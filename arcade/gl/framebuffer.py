@@ -141,8 +141,7 @@ class Framebuffer:
         """
         return self._glo
 
-    @property
-    def viewport(self) -> Tuple[int, int, int, int]:
+    def _get_viewport(self) -> Tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
@@ -159,24 +158,11 @@ class Framebuffer:
         """
         return self._viewport
 
-    @viewport.setter
-    def viewport(self, value: Tuple[int, int, int, int]):
+    def _set_viewport(self, value: Tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
-        # If this is the default framebuffer we apply pixel scale
-        # automatically for the user. This will make sense for
-        # most users.
-        if self.is_default:
-            ratio = self.ctx.window.get_pixel_ratio()
-            self._viewport = (
-                int(value[0] * ratio),
-                int(value[1] * ratio),
-                int(value[2] * ratio),
-                int(value[3] * ratio),
-            )
-        else:
-            self._viewport = value
+        self._viewport = value
 
         # If the framebuffer is bound we need to set the viewport.
         # Otherwise it will be set on use()
@@ -186,6 +172,8 @@ class Framebuffer:
                 gl.glScissor(*self._viewport)
             else:
                 gl.glScissor(*self._scissor)
+
+    viewport = property(_get_viewport, _set_viewport)
 
     @property
     def scissor(self) -> Optional[Tuple[int, int, int, int]]:
@@ -568,3 +556,49 @@ class DefaultFrameBuffer(Framebuffer):
 
         # HACK: Signal the default framebuffer having depth buffer
         self._depth_attachment = True
+
+    def _get_viewport(self) -> Tuple[int, int, int, int]:
+        """
+        Get or set the framebuffer's viewport.
+        The viewport parameter are ``(x, y, width, height)``.
+        It determines what part of the framebuffer should be redered to.
+        By default the viewport is ``(0, 0, width, height)``.
+
+        The viewport value is persistent all will automatically
+        be applies every time the framebuffer is bound.
+
+        Example::
+
+            # 100, x 100 lower left with size 200 x 200px
+            fb.viewport = 100, 100, 200, 200
+        """
+        ratio = self.ctx.window.get_pixel_ratio()
+        return (
+            int(self._viewport[0] / ratio),
+            int(self._viewport[1] / ratio),
+            int(self._viewport[2] / ratio),
+            int(self._viewport[3] / ratio),
+        )
+
+    def _set_viewport(self, value: Tuple[int, int, int, int]):
+        if not isinstance(value, tuple) or len(value) != 4:
+            raise ValueError("viewport should be a 4-component tuple")
+
+        ratio = self.ctx.window.get_pixel_ratio()
+        self._viewport = (
+            int(value[0] * ratio),
+            int(value[1] * ratio),
+            int(value[2] * ratio),
+            int(value[3] * ratio),
+        )
+
+        # If the framebuffer is bound we need to set the viewport.
+        # Otherwise it will be set on use()
+        if self._ctx.active_framebuffer == self:
+            gl.glViewport(*self._viewport)
+            if self._scissor is None:
+                gl.glScissor(*self._viewport)
+            else:
+                gl.glScissor(*self._scissor)
+
+    viewport = property(_get_viewport, _set_viewport)
