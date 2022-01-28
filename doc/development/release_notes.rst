@@ -54,9 +54,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Documentation
 
-  * Change examples so instead of `self.clear()` we use `self.window.clear()`
-    as what `start_render` did was confusing people, while `clear` is ... well,
-    more clear. `#1071 <https://github.com/pythonarcade/arcade/issues/1071>`_
+  * Change examples so instead of ``arcade.start_render()`` we use ``self.clear()``.
+    The start render function was confusing people.
+    `#1071 <https://github.com/pythonarcade/arcade/issues/1071>`_
   * Fix a bunch of links that were incorrectly pointing to old pvcraven instead of pythonarcade.
     `#1063 <https://github.com/pythonarcade/arcade/issues/1063>`_
   * Update pyinstaller instructions
