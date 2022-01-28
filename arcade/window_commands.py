@@ -171,11 +171,11 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     """
     window = get_window()
     fbo = window.ctx.fbo
-    # If the window framebuffer is active we should apply pixel scale
+    # If we are dealing with window framebuffer we need to query window size
+    # through the window itself and not the default framebuffer
     if fbo.is_default:
-        scaling = get_scaling_factor(window)
-        fbo.viewport = 0, 0, int(window.width * scaling), int(window.height * scaling)
-    # otherwise it's an offscreen framebuffer not needing pixel scale
+        fbo.viewport = 0, 0, window.width, window.height
+    # otherwise it's an offscreen framebuffer and we can trust the size
     else:
         fbo.viewport = 0, 0, *fbo.size
 
