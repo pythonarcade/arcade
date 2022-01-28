@@ -25,8 +25,8 @@ import arcade
 from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Transform Feedback"
 
 
@@ -148,7 +148,6 @@ class MyGame(arcade.Window):
         self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
 
         self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
-        self.on_resize(*self.get_framebuffer_size())
         self.time = time.time()
 
     def gen_initial_data(self, count):
@@ -160,7 +159,6 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        arcade.set_viewport(0, self.get_framebuffer_size()[0], 0, self.get_framebuffer_size()[1])
 
         # Calculate the actual delta time and current time
         t = time.time()

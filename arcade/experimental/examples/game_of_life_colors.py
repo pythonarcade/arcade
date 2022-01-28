@@ -142,18 +142,18 @@ class GameOfLife(arcade.Window):
                 if (living) {
                     if (neighbours == 2 || neighbours == 3) {
                         // The cell lives, but we write out the average color minus a small value
-                        gl_FragColor = vec4(sum.rgb - vec3(1.0/255.0), 1.0);
+                        fragColor = vec4(sum.rgb - vec3(1.0/255.0), 1.0);
                     } else {
                         // The cell dies when too few or too many neighbors
-                        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                     }
                 } else {
                     if (neighbours == 3) {
                         // A new cell was born
-                        gl_FragColor = vec4(normalize(sum.rgb), 1.0);
+                        fragColor = vec4(normalize(sum.rgb), 1.0);
                     } else {
                         // Still dead
-                        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                     }
                 }
             }
