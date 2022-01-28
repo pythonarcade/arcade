@@ -135,7 +135,7 @@ class Surface:
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
-        self.fbo.viewport = int(x), int(y), int(width),int(height)
+        self.fbo.viewport = int(x), int(y), int(width), int(height)
 
         width = max(width, 1)
         height = max(height, 1)
