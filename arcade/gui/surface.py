@@ -135,12 +135,8 @@ class Surface:
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
-        self.fbo.viewport = (
-            int(x * self._pixel_ratio),
-            int(y * self._pixel_ratio),
-            int(width * self._pixel_ratio),
-            int(height * self._pixel_ratio),
-        )
+        self.fbo.viewport = int(x), int(y), int(width),int(height)
+
         width = max(width, 1)
         height = max(height, 1)
         self.ctx.projection_2d = 0, width, 0, height
