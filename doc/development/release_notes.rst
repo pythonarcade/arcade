@@ -38,6 +38,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Fixed issue `#1068 <https://github.com/pythonarcade/arcade/issues/1068>`_
     (#1069) where loaded rectangular hit box was wrong.
   * Add better error for infinite tile maps
+  * Added ``SpriteList.properties`` and properties from Image and Tile layers will automatically be
+    loaded into that when loading a Tiled map
 
 * General
 
