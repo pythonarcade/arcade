@@ -7,7 +7,6 @@ from typing import Optional
 from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
-from arcade.window_commands import get_scaling_factor
 
 
 class Camera:
