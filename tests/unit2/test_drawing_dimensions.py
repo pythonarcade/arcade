@@ -8,7 +8,7 @@ def test_drawing_dims(window):
     arcade.set_background_color(arcade.color.WHITE)
 
     # Start the render process. This must be done before any drawing commands.
-    self.clear()
+    arcade.start_render()
 
     radius = 50
     width = radius * 2

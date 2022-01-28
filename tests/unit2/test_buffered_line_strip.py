@@ -10,7 +10,7 @@ def test_buffered_lines(window):
                     [300, 300])
     line_strip = arcade.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
 
-    self.clear()
+    arcade.start_render()
     line_strip.draw()
     p = arcade.get_pixel(0, 100)
     assert p == (0, 0, 0)

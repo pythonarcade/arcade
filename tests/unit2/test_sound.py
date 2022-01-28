@@ -83,7 +83,7 @@ def test_sound(window):
             assert laser_mp3_stream.is_playing(player) == False
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
 
     window.on_update = update
     window.on_draw = on_draw

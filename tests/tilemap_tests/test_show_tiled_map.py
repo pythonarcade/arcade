@@ -18,7 +18,7 @@ def test_show_tilemap(window: arcade.Window):
         my_map.sprite_lists["Blocking Sprites"].update_animation(delta_time)
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         my_map.sprite_lists["Blocking Sprites"].draw()
 
     window.on_draw = on_draw

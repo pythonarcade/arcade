@@ -27,7 +27,7 @@ def test_physics_engine(window):
     )
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         wall_list.draw()
         character_list.draw()
 

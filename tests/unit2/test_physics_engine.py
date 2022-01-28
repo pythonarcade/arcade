@@ -34,7 +34,7 @@ def test_physics_engine(window):
     physics_engine = arcade.PhysicsEngineSimple(character_sprite, wall_list)
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         wall_list.draw()
         character_list.draw()
 

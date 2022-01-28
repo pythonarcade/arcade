@@ -44,7 +44,7 @@ def test_window(window: arcade.Window):
     factor = arcade.get_scaling_factor(w)
     assert factor > 0
 
-    self.clear()
+    arcade.start_render()
     arcade.finish_render()
 
     def f():

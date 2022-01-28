@@ -52,7 +52,7 @@ def test_load_textures(window):
     character_list.append(player)
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         character_list.draw()
 
     def update(delta_time):

@@ -9,7 +9,7 @@ def test_textured_rects(window: arcade.Window):
     texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         scale = .6
         arcade.draw_texture_rectangle(
             540, 120,
@@ -37,7 +37,7 @@ def test_textured_rects_2(window: arcade.Window):
     texture = arcade.load_texture(":resources:images/items/coinGold.png")
 
     def on_draw():
-        self.clear()
+        arcade.start_render()
         x = 50
         y = 50
         scale = 1.0
