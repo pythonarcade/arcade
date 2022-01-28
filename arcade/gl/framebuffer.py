@@ -500,7 +500,23 @@ class Framebuffer:
 
 
 class DefaultFrameBuffer(Framebuffer):
-    """Represents the default framebuffer"""
+    """
+    Represents the default framebuffer.
+    This is the framebuffer of the window itself and need
+    some special handling.
+
+    We are not allowed to destroy this framebuffer since
+    it's owned by pyglet. This framebuffer can also change
+    size and pixel ratio at any point.
+
+    We're doing some initial introspection to guess
+    somewhat sane initial values. Since this is a
+    dynamic framebuffer we cannot trust the internal
+    values. We can only trust what the pyglet window
+    itself reports related to window size and 
+    framebuffer size. This should be updated in the
+    ``on_resize`` callback.
+    """
 
     #: Is this the default framebuffer? (window buffer)
     is_default = True
