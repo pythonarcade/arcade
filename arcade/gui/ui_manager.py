@@ -5,7 +5,7 @@ The better gui for arcade
 - UIElements are now called Widgets (like everywhere else)
 - Widgets render into a FrameBuffer, which supports in memory drawings with less memory usage
 - Support for animated widgets
-- Texts are now rendered with pyglet, open easier support for text areas with scolling
+- Texts are now rendered with pyglet, open easier support for text areas with scrolling
 - TextArea with scroll support
 """
 import warnings
