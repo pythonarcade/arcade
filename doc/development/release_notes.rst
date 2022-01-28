@@ -49,6 +49,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * ``Window.clear`` can now clear a sub-section of the screen through
     the new optional ``viewport`` parameter.
   * :py:meth:`arcade.Window.clear` can now take normalized/float color values
+  * The new :py:meth:`arcade.View.clear` method now clears the current window. This can
+    be used as a shortcut :py:meth:`arcade.Window.clear` when inside of a View class.
   * Add support for custom resource handles
   * Add support for anisotropic filtering with textures.
 
