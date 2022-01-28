@@ -67,7 +67,8 @@ class UIMockup(arcade.Window):
 
     def __init__(self):
         super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager(auto_enable=True)
+        self.manager = UIManager()
+        self.manager.enable()
         self.fps = FPSCounter()
 
         # size = 40
