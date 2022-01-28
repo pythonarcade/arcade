@@ -190,12 +190,5 @@ class Camera:
         """
         self._window.current_camera = self
         self.update()
-        fbo = self._window.ctx.fbo
-        scaling = get_scaling_factor(self._window) if fbo.is_default else 1.0
-        fbo.ctx.viewport = (
-            0,
-            0,
-            int(self.viewport_width * scaling),
-            int(self.viewport_height * scaling),
-        )
+        self._window.ctx.viewport = 0, 0, int(self.viewport_width), int(self.viewport_height)
         self._window.ctx.projection_2d_matrix = self.combined_matrix
