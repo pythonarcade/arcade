@@ -135,7 +135,7 @@ class Text:
 
     The constructor arguments work identically to those of
     :py:func:`~arcade.draw_text`. See its documentation for in-depth
-    explanation for how to use each of them.
+    explanation for how to use each of them. For example code, see :ref:`drawing_text_objects`.
 
     :param str text: Initial text to display. Can be an empty string
     :param float start_x: x position to align the text's anchor point with
@@ -390,6 +390,8 @@ def draw_text(
     This function lets you start draw text easily with better
     performance than the old pillow-based text. If you need even higher
     performance, consider using :py:class:`~arcade.Text`.
+
+    Example code can be found at :ref:`drawing_text`.
 
     :param str text: Text to display
     :param float start_x: x position to align the text's anchor point with

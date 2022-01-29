@@ -89,3 +89,9 @@ Sprites are loaded to the graphics card and drawn in a batch. Sprites that
 don't move can be re-drawn incredibly fast. Sprites that do move only need their
 position updated. Sprite drawing with Arcade is incredibly fast, and requires
 rarely needs any extra effort from the programmer.
+
+Text drawing performance
+------------------------
+
+Arcade's :meth:`arcade.draw_text` can be quite slow. To speed things up, use
+text objects. See :ref:`drawing_text_objects`.

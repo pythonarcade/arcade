@@ -46,6 +46,11 @@ Drawing Primitives
 
    :ref:`drawing_text`
 
+.. figure:: thumbs/drawing_text_objects.png
+   :figwidth: 170px
+
+   :ref:`drawing_text_objects`
+
 Drawing with Loops
 ^^^^^^^^^^^^^^^^^^
 
