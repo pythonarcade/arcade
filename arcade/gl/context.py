@@ -149,7 +149,7 @@ class Context:
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
         self._window_ref = weakref.ref(window)
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
@@ -184,8 +184,8 @@ class Context:
         self._point_size = 1.0
         self._flags: Set[int] = set()
 
-        # Normal garbage collection as default (what we expect in python)
-        self._gc_mode = "auto"
+        # Context GC as default. We need to call Context.gc() to free opengl resorces
+        self._gc_mode = "context_gc"
         self.gc_mode = gc_mode
         #: Collected objects to gc when gc_mode is "context_gc"
         self.objects: Deque[Any] = deque()
