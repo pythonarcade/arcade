@@ -1,7 +1,6 @@
 from typing import Optional, List
 
-from arcade import Camera, draw_lrtb_rectangle_outline
-from arcade.color import WHITE
+from arcade import Camera
 
 
 class Section:
@@ -10,11 +9,15 @@ class Section:
     Events are dispatched to the section based on it's position on the screen.
     """
 
-    def __init__(self, view, left: float, bottom: float, width: float, height: float, *,
-                 accept_keyboard_events: bool = False, prevent_dispatch: bool = True,
-                 prevent_dispatch_view: bool = True):
-        # parent view
-        self.view = view
+    def __init__(self, left: float, bottom: float, width: float, height: float, *,
+                 name: Optional[str] = None, accept_keyboard_events: bool = False,
+                 prevent_dispatch: bool = True, prevent_dispatch_view: bool = True,
+                 local_mouse_coordinates: bool = False):
+
+        # name of the section
+        self.name: Optional[str] = name
+        # parent view: set by the SectionManager
+        self._view = None  # protected, you should not change section.view manually
 
         # section options
         self.enabled: bool = True  # enables or disables this section
@@ -22,6 +25,7 @@ class Section:
         self.accept_keyboard_events: bool = accept_keyboard_events
         self.prevent_dispatch: bool = prevent_dispatch  # prevents events to propagate
         self.prevent_dispatch_view: bool = prevent_dispatch_view  # prevents events to propagate to the view
+        self.local_mouse_coordinates: bool = local_mouse_coordinates  # mouse coordinates relative to section
 
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
@@ -32,6 +36,11 @@ class Section:
 
         # optional section camera
         self.camera: Optional[Camera] = None
+
+    @property
+    def view(self):
+        """ The view this section is set on """
+        return self._view
 
     @property
     def right(self) -> float:
@@ -56,6 +65,14 @@ class Section:
     def mouse_is_on_top(self, x: float, y: float) -> bool:
         """ Check if the current mouse position is on top of this section """
         return self.left <= x <= self.right and self.bottom <= y <= self.top
+
+    def get_xy_screen_relative(self, section_x: float, section_y: float):
+        """ Returns screen coordinates from section coordinates """
+        return self.left + section_x, self.bottom + section_y
+
+    def get_xy_section_relative(self, screen_x: float, screen_y: float):
+        """ returns section coordinates from screen coordinates """
+        return screen_x - self.left, screen_y - self.bottom
 
     # Following methods are just the usual view methods + on_mouse_enter / on_mouse_leave
 
@@ -133,16 +150,31 @@ class SectionManager:
         for section in self.sections:
             section.enabled = True
 
+    def get_section_by_name(self, name: str) -> Optional[Section]:
+        """ Returns the first section with the given name """
+        sections = [section for section in self.sections if section.name == name]
+        if sections:
+            return sections[0]
+        return None
+
     def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
         """
         Adds a section to this Section Manager.
         :param section: the section to add to this section manager
         :param at_index: inserts the section at that index. If None at the end
         """
+        if not isinstance(section, Section):
+            raise ValueError('You can only add Section instances')
+        section._view = self.view  # modify view param from section
         if at_index is None:
             self.sections.append(section)
         else:
             self.sections.insert(at_index, section)
+
+    def remove_section(self, section: "Section") -> None:
+        """ Removes a section from this section manager """
+        section._view = None
+        self.sections.remove(section)
 
     def on_update(self, delta_time: float):
         """ Called on each event loop. First dispatch the view event, then the section ones. """
@@ -173,9 +205,6 @@ class SectionManager:
             section.on_draw()
             if section.camera:
                 self.camera.use()  # reset to the default camera after the section is draw if needed
-            if self.debug:
-                draw_lrtb_rectangle_outline(section.left, section.right,
-                                            section.top, section.bottom, WHITE)
 
     def on_resize(self, width: int, height: int):
         """ Called when the window is resized. First dispatch the view event, then the section ones. """
@@ -206,14 +235,18 @@ class SectionManager:
         # check if the affected section has been already computed
         section = kwargs.get('current_section')
         if section:
-            # remove the section from the kwargs so it arrives clean to the event handler
+            # remove the section from the kwargs, so it arrives clean to the event handler
             del kwargs['current_section']
         else:
             section = self.get_section(x, y)  # get the section from mouse position
         if section:
             method = getattr(section, event, None)  # get the method to call from the section
             if method:
-                result = method(x, y, *args, **kwargs)  # call the section method
+                if section.local_mouse_coordinates:
+                    position = section.get_xy_section_relative(x, y)
+                else:
+                    position = x, y
+                result = method(*position, *args, **kwargs)  # call the section method
             if (method and result is True) or section.prevent_dispatch:
                 # if the method returns EVENT_HANDLED (True) then avoid propagating the event.
                 # if the section prevents dispatching events to the view return
@@ -226,7 +259,7 @@ class SectionManager:
 
     def dispatch_keyboard_event(self, event, *args, **kwargs) -> Optional[bool]:
         """ Generic method to dispatch keyboard events to the correct sections """
-        # get the sections that receives keyboard events if any
+        # get the sections that receive keyboard events if any
         propagate_to_view = True
         for section in self.get_keyboard_sections():
             method = getattr(section, event, None)  # get the method to call from the section

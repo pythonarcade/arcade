@@ -18,7 +18,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
 from arcade.arcade_types import Color
-from arcade.sections import SectionManager
+from arcade import SectionManager
 
 LOG = logging.getLogger(__name__)
 
