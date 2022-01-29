@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.10
 ------
 
-*Unreleased*
+*Released 2022-Jan-29*
 
 * Sprites
 
