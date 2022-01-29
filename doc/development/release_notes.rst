@@ -53,6 +53,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     be used as a shortcut :py:meth:`arcade.Window.clear` when inside of a View class.
   * Add support for custom resource handles
   * Add support for anisotropic filtering with textures.
+  * Clearing the window should always clear the entire window
+    regardless of camera / viewport setup (unless a scissor box is set)
 
 * Documentation
 
@@ -71,6 +73,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Fixed a bug were specifying vertex count wasn't possible with transforms when
     the vertex array has an index buffer bound.
   * The :py:class:`~arcade.gl.Query` object now allows for selecting what specific queries should be performed
+  * Fixed a issue causing the wrong garbage collection mode to activate during context creation
+  * Viewport values for the default framebuffer now applies pixel ratio by default
+  * Scissor values for the default framebuffer now applies pixel ratio by default
 
 * ``arcade.gui``
 
