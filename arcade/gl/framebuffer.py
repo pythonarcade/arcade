@@ -635,7 +635,10 @@ class DefaultFrameBuffer(Framebuffer):
 
     def _set_scissor(self, value):
         if value is None:
+            # FIXME: Do we need to reset something here?
             self._scissor = None
+            if self._ctx.active_framebuffer == self:
+                gl.glScissor(*self._viewport)
         else:
             ratio = self.ctx.window.get_pixel_ratio()
             self._scissor = (
@@ -649,3 +652,5 @@ class DefaultFrameBuffer(Framebuffer):
             # Otherwise it will be set on use()
             if self._ctx.active_framebuffer == self:
                 gl.glScissor(*self._scissor)
+
+    scissor = property(_get_scissor, _set_scissor)
