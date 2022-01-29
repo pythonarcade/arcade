@@ -210,7 +210,7 @@ class MyGame(arcade.Window):
         # We draw a dot to make it easy too see the text in relation to
         # its start x and y.
         start_y -= DEFAULT_LINE_HEIGHT
-        
+
         self.default_baseline_left = arcade.Text(
             "Default of 'baseline' and 'Left'",
             start_x,
@@ -325,7 +325,7 @@ class MyGame(arcade.Window):
             5,
         )
         self.default_baseline_left.draw()
- 
+
         arcade.draw_point(
             self.bottom_left.x,
             self.bottom_left.y,
