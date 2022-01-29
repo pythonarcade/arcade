@@ -175,8 +175,7 @@ class Framebuffer:
 
     viewport = property(_get_viewport, _set_viewport)
 
-    @property
-    def scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.      
 
@@ -196,8 +195,7 @@ class Framebuffer:
         """
         return self._scissor
 
-    @scissor.setter
-    def scissor(self, value):
+    def _set_scissor(self, value):
         self._scissor = value
 
         if self._scissor is not None:
@@ -205,6 +203,8 @@ class Framebuffer:
             # Otherwise it will be set on use()
             if self._ctx.active_framebuffer == self:
                 gl.glScissor(*self._scissor)
+
+    scissor = property(_get_scissor, _set_scissor)
 
     @property
     def ctx(self) -> "Context":
@@ -597,8 +597,55 @@ class DefaultFrameBuffer(Framebuffer):
         if self._ctx.active_framebuffer == self:
             gl.glViewport(*self._viewport)
             if self._scissor is None:
+                # FIXME: Probably should be set to the framebuffer size
                 gl.glScissor(*self._viewport)
             else:
                 gl.glScissor(*self._scissor)
 
     viewport = property(_get_viewport, _set_viewport)
+
+    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
+        """
+        Get or set the scissor box for this framebuffer.      
+
+        By default the scissor box is disabled and has no effect
+        and will have an initial value of ``None``. The scissor
+        box is enabled when setting a value and disabled when
+        set to ``None``
+
+            # Set and eneable scissor box only drawing
+            # in a 100 x 100 pixel lower left area
+            ctx.scissor = 0, 0, 100, 100
+            # Disable scissoring
+            ctx.scissor = None
+
+        :type: tuple (x, y, width, height)
+
+        """
+        if self._scissor is None:
+            return None
+
+        ratio = self.ctx.window.get_pixel_ratio()
+        return (
+            int(self._scissor[0] / ratio),
+            int(self._scissor[1] / ratio),
+            int(self._scissor[2] / ratio),
+            int(self._scissor[3] / ratio),
+        )
+
+    def _set_scissor(self, value):
+        if value is None:
+            self._scissor = None
+        else:
+            ratio = self.ctx.window.get_pixel_ratio()
+            self._scissor = (
+                int(value[0] * ratio),
+                int(value[1] * ratio),
+                int(value[2] * ratio),
+                int(value[3] * ratio),
+            )
+
+            # If the framebuffer is bound we need to set the scissor box.
+            # Otherwise it will be set on use()
+            if self._ctx.active_framebuffer == self:
+                gl.glScissor(*self._scissor)
