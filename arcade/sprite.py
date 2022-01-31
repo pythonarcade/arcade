@@ -1304,7 +1304,7 @@ def load_animated_gif(resource_name):
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")
 
-    #print(image_object.n_frames)
+    # print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
     for frame in range(0, image_object.n_frames):
