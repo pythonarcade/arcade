@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 Perspective example using the lower level rendering API.
 
@@ -75,10 +76,10 @@ class Perspective(arcade.Window):
                 'f',
                 [
                     # x  y   z  u  v 
-                    -1,  1, 0, 0, 1, # Top Left
-                    -1, -1, 0, 0, 0, # Bottom Left
+                    -1,  1, 0, 0, 1,  # Top Left     
+                    -1, -1, 0, 0, 0,  # Bottom Left
                      1,  1, 0, 1, 1,  # Top Right
-                     1, -1, 0, 1, 0, # Bottom right
+                     1, -1, 0, 1, 0,  # Bottom right
                 ]
             )
         )
