@@ -6,6 +6,11 @@ What's key here is to understand how sections can isolate code that otherwise
 Also, note that events are received on each section only based on the
  section configuration. This way you don't have to check every time if the mouse
  position is on top of some area.
+Other featrures showed here.
+ - Event dispatching (two sections will receive on_key_press and on_key_release
+ - Event draw and update order based on section_manager sections list order
+ - Section enable property to show or hide sections
+ - Modal Sections
 
 """
 import arcade
@@ -26,6 +31,36 @@ class Ball(arcade.SpriteCircle):
     @property
     def speed(self):
         return round((abs(self.change_x) + abs(self.change_y)) * 60, 2)
+
+
+class ModalSection(Section):
+
+    def __init__(self, left: float, bottom: float, width: float, height: float):
+        super().__init__(left, bottom, width, height, modal=True, enabled=False)
+
+        self.button = arcade.SpriteSolidColor(100, 50, arcade.color.RED)
+        self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
+
+    def on_draw(self):
+        arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
+                                          self.bottom, arcade.color.GRAY)
+        arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
+                                           self.bottom, arcade.color.WHITE)
+        self.draw_button()
+
+    def draw_button(self):
+        self.button.draw()
+        arcade.draw_text('Close Modal', self.button.left + 5,
+                         self.button.bottom + self.button.height / 2, arcade.color.WHITE)
+
+    def on_resize(self, width: int, height: int):
+        self.left = width / 3
+        self.bottom = (height / 2) - self.height / 2
+        self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        if self.button.collides_with_point((x, y)):
+            self.enabled = False
 
 
 class InfoBar(Section):
@@ -61,6 +96,9 @@ class Panel(Section):
         self.button_stop = self.new_button(arcade.color.PUMPKIN)
         self.button_toogle_info_bar = self.new_button(arcade.color.YELLOW)
 
+        self.button_show_modal = self.new_button(arcade.color.SAND)
+        self.pressed_key = None
+
     @staticmethod
     def new_button(color):
         return arcade.SpriteSolidColor(100, 50, color)
@@ -73,6 +111,10 @@ class Panel(Section):
         arcade.draw_text('Press to toogle info_bar', self.left + 10, self.top - 140, arcade.color.BLACK, 9)
         self.button_toogle_info_bar.draw()
 
+    def draw_button_show_modal(self):
+        self.button_show_modal.draw()
+        arcade.draw_text('Show Modal', self.left - 37 + self.width / 2, self.bottom + 95, arcade.color.BLACK, 9)
+
     def on_draw(self):
         arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
                                           self.bottom, arcade.color.BROWN)
@@ -81,11 +123,19 @@ class Panel(Section):
         self.draw_button_stop()
         self.draw_button_toogle_info_bar()
 
+        if self.pressed_key:
+            arcade.draw_text(f'Pressed key code: {self.pressed_key}', self.left + 10,
+                             self.top - 240, arcade.color.GRAY, 9)
+
+        self.draw_button_show_modal()
+
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         if self.button_stop.collides_with_point((x, y)):
             self.view.map.ball.stop()
         elif self.button_toogle_info_bar.collides_with_point((x, y)):
             self.view.info_bar.enabled = not self.view.info_bar.enabled
+        elif self.button_show_modal.collides_with_point((x, y)):
+            self.view.modal_section.enabled = True
 
     def on_resize(self, width: int, height: int):
         # stick to the right
@@ -93,6 +143,13 @@ class Panel(Section):
         self.height = height - self.view.info_bar.height
         self.button_stop.position = self.left + self.width / 2, self.top - 80
         self.button_toogle_info_bar.position = self.left + self.width / 2, self.top - 180
+        self.button_show_modal.position = self.left + self.width / 2, self.bottom + 100
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        self.pressed_key = symbol
+
+    def on_key_release(self, _symbol: int, _modifiers: int):
+        self.pressed_key = None
 
 
 class Map(Section):
@@ -148,11 +205,14 @@ class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
+        self.modal_section = ModalSection(self.window.width / 3, (self.window.height / 2) - 100, 400, 200)
         self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT)
-        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT)
+        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
+                           accept_keyboard_events=True, prevent_dispatch={False})
         self.map = Map(0, 0, self.window.width - PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
                        accept_keyboard_events=True)
 
+        self.section_manager.add_section(self.modal_section)
         self.section_manager.add_section(self.info_bar)
         self.section_manager.add_section(self.panel)
         self.section_manager.add_section(self.map)

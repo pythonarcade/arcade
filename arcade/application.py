@@ -592,6 +592,8 @@ class Window(pyglet.window.Window):
         )
         self._current_view.on_show()
         self._current_view.on_show_view()
+        if self._current_view.has_sections:
+            self._current_view.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -610,6 +612,7 @@ class Window(pyglet.window.Window):
 
         self._current_view.on_hide_view()
         if self._current_view.has_sections:
+            self._current_view.section_manager.on_hide_view()
             self.remove_handlers(self._current_view.section_manager)
         self.remove_handlers(self._current_view)
         self._current_view = None
