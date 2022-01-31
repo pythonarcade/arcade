@@ -235,6 +235,8 @@ class Window(pyglet.window.Window):
     def close(self):
         """ Close the Window. """
         super().close()
+        # Make sure we don't reference the window any more
+        set_window(None)
         pyglet.clock.unschedule(self._dispatch_updates)
 
     def set_fullscreen(self,
@@ -421,12 +423,16 @@ class Window(pyglet.window.Window):
         :param int width: New width
         :param int height: New height
         """
-        # Retain projection scrolling if applied
-        original_viewport = self.get_viewport()
-        self.set_viewport(original_viewport[0],
-                          original_viewport[0] + width,
-                          original_viewport[2],
-                          original_viewport[2] + height)
+        # NOTE: When a second window is opened pyglet will
+        #       dispatch on_resize during the window constructor.
+        #       The arcade context is not created at that time
+        if hasattr(self, "_ctx"):
+            # Retain projection scrolling if applied
+            original_viewport = self._ctx.projection_2d
+            self.set_viewport(original_viewport[0],
+                            original_viewport[0] + width,
+                            original_viewport[2],
+                            original_viewport[2] + height)
 
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
@@ -508,7 +514,7 @@ class Window(pyglet.window.Window):
     # noinspection PyMethodMayBeStatic
     def get_viewport(self) -> Tuple[float, float, float, float]:
         """ Get the viewport. (What coordinates we can see.) """
-        return get_viewport()
+        return self.ctx.projection_2d
 
     def use(self):
         """Bind the window's framebuffer for rendering commands"""
