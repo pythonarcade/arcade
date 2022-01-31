@@ -172,7 +172,8 @@ class Section:
         """ returns section coordinates from screen coordinates """
         return screen_x - self.left, screen_y - self.bottom
 
-    # Following methods are just the usual view methods + on_mouse_enter / on_mouse_leave
+    # Following methods are just the usual view methods
+    #  + on_mouse_enter / on_mouse_leave / on_show_section / on_hide_section
 
     def on_draw(self):
         pass
@@ -223,24 +224,22 @@ class Section:
 class SectionManager:
     """
     This manages the different Sections a View has.
-    Actions such as dispatching the eventos to the correct Section, draw order, etc.
+    Actions such as dispatching the events to the correct Section, draw order, etc.
     """
 
     def __init__(self, view):
         self.view = view  # the view this section manager belongs to
 
         # store sections in update/event order and in draw order
-        self._sections: List[Section] = []  # a list of the current sections for this view
+        self._sections: List[Section] = []  # a list of the current sections for this in update/event order
         self._sections_draw: List[Section] = []  # the list of current sections in draw order
 
         # generic camera to reset after a custom camera is use
+        # this camera is set to the whole viewport
         self.camera: Camera = Camera(self.view.window.width, self.view.window.height)
 
         # Holds the section the mouse is currently on top
         self.mouse_over_section: Optional[Section] = None
-
-        # debug tool to just draw some rectangles over the section borders
-        self.debug: bool = False
 
     @property
     def sections(self) -> List[Section]:
@@ -296,6 +295,8 @@ class SectionManager:
 
     def clear_sections(self):
         """ Removes all sections """
+        for section in self.sections:
+            section._view = None
         self._sections = []
         self._sections_draw = []
 
@@ -427,6 +428,10 @@ class SectionManager:
         return self.dispatch_mouse_event('on_mouse_release', x, y, *args, **kwargs)
 
     def on_mouse_motion(self, x: float, y: float, *args, **kwargs) -> Optional[bool]:
+        """
+        This method dispatches the on_mouse_motion and also calculates
+         if on_mouse_enter/leave should be fired
+        """
         before_section = self.mouse_over_section
         current_section = self.get_section(x, y)
         if before_section is not current_section:
