@@ -1299,18 +1299,18 @@ def load_animated_gif(resource_name):
     """
 
     file_name = resolve_resource_path(resource_name)
-    print(file_name)
+    # print(file_name)
     image_object = PIL.Image.open(file_name)
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")
 
-    print(image_object.n_frames)
+    #print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
     for frame in range(0, image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
-        print(frame_duration)
+        # print(frame_duration)
         image = image_object.convert("RGBA")
         texture = Texture(f"{resource_name}-{frame}", image)
         sprite.textures.append(texture)
