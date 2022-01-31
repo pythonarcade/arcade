@@ -579,15 +579,16 @@ class Window(pyglet.window.Window):
         if new_view.has_sections:
             self.push_handlers(
                 **{
-                    et: getattr(new_view.section_manager, et, None)
-                    for et in self.section_manager_events
-                 }
+                    event_type: getattr(new_view.section_manager, event_type, None)
+                    for event_type in self.section_manager_events
+                }
             )
         self.push_handlers(
             **{
-                et: getattr(new_view, et, None)
-                for et in self.event_types
-                if et != 'on_show' and et not in self.section_manager_events and hasattr(new_view, et)
+                event_type: getattr(new_view, event_type, None)
+                for event_type in self.event_types
+                if event_type != 'on_show' and event_type not in self.section_manager_events
+                and hasattr(new_view, event_type)
             }
         )
         self._current_view.on_show()
