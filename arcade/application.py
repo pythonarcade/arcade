@@ -13,7 +13,6 @@ from pyglet.canvas.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
-from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
@@ -429,10 +428,12 @@ class Window(pyglet.window.Window):
         if hasattr(self, "_ctx"):
             # Retain projection scrolling if applied
             original_viewport = self._ctx.projection_2d
-            self.set_viewport(original_viewport[0],
-                            original_viewport[0] + width,
-                            original_viewport[2],
-                            original_viewport[2] + height)
+            self.set_viewport(
+                original_viewport[0],
+                original_viewport[0] + width,
+                original_viewport[2],
+                original_viewport[2] + height
+            )
 
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
