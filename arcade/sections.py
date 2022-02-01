@@ -324,7 +324,7 @@ class SectionManager:
         """
         Called on each event loop. First dispatch the view event, then the section ones.
         It automatically calls camera.use() for each section that has a camera and resets
-         the camera effects by calling the default SectionManager camera afterwards if needed.
+        the camera effects by calling the default SectionManager camera afterwards if needed.
         """
         self.view.on_draw()
         for section in self._sections_draw:  # iterate over sections_draw

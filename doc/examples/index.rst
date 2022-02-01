@@ -448,6 +448,13 @@ Resizable Window and Fullscreen Games
 
    :ref:`full_screen_example`
 
+Dividing a View Into Sections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/sections.png
+   :figwidth: 170px
+
+   :ref:`sections`
 
 Graphical User Interface
 ------------------------
