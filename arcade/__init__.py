@@ -93,6 +93,9 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 
+from .camera import Camera
+from .sections import Section, SectionManager
+
 from .application import MOUSE_BUTTON_LEFT
 from .application import MOUSE_BUTTON_MIDDLE
 from .application import MOUSE_BUTTON_RIGHT
@@ -311,7 +314,6 @@ from .text_pillow import (
     DEFAULT_FONT_NAMES,
 )
 
-from .camera import Camera
 
 # --- Generated __all__ ---
 
@@ -356,6 +358,8 @@ __all__ = ['AStarBarrierList',
            'RGBA',
            'Rect',
            'RectList',
+           'Section',
+           'SectionManager',
            'Scene',
            'Shape',
            'ShapeElementList',

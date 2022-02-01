@@ -25,7 +25,7 @@ class Camera:
         self,
         viewport_width: int = 0,
         viewport_height: int = 0,
-        window: Optional[arcade.Window] = None,
+        window: Optional["arcade.Window"] = None,
     ):
         # Reference to Context, used to update projection matrix
         self._window = window or arcade.get_window()

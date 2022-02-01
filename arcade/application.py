@@ -17,6 +17,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
 from arcade.arcade_types import Color
+from arcade import SectionManager
 
 LOG = logging.getLogger(__name__)
 
@@ -71,24 +72,25 @@ class Window(pyglet.window.Window):
     :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse``
                                 attributes available for use.
     """
+
     def __init__(
-        self,
-        width: int = 800,
-        height: int = 600,
-        title: str = 'Arcade Window',
-        fullscreen: bool = False,
-        resizable: bool = False,
-        update_rate: Optional[float] = 1 / 60,
-        antialiasing: bool = True,
-        gl_version: Tuple[int, int] = (3, 3),
-        screen: pyglet.canvas.Screen = None,
-        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
-        visible: bool = True,
-        vsync: bool = False,
-        gc_mode: str = "context_gc",
-        center_window: bool = False,
-        samples: int = 4,
-        enable_polling: bool = True
+            self,
+            width: int = 800,
+            height: int = 600,
+            title: str = 'Arcade Window',
+            fullscreen: bool = False,
+            resizable: bool = False,
+            update_rate: Optional[float] = 1 / 60,
+            antialiasing: bool = True,
+            gl_version: Tuple[int, int] = (3, 3),
+            screen: pyglet.canvas.Screen = None,
+            style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+            visible: bool = True,
+            vsync: bool = False,
+            gc_mode: str = "context_gc",
+            center_window: bool = False,
+            samples: int = 4,
+            enable_polling: bool = True
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -170,6 +172,12 @@ class Window(pyglet.window.Window):
             self.keyboard = None
             self.mouse = None
 
+        # Events that the section manager should handle (instead of the View) if sections are present in a View
+        self.section_manager_events = {'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
+                                       'on_mouse_release', 'on_mouse_scroll', 'on_mouse_enter',
+                                       'on_mouse_leave', 'on_key_press', 'on_key_release', 'on_draw',
+                                       'on_update', 'update', 'on_resize'}
+
     @property
     def current_view(self) -> Optional["View"]:
         """
@@ -191,10 +199,10 @@ class Window(pyglet.window.Window):
         return self._ctx
 
     def clear(
-        self,
-        color: Optional[Color] = None,
-        normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+            self,
+            color: Optional[Color] = None,
+            normalized: bool = False,
+            viewport: Tuple[int, int, int, int] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -569,19 +577,31 @@ class Window(pyglet.window.Window):
         # remove previously shown view's handlers
         if self._current_view is not None:
             self._current_view.on_hide_view()
+            if self._current_view.has_sections:
+                self.remove_handlers(self._current_view.section_manager)
             self.remove_handlers(self._current_view)
 
         # push new view's handlers
         self._current_view = new_view
+        if new_view.has_sections:
+            self.push_handlers(
+                **{
+                    event_type: getattr(new_view.section_manager, event_type, None)
+                    for event_type in self.section_manager_events
+                }
+            )
         self.push_handlers(
             **{
-                et: getattr(new_view, et, None)
-                for et in self.event_types
-                if et != 'on_show' and hasattr(new_view, et)
+                event_type: getattr(new_view, event_type, None)
+                for event_type in self.event_types
+                if event_type != 'on_show' and event_type not in self.section_manager_events
+                and hasattr(new_view, event_type)
             }
         )
         self._current_view.on_show()
         self._current_view.on_show_view()
+        if self._current_view.has_sections:
+            self._current_view.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -599,6 +619,9 @@ class Window(pyglet.window.Window):
             return
 
         self._current_view.on_hide_view()
+        if self._current_view.has_sections:
+            self._current_view.section_manager.on_hide_view()
+            self.remove_handlers(self._current_view.section_manager)
         self.remove_handlers(self._current_view)
         self._current_view = None
 
@@ -726,6 +749,20 @@ class View:
             self.window = window
 
         self.key: Optional[int] = None
+        self.section_manager: SectionManager = SectionManager(self)
+
+    @property
+    def has_sections(self) -> bool:
+        """ Return if the View has sections """
+        return self.section_manager.has_sections
+
+    def add_section(self, section, at_index: Optional[int] = None) -> None:
+        """
+        Adds a section to the view Section Manager.
+        :param section: the section to add to this section manager
+        :param at_index: inserts the section at that index. If None at the end
+        """
+        return self.section_manager.add_section(section, at_index)
 
     def clear(
         self,
