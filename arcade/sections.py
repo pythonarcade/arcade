@@ -421,6 +421,8 @@ class SectionManager:
         if method:
             return method(*args, **kwargs) or prevent_dispatch  # call the view method
 
+        return False
+
     def on_mouse_press(self, x: float, y: float, *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_press', x, y, *args, **kwargs)
 
@@ -464,6 +466,8 @@ class SectionManager:
             # clear the section the mouse is over as it's out of the screen
             kwargs['current_section'], self.mouse_over_section = self.mouse_over_section, None
             return self.dispatch_mouse_event('on_mouse_leave', x, y, *args, **kwargs)
+
+        return False
 
     def on_key_press(self, *args, **kwargs) -> Optional[bool]:
         return self.dispatch_keyboard_event('on_key_press', *args, **kwargs)

@@ -13,6 +13,7 @@ Other features showed here.
  - Modal Sections
 
 """
+from typing import Optional
 import arcade
 from arcade.sections import Section
 
@@ -104,7 +105,7 @@ class Panel(Section):
         self.button_toggle_info_bar = self.new_button(COLOR_1)
 
         self.button_show_modal = self.new_button(COLOR_2)
-        self.pressed_key = None
+        self.pressed_key: Optional[int] = None
 
     @staticmethod
     def new_button(color):
@@ -169,7 +170,7 @@ class Map(Section):
         self.sprite_list = arcade.SpriteList()
         self.sprite_list.append(self.ball)
 
-        self.pressed_key = None
+        self.pressed_key: Optional[int] = None
 
     def on_update(self, delta_time: float):
 
