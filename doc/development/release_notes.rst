@@ -7,6 +7,15 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.11
+------
+
+*Unreleased*
+
+* Sections
+
+  * Placeholder to put something about sections here.
+
 2.6.10
 ------
 
