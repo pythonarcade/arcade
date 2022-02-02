@@ -46,9 +46,9 @@ class Section:
         return self._view
 
     @property
-    def section_manager(self) -> "SectionManager":
+    def section_manager(self) -> Optional["SectionManager"]:
         """ Returns the section manager """
-        return self._view.section_manager
+        return self._view.section_manager if self._view else None
 
     @property
     def enabled(self) -> bool:
@@ -269,7 +269,7 @@ class SectionManager:
 
     def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
         """
-        Adds a section to this Section Manager.
+        Adds a section to this Section Manager
         :param section: the section to add to this section manager
         :param at_index: inserts the section at that index. If None at the end
         """
