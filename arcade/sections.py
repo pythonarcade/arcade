@@ -21,11 +21,12 @@ class Section:
 
         # section options
         self._enabled: bool = enabled  # enables or disables this section
-        self._modal: bool = modal # prevent the following sections from receiving input events and updating
+        self._modal: bool = modal  # prevent the following sections from receiving input events and updating
         self.block_updates: bool = False  # if True update and on_update will not trigger in this section
         self.accept_keyboard_events: bool = accept_keyboard_events
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}  # prevents events to propagate
-        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {True}  # prevents events to propagate to the view
+        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {
+            True}  # prevents events to propagate to the view
         self.local_mouse_coordinates: bool = local_mouse_coordinates  # mouse coordinates relative to section
 
         # section position into the current viewport
@@ -157,8 +158,8 @@ class Section:
 
     def overlaps_with(self, section) -> bool:
         """ Checks if this section overlaps with another section """
-        return not(self.right < section.left or self.left > section.right
-                   or self.top < section.bottom or self.bottom > section.top)
+        return not (self.right < section.left or self.left > section.right
+                    or self.top < section.bottom or self.bottom > section.top)
 
     def mouse_is_on_top(self, x: float, y: float) -> bool:
         """ Check if the current mouse position is on top of this section """
