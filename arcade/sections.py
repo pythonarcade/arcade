@@ -1,6 +1,9 @@
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, TYPE_CHECKING
 
 from arcade import Camera
+
+if TYPE_CHECKING:
+    from arcade import View
 
 
 class Section:
