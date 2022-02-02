@@ -17,7 +17,7 @@ class Section:
         # name of the section
         self.name: Optional[str] = name
         # parent view: set by the SectionManager
-        self._view = None  # protected, you should not change section.view manually
+        self._view: Optional["View"] = None  # protected, you should not change section.view manually
 
         # section options
         self._enabled: bool = enabled  # enables or disables this section
