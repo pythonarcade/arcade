@@ -172,12 +172,6 @@ class Window(pyglet.window.Window):
             self.keyboard = None
             self.mouse = None
 
-        # Events that the section manager should handle (instead of the View) if sections are present in a View
-        self.section_manager_events = {'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
-                                       'on_mouse_release', 'on_mouse_scroll', 'on_mouse_enter',
-                                       'on_mouse_leave', 'on_key_press', 'on_key_release', 'on_draw',
-                                       'on_update', 'update', 'on_resize'}
-
     @property
     def current_view(self) -> Optional["View"]:
         """
@@ -584,17 +578,21 @@ class Window(pyglet.window.Window):
         # push new view's handlers
         self._current_view = new_view
         if new_view.has_sections:
+            section_manager_managed_events = new_view.section_manager.managed_events
             self.push_handlers(
                 **{
                     event_type: getattr(new_view.section_manager, event_type, None)
-                    for event_type in self.section_manager_events
+                    for event_type in section_manager_managed_events
                 }
             )
+        else:
+            section_manager_managed_events = set()
+
         self.push_handlers(
             **{
                 event_type: getattr(new_view, event_type, None)
                 for event_type in self.event_types
-                if event_type != 'on_show' and event_type not in self.section_manager_events
+                if event_type != 'on_show' and event_type not in section_manager_managed_events
                 and hasattr(new_view, event_type)
             }
         )
