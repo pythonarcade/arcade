@@ -1,6 +1,9 @@
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, Union, TYPE_CHECKING
 
 from arcade import Camera
+
+if TYPE_CHECKING:
+    from arcade import View
 
 
 class Section:
@@ -10,22 +13,24 @@ class Section:
     """
 
     def __init__(self, left: float, bottom: float, width: float, height: float, *,
-                 name: Optional[str] = None, accept_keyboard_events: bool = False,
+                 name: Optional[str] = None, accept_keyboard_events: Union[bool, Iterable] = False,
                  prevent_dispatch: Optional[Iterable] = None, prevent_dispatch_view: Optional[Iterable] = None,
                  local_mouse_coordinates: bool = False, enabled: bool = True, modal: bool = False):
 
         # name of the section
         self.name: Optional[str] = name
         # parent view: set by the SectionManager
-        self._view = None  # protected, you should not change section.view manually
+        self._view: Optional["View"] = None  # protected, you should not change section.view manually
 
         # section options
         self._enabled: bool = enabled  # enables or disables this section
-        self._modal: bool = modal # prevent the following sections from receiving input events and updating
+        self._modal: bool = modal  # prevent the following sections from receiving input events and updating
         self.block_updates: bool = False  # if True update and on_update will not trigger in this section
-        self.accept_keyboard_events: bool = accept_keyboard_events
+        # holds the True or False to allow or noy key events or a set of arcade keys to accept.
+        self.accept_keyboard_events: Union[bool, Iterable] = accept_keyboard_events
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}  # prevents events to propagate
-        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {True}  # prevents events to propagate to the view
+        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {
+            True}  # prevents events to propagate to the view
         self.local_mouse_coordinates: bool = local_mouse_coordinates  # mouse coordinates relative to section
 
         # section position into the current viewport
@@ -46,9 +51,9 @@ class Section:
         return self._view
 
     @property
-    def section_manager(self) -> "SectionManager":
+    def section_manager(self) -> Optional["SectionManager"]:
         """ Returns the section manager """
-        return self._view.section_manager
+        return self._view.section_manager if self._view else None
 
     @property
     def enabled(self) -> bool:
@@ -157,8 +162,8 @@ class Section:
 
     def overlaps_with(self, section) -> bool:
         """ Checks if this section overlaps with another section """
-        return not(self.right < section.left or self.left > section.right
-                   or self.top < section.bottom or self.bottom > section.top)
+        return not (self.right < section.left or self.left > section.right
+                    or self.top < section.bottom or self.bottom > section.top)
 
     def mouse_is_on_top(self, x: float, y: float) -> bool:
         """ Check if the current mouse position is on top of this section """
@@ -269,7 +274,7 @@ class SectionManager:
 
     def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
         """
-        Adds a section to this Section Manager.
+        Adds a section to this Section Manager
         :param section: the section to add to this section manager
         :param at_index: inserts the section at that index. If None at the end
         """
@@ -392,7 +397,6 @@ class SectionManager:
 
     def dispatch_keyboard_event(self, event, *args, **kwargs) -> Optional[bool]:
         """ Generic method to dispatch keyboard events to the correct sections """
-        # get the sections that receive keyboard events if any
         propagate_to_view = True
         prevent_dispatch = False
         for section in self.sections:
@@ -400,7 +404,10 @@ class SectionManager:
                 break
             if not section.enabled:
                 continue
-            if section.accept_keyboard_events:
+            keys_allowed = section.accept_keyboard_events
+            if keys_allowed is False:
+                continue
+            if keys_allowed is True or args[0] in keys_allowed or args in keys_allowed:
                 if any(test in section.prevent_dispatch_view for test in [True, event]):
                     propagate_to_view = False
                 method = getattr(section, event, None)  # get the method to call from the section
