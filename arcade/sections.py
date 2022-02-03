@@ -1,4 +1,4 @@
-from typing import Optional, List, Iterable, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set
 
 from arcade import Camera
 
@@ -245,6 +245,12 @@ class SectionManager:
 
         # Holds the section the mouse is currently on top
         self.mouse_over_section: Optional[Section] = None
+
+        # Events that the section manager should handle (instead of the View) if sections are present in a View
+        self.managed_events: Set = {'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
+                                    'on_mouse_release', 'on_mouse_scroll', 'on_mouse_enter',
+                                    'on_mouse_leave', 'on_key_press', 'on_key_release', 'on_draw',
+                                    'on_update', 'update', 'on_resize'}
 
     @property
     def sections(self) -> List[Section]:
