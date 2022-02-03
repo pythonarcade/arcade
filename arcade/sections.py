@@ -397,7 +397,6 @@ class SectionManager:
 
     def dispatch_keyboard_event(self, event, *args, **kwargs) -> Optional[bool]:
         """ Generic method to dispatch keyboard events to the correct sections """
-        # get the sections that receive keyboard events if any
         propagate_to_view = True
         prevent_dispatch = False
         for section in self.sections:
@@ -405,7 +404,10 @@ class SectionManager:
                 break
             if not section.enabled:
                 continue
-            if section.accept_keyboard_events:
+            keys_allowed = section.accept_keyboard_events
+            if keys_allowed is False:
+                continue
+            if keys_allowed is True or args[0] in keys_allowed or args in keys_allowed:
                 if any(test in section.prevent_dispatch_view for test in [True, event]):
                     propagate_to_view = False
                 method = getattr(section, event, None)  # get the method to call from the section
