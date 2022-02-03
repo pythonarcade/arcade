@@ -1,4 +1,4 @@
-from typing import Optional, List, Iterable, TYPE_CHECKING
+from typing import Optional, List, Iterable, Union, TYPE_CHECKING
 
 from arcade import Camera
 
@@ -13,7 +13,7 @@ class Section:
     """
 
     def __init__(self, left: float, bottom: float, width: float, height: float, *,
-                 name: Optional[str] = None, accept_keyboard_events: bool = False,
+                 name: Optional[str] = None, accept_keyboard_events: Union[bool, Iterable] = False,
                  prevent_dispatch: Optional[Iterable] = None, prevent_dispatch_view: Optional[Iterable] = None,
                  local_mouse_coordinates: bool = False, enabled: bool = True, modal: bool = False):
 
@@ -26,7 +26,8 @@ class Section:
         self._enabled: bool = enabled  # enables or disables this section
         self._modal: bool = modal  # prevent the following sections from receiving input events and updating
         self.block_updates: bool = False  # if True update and on_update will not trigger in this section
-        self.accept_keyboard_events: bool = accept_keyboard_events
+        # holds the True or False to allow or noy key events or a set of arcade keys to accept.
+        self.accept_keyboard_events: Union[bool, Iterable] = accept_keyboard_events
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}  # prevents events to propagate
         self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {
             True}  # prevents events to propagate to the view
