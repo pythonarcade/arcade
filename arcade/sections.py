@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set
 
-from arcade import Camera
+
+from arcade import Camera, get_window
 
 if TYPE_CHECKING:
     from arcade import View
@@ -13,7 +14,7 @@ class Section:
     """
 
     def __init__(self, left: float, bottom: float, width: float, height: float, *,
-                 name: Optional[str] = None, accept_keyboard_events: Union[bool, Iterable] = False,
+                 name: Optional[str] = None, accept_keyboard_events: Union[bool, Iterable] = True,
                  prevent_dispatch: Optional[Iterable] = None, prevent_dispatch_view: Optional[Iterable] = None,
                  local_mouse_coordinates: bool = False, enabled: bool = True, modal: bool = False):
 
@@ -158,7 +159,10 @@ class Section:
     @property
     def window(self):
         """ The view window """
-        return self.view.window
+        if getattr(self, '_view', None) is None or self._view is None:
+            return get_window()
+        else:
+            return self._view.window
 
     def overlaps_with(self, section) -> bool:
         """ Checks if this section overlaps with another section """

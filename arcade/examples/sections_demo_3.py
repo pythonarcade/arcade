@@ -1,4 +1,6 @@
 """
+Section Example 3:
+
 This shows how sections work with a very small example
 
 What's key here is to understand how sections can isolate code that otherwise
@@ -6,14 +8,17 @@ What's key here is to understand how sections can isolate code that otherwise
 Also, note that events are received on each section only based on the
  section configuration. This way you don't have to check every time if the mouse
  position is on top of some area.
-Other features showed here.
- - Event dispatching (two sections will receive on_key_press and on_key_release
- - Event draw and update order based on section_manager sections list order
- - Section enable property to show or hide sections
- - Modal Sections
 
+Note:
+ - Event dispatching (two sections will receive on_key_press and on_key_release)
+ - Prevent dispatching to allow some events to stop propagating
+ - Event draw, update and event delivering order based on section_manager sections list order
+ - Section "enable" property to show or hide sections
+ - Modal Sections: sections that draws last but capture all events and also stop other sections from updating.
 """
 from typing import Optional
+from math import sqrt
+
 import arcade
 from arcade.sections import Section
 
@@ -30,26 +35,31 @@ COLOR_3 = arcade.color_from_hex_string('#03A688')
 
 
 class Ball(arcade.SpriteCircle):
+    """ The moving ball """
 
     def __init__(self, radius, color):
         super().__init__(radius, color)
 
-        self.bounce_count = 0
+        self.bounce_count: int = 0  # to count the number of bounces
 
     @property
     def speed(self):
-        return round((abs(self.change_x) + abs(self.change_y)) * 60, 2)
+        # return euclidian distance * current fps (60 default)
+        return int(sqrt(pow(self.change_x, 2) + pow(self.change_y, 2)) * 60)
 
 
 class ModalSection(Section):
+    """ A modal section that represents a popup that waits for user input """
 
     def __init__(self, left: float, bottom: float, width: float, height: float):
         super().__init__(left, bottom, width, height, modal=True, enabled=False)
 
+        # modal button
         self.button = arcade.SpriteSolidColor(100, 50, arcade.color.RED)
         self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
 
     def on_draw(self):
+        # draw modal frame and button
         arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
                                           self.bottom, arcade.color.GRAY)
         arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
@@ -57,27 +67,32 @@ class ModalSection(Section):
         self.draw_button()
 
     def draw_button(self):
+        # draws the button and button text
         self.button.draw()
         arcade.draw_text('Close Modal', self.button.left + 5,
                          self.button.bottom + self.button.height / 2, arcade.color.WHITE)
 
     def on_resize(self, width: int, height: int):
+        """ set position on screen resize """
         self.left = width / 3
         self.bottom = (height / 2) - self.height / 2
         self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        """ Check if the button is pressed """
         if self.button.collides_with_point((x, y)):
             self.enabled = False
 
 
 class InfoBar(Section):
+    """ This is the top bar of the screen where info is showed """
 
     @property
     def ball(self):
         return self.view.map.ball
 
     def on_draw(self):
+        # draw game info
         arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
                                           self.bottom, COLOR_DARK)
         arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
@@ -97,18 +112,21 @@ class InfoBar(Section):
 
 
 class Panel(Section):
+    """This is the Panel to the right where buttons and info is showed """
 
     def __init__(self, left: float, bottom: float, width: float, height: float, **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
+        # create buttons
         self.button_stop = self.new_button(arcade.color.ARSENIC)
         self.button_toggle_info_bar = self.new_button(COLOR_1)
 
         self.button_show_modal = self.new_button(COLOR_2)
-        self.pressed_key: Optional[int] = None
+        self.pressed_key: Optional[int] = None  # to show the key that's actually pressed
 
     @staticmethod
     def new_button(color):
+        # helper to create new buttons
         return arcade.SpriteSolidColor(100, 50, color)
 
     def draw_button_stop(self):
@@ -161,6 +179,7 @@ class Panel(Section):
 
 
 class Map(Section):
+    """ This represents the place where the game takes place """
 
     def __init__(self, left: float, bottom: float, width: float, height: float, **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
@@ -212,17 +231,24 @@ class Map(Section):
 
 
 class GameView(arcade.View):
+    """ The game itself """
 
     def __init__(self):
         super().__init__()
 
+        # create and store the modal so we can set self.modal_section.enabled = True to show it
         self.modal_section = ModalSection(self.window.width / 3, (self.window.height / 2) - 100, 400, 200)
-        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT)
-        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
-                           accept_keyboard_events=True, prevent_dispatch={False})
-        self.map = Map(0, 0, self.window.width - PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
-                       accept_keyboard_events=True)
 
+        # we set accept_keyboard_events to False (default to True)
+        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,
+                                accept_keyboard_events=False)
+
+        # as prevent_dispatch is on by default, we let pass the events to the following Section: the map
+        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
+                           prevent_dispatch={False})
+        self.map = Map(0, 0, self.window.width - PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT)
+
+        # add the sections
         self.section_manager.add_section(self.modal_section)
         self.section_manager.add_section(self.info_bar)
         self.section_manager.add_section(self.panel)
@@ -238,7 +264,7 @@ def main():
 
     window.show_view(game)
 
-    arcade.run()
+    window.run()
 
 
 if __name__ == '__main__':

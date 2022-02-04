@@ -45,7 +45,7 @@ titles = {
     'utils.py': ['Misc Utility Functions', 'utility.rst'],
     'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
-    'sections.py': ['Window and View', 'window.rst'],
+    'sections_demo_3.py': ['Window and View', 'window.rst'],
     'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
