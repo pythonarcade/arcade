@@ -471,7 +471,7 @@ class Sprite:
         self.change_angle = 0
 
     @property
-    def collision_radius(self) -> Optional[float]:
+    def collision_radius(self) -> float:
         """
         Get the collision radius.
 
@@ -1189,8 +1189,8 @@ class AnimatedWalkingSprite(Sprite):
         self.walk_down_textures: List[Texture] = []
         self.cur_texture_index = 0
         self.texture_change_distance = 20
-        self.last_texture_change_center_x = 0
-        self.last_texture_change_center_y = 0
+        self.last_texture_change_center_x: float = 0
+        self.last_texture_change_center_y: float = 0
 
     def update_animation(self, delta_time: float = 1 / 60):
         """

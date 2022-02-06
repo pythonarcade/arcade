@@ -132,8 +132,8 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
         direction = math.copysign(1, moving_sprite.change_x)
         cur_x_change = abs(moving_sprite.change_x)
         upper_bound = cur_x_change
-        lower_bound = 0
-        cur_y_change = 0
+        lower_bound: float = 0
+        cur_y_change: float = 0
 
         exit_loop = False
         while not exit_loop:
