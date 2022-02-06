@@ -138,8 +138,8 @@ Arcade Skill Tree
 
   * Procedural Generation
 
-    * :ref:`depth_first_maze`
-    * :ref:`recursive_maze`
+    * :ref:`maze_depth_first`
+    * :ref:`maze_recursive`
     * :ref:`procedural_caves_bsp`
     * :ref:`procedural_caves_cellular`
 

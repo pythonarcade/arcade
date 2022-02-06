@@ -1,6 +1,6 @@
 :orphan:
 
-.. _recursive_maze:
+.. _maze_recursive:
 
 Creating a Recursive Maze
 =========================
