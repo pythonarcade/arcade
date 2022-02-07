@@ -189,8 +189,9 @@ class Section:
 
     def mouse_is_on_top(self, x: float, y: float) -> bool:
         """ Check if the current mouse position is on top of this section """
-        return self.ec_left <= x <= self.ec_right and \
-               self.ec_bottom <= y <= self.ec_top
+        test_x = self.ec_left <= x <= self.ec_right
+        test_y = self.ec_bottom <= y <= self.ec_top
+        return test_x and test_y
 
     def get_xy_screen_relative(self, section_x: float, section_y: float):
         """ Returns screen coordinates from section coordinates """
@@ -325,10 +326,11 @@ class SectionManager:
         else:
             self._sections.insert(at_index, section)
         # keep sections order updated in the lists of sections to draw
-        self._sections.sort(
-            key=lambda s: 0 if s.modal else 1)  # modals go first
-        self._sections_draw = sorted(self._sections, key=lambda
-            s: 1 if s.modal else 0)  # modals go last
+        # modals go first
+        self._sections.sort(key=lambda s: 0 if s.modal else 1)
+        # modals go last
+        self._sections_draw = sorted(self._sections,
+                                     key=lambda s: 1 if s.modal else 0)
 
     def remove_section(self, section: "Section") -> None:
         """ Removes a section from this section manager """
@@ -336,10 +338,11 @@ class SectionManager:
         self._sections.remove(section)
 
         # keep sections order updated in the lists of sections
-        self._sections.sort(
-            key=lambda s: 0 if s.modal else 1)  # modals go first
-        self._sections_draw = sorted(self._sections, key=lambda
-            s: 1 if s.modal else 0)  # modals go last
+        # modals go first
+        self._sections.sort(key=lambda s: 0 if s.modal else 1)
+        # modals go last
+        self._sections_draw = sorted(self._sections,
+                                     key=lambda s: 1 if s.modal else 0)
 
     def clear_sections(self):
         """ Removes all sections """
@@ -393,7 +396,7 @@ class SectionManager:
                 section.camera.use()
             section.on_draw()
             if section.camera:
-                # reset to the default camera after the section is draw
+                # reset to the default camera after the section is drawn
                 self.camera.use()
 
     def on_resize(self, width: int, height: int):
@@ -477,8 +480,8 @@ class SectionManager:
             keys_allowed = section.accept_keyboard_events
             if keys_allowed is False:
                 continue
-            if keys_allowed is True or args[
-                0] in keys_allowed or args in keys_allowed:
+            if keys_allowed is True or args[0] in keys_allowed \
+                    or args in keys_allowed:
                 if any(test in section.prevent_dispatch_view for test in
                        [True, event]):
                     propagate_to_view = False
