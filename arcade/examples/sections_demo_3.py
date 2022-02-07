@@ -15,7 +15,7 @@ Note:
  - Event draw, update and event delivering order based on section_manager
    sections list order
  - Section "enable" property to show or hide sections
- - Modal Sections: sections that draws last but capture all events and also stop
+ - Modal Sections: sections that draw last but capture all events and also stop
    other sections from updating.
 """
 from typing import Optional
@@ -27,7 +27,6 @@ from arcade.sections import Section
 INFO_BAR_HEIGHT = 40
 PANEL_WIDTH = 200
 SPRITE_SPEED = 1
-
 
 COLOR_LIGHT = arcade.color_from_hex_string('#D9BBA0')
 COLOR_DARK = arcade.color_from_hex_string('#0D0D0D')
@@ -58,8 +57,8 @@ class ModalSection(Section):
 
         # modal button
         self.button = arcade.SpriteSolidColor(100, 50, arcade.color.RED)
-        self.button.position = self.left + self.width / 2, \
-                               self.bottom + self.height / 2
+        pos = self.left + self.width / 2, self.bottom + self.height / 2
+        self.button.position = pos
 
     def on_draw(self):
         # draw modal frame and button
@@ -80,8 +79,8 @@ class ModalSection(Section):
         """ set position on screen resize """
         self.left = width / 3
         self.bottom = (height / 2) - self.height / 2
-        self.button.position = self.left + self.width / 2, \
-                               self.bottom + self.height / 2
+        pos = self.left + self.width / 2, self.bottom + self.height / 2
+        self.button.position = pos
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ Check if the button is pressed """
@@ -182,10 +181,12 @@ class Panel(Section):
         self.left = width - self.width
         self.height = height - self.view.info_bar.height
         self.button_stop.position = self.left + self.width / 2, self.top - 80
-        self.button_toggle_info_bar.position = self.left + self.width / 2, \
-                                               self.top - 180
-        self.button_show_modal.position = self.left + self.width / 2, \
-                                          self.bottom + 100
+
+        pos = self.left + self.width / 2, self.top - 180
+        self.button_toggle_info_bar.position = pos
+
+        pos = self.left + self.width / 2, self.bottom + 100
+        self.button_show_modal.position = pos
 
     def on_key_press(self, symbol: int, modifiers: int):
         self.pressed_key = symbol
@@ -253,7 +254,7 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        # create and store the modal so we can set
+        # create and store the modal, so we can set
         # self.modal_section.enabled = True to show it
         self.modal_section = ModalSection(self.window.width / 3,
                                           (self.window.height / 2) - 100,

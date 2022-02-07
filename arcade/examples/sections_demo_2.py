@@ -112,7 +112,7 @@ class Pong(View):
         self.ball: SpriteCircle = SpriteCircle(20, RED)
 
     def setup(self):
-        # setup a new game
+        # set up a new game
 
         # set ball position in the middle
         self.ball.position = self.window.width / 2, self.window.height / 2
@@ -146,7 +146,8 @@ class Pong(View):
             # bounce the ball from the paddle
             self.ball.change_x *= -1
 
-        # check if the ball has exit the screen in either side and end the game
+        # check if the ball has exited the screen in either side and
+        # end the game
         if self.ball.right <= 0:
             self.end_game(self.right_player)
         elif self.ball.left >= self.window.width:
@@ -175,7 +176,7 @@ def main():
     # create the custom View
     game = Pong()
 
-    # setup the game (start a game)
+    # set up the game (start a game)
     game.setup()
 
     # show the view

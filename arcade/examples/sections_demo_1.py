@@ -40,7 +40,7 @@ class Box(arcade.SpriteSolidColor):
 
 class ScreenPart(arcade.Section):
     """
-    This represents a part of the View defined by it's
+    This represents a part of the View defined by its
     boundaries (left, bottom, etc.)
     """
 
@@ -65,7 +65,7 @@ class ScreenPart(arcade.Section):
     def on_draw(self):
         """ Draw this section """
         if self.selected:
-            # Section is selected when mouse is within it's boundaries
+            # Section is selected when mouse is within its boundaries
             arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
                                               self.bottom, arcade.color.GRAY)
             arcade.draw_text(f'Your are on the {self.name}', self.left + 30,
@@ -81,7 +81,7 @@ class ScreenPart(arcade.Section):
             self.hold_box.position = x, y
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        # if we pick a Box with the mouse, "hold" it and stop it's movement
+        # if we pick a Box with the mouse, "hold" it and stop its movement
         if self.box.collides_with_point((x, y)):
             self.hold_box = self.box
             self.hold_box.stop()
