@@ -12,9 +12,11 @@ Also, note that events are received on each section only based on the
 Note:
  - Event dispatching (two sections will receive on_key_press and on_key_release)
  - Prevent dispatching to allow some events to stop propagating
- - Event draw, update and event delivering order based on section_manager sections list order
+ - Event draw, update and event delivering order based on section_manager
+   sections list order
  - Section "enable" property to show or hide sections
- - Modal Sections: sections that draws last but capture all events and also stop other sections from updating.
+ - Modal Sections: sections that draws last but capture all events and also stop
+   other sections from updating.
 """
 from typing import Optional
 from math import sqrt
@@ -56,7 +58,8 @@ class ModalSection(Section):
 
         # modal button
         self.button = arcade.SpriteSolidColor(100, 50, arcade.color.RED)
-        self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
+        self.button.position = self.left + self.width / 2, \
+                               self.bottom + self.height / 2
 
     def on_draw(self):
         # draw modal frame and button
@@ -70,13 +73,15 @@ class ModalSection(Section):
         # draws the button and button text
         self.button.draw()
         arcade.draw_text('Close Modal', self.button.left + 5,
-                         self.button.bottom + self.button.height / 2, arcade.color.WHITE)
+                         self.button.bottom + self.button.height / 2,
+                         arcade.color.WHITE)
 
     def on_resize(self, width: int, height: int):
         """ set position on screen resize """
         self.left = width / 3
         self.bottom = (height / 2) - self.height / 2
-        self.button.position = self.left + self.width / 2, self.bottom + self.height / 2
+        self.button.position = self.left + self.width / 2, \
+                               self.bottom + self.height / 2
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ Check if the button is pressed """
@@ -97,13 +102,17 @@ class InfoBar(Section):
                                           self.bottom, COLOR_DARK)
         arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
                                            self.bottom, COLOR_LIGHT)
-        arcade.draw_text(f'Ball bounce count: {self.ball.bounce_count}', self.left + 20,
-                         self.top - self.height / 1.6, COLOR_LIGHT)
+        arcade.draw_text(f'Ball bounce count: {self.ball.bounce_count}',
+                         self.left + 20, self.top - self.height / 1.6,
+                         COLOR_LIGHT)
 
-        arcade.draw_text(f'Ball change in axis: {(self.ball.change_x, self.ball.change_y)}',
-                         self.left + 220, self.top - self.height / 1.6, COLOR_LIGHT)
+        ball_change_axis = self.ball.change_x, self.ball.change_y
+        arcade.draw_text(f'Ball change in axis: {ball_change_axis}',
+                         self.left + 220, self.top - self.height / 1.6,
+                         COLOR_LIGHT)
         arcade.draw_text(f'Ball speed: {self.ball.speed} pixels/second',
-                         self.left + 480, self.top - self.height / 1.6, COLOR_LIGHT)
+                         self.left + 480, self.top - self.height / 1.6,
+                         COLOR_LIGHT)
 
     def on_resize(self, width: int, height: int):
         # stick to the top
@@ -114,7 +123,8 @@ class InfoBar(Section):
 class Panel(Section):
     """This is the Panel to the right where buttons and info is showed """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float, **kwargs):
+    def __init__(self, left: float, bottom: float, width: float, height: float,
+                 **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
         # create buttons
@@ -122,7 +132,8 @@ class Panel(Section):
         self.button_toggle_info_bar = self.new_button(COLOR_1)
 
         self.button_show_modal = self.new_button(COLOR_2)
-        self.pressed_key: Optional[int] = None  # to show the key that's actually pressed
+        # to show the key that's actually pressed
+        self.pressed_key: Optional[int] = None
 
     @staticmethod
     def new_button(color):
@@ -130,16 +141,19 @@ class Panel(Section):
         return arcade.SpriteSolidColor(100, 50, color)
 
     def draw_button_stop(self):
-        arcade.draw_text('Press button to stop the ball', self.left + 10, self.top - 40, COLOR_LIGHT, 10)
+        arcade.draw_text('Press button to stop the ball', self.left + 10,
+                         self.top - 40, COLOR_LIGHT, 10)
         self.button_stop.draw()
 
     def draw_button_toggle_info_bar(self):
-        arcade.draw_text('Press to toggle info_bar', self.left + 10, self.top - 140, COLOR_LIGHT, 10)
+        arcade.draw_text('Press to toggle info_bar', self.left + 10,
+                         self.top - 140, COLOR_LIGHT, 10)
         self.button_toggle_info_bar.draw()
 
     def draw_button_show_modal(self):
         self.button_show_modal.draw()
-        arcade.draw_text('Show Modal', self.left - 37 + self.width / 2, self.bottom + 95, COLOR_DARK, 10)
+        arcade.draw_text('Show Modal', self.left - 37 + self.width / 2,
+                         self.bottom + 95, COLOR_DARK, 10)
 
     def on_draw(self):
         arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
@@ -150,8 +164,8 @@ class Panel(Section):
         self.draw_button_toggle_info_bar()
 
         if self.pressed_key:
-            arcade.draw_text(f'Pressed key code: {self.pressed_key}', self.left + 10,
-                             self.top - 240, COLOR_LIGHT, 9)
+            arcade.draw_text(f'Pressed key code: {self.pressed_key}',
+                             self.left + 10, self.top - 240, COLOR_LIGHT, 9)
 
         self.draw_button_show_modal()
 
@@ -168,8 +182,10 @@ class Panel(Section):
         self.left = width - self.width
         self.height = height - self.view.info_bar.height
         self.button_stop.position = self.left + self.width / 2, self.top - 80
-        self.button_toggle_info_bar.position = self.left + self.width / 2, self.top - 180
-        self.button_show_modal.position = self.left + self.width / 2, self.bottom + 100
+        self.button_toggle_info_bar.position = self.left + self.width / 2, \
+                                               self.top - 180
+        self.button_show_modal.position = self.left + self.width / 2, \
+                                          self.bottom + 100
 
     def on_key_press(self, symbol: int, modifiers: int):
         self.pressed_key = symbol
@@ -181,7 +197,8 @@ class Panel(Section):
 class Map(Section):
     """ This represents the place where the game takes place """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float, **kwargs):
+    def __init__(self, left: float, bottom: float, width: float, height: float,
+                 **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
         self.ball = Ball(20, COLOR_3)
@@ -236,17 +253,24 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        # create and store the modal so we can set self.modal_section.enabled = True to show it
-        self.modal_section = ModalSection(self.window.width / 3, (self.window.height / 2) - 100, 400, 200)
+        # create and store the modal so we can set
+        # self.modal_section.enabled = True to show it
+        self.modal_section = ModalSection(self.window.width / 3,
+                                          (self.window.height / 2) - 100,
+                                          400, 200)
 
         # we set accept_keyboard_events to False (default to True)
-        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,
+        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT,
+                                self.window.width, INFO_BAR_HEIGHT,
                                 accept_keyboard_events=False)
 
-        # as prevent_dispatch is on by default, we let pass the events to the following Section: the map
-        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT,
+        # as prevent_dispatch is on by default, we let pass the events to the
+        # following Section: the map
+        self.panel = Panel(self.window.width - PANEL_WIDTH, 0, PANEL_WIDTH,
+                           self.window.height - INFO_BAR_HEIGHT,
                            prevent_dispatch={False})
-        self.map = Map(0, 0, self.window.width - PANEL_WIDTH, self.window.height - INFO_BAR_HEIGHT)
+        self.map = Map(0, 0, self.window.width - PANEL_WIDTH,
+                       self.window.height - INFO_BAR_HEIGHT)
 
         # add the sections
         self.section_manager.add_section(self.modal_section)

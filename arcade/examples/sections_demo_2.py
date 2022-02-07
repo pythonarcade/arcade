@@ -1,17 +1,24 @@
 """
 Section Example 2:
 
-In this Section example we develop a very basic Pong game playable by two persons in the same computer (hot seat!).
-Each Player is abstracted as a Section that consists of a space in the screen where the player paddle can move.
+In this Section example we develop a very basic Pong game playable by two
+persons in the same computer (hot seat!).
+
+Each Player is abstracted as a Section that consists of a space in the screen
+where the player paddle can move.
 
 Note:
-    - Sections can live along with Views. Sections do not need to occupy 100% of the screen.
-    - View methods can interact with Sections by storing a reference to each one.
-    - How keyboard events can be redirected to each section depending on the pressed key automatically.
+    - Sections can live along with Views. Sections do not need to occupy 100%
+      of the screen.
+    - View methods can interact with Sections by storing a reference to each
+      one.
+    - How keyboard events can be redirected to each section depending on the
+      pressed key automatically.
 """
 import random
 
-from arcade import Window, Section, View, SpriteList, SpriteSolidColor, SpriteCircle, draw_text, draw_line
+from arcade import Window, Section, View, SpriteList, SpriteSolidColor, \
+    SpriteCircle, draw_text, draw_line
 from arcade.color import BLACK, BLUE, RED, BEAU_BLUE, GRAY
 from arcade.key import W, S, UP, DOWN
 
@@ -20,10 +27,15 @@ PLAYER_PADDLE_SPEED = 10
 
 
 class Player(Section):
-    """ A Section representing the space in the screen where the player paddle can move"""
+    """
+    A Section representing the space in the screen where the player
+    paddle can move
+    """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float, key_up: int, key_down: int, **kwargs):
-        super().__init__(left, bottom, width, height, accept_keyboard_events={key_up, key_down}, **kwargs)
+    def __init__(self, left: float, bottom: float, width: float, height: float,
+                 key_up: int, key_down: int, **kwargs):
+        super().__init__(left, bottom, width, height,
+                         accept_keyboard_events={key_up, key_down}, **kwargs)
 
         # keys assigned to move the paddle
         self.key_up: int = key_up
@@ -51,8 +63,10 @@ class Player(Section):
         else:
             keys = 'UP and DOWN'
             start_x = self.left - 290
-        draw_text(f'Player {self.name} (move paddle with: {keys})', start_x, self.top - 20, BLUE, 9)
-        draw_text(f'Score: {self.score}', self.left + 20, self.bottom + 20, BLUE)
+        draw_text(f'Player {self.name} (move paddle with: {keys})',
+                  start_x, self.top - 20, BLUE, 9)
+        draw_text(f'Score: {self.score}', self.left + 20,
+                  self.bottom + 20, BLUE)
 
         # draw the paddle
         self.paddle.draw()
@@ -74,13 +88,17 @@ class Pong(View):
     def __init__(self):
         super().__init__()
 
-        # a sprite list that will hold each player paddle to check for collisions
+        # a sprite list that will hold each player paddle to
+        # check for collisions
         self.paddles: SpriteList = SpriteList()
 
         # we store each Section
-        self.left_player: Player = Player(0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W, key_down=S, name='Left')
-        self.right_player: Player = Player(self.window.width - PLAYER_SECTION_WIDTH, 0, PLAYER_SECTION_WIDTH, self.window.height,
-                                           key_up=UP, key_down=DOWN, name='Right')
+        self.left_player: Player = Player(
+            0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W,
+            key_down=S, name='Left')
+        self.right_player: Player = Player(
+            self.window.width - PLAYER_SECTION_WIDTH, 0, PLAYER_SECTION_WIDTH,
+            self.window.height, key_up=UP, key_down=DOWN, name='Right')
 
         # add the sections to the SectionManager so Sections start to work
         self.add_section(self.left_player)
