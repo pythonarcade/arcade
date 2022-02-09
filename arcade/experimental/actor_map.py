@@ -6,9 +6,7 @@ This example is using the lower level rendering API
 in arcade.
 """
 import random
-from textwrap import wrap
 from typing import Tuple
-from pyglet.math import Mat3
 
 import arcade
 from arcade.gl import geometry
@@ -59,7 +57,6 @@ class Actor:
         self._view_distance = view_distance
         # Geometry for drawing the actor view
         self.geometry = geometry.quad_2d_fs()
-        self.matrix = Mat3()
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -82,10 +79,7 @@ class Actor:
     def draw(self, time: float):
         self.map.texture.use()
         program = self.shaders.actor_view
-        try:
-            program["mapSize"] = self.map.size
-        except:
-            pass
+        program["mapSize"] = self.map.size
         program["area"] = self._area
         program["pos"] = time / 10, time / 10
         program["rot"] = time * 10
@@ -149,7 +143,7 @@ class Map:
     @property
     def width(self):
         return self.size[0]
-    
+
     @property
     def height(self):
         return self.size[1]
@@ -228,4 +222,3 @@ class Shaders:
 
 
 ActorMap().run()
-
