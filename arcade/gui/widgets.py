@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from random import randint
-from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING
+from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING, TypeVar
 
 import pyglet
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -121,6 +121,8 @@ class _Rect(NamedTuple):
         return self.move(dy=diff_y)
 
 
+W = TypeVar('W', bound="UIWidget")
+
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
@@ -182,7 +184,7 @@ class UIWidget(EventDispatcher, ABC):
         """
         self._rendered = False
 
-    def add(self, child: "UIWidget", *, index=None) -> "UIWidget":
+    def add(self, child: W, *, index=None) -> W:
         """
         Add a widget to this :class:`UIWidget` as a child.
         Added widgets will receive ui events and be rendered.
@@ -374,12 +376,21 @@ class UIWidget(EventDispatcher, ABC):
         return rect.y + rect.height
 
     @property
+    def position(self):
+        """Returns bottom left coordinates"""
+        return self.left, self.bottom
+
+    @property
     def width(self):
         return self.rect.width
 
     @property
     def height(self):
         return self.rect.height
+
+    @property
+    def size(self):
+        return self.width, self.height
 
     @property
     def center_x(self):
@@ -389,7 +400,11 @@ class UIWidget(EventDispatcher, ABC):
     def center_y(self):
         return self.rect.center_y
 
-    def center_on_screen(self):
+    @property
+    def center(self):
+        return self.center_x, self.center_y
+
+    def center_on_screen(self: W) -> W:
         """
         Places this widget in the center of the current window.
         """
@@ -397,6 +412,7 @@ class UIWidget(EventDispatcher, ABC):
         center_y = arcade.get_window().height // 2
 
         self.rect = self.rect.align_center(center_x, center_y)
+        return self
 
 
 class UIWidgetParent(ABC):
