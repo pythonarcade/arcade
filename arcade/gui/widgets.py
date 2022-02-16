@@ -123,6 +123,7 @@ class _Rect(NamedTuple):
 
 W = TypeVar('W', bound="UIWidget")
 
+
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
