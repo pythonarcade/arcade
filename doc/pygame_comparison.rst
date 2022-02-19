@@ -137,6 +137,14 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - 0.081 seconds
      - 0.029 seconds
 
+.. figure:: images/fps_comparison2.svg
+
+    FPS comparison of programs drawing **stationary** sprites.
+
+.. figure:: images/fps_comparison1.svg
+
+    FPS comparison of programs drawing **moving** sprites.
+
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
          then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
          graphics card.
