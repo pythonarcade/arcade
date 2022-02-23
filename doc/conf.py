@@ -171,6 +171,13 @@ suppress_warnings = [
     "ref.python",
 ]
 
+
+def warn_undocumented_members(app, what, name, obj, options, lines):
+    if len(lines) == 0:
+        print(f"{what} {name} is undocumented")
+        # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
+
+
 def source_read(app, docname, source):
 
     # print(f"  XXX Reading {docname}")
@@ -234,3 +241,4 @@ def setup(app):
     app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
+    app.connect("autodoc-process-docstring", warn_undocumented_members)
