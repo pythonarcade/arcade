@@ -142,7 +142,10 @@ class Sprite:
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
         :sprite_lists: List of all the sprite lists this sprite is part of.
-        :texture: `Texture` class with the current texture.
+        :texture: :class:`arcade.Texture` class with the current texture. Setting a new texture does \
+        **not** update the hit box of the sprite. This can be done with \
+        ``my_sprite.hit_box = my_sprite.texture.hit_box_points``. New textures will be centered \
+        on the current center_x/center_y.
         :textures: List of textures associated with this sprite.
         :top: Set/query the sprite location by using the top coordinate. This \
         will be the 'y' of the top of the sprite.
