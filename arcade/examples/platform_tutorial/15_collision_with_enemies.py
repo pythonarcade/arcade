@@ -253,7 +253,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Setup the Cameras
+        # Set up the Cameras
         self.camera = arcade.Camera(self.width, self.height)
         self.gui_camera = arcade.Camera(self.width, self.height)
 
@@ -372,7 +372,7 @@ class MyGame(arcade.Window):
 
     def process_keychange(self):
         """
-        Called when we change a key up/down or we move on/off a ladder.
+        Called when we change a key up/down, or we move on/off a ladder.
         """
         # Process up/down
         if self.up_pressed and not self.down_pressed:

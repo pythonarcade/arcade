@@ -295,7 +295,7 @@ class GameView(arcade.View):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Setup the Cameras
+        # Set up the Cameras
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
@@ -655,14 +655,14 @@ class GameView(arcade.View):
 
 
 class GameOverView(arcade.View):
-    """Class to manage the game over view"""
+    """Class to manage the game overview"""
 
     def on_show(self):
         """Called when switching to this view"""
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
-        """Draw the game over view"""
+        """Draw the game overview"""
         self.clear()
         arcade.draw_text(
             "Game Over - Click to restart",

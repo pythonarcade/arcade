@@ -209,7 +209,7 @@ class Sprite:
         self.boundary_top: Optional[float] = None
         self.boundary_bottom: Optional[float] = None
 
-        # Texture propreties
+        # Texture properties
         self._texture: Optional[Texture] = None
         self.textures: List[Texture] = []
         self.cur_texture_index: int = 0
@@ -222,7 +222,7 @@ class Sprite:
         self._pymunk: Optional[PyMunk] = None
         self.force = [0, 0]
 
-        # Debug propreties
+        # Debug properties
         self.guid: Optional[str] = None
 
         # Sanity check values

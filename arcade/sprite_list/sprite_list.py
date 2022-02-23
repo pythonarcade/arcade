@@ -131,7 +131,7 @@ class SpriteList:
 
         # List of sprites in the sprite list
         self.sprite_list: List[Sprite] = []
-        # Buffer slots for the sprites (exclusing index buffer)
+        # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: Dict[Sprite, int] = dict()
         # TODO: Figure out what to do with this. Might be obsolete.
@@ -192,7 +192,7 @@ class SpriteList:
     def _init_deferred(self):
         """
         Since spritelist can be created before the window we need to defer initialization.
-        It also make us able to support lazy loading.
+        It also makes us able to support lazy loading.
         """
         if self._initialized:
             return

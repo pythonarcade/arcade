@@ -60,16 +60,16 @@ class Window(pyglet.window.Window):
     :param bool resizable: Can the user resize the window?
     :param float update_rate: How frequently to update the window.
     :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
-    :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
+    :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
     :param bool visible: Should the window be visible immediately
-    :param bool vsync: Wait for vertical screen refresh before swapping buffer
+    :param bool vsync: Wait for vertical screen refresh before swapping buffer \
                        This can make animations and movement look smoother.
     :param bool gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
     :param bool center_window: If true, will center the window.
-    :param bool samples: Number of samples used in antialiasing (default 4).
+    :param bool samples: Number of samples used in antialiasing (default 4). \
                          Usually this is 2, 4, 8 or 16.
-    :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse``
+    :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
     """
 
@@ -790,7 +790,7 @@ class View:
         pass
 
     def on_show(self):
-        """Called when this view is shown and if window dispatches a on_show event.
+        """Called when this view is shown and if window dispatches an on_show event.
         (first time showing window or resize)
         """
         pass
