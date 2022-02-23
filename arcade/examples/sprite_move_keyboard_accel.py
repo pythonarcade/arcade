@@ -23,7 +23,7 @@ MAX_SPEED = 3.0
 # How fast we accelerate
 ACCELERATION_RATE = 0.1
 
-# How fast to slow down after we letr off the key
+# How fast to slow down after we let off the key
 FRICTION = 0.02
 
 

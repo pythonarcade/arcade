@@ -41,7 +41,7 @@ class Sound:
 
         :param float volume: Volume, from 0=quiet to 1=loud
         :param float pan: Pan, from -1=left to 0=centered to 1=right
-        :param bool loop: Loop, false to play once, true to loop continously
+        :param bool loop: Loop, false to play once, true to loop continuously
         """
         if isinstance(self.source, media.StreamingSource) \
                 and self.source.is_player_source:

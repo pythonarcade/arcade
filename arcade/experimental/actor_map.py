@@ -35,7 +35,7 @@ class Actor:
     """
     An actor located somewhere in the map.
     We can render this actor's view to the screen.
-    It should support translationa and rotations
+    It should support translation and rotations
     and possibly zoom.
     """
     def __init__(

@@ -62,7 +62,7 @@ class _Property:
     def bind(self, instance, callback):
         obs = self._get_obs(instance)
         # Instance methods are bound methods, which can not be referenced by normal `ref()`
-        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselfs into `WeakSet.data`.
+        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
         obs.listeners.add(callback)
 
     def __set_name__(self, owner, name):

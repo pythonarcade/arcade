@@ -140,7 +140,7 @@ class MyGame(arcade.Window):
         # This will adjust text position based on viewport
         self.gui_camera.use()
 
-        # Calculate FPS if conidtions are met
+        # Calculate FPS if conditions are met
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
             self.fps_message = f"FPS: {fps:5.0f}"

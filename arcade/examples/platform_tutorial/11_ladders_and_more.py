@@ -229,7 +229,7 @@ class MyGame(arcade.Window):
 
             # Figure out how many points this coin is worth
             if "Points" not in coin.properties:
-                print("Warning, collected a coing without a Points property.")
+                print("Warning, collected a coin without a Points property.")
             else:
                 points = int(coin.properties["Points"])
                 self.score += points

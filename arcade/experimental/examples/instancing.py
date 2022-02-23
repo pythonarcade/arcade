@@ -72,7 +72,7 @@ class MyGame(arcade.Window):
             0.8, -0.8,
         ])
 
-        # Generat per instance data. We'll create a generator function for this (less messy)
+        # Generate per instance data. We'll create a generator function for this (less messy)
         def gen_instance_data(instances):
             random.seed(123456)
             for _ in range(instances):

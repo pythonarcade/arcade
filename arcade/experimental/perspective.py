@@ -2,7 +2,7 @@
 """
 Perspective example using the lower level rendering API.
 
-This is definitely in the advaced section, but it can be
+This is definitely in the advanced section, but it can be
 a useful tool to learn. Sometimes we want perspective
 projection for things like backgrounds. This can be
 done very efficiently with shaders.

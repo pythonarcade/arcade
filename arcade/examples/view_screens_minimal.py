@@ -67,7 +67,7 @@ class GameView(arcade.View):
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
     def on_key_press(self, key, _modifiers):
-        """ Handle keypresses. In this case, we'll just count a 'space' as
+        """ Handle key presses. In this case, we'll just count a 'space' as
         game over and advance to the game over view. """
         if key == arcade.key.SPACE:
             game_over_view = GameOverView()

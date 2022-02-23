@@ -203,7 +203,7 @@ class Window(pyglet.window.Window):
 
         :param Color color: Optional color overriding the current background color
         :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
-        :param Tuple[int, int, int, int]: The viewport range to clear
+        :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         color = color if color is not None else self.background_color
         self.ctx.screen.clear(color, normalized=normalized, viewport=viewport)
@@ -631,7 +631,7 @@ class Window(pyglet.window.Window):
 
     def flip(self):
         """
-        Window framebuffers norally have a back and front buffer.
+        Window framebuffers normally have a back and front buffer.
         This method makes the back buffer visible and hides the front buffer.
         A frame is rendered into the back buffer, so this method displays
         the frame we currently worked on.
@@ -773,7 +773,7 @@ class View:
 
         :param Color color: Optional color overriding the current background color
         :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
-        :param Tuple[int, int, int, int]: The viewport range to clear
+        :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         self.window.clear(color, normalized, viewport)
 

@@ -1,5 +1,5 @@
 """
-Constructs, are prepared widget combinations, you can use for common usecases
+Constructs, are prepared widget combinations, you can use for common use-cases
 """
 import arcade
 from arcade.gui.mixins import UIMouseFilterMixin

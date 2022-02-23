@@ -138,7 +138,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
 
     .. tip:: Beginners will want to use :py:class:`~arcade.Camera`.
              It provides easy to use support for common tasks
-             such as screenshake and movement to a destination.
+             such as screen shake and movement to a destination.
 
     If you are making a game with complex control over the viewport,
     this function can help.

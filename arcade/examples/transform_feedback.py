@@ -1,5 +1,5 @@
 """
-Shows simple use of tranform feedback.
+Shows simple use of transform feedback.
 
 Transforming is similar to rendering except that the output
 or the shader is a buffer instead of a framebuffer/screen.
@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
             """,
         )
 
-        # A program tranforming points being affected by a gravity point
+        # A program transforming points being affected by a gravity point
         self.gravity_program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
             // Position of gravity
             uniform vec2 gravity_pos;
 
-            // The format of the data in our tranform buffer(s)
+            // The format of the data in our transform buffer(s)
             in vec2 in_pos;
             in vec2 in_vel;
 
@@ -97,7 +97,7 @@ class MyGame(arcade.Window):
             """,
         )
         N = 50_000
-        # Make two buffers we tranform between so we can work on the previous result
+        # Make two buffers we transform between so we can work on the previous result
         self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
         self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
 
@@ -105,7 +105,7 @@ class MyGame(arcade.Window):
         self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
         self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
 
-        # We need to be able to tranform both buffers (ping-pong)
+        # We need to be able to transform both buffers (ping-pong)
         self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
 

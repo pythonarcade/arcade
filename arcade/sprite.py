@@ -179,7 +179,7 @@ class Sprite:
         angle: float = 0,
     ):
         """ Constructor """
-        # Position, size and orientation propreties
+        # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
         self._scale: float = scale
@@ -188,7 +188,7 @@ class Sprite:
         self.velocity = [0.0, 0.0]
         self.change_angle: float = 0.0
 
-        # Hit box and collision propret
+        # Hit box and collision property
         self._points: Optional[PointList] = None
         self._point_list_cache: Optional[PointList] = None
         self._hit_box_shape: Optional[ShapeElementList] = None

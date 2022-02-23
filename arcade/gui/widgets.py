@@ -245,7 +245,7 @@ class UIWidget(EventDispatcher, ABC):
             yield parent  # type: ignore
 
     def trigger_full_render(self):
-        """In case a widget uses transperant areas or was moved,
+        """In case a widget uses transparent areas or was moved,
          it might be important to request a full rendering of parents"""
         self.trigger_render()
         for parent in self._walk_parents():

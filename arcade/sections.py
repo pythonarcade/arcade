@@ -387,7 +387,7 @@ class SectionManager:
                 prevent_dispatch = method(*position, *args, **kwargs)  # call the section method
                 prevent_dispatch = True if section.modal else prevent_dispatch  # prevent dispatch if modal
                 if prevent_dispatch is True or any(test in section.prevent_dispatch for test in [True, event]):
-                    # prevent_dispatch attributte from section only affects if
+                    # prevent_dispatch attribute from section only affects if
                     #  the method is implemented in the same section
                     prevent_dispatch = True
         if section and any(test in section.prevent_dispatch_view for test in [True, event]):
@@ -420,7 +420,7 @@ class SectionManager:
                 if method:
                     prevent_dispatch = method(*args, **kwargs)  # call the section method
                     if prevent_dispatch is True or any(test in section.prevent_dispatch for test in [True, event]):
-                        # prevent_dispatch attributte from section only affects if
+                        # prevent_dispatch attribute from section only affects if
                         #  the method is implemented in the same section
                         prevent_dispatch = True
             if section.modal:

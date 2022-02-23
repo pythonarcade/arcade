@@ -145,7 +145,7 @@ class Framebuffer:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
-        It determines what part of the framebuffer should be redered to.
+        It determines what part of the framebuffer should be rendered to.
         By default the viewport is ``(0, 0, width, height)``.
 
         The viewport value is persistent all will automatically
@@ -184,7 +184,7 @@ class Framebuffer:
         box is enabled when setting a value and disabled when
         set to ``None``
 
-            # Set and eneable scissor box only drawing
+            # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
             ctx.scissor = 0, 0, 100, 100
             # Disable scissoring
@@ -313,7 +313,7 @@ class Framebuffer:
             prev_fbo.use()
 
     def use(self, *, force: bool = False):
-        """Bind the framebuffer making it the target of all redering commands
+        """Bind the framebuffer making it the target of all rendering commands
 
         :param bool force: Force the framebuffer binding even if the system
                            already believes it's already bound.
@@ -400,7 +400,8 @@ class Framebuffer:
         """
         Read framebuffer pixels
 
-        :param viewport Tuple[int,int,int,int]: The x, y, with, height to read
+        :param Tuple[int,int,int,int] viewport: The x, y, with, height to read
+        :param int components:
         :param int attachment: The attachment id to read from
         :param str dtype: The data type to read
         :return: pixel data as a bytearray
@@ -475,7 +476,7 @@ class Framebuffer:
         Checks the completeness of the framebuffer.
         If the framebuffer is not complete, we cannot continue.
         """
-        # See completness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
+        # See completeness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
         states = {
             gl.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
             gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment.",
@@ -561,7 +562,7 @@ class DefaultFrameBuffer(Framebuffer):
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
-        It determines what part of the framebuffer should be redered to.
+        It determines what part of the framebuffer should be rendered to.
         By default the viewport is ``(0, 0, width, height)``.
 
         The viewport value is persistent all will automatically
@@ -613,7 +614,7 @@ class DefaultFrameBuffer(Framebuffer):
         box is enabled when setting a value and disabled when
         set to ``None``
 
-            # Set and eneable scissor box only drawing
+            # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
             ctx.scissor = 0, 0, 100, 100
             # Disable scissoring

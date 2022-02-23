@@ -184,7 +184,7 @@ class Context:
         self._point_size = 1.0
         self._flags: Set[int] = set()
 
-        # Context GC as default. We need to call Context.gc() to free opengl resorces
+        # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
         self.gc_mode = gc_mode
         #: Collected objects to gc when gc_mode is "context_gc"
@@ -431,7 +431,7 @@ class Context:
         box is enabled when setting a value and disabled when
         set to ``None``
 
-            # Set and eneable scissor box only drawing
+            # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
             ctx.scissor = 0, 0, 100, 100
             # Disable scissoring
@@ -536,7 +536,7 @@ class Context:
         * The source and destination framebuffer must be the same size
         * The formats of the attachments must be the same
         * Only the source framebuffer can be multisampled
-        * Framebuffers cannot have interger attachments
+        * Framebuffers cannot have integer attachments
 
         :param Framebuffer src: The framebuffer to copy from
         :param Framebuffer dst: The framebuffer we copy to
@@ -724,8 +724,8 @@ class Context:
         """
         Create a query object for measuring rendering calls in opengl.
 
-        :param bool sampled: Collect written samples
-        :param bool time: Measure redering duration
+        :param bool samples: Collect written samples
+        :param bool time: Measure rendering duration
         :param bool primitives: Collect the number of primitives emitted
 
         :rtype: :py:class:`~arcade.gl.Query`

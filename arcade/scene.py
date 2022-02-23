@@ -270,7 +270,7 @@ class Scene:
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will have on_update called.
 
-        :param delta_time float: Time since last update.
+        :param float delta_time: Time since last update.
         :param Optional[List[str]] names: A list of names of SpriteLists to update.
         """
         if names:

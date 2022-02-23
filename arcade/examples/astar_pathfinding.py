@@ -188,7 +188,7 @@ class MyGame(arcade.Window):
 
         # Calculate a path to the player
         enemy = self.enemy_list[0]
-        # Set to True if we can move diagonally. Note that diagnonal movement
+        # Set to True if we can move diagonally. Note that diagonal movement
         # might cause the enemy to clip corners.
         self.path = arcade.astar_calculate_path(enemy.position,
                                                 self.player.position,
