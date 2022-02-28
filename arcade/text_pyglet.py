@@ -335,7 +335,11 @@ class Text:
     @property
     def width(self) -> int:
         """
-        Get or set the width of the label in pixels                
+        Get or set the width of the label in pixels.
+        This value affects text flow when multiline text is used.
+        If you are looking for the physical size if the text, see
+         :py:attr:`~arcade.Text.content_width`
+
         """
         return self._label.width
 
@@ -347,6 +351,9 @@ class Text:
     def height(self) -> int:
         """
         Get or set the height of the label in pixels
+        This value affects text flow when multiline text is used.
+        If you are looking for the physical size if the text, see
+        :py:attr:`~arcade.Text.content_height`
         """
         return self._label.height
 
@@ -364,21 +371,21 @@ class Text:
     @property
     def content_width(self) -> int:
         """
-        Get the exact size of the text contents
+        Get the pixel width of the text contents
         """
         return self._label.content_width
 
     @property
     def content_height(self) -> int:
         """
-        Get the exact height of of the text content.
+        Get the pixel height of of the text content.
         """
         return self._label.content_height
 
     @property
     def content_size(self) -> Tuple[int, int]:
         """
-        Get the exact with and height of the text contents.
+        Get the pixel with and height of the text contents.
         """
         return self._label.content_width, self._label.content_height
 
