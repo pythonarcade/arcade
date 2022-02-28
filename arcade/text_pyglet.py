@@ -338,8 +338,7 @@ class Text:
         Get or set the width of the label in pixels.
         This value affects text flow when multiline text is used.
         If you are looking for the physical size if the text, see
-         :py:attr:`~arcade.Text.content_width`
-
+        :py:attr:`~arcade.Text.content_width`
         """
         return self._label.width
 
