@@ -83,7 +83,7 @@ class GameWindow(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Map name
-        map_name = "pymunk_test_map.json"
+        map_name = ":resources:/tiled_maps/pymunk_test_map.json"
 
         # Load in TileMap
         tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
