@@ -377,14 +377,14 @@ class Text:
     @property
     def content_height(self) -> int:
         """
-        Get the pixel height of of the text content.
+        Get the pixel height of the text content.
         """
         return self._label.content_height
 
     @property
     def content_size(self) -> Tuple[int, int]:
         """
-        Get the pixel with and height of the text contents.
+        Get the pixel width and height of the text contents.
         """
         return self._label.content_width, self._label.content_height
 
