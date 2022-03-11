@@ -1,11 +1,6 @@
 """
-Starting Template
-
-Once you have learned how to use classes, you can begin your program with this
-template.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template
+Parallax Example
+python -m arcade.examples.parallax
 """
 import arcade
 

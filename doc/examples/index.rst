@@ -626,6 +626,11 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_background`
 
+.. figure:: thumbs/parallax.png
+   :figwidth: 170px
+
+   :ref:`parallax`
+
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
