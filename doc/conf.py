@@ -145,10 +145,6 @@ html_baseurl = 'https://api.arcade.academy/'
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 html_codeblock_linenos_style = 'table'
 
-# Set Optimizely Web Experiment Snippet
-html_js_files = [
-    'https://cdn.optimizely.com/js/21076860443.js',
-]
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
