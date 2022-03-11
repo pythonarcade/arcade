@@ -133,6 +133,7 @@ from .utils import generate_uuid_from_kwargs
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
 from .geometry_generic import clamp
+from .geometry_generic import get_angle_degrees
 
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
@@ -444,6 +445,7 @@ __all__ = ['AStarBarrierList',
            'exit',
            'finish_render',
            'get_closest_sprite',
+           'get_angle_degrees',
            'get_display_size',
            'get_distance',
            'get_distance_between_sprites',

@@ -1,5 +1,6 @@
 import math
 from typing import List
+from arcade_types import Point
 
 
 def get_distance(x1: float, y1: float, x2: float, y2: float):
@@ -46,3 +47,21 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     y = round(rotated_y + cy, rounding_precision)
 
     return [x, y]
+
+
+def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
+    """
+    Get the angle in degrees between two points.
+
+    :param float x1: First point
+    :param float y1: First point
+    :param float x2: Second point
+    :param float y2: Second point
+    """
+
+    # Calculation the angle in radians between the start points
+    # and end points.
+    x_diff = x2 - x1
+    y_diff = y2 - y1
+    angle = math.degrees(math.atan2(x_diff, y_diff))
+    return angle
