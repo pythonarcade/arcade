@@ -8,6 +8,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 import math
 
 from arcade.texture import _build_cache_name
+from arcade.geometry_generic import get_angle_degrees
 
 import dataclasses
 
@@ -942,6 +943,17 @@ class Sprite:
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         """Called by the pymunk physics engine if this sprite moves."""
         pass
+
+    def face_point(self, point: Point):
+        """
+        Face the sprite towards a point. Assumes sprite image is facing upwards.
+
+        :param Point point: Point to face towards.
+        """
+        angle = get_angle_degrees(self.center_x, self.center_y, point[0], point[1])
+
+        # Reverse angle because sprite angles are backwards
+        self.angle = -angle
 
     def draw(self, *, filter=None, pixelated=None, blend_function=None):
         """
