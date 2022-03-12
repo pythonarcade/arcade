@@ -19,12 +19,52 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Add :class:`arcade.SectionManager` to the API.
   * Add examples on how to use: :ref:`section_examples`
 
-* Add parallax example: :ref:`parallax`
-* Add :func:`arcade.get_angle_degrees` function.
-* Add easing functions and example. See :ref:`easing_example`.
-* Add :ref:`perspective` example.
-* Fixed issue `#1074 <https://github.com/pythonarcade/arcade/issues/1074>`_
-  to prevent a crash when opening a window.
+* New Example Code:
+
+  * Add parallax example: :ref:`parallax`.
+  * Add GUI flat button styling example: :ref:`gui_flat_button_styled`.
+  * Add :ref:`perspective` example.
+
+* New functionality:
+
+  * Add :func:`arcade.get_angle_degrees` function.
+  * Add easing functions and example. See :ref:`easing_example`.
+  * Add :meth:`arcade.Sprite.facePoint` to face sprite towards a point.
+
+* Fixes:
+
+  * Fixed issue `#1074 <https://github.com/pythonarcade/arcade/issues/1074>`_
+    to prevent a crash when opening a window.
+  * Fixed issue `#978 <https://github.com/pythonarcade/arcade/issues/978>`_,
+    copy button in examples moved to the left to prevent it disappearing.
+  * Fixed issue `#967 <https://github.com/pythonarcade/arcade/issues/967>`_,
+    CRT example now pulls from resources so people don't have to download image to try it out.
+  * PyMunk sample map now in resources so people don't have to download it.
+  * :func:`arcade.draw_points` no longer draws the points twice, improving performance.
+
+* Documentation:
+
+  * Update :ref:`pygame-comparison`.
+  * Improve ``Sprite.texture`` docs.
+  * When building Arcade docs, script now lets us know what classes don't have docstrings.
+  * Spelling/typo fixes in docs.
+
+* Misc:
+
+  * Update :class:`aracde.Sprite` to use decorators to declare properties instead of the older method.
+  * ``arcade.gl.Geometry.transform`` no longer takes a mode parameter.
+  * `#1095 <https://github.com/pythonarcade/arcade/issues/1095>`_,
+    Improvements to :class:`arcade.Text` and its documentation.
+  * Force GDI text on windows until direct write is more mature.
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`eruvanos <https://github.com/eruvanos>`_,
+`janscas <https://github.com/janscas>`_,
+`MrWardKKHS <https://github.com/MrWardKKHS>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
 
 2.6.10
 ------
