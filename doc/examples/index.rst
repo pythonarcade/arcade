@@ -588,6 +588,11 @@ Frame Buffers
 
    :ref:`game_of_life_fbo`
 
+.. figure:: thumbs/perspective.png
+   :figwidth: 170px
+
+   :ref:`perspective`
+
 .. _concept_games:
 
 Concept Games

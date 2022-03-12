@@ -18,6 +18,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Add parallax example: :ref:`parallax`
 * Add :func:`arcade.get_angle_degrees` function.
+* Add easing functions and example. See :ref:`easing_example`.
+* Add :ref:`perspective` example.
 
 2.6.10
 ------
