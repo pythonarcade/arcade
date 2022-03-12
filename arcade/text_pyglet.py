@@ -147,8 +147,10 @@ class Text:
     :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
-    :param str anchor_x: How to calculate the anchor point's x coordinate
-    :param str anchor_y: How to calculate the anchor point's y coordinate
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+                         Options: "left", "center", or "right"
+    :param str anchor_y: How to calculate the anchor point's y coordinate.
+                         Options: "top", "bottom", "center", or "baseline".
     :param bool multiline: Requires width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
 
@@ -228,7 +230,7 @@ class Text:
     @property
     def value(self) -> str:
         """
-        The current value to display.
+        Set the current text string to display
         """
         return self._label.text
 
@@ -237,7 +239,23 @@ class Text:
         self._label.text = value
 
     @property
+    def text(self) -> str:
+        """
+        Set the current text string to display.
+
+        This is an alias for :py:attr:`~arcade.Text.value`
+        """
+        return self._label.text
+
+    @text.setter
+    def text(self, value: str):
+        self._label.text = value
+
+    @property
     def x(self) -> float:
+        """
+        Get or set the x position of the label
+        """
         return self._label.x
 
     @x.setter
@@ -246,6 +264,9 @@ class Text:
 
     @property
     def y(self) -> float:
+        """
+        Get or set the y position of the label
+        """
         return self._label.y
 
     @y.setter
@@ -254,6 +275,9 @@ class Text:
 
     @property
     def font_name(self) -> FontNameOrNames:
+        """
+        Get or set the font name(s) for this label
+        """
         return self._label.font_name
 
     @font_name.setter
@@ -262,6 +286,9 @@ class Text:
 
     @property
     def font_size(self) -> float:
+        """
+        Get or set the font size of the label
+        """
         return self._label.font_size
 
     @font_size.setter
@@ -270,6 +297,11 @@ class Text:
 
     @property
     def anchor_x(self) -> str:
+        """
+        Get or set the horizontal anchor.
+
+        Options: "left", "center", or "right"
+        """
         return self._label.anchor_x
 
     @anchor_x.setter
@@ -278,6 +310,11 @@ class Text:
 
     @property
     def anchor_y(self) -> str:
+        """
+        Get or set the vertical anchor.
+
+        Options : "top", "bottom", "center", or "baseline"
+        """
         return self._label.anchor_y
 
     @anchor_y.setter
@@ -286,6 +323,9 @@ class Text:
 
     @property
     def color(self) -> Color:
+        """
+        Get or set the text color for this label
+        """
         return self._label.color
 
     @color.setter
@@ -294,11 +334,59 @@ class Text:
 
     @property
     def width(self) -> int:
+        """
+        Get or set the width of the label in pixels.
+        This value affects text flow when multiline text is used.
+        If you are looking for the physical size if the text, see
+        :py:attr:`~arcade.Text.content_width`
+        """
         return self._label.width
 
     @width.setter
     def width(self, width: int):
         self._label.width = width
+
+    @property
+    def height(self) -> int:
+        """
+        Get or set the height of the label in pixels
+        This value affects text flow when multiline text is used.
+        If you are looking for the physical size if the text, see
+        :py:attr:`~arcade.Text.content_height`
+        """
+        return self._label.height
+
+    @height.setter
+    def height(self, value):
+        self._label.height = value
+
+    @property
+    def size(self):
+        """
+        Get the size of this label        
+        """
+        return self._label.width, self._label.height
+
+    @property
+    def content_width(self) -> int:
+        """
+        Get the pixel width of the text contents
+        """
+        return self._label.content_width
+
+    @property
+    def content_height(self) -> int:
+        """
+        Get the pixel height of the text content.
+        """
+        return self._label.content_height
+
+    @property
+    def content_size(self) -> Tuple[int, int]:
+        """
+        Get the pixel width and height of the text contents.
+        """
+        return self._label.content_width, self._label.content_height
 
     @property
     def align(self) -> str:
@@ -315,6 +403,9 @@ class Text:
 
     @property
     def bold(self) -> bool:
+        """
+        Get or set bold state of this label
+        """
         return self._label.bold
 
     @bold.setter
@@ -323,6 +414,9 @@ class Text:
 
     @property
     def italic(self) -> bool:
+        """
+        Get or set the italic state of this label
+        """
         return self._label.italic
 
     @italic.setter
@@ -331,6 +425,9 @@ class Text:
 
     @property
     def multiline(self) -> bool:
+        """
+        Get or set the multiline flag of this label.
+        """
         return self._label.multiline
 
     @multiline.setter

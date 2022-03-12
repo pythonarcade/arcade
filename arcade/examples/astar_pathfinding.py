@@ -1,10 +1,6 @@
 """
 A-Star Path-finding
 
-.. note:: This uses features from the upcoming version 2.4. The API for these
-          functions may still change. To use, you will need to install one of the
-          pre-release packages, or install via GitHub.
-
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
@@ -188,7 +184,7 @@ class MyGame(arcade.Window):
 
         # Calculate a path to the player
         enemy = self.enemy_list[0]
-        # Set to True if we can move diagonally. Note that diagnonal movement
+        # Set to True if we can move diagonally. Note that diagonal movement
         # might cause the enemy to clip corners.
         self.path = arcade.astar_calculate_path(enemy.position,
                                                 self.player.position,

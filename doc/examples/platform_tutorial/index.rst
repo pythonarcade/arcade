@@ -34,6 +34,7 @@ The tutorial is divided into these parts:
    step_14
    step_15
    step_16
+   step_17
 
 Currently there are a few more examples that expand beyond where the tutorial leaves off.
 You can see the source code for those examples as well as every chapter in the tutorial on

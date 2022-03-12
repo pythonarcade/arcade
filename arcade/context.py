@@ -209,7 +209,7 @@ class ArcadeContext(Context):
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
-        is passned in the ``SpriteList`` constructor.
+        is passed in the ``SpriteList`` constructor.
 
         :type: TextureAtlas
         """

@@ -239,7 +239,7 @@ class VertexArray:
 
         :param Buffer buffer: The buffer to write the output
         :param gl.GLenum mode: The input primitive mode
-        :param gl.GLenum output:mode: The output primitive mode
+        :param gl.GLenum output_mode: The output primitive mode
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
@@ -458,7 +458,6 @@ class Geometry:
 
         :param Program program: The Program to render with
         :param Buffer buffer: The buffer to write the output
-        :param gl.GLenum mode: The input primitive mode
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render

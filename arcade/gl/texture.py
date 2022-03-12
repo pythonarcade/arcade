@@ -635,6 +635,7 @@ class Texture:
         :param int unit: The image unit
         :param bool read: The compute shader intends to read from this image
         :param bool write: The compute shader intends to write to this image
+        :param int level:
         """
 
         access = gl.GL_READ_WRITE

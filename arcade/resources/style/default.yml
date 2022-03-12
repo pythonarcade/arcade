@@ -1,4 +1,4 @@
-# Suppored types:
+# Supported types:
 #
 # Arcade color: BLACK -> arcade.color.BLACK
 # RGB color: RGB string 255, 255, 255 -> (255,255,255)

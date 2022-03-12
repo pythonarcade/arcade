@@ -197,7 +197,7 @@ class Buffer:
         Re-allocate the entire buffer memory. This can be used to resize
         a buffer or for re-specification (orphan the buffer to avoid blocking).
 
-        If the current buffer is busy in redering operations
+        If the current buffer is busy in rendering operations
         it will be deallocated by OpenGL when completed.
 
         :param int size: New size of buffer. -1 will retain the current size.
@@ -214,7 +214,7 @@ class Buffer:
 
     def bind_to_uniform_block(self, binding: int = 0, offset: int = 0, size: int = -1):
         """Bind this buffer to a uniform block location.
-        In most cases it will be sufficient to only provice a binding location.
+        In most cases it will be sufficient to only provide a binding location.
 
         :param int binding: The binding location
         :param int offset: byte offset

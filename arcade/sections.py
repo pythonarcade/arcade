@@ -443,6 +443,7 @@ class SectionManager:
                     position = section.get_xy_section_relative(x, y)
                 else:
                     position = x, y
+
                 # call the section method
                 prevent_dispatch = method(*position, *args, **kwargs)
                 # prevent dispatch if modal
@@ -488,6 +489,7 @@ class SectionManager:
                 # get the method to call from the section
                 method = getattr(section, event, None)
                 if method:
+
                     # call the section method
                     prevent_dispatch = method(*args, **kwargs)
                     if prevent_dispatch is True or any(

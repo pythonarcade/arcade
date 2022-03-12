@@ -215,7 +215,7 @@ class BufferDescription:
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
         self.attributes = attributes
-        #: List of normalied attributes
+        #: List of normalized attributes
         self.normalized = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
         self.instanced = instanced  # type: bool

@@ -10,7 +10,7 @@ The better gui for arcade
 """
 import warnings
 from collections import defaultdict
-from typing import List, Dict
+from typing import List, Dict, TypeVar, Iterable
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -28,6 +28,8 @@ from arcade.gui.events import (UIMouseMovementEvent,
                                UIOnUpdateEvent)
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
+
+W = TypeVar('W', bound=UIWidget)
 
 
 class UIManager(EventDispatcher, UIWidgetParent):
@@ -62,7 +64,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             warnings.warn("`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`")
             self.enable()
 
-    def add(self, widget: UIWidget, *, index=None) -> UIWidget:
+    def add(self, widget: W, *, index=None) -> W:
         """
         Add a widget to the :class:`UIManager`.
         Added widgets will receive ui events and be rendered.
@@ -87,7 +89,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 children.remove(child)
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: UIWidget = None):
+    def walk_widgets(self, *, root: UIWidget = None) -> Iterable[UIWidget]:
         """walks through widget tree, in reverse draw order (most top drawn widget first)"""
         layer = 0
         children = root.children if root else self.children[layer]
@@ -95,7 +97,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             yield from self.walk_widgets(root=child)
             yield child
 
-    def get_widgets_at(self, pos, cls=UIWidget):
+    def get_widgets_at(self, pos, cls=UIWidget) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 

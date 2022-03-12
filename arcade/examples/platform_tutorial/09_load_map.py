@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Setup the Cameras
+        # Set up the Cameras
         self.camera = arcade.Camera(self.width, self.height)
         self.gui_camera = arcade.Camera(self.width, self.height)
 

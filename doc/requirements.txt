@@ -1,12 +1,12 @@
-Sphinx==4.3.2
-sphinx-copybutton==0.4.0
+Sphinx==4.4.0
+sphinx-copybutton==0.5.0
 sphinx-rtd-theme==1.0.0
 sphinx-sitemap==2.2.0
 pyglet==2.0.dev12
 dirsync==2.2.5
-pytiled-parser==1.5.4
+pytiled-parser==2.0.1
 pymunk==6.2.1
 pyyaml==6.0
-Pillow==9.0.0
+Pillow==9.0.1
 docutils<0.18
 

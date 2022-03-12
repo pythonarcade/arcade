@@ -123,7 +123,7 @@ class MyGame(arcade.Window):
         wall.change_y = 2 * SPRITE_SCALING
         self.moving_wall_list.append(wall)
 
-        # Creaate our physics engine
+        # Create our physics engine
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
                                            [self.static_wall_list, self.moving_wall_list],

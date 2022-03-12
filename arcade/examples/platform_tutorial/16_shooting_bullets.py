@@ -398,7 +398,7 @@ class MyGame(arcade.Window):
 
     def process_keychange(self):
         """
-        Called when we change a key up/down or we move on/off a ladder.
+        Called when we change a key up/down, or we move on/off a ladder.
         """
         # Process up/down
         if self.up_pressed and not self.down_pressed:

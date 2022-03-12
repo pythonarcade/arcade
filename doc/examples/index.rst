@@ -176,6 +176,11 @@ Sprite Player Movement
 
    :ref:`turn_and_move`
 
+.. figure:: thumbs/easing_example.png
+   :figwidth: 170px
+
+   :ref:`easing_example`
+
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -334,6 +339,11 @@ Camera Use
 
    :ref:`sprite_move_scrolling_shake`
 
+.. figure:: thumbs/camera_platform.png
+   :figwidth: 170px
+
+   :ref:`camera_platform`
+
 Platformers
 -----------
 
@@ -390,12 +400,12 @@ Procedural Generation
 .. figure:: thumbs/maze_recursive.png
    :figwidth: 170px
 
-   :ref:`recursive_maze`
+   :ref:`maze_recursive`
 
 .. figure:: thumbs/maze_depth_first.png
    :figwidth: 170px
 
-   :ref:`depth_first_maze`
+   :ref:`maze_depth_first`
 
 .. figure:: thumbs/procedural_caves_cellular.png
    :figwidth: 170px
@@ -464,6 +474,11 @@ Graphical User Interface
 
    :ref:`gui_flat_button`
 
+.. figure:: thumbs/gui_flat_button_styled.png
+   :figwidth: 170px
+
+   :ref:`gui_flat_button_styled`
+
 .. figure:: thumbs/gui_widgets.png
    :figwidth: 170px
 
@@ -478,6 +493,11 @@ Graphical User Interface
    :figwidth: 170px
 
    :ref:`gui_scrollable_text`
+
+.. figure:: thumbs/gui_slider.png
+   :figwidth: 170px
+
+   :ref:`gui_slider`
 
 
 Grid-Based Games
@@ -568,6 +588,11 @@ Frame Buffers
 
    :ref:`game_of_life_fbo`
 
+.. figure:: thumbs/perspective.png
+   :figwidth: 170px
+
+   :ref:`perspective`
+
 .. _concept_games:
 
 Concept Games
@@ -610,6 +635,11 @@ Odds and Ends
    :figwidth: 170px
 
    :ref:`sprite_collect_coins_background`
+
+.. figure:: thumbs/parallax.png
+   :figwidth: 170px
+
+   :ref:`parallax`
 
 .. figure:: thumbs/timer.png
    :figwidth: 170px

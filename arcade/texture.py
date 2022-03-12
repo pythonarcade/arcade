@@ -65,6 +65,8 @@ class Texture:
         :image: A :py:class:`PIL.Image.Image` object.
         :width: Width of the texture in pixels.
         :height: Height of the texture in pixels.
+        :size: Tuple containing (width, height)
+        :hit_box_points: The computed hit box of the texture
 
 
     """
@@ -247,6 +249,7 @@ class Texture:
                    height: float,
                    angle: float = 0,
                    alpha: int = 255):
+        """ Draw a texture with a specific width and height. """
 
         self._create_cached_sprite()
         if self._sprite and self._sprite_list:

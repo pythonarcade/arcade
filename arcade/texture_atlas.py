@@ -337,9 +337,9 @@ class TextureAtlas:
         )
         self._atlas_regions[texture.name] = region
         # Get the existing slot for this texture or grab a new one.
-        # Existing slots for textures will only happen when re-bulding
+        # Existing slots for textures will only happen when re-building
         # the atlas since we want to keep the same slots to avoid
-        # re-bulding the sprite list
+        # re-building the sprite list
         existing_slot = self._uv_slots.get(texture.name)
         slot = existing_slot if existing_slot is not None else self._uv_slots_free.popleft()
         self._uv_slots[texture.name] = slot

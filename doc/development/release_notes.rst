@@ -16,6 +16,11 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Placeholder to put something about sections here.
 
+* Add parallax example: :ref:`parallax`
+* Add :func:`arcade.get_angle_degrees` function.
+* Add easing functions and example. See :ref:`easing_example`.
+* Add :ref:`perspective` example.
+
 2.6.10
 ------
 
@@ -25,7 +30,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Collision checking against one or more sprite lists
     can use the GPU via a 'transform' for much better performance.
-    The :meth:`arcade.check_for_collision_with_lists` and :meth:`arcade.check_for_collision_with_lists`
+    The :meth:`arcade.check_for_collision_with_list` and :meth:`arcade.check_for_collision_with_lists`
     methods now support selection between spatial, GPU, and CPU methods of detection.
   * Added :py:meth:`~arcade.SpriteList.clear` for resetting/clearing a spritelist. This will iterate
     and remove all sprites by default, or do a faster `O(1)` clear. Please read the api docs

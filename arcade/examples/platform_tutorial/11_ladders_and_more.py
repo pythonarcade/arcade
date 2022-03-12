@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Setup the Cameras
+        # Set up the Cameras
         self.camera = arcade.Camera(self.width, self.height)
         self.gui_camera = arcade.Camera(self.width, self.height)
 
@@ -229,7 +229,7 @@ class MyGame(arcade.Window):
 
             # Figure out how many points this coin is worth
             if "Points" not in coin.properties:
-                print("Warning, collected a coing without a Points property.")
+                print("Warning, collected a coin without a Points property.")
             else:
                 points = int(coin.properties["Points"])
                 self.score += points

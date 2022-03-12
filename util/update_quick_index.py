@@ -17,6 +17,7 @@ titles = {
     'emitter_simple.py': ['Particles', 'particle_emitter.rst'],
     'geometry.py': ['Geometry Support', 'geometry.rst'],
     'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
+    'easing.py': ['Geometry Support', 'geometry.rst'],
     'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
     'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],

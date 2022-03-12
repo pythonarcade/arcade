@@ -215,7 +215,7 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
 
-        map_name = "pymunk_test_map.json"
+        map_name = ":resources:/tiled_maps/pymunk_test_map.json"
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_map(map_name)

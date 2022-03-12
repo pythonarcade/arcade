@@ -84,7 +84,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Python Arcade Library'
-copyright = '2021, Paul Vincent Craven'
+copyright = '2022, Paul Vincent Craven'
 author = 'Paul Vincent Craven'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -145,10 +145,6 @@ html_baseurl = 'https://api.arcade.academy/'
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 html_codeblock_linenos_style = 'table'
 
-# Set Optimizely Web Experiment Snippet
-html_js_files = [
-    'https://cdn.optimizely.com/js/21076860443.js',
-]
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -170,6 +166,13 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
 suppress_warnings = [
     "ref.python",
 ]
+
+
+def warn_undocumented_members(app, what, name, obj, options, lines):
+    if len(lines) == 0:
+        print(f"{what} {name} is undocumented")
+        # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
+
 
 def source_read(app, docname, source):
 
@@ -234,3 +237,4 @@ def setup(app):
     app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
+    app.connect("autodoc-process-docstring", warn_undocumented_members)

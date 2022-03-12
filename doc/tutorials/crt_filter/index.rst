@@ -61,5 +61,8 @@ Full Example Code
 The example code just animates a Pac-Man image. You can toggle the CRT filter on
 or off by hitting the space bar.
 
+Images to run this example can be found here:
+https://github.com/pythonarcade/arcade/tree/development/doc/tutorials/crt_filter
+
 .. literalinclude:: crt_filter_example.py
 
