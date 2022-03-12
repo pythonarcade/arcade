@@ -135,6 +135,18 @@ from .geometry_generic import rotate_point
 from .geometry_generic import clamp
 from .geometry_generic import get_angle_degrees
 
+from .easing import EasingData
+from .easing import linear
+from .easing import smoothstep
+from .easing import ease_in
+from .easing import ease_out
+from .easing import easing
+from .easing import ease_angle
+from .easing import ease_angle_update
+from .easing import ease_update
+from .easing import ease_value
+from .easing import ease_position
+
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
 
@@ -323,9 +335,11 @@ __all__ = ['AStarBarrierList',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
+           'AtlasRegion',
            'Camera',
            'Color',
            'DEFAULT_FONT_NAMES',
+           'EasingData',
            'EmitBurst',
            'EmitController',
            'EmitInterval',
@@ -353,6 +367,7 @@ __all__ = ['AStarBarrierList',
            'Point',
            'PointList',
            'PyMunk',
+           'PymunkException',
            'PymunkPhysicsEngine',
            'PymunkPhysicsObject',
            'RGB',
@@ -370,6 +385,7 @@ __all__ = ['AStarBarrierList',
            'SpriteList',
            'SpriteSolidColor',
            'TShape',
+           'TiledObject',
            'Text',
            'Texture',
            'TextureAtlas',
@@ -440,10 +456,23 @@ __all__ = ['AStarBarrierList',
            'draw_triangle_outline',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
+           'ease_angle',
+           'ease_value',
+           'ease_position',
+           'easing',
+           'ease_in',
+           'ease_out',
+           'smoothstep',
+           'linear',
+           'ease_angle_update',
+           'ease_update',
+           'easing_position',
            'earclip',
            'enable_timings',
            'exit',
            'finish_render',
+           'float_to_byte_color',
+           'generate_uuid_from_kwargs',
            'get_closest_sprite',
            'get_angle_degrees',
            'get_display_size',
@@ -463,10 +492,12 @@ __all__ = ['AStarBarrierList',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
            'get_timings',
+           'get_three_float_color',
            'clear_timings',
            'create_text_image',
            'get_viewport',
            'get_window',
+           'get_fps',
            'has_line_of_sight',
            'is_point_in_polygon',
            'isometric_grid_to_screen',
@@ -487,6 +518,7 @@ __all__ = ['AStarBarrierList',
            'make_transparent_color',
            'open_window',
            'pause',
+           'print_timings',
            'play_sound',
            'quick_run',
            'rand_angle_360_deg',
