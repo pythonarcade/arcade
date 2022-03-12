@@ -58,6 +58,8 @@ import pyglet
 # Originally, this only disabled them for macs where
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
+# Use the old gdi fonts on windows until directwrite is fast/stable
+pyglet.options['win32_gdi_font'] = True
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
 if not getattr(sys, 'is_pyglet_doc_run', False):
