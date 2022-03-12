@@ -58,7 +58,7 @@ def easing(percent: float, easing_data: EasingData) -> float:
     Function for calculating return value for easing, given percent and easing data.
     """
     return easing_data.start_value + (easing_data.end_value - easing_data.start_value) * \
-           easing_data.ease_function(percent)
+        easing_data.ease_function(percent)
 
 
 def ease_angle(start_angle, end_angle, *, time=None, rate=None, ease_function=linear):
