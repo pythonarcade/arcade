@@ -12,14 +12,19 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 *Unreleased*
 
-* Sections
+* Sections - Add support to divide window into sections.
+  (Thanks `janscas <https://github.com/janscas>`_ for the contribution.)
 
-  * Placeholder to put something about sections here.
+  * Add :class:`arcade.Section` to the API.
+  * Add :class:`arcade.SectionManager` to the API.
+  * Add examples on how to use: :ref:`section_examples`
 
 * Add parallax example: :ref:`parallax`
 * Add :func:`arcade.get_angle_degrees` function.
 * Add easing functions and example. See :ref:`easing_example`.
 * Add :ref:`perspective` example.
+* Fixed issue `#1074 <https://github.com/pythonarcade/arcade/issues/1074>`_
+  to prevent a crash when opening a window.
 
 2.6.10
 ------

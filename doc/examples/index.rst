@@ -458,13 +458,25 @@ Resizable Window and Fullscreen Games
 
    :ref:`full_screen_example`
 
+.. _section_examples:
+
 Dividing a View Into Sections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/sections.png
+.. figure:: thumbs/sections_demo_1.png
    :figwidth: 170px
 
-   :ref:`sections`
+   :ref:`sections_demo_1`
+
+.. figure:: thumbs/sections_demo_2.png
+   :figwidth: 170px
+
+   :ref:`sections_demo_2`
+
+.. figure:: thumbs/sections_demo_3.png
+   :figwidth: 170px
+
+   :ref:`sections_demo_3`
 
 Graphical User Interface
 ------------------------

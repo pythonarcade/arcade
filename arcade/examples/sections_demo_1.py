@@ -2,10 +2,10 @@
 Section Example 1:
 
 In this Section example we divide the screen in two sections and let the user
-pick a box depening on the selected Section
+pick a box depending on the selected Section
 
 Note:
-    - How View know nothing of what's happeing inside the sections.
+    - How View know nothing of what's happening inside the sections.
       Each section knows what to do.
     - Each event mouse input is handled by each Section even if the class
       it's the same (ScreenPart).
@@ -68,7 +68,7 @@ class ScreenPart(arcade.Section):
             # Section is selected when mouse is within its boundaries
             arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
                                               self.bottom, arcade.color.GRAY)
-            arcade.draw_text(f'Your are on the {self.name}', self.left + 30,
+            arcade.draw_text(f'You\'re are on the {self.name}', self.left + 30,
                              self.top - 50, arcade.color.BLACK, 16)
 
         # draw the box
@@ -88,7 +88,7 @@ class ScreenPart(arcade.Section):
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         # if hold_box is True because we pick it with on_mouse_press
-        # then relese the Box
+        # then release the Box
         if self.hold_box:
             self.hold_box.release()
 
