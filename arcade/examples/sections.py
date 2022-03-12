@@ -15,7 +15,7 @@ Other features showed here.
 """
 from typing import Optional
 import arcade
-from arcade.sections import Section
+from arcade import Section
 
 INFO_BAR_HEIGHT = 40
 PANEL_WIDTH = 200
