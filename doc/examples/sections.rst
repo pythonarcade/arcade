@@ -10,6 +10,6 @@ Sections
     :align: center
     :alt: Screen shot of using sections
 
-.. literalinclude:: ../../arcade/examples/sections.py
+.. literalinclude:: ../../arcade/examples/sections_demo_3.py
     :caption: sections.py
     :linenos:
