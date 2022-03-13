@@ -62,6 +62,7 @@ Special thanks to
 `eruvanos <https://github.com/eruvanos>`_,
 `janscas <https://github.com/janscas>`_,
 `MrWardKKHS <https://github.com/MrWardKKHS>`_,
+`DragonMoffon <https://github.com/DragonMoffon>`_,
 `pvcraven <https://github.com/pvcraven>`_,
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
