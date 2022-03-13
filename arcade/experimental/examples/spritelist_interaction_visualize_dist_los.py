@@ -62,8 +62,6 @@ class SpriteListInteraction(arcade.Window):
             if count == NUM_SPRITES:
                 break
 
-
-
         # This program draws lines from the player/origin
         # to sprites that are within a certain distance.
         # The main action here happens in the geometry shader.
