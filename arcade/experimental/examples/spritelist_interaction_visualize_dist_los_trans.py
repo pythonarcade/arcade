@@ -52,10 +52,9 @@ class SpriteListInteraction(arcade.Window):
 
         # Genreate some random coins.
         # We make sure they are not placed inside a wall.
-        # We give each coin 4 chances to spawn at the right position.
+        # We give each coin 1 chance to spawn at the right position.
         self.coins = arcade.SpriteList()
-        count = 0
-        for _ in range(NUM_SPRITES * 4):
+        for _ in range(NUM_SPRITES):
             coin = arcade.Sprite(
                 ":resources:images/items/coinGold.png",
                 center_x=random.randint(0, WINDOW_WIDTH),
@@ -66,9 +65,6 @@ class SpriteListInteraction(arcade.Window):
                 continue
 
             self.coins.append(coin)
-            count += 1
-            if count == NUM_SPRITES:
-                break
 
         # This program draws lines from the player/origin
         # to sprites that are within a certain distance.
