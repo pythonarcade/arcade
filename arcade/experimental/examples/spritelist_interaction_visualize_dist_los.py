@@ -15,7 +15,8 @@ import arcade
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-NUM_SPRITES = 100
+NUM_COINS = 500
+NUM_WALLS = 75
 INTERACTION_RADIUS = 300
 
 
@@ -32,7 +33,7 @@ class SpriteListInteraction(arcade.Window):
 
         # Wall sprites we are checking collission against
         self.walls = arcade.SpriteList()
-        for _ in range(NUM_SPRITES):
+        for _ in range(NUM_WALLS):
             self.walls.append(
                 arcade.Sprite(
                     ":resources:images/tiles/boxCrate_double.png",
@@ -44,10 +45,9 @@ class SpriteListInteraction(arcade.Window):
 
         # Genreate some random coins.
         # We make sure they are not placed inside a wall.
-        # We give each coin 4 chances to spawn at the right position.
+        # We give the coins one chance to appear outside walls
         self.coins = arcade.SpriteList()
-        count = 0
-        for _ in range(NUM_SPRITES * 4):
+        for _ in range(NUM_COINS):
             coin = arcade.Sprite(
                 ":resources:images/items/coinGold.png",
                 center_x=random.randint(0, WINDOW_WIDTH),
@@ -58,9 +58,6 @@ class SpriteListInteraction(arcade.Window):
                 continue
 
             self.coins.append(coin)
-            count += 1
-            if count == NUM_SPRITES:
-                break
 
         # This program draws lines from the player/origin
         # to sprites that are within a certain distance.
@@ -135,6 +132,7 @@ class SpriteListInteraction(arcade.Window):
                 // Second line segment position (sprite position)
                 gl_Position = proj.matrix * vec4(v_position[0], 0.0, 1.0);
                 EmitVertex();
+                EndPrimitive();
             }
             """,
             fragment_shader="""
@@ -175,7 +173,7 @@ class SpriteListInteraction(arcade.Window):
         # use to run our shader/gpu program. It only requires that we
         # use correctly named input name(s). in_pos in this example
         # what will automatically map in the position buffer to the vertex shader.
-        self.coins._geometry.render(self.program_visualize_dist)
+        self.coins._geometry.render(self.program_visualize_dist, vertices=len(self.coins))
         self.player.draw()
 
         # Visualize the interaction radius

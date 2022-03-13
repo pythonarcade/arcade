@@ -23,7 +23,8 @@ import arcade
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-NUM_SPRITES = 100
+NUM_COINS = 500
+NUM_WALLS = 100
 INTERACTION_RADIUS = 200
 
 
@@ -40,7 +41,7 @@ class SpriteListInteraction(arcade.Window):
 
         # Wall sprites we are checking collission against
         self.walls = arcade.SpriteList()
-        for _ in range(NUM_SPRITES):
+        for _ in range(NUM_WALLS):
             self.walls.append(
                 arcade.Sprite(
                     ":resources:images/tiles/boxCrate_double.png",
@@ -54,7 +55,7 @@ class SpriteListInteraction(arcade.Window):
         # We make sure they are not placed inside a wall.
         # We give each coin 1 chance to spawn at the right position.
         self.coins = arcade.SpriteList()
-        for _ in range(NUM_SPRITES):
+        for _ in range(NUM_COINS):
             coin = arcade.Sprite(
                 ":resources:images/items/coinGold.png",
                 center_x=random.randint(0, WINDOW_WIDTH),
@@ -66,10 +67,10 @@ class SpriteListInteraction(arcade.Window):
 
             self.coins.append(coin)
 
-        # This program draws lines from the player/origin
-        # to sprites that are within a certain distance.
-        # The main action here happens in the geometry shader.
-        # It creates lines when a sprite is within the maxDistance.
+        # This program finds sprites within a certain distance
+        # not blocked by line of sight. We use a texture containing
+        # the walls to trace a ray between the player and coin.
+        # If any non-zero pixels are detected we skip the sprite.
         self.program_select_sprites = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -148,10 +149,10 @@ class SpriteListInteraction(arcade.Window):
         # Configure program with maximum distance
         self.program_select_sprites["maxDistance"] = INTERACTION_RADIUS
 
-        # We need a buffer that can capture the output from our transform shader.
-        # We need to make room for len(coins) 32 bit floats (size specified in bytes)
         # NOTE: Before we do this we need to ensure the internal sprite buffers are complete!
         self.coins._write_sprite_buffers_to_gpu()
+        # We need a buffer that can capture the output from our transform shader.
+        # We need to make room for len(coins) 32 bit floats (4 bytes each. size specified in bytes)
         self.result_buffer = self.ctx.buffer(reserve=len(self.coins) * 4)
         # We need a query to count how many sprites the shader gave us.
         # We do this by making a sampler that counts the number of primitives
@@ -172,15 +173,9 @@ class SpriteListInteraction(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        # We can run our program with this geometry since
-        # the inputs are compatible (it has an "in_position" configured)
-        # We're doing a transform here making the shader write data into the result buffer.
-        # We also run the transform with query active so we can count the number of valid results.
-        # NOTE: This could also happen in on_update
-
         # As long as we have coins...
         if len(self.coins) > 0:
-            # Ensure the internal sprite buffers are up tp date
+            # Ensure the internal sprite buffers are up to date
             self.coins._write_sprite_buffers_to_gpu()
             # Bind the wall texture to texture channel 0 so we can read it in the shader
             self.walls_fbo.color_attachments[0].use(0)

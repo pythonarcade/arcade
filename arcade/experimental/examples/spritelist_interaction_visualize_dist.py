@@ -9,7 +9,7 @@ import arcade
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-NUM_SPRITES = 1000
+NUM_COINS = 1000
 INTERACTION_RADIUS = 250
 
 
@@ -20,7 +20,7 @@ class SpriteListInteraction(arcade.Window):
 
         # Genreate some random coins
         self.coins = arcade.SpriteList()
-        for _ in range(NUM_SPRITES):
+        for _ in range(NUM_COINS):
             self.coins.append(
                 arcade.Sprite(
                     ":resources:images/items/coinGold.png",
