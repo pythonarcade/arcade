@@ -87,13 +87,13 @@ def ease_out_bounce(percent: float) -> float:
     if percent < 1 / d1:
         return n1 * percent * percent
     elif percent < 2 / d1:
-        percent_modified = percent - 1.5/d1
+        percent_modified = percent - 1.5 / d1
         return n1 * percent_modified * percent_modified + 0.75
     elif percent < 2.5 / d1:
-        percent_modified = percent - 2.25/d1
+        percent_modified = percent - 2.25 / d1
         return n1 * percent_modified * percent_modified + 0.9375
     else:
-        percent_modified = percent - 2.625/d1
+        percent_modified = percent - 2.625 / d1
         return n1 * percent_modified * percent_modified + 0.984375
 
 
@@ -135,7 +135,7 @@ def ease_in_out_sin(percent: float) -> float:
     """
     Function for easing in and out using a sin wave
     """
-    return -cos(percent * pi)*0.5 + 0.5
+    return -cos(percent * pi) * 0.5 + 0.5
 
 
 def easing(percent: float, easing_data: EasingData) -> float:

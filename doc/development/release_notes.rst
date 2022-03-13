@@ -28,7 +28,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 * New functionality:
 
   * Add :func:`arcade.get_angle_degrees` function.
-  * Add easing functions and example. See :ref:`easing_example`.
+  * Add easing functions and example. See :ref:`easing_example_1` and :ref:`easing_example_2`.
   * Add :meth:`arcade.Sprite.facePoint` to face sprite towards a point.
 
 * Fixes:

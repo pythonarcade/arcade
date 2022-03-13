@@ -176,10 +176,15 @@ Sprite Player Movement
 
    :ref:`turn_and_move`
 
-.. figure:: thumbs/easing_example.png
+.. figure:: thumbs/easing_example_1.png
    :figwidth: 170px
 
-   :ref:`easing_example`
+   :ref:`easing_example_1`
+
+.. figure:: thumbs/easing_example_2.png
+   :figwidth: 170px
+
+   :ref:`easing_example_2`
 
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
