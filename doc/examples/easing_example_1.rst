@@ -5,7 +5,7 @@
 Easing Example 1
 ================
 
-.. image:: easing_example_2.png
+.. image:: easing_example_1.png
     :width: 600px
     :align: center
     :alt: Easing Example
