@@ -6,7 +6,6 @@ and nearby sprites when they are within a certain distance.
 """
 import random
 import arcade
-from arcade.gl import BufferDescription
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600

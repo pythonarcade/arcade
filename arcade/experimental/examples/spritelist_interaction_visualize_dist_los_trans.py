@@ -69,7 +69,7 @@ class SpriteListInteraction(arcade.Window):
             count += 1
             if count == NUM_SPRITES:
                 break
-        
+
         # This program draws lines from the player/origin
         # to sprites that are within a certain distance.
         # The main action here happens in the geometry shader.
@@ -193,7 +193,11 @@ class SpriteListInteraction(arcade.Window):
                 # use to run our shader/gpu program. It only requires that we
                 # use correctly named input name(s). in_pos in this example
                 # what will automatically map in the position buffer to the vertex shader.
-                self.coins._geometry.transform(self.program_select_sprites, self.result_buffer, vertices=len(self.coins))
+                self.coins._geometry.transform(
+                    self.program_select_sprites,
+                    self.result_buffer,
+                    vertices=len(self.coins),
+                )
 
             # Store the number of primitives/sprites found
             num_sprites_found = self.query.primitives_generated
@@ -201,7 +205,10 @@ class SpriteListInteraction(arcade.Window):
                 print(f"We found {num_sprites_found} sprite(s)")
                 # Transfer the the data from the vram into python and decode the values into python objects.
                 # We read num_sprites_found float values from the result buffer and convert those into python floats
-                sprite_indices = struct.unpack(f"{num_sprites_found}f", self.result_buffer.read(size=num_sprites_found * 4))
+                sprite_indices = struct.unpack(
+                    f"{num_sprites_found}f",
+                    self.result_buffer.read(size=num_sprites_found * 4),
+                )
                 print("Indices found:", sprite_indices)
                 print(
                     (

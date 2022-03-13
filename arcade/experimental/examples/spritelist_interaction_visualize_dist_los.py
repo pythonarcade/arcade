@@ -12,7 +12,6 @@ colliding with something.
 """
 import random
 import arcade
-from arcade.gl import BufferDescription
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
