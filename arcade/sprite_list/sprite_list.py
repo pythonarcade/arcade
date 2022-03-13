@@ -968,9 +968,15 @@ class SpriteList:
         Ensure buffers are resized and fresh sprite data
         is written into the internal sprite buffers.
 
-        This is automatically called in ``SpriteList.draw()``,
+        This is automatically called in :py:meth:`SpriteList.draw`,
         but there are instances when using custom shaders
-        we need to force this to happen.
+        we need to force this to happen since we might
+        have not called :py:meth:`SpriteList.draw` since the
+        spritelist was modified.
+
+        If you have added, removed, moved or changed ANY
+        sprite property this method will synchronize the
+        data on the gpu side (buffer resizing and writing in new data).
         """
         self._write_sprite_buffers_to_gpu()
 
