@@ -11,6 +11,7 @@ from arcade.gl import BufferDescription
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 NUM_SPRITES = 1000
+INTERACTION_RADIUS = 250
 
 
 class SpriteListInteraction(arcade.Window):
@@ -45,14 +46,14 @@ class SpriteListInteraction(arcade.Window):
             #version 330
 
             // Sprite positions from SpriteList
-            in vec2 in_position;
+            in vec2 in_pos;
 
             // Output to geometry shader
             out vec2 v_position;
 
             void main() {
                 // This shader just forwards info to geo shader
-                v_position = in_position;
+                v_position = in_pos;
             }
             """,
             geometry_shader="""
@@ -104,20 +105,20 @@ class SpriteListInteraction(arcade.Window):
             """
         )
         # Configure program with maximum distance
-        self.program_visualize_dist["maxDistance"] = 250
-        # Create a geometry instance with the spritelist's position buffer.
-        # This configures the inputs for the vertex shader
-        self.geometry = self.ctx.geometry(
-            [BufferDescription(self.coins._sprite_pos_buf, "2f", ["in_position"])]
-        )
+        self.program_visualize_dist["maxDistance"] = INTERACTION_RADIUS
 
     def on_draw(self):
         self.clear()
         self.coins.draw()
-        # We can run our program with this geometry since
-        # the inputs are compatible (it has an "in_position" configured)
-        self.geometry.render(self.program_visualize_dist)
+        # We already have a geometry instance in the spritelist we can
+        # use to run our shader/gpu program. It only requires that we
+        # use correctly named input name(s). in_pos in this example
+        # what will automatically map in the position buffer to the vertex shader.
+        self.coins._geometry.render(self.program_visualize_dist, vertices=len(self.coins))
         self.player.draw()
+
+        # Visualize the interaction radius
+        arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         # Move the sprite to mouse position

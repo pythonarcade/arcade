@@ -1,23 +1,30 @@
 """
 Shows how we can use shaders using existing spritelist data.
 
-This examples renders a line between the player position
-and nearby sprites when they are within a certain distance.
+This example builds on previous examples visualizing selection
+of nearby sprites taking line of sight into consideration.
 
-This builds on a previous example adding line of sight (LoS)
-checks by using texture lookups. We our walls into a
-texture and read the pixels in a line between the 
-player and the target sprite to check if the path is
-colliding with something.
+This version on the other hand does not visualize. We want
+return useful data from the shader to resolve the actual
+selected sprite objects so we can use it in our game logic.
+
+For this to happen we need to change our shader into a
+transform shader. These shaders do not draw to the screen.
+They write data into a buffer we can read back on the
+python side. This simply involves removing the fragment
+shader and instead defining some values to output.
+We also need to do a transform() instead of render()
+and supply a buffer for our results. In addition we
+use a Query to count how many results the shader gave us.
 """
 import random
+import struct
 import arcade
-from arcade.gl import BufferDescription
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 NUM_SPRITES = 100
-INTERACTION_RADIUS = 300
+INTERACTION_RADIUS = 200
 
 
 class SpriteListInteraction(arcade.Window):
@@ -62,12 +69,12 @@ class SpriteListInteraction(arcade.Window):
             count += 1
             if count == NUM_SPRITES:
                 break
-
+        
         # This program draws lines from the player/origin
         # to sprites that are within a certain distance.
         # The main action here happens in the geometry shader.
         # It creates lines when a sprite is within the maxDistance.
-        self.program_visualize_dist = self.ctx.program(
+        self.program_select_sprites = self.ctx.program(
             vertex_shader="""
             #version 330
 
@@ -98,14 +105,17 @@ class SpriteListInteraction(arcade.Window):
             uniform sampler2D walls;
 
             // These configure the geometry shader to process a points
-            // and allows it to emit lines. It runs for every sprite
+            // and also emit single points of data
             // in the spritelist.
             layout (points) in;
-            layout (line_strip, max_vertices = 2) out;
+            layout (points, max_vertices = 1) out;
 
             // The position input from vertex shader.
             // It's an array because geo shader can take more than one input
             in vec2 v_position[];
+            // This shader outputs all the sprite indices it selected.
+            // NOTE: We use floats here for compatibility since integers are always working
+            out float spriteIndex;
 
             // Helper function converting screen coordinates to texture coordinates.
             // Texture coordinates are normalized (0.0 -> 1.0) were 0,0 is in the
@@ -129,30 +139,28 @@ class SpriteListInteraction(arcade.Window):
                     // If we find non-zero pixel data we have obstacles in our path!
                     if (color != vec4(0.0)) return;
                 }
-
-                // First line segment position (origin)
-                gl_Position = proj.matrix * vec4(origin, 0.0, 1.0);
+                // We simply return the primitive index.
+                // This is a built in counter in geometry shaders
+                // started at 0 incrementing by 1 for every invocation.
+                // It should always match the spritelist index.
+                spriteIndex = float(gl_PrimitiveIDIn);
                 EmitVertex();
-                // Second line segment position (sprite position)
-                gl_Position = proj.matrix * vec4(v_position[0], 0.0, 1.0);
-                EmitVertex();
+                EndPrimitive();
             }
             """,
-            fragment_shader="""
-            #version 330
-            // The fragment shader just runs for every pixel of the line segment.
-
-            // Reference to the pixel we are writing to in the framebuffer
-            out vec4 fragColor;
-
-            void main() {
-                // All the pixels in the line should just be white
-                fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-            }
-            """
         )
         # Configure program with maximum distance
-        self.program_visualize_dist["maxDistance"] = INTERACTION_RADIUS
+        self.program_select_sprites["maxDistance"] = INTERACTION_RADIUS
+
+        # We need a buffer that can capture the output from our transform shader.
+        # We need to make room for len(coins) 32 bit floats (size specified in bytes)
+        # NOTE: Before we do this we need to ensure the internal sprite buffers are complete!
+        self.coins._write_sprite_buffers_to_gpu()
+        self.result_buffer = self.ctx.buffer(reserve=len(self.coins) * 4)
+        # We need a query to count how many sprites the shader gave us.
+        # We do this by making a sampler that counts the number of primitives
+        # (points in this instance) it emitted into the result buffer.
+        self.query = self.ctx.query()
 
         # Lookup texture/framebuffer for walls so we can trace pixels in the shader.
         # It contains a texture attachment with the same size as the window.
@@ -168,15 +176,47 @@ class SpriteListInteraction(arcade.Window):
     def on_draw(self):
         self.clear()
 
+        # We can run our program with this geometry since
+        # the inputs are compatible (it has an "in_position" configured)
+        # We're doing a transform here making the shader write data into the result buffer.
+        # We also run the transform with query active so we can count the number of valid results.
+        # NOTE: This could also happen in on_update
+
+        # As long as we have coins...
+        if len(self.coins) > 0:
+            # Ensure the internal sprite buffers are up tp date
+            self.coins._write_sprite_buffers_to_gpu()
+            # Bind the wall texture to texture channel 0 so we can read it in the shader
+            self.walls_fbo.color_attachments[0].use(0)
+            with self.query:
+                # We already have a geometry instance in the spritelist we can
+                # use to run our shader/gpu program. It only requires that we
+                # use correctly named input name(s). in_pos in this example
+                # what will automatically map in the position buffer to the vertex shader.
+                self.coins._geometry.transform(self.program_select_sprites, self.result_buffer, vertices=len(self.coins))
+
+            # Store the number of primitives/sprites found
+            num_sprites_found = self.query.primitives_generated
+            if num_sprites_found > 0:
+                print(f"We found {num_sprites_found} sprite(s)")
+                # Transfer the the data from the vram into python and decode the values into python objects.
+                # We read num_sprites_found float values from the result buffer and convert those into python floats
+                sprite_indices = struct.unpack(f"{num_sprites_found}f", self.result_buffer.read(size=num_sprites_found * 4))
+                print("Indices found:", sprite_indices)
+                print(
+                    (
+                        f"max(sprite_indices) = {max(sprite_indices)} | "
+                        f"len(self.coins) = {len(self.coins)} | "
+                        f"sprite_indices = {len(sprite_indices)}"
+                    )
+                )
+                # Resolve the list of selected sprites and remove them
+                sprites = [self.coins[int(i)] for i in sprite_indices]
+                for coin in sprites:
+                    coin.remove_from_sprite_lists()
+
         self.walls.draw()
         self.coins.draw()
-        # Bind the wall texture to texture channel 0 so we can read it in the shader
-        self.walls_fbo.color_attachments[0].use(0)
-        # We already have a geometry instance in the spritelist we can
-        # use to run our shader/gpu program. It only requires that we
-        # use correctly named input name(s). in_pos in this example
-        # what will automatically map in the position buffer to the vertex shader.
-        self.coins._geometry.render(self.program_visualize_dist)
         self.player.draw()
 
         # Visualize the interaction radius
@@ -186,7 +226,7 @@ class SpriteListInteraction(arcade.Window):
         # Move the sprite to mouse position
         self.player.position = x, y
         # Update the program with a new origin
-        self.program_visualize_dist["origin"] = x, y
+        self.program_select_sprites["origin"] = x, y
 
 
 SpriteListInteraction().run()
