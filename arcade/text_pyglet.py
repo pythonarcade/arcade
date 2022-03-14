@@ -114,6 +114,7 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
             # but it's actually valid since we only use it when it was
             # previously assigned.
             label.x, label.y = x, y
+            window.view = Mat4()
 
 
 class Text:
