@@ -431,28 +431,22 @@ class Sprite:
 
     def forward(self, speed: float = 1.0):
         """
-        Set a Sprite's movement vector to move forward. Does not actually move the sprite, just
-        sets change_x/change_y. (This allows its use with physics engines.)
-
+        Set a Sprite's position to speed by its angle
         :param speed: speed factor
         """
-        self.change_x = math.sin(self.radians) * speed
-        self.change_y = math.cos(self.radians) * speed
+        self.change_x += math.cos(self.radians) * speed
+        self.change_y += math.sin(self.radians) * speed
 
     def reverse(self, speed: float = 1.0):
         """
-        Set a Sprite's movement vector to move backwards. Does not actually move the sprite, just
-        sets change_x/change_y. (This allows its use with physics engines.)
-
+        Set a new speed, but in reverse.
         :param speed: speed factor
         """
         self.forward(-speed)
 
     def strafe(self, speed: float = 1.0):
         """
-        Set a Sprite's movement vector to move sideways. Does not actually move the sprite, just
-        sets change_x/change_y. (This allows its use with physics engines.)
-
+        Set a sprites position perpendicular to its angle by speed
         :param speed: speed factor
         """
         self.change_x += -math.sin(self.radians) * speed
@@ -463,14 +457,14 @@ class Sprite:
         Rotate the sprite right a certain number of degrees.
         :param theta: change in angle
         """
-        self.angle += theta
+        self.angle -= theta
 
     def turn_left(self, theta: float = 90):
         """
         Rotate the sprite left a certain number of degrees.
         :param theta: change in angle
         """
-        self.angle -= theta
+        self.angle += theta
 
     def stop(self):
         """

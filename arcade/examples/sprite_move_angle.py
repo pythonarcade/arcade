@@ -11,7 +11,7 @@ python -m arcade.examples.sprite_move_angle
 import arcade
 import math
 
-SPRITE_SCALING = 1.0
+SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -34,14 +34,14 @@ class Player(arcade.Sprite):
         self.speed = 0
 
     def update(self):
-        # Rotate the ship
-        self.angle += self.change_angle
-
         # Convert angle in degrees to radians.
         angle_rad = math.radians(self.angle)
 
+        # Rotate the ship
+        self.angle += self.change_angle
+
         # Use math to find our change based on our speed and angle
-        self.center_x += self.speed * math.sin(angle_rad)
+        self.center_x += -self.speed * math.sin(angle_rad)
         self.center_y += self.speed * math.cos(angle_rad)
 
 
@@ -91,13 +91,11 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.player_list.draw()
 
-        # Draw our current angle
-        arcade.draw_text(f"Angle: {self.player_sprite.angle:.1f}", 10, 10, arcade.color.WHITE, 16)
-
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on our sprite lists
+        # Call update on all sprites (The sprites don't do much in this
+        # example though.)
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):
@@ -111,9 +109,9 @@ class MyGame(arcade.Window):
 
         # Rotate left/right
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_angle = -ANGLE_SPEED
-        elif key == arcade.key.RIGHT:
             self.player_sprite.change_angle = ANGLE_SPEED
+        elif key == arcade.key.RIGHT:
+            self.player_sprite.change_angle = -ANGLE_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
