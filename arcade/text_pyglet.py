@@ -94,26 +94,21 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
 
         # execute view matrix magic to rotate cleanly
         if rotation:
-            # original_view = window.view
-
             angle_radians = math.radians(rotation)
             x = label.x
             y = label.y
-            label.x = 0
-            label.y = 0
+            # Create a matrix translating the label to 0,0
+            # then rotating it and then move it back
             r_view = Mat4.from_rotation(angle_radians, (0, 0, 1))
-            t_view = Mat4.from_translation((x, y, 0))
-            final_view = r_view @ t_view
+            t1_view = Mat4.from_translation((-x, -y, 0))
+            t2_view = Mat4.from_translation((x, y, 0))
+            final_view = t1_view @ r_view @ t2_view
             window.view = final_view
 
         label.draw()
 
-        # restore original position if we used view matrix magic
+        # Reset the view matrix
         if rotation:
-            # linters might warn that this is used before assignment,
-            # but it's actually valid since we only use it when it was
-            # previously assigned.
-            label.x, label.y = x, y
             window.view = Mat4()
 
 
