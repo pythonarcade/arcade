@@ -25,8 +25,8 @@ void main() {
     vec2 hsize_max = vec2(max(v_size[0].x, v_size[0].y)) / 1.5;
     float angle = radians(v_angle[0]);
     mat2 rot = mat2(
-        cos(angle), sin(angle),
-        -sin(angle), cos(angle)
+        cos(angle), -sin(angle),
+        sin(angle), cos(angle)
     );
     // Do viewport culling for sprites.
     // We do this in normalized device coordinates to make it simple
