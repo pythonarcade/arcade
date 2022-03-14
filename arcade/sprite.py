@@ -431,7 +431,10 @@ class Sprite:
 
     def forward(self, speed: float = 1.0):
         """
-        Set a Sprite's position to speed by its angle
+        Adjusts a Sprite's movement vector forward.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
         :param speed: speed factor
         """
         self.change_x += math.cos(self.radians) * speed
@@ -439,14 +442,20 @@ class Sprite:
 
     def reverse(self, speed: float = 1.0):
         """
-        Set a new speed, but in reverse.
+        Adjusts a Sprite's movement vector backwards.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
         :param speed: speed factor
         """
         self.forward(-speed)
 
     def strafe(self, speed: float = 1.0):
         """
-        Set a sprites position perpendicular to its angle by speed
+        Adjusts a Sprite's movement vector sideways.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
         :param speed: speed factor
         """
         self.change_x += -math.sin(self.radians) * speed
