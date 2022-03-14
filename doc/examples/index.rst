@@ -176,10 +176,15 @@ Sprite Player Movement
 
    :ref:`turn_and_move`
 
-.. figure:: thumbs/easing_example.png
+.. figure:: thumbs/easing_example_1.png
    :figwidth: 170px
 
-   :ref:`easing_example`
+   :ref:`easing_example_1`
+
+.. figure:: thumbs/easing_example_2.png
+   :figwidth: 170px
+
+   :ref:`easing_example_2`
 
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -458,13 +463,25 @@ Resizable Window and Fullscreen Games
 
    :ref:`full_screen_example`
 
+.. _section_examples:
+
 Dividing a View Into Sections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/sections.png
+.. figure:: thumbs/sections_demo_1.png
    :figwidth: 170px
 
-   :ref:`sections`
+   :ref:`sections_demo_1`
+
+.. figure:: thumbs/sections_demo_2.png
+   :figwidth: 170px
+
+   :ref:`sections_demo_2`
+
+.. figure:: thumbs/sections_demo_3.png
+   :figwidth: 170px
+
+   :ref:`sections_demo_3`
 
 Graphical User Interface
 ------------------------
@@ -587,6 +604,11 @@ Frame Buffers
    :figwidth: 170px
 
    :ref:`game_of_life_fbo`
+
+.. figure:: thumbs/perspective.png
+   :figwidth: 170px
+
+   :ref:`perspective`
 
 .. _concept_games:
 

@@ -142,6 +142,14 @@ from .easing import linear
 from .easing import smoothstep
 from .easing import ease_in
 from .easing import ease_out
+from .easing import ease_in_out
+from .easing import ease_out_elastic
+from .easing import ease_out_bounce
+from .easing import ease_in_back
+from .easing import ease_out_back
+from .easing import ease_in_sin
+from .easing import ease_out_sin
+from .easing import ease_in_out_sin
 from .easing import easing
 from .easing import ease_angle
 from .easing import ease_angle_update
@@ -463,12 +471,20 @@ __all__ = ['AStarBarrierList',
            'ease_position',
            'easing',
            'ease_in',
+           'ease_in_out',
+           'ease_out_elastic',
+           'ease_out_bounce',
+           'ease_in_back',
+           'ease_out_back',
+           'ease_in_sin',
+           'ease_out_sin',
+           'ease_in_out_sin',
            'ease_out',
            'smoothstep',
            'linear',
            'ease_angle_update',
            'ease_update',
-           'easing_position',
+           'ease_position',
            'earclip',
            'enable_timings',
            'exit',

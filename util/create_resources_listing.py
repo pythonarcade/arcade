@@ -12,7 +12,7 @@ from pathlib import Path
 COLUMNS = 3
 
 
-skip_extensions = ['.glsl', '.md', '.py', '.yml', '.json', '.url', '.txt']
+skip_extensions = ['.glsl', '.md', '.py', '.yml', '.url', '.txt']
 
 
 def skipped_file(path):

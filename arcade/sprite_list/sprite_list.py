@@ -36,6 +36,8 @@ from pyglet.math import (
     Mat3,
 )
 
+from arcade.gl.vertex_array import Geometry
+
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas
 
@@ -370,6 +372,27 @@ class SpriteList:
     def atlas(self) -> "TextureAtlas":
         """Get the texture atlas for this sprite list"""
         return self._atlas
+
+    @property
+    def geometry(self) -> Geometry:
+        """
+        Returns the internal geometry for this spritelist.
+        This can be used to execute custom shaders with the
+        spritelist data.
+
+        One or multiple of the following inputs must be defined in your vertex shader::
+
+            in vec2 in_pos;
+            in float in_angle;
+            in vec2 in_size;
+            in float in_texture;
+            in vec4 in_color;
+
+        """
+        if not self._geometry:
+            raise ValueError("SpriteList is not initialized.")
+
+        return self._geometry
 
     def _next_slot(self) -> int:
         """
@@ -940,8 +963,24 @@ class SpriteList:
         self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
 
+    def write_sprite_buffers_to_gpu(self) -> None:
+        """
+        Ensure buffers are resized and fresh sprite data
+        is written into the internal sprite buffers.
+
+        This is automatically called in :py:meth:`SpriteList.draw`,
+        but there are instances when using custom shaders
+        we need to force this to happen since we might
+        have not called :py:meth:`SpriteList.draw` since the
+        spritelist was modified.
+
+        If you have added, removed, moved or changed ANY
+        sprite property this method will synchronize the
+        data on the gpu side (buffer resizing and writing in new data).
+        """
+        self._write_sprite_buffers_to_gpu()
+
     def _write_sprite_buffers_to_gpu(self):
-        """Create or resize buffers"""
         LOG.debug(
             "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
             id(self),

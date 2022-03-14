@@ -12,7 +12,7 @@ COMPUTE_SHADER = """
 
 layout (local_size_x = 16, local_size_y = 16) in;
 // match the input texture format!
-layout(rgba8, location=0) write-only uniform image2D destTex;
+layout(rgba8, location=0) uniform image2D destTex;
 uniform float time;
 
 void main() {
