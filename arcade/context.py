@@ -3,7 +3,6 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from arcade.gl.compute_shader import ComputeShader
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
