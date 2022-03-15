@@ -24,7 +24,7 @@ class Uniform:
         gl.GL_INT_VEC2: (gl.GLint, gl.glProgramUniform2iv, 2, 1),
         gl.GL_INT_VEC3: (gl.GLint, gl.glProgramUniform3iv, 3, 1),
         gl.GL_INT_VEC4: (gl.GLint, gl.glProgramUniform4iv, 4, 1),
-        gl.GL_BOOL: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_BOOL: (gl.GLint, gl.glProgramUniform1iv, 1, 1),
         gl.GL_BOOL_VEC2: (gl.GLint, gl.glProgramUniform2iv, 2, 1),
         gl.GL_BOOL_VEC3: (gl.GLint, gl.glProgramUniform3iv, 3, 1),
         gl.GL_BOOL_VEC4: (gl.GLint, gl.glProgramUniform4iv, 4, 1),
