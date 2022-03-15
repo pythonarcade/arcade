@@ -24,15 +24,14 @@ class VideoPlayer(arcade.Window):
         # video_width, video_height = self.get_video_size()
         # print((video_width, video_height), self.player.source.duration, self.player.time)
 
-        with self.ctx.pyglet_rendering():
-            self.ctx.disable(self.ctx.BLEND)
-            video_texture = self.player.texture
-            video_texture.blit(
-                0,
-                0,
-                width=self.width,
-                height=self.height,
-            )
+        self.ctx.disable(self.ctx.BLEND)
+        video_texture = self.player.texture
+        video_texture.blit(
+            0,
+            0,
+            width=self.width,
+            height=self.height,
+        )
 
     def on_update(self, delta_time: float):
         pass

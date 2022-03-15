@@ -190,7 +190,7 @@ class ArcadeContext(Context):
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
 
-        self.active_program = None
+        # self.active_program = None
         self.point_size = 1.0
 
     def reset(self) -> None:
@@ -200,7 +200,7 @@ class ArcadeContext(Context):
         """
         self.screen.use(force=True)
         self.bind_window_block()
-        self.active_program = None
+        # self.active_program = None
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
@@ -281,24 +281,6 @@ class ArcadeContext(Context):
 
         self._projection_2d_matrix = value
         self.window.projection = self._projection_2d_matrix
-
-    @contextmanager
-    def pyglet_rendering(self):
-        """Context manager for pyglet rendering.
-        Since arcade and pyglet needs slightly different
-        states we needs some initialization and cleanup.
-
-        Examples::
-
-            with window.ctx.pyglet_rendering():
-                # Draw with pyglet here
-        """
-        try:
-            yield None
-        finally:
-            self.active_program = None
-            # self.enable(self.BLEND, pyglet.gl.GL_SCISSOR_TEST)
-            # self.blend_func = self.BLEND_DEFAULT
 
     def load_program(
         self,

@@ -84,7 +84,7 @@ class ComputeShader:
 
     def use(self):
         gl.glUseProgram(self._glo)
-        self._ctx.active_program = self
+        # self._ctx.active_program = self
 
     def run(self, group_x=1, group_y=1, group_z=1) -> None:
         """
@@ -109,8 +109,8 @@ class ComputeShader:
     def __setitem__(self, key, value):
         """Set a uniform value"""
         # Ensure we are setting the uniform on this program
-        if self._ctx.active_program != self:
-            self.use()
+        # if self._ctx.active_program != self:
+        #     self.use()
 
         try:
             uniform = self._uniforms[key]

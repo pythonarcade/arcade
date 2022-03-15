@@ -841,8 +841,7 @@ class UILabel(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.label.draw()
+        self.label.draw()
 
 
 class UITextArea(UIWidget):
@@ -937,8 +936,7 @@ class UITextArea(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        self.layout.draw()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
@@ -1124,9 +1122,7 @@ class UIInputText(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        self.layout.draw()
 
 
 class UIFlatButton(UIInteractiveWidget):

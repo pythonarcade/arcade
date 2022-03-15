@@ -227,9 +227,10 @@ class Program:
 
     def __setitem__(self, key, value):
         """Set a uniform value"""
+        # NOTE: We don't need this when using glProgramUniform
         # Ensure we are setting the uniform on this program
-        if self._ctx.active_program != self:
-            self.use()
+        # if self._ctx.active_program != self:
+        #     self.use()
 
         try:
             uniform = self._uniforms[key]
@@ -245,9 +246,9 @@ class Program:
         """
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
-        if self._ctx.active_program != self:
-            gl.glUseProgram(self._glo)
-            self._ctx.active_program = self
+        # if self._ctx.active_program != self:
+        gl.glUseProgram(self._glo)
+        # self._ctx.active_program = self
 
     def _setup_out_attributes(self):
         """Set up transform feedback varyings"""
