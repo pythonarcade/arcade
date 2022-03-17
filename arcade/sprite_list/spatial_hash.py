@@ -184,8 +184,9 @@ def get_closest_sprite(
     :param Sprite sprite: Target sprite
     :param SpriteList sprite_list: List to search for closest sprite.
 
-    :return: Closest sprite.
-    :rtype: Sprite
+    :return: A tuple containing the closest sprite and the minimum distance.
+             If the spritelist is empty we return ``None``.
+    :rtype: Optional[Tuple[Sprite, float]]
     """
     if len(sprite_list) == 0:
         return None
