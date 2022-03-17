@@ -2,7 +2,7 @@
 Drawing text with pyglet label
 """
 import math
-from typing import Tuple, Union
+from typing import Any, Tuple, Union
 
 import arcade
 import pyglet
@@ -227,25 +227,35 @@ class Text:
     @property
     def value(self) -> str:
         """
-        Set the current text string to display
+        Get or set the current text string to display.
+
+        THe value assigned will be converted to a string.
         """
         return self._label.text
 
     @value.setter
-    def value(self, value: str):
+    def value(self, value: Any):
+        value = str(value)
+        if self._label.text == value:
+            return
         self._label.text = value
 
     @property
     def text(self) -> str:
         """
-        Set the current text string to display.
+        Get or set the current text string to display.
+
+        THe value assigned will be converted to a string.
 
         This is an alias for :py:attr:`~arcade.Text.value`
         """
         return self._label.text
 
     @text.setter
-    def text(self, value: str):
+    def text(self, value: Any):
+        value = str(value)
+        if self._label.text == value:
+            return
         self._label.text = value
 
     @property
@@ -257,6 +267,8 @@ class Text:
 
     @x.setter
     def x(self, x: float) -> None:
+        if self._label.x == x:
+            return
         self._label.x = x
 
     @property
@@ -268,6 +280,8 @@ class Text:
 
     @y.setter
     def y(self, y: float):
+        if self._label.y == y:
+            return
         self._label.y = y
 
     @property
@@ -457,7 +471,7 @@ class Text:
 
 
 def draw_text(
-    text: str,
+    text: Any,
     start_x: float,
     start_y: float,
     color: Color = arcade.color.WHITE,
@@ -487,7 +501,7 @@ def draw_text(
 
     Example code can be found at :ref:`drawing_text`.
 
-    :param str text: Text to display
+    :param Any text: Text to display. The object passed in will be converted to a string
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
@@ -636,7 +650,7 @@ def draw_text(
         adjusted_font = _attempt_font_name_resolution(font_name)
 
         label = pyglet.text.Label(
-            text=text,
+            text=str(text),
             x=start_x,
             y=start_y,
             font_name=adjusted_font,
@@ -652,11 +666,15 @@ def draw_text(
         )
         cache[key] = label
 
-    # These updates are relatively cheap
-    label.text = text
-    label.x = start_x
-    label.y = start_y
-    label.color = color
+    # These updates are quite expensive
+    if label.text != text:
+        label.text = str(text)
+    if label.x != start_x:
+        label.x = start_x
+    if label.y != start_y:
+        label.y = start_y
+    if label.color != color:
+        label.color = color
 
     _draw_label_with_rotation(label, rotation)
 
