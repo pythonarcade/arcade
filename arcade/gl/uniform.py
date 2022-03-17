@@ -15,15 +15,23 @@ class Uniform:
 
     _uniform_getters = {
         gl.GLint: gl.glGetUniformiv,
+        gl.GLuint: gl.glGetUniformuiv,
         gl.GLfloat: gl.glGetUniformfv,
     }
 
     _uniform_setters = {
         # uniform type: (gl_type, setter, length, count)
+        # integers
         gl.GL_INT: (gl.GLint, gl.glProgramUniform1iv, 1, 1),
         gl.GL_INT_VEC2: (gl.GLint, gl.glProgramUniform2iv, 2, 1),
         gl.GL_INT_VEC3: (gl.GLint, gl.glProgramUniform3iv, 3, 1),
         gl.GL_INT_VEC4: (gl.GLint, gl.glProgramUniform4iv, 4, 1),
+        # Unsigned integers
+        gl.GL_UNSIGNED_INT: (gl.GLuint, gl.glProgramUniform1uiv, 1, 1),
+        gl.GL_UNSIGNED_INT_VEC2: (gl.GLuint, gl.glProgramUniform2uiv, 2, 1),
+        gl.GL_UNSIGNED_INT_VEC3: (gl.GLuint, gl.glProgramUniform3uiv, 3, 1),
+        gl.GL_UNSIGNED_INT_VEC4: (gl.GLuint, gl.glProgramUniform4uiv, 4, 1),
+        # Bools
         gl.GL_BOOL: (gl.GLint, gl.glProgramUniform1iv, 1, 1),
         gl.GL_BOOL_VEC2: (gl.GLint, gl.glProgramUniform2iv, 2, 1),
         gl.GL_BOOL_VEC3: (gl.GLint, gl.glProgramUniform3iv, 3, 1),

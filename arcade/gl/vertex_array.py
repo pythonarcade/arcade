@@ -225,6 +225,44 @@ class VertexArray:
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
+    def render_indirect(self, buffer: Buffer, mode: gl.GLuint, count, first, stride):
+        """
+        Render the VertexArray to the framebuffer using indirect rendering.
+
+        .. Warning:: This requires OpenGL 4.3
+
+        :param Buffer buffer: The buffer containing one or multiple draw parameters
+        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param int count: The number if indirect draw calls to run
+        :param int first: The first indirect draw call to start on
+        :param int stride: The byte stride of the draw command buffer.
+                           Keep the default (0) if the buffer is tightly packed.
+        """
+        # The default buffer stride for array and indexed
+        _stride = 20 if self._ibo is not None else 16
+        stride = stride or _stride
+        if stride % 4 != 0 or stride < 0:
+            raise ValueError(f"stride must be positive integer in multiples of 4, not {stride}.")
+
+        # The maximum number of draw calls in the buffer
+        max_commands = buffer.size // stride
+        if count < 0:
+            count = max_commands
+        elif (first + count) > max_commands:
+            raise ValueError(
+                "Attempt to issue rendering commands outside the buffer. "
+                f"first = {first}, count = {count} is reaching past "
+                f"the buffer end. The buffer have room for {max_commands} "
+                f"draw commands. byte size {buffer.size}, stride {stride}." 
+            )
+
+        gl.glBindVertexArray(self.glo)
+        gl.glBindBuffer(gl.GL_DRAW_INDIRECT_BUFFER, buffer._glo)
+        if self._ibo:
+            gl.glMultiDrawElementsIndirect(mode, self._index_element_type, first * stride, count, stride)
+        else:
+            gl.glMultiDrawArraysIndirect(mode, first * stride, count, stride)
+
     def transform(
         self,
         buffer: Buffer,
@@ -401,10 +439,14 @@ class Geometry:
     ) -> None:
         """Render the geometry with a specific program.
 
+        The geometry object will know how many vertices your buffers contains
+        so overriding vertices is not needed unless you have a special case
+        or have resized the buffers after the geometry instance was created.
+
         :param Program program: The Program to render with
         :param gl.GLenum mode: Override what primitive mode should be used
         :param int first: Offset start vertex
-        :param int vertices: Number of vertices to render
+        :param int vertices: Override the number of vertices to render
         :param int instances: Number of instances to render
         """
         program.use()
@@ -440,6 +482,59 @@ class Geometry:
             vertices=vertices or self._num_vertices,
             instances=instances,
         )
+
+    def render_indirect(
+        self,
+        program: Program,
+        buffer: Buffer,
+        *,
+        mode: gl.GLuint = None,
+        count: int = -1,
+        first: int = 0,
+        stride: int = 0,
+    ):
+        """
+        Render the VertexArray to the framebuffer using indirect rendering.
+
+        .. Warning:: This requires OpenGL 4.3
+
+        The following structs are expected for the buffer::
+
+            // Array rendering - no index buffer (16 bytes)
+            typedef  struct {
+                uint  count;
+                uint  instanceCount;
+                uint  first;
+                uint  baseInstance;
+            } DrawArraysIndirectCommand;
+
+            // Index rendering - with index buffer 20 bytes
+            typedef  struct {
+                GLuint  count;
+                GLuint  instanceCount;
+                GLuint  firstIndex;
+                GLuint  baseVertex;
+                GLuint  baseInstance;
+            } DrawElementsIndirectCommand;
+
+        The ``stride`` is the byte stride between every redering command
+        in the buffer. By default we assume this is 16 for array rendering
+        (no index buffer) and 20 for indexed rendering (with index buffer)
+
+        :param Program program: The program to execute
+        :param Buffer buffer: The buffer containing one or multiple draw parameters
+        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param int count: The number if indirect draw calls to run.
+                          If omitted all draw commands in the buffer will be executed.
+        :param int first: The first indirect draw call to start on
+        :param int stride: The byte stride of the draw command buffer.
+                           Keep the default (0) if the buffer is tightly packed.
+        """
+        program.use()
+        vao = self.instance(program)
+
+        mode = self._mode if mode is None else mode
+        vao.render_indirect(buffer, mode, count, first, stride)
 
     def transform(
         self,
@@ -478,7 +573,13 @@ class Geometry:
 
     def flush(self) -> None:
         """
-        Flush all the internally generated VertexArrays
+        Flush all the internally generated VertexArrays.
+
+        The Geometry instance will store a VertexArray
+        for every unique set of input attributes it
+        stumbles over when redering and transform calls
+        are issued. This data is usually pretty light weight
+        and usually don't need flushing.
         """
         self._vao_cache = {}
 

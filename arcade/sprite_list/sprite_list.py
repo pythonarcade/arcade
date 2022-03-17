@@ -35,6 +35,7 @@ from arcade.context import ArcadeContext
 from pyglet.math import (
     Mat3,
 )
+from arcade.gl.buffer import Buffer
 
 from arcade.gl.vertex_array import Geometry
 
@@ -376,7 +377,7 @@ class SpriteList:
     @property
     def geometry(self) -> Geometry:
         """
-        Returns the internal geometry for this spritelist.
+        Returns the internal OpenGL geometry for this spritelist.
         This can be used to execute custom shaders with the
         spritelist data.
 
@@ -387,12 +388,118 @@ class SpriteList:
             in vec2 in_size;
             in float in_texture;
             in vec4 in_color;
-
         """
         if not self._geometry:
             raise ValueError("SpriteList is not initialized.")
 
         return self._geometry
+
+    @property
+    def buffer_positions(self) -> Buffer:
+        """
+        Get the internal OpenGL position buffer for this spritelist.
+
+        The buffer contains 32 bit float values with
+        x and y positions. These are the center postions
+        for each sprite.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_pos``.
+        """
+        if self._sprite_pos_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_pos_buf
+
+    @property
+    def buffer_sizes(self) -> Buffer:
+        """
+        Get the internal OpenGL size buffer for this spritelist.
+
+        The buffer contains 32 bit float width and height values.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_size``.
+        """        
+        if self._sprite_size_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_size_buf
+
+    @property
+    def buffer_angles(self) -> Buffer:
+        """
+        Get the internal OpenGL angle buffer for the spritelist.
+
+        This buffer contains a series of 32 bit floats
+        representing the rotation angle for each sprite in degrees.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_angle``.
+        """
+        if self._sprite_angle_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_angle_buf
+
+    @property
+    def buffer_colors(self) -> Buffer:
+        """
+        Get the internal OpenGL color buffer for this spritelist.
+
+        This buffer contains a series of 32 bit floats representing
+        the RGBA color for each sprite. 4 x floats = RGBA.
+
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_color``.
+        """
+        if self._sprite_color_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_color_buf
+
+    @property
+    def buffer_textures(self) -> Buffer:
+        """
+        Get the internal openGL texture id buffer for the spritelist.
+
+        This buffer contains a series of single 32 bit floats referencing
+        a texture ID. This ID references a texture in the texture
+        atlas assigned to this spritelist. The ID is used to look up
+        texture coordinates in a 32bit floating point texture the
+        texter atlas provides. This system makes sure we can resize
+        and rebuild a texture atlas without having to rebuild every
+        single spritelist.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_texture``.
+
+        Note that it should ideally an unsigned integer, but due to
+        compatibility we store them as 32 bit floats. We cast them
+        to integers in the shader.
+        """
+        if self._sprite_texture_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_texture_buf
+
+    @property
+    def buffer_indices(self) -> Buffer:
+        """
+        Get the internal index buffer for this spritelist.
+
+        The data in the other buffers are not in the correct order
+        matching ``spritelist[i]``. The index buffer has to be
+        used used to resolve the right order. It simply contains
+        a series of integers referencing locations in the other buffers.
+
+        Also note that the length of this buffer might be bigger than
+        the number of sprites. Rely on ``len(spritelist)`` for the
+        correct length.
+
+        This index buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance and will be automatically be applied the the input buffers
+        when rendering or transforming.
+        """
+        if self._sprite_index_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_index_buf
 
     def _next_slot(self) -> int:
         """

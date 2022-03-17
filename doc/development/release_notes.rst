@@ -7,10 +7,19 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.6.11
+2.6.12
 ------
 
 *Unreleased*
+
+* Documentation
+
+  * Work on :ref:`shader_toy_tutorial`.
+
+2.6.11
+------
+
+*Released 2022-Mar-17*
 
 * Sections - Add support to divide window into sections.
   (Thanks `janscas <https://github.com/janscas>`_ for the contribution.)
@@ -52,10 +61,40 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 * Misc:
 
   * Update :class:`aracde.Sprite` to use decorators to declare properties instead of the older method.
-  * ``arcade.gl.Geometry.transform`` no longer takes a mode parameter.
   * `#1095 <https://github.com/pythonarcade/arcade/issues/1095>`_,
     Improvements to :class:`arcade.Text` and its documentation.
+    We can now also get the pixel size of a Text contents though ``content_width``,
+    ``content_height`` and ``content_size``.
   * Force GDI text on windows until direct write is more mature.
+  * Optimized text rendering and text rotation
+  * :py:func:`arcade.draw_text` and :py:class:`arcade.Text` objects
+    now accepts any python object as text and converts it into
+    a string internally if needed.
+  * :py:class:`~arcade.SpriteList` now exposes several new members
+    that used to be private. These are lower level members related
+    to the underlying geometry of the spritelist and can be used
+    by custom shaders to do interesting things blazingly fast.
+    SpriteList interaction example with shaders can be found in the
+    experimental directory.
+    Members include :py:meth:`~arcade.SpriteList.write_sprite_buffers_to_gpu`,
+    :py:attr:`~arcade.SpriteList.geometry`,
+    :py:attr:`~arcade.SpriteList.buffer_positions`,
+    :py:attr:`~arcade.SpriteList.buffer_sizes`,
+    :py:attr:`~arcade.SpriteList.buffer_textures`,
+    :py:attr:`~arcade.SpriteList.buffer_colors`,
+    :py:attr:`~arcade.SpriteList.buffer_angles` and
+    :py:attr:`~arcade.SpriteList.buffer_indices`
+ 
+* OpenGL:
+
+  * Added support for indirect rendering. This is an OpenGL 4.3 feature.
+    It makes us able to render multiple meshes in the the same draw call
+    providing significant speed increases in some use cases.
+    See :py:meth:`arcade.gl.Geometry.render_indirect` and examples
+    in the experimental directory.
+  * Added support for unsigned integer uniform types
+  * ``arcade.gl.Geometry.transform`` no longer takes a mode parameter.
+
 
 Special thanks to
 `einarf <https://github.com/einarf>`_,
