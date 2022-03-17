@@ -47,22 +47,32 @@ class RenderIndirect(arcade.Window):
         # Query object to measure the rendering calls
         self.query = self.ctx.query()
 
+        # Generate:
+        # geometry: Triangles for lots of squares
+        # indices: Optional indices for an index buffer
+        # array_draw_commands: List of draw commands for rendering each individual square (without index buffer)
+        # indexed_draw_commands: List of draw commands for rendering each individual square (with index buffer)
         geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(self.num_objects)
 
+        # Crate OpenGL buffers of the data
         self.draw_command_array_buffer = self.ctx.buffer(data=array('I', array_draw_commands))
         self.draw_command_indexed_buffer = self.ctx.buffer(data=array('I', indexed_draw_commands))
         self.vbo = self.ctx.buffer(data=array('f', geometry))
         self.ibo = self.ctx.buffer(data=array('i', indices))
 
+        # Our geometry without index buffer
         self.geometry_array = self.ctx.geometry(
             [BufferDescription(self.vbo, "2f 4f", ("in_pos", "in_color"))],
             mode=self.ctx.TRIANGLES,
         )
+        # Our geometry with index buffer
         self.geometry_indexed = self.ctx.geometry(
             [BufferDescription(self.vbo, "2f 4f", ("in_pos", "in_color"))],
             index_buffer=self.ibo,
             mode=self.ctx.TRIANGLES,
         )
+
+        # Simple program rendering colored geometry
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330
