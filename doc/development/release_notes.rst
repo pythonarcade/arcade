@@ -7,6 +7,15 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.12
+------
+
+*Unreleased*
+
+* Documentation
+
+  * Work on :ref:`shader_toy_tutorial`.
+
 2.6.11
 ------
 

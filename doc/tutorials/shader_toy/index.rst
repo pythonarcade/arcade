@@ -46,7 +46,8 @@ Next, let's create a simple first GLSL program. Our program will:
 * Normalize the coordinates. Instead of 0 to 1024, we'll go 0.0 to 1.0. This is standard
   practice, and allows us to work independently of resolution.
   Resolution is already stored for us in a standardized variable named ``iResolution``.
-* Next, we'll use a white color as default.
+* Next, we'll use a white color as default. Colors are four floating point RGBA values, ranging
+  from 0.0 to 1.0. To start with, we'll set just RGB and use 1.0 for alpha.
 * If we are greater that 0.2 for our coordinate (20% of screen size) we'll use black instead.
 * Set our output color, standardized with the variable name ``fracColor``.
 
@@ -80,37 +81,111 @@ Other default variables you can use:
 Step 3: Move origin to center of screen, adjust for aspect
 ----------------------------------------------------------
 
+Next up, we'd like to center our circle, and adjust for the
+aspect ratio. This will give us a (0, 0) in the middle of the screen
+and a perfect circle.
+
 .. literalinclude:: circle_2.glsl
     :caption: Center the origin
     :language: glsl
     :linenos:
+    :emphasize-lines: 6-9
 
 .. image:: circle_2.png
    :width: 60%
 
-.. note:: To Be Done...
+Step 4: Add a fade effect
+-------------------------
 
-    The rest of the is TBD
+We can take colors, like our white (1.0, 1.0, 1.0) and adjust their
+intensity by multiplying them times a float. Multiplying white times
+0.5 will give us gray (0.5, 0.5, 0.5).
 
+We can use this to create a fade effect around our circle.
+The inverse of the distance :math:`\frac{1}{d}` gives us a good curve.
+However the numbers are too large to adjust our white color. We can solve
+this by scaling it down. Run this, and adjust the scale value to see how
+it changes.
 
-Glow
-----
-
-.. literalinclude:: glow.glsl
-    :caption: GLSL code for creating a shader.
+.. literalinclude:: circle_3.glsl
+    :caption: Add fade effect
     :language: glsl
     :linenos:
+    :emphasize-lines: 11-18
+
+.. image:: circle_3.png
+   :width: 60%
+
+Step 5: Adjust how fast we fade
+-------------------------------
+
+We can use an exponent to adjust how steep or shallow that curve is.
+If we use 1.0 it will be the same, 0.5 will cause it to fade out slower, 1.5
+will fade faster.
+
+We can also change our color to orange.
+
+.. literalinclude:: circle_4.glsl
+    :caption: Adjusts fade speed
+    :language: glsl
+    :linenos:
+    :emphasize-lines: 15-16, 18-19
+
+.. image:: circle_4.png
+   :width: 60%
+
+Step 6: Tone adjust
+-------------------
+
+Once we add color, the glow looks a bit off.
+We can do "tone mapping" with a bit of math if you like the
+look better.
+
+.. literalinclude:: circle_5.glsl
+    :caption: Adjusts fade speed
+    :language: glsl
+    :linenos:
+    :emphasize-lines: 21-22
+
+.. image:: circle_5.png
+   :width: 60%
+
+Step 7: Positioning the glow
+----------------------------
+
+What if we want to position the glow at a certain spot? Send an x, y to
+center on? What if we want to control the color of the glow too?
+
+We can send data to our shader using *uniforms*. Those can easily be set in our
+Python program:
+
+.. literalinclude:: shadertoy_demo_3.py
+    :caption: Run a shader
+    :linenos:
+    :emphasize-lines: 19-21
+
+Then we can use those uniforms in our shader:
+
+.. literalinclude:: circle_6.glsl
+    :caption: Adjusts fade speed
+    :language: glsl
+    :linenos:
+    :emphasize-lines: 1-2, 8, 11, 23
+
+.. image:: circle_6.png
+   :width: 60%
 
 Other examples
 --------------
 
-This short ShaderToy demo loads a GLSL file and displays it:
+Here's another Python program that loads a GLSL file and displays it:
 
 .. literalinclude:: shadertoy_demo.py
     :caption: Shader Toy Demo
     :linenos:
 
-You can click on the caption below the example shaders here to see the source
+You can use this demo with any of the sample code below.
+Click on the caption below the example shaders here to see the source
 code for the shader.
 
 Some other sample shaders:
@@ -130,11 +205,10 @@ Some other sample shaders:
 
    :ref:`fractal_pyramid`
 
-Writing shaders is beyond the scope of this tutorial. Unfortunately,
-I haven't found one comprehensive tutorial on how to write a shader. There
-are several smaller tutorials out there that are good.
+Additional learning
+-------------------
 
-Here is one learn-by-example tutorial:
+Here is a decent learn-by-example tutorial for making shaders:
 
 https://www.shadertoy.com/view/Md23DV
 
