@@ -51,7 +51,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Misc:
 
-  * Update :class:`aracde.Sprite` to use decorators to declare properties instead of the older method.
+  * Update :class:`arcade.Sprite` to use decorators to declare properties instead of the older method.
   * `#1095 <https://github.com/pythonarcade/arcade/issues/1095>`_,
     Improvements to :class:`arcade.Text` and its documentation.
     We can now also get the pixel size of a Text contents though ``content_width``,
