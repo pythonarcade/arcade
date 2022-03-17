@@ -134,15 +134,15 @@ We can also change our color to orange.
 .. image:: circle_4.png
    :width: 60%
 
-Step 6: Tone adjust
--------------------
+Step 6: Tone mapping
+--------------------
 
 Once we add color, the glow looks a bit off.
 We can do "tone mapping" with a bit of math if you like the
 look better.
 
 .. literalinclude:: circle_5.glsl
-    :caption: Adjusts fade speed
+    :caption: Tone mapping
     :language: glsl
     :linenos:
     :emphasize-lines: 21-22
@@ -167,7 +167,7 @@ Python program:
 Then we can use those uniforms in our shader:
 
 .. literalinclude:: circle_6.glsl
-    :caption: Adjusts fade speed
+    :caption: Glow follows mouse, and color can be changed.
     :language: glsl
     :linenos:
     :emphasize-lines: 1-2, 8, 11, 23
