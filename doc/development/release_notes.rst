@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.11
 ------
 
-*Unreleased*
+*Released 2022-Mar-17*
 
 * Sections - Add support to divide window into sections.
   (Thanks `janscas <https://github.com/janscas>`_ for the contribution.)
