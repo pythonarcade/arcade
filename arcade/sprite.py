@@ -110,8 +110,8 @@ class Sprite:
 
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
-        :angle: Rotation angle in degrees.
-        :radians: Rotation angle in radians.
+        :angle: Rotation angle in degrees. Sprites rotate counter-clock-wise.
+        :radians: Rotation angle in radians. Sprites rotate counter-clock-wise.
         :bottom: Set/query the sprite location by using the bottom coordinate. \
         This will be the 'y' of the bottom of the sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
@@ -477,7 +477,7 @@ class Sprite:
 
     def stop(self):
         """
-        Stop the Sprite's motion
+        Stop the Sprite's motion.
         """
         self.change_x = 0
         self.change_y = 0
