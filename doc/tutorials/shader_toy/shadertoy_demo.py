@@ -11,15 +11,16 @@ class MyGame(arcade.Window):
         # Keep track of total run-time
         self.time = 0.0
 
-        # Read in a GLSL program and create a shadertoy out of it
+        # File name of GLSL code
         # file_name = "fractal_pyramid.glsl"
         # file_name = "cyber_fuji_2020.glsl"
         file_name = "earth_planet_sky.glsl"
         # file_name = "flame.glsl"
         # file_name = "star_nest.glsl"
-        file = open(file_name)
-        shader_sourcecode = file.read()
-        self.shadertoy = Shadertoy(size=self.get_size(), main_source=shader_sourcecode)
+
+        # Create a shader from it
+        self.shadertoy = Shadertoy(size=self.get_size(),
+                                   main_source=open(file_name).read())
 
     def on_draw(self):
         self.clear()

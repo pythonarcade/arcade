@@ -8,12 +8,10 @@ class MyGame(arcade.Window):
         # Call the parent constructor
         super().__init__(width=1920, height=1080)
 
-        # Read a GLSL program into a string
-        file = open("circle_5.glsl")
-        shader_sourcecode = file.read()
-        # Create a shader from it
+        # Load a file and create a shader from it
+        file_name = "circle_1.glsl"
         self.shadertoy = Shadertoy(size=self.get_size(),
-                                   main_source=shader_sourcecode)
+                                   main_source=open(file_name).read())
 
     def on_draw(self):
         # Run the GLSL code
