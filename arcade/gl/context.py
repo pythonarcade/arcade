@@ -348,22 +348,36 @@ class Context:
     @contextmanager
     def enabled(self, *flags):
         """
-        Temporarily change enabled flags::
+        Temporarily change enabled flags.
+
+        Flags that was enabled initially will stay enabled.
+        Only new enabled flags will be reversed when exiting
+        the context.
+
+        Example::
 
             with ctx.enabled(ctx.BLEND, ctx.CULL_FACE):
                 # Render something
         """
-        old_flags = self._flags
+        flags = set(flags)
+        new_flags = flags - self._flags
+
         self.enable(*flags)
         try:
             yield
         finally:
-            self.enable(*old_flags)
+            self.disable(*new_flags)
 
     @contextmanager
     def enabled_only(self, *flags):
         """
-        Temporarily change enabled flags::
+        Temporarily change enabled flags.
+
+        Only the supplied flags with be enabled in
+        in the context. When exiting the context
+        the old flags will be restored.
+
+        Example::
 
             with ctx.enabled_only(ctx.BLEND, ctx.CULL_FACE):
                 # Render something
