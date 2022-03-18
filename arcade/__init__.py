@@ -328,7 +328,6 @@ from arcade import experimental
 from .text_pyglet import (
     draw_text,
     load_font,
-    create_text,
     Text,
 )
 from .text_pillow import (

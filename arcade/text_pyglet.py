@@ -684,9 +684,3 @@ def draw_text(
         label.color = color
 
     _draw_label_with_rotation(label, rotation)
-
-
-# TODO: maybe remove, as this is invalid
-def create_text(*args, **kwargs):
-    """Legacy stub, returns a text object."""
-    return Text("Hello")
