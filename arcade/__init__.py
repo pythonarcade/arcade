@@ -53,6 +53,10 @@ else:
 # noinspection PyPep8
 import pyglet
 
+# Not sure if this is generic enough
+if not os.environ.get('DISPLAY'):
+    pyglet.options["headless"] = True
+
 # Disable shadow windows until issues with intel GPUs
 # on Windows and elsewhere are better understood.
 # Originally, this only disabled them for macs where
@@ -240,8 +244,9 @@ from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
 from .isometric import screen_to_isometric_grid
 
-from .joysticks import get_game_controllers
-from .joysticks import get_joysticks
+if not pyglet.options["headless"]:
+    from .joysticks import get_game_controllers
+    from .joysticks import get_joysticks
 
 from .emitter import EmitBurst
 from .emitter import EmitController

@@ -8,6 +8,7 @@ import time
 from typing import Tuple, Optional
 
 import pyglet
+
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
 
@@ -165,9 +166,15 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
+            
             self.keyboard = pyglet.window.key.KeyStateHandler()
-            self.mouse = pyglet.window.mouse.MouseStateHandler()
-            self.push_handlers(self.keyboard, self.mouse)
+            
+            if pyglet.options["headless"]:
+                self.push_handlers(self.keyboard)
+                
+            else:
+                self.mouse = pyglet.window.mouse.MouseStateHandler()
+                self.push_handlers(self.keyboard, self.mouse)
         else:
             self.keyboard = None
             self.mouse = None
