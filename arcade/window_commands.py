@@ -170,12 +170,16 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     :param Number top: Top (largest) y value.
     """
     window = get_window()
+    # Get the active framebuffer
     fbo = window.ctx.fbo
-    # If we are dealing with window framebuffer we need to query window size
-    # through the window itself and not the default framebuffer
+    # If the framebuffer is the default one (aka. window framebuffer)
+    # we can't trust its size and need to get that from the window.
+    # This is because the default framebuffer is only introspected
+    # during context creation and it doesn't update size internally
+    # when the window is resizing.
     if fbo.is_default:
         fbo.viewport = 0, 0, window.width, window.height
-    # otherwise it's an offscreen framebuffer and we can trust the size
+    # Otherwise it's an offscreen framebuffer and we can trust the size
     else:
         fbo.viewport = 0, 0, *fbo.size
 
