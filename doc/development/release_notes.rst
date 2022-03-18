@@ -16,6 +16,15 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Work on :ref:`shader_toy_tutorial`.
 
+* Misc:
+
+  * Added performance warning for :py:func:`arcade.draw_text`.
+    Using :py:class:`arcade.Text` is a lot faster. We have
+    also promoted the use of text objects in examples.
+  * Removed the deprecated ``arcade.create_text`` function
+  * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
+    reverts to the original context flags
+
 2.6.11
 ------
 
