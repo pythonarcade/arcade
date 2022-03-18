@@ -489,6 +489,13 @@ def draw_text(
     """
     A simple way for beginners to draw text.
 
+    .. warning:: Use :py:class:`arcade.Text` objects instead.
+
+        This method of drawing text is very slow
+        and might be removed in the near future.
+        Text objects can be 10-100 times faster
+        depending on the use case.
+
     .. warning:: Cameras affect text drawing!
 
         If you want to draw a custom GUI that doesn't move with the
