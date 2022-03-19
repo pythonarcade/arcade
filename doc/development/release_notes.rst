@@ -25,6 +25,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
     reverts to the original context flags
   * Support uniform blocks in compute shaders
+  * :py:class:`arcade.gl.Buffer` is guaranteed to contain
+    zero byte values on creation.
 
 2.6.11
 ------
