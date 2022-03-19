@@ -22,6 +22,15 @@ https://www.shadertoy.com/
 Arcade includes additional code making it easier to run these ShaderToy shaders
 in an Arcade program. This tutorial helps you get started.
 
+Slides
+------
+
+This tutorial is schedued to be presented at 2022 PyCon US. Here are the slides for that presentation:
+
+.. raw:: html
+
+    <iframe src="https://slides.com/paulcraven/using-the-gpu/embed" width="576" height="420" title="Using the GPU" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
 Step 1: Open a window
 ---------------------
 
