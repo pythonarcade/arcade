@@ -18,6 +18,12 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Misc:
 
+  * :py:class:`arcade.Text` not has a ``left``, ``right`` ``top``
+    and ``bottom`` attribute for getting the pixel locations
+    of the content borders.
+  * Added :py:meth:`arcade.Text.draw_debug` that will visualize
+    the content area of the text and the anchor point. This
+    can be useful to understand the text anchoring.
   * Added performance warning for :py:func:`arcade.draw_text`.
     Using :py:class:`arcade.Text` is a lot faster. We have
     also promoted the use of text objects in examples.
