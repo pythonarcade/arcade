@@ -172,7 +172,7 @@ class Context:
         self.active_program: Optional[Program] = None
         # Tracking active framebuffer. On context creation the window is the default render target
         self.active_framebuffer: Framebuffer = self._screen
-        self.stats: ContextStats = ContextStats(warn_threshold=1000)
+        self._stats: ContextStats = ContextStats(warn_threshold=1000)
 
         # Hardcoded states
         # This should always be enabled
@@ -236,6 +236,14 @@ class Context:
             NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
         """
         return self._limits
+
+    @property
+    def stats(self) -> "ContextStats":
+        """
+        Get the stats instance containing runtime information
+        about creation and destruction of OpenGL objects.
+        """
+        return self._stats
 
     @property
     def window(self) -> Window:
@@ -817,6 +825,9 @@ class Context:
 
 
 class ContextStats:
+    """
+    Runtime allocation statistics of OpenGL objects.
+    """
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
         # (created, freed)
@@ -829,7 +840,12 @@ class ContextStats:
         self.compute_shader = (0, 0)
         self.query = (0, 0)
 
-    def incr(self, key):
+    def incr(self, key: str) -> None:
+        """
+        Increments a counter.
+
+        :param str key: The attribute name / counter to increment.
+        """
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
         if created % self.warn_threshold == 0 and created > 0:
@@ -843,6 +859,11 @@ class ContextStats:
             )
 
     def decr(self, key):
+        """
+        Decrement a counter.
+
+        :param str key: The attribute name / counter to decrement.
+        """
         created, freed = getattr(self, key)
         setattr(self, key, (created, freed + 1))
 
