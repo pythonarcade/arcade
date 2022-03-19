@@ -212,7 +212,7 @@ class Window(pyglet.window.Window):
     def background_color(self):
         """Get or set the background color for this window.
 
-        If the background color is an ``RGB`` value instead of ``RGBA```
+        If the background color is an ``RGB`` value instead of ``RGBA``
         we assume alpha value 255.
 
         :type: Color
