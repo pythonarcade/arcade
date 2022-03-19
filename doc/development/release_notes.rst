@@ -24,6 +24,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Removed the deprecated ``arcade.create_text`` function
   * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
     reverts to the original context flags
+  * Support uniform blocks in compute shaders
 
 2.6.11
 ------

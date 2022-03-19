@@ -18,7 +18,6 @@ class ComputeShader:
         self._ctx = ctx
         self._source = glsl_source
         self._uniforms: Dict[str, Uniform] = dict()
-        self._uniform_blocks: Dict[str, UniformBlock] = dict()
 
         from arcade.gl import ShaderException
 
@@ -197,3 +196,25 @@ class ComputeShader:
             u_name,  # string buffer for storing the name
         )
         return u_name.value.decode(), u_type.value, u_size.value
+
+    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+        """Query active uniform block by retrieving the name and index and size"""
+        # Query name
+        u_size = gl.GLint()
+        buf_size = 192  # max uniform character length
+        u_name = create_string_buffer(buf_size)
+        gl.glGetActiveUniformBlockName(
+            self._glo,  # program to query
+            location,  # location to query
+            256,  # max size if the name
+            u_size,  # length
+            u_name,
+        )
+        # Query index
+        index = gl.glGetUniformBlockIndex(self._glo, u_name)
+        # Query size
+        b_size = gl.GLint()
+        gl.glGetActiveUniformBlockiv(
+            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
+        )
+        return index, b_size.value, u_name.value.decode()
