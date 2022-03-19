@@ -27,6 +27,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Support uniform blocks in compute shaders
   * :py:class:`arcade.gl.Buffer` is guaranteed to contain
     zero byte values on creation.
+  * :py:meth:`arcade.gl.Buffer.read` now reads the correct
+    number of bytes when only ``offset`` parameter is passed.
 
 2.6.11
 ------
