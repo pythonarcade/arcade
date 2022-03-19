@@ -29,6 +29,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     zero byte values on creation.
   * :py:meth:`arcade.gl.Buffer.read` now reads the correct
     number of bytes when only ``offset`` parameter is passed.
+  * Expose :py:class:`~arcade.gl.context.Limits` in :py:attr:`arcade.gl.Context.info`
+    and document all limit values
 
 2.6.11
 ------
