@@ -150,7 +150,7 @@ class SpriteListInteraction(arcade.Window):
         self.program_select_sprites["maxDistance"] = INTERACTION_RADIUS
 
         # NOTE: Before we do this we need to ensure the internal sprite buffers are complete!
-        self.coins._write_sprite_buffers_to_gpu()
+        self.coins.write_sprite_buffers_to_gpu()
         # We need a buffer that can capture the output from our transform shader.
         # We need to make room for len(coins) 32 bit floats (4 bytes each. size specified in bytes)
         self.result_buffer = self.ctx.buffer(reserve=len(self.coins) * 4)
@@ -176,7 +176,7 @@ class SpriteListInteraction(arcade.Window):
         # As long as we have coins...
         if len(self.coins) > 0:
             # Ensure the internal sprite buffers are up to date
-            self.coins._write_sprite_buffers_to_gpu()
+            self.coins.write_sprite_buffers_to_gpu()
             # Bind the wall texture to texture channel 0 so we can read it in the shader
             self.walls_fbo.color_attachments[0].use(0)
             with self.query:
@@ -184,7 +184,7 @@ class SpriteListInteraction(arcade.Window):
                 # use to run our shader/gpu program. It only requires that we
                 # use correctly named input name(s). in_pos in this example
                 # what will automatically map in the position buffer to the vertex shader.
-                self.coins._geometry.transform(
+                self.coins.geometry.transform(
                     self.program_select_sprites,
                     self.result_buffer,
                     vertices=len(self.coins),

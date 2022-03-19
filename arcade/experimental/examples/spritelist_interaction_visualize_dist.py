@@ -113,7 +113,7 @@ class SpriteListInteraction(arcade.Window):
         # use to run our shader/gpu program. It only requires that we
         # use correctly named input name(s). in_pos in this example
         # what will automatically map in the position buffer to the vertex shader.
-        self.coins._geometry.render(self.program_visualize_dist, vertices=len(self.coins))
+        self.coins.geometry.render(self.program_visualize_dist, vertices=len(self.coins))
         self.player.draw()
 
         # Visualize the interaction radius
