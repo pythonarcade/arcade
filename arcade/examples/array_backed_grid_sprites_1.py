@@ -5,6 +5,9 @@ Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
 
 This version syncs the grid to the sprite list in one go using resync_grid_with_sprites.
+This is faster than rebuilding a shape list every time the grid changes,
+but we are still inspecting every single cell of the grid when it updates.
+There are faster ways, but this works for smaller grid sizes.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_1
@@ -42,16 +45,23 @@ class MyGame(arcade.Window):
 
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
-        self.grid = []
-        for row in range(ROW_COUNT):
-            # Add an empty array that will hold each cell
-            # in this row
-            self.grid.append([])
-            for column in range(COLUMN_COUNT):
-                self.grid[row].append(0)  # Append a cell
+        # This array can be altered later to contain 0 or 1
+        # to show a white or green cell.
+        # 
+        # A 4 x 4 grid would look like this
+        #
+        # grid = [
+        #     [0, 0, 0, 0],
+        #     [0, 0, 0, 0],
+        #     [0, 0, 0, 0],
+        #     [0, 0, 0, 0],
+        # ]
+        # We can quickly build a grid with python list comprehension
+        self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
-        arcade.set_background_color(arcade.color.BLACK)
-
+         # Set the window's background color
+        self.background_color = arcade.color.BLACK
+        # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
         # Create a list of solid-color sprites to represent each grid location
@@ -65,7 +75,14 @@ class MyGame(arcade.Window):
                 self.grid_sprite_list.append(sprite)
 
     def resync_grid_with_sprites(self):
+        """
+        Update the color of all the sprites to match
+        the color/stats in the grid.
 
+        We look at the values in each cell.
+        If the cell contains 0 we assign a white color.
+        If the cell contains 1 we assign a green color.
+        """
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 # We need to convert our two dimensional grid to our
@@ -84,10 +101,10 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
-
-        # This command has to happen before we start drawing
+        # We should always start by clearing the window pixels
         self.clear()
 
+        # Batch draw all the sprites
         self.grid_sprite_list.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -95,7 +112,7 @@ class MyGame(arcade.Window):
         Called when the user presses a mouse button.
         """
 
-        # Change the x/y screen coordinates to grid coordinates
+        # Convert the clicked mouse position into grid coordinates
         column = int(x // (WIDTH + MARGIN))
         row = int(y // (HEIGHT + MARGIN))
 
@@ -103,14 +120,17 @@ class MyGame(arcade.Window):
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
-        if row < ROW_COUNT and column < COLUMN_COUNT:
+        if row >= ROW_COUNT or column >= COLUMN_COUNT:
+            # Simply return from this method since nothing needs updating
+            return
 
-            # Flip the location between 1 and 0.
-            if self.grid[row][column] == 0:
-                self.grid[row][column] = 1
-            else:
-                self.grid[row][column] = 0
+        # Flip the location between 1 and 0.
+        if self.grid[row][column] == 0:
+            self.grid[row][column] = 1
+        else:
+            self.grid[row][column] = 0
 
+        # Update the sprite colors to match the new grid
         self.resync_grid_with_sprites()
 
 
