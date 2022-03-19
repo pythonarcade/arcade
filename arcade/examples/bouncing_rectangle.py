@@ -5,7 +5,6 @@ on the screen.
 If Python and Arcade are installed, this example can be run
 from the command line with:
 python -m arcade.examples.bouncing_rectangle
-
 """
 
 import arcade
@@ -80,7 +79,7 @@ class MyGame(arcade.Window):
         self.item.change_y = 3
 
         # Set background color
-        arcade.set_background_color(BACKGROUND_COLOR)
+        self.background_color = BACKGROUND_COLOR
 
     def on_update(self, delta_time):
         # Move the rectangle

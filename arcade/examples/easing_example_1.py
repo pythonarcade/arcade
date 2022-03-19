@@ -72,7 +72,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Set the background color
-        arcade.set_background_color(arcade.color_from_hex_string(BACKGROUND_COLOR))
+        self.background_color = arcade.color_from_hex_string(BACKGROUND_COLOR)
 
         self.ball_list = None
         self.text_list = []

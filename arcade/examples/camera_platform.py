@@ -76,6 +76,22 @@ class MyGame(arcade.Window):
         self.shake_vel_1 = 0
         self.shake_vel_2 = 0
 
+        # Text
+        self.text_fps = arcade.Text(
+            "",
+            start_x=10,
+            start_y=40,
+            color=arcade.color.BLACK,
+            font_size=14,
+        )
+        self.text_score = arcade.Text(
+            f"Score: {self.score}",
+            start_x=10,
+            start_y=20,
+            color=arcade.color.BLACK,
+            font_size=14,
+        )
+
     def setup(self):
         """Set up the game and initialize the variables."""
 
@@ -126,7 +142,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Keep player from running through the wall_list layer
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -144,44 +160,35 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """Render the screen."""
-        # print(self.camera.position)
+        self.clear()
 
         self.camera.use()
-        self.clear()
-
-        self.frame_count += 1
-
-        # This command has to happen before we start drawing
-        self.clear()
 
         # Draw our Scene
         self.scene.draw()
 
         self.gui_camera.use()
 
-        # Draw FPS
+        # Update fps text periodically
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
+            self.text_fps.text = f"FPS: {fps:5.2f}"
 
-        if self.fps_message:
-            x = 10
-            y = 40
-            arcade.draw_text(self.fps_message, x, y, arcade.color.BLACK, 14)
+        self.text_fps.draw()
 
         if self.frame_count % 60 == 0:
             self.last_time = time.time()
 
         # Draw Score
-        x = 10
-        y = 20
-        arcade.draw_text(f"Score: {self.score}", x, y, arcade.color.BLACK, 14)
+        self.text_score.draw()
 
         # Draw game over
         if self.game_over:
             x = 200 + self.camera.position[0]
             y = 200 + self.camera.position[1]
             arcade.draw_text("Game Over", x, y, arcade.color.BLACK, 30)
+
+        self.frame_count += 1
 
     def on_key_press(self, key, modifiers):
         """
@@ -251,6 +258,9 @@ class MyGame(arcade.Window):
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.12)
+
+        # Update score text
+        self.text_score.text = f"Score: {self.score}"
 
 
 def main():
