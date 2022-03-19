@@ -57,9 +57,17 @@ class MyGame(arcade.Window):
         #     [0, 0, 0, 0],
         # ]
         # We can quickly build a grid with python list comprehension
-        self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
+        # self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
+        # Making the grid with loops:
+        self.grid = []
+        for row in range(ROW_COUNT):
+            # Add an empty array that will hold each cell
+            # in this row
+            self.grid.append([])
+            for column in range(COLUMN_COUNT):
+                self.grid[row].append(0)  # Append a cell
 
-         # Set the window's background color
+        # Set the window's background color
         self.background_color = arcade.color.BLACK
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
