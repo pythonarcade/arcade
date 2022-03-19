@@ -67,7 +67,15 @@ class Context:
     DEPTH_TEST = gl.GL_DEPTH_TEST
     #: Context flag: Face culling
     CULL_FACE = gl.GL_CULL_FACE
-    #: Context flag: Enable ``gl_PointSize`` in shaders.
+    #: Context flag: Enables ``gl_PointSize`` in vertex or geometry shaders.
+    #:
+    #: When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
+    #: for each individual point.
+    #:
+    #: If this value is not set in the shader the behavior is undefined. This means the points may
+    #: or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
+    #:
+    #: When disabled :py:attr:`Context.point_size` is used.
     PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
 
     # Blend functions
@@ -540,7 +548,21 @@ class Context:
 
     @property
     def point_size(self) -> float:
-        """float: Get or set the point size."""
+        """
+        float: Set/get the point size.
+        
+        Point size changes the pixel size of rendered points. The min and max values
+        are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
+        This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
+
+        If variable point size is needed you can enable :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE`
+        and write to ``gl_PointSize`` in the vertex or geometry shader.
+
+        .. Note::
+
+            Using a geometry shader to create triangle strips from points is often a safer
+            way to render large points since you don't have have any size restrictions.
+        """
         return self._point_size
 
     @point_size.setter
@@ -972,6 +994,8 @@ class Limits:
         #: How many buffers we can have as output when doing a transform(feedback).
         #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+        #: The minimum and maximum point size
+        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
 
         err = self._ctx.error
         if err:
