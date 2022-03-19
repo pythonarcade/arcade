@@ -550,7 +550,7 @@ class Context:
     def point_size(self) -> float:
         """
         float: Set/get the point size.
-        
+
         Point size changes the pixel size of rendered points. The min and max values
         are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
         This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
