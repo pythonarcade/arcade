@@ -484,7 +484,6 @@ class Text:
             :ref:`sprite_move_scrolling`.
 
         """
-        print(self._label._get_right())
         _draw_label_with_rotation(self._label, self.rotation)
 
     def draw_debug(    
