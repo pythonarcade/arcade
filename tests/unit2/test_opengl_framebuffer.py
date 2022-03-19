@@ -65,7 +65,7 @@ def test_clear(ctx):
 
 def test_multi_attachment(ctx):
     """Create framebuffers with multiple layers"""
-    for i in range(ctx.limits.MAX_COLOR_ATTACHMENTS):
+    for i in range(ctx.info.MAX_COLOR_ATTACHMENTS):
         fb = create(ctx, 10, 10, components=4, layers=i + 1)
         assert len(fb.color_attachments) == i + 1
         assert fb.glo.value > 0

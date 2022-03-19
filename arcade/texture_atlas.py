@@ -140,7 +140,7 @@ class TextureAtlas:
     ):
 
         self._ctx = ctx or arcade.get_window().ctx
-        self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
+        self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
         self._border: int = 1
         self._allocator = Allocator(*self._size)

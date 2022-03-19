@@ -112,7 +112,7 @@ class Texture:
         self._components = components
         self._alignment = 1
         self._target = target
-        self._samples = min(max(0, samples), self._ctx.limits.MAX_SAMPLES)
+        self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
         self._depth = depth
         self._compare_func: Optional[str] = None
         self._anisotropy = 1.0
@@ -239,7 +239,7 @@ class Texture:
                     (
                         f"Unable to create texture: {ex} : dtype={self._dtype} "
                         f"size={self.size} components={self._components} "
-                        f"MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
+                        f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
                     )
                 )
 
@@ -444,7 +444,7 @@ class Texture:
 
     @anisotropy.setter
     def anisotropy(self, value):
-        self._anisotropy = max(1.0, min(value, self._ctx.limits.MAX_TEXTURE_MAX_ANISOTROPY))
+        self._anisotropy = max(1.0, min(value, self._ctx.info.MAX_TEXTURE_MAX_ANISOTROPY))
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
         gl.glTexParameterf(self._target, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)

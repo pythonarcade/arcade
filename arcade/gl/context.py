@@ -151,12 +151,12 @@ class Context:
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
         self._window_ref = weakref.ref(window)
-        self.limits = Limits(self)
-        self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
+        self._limits = Limits(self)
+        self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
         Context.activate(self)
         # Texture unit we use when doing operations on textures to avoid
         # affecting currently bound textures in the first units
-        self.default_texture_unit: int = self.limits.MAX_TEXTURE_IMAGE_UNITS - 1
+        self.default_texture_unit: int = self._limits.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
@@ -189,6 +189,45 @@ class Context:
         self.gc_mode = gc_mode
         #: Collected objects to gc when gc_mode is "context_gc"
         self.objects: Deque[Any] = deque()
+
+    @property
+    def info(self) -> "Limits":
+        """
+        Get the Limits object for this context containing information
+        about hardware/driver limits and other context information.
+
+        Example::
+
+            >> ctx.info.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.info.VENDOR
+            NVIDIA Corporation
+            >> ctx.info.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+        """
+        return self._limits
+
+    @property
+    def limits(self) -> "Limits":
+        """
+        Get the Limits object for this context containing information
+        about hardware/driver limits and other context information.
+
+        .. Warning::
+
+            This an old alias for :py:attr:`~arcade.gl.Context.info`
+            and is only around for backwards compatibility.
+
+        Example::
+
+            >> ctx.limits.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.limits.VENDOR
+            NVIDIA Corporation
+            >> ctx.limits.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+        """
+        return self._limits
 
     @property
     def window(self) -> Window:
@@ -795,7 +834,9 @@ class Limits:
         self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
         #: Major version number of the OpenGL API supported by the current context.
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
+        #: The vendor string. For example "NVIDIA Corporation"
         self.VENDOR = self.get_str(gl.GL_VENDOR)
+        #: The renderer things. For example "NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2"
         self.RENDERER = self.get_str(gl.GL_RENDERER)
         #: Value indicating the number of sample buffers associated with the framebuffer
         self.SAMPLE_BUFFERS = self.get(gl.GL_SAMPLE_BUFFERS)
@@ -923,9 +964,13 @@ class Limits:
         # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET)
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
-        # TODO: Missing in pyglet
+        #: The highest supported anisotropy value. Usually 8.0 or 16.0.
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        #: The maximum support window or framebuffer viewport.
+        #: This is usually the same as the maximum texture size
         self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        #: How many buffers we can have as output when doing a transform(feedback).
+        #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
 
         err = self._ctx.error
