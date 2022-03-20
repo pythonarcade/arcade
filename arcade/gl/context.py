@@ -813,7 +813,7 @@ class Context:
 
         :rtype: :py:class:`~arcade.gl.Query`
         """
-        return Query(self)
+        return Query(self, samples=samples, time=time, primitives=primitives)
 
     def compute_shader(self, *, source: str):
         """
