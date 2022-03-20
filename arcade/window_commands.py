@@ -310,10 +310,24 @@ def start_render() -> None:
 
 def set_background_color(color: Color) -> None:
     """
-    Specifies the background color of the window. This value
-    will persist for every future screen clears until changed.
+    Set the color :py:meth:`arcade.Window.clear()` will use
+    when clearing the window. This only needs to be called
+    when the background color changes.
 
-    :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
+    .. Note::
+
+        A shorter and faster way to set background color
+        is using :py:attr:`arcade.Window.background_color`.
+
+    Examples::
+
+        # Use Arcade's built in color values
+        arcade.set_background_color(arcade.color.AMAZON)
+
+        # Specify RGB value directly (red)
+        arcade.set_background_color((255, 0, 0))
+
+    :param Color color: List of 3 or 4 values in RGB/RGBA format.
     """
     get_window().background_color = color
 

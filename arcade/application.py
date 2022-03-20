@@ -209,8 +209,19 @@ class Window(pyglet.window.Window):
         self.ctx.screen.clear(color, normalized=normalized, viewport=viewport)
 
     @property
-    def background_color(self):
-        """Get or set the background color for this window.
+    def background_color(self) -> Color:
+        """
+        Get or set the background color for this window.
+        This affects what color the window will contain when
+        :py:meth:`~arcade.Window.clear()` is called.
+
+        Examples::
+
+            # Use Arcade's built in color values
+            window.background_color = arcade.color.AMAZON
+
+            # Specify RGB value directly (red)
+            window.background_color = 255, 0, 0
 
         If the background color is an ``RGB`` value instead of ``RGBA``
         we assume alpha value 255.
