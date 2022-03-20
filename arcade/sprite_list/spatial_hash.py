@@ -290,6 +290,12 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
     if emit_count == 0:
         return []
 
+    # # Debug block for tranform data to keep around
+    # print("emit_count", emit_count)
+    # data = buffer.read(size=emit_count * 4)
+    # print("bytes", data)
+    # print("data", struct.unpack(f'{emit_count}i', data))
+
     # .. otherwise build and return a list of the sprites selected by the transform
     return [
         sprite_list[i]
