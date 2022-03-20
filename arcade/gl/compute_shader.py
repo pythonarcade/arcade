@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ComputeShader:
     """
-    Represent an OpenGL compute shader
+    A higher level wrapper for an OpenGL compute shader.
     """
 
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
@@ -79,9 +79,15 @@ class ComputeShader:
 
     @property
     def glo(self) -> int:
+        """The name/id of the OpenGL resource"""
         return self._glo
 
     def use(self):
+        """
+        Use/activate the compute shader.
+        This is not necessary to call in normal use cases
+        since ``run()`` already do this for you.
+        """
         gl.glUseProgram(self._glo)
         self._ctx.active_program = self
 
@@ -89,11 +95,15 @@ class ComputeShader:
         """
         Run the compute shader.
 
+        Group sizes are ``1`` by default. If your compute
+        shader don't use the `y` or `z` dimension you don't
+        have to supply that parameter.
+
         :param int group_x: The number of work groups to be launched in the X dimension.
         :param int group_y: The number of work groups to be launched in the y dimension.
         :param int group_z: The number of work groups to be launched in the z dimension.
         """
-        self.use()        
+        self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)
 
     def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
@@ -126,11 +136,17 @@ class ComputeShader:
             self._ctx.objects.append(self)
 
     def delete(self):
+        """
+        Destroy the internal compute shader object.
+        This is normally not necessary, but depends on the
+        garbage collection more configured in the context.
+        """
         ComputeShader.delete_glo(self._ctx, self._glo)
         self._glo = 0
 
     @staticmethod
     def delete_glo(ctx, prog_id):
+        """Low level method for destroying a compute shader by id"""
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
