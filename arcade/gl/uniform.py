@@ -199,7 +199,7 @@ class Uniform:
         return setter_func
 
     def __repr__(self):
-        return f"<Uniform '{self._name}' loc={self._location} array_length={self._array_length}"
+        return f"<Uniform '{self._name}' loc={self._location} array_length={self._array_length}>"
 
 
 class UniformBlock:
