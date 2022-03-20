@@ -151,6 +151,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
                     child._do_render(surface, force)
 
         self._rendered = True
+    
+    def clear(self):
+      for widget in self.walk_widgets():
+          self.remove(widget)
 
     def enable(self):
         """
