@@ -153,6 +153,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._rendered = True
     
     def clear(self):
+      """
+      Clears the container
+      """
       for widget in self.walk_widgets():
           self.remove(widget)
 
