@@ -12,31 +12,60 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 *Unreleased*
 
-* Documentation
+* General:
 
-  * Work on :ref:`shader_toy_tutorial`.
-
-* Misc:
-
-  * :py:class:`arcade.Text` not has a ``left``, ``right`` ``top``
+  * Bugfix: :py:func:`~arcade.check_for_collision_with_list` selected
+    the wrong collision algorithm. This could affect performance.
     and ``bottom`` attribute for getting the pixel locations
     of the content borders.
   * Added :py:meth:`arcade.Text.draw_debug` that will visualize
     the content area of the text and the anchor point. This
     can be useful to understand the text anchoring.
+  * :py:class:`arcade.Text` not has a ``left``, ``right`` ``top``
   * Added performance warning for :py:func:`arcade.draw_text`.
     Using :py:class:`arcade.Text` is a lot faster. We have
     also promoted the use of text objects in examples.
   * Removed the deprecated ``arcade.create_text`` function
-  * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
-    reverts to the original context flags
-  * Support uniform blocks in compute shaders
+  * ``UITextureButton.texture_pressed`` now returns the pressed texture,
+    not the texture
+
+* Documentation
+
+  * Work on :ref:`shader_toy_tutorial`.
+  * Docstring improvements throughout the code base
+  * Many examples are cleaned up
+
+* OpenGL
+
   * :py:class:`arcade.gl.Buffer` is guaranteed to contain
     zero byte values on creation.
-  * :py:meth:`arcade.gl.Buffer.read` now reads the correct
-    number of bytes when only ``offset`` parameter is passed.
   * Expose :py:class:`~arcade.gl.context.Limits` in :py:attr:`arcade.gl.Context.info`
     and document all limit values
+  * Added limit: ``MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS``
+  * :py:meth:`arcade.gl.Buffer.read` now reads the correct
+    number of bytes when only ``offset`` parameter is passed.
+  * Improved compute shader examples
+  * Support uniform blocks in compute shaders
+  * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
+    reverts to the original context flags
+  * Many docstring improvements in the ``arcade.gl`` module
+  * Bugfix: Query objects ignored creation parameters
+  * :py:class:`arcade.gl.ComputeShader` is now part of the gl module
+  * :py:class:`arcade.gl.ComputeShader` was added to docs
+  * Expose and document :py:class:`arcade.gl.context.ContextStats`
+
+Special thanks to
+`MrWardKKHS <https://github.com/MrWardKKHS>`_,
+`pvcraven <https://github.com/pvcraven>`_ and
+`einarf <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
+Also thanks to:
+
+* `DragonMoffon <https://github.com/DragonMoffon>`_ for arcade.gl testing and feedback
+* `bunny-therapist <https://github.com/bunny-therapist>`_ discovering collision bug
+* `Robert Morris <https://github.com/morrissimo>`_ for making us aware of the MacBook issue
 
 2.6.11
 ------
