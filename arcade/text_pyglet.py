@@ -393,6 +393,34 @@ class Text:
         return self._label.content_height
 
     @property
+    def left(self) -> int:
+        """
+        Pixel location of the left content border.
+        """
+        return self._label._get_left()
+
+    @property
+    def right(self) -> int:
+        """
+        Pixel location of the right content border.
+        """
+        return self._label._get_left() + self._label.content_width
+
+    @property
+    def top(self) -> int:
+        """
+        Pixel location of the top content border.
+        """
+        return self._label._get_top(self._label._get_lines())
+
+    @property
+    def bottom(self) -> int:
+        """
+        Pixel location of the bottom content border.
+        """
+        return self._label._get_bottom(self._label._get_lines())
+
+    @property
     def content_size(self) -> Tuple[int, int]:
         """
         Get the pixel width and height of the text contents.
@@ -456,6 +484,36 @@ class Text:
             :ref:`sprite_move_scrolling`.
 
         """
+        _draw_label_with_rotation(self._label, self.rotation)
+
+    def draw_debug(    
+        self,
+        anchor_color: Color = arcade.color.RED,
+        background_color: Color = arcade.color.DARK_BLUE,
+        outline_color: Color = arcade.color.WHITE,
+    ) -> None:
+        """
+        Draw test with debug geometry showing the content
+        area, outline and the anchor point.
+
+        :param Color anchor_color: Color of the anchor point
+        :param Color background_color: Color the content background
+        :param Color outline_color: Color of the content outline
+        """
+        left = self.left
+        right = self.right
+        top = self.top
+        bottom = self.bottom
+
+        # Draw background
+        arcade.draw_lrtb_rectangle_filled(left, right, top, bottom, color=background_color)
+
+        # Draw outline
+        arcade.draw_lrtb_rectangle_outline(left, right, top, bottom, color=outline_color)
+
+        # Draw anchor
+        arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
+
         _draw_label_with_rotation(self._label, self.rotation)
 
     @property
