@@ -7,7 +7,7 @@ how we can visualize the result using a normal shader.
 
 We generate N number of points with random velocities, colors and a radius in python
 and write that to an ssbo/buffer. Every frame we run a compute shader
-that calculates new postions for every point based on the velocities,
+that calculates new positions for every point based on the velocities,
 collision with screen borders and a directional force we change over time.
 The result ends up in a new buffer because it's not always practical to
 read and write to the same buffer at the same time (but it is possible).
@@ -18,7 +18,7 @@ These points are then rendered as circles/balls using a traditional shader.
 We use a geometry shader to on-the-fly create a rectangle for each point.
 The size of each ball is based on the radius stored for each point.
 
-The compute shader in this example works in one dimension for simplicitly.
+The compute shader in this example works in one dimension for simplicity.
 """
 import random
 import math
@@ -30,8 +30,8 @@ from arcade.gl import BufferDescription
 COMPUTE_SHADER = """
 #version 430
 
-// Describe the mimimum amount of work this compute shader can execute.
-// This is called a work group. Our work group will run 256 threads/incovations.
+// Describe the minimum amount of work this compute shader can execute.
+// This is called a work group. Our work group will run 256 threads/invocations.
 // When we run a compute shader we specify how many of these groups we are executing.
 // This work group only has one dimension, but there is also local_size_y and local_size_z.
 layout(local_size_x=256) in;
