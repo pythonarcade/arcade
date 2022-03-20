@@ -11,17 +11,17 @@ python -m arcade.examples.procedural_caves_cellular
 import random
 import arcade
 import timeit
-import os
+from pyglet.math import Vec2
 
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-SPRITE_SCALING = 0.125
+SPRITE_SCALING = 0.25
 SPRITE_SIZE = 128 * SPRITE_SCALING
 
 # How big the grid is
-GRID_WIDTH = 400
-GRID_HEIGHT = 300
+GRID_WIDTH = 450
+GRID_HEIGHT = 400
 
 # Parameters for cellular automata
 CHANCE_TO_START_ALIVE = 0.4
@@ -39,9 +39,9 @@ VIEWPORT_MARGIN = 300
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 WINDOW_TITLE = "Procedural Caves Cellular Automata Example"
-# If true, rather than each block being a separate sprite, blocks on rows
-# will be merged into one sprite.
-MERGE_SPRITES = False
+
+# How fast the camera pans to the player. 1.0 is instant.
+CAMERA_SPEED = 0.1
 
 
 def create_grid(width, height):
@@ -99,32 +99,71 @@ def do_simulation_step(old_grid):
     return new_grid
 
 
-class MyGame(arcade.Window):
+class InstructionView(arcade.View):
+    """ View to show instructions """
+
+    def __init__(self):
+        super().__init__()
+        self.frame_count = 0
+
+    def on_show(self):
+        """ This is run once when we switch to this view """
+        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+
+        # Reset the viewport, necessary if we have a scrolling game and we need
+        # to reset the viewport back to the start so we can see what we draw.
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
+    def on_draw(self):
+        """ Draw this view """
+        self.clear()
+        arcade.draw_text("Loading...", self.window.width / 2, self.window.height / 2,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+
+    def on_update(self, dt):
+        if self.frame_count == 0:
+            self.frame_count += 1
+            return
+
+        """ If the user presses the mouse button, start the game. """
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+
+class GameView(arcade.View):
     """
     Main application class.
     """
 
     def __init__(self):
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        super().__init__()
 
         self.grid = None
         self.wall_list = None
         self.player_list = None
         self.player_sprite = None
-        self.view_bottom = 0
-        self.view_left = 0
         self.draw_time = 0
         self.processing_time = 0
         self.physics_engine = None
 
+        # Track the current state of what key is pressed
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
+
+        # Create the cameras. One for the GUI, one for the sprites.
+        # We scroll the 'sprite world' but not the GUI.
+        self.camera_sprites = arcade.Camera(self.window.width, self.window.height)
+        self.camera_gui = arcade.Camera(self.window.width, self.window.height)
+
         arcade.set_background_color(arcade.color.BLACK)
+
+        self.sprite_count_text = None
+        self.draw_time_text = None
+        self.processing_time_text = None
+
 
     def setup(self):
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
@@ -137,39 +176,13 @@ class MyGame(arcade.Window):
             self.grid = do_simulation_step(self.grid)
 
         # Create sprites based on 2D grid
-        if not MERGE_SPRITES:
-            # This is the simple-to-understand method. Each grid location
-            # is a sprite.
-            for row in range(GRID_HEIGHT):
-                for column in range(GRID_WIDTH):
-                    if self.grid[row][column] == 1:
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
-                        wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
-                        wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
-                        self.wall_list.append(wall)
-        else:
-            # This uses new Arcade 1.3.1 features, that allow me to create a
-            # larger sprite with a repeating texture. So if there are multiple
-            # cells in a row with a wall, we merge them into one sprite, with a
-            # repeating texture for each cell. This reduces our sprite count.
-            for row in range(GRID_HEIGHT):
-                column = 0
-                while column < GRID_WIDTH:
-                    while column < GRID_WIDTH and self.grid[row][column] == 0:
-                        column += 1
-                    start_column = column
-                    while column < GRID_WIDTH and self.grid[row][column] == 1:
-                        column += 1
-                    end_column = column - 1
-
-                    column_count = end_column - start_column + 1
-                    column_mid = (start_column + end_column) / 2
-
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING,
-                                         repeat_count_x=column_count)
-                    wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
+        # Each grid location is a sprite.
+        for row in range(GRID_HEIGHT):
+            for column in range(GRID_WIDTH):
+                if self.grid[row][column] == 1:
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
-                    wall.width = SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
@@ -194,8 +207,30 @@ class MyGame(arcade.Window):
                 # Not in a wall! Success!
                 placed = True
 
+        self.scroll_to_player(1.0)
+
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                          self.wall_list)
+
+        # Draw info on the screen
+        sprite_count = len(self.wall_list)
+        output = f"Sprite Count: {sprite_count:,}"
+        self.sprite_count_text = arcade.Text(output,
+                                             20,
+                                             self.window.height - 20,
+                                             arcade.color.WHITE, 16)
+
+        output = f"Drawing time:"
+        self.draw_time_text = arcade.Text(output,
+                                          20,
+                                          self.window.height - 40,
+                                          arcade.color.WHITE, 16)
+
+        output = f"Processing time:"
+        self.processing_time_text = arcade.Text(output,
+                                                20,
+                                                self.window.height - 60,
+                                                arcade.color.WHITE, 16)
 
     def on_draw(self):
         """ Render the screen. """
@@ -207,59 +242,87 @@ class MyGame(arcade.Window):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
 
+        # Select the camera we'll use to draw all our sprites
+        self.camera_sprites.use()
+
         # Draw the sprites
         self.wall_list.draw()
         self.player_list.draw()
 
-        # Draw info on the screen
-        sprite_count = len(self.wall_list)
+        # Select the (unscrolled) camera for our GUI
+        self.camera_gui.use()
 
-        output = f"Sprite Count: {sprite_count}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         self.height - 20 + self.view_bottom,
-                         arcade.color.WHITE, 16)
-
+        self.sprite_count_text.draw()
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         self.height - 40 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        self.draw_time_text.text = output
+        self.draw_time_text.draw()
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         self.height - 60 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        self.processing_time_text.text = output
+        self.processing_time_text.draw()
 
         self.draw_time = timeit.default_timer() - draw_start_time
+
+    def update_player_speed(self):
+
+        # Calculate speed based on the keys pressed
+        self.player_sprite.change_x = 0
+        self.player_sprite.change_y = 0
+
+        if self.up_pressed and not self.down_pressed:
+            self.player_sprite.change_y = MOVEMENT_SPEED
+        elif self.down_pressed and not self.up_pressed:
+            self.player_sprite.change_y = -MOVEMENT_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
         if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
+            self.up_pressed = True
         elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
+            self.down_pressed = True
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
+            self.left_pressed = True
         elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+        if key == arcade.key.UP:
+            self.up_pressed = False
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
+
+    def scroll_to_player(self, speed=CAMERA_SPEED):
+        """
+        Scroll the window to the player.
+
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
+
+        position = Vec2(self.player_sprite.center_x - self.window.width / 2,
+                        self.player_sprite.center_y - self.window.height / 2)
+        self.camera_sprites.move_to(position, speed)
+        self.camera_sprites.update()
 
     def on_resize(self, width, height):
-
-        arcade.set_viewport(self.view_left,
-                            self.width + self.view_left,
-                            self.view_bottom,
-                            self.height + self.view_bottom)
+        """
+        Resize window
+        Handle the user grabbing the edge and resizing the window.
+        """
+        self.camera_sprites.resize(int(width), int(height))
+        self.camera_gui.resize(int(width), int(height))
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -268,51 +331,20 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
+        self.update_player_speed()
         self.physics_engine.update()
 
-        # --- Manage Scrolling ---
-
-        # Track if we need to change the viewport
-
-        changed = False
-
-        # Scroll left
-        left_bndry = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_bndry = self.view_left + WINDOW_WIDTH - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
-            changed = True
-
-        # Scroll up
-        top_bndry = self.view_bottom + WINDOW_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
-            changed = True
-
-        # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
-
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                self.width + self.view_left,
-                                self.view_bottom,
-                                self.height + self.view_bottom)
+        # Scroll the screen to the player
+        self.scroll_to_player()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
-    game = MyGame()
-    game.setup()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
+    start_view = InstructionView()
+    window.show_view(start_view)
     arcade.run()
 
 
