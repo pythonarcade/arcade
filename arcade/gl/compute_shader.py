@@ -85,8 +85,11 @@ class ComputeShader:
     def use(self):
         """
         Use/activate the compute shader.
-        This is not necessary to call in normal use cases
-        since ``run()`` already do this for you.
+
+        .. Note::
+
+            This is not necessary to call in normal use cases
+            since ``run()`` already does this for you.
         """
         gl.glUseProgram(self._glo)
         self._ctx.active_program = self
@@ -95,9 +98,22 @@ class ComputeShader:
         """
         Run the compute shader.
 
-        Group sizes are ``1`` by default. If your compute
-        shader don't use the `y` or `z` dimension you don't
-        have to supply that parameter.
+        When running a compute shader we specify how many work groups should
+        be executed on the ``x``, ``y`` and ``z`` dimension. The size of the work group
+        is defined in the compute shader.
+
+        .. code:: glsl
+
+            // Work group with one dimension. 16 work groups executed.
+            layout(local_size_x=16) in;
+            // Work group with two dimensions. 256 work groups executed.
+            layout(local_size_x=16, local_size_y=16) in;
+            // Work group with three dimensions. 4096 work groups executed.
+            layout(local_size_x=16, local_size_y=16, local_size_z=16) in;
+
+        Group sizes are ``1`` by default. If your compute shader doesn't specify
+        a size for a dimension or use 1 as size you don't have to supply
+        this parameter.
 
         :param int group_x: The number of work groups to be launched in the X dimension.
         :param int group_y: The number of work groups to be launched in the y dimension.
@@ -180,6 +196,7 @@ class ComputeShader:
             )
 
     def _introspect_uniform_blocks(self):
+        """Finds uniform blocks and maps the to python objectss"""
         active_uniform_blocks = gl.GLint(0)
         gl.glGetProgramiv(
             self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
