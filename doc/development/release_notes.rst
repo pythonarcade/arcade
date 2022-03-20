@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.12
 ------
 
-*Unreleased*
+*2022-Mar-20*
 
 * General:
 
