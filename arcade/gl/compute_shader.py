@@ -112,7 +112,7 @@ class ComputeShader:
             layout(local_size_x=16, local_size_y=16, local_size_z=16) in;
 
         Group sizes are ``1`` by default. If your compute shader doesn't specify
-        a size for a dimension or use 1 as size you don't have to supply
+        a size for a dimension or uses ``1`` as size you don't have to supply
         this parameter.
 
         :param int group_x: The number of work groups to be launched in the X dimension.
