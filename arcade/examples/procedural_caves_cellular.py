@@ -164,7 +164,6 @@ class GameView(arcade.View):
         self.draw_time_text = None
         self.processing_time_text = None
 
-
     def setup(self):
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         self.player_list = arcade.SpriteList()
@@ -220,13 +219,13 @@ class GameView(arcade.View):
                                              self.window.height - 20,
                                              arcade.color.WHITE, 16)
 
-        output = f"Drawing time:"
+        output = "Drawing time:"
         self.draw_time_text = arcade.Text(output,
                                           20,
                                           self.window.height - 40,
                                           arcade.color.WHITE, 16)
 
-        output = f"Processing time:"
+        output = "Processing time:"
         self.processing_time_text = arcade.Text(output,
                                                 20,
                                                 self.window.height - 60,
