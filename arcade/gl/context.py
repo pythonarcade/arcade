@@ -894,7 +894,9 @@ class Context:
         geometry_shader: str = None,
         tess_control_shader: str = None,
         tess_evaluation_shader: str = None,
-        defines: Dict[str, str] = None
+        defines: Dict[str, str] = None,
+        varyings: Optional[Sequence[str]] = None,
+        varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
@@ -904,6 +906,14 @@ class Context:
         :param str tess_control_shader: tessellation control shader source (optional)
         :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
         :param dict defines: Substitute #defines values in the source (optional)
+        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+                                                 This is normally not necessary since we auto detect them,
+                                                 but some more complex out structures we can't detect.
+        :param str varyings_capture_mode: The capture mode for transforms.
+                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
+                                          ``"separate"`` means each out attribute will be written separate buffers.
+                                          Based on these settings the `transform()` method will accept a single
+                                          buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
@@ -930,8 +940,8 @@ class Context:
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
-        out_attributes = []  # type: List[str]
-        if not source_fs:
+        out_attributes = list(varyings) if varyings is not None else []  # type: List[str]
+        if not source_fs and not out_attributes:
             if source_geo:
                 out_attributes = source_geo.out_attributes
             else:
@@ -952,7 +962,8 @@ class Context:
             tess_evaluation_shader=source_te.get_source(defines=defines)
             if source_te
             else None,
-            out_attributes=out_attributes,
+            varyings=out_attributes,
+            varyings_capture_mode=varyings_capture_mode,
         )
 
     def query(self, *, samples=True, time=True, primitives=True):
