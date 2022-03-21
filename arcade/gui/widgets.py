@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from random import randint
+import string
 from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING, TypeVar
 
 import pyglet
@@ -997,6 +998,7 @@ class UIInputText(UIWidget):
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
     :param style: not used
+    :param only_numeric_values: set this to True to only accept numeric values
     """
 
     def __init__(self,
@@ -1013,6 +1015,7 @@ class UIInputText(UIWidget):
                  size_hint_min=None,
                  size_hint_max=None,
                  style=None,
+                 only_numeric_values: bool = False,
                  **kwargs
                  ):
         super().__init__(x, y, width, height,
@@ -1037,6 +1040,8 @@ class UIInputText(UIWidget):
         self.caret = _Arcade_Caret(self.layout, color=(0, 0, 0))
 
         self._blink_state = self._get_caret_blink_state()
+        
+        self.only_numeric_values = only_numeric_values
 
         if init_text:
             self.text = ""
@@ -1076,8 +1081,14 @@ class UIInputText(UIWidget):
         if self._active:
             # Act on events if active
             if isinstance(event, UITextEvent):
-                self.caret.on_text(event.text)
-                self.trigger_full_render()
+                # if the user only wants numbers
+                if self.only_numeric_values:
+                    if event.text not in string.printable[10:]:
+                        self.caret.on_text(event.text)
+                        self.trigger_full_render()
+                else:
+                    self.caret.on_text(event.text)
+                    self.trigger_full_render()
             elif isinstance(event, UITextMotionEvent):
                 self.caret.on_text_motion(event.motion)
                 self.trigger_full_render()
@@ -1116,7 +1127,10 @@ class UIInputText(UIWidget):
 
     @property
     def text(self):
-        return self.doc.text
+        if self.only_numeric_values:
+            return int(self.doc.text)
+        else:
+            return self.doc.text
 
     @text.setter
     def text(self, value):
