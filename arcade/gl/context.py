@@ -847,6 +847,13 @@ class Context:
                 mode=ctx.POINTS,
             )
 
+            # Geometry with index buffer
+            ctx.geometry(
+                [BufferDescription(buffer, '2f', ["in_vert"])],
+                index_buffer=ibo,
+                mode=ctx.TRIANGLES,
+            )
+
             # Separate buffers
             ctx.geometry([
                     BufferDescription(buffer_pos, '2f', ["in_vert"])
@@ -867,10 +874,17 @@ class Context:
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
         :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of the index buffer type.
+        :param int index_element_size: Byte size of a single index/element in the index buffer.
+                                       In other words, the index buffer can be 8, 16 or 32 bit integers.
                                        Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
+        return Geometry(
+            self,
+            content,
+            index_buffer=index_buffer,
+            mode=mode,
+            index_element_size=index_element_size,
+        )
 
     def program(
         self,
