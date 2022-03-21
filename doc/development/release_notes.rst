@@ -16,12 +16,13 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Bugfix: :py:func:`~arcade.check_for_collision_with_list` selected
     the wrong collision algorithm. This could affect performance.
-    of the content borders.
+  * Bugfix: GPU collision detection show now work on older MacBooks
   * Added :py:meth:`arcade.Text.draw_debug` that will visualize
     the content area of the text and the anchor point. This
     can be useful to understand the text anchoring.
   * :py:class:`arcade.Text` now has a ``left``, ``right`` ``top``
     and ``bottom`` attribute for getting the pixel locations
+    of the content borders.
   * Added performance warning for :py:func:`arcade.draw_text`.
     Using :py:class:`arcade.Text` is a lot faster. We have
     also promoted the use of text objects in examples.
