@@ -1040,7 +1040,6 @@ class UIInputText(UIWidget):
         self.caret = _Arcade_Caret(self.layout, color=(0, 0, 0))
 
         self._blink_state = self._get_caret_blink_state()
-        
         self.only_numeric_values = only_numeric_values
 
         if init_text:
