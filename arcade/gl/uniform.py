@@ -203,6 +203,9 @@ class Uniform:
 
 
 class UniformBlock:
+    """
+    Wrapper for a uniform block in shaders.
+    """
     __slots__ = ("glo", "index", "size", "name")
 
     def __init__(self, glo: int, index: int, size: int, name: str):
@@ -213,7 +216,7 @@ class UniformBlock:
 
     @property
     def binding(self) -> int:
-        """int: Get or set the binding point for this uniform block"""
+        """Get or set the binding index for this uniform block"""
         binding = gl.GLint()
         gl.glGetActiveUniformBlockiv(
             self.glo, self.index, gl.GL_UNIFORM_BLOCK_BINDING, binding

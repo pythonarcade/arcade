@@ -31,8 +31,8 @@ class ArcadeContext(Context):
 
     :param pyglet.window.Window window: The pyglet window
     :param str gc_mode: The garbage collection mode for opengl objects.
-                        ``auto`` (default) is just what we would expect in python
-                        while ``context_gc`` requires you to call ``Context.gc()``.
+                        ``auto`` is just what we would expect in python
+                        while ``context_gc`` (default) requires you to call ``Context.gc()``.
                         The latter can be useful when using multiple threads when
                         it's not clear what thread will gc the object.
     """
@@ -209,7 +209,7 @@ class ArcadeContext(Context):
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
-        is passed in the ``SpriteList`` constructor.
+        is passed in the :py:class:`arcade.SpriteList` constructor.
 
         :type: TextureAtlas
         """

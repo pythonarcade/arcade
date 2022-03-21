@@ -276,7 +276,10 @@ class Context:
     @property
     def gl_version(self) -> Tuple[int, int]:
         """
-        The OpenGL version as a 2 component tuple
+        The OpenGL version as a 2 component tuple.
+        This is the reported OpenGL version from
+        drivers and might be a higher version than
+        you requested.
 
         :type: tuple (major, minor) version
         """
@@ -306,15 +309,18 @@ class Context:
     def gc_mode(self) -> str:
         """
         Set the garbage collection mode for OpenGL resources.
-        Supported modes are:
+        Supported modes are::
 
-            # default: Auto 
-            ctx.gc_mode = "auto"
-
+            # Default:
             # Defer garbage collection until ctx.gc() is called
             # This can be useful to enforce the main thread to
             # run garbage collection of opengl resources
-            ctx.gc_mode = "context_gc"            
+            ctx.gc_mode = "context_gc"
+
+            # Auto collect is similar to python garbage collection.
+            # This is a risky mode. Know what you are doing before using this.
+            ctx.gc_mode = "auto"
+
         """
         return self._gc_mode
 
@@ -348,7 +354,11 @@ class Context:
 
     @classmethod
     def activate(cls, ctx: "Context"):
-        """Mark a context as the currently active one"""
+        """
+        Mark a context as the currently active one.
+
+        .. Warning:: Never call this unless you know exactly what you are doing.
+        """
         cls.active = ctx
 
     def enable(self, *flags):
@@ -517,7 +527,33 @@ class Context:
     @property
     def blend_func(self) -> Tuple[int, int]:
         """
-        Get or the blend function::
+        Get or set the blend function.
+        This is tuple specifying how the red, green, blue, and
+        alpha blending factors are computed for the source
+        and  destination pixel.
+
+        Supported blend functions are::
+
+            ZERO
+            ONE
+            SRC_COLOR
+            ONE_MINUS_SRC_COLOR
+            DST_COLOR
+            ONE_MINUS_DST_COLOR
+            SRC_ALPHA
+            ONE_MINUS_SRC_ALPHA
+            DST_ALPHA
+            ONE_MINUS_DST_ALPHA
+
+            # Shortcuts
+            DEFAULT_BLENDING     # (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
+            ADDITIVE_BLENDING    # (ONE, ONE)
+            PREMULTIPLIED_ALPHA  # (SRC_ALPHA, ONE)
+
+        The constants can be accessed in the ``arcade.gl``
+        module or simply as attributes of the context object.
+
+        Example::
 
             ctx.blend_func = ctx.ONE, ctx.ONE
 
@@ -613,7 +649,7 @@ class Context:
         """
         Copies/blits a framebuffer to another one.
 
-        This operation many restrictions to ensure it works across
+        This operation has many restrictions to ensure it works across
         different platforms and drivers:
 
         * The source and destination framebuffer must be the same size
@@ -639,14 +675,38 @@ class Context:
     def buffer(
         self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
-        """Create a new OpenGL Buffer object.
+        """
+        Create an OpenGL Buffer object. The buffer will contain all zero-bytes if no data is supplied.
+
+        Examples::
+
+            # Create 1024 byte buffer
+            ctx.buffer(reserve=1024)
+            # Create a buffer with 1000 float values using python's array.array
+            from array import array
+            ctx.buffer(data=array('f', [i for in in range(1000)])
+            # Create a buffer with 1000 random 32 bit floats using numpy
+            self.ctx.buffer(data=np.random.random(1000).astype("f4"))
+
+        The ``usage`` parameter enables the GL implementation to make more intelligent
+        decisions that may impact buffer object performance. It does not add any restrictions.
+        If in doubt, skip this parameter and revisit when optimizing. The result
+        are likely to be different between vendors/drivers or may not have any effect.
+
+        The available values means the following::
+
+            stream
+                The data contents will be modified once and used at most a few times.
+            static
+                The data contents will be modified once and used many times.
+            dynamic
+                The data contents will be modified repeatedly and used many times.
 
         :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         :rtype: :py:class:`~arcade.gl.Buffer`
         """
-        # create_with_size
         return Buffer(self, data, reserve=reserve, usage=usage)
 
     def framebuffer(
@@ -708,7 +768,9 @@ class Context:
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
-        """Create a 2D depth texture
+        """
+        Create a 2D depth texture. Can be used as a depth attachment
+        in a :py:class:`~arcade.gl.Framebuffer`.
 
         :param Tuple[int, int] size: The size of the texture
         :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
@@ -815,9 +877,9 @@ class Context:
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
-    def compute_shader(self, *, source: str):
+    def compute_shader(self, *, source: str) -> ComputeShader:
         """
-        Create a compute shader
+        Create a compute shader.
 
         :param str source: The glsl source
         """

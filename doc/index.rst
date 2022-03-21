@@ -155,6 +155,7 @@ The Python Arcade Library
             <li><a href="https://github.com/pythonarcade/arcade">GitHub</a></li>
             <li><a href="development/release_notes.html">Release Notes</a></li>
             <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/release_checklist.html">Release Check-List</a></li>
           </ul>
         </td>
 
