@@ -195,7 +195,8 @@ class Context:
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
         self.gc_mode = gc_mode
-        #: Collected objects to gc when gc_mode is "context_gc"
+        #: Collected objects to gc when gc_mode is "context_gc".
+        #: This can be used during debugging.
         self.objects: Deque[Any] = deque()
 
     @property
@@ -242,6 +243,15 @@ class Context:
         """
         Get the stats instance containing runtime information
         about creation and destruction of OpenGL objects.
+
+        Example::
+
+            >> ctx.limits.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.limits.VENDOR
+            NVIDIA Corporation
+            >> ctx.limits.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
         """
         return self._stats
 
@@ -508,7 +518,9 @@ class Context:
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
         box is enabled when setting a value and disabled when
-        set to ``None``
+        set to ``None``.
+
+        Example::
 
             # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
@@ -550,12 +562,17 @@ class Context:
             ADDITIVE_BLENDING    # (ONE, ONE)
             PREMULTIPLIED_ALPHA  # (SRC_ALPHA, ONE)
 
-        The constants can be accessed in the ``arcade.gl``
+        These enums can be accessed in the ``arcade.gl``
         module or simply as attributes of the context object.
+        The raw enums from ``pyglet.gl`` can also be used.
 
         Example::
 
+            # Using constants from the context object
             ctx.blend_func = ctx.ONE, ctx.ONE
+            # from the gl module
+            from arcade import gl
+            ctx.blend_func = gl.ONE, gl.One
 
         :type: tuple (src, dst)
         """
@@ -593,7 +610,7 @@ class Context:
     @property
     def point_size(self) -> float:
         """
-        float: Set/get the point size.
+        Set or get the point size. Default is `1.0`.
 
         Point size changes the pixel size of rendered points. The min and max values
         are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
@@ -616,7 +633,14 @@ class Context:
 
     @property
     def primitive_restart_index(self) -> int:
-        """Get or set the primitive restart index. Default is -1"""
+        """
+        Get or set the primitive restart index. Default is ``-1``.
+
+        The primitive restart index can be used in index buffers
+        to restart a primitive. This is for example useful when you
+        use triangle strips or line strips and want to start on
+        a new strip in the same buffer / draw call.
+        """
         return self._primitive_restart_index
 
     @primitive_restart_index.setter
@@ -633,7 +657,7 @@ class Context:
         """
         gl.glFinish()
 
-    def flush(self):
+    def flush(self) -> None:
         """
         A suggestion to the driver to execute all the queued
         drawing calls even if the queue is not full yet.
@@ -785,7 +809,59 @@ class Context:
         index_element_size: int = 4,
     ):
         """
-        Create a Geomtry instance.
+        Create a Geomtry instance. This is Arcade's version of a vertex array adding
+        a lot of convenice for the user. Geometry objects are fairly light. They are
+        mainly responsible for automatically map buffer inputs to your shader(s)
+        and provide various methods for rendering or processing this geometry,
+
+        The same geometry can be rendered with different
+        programs as long as your shader is using one or more of the input attribute.
+        This means geometry with positions and colors can be rendered with a program
+        only using the positions. We will automatically map what is necessary and
+        cache these mappings internally for performace.
+
+        In short, the geometry object is a light object that describes what buffers
+        contains and automatically negotiate with shaders/programs. This is a very
+        complex field in OpenGL so the Geometry object provides substantial time
+        savings and greatly reduces the complexity of your code.
+
+        Geometry also provide rendering methods supporting the following:
+
+        * Rendering geometry with and without index buffer
+        * Rendering your geometry using instancing. Per instance buffers can be provided
+          or the current instance can be looked up using ``gl_InstanceID`` in shaders.
+        * Running transform feedback shaders that writes to buffers instead the screen.
+          This can write to one or multiple buffer.
+        * Render your geometry with indirect rendering. This means packing
+          multiple meshes into the same buffer(s) and batch drawing them.
+
+        Examples::
+
+            # Single buffer geometry with a vec2 vertex position attribute
+            ctx.geometry([BufferDescription(buffer, '2f', ["in_vert"])], mode=ctx.TRIANGLES)
+
+            # Single interlaved buffer with two attributes. A vec2 position and vec2 velocity
+            ctx.geometry([
+                    BufferDescription(buffer, '2f 2f', ["in_vert", "in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Separate buffers
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_vel, '2f', ["in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Providing per-instance data for instancing
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_instance_pos, '2f', ["in_offset"], instanced=True)
+                ],
+                mode=ctx.POINTS,
+            )
 
         :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
         :param Buffer index_buffer: Index/element buffer (optional)
