@@ -115,10 +115,6 @@ class PymunkPhysicsEngine:
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)  # type: ignore
 
-        # Backwards compatibility for a typo introduced in 2.6.2 and for versions under 2.6.1
-        # The current version is checked first, then the most common older form, then the typo
-        moment_of_inertia = moment_of_inertia or moment or moment_of_intertia
-
         # Default to a box moment_of_inertia
         if moment_of_inertia is None:
             moment_of_inertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
