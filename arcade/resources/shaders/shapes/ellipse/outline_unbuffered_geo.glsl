@@ -20,7 +20,7 @@ uniform vec4 shape;
 void main() {
     // Get center of the circle
     vec2 center = gl_in[0].gl_Position.xy;
-    int segments_selected = 0;
+    int segments_selected = segments;
 
     // Calculate rotation/tilt
     float angle = radians(shape.z);
@@ -29,10 +29,7 @@ void main() {
         sin(angle),  cos(angle)
     );
 
-    if (segments > 0) {
-        // The user defined number of segments. Clamp it.
-        segments_selected = segments;
-    } else {
+    if (segments_selected < 0) {
         segments_selected = 32;
         // Estimate the number of segments needed based on size
         // float size = max(shape.x, shape.y);
