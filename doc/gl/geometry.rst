@@ -19,6 +19,7 @@ Geometry
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 VertexArray
 -----------
@@ -27,3 +28,4 @@ VertexArray
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
