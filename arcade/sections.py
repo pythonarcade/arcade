@@ -12,7 +12,7 @@ class Section:
     Events are dispatched to the section based on it's position on the screen.
     """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  *, name: Optional[str] = None,
                  accept_keyboard_events: Union[bool, Iterable] = True,
                  prevent_dispatch: Optional[Iterable] = None,
@@ -47,12 +47,12 @@ class Section:
 
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
-        self._left: float = left
-        self._bottom: float = bottom
-        self._width: float = width
-        self._height: float = height
-        self._right: float = left + width
-        self._top: float = bottom + height
+        self._left: int = left
+        self._bottom: int = bottom
+        self._width: int = width
+        self._height: int = height
+        self._right: int = left + width
+        self._top: int = bottom + height
 
         # optional section camera
         self.camera: Optional[Camera] = None
@@ -91,85 +91,85 @@ class Section:
         return self._modal
 
     @property
-    def left(self) -> float:
+    def left(self) -> int:
         """ Left edge of this section """
         return self._left
 
     @left.setter
-    def left(self, value: float):
+    def left(self, value: int):
         self._left = value
         self._right = value + self._width
 
     @property
-    def bottom(self) -> float:
+    def bottom(self) -> int:
         """ The bottom edge of this section """
         return self._bottom
 
     @bottom.setter
-    def bottom(self, value: float):
+    def bottom(self, value: int):
         self._bottom = value
         self._top = value + self._height
 
     @property
-    def width(self) -> float:
+    def width(self) -> int:
         """ The width of this section """
         return self._width
 
     @width.setter
-    def width(self, value: float):
+    def width(self, value: int):
         self._width = value
         self._right = value + self._left
 
     @property
-    def height(self) -> float:
+    def height(self) -> int:
         """ The height of this section """
         return self._height
 
     @height.setter
-    def height(self, value: float):
+    def height(self, value: int):
         self._height = value
         self._top = value + self._bottom
 
     @property
-    def right(self) -> float:
+    def right(self) -> int:
         """ Right edge of this section """
         return self._right
 
     @right.setter
-    def right(self, value: float):
+    def right(self, value: int):
         self._right = value
         self._left = value - self._width
 
     @property
-    def top(self) -> float:
+    def top(self) -> int:
         """ Top edge of this section """
         return self._top
 
     @top.setter
-    def top(self, value: float):
+    def top(self, value: int):
         self._top = value
         self._bottom = value - self._height
 
     @property
-    def ec_left(self) -> float:
+    def ec_left(self) -> int:
         # Section event capture dimension.
         # This attribute defines Left event capture area
-        return 0.0 if self._modal else self._left
+        return 0 if self._modal else self._left
 
     @property
-    def ec_right(self) -> float:
+    def ec_right(self) -> int:
         # Section event capture dimension.
         # This attribute defines Right event capture area
         return self.window.width if self._modal else self._right
 
     @property
-    def ec_bottom(self) -> float:
+    def ec_bottom(self) -> int:
         # Section event capture dimension.
         # This attribute defines Bottom event capture area
-        return 0.0 if self._modal else self._bottom
+        return 0 if self._modal else self._bottom
 
     @property
-    def ec_top(self) -> float:
+    def ec_top(self) -> int:
         # Section event capture dimension.
         # This attribute defines Top event capture area
         return self.window.height if self._modal else self._top
