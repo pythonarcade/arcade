@@ -1,8 +1,8 @@
 #version 330
 
 #define PI 3.1415926535897932384626433832795
-#define MIN_SEGMENTS 3
-#define MAX_SEGMENTS 112
+const int MIN_SEGMENTS = 3;
+const int MAX_SEGMENTS = 112;
 
 layout (points) in;
 // TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
@@ -35,9 +35,9 @@ void main() {
     } else {
         // Estimate the number of segments needed based on size
         float size = max(shape.x, shape.y);
-        if (size <= 4)
+        if (size <= 4.0)
             segments_selected = 4;
-        else if (size <= 16)
+        else if (size <= 16.0)
             segments_selected = 16;
         else
             segments_selected = 32;
