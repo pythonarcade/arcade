@@ -71,7 +71,8 @@ class PymunkPhysicsEngine:
                    moment_of_intertia: Optional[float] = None,  # typo keyword, used by 2.6.2 and 2.6.3
                    moment: Optional[float] = None  # used prior to 2.6.2
                    ):
-        """ Add a sprite to the physics engine. 
+        """ Add a sprite to the physics engine.
+
             :param sprite: The sprite to add
             :param mass: The mass of the object. Defaults to 1
             :param friction: The friction the object has. Defaults to 0.2
