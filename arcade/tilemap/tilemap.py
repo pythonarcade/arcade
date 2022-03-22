@@ -844,19 +844,32 @@ class TileMap:
 
                 shape = [x + offset[0], y + offset[1]]
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
-                x = cur_object.coordinates.x + offset[0]
-                y = cur_object.coordinates.y + offset[1]
-                sx = x
-                sy = -y
-                ex = x + cur_object.size.width
-                ey = -(y + cur_object.size.height)
+                if cur_object.size.width == 0 and cur_object.size.height == 0:
+                    print(
+                        f"WARNING: Tiled object with ID {cur_object.id} is a rectangle "
+                        "with a width and height of 0. Loading it as a single point."
+                    )
+                    x = cur_object.coordinates.x * scaling
+                    y = (
+                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+                        - cur_object.coordinates.y
+                    ) * scaling
 
-                p1 = [sx, sy]
-                p2 = [ex, sy]
-                p3 = [ex, ey]
-                p4 = [sx, ey]
+                    shape = [x + offset[0], y + offset[1]]
+                else:
+                    x = cur_object.coordinates.x + offset[0]
+                    y = cur_object.coordinates.y + offset[1]
+                    sx = x
+                    sy = -y
+                    ex = x + cur_object.size.width
+                    ey = -(y + cur_object.size.height)
 
-                shape = [p1, p2, p3, p4]
+                    p1 = [sx, sy]
+                    p2 = [ex, sy]
+                    p3 = [ex, ey]
+                    p4 = [sx, ey]
+
+                    shape = [p1, p2, p3, p4]
             elif isinstance(
                 cur_object, pytiled_parser.tiled_object.Polygon
             ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
