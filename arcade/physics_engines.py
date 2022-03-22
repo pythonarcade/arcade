@@ -225,12 +225,13 @@ class PhysicsEngineSimple:
         """
         assert(isinstance(player_sprite, Sprite))
 
-        if isinstance(walls, SpriteList):
-            self.walls = [walls]
-        elif isinstance(walls, list):
-            self.walls = list(walls)
+        if walls:
+            if isinstance(walls, SpriteList):
+                self.walls = [walls]
+            else:
+                self.walls = list(walls)
         else:
-            raise ValueError("Unsupported wall type. Must be SpriteList or list of SpriteLists")
+            self.walls = []
 
         self.player_sprite = player_sprite
 
