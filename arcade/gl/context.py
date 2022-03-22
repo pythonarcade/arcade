@@ -993,14 +993,21 @@ class ContextStats:
     """
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
-        # (created, freed)
+        #: Textures (created, freed)
         self.texture = (0, 0)
+        #: Framebuffers (created, freed)
         self.framebuffer = (0, 0)
+        #: Buffers (created, freed)
         self.buffer = (0, 0)
+        #: Programs (created, freed)
         self.program = (0, 0)
+        #: Vertex Arrays (created, freed)
         self.vertex_array = (0, 0)
+        #: Geometry (created, freed)
         self.geometry = (0, 0)
+        #: Compute Shaders (created, freed)
         self.compute_shader = (0, 0)
+        #: Queries (created, freed)
         self.query = (0, 0)
 
     def incr(self, key: str) -> None:
