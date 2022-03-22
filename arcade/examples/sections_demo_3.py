@@ -77,8 +77,8 @@ class ModalSection(Section):
 
     def on_resize(self, width: int, height: int):
         """ set position on screen resize """
-        self.left = width / 3
-        self.bottom = (height / 2) - self.height / 2
+        self.left = width // 3
+        self.bottom = (height // 2) - self.height // 2
         pos = self.left + self.width / 2, self.bottom + self.height / 2
         self.button.position = pos
 
