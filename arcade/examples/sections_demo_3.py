@@ -52,7 +52,7 @@ class Ball(arcade.SpriteCircle):
 class ModalSection(Section):
     """ A modal section that represents a popup that waits for user input """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float):
+    def __init__(self, left: int, bottom: int, width: int, height: int):
         super().__init__(left, bottom, width, height, modal=True, enabled=False)
 
         # modal button
@@ -77,8 +77,8 @@ class ModalSection(Section):
 
     def on_resize(self, width: int, height: int):
         """ set position on screen resize """
-        self.left = width / 3
-        self.bottom = (height / 2) - self.height / 2
+        self.left = width // 3
+        self.bottom = (height // 2) - self.height // 2
         pos = self.left + self.width / 2, self.bottom + self.height / 2
         self.button.position = pos
 
@@ -122,7 +122,7 @@ class InfoBar(Section):
 class Panel(Section):
     """This is the Panel to the right where buttons and info is showed """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
@@ -198,7 +198,7 @@ class Panel(Section):
 class Map(Section):
     """ This represents the place where the game takes place """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 

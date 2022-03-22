@@ -44,7 +44,7 @@ class ScreenPart(arcade.Section):
     boundaries (left, bottom, etc.)
     """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
