@@ -208,11 +208,15 @@ Some other sample shaders:
 Additional learning
 -------------------
 
-Here is a decent learn-by-example tutorial for making shaders:
+On this site:
 
-https://www.shadertoy.com/view/Md23DV
+* Learn how to ray-cast shadows in the :ref:`raycasting_tutorial`.
+* Make your screen look like an 80s monitor in :ref:`crt_filter`.
+* Read more about using OpenGL in Arcade with :ref:`open_gl_notes`.
+* Learn to do a compute shader in :ref:`compute_shader_tutorial`.
 
-Here's a video tutorial that steps through how to do an explosion:
+On other sites:
 
-https://www.youtube.com/watch?v=xDxAnguEOn8
+* Here is a decent learn-by-example tutorial for making shaders: https://www.shadertoy.com/view/Md23DV
+* Here's a video tutorial that steps through how to do an explosion: https://www.youtube.com/watch?v=xDxAnguEOn8
 
