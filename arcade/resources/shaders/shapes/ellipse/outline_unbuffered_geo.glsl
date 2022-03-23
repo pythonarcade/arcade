@@ -1,6 +1,7 @@
 #version 330
 
 #define PI 3.1415926535897932384626433832795
+// 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;
 const int MAX_SEGMENTS = 112;
 
@@ -30,15 +31,14 @@ void main() {
     );
 
     if (segments_selected < 0) {
-        segments_selected = 32;
         // Estimate the number of segments needed based on size
-        // float size = max(shape.x, shape.y);
-        // if (size <= 4.0)
-        //     segments_selected = 4;
-        // else if (size <= 16.0)
-        //     segments_selected = 16;
-        // else
-        //     segments_selected = 32;
+        float size = max(shape.x, shape.y);
+        if (size <= 4.0)
+            segments_selected = 4;
+        else if (size <= 16.0)
+            segments_selected = 16;
+        else
+            segments_selected = 32;
     }
     // Clamp number of segments
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
