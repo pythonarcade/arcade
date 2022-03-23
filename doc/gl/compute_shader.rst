@@ -6,3 +6,4 @@ Compute Shader
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource

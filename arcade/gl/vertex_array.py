@@ -1,5 +1,5 @@
 from ctypes import c_void_p, byref
-from typing import Dict, Optional, Sequence, TYPE_CHECKING
+from typing import Dict, List, Optional, Sequence, TYPE_CHECKING, Union
 import weakref
 
 from pyglet import gl
@@ -263,7 +263,7 @@ class VertexArray:
         else:
             gl.glMultiDrawArraysIndirect(mode, first * stride, count, stride)
 
-    def transform(
+    def transform_interleaved(
         self,
         buffer: Buffer,
         mode: gl.GLenum,
@@ -304,6 +304,55 @@ class VertexArray:
             gl.glBindBufferBase(
                 gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo
             )
+
+        gl.glBeginTransformFeedback(output_mode)
+
+        if self._ibo is not None:
+            count = self._ibo.size // 4
+            # TODO: Support first argument by offsetting pointer (second last arg)
+            gl.glDrawElementsInstanced(mode, vertices or count, gl.GL_UNSIGNED_INT, None, instances)
+        else:
+            # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
+            gl.glDrawArraysInstanced(mode, first, vertices, instances)
+
+        gl.glEndTransformFeedback()
+        gl.glDisable(gl.GL_RASTERIZER_DISCARD)
+
+    def transform_separate(
+        self,
+        buffers: List[Buffer],
+        mode: gl.GLenum,
+        output_mode: gl.GLenum,
+        first: int = 0,
+        vertices: int = 0,
+        instances: int = 1,
+        buffer_offset=0,
+    ):
+        if vertices < 0:
+            raise ValueError(f"Cannot determine the number of vertices: {vertices}")
+
+        # Get size from the smallest buffer
+        size = min(buf.size for buf in buffers)
+        if buffer_offset >= size:
+            raise ValueError("buffer_offset at end or past the buffer size")
+
+        gl.glBindVertexArray(self.glo)
+        gl.glEnable(gl.GL_RASTERIZER_DISCARD)
+
+        if buffer_offset > 0:
+            for index, buffer in enumerate(buffers):
+                gl.glBindBufferRange(
+                    gl.GL_TRANSFORM_FEEDBACK_BUFFER,
+                    index,
+                    buffer.glo,
+                    buffer_offset,
+                    buffer.size - buffer_offset,
+                )
+        else:
+            for index, buffer in enumerate(buffers):
+                gl.glBindBufferBase(
+                    gl.GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.glo
+                )
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -539,7 +588,7 @@ class Geometry:
     def transform(
         self,
         program: Program,
-        buffer: Buffer,
+        buffer: Union[Buffer, List[Buffer]],
         *,
         first: int = 0,
         vertices: int = None,
@@ -552,7 +601,9 @@ class Geometry:
         If a geometry shader is used the output primitive mode is automatically detected.
 
         :param Program program: The Program to render with
-        :param Buffer buffer: The buffer to write the output
+        :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
+            This depends on the programs ``varyings_capture_mode``. We can transform
+            into one buffer interlaved or transform each attribute into separate buffers.
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
@@ -560,16 +611,40 @@ class Geometry:
         """
         program.use()
         vao = self.instance(program)
-        # mode = mode if mode is not None else gl.GL_POINTS
-        vao.transform(
-            buffer,
-            mode=program.geometry_input,
-            output_mode=program.geometry_output,
-            first=first,
-            vertices=vertices or self._num_vertices,
-            instances=instances,
-            buffer_offset=buffer_offset,
-        )
+        if program._varyings_capture_mode == "interleaved":
+            if not isinstance(buffer, Buffer):
+                raise ValueError(
+                    (
+                        "Buffer must be a single Buffer object "
+                        f"because the capture mode of the program is: {program.varyings_capture_mode}"
+                    )
+                )
+            vao.transform_interleaved(
+                buffer,
+                mode=program.geometry_input,
+                output_mode=program.geometry_output,
+                first=first,
+                vertices=vertices or self._num_vertices,
+                instances=instances,
+                buffer_offset=buffer_offset,
+            )
+        else:
+            if not isinstance(buffer, list):
+                raise ValueError(
+                    (
+                        "buffer must be a list of Buffer object "
+                        f"because the capture mode of the program is: {program.varyings_capture_mode}"
+                    )
+                )
+            vao.transform_separate(
+                buffer,
+                mode=program.geometry_input,
+                output_mode=program.geometry_output,
+                first=first,
+                vertices=vertices or self._num_vertices,
+                instances=instances,
+                buffer_offset=buffer_offset,
+            )
 
     def flush(self) -> None:
         """

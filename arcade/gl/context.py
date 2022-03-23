@@ -195,7 +195,8 @@ class Context:
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
         self.gc_mode = gc_mode
-        #: Collected objects to gc when gc_mode is "context_gc"
+        #: Collected objects to gc when gc_mode is "context_gc".
+        #: This can be used during debugging.
         self.objects: Deque[Any] = deque()
 
     @property
@@ -242,6 +243,15 @@ class Context:
         """
         Get the stats instance containing runtime information
         about creation and destruction of OpenGL objects.
+
+        Example::
+
+            >> ctx.limits.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.limits.VENDOR
+            NVIDIA Corporation
+            >> ctx.limits.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
         """
         return self._stats
 
@@ -508,7 +518,9 @@ class Context:
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
         box is enabled when setting a value and disabled when
-        set to ``None``
+        set to ``None``.
+
+        Example::
 
             # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
@@ -550,12 +562,17 @@ class Context:
             ADDITIVE_BLENDING    # (ONE, ONE)
             PREMULTIPLIED_ALPHA  # (SRC_ALPHA, ONE)
 
-        The constants can be accessed in the ``arcade.gl``
+        These enums can be accessed in the ``arcade.gl``
         module or simply as attributes of the context object.
+        The raw enums from ``pyglet.gl`` can also be used.
 
         Example::
 
+            # Using constants from the context object
             ctx.blend_func = ctx.ONE, ctx.ONE
+            # from the gl module
+            from arcade import gl
+            ctx.blend_func = gl.ONE, gl.One
 
         :type: tuple (src, dst)
         """
@@ -593,7 +610,7 @@ class Context:
     @property
     def point_size(self) -> float:
         """
-        float: Set/get the point size.
+        Set or get the point size. Default is `1.0`.
 
         Point size changes the pixel size of rendered points. The min and max values
         are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
@@ -616,7 +633,14 @@ class Context:
 
     @property
     def primitive_restart_index(self) -> int:
-        """Get or set the primitive restart index. Default is -1"""
+        """
+        Get or set the primitive restart index. Default is ``-1``.
+
+        The primitive restart index can be used in index buffers
+        to restart a primitive. This is for example useful when you
+        use triangle strips or line strips and want to start on
+        a new strip in the same buffer / draw call.
+        """
         return self._primitive_restart_index
 
     @primitive_restart_index.setter
@@ -633,7 +657,7 @@ class Context:
         """
         gl.glFinish()
 
-    def flush(self):
+    def flush(self) -> None:
         """
         A suggestion to the driver to execute all the queued
         drawing calls even if the queue is not full yet.
@@ -785,16 +809,82 @@ class Context:
         index_element_size: int = 4,
     ):
         """
-        Create a Geomtry instance.
+        Create a Geomtry instance. This is Arcade's version of a vertex array adding
+        a lot of convenice for the user. Geometry objects are fairly light. They are
+        mainly responsible for automatically map buffer inputs to your shader(s)
+        and provide various methods for rendering or processing this geometry,
+
+        The same geometry can be rendered with different
+        programs as long as your shader is using one or more of the input attribute.
+        This means geometry with positions and colors can be rendered with a program
+        only using the positions. We will automatically map what is necessary and
+        cache these mappings internally for performace.
+
+        In short, the geometry object is a light object that describes what buffers
+        contains and automatically negotiate with shaders/programs. This is a very
+        complex field in OpenGL so the Geometry object provides substantial time
+        savings and greatly reduces the complexity of your code.
+
+        Geometry also provide rendering methods supporting the following:
+
+        * Rendering geometry with and without index buffer
+        * Rendering your geometry using instancing. Per instance buffers can be provided
+          or the current instance can be looked up using ``gl_InstanceID`` in shaders.
+        * Running transform feedback shaders that writes to buffers instead the screen.
+          This can write to one or multiple buffer.
+        * Render your geometry with indirect rendering. This means packing
+          multiple meshes into the same buffer(s) and batch drawing them.
+
+        Examples::
+
+            # Single buffer geometry with a vec2 vertex position attribute
+            ctx.geometry([BufferDescription(buffer, '2f', ["in_vert"])], mode=ctx.TRIANGLES)
+
+            # Single interlaved buffer with two attributes. A vec2 position and vec2 velocity
+            ctx.geometry([
+                    BufferDescription(buffer, '2f 2f', ["in_vert", "in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Geometry with index buffer
+            ctx.geometry(
+                [BufferDescription(buffer, '2f', ["in_vert"])],
+                index_buffer=ibo,
+                mode=ctx.TRIANGLES,
+            )
+
+            # Separate buffers
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_vel, '2f', ["in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Providing per-instance data for instancing
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_instance_pos, '2f', ["in_offset"], instanced=True)
+                ],
+                mode=ctx.POINTS,
+            )
 
         :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
         :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of the index buffer type.
+        :param int index_element_size: Byte size of a single index/element in the index buffer.
+                                       In other words, the index buffer can be 8, 16 or 32 bit integers.
                                        Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
+        return Geometry(
+            self,
+            content,
+            index_buffer=index_buffer,
+            mode=mode,
+            index_element_size=index_element_size,
+        )
 
     def program(
         self,
@@ -804,7 +894,9 @@ class Context:
         geometry_shader: str = None,
         tess_control_shader: str = None,
         tess_evaluation_shader: str = None,
-        defines: Dict[str, str] = None
+        defines: Dict[str, str] = None,
+        varyings: Optional[Sequence[str]] = None,
+        varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
@@ -814,6 +906,14 @@ class Context:
         :param str tess_control_shader: tessellation control shader source (optional)
         :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
         :param dict defines: Substitute #defines values in the source (optional)
+        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+                                                 This is normally not necessary since we auto detect them,
+                                                 but some more complex out structures we can't detect.
+        :param str varyings_capture_mode: The capture mode for transforms.
+                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
+                                          ``"separate"`` means each out attribute will be written separate buffers.
+                                          Based on these settings the `transform()` method will accept a single
+                                          buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
@@ -840,8 +940,8 @@ class Context:
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
-        out_attributes = []  # type: List[str]
-        if not source_fs:
+        out_attributes = list(varyings) if varyings is not None else []  # type: List[str]
+        if not source_fs and not out_attributes:
             if source_geo:
                 out_attributes = source_geo.out_attributes
             else:
@@ -862,7 +962,8 @@ class Context:
             tess_evaluation_shader=source_te.get_source(defines=defines)
             if source_te
             else None,
-            out_attributes=out_attributes,
+            varyings=out_attributes,
+            varyings_capture_mode=varyings_capture_mode,
         )
 
     def query(self, *, samples=True, time=True, primitives=True):
@@ -892,14 +993,21 @@ class ContextStats:
     """
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
-        # (created, freed)
+        #: Textures (created, freed)
         self.texture = (0, 0)
+        #: Framebuffers (created, freed)
         self.framebuffer = (0, 0)
+        #: Buffers (created, freed)
         self.buffer = (0, 0)
+        #: Programs (created, freed)
         self.program = (0, 0)
+        #: Vertex Arrays (created, freed)
         self.vertex_array = (0, 0)
+        #: Geometry (created, freed)
         self.geometry = (0, 0)
+        #: Compute Shaders (created, freed)
         self.compute_shader = (0, 0)
+        #: Queries (created, freed)
         self.query = (0, 0)
 
     def incr(self, key: str) -> None:

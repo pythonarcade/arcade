@@ -215,7 +215,8 @@ class PhysicsEngineSimple:
     started with this engine than more sophisticated engines like PyMunk.
 
     :param Sprite player_sprite: The moving sprite
-    :param SpriteList walls: The sprites it can't move through
+    :param  Union[SpriteList, Iterable[SpriteList] walls: The sprites it can't move through.
+        This can be one or multiple spritelists.
     """
 
     def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, Iterable[SpriteList]]):
@@ -224,12 +225,13 @@ class PhysicsEngineSimple:
         """
         assert(isinstance(player_sprite, Sprite))
 
-        if isinstance(walls, SpriteList):
-            self.walls = [walls]
-        elif isinstance(walls, list):
-            self.walls = list(walls)
+        if walls:
+            if isinstance(walls, SpriteList):
+                self.walls = [walls]
+            else:
+                self.walls = list(walls)
         else:
-            raise ValueError("Unsupported wall type. Must be SpriteList or list of SpriteLists")
+            self.walls = []
 
         self.player_sprite = player_sprite
 

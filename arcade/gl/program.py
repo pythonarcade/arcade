@@ -43,19 +43,27 @@ class Program:
     :param str geometry_shader: geometry shader source
     :param str tess_control_shader: tessellation control shader source
     :param str tess_evaluation_shader: tessellation evaluation shader source
-    :param List[str] out_attributes: List of out attributes used in transform feedback.
+    :param List[str] varyings: List of out attributes used in transform feedback.
+    :param str varyings_capture_mode: The capture mode for transforms.
+                                        ``"interleaved"`` means all out attribute will be written to a single buffer.
+                                        ``"separate"`` means each out attribute will be written separate buffers.
+                                        Based on these settings the `transform()` method will accept a single
+                                        buffer or a list of buffer.
     """
 
     __slots__ = (
         "_ctx",
         "_glo",
         "_uniforms",
-        "_out_attributes",
+        "_varyings",
+        "_varyings_capture_mode",
         "_geometry_info",
         "_attributes",
         "attribute_key",
         "__weakref__",
     )
+
+    _valid_capture_modes = ("interleaved", "separate")
 
     def __init__(
         self,
@@ -66,18 +74,26 @@ class Program:
         geometry_shader: str = None,
         tess_control_shader: str = None,
         tess_evaluation_shader: str = None,
-        out_attributes: List[str] = None,
+        varyings: List[str] = None,
+        varyings_capture_mode: str = "interleaved",
     ):
         """Create a Program."""
 
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
-        self._out_attributes = out_attributes or []
+        self._varyings = varyings or []
+        self._varyings_capture_mode = varyings_capture_mode.strip().lower()
         self._geometry_info = (0, 0, 0)
         self._attributes = []  # type: List[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
         self._uniforms: Dict[str, Uniform] = {}
+
+        if self._varyings_capture_mode not in self._valid_capture_modes:
+            raise ValueError(
+                f"Invalid capture mode '{self._varyings_capture_mode}'. "
+                f"Valid modes are: {self._valid_capture_modes}."
+            )
 
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
@@ -97,7 +113,7 @@ class Program:
 
         # For now we assume varyings can be set up if no fragment shader
         if not fragment_shader:
-            self._setup_out_attributes()
+            self._configure_varyings()
 
         Program.link(self._glo)
         if geometry_shader:
@@ -159,13 +175,34 @@ class Program:
         return self._attributes
 
     @property
-    def out_attributes(self) -> List[str]:
+    def varyings(self) -> List[str]:
         """
         Out attributes names used in transform feedback
 
         :type: list of str
         """
-        return self._out_attributes
+        return self._varyings
+
+    @property
+    def out_attributes(self) -> List[str]:
+        """
+        Out attributes names used in transform feedback.
+
+        .. Warning:: Old alias for ``varyings``. May be removed in the future.
+
+        :type: list of str
+        """
+        return self._varyings
+
+    @property
+    def varyings_capture_mode(self) -> str:
+        """
+        Get the capture more for transform feedback (single, multiple).
+
+        This is a read only property since capture mode
+        can only be set before the program is linked.
+        """
+        return self._varyings_capture_mode
 
     @property
     def geometry_input(self) -> int:
@@ -249,26 +286,29 @@ class Program:
             gl.glUseProgram(self._glo)
             self._ctx.active_program = self
 
-    def _setup_out_attributes(self):
+    def _configure_varyings(self):
         """Set up transform feedback varyings"""
-        if not self._out_attributes:
+        if not self._varyings:
             return
 
         # Covert names to char**
-        c_array = (c_char_p * len(self._out_attributes))()
-        for i, name in enumerate(self._out_attributes):
+        c_array = (c_char_p * len(self._varyings))()
+        for i, name in enumerate(self._varyings):
             c_array[i] = name.encode()
 
         ptr = cast(c_array, POINTER(POINTER(c_char)))
 
-        # NOTE: We only support interleaved attributes for now
+        # Are we capturing in interlaved or separate buffers?
+        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" \
+            else gl.GL_SEPARATE_ATTRIBS
+
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
             len(
-                self._out_attributes
+                self._varyings
             ),  # number of varying variables used for transform feedback
             ptr,  # zero-terminated strings specifying the names of the varying variables
-            gl.GL_INTERLEAVED_ATTRIBS,
+            mode,
         )
 
     def _introspect_attributes(self):

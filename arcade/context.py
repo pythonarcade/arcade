@@ -254,7 +254,7 @@ class ArcadeContext(Context):
         Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
 
-        :type: Mat4
+        :type: pyglet.math.Mat4
         """
         return self._projection_2d_matrix
 
@@ -356,7 +356,12 @@ class ArcadeContext(Context):
 
     def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
         """
-        Loads a compute shader.
+        Loads a compute shader from file. This methods supports
+        resource handles.
+
+        Example::
+
+            ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         :param Union[str,pathlib.Path] path: Path to texture
         """
@@ -371,12 +376,16 @@ class ArcadeContext(Context):
         flip: bool = True,
         build_mipmaps: bool = False,
     ) -> Texture:
-        """Loads and creates an OpenGL 2D texture.
-        Currently all textures are converted to RGBA.
+        """
+        Loads and creates an OpenGL 2D texture.
+        Currently all textures are converted to RGBA for simplicity.
 
         Example::
 
+            # Load a texture in current working directory
             texture = window.ctx.load_texture("background.png")
+            # Load a texture using Arcade resource handle
+            texture = window.ctx.load_texture(":textures:background.png")
 
         :param Union[str,pathlib.Path] path: Path to texture
         :param bool flip: Flips the image upside down
