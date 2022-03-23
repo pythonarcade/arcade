@@ -54,7 +54,7 @@ else:
 import pyglet
 
 # Env variable shortcut for headless mode
-if not os.environ.get('ARCADE_HEADLESS'):
+if os.environ.get('ARCADE_HEADLESS'):
     pyglet.options["headless"] = True
 
 # Disable shadow windows until issues with intel GPUs
