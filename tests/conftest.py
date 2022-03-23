@@ -10,7 +10,7 @@ WINDOW = None
 def create_window():
     global WINDOW
     if not WINDOW:
-        WINDOW = arcade.Window(title="Testing", vsync=False)
+        WINDOW = arcade.Window(title="Testing", vsync=False, antialiasing=False)
     return WINDOW
 
 
