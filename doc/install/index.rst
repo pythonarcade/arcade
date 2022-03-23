@@ -5,7 +5,7 @@ Installation Instructions
 
 Arcade runs on Windows, Mac OS X, and Linux.
 
-Arcade requires Python 3.6 or newer. It does not run on Python 2.x.
+Arcade requires Python 3.7 or newer. It does not run on Python 2.x.
 
 Select the instructions for your platform:
 
@@ -17,3 +17,5 @@ Select the instructions for your platform:
    mac
    linux
    source
+   obsolete
+
