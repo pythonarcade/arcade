@@ -53,8 +53,8 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# Not sure if this is generic enough
-if not os.environ.get('DISPLAY'):
+# Env variable shortcut for headless mode
+if not os.environ.get('ARCADE_HEADLESS'):
     pyglet.options["headless"] = True
 
 # Disable shadow windows until issues with intel GPUs
@@ -244,6 +244,7 @@ from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
 from .isometric import screen_to_isometric_grid
 
+# We don't have joysticks game controllers in headless mode
 if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks

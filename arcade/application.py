@@ -166,12 +166,12 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
-            
+
             self.keyboard = pyglet.window.key.KeyStateHandler()
-            
+
             if pyglet.options["headless"]:
                 self.push_handlers(self.keyboard)
-                
+
             else:
                 self.mouse = pyglet.window.mouse.MouseStateHandler()
                 self.push_handlers(self.keyboard, self.mouse)
