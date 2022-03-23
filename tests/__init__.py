@@ -1,7 +1,6 @@
-# import pytest
-
-# pytest.main(["-x", "tests/unit2"])
+import os
 
 # Headless mode
-import pyglet
-pyglet.options["headless"] = True
+if os.environ.get("ARCADE_HEADLESS_TEST"):
+    import pyglet
+    pyglet.options["headless"] = True
