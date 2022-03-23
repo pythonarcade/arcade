@@ -9,6 +9,8 @@ Release Checklist
 #. Make sure ``arcade/examples/asteroid_smasher.py`` is playable.
 #. Make sure ``arcade/examples/platform_tutorial/17_views.py`` is playable.
 #. Update version number in  ``arcade/version.py``
+#. Update :ref:`release_notes` with release dates and any additional
+   info needed.
 #. Make sure last check-in ran clean on github actions, viewable on Discord
 #. Merge development branch into maintenance.
 #. Add label to release

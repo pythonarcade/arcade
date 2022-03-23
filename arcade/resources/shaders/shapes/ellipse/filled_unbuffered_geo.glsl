@@ -1,9 +1,9 @@
 #version 330
 
 #define PI 3.1415926535897932384626433832795
-#define MIN_SEGMENTS 3
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
-#define MAX_SEGMENTS 85
+const int MIN_SEGMENTS = 3;
+const int MAX_SEGMENTS = 112;
 
 layout (points) in;
 // TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
@@ -21,7 +21,7 @@ uniform vec3 shape;
 void main() {
     // Get center of the circle
     vec2 center = gl_in[0].gl_Position.xy;
-    int segments_selected = 0;
+    int segments_selected = segments;
 
     // Calculate rotation/tilt
     float angle = radians(shape.z);
@@ -30,15 +30,12 @@ void main() {
         sin(angle),  cos(angle)
     );
 
-    if (segments > 0) {
-        // The user defined number of segments. Clamp it.
-        segments_selected = segments;
-    } else {
+    if (segments_selected < 0) {
         // Estimate the number of segments needed based on size
         float size = max(shape.x, shape.y);
-        if (size <= 4)
+        if (size <= 4.0)
             segments_selected = 4;
-        else if (size <= 16)
+        else if (size <= 16.0)
             segments_selected = 16;
         else
             segments_selected = 32;

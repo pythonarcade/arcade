@@ -11,6 +11,7 @@ FrameBuffer
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 DefaultFrameBuffer
 ------------------
@@ -19,3 +20,4 @@ DefaultFrameBuffer
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
