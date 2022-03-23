@@ -433,6 +433,9 @@ class TileMap:
         if tile.type:
             my_sprite.properties["type"] = tile.type
 
+        # Add tile ID to sprite properties
+        my_sprite.properties["tile_id"] = tile.id
+
         if tile.objects is not None:
             if not isinstance(tile.objects, pytiled_parser.ObjectLayer):
                 print("Warning, tile.objects is not an ObjectLayer as expected.")
