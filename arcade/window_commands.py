@@ -97,7 +97,12 @@ def get_window() -> "Window":
     :return: Handle to the current window.
     """
     if _window is None:
-        raise RuntimeError("No window is active. Use set_window() to set an active window")
+        raise RuntimeError(
+            (
+                "No window is active. "
+                "It has not been created yet, or it was closed."
+            )
+        )
 
     return _window
 
@@ -233,12 +238,34 @@ def run():
     After the window has been set up, and the event hooks are in place, this is usually one of the last
     commands on the main program.
     """
-    if 'ARCADE_TEST' in os.environ and os.environ['ARCADE_TEST'].upper() == "TRUE":
-        # print("Testing!!!")
-        window = get_window()
+    window = get_window()
+
+    # Used in some unit test
+    if os.environ.get('ARCADE_TEST'):       
         if window:
             window.on_update(1 / 60)
             window.on_draw()
+    elif window.headless:
+        # We are entering headless more an will emulate an event loop
+        import time
+        # Ensure the initial delta time is not 0 to be
+        # more in line with how a normal window works.
+        delta_time = 1 / 60
+        last_time = time.perf_counter()
+
+        # As long as we have a context --
+        while window._context:
+            window.on_update(delta_time)
+            # windwow could be closed in on_update
+            if window._context:
+                window.on_draw()
+            # windwow could be closed in on_draw
+            if window._context:
+                window.flip()
+
+            now = time.perf_counter()
+            delta_time, last_time = now - last_time, now
+
     else:
         import sys
         if sys.platform != 'win32':

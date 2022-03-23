@@ -98,6 +98,9 @@ class Window(pyglet.window.Window):
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
+        #: bool: If this is a headless window
+        self.headless = pyglet.options.get("headless") is True
+
         config = None
         # Attempt to make window with antialiasing
         if antialiasing:
@@ -726,8 +729,13 @@ class Window(pyglet.window.Window):
         super().dispatch_events()
 
 
-def open_window(width: int, height: int, window_title: str, resizable: bool = False,
-                antialiasing: bool = True) -> Window:
+def open_window(
+    width: int,
+    height: int,
+    window_title: Optional[str] = None,
+    resizable: bool = False,
+    antialiasing: bool = True,
+) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
