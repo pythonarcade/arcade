@@ -1,5 +1,3 @@
-import sys
-
 shapely_exists = False
 
 try:
