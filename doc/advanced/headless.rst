@@ -2,16 +2,23 @@
 Headless Arcade
 ===============
 
-Introduction
-------------
+.. contents::
 
-Arcade can render in headless mode on Linux servers with EGL installed.
-This should work both in a destop environment and on servers and even
+For some applications, it may be that we want to run Arcade, but not open
+up a window. We might want to draw to a buffer and save an image to be
+used in a server or data science visualization. In remote cloud operations,
+we might not even have a monitor for the computer. Running Arcade this way
+is called headless mode.
+
+Arcade can render in `headless mode <https://en.wikipedia.org/wiki/Headless_software>`_
+on Linux servers with
+`EGL <https://en.wikipedia.org/wiki/EGL_(API)>`_ installed.
+This should work both in a desktop environment and on servers and even
 in virtual machines. Both software and hardware rendering should
 be acceptable depending on your use case.
 We are leveraging the headless mode in pyglet.
 
-Enabling Headless Mode
+Enabling headless mode
 ----------------------
 
 Headless mode needs to be configured **before** arcade is imported.
@@ -71,10 +78,13 @@ created through the :py:class:`~arcade.ArcadeContext` if needed.
 Examples
 --------
 
-There are two recommended approaches.
+There are two recommended approaches: :ref:`simple_headless_approach`
+and :ref:`extend_arcade_window_headless`.
 
-Simple
-~~~~~~
+.. _simple_headless_approach:
+
+Simple headless mode
+~~~~~~~~~~~~~~~~~~~~
 
 For simpler applications we don't need to subclass the window. 
 
@@ -98,12 +108,14 @@ For simpler applications we don't need to subclass the window.
 You are free to :py:meth:`~arcade.Window.clear` the window and render
 new contents at any time.
 
-Extending Arcade Window
-~~~~~~~~~~~~~~~~~~~~~~~
+.. _extend_arcade_window_headless:
 
-For Arcade users extending the window makes more sense.
+Headless mode while extending the Arcade Window
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For Arcade users extending the window, this method makes more sense.
 The :py:meth:`~arcade.run` method supports headless
-mode and will emulate pyglet's event loop by calling
+mode and will emulate Pyglet's event loop by calling
 ``on_update``, ``on_draw`` and ``flip()`` (swap buffers)
 in a loop until you close the window.
 
@@ -152,7 +164,7 @@ resources every frame.
 Advanced
 --------
 
-The lower level rendering API is of course still avaialble
+The lower level rendering API is of course still available
 through :py:attr:`arcade.Window.ctx`.
 
 Issues?
