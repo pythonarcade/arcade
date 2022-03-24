@@ -16,7 +16,9 @@ on Linux servers with
 This should work both in a desktop environment and on servers and even
 in virtual machines. Both software and hardware rendering should
 be acceptable depending on your use case.
-We are leveraging the headless mode in pyglet.
+
+We are leveraging the headless mode in pyglet. If you are seeking knowledege
+about the inner workings of headless, that's the right place to look.
 
 Enabling headless mode
 ----------------------
@@ -39,6 +41,19 @@ This of course also means you can configure headless externally.
 .. code:: bash
 
     $ export ARCADE_HEADLESS=True
+
+To quickly check the enviroment such as renderer and versions::
+
+    $ python -m arcade
+
+    Arcade 2.6.12
+    -------------
+    vendor: AMD
+    renderer: AMD Radeon(TM) Vega 11 Graphics (RAVEN, DRM 3.41.0, 5.13.0-37-generic, LLVM 12.0.0)
+    version: (4, 6)
+    python: 3.9.9 (main, Dec 20 2021, 08:19:16) 
+    [GCC 9.3.0]
+    platform: linux
 
 How is this affecting my code?
 ------------------------------
@@ -165,7 +180,22 @@ Advanced
 --------
 
 The lower level rendering API is of course still available
-through :py:attr:`arcade.Window.ctx`.
+through :py:attr:`arcade.Window.ctx`. It exposes methods
+to create framebuffers, textures, shaders (including compute shaders)
+and other higher level wrappers over OpenGL types.
+
+When working in a multi-gpu environment you can also select
+a specific device id. This is 0 by default and must be set
+before the window is created. These device ids usually refers
+to a physical device (graphics card) or a virtual card/device.
+
+.. code:: py
+
+    # Default setting
+    pyglet.options['headless_device'] = 0
+
+    # Use the second gpu/device
+    pyglet.options['headless_device'] = 1
 
 Issues?
 -------
