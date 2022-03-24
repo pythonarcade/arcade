@@ -269,6 +269,7 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Advanced
 
+   advanced/headless
    advanced/vsync
    advanced/textures
    advanced/texture_atlas
