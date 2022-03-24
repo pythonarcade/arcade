@@ -254,18 +254,20 @@ def run():
         last_time = time.perf_counter()
 
         # As long as we have a context --
-        while window._context:
-            window.on_update(delta_time)
-            # windwow could be closed in on_update
-            if window._context:
-                window.on_draw()
+        while window.context:
+            # Select active view or window
+            active = window.current_view or window
+
+            active.on_update(delta_time)
+            if window.context:
+                active.on_draw()
+
             # windwow could be closed in on_draw
-            if window._context:
+            if window.context:
                 window.flip()
 
             now = time.perf_counter()
             delta_time, last_time = now - last_time, now
-
     else:
         import sys
         if sys.platform != 'win32':
