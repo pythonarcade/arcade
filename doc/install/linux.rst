@@ -1,8 +1,8 @@
 Installation on Linux
 =====================
 
-The Arcade library is Python 3.6+ only. First check your version of Python to ensure
-you have 3.6 or higher:
+The Arcade library is Python 3.7+ only. First check your version of Python to ensure
+you have 3.7 or higher:
 
 .. code-block:: bash
 
@@ -14,10 +14,10 @@ If your version shows Python 2.X then try running with:
     
     python3 -V
 
-If that works and shows you Python 3.6+, then anytime you see the ``python`` command, replace it with ``python3``.
+If that works and shows you Python 3.7+, then anytime you see the ``python`` command, replace it with ``python3``.
 
-If you do not have Python 3.6+, please lookup how to install it for your specific distro of Linux.
-For Ubuntu/Debian this would be with the below command, if you did have Python 3.6, you can skip this step:
+If you do not have Python 3.7+, please lookup how to install it for your specific distro of Linux.
+For Ubuntu/Debian this would be with the below command, if you did have Python 3.7, you can skip this step:
 
 .. code-block:: bash
 
@@ -55,3 +55,4 @@ Raspberry Pi Instructions
 
 Arcade required OpenGL graphics 3.3 or higher. Unfortunately the Raspberry Pi
 does not support this, Arcade can not run on the Raspberry Pi.
+
