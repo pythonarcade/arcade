@@ -1,5 +1,6 @@
 import random
 from pathlib import Path
+from pyglet.math import Vec2
 
 import arcade
 from arcade.experimental import Shadertoy
@@ -23,7 +24,7 @@ PLAYING_FIELD_HEIGHT = 1600
 class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, resizable=True)
 
         # The shader toy and 'channels' we'll be using
         self.shadertoy = None
@@ -38,12 +39,20 @@ class MyGame(arcade.Window):
         self.bomb_list = arcade.SpriteList()
         self.physics_engine = None
 
+        # Create cameras used for scrolling
+        self.camera_sprites = arcade.Camera(width, height)
+        self.camera_gui = arcade.Camera(width, height)
+
         self.generate_sprites()
+
+        # Our sample GUI text
+        self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 24)
+
         arcade.set_background_color(arcade.color.ARMY_GREEN)
 
     def load_shader(self):
         # Where is the shader file? Must be specified as a path.
-        shader_file_path = Path("step_03.glsl")
+        shader_file_path = Path("step_06.glsl")
 
         # Size of the window
         window_size = self.get_size()
@@ -96,7 +105,15 @@ class MyGame(arcade.Window):
         # Physics engine, so we don't run into walls
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
+        # Start centered on the player
+        self.scroll_to_player(1.0)
+        self.camera_sprites.update()
+
+
     def on_draw(self):
+        # Use our scrolled camera
+        self.camera_sprites.use()
+
         # Select the channel 0 frame buffer to draw on
         self.channel0.use()
         self.channel0.clear()
@@ -112,12 +129,29 @@ class MyGame(arcade.Window):
         self.use()
         # Clear to background color
         self.clear()
-        # Run the shader and render to the window
-        self.shadertoy.program['lightPosition'] = self.player_sprite.position
+
+        # Calculate the light position. We have to subtract the camera position
+        # from the player position to get screen-relative coordinates.
+        p = (self.player_sprite.position[0] - self.camera_sprites.position[0],
+             self.player_sprite.position[1] - self.camera_sprites.position[1])
+
+        # Set the uniform data
+        self.shadertoy.program['lightPosition'] = p
         self.shadertoy.program['lightSize'] = 300
+
+        # Run the shader and render to the window
         self.shadertoy.render()
+
+        # Draw the walls
+        self.wall_list.draw()
+
         # Draw the player
         self.player_list.draw()
+
+        # Switch to the un-scrolled camera to draw the GUI with
+        self.camera_gui.use()
+        # Draw our sample GUI text
+        self.score_text.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -145,6 +179,27 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+        # Scroll the screen to the player
+        self.scroll_to_player()
+
+    def scroll_to_player(self, speed=CAMERA_SPEED):
+        """
+        Scroll the window to the player.
+
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
+
+        position = Vec2(self.player_sprite.center_x - self.width / 2,
+                        self.player_sprite.center_y - self.height / 2)
+        self.camera_sprites.move_to(position, speed)
+
+    def on_resize(self, width: float, height: float):
+        super().on_resize(width, height)
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
+        self.shadertoy.resize((width, height))
 
 
 if __name__ == "__main__":

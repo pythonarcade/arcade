@@ -23,7 +23,7 @@ PLAYING_FIELD_HEIGHT = 1600
 class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+        super().__init__(width, height, title)
 
         # The shader toy and 'channels' we'll be using
         self.shadertoy = None
@@ -99,6 +99,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         # Select the channel 0 frame buffer to draw on
         self.channel0.use()
+        self.channel0.clear()
         # Draw the walls
         self.wall_list.draw()
 
