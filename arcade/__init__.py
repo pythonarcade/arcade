@@ -91,7 +91,6 @@ from .window_commands import get_scaling_factor
 from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
-from .window_commands import quick_run
 from .window_commands import run
 from .window_commands import schedule
 from .window_commands import set_background_color
@@ -544,7 +543,6 @@ __all__ = ['AStarBarrierList',
            'pause',
            'print_timings',
            'play_sound',
-           'quick_run',
            'rand_angle_360_deg',
            'rand_angle_spread_deg',
            'rand_in_circle',
