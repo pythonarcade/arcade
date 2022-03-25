@@ -708,9 +708,16 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    # def set_mouse_platform_visible(self, platform_visible=None):
-    #     """ This does something. """
-    #     super().set_mouse_platform_visible(platform_visible)
+    def set_mouse_platform_visible(self, platform_visible=None):
+        """
+        This method is only exposed/overridden because it causes PyCharm
+        to display a warning. This function is
+        setting the platform specific mouse cursor visibility and
+        would only be something an advanced user would care about.
+
+        See pyglet documentation for details.
+        """
+        super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
         """ Capture the mouse. """
