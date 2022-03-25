@@ -523,13 +523,16 @@ class Text:
     @property
     def position(self) -> Point:
         """
-        The current x, y position as a tuple. This wraps x and y.
+        The current x, y position as a tuple.
+
+        This is faster than setting x and y position separately
+        because the underlying geometry only needs to change position once.
         """
         return self._label.x, self._label.y
 
     @position.setter
     def position(self, point: Point):
-        self._label.x, self._label.y = point
+        self._label.position = point
 
 
 def draw_text(
@@ -738,10 +741,8 @@ def draw_text(
     # These updates are quite expensive
     if label.text != text:
         label.text = str(text)
-    if label.x != start_x:
-        label.x = start_x
-    if label.y != start_y:
-        label.y = start_y
+    if label.x != start_x or label.y != start_y:
+        label.position = start_x, start_y
     if label.color != color:
         label.color = color
 
