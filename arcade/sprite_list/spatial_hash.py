@@ -279,7 +279,7 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
         sprite_list._geometry.transform(  # type: ignore
             ctx.collision_detection_program,
             buffer,
-            vertices=len(sprite_list),
+            vertices=sprite_count,
         )
 
     # Store the number of sprites emitted
