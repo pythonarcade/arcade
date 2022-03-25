@@ -12,7 +12,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Tilemap
 
-  * Rectangle objects which are empty(have no width or height) will not be automatically
+  * Rectangle objects which are empty(have no width or height) will now be automatically
     converted into single points.
   * The Tile ID of a sprite can be access with ``sprite.properties["tile_id"]``. This refers
     to the local ID of the tile within the Tileset. This value can be used to get the tile info 
