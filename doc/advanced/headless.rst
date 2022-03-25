@@ -1,4 +1,6 @@
 
+.. _headless:
+
 Headless Arcade
 ===============
 

@@ -10,6 +10,36 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.13
 ------
 
+* New Features
+
+  * Arcade can now run in headless mode on linux servers opening
+    more possibilities for users in for example the data science
+    community (`#1107 <https://github.com/pythonarcade/arcade/issues/1107>`_).
+    See :ref:`headless` for more information.
+
+* Bugfixes
+
+  * The random text glitching issue especially affecting users with iGPUs
+    is finally resolved in pyglet. For that reason we have upgraded to
+    the pyglet 2.0a2 release.
+  * Fixed an issue causing :py:func:`arcade.draw_circle_filled` and
+    :py:func:`arcade.draw_circle_outline` to always render with 3 segments
+    on some iGPUs.
+  * Fixed an issue causing interactive widgets to unnecessarily re-draw when
+    hovering or pressing them. This could cause performance issues.
+
+* Various Improvements
+
+  * :py:func:`arcade.load_font` now supports resource handles
+  * :py:class:`~arcade.PhysicsEngineSimple` can now take an iterable of wall spritelists
+  * Sprite creation is now ~6-8% faster.
+  * Removed warning about missing shapely on startup
+  * Window titles are now optional. If no window title is specified
+    the title will be the absolute path to the python file it was created in.
+    This was changed because of the new headless mode.
+  * Removed ``arcade.quick_run``. This function had no useful purpose.
+  * Added clear method to UIManager (`#1116 <https://github.com/pythonarcade/arcade/pull/1116>`_)
+
 * Tilemap
 
   * Rectangle objects which are empty(have no width or height) will now be automatically
@@ -20,8 +50,31 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * Docs
 
-  * Added python version support info to install instructions(`#1122 <https://github.com/pythonarcade/arcade/pull/1122>`_)
+  * Added python version support info to install instructions (`#1122 <https://github.com/pythonarcade/arcade/pull/1122>`_)
   * Fixed typo in :py:func:`~arcade.Sprite.append_texture` docstring(`#1126 <https://github.com/pythonarcade/arcade/pull/1126>`_)
+  * Improved the raycasting tutorial (`#1124 <https://github.com/pythonarcade/arcade/issues/1124>`_)
+  * Replace mentions of 3.6 on Linux install page (`#1129 <https://github.com/pythonarcade/arcade/pull/1129>`_)
+  * Fix broken links in the homepage (`#1139 <https://github.com/pythonarcade/arcade/pull/1130>`_)
+  * Lots of other improvements to docstrings throughout the code base
+  * General documentation improvements
+
+* OpenGL
+
+  * :py:class:`arcade.gl.Geometry` now supports transforming to multiple buffers.
+  * Added and improved examples in ``experimental/examples``.
+  * Major improvements to API docs
+
+Special thanks to
+`Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Maic Siemering <https://github.com/eruvanos>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`pvcraven <https://github.com/pvcraven>`_
+and
+`einarf <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
 
 2.6.12
 ------
