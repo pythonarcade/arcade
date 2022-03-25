@@ -64,9 +64,12 @@ pyglet.options['shadow_window'] = False
 pyglet.options['win32_gdi_font'] = True
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
-if not getattr(sys, 'is_pyglet_doc_run', False):
-    pyglet.font.base.Font.texture_width = 4096
-    pyglet.font.base.Font.texture_height = 4096
+# This was only needed with pyglet==2.0dev13 and earlier
+# when we were chasing down a text glitch when new atlases
+# were created (Creating new IndexedVertexDomains)
+# if not getattr(sys, 'is_pyglet_doc_run', False):
+#     pyglet.font.base.Font.texture_width = 4096
+#     pyglet.font.base.Font.texture_height = 4096
 
 # noinspection PyPep8
 from arcade import color
