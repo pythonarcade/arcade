@@ -10,6 +10,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.13
 ------
 
+*Released 2022-Mar-25*
+
 * New Features
 
   * Arcade can now run in headless mode on linux servers opening
@@ -81,7 +83,7 @@ Pyglet's continued development.
 2.6.12
 ------
 
-*2022-Mar-20*
+*Released 2022-Mar-20*
 
 * General:
 
