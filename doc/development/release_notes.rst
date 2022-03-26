@@ -40,6 +40,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     This was changed because of the new headless mode.
   * Removed ``arcade.quick_run``. This function had no useful purpose.
   * Added clear method to UIManager (`#1116 <https://github.com/pythonarcade/arcade/pull/1116>`_)
+  * Updated from Pillow 9.0.0 to 9.0.1
 
 * Tilemap
 
