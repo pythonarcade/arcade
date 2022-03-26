@@ -27,6 +27,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     on some iGPUs.
   * Fixed an issue causing interactive widgets to unnecessarily re-draw when
     hovering or pressing them. This could cause performance issues.
+  * SectionManager's ``on_show_view`` was never called when showing a view
 
 * Various Improvements
 
