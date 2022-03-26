@@ -829,7 +829,11 @@ class View:
         pass
 
     def on_show_view(self):
-        """Called once when the view is shown."""
+        """
+        Called once when the view is shown.
+
+        .. seealso:: :py:meth:`~arcade.View.on_hide_view`
+        """
         pass
 
     def on_hide_view(self):
