@@ -1,5 +1,9 @@
 ## Bug Report
 
+## System Info
+
+Run this and paste the output here: python -m arcade
+
 ### Actual behavior:
 
 ### Expected behavior:
