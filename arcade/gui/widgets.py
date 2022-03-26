@@ -470,7 +470,7 @@ class UIInteractiveWidget(UIWidget):
     def pressed(self, value):
         if self._pressed != value:
             self._pressed = value
-            self.trigger_full_render()
+            self.trigger_render()
 
     @property
     def hovered(self):
@@ -480,7 +480,7 @@ class UIInteractiveWidget(UIWidget):
     def hovered(self, value):
         if value != self._hovered:
             self._hovered = value
-            self.trigger_full_render()
+            self.trigger_render()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseMovementEvent):

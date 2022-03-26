@@ -11,6 +11,7 @@ Program
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 Program Members
 ---------------
@@ -22,6 +23,7 @@ Uniform
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 UniformBlock
 ~~~~~~~~~~~~
@@ -30,3 +32,4 @@ UniformBlock
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource

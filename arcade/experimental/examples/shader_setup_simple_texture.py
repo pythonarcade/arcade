@@ -1,19 +1,18 @@
 """
-A very simple example rendering a fullscreen rectangle
-with a texture doing some simple pixel manipulations.
+A very simple example rendering a textured fullscreen rectangle.
 """
 import arcade
 from arcade.gl import geometry
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Shader Setup With Pixel Manipulation"
+SCREEN_TITLE = "Shader Setup"
 
 
 class ShaderSetup(arcade.Window):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
         self.time = 0
         self.program = self.ctx.program(
             vertex_shader="""
@@ -49,7 +48,6 @@ class ShaderSetup(arcade.Window):
 
             // A sampler that can read a texture from a channel
             uniform sampler2D background;
-            uniform float time;
 
             // Texture coordinate from the vertex shader
             in vec2 v_uv;
@@ -58,16 +56,8 @@ class ShaderSetup(arcade.Window):
             out vec4 out_color;
 
             void main() {
-                // Let's manipulate the texture coordinates to make some distortion
-                // We are trying to make some waves moving from the center.
-                // It's too important that you understand the details of this distortion.
-                vec2 pos = v_uv - vec2(0.5);
-                float dist = length(pos);
-                vec2 direction = normalize(pos);
-                vec2 uv = v_uv + (direction * (sin(dist * 50 - time) - 0.5)) * 0.25;
-
-                // Read a pixel using the distorted texture coordinates and write to screen
-                out_color = texture(background, uv);
+                // Read a pixel from current texture coordinate and write that to the screen.
+                out_color = texture(background, v_uv);
             }
             """
         )
@@ -82,15 +72,10 @@ class ShaderSetup(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        # Update the current time in the shader uniform
-        self.program["time"] = self.time * 3
         # Bind the texture channel 0 (we configured the sampler to use channel 0)
         self.texture.use(0)
         # Draw the geometry using the program
         self.quad.render(self.program)
 
-    def on_update(self, dt):
-        self.time += dt
 
-
-ShaderSetup(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
+ShaderSetup().run()

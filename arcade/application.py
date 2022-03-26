@@ -8,6 +8,7 @@ import time
 from typing import Tuple, Optional
 
 import pyglet
+
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
 
@@ -74,28 +75,31 @@ class Window(pyglet.window.Window):
     """
 
     def __init__(
-            self,
-            width: int = 800,
-            height: int = 600,
-            title: str = 'Arcade Window',
-            fullscreen: bool = False,
-            resizable: bool = False,
-            update_rate: Optional[float] = 1 / 60,
-            antialiasing: bool = True,
-            gl_version: Tuple[int, int] = (3, 3),
-            screen: pyglet.canvas.Screen = None,
-            style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
-            visible: bool = True,
-            vsync: bool = False,
-            gc_mode: str = "context_gc",
-            center_window: bool = False,
-            samples: int = 4,
-            enable_polling: bool = True
+        self,
+        width: int = 800,
+        height: int = 600,
+        title: Optional[str] = 'Arcade Window',
+        fullscreen: bool = False,
+        resizable: bool = False,
+        update_rate: Optional[float] = 1 / 60,
+        antialiasing: bool = True,
+        gl_version: Tuple[int, int] = (3, 3),
+        screen: pyglet.canvas.Screen = None,
+        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+        visible: bool = True,
+        vsync: bool = False,
+        gc_mode: str = "context_gc",
+        center_window: bool = False,
+        samples: int = 4,
+        enable_polling: bool = True
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
+
+        #: bool: If this is a headless window
+        self.headless = pyglet.options.get("headless") is True
 
         config = None
         # Attempt to make window with antialiasing
@@ -165,9 +169,15 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
+
             self.keyboard = pyglet.window.key.KeyStateHandler()
-            self.mouse = pyglet.window.mouse.MouseStateHandler()
-            self.push_handlers(self.keyboard, self.mouse)
+
+            if pyglet.options["headless"]:
+                self.push_handlers(self.keyboard)
+
+            else:
+                self.mouse = pyglet.window.mouse.MouseStateHandler()
+                self.push_handlers(self.keyboard, self.mouse)
         else:
             self.keyboard = None
             self.mouse = None
@@ -610,7 +620,7 @@ class Window(pyglet.window.Window):
         self._current_view.on_show()
         self._current_view.on_show_view()
         if self._current_view.has_sections:
-            self._current_view.on_show_view()
+            self._current_view.section_manager.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -698,9 +708,16 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    # def set_mouse_platform_visible(self, platform_visible=None):
-    #     """ This does something. """
-    #     super().set_mouse_platform_visible(platform_visible)
+    def set_mouse_platform_visible(self, platform_visible=None):
+        """
+        This method is only exposed/overridden because it causes PyCharm
+        to display a warning. This function is
+        setting the platform specific mouse cursor visibility and
+        would only be something an advanced user would care about.
+
+        See pyglet documentation for details.
+        """
+        super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
         """ Capture the mouse. """
@@ -719,8 +736,13 @@ class Window(pyglet.window.Window):
         super().dispatch_events()
 
 
-def open_window(width: int, height: int, window_title: str, resizable: bool = False,
-                antialiasing: bool = True) -> Window:
+def open_window(
+    width: int,
+    height: int,
+    window_title: Optional[str] = None,
+    resizable: bool = False,
+    antialiasing: bool = True,
+) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because

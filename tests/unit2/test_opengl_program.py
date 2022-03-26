@@ -246,10 +246,9 @@ def test_link_failed(ctx):
         )
 
 
-def test_out_attributes(ctx):
-    # Uniform testing
-    program = ctx.program(
-        vertex_shader="""
+def test_varyings(ctx):
+    """Test varyings"""
+    src = """
         #version 330
         in vec2 in_pos;
         in vec2 in_velocity;
@@ -260,9 +259,12 @@ def test_out_attributes(ctx):
             out_pos = in_pos + vec2(1.0);
             out_velocity = in_pos * 0.99;
         }
-        """,
+    """
+
+    program = ctx.program(
+        vertex_shader=src,
     )
-    assert program.out_attributes == ['out_pos', 'out_velocity']
+    assert program.varyings == ['out_pos', 'out_velocity']
 
     if ctx.gl_version >= (4, 1):
         program = ctx.program(
@@ -279,7 +281,23 @@ def test_out_attributes(ctx):
             }
             """,
         )
-        assert program.out_attributes == ['out_pos', 'out_velocity']
+        assert program.varyings == ['out_pos', 'out_velocity']
+
+    # Illegal varying names
+    with pytest.raises(ShaderException):
+        ctx.program(vertex_shader=src, varyings=["somthing", "stuff"])
+
+    # Mapping one of two varyings
+    program = ctx.program(vertex_shader=src, varyings=["out_pos"])
+    assert program.varyings == ['out_pos']
+    program = ctx.program(vertex_shader=src, varyings=["out_velocity"])
+    assert program.varyings == ['out_velocity']
+
+    # Configure capture mode
+    program = ctx.program(vertex_shader=src, varyings_capture_mode="interleaved")
+    assert program.varyings_capture_mode == "interleaved"
+    program = ctx.program(vertex_shader=src, varyings_capture_mode="separate")
+    assert program.varyings_capture_mode == "separate"
 
 
 def test_uniform_block(ctx):

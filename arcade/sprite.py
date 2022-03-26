@@ -306,7 +306,7 @@ class Sprite:
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        :param arcade.Texture texture: Texture to add ot the list of available textures
+        :param arcade.Texture texture: Texture to add to the list of available textures
 
         """
         self.textures.append(texture)
@@ -418,7 +418,7 @@ class Sprite:
                 point = rotate_point(point[0], point[1], 0, 0, self._angle)
 
             # Get a copy of the point
-            point = [point[0] * self._scale + self.position[0], point[1] * self._scale + self.position[1]]
+            point = [point[0] * self._scale + self._position[0], point[1] * self._scale + self._position[1]]
 
             return point
 

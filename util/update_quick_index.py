@@ -213,6 +213,7 @@ def process_directory(directory, quick_index_file):
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write(f"    :members:\n")
+                # api_file.write(f"    :member-order: groupwise\n")
 
                 # Include inherited members
                 if full_class_name in ("arcade.ArcadeContext",):

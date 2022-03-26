@@ -2,6 +2,7 @@
 Drawing text with pyglet label
 """
 import math
+from pathlib import Path
 from typing import Any, Tuple, Union
 
 import arcade
@@ -12,24 +13,27 @@ from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
 
 
-def load_font(font_name) -> None:
+def load_font(path: Union[str, Path]) -> None:
     """
-    Load a font for later use.
+    Load fonts in a file (usually .ttf) adding them to a global font registry.
 
+    A file can contain one or multiple fonts. Each font has a name.
+    Open the font file to find the actually name(s). These names
+    are used to select font when drawing text.
+
+    Examples::
+
+        # Load a font in the current working directory
+        # (absolute path is often better)
+        arcade.load_font("Custom.ttf")
+        # Load a font using a custom resource handle
+        arcade.load_font(":font:Custom.ttf")
 
     :param font_name:
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
-    # search resources folder for the named font, and error if it doesn't exist
-    if font_name.startswith(":resources:"):
-        try:
-            file_path = resolve_resource_path(font_name)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Unable to find resource with the name: {font_name}")
-    else:
-        file_path = font_name
-
+    file_path = resolve_resource_path(path)
     pyglet.font.add_file(str(file_path))
 
 
@@ -519,13 +523,16 @@ class Text:
     @property
     def position(self) -> Point:
         """
-        The current x, y position as a tuple. This wraps x and y.
+        The current x, y position as a tuple.
+
+        This is faster than setting x and y position separately
+        because the underlying geometry only needs to change position once.
         """
         return self._label.x, self._label.y
 
     @position.setter
     def position(self, point: Point):
-        self._label.x, self._label.y = point
+        self._label.position = point
 
 
 def draw_text(
@@ -734,10 +741,8 @@ def draw_text(
     # These updates are quite expensive
     if label.text != text:
         label.text = str(text)
-    if label.x != start_x:
-        label.x = start_x
-    if label.y != start_y:
-        label.y = start_y
+    if label.x != start_x or label.y != start_y:
+        label.position = start_x, start_y
     if label.color != color:
         label.color = color
 

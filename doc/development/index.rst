@@ -13,3 +13,4 @@ Development Information
    enhancement_list
    edge_artifacts/index
    logging
+   release_checklist

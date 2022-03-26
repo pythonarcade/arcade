@@ -1,3 +1,4 @@
+.. _open_gl_notes:
 
 OpenGL Notes
 ============

@@ -99,7 +99,6 @@ Arcade Skill Tree
   * Enemy randomly shoots *x* frames - :ref:`sprite_bullets_random`
   * Player aims - :ref:`sprite_bullets_aimed`
   * Enemy aims - :ref:`sprite_bullets_enemy_aims`
-  * Multi-hit - *Supported, but documentation needed.*
 
 * Physics Engines
 
@@ -114,7 +113,6 @@ Arcade Skill Tree
   * Using the physics engine on multiple sprites - *Supported, but documentation needed.*
   * Pymunk top-down - *Supported, needs docs*
   * Pymunk physics engine for a platformer - :ref:`pymunk_platformer_tutorial`
-  * Pymunk shooting - *Support under development.*
 
 * View management
 
@@ -162,12 +160,19 @@ Arcade Skill Tree
   * Concepts - :ref:`gui_concepts`
   * Examples - :ref:`gui_concepts`
 
-* OpenGL Frame buffers
+* OpenGL
 
+  * Read more about using OpenGL in Arcade with :ref:`open_gl_notes`.
   * Lights - :ref:`light_demo`
-  * Wrap-around - *Supported, but documentation needed.*
-  * Mini-map - :ref:`minimap`
+  * Writing shaders using "ShaderToy"
+
+    * :ref:`shader_toy_tutorial`
+    * Learn how to ray-cast shadows in the :ref:`raycasting_tutorial`.
+    * Make your screen look like an 80s monitor in :ref:`crt_filter`.
+    * Study the `Asteroids Example Code <https://github.com/pythonarcade/asteroids>`_.
+
+  * Rendering onto a sprite to create a mini-map - :ref:`minimap`
   * Bloom/glow effect - :ref:`bloom_defender`
-  * Writing your own shader - *Supported, but documentation needed.*
+  * Learn to do a compute shader in :ref:`compute_shader_tutorial`.
 
 * :ref:`Logging`
