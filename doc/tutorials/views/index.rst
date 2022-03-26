@@ -108,14 +108,14 @@ it:
 
     class InstructionView(arcade.View):
 
-Then we need to define the ``on_show`` method that will be run once when we
+Then we need to define the ``on_show_view`` method that will be run once when we
 switch to this view. In this case, we don't need to do much, just set the
 background color. If the game is one that scrolls, we'll also need to reset
 the viewport so that (0, 0) is back to the lower-left coordinate.
 
 .. literalinclude:: 03_views.py
-    :caption: Add views - on_show
-    :pyobject: InstructionView.on_show
+    :caption: Add views - on_show_view
+    :pyobject: InstructionView.on_show_view
 
 The ``on_draw`` method works just like the window class's method, but it will
 only be called when this view is active.
