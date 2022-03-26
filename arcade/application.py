@@ -609,6 +609,8 @@ class Window(pyglet.window.Window):
         else:
             section_manager_managed_events = set()
 
+        # Note: Excluding on_show because this even can trigger multiple times.
+        #       It should only be called once when the view is shown.
         self.push_handlers(
             **{
                 event_type: getattr(new_view, event_type, None)
@@ -823,17 +825,19 @@ class View:
         pass
 
     def on_show(self):
-        """Called when this view is shown and if window dispatches an on_show event.
-        (first time showing window or resize)
-        """
+        """Deprecated. Use :py:meth:`~arcade.View.on_show_view` instead."""
         pass
 
     def on_show_view(self):
-        """Called when this view is shown"""
+        """
+        Called once when the view is shown.
+
+        .. seealso:: :py:meth:`~arcade.View.on_hide_view`
+        """
         pass
 
     def on_hide_view(self):
-        """Called when this view is not shown anymore"""
+        """Called once when this view is hidden."""
         pass
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):

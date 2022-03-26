@@ -135,7 +135,7 @@ class MyGame(arcade.View):
         self.enemy_list = arcade.SpriteList()
         self.joy = None
 
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_MIDNIGHT_BLUE)
         joys = self.window.joys
         for joy in joys:
