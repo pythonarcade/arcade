@@ -47,7 +47,7 @@ class Profiler:
     def enable(self):
         """Start/enable the profiler"""
         self._profiler.enable()
-    
+
     def disable(self):
         """Stop/disable the profiler"""
         self._profiler.disable()
