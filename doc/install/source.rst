@@ -24,7 +24,5 @@ To install additional documentation and development requirements:
 
 .. code-block:: bash
 
-    pip install -e .[dev,docs]
-    # .. or separately
     pip install -e .[dev]
-    pip install -e .[docs]
+
