@@ -674,25 +674,35 @@ class TextureAtlas:
 
         return size, size
 
-    def to_image(self) -> Image.Image:
+    def to_image(self, flip: bool = False) -> Image.Image:
         """
         Convert the atlas to a Pillow image
 
+        :param bool flip: Flip the image horizontally
         :return: A pillow image containing the atlas texture
         """
-        return Image.frombytes("RGBA", self._texture.size, bytes(self._texture.read()))
+        image = Image.frombytes("RGBA", self._texture.size, bytes(self._texture.read()))
+        if flip:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-    def show(self) -> None:
-        """Show the texture atlas using Pillow"""
-        self.to_image().show()
+        return image
 
-    def save(self, path: str) -> None:
+    def show(self, flip: bool = False) -> None:
+        """
+        Show the texture atlas using Pillow
+        
+        :param bool flip: Flip the image horizontally
+        """
+        self.to_image(flip=flip).show()
+
+    def save(self, path: str, flip: bool = False) -> None:
         """
         Save the texture atlas to a png.
 
         :param str path: The path to save the atlas on disk
+        :param bool flip: Flip the image horizontally
         """
-        self.to_image().save(path, format="png")
+        self.to_image(flip=flip).save(path, format="png")
 
     def _check_size(self, size: Tuple[int, int]) -> None:
         """Check it the atlas exceeds the hardware limitations"""
