@@ -690,7 +690,7 @@ class TextureAtlas:
     def show(self, flip: bool = False) -> None:
         """
         Show the texture atlas using Pillow
-        
+
         :param bool flip: Flip the image horizontally
         """
         self.to_image(flip=flip).show()
