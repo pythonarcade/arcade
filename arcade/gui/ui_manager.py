@@ -35,18 +35,20 @@ W = TypeVar('W', bound=UIWidget)
 class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
+    
+    .. code:: py
 
-    manager = UIManager()
-    manager.enable() # hook up window events
+        manager = UIManager()
+        manager.enable() # hook up window events
 
-    manager.add(Dummy())
+        manager.add(Dummy())
 
-    def on_draw():
-        self.clear()
+        def on_draw():
+            self.clear()
 
-        ...
+            ...
 
-        manager.draw() # draws the UI on screen
+            manager.draw() # draws the UI on screen
 
     """
     _enabled = False
