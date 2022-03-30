@@ -36,17 +36,19 @@ class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
 
-    manager = UIManager()
-    manager.enable() # hook up window events
+    .. code:: py
 
-    manager.add(Dummy())
+        manager = UIManager()
+        manager.enable() # hook up window events
 
-    def on_draw():
-        self.clear()
+        manager.add(Dummy())
 
-        ...
+        def on_draw():
+            self.clear()
 
-        manager.draw() # draws the UI on screen
+            ...
+
+            manager.draw() # draws the UI on screen
 
     """
     _enabled = False
@@ -84,6 +86,11 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return widget
 
     def remove(self, child: UIWidget):
+        """
+        Removes the given widget from UIManager.
+
+        :param UIWidget child: widget to remove
+        """
         for children in self.children.values():
             if child in children:
                 children.remove(child)
