@@ -91,7 +91,8 @@ class Window(pyglet.window.Window):
         gc_mode: str = "context_gc",
         center_window: bool = False,
         samples: int = 4,
-        enable_polling: bool = True
+        enable_polling: bool = True,
+        gl_api: str = "OPENGL"
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -108,6 +109,7 @@ class Window(pyglet.window.Window):
                 config = pyglet.gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
+                    opengl_api=gl_api,
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
@@ -122,8 +124,9 @@ class Window(pyglet.window.Window):
         # If we still don't have a config 
         if not config:
             config = pyglet.gl.Config(
-                major_version=3,
-                minor_version=3,
+                major_version=gl_version[0],
+                minor_version=gl_version[1],
+                opengl_api=gl_api,
                 double_buffer=True,
             )
         try:
