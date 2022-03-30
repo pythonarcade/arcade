@@ -35,7 +35,7 @@ W = TypeVar('W', bound=UIWidget)
 class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
-    
+
     .. code:: py
 
         manager = UIManager()
