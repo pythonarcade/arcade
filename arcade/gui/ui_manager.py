@@ -84,6 +84,11 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return widget
 
     def remove(self, child: UIWidget):
+        """
+        Removes the given widget from UIManager.
+
+        :param child: widget to remove
+        """
         for children in self.children.values():
             if child in children:
                 children.remove(child)
