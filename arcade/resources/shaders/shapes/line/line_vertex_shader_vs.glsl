@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 
 uniform Projection {
     uniform mat4 matrix;
