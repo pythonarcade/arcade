@@ -737,6 +737,29 @@ class Window(pyglet.window.Window):
         """ Dispatch events """
         super().dispatch_events()
 
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
 
 def open_window(
     width: int,
@@ -935,5 +958,28 @@ class View:
         :py:meth:`~arcade.Window.on_resize` is also called separately.
         By default this method does nothing and can be overridden to
         handle resize logic.
+        """
+        pass
+
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x:
+        :param int y:
         """
         pass
