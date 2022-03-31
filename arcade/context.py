@@ -123,10 +123,10 @@ class ArcadeContext(Context):
         self.atlas_resize_program["texcoords_old"] = 2
         self.atlas_resize_program["texcoords_new"] = 3
         # SpriteList collision resources
-        self.collision_detection_program = self.load_program(
-            vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",
-            geometry_shader=":resources:shaders/collision/col_trans_gs.glsl",
-        )
+        #self.collision_detection_program = self.load_program(
+        #    vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",
+        #    geometry_shader=":resources:shaders/collision/col_trans_gs.glsl",
+        #)
         self.collision_buffer = self.buffer(reserve=1024 * 4)
         self.collision_query = self.query(samples=False, time=False, primitives=True)
 
