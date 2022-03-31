@@ -1,6 +1,5 @@
 #version 330
 
-#define PI 3.1415926535897932384626433832795
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;
 const int MAX_SEGMENTS = 112;
@@ -44,7 +43,7 @@ void main() {
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
 
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
-    float stepp = PI * 2 / segments_selected;
+    float stepp = 3.1415926535897932384626433832795 * 2 / segments_selected;
 
     for (int i = 0; i < segments_selected; i++) {
         gl_Position = proj.matrix * vec4(center, 0.0, 1.0);
