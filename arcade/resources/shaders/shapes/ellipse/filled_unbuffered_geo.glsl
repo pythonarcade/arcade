@@ -1,6 +1,6 @@
 #version 330
 
-#define PI 3.1415926535897932384626433832795
+#define PI 3.141592
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;
 const int MAX_SEGMENTS = 112;
