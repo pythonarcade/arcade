@@ -36,6 +36,8 @@ class Context:
     #: The active context
     active: Optional["Context"] = None
 
+    opengl_api: str = None
+
     # --- Store the most commonly used OpenGL constants
     # Texture
     #: Texture interpolation: Nearest pixel
@@ -157,8 +159,9 @@ class Context:
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "OPENGL"):
         self._window_ref = weakref.ref(window)
+        self.opengl_api = gl_api
         self._limits = Limits(self)
         self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
         Context.activate(self)

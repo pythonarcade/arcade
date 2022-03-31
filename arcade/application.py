@@ -163,7 +163,7 @@ class Window(pyglet.window.Window):
         self.flip_count: int = 0
         self.static_display: bool = False
 
-        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
+        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api)
         set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = (0, 0, 0, 0)
 
