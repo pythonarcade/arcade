@@ -230,7 +230,7 @@ class Section:
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float,
                       _buttons: int, _modifiers: int):
-        pass
+        self.on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_enter(self, x: float, y: float):
         pass
