@@ -3,6 +3,7 @@
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;
 const int MAX_SEGMENTS = 112;
+const float PI = 3.141592;
 
 layout (points) in;
 // TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
@@ -43,20 +44,20 @@ void main() {
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
 
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
-    float stepp = 3.1415926535897932384626433832795 * 2 / segments_selected;
+    float stepp = PI * 2.0 / float(segments_selected);
 
     for (int i = 0; i < segments_selected; i++) {
         gl_Position = proj.matrix * vec4(center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p1 = vec2(sin((i + 1) * stepp), cos((i + 1) * stepp)) * shape.xy;
+        vec2 p1 = vec2(sin(float((i + 1)) * stepp), cos(float((i + 1)) * stepp)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
         gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p2 = vec2(sin(i * stepp), cos(i * stepp)) * shape.xy;
+        vec2 p2 = vec2(sin(float(i) * stepp), cos(float(i) * stepp)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
         gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
