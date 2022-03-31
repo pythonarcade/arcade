@@ -82,7 +82,7 @@ class Sprite:
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
           Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
           :data:`PhysicsEnginePlatformer`
           and 'Detailed' for the :data:`PymunkPhysicsEngine`.
@@ -174,7 +174,7 @@ class Sprite:
         flipped_horizontally: bool = False,
         flipped_vertically: bool = False,
         flipped_diagonally: bool = False,
-        hit_box_algorithm: str = "Simple",
+        hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
         texture: Texture = None,
         angle: float = 0,

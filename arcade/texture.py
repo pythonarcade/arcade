@@ -398,7 +398,7 @@ def load_texture(file_name: Union[str, Path],
                  flipped_diagonally: bool = False,
                  can_cache: bool = True,
                  mirrored: bool = None,
-                 hit_box_algorithm: str = "Simple",
+                 hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5) -> Texture:
     """
     Load an image from disk and create a texture.
@@ -424,7 +424,7 @@ def load_texture(file_name: Union[str, Path],
     to save time. Sometimes this is not desirable, as resizing a cached texture will cause all other textures to \
     resize with it. Setting can_cache to false will prevent this issue at the experience of additional resources.
     :param bool mirrored: Deprecated.
-    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
     Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
     :data:`PhysicsEnginePlatformer` \
     and 'Detailed' for the :data:`PymunkPhysicsEngine`.
