@@ -897,24 +897,24 @@ class Context:
                                           buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
-        source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
+        source_vs = ShaderSource(self, vertex_shader, gl.GL_VERTEX_SHADER)
         source_fs = (
-            ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER)
+            ShaderSource(self, fragment_shader, gl.GL_FRAGMENT_SHADER)
             if fragment_shader
             else None
         )
         source_geo = (
-            ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER)
+            ShaderSource(self, geometry_shader, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
             else None
         )
         source_tc = (
-            ShaderSource(tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
+            ShaderSource(self, tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
             if tess_control_shader
             else None
         )
         source_te = (
-            ShaderSource(tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
+            ShaderSource(self, tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
             if tess_evaluation_shader
             else None
         )

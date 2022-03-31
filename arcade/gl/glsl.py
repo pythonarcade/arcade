@@ -24,7 +24,7 @@ class ShaderSource:
     :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
 
-    def __init__(self, source: str, source_type: gl.GLenum):
+    def __init__(self, ctx: gl.Context, source: str, source_type: gl.GLenum):
         """Create a shader source wrapper."""
         self._source = source.strip()
         self._type = source_type
@@ -33,6 +33,10 @@ class ShaderSource:
 
         if not self._lines:
             raise ValueError("Shader source is empty")
+
+        if ctx.config.opengl_api == "OPENGL_ES":
+            self._lines[0] = "#version 320 es"
+            self._lines.insert(1, "precision mediump float;")
 
         self._version = self._find_glsl_version()
 
@@ -57,6 +61,7 @@ class ShaderSource:
         if not defines:
             return self._source
 
+        self._lines[0]
         lines = ShaderSource.apply_defines(self._lines, defines)
         return "\n".join(lines)
 
