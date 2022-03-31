@@ -59,7 +59,7 @@ class ShaderSource:
         :param dict defines: Defines to replace in the source.
         """
         if not defines:
-            return self._source
+            return "\n".join(lines)
 
         self._lines[0]
         lines = ShaderSource.apply_defines(self._lines, defines)

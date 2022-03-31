@@ -1,7 +1,7 @@
 #version 330
 
 uniform sampler2D Texture;
-uniform vec4 spritelist_color = vec4(1.0);
+uniform vec4 spritelist_color;
 
 in vec2 v_texture;
 in vec4 v_color;
