@@ -368,9 +368,11 @@ class Window(pyglet.window.Window):
         """
         Override this function to add mouse button functionality.
 
-        :param int x:
-        :param int y:
-        :param int button:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -380,10 +382,10 @@ class Window(pyglet.window.Window):
         """
         User moves the scroll wheel.
 
-        :param int x:
-        :param int y:
-        :param int scroll_x:
-        :param int scroll_y:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
