@@ -187,17 +187,17 @@ class Section:
         return not (self.right < section.left or self.left > section.right
                     or self.top < section.bottom or self.bottom > section.top)
 
-    def mouse_is_on_top(self, x: float, y: float) -> bool:
+    def mouse_is_on_top(self, x: int, y: int) -> bool:
         """ Check if the current mouse position is on top of this section """
         test_x = self.ec_left <= x <= self.ec_right
         test_y = self.ec_bottom <= y <= self.ec_top
         return test_x and test_y
 
-    def get_xy_screen_relative(self, section_x: float, section_y: float):
+    def get_xy_screen_relative(self, section_x: int, section_y: int):
         """ Returns screen coordinates from section coordinates """
         return self.left + section_x, self.bottom + section_y
 
-    def get_xy_section_relative(self, screen_x: float, screen_y: float):
+    def get_xy_section_relative(self, screen_x: int, screen_y: int):
         """ returns section coordinates from screen coordinates """
         return screen_x - self.left, screen_y - self.bottom
 
@@ -216,26 +216,26 @@ class Section:
     def on_resize(self, width: int, height: int):
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         pass
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         pass
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float,
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int,
                       _buttons: int, _modifiers: int):
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_enter(self, x: float, y: float):
+    def on_mouse_enter(self, x: int, y: int):
         pass
 
-    def on_mouse_leave(self, x: float, y: float):
+    def on_mouse_leave(self, x: int, y: int):
         pass
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -415,14 +415,14 @@ class SectionManager:
         for section in self.sections:
             section.accept_keyboard_events = False
 
-    def get_section(self, x: float, y: float) -> Optional[Section]:
+    def get_section(self, x: int, y: int) -> Optional[Section]:
         """ Returns the first section based on x,y position """
         for section in self.sections:
             if section.enabled and section.mouse_is_on_top(x, y):
                 return section
         return None
 
-    def dispatch_mouse_event(self, event: str, x: float, y: float, *args,
+    def dispatch_mouse_event(self, event: str, x: int, y: int, *args,
                              **kwargs) -> Optional[bool]:
         """ Generic method to dispatch mouse events to the correct Section """
         # check if the affected section has been already computed
@@ -513,17 +513,17 @@ class SectionManager:
 
         return False
 
-    def on_mouse_press(self, x: float, y: float,
+    def on_mouse_press(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_press', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_release(self, x: float, y: float,
+    def on_mouse_release(self, x: int, y: int,
                          *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_release', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_motion(self, x: float, y: float,
+    def on_mouse_motion(self, x: int, y: int,
                         *args, **kwargs) -> Optional[bool]:
         """
         This method dispatches the on_mouse_motion and also calculates
@@ -548,16 +548,16 @@ class SectionManager:
         return self.dispatch_mouse_event('on_mouse_motion', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_scroll(self, x: float, y: float,
+    def on_mouse_scroll(self, x: int, y: int,
                         *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_scroll', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_drag(self, x: float, y: float,
+    def on_mouse_drag(self, x: int, y: int,
                       *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_drag', x, y, *args, **kwargs)
 
-    def on_mouse_enter(self, x: float, y: float,
+    def on_mouse_enter(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         current_section = self.get_section(x, y)
         # set the section the mouse is over
@@ -568,7 +568,7 @@ class SectionManager:
         return self.dispatch_mouse_event('on_mouse_enter', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_leave(self, x: float, y: float,
+    def on_mouse_leave(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         if self.mouse_over_section:
             # clear the section the mouse is over as it's out of the screen
