@@ -50,7 +50,7 @@ void main() {
     // Number of vertices is segments * 2 + 2, so we need to emit the initial vertex first
 
     // First outer vertex
-    vec2 p_start = vec2(sin(0), cos(0)) * shape.xy;
+    vec2 p_start = vec2(sin(0.0), cos(0.0)) * shape.xy;
     gl_Position = proj.matrix * vec4((rot * p_start) + center, 0.0, 1.0);
     EmitVertex();
 
@@ -67,7 +67,7 @@ void main() {
         EmitVertex();
     }
     // Last inner vertex to wrap up
-    vec2 p_end = vec2(sin(0), cos(0)) * (shape.xy - vec2(shape.w));
+    vec2 p_end = vec2(sin(0.0), cos(0.0)) * (shape.xy - vec2(shape.w));
     gl_Position = proj.matrix * vec4((rot * p_end) + center, 0.0, 1.0);
     EmitVertex();
 
