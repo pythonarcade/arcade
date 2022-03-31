@@ -1,24 +1,24 @@
-from contextlib import contextmanager
-from ctypes import c_int, c_char_p, cast, c_float
-from collections import deque
 import logging
 import weakref
-from typing import Any, Deque, Dict, List, Tuple, Union, Sequence, Set
+from collections import deque
+from contextlib import contextmanager
+from ctypes import c_char_p, c_float, c_int, cast
+from typing import (Any, Deque, Dict, List, Optional, Sequence, Set, Tuple,
+                    Union)
 
 import pyglet
-from pyglet.window import Window
 from pyglet import gl
+from pyglet.window import Window
 
 from .buffer import Buffer
-from .program import Program
-from .vertex_array import Geometry
-from .framebuffer import Framebuffer, DefaultFrameBuffer
-from typing import Optional
-from .texture import Texture
-from .query import Query
-from .glsl import ShaderSource
-from .types import BufferDescription
 from .compute_shader import ComputeShader
+from .framebuffer import DefaultFrameBuffer, Framebuffer
+from .glsl import ShaderSource
+from .program import Program
+from .query import Query
+from .texture import Texture
+from .types import BufferDescription
+from .vertex_array import Geometry
 
 LOG = logging.getLogger(__name__)
 
@@ -176,11 +176,9 @@ class Context:
 
         # Hardcoded states
         # This should always be enabled
-        gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
+        #gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
         # Set primitive restart index to -1 by default
-        gl.glEnable(gl.GL_PRIMITIVE_RESTART)
-        self._primitive_restart_index = -1
-        self.primitive_restart_index = self._primitive_restart_index
+        gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
 
         # We enable scissor testing by default.
         # This is always set to the same value as the viewport
@@ -631,23 +629,6 @@ class Context:
         gl.glPointSize(self._point_size)
         self._point_size = value
 
-    @property
-    def primitive_restart_index(self) -> int:
-        """
-        Get or set the primitive restart index. Default is ``-1``.
-
-        The primitive restart index can be used in index buffers
-        to restart a primitive. This is for example useful when you
-        use triangle strips or line strips and want to start on
-        a new strip in the same buffer / draw call.
-        """
-        return self._primitive_restart_index
-
-    @primitive_restart_index.setter
-    def primitive_restart_index(self, value: int):
-        self._primitive_restart_index = value
-        gl.glPrimitiveRestartIndex(value)
-
     def finish(self) -> None:
         """
         Wait until all OpenGL rendering commands are completed.
@@ -1057,7 +1038,7 @@ class Limits:
         #: that are used to position rasterized geometry in window coordinates
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
         #: A mask value indicating what context profile is used (core, compat etc.)
-        self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
+        #self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
         #: Minimum required alignment for uniform buffer sizes and offset
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
             gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
@@ -1138,7 +1119,7 @@ class Limits:
         #: Maximum samples for a framebuffer
         self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
         #: A rough estimate of the largest rectangular texture that the GL can handle
-        self.MAX_RECTANGLE_TEXTURE_SIZE = self.get(gl.GL_MAX_RECTANGLE_TEXTURE_SIZE)
+        #self.MAX_RECTANGLE_TEXTURE_SIZE = self.get(gl.GL_MAX_RECTANGLE_TEXTURE_SIZE)
         #: Maximum supported size for renderbuffers
         self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
         #: Maximum number of sample mask words
@@ -1178,7 +1159,7 @@ class Limits:
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         #: The highest supported anisotropy value. Usually 8.0 or 16.0.
-        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        #self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
         #: The maximum support window or framebuffer viewport.
         #: This is usually the same as the maximum texture size
         self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
@@ -1186,7 +1167,7 @@ class Limits:
         #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
         #: The minimum and maximum point size
-        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
+        #self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
 
         err = self._ctx.error
         if err:
