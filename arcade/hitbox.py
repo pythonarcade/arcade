@@ -3,7 +3,7 @@ This module is used for calculating hit boxes
 """
 import pymunk
 
-from PIL import Image
+from PIL.Image import Image
 from arcade import Point
 from typing import List, Union, Tuple
 from pymunk import autogeometry
@@ -11,25 +11,25 @@ from pymunk import autogeometry
 
 def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
     """
-    Given an image, this returns points that make up a hit box around it. Attempts
+    Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
     :param Image image:
 
     :Returns: List of points
     """
+    if image.mode != "RGBA":
+        raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")
+
     left_border = 0
     good = True
     while good and left_border < image.width:
         for row in range(image.height):
             pos = (left_border, row)
             pixel = image.getpixel(pos)
-            if type(pixel) is int or len(pixel) != 4:
-                raise TypeError("Error, calculate_points called on image not in RGBA format")
-            else:
-                if pixel[3] != 0:
-                    good = False
-                    break
+            if pixel[3] != 0:
+                good = False
+                break
         if good:
             left_border += 1
 
@@ -136,11 +136,12 @@ def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
     return tuple(dict.fromkeys(result))  # type: ignore
 
 
-def calculate_hit_box_points_detailed(image: Image,
-                                      hit_box_detail: float = 4.5)\
-        -> Union[List[Point], Tuple[Point, ...]]:
+def calculate_hit_box_points_detailed(
+    image: Image,
+    hit_box_detail: float = 4.5,
+) -> Union[List[Point], Tuple[Point, ...]]:
     """
-    Given an image, this returns points that make up a hit box around it. Attempts
+    Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
     :param Image image: Image get hit box from.
@@ -148,8 +149,9 @@ def calculate_hit_box_points_detailed(image: Image,
                                trade-off in number of points vs. accuracy.
 
     :Returns: List of points
-
     """
+    if image.mode != "RGBA":
+        raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")
 
     def sample_func(sample_point: Point) -> int:
         """ Method used to sample image. """
