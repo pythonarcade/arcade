@@ -167,6 +167,20 @@ suppress_warnings = [
     "ref.python",
 ]
 
+# -- Options for Texinfo output -------------------------------------------
+
+# Grouping the document tree into Texinfo files. List of tuples
+# (source start file, target name, title, author,
+#  dir menu entry, description, category)
+texinfo_documents = [
+    (
+        master_doc,  # source start file
+        'arcade.tex',  # target name
+        'Python Arcade Documentation',  # title
+        author,  # author
+        "manual",  # documentclass [howto, manual, or own class]
+    ),
+]
 
 def warn_undocumented_members(app, what, name, obj, options, lines):
     if len(lines) == 0:
