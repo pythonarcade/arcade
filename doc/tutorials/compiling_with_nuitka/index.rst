@@ -111,5 +111,8 @@ This will set the app icon to icon.png
 This will set the app icon to Python's icon (hehe)
 
 
+Additional Information
+----------------------
+* The method has been tested on Nuitka v0.7
 
 .. _Nuitka: https://nuitka.net/
