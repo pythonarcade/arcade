@@ -20,9 +20,6 @@
 Quick API Index
 ===============
 
-.. contents::
-
-
 * :ref:`color`
 * :ref:`csscolor`
 * :ref:`key`

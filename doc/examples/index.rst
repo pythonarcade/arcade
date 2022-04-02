@@ -3,9 +3,6 @@
 How-To Example Code
 ===================
 
-.. contents::
-   :depth: 1
-   :local:
 
 Starting Templates
 ------------------

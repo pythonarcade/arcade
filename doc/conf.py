@@ -117,11 +117,18 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
+
+html_theme_options = {
+    "light_logo": "../_images/arcade-logo.svg",
+    "dark_logo": "../_images/arcade-logo.svg",
+}
+
+html_title = f"Python Arcade {version}"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/favicon-32x32.png'
+# html_logo = '_static/favicon-32x32.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -139,7 +146,7 @@ html_static_path = ['_static']
 html_extra_path = ['html_extra']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Arcadedoc'
+htmlhelp_basename = 'Arcade'
 html_baseurl = 'https://api.arcade.academy/'
 
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
