@@ -44,20 +44,20 @@ void main() {
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
 
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
-    float step = PI * 2 / segments_selected;
+    float st = PI * 2 / segments_selected;
 
     for (int i = 0; i < segments_selected; i++) {
         gl_Position = proj.matrix * vec4(center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p1 = vec2(sin((i + 1) * step), cos((i + 1) * step)) * shape.xy;
+        vec2 p1 = vec2(sin((i + 1) * st), cos((i + 1) * st)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
         gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p2 = vec2(sin(i * step), cos(i * step)) * shape.xy;
+        vec2 p2 = vec2(sin(i * st), cos(i * st)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
         gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
