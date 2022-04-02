@@ -33,7 +33,7 @@ REQUIREMENTS_DOCS = [
     "pyyaml==6.0",
     "docutils<0.18",
     "sphinx-sitemap",
-    "sphinx_rtd_theme",
+    "fruo",
     "sphinx_copybutton",
     "dirsync",
     "wheel",

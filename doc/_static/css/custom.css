@@ -7,3 +7,15 @@
 .sidebar-brand-text {
   flex: 3;
 }
+
+#how-to-example-code section {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+#how-to-example-code section h2 {
+  width: 100%;
+}
+#how-to-example-code section h3 {
+  width: 100%;
+}
