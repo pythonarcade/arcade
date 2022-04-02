@@ -118,6 +118,7 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+            <li><a href="tutorials/compiling_with_nuitka/index.html">Compiling a game with Nuitka</a></li>
           </ul>
 
         </td>
@@ -258,6 +259,7 @@ game without learning a complex framework.
    tutorials/lights/index
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
+   tutorials/compiling_with_nuitka/index
    tutorials/shader_toy/index
    tutorials/framebuffer/index
    tutorials/raycasting/index
