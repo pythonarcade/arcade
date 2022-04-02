@@ -1,4 +1,5 @@
-from arcade.gui.widgets import UIBoxLayout, UIDummy
+from arcade.gui.widgets import UIDummy
+from arcade.gui import UIBoxLayout
 
 
 # Vertical

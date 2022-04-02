@@ -1,6 +1,8 @@
 from arcade.gui.events import UIEvent
 
-from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxLayout, UIDummy
+from arcade.gui.widgets import UIWidget, UIDummy
+from arcade.gui import UIAnchorWidget, UIBoxLayout
+
 
 # TODO add tests
 

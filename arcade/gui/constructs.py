@@ -3,7 +3,10 @@ Constructs, are prepared widget combinations, you can use for common use-cases
 """
 import arcade
 from arcade.gui.mixins import UIMouseFilterMixin
-from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton, UIBoxLayout
+from arcade.gui.widgets import UILayout
+from arcade.gui.widgets.text import UITextArea
+from arcade.gui.widgets.layout import UIAnchorWidget, UIBoxLayout
+from arcade.gui.widgets.buttons import UIFlatButton
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
@@ -17,35 +20,57 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
     :param callback: Callback function, will receive the text of the clicked button
     """
 
-    def __init__(self,
-                 *,
-                 width: float,
-                 height: float,
-                 message_text: str,
-                 buttons=("Ok",),
-                 callback=None):
+    def __init__(
+        self,
+        *,
+        width: float,
+        height: float,
+        message_text: str,
+        buttons=("Ok",),
+        callback=None
+    ):
 
         space = 10
 
-        self._text_area = UITextArea(text=message_text,
-                                     width=width - space,
-                                     height=height - space,
-                                     text_color=arcade.color.BLACK)
+        self._text_area = UITextArea(
+            text=message_text,
+            width=width - space,
+            height=height - space,
+            text_color=arcade.color.BLACK,
+        )
 
         button_group = UIBoxLayout(vertical=False)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
-            button_group.add(button.with_space_around(left=10))
+            button_group.add(button.with_padding(left=10))
             button.on_click = self.on_ok  # type: ignore
 
-        self._bg_tex = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+        self._bg_tex = arcade.load_texture(
+            ":resources:gui_basic_assets/window/grey_panel.png"
+        )
 
         self._callback = callback  # type: ignore
 
-        group = UILayout(width=width, height=height, children=[
-            UIAnchorWidget(child=self._text_area, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
-            UIAnchorWidget(child=button_group, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
-        ]).with_background(self._bg_tex)
+        group = UILayout(
+            width=width,
+            height=height,
+            children=[
+                UIAnchorWidget(
+                    child=self._text_area,
+                    anchor_x="left",
+                    anchor_y="top",
+                    align_x=10,
+                    align_y=-10,
+                ),
+                UIAnchorWidget(
+                    child=button_group,
+                    anchor_x="right",
+                    anchor_y="bottom",
+                    align_x=-10,
+                    align_y=10,
+                ),
+            ],
+        ).with_background(texture=self._bg_tex)
 
         super().__init__(child=group)
 

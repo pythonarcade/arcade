@@ -1,5 +1,5 @@
 import arcade
-from arcade.experimental.uislider import UISlider
+from arcade.gui.widgets.slider import UISlider
 from arcade.gui import UIManager, UIAnchorWidget, UILabel
 from arcade.gui.events import UIOnChangeEvent
 
@@ -27,6 +27,6 @@ class UIMockup(arcade.Window):
         self.manager.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = UIMockup()
     arcade.run()

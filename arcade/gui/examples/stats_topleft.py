@@ -1,6 +1,5 @@
 import arcade
-from arcade.gui import UIManager
-from arcade.gui.widgets import UIAnchorWidget, UIBoxLayout, UILabel
+from arcade.gui import UIManager, UILabel, UIAnchorWidget, UIBoxLayout
 
 
 class UINumberLabel(UILabel):
@@ -44,29 +43,30 @@ class UIMockup(arcade.Window):
             vertical=False,
             children=[
                 # Create one vertical UIBoxLayout per column and add the labels
-                UIBoxLayout(vertical=True, children=[
-                    UILabel(text="Time:", width=50),
-                    UILabel(text="Wood:", width=50),
-                    UILabel(text="Stone:", width=50),
-                    UILabel(text="Food:", width=50),
-                ]),
+                UIBoxLayout(
+                    vertical=True,
+                    children=[
+                        UILabel(text="Time:", width=50),
+                        UILabel(text="Wood:", width=50),
+                        UILabel(text="Stone:", width=50),
+                        UILabel(text="Food:", width=50),
+                    ],
+                ),
                 # Create one vertical UIBoxLayout per column and add the labels
-                UIBoxLayout(vertical=True, children=[
-                    self.timer,
-                    wood,
-                    stone,
-                    food
-                ]),
-            ])
+                UIBoxLayout(vertical=True, children=[self.timer, wood, stone, food]),
+            ],
+        )
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
-        self.manager.add(UIAnchorWidget(
-            align_x=10,
-            anchor_x="left",
-            align_y=-10,
-            anchor_y="top",
-            child=self.columns
-        ))
+        self.manager.add(
+            UIAnchorWidget(
+                align_x=10,
+                anchor_x="left",
+                align_y=-10,
+                anchor_y="top",
+                child=self.columns,
+            )
+        )
 
     def on_update(self, delta_time: float):
         self.timer.value += delta_time

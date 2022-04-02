@@ -15,21 +15,23 @@ from typing import List, Dict, TypeVar, Iterable
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
-from arcade.gui.events import (UIMouseMovementEvent,
-                               UIMousePressEvent,
-                               UIMouseReleaseEvent,
-                               UIMouseScrollEvent,
-                               UITextEvent,
-                               UIMouseDragEvent,
-                               UITextMotionEvent,
-                               UITextMotionSelectEvent,
-                               UIKeyPressEvent,
-                               UIKeyReleaseEvent,
-                               UIOnUpdateEvent)
+from arcade.gui.events import (
+    UIMouseMovementEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
+    UIMouseScrollEvent,
+    UITextEvent,
+    UIMouseDragEvent,
+    UITextMotionEvent,
+    UITextMotionSelectEvent,
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
+    UIOnUpdateEvent,
+)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
+from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
 
-W = TypeVar('W', bound=UIWidget)
+W = TypeVar("W", bound=UIWidget)
 
 
 class UIManager(EventDispatcher, UIWidgetParent):
@@ -51,6 +53,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             manager.draw() # draws the UI on screen
 
     """
+
     _enabled = False
 
     def __init__(self, window: arcade.Window = None, auto_enable=False):
@@ -63,7 +66,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.register_event_type("on_event")
 
         if auto_enable:
-            warnings.warn("`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`")
+            warnings.warn(
+                "`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`"
+            )
             self.enable()
 
     def add(self, widget: W, *, index=None) -> W:
@@ -268,7 +273,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(
+        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+    ):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
@@ -278,7 +285,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
+        return self.dispatch_ui_event(
+            UIMouseScrollEvent(self, x, y, scroll_x, scroll_y)
+        )
 
     def on_key_press(self, symbol: int, modifiers: int):
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
@@ -304,8 +313,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.trigger_render()
 
     @property
-    def rect(self) -> _Rect:
-        return _Rect(0, 0, *self.window.get_size())
+    def rect(self) -> Rect:
+        return Rect(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
