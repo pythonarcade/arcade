@@ -67,7 +67,15 @@ class Context:
     DEPTH_TEST = gl.GL_DEPTH_TEST
     #: Context flag: Face culling
     CULL_FACE = gl.GL_CULL_FACE
-    #: Context flag: Enable ``gl_PointSize`` in shaders.
+    #: Context flag: Enables ``gl_PointSize`` in vertex or geometry shaders.
+    #:
+    #: When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
+    #: for each individual point.
+    #:
+    #: If this value is not set in the shader the behavior is undefined. This means the points may
+    #: or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
+    #:
+    #: When disabled :py:attr:`Context.point_size` is used.
     PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
 
     # Blend functions
@@ -151,12 +159,12 @@ class Context:
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
         self._window_ref = weakref.ref(window)
-        self.limits = Limits(self)
-        self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
+        self._limits = Limits(self)
+        self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
         Context.activate(self)
         # Texture unit we use when doing operations on textures to avoid
         # affecting currently bound textures in the first units
-        self.default_texture_unit: int = self.limits.MAX_TEXTURE_IMAGE_UNITS - 1
+        self.default_texture_unit: int = self._limits.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
@@ -164,7 +172,7 @@ class Context:
         self.active_program: Optional[Program] = None
         # Tracking active framebuffer. On context creation the window is the default render target
         self.active_framebuffer: Framebuffer = self._screen
-        self.stats: ContextStats = ContextStats(warn_threshold=1000)
+        self._stats: ContextStats = ContextStats(warn_threshold=1000)
 
         # Hardcoded states
         # This should always be enabled
@@ -187,8 +195,65 @@ class Context:
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
         self.gc_mode = gc_mode
-        #: Collected objects to gc when gc_mode is "context_gc"
+        #: Collected objects to gc when gc_mode is "context_gc".
+        #: This can be used during debugging.
         self.objects: Deque[Any] = deque()
+
+    @property
+    def info(self) -> "Limits":
+        """
+        Get the Limits object for this context containing information
+        about hardware/driver limits and other context information.
+
+        Example::
+
+            >> ctx.info.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.info.VENDOR
+            NVIDIA Corporation
+            >> ctx.info.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+        """
+        return self._limits
+
+    @property
+    def limits(self) -> "Limits":
+        """
+        Get the Limits object for this context containing information
+        about hardware/driver limits and other context information.
+
+        .. Warning::
+
+            This an old alias for :py:attr:`~arcade.gl.Context.info`
+            and is only around for backwards compatibility.
+
+        Example::
+
+            >> ctx.limits.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.limits.VENDOR
+            NVIDIA Corporation
+            >> ctx.limits.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+        """
+        return self._limits
+
+    @property
+    def stats(self) -> "ContextStats":
+        """
+        Get the stats instance containing runtime information
+        about creation and destruction of OpenGL objects.
+
+        Example::
+
+            >> ctx.limits.MAX_TEXTURE_SIZE
+            (16384, 16384)
+            >> ctx.limits.VENDOR
+            NVIDIA Corporation
+            >> ctx.limits.RENDERER
+            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+        """
+        return self._stats
 
     @property
     def window(self) -> Window:
@@ -221,7 +286,10 @@ class Context:
     @property
     def gl_version(self) -> Tuple[int, int]:
         """
-        The OpenGL version as a 2 component tuple
+        The OpenGL version as a 2 component tuple.
+        This is the reported OpenGL version from
+        drivers and might be a higher version than
+        you requested.
 
         :type: tuple (major, minor) version
         """
@@ -251,15 +319,18 @@ class Context:
     def gc_mode(self) -> str:
         """
         Set the garbage collection mode for OpenGL resources.
-        Supported modes are:
+        Supported modes are::
 
-            # default: Auto 
-            ctx.gc_mode = "auto"
-
+            # Default:
             # Defer garbage collection until ctx.gc() is called
             # This can be useful to enforce the main thread to
             # run garbage collection of opengl resources
-            ctx.gc_mode = "context_gc"            
+            ctx.gc_mode = "context_gc"
+
+            # Auto collect is similar to python garbage collection.
+            # This is a risky mode. Know what you are doing before using this.
+            ctx.gc_mode = "auto"
+
         """
         return self._gc_mode
 
@@ -293,7 +364,11 @@ class Context:
 
     @classmethod
     def activate(cls, ctx: "Context"):
-        """Mark a context as the currently active one"""
+        """
+        Mark a context as the currently active one.
+
+        .. Warning:: Never call this unless you know exactly what you are doing.
+        """
         cls.active = ctx
 
     def enable(self, *flags):
@@ -348,22 +423,36 @@ class Context:
     @contextmanager
     def enabled(self, *flags):
         """
-        Temporarily change enabled flags::
+        Temporarily change enabled flags.
+
+        Flags that was enabled initially will stay enabled.
+        Only new enabled flags will be reversed when exiting
+        the context.
+
+        Example::
 
             with ctx.enabled(ctx.BLEND, ctx.CULL_FACE):
                 # Render something
         """
-        old_flags = self._flags
+        flags = set(flags)
+        new_flags = flags - self._flags
+
         self.enable(*flags)
         try:
             yield
         finally:
-            self.enable(*old_flags)
+            self.disable(*new_flags)
 
     @contextmanager
     def enabled_only(self, *flags):
         """
-        Temporarily change enabled flags::
+        Temporarily change enabled flags.
+
+        Only the supplied flags with be enabled in
+        in the context. When exiting the context
+        the old flags will be restored.
+
+        Example::
 
             with ctx.enabled_only(ctx.BLEND, ctx.CULL_FACE):
                 # Render something
@@ -429,7 +518,9 @@ class Context:
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
         box is enabled when setting a value and disabled when
-        set to ``None``
+        set to ``None``.
+
+        Example::
 
             # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area
@@ -448,9 +539,40 @@ class Context:
     @property
     def blend_func(self) -> Tuple[int, int]:
         """
-        Get or the blend function::
+        Get or set the blend function.
+        This is tuple specifying how the red, green, blue, and
+        alpha blending factors are computed for the source
+        and  destination pixel.
 
+        Supported blend functions are::
+
+            ZERO
+            ONE
+            SRC_COLOR
+            ONE_MINUS_SRC_COLOR
+            DST_COLOR
+            ONE_MINUS_DST_COLOR
+            SRC_ALPHA
+            ONE_MINUS_SRC_ALPHA
+            DST_ALPHA
+            ONE_MINUS_DST_ALPHA
+
+            # Shortcuts
+            DEFAULT_BLENDING     # (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
+            ADDITIVE_BLENDING    # (ONE, ONE)
+            PREMULTIPLIED_ALPHA  # (SRC_ALPHA, ONE)
+
+        These enums can be accessed in the ``arcade.gl``
+        module or simply as attributes of the context object.
+        The raw enums from ``pyglet.gl`` can also be used.
+
+        Example::
+
+            # Using constants from the context object
             ctx.blend_func = ctx.ONE, ctx.ONE
+            # from the gl module
+            from arcade import gl
+            ctx.blend_func = gl.ONE, gl.One
 
         :type: tuple (src, dst)
         """
@@ -487,7 +609,21 @@ class Context:
 
     @property
     def point_size(self) -> float:
-        """float: Get or set the point size."""
+        """
+        Set or get the point size. Default is `1.0`.
+
+        Point size changes the pixel size of rendered points. The min and max values
+        are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
+        This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
+
+        If variable point size is needed you can enable :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE`
+        and write to ``gl_PointSize`` in the vertex or geometry shader.
+
+        .. Note::
+
+            Using a geometry shader to create triangle strips from points is often a safer
+            way to render large points since you don't have have any size restrictions.
+        """
         return self._point_size
 
     @point_size.setter
@@ -497,7 +633,14 @@ class Context:
 
     @property
     def primitive_restart_index(self) -> int:
-        """Get or set the primitive restart index. Default is -1"""
+        """
+        Get or set the primitive restart index. Default is ``-1``.
+
+        The primitive restart index can be used in index buffers
+        to restart a primitive. This is for example useful when you
+        use triangle strips or line strips and want to start on
+        a new strip in the same buffer / draw call.
+        """
         return self._primitive_restart_index
 
     @primitive_restart_index.setter
@@ -514,7 +657,7 @@ class Context:
         """
         gl.glFinish()
 
-    def flush(self):
+    def flush(self) -> None:
         """
         A suggestion to the driver to execute all the queued
         drawing calls even if the queue is not full yet.
@@ -530,7 +673,7 @@ class Context:
         """
         Copies/blits a framebuffer to another one.
 
-        This operation many restrictions to ensure it works across
+        This operation has many restrictions to ensure it works across
         different platforms and drivers:
 
         * The source and destination framebuffer must be the same size
@@ -556,14 +699,38 @@ class Context:
     def buffer(
         self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
-        """Create a new OpenGL Buffer object.
+        """
+        Create an OpenGL Buffer object. The buffer will contain all zero-bytes if no data is supplied.
+
+        Examples::
+
+            # Create 1024 byte buffer
+            ctx.buffer(reserve=1024)
+            # Create a buffer with 1000 float values using python's array.array
+            from array import array
+            ctx.buffer(data=array('f', [i for in in range(1000)])
+            # Create a buffer with 1000 random 32 bit floats using numpy
+            self.ctx.buffer(data=np.random.random(1000).astype("f4"))
+
+        The ``usage`` parameter enables the GL implementation to make more intelligent
+        decisions that may impact buffer object performance. It does not add any restrictions.
+        If in doubt, skip this parameter and revisit when optimizing. The result
+        are likely to be different between vendors/drivers or may not have any effect.
+
+        The available values means the following::
+
+            stream
+                The data contents will be modified once and used at most a few times.
+            static
+                The data contents will be modified once and used many times.
+            dynamic
+                The data contents will be modified repeatedly and used many times.
 
         :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         :rtype: :py:class:`~arcade.gl.Buffer`
         """
-        # create_with_size
         return Buffer(self, data, reserve=reserve, usage=usage)
 
     def framebuffer(
@@ -625,7 +792,9 @@ class Context:
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
-        """Create a 2D depth texture
+        """
+        Create a 2D depth texture. Can be used as a depth attachment
+        in a :py:class:`~arcade.gl.Framebuffer`.
 
         :param Tuple[int, int] size: The size of the texture
         :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
@@ -640,16 +809,82 @@ class Context:
         index_element_size: int = 4,
     ):
         """
-        Create a Geomtry instance.
+        Create a Geomtry instance. This is Arcade's version of a vertex array adding
+        a lot of convenice for the user. Geometry objects are fairly light. They are
+        mainly responsible for automatically map buffer inputs to your shader(s)
+        and provide various methods for rendering or processing this geometry,
+
+        The same geometry can be rendered with different
+        programs as long as your shader is using one or more of the input attribute.
+        This means geometry with positions and colors can be rendered with a program
+        only using the positions. We will automatically map what is necessary and
+        cache these mappings internally for performace.
+
+        In short, the geometry object is a light object that describes what buffers
+        contains and automatically negotiate with shaders/programs. This is a very
+        complex field in OpenGL so the Geometry object provides substantial time
+        savings and greatly reduces the complexity of your code.
+
+        Geometry also provide rendering methods supporting the following:
+
+        * Rendering geometry with and without index buffer
+        * Rendering your geometry using instancing. Per instance buffers can be provided
+          or the current instance can be looked up using ``gl_InstanceID`` in shaders.
+        * Running transform feedback shaders that writes to buffers instead the screen.
+          This can write to one or multiple buffer.
+        * Render your geometry with indirect rendering. This means packing
+          multiple meshes into the same buffer(s) and batch drawing them.
+
+        Examples::
+
+            # Single buffer geometry with a vec2 vertex position attribute
+            ctx.geometry([BufferDescription(buffer, '2f', ["in_vert"])], mode=ctx.TRIANGLES)
+
+            # Single interlaved buffer with two attributes. A vec2 position and vec2 velocity
+            ctx.geometry([
+                    BufferDescription(buffer, '2f 2f', ["in_vert", "in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Geometry with index buffer
+            ctx.geometry(
+                [BufferDescription(buffer, '2f', ["in_vert"])],
+                index_buffer=ibo,
+                mode=ctx.TRIANGLES,
+            )
+
+            # Separate buffers
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_vel, '2f', ["in_velocity"])
+                ],
+                mode=ctx.POINTS,
+            )
+
+            # Providing per-instance data for instancing
+            ctx.geometry([
+                    BufferDescription(buffer_pos, '2f', ["in_vert"])
+                    BufferDescription(buffer_instance_pos, '2f', ["in_offset"], instanced=True)
+                ],
+                mode=ctx.POINTS,
+            )
 
         :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
         :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of the index buffer type.
+        :param int index_element_size: Byte size of a single index/element in the index buffer.
+                                       In other words, the index buffer can be 8, 16 or 32 bit integers.
                                        Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
+        return Geometry(
+            self,
+            content,
+            index_buffer=index_buffer,
+            mode=mode,
+            index_element_size=index_element_size,
+        )
 
     def program(
         self,
@@ -659,7 +894,9 @@ class Context:
         geometry_shader: str = None,
         tess_control_shader: str = None,
         tess_evaluation_shader: str = None,
-        defines: Dict[str, str] = None
+        defines: Dict[str, str] = None,
+        varyings: Optional[Sequence[str]] = None,
+        varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
@@ -669,6 +906,14 @@ class Context:
         :param str tess_control_shader: tessellation control shader source (optional)
         :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
         :param dict defines: Substitute #defines values in the source (optional)
+        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+                                                 This is normally not necessary since we auto detect them,
+                                                 but some more complex out structures we can't detect.
+        :param str varyings_capture_mode: The capture mode for transforms.
+                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
+                                          ``"separate"`` means each out attribute will be written separate buffers.
+                                          Based on these settings the `transform()` method will accept a single
+                                          buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
@@ -695,8 +940,8 @@ class Context:
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
-        out_attributes = []  # type: List[str]
-        if not source_fs:
+        out_attributes = list(varyings) if varyings is not None else []  # type: List[str]
+        if not source_fs and not out_attributes:
             if source_geo:
                 out_attributes = source_geo.out_attributes
             else:
@@ -717,7 +962,8 @@ class Context:
             tess_evaluation_shader=source_te.get_source(defines=defines)
             if source_te
             else None,
-            out_attributes=out_attributes,
+            varyings=out_attributes,
+            varyings_capture_mode=varyings_capture_mode,
         )
 
     def query(self, *, samples=True, time=True, primitives=True):
@@ -730,11 +976,11 @@ class Context:
 
         :rtype: :py:class:`~arcade.gl.Query`
         """
-        return Query(self)
+        return Query(self, samples=samples, time=time, primitives=primitives)
 
-    def compute_shader(self, *, source: str):
+    def compute_shader(self, *, source: str) -> ComputeShader:
         """
-        Create a compute shader
+        Create a compute shader.
 
         :param str source: The glsl source
         """
@@ -742,19 +988,34 @@ class Context:
 
 
 class ContextStats:
+    """
+    Runtime allocation statistics of OpenGL objects.
+    """
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
-        # (created, freed)
+        #: Textures (created, freed)
         self.texture = (0, 0)
+        #: Framebuffers (created, freed)
         self.framebuffer = (0, 0)
+        #: Buffers (created, freed)
         self.buffer = (0, 0)
+        #: Programs (created, freed)
         self.program = (0, 0)
+        #: Vertex Arrays (created, freed)
         self.vertex_array = (0, 0)
+        #: Geometry (created, freed)
         self.geometry = (0, 0)
+        #: Compute Shaders (created, freed)
         self.compute_shader = (0, 0)
+        #: Queries (created, freed)
         self.query = (0, 0)
 
-    def incr(self, key):
+    def incr(self, key: str) -> None:
+        """
+        Increments a counter.
+
+        :param str key: The attribute name / counter to increment.
+        """
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
         if created % self.warn_threshold == 0 and created > 0:
@@ -768,6 +1029,11 @@ class ContextStats:
             )
 
     def decr(self, key):
+        """
+        Decrement a counter.
+
+        :param str key: The attribute name / counter to decrement.
+        """
         created, freed = getattr(self, key)
         setattr(self, key, (created, freed + 1))
 
@@ -781,7 +1047,9 @@ class Limits:
         self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
         #: Major version number of the OpenGL API supported by the current context.
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
+        #: The vendor string. For example "NVIDIA Corporation"
         self.VENDOR = self.get_str(gl.GL_VENDOR)
+        #: The renderer things. For example "NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2"
         self.RENDERER = self.get_str(gl.GL_RENDERER)
         #: Value indicating the number of sample buffers associated with the framebuffer
         self.SAMPLE_BUFFERS = self.get(gl.GL_SAMPLE_BUFFERS)
@@ -909,9 +1177,16 @@ class Limits:
         # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET)
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
-        # TODO: Missing in pyglet
+        #: The highest supported anisotropy value. Usually 8.0 or 16.0.
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        #: The maximum support window or framebuffer viewport.
+        #: This is usually the same as the maximum texture size
         self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        #: How many buffers we can have as output when doing a transform(feedback).
+        #: This is usually 4
+        self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+        #: The minimum and maximum point size
+        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
 
         err = self._ctx.error
         if err:

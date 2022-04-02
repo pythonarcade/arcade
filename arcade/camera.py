@@ -158,7 +158,7 @@ class Camera:
         Sets the goal position of the camera.
 
         The camera will lerp towards this position based on the provided speed,
-        updating it's position everytime the use() function is called.
+        updating its position everytime the use() function is called.
 
         :param Vec2 vector: Vector to move the camera towards.
         :param Vec2 speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly

@@ -27,7 +27,7 @@ class HijackSpritePositions(arcade.Window):
                 )
             )
         # Ensure the internal buffers are up to date (size etc)
-        self.coins._write_sprite_buffers_to_gpu()
+        self.coins.write_sprite_buffers_to_gpu()
 
         # This shader simply generate some new positions
         self.position_program = self.ctx.program(
@@ -63,9 +63,9 @@ class HijackSpritePositions(arcade.Window):
 
         # Write the new positions directly into the position
         # buffer of the spritelist. A little bit rude, but it works.
-        self.coins._geometry.transform(
+        self.coins.geometry.transform(
             self.position_program,
-            self.coins._sprite_pos_buf,
+            self.coins.buffer_positions,
             vertices=len(self.coins),
         )
         self.coins.draw()

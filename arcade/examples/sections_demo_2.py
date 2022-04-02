@@ -32,7 +32,7 @@ class Player(Section):
     paddle can move
     """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  key_up: int, key_down: int, **kwargs):
         super().__init__(left, bottom, width, height,
                          accept_keyboard_events={key_up, key_down}, **kwargs)

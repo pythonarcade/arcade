@@ -11,14 +11,14 @@ Context
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 ContextStats
 ------------
 
 .. autoclass:: arcade.gl.context.ContextStats
    :members:
-   :undoc-members:
-   :show-inheritance:
+   :member-order: bysource
 
 Limits
 ------
@@ -26,4 +26,4 @@ Limits
 .. autoclass:: arcade.gl.context.Limits
    :members:
    :undoc-members:
-   :show-inheritance:
+   :member-order: bysource

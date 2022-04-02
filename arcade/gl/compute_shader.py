@@ -11,14 +11,13 @@ if TYPE_CHECKING:
 
 class ComputeShader:
     """
-    Represent an OpenGL compute shader
+    A higher level wrapper for an OpenGL compute shader.
     """
 
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
         self._uniforms: Dict[str, Uniform] = dict()
-        self._uniform_blocks: Dict[str, UniformBlock] = dict()
 
         from arcade.gl import ShaderException
 
@@ -80,9 +79,18 @@ class ComputeShader:
 
     @property
     def glo(self) -> int:
+        """The name/id of the OpenGL resource"""
         return self._glo
 
     def use(self):
+        """
+        Use/activate the compute shader.
+
+        .. Note::
+
+            This is not necessary to call in normal use cases
+            since ``run()`` already does this for you.
+        """
         gl.glUseProgram(self._glo)
         # self._ctx.active_program = self
 
@@ -90,11 +98,28 @@ class ComputeShader:
         """
         Run the compute shader.
 
+        When running a compute shader we specify how many work groups should
+        be executed on the ``x``, ``y`` and ``z`` dimension. The size of the work group
+        is defined in the compute shader.
+
+        .. code:: glsl
+
+            // Work group with one dimension. 16 work groups executed.
+            layout(local_size_x=16) in;
+            // Work group with two dimensions. 256 work groups executed.
+            layout(local_size_x=16, local_size_y=16) in;
+            // Work group with three dimensions. 4096 work groups executed.
+            layout(local_size_x=16, local_size_y=16, local_size_z=16) in;
+
+        Group sizes are ``1`` by default. If your compute shader doesn't specify
+        a size for a dimension or uses ``1`` as size you don't have to supply
+        this parameter.
+
         :param int group_x: The number of work groups to be launched in the X dimension.
         :param int group_y: The number of work groups to be launched in the y dimension.
         :param int group_z: The number of work groups to be launched in the z dimension.
         """
-        self.use()        
+        self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)
 
     def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
@@ -127,11 +152,17 @@ class ComputeShader:
             self._ctx.objects.append(self)
 
     def delete(self):
+        """
+        Destroy the internal compute shader object.
+        This is normally not necessary, but depends on the
+        garbage collection more configured in the context.
+        """
         ComputeShader.delete_glo(self._ctx, self._glo)
         self._glo = 0
 
     @staticmethod
     def delete_glo(ctx, prog_id):
+        """Low level method for destroying a compute shader by id"""
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
@@ -165,6 +196,7 @@ class ComputeShader:
             )
 
     def _introspect_uniform_blocks(self):
+        """Finds uniform blocks and maps the to python objectss"""
         active_uniform_blocks = gl.GLint(0)
         gl.glGetProgramiv(
             self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
@@ -197,3 +229,25 @@ class ComputeShader:
             u_name,  # string buffer for storing the name
         )
         return u_name.value.decode(), u_type.value, u_size.value
+
+    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+        """Query active uniform block by retrieving the name and index and size"""
+        # Query name
+        u_size = gl.GLint()
+        buf_size = 192  # max uniform character length
+        u_name = create_string_buffer(buf_size)
+        gl.glGetActiveUniformBlockName(
+            self._glo,  # program to query
+            location,  # location to query
+            256,  # max size if the name
+            u_size,  # length
+            u_name,
+        )
+        # Query index
+        index = gl.glGetUniformBlockIndex(self._glo, u_name)
+        # Query size
+        b_size = gl.GLint()
+        gl.glGetActiveUniformBlockiv(
+            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
+        )
+        return index, b_size.value, u_name.value.decode()

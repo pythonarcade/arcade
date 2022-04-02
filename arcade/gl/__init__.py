@@ -18,6 +18,7 @@ should be done through methods in a context.
 
 from .context import Context
 from .types import BufferDescription
+from .compute_shader import ComputeShader
 from .exceptions import ShaderException
 from .enums import *
 from .buffer import Buffer

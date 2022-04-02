@@ -32,8 +32,8 @@ class ArcadeContext(Context):
 
     :param pyglet.window.Window window: The pyglet window
     :param str gc_mode: The garbage collection mode for opengl objects.
-                        ``auto`` (default) is just what we would expect in python
-                        while ``context_gc`` requires you to call ``Context.gc()``.
+                        ``auto`` is just what we would expect in python
+                        while ``context_gc`` (default) requires you to call ``Context.gc()``.
                         The latter can be useful when using multiple threads when
                         it's not clear what thread will gc the object.
     """
@@ -82,7 +82,7 @@ class ArcadeContext(Context):
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
-        self.sprite_list_program_no_cull["Texture"] = 0
+        self.sprite_list_program_no_cull["sprite_texture"] = 0
         self.sprite_list_program_no_cull["uv_texture"] = 1
 
         self.sprite_list_program_cull: Program = self.load_program(
@@ -90,7 +90,7 @@ class ArcadeContext(Context):
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
-        self.sprite_list_program_cull["Texture"] = 0
+        self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
 
         # Shapes
@@ -224,7 +224,7 @@ class ArcadeContext(Context):
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
-        is passed in the ``SpriteList`` constructor.
+        is passed in the :py:class:`arcade.SpriteList` constructor.
 
         :type: TextureAtlas
         """
@@ -269,7 +269,7 @@ class ArcadeContext(Context):
         Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
 
-        :type: Mat4
+        :type: pyglet.math.Mat4
         """
         return self._projection_2d_matrix
 
@@ -344,7 +344,12 @@ class ArcadeContext(Context):
 
     def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
         """
-        Loads a compute shader.
+        Loads a compute shader from file. This methods supports
+        resource handles.
+
+        Example::
+
+            ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         :param Union[str,pathlib.Path] path: Path to texture
         """
@@ -359,12 +364,16 @@ class ArcadeContext(Context):
         flip: bool = True,
         build_mipmaps: bool = False,
     ) -> Texture:
-        """Loads and creates an OpenGL 2D texture.
-        Currently all textures are converted to RGBA.
+        """
+        Loads and creates an OpenGL 2D texture.
+        Currently all textures are converted to RGBA for simplicity.
 
         Example::
 
+            # Load a texture in current working directory
             texture = window.ctx.load_texture("background.png")
+            # Load a texture using Arcade resource handle
+            texture = window.ctx.load_texture(":textures:background.png")
 
         :param Union[str,pathlib.Path] path: Path to texture
         :param bool flip: Flips the image upside down

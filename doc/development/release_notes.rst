@@ -7,14 +7,139 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.13
+------
+
+*Released 2022-Mar-25*
+
+* New Features
+
+  * Arcade can now run in headless mode on linux servers opening
+    more possibilities for users in for example the data science
+    community (`#1107 <https://github.com/pythonarcade/arcade/issues/1107>`_).
+    See :ref:`headless` for more information.
+
+* Bugfixes
+
+  * The random text glitching issue especially affecting users with iGPUs
+    is finally resolved in pyglet. For that reason we have upgraded to
+    the pyglet 2.0a2 release.
+  * Fixed an issue causing :py:func:`arcade.draw_circle_filled` and
+    :py:func:`arcade.draw_circle_outline` to always render with 3 segments
+    on some iGPUs.
+  * Fixed an issue causing interactive widgets to unnecessarily re-draw when
+    hovering or pressing them. This could cause performance issues.
+  * SectionManager's ``on_show_view`` was never called when showing a view
+
+* Various Improvements
+
+  * :py:func:`arcade.load_font` now supports resource handles
+  * :py:class:`~arcade.PhysicsEngineSimple` can now take an iterable of wall spritelists
+  * Sprite creation is now ~6-8% faster.
+  * Removed warning about missing shapely on startup
+  * Window titles are now optional. If no window title is specified
+    the title will be the absolute path to the python file it was created in.
+    This was changed because of the new headless mode.
+  * Removed ``arcade.quick_run``. This function had no useful purpose.
+  * Added clear method to UIManager (`#1116 <https://github.com/pythonarcade/arcade/pull/1116>`_)
+  * Updated from Pillow 9.0.0 to 9.0.1
+
+* Tilemap
+
+  * Rectangle objects which are empty(have no width or height) will now be automatically
+    converted into single points.
+  * The Tile ID of a sprite can be access with ``sprite.properties["tile_id"]``. This refers
+    to the local ID of the tile within the Tileset. This value can be used to get the tile info 
+    for a given Sprite created from loading a tilemap.
+
+* Docs
+
+  * Added python version support info to install instructions (`#1122 <https://github.com/pythonarcade/arcade/pull/1122>`_)
+  * Fixed typo in :py:func:`~arcade.Sprite.append_texture` docstring(`#1126 <https://github.com/pythonarcade/arcade/pull/1126>`_)
+  * Improved the raycasting tutorial (`#1124 <https://github.com/pythonarcade/arcade/issues/1124>`_)
+  * Replace mentions of 3.6 on Linux install page (`#1129 <https://github.com/pythonarcade/arcade/pull/1129>`_)
+  * Fix broken links in the homepage (`#1139 <https://github.com/pythonarcade/arcade/pull/1130>`_)
+  * Lots of other improvements to docstrings throughout the code base
+  * General documentation improvements
+
+* OpenGL
+
+  * :py:class:`arcade.gl.Geometry` now supports transforming to multiple buffers.
+  * Added and improved examples in ``experimental/examples``.
+  * Major improvements to API docs
+
+Special thanks to
+`Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Maic Siemering <https://github.com/eruvanos>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`pvcraven <https://github.com/pvcraven>`_
+and
+`einarf <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
 2.6.12
 ------
 
-*Unreleased*
+*Released 2022-Mar-20*
+
+* General:
+
+  * Bugfix: :py:func:`~arcade.check_for_collision_with_list` selected
+    the wrong collision algorithm. This could affect performance.
+  * Bugfix: GPU collision detection show now work on older MacBooks
+  * Added :py:meth:`arcade.Text.draw_debug` that will visualize
+    the content area of the text and the anchor point. This
+    can be useful to understand the text anchoring.
+  * :py:class:`arcade.Text` now has a ``left``, ``right`` ``top``
+    and ``bottom`` attribute for getting the pixel locations
+    of the content borders.
+  * Added performance warning for :py:func:`arcade.draw_text`.
+    Using :py:class:`arcade.Text` is a lot faster. We have
+    also promoted the use of text objects in examples.
+  * Removed the deprecated ``arcade.create_text`` function
+  * ``UITextureButton.texture_pressed`` now returns the pressed texture,
+    not the texture
 
 * Documentation
 
   * Work on :ref:`shader_toy_tutorial`.
+  * Docstring improvements throughout the code base
+  * Many examples are cleaned up
+
+* OpenGL
+
+  * :py:class:`arcade.gl.Buffer` is guaranteed to contain
+    zero byte values on creation.
+  * Expose :py:class:`~arcade.gl.context.Limits` in :py:attr:`arcade.gl.Context.info`
+    and document all limit values
+  * Added limit: ``MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS``
+  * :py:meth:`arcade.gl.Buffer.read` now reads the correct
+    number of bytes when only ``offset`` parameter is passed.
+  * Improved compute shader examples
+  * Support uniform blocks in compute shaders
+  * Bug: :py:attr:`arcade.gl.Context.enabled` now properly
+    reverts to the original context flags
+  * Many docstring improvements in the ``arcade.gl`` module
+  * Bugfix: Query objects ignored creation parameters
+  * :py:class:`arcade.gl.ComputeShader` is now part of the gl module
+  * :py:class:`arcade.gl.ComputeShader` was added to docs
+  * Expose and document :py:class:`arcade.gl.context.ContextStats`
+
+Special thanks to
+`MrWardKKHS <https://github.com/MrWardKKHS>`_,
+`pvcraven <https://github.com/pvcraven>`_ and
+`einarf <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
+Also thanks to:
+
+* `DragonMoffon <https://github.com/DragonMoffon>`_ for arcade.gl testing and feedback
+* `bunny-therapist <https://github.com/bunny-therapist>`_ discovering collision bug
+* `Robert Morris <https://github.com/morrissimo>`_ for making us aware of the MacBook issue
 
 2.6.11
 ------

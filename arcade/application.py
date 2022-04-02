@@ -8,6 +8,7 @@ import time
 from typing import Tuple, Optional
 
 import pyglet
+
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
 
@@ -74,28 +75,31 @@ class Window(pyglet.window.Window):
     """
 
     def __init__(
-            self,
-            width: int = 800,
-            height: int = 600,
-            title: str = 'Arcade Window',
-            fullscreen: bool = False,
-            resizable: bool = False,
-            update_rate: Optional[float] = 1 / 60,
-            antialiasing: bool = True,
-            gl_version: Tuple[int, int] = (3, 3),
-            screen: pyglet.canvas.Screen = None,
-            style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
-            visible: bool = True,
-            vsync: bool = False,
-            gc_mode: str = "context_gc",
-            center_window: bool = False,
-            samples: int = 4,
-            enable_polling: bool = True
+        self,
+        width: int = 800,
+        height: int = 600,
+        title: Optional[str] = 'Arcade Window',
+        fullscreen: bool = False,
+        resizable: bool = False,
+        update_rate: Optional[float] = 1 / 60,
+        antialiasing: bool = True,
+        gl_version: Tuple[int, int] = (3, 3),
+        screen: pyglet.canvas.Screen = None,
+        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+        visible: bool = True,
+        vsync: bool = False,
+        gc_mode: str = "context_gc",
+        center_window: bool = False,
+        samples: int = 4,
+        enable_polling: bool = True
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
+
+        #: bool: If this is a headless window
+        self.headless = pyglet.options.get("headless") is True
 
         config = None
         # Attempt to make window with antialiasing
@@ -165,9 +169,15 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
+
             self.keyboard = pyglet.window.key.KeyStateHandler()
-            self.mouse = pyglet.window.mouse.MouseStateHandler()
-            self.push_handlers(self.keyboard, self.mouse)
+
+            if pyglet.options["headless"]:
+                self.push_handlers(self.keyboard)
+
+            else:
+                self.mouse = pyglet.window.mouse.MouseStateHandler()
+                self.push_handlers(self.keyboard, self.mouse)
         else:
             self.keyboard = None
             self.mouse = None
@@ -209,10 +219,21 @@ class Window(pyglet.window.Window):
         self.ctx.screen.clear(color, normalized=normalized, viewport=viewport)
 
     @property
-    def background_color(self):
-        """Get or set the background color for this window.
+    def background_color(self) -> Color:
+        """
+        Get or set the background color for this window.
+        This affects what color the window will contain when
+        :py:meth:`~arcade.Window.clear()` is called.
 
-        If the background color is an ``RGB`` value instead of ``RGBA```
+        Examples::
+
+            # Use Arcade's built in color values
+            window.background_color = arcade.color.AMAZON
+
+            # Specify RGB value directly (red)
+            window.background_color = 255, 0, 0
+
+        If the background color is an ``RGB`` value instead of ``RGBA``
         we assume alpha value 255.
 
         :type: Color
@@ -304,23 +325,23 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(self._dispatch_updates)
         pyglet.clock.schedule_interval(self._dispatch_updates, rate)
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
         Override this function to add mouse functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         """
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of the mouse
-        :param float y: y position of the mouse
+        :param int x: x position of the mouse
+        :param int y: y position of the mouse
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
@@ -329,28 +350,29 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         :param int buttons: Which button is pressed
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x:
-        :param float y:
-        :param int button:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -360,10 +382,10 @@ class Window(pyglet.window.Window):
         """
         User moves the scroll wheel.
 
-        :param int x:
-        :param int y:
-        :param int scroll_x:
-        :param int scroll_y:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
@@ -588,6 +610,8 @@ class Window(pyglet.window.Window):
         else:
             section_manager_managed_events = set()
 
+        # Note: Excluding on_show because this even can trigger multiple times.
+        #       It should only be called once when the view is shown.
         self.push_handlers(
             **{
                 event_type: getattr(new_view, event_type, None)
@@ -599,7 +623,7 @@ class Window(pyglet.window.Window):
         self._current_view.on_show()
         self._current_view.on_show_view()
         if self._current_view.has_sections:
-            self._current_view.on_show_view()
+            self._current_view.section_manager.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -687,9 +711,16 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    # def set_mouse_platform_visible(self, platform_visible=None):
-    #     """ This does something. """
-    #     super().set_mouse_platform_visible(platform_visible)
+    def set_mouse_platform_visible(self, platform_visible=None):
+        """
+        This method is only exposed/overridden because it causes PyCharm
+        to display a warning. This function is
+        setting the platform specific mouse cursor visibility and
+        would only be something an advanced user would care about.
+
+        See pyglet documentation for details.
+        """
+        super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
         """ Capture the mouse. """
@@ -707,9 +738,37 @@ class Window(pyglet.window.Window):
         """ Dispatch events """
         super().dispatch_events()
 
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
 
-def open_window(width: int, height: int, window_title: str, resizable: bool = False,
-                antialiasing: bool = True) -> Window:
+        :param int x:
+        :param int y:
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
+
+def open_window(
+    width: int,
+    height: int,
+    window_title: Optional[str] = None,
+    resizable: bool = False,
+    antialiasing: bool = True,
+) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -790,36 +849,38 @@ class View:
         pass
 
     def on_show(self):
-        """Called when this view is shown and if window dispatches an on_show event.
-        (first time showing window or resize)
-        """
+        """Deprecated. Use :py:meth:`~arcade.View.on_show_view` instead."""
         pass
 
     def on_show_view(self):
-        """Called when this view is shown"""
+        """
+        Called once when the view is shown.
+
+        .. seealso:: :py:meth:`~arcade.View.on_hide_view`
+        """
         pass
 
     def on_hide_view(self):
-        """Called when this view is not shown anymore"""
+        """Called once when this view is hidden."""
         pass
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
         Override this function to add mouse functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         """
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of the mouse
-        :param float y: y position of the mouse
+        :param int x: x position of the mouse
+        :param int y: y position of the mouse
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
@@ -828,28 +889,29 @@ class View:
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         :param int _buttons: Which button is pressed
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x:
-        :param float y:
-        :param int button:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -859,10 +921,10 @@ class View:
         """
         User moves the scroll wheel.
 
-        :param int x:
-        :param int y:
-        :param int scroll_x:
-        :param int scroll_y:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
@@ -898,5 +960,28 @@ class View:
         :py:meth:`~arcade.Window.on_resize` is also called separately.
         By default this method does nothing and can be overridden to
         handle resize logic.
+        """
+        pass
+
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
         """
         pass

@@ -33,7 +33,7 @@ SPRITE_SCALING = 0.5
 
 
 class MenuView(arcade.View):
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
@@ -49,7 +49,7 @@ class MenuView(arcade.View):
 
 
 class InstructionView(arcade.View):
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.ORANGE_PEEL)
 
     def on_draw(self):
@@ -94,7 +94,7 @@ class GameView(arcade.View):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Don't show the mouse cursor
@@ -151,7 +151,7 @@ class GameOverView(arcade.View):
         super().__init__()
         self.time_taken = 0
 
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):

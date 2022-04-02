@@ -118,6 +118,7 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+            <li><a href="tutorials/compiling_with_nuitka/index.html">Compiling a game with Nuitka</a></li>
           </ul>
 
         </td>
@@ -154,7 +155,8 @@ The Python Arcade Library
           <ul>
             <li><a href="https://github.com/pythonarcade/arcade">GitHub</a></li>
             <li><a href="development/release_notes.html">Release Notes</a></li>
-            <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/release_checklist.html">Release Check-List</a></li>
           </ul>
         </td>
 
@@ -182,7 +184,7 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://learn.arcade.academy/">Book: Learn to Program with Arcade</a></li>
-            <li><a href="tutorials/edge_artifacts/index.html">Fixing Edge Artifacts</a></li>
+            <li><a href="development/edge_artifacts/index.html">Fixing Edge Artifacts</a></li>
             <li><a href="https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html">Peer To Peer Gaming With Arcade and Python Banyan</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">US PyCon 2019 Tutorial</a></li>
             <li><a href="https://youtu.be/2SMkk63k6Ik">Aus PyCon 2018 Multiplayer Games</a></li>
@@ -257,6 +259,7 @@ game without learning a complex framework.
    tutorials/lights/index
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
+   tutorials/compiling_with_nuitka/index
    tutorials/shader_toy/index
    tutorials/framebuffer/index
    tutorials/raycasting/index
@@ -268,6 +271,7 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Advanced
 
+   advanced/headless
    advanced/vsync
    advanced/textures
    advanced/texture_atlas

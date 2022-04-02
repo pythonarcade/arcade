@@ -3,10 +3,11 @@
 
 in vec2 in_pos;
 in vec2 in_size;
-out vec2 v_pos;
-out vec2 v_size;
+
+out vec2 pos;
+out vec2 size;
 
 void main() {
-    v_pos = in_pos;
-    v_size = in_size;
+    pos = in_pos;
+    size = in_size;
 }

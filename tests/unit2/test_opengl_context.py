@@ -6,8 +6,8 @@ import pytest
 
 def test_ctx(ctx):
     assert ctx.gl_version >= (3, 3)
-    assert ctx.limits.MAX_TEXTURE_SIZE > 4096
-    assert ctx.limits.MAX_ARRAY_TEXTURE_LAYERS >= 256
+    assert ctx.info.MAX_TEXTURE_SIZE > 4096
+    assert ctx.info.MAX_ARRAY_TEXTURE_LAYERS >= 256
 
     assert ctx.blend_func == ctx.BLEND_DEFAULT
     ctx.blend_func = ctx.BLEND_PREMULTIPLIED_ALPHA

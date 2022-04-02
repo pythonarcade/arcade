@@ -54,16 +54,17 @@ def get_projection() -> Mat4:
 
 
 def create_orthogonal_projection(
-        left,
-        right,
-        bottom,
-        top,
-        near=1,
-        far=-1,
+    left: float,
+    right: float,
+    bottom: float,
+    top: float,
+    near: float = 1,
+    far: float = -1,
 ) -> Mat4:
     """
     Creates an orthogonal projection matrix. Used internally with the
-    OpenGL shaders.
+    OpenGL shaders. It creates the same matrix as the deprecated/removed
+    ``glOrtho`` OpenGL function.
 
     :param float left: The left of the near plane relative to the plane's center.
     :param float right: The right of the near plane relative to the plane's center.
@@ -74,16 +75,21 @@ def create_orthogonal_projection(
                        rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
     :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: Mat4
+    :rtype: pyglet.math.Mat4
 
-    .. seealso:: https://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
+    .. seealso:: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
     """
     return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
 
 
 def pause(seconds: Number) -> None:
     """
-    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep()
+    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
+
+    .. Warning::
+
+        This is mostly used for unit tests and is not likely to be
+        a good solution for pausing an application or game.
 
     :param float seconds: Time interval to pause in seconds.
     """
@@ -97,7 +103,12 @@ def get_window() -> "Window":
     :return: Handle to the current window.
     """
     if _window is None:
-        raise RuntimeError("No window is active. Use set_window() to set an active window")
+        raise RuntimeError(
+            (
+                "No window is active. "
+                "It has not been created yet, or it was closed."
+            )
+        )
 
     return _window
 
@@ -155,14 +166,16 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
 
     .. note:: ``Window.on_resize`` calls ``set_viewport`` by default.
               If you want to set your own custom viewport during the
-              game, you may need to over-ride this function.
+              game, you may need to over-ride the ``on_resize`` method.
 
-    **For more advanced users**: This functions sets the orthogonal projection
-    used by shapes and sprites. It also updates the viewport to match the current
-    screen resolution.
-    ``window.ctx.projection_2d`` (:py:meth:`~arcade.ArcadeContext.projection_2d`)
-    and ``window.ctx.viewport`` (:py:meth:`~arcade.gl.Context.viewport`)
-    can be used to set viewport and projection separately.
+    .. note:: For more advanced users
+
+        This functions sets the orthogonal projection
+        used by shapes and sprites. It also updates the viewport to match the current
+        screen resolution.
+        ``window.ctx.projection_2d`` (:py:meth:`~arcade.ArcadeContext.projection_2d`)
+        and ``window.ctx.viewport`` (:py:meth:`~arcade.gl.Context.viewport`)
+        can be used to set viewport and projection separately.
 
     :param Number left: Left-most (smallest) x value.
     :param Number right: Right-most (largest) x value.
@@ -170,12 +183,16 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     :param Number top: Top (largest) y value.
     """
     window = get_window()
+    # Get the active framebuffer
     fbo = window.ctx.fbo
-    # If we are dealing with window framebuffer we need to query window size
-    # through the window itself and not the default framebuffer
+    # If the framebuffer is the default one (aka. window framebuffer)
+    # we can't trust its size and need to get that from the window.
+    # This is because the default framebuffer is only introspected
+    # during context creation and it doesn't update size internally
+    # when the window is resizing.
     if fbo.is_default:
         fbo.viewport = 0, 0, window.width, window.height
-    # otherwise it's an offscreen framebuffer and we can trust the size
+    # Otherwise it's an offscreen framebuffer and we can trust the size
     else:
         fbo.viewport = 0, 0, *fbo.size
 
@@ -215,8 +232,13 @@ def close_window() -> None:
 def finish_render():
     """
     Swap buffers and displays what has been drawn.
-    If programs use derive from the Window class, this function is
-    automatically called.
+
+    .. Warning::
+
+        If you are extending the :py:class:`~arcade.Window` class, this function
+        should not be called. The event loop will automatically swap the window
+        framebuffer for you after ``on_draw``.
+
     """
     get_window().static_display = True
     get_window().flip_count = 0
@@ -227,14 +249,39 @@ def run():
     """
     Run the main loop.
     After the window has been set up, and the event hooks are in place, this is usually one of the last
-    commands on the main program.
+    commands on the main program. This is a blocking function starting pyglet's event loop
+    meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
     """
-    if 'ARCADE_TEST' in os.environ and os.environ['ARCADE_TEST'].upper() == "TRUE":
-        # print("Testing!!!")
-        window = get_window()
+    window = get_window()
+
+    # Used in some unit test
+    if os.environ.get('ARCADE_TEST'):       
         if window:
             window.on_update(1 / 60)
             window.on_draw()
+    elif window.headless:
+        # We are entering headless more an will emulate an event loop
+        import time
+        # Ensure the initial delta time is not 0 to be
+        # more in line with how a normal window works.
+        delta_time = 1 / 60
+        last_time = time.perf_counter()
+
+        # As long as we have a context --
+        while window.context:
+            # Select active view or window
+            active = window.current_view or window
+
+            active.on_update(delta_time)
+            if window.context:
+                active.on_draw()
+
+            # windwow could be closed in on_draw
+            if window.context:
+                window.flip()
+
+            now = time.perf_counter()
+            delta_time, last_time = now - last_time, now
     else:
         import sys
         if sys.platform != 'win32':
@@ -276,20 +323,6 @@ def run():
                 pyglet.app.run()
 
 
-def quick_run(time_to_pause: Number):
-    """
-    Only run the application for the specified time in seconds.
-    Useful for unit testing or continuous integration (CI) testing
-    where there is no user interaction.
-
-    :param Number time_to_pause: Number of seconds to pause before automatically
-         closing.
-
-    """
-    pause(time_to_pause)
-    close_window()
-
-
 def exit():
     """
     Exits the application.
@@ -299,17 +332,35 @@ def exit():
 
 def start_render() -> None:
     """
-    Clears the window. Can also be replaced with :py:meth:`~arcade.Window.clear`.
+    Clears the window.
+
+    More practical alternatives to this function is 
+    :py:meth:`arcade.Window.clear`
+    or :py:meth:`arcade.View.clear`.
     """
     get_window().clear()
 
 
 def set_background_color(color: Color) -> None:
     """
-    Specifies the background color of the window. This value
-    will persist for every future screen clears until changed.
+    Set the color :py:meth:`arcade.Window.clear()` will use
+    when clearing the window. This only needs to be called
+    when the background color changes.
 
-    :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
+    .. Note::
+
+        A shorter and faster way to set background color
+        is using :py:attr:`arcade.Window.background_color`.
+
+    Examples::
+
+        # Use Arcade's built in color values
+        arcade.set_background_color(arcade.color.AMAZON)
+
+        # Specify RGB value directly (red)
+        arcade.set_background_color((255, 0, 0))
+
+    :param Color color: List of 3 or 4 values in RGB/RGBA format.
     """
     get_window().background_color = color
 

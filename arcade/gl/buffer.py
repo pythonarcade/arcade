@@ -55,7 +55,9 @@ class Buffer:
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
             self._size = reserve
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
+            # populate the buffer with zero byte values
+            data = (gl.GLubyte * self._size)(0)
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
@@ -131,11 +133,14 @@ class Buffer:
         :rtype: bytes
         """
         if size == -1:
-            size = self._size
+            size = self._size - offset
 
         # Catch this before confusing INVALID_OPERATION is raised
         if size < 1:
-            raise ValueError("Attempting to read 0 or less bytes from buffer")
+            raise ValueError(
+                "Attempting to read 0 or less bytes from buffer: "
+                f"buffer size={self._size} | params: size={size}, offset={offset}"
+            )
 
         # Manually detect this so it doesn't raise a confusing INVALID_VALUE error
         if size + offset > self._size:

@@ -31,6 +31,8 @@ def test_read_write(ctx):
     with pytest.raises(ValueError):
         buffer.read(0)
 
+    # Offset without size
+    assert len(buffer.read(offset=6)) == 5
 
 def test_write_bufferprotocol(ctx):
     """Write data to buffer with buffer protocol"""

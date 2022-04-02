@@ -82,7 +82,7 @@ class Sprite:
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
           Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
           :data:`PhysicsEnginePlatformer`
           and 'Detailed' for the :data:`PymunkPhysicsEngine`.
@@ -174,7 +174,7 @@ class Sprite:
         flipped_horizontally: bool = False,
         flipped_vertically: bool = False,
         flipped_diagonally: bool = False,
-        hit_box_algorithm: str = "Simple",
+        hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
         texture: Texture = None,
         angle: float = 0,
@@ -306,7 +306,7 @@ class Sprite:
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        :param arcade.Texture texture: Texture to add ot the list of available textures
+        :param arcade.Texture texture: Texture to add to the list of available textures
 
         """
         self.textures.append(texture)
@@ -418,7 +418,7 @@ class Sprite:
                 point = rotate_point(point[0], point[1], 0, 0, self._angle)
 
             # Get a copy of the point
-            point = [point[0] * self._scale + self.position[0], point[1] * self._scale + self.position[1]]
+            point = [point[0] * self._scale + self._position[0], point[1] * self._scale + self._position[1]]
 
             return point
 

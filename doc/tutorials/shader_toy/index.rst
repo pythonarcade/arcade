@@ -22,6 +22,17 @@ https://www.shadertoy.com/
 Arcade includes additional code making it easier to run these ShaderToy shaders
 in an Arcade program. This tutorial helps you get started.
 
+PyCon 2022 Slides
+-----------------
+
+This tutorial is scheduled to be presented at 2022 PyCon US. Here are the slides for that presentation:
+
+.. raw:: html
+
+    <iframe src="https://slides.com/paulcraven/using-the-gpu/embed" width="720" height="526" title="Using the GPU" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+|
+
 Step 1: Open a window
 ---------------------
 
@@ -31,15 +42,18 @@ This is simple program that just opens a basic Arcade window. We'll add a shader
     :caption: Open a window
     :linenos:
 
-Step 2: Load and display a shader
----------------------------------
+Step 2: Load a shader
+---------------------
 
-This program will load a GLSL program and display it.
+This program will load a GLSL program and display it. We'll write our shader in the next step.
 
 .. literalinclude:: shadertoy_demo_2.py
     :caption: Run a shader
     :linenos:
     :emphasize-lines: 2, 11-16, 20
+
+Step 3: Write a shader
+----------------------
 
 Next, let's create a simple first GLSL program. Our program will:
 
@@ -78,7 +92,7 @@ Other default variables you can use:
 
 "Uniform" means the data is the same for each pixel the GLSL program runs on.
 
-Step 3: Move origin to center of screen, adjust for aspect
+Step 4: Move origin to center of screen, adjust for aspect
 ----------------------------------------------------------
 
 Next up, we'd like to center our circle, and adjust for the
@@ -94,7 +108,7 @@ and a perfect circle.
 .. image:: circle_2.png
    :width: 60%
 
-Step 4: Add a fade effect
+Step 5: Add a fade effect
 -------------------------
 
 We can take colors, like our white (1.0, 1.0, 1.0) and adjust their
@@ -116,7 +130,7 @@ it changes.
 .. image:: circle_3.png
    :width: 60%
 
-Step 5: Adjust how fast we fade
+Step 6: Adjust how fast we fade
 -------------------------------
 
 We can use an exponent to adjust how steep or shallow that curve is.
@@ -134,7 +148,7 @@ We can also change our color to orange.
 .. image:: circle_4.png
    :width: 60%
 
-Step 6: Tone mapping
+Step 7: Tone mapping
 --------------------
 
 Once we add color, the glow looks a bit off.
@@ -150,7 +164,7 @@ look better.
 .. image:: circle_5.png
    :width: 60%
 
-Step 7: Positioning the glow
+Step 8: Positioning the glow
 ----------------------------
 
 What if we want to position the glow at a certain spot? Send an x, y to

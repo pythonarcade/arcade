@@ -4,8 +4,6 @@ The Arcade Library
 A Python simple, easy to use module for creating 2D games.
 """
 # flake8: noqa: E402
-# Note: DO NOT EDIT arcade/__init__.py
-# Instead look at util/init_template.py and update_init.py
 
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
@@ -53,6 +51,10 @@ else:
 # noinspection PyPep8
 import pyglet
 
+# Env variable shortcut for headless mode
+if os.environ.get('ARCADE_HEADLESS'):
+    pyglet.options["headless"] = True
+
 # Disable shadow windows until issues with intel GPUs
 # on Windows and elsewhere are better understood.
 # Originally, this only disabled them for macs where
@@ -62,9 +64,12 @@ pyglet.options['shadow_window'] = False
 pyglet.options['win32_gdi_font'] = True
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
-if not getattr(sys, 'is_pyglet_doc_run', False):
-    pyglet.font.base.Font.texture_width = 4096
-    pyglet.font.base.Font.texture_height = 4096
+# This was only needed with pyglet==2.0dev13 and earlier
+# when we were chasing down a text glitch when new atlases
+# were created (Creating new IndexedVertexDomains)
+# if not getattr(sys, 'is_pyglet_doc_run', False):
+#     pyglet.font.base.Font.texture_width = 4096
+#     pyglet.font.base.Font.texture_height = 4096
 
 # noinspection PyPep8
 from arcade import color
@@ -86,7 +91,6 @@ from .window_commands import get_scaling_factor
 from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
-from .window_commands import quick_run
 from .window_commands import run
 from .window_commands import schedule
 from .window_commands import set_background_color
@@ -240,8 +244,10 @@ from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
 from .isometric import screen_to_isometric_grid
 
-from .joysticks import get_game_controllers
-from .joysticks import get_joysticks
+# We don't have joysticks game controllers in headless mode
+if not pyglet.options["headless"]:
+    from .joysticks import get_game_controllers
+    from .joysticks import get_joysticks
 
 from .emitter import EmitBurst
 from .emitter import EmitController
@@ -328,7 +334,6 @@ from arcade import experimental
 from .text_pyglet import (
     draw_text,
     load_font,
-    create_text,
     Text,
 )
 from .text_pillow import (
@@ -538,7 +543,6 @@ __all__ = ['AStarBarrierList',
            'pause',
            'print_timings',
            'play_sound',
-           'quick_run',
            'rand_angle_360_deg',
            'rand_angle_spread_deg',
            'rand_in_circle',

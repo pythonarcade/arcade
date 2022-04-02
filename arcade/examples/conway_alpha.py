@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
-        arcade.set_background_color(BACKGROUND_COLOR)
+        self.background_color = BACKGROUND_COLOR
 
         # We need two layers. One holds the current state of our grid, the other
         # holds the next frame's state. We flip back and forth between the two.
@@ -107,8 +107,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-
-        # This command has to happen before we start drawing
+        # Clear all pixels in the window
         self.clear()
         self.layers_grid_sprites_one_dim[0].draw()
 

@@ -279,7 +279,7 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
         sprite_list._geometry.transform(  # type: ignore
             ctx.collision_detection_program,
             buffer,
-            vertices=len(sprite_list),
+            vertices=sprite_count,
         )
 
     # Store the number of sprites emitted
@@ -289,6 +289,12 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
     # If no sprites emitted we can just return an empty list
     if emit_count == 0:
         return []
+
+    # # Debug block for tranform data to keep around
+    # print("emit_count", emit_count)
+    # data = buffer.read(size=emit_count * 4)
+    # print("bytes", data)
+    # print("data", struct.unpack(f'{emit_count}i', data))
 
     # .. otherwise build and return a list of the sprites selected by the transform
     return [
@@ -324,7 +330,7 @@ def check_for_collision_with_list(
             f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
         )
 
-    if sprite_list.spatial_hash and method == 1:
+    if sprite_list.spatial_hash and (method == 1 or method == 0):
         # Spatial
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)

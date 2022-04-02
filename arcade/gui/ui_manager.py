@@ -36,17 +36,19 @@ class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
 
-    manager = UIManager()
-    manager.enable() # hook up window events
+    .. code:: py
 
-    manager.add(Dummy())
+        manager = UIManager()
+        manager.enable() # hook up window events
 
-    def on_draw():
-        self.clear()
+        manager.add(Dummy())
 
-        ...
+        def on_draw():
+            self.clear()
 
-        manager.draw() # draws the UI on screen
+            ...
+
+            manager.draw() # draws the UI on screen
 
     """
     _enabled = False
@@ -84,9 +86,15 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return widget
 
     def remove(self, child: UIWidget):
+        """
+        Removes the given widget from UIManager.
+
+        :param UIWidget child: widget to remove
+        """
         for children in self.children.values():
             if child in children:
                 children.remove(child)
+                child.parent = None
                 self.trigger_render()
 
     def walk_widgets(self, *, root: UIWidget = None) -> Iterable[UIWidget]:
@@ -96,6 +104,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
         for child in reversed(children):
             yield from self.walk_widgets(root=child)
             yield child
+
+    def clear(self):
+        """
+        Remove all widgets from UIManager
+        """
+        for layer in self.children.values():
+            for widget in layer:
+                self.remove(widget)
 
     def get_widgets_at(self, pos, cls=UIWidget) -> Iterable[W]:
         """

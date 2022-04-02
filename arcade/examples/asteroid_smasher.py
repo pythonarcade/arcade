@@ -12,7 +12,6 @@ python -m arcade.examples.asteroid_smasher
 import random
 import math
 import arcade
-import os
 
 from typing import cast
 
@@ -145,15 +144,6 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
-        self.frame_count = 0
-
         self.game_over = False
 
         # Sprite lists
@@ -174,10 +164,13 @@ class MyGame(arcade.Window):
         self.hit_sound3 = arcade.load_sound(":resources:sounds/hit1.wav")
         self.hit_sound4 = arcade.load_sound(":resources:sounds/hit2.wav")
 
+        # Text
+        self.text_score = None
+        self.text_asteroid_count = None
+
     def start_new_game(self):
         """ Set up the game and initialize the variables. """
 
-        self.frame_count = 0
         self.game_over = False
 
         # Sprite lists
@@ -225,6 +218,20 @@ class MyGame(arcade.Window):
             enemy_sprite.size = 4
             self.asteroid_list.append(enemy_sprite)
 
+        # Create new text objects with initial values
+        self.text_score = arcade.Text(
+            f"Score: {self.score}",
+            start_x=10,
+            start_y=70,
+            font_size=13,
+        )
+        self.text_asteroid_count = arcade.Text(
+            f"Asteroid Count: {len(self.asteroid_list)}",
+            start_x=10,
+            start_y=50,
+            font_size=13,
+        )
+
     def on_draw(self):
         """
         Render the screen.
@@ -239,12 +246,9 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
         self.player_sprite_list.draw()
 
-        # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 70, arcade.color.WHITE, 13)
-
-        output = f"Asteroid Count: {len(self.asteroid_list)}"
-        arcade.draw_text(output, 10, 50, arcade.color.WHITE, 13)
+        # Draw the text
+        self.text_score.draw()
+        self.text_asteroid_count.draw()
 
     def on_key_press(self, symbol, modifiers):
         """ Called whenever a key is pressed. """
@@ -365,8 +369,6 @@ class MyGame(arcade.Window):
     def on_update(self, x):
         """ Move everything """
 
-        self.frame_count += 1
-
         if not self.game_over:
             self.asteroid_list.update()
             self.bullet_list.update()
@@ -407,6 +409,10 @@ class MyGame(arcade.Window):
                     else:
                         self.game_over = True
                         print("Game over")
+
+        # Update the text objects
+        self.text_score.text = f"Score: {self.score}"
+        self.text_asteroid_count.text = f"Asteroid Count: {len(self.asteroid_list)}"
 
 
 def main():

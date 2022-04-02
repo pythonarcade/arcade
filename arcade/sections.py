@@ -12,7 +12,7 @@ class Section:
     Events are dispatched to the section based on it's position on the screen.
     """
 
-    def __init__(self, left: float, bottom: float, width: float, height: float,
+    def __init__(self, left: int, bottom: int, width: int, height: int,
                  *, name: Optional[str] = None,
                  accept_keyboard_events: Union[bool, Iterable] = True,
                  prevent_dispatch: Optional[Iterable] = None,
@@ -47,15 +47,20 @@ class Section:
 
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
-        self._left: float = left
-        self._bottom: float = bottom
-        self._width: float = width
-        self._height: float = height
-        self._right: float = left + width
-        self._top: float = bottom + height
+        self._left: int = left
+        self._bottom: int = bottom
+        self._width: int = width
+        self._height: int = height
+        self._right: int = left + width
+        self._top: int = bottom + height
 
         # optional section camera
         self.camera: Optional[Camera] = None
+
+    def __repr__(self):
+        name = f'Section {self.name}' if self.name else 'Section'
+        dimensions = (self.left, self.right, self.top, self.bottom)
+        return f'{name} at {dimensions} '
 
     @property
     def view(self):
@@ -91,85 +96,85 @@ class Section:
         return self._modal
 
     @property
-    def left(self) -> float:
+    def left(self) -> int:
         """ Left edge of this section """
         return self._left
 
     @left.setter
-    def left(self, value: float):
+    def left(self, value: int):
         self._left = value
         self._right = value + self._width
 
     @property
-    def bottom(self) -> float:
+    def bottom(self) -> int:
         """ The bottom edge of this section """
         return self._bottom
 
     @bottom.setter
-    def bottom(self, value: float):
+    def bottom(self, value: int):
         self._bottom = value
         self._top = value + self._height
 
     @property
-    def width(self) -> float:
+    def width(self) -> int:
         """ The width of this section """
         return self._width
 
     @width.setter
-    def width(self, value: float):
+    def width(self, value: int):
         self._width = value
         self._right = value + self._left
 
     @property
-    def height(self) -> float:
+    def height(self) -> int:
         """ The height of this section """
         return self._height
 
     @height.setter
-    def height(self, value: float):
+    def height(self, value: int):
         self._height = value
         self._top = value + self._bottom
 
     @property
-    def right(self) -> float:
+    def right(self) -> int:
         """ Right edge of this section """
         return self._right
 
     @right.setter
-    def right(self, value: float):
+    def right(self, value: int):
         self._right = value
         self._left = value - self._width
 
     @property
-    def top(self) -> float:
+    def top(self) -> int:
         """ Top edge of this section """
         return self._top
 
     @top.setter
-    def top(self, value: float):
+    def top(self, value: int):
         self._top = value
         self._bottom = value - self._height
 
     @property
-    def ec_left(self) -> float:
+    def ec_left(self) -> int:
         # Section event capture dimension.
         # This attribute defines Left event capture area
-        return 0.0 if self._modal else self._left
+        return 0 if self._modal else self._left
 
     @property
-    def ec_right(self) -> float:
+    def ec_right(self) -> int:
         # Section event capture dimension.
         # This attribute defines Right event capture area
         return self.window.width if self._modal else self._right
 
     @property
-    def ec_bottom(self) -> float:
+    def ec_bottom(self) -> int:
         # Section event capture dimension.
         # This attribute defines Bottom event capture area
-        return 0.0 if self._modal else self._bottom
+        return 0 if self._modal else self._bottom
 
     @property
-    def ec_top(self) -> float:
+    def ec_top(self) -> int:
         # Section event capture dimension.
         # This attribute defines Top event capture area
         return self.window.height if self._modal else self._top
@@ -187,17 +192,17 @@ class Section:
         return not (self.right < section.left or self.left > section.right
                     or self.top < section.bottom or self.bottom > section.top)
 
-    def mouse_is_on_top(self, x: float, y: float) -> bool:
+    def mouse_is_on_top(self, x: int, y: int) -> bool:
         """ Check if the current mouse position is on top of this section """
         test_x = self.ec_left <= x <= self.ec_right
         test_y = self.ec_bottom <= y <= self.ec_top
         return test_x and test_y
 
-    def get_xy_screen_relative(self, section_x: float, section_y: float):
+    def get_xy_screen_relative(self, section_x: int, section_y: int):
         """ Returns screen coordinates from section coordinates """
         return self.left + section_x, self.bottom + section_y
 
-    def get_xy_section_relative(self, screen_x: float, screen_y: float):
+    def get_xy_section_relative(self, screen_x: int, screen_y: int):
         """ returns section coordinates from screen coordinates """
         return screen_x - self.left, screen_y - self.bottom
 
@@ -216,26 +221,26 @@ class Section:
     def on_resize(self, width: int, height: int):
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         pass
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         pass
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float,
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int,
                       _buttons: int, _modifiers: int):
+        self.on_mouse_motion(x, y, dx, dy)
+
+    def on_mouse_enter(self, x: int, y: int):
         pass
 
-    def on_mouse_enter(self, x: float, y: float):
-        pass
-
-    def on_mouse_leave(self, x: float, y: float):
+    def on_mouse_leave(self, x: int, y: int):
         pass
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -415,20 +420,22 @@ class SectionManager:
         for section in self.sections:
             section.accept_keyboard_events = False
 
-    def get_section(self, x: float, y: float) -> Optional[Section]:
+    def get_section(self, x: int, y: int) -> Optional[Section]:
         """ Returns the first section based on x,y position """
         for section in self.sections:
             if section.enabled and section.mouse_is_on_top(x, y):
                 return section
         return None
 
-    def dispatch_mouse_event(self, event: str, x: float, y: float, *args,
+    def dispatch_mouse_event(self, event: str, x: int, y: int, *args,
                              **kwargs) -> Optional[bool]:
         """ Generic method to dispatch mouse events to the correct Section """
         # check if the affected section has been already computed
         prevent_dispatch = False
-        section = kwargs.get('current_section')
-        if section:
+
+        section_pre_computed = 'current_section' in kwargs
+        if section_pre_computed:
+            section = kwargs['current_section']
             # remove the section from the kwargs,
             # so it arrives clean to the event handler
             del kwargs['current_section']
@@ -513,17 +520,17 @@ class SectionManager:
 
         return False
 
-    def on_mouse_press(self, x: float, y: float,
+    def on_mouse_press(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_press', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_release(self, x: float, y: float,
+    def on_mouse_release(self, x: int, y: int,
                          *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_release', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_motion(self, x: float, y: float,
+    def on_mouse_motion(self, x: int, y: int,
                         *args, **kwargs) -> Optional[bool]:
         """
         This method dispatches the on_mouse_motion and also calculates
@@ -548,16 +555,36 @@ class SectionManager:
         return self.dispatch_mouse_event('on_mouse_motion', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_scroll(self, x: float, y: float,
+    def on_mouse_scroll(self, x: int, y: int,
                         *args, **kwargs) -> Optional[bool]:
         return self.dispatch_mouse_event('on_mouse_scroll', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_drag(self, x: float, y: float,
+    def on_mouse_drag(self, x: int, y: int,
                       *args, **kwargs) -> Optional[bool]:
+        """
+        This method dispatches the on_mouse_drag and also calculates
+         if on_mouse_enter/leave should be fired
+        """
+        before_section = self.mouse_over_section
+        current_section = self.get_section(x, y)
+        if before_section is not current_section:
+            self.mouse_over_section = current_section
+            if before_section:
+                # dispatch on_mouse_leave to before_section
+                # (result from this call is ignored)
+                self.dispatch_mouse_event('on_mouse_leave', x, y,
+                                          current_section=before_section)
+            if current_section:
+                # dispatch on_mouse_enter to current_section
+                # (result from this call is ignored)
+                self.dispatch_mouse_event('on_mouse_enter', x, y,
+                                          current_section=current_section)
+        if current_section is not None:
+            kwargs['current_section'] = current_section
         return self.dispatch_mouse_event('on_mouse_drag', x, y, *args, **kwargs)
 
-    def on_mouse_enter(self, x: float, y: float,
+    def on_mouse_enter(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         current_section = self.get_section(x, y)
         # set the section the mouse is over
@@ -568,11 +595,11 @@ class SectionManager:
         return self.dispatch_mouse_event('on_mouse_enter', x, y, *args,
                                          **kwargs)
 
-    def on_mouse_leave(self, x: float, y: float,
+    def on_mouse_leave(self, x: int, y: int,
                        *args, **kwargs) -> Optional[bool]:
         if self.mouse_over_section:
             # clear the section the mouse is over as it's out of the screen
-            kwargs['current_section'], self.mouse_over_section =\
+            kwargs['current_section'], self.mouse_over_section = \
                 self.mouse_over_section, None
             return self.dispatch_mouse_event('on_mouse_leave', x, y, *args,
                                              **kwargs)

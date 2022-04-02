@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
         self.text = "Test"
 
     def setup(self):
@@ -144,7 +144,7 @@ class MyGame(arcade.Window):
             self.player_sprite.easing_y_data = ey
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        self.player_sprite.face_towards(x, y)
+        self.player_sprite.face_point((x, y))
 
 
 def main():

@@ -256,7 +256,7 @@ Finally we'll go back to the Python program and update our ``on_draw`` method to
 .. literalinclude:: step_03.py
     :caption: Drawing using the shader
     :pyobject: MyGame.on_draw
-    :emphasize-lines: 7-9, 15-20
+    :emphasize-lines: 8-11, 17-22
 
 .. note::
 
@@ -266,8 +266,9 @@ Finally we'll go back to the Python program and update our ``on_draw`` method to
    is missing even if you've declared it.
 
 * :ref:`raycasting_step_03` |larr| Full listing of where we are right now with the Python program
-* :ref:`raycasting_step_03_gl` |larr| Full listing of where we are right now with the GLSL program
 * :ref:`raycasting_step_03_diff` |larr| What we changed to get here
+* :ref:`raycasting_step_03_gl` |larr| Full listing of where we are right now with the GLSL program
+* :ref:`raycasting_step_03_gl_diff` |larr| What we changed to get here
 
 Step 4: Make the Walls Shadowed
 -------------------------------
@@ -377,11 +378,84 @@ see what is casting the shadows.
 .. literalinclude:: step_06.py
     :caption: Step 6, Draw the Barriers
     :pyobject: MyGame.on_draw
-    :emphasize-lines: 20-21
+    :emphasize-lines: 22-23
 
 * :ref:`raycasting_step_06` |larr| Full listing of where we are right now with the Python program
 * :ref:`raycasting_step_06_gl` |larr| Full listing of where we are right now with the GLSL program
 * :ref:`raycasting_step_06_gl_diff` |larr| What we changed to get here
+
+Step 7 - Support window resizing
+--------------------------------
+
+What if you need to resize the window? First enable resizing:
+
+You'll need to enable resizing in the window's ``__init__``:
+
+.. literalinclude:: step_07.py
+    :caption: Enable resizing
+    :language: python
+    :lines: 24-27
+    :emphasize-lines: 4
+
+Then we need to override the ``Window.resize`` method to also resize the shadertoy:
+
+.. literalinclude:: step_07.py
+    :caption: Resizing the window
+    :pyobject: MyGame.on_resize
+
+* :ref:`raycasting_step_07` |larr| Full listing of where we are right now with the Python program
+* :ref:`raycasting_step_07_diff` |larr| What we changed to get here
+
+Step 8 - Support scrolling
+--------------------------
+
+What if we want to scroll around the screen? Have a GUI that doesn't scroll?
+
+First, we'll add a camera for the scrolling parts of the screen (sprites) and another
+camera for the non-scrolling GUI bits. Also, we'll create some text to toss on the
+screen as something for the GUI.
+
+.. literalinclude:: step_08.py
+    :caption: MyGame.__init__
+    :pyobject: MyGame.__init__
+    :linenos:
+    :emphasize-lines: 17-19, 23-24
+
+Next up, we need to draw and use the cameras. This complicates our shader as it doesn't
+care about the scrolling, so we have to pass it a position not effected by the camera position.
+Thus we subtract it out.
+
+.. literalinclude:: step_08.py
+    :caption: MyGame.on_draw
+    :pyobject: MyGame.on_draw
+    :linenos:
+    :emphasize-lines: 2-3, 21-27, 39-42
+
+When we update, we need to scroll the camera to where the user is:
+
+.. literalinclude:: step_08.py
+    :caption: MyGame.on_update
+    :pyobject: MyGame.on_update
+    :linenos:
+    :emphasize-lines: 7-8
+
+We need that new function:
+
+.. literalinclude:: step_08.py
+    :caption: MyGame.scroll_to_player
+    :pyobject: MyGame.scroll_to_player
+    :linenos:
+
+Finally, when we resize the window, we have to resize our cameras:
+
+.. literalinclude:: step_08.py
+    :caption: MyGame.on_resize
+    :pyobject: MyGame.on_resize
+    :linenos:
+    :emphasize-lines: 3-4
+
+* :ref:`raycasting_step_08` |larr| Full listing of where we are right now with the Python program
+* :ref:`raycasting_step_08_diff` |larr| What we changed to get here
 
 Bibliography
 ------------
