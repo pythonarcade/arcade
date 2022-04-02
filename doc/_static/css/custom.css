@@ -19,3 +19,41 @@
 #how-to-example-code section h3 {
   width: 100%;
 }
+
+img.right-image {
+   float: right;
+   margin-left: 8px;
+   margin-bottom: 4px;
+   margin-top: 10px;
+}
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: disc;
+    line-height: 30px;
+    margin-left: 24px;
+}
+li p {
+    margin-bottom: 0;
+}
+ul {
+    margin-bottom: 30px;
+}
+.section-header {
+    display: flex;
+}
+.section-logo-div {
+    display: block;
+    width: 80px;
+}
+.section-title {
+    display: block;
+}
+.section-title h2 {
+    margin-top: 0.5em;
+}
+.section-logo {
+    width: 78px;
+}

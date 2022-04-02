@@ -39,9 +39,6 @@ RELEASE = VERSION
 
 # -- General configuration ------------------------------------------------
 
-# If your documentation needs a minimal Sphinx version, state it here.
-# needs_sphinx = '1.0'
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -75,9 +72,6 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
-
-# The encoding of source files.
-# source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -189,13 +183,14 @@ texinfo_documents = [
     ),
 ]
 
-def warn_undocumented_members(app, what, name, obj, options, lines):
+
+def warn_undocumented_members(_app, what, name, _obj, _options, lines):
     if len(lines) == 0:
         print(f"{what} {name} is undocumented")
         # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
 
 
-def source_read(app, docname, source):
+def source_read(_app, docname, source):
 
     # print(f"  XXX Reading {docname}")
     import os
@@ -230,7 +225,7 @@ def source_read(app, docname, source):
         source[0] = original_text + append_text
 
 
-def post_process(app, exception):
+def post_process(_app, _exception):
     pass
 
 #     try:

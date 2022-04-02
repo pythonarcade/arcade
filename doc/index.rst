@@ -32,11 +32,13 @@ The Python Arcade Library
 
       <tr>
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/example_code.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2 style="width:auto;">Example Code</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/example_code.svg">
+            </div>
+            <div class="section-title">
+              <h2>Example Code</h2>
+            </div>
           </div>
           <ul>
           <li><a href="examples/index.html">All Example Code</a></li>
@@ -46,11 +48,13 @@ The Python Arcade Library
           </ul>
         </td>
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/installation.svg"><br/>
-          </div>
-          <div style="display:inline-block;">
-            <h2 style="width:auto;">Installation</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+             <img class="section-logo" src="_static/installation.svg"><br/>
+           </div>
+            <div class="section-title">
+             <h2>Installation</h2>
+           </div>
           </div>
           <ul>
           <li><a href="install/windows.html">Windows</a></li>
@@ -60,15 +64,17 @@ The Python Arcade Library
           </ul>
         </td>
       </tr>
-      <tr>
 
+      <tr>
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/learn.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Tutorials</h2>
-          </div>
+          <div class="section-header">
+            <div class="section-logo-div">
+               <img class="section-logo" src="_static/learn.svg">
+             </div>
+             <div class="section-title">
+               <h2>Tutorials</h2>
+             </div>
+           </div>
           <ul>
             <li><a href="examples/platform_tutorial/index.html">Simple Platformer</a></li>
             <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Pymunk Physics</a></li>
@@ -81,11 +87,13 @@ The Python Arcade Library
         </td>
 
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/social.svg"><br/>
-          </div>
-          <div style="display:inline-block;">
-            <h2>Social</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/social.svg"><br/>
+            </div>
+            <div class="section-title">
+              <h2>Social</h2>
+            </div>
           </div>
           <ul>
             <li><a href="https://discord.gg/ZjGDqMp">Discord</a> (most active spot)</li>
@@ -97,24 +105,29 @@ The Python Arcade Library
           </ul>
         </td>
       </tr>
+
       <tr>
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/example_games.svg" alt="example games icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Games</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+                <img class="section-logo" src="_static/example_games.svg" alt="example games icon">
+            </div>
+            <div class="section-title">
+              <h2>Games</h2>
+            </div>
           </div>
           <ul>
             <li><a href="sample_games.html">Example Games</a></li>
             <li><a href="game_jam_2020.html">GameJam 2020 Games</a></li>
           </ul>
 
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Distribute Your Game</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+               <img class="section-logo" src="_static/download-circle.svg" alt="download icon">
+             </div>
+             <div class="section-title">
+               <h2>Distribute Games</h2>
+            </div>
           </div>
           <ul>
             <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
@@ -124,11 +137,13 @@ The Python Arcade Library
         </td>
 
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/API.svg" alt="API icon"><br/>
-          </div>
-          <div style="display:inline-block;">
-            <h2>API</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/API.svg" alt="API icon"><br/>
+            </div>
+            <div class="section-title">
+              <h2>API</h2>
+            </div>
           </div>
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
@@ -144,13 +159,14 @@ The Python Arcade Library
       </tr>
 
       <tr>
-
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/source.svg" alt="source icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Source Code</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/source.svg" alt="source icon">
+            </div>
+            <div class="section-title">
+              <h2>Source Code</h2>
+            </div>
           </div>
           <ul>
             <li><a href="https://github.com/pythonarcade/arcade">GitHub</a></li>
@@ -161,26 +177,24 @@ The Python Arcade Library
         </td>
 
         <td>
-
-          <div style="display:inline-block;">
+          <div class="section-title">
             <h2>Other Gaming Libraries</h2>
           </div>
           <ul>
             <li><a href="pygame_comparison.html">Arcade vs. Pygame Comparison</a></li>
           </ul>
-
         </td>
-
       </tr>
 
       <tr>
-
         <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/learn.svg" alt="learn icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Learn</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/learn.svg" alt="learn icon">
+            </div>
+            <div class="section-title">
+              <h2>Learn</h2>
+            </div>
           </div>
           <ul>
             <li><a href="https://learn.arcade.academy/">Book: Learn to Program with Arcade</a></li>
@@ -193,20 +207,20 @@ The Python Arcade Library
         </td>
 
         <td>
-
-
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/performance.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Performance</h2>
+          <div class="section-header">
+            <div class="section-logo-div">
+              <img class="section-logo" src="_static/performance.svg">
+            </div>
+            <div class="section-title">
+              <h2>Performance</h2>
+            </div>
           </div>
           <ul>
           <li><a href="development/performance_tips.html">Performance Tips</a></li>
           <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
           </ul>
 
-          <div style="display:inline-block;">
+          <div class="section-title">
             <h2>Related Libraries</h2>
           </div>
           <ul>
