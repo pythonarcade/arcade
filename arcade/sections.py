@@ -57,6 +57,11 @@ class Section:
         # optional section camera
         self.camera: Optional[Camera] = None
 
+    def __repr__(self):
+        name = f'Section {self.name}' if self.name else 'Section'
+        dimensions = (self.left, self.right, self.top, self.bottom)
+        return f'{name} at {dimensions} '
+
     @property
     def view(self):
         """ The view this section is set on """
@@ -427,8 +432,10 @@ class SectionManager:
         """ Generic method to dispatch mouse events to the correct Section """
         # check if the affected section has been already computed
         prevent_dispatch = False
-        section = kwargs.get('current_section')
-        if section:
+
+        section_pre_computed = 'current_section' in kwargs
+        if section_pre_computed:
+            section = kwargs['current_section']
             # remove the section from the kwargs,
             # so it arrives clean to the event handler
             del kwargs['current_section']
@@ -555,6 +562,26 @@ class SectionManager:
 
     def on_mouse_drag(self, x: int, y: int,
                       *args, **kwargs) -> Optional[bool]:
+        """
+        This method dispatches the on_mouse_drag and also calculates
+         if on_mouse_enter/leave should be fired
+        """
+        before_section = self.mouse_over_section
+        current_section = self.get_section(x, y)
+        if before_section is not current_section:
+            self.mouse_over_section = current_section
+            if before_section:
+                # dispatch on_mouse_leave to before_section
+                # (result from this call is ignored)
+                self.dispatch_mouse_event('on_mouse_leave', x, y,
+                                          current_section=before_section)
+            if current_section:
+                # dispatch on_mouse_enter to current_section
+                # (result from this call is ignored)
+                self.dispatch_mouse_event('on_mouse_enter', x, y,
+                                          current_section=current_section)
+        if current_section is not None:
+            kwargs['current_section'] = current_section
         return self.dispatch_mouse_event('on_mouse_drag', x, y, *args, **kwargs)
 
     def on_mouse_enter(self, x: int, y: int,
@@ -572,7 +599,7 @@ class SectionManager:
                        *args, **kwargs) -> Optional[bool]:
         if self.mouse_over_section:
             # clear the section the mouse is over as it's out of the screen
-            kwargs['current_section'], self.mouse_over_section =\
+            kwargs['current_section'], self.mouse_over_section = \
                 self.mouse_over_section, None
             return self.dispatch_mouse_event('on_mouse_leave', x, y, *args,
                                              **kwargs)
