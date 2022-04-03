@@ -214,7 +214,7 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "rect", self.trigger_full_render)
         bind(
             self, "visible", self.trigger_full_render
-        )  # TODO maybe trigger_parent_render would be enought
+        )  # TODO maybe trigger_parent_render would be enough
         bind(self, "children", self.trigger_render)
         bind(self, "border_width", self.trigger_render)
         bind(self, "border_color", self.trigger_render)
@@ -613,7 +613,7 @@ class UIInteractiveWidget(UIWidget):
     def pressed(self, value):
         if self._pressed != value:
             self._pressed = value
-            self.trigger_full_render()
+            self.trigger_render()
 
     @property
     def hovered(self):
@@ -623,7 +623,7 @@ class UIInteractiveWidget(UIWidget):
     def hovered(self, value):
         if value != self._hovered:
             self._hovered = value
-            self.trigger_full_render()
+            self.trigger_render()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseMovementEvent):

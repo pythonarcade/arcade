@@ -98,7 +98,7 @@ class UITextureButton(UIInteractiveWidget):
 
     @property
     def texture_pressed(self):
-        return self._tex
+        return self._tex_pressed
 
     @texture_pressed.setter
     def texture_pressed(self, value: Texture):
