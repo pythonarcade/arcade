@@ -50,6 +50,9 @@ class MyWindow(arcade.Window):
             buttons=["Ok", "Cancel"],
         )
 
+        # hide open button and prevent interaction
+        self.open_message_box_button.visible = False
+
         self.manager.add(message_box)
 
     def on_draw(self):
@@ -61,6 +64,9 @@ class MyWindow(arcade.Window):
 
     def on_message_box_close(self, button_text):
         print(f"User pressed {button_text}.")
+
+        # show open button and allow interaction again
+        self.open_message_box_button.visible = True
 
 
 window = MyWindow()
