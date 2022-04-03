@@ -1079,7 +1079,7 @@ class Limits:
         #: Maximum number of simultaneous outputs that may be written in a fragment shader
         self.MAX_DRAW_BUFFERS = self.get(gl.GL_MAX_DRAW_BUFFERS)
         #: Maximum number of active draw buffers when using dual-source blending
-        self.MAX_DUAL_SOURCE_DRAW_BUFFERS = self.get(gl.GL_MAX_DUAL_SOURCE_DRAW_BUFFERS)
+        #self.MAX_DUAL_SOURCE_DRAW_BUFFERS = self.get(gl.GL_MAX_DUAL_SOURCE_DRAW_BUFFERS)
         #: Recommended maximum number of vertex array indices
         self.MAX_ELEMENTS_INDICES = self.get(gl.GL_MAX_ELEMENTS_INDICES)
         #: Recommended maximum number of vertex array vertices
@@ -1128,7 +1128,7 @@ class Limits:
         #: Maximum number of sample mask words
         self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
         #: Maximum number of texels allowed in the texel array of a texture buffer object
-        self.MAX_TEXTURE_BUFFER_SIZE = self.get(gl.GL_MAX_TEXTURE_BUFFER_SIZE)
+        #self.MAX_TEXTURE_BUFFER_SIZE = self.get(gl.GL_MAX_TEXTURE_BUFFER_SIZE)
         #: Maximum number of uniform buffer binding points on the context
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
         #: Maximum number of uniform buffer binding points on the context
