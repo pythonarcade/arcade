@@ -145,8 +145,8 @@ class UILabel(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        # with surface.ctx.pyglet_rendering():
+        self.layout.draw()
 
 
 # class _Arcade_Caret(Caret):
@@ -335,8 +335,8 @@ class UIInputText(UIWidget):
         self._update_layout()
         self.prepare_render(surface)
 
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        # with surface.ctx.pyglet_rendering():
+        self.layout.draw()
 
 
 class UITextArea(UIWidget):
@@ -446,8 +446,8 @@ class UITextArea(UIWidget):
     def do_render(self, surface: Surface):
         self._update_layout()
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        # with surface.ctx.pyglet_rendering():
+        self.layout.draw()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
