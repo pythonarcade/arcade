@@ -2,9 +2,9 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
-from arcade.gl.compute_shader import ComputeShader
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
+from contextlib import contextmanager
 
 import pyglet
 from pyglet import gl
@@ -13,6 +13,7 @@ from PIL import Image
 
 import arcade
 from arcade.gl import BufferDescription, Context
+from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
 from arcade.gl.vertex_array import Geometry
@@ -280,6 +281,20 @@ class ArcadeContext(Context):
 
         self._projection_2d_matrix = value
         self.window.projection = self._projection_2d_matrix
+
+    @contextmanager
+    def pyglet_rendering(self):
+        """
+        Context manager for doing redering with pyglet
+        ensuring context states are reverted. This
+        affects things like blending.
+        """
+        blend_enabled = self.is_enabled(self.BLEND)
+        try:
+            yield
+        finally:
+            if blend_enabled:
+                self.enable(self.BLEND)
 
     def load_program(
         self,
