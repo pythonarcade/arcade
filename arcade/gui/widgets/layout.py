@@ -44,17 +44,16 @@ class UIAnchorWidget(UIWrapper):
         height = child_height + self.padding_top + self.padding_bottom + 2 * self.border_width
         rect = Rect(0, 0, width, height)
 
-        # TODO support size_hint_min
         # Handle min size hint (e.g. UIBoxLayout)
-        # if hasattr(self.child, "size_hint_min") and self.child.size_hint_min:
-        #     print("Size hint min", self.child.size_hint_min)
-        #     min_width, min_height = self.child.size_hint_min
-        #
-        #     current_width, current_height = rect.size
-        #     new_width = min_width if min_width > current_width else current_width
-        #     new_height = min_height if min_height > current_height else current_height
-        #
-        #     rect = rect.resize(new_width, new_height)
+        if hasattr(self.child, "size_hint_min") and self.child.size_hint_min:
+            print("Size hint min", self.child.size_hint_min)
+            min_width, min_height = self.child.size_hint_min
+
+            current_width, current_height = rect.size
+            new_width = min_width if min_width > current_width else current_width
+            new_height = min_height if min_height > current_height else current_height
+
+            rect = rect.resize(new_width, new_height)
 
         # calculate wanted position
         parent_rect = (

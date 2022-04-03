@@ -9,6 +9,7 @@ from typing import (
     TypeVar,
     Tuple,
     List,
+    Dict,
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -146,6 +147,11 @@ class Rect(NamedTuple):
 W = TypeVar("W", bound="UIWidget")
 
 
+class _ChildEntry(NamedTuple):
+    child: "UIWidget"
+    data: Dict
+
+
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
@@ -166,7 +172,7 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    children: List = ListProperty()  # type: ignore
+    _children: List[_ChildEntry] = ListProperty()  # type: ignore
 
     rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
@@ -215,7 +221,7 @@ class UIWidget(EventDispatcher, ABC):
         bind(
             self, "visible", self.trigger_full_render
         )  # TODO maybe trigger_parent_render would be enough
-        bind(self, "children", self.trigger_render)
+        bind(self, "_children", self.trigger_render)
         bind(self, "border_width", self.trigger_render)
         bind(self, "border_color", self.trigger_render)
         bind(self, "bg_color", self.trigger_render)
@@ -232,7 +238,7 @@ class UIWidget(EventDispatcher, ABC):
         """
         self._rendered = False
 
-    def add(self, child: W, *, index=None) -> W:
+    def add(self, child: W, **kwargs) -> W:
         """
         Add a widget to this :class:`UIWidget` as a child.
         Added widgets will receive ui events and be rendered.
@@ -244,27 +250,25 @@ class UIWidget(EventDispatcher, ABC):
         :return: given child
         """
         child.parent = self
+        index = kwargs.pop("index") if "index" in kwargs else None
         if index is None:
-            self.children.append(child)
+            self._children.append(_ChildEntry(child, kwargs))
         else:
-            self.children.insert(max(len(self.children), index), child)
-        # TODO check: done by children listener
-        # self.trigger_full_render()
+            self._children.insert(max(len(self.children), index), child)
+
         return child
 
     def remove(self, child: "UIWidget"):
         child.parent = None
-        self.children.remove(child)
-        # TODO check: done by children listener
-        # self.trigger_full_render()
+        for c in self._children:
+            if c.child == child:
+                self._children.remove(c)
 
     def clear(self):
         for child in self.children:
             child.parent = None
 
-        self.children.clear()
-        # TODO check: done by children listener
-        # self.trigger_full_render()
+        self._children.clear()
 
     def __contains__(self, item):
         return item in self.children
@@ -455,6 +459,10 @@ class UIWidget(EventDispatcher, ABC):
         self.padding_right = pr
         self.padding_bottom = pb
         self.padding_left = pl
+
+    @property
+    def children(self):
+        return [child for child, data in self._children]
 
     def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
         """
@@ -778,45 +786,6 @@ class UILayout(UIWidget, UIWidgetParent):
     :param size_hint_max: max width and height in pixel
     :param style: not used
     """
-
-    def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            children: Iterable[UIWidget] = tuple(),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
-    ):
-        super().__init__(
-            x,
-            y,
-            width,
-            height,
-            children=children,
-            size_hint=size_hint,
-            size_hint_min=size_hint_min,
-            size_hint_max=size_hint_max,
-            style=style,
-            **kwargs,
-        )
-
-    def add(self, child: "UIWidget", **kwargs) -> "UIWidget":
-        super().add(child)
-        self.do_layout()
-        return child
-
-    def remove(self, child: "UIWidget"):
-        super().remove(child)
-        self.do_layout()
-
-    def clear(self):
-        super().clear()
-        self.do_layout()
 
     def do_layout(self):
         """
