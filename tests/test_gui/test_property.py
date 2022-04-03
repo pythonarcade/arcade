@@ -1,10 +1,10 @@
 import gc
 
-from arcade.gui._property import _Property, _bind
+from arcade.gui.property import Property, bind
 
 
 class MyObject:
-    name = _Property()
+    name = Property()
 
 
 class Observer:
@@ -21,7 +21,7 @@ def test_callback():
     observer = Observer()
 
     my_obj = MyObject()
-    _bind(my_obj, "name", observer)
+    bind(my_obj, "name", observer)
 
     assert not observer.called
 
@@ -61,7 +61,7 @@ def test_does_not_trigger_if_value_unchanged():
     observer = Observer()
     my_obj = MyObject()
     my_obj.name = "CONSTANT"
-    _bind(my_obj, "name", observer)
+    bind(my_obj, "name", observer)
 
     assert not observer.called
 
@@ -92,7 +92,7 @@ def test_gc_keeps_bound_methods():
     obj = MyObject()
     obj.name = "Some Name"
 
-    _bind(obj, "name", observer.call)
+    bind(obj, "name", observer.call)
 
     assert len(MyObject.name.obs[obj].listeners) == 1
 
@@ -110,7 +110,7 @@ def test_gc_keeps_temp_methods():
     def callback(*args, **kwargs):
         calls.append((args, kwargs))
 
-    _bind(obj, "name", callback)
+    bind(obj, "name", callback)
 
     assert len(MyObject.name.obs[obj].listeners) == 1
 

@@ -7,6 +7,26 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.7
+------
+
+*Unreleased*
+
+* GUI
+
+  * :py:class:`~arcade.gui.widgets.UIWidget`:
+    * supports padding, border and background (color and texture)
+    * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
+    * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
+    * `UIWidget.with_...) methods do not wrap the widget anymore, they only change the attributes
+  * New widgets:
+    * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
+    * :py:class:`~arcade.gui.widgets.slider.UISlider`
+  * Arcade :py:class:`~arcade.gui.property.Property`:
+
+    Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
+
+
 2.6.13
 ------
 
@@ -49,7 +69,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Rectangle objects which are empty(have no width or height) will now be automatically
     converted into single points.
   * The Tile ID of a sprite can be access with ``sprite.properties["tile_id"]``. This refers
-    to the local ID of the tile within the Tileset. This value can be used to get the tile info 
+    to the local ID of the tile within the Tileset. This value can be used to get the tile info
     for a given Sprite created from loading a tilemap.
 
 * Docs
@@ -209,7 +229,7 @@ Also thanks to:
     :py:attr:`~arcade.SpriteList.buffer_colors`,
     :py:attr:`~arcade.SpriteList.buffer_angles` and
     :py:attr:`~arcade.SpriteList.buffer_indices`
- 
+
 * OpenGL:
 
   * Added support for indirect rendering. This is an OpenGL 4.3 feature.

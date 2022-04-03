@@ -1,5 +1,7 @@
 import arcade
 import arcade.gui
+import arcade.gui.widgets.buttons
+import arcade.gui.widgets.layout
 
 
 class MyView(arcade.View):
@@ -17,7 +19,7 @@ class MyView(arcade.View):
         # This creates a "manager" for all our UI elements
         self.ui_manager = arcade.gui.UIManager(self.window)
 
-        box = arcade.gui.UIBoxLayout(vertical=False)
+        box = arcade.gui.widgets.layout.UIBoxLayout(vertical=False, space_between=20)
 
         # --- Start button
         normal_texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/"
@@ -28,7 +30,7 @@ class MyView(arcade.View):
                                             "sound_off.png")
 
         # Create our button
-        self.start_button = arcade.gui.UITextureButton(
+        self.start_button = arcade.gui.widgets.buttons.UITextureButton(
             texture=normal_texture,
             texture_hovered=hover_texture,
             texture_pressed=press_texture,
@@ -46,7 +48,7 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/down.png")
 
         # Create our button
-        self.down_button = arcade.gui.UITextureButton(
+        self.down_button = arcade.gui.widgets.buttons.UITextureButton(
             texture=normal_texture,
             texture_hovered=hover_texture,
             texture_pressed=press_texture,
@@ -65,7 +67,7 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/up.png")
 
         # Create our button
-        self.up_button = arcade.gui.UITextureButton(
+        self.up_button = arcade.gui.widgets.buttons.UITextureButton(
             texture=normal_texture,
             texture_hovered=hover_texture,
             texture_pressed=press_texture,
@@ -84,7 +86,7 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/right.png")
 
         # Create our button
-        self.right_button = arcade.gui.UITextureButton(
+        self.right_button = arcade.gui.widgets.buttons.UITextureButton(
             texture=normal_texture,
             texture_hovered=hover_texture,
             texture_pressed=press_texture,
@@ -98,7 +100,7 @@ class MyView(arcade.View):
         box.add(self.right_button)
 
         # Place buttons in the center of the screen using an UIAnchorWidget with default values
-        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box))
+        self.ui_manager.add(arcade.gui.widgets.layout.UIAnchorWidget(child=box))
 
     def music_over(self):
         self.media_player.pop_handlers()

@@ -20,64 +20,45 @@ from .mixins import UIMouseFilterMixin
 from .mixins import UIWindowLikeMixin
 from .surface import Surface
 from .ui_manager import UIManager
-from .widgets import UIAnchorWidget
-from .widgets import UIBorder
-from .widgets import UIBoxLayout
+from .widgets.layout import UIAnchorWidget, UIBoxLayout
 from .widgets import UIDummy
-from .widgets import UIFlatButton
-from .widgets import UIInputText
 from .widgets import UIInteractiveWidget
-from .widgets import UILabel
-from .widgets import UILayout
-from .widgets import UIPadding
+from .widgets.text import UILabel, UIInputText, UITextArea
 from .widgets import UISpace
 from .widgets import UISpriteWidget
-from .widgets import UITextArea
-from .widgets import UITextArea
-from .widgets import UITextureButton
-from .widgets import UITexturePane
+from .widgets.buttons import UITextureButton, UIFlatButton
 from .widgets import UIWidget
 from .widgets import UIWidgetParent
 from .widgets import UIWrapper
 
-__all__ = ['UIManager',
-           'UIBorder',
-           'UIBoxLayout',
-           'UIMessageBox',
-           'UIFlatButton',
-           'UIAnchorWidget',
-           'UIKeyEvent',
-           'UIDummy',
-           'UIDraggableMixin',
-           'UIMouseFilterMixin',
-           'UIWindowLikeMixin',
-           'UIKeyPressEvent',
-           'UIKeyReleaseEvent',
-           'UIEvent',
-           'UIInputText',
-           'UILabel',
-           'UIPadding',
-           'UIInteractiveWidget',
-           'UIMouseEvent',
-           'UIMouseDragEvent',
-           'UIMouseMovementEvent',
-           'UIMousePressEvent',
-           'UIMouseReleaseEvent',
-           'UIMouseScrollEvent',
-           'UIOnUpdateEvent',
-           'UIOnChangeEvent',
-           'UIOnClickEvent',
-           'UITextEvent',
-           'UITextMotionEvent',
-           'UITextMotionSelectEvent',
-           'UITexturePane',
-           'UITextArea',
-           'UITextureButton',
-           'UISpace',
-           'UILayout',
-           'UISpriteWidget',
-           'UIWidget',
-           'UIWidgetParent',
-           'UIWrapper',
-           'Surface',
-           ]
+__all__ = [
+    "UIManager",
+    "UIMessageBox",
+    "UIKeyEvent",
+    "UIDummy",
+    "UIDraggableMixin",
+    "UIMouseFilterMixin",
+    "UIWindowLikeMixin",
+    "UIKeyPressEvent",
+    "UIKeyReleaseEvent",
+    "UIEvent",
+    "UIInteractiveWidget",
+    "UIMouseEvent",
+    "UIMouseDragEvent",
+    "UIMouseMovementEvent",
+    "UIMousePressEvent",
+    "UIMouseReleaseEvent",
+    "UIMouseScrollEvent",
+    "UIOnUpdateEvent",
+    "UIOnChangeEvent",
+    "UIOnClickEvent",
+    "UITextEvent",
+    "UITextMotionEvent",
+    "UITextMotionSelectEvent",
+    "UISpace",
+    "UISpriteWidget",
+    "UIWidget",
+    "UIWidgetParent",
+    "UIWrapper",
+    "Surface",
+]

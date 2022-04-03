@@ -1,7 +1,6 @@
 import arcade
 from arcade import load_texture
-from arcade.gui import UIManager
-from arcade.gui.widgets import UITextArea, UIInputText, UITexturePane
+from arcade.gui import UIManager, UIInputText, UITextArea
 
 LOREM_IPSUM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. "
@@ -29,28 +28,25 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
-        text_area = UITextArea(x=100,
-                               y=200,
-                               width=200,
-                               height=300,
-                               text=LOREM_IPSUM,
-                               text_color=(0, 0, 0, 255))
+        text_area = UITextArea(
+            x=100,
+            y=200,
+            width=200,
+            height=300,
+            text=LOREM_IPSUM,
+            text_color=(0, 0, 0, 255),
+        )
+
+        self.manager.add(text_area.with_padding(all=15).with_background(texture=bg_tex))
+
         self.manager.add(
-            UITexturePane(
-                text_area.with_space_around(right=20),
-                tex=bg_tex,
-                padding=(10, 10, 10, 10)
-            )
+            UIInputText(x=340, y=200, width=200, height=50, text="Hello")
+            .with_background(texture=bg_tex)
+            .with_padding(all=10)
         )
 
         self.manager.add(
-            UITexturePane(
-                UIInputText(x=340, y=200, width=200, height=50, text="Hello"),
-                tex=bg_tex,
-                padding=(10, 10, 10, 10)
-            ))
-        self.manager.add(
-            UIInputText(x=340, y=110, width=200, height=50, text="Hello"),
+            UIInputText(x=340, y=110, width=200, height=50, text="Hello").with_border(),
         )
 
     def on_draw(self):
