@@ -1,4 +1,5 @@
 #version 330
+#extension GL_EXT_geometry_shader : require
 
 // The render target for this program is the new
 // texture atlas texture

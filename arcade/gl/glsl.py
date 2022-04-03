@@ -36,7 +36,10 @@ class ShaderSource:
 
         if ctx.opengl_api == "gles":
             self._lines[0] = "#version 320 es"
-            self._lines.insert(1, "precision mediump float;")
+            if self._lines[1].startswith("#"):
+                self._lines.insert(2, "precision mediump float;")
+            else:
+                self._lines.insert(1, "precision mediump float;")
 
         self._version = self._find_glsl_version()
 

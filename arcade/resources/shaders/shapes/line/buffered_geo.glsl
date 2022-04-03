@@ -1,4 +1,5 @@
 #version 330
+#extension GL_EXT_geometry_shader : require
 
 layout (lines) in;
 layout (triangle_strip, max_vertices = 4) out;
