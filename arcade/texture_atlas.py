@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from arcade.gl import Texture as GLTexture
 
 # How many texture coordinates to store
-TEXCOORD_BUFFER_SIZE = 8192
+TEXCOORD_BUFFER_SIZE = 4096
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx
 RESIZE_STEP = 128
