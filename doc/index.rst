@@ -12,7 +12,7 @@ The Python Arcade Library
 
 .. raw:: html
 
-    <table style="width:100%;">
+    <table class="main-page-table">
       <tr>
         <td>
            <h2>
@@ -34,7 +34,7 @@ The Python Arcade Library
         <td>
           <div class="section-header">
             <div class="section-logo-div">
-              <img class="section-logo" src="_static/example_code.svg">
+              <img class="section-logo" alt="example code icon" src="_static/example_code.svg">
             </div>
             <div class="section-title">
               <h2>Example Code</h2>
@@ -50,7 +50,7 @@ The Python Arcade Library
         <td>
           <div class="section-header">
             <div class="section-logo-div">
-             <img class="section-logo" src="_static/installation.svg"><br/>
+             <img class="section-logo" alt="installation icon" src="_static/installation.svg"><br/>
            </div>
             <div class="section-title">
              <h2>Installation</h2>
@@ -69,7 +69,7 @@ The Python Arcade Library
         <td>
           <div class="section-header">
             <div class="section-logo-div">
-               <img class="section-logo" src="_static/learn.svg">
+               <img class="section-logo" alt="learn icon" src="_static/learn.svg">
              </div>
              <div class="section-title">
                <h2>Tutorials</h2>
@@ -89,7 +89,7 @@ The Python Arcade Library
         <td>
           <div class="section-header">
             <div class="section-logo-div">
-              <img class="section-logo" src="_static/social.svg"><br/>
+              <img class="section-logo" alt="social icon" src="_static/social.svg"><br/>
             </div>
             <div class="section-title">
               <h2>Social</h2>
@@ -209,7 +209,7 @@ The Python Arcade Library
         <td>
           <div class="section-header">
             <div class="section-logo-div">
-              <img class="section-logo" src="_static/performance.svg">
+              <img class="section-logo" alt="performance icon" src="_static/performance.svg">
             </div>
             <div class="section-title">
               <h2>Performance</h2>
@@ -227,16 +227,16 @@ The Python Arcade Library
             <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
             <li><a href="https://github.com/maarten-dp/arcade-curtains">Arcade-Curtains</a></li>
            </ul>
-
         </td>
-
       </tr>
 
     </table>
 
 .. raw:: html
 
-    <div style="padding:55% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/662273899?h=31bf92c415&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Arcade Demo.mp4"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+    <div style="padding:55% 0 0 0;position:relative;">
+      <iframe class="vimeo-video" src="https://player.vimeo.com/video/662273899?h=31bf92c415&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Arcade Demo.mp4"></iframe>
+    </div><script src="https://player.vimeo.com/api/player.js"></script>
     <p><a href="https://vimeo.com/662273899">Quick Arcade Library Introduction Video</a></p>
 
 Arcade is an easy-to-learn Python library for creating 2D video games. It is
