@@ -34,7 +34,7 @@ class ShaderSource:
         if not self._lines:
             raise ValueError("Shader source is empty")
 
-        if ctx.opengl_api == "OPENGL_ES":
+        if ctx.opengl_api == "gles":
             self._lines[0] = "#version 320 es"
             self._lines.insert(1, "precision mediump float;")
 

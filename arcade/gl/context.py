@@ -159,7 +159,7 @@ class Context:
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "OPENGL"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
         self._window_ref = weakref.ref(window)
         self.opengl_api = gl_api
         self._limits = Limits(self)

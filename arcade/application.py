@@ -92,7 +92,7 @@ class Window(pyglet.window.Window):
         center_window: bool = False,
         samples: int = 4,
         enable_polling: bool = True,
-        gl_api: str = "OPENGL"
+        gl_api: str = "gl"
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment

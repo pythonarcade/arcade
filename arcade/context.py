@@ -39,7 +39,7 @@ class ArcadeContext(Context):
 
     atlas_size = 512, 512
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "OPENGL"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
 
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
