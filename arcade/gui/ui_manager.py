@@ -227,12 +227,29 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def draw(self):
         # Request Widgets to prepare for next frame
         self._do_layout()
+
+        ctx = self.window.ctx
+
+        # When drawing into the framebuffer we need to set a separate
+        # blend function for the alpha component.
+        ctx.blend_func = (
+            ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
+            ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA         # Alpha blend func
+        )
         self._do_render()
+
+        # This should cause the framebuffer texture to have the correct alpha
+        # values for blending the texture to the screen when using the following
+        # blend function (Surface):
+        ctx.blend_func = ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA
 
         # Draw layers
         layers = sorted(self.children.keys())
         for layer in layers:
             self._get_surface(layer).draw()
+
+        # Reset back to default blend function
+        ctx.blend_func = ctx.BLEND_DEFAULT
 
     def adjust_mouse_coordinates(self, x, y):
         """
