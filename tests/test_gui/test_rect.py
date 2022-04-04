@@ -102,3 +102,47 @@ def test_rect_align_left():
 
     # THEN
     assert new_rect == (50, 20, 100, 200)
+
+
+def test_rect_min_size():
+    # GIVEN
+    rect = Rect(10, 20, 100, 200)
+
+    # WHEN
+    new_rect = rect.min_size(120, 180)
+
+    # THEN
+    assert new_rect == (10, 20, 120, 200)
+
+
+def test_rect_max_size():
+    # GIVEN
+    rect = Rect(10, 20, 100, 200)
+
+    # WHEN
+    new_rect = rect.max_size(120, 180)
+
+    # THEN
+    assert new_rect == (10, 20, 100, 180)
+
+
+def test_rect_max_size_only_width():
+    # GIVEN
+    rect = Rect(10, 20, 100, 200)
+
+    # WHEN
+    new_rect = rect.max_size(width=80)
+
+    # THEN
+    assert new_rect == (10, 20, 80, 200)
+
+
+def test_rect_max_size_only_height():
+    # GIVEN
+    rect = Rect(10, 20, 100, 200)
+
+    # WHEN
+    new_rect = rect.max_size(height=80)
+
+    # THEN
+    assert new_rect == (10, 20, 100, 80)

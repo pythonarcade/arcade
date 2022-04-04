@@ -537,7 +537,7 @@ class Context:
         self.fbo.scissor = value
 
     @property
-    def blend_func(self) -> Tuple[int, int]:
+    def blend_func(self) -> Union[Tuple[int, int], Tuple[int, int, int, int]]:
         """
         Get or set the blend function.
         This is tuple specifying how the red, green, blue, and
@@ -579,9 +579,14 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value: Tuple[int, int]):
+    def blend_func(self, value: Union[Tuple[int, int], Tuple[int, int, int, int]]):
         self._blend_func = value
-        gl.glBlendFunc(value[0], value[1])
+        if len(value) == 2:
+            gl.glBlendFunc(value[0], value[1])
+        elif len(value) == 4:
+            gl.glBlendFuncSeparate(value[0], value[1], value[2], value[3])
+        else:
+            ValueError("blend_func takes a tuple of 2 or 4 values")
 
     # def blend_equation(self)
     # def front_face(self)
@@ -1056,8 +1061,6 @@ class Limits:
         #: An estimate of the number of bits of subpixel resolution
         #: that are used to position rasterized geometry in window coordinates
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
-        #: A mask value indicating what context profile is used (core, compat etc.)
-        self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
         #: Minimum required alignment for uniform buffer sizes and offset
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
             gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
@@ -1137,8 +1140,6 @@ class Limits:
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
         #: Maximum samples for a framebuffer
         self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
-        #: A rough estimate of the largest rectangular texture that the GL can handle
-        self.MAX_RECTANGLE_TEXTURE_SIZE = self.get(gl.GL_MAX_RECTANGLE_TEXTURE_SIZE)
         #: Maximum supported size for renderbuffers
         self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
         #: Maximum number of sample mask words

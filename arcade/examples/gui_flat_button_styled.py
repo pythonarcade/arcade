@@ -67,11 +67,10 @@ class MyWindow(arcade.Window):
         self.v_box.add(demo_button_2)
 
         # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
-            arcade.gui.widgets.layout.UIAnchorWidget(
-                anchor_x="center_x", anchor_y="center_y", child=self.v_box
-            )
-        )
+        ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
+        ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
+
+        self.manager.add(ui_anchor_layout)
 
     def on_draw(self):
         self.clear()

@@ -106,7 +106,8 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
         final_view = t1_view @ r_view @ t2_view
         window.view = final_view
 
-    label.draw()
+    with window.ctx.pyglet_rendering():
+        label.draw()
 
     # Reset the view matrix
     if rotation:

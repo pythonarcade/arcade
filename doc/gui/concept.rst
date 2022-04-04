@@ -110,6 +110,13 @@ Executed steps within :class:`UIBoxLayout`:
          │UIManager│          │UILayout│                      │children│
          └─────────┘          └────────┘                      └────────┘
 
+Size hint support
++++++++++++++++++
+
+* :class:`UIManager` uses `size_hint` to resize of direct child widgets based on window size
+* :class:`UIManager` uses `size_hint_min` to ensure minimal size of direct child widgets
+* :class:`UIAnchorLayout` uses `size_hint_min` to size :class:`UIBoxLayout`
+
 
 UIMixin
 =======
@@ -135,10 +142,7 @@ Available Elements
     - :class:`UISpriteWidget` - Embeds a Sprite within the GUI tree
 - :class:`UILayout`:
     - :class:`UIBoxLayout` - Places widgets next to each other (vertical or horizontal)
-- :class:`UIWrapper`:
-    - :class:`UIPadding` - Add space around a widget
-    - :class:`UIBorder` - Add border around a widget
-    - :class:`UIAnchorWidget` - Used to position UIWidgets relative on screen
+    - :class:`UIAnchorLayout` - Places widgets within itself following anchor information
 - Constructs
     - :class:`UIMessageBox` - Popup box with a message text and a few buttons.
 - Mixins

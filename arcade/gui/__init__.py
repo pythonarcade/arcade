@@ -20,7 +20,7 @@ from .mixins import UIMouseFilterMixin
 from .mixins import UIWindowLikeMixin
 from .surface import Surface
 from .ui_manager import UIManager
-from .widgets.layout import UIAnchorWidget, UIBoxLayout
+from .widgets.layout import UIBoxLayout
 from .widgets import UIDummy
 from .widgets import UIInteractiveWidget
 from .widgets.text import UILabel, UIInputText, UITextArea
