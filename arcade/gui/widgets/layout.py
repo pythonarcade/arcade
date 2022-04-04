@@ -212,7 +212,6 @@ class UIBoxLayout(UILayout):
                 start_x += child.width
                 start_x += self._space_between
 
-
 class UIGridLayout(UILayout):
     """
     Places widget in a grid layout.
@@ -229,7 +228,6 @@ class UIGridLayout(UILayout):
     :param int column_count: Number of columns in the grid, can be changed
     :param int row_count: Number of rows in the grid, can be changed
     """
-
     def __init__(self, x=0,
                  y=0,
                  align_horizontal="center",
@@ -249,8 +247,6 @@ class UIGridLayout(UILayout):
 
         self._horizontal_spacing = horizontal_spacing
         self._vertical_spacing = vertical_spacing
-
-        # self._child_dict = {}
 
         self.column_count = column_count
         self.row_count = row_count
@@ -330,7 +326,7 @@ class UIGridLayout(UILayout):
 
             child_sorted_row_wise[row_num].append(child)
 
-        # row wise placing children
+        # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
             max_height = max_height_per_row[row_num] + self._vertical_spacing
             center_y = start_y - (max_height // 2)
