@@ -1,7 +1,7 @@
 from typing import Iterable, TypeVar
 
 from arcade.gui.property import bind
-from arcade.gui.widgets import UIWidget, UILayout
+from arcade.gui.widgets import UIWidget, UILayout, Rect
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -211,3 +211,152 @@ class UIBoxLayout(UILayout):
                     child.rect = new_rect
                 start_x += child.width
                 start_x += self._space_between
+
+
+class UIGridLayout(UILayout):
+    """
+    Places widget in a grid layout.
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
+    :param float align_horizontal: Align children in orthogonal direction (x: left, center, right)
+    :param float align_vertical: Align children in orthogonal direction (y: top, center, bottom)
+    :param Iterable[UIWidget] children: Initial children, more can be added
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
+    :param size_hint_min: Min width and height in pixel
+    :param size_hint_max: Max width and height in pixel
+    :param horizontal_spacing: Space between columns
+    :param vertical_spacing: Space between rows
+    :param int column_count: Number of columns in the grid, can be changed
+    :param int row_count: Number of rows in the grid, can be changed
+    """
+
+    def __init__(self, x=0,
+                 y=0,
+                 align_horizontal="center",
+                 align_vertical="center",
+                 children: Iterable[UIWidget] = tuple(),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 horizontal_spacing: int = 0,
+                 vertical_spacing: int = 0,
+                 column_count: int = 1,
+                 row_count: int = 1, style=None, **kwargs):
+
+        super(UIGridLayout, self).__init__(x=x, y=y, width=0, height=0, children=children,
+                                           size_hint=size_hint, size_hint_min=size_hint_min,
+                                           size_hint_max=size_hint_max, style=style, **kwargs)
+
+        self._horizontal_spacing = horizontal_spacing
+        self._vertical_spacing = vertical_spacing
+
+        # self._child_dict = {}
+
+        self.column_count = column_count
+        self.row_count = row_count
+
+        self.align_horizontal = align_horizontal
+        self.align_vertical = align_vertical
+
+        bind(self, "_children", self._update_size_hints)
+
+        # initially update size hints
+        self._update_size_hints()
+
+    def _update_size_hints(self):
+        max_width_per_column = [0] * self.column_count
+        max_height_per_row = [0] * self.row_count
+
+        child_sorted_row_wise = [[] for _ in range(self.row_count)]
+
+        for child, data in self._children:
+            col_num = data["col_num"]
+            row_num = data["row_num"]
+
+            if child.width > max_width_per_column[col_num]:
+                max_width_per_column[col_num] = child.width
+
+            if child.height > max_height_per_row[row_num]:
+                max_height_per_row[row_num] = child.height
+
+            child_sorted_row_wise[row_num].append(child)
+
+        # row wise rendering children
+        base_width = self.padding_left + self.padding_right + 2 * self.border_width
+        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        content_height = sum(max_height_per_row) + (self.row_count - 1) * self._vertical_spacing
+        content_width = sum(max_width_per_column) + (self.column_count - 1) * self._horizontal_spacing
+
+        self.size_hint_min = (base_width + content_width, base_height + content_height)
+
+    def add(self,
+            child: W,
+            col_num: int = 0,
+            row_num: int = 0,
+            **kwargs) -> W:
+        """
+        Adds widgets in the grid.
+
+        :param UIWidget child: The widget which is to be added in the grid
+        :param int col_num: The column number in which the widget is to be added (first column is numbered 0; left)
+        :param int row_num: The row number in which the widget is to be added (first row is numbered 0; top)
+        """
+        return super().add(child, col_num=col_num, row_num=row_num, **kwargs)
+
+    def do_layout(self):
+        initial_left_x = self.content_rect.left
+        start_y = self.content_rect.top
+
+        if not self.children:
+            base_width = self.padding_left + self.padding_right + 2 * self.border_width
+            base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+            self.rect = Rect(self.left, self.bottom, base_width, base_height)
+            return
+
+        max_width_per_column = [0] * self.column_count
+        max_height_per_row = [0] * self.row_count
+
+        child_sorted_row_wise = [[] for _ in range(self.row_count)]
+
+        for child, data in self._children:
+            col_num = data["col_num"]
+            row_num = data["row_num"]
+
+            if child.width > max_width_per_column[col_num]:
+                max_width_per_column[col_num] = child.width
+
+            if child.height > max_height_per_row[row_num]:
+                max_height_per_row[row_num] = child.height
+
+            child_sorted_row_wise[row_num].append(child)
+
+        # row wise placing children
+        for row_num, row in enumerate(child_sorted_row_wise):
+            max_height = max_height_per_row[row_num] + self._vertical_spacing
+            center_y = start_y - (max_height // 2)
+
+            start_x = initial_left_x
+
+            for col_num, child in enumerate(row):
+                max_width = max_width_per_column[col_num] + self._horizontal_spacing
+                center_x = start_x + max_width // 2
+
+                if self.align_vertical == "top":
+                    new_rect = child.rect.align_top(start_y)
+                elif self.align_vertical == "bottom":
+                    new_rect = child.rect.align_bottom(start_y - max_height)
+                else:
+                    new_rect = child.rect.align_center_y(center_y)
+
+                if self.align_horizontal == "left":
+                    new_rect = new_rect.align_left(start_x)
+                elif self.align_horizontal == "right":
+                    new_rect = new_rect.align_right(start_x + max_width)
+                else:
+                    new_rect = new_rect.align_center_x(center_x)
+
+                if new_rect != child.rect:
+                    child.rect = new_rect
+                start_x += max_width
+
+            start_y -= max_height

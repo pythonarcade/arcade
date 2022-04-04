@@ -679,6 +679,7 @@ class UIInteractiveWidget(UIWidget):
 class UIDummy(UIInteractiveWidget):
     """
     Solid color widget, used for testing.
+    Prints own rect on click.
 
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
@@ -715,6 +716,9 @@ class UIDummy(UIInteractiveWidget):
         )
         self.color = color
         self.frame = randint(0, 255)
+
+    def on_click(self, event: UIOnClickEvent):
+        print("UIDummy.rect:", self.rect)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
