@@ -1,7 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Slab&display=swap');
 
 body {
-    font-family: Roboto, sans-serif;
+    font-family: Lato, sans-serif;
+}
+p {
+    line-height: 24px;
+    font-size: 16px;
+    margin: 0 0 24px;
 }
 h1, h2 {
     font-family: Roboto Slab, Georgia, serif;
@@ -54,6 +59,10 @@ li {
 }
 li p {
     margin-bottom: 0;
+}
+.toc-tree li {
+    list-style: None;
+    margin-left: 0;
 }
 ul {
     margin-bottom: 30px;
