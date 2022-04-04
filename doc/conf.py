@@ -120,6 +120,13 @@ html_theme_options = {
 
 html_title = f"Python Arcade {version}"
 
+# html_js_files = [
+#     'js/custom.js',
+# ]
+
+html_css_files = [
+    'css/custom.css',
+]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 # html_logo = '_static/favicon-32x32.png'
