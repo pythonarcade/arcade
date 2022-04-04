@@ -19,7 +19,7 @@ class takes two parameters: The moving
 sprite, and a list of sprites the moving sprite can't move through.
 
 For more information about the physics engine we are using here, see
-`PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
+`PhysicsEngineSimple class <../../api/physics_engines.html#arcade.PhysicsEngineSimple>`_
 
 .. note::
 
