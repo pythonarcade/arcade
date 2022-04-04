@@ -304,9 +304,6 @@ class UIGridLayout(UILayout):
         start_y = self.content_rect.top
 
         if not self.children:
-            base_width = self.padding_left + self.padding_right + 2 * self.border_width
-            base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
-            self.rect = Rect(self.left, self.bottom, base_width, base_height)
             return
 
         max_width_per_column = [0] * self.column_count
