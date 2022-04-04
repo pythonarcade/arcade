@@ -30,11 +30,10 @@ class MyWindow(arcade.Window):
         open_message_box_button.on_click = self.on_click_open
         self.open_message_box_button = open_message_box_button
         # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
-            arcade.gui.widgets.layout.UIAnchorWidget(
-                anchor_x="center_x", anchor_y="center_y", child=self.v_box
-            )
-        )
+
+        ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
+        ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
+        self.manager.add(ui_anchor_layout)
 
     def on_click_open(self, event):
         # The code in this function is run when we click the ok button.

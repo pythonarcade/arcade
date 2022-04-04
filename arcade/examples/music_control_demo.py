@@ -100,7 +100,7 @@ class MyView(arcade.View):
         box.add(self.right_button)
 
         # Place buttons in the center of the screen using an UIAnchorWidget with default values
-        self.ui_manager.add(arcade.gui.widgets.layout.UIAnchorWidget(child=box))
+        self.ui_manager.add(arcade.gui.widgets.layout.UIAnchorLayout(children=[box]))
 
     def music_over(self):
         self.media_player.pop_handlers()

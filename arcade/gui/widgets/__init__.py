@@ -143,6 +143,18 @@ class Rect(NamedTuple):
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
+    def min_size(self, width=0.0, height=0.0):
+        return Rect(self.x, self.y, max(width, self.width), max(height, self.height))
+
+    def max_size(self, width: float = None, height: float = None):
+        w, h = self.size
+        if width:
+            w = min(width, self.width)
+        if height:
+            h = min(height, self.height)
+
+        return Rect(self.x, self.y, w, h)
+
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -254,7 +266,7 @@ class UIWidget(EventDispatcher, ABC):
         if index is None:
             self._children.append(_ChildEntry(child, kwargs))
         else:
-            self._children.insert(max(len(self.children), index), child)
+            self._children.insert(max(len(self.children), index), _ChildEntry(child, kwargs))
 
         return child
 

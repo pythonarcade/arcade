@@ -36,7 +36,17 @@ W = TypeVar("W", bound=UIWidget)
 
 class UIManager(EventDispatcher, UIWidgetParent):
     """
-    V2 UIManager
+    UIManager is the central component within Arcade's GUI system.
+    Handles window events, layout process and rendering.
+
+    To process window events, :py:meth:`UIManager.enable()` has to be called,
+    which will inject event callbacks for all window events and redirects them through the widget tree.
+
+    If used within a view :py:meth:`UIManager.enable()` should be called from :py:meth:`View.on_show_view()` and
+    :py:meth:`UIManager.disable()` should be called from :py:meth:`View.on_hide_view()`
+
+    Supports `size_hint` to grow/shrink direct children dependent on window size.
+    Supports `size_hint_min` to ensure size of direct children (e.g. UIBoxLayout).
 
     .. code:: py
 
@@ -151,13 +161,22 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def _do_layout(self):
         layers = sorted(self.children.keys())
         for layer in layers:
+            surface = self._get_surface(layer)
+            surface_width, surface_height = surface.size
+
             for child in self.children[layer]:
-                # TODO Observe if rect of child changed. This will be solved with observable properties later
-                rect = child.rect
+
+                if child.size_hint:
+                    sh_x, sh_y = child.size_hint
+                    nw = surface_width * sh_x if sh_x else None
+                    nh = surface_height * sh_y if sh_y else None
+                    child.rect = child.rect.resize(nw, nh)
+
+                if child.size_hint_min:
+                    shm_w, shm_h = child.size_hint_min
+                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0)
+
                 child._do_layout()
-                if rect != child.rect:
-                    # TODO use Arcade Property instead
-                    self.trigger_render()
 
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
