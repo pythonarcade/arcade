@@ -8,9 +8,10 @@ Drawing with Functions
 This example shows how to define functions that draw objects. Such as
 ``draw_tree(x, y)`` and ``draw_bird(x, y)``.
 
-For more information see:
+For more information see `Chapter 9 of Arcade Academy - Learn Python <academy_py_ch9_>`_
+or watch the video below:
 
-*  https://learn.arcade.academy/chapters/09_drawing_with_functions/drawing_with_functions.html
+.. _academy_py_ch9: https://learn.arcade.academy/en/latest/chapters/09_drawing_with_functions/drawing_with_functions.html
 
 .. raw:: html
 
