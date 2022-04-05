@@ -516,9 +516,6 @@ class Sprite:
         """
         self._collision_radius = collision_radius
 
-    def __lt__(self, other):
-        return self._texture.texture_id.value < other.texture.texture_id.value
-
     def clear_spatial_hashes(self):
         """
         Search the sprite lists this sprite is a part of, and remove it
