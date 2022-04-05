@@ -9,9 +9,9 @@ class MyGame(arcade.Window):
         super().__init__(width=1920, height=1080)
 
         # Load a file and create a shader from it
-        file_name = "circle_1.glsl"
-        self.shadertoy = Shadertoy(size=self.get_size(),
-                                   main_source=open(file_name).read())
+        shader_file_path = "circle_1.glsl"
+        window_size = self.get_size()
+        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
 
     def on_draw(self):
         # Run the GLSL code
