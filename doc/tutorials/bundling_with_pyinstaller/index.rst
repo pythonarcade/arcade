@@ -252,11 +252,11 @@ PyInstaller Documentation
 -------------------------
 
 PyInstaller is a flexible tool that can handle a wide variety of different situations.  For further
-reading, here are links to the official PyInstaller documentation:
+reading, here are links to the official PyInstaller documentation and GitHub page:
 
-* PyInstaller home page: http://www.pyinstaller.org/
 * PyInstaller Manual: https://pyinstaller.readthedocs.io/en/stable/
+* PyInstaller GitHub: https://github.com/pyinstaller/pyinstaller
 
 .. _Arcade: http://arcade.academy
-.. _PyInstaller: http://www.pyinstaller.org
+.. _PyInstaller: https://pyinstaller.readthedocs.io/en/stable/
 .. _Pymunk: http://www.pymunk.org/en/latest/
