@@ -128,7 +128,7 @@ it).
 We need to put our translation into the right folder structure so our
 library will be able to find it. Create the ``my_app.mo`` folder
 heirarchy. Because we're translating it into Spanish (whose `country
-code <https://www.iso.org/obp/ui/#search>`__ is ``es``), we have to make
+code <https://www.iso.org/obp/ui/>`__ is ``es``), we have to make
 a ``locale/es/LC_MESSAGES`` directory for it.
 
 ::
