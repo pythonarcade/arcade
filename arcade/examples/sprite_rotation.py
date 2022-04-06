@@ -38,9 +38,11 @@ class ExampleWindow(arcade.Window):
         self.example_sprite_1 = RotatingSprite(":resources:images/space_shooter/laserBlue01.png",
                                                center_x=SCREEN_WIDTH // 4 + 26, center_y=SCREEN_HEIGHT // 2)
 
-        # This second example shows how the method can be use to make rotating platforms.
+        # This second example shows how the method can be used to make rotating platforms.
         self.example_sprite_2 = RotatingSprite(":resources:images/tiles/grassHalf.png", scale=0.25,
                                                center_x=3 * SCREEN_WIDTH // 4 + 50, center_y=SCREEN_HEIGHT // 2)
+
+        # This third example shows how the method can be used to rotate the barrel of a tank correctly.
 
         self.base_sprite_1 = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=0.25,
                                            center_x=SCREEN_WIDTH // 4, center_y=SCREEN_HEIGHT // 2)
@@ -65,6 +67,10 @@ class ExampleWindow(arcade.Window):
         self.sprites.draw()
 
 
-if __name__ == '__main__':
+def main():
     window = ExampleWindow()
     window.run()
+
+
+if __name__ == '__main__':
+    main()
