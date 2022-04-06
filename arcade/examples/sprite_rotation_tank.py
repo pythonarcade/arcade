@@ -52,8 +52,8 @@ class ExampleWindow(arcade.Window):
         # Generate a grassy background
         self.background = arcade.SpriteList()
         # since 64 is not a factor of SCREEN_WIDTH or SCREEN_HEIGHT add an extra to cover the gap
-        for x in range(SCREEN_WIDTH//64 + 1):
-            for y in range(SCREEN_HEIGHT//64 + 1):
+        for x in range(SCREEN_WIDTH // 64 + 1):
+            for y in range(SCREEN_HEIGHT // 64 + 1):
                 self.background.append(arcade.Sprite(":resources:images/topdown_tanks/tileGrass1.png",
                                                      center_x=x * 64, center_y=y * 64))
 
