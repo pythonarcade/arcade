@@ -55,7 +55,7 @@ class ExampleWindow(arcade.Window):
         for x in range(SCREEN_WIDTH//64 + 1):
             for y in range(SCREEN_HEIGHT//64 + 1):
                 self.background.append(arcade.Sprite(":resources:images/topdown_tanks/tileGrass1.png",
-                                                     center_x=x*64, center_y=y*64))
+                                                     center_x=x * 64, center_y=y * 64))
 
         # The tank and barrel sprite. These Can be all added to their own separate class in a more advanced program.
         self.tank = arcade.Sprite(":resources:images/topdown_tanks/tankBody_dark_outline.png",
