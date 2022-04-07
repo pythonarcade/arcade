@@ -192,7 +192,7 @@ with
     gettext.install('text_loc_example', localedir='text_loc_example_locale')
 
 As `the
-documentaion <https://docs.python.org/3/library/gettext.html#gettext.find>`__
+documentation <https://docs.python.org/3/library/gettext.html#gettext.find>`__
 says, this code searches the user's computer for the language being
 used, then the ``locale`` folder for an appropriate translation to find
 the right language to show on the screen.
