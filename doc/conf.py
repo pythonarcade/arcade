@@ -102,7 +102,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -116,12 +116,23 @@ html_theme = 'furo'
 html_theme_options = {
     "light_logo": "../_images/arcade-logo.svg",
     "dark_logo": "../_images/arcade-logo.svg",
+    "light_css_variables": {
+       "font-stack--monospace": "Roboto Mono, Courier, monospace",
+        "toc-font-size": "17px",
+        "sidebar-item-font-size": "17px",
+        "sidebar-item-line-height": "20px",
+    },
+    "dark_css_variables": {
+       "font-stack--monospace": "Roboto Mono, Courier, monospace",
+        "toc-font-size": "18px",
+        "sidebar-item-font-size": "17px",
+        "sidebar-item-line-height": "20px",
+    },
 }
 
 html_title = f"Python Arcade {version}"
 
 html_js_files = [
-    'https://code.jquery.com/jquery-3.5.1.js',
     'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js',
 ]
 

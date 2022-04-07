@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Mono:ital,wght@0,400;0,700;1,400&family=Roboto+Slab&display=swap');
 
 body {
     font-family: Lato, sans-serif;
 }
 p {
-    line-height: 24px;
-    font-size: 16px;
+    line-height: 30px;
+    font-size: 18px;
     margin: 0 0 24px;
 }
 h1, h2 {
@@ -65,8 +65,7 @@ li p {
     margin-left: 0;
 }
 ul {
-    margin-bottom: 30px;
-    margin-left: 0px;
+    margin-left: 0;
 }
 .section-header {
     display: flex;
@@ -101,4 +100,30 @@ ul {
 }
 .sidebar-tree ul li {
     list-style-type: None;
+}
+
+/* Make Function API look nice */
+.sig-name {
+    color: black;
+}
+.sig-praram {
+    color: darkgray;
+}
+.sig-param .n:first-of-type {
+    color: black;
+    margin-left: 10px;
+}
+.sig-param::before {
+    content: '\A  ';
+    white-space: pre;
+    margin-left: 10px;
+}
+/* Make code look nice */
+.code-block-caption::before {
+    counter-increment: listing;
+    content: "Listing " counter(listing) ": ";
+}
+.code-block-caption {
+    font-family: 'Consolas', 'courier new', 'courier', monospace;
+    font-size: 15px;
 }
