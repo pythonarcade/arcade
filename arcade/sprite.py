@@ -133,12 +133,13 @@ class Sprite:
         :height: Height of the sprite.
         :force: Force being applied to the sprite. Useful when used with Pymunk \
         for physics.
-        :left: Set/query the sprite location by using the left coordinate. This \
-        will be the 'x' of the left of the sprite.
-        :points: Points, in relation to the center of the sprite, that are used \
-        for collision detection. Arcade defaults to creating points for a rectangle \
+        :hit_box: Points, in relation to the center of the sprite, that are used \
+        for collision detection. Arcade defaults to creating a hit box via the \
+        'simple' hit box algorithm \
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
+        :left: Set/query the sprite location by using the left coordinate. This \
+        will be the 'x' of the left of the sprite.
         :position: A list with the (x, y) of where the sprite is.
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
