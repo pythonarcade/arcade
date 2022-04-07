@@ -105,7 +105,7 @@ Pyglet's continued development.
 
 * Documentation
 
-  * Work on :ref:`shader_toy_tutorial`.
+  * Work on :ref:`shader_toy_tutorial_glow`.
   * Docstring improvements throughout the code base
   * Many examples are cleaned up
 
@@ -754,12 +754,12 @@ and the documentation.
 
   * `Shadertoy.com <https://www.shadertoy.com/>`_ is a website that makes it easier to write OpenGL shaders.
   * The new :class:`arcade.Shadertoy` class makes it easy to run and interact with these shaders in Arcade.
-  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
+  * See :ref:`shader_toy_tutorial_glow` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
-    .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
+    .. image:: ../tutorials/shader_toy_glow/cyber_fuji_2020.png
        :width: 40%
 
-    .. image:: ../tutorials/shader_toy/star_nest.png
+    .. image:: ../tutorials/shader_toy_glow/star_nest.png
        :width: 40%
 
 * Reworked GUI
@@ -854,7 +854,7 @@ and the documentation.
     .. image:: ../tutorials/raycasting/example.png
        :width: 50%
 
-  * New tutorial for :ref:`shader_toy_tutorial`.
+  * New tutorial for :ref:`shader_toy_tutorial_glow`.
   * Revamped tutorial: :ref:`platformer_tutorial`.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.

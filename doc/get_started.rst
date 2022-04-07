@@ -166,7 +166,8 @@ Arcade Skill Tree
   * Lights - :ref:`light_demo`
   * Writing shaders using "ShaderToy"
 
-    * :ref:`shader_toy_tutorial`
+    * :ref:`shader_toy_tutorial_glow`
+    * :ref:`shader_toy_tutorial_particles`
     * Learn how to ray-cast shadows in the :ref:`raycasting_tutorial`.
     * Make your screen look like an 80s monitor in :ref:`crt_filter`.
     * Study the `Asteroids Example Code <https://github.com/pythonarcade/asteroids>`_.
