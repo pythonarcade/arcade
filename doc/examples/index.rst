@@ -704,7 +704,7 @@ Tutorials
 .. figure:: thumbs/shader_toy_tutorial.png
    :figwidth: 170px
 
-   :ref:`shader_toy_tutorial`
+   :ref:`shader_toy_tutorial_glow`
 
 
 Particle System

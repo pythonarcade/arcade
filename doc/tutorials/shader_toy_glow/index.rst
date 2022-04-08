@@ -1,7 +1,7 @@
-.. _shader_toy_tutorial:
+.. _shader_toy_tutorial_glow:
 
-Shader Toy Tutorial
-===================
+Shader Toy Tutorial - Glow
+==========================
 
 .. contents::
 

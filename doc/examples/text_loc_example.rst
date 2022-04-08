@@ -128,7 +128,7 @@ it).
 We need to put our translation into the right folder structure so our
 library will be able to find it. Create the ``my_app.mo`` folder
 heirarchy. Because we're translating it into Spanish (whose `country
-code <https://www.iso.org/obp/ui/#search>`__ is ``es``), we have to make
+code <https://www.iso.org/obp/ui/>`__ is ``es``), we have to make
 a ``locale/es/LC_MESSAGES`` directory for it.
 
 ::
@@ -192,7 +192,7 @@ with
     gettext.install('text_loc_example', localedir='text_loc_example_locale')
 
 As `the
-documentaion <https://docs.python.org/3/library/gettext.html#gettext.find>`__
+documentation <https://docs.python.org/3/library/gettext.html#gettext.find>`__
 says, this code searches the user's computer for the language being
 used, then the ``locale`` folder for an appropriate translation to find
 the right language to show on the screen.
