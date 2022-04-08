@@ -344,8 +344,6 @@ from .text_pillow import (
 )
 
 
-# --- Generated __all__ ---
-
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
            'AnimatedWalkingSprite',
