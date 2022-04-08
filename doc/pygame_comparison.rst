@@ -22,10 +22,10 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - https://arcade.academy
      - https://www.pygame.org
    * - API Docs
-     - `API Docs <https://arcade.academy/quick_index.html>`__
+     - :ref:`API Docs<quick_index>`
      - `API Docs <https://www.pygame.org/docs/>`__
    * - Example code
-     - `Example code <https://arcade.academy/examples/index.html>`_
+     - :ref:`Example Code<example-code>`
      - N/A
    * - License
      - `MIT License`_
