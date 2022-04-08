@@ -1,4 +1,3 @@
-import imp
 """
 Simple ray marcher.
 This can also be created with shadertoy
@@ -12,6 +11,7 @@ import arcade
 from arcade.gl import geometry
 
 CURRENT_DIR = Path(__file__).parent.resolve()
+
 
 class RayMarcherSimple(arcade.Window):
 
@@ -38,5 +38,6 @@ class RayMarcherSimple(arcade.Window):
 
     def set_aspect_ratio(self, width, height):
         self.program["aspect_ratio"] = width / height
+
 
 RayMarcherSimple().run()
