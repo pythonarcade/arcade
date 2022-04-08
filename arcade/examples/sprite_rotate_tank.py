@@ -23,6 +23,9 @@ import math
 TANK_SPEED = 64  # How many pixels per second the tank travels
 TANK_TURNING_SPEED = 60  # how many degrees per second the tank spins by.
 
+# This is half the length of the barrel sprite. We use this value to ensure the end of the barrel sit in the middle of the tank.
+TANK_BARREL_LENGTH_HALF = 15  
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
@@ -168,8 +171,8 @@ class ExampleWindow(arcade.Window):
             self._correct = True
             angle = math.radians(arcade.get_angle_degrees(self.tank.center_y, self.tank.center_x,
                                                           self.mouse_pos[1], self.mouse_pos[0]))
-            self.barrel.center_x = self.tank.center_x + math.cos(angle) * 13
-            self.barrel.center_y = self.tank.center_y + math.sin(angle) * 13
+            self.barrel.center_x = self.tank.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF
+            self.barrel.center_y = self.tank.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF
         else:
             self._correct = False
             self.barrel.center_x = self.tank.center_x
