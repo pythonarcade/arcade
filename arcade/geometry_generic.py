@@ -63,3 +63,18 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     angle = math.degrees(math.atan2(x_diff, y_diff))
     return angle
 
+
+def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
+    """
+    Get the angle in radians between two points.
+
+    :param float x1: x coordinate of the first point
+    :param float y1: y coordinate of the first point
+    :param float x2: x coordinate of the second point
+    :param float y2: y coordinate of the second point
+    """
+
+    x_diff = x2 - x1
+    y_diff = y2 - y1
+    angle = math.atan2(x_diff, y_diff)
+    return angle

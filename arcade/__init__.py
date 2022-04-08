@@ -140,6 +140,7 @@ from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
 from .geometry_generic import clamp
 from .geometry_generic import get_angle_degrees
+from .geometry_generic import get_angle_radians
 
 from .easing import EasingData
 from .easing import linear
