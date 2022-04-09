@@ -18,11 +18,11 @@ from typing import Dict, List, Tuple, Sequence, TYPE_CHECKING
 from array import array
 
 import PIL
+from PIL import Image, ImageDraw
 from arcade.gl.framebuffer import Framebuffer
 from collections import deque
 from contextlib import contextmanager
 
-from PIL import Image
 
 import arcade
 
@@ -674,13 +674,21 @@ class TextureAtlas:
 
         return size, size
 
-    def to_image(self, flip: bool = False, components: int = 4) -> Image.Image:
+    def to_image(
+        self,
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: Tuple[int, int, int] = (255, 0, 0),
+    ) -> Image.Image:
         """
         Convert the atlas to a Pillow image
 
         :param bool flip: Flip the image horizontally
-        :return: A pillow image containing the atlas texture
         :param int components: Number of components. (3 = RGB, 4 = RGBA)
+        :param bool draw_borders: Draw region borders into image
+        :param color: RGB color of the borders
+        :return: A pillow image containing the atlas texture
         """
         if components == 4:
             mode = "RGBA"
@@ -693,29 +701,64 @@ class TextureAtlas:
             self._texture.size,
             bytes(self._fbo.read(components=components)),
         )
+
+        if self.border == 1 and draw_borders:
+            draw = ImageDraw.Draw(image)
+            for rg in self._atlas_regions.values():
+                p1 = rg.x - 1, rg.y - 1
+                p2 = rg.x + rg.width, rg.y + rg.height
+                draw.rectangle([p1, p2], outline=border_color, width=1)
+
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         return image
 
-    def show(self, flip: bool = False, components: int = 4) -> None:
+    def show(
+        self,
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: Tuple[int, int, int] = (255, 0, 0),
+    ) -> None:
         """
         Show the texture atlas using Pillow
 
         :param bool flip: Flip the image horizontally
         :param int components: Number of components. (3 = RGB, 4 = RGBA)
+        :param bool draw_borders: Draw region borders into image
+        :param color: RGB color of the borders
         """
-        self.to_image(flip=flip, components=components).show()
+        self.to_image(
+            flip=flip,
+            components=components,
+            draw_borders=draw_borders,
+            border_color=border_color,
+        ).show()
 
-    def save(self, path: str, flip: bool = False, components: int = 4) -> None:
+    def save(
+        self,
+        path: str,
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: Tuple[int, int, int] = (255, 0, 0),
+    ) -> None:
         """
         Save the texture atlas to a png.
 
         :param str path: The path to save the atlas on disk
         :param bool flip: Flip the image horizontally
         :param int components: Number of components. (3 = RGB, 4 = RGBA)
+        :param color: RGB color of the borders
+        :return: A pillow image containing the atlas texture
         """
-        self.to_image(flip=flip, components=components).save(path, format="png")
+        self.to_image(
+            flip=flip,
+            components=components,
+            draw_borders=draw_borders,
+            border_color=border_color,
+        ).save(path, format="png")
 
     def _check_size(self, size: Tuple[int, int]) -> None:
         """Check it the atlas exceeds the hardware limitations"""
