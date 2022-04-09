@@ -674,35 +674,48 @@ class TextureAtlas:
 
         return size, size
 
-    def to_image(self, flip: bool = False) -> Image.Image:
+    def to_image(self, flip: bool = False, components: int = 4) -> Image.Image:
         """
         Convert the atlas to a Pillow image
 
         :param bool flip: Flip the image horizontally
         :return: A pillow image containing the atlas texture
+        :param int components: Number of components. (3 = RGB, 4 = RGBA)
         """
-        image = Image.frombytes("RGBA", self._texture.size, bytes(self._texture.read()))
+        if components == 4:
+            mode = "RGBA"
+        elif components == 3:
+            mode = "RGB"
+        else:
+            raise ValueError(f"Components must be 3 or 4, not {components}")
+        image = Image.frombytes(
+            mode,
+            self._texture.size,
+            bytes(self._fbo.read(components=components)),
+        )
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         return image
 
-    def show(self, flip: bool = False) -> None:
+    def show(self, flip: bool = False, components: int = 4) -> None:
         """
         Show the texture atlas using Pillow
 
         :param bool flip: Flip the image horizontally
+        :param int components: Number of components. (3 = RGB, 4 = RGBA)
         """
-        self.to_image(flip=flip).show()
+        self.to_image(flip=flip, components=components).show()
 
-    def save(self, path: str, flip: bool = False) -> None:
+    def save(self, path: str, flip: bool = False, components: int = 4) -> None:
         """
         Save the texture atlas to a png.
 
         :param str path: The path to save the atlas on disk
         :param bool flip: Flip the image horizontally
+        :param int components: Number of components. (3 = RGB, 4 = RGBA)
         """
-        self.to_image(flip=flip).save(path, format="png")
+        self.to_image(flip=flip, components=components).save(path, format="png")
 
     def _check_size(self, size: Tuple[int, int]) -> None:
         """Check it the atlas exceeds the hardware limitations"""
