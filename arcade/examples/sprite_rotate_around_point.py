@@ -19,11 +19,12 @@ SCREEN_TITLE = "Rotating Sprite Example"
 class RotatingSprite(arcade.Sprite):
     """
     This is an example sprite subclass which implements a generic rotate_around_point method.
+
     The change_angle keyword could be removed if you know that sprites will always / never change angle.
     """
     def rotate_around_point(self, point, degrees, change_angle=True):
         """
-        rotates the sprite around a defined point by the set amount of degrees
+        Rotates the sprite around a point by the set amount of degrees
 
         :param point: The point that the sprite will rotate about
         :param degrees: How many degrees to rotate the sprite
@@ -32,8 +33,6 @@ class RotatingSprite(arcade.Sprite):
 
         if change_angle:
             # This is so the direction the sprite faces changes when rotating.
-            # It isn't necessary to have this. For example, you may only use this for rotating platforms that will
-            # never change angle.
             self.angle += degrees
 
         # use arcade.rotate_point to rotate the sprites center x and y by the point.
