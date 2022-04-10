@@ -205,11 +205,13 @@ class UIWidget(EventDispatcher, ABC):
         return child
 
     def remove(self, child: "UIWidget"):
+        """Removes the given child from children list."""
         child.parent = None
         self.children.remove(child)
         self.trigger_full_render()
 
     def clear(self):
+        """Clears the child list."""
         for child in self.children:
             child.parent = None
 
@@ -292,16 +294,17 @@ class UIWidget(EventDispatcher, ABC):
         pass
 
     def dispatch_ui_event(self, event: UIEvent):
-        """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism
-         """
+        """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism"""
         return self.dispatch_event("on_event", event)
 
-    def with_border(self, width=2, color=(0, 0, 0)):
+    def with_border(self, width=2, color=(0, 0, 0)) -> "UIBorder":
         """
-        Wraps this Widget with a border
-        :param width: border width
-        :param color: border color
-        :return: Wrapping Border with self as child
+        Wraps this widget with a border
+
+        :param width: Border width
+        :param color: Border color
+
+        :return: Wrapped Border with self as child
         """
         return UIBorder(self, border_width=width, border_color=color)
 
@@ -310,19 +313,32 @@ class UIWidget(EventDispatcher, ABC):
                           right: float = 0,
                           bottom: float = 0,
                           left: float = 0,
-                          bg_color: Optional[arcade.Color] = None):
+                          bg_color: Optional[arcade.Color] = None) -> "UIPadding":
         """
-        Wraps this Widget with a border
-        :param top: Top Padding
-        :param right: Right Padding
-        :param bottom: Bottom Padding
-        :param left: Left Padding
+        Wraps this widget and applies padding
+
+        :param top: Top padding
+        :param right: Right padding
+        :param bottom: Bottom padding
+        :param left: Left padding
         :param bg_color: Background color
-        :return: Wrapping Padding with self as child
+
+        :return: Wrapped Padding with self as child
         """
         return UIPadding(self, padding=(top, right, bottom, left), bg_color=bg_color)
 
-    def with_background(self, texture: Texture, top=0, right=0, bottom=0, left=0):
+    def with_background(self, texture: Texture, top=0, right=0, bottom=0, left=0) -> "UITexturePane":
+        """
+        Wraps the widget with a background
+
+        :param texture: Background texture
+        :param top: Top padding
+        :param right: Right padding
+        :param bottom: Bottom padding
+        :param left: Left padding
+
+        :return: Wrapped Texture with self as child
+        """
         return UITexturePane(self, tex=texture, padding=(top, right, bottom, left))
 
     @property
