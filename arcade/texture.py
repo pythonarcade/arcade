@@ -261,26 +261,6 @@ class Texture:
             self._sprite.alpha = alpha
             self._sprite_list.draw()
 
-    def draw_transformed(self,
-                         left: float,
-                         bottom: float,
-                         width: float,
-                         height: float,
-                         angle: float = 0,
-                         alpha: int = 255,
-                         texture_transform: Mat3 = Mat3()):
-
-        self._create_cached_sprite()
-        if self._sprite and self._sprite_list:
-            self._sprite.center_x = left + width / 2
-            self._sprite.center_y = bottom + height / 2
-            self._sprite.width = width
-            self._sprite.height = height
-            self._sprite.angle = angle
-            self._sprite.alpha = alpha
-            # self._sprite.texture_transform = texture_transform
-            self._sprite_list.draw()
-
     def draw_scaled(self, center_x: float, center_y: float,
                     scale: float = 1.0,
                     angle: float = 0,
@@ -575,6 +555,7 @@ def load_spritesheet(file_name: Union[str, Path],
         start_x = (sprite_width + margin) * column
         start_y = (sprite_height + margin) * row
         image = source_image.crop((start_x, start_y, start_x + sprite_width, start_y + sprite_height))
+        print(f"crop({start_x}, {start_y}, {start_x + sprite_width}, {start_y + sprite_height})")
         texture = Texture(f"{file_name}-{sprite_no}", image)
         texture_list.append(texture)
 
