@@ -17,7 +17,6 @@ from arcade import RectList
 from arcade import Color
 from arcade import calculate_hit_box_points_simple
 from arcade import calculate_hit_box_points_detailed
-from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 
@@ -555,7 +554,6 @@ def load_spritesheet(file_name: Union[str, Path],
         start_x = (sprite_width + margin) * column
         start_y = (sprite_height + margin) * row
         image = source_image.crop((start_x, start_y, start_x + sprite_width, start_y + sprite_height))
-        print(f"crop({start_x}, {start_y}, {start_x + sprite_width}, {start_y + sprite_height})")
         texture = Texture(f"{file_name}-{sprite_no}", image)
         texture_list.append(texture)
 
