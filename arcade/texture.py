@@ -288,7 +288,9 @@ class Texture:
 def load_textures(file_name: Union[str, Path],
                   image_location_list: RectList,
                   mirrored: bool = False,
-                  flipped: bool = False) -> List[Texture]:
+                  flipped: bool = False,
+                  hit_box_algorithm: Optional[str] = "Simple",
+                  hit_box_detail: float = 4.5) -> List[Texture]:
     """
     Load a set of textures from a single image file.
 
@@ -306,7 +308,8 @@ def load_textures(file_name: Union[str, Path],
            a `List` of four floats: `[x, y, width, height]`.
     :param bool mirrored: If set to `True`, the image is mirrored left to right.
     :param bool flipped: If set to `True`, the image is flipped upside down.
-
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' (default) or 'Detailed'.
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
     :returns: List of :class:`Texture`'s.
 
     :raises: ValueError
@@ -320,7 +323,12 @@ def load_textures(file_name: Union[str, Path],
         file_name = resolve_resource_path(file_name)
 
         source_image = PIL.Image.open(file_name)
-        result = Texture(cache_file_name, source_image)
+        result = Texture(
+            cache_file_name,
+            image=source_image,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
         load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
 
     source_image_width, source_image_height = source_image.size
@@ -354,14 +362,19 @@ def load_textures(file_name: Union[str, Path],
             result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
         else:
             image = source_image.crop((x, y, x + width, y + height))
-            # image = _trim_image(image)
 
             if mirrored:
                 image = PIL.ImageOps.mirror(image)
 
             if flipped:
                 image = PIL.ImageOps.flip(image)
-            result = Texture(cache_name, image)
+
+            result = Texture(
+                cache_name,
+                image=image,
+                hit_box_algorithm=hit_box_algorithm,
+                hit_box_detail=hit_box_detail,
+            )
             load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
         texture_info_list.append(result)
 
@@ -480,7 +493,6 @@ def load_texture(file_name: Union[str, Path],
     else:
         image = source_image
 
-    # image = _trim_image(image)
     if flipped_diagonally:
         image = image.transpose(PIL.Image.TRANSPOSE)
 
@@ -529,16 +541,18 @@ def load_spritesheet(file_name: Union[str, Path],
                      sprite_height: int,
                      columns: int,
                      count: int,
-                     margin: int = 0) -> List[Texture]:
+                     margin: int = 0,
+                     hit_box_algorithm: Optional[str] = "Simple",
+                     hit_box_detail: float = 4.5) -> List[Texture]:
     """
-
     :param str file_name: Name of the file to that holds the texture.
     :param int sprite_width: Width of the sprites in pixels
     :param int sprite_height: Height of the sprites in pixels
     :param int columns: Number of tiles wide the image is.
     :param int count: Number of tiles in the image.
     :param int margin: Margin between images
-
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' (default) or 'Detailed'.
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
     :returns List: List of :class:`Texture` objects.
     """
 
@@ -554,7 +568,12 @@ def load_spritesheet(file_name: Union[str, Path],
         start_x = (sprite_width + margin) * column
         start_y = (sprite_height + margin) * row
         image = source_image.crop((start_x, start_y, start_x + sprite_width, start_y + sprite_height))
-        texture = Texture(f"{file_name}-{sprite_no}", image)
+        texture = Texture(
+            f"{file_name}-{sprite_no}",
+            image=image,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
         texture_list.append(texture)
 
     return texture_list
