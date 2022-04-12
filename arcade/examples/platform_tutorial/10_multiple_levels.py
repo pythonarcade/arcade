@@ -110,7 +110,7 @@ class MyGame(arcade.Window):
         # Keep track of the score, make sure we keep the score if the player finishes a level
         if self.reset_score:
             self.score = 0
-            self.reset_score = True
+        self.reset_score = True
 
         # Add Player Spritelist before "Foreground" layer. This will make the foreground
         # be drawn after the player, making it appear to be in front of the Player.
