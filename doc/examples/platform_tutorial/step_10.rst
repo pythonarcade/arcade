@@ -20,9 +20,16 @@ features. In this example we'll add the following things:
     "map_02.json", etc. Then having a level attribute to track which number we're on and increasing
     it and re-running the setup function.
 
-To start things off, let's add a few constants at the top of our game. The first one to define a starting
-position for the player, and then since we're starting to have a larger number of layers in our game, it 
-will be best to store their names in variables in case we need to change them later.
+To start things off, let's add a few constants at the top of our game. The first one we need to define is the size of
+a sprite in pixels.  Along with that we need to know the grid size in pixels.  These are used to calculate
+the end of the level.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
+    :caption: Multiple Levels - Constants
+    :lines: 15-16
+
+Next we need to define a starting position for the player, and then since we're starting to have a larger number of
+layers in our game, it will be best to store their names in variables in case we need to change them later.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Constants
