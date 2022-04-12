@@ -462,17 +462,19 @@ class Sprite:
         self.change_x += -math.sin(self.radians) * speed
         self.change_y += math.cos(self.radians) * speed
 
-    def turn_right(self, theta: float = 90):
+    def turn_right(self, theta: float = 90.0):
         """
-        Rotate the sprite right a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite right by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle -= theta
 
-    def turn_left(self, theta: float = 90):
+    def turn_left(self, theta: float = 90.0):
         """
-        Rotate the sprite left a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite left by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle += theta
 
