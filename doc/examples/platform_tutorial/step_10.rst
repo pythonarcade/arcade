@@ -33,14 +33,23 @@ edge of the map is, and one to keep track of what level we're on, and add a new 
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Init Function
-    :lines: 66-75
+    :lines: 69-78
+
+Also in our ``__init__`` function we'll need a variable to tell us if we need to reset the score.  This will be the case
+if the player fails the level.  However, now that the player can pass a level, we need to keep
+the score when calling our ``setup`` function for the new level.  Otherwise it will reset
+the score back to 0
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
+    :caption: Multiple Levels - Init Function
+    :lines: 66-68
 
 Then in our ``setup`` function we'll change up our map name variable to use that new level attribute,
 and add some extra layer specific options for the new layers we've added to our map.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Setup Function
-    :lines: 84-98
+    :lines: 87-101
 
 Now in order to make our player appear behind the "Foreground" layer, we need to add a line in our
 ``setup`` function before we create the player Sprite. This will basically be telling our Scene where
@@ -49,24 +58,32 @@ just been added to the end of the render order.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Setup Function
-    :lines: 110-122
+    :lines: 115-127
     :emphasize-lines: 1-6
+
+Next in our ``setup`` function we need to check to see if we need to reset the score or keep it.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
+    :caption: Multiple Levels - Setup Function
+    :lines: 106-113
+    :emphasize-lines: 5-8
 
 Lastly in our ``setup`` function we need to calculate the ``end_of_map`` value we added earlier in ``init``.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Setup Function
-    :lines: 126-127
+    :lines: 131-132
 
 The ``on_draw``, ``on_key_press``, and ``on_key_release`` functions will be unchanged for this section, so the
 last thing to do is add a few things to the ``on_update`` function. First we check if the player has fallen off
 of the map, and if so, we move them back to the starting position. Then we check if they collided with something
 from the "Don't Touch" layer, and if so reset them to the start. Lastly we check if they've reached the end of the
-map, and if they have we increment the level value and re-run the setup function.
+map, and if they have we increment the level value, tell our ``setup`` function not to reset the score, and then re-run
+the ``setup`` function.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: Multiple Levels - Update Function
-    :lines: 219-243
+    :lines: 224-251
 
   
 .. note::
