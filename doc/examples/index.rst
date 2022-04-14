@@ -186,6 +186,11 @@ Sprite Player Movement
 
    :ref:`easing_example_2`
 
+.. figure:: thumbs/sprite_rotate_around_tank.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_tank`
+
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
