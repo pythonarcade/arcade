@@ -143,3 +143,9 @@ table.dataTable.display tbody tr.odd > .sorting_1 {
 table.dataTable.display tbody tr.even > .sorting_1 {
     background-color: var(--color-background-secondary);
 }
+p code.literal {
+    border: None;
+}
+code.literal {
+    background: None;
+}
