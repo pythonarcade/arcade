@@ -36,7 +36,8 @@ class Context:
     #: The active context
     active: Optional["Context"] = None
 
-    opengl_api: str = None
+    #: The OpenGL api. Usually "gl" or "gles".
+    gl_api: str = None
 
     # --- Store the most commonly used OpenGL constants
     # Texture
@@ -161,7 +162,7 @@ class Context:
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
         self._window_ref = weakref.ref(window)
-        self.opengl_api = gl_api
+        self.gl_api = gl_api
         self._limits = Limits(self)
         self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
         Context.activate(self)
@@ -179,9 +180,12 @@ class Context:
 
         # Hardcoded states
         # This should always be enabled
-        #gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
+        # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
         # Set primitive restart index to -1 by default
-        gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
+        if self.gl_api == "gles":
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
+        else:
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
 
         # We enable scissor testing by default.
         # This is always set to the same value as the viewport
@@ -416,10 +420,11 @@ class Context:
         else:
             gl.glDisable(self.CULL_FACE)
 
-        if self.PROGRAM_POINT_SIZE in self._flags:
-            gl.glEnable(self.PROGRAM_POINT_SIZE)
-        else:
-            gl.glDisable(self.PROGRAM_POINT_SIZE)
+        if self.gl_api == "gl":
+            if self.PROGRAM_POINT_SIZE in self._flags:
+                gl.glEnable(self.PROGRAM_POINT_SIZE)
+            else:
+                gl.glDisable(self.PROGRAM_POINT_SIZE)
 
     @contextmanager
     def enabled(self, *flags):
@@ -629,7 +634,8 @@ class Context:
 
     @point_size.setter
     def point_size(self, value: float):
-        gl.glPointSize(self._point_size)
+        if self.gl_api == "gl":
+            gl.glPointSize(self._point_size)
         self._point_size = value
 
     def finish(self) -> None:

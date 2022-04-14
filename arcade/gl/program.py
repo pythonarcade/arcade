@@ -105,6 +105,16 @@ class Program:
         if tess_evaluation_shader:
             shaders.append((tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER))
 
+        # Inject a dummy fragment shader on gles when doing transforms
+        if self._ctx.gl_api == "gles" and not fragment_shader:
+            dummy_frag_src = """
+                #version 310 es
+                precision mediump float;
+                out vec4 fragColor;
+                void main() { fragColor = vec4(1.0); }
+            """
+            shaders.append((dummy_frag_src, gl.GL_FRAGMENT_SHADER))
+
         shaders_id = []
         for shader_code, shader_type in shaders:
             shader = Program.compile_shader(shader_code, shader_type)
@@ -116,6 +126,7 @@ class Program:
             self._configure_varyings()
 
         Program.link(self._glo)
+
         if geometry_shader:
             geometry_in = gl.GLint()
             geometry_out = gl.GLint()
