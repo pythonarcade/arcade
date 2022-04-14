@@ -62,19 +62,19 @@ class GPUBouncingCoins(arcade.Window):
                 vec2 vel = in_vel;
                 if (pos.x > size.x) {
                     pos.x = size.x;
-                    vel.x *= -1;
+                    vel.x *= -1.0;
                 }
-                else if (pos.x < 0) {
-                    pos.x = 0;
-                    vel.x *= -1;
+                else if (pos.x < 0.0) {
+                    pos.x = 0.0;
+                    vel.x *= -1.0;
                 }
                 if (pos.y > size.y) {
                     pos.y = size.y;
-                    vel.y *= -1;
+                    vel.y *= -1.0;
                 }
-                else if (pos.t < 0) {
-                    pos.y = 0;
-                    vel.y *= -1;
+                else if (pos.t < 0.0) {
+                    pos.y = 0.0;
+                    vel.y *= -1.0;
                 }
                 out_pos = pos;
                 out_vel = vel;

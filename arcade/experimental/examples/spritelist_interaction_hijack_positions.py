@@ -49,10 +49,11 @@ class HijackSpritePositions(arcade.Window):
                 // gl_VertexID is the sprite position in the spriteslist.
                 // We can use that to value to create unique positions with
                 // some simple math.
-                out_pos = size / 2 + vec2(
-                    sin(gl_VertexID + time + gl_VertexID * bend),
-                    cos(gl_VertexID + time + gl_VertexID * bend)
-                ) * gl_VertexID;
+                float vertId = float(gl_VertexID);
+                out_pos = size / 2.0 + vec2(
+                    sin(vertId + time + vertId * bend),
+                    cos(vertId + time + vertId * bend)
+                ) * vertId;
             }
             """
         )

@@ -45,17 +45,18 @@ class MyGame(arcade.Window):
                 // Get the position emitted from the vertex shader
                 // We get the 0th element because point primitives only have 1 position.
                 vec4 pos = gl_in[0].gl_Position;
-                float offset = 0.02 + sin(time * 5.0 + gl_PrimitiveIDIn) / 200.0;
-
+                float primId = float(gl_PrimitiveIDIn);
+                float offset = 0.02 + sin(time * 5.0 + primId) / 200.0;
                 float rot = time + length(pos) * 10.0;
+
                 mat2 rotate = mat2(
                     cos(rot), -sin(rot),
                     sin(rot),  cos(rot)
                 );
                 vec3 color = vec3(
-                    (sin(time + gl_PrimitiveIDIn) + 1.0) / 2.0,
-                    (sin(time + 2 + gl_PrimitiveIDIn) + 1.0) / 2.0,
-                    (sin(time + 3 + gl_PrimitiveIDIn) + 1.0) / 2.0
+                    (sin(time + primId) + 1.0) / 2.0,
+                    (sin(time + 2.0 + primId) + 1.0) / 2.0,
+                    (sin(time + 3.0 + primId) + 1.0) / 2.0
                 );
                 // Emit 4 vertices around the original vertex position making a quad
                 gl_Position = pos + vec4(rotate * vec2(-offset, offset), 0.0, 0.0);

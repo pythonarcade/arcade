@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
 
             void main() {
                 // Create rotation based on what instance we are drawing
-                float angle = time * 0.5 + gl_InstanceID;
+                float angle = time * 0.5 + float(gl_InstanceID);
                 mat2 rot = mat2(
                     cos(angle), sin(angle),
                     -sin(angle), cos(angle)

@@ -64,7 +64,7 @@ class ShaderSetup(arcade.Window):
                 vec2 pos = v_uv - vec2(0.5);
                 float dist = length(pos);
                 vec2 direction = normalize(pos);
-                vec2 uv = v_uv + (direction * (sin(dist * 50 - time) - 0.5)) * 0.25;
+                vec2 uv = v_uv + (direction * (sin(dist * 50.0 - time) - 0.5)) * 0.25;
 
                 // Read a pixel using the distorted texture coordinates and write to screen
                 out_color = texture(background, uv);

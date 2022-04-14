@@ -47,6 +47,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.set_vsync(True)
+        self.ctx.disable(self.ctx.BLEND)
         self.size = self.width // 4, self.height // 4
 
         # Two buffers on the gpu with positions
@@ -126,7 +127,7 @@ class MyGame(arcade.Window):
                 // Move the point away from the mouse position
                 float dist = length(pos - mouse_pos);
                 if (dist < 90.0) {
-                    pos += (pos - mouse_pos) * dt * 10;
+                    pos += (pos - mouse_pos) * dt * 10.0;
                 }
                 out_pos = pos;
             }

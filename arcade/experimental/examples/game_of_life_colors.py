@@ -137,7 +137,7 @@ class GameOfLife(arcade.Window):
                 if (cell(v9)) neighbours++;
 
                 // Average color for all neighbors
-                vec4 sum = (v1 + v2 + v3 + v4 + v6 + v7 + v8 + v9) / neighbours;
+                vec4 sum = (v1 + v2 + v3 + v4 + v6 + v7 + v8 + v9) / float(neighbours);
 
                 if (living) {
                     if (neighbours == 2 || neighbours == 3) {
