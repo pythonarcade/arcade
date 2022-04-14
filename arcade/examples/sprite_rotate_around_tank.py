@@ -29,7 +29,7 @@ TANK_TURN_SPEED_DEGREES = 70  # How fast the tank's body can turn
 
 
 # This is half the length of the barrel sprite.
-# We use it to ensure the back of the barrel sits in the middle of the tank
+# We use it to ensure the barrel's rear sits in the middle of the tank
 TANK_BARREL_LENGTH_HALF = 15  
 
 
