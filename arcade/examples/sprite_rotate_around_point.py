@@ -91,11 +91,13 @@ class ExampleWindow(arcade.Window):
     def on_update(self, delta_time: float):
         # Rotate the laser sprite and change its angle
         self.left_rotating_laser_sprite.rotate_around_point(
-            self.laser_base_sprite.position, 120 * delta_time)
+            self.laser_base_sprite.position,
+            120 * delta_time)
 
         # Rotate the platform sprite but don't change its angle
         self.right_rotating_platform_sprite.rotate_around_point(
-            self.platform_base_sprite.position, 60 * delta_time, False)
+            self.platform_base_sprite.position,
+            60 * delta_time, False)
 
     def on_draw(self):
         # Draw the sprite list.
