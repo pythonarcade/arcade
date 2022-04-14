@@ -43,6 +43,10 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         self.shadertoy.time += delta_time
 
+    def on_resize(self, width: float, height: float):
+        super().on_resize(width, height)
+        self.shadertoy.resize(self.get_framebuffer_size())
+
 
 if __name__ == "__main__":
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
