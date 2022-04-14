@@ -187,6 +187,9 @@ class Context:
         else:
             gl.glEnable(gl.GL_PRIMITIVE_RESTART)
 
+        self._primitive_restart_index = -1
+        self.primitive_restart_index = self._primitive_restart_index
+
         # We enable scissor testing by default.
         # This is always set to the same value as the viewport
         # to avoid background color affecting areas outside the viewport
@@ -637,6 +640,24 @@ class Context:
         if self.gl_api == "gl":
             gl.glPointSize(self._point_size)
         self._point_size = value
+
+
+    @property
+    def primitive_restart_index(self) -> int:
+        """
+        Get or set the primitive restart index. Default is ``-1``.
+        The primitive restart index can be used in index buffers
+        to restart a primitive. This is for example useful when you
+        use triangle strips or line strips and want to start on
+        a new strip in the same buffer / draw call.
+        """
+        return self._primitive_restart_index
+
+    @primitive_restart_index.setter
+    def primitive_restart_index(self, value: int):
+        self._primitive_restart_index = value
+        if self.gl_api == "gl":
+            gl.glPrimitiveRestartIndex(value)
 
     def finish(self) -> None:
         """
