@@ -10,6 +10,7 @@ from arcade.gl.glsl import ShaderSource
 def test_shader_source(ctx):
     """Test shader source parsing"""
     source_wrapper = ShaderSource(
+        ctx,
         """
         #version 330
         #define TEST 10
@@ -25,7 +26,11 @@ def test_shader_source(ctx):
         """,
         gl.GL_VERTEX_SHADER,
     )
-    assert source_wrapper.version == 330
+    if ctx.gl_api == "gl":
+        assert source_wrapper.version == 330
+    elif ctx.gl_api == "gles":
+        assert source_wrapper.version == 310
+
     assert source_wrapper.out_attributes == ['out_pos', 'out_velocity']
     source = source_wrapper.get_source(defines={'TEST': 1, 'TEST2': '2'})
     assert '#define TEST 1' in source
@@ -34,13 +39,14 @@ def test_shader_source(ctx):
 
 def test_shader_source_empty(ctx):
     with pytest.raises(ValueError):
-        ShaderSource("", gl.GL_VERTEX_SHADER)
+        ShaderSource(ctx, "", gl.GL_VERTEX_SHADER)
 
 
 def test_shader_source_missing_version(ctx):
     """ShaderException: Cannot find #version in shader source"""
     with pytest.raises(ShaderException):
         ShaderSource(
+            ctx,
             (
                 "in vec3 in_vert\n"
                 "void main() {\n"
@@ -55,6 +61,7 @@ def test_shader_source_malformed(ctx):
     """Malformed glsl source"""
     with pytest.raises(ShaderException):
         ShaderSource(
+            ctx,
             (
                 "in in_vert\n"
                 "void main() \n"
@@ -65,6 +72,7 @@ def test_shader_source_malformed(ctx):
         )
     with pytest.raises(ShaderException):
         ShaderSource(
+            ctx,
             (
                 "#version\n"
                 "in in_vert\n"
@@ -75,6 +83,7 @@ def test_shader_source_malformed(ctx):
             gl.GL_VERTEX_SHADER,
         )
     wrapper = ShaderSource(
+        ctx,
         (
             "#version 330\n"
             "\n"
@@ -94,6 +103,7 @@ def test_shader_source_malformed(ctx):
 
 def test_shader_program_broken_out(ctx):
     wrapper = ShaderSource(
+        ctx,
         (
             "#version 330\n"
             "in vec3 in_vert;\n"

@@ -34,6 +34,8 @@ class ShaderSource:
         if not self._lines:
             raise ValueError("Shader source is empty")
 
+        self._version = self._find_glsl_version()
+
         if ctx.gl_api == "gles":
             self._lines[0] = "#version 310 es"
             if self._lines[1].startswith("#"):
@@ -44,7 +46,7 @@ class ShaderSource:
             if self._type == gl.GL_GEOMETRY_SHADER:
                 self._lines.insert(1, "#extension GL_EXT_geometry_shader : require")
 
-        self._version = self._find_glsl_version()
+            self._version = self._find_glsl_version()
 
         if self._type in [gl.GL_VERTEX_SHADER, gl.GL_GEOMETRY_SHADER]:
             self._parse_out_attributes()
@@ -67,7 +69,6 @@ class ShaderSource:
         if not defines:
             return "\n".join(self._lines)
 
-        self._lines[0]
         lines = ShaderSource.apply_defines(self._lines, defines)
         return "\n".join(lines)
 
