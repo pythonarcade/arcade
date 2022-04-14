@@ -85,10 +85,10 @@ class ExampleWindow(arcade.Window):
             anchor_x='center')
 
         self.sprites.extend([
-                self.laser_base_sprite,
-                self.left_rotating_laser_sprite,
-                self.platform_base_sprite,
-                self.right_rotating_platform_sprite])
+            self.laser_base_sprite,
+            self.left_rotating_laser_sprite,
+            self.platform_base_sprite,
+            self.right_rotating_platform_sprite])
 
     def on_update(self, delta_time: float):
         # Rotate the laser sprite and change its angle
