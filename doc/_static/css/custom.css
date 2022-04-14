@@ -149,3 +149,6 @@ p code.literal {
 code.literal {
     background: None;
 }
+.dataTables_wrapper .dataTables_filter {
+    color: var(--color-foreground-primary);
+}
