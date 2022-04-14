@@ -5,6 +5,10 @@ Shader Toy Tutorial - Particles
 
 .. contents::
 
+This tutorial assumes you are familiar with the material in
+:ref:`shader_toy_tutorial_glow`. If you haven't gone through that
+tutorial, you might want to do that first.
+
 Load the shader
 ---------------
 
@@ -57,3 +61,4 @@ Twinkling Particles
 .. literalinclude:: explosion_5.glsl
    :linenos:
    :language: glsl
+   :emphasize-lines: 60
