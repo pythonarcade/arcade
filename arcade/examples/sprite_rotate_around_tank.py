@@ -18,7 +18,7 @@ between two ways of rotating a tank's turret and barrel:
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_rotate_tank
+python -m arcade.examples.sprite_rotate_around_tank
 """
 import arcade
 import math
