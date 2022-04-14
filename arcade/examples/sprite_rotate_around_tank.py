@@ -77,7 +77,7 @@ class ExampleWindow(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set Background to be green
-        self.background_color = arcade.color.GREEN
+        self.background_color = arcade.csscolor.SEA_GREEN
 
         # The tank and barrel sprite
         self.tank = arcade.Sprite(TANK_BODY)
