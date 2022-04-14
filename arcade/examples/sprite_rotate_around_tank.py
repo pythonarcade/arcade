@@ -146,21 +146,21 @@ class ExampleWindow(arcade.Window):
             self.tank.center_y, self.tank.center_x,
             self.mouse_pos[1], self.mouse_pos[0])
 
+        # Compensate for the vertical orientation of the barrel texture
+        # This could be skipped if the texture faced right instead
+        mouse_angle += 90
+
         if self.correct:
             # Rotate the barrel sprite with one end at the tank's center
 
             # Subtract the old angle to get the change in angle
             angle_change = mouse_angle - self.barrel.angle
 
-            # Compensate for the vertical orientation of the barrel texture
-            angle_change += 90
-
             self.barrel.rotate_around_point(self.tank.position, angle_change)
         else:
             # Swivel the barrel with its center aligned with the body's 
             
-            # Compensate for the vertical orientation of the barrel texture
-            self.barrel.angle = mouse_angle + 90 
+            self.barrel.angle = mouse_angle
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.W:
