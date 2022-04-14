@@ -37,7 +37,11 @@ h1, h2 {
 #how-to-example-code section h3 {
   width: 100%;
 }
-
+#github-stars {
+    width: 170px;
+    height: 30px;
+    margin-bottom: -18px;
+}
 img.right-image {
    float: right;
    margin-left: 8px;

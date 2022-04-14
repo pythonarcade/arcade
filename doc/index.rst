@@ -26,7 +26,7 @@ The Python Arcade Library
            </h2>
         </td>
         <td>
-          <iframe src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+          <iframe id="github-stars" src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" title="GitHub"></iframe>
         </td>
       </tr>
 

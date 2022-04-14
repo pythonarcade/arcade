@@ -118,14 +118,14 @@ html_theme_options = {
     "dark_logo": "../_images/arcade-logo.svg",
     "light_css_variables": {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "17px",
-        "sidebar-item-font-size": "17px",
+        "toc-font-size": "16px",
+        "sidebar-item-font-size": "16px",
         "sidebar-item-line-height": "20px",
     },
     "dark_css_variables": {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "18px",
-        "sidebar-item-font-size": "17px",
+        "toc-font-size": "16px",
+        "sidebar-item-font-size": "16px",
         "sidebar-item-line-height": "20px",
     },
 }
