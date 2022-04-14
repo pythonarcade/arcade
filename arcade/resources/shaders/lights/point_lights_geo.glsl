@@ -8,9 +8,9 @@ uniform Projection {
 
 uniform vec2 position;
 
-in float vs_radius[1];
-in float vs_attenuation[1];
-in vec3 vs_color[1];
+in float vs_radius[];
+in float vs_attenuation[];
+in vec3 vs_color[];
 
 out vec2 uv;
 out float attenuation;

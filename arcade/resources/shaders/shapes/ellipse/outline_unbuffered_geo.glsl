@@ -1,5 +1,4 @@
 #version 330
-#extension GL_EXT_geometry_shader : require
 
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;

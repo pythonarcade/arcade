@@ -41,6 +41,9 @@ class ShaderSource:
             else:
                 self._lines.insert(1, "precision mediump float;")
 
+            if self._type == gl.GL_GEOMETRY_SHADER:
+                self._lines.insert(1, "#extension GL_EXT_geometry_shader : require")
+
         self._version = self._find_glsl_version()
 
         if self._type in [gl.GL_VERTEX_SHADER, gl.GL_GEOMETRY_SHADER]:
