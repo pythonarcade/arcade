@@ -118,25 +118,27 @@ class Query:
         return self._primitives
 
     def __enter__(self):
-        if self._samples_enabled:
-            gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
-        if self._time_enabled:
-            gl.glBeginQuery(gl.GL_TIME_ELAPSED, self._glo_time_elapsed)
+        if self._ctx.gl_api == "gl":
+            if self._samples_enabled:
+                gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
+            if self._time_enabled:
+                gl.glBeginQuery(gl.GL_TIME_ELAPSED, self._glo_time_elapsed)
         if self._primitives_enabled:
             gl.glBeginQuery(gl.GL_PRIMITIVES_GENERATED, self._glo_primitives_generated)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self._samples_enabled:
-            gl.glEndQuery(gl.GL_SAMPLES_PASSED)
-            value = gl.GLint()
-            gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
-            self._samples = value.value
+        if self._ctx.gl_api == "gl":
+            if self._samples_enabled:
+                gl.glEndQuery(gl.GL_SAMPLES_PASSED)
+                value = gl.GLint()
+                gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
+                self._samples = value.value
 
-        if self._time_enabled:
-            gl.glEndQuery(gl.GL_TIME_ELAPSED)
-            value = gl.GLint()
-            gl.glGetQueryObjectiv(self._glo_time_elapsed, gl.GL_QUERY_RESULT, value)
-            self._time = value.value
+            if self._time_enabled:
+                gl.glEndQuery(gl.GL_TIME_ELAPSED)
+                value = gl.GLint()
+                gl.glGetQueryObjectiv(self._glo_time_elapsed, gl.GL_QUERY_RESULT, value)
+                self._time = value.value
 
         if self._primitives_enabled:
             gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
