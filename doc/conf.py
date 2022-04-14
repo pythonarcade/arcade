@@ -138,8 +138,8 @@ html_js_files = [
 
 
 html_css_files = [
-    'css/custom.css',
     'https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css',
+    'css/custom.css',
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.

@@ -131,3 +131,15 @@ ul {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
+table.dataTable.display tbody tr.odd {
+    background-color: var(--color-background-primary);
+}
+table.dataTable.display tbody tr.even {
+    background-color: var(--color-background-secondary);
+}
+table.dataTable.display tbody tr.odd > .sorting_1 {
+    background-color: var(--color-background-primary);
+}
+table.dataTable.display tbody tr.even > .sorting_1 {
+    background-color: var(--color-background-secondary);
+}
