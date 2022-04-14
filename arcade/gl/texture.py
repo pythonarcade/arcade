@@ -214,7 +214,7 @@ class Texture:
                 self._height,
                 0,
                 gl.GL_DEPTH_COMPONENT,
-                gl.GL_FLOAT,
+                gl.GL_UNSIGNED_INT, # gl.GL_FLOAT,
                 data,
             )
             self.compare_func = "<="
