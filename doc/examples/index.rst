@@ -220,6 +220,11 @@ Sprite Non-Player Movement
 
    :ref:`sprite_collect_rotating`
 
+.. figure:: thumbs/sprite_rotate_around_point.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_point`
+
 Sprite Pathing
 ^^^^^^^^^^^^^^
 
