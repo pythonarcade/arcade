@@ -99,6 +99,12 @@ class Window(pyglet.window.Window):
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
+        # Detect Raspberry Pi and switch to OpenGL ES 3.1
+        if "raspi" in os.uname().nodename:
+            gl_version = 3, 1
+            gl_api = "gles"
+
+
         #: bool: If this is a headless window
         self.headless = pyglet.options.get("headless") is True
 
