@@ -160,7 +160,6 @@ class ExampleWindow(arcade.Window):
             self.barrel.rotate_around_point(self.tank.position, angle_change)
         else:
             # Swivel the barrel with its center aligned with the body's 
- 
             self.barrel.angle = mouse_angle
 
     def on_key_press(self, symbol: int, modifiers: int):
