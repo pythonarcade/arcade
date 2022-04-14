@@ -7,8 +7,8 @@ these rotating parts are usually implemented as sprites that move
 relative to whatever they're attached to.
 
 There's a catch to this: you have to rotate these parts around their
-attachment points rather than the centers of their sprites. The rotation
-will look wrong if you don't!
+attachment points rather than the centers of their sprites. The
+rotation will look wrong if you don't!
 
 To illustrate the differnce, this example allows the player to switch
 between two ways of rotating a tank's turret and barrel:
