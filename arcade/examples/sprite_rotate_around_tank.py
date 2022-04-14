@@ -7,13 +7,14 @@ these rotating parts are usually implemented as sprites that move
 relative to whatever they're attached to.
 
 There's a catch to this: you have to rotate these parts around their
-attachment points rather than the centers of their sprites. The
-rotation will look wrong if you don't!
+attachment points rather than the centers of their sprites. Otherwise,
+the rotation will look wrong!
 
-To illustrate the differnce, this example allows the player to switch
-between two ways of rotating a tank's turret and barrel:
-1. Correctly, rotating the barrel as if it were part of a turret
-2. Incorrectly, rotating as if its center was pinned to the tank's 
+To illustrate the difference, this example uses a player-controllable
+tank with a barrel that follows the mouse. You can press P to switch
+between two ways of rotating the barrel:
+1. Correctly, with the barrel's rear against the tank's center
+2. Incorrectly, around the barrel's center pinned to the tank's 
 
 Artwork from https://kenney.nl
 
