@@ -17,7 +17,7 @@ void main() {
     vec4 col = vec4(0.0);
     vec2 uv_step = vec2(1.0) / target_size;
     for (int i = 0; i < KERNEL_SIZE; i++) {
-        col += texture(texture0, v_uv + vec2(uv_step.x * (i - KERNEL_RANGE), 0.0)) * KERNEL[i];
+        col += texture(texture0, v_uv + vec2(uv_step.x * float(i - KERNEL_RANGE), 0.0)) * KERNEL[i];
     }
     outColor = vec4(col.rgb, 1.0);
 }
