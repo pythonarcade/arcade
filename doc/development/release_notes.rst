@@ -46,6 +46,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 * OpenGL
 
   * Added ray marching example with fragment shader
+  * Allow reading framebuffer data with 2 and 4 byte component sizes
   * Simplified texture atlas texture coordinates to make them
     easier to use in custom shaders.
   * Support dumping the atlas texture as RGB
