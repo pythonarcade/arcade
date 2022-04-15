@@ -29,6 +29,9 @@ def test_create(window: arcade.Window):
     with query:
         quad.render(program)
 
-    assert query.time_elapsed > 0
+    # gles query doesn't support time and written samples
+    if ctx.gl_api == "gl":
+        assert query.time_elapsed > 0
+        assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
+
     assert query.primitives_generated == 2
-    assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
