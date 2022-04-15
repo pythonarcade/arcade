@@ -676,6 +676,8 @@ class Texture:
         :param bool write: The compute shader intends to write to this image
         :param int level:
         """
+        if self._ctx.gl_api == "gles" and not self._immutable:
+            raise ValueError("Textures bound to image units must be created with immutable=True")
 
         access = gl.GL_READ_WRITE
         if read and write:
