@@ -504,17 +504,20 @@ class Texture:
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
 
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
+        if self._ctx.gl_api == "gl":
+            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
-        buffer = (
-            gl.GLubyte
-            * (self.width * self.height * self._component_size * self._components)
-        )()
-        gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
-
-        return bytearray(buffer)
+            buffer = (
+                gl.GLubyte
+                * (self.width * self.height * self._component_size * self._components)
+            )()
+            gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
+            return bytearray(buffer)
+        elif self._ctx.gl_api == "gles":
+            fbo = self._ctx.framebuffer(color_attachments=[self])
+            return fbo.read(components=self._components, dtype=self._dtype)
 
     def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
         """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.

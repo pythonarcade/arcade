@@ -411,17 +411,18 @@ class Framebuffer:
             frmt = pixel_formats[dtype]
             base_format = frmt[0][components]
             pixel_type = frmt[2]
+            component_size = frmt[3]
         except Exception:
             raise ValueError(f"Invalid dtype '{dtype}'")
 
-        with self:
+        with self.activate():
             # Configure attachment to read from
-            # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
             if viewport:
                 x, y, width, height = viewport
             else:
                 x, y, width, height = 0, 0, self._width, self._height
-            data = (gl.GLubyte * (components * width * height))(0)
+            data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
 
         return bytearray(data)
