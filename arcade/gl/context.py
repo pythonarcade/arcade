@@ -37,7 +37,7 @@ class Context:
     active: Optional["Context"] = None
 
     #: The OpenGL api. Usually "gl" or "gles".
-    gl_api: str = None
+    gl_api: str = "gl"
 
     # --- Store the most commonly used OpenGL constants
     # Texture
@@ -159,9 +159,12 @@ class Context:
         gl.GL_STACK_UNDERFLOW: "GL_STACK_UNDERFLOW",
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
+    _valid_apis = ('gl', 'gles')
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
         self._window_ref = weakref.ref(window)
+        if gl_api not in self._valid_apis:
+            raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
         self.gl_api = gl_api
         self._limits = Limits(self)
         self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)

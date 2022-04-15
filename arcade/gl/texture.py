@@ -552,6 +552,8 @@ class Texture:
         elif self._ctx.gl_api == "gles":
             fbo = self._ctx.framebuffer(color_attachments=[self])
             return fbo.read(components=self._components, dtype=self._dtype)
+        else:
+            raise ValueError("Unknown gl_api: '{self._ctx.gl_api}'")
 
     def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
         """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
