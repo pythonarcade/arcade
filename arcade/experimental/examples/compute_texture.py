@@ -20,7 +20,7 @@ layout (local_size_x = 16, local_size_y = 16) in;
 // Important: The binding needs to match the unit
 // Parameter in Texture.bind_to_image.
 // Each image needs a different binding unit starting from 0
-layout(rgba8, binding=0) uniform image2D destTex;
+layout(rgba8, binding=0) uniform writeonly image2D destTex;
 
 uniform float time;
 
