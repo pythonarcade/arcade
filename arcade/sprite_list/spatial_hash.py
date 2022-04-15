@@ -284,7 +284,7 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
 
     # Store the number of sprites emitted
     emit_count = ctx.collision_query.primitives_generated
-    # print(num_sprites, self.query.time_elapsed, self.query.time_elapsed / 1_000_000_000)
+    # print(emit_count, ctx.collision_query.time_elapsed, ctx.collision_query.time_elapsed / 1_000_000_000)
 
     # If no sprites emitted we can just return an empty list
     if emit_count == 0:
