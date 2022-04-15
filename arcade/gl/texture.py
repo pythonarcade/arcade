@@ -54,6 +54,8 @@ class Texture:
     :param int samples: Creates a multisampled texture for values > 0.
                         This value will be clamped between 0 and the max
                         sample capability reported by the drivers.
+    :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
+                           required when using textures with compute shaders.
     """
 
     __slots__ = (
@@ -76,6 +78,7 @@ class Texture:
         "_wrap_x",
         "_wrap_y",
         "_anisotropy",
+        "_immutable",
         "__weakref__",
     )
     _compare_funcs = {
@@ -104,6 +107,7 @@ class Texture:
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,
+        immutable: bool = False,
     ):
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
@@ -114,6 +118,7 @@ class Texture:
         self._target = target
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
         self._depth = depth
+        self._immutable = immutable
         self._compare_func: Optional[str] = None
         self._anisotropy = 1.0
         # Default filters for float and integer textures
@@ -165,10 +170,14 @@ class Texture:
         Resize the texture. This will re-allocate the internal
         memory and all pixel data will be lost.
         """
+        if self._immutable:
+            raise ValueError("Immutable textures cannot be resized")
+
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
 
         self._width, self._height = size
+
         self._texture_2d(None)
 
     def __del__(self):
@@ -204,6 +213,7 @@ class Texture:
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, self._alignment)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, self._alignment)
 
+
         # Create depth 2d texture
         if self._depth:
             gl.glTexImage2D(
@@ -223,17 +233,34 @@ class Texture:
             try:
                 self._format = _format[self._components]
                 self._internal_format = _internal_format[self._components]
-                gl.glTexImage2D(
-                    self._target,  # target
-                    0,  # level
-                    self._internal_format,  # internal_format
-                    self._width,  # width
-                    self._height,  # height
-                    0,  # border
-                    self._format,  # format
-                    self._type,  # type
-                    data,  # data
-                )
+
+
+                if self._immutable:
+                    # Specify immutable storage for this texture.
+                    # glTexStorage2D can only be called once
+                    gl.glTexStorage2D(
+                        self._target,
+                        1,  # Levels
+                        self._internal_format,
+                        self._width,
+                        self._height,
+                    )
+                    if data:
+                        self.write(data)
+                else:
+                    # Specify mutable storage for this texture.
+                    # glTexImage2D can be called multiple times to re-allocate storage
+                    gl.glTexImage2D(
+                        self._target,  # target
+                        0,  # level
+                        self._internal_format,  # internal_format
+                        self._width,  # width
+                        self._height,  # height
+                        0,  # border
+                        self._format,  # format
+                        self._type,  # type
+                        data,  # data
+                    )
             except gl.GLException as ex:
                 raise gl.GLException(
                     (
@@ -332,6 +359,15 @@ class Texture:
         :type: bool
         """
         return self._depth
+
+    @property
+    def immutable(self) -> bool:
+        """
+        Does this texture have immutable storage?
+
+        :type: bool
+        """
+        return self._immutable
 
     @property
     def filter(self) -> Tuple[int, int]:

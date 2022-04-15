@@ -771,6 +771,7 @@ class Context:
         wrap_y: gl.GLenum = None,
         filter: Tuple[gl.GLenum, gl.GLenum] = None,
         samples: int = 0,
+        immutable: bool = False,
     ) -> Texture:
         """Create a 2D Texture.
 
@@ -789,6 +790,8 @@ class Context:
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
         :param int samples: Creates a multisampled texture for values > 0
+        :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
+                               required when using textures with compute shaders.
         """
         return Texture(
             self,
@@ -800,6 +803,7 @@ class Context:
             wrap_y=wrap_y,
             filter=filter,
             samples=samples,
+            immutable=immutable,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
