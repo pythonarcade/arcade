@@ -995,7 +995,8 @@ class Context:
 
         :param str source: The glsl source
         """
-        return ComputeShader(self, source)
+        src = ShaderSource(self, source, gl.GL_COMPUTE_SHADER)
+        return ComputeShader(self, src.get_source())
 
 
 class ContextStats:
