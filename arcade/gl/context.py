@@ -641,7 +641,6 @@ class Context:
             gl.glPointSize(self._point_size)
         self._point_size = value
 
-
     @property
     def primitive_restart_index(self) -> int:
         """
@@ -1072,8 +1071,6 @@ class Limits:
         #: An estimate of the number of bits of subpixel resolution
         #: that are used to position rasterized geometry in window coordinates
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
-        #: A mask value indicating what context profile is used (core, compat etc.)
-        #self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
         #: Minimum required alignment for uniform buffer sizes and offset
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
             gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
@@ -1110,8 +1107,6 @@ class Limits:
         self.MAX_DEPTH_TEXTURE_SAMPLES = self.get(gl.GL_MAX_DEPTH_TEXTURE_SAMPLES)
         #: Maximum number of simultaneous outputs that may be written in a fragment shader
         self.MAX_DRAW_BUFFERS = self.get(gl.GL_MAX_DRAW_BUFFERS)
-        #: Maximum number of active draw buffers when using dual-source blending
-        #self.MAX_DUAL_SOURCE_DRAW_BUFFERS = self.get(gl.GL_MAX_DUAL_SOURCE_DRAW_BUFFERS)
         #: Recommended maximum number of vertex array indices
         self.MAX_ELEMENTS_INDICES = self.get(gl.GL_MAX_ELEMENTS_INDICES)
         #: Recommended maximum number of vertex array vertices
@@ -1153,14 +1148,10 @@ class Limits:
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
         #: Maximum samples for a framebuffer
         self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
-        #: A rough estimate of the largest rectangular texture that the GL can handle
-        #self.MAX_RECTANGLE_TEXTURE_SIZE = self.get(gl.GL_MAX_RECTANGLE_TEXTURE_SIZE)
         #: Maximum supported size for renderbuffers
         self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
         #: Maximum number of sample mask words
         self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
-        #: Maximum number of texels allowed in the texel array of a texture buffer object
-        #self.MAX_TEXTURE_BUFFER_SIZE = self.get(gl.GL_MAX_TEXTURE_BUFFER_SIZE)
         #: Maximum number of uniform buffer binding points on the context
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
         #: Maximum number of uniform buffer binding points on the context
@@ -1194,7 +1185,7 @@ class Limits:
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         #: The highest supported anisotropy value. Usually 8.0 or 16.0.
-        #self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         #: The maximum support window or framebuffer viewport.
         #: This is usually the same as the maximum texture size
         self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
@@ -1202,7 +1193,7 @@ class Limits:
         #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
         #: The minimum and maximum point size
-        #self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
+        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
 
         err = self._ctx.error
         if err:
@@ -1212,22 +1203,34 @@ class Limits:
 
     def get_int_tuple(self, enum: gl.GLenum, length: int):
         """Get an enum as an int tuple"""
-        values = (c_int * length)()
-        gl.glGetIntegerv(enum, values)
-        return tuple(values)
+        try:
+            values = (c_int * length)()
+            gl.glGetIntegerv(enum, values)
+            return tuple(values)
+        except gl.lib.GLException:
+            return tuple([0] * length)
 
-    def get(self, enum: gl.GLenum) -> int:
+    def get(self, enum: gl.GLenum, default=0) -> int:
         """Get an integer limit"""
-        value = c_int()
-        gl.glGetIntegerv(enum, value)
-        return value.value
+        try:
+            value = c_int()
+            gl.glGetIntegerv(enum, value)
+            return value.value
+        except gl.lib.GLException:
+            return default
 
-    def get_float(self, enum: gl.GLenum) -> float:
+    def get_float(self, enum: gl.GLenum, default=0.0) -> float:
         """Get a float limit"""
-        value = c_float()
-        gl.glGetFloatv(enum, value)
-        return value.value
+        try:
+            value = c_float()
+            gl.glGetFloatv(enum, value)
+            return value.value
+        except gl.lib.GLException:
+            return default
 
     def get_str(self, enum: gl.GLenum) -> str:
         """Get a string limit"""
-        return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
+        try:
+            return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
+        except gl.lib.GLException:
+            return "Unknown"

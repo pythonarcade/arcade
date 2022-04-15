@@ -213,7 +213,6 @@ class Texture:
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, self._alignment)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, self._alignment)
 
-
         # Create depth 2d texture
         if self._depth:
             gl.glTexImage2D(
@@ -224,7 +223,7 @@ class Texture:
                 self._height,
                 0,
                 gl.GL_DEPTH_COMPONENT,
-                gl.GL_UNSIGNED_INT, # gl.GL_FLOAT,
+                gl.GL_UNSIGNED_INT,  # gl.GL_FLOAT,
                 data,
             )
             self.compare_func = "<="
@@ -233,7 +232,6 @@ class Texture:
             try:
                 self._format = _format[self._components]
                 self._internal_format = _internal_format[self._components]
-
 
                 if self._immutable:
                     # Specify immutable storage for this texture.

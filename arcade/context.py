@@ -189,7 +189,6 @@ class ArcadeContext(Context):
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
 
         self.active_program = None
-        #self.point_size = 1.0
 
     def reset(self) -> None:
         """
