@@ -334,8 +334,11 @@ def check_for_collision_with_list(
         # Spatial
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
-    else:
+    elif method == 3 or (method == 0 and len(sprite_list) <= 1500):
         sprite_list_to_check = sprite_list  # type: ignore
+    else:
+        # GPU transform
+        sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
 
     return [
         sprite2
@@ -375,8 +378,11 @@ def check_for_collision_with_lists(sprite: Sprite,
             # Spatial
             sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
             # checks_saved = len(sprite_list) - len(sprite_list_to_check)
-        else:
+        elif method == 3:
             sprite_list_to_check = sprite_list  # type: ignore
+        else:
+            # GPU transform
+            sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
 
         for sprite2 in sprite_list_to_check:
             if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
