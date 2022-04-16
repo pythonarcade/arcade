@@ -20,7 +20,7 @@ float GetDist(vec3 p) {
     // Distance between p and sphere center minus sphere radius
     float sphereDist = length(p - sphere.xyz) - sphere.w;
 
-    float planeDist = p.y + sin(p.x * 55 + iTime) / 5.;
+    float planeDist = p.y;
 
     float d = min(sphereDist, planeDist);
 
