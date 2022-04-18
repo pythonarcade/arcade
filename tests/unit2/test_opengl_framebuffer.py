@@ -99,13 +99,27 @@ def test_read(ctx):
     fb = create(ctx, 2, 2, components=4)
     fb.clear(color=(255, 255, 0, 255))
     data = fb.read(components=4)
-
     assert len(data) == 16
 
-    # FIXME: needs read alignment
-    # data = fb.read(components=3)
-    # assert len(data) == 12
-    # assert data == b'\xff\xff\x00' * 4
+    # Read 3 components
+    data = fb.read(components=3)
+    assert len(data) == 12
+    assert data == b'\xff\xff\x00' * 4
+
+    # Read from f2 texture
+    fb = create(ctx, 2, 2, components=1, layers=1, dtype="f2")
+    data = fb.read(components=1, dtype="f2")
+    assert len(data) == 2 * 2 * 2
+
+    # Read from f4 texture
+    fb = create(ctx, 2, 2, components=1, layers=1, dtype="f4")
+    data = fb.read(components=1, dtype="f4")
+    assert len(data) == 2 * 2 * 4
+
+    # Read from i2 texture
+    fb = create(ctx, 2, 2, components=1, layers=1, dtype="i2")
+    data = fb.read(components=1, dtype="i2")
+    assert len(data) == 2 * 2 * 2
 
 def test_resize(ctx):
     tex = ctx.texture((100, 100), components=4)

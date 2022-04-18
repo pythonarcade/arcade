@@ -63,6 +63,9 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
+        # Do we need to reset the score?
+        self.reset_score = True
+
         # Where is the right edge of the map?
         self.end_of_map = 0
 
@@ -104,8 +107,10 @@ class MyGame(arcade.Window):
         # from the map as SpriteLists in the scene in the proper order.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        # Keep track of the score
-        self.score = 0
+        # Keep track of the score, make sure we keep the score if the player finishes a level
+        if self.reset_score:
+            self.score = 0
+        self.reset_score = True
 
         # Add Player Spritelist before "Foreground" layer. This will make the foreground
         # be drawn after the player, making it appear to be in front of the Player.
@@ -238,6 +243,9 @@ class MyGame(arcade.Window):
         if self.player_sprite.center_x >= self.end_of_map:
             # Advance to the next level
             self.level += 1
+
+            # Make sure to keep the score from this level when setting up the next level
+            self.reset_score = False
 
             # Load the next level
             self.setup()

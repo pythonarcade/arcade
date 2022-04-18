@@ -76,3 +76,4 @@ Twinkling Particles
 .. literalinclude:: explosion_5.glsl
    :linenos:
    :language: glsl
+   :emphasize-lines: 60

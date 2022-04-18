@@ -7,6 +7,74 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.14 [UNRELEASED]
+-------------------
+
+* Various Improvements
+
+  * Allow specifying hit box parameters in :py:func:`~arcade.load_textures` and
+    :py:func:`~arcade.load_spritesheet`
+  * :py:class:`~arcade.Camera` should no longer apply zoom on the z axis
+  * Promote using :py:meth:`arcade.View.on_show_view` in examples
+    and tutorials
+  * The arcade window and views now expose :py:meth:`arcade.Window.on_enter`
+    :py:meth:`arcade.Window.on_leave`. These events are triggered
+    when the mouse enters and leaves the window area.
+  * Sections should now also support mouse enter/leave events
+  * Hit box calculation methods should raise a more useful
+    error message when the texture is not RGBA.
+  * Slight optimization in updating sprite location in SpriteList
+  * Removed all remaining references to texture transforms
+  * Removed the broken ``Sprite.__lt__`` method
+  * Added :py:func:`~arcade.get_angle_radians`
+  * Removed ``Texture.draw_transformed``
+  * Added ``Shadertoy.delta_time`` alias for ``time_delta``
+  * Shadertoy should now properly support ``iFrame`` and  ``iTimeDelta``
+
+* Docs / Tutorials / Examples
+
+  * Updated install docs
+  * Added tutorial for compiling an arcade game with Nuika
+  * Improved/extended shadertoy tutorials
+  * Added example using textures with shadertoy
+  * Added sprite rotation examples
+  * Clarified the difference between :py:meth:`arcade.View.on_show_view`
+    and :py:meth:`arcade.View.on_show`
+  * Improved UIManager docstrings
+  * Various annotation and docstring improvements
+  * Fixed several broken links in docs
+  * We're now building PDF/EPUB docs
+
+* OpenGL
+
+  * Added ray marching example with fragment shader
+  * Allow reading framebuffer data with 2 and 4 byte component sizes
+  * Simplified texture atlas texture coordinates to make them
+    easier to use in custom shaders.
+  * Support dumping the atlas texture as RGB
+  * Support dumping the atlas texture with debug lines
+    showing texture borders
+  * We no longer check ``GL_CONTEXT_PROFILE_MASK`` due to
+    missing support in older drivers. Especially GL 3.1 drivers
+    that can in theory run arcade
+  * Various shader cleanups
+
+* Experimental
+
+  * Added a simple profiler class
+
+Special thanks to
+`Vincent Poulailleau <https://github.com/vpoulailleau>`_
+`Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Darren Eberly <https://github.com/Cleptomania>`_,
+`pvcraven <https://github.com/pvcraven>`_
+and
+`Einar Forselv <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
 2.6.13
 ------
 

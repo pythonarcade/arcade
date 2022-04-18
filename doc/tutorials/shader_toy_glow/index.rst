@@ -170,7 +170,10 @@ Step 8: Positioning the glow
 What if we want to position the glow at a certain spot? Send an x, y to
 center on? What if we want to control the color of the glow too?
 
-We can send data to our shader using *uniforms*. Those can easily be set in our
+We can send data to our shader using *uniforms*.
+The data we send will be the same (uniform) for each pixel rendered by the
+shader.
+The uniforms can easily be set in our
 Python program:
 
 .. literalinclude:: shadertoy_demo_3.py
@@ -188,6 +191,31 @@ Then we can use those uniforms in our shader:
 
 .. image:: circle_6.png
    :width: 60%
+
+.. note:: Built-in Uniforms
+
+   Shadertoy assumes some built-in values. These can be set during the
+   ``Shadertoy.render()`` call. In this example I'm not using those
+   variables because I want to show how to send any value, not just built-in
+   ones. The built-in values:
+
+    ================= ===================================
+    Python Variable   GLSL Variable
+    ================= ===================================
+    time              iTime
+    time_delta        iTimeDelta
+    mouse_position    iMouse
+    size              This is set by Shadertoy.resize()
+    frame             iFrame
+    ================= ===================================
+
+    An example of how they are set:
+
+    .. code-block::
+
+        my_shader.render(time=self.time, mouse_position=mouse_position)
+
+    When resizing a window, make sure to always resize the shader as well.
 
 Other examples
 --------------
@@ -224,6 +252,7 @@ Additional learning
 
 On this site:
 
+* Learn a method of creating particles in :ref:`shader_toy_tutorial_particles`.
 * Learn how to ray-cast shadows in the :ref:`raycasting_tutorial`.
 * Make your screen look like an 80s monitor in :ref:`crt_filter`.
 * Read more about using OpenGL in Arcade with :ref:`open_gl_notes`.

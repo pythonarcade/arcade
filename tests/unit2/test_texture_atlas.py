@@ -109,7 +109,15 @@ def test_clear(ctx):
 def test_to_image(ctx):
     """Convert atlas to image"""
     atlas = TextureAtlas((100, 100))
-    atlas.to_image()
+    img = atlas.to_image()
+    assert img.mode == "RGBA"
+    assert img.size == (100, 100)
+    img = atlas.to_image(components=4)
+    assert img.mode == "RGBA"
+    assert img.size == (100, 100)
+    img = atlas.to_image(components=3)
+    assert img.mode == "RGB"
+    assert img.size == (100, 100)
 
 
 def test_calculate_minimum_size(ctx):
