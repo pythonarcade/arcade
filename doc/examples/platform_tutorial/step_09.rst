@@ -39,7 +39,7 @@ we load in the map, first we'll create a ``tile_map`` object in our init functio
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
     :caption: Load a map - Create the object
-    :lines: 34-35
+    :lines: 32-33
 
 Then we will do the actual loading in the setup function Our new setup function will look like this:
 
@@ -95,4 +95,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
     :caption: Load the Map
     :linenos:
-    :emphasize-lines: 34-35,68-69,71-78,80-81,83-85,97-105,116-117
+    :emphasize-lines: 32-33,66-67,69-76,78-79,81-83,95-103,114-115

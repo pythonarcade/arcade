@@ -42,6 +42,7 @@ def run_examples(indices_in_range, index_skip_list):
         print(f"=================== Example {idx + 1:3} of {len(examples)}: {example}")
         # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
         cmd = 'python -m ' + example
+        print(cmd)
         subprocess.call(cmd, shell=True)
 
 
@@ -49,6 +50,8 @@ def all_examples():
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
+    # Set an environment variable that will just run on_update() and on_draw()
+    # once, then quit.
     os.environ['ARCADE_TEST'] = "TRUE"
 
     indices_in_range = None
