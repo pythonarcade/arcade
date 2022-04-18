@@ -1,3 +1,4 @@
+import sys
 import arcade
 from arcade.gl import geometry
 
@@ -26,8 +27,11 @@ def test_create(window: arcade.Window):
     quad = geometry.quad_2d_fs()
     query = ctx.query()
 
-    with query:
-        quad.render(program)
+    # NOTE: On mac the query doesn't work mixed with other test.
+    #       Only when running standalone
+    if sys.platform != "darwin":
+        with query:
+            quad.render(program)
 
     # gles query doesn't support time and written samples
     if ctx.gl_api == "gl":

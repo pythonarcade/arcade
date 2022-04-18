@@ -9,6 +9,7 @@ class UIEvent:
     An event always has a source, which is the UIManager for general input events,
     but will be the specific widget in case of events like on_click events.
     """
+
     source: Any
 
 
@@ -17,6 +18,7 @@ class UIMouseEvent(UIEvent):
     """
     Covers all mouse event
     """
+
     x: float
     y: float
 
@@ -98,6 +100,7 @@ class UIOnUpdateEvent(UIEvent):
     """
     Arcade on_update callback passed as :class:`UIEvent`
     """
+
     dt: int
 
 
@@ -106,5 +109,6 @@ class UIOnChangeEvent(UIEvent):
     """
     Value of a widget changed
     """
+
     old_value: Any
     new_value: Any

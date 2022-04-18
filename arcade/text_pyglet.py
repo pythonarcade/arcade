@@ -91,30 +91,27 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
     :param pyglet.text.Label label: a pyglet label to wrap and draw
     :param float rotation: rotate this many degrees from horizontal around anchor
     """
-
-    # raw pyglet draw functions need this context helper inside arcade
     window = arcade.get_window()
+
+    # execute view matrix magic to rotate cleanly
+    if rotation:
+        angle_radians = math.radians(rotation)
+        x = label.x
+        y = label.y
+        # Create a matrix translating the label to 0,0
+        # then rotating it and then move it back
+        r_view = Mat4.from_rotation(angle_radians, (0, 0, 1))
+        t1_view = Mat4.from_translation((-x, -y, 0))
+        t2_view = Mat4.from_translation((x, y, 0))
+        final_view = t1_view @ r_view @ t2_view
+        window.view = final_view
+
     with window.ctx.pyglet_rendering():
-
-        # execute view matrix magic to rotate cleanly
-        if rotation:
-            angle_radians = math.radians(rotation)
-            x = label.x
-            y = label.y
-            # Create a matrix translating the label to 0,0
-            # then rotating it and then move it back
-            r_view = Mat4.from_rotation(angle_radians, (0, 0, 1))
-            t1_view = Mat4.from_translation((-x, -y, 0))
-            t2_view = Mat4.from_translation((x, y, 0))
-            final_view = t1_view @ r_view @ t2_view
-            window.view = final_view
-
         label.draw()
 
-        # NOTE: We already do this in the pyglet rendering context manager
-        # if rotation:
-        #     # Reset the view matrix            
-        #     # window.view = Mat4()
+    # Reset the view matrix
+    if rotation:
+        window.view = Mat4()
 
 
 class Text:

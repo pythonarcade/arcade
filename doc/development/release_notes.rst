@@ -7,6 +7,88 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.7
+------
+
+*Unreleased*
+
+* GUI
+
+  * :py:class:`~arcade.gui.widgets.UIWidget`:
+    * supports padding, border and background (color and texture)
+    * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
+    * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
+    * `UIWidget.with_...) methods do not wrap the widget anymore, they only change the attributes
+  * New widgets:
+    * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
+    * :py:class:`~arcade.gui.widgets.slider.UISlider`
+  * Arcade :py:class:`~arcade.gui.property.Property`:
+
+    Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
+
+2.6.14 [UNRELEASED]
+-------------------
+
+* Various Improvements
+
+  * Allow specifying hit box parameters in :py:func:`~arcade.load_textures` and
+    :py:func:`~arcade.load_spritesheet`
+  * :py:class:`~arcade.Camera` should no longer apply zoom on the z axis
+  * Promote using :py:meth:`arcade.View.on_show_view` in examples
+    and tutorials
+  * The arcade window and views now expose :py:meth:`arcade.Window.on_enter`
+    :py:meth:`arcade.Window.on_leave`. These events are triggered
+    when the mouse enters and leaves the window area.
+  * Sections should now also support mouse enter/leave events
+  * Hit box calculation methods should raise a more useful
+    error message when the texture is not RGBA.
+  * Slight optimization in updating sprite location in SpriteList
+  * Removed all remaining references to texture transforms
+  * Removed the broken ``Sprite.__lt__`` method
+  * Added :py:func:`~arcade.get_angle_radians`
+  * Removed ``Texture.draw_transformed``
+
+* Docs / Tutorials / Examples
+
+  * Updated install docs
+  * Added tutorial for compiling an arcade game with Nuika
+  * Improved/extended shadertoy tutorials
+  * Added example using textures with shadertoy
+  * Added sprite rotation examples
+  * Clarified the difference between :py:meth:`arcade.View.on_show_view`
+    and :py:meth:`arcade.View.on_show`
+  * Improved UIManager docstrings
+  * Various annotation and docstring improvements
+  * Fixed several broken links in docs
+  * We're now building PDF/EPUB docs
+
+* OpenGL
+
+  * Added ray marching example with fragment shader
+  * Allow reading framebuffer data with 2 and 4 byte component sizes
+  * Simplified texture atlas texture coordinates to make them
+    easier to use in custom shaders.
+  * Support dumping the atlas texture as RGB
+  * Support dumping the atlas texture with debug lines
+    showing texture borders
+  * Various shader cleanups
+
+* Experimental
+
+  * Added a simple profiler class
+
+Special thanks to
+`Vincent Poulailleau <https://github.com/vpoulailleau>`_
+`Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Darren Eberly <https://github.com/Cleptomania>`_,
+`pvcraven <https://github.com/pvcraven>`_
+and
+`Einar Forselv <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
 2.6.13
 ------
 
@@ -49,7 +131,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Rectangle objects which are empty(have no width or height) will now be automatically
     converted into single points.
   * The Tile ID of a sprite can be access with ``sprite.properties["tile_id"]``. This refers
-    to the local ID of the tile within the Tileset. This value can be used to get the tile info 
+    to the local ID of the tile within the Tileset. This value can be used to get the tile info
     for a given Sprite created from loading a tilemap.
 
 * Docs
@@ -105,7 +187,7 @@ Pyglet's continued development.
 
 * Documentation
 
-  * Work on :ref:`shader_toy_tutorial`.
+  * Work on :ref:`shader_toy_tutorial_glow`.
   * Docstring improvements throughout the code base
   * Many examples are cleaned up
 
@@ -209,7 +291,7 @@ Also thanks to:
     :py:attr:`~arcade.SpriteList.buffer_colors`,
     :py:attr:`~arcade.SpriteList.buffer_angles` and
     :py:attr:`~arcade.SpriteList.buffer_indices`
- 
+
 * OpenGL:
 
   * Added support for indirect rendering. This is an OpenGL 4.3 feature.
@@ -754,12 +836,12 @@ and the documentation.
 
   * `Shadertoy.com <https://www.shadertoy.com/>`_ is a website that makes it easier to write OpenGL shaders.
   * The new :class:`arcade.Shadertoy` class makes it easy to run and interact with these shaders in Arcade.
-  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
+  * See :ref:`shader_toy_tutorial_glow` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
-    .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
+    .. image:: ../tutorials/shader_toy_glow/cyber_fuji_2020.png
        :width: 40%
 
-    .. image:: ../tutorials/shader_toy/star_nest.png
+    .. image:: ../tutorials/shader_toy_glow/star_nest.png
        :width: 40%
 
 * Reworked GUI
@@ -854,7 +936,7 @@ and the documentation.
     .. image:: ../tutorials/raycasting/example.png
        :width: 50%
 
-  * New tutorial for :ref:`shader_toy_tutorial`.
+  * New tutorial for :ref:`shader_toy_tutorial_glow`.
   * Revamped tutorial: :ref:`platformer_tutorial`.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.

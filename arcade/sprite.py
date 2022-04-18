@@ -82,7 +82,7 @@ class Sprite:
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
           Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
           :data:`PhysicsEnginePlatformer`
           and 'Detailed' for the :data:`PymunkPhysicsEngine`.
@@ -133,12 +133,13 @@ class Sprite:
         :height: Height of the sprite.
         :force: Force being applied to the sprite. Useful when used with Pymunk \
         for physics.
-        :left: Set/query the sprite location by using the left coordinate. This \
-        will be the 'x' of the left of the sprite.
-        :points: Points, in relation to the center of the sprite, that are used \
-        for collision detection. Arcade defaults to creating points for a rectangle \
+        :hit_box: Points, in relation to the center of the sprite, that are used \
+        for collision detection. Arcade defaults to creating a hit box via the \
+        'simple' hit box algorithm \
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
+        :left: Set/query the sprite location by using the left coordinate. This \
+        will be the 'x' of the left of the sprite.
         :position: A list with the (x, y) of where the sprite is.
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
@@ -160,24 +161,24 @@ class Sprite:
     """
 
     def __init__(
-        self,
-        filename: str = None,
-        scale: float = 1,
-        image_x: float = 0,
-        image_y: float = 0,
-        image_width: float = 0,
-        image_height: float = 0,
-        center_x: float = 0,
-        center_y: float = 0,
-        repeat_count_x: int = 1,  # Unused
-        repeat_count_y: int = 1,  # Unused
-        flipped_horizontally: bool = False,
-        flipped_vertically: bool = False,
-        flipped_diagonally: bool = False,
-        hit_box_algorithm: str = "Simple",
-        hit_box_detail: float = 4.5,
-        texture: Texture = None,
-        angle: float = 0,
+            self,
+            filename: str = None,
+            scale: float = 1.0,
+            image_x: int = 0,
+            image_y: int = 0,
+            image_width: int = 0,
+            image_height: int = 0,
+            center_x: float = 0.0,
+            center_y: float = 0.0,
+            repeat_count_x: int = 1,  # Unused
+            repeat_count_y: int = 1,  # Unused
+            flipped_horizontally: bool = False,
+            flipped_vertically: bool = False,
+            flipped_diagonally: bool = False,
+            hit_box_algorithm: Optional[str] = "Simple",
+            hit_box_detail: float = 4.5,
+            texture: Texture = None,
+            angle: float = 0.0,
     ):
         """ Constructor """
         # Position, size and orientation properties
@@ -221,14 +222,14 @@ class Sprite:
 
         # Pymunk specific properties
         self._pymunk: Optional[PyMunk] = None
-        self.force = [0, 0]
+        self.force = [0.0, 0.0]
 
         # Debug properties
         self.guid: Optional[str] = None
 
         # Sanity check values
         if image_width < 0:
-            raise ValueError("Width of image can't be less than zero.")
+            raise ValueError("Width entered is less than zero. Width must be a positive float.")
 
         if image_height < 0:
             raise ValueError(
@@ -461,17 +462,19 @@ class Sprite:
         self.change_x += -math.sin(self.radians) * speed
         self.change_y += math.cos(self.radians) * speed
 
-    def turn_right(self, theta: float = 90):
+    def turn_right(self, theta: float = 90.0):
         """
-        Rotate the sprite right a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite right by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle -= theta
 
-    def turn_left(self, theta: float = 90):
+    def turn_left(self, theta: float = 90.0):
         """
-        Rotate the sprite left a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite left by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle += theta
 
@@ -515,9 +518,6 @@ class Sprite:
         :param float collision_radius: Collision radius
         """
         self._collision_radius = collision_radius
-
-    def __lt__(self, other):
-        return self._texture.texture_id.value < other.texture.texture_id.value
 
     def clear_spatial_hashes(self):
         """
@@ -1133,17 +1133,17 @@ class AnimatedTimeBasedSprite(Sprite):
     """
 
     def __init__(
-        self,
-        filename: str = None,
-        scale: float = 1,
-        image_x: float = 0,
-        image_y: float = 0,
-        image_width: float = 0,
-        image_height: float = 0,
-        center_x: float = 0,
-        center_y: float = 0,
-        _repeat_count_x=1,  # Unused
-        _repeat_count_y=1,  # Unused
+            self,
+            filename: str = None,
+            scale: float = 1.0,
+            image_x: int = 0,
+            image_y: int = 0,
+            image_width: int = 0,
+            image_height: int = 0,
+            center_x: float = 0.0,
+            center_y: float = 0.0,
+            _repeat_count_x=1,  # Unused
+            _repeat_count_y=1,  # Unused
     ):
 
         super().__init__(
@@ -1190,12 +1190,12 @@ class AnimatedWalkingSprite(Sprite):
     """
 
     def __init__(
-        self,
-        scale: float = 1,
-        image_x: float = 0,
-        image_y: float = 0,
-        center_x: float = 0,
-        center_y: float = 0,
+            self,
+            scale: float = 1.0,
+            image_x: int = 0,
+            image_y: int = 0,
+            center_x: float = 0.0,
+            center_y: float = 0.0,
     ):
         super().__init__(
             scale=scale,
@@ -1213,8 +1213,8 @@ class AnimatedWalkingSprite(Sprite):
         self.walk_down_textures: List[Texture] = []
         self.cur_texture_index = 0
         self.texture_change_distance = 20
-        self.last_texture_change_center_x: float = 0
-        self.last_texture_change_center_y: float = 0
+        self.last_texture_change_center_x: float = 0.0
+        self.last_texture_change_center_y: float = 0.0
 
     def update_animation(self, delta_time: float = 1 / 60):
         """

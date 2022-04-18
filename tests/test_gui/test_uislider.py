@@ -1,4 +1,4 @@
-from arcade.experimental.uislider import UISlider
+from arcade.gui.widgets.slider import UISlider
 
 
 def test_initial_value_set():

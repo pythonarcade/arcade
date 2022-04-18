@@ -333,23 +333,23 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(self._dispatch_updates)
         pyglet.clock.schedule_interval(self._dispatch_updates, rate)
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
         Override this function to add mouse functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         """
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of the mouse
-        :param float y: y position of the mouse
+        :param int x: x position of the mouse
+        :param int y: y position of the mouse
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
@@ -358,28 +358,29 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         :param int buttons: Which button is pressed
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x:
-        :param float y:
-        :param int button:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -389,10 +390,10 @@ class Window(pyglet.window.Window):
         """
         User moves the scroll wheel.
 
-        :param int x:
-        :param int y:
-        :param int scroll_x:
-        :param int scroll_y:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
@@ -745,6 +746,29 @@ class Window(pyglet.window.Window):
         """ Dispatch events """
         super().dispatch_events()
 
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x:
+        :param int y:
+        """
+        pass
+
 
 def open_window(
     width: int,
@@ -848,23 +872,23 @@ class View:
         """Called once when this view is hidden."""
         pass
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
         Override this function to add mouse functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         """
         pass
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of the mouse
-        :param float y: y position of the mouse
+        :param int x: x position of the mouse
+        :param int y: y position of the mouse
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
@@ -873,28 +897,29 @@ class View:
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x: x position of mouse
-        :param float y: y position of mouse
-        :param float dx: Change in x since the last time this method was called
-        :param float dy: Change in y since the last time this method was called
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
         :param int _buttons: Which button is pressed
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
-        :param float x:
-        :param float y:
-        :param int button:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -904,10 +929,10 @@ class View:
         """
         User moves the scroll wheel.
 
-        :param int x:
-        :param int y:
-        :param int scroll_x:
-        :param int scroll_y:
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
@@ -943,5 +968,28 @@ class View:
         :py:meth:`~arcade.Window.on_resize` is also called separately.
         By default this method does nothing and can be overridden to
         handle resize logic.
+        """
+        pass
+
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
         """
         pass

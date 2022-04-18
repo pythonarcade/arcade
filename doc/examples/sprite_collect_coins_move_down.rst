@@ -5,9 +5,9 @@
 Collect Coins Moving Down
 =========================
 
-For a complete explanation, see:
+For a complete explanation, see `Chapter 22 of Arcade Academy - Learn Python <academy_py_ch22_>`_.
 
-* https://learn.arcade.academy/chapters/19_moving_sprites/moving_sprites.html#moving-sprites-down
+.. _academy_py_ch22: https://learn.arcade.academy/en/latest/chapters/22_moving_sprites/moving_sprites.html#moving-sprites-down
 
 .. image:: sprite_collect_coins_move_down.png
     :width: 600px

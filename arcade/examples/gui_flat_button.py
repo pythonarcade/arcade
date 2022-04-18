@@ -8,7 +8,11 @@ import arcade.gui
 
 # --- Method 1 for handling click events,
 # Create a child class.
-class QuitButton(arcade.gui.UIFlatButton):
+import arcade.gui.widgets.buttons
+import arcade.gui.widgets.layout
+
+
+class QuitButton(arcade.gui.widgets.buttons.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         arcade.exit()
 
@@ -26,14 +30,18 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxLayout()
+        self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
 
         # Create the buttons
-        start_button = arcade.gui.UIFlatButton(text="Start Game", width=200)
-        self.v_box.add(start_button.with_space_around(bottom=20))
+        start_button = arcade.gui.widgets.buttons.UIFlatButton(
+            text="Start Game", width=200
+        )
+        self.v_box.add(start_button)
 
-        settings_button = arcade.gui.UIFlatButton(text="Settings", width=200)
-        self.v_box.add(settings_button.with_space_around(bottom=20))
+        settings_button = arcade.gui.widgets.buttons.UIFlatButton(
+            text="Settings", width=200
+        )
+        self.v_box.add(settings_button)
 
         # Again, method 1. Use a child class to handle events.
         quit_button = QuitButton(text="Quit", width=200)
@@ -50,12 +58,10 @@ class MyWindow(arcade.Window):
             print("Settings:", event)
 
         # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center_x",
-                anchor_y="center_y",
-                child=self.v_box)
-        )
+        ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
+        ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
+
+        self.manager.add(ui_anchor_layout)
 
     def on_click_start(self, event):
         print("Start:", event)

@@ -16,8 +16,6 @@ Drawing
   Add support for drawing rounded rectangles.
 * `Issue 433 <https://github.com/pythonarcade/arcade/issues/433>`_
   Add support for bitmapped fonts.
-* `Issue 595 <https://github.com/pythonarcade/arcade/issues/595>`_
-  Optimize drawing functions by caching them
 * Add support for Pyglet's ImageMouseCursors
 
 GUI
@@ -30,15 +28,12 @@ Sprites
 
 * `Issue 291 <https://github.com/pythonarcade/arcade/issues/291>`_
   Load a spritesheet with a texture_region map.
-* `Issue 377 <https://github.com/pythonarcade/arcade/issues/377>`_
-  Support basic sprite animations like rotate, flicker, disappear, etc.
 * `Issue 380 <https://github.com/pythonarcade/arcade/issues/380>`_
   Add ability to specify a point the sprite rotates around.
 * `Issue 523 <https://github.com/pythonarcade/arcade/issues/523>`_
   Add sprite trigger/example for on_enter / on_exit.
 * `Issue 289 <https://github.com/pythonarcade/arcade/issues/289>`_
   Be able to get Sprite position and velocity as vectors.
-* Be able to load an animated gif as an animated time-based sprite.
 * Be able to load an Aesprite image directly (Piggy-back of Pyglet support)
 
 Physics Engine
@@ -70,8 +65,6 @@ Examples
 
 * `Issue 345 <https://github.com/pythonarcade/arcade/issues/345>`_
   Create example showing how to manage multiple windows.
-* `Issue 397 <https://github.com/pythonarcade/arcade/issues/397>`_
-  Add example code showing how to do parallax.
 * `Issue 446 <https://github.com/pythonarcade/arcade/issues/446>`_
   Add more procedural generation examples.
 * `Issue 464 <https://github.com/pythonarcade/arcade/issues/464>`_

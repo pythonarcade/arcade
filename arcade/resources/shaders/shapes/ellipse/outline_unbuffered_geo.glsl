@@ -44,7 +44,7 @@ void main() {
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
 
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
-    float stepp = PI * 2.0 / float(segments_selected);
+    float st = PI * 2 / segments_selected;
 
     // Draw thick circle with triangle strip. This can be handled as a single primitive by the gpu.
     // Number of vertices is segments * 2 + 2, so we need to emit the initial vertex first
@@ -57,12 +57,12 @@ void main() {
     // Draw cross segments from inner to outer
     for (int i = 0; i < segments_selected; i++) {
         // Inner vertex
-        vec2 p1 = vec2(sin(float(i) * stepp), cos(float(i) * stepp)) * (shape.xy - vec2(shape.w));
+        vec2 p1 = vec2(sin((i) * st), cos((i) * st)) * (shape.xy - vec2(shape.w));
         gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Outer vertex
-        vec2 p2 = vec2(sin(float((i + 1)) * stepp), cos(float((i + 1)) * stepp)) * shape.xy;
+        vec2 p2 = vec2(sin((i + 1) * st), cos((i + 1) * st)) * shape.xy;
         gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
     }

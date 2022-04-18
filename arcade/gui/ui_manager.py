@@ -15,26 +15,38 @@ from typing import List, Dict, TypeVar, Iterable
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
-from arcade.gui.events import (UIMouseMovementEvent,
-                               UIMousePressEvent,
-                               UIMouseReleaseEvent,
-                               UIMouseScrollEvent,
-                               UITextEvent,
-                               UIMouseDragEvent,
-                               UITextMotionEvent,
-                               UITextMotionSelectEvent,
-                               UIKeyPressEvent,
-                               UIKeyReleaseEvent,
-                               UIOnUpdateEvent)
+from arcade.gui.events import (
+    UIMouseMovementEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
+    UIMouseScrollEvent,
+    UITextEvent,
+    UIMouseDragEvent,
+    UITextMotionEvent,
+    UITextMotionSelectEvent,
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
+    UIOnUpdateEvent,
+)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
+from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
 
-W = TypeVar('W', bound=UIWidget)
+W = TypeVar("W", bound=UIWidget)
 
 
 class UIManager(EventDispatcher, UIWidgetParent):
     """
-    V2 UIManager
+    UIManager is the central component within Arcade's GUI system.
+    Handles window events, layout process and rendering.
+
+    To process window events, :py:meth:`UIManager.enable()` has to be called,
+    which will inject event callbacks for all window events and redirects them through the widget tree.
+
+    If used within a view :py:meth:`UIManager.enable()` should be called from :py:meth:`View.on_show_view()` and
+    :py:meth:`UIManager.disable()` should be called from :py:meth:`View.on_hide_view()`
+
+    Supports `size_hint` to grow/shrink direct children dependent on window size.
+    Supports `size_hint_min` to ensure size of direct children (e.g. UIBoxLayout).
 
     .. code:: py
 
@@ -51,6 +63,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             manager.draw() # draws the UI on screen
 
     """
+
     _enabled = False
 
     def __init__(self, window: arcade.Window = None, auto_enable=False):
@@ -63,7 +76,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.register_event_type("on_event")
 
         if auto_enable:
-            warnings.warn("`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`")
+            warnings.warn(
+                "`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`"
+            )
             self.enable()
 
     def add(self, widget: W, *, index=None) -> W:
@@ -146,13 +161,22 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def _do_layout(self):
         layers = sorted(self.children.keys())
         for layer in layers:
+            surface = self._get_surface(layer)
+            surface_width, surface_height = surface.size
+
             for child in self.children[layer]:
-                # TODO Observe if rect of child changed. This will be solved with observable properties later
-                rect = child.rect
+
+                if child.size_hint:
+                    sh_x, sh_y = child.size_hint
+                    nw = surface_width * sh_x if sh_x else None
+                    nh = surface_height * sh_y if sh_y else None
+                    child.rect = child.rect.resize(nw, nh)
+
+                if child.size_hint_min:
+                    shm_w, shm_h = child.size_hint_min
+                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0)
+
                 child._do_layout()
-                if rect != child.rect:
-                    # TODO use Arcade Property instead
-                    self.trigger_render()
 
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
@@ -222,12 +246,29 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def draw(self):
         # Request Widgets to prepare for next frame
         self._do_layout()
+
+        ctx = self.window.ctx
+
+        # When drawing into the framebuffer we need to set a separate
+        # blend function for the alpha component.
+        ctx.blend_func = (
+            ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
+            ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA         # Alpha blend func
+        )
         self._do_render()
+
+        # This should cause the framebuffer texture to have the correct alpha
+        # values for blending the texture to the screen when using the following
+        # blend function (Surface):
+        ctx.blend_func = ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA
 
         # Draw layers
         layers = sorted(self.children.keys())
         for layer in layers:
             self._get_surface(layer).draw()
+
+        # Reset back to default blend function
+        ctx.blend_func = ctx.BLEND_DEFAULT
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -268,7 +309,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(
+        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+    ):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
@@ -278,7 +321,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
+        return self.dispatch_ui_event(
+            UIMouseScrollEvent(self, x, y, scroll_x, scroll_y)
+        )
 
     def on_key_press(self, symbol: int, modifiers: int):
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
@@ -304,8 +349,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.trigger_render()
 
     @property
-    def rect(self) -> _Rect:
-        return _Rect(0, 0, *self.window.get_size())
+    def rect(self) -> Rect:
+        return Rect(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
