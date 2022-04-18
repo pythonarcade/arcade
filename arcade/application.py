@@ -4,6 +4,7 @@ derive from.
 """
 import logging
 import os
+import sys
 import time
 from typing import Tuple, Optional
 
@@ -100,7 +101,7 @@ class Window(pyglet.window.Window):
             antialiasing = False
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
-        if "raspi" in os.uname().nodename:
+        if sys.platform != "win32" and "raspi" in os.uname().nodename:
             gl_version = 3, 1
             gl_api = "gles"
 
