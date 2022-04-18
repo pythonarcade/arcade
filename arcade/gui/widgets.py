@@ -18,6 +18,7 @@ from arcade.gui.surface import Surface
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
+from string import printable
 
 class _Rect(NamedTuple):
     x: float
@@ -988,12 +989,13 @@ class UIInputText(UIWidget):
     :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
-    :param text: Text to show
+    :param text: text to show
+    :param validate: validation
     :param font_name: string or tuple of font names, to load
     :param font_size: size of the text
     :param text_color: color of the text
     :param multiline: support for multiline
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint: tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
     :param style: not used
@@ -1005,6 +1007,8 @@ class UIInputText(UIWidget):
                  width: float = 100,
                  height: float = 50,
                  text: str = "",
+                 validate: string.printable,
+                 maximum: int = 0,
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (0, 0, 0, 255),
@@ -1027,7 +1031,10 @@ class UIInputText(UIWidget):
 
         self._active = False
         self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
-
+        
+        self.validate = validate
+        self.maximum = maximum
+        
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, len(text), dict(font_name=font_name,
                                               font_size=font_size,
@@ -1076,7 +1083,12 @@ class UIInputText(UIWidget):
         if self._active:
             # Act on events if active
             if isinstance(event, UITextEvent):
-                self.caret.on_text(event.text)
+                for char in event.text:
+                    if char in self.validate:
+                        if self.maximum:
+                            if len(self.text) < self.maximum:
+                                self.caret.on_text(event.text)
+                                
                 self.trigger_full_render()
             elif isinstance(event, UITextMotionEvent):
                 self.caret.on_text_motion(event.motion)
