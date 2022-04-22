@@ -1,5 +1,11 @@
 """
+A stationary Background.
 
+This program loads a background from a file.
+The texture is not added to a texture atlas or texture cache.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.background_stationary
 """
 
 import arcade
@@ -15,20 +21,22 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, enable_polling=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        self.camera = arcade.Camera()
+
         # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
+        # Image from:
+        # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
         self.background = arcade.Background.from_file(":resources:/images/backgrounds/abstract_1.jpg")
 
         # Create the player sprite.
         self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
-        self.player_sprite.center_y = SCREEN_HEIGHT // 2
-        self.player_sprite.center_x = SCREEN_WIDTH // 2
+        self.player_sprite.center_y = self.camera.viewport_height // 2
+        self.player_sprite.center_x = self.camera.viewport_width // 2
 
         # Track Player Motion
         self.x_direction = 0
         self.y_direction = 0
-
-        self.camera = arcade.Camera()
 
     def pan_camera_to_player(self):
         # This will center the camera on the player.
@@ -36,15 +44,15 @@ class MyGame(arcade.Window):
         target_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
         # This ensures the background is always at least partially visible.
-        if -SCREEN_WIDTH / 2 > target_x:
-            target_x = -SCREEN_WIDTH / 2
-        elif target_x > self.background.size[0] - SCREEN_WIDTH / 2:
-            target_x = self.background.size[0] - SCREEN_WIDTH / 2
+        if -self.camera.viewport_width / 2 > target_x:
+            target_x = -self.camera.viewport_width / 2
+        elif target_x > self.background.size[0] - self.camera.viewport_width / 2:
+            target_x = self.background.size[0] - self.camera.viewport_width / 2
 
-        if -SCREEN_HEIGHT / 2 > target_y:
-            target_y = -SCREEN_HEIGHT / 2
-        elif target_y > self.background.size[1] - SCREEN_HEIGHT / 2:
-            target_y = self.background.size[1] - SCREEN_HEIGHT / 2
+        if -self.camera.viewport_height / 2 > target_y:
+            target_y = -self.camera.viewport_height / 2
+        elif target_y > self.background.size[1] - self.camera.viewport_height / 2:
+            target_y = self.background.size[1] - self.camera.viewport_height / 2
 
         self.camera.move_to((target_x, target_y), 0.1)
 
@@ -82,6 +90,10 @@ class MyGame(arcade.Window):
             self.y_direction += PLAYER_SPEED
         elif symbol == arcade.key.UP:
             self.y_direction -= PLAYER_SPEED
+
+    def on_resize(self, width: float, height: float):
+        super().on_resize(width, height)
+        self.camera.resize(width, height)
 
 
 def main():

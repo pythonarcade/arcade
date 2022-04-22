@@ -131,7 +131,7 @@ class BackgroundTexture:
 
 class Background:
     """
-    Backgrounds are large geometries which a Background texture is rendered.
+    Backgrounds are large geometries to which a Background texture is rendered.
     By default, the position defines the bottom left corner.
     If the size is larger than the given BackgroundTexture the texture will repeat.
 
@@ -139,7 +139,7 @@ class Background:
     This can be used to move the background without actually adjusting the position
 
     You may supply your own shader and geometries.
-    Unless you make a subclass the shader will need to implement 4 uniforms
+    The default shader implements 4 uniforms.
         vec2 pos, vec2 size, mat3 pixelTransform, and float blend.
     """
 
