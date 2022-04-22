@@ -47,6 +47,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Removed the broken ``Sprite.__lt__`` method
   * Added :py:func:`~arcade.get_angle_radians`
   * Removed ``Texture.draw_transformed``
+  * Added ``Shadertoy.delta_time`` alias for ``time_delta``
+  * Shadertoy should now properly support ``iFrame`` and  ``iTimeDelta``
 
 * Docs / Tutorials / Examples
 
@@ -71,6 +73,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Support dumping the atlas texture as RGB
   * Support dumping the atlas texture with debug lines
     showing texture borders
+  * We no longer check ``GL_CONTEXT_PROFILE_MASK`` due to
+    missing support in older drivers. Especially GL 3.1 drivers
+    that can in theory run arcade
   * Various shader cleanups
 
 * Experimental
