@@ -11,6 +11,7 @@ def create_window():
     global WINDOW
     if not WINDOW:
         WINDOW = arcade.Window(title="Testing", vsync=False, antialiasing=False)
+        WINDOW.set_vsync(False)
     return WINDOW
 
 
@@ -26,6 +27,7 @@ def prepare_window(window: arcade.Window):
 
     # Reset context (various states)
     ctx.reset()
+    window.set_vsync(False)
     window.flip()
     window.clear()
     ctx.gc_mode = "context_gc"
