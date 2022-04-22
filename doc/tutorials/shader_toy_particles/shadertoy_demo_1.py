@@ -9,10 +9,11 @@ class MyGame(arcade.Window):
         # Call the parent constructor
         super().__init__(width=1920, height=1080)
 
+        # Used to track run-time
         self.time = 0.0
 
         # Load a file and create a shader from it
-        file_name = "explosion_5.glsl"
+        file_name = "explosion.glsl"
         self.shadertoy = Shadertoy(size=self.get_size(),
                                    main_source=open(file_name).read())
 
@@ -25,10 +26,8 @@ class MyGame(arcade.Window):
         self.shadertoy.render(time=self.time)
 
     def on_update(self, delta_time: float):
+        # Track run time
         self.time += delta_time
-
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        self.time = 0
 
 
 if __name__ == "__main__":

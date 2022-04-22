@@ -82,6 +82,18 @@ class ShadertoyBase:
         self._time_delta = value
 
     @property
+    def delta_time(self) -> float:
+        """
+        Get or set the current delta time.
+        An alternative to ``time_delta``.
+        """
+        return self._time_delta
+
+    @delta_time.setter
+    def delta_time(self, value):
+        self._time_delta = value
+
+    @property
     def frame(self) -> int:
         """
         Get or set the current frame
