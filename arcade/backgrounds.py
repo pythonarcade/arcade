@@ -269,8 +269,8 @@ class BackgroundGroup:
     """
     If you have many backgrounds which you would like to draw together and move together this can help.
 
-    The pos of the Background Group is independent of the Background pos.
-    The offset of the BackgroundGroup is the same for each background.
+    The pos of the Background Group is independent of each Background pos.
+    The offset of the BackgroundGroup is the same as each background.
     """
 
     def __init__(self):
@@ -311,8 +311,23 @@ class BackgroundGroup:
         for background in self.backgrounds:
             background.draw(self.pos)
 
+    def add_from_file(self,
+                      tex_src: str,
+                      pos: tuple[float, float] = (0.0, 0.0),
+                      size: tuple[int, int] = None,
+                      offset: tuple[float, float] = (0.0, 0.0),
+                      scale: float = 1.0,
+                      angle: float = 0.0,
+                      *,
+                      filters=(gl.NEAREST, gl.NEAREST),
+                      shader: gl.Program = None,
+                      geometry: gl.Geometry = None):
+        background = Background.from_file(tex_src, pos, size, offset, scale, angle,
+                                          filters=filters, shader=shader, geometry=geometry)
+        self.add(background)
 
-class ParallaxBackground:
+
+class ParallaxGroup:
     """
     The ParallaxBackground holds a list of backgrounds and a list of depths.
 
@@ -375,3 +390,19 @@ class ParallaxBackground:
     def draw(self):
         for background in self.backgrounds:
             background.draw(self.pos)
+
+    def add_from_file(self,
+                      tex_src: str,
+                      pos: tuple[float, float] = (0.0, 0.0),
+                      size: tuple[int, int] = None,
+                      depth: float = 1,
+                      offset: tuple[float, float] = (0.0, 0.0),
+                      scale: float = 1.0,
+                      angle: float = 0.0,
+                      *,
+                      filters=(gl.NEAREST, gl.NEAREST),
+                      shader: gl.Program = None,
+                      geometry: gl.Geometry = None):
+        background = Background.from_file(tex_src, pos, size, offset, scale, angle,
+                                          filters=filters, shader=shader, geometry=geometry)
+        self.add(background, depth)

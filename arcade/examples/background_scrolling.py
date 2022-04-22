@@ -6,6 +6,8 @@ and create a screen sized background.
 The background is constantly aligned to the screen, and the
 texture offset changed. This creates an illusion of moving.
 
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.background_scrolling
 """
 import arcade
 
@@ -41,24 +43,7 @@ class MyGame(arcade.Window):
         target_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
         target_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
-        # This ensures the background is always at least partially visible.
-        if -self.camera.viewport_width / 2 > target_x:
-            target_x = -self.camera.viewport_width / 2
-        elif target_x > self.background.size[0] - self.camera.viewport_width / 2:
-            target_x = self.background.size[0] - self.camera.viewport_width / 2
-
-        if -self.camera.viewport_height / 2 > target_y:
-            target_y = -self.camera.viewport_height / 2
-        elif target_y > self.background.size[1] - self.camera.viewport_height / 2:
-            target_y = self.background.size[1] - self.camera.viewport_height / 2
-
-        self.camera.move_to((target_x, target_y), 0.1)
-
-        # Ensure the background aligns with the camera
-        self.background.pos = self.camera.position
-
-        # Offset the background texture.
-        self.background.texture.offset = self.camera.position
+        self.camera.move_to((target_x, target_y), 0.05)
 
     def on_update(self, delta_time: float):
         new_position = (self.player_sprite.center_x + self.x_direction * delta_time,
@@ -71,6 +56,12 @@ class MyGame(arcade.Window):
         self.clear()
 
         self.camera.use()
+
+        # Ensure the background aligns with the camera
+        self.background.pos = self.camera.position
+
+        # Offset the background texture.
+        self.background.texture.offset = self.camera.position
 
         self.background.draw()
         self.player_sprite.draw()

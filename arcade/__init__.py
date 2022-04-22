@@ -297,7 +297,7 @@ from .sprite_list import get_sprites_at_point
 from .backgrounds import BackgroundTexture
 from .backgrounds import Background
 from .backgrounds import BackgroundGroup
-from .backgrounds import ParallaxBackground
+from .backgrounds import ParallaxGroup
 
 from .scene import Scene
 
