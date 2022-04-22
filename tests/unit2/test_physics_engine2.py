@@ -287,8 +287,7 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (3, -6)
 
 
-def test_main():
-    window = arcade.open_window(800, 800, "Test")
+def test_main(window: arcade.Window):
     character_list = arcade.SpriteList()
     wall_list = arcade.SpriteList()
     moving_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.RED)
@@ -310,5 +309,3 @@ def test_main():
     )
     basic_tests(moving_sprite, wall_list, physics_engine)
     platformer_tests(moving_sprite, wall_list, physics_engine)
-
-    arcade.close_window()
