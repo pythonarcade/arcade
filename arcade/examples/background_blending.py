@@ -53,8 +53,8 @@ class MyGame(arcade.Window):
         # This limits where the player can see. Ensuring they never go too far from the transition.
         if -self.camera.viewport_width / 2 > target_x:
             target_x = -self.camera.viewport_width / 2
-        elif target_x > self.background_1.size[0]*2 - self.camera.viewport_width / 2:
-            target_x = self.background_1.size[0]*2 - self.camera.viewport_width / 2
+        elif target_x > self.background_1.size[0] * 2 - self.camera.viewport_width / 2:
+            target_x = self.background_1.size[0] * 2 - self.camera.viewport_width / 2
 
         if -self.camera.viewport_height / 2 > target_y:
             target_y = -self.camera.viewport_height / 2

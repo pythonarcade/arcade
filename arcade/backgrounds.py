@@ -125,7 +125,7 @@ class BackgroundTexture:
     def render_target(self, context: ArcadeContext, color_attachments=None, depth_attachment=None):
         if color_attachments is None:
             color_attachments = []
-        return context.framebuffer(color_attachments=[self.texture]+color_attachments,
+        return context.framebuffer(color_attachments=[self.texture] + color_attachments,
                                    depth_attachment=depth_attachment)
 
 
@@ -236,7 +236,7 @@ class Background:
             print("Attempting to set uniform 'pixelTransform' when the shader does not have a uniform with that name.")
 
         try:
-            self.shader['pos'] = self.pos[0]+shift[0], self.pos[1]+shift[1]
+            self.shader['pos'] = self.pos[0] + shift[0], self.pos[1] + shift[1]
         except KeyError:
             print("Attempting to set uniform 'pos' when the shader does not have a uniform with that name.")
 
