@@ -193,6 +193,13 @@ class Context:
         self._primitive_restart_index = -1
         self.primitive_restart_index = self._primitive_restart_index
 
+        # Detect support for glProgramUniform.
+        # Assumed to be supported in gles
+        self._ext_separate_shader_objects_enabled = True
+        if self.gl_api == "gl":
+            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
+            self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
+
         # We enable scissor testing by default.
         # This is always set to the same value as the viewport
         # to avoid background color affecting areas outside the viewport

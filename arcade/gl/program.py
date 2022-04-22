@@ -388,7 +388,7 @@ class Program:
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
             self._uniforms[u_name] = Uniform(
-                self._glo, u_location, u_name, u_type, u_size
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
             )
 
     def _introspect_uniform_blocks(self):
