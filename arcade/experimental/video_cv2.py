@@ -9,7 +9,7 @@ Dependencies:
 """
 import arcade
 from arcade.gl.geometry import quad_2d_fs
-import cv2
+import cv2  # type: ignore
 
 
 class CV2Player(arcade.Window):
