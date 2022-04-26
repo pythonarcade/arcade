@@ -27,12 +27,13 @@ class VideoPlayer(arcade.Window):
         with self.ctx.pyglet_rendering():
             self.ctx.disable(self.ctx.BLEND)
             video_texture = self.player.texture
-            video_texture.blit(
-                0,
-                0,
-                width=self.width,
-                height=self.height,
-            )
+            if video_texture:
+                video_texture.blit(
+                    0,
+                    0,
+                    width=self.width,
+                    height=self.height,
+                )
 
     def on_update(self, delta_time: float):
         pass
