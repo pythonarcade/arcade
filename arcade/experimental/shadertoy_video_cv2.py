@@ -1,6 +1,9 @@
 """
-Use texture layers with shadertoy.
-We simply mix the two texture layers.
+Manipulate a cv2 video with shadertoy.
+
+Dependencies:
+    pip install opencv-python
+
 """
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
@@ -11,7 +14,7 @@ SCREEN_HEIGHT = 300
 SCREEN_TITLE = "ShaderToy Video"
 
 
-class MyGame(arcade.Window):
+class ShadertoyVideo(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
@@ -66,5 +69,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    ShadertoyVideo(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
