@@ -48,6 +48,9 @@ class CV2Player(arcade.Window):
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         )
         self.texture = self.ctx.texture((width, height), components=3)
+        # Swap the components in the texture because cv2 returns BGR data
+        # Leave the alpha component as always 1
+        self.texture.swizzle = "BGR1"
         self.set_size(width, height)
 
     def on_draw(self):
