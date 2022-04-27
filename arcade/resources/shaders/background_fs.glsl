@@ -8,9 +8,10 @@ uniform mat3 pixelTransform;
 
 uniform float blend = 1;
 
+uniform vec3 color;
+
 uniform vec2 pos;
 uniform vec2 size;
-uniform vec2 bounds;
 
 out vec4 fragColor;
 
@@ -22,5 +23,6 @@ void main() {
 
     adjusted = adjusted / texSize;
     fragColor = texture(backgroundTexture, adjusted, 0);
+    fragColor.rgb *= color;
     fragColor.a *= blend;
 }

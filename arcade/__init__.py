@@ -294,11 +294,6 @@ from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
 
-from .backgrounds import BackgroundTexture
-from .backgrounds import Background
-from .backgrounds import BackgroundGroup
-from .backgrounds import ParallaxGroup
-
 from .scene import Scene
 
 from .physics_engines import PhysicsEnginePlatformer

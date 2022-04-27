@@ -1,5 +1,11 @@
+from PIL import Image
+
 import arcade.gl as gl
+from arcade.resources import resolve_resource_path
+from arcade.window_commands import get_window
 from pyglet.math import Mat3
+from arcade import ArcadeContext
+
 
 class BackgroundTexture:
     """
@@ -28,7 +34,7 @@ class BackgroundTexture:
         return self._offset_transform @ self._angle_transform @ self._scale_transform
 
     @property
-    def scale(self):
+    def scale(self) -> float:
         return self._scale
 
     @scale.setter
@@ -37,7 +43,7 @@ class BackgroundTexture:
         self._scale_transform = Mat3().scale(value, value)
 
     @property
-    def angle(self):
+    def angle(self) -> float:
         return self._angle
 
     @angle.setter
@@ -46,8 +52,8 @@ class BackgroundTexture:
         self._angle_transform = Mat3().rotate(value)
 
     @property
-    def offset(self):
-        return self._scale
+    def offset(self) -> tuple[float, float]:
+        return self._offset
 
     @offset.setter
     def offset(self, value: tuple[float, float]):
@@ -108,8 +114,24 @@ class BackgroundTexture:
         """
         self.texture.use(unit)
 
-    def render_target(self, context: ArcadeContext, color_attachments=None, depth_attachment=None):
+    def render_target(self, context: ArcadeContext,
+                      color_attachments: list[gl.Texture] = None,
+                      depth_attachment: gl.Texture = None) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []
         return context.framebuffer(color_attachments=[self.texture] + color_attachments,
                                    depth_attachment=depth_attachment)
+
+    @staticmethod
+    def from_file(tex_src: str,
+                  offset: tuple[float, float] = (0.0, 0.0),
+                  scale: float = 1.0,
+                  angle: float = 0.0,
+                  filters=(gl.NEAREST, gl.NEAREST)):
+        _context = get_window().ctx
+
+        with Image.open(resolve_resource_path(tex_src)).convert("RGBA") as img:
+            texture = _context.texture(img.size, data=img.transpose(Image.FLIP_TOP_BOTTOM).tobytes(),
+                                       filter=filters)
+
+        return BackgroundTexture(texture, offset, scale, angle)

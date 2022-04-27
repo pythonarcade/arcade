@@ -10,6 +10,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.background_scrolling
 """
 import arcade
+import arcade.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -26,7 +27,7 @@ class MyGame(arcade.Window):
         self.camera = arcade.Camera()
 
         # Load the background from file. Sized to match the screen
-        self.background = arcade.Background.from_file(":resources:/images/tiles/sandCenter.png",
+        self.background = background.Background.from_file(":resources:/images/tiles/sandCenter.png",
                                                       size=(SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Create the player sprite.

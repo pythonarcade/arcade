@@ -12,6 +12,7 @@ python -m arcade.examples.background_groups
 """
 
 import arcade
+import arcade.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -31,7 +32,7 @@ class MyGame(arcade.Window):
         self.camera = arcade.Camera()
 
         # create a background group which will hold all the backgrounds.
-        self.backgrounds = arcade.BackgroundGroup()
+        self.backgrounds = background.BackgroundGroup()
 
         # Add each background from a file.
         # It is important to note that the scale only impacts the texture and not the background.

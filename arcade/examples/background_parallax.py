@@ -13,6 +13,7 @@ python -m arcade.examples.background_parallax
 """
 
 import arcade
+import arcade.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -32,7 +33,7 @@ class MyGame(arcade.Window):
         self.camera = arcade.Camera()
 
         # create a background group which will hold all the backgrounds.
-        self.backgrounds = arcade.ParallaxGroup()
+        self.backgrounds = background.ParallaxGroup()
 
         # Add each background from a file.
         # It is important to note that the scale only impacts the texture and not the background.
@@ -99,9 +100,11 @@ class MyGame(arcade.Window):
         super().on_resize(width, height)
         self.camera.resize(width, height)
 
-        # to get the best looks out of parallax we want to keep the width eqaul to the screen size
-        for background in self.backgrounds.backgrounds:
-            background.size = (width, 576)
+        # We can iterate through a background group,
+        # but in the case of a parallax group the iter returns
+        # both the Backgrounds and the depths. (tuple[Background, float])
+        for backgrounds, depth in self.backgrounds:
+            backgrounds.size = (width, 576)
 
 
 def main():

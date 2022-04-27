@@ -10,6 +10,7 @@ python -m arcade.examples.background_blending
 """
 
 import arcade
+import arcade.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -26,12 +27,12 @@ class MyGame(arcade.Window):
         self.camera = arcade.Camera()
 
         # Load the first background from file. Sized to match the screen
-        self.background_1 = arcade.Background.from_file(":resources:/images/tiles/sandCenter.png",
-                                                        size=(SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.background_1 = background.Background.from_file(":resources:/images/tiles/sandCenter.png",
+                                                            size=(SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Load the second background from file. Sized to match the screen
-        self.background_2 = arcade.Background.from_file(":resources:/images/tiles/dirtCenter.png",
-                                                        size=(SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.background_2 = background.Background.from_file(":resources:/images/tiles/dirtCenter.png",
+                                                            size=(SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # start with the second background being hidden
         self.background_2.blend = 0.0

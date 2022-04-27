@@ -9,6 +9,7 @@ python -m arcade.examples.background_stationary
 """
 
 import arcade
+import arcade.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -27,7 +28,7 @@ class MyGame(arcade.Window):
         # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
         # Image from:
         # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
-        self.background = arcade.Background.from_file(":resources:/images/backgrounds/abstract_1.jpg")
+        self.background = background.Background.from_file(":resources:/images/backgrounds/abstract_1.jpg")
 
         # Create the player sprite.
         self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
