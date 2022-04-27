@@ -1,7 +1,5 @@
-
 from typing import Union
 
-from arcade.color import WHITE
 from arcade.window_commands import get_window
 import arcade.gl as gl
 
@@ -72,7 +70,7 @@ class Background:
                   angle: float = 0.0,
                   *,
                   filters=(gl.NEAREST, gl.NEAREST),
-                  color=WHITE,
+                  color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
                   shader: gl.Program = None,
                   geometry: gl.Geometry = None):
         """
@@ -85,7 +83,8 @@ class Background:
         :param scale: The BackgroundTexture Scale.
         :param angle: The BackgroundTexture angle.
         :param filters: The OpenGl Texture filters (gl.Nearest by default).
-        :param color: A 3 Tuple which can be from 1-255 or 0.0-1.0. If the sum of the three items is less than 3 it is
+        :param color: This is a color defined from 0-255. Prioritises color_norm
+        :param color_norm: This is a color defined from 0.0-1.0. Prioritises color_norm
         assumed to be in the range 0.0-1.0.
         :param shader: The shader used for rendering.
         :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
@@ -95,7 +94,14 @@ class Background:
         if size is None:
             size = background_texture.texture.size
 
-        return Background(background_texture, pos, size, color, shader, geometry)
+        if color is None and color_norm is None:
+            _color = (1.0, 1.0, 1.0)
+        elif color is None or (color is not None and color_norm is not None):
+            _color = color_norm
+        else:
+            _color = color[0] / 255, color[1] / 255, color[2] / 255
+
+        return Background(background_texture, pos, size, _color, shader, geometry)
 
     @property
     def pos(self) -> tuple[float, float]:
@@ -130,12 +136,30 @@ class Background:
             print("Attempting to set uniform 'blend' when the shader does not have a uniform with that name.")
 
     @property
-    def color(self) -> tuple[float, float, float]:
-        return self._color
+    def color(self) -> tuple[int, int, int]:
+        """
+        Color in the range of 0-255.
+        """
+        return int(self._color[0] * 255), int(self._color[1] * 255), int(self._color[2] * 255)
 
     @color.setter
-    def color(self, value: Union[tuple[float, float, float], tuple[int, int, int]]):
-        self._color = value if sum(value) <= 3 else (value[0] / 255, value[1] / 255, value[2] / 255)
+    def color(self, value: tuple[int, int, int]):
+        """
+        Color in the range of 0-255.
+        """
+        self._color = (value[0] / 255, value[1] / 255, value[2] / 255)
+        try:
+            self.shader['color'] = self._color
+        except KeyError:
+            print("Attempting to set uniform 'color' when shader does not have uniform with that name.")
+
+    @property
+    def color_norm(self) -> tuple[float, float, float]:
+        return self._color
+
+    @color_norm.setter
+    def color_norm(self, value: tuple[float, float, float]):
+        self._color = value
         try:
             self.shader['color'] = self._color
         except KeyError:

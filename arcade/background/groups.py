@@ -68,10 +68,13 @@ class BackgroundGroup:
                       angle: float = 0.0,
                       *,
                       filters=(gl.NEAREST, gl.NEAREST),
+                      color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
                       shader: gl.Program = None,
                       geometry: gl.Geometry = None):
         background = Background.from_file(tex_src, pos, size, offset, scale, angle,
-                                          filters=filters, shader=shader, geometry=geometry)
+                                          filters=filters,
+                                          color=color, color_norm=color_norm,
+                                          shader=shader, geometry=geometry)
         self.add(background)
 
 
@@ -155,8 +158,11 @@ class ParallaxGroup:
                       angle: float = 0.0,
                       *,
                       filters=(gl.NEAREST, gl.NEAREST),
+                      color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
                       shader: gl.Program = None,
                       geometry: gl.Geometry = None):
         background = Background.from_file(tex_src, pos, size, offset, scale, angle,
-                                          filters=filters, shader=shader, geometry=geometry)
+                                          filters=filters,
+                                          color=color, color_norm=color_norm,
+                                          shader=shader, geometry=geometry)
         self.add(background, depth)

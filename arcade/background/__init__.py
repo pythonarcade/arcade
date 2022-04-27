@@ -3,7 +3,6 @@ from PIL import Image
 import arcade.gl as gl
 from arcade import get_window
 from arcade.resources import resolve_resource_path
-from arcade.color import WHITE
 
 from arcade.background.background_texture import BackgroundTexture
 from arcade.background.background import Background
@@ -32,12 +31,19 @@ def background_from_file(tex_src: str,
                          angle: float = 0.0,
                          *,
                          filters=(gl.NEAREST, gl.NEAREST),
-                         color=WHITE,
+                         color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
                          shader: gl.Program = None,
                          geometry: gl.Geometry = None) -> Background:
 
     texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
     if size is None:
         size = texture.texture.size
+
+    if color is None and color_norm is None:
+        _color = (1.0, 1.0, 1.0)
+    elif color is None or (color is not None and color_norm is not None):
+        _color = color_norm
+    else:
+        _color = color[0] / 255, color[1] / 255, color[2] / 255
 
     return Background(texture, pos, size, color, shader, geometry)
