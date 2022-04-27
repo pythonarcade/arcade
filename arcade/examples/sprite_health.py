@@ -26,7 +26,7 @@ SCREEN_TITLE = "Sprite Health Bars"
 class Player(arcade.Sprite):
     def __init__(self, filename: str, scale: float, bar_list: arcade.SpriteList) -> None:
         super().__init__(filename=filename, scale=scale)
-        self.indicator_bar: IndicatorBar = IndicatorBar(self, bar_list, self.position)
+        self.indicator_bar: IndicatorBar = IndicatorBar(self, bar_list, (self.center_x, self.center_y))
         self.health: int = PLAYER_HEALTH
 
 
@@ -154,22 +154,16 @@ class IndicatorBar:
 class MyGame(arcade.Window):
     def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        self.player_sprite = None
-        self.enemy_sprite = None
-        self.bullet_list = None
-        self.bar_list = None
+        self.bullet_list = arcade.SpriteList()
+        self.bar_list = arcade.SpriteList()
+        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER, self.bar_list)
+        self.enemy_sprite = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING_ENEMY)
         self.enemy_timer = 0
 
     def setup(self) -> None:
         """Set up the game and initialize the variables."""
-        # Sprite lists
-        self.bullet_list = arcade.SpriteList()
-        self.bar_list = arcade.SpriteList()
-
-        # Player and enemy
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER, self.bar_list)
+        # Setup player and enemy positions
         self.player_sprite.position = self.width // 2, self.height // 4
-        self.enemy_sprite = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING_ENEMY)
         self.enemy_sprite.position = self.width // 2, self.height // 2
 
         # Set the background color
