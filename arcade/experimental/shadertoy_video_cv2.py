@@ -48,6 +48,7 @@ class ShadertoyVideo(arcade.Window):
         self.video_texture.wrap_y = self.ctx.CLAMP_TO_EDGE
         self.video_texture.swizzle = "BGR1"
         self.shadertoy.channel_0 = self.video_texture
+        self.set_size(width, height)
 
     def on_draw(self):
         self.clear()
