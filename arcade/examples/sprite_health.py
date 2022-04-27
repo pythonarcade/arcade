@@ -8,25 +8,48 @@ python -m arcade.examples.sprite_health
 """
 import math
 import arcade
+from arcade.resources import (
+    image_female_person_idle,
+    image_zombie_idle,
+    image_laser_blue01,
+)
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
 SPRITE_SCALING_BULLET = 1
 INDICATOR_BAR_OFFSET = 32
-ENEMY_ATTACK_COOLDOWN = 0.5
-BULLET_SPEED = 5
+ENEMY_ATTACK_COOLDOWN = 1
+BULLET_SPEED = 2
 BULLET_DAMAGE = 1
-PLAYER_HEALTH = 10
+PLAYER_HEALTH = 5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Health Bars"
 
 
+def sprite_off_screen(
+    sprite: arcade.Sprite,
+    screen_height: int = SCREEN_HEIGHT,
+    screen_width: int = SCREEN_WIDTH,
+) -> bool:
+    """Checks if a sprite is off-screen or not."""
+    return (
+        sprite.top < 0
+        or sprite.bottom > screen_height
+        or sprite.right < 0
+        or sprite.left > screen_width
+    )
+
+
 class Player(arcade.Sprite):
-    def __init__(self, filename: str, scale: float, bar_list: arcade.SpriteList) -> None:
+    def __init__(
+        self, filename: str, scale: float, bar_list: arcade.SpriteList
+    ) -> None:
         super().__init__(filename=filename, scale=scale)
-        self.indicator_bar: IndicatorBar = IndicatorBar(self, bar_list, (self.center_x, self.center_y))
+        self.indicator_bar: IndicatorBar = IndicatorBar(
+            self, bar_list, (self.center_x, self.center_y)
+        )
         self.health: int = PLAYER_HEALTH
 
 
@@ -34,24 +57,15 @@ class IndicatorBar:
     """
     Represents a bar which can display information about a sprite.
 
-    Parameters
-    ----------
-    owner: Player
-        The owner of this indicator bar.
-    sprite_list: arcade.SpriteList
-        The sprite list used to draw the indicator bar components.
-    position: tuple[float, float]
-        The initial position of the bar.
-    full_color: arcade.Color
-        The color of the bar.
-    background_color: arcade.Color
-        The background color of the bar.
-    width: int
-        The width of the bar.
-    height: int
-        The height of the bar.
-    border_size: int
-        The size of the bar's border.
+    :param Player owner: The owner of this indicator bar.
+    :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
+    bar components.
+    :param tuple[float, float] position: The initial position of the bar.
+    :param arcade.Color full_color: The color of the bar.
+    :param arcade.Color background_color: The background color of the bar.
+    :param int width: The width of the bar.
+    :param int height: The height of the bar.
+    :param int border_size: The size of the bar's border.
     """
 
     def __init__(
@@ -156,8 +170,10 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.bullet_list = arcade.SpriteList()
         self.bar_list = arcade.SpriteList()
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER, self.bar_list)
-        self.enemy_sprite = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING_ENEMY)
+        self.player_sprite = Player(
+            image_female_person_idle, SPRITE_SCALING_PLAYER, self.bar_list
+        )
+        self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
         self.enemy_timer = 0
 
     def setup(self) -> None:
@@ -194,7 +210,10 @@ class MyGame(arcade.Window):
         self.enemy_timer += delta_time
 
         # Update the player's indicator bar position
-        self.player_sprite.indicator_bar.position = self.player_sprite.center_x, self.player_sprite.center_y + INDICATOR_BAR_OFFSET
+        self.player_sprite.indicator_bar.position = (
+            self.player_sprite.center_x,
+            self.player_sprite.center_y + INDICATOR_BAR_OFFSET,
+        )
 
         # Call updates on bullet sprites
         self.bullet_list.update()
@@ -204,7 +223,7 @@ class MyGame(arcade.Window):
             self.enemy_timer = 0
 
             # Create the bullet
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_BULLET)
+            bullet = arcade.Sprite(image_laser_blue01, SPRITE_SCALING_BULLET)
 
             # Set the bullet's position
             bullet.position = self.enemy_sprite.position
@@ -219,16 +238,18 @@ class MyGame(arcade.Window):
             bullet.angle = angle_deg
 
             # Give the bullet a velocity towards the player
-            bullet.change_x = math.cos(angle) * BULLET_SPEED
-            bullet.change_y = math.sin(angle) * BULLET_SPEED
+            bullet.velocity = (
+                math.cos(angle) * BULLET_SPEED,
+                math.sin(angle) * BULLET_SPEED,
+            )
 
             # Add the bullet to the bullet list
             self.bullet_list.append(bullet)
 
         # Loop through each bullet
         for bullet in self.bullet_list:
-            # Check if the bullet has gone off-screen. If so, kill it
-            if bullet.top < 0 or bullet.bottom > SCREEN_HEIGHT or bullet.right < 0 or bullet.left > SCREEN_WIDTH:
+            # Check if the bullet has gone off-screen. If so, delete the bullet
+            if sprite_off_screen(bullet):
                 bullet.remove_from_sprite_lists()
                 continue
 
@@ -239,7 +260,9 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
 
                 # Set the player's indicator bar fullness
-                self.player_sprite.indicator_bar.fullness = self.player_sprite.health / PLAYER_HEALTH
+                self.player_sprite.indicator_bar.fullness = (
+                    self.player_sprite.health / PLAYER_HEALTH
+                )
 
 
 def main() -> None:
