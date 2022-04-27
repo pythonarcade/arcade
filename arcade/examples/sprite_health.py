@@ -7,11 +7,13 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_health
 """
 import math
+from typing import Tuple
+
 import arcade
 from arcade.resources import (
     image_female_person_idle,
-    image_zombie_idle,
     image_laser_blue01,
+    image_zombie_idle,
 )
 
 SPRITE_SCALING_PLAYER = 0.5
@@ -70,7 +72,7 @@ class IndicatorBar:
     :param Player owner: The owner of this indicator bar.
     :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
     bar components.
-    :param tuple[float, float] position: The initial position of the bar.
+    :param Tuple[float, float] position: The initial position of the bar.
     :param arcade.Color full_color: The color of the bar.
     :param arcade.Color background_color: The background color of the bar.
     :param int width: The width of the bar.
@@ -82,7 +84,7 @@ class IndicatorBar:
         self,
         owner: Player,
         sprite_list: arcade.SpriteList,
-        position: tuple[float, float] = (0, 0),
+        position: Tuple[float, float] = (0, 0),
         full_color: arcade.Color = arcade.color.GREEN,
         background_color: arcade.Color = arcade.color.BLACK,
         width: int = 100,
@@ -117,7 +119,7 @@ class IndicatorBar:
 
         # Set the fullness and position of the bar
         self.fullness: float = 1.0
-        self.position: tuple[float, float] = position
+        self.position: Tuple[float, float] = position
 
     def __repr__(self) -> str:
         return f"<IndicatorBar (Owner={self.owner})>"
@@ -158,12 +160,12 @@ class IndicatorBar:
             self.full_box.left = self._center_x - (self._box_width // 2)
 
     @property
-    def position(self) -> tuple[float, float]:
+    def position(self) -> Tuple[float, float]:
         """Returns the current position of the bar."""
         return self._center_x, self._center_y
 
     @position.setter
-    def position(self, new_position: tuple[float, float]) -> None:
+    def position(self, new_position: Tuple[float, float]) -> None:
         """Sets the new position of the bar."""
         # Check if the position has changed. If so, change the bar's position
         if new_position != self.position:
