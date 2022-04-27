@@ -19,7 +19,7 @@ SPRITE_SCALING_ENEMY = 0.5
 SPRITE_SCALING_BULLET = 1
 INDICATOR_BAR_OFFSET = 32
 ENEMY_ATTACK_COOLDOWN = 1
-BULLET_SPEED = 2
+BULLET_SPEED = 150
 BULLET_DAMAGE = 1
 PLAYER_HEALTH = 5
 
@@ -43,14 +43,24 @@ def sprite_off_screen(
 
 
 class Player(arcade.Sprite):
-    def __init__(
-        self, filename: str, scale: float, bar_list: arcade.SpriteList
-    ) -> None:
-        super().__init__(filename=filename, scale=scale)
+    def __init__(self, bar_list: arcade.SpriteList) -> None:
+        super().__init__(filename=image_female_person_idle, scale=SPRITE_SCALING_PLAYER)
         self.indicator_bar: IndicatorBar = IndicatorBar(
             self, bar_list, (self.center_x, self.center_y)
         )
         self.health: int = PLAYER_HEALTH
+
+
+class Bullet(arcade.Sprite):
+    def __init__(self) -> None:
+        super().__init__(filename=image_laser_blue01, scale=SPRITE_SCALING_BULLET)
+
+    def on_update(self, delta_time: float = 1 / 60) -> None:
+        """Updates the bullet's position."""
+        self.position = (
+            self.center_x + self.change_x * delta_time,
+            self.center_y + self.change_y * delta_time,
+        )
 
 
 class IndicatorBar:
@@ -170,10 +180,20 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.bullet_list = arcade.SpriteList()
         self.bar_list = arcade.SpriteList()
-        self.player_sprite = Player(
-            image_female_person_idle, SPRITE_SCALING_PLAYER, self.bar_list
-        )
+        self.player_sprite = Player(self.bar_list)
         self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
+        self.top_text: arcade.Text = arcade.Text(
+            "Dodge the bullets by moving the mouse!",
+            self.width // 2,
+            self.height - 50,
+            anchor_x="center",
+        )
+        self.bottom_text: arcade.Text = arcade.Text(
+            "When your health bar reaches zero, you lose!",
+            self.width // 2,
+            50,
+            anchor_x="center",
+        )
         self.enemy_timer = 0
 
     def setup(self) -> None:
@@ -196,6 +216,10 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
         self.bar_list.draw()
 
+        # Draw the text objects
+        self.top_text.draw()
+        self.bottom_text.draw()
+
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float) -> None:
         """Called whenever the mouse moves."""
         self.player_sprite.position = x, y
@@ -216,14 +240,15 @@ class MyGame(arcade.Window):
         )
 
         # Call updates on bullet sprites
-        self.bullet_list.update()
+        self.bullet_list.on_update(delta_time)
 
-        # Check if the enemy can attack. If so, shoot a bullet from the enemy to the player
+        # Check if the enemy can attack. If so, shoot a bullet from the
+        # enemy to the player
         if self.enemy_timer >= ENEMY_ATTACK_COOLDOWN:
             self.enemy_timer = 0
 
             # Create the bullet
-            bullet = arcade.Sprite(image_laser_blue01, SPRITE_SCALING_BULLET)
+            bullet = Bullet()
 
             # Set the bullet's position
             bullet.position = self.enemy_sprite.position
@@ -238,10 +263,8 @@ class MyGame(arcade.Window):
             bullet.angle = angle_deg
 
             # Give the bullet a velocity towards the player
-            bullet.velocity = (
-                math.cos(angle) * BULLET_SPEED,
-                math.sin(angle) * BULLET_SPEED,
-            )
+            bullet.change_x = math.cos(angle) * BULLET_SPEED
+            bullet.change_y = math.sin(angle) * BULLET_SPEED
 
             # Add the bullet to the bullet list
             self.bullet_list.append(bullet)
