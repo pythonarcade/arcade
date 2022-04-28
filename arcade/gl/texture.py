@@ -92,6 +92,23 @@ class Texture:
         "0": gl.GL_NEVER,
         "1": gl.GL_ALWAYS,
     }
+    # Swizzle conversion lookup
+    _swizzle_enum_to_str = {
+        gl.GL_RED: 'R',
+        gl.GL_GREEN: 'G',
+        gl.GL_BLUE: 'B',
+        gl.GL_ALPHA: 'A',
+        gl.GL_ZERO: '0',
+        gl.GL_ONE: '1',
+    }
+    _swizzle_str_to_enum = {
+        'R': gl.GL_RED,
+        'G': gl.GL_GREEN,
+        'B': gl.GL_BLUE,
+        'A': gl.GL_ALPHA,
+        '0': gl.GL_ZERO,
+        '1': gl.GL_ONE,
+    }
 
     def __init__(
         self,
@@ -366,6 +383,74 @@ class Texture:
         :type: bool
         """
         return self._immutable
+
+    @property
+    def swizzle(self) -> str:
+        """
+        str: The swizzle mask of the texture (Default ``'RGBA'``).
+
+        The swizzle mask change/reorder the ``vec4`` value returned by the ``texture()`` function
+        in a GLSL shaders. This is represented by a 4 character string were each
+        character can be::
+
+            'R' GL_RED
+            'G' GL_GREEN
+            'B' GL_BLUE
+            'A' GL_ALPHA
+            '0' GL_ZERO
+            '1' GL_ONE
+
+        Example::
+
+            # Alpha channel will always return 1.0
+            texture.swizzle = 'RGB1'
+
+            # Only return the red component. The rest is masked to 0.0
+            texture.swizzle = 'R000'
+
+            # Reverse the components
+            texture.swizzle = 'ABGR'        
+        """
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
+
+        # Read the current swizzle values from the texture
+        swizzle_r = gl.GLint()
+        swizzle_g = gl.GLint()
+        swizzle_b = gl.GLint()
+        swizzle_a = gl.GLint()
+
+        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_R, swizzle_r)
+        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_G, swizzle_g)
+        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_B, swizzle_b)
+        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_A, swizzle_a)
+
+        swizzle_str = ""
+        for v in [swizzle_r, swizzle_g, swizzle_b, swizzle_a]:
+            swizzle_str += self._swizzle_enum_to_str[v.value]
+
+        return swizzle_str
+
+    @swizzle.setter
+    def swizzle(self, value: str):
+        if not isinstance(value, str):
+            raise ValueError(f"Swizzle must be a string, not '{type(str)}'")
+
+        if len(value) != 4:
+            raise ValueError("Swizzle must be a string of length 4")
+
+        swizzle_enums = []
+        for c in value:
+            try:
+                c = c.upper()
+                swizzle_enums.append(self._swizzle_str_to_enum[c])
+            except KeyError:
+                raise ValueError(f"Swizzle value '{c}' invalid. Must be one of RGBA01")
+
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_R, swizzle_enums[0])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_G, swizzle_enums[1])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_B, swizzle_enums[2])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_A, swizzle_enums[3])
 
     @property
     def filter(self) -> Tuple[int, int]:

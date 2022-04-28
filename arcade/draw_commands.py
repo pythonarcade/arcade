@@ -216,9 +216,6 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
-    # width = radius * 2
-    # height = radius * 2
-    # draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
     draw_ellipse_filled(center_x, center_y, radius * 2, radius * 2, color,
                         tilt_angle=tilt_angle,
                         num_segments=num_segments)
@@ -243,10 +240,6 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
-    # width = radius * 2
-    # height = radius * 2
-    # draw_ellipse_outline(center_x, center_y, width, height,
-    #                      color, border_width, num_segments=num_segments)
     draw_ellipse_outline(center_x=center_x, center_y=center_y,
                          width=radius * 2, height=radius * 2,
                          color=color,
@@ -298,29 +291,6 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
-    # unrotated_point_list = []
-    #
-    # for segment in range(num_segments):
-    #     theta = 2.0 * 3.1415926 * segment / num_segments
-    #
-    #     x = (width / 2) * math.cos(theta)
-    #     y = (height / 2) * math.sin(theta)
-    #
-    #     unrotated_point_list.append([x, y])
-    #
-    # if tilt_angle == 0:
-    #     uncentered_point_list = unrotated_point_list
-    # else:
-    #     uncentered_point_list = []
-    #     for point in unrotated_point_list:
-    #         uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-    #
-    # point_list = []
-    # for point in uncentered_point_list:
-    #     point_list.append((point[0] + center_x, point[1] + center_y))
-    #
-    # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
-
 
 def draw_ellipse_outline(center_x: float, center_y: float,
                          width: float,
@@ -366,66 +336,6 @@ def draw_ellipse_outline(center_x: float, center_y: float,
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
-    # if border_width == 1:
-    #     unrotated_point_list = []
-    #
-    #     for segment in range(num_segments):
-    #         theta = 2.0 * 3.1415926 * segment / num_segments
-    #
-    #         x = (width / 2) * math.cos(theta)
-    #         y = (height / 2) * math.sin(theta)
-    #
-    #         unrotated_point_list.append([x, y])
-    #
-    #     if tilt_angle == 0:
-    #         uncentered_point_list = unrotated_point_list
-    #     else:
-    #         uncentered_point_list = []
-    #         for point in unrotated_point_list:
-    #             uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-    #
-    #     point_list = []
-    #     for point in uncentered_point_list:
-    #         point_list.append((point[0] + center_x, point[1] + center_y))
-    #
-    #     _generic_draw_line_strip(point_list, color, gl.GL_LINE_LOOP)
-    # else:
-    #
-    #     unrotated_point_list = []
-    #
-    #     start_segment = 0
-    #     end_segment = num_segments
-    #
-    #     inside_width = (width / 2) - border_width / 2
-    #     outside_width = (width / 2) + border_width / 2
-    #     inside_height = (height / 2) - border_width / 2
-    #     outside_height = (height / 2) + border_width / 2
-    #
-    #     for segment in range(start_segment, end_segment + 1):
-    #         theta = 2.0 * math.pi * segment / num_segments
-    #
-    #         x1 = inside_width * math.cos(theta)
-    #         y1 = inside_height * math.sin(theta)
-    #
-    #         x2 = outside_width * math.cos(theta)
-    #         y2 = outside_height * math.sin(theta)
-    #
-    #         unrotated_point_list.append([x1, y1])
-    #         unrotated_point_list.append([x2, y2])
-    #
-    #     if tilt_angle == 0:
-    #         uncentered_point_list = unrotated_point_list
-    #     else:
-    #         uncentered_point_list = []
-    #         for point in unrotated_point_list:
-    #             uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-    #
-    #     point_list = []
-    #     for point in uncentered_point_list:
-    #         point_list.append((point[0] + center_x, point[1] + center_y))
-    #
-    #     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
-
 
 # --- END ELLIPSE FUNCTIONS # # #
 
@@ -445,8 +355,6 @@ def _generic_draw_line_strip(point_list: PointList,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     """
-    # Cache the program. But not on linux because it fails unit tests for some reason.
-    # if not _generic_draw_line_strip.program or sys.platform == "linux":
     window = get_window()
     ctx = window.ctx
 
@@ -531,12 +439,6 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
         data=array.array('f', [start_x, start_y, end_x, end_y]))
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
-    # NOTE: Keep old code just in case
-    # points = (start_x, start_y), (end_x, end_y)
-    # points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-    # triangle_point_list = points[1], points[0], points[2], points[3]
-    # _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
-
 
 def draw_lines(point_list: PointList,
                color: Color,
@@ -567,7 +469,6 @@ def draw_lines(point_list: PointList,
 
     while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
-        # print('-> ', len(point_list) * 3 * 4, ctx.shape_line_buffer_pos.size)
 
     program['line_width'] = line_width
     program['color'] = color_normalized
@@ -575,19 +476,6 @@ def draw_lines(point_list: PointList,
         data=array.array('f', [v for point in point_list for v in point]))
     geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
 
-    # Keep old code just in case
-    # triangle_point_list: PointList = []
-    # last_point = None
-    # for point in point_list:
-    #     if last_point is not None:
-    #         points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
-    #         reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
-    #         # noinspection PyUnresolvedReferences
-    #         triangle_point_list.extend(reordered_points)
-    #         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLES)
-    #         last_point = None
-    #     else:
-    #         last_point = point
 
 # --- BEGIN POINT FUNCTIONS # # #
 
@@ -603,23 +491,6 @@ def draw_point(x: float, y: float, color: Color, size: float):
     :param float size: Size of the point in pixels.
     """
     draw_rectangle_filled(x, y, size, size, color)
-
-
-# def _get_points_for_points(point_list, size):
-#     new_point_list = []
-#     hs = size / 2
-#     for point in point_list:
-#         x = point[0]
-#         y = point[1]
-#         new_point_list.append((x - hs, y - hs))
-#         new_point_list.append((x + hs, y - hs))
-#         new_point_list.append((x + hs, y + hs))
-
-#         new_point_list.append((x + hs, y + hs))
-#         new_point_list.append((x - hs, y - hs))
-#         new_point_list.append((x - hs, y + hs))
-
-#     return new_point_list
 
 
 def draw_points(point_list: PointList, color: Color, size: float = 1):
@@ -928,19 +799,6 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     buffer.write(data=array.array('f', (center_x, center_y)))
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
-    # p1 = [-width // 2 + center_x, -height // 2 + center_y]
-    # p2 = [width // 2 + center_x, -height // 2 + center_y]
-    # p3 = [width // 2 + center_x, height // 2 + center_y]
-    # p4 = [-width // 2 + center_x, height // 2 + center_y]
-
-    # if tilt_angle != 0:
-    #     p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
-    #     p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
-    #     p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
-    #     p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
-
-    # _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
-
 
 def draw_scaled_texture_rectangle(center_x: float, center_y: float,
                                   texture: Texture,
@@ -1033,23 +891,18 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> 
     """
     Get an image from the screen.
 
+    Example::
+
+        image = get_image()
+        image.save('screenshot.png', 'PNG')
+
     :param int x: Start (left) x location
     :param int y: Start (top) y location
     :param int width: Width of image. Leave blank for grabbing the 'rest' of the image
     :param int height: Height of image. Leave blank for grabbing the 'rest' of the image
     :returns: A Pillow Image
     :rtype: PIL.Image.Image
-
-    You can save the image like:
-
-    .. highlight:: python
-    .. code-block:: python
-
-        image = get_image()
-        image.save('screenshot.png', 'PNG')
     """
-
-    # Get the dimensions
     window = get_window()
 
     pixel_ratio = window.get_pixel_ratio()
@@ -1072,5 +925,4 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> 
     image = PIL.Image.frombytes("RGBA", (width, height), image_buffer)
     image = PIL.ImageOps.flip(image)
 
-    # image.save('glutout.png', 'PNG')
     return image

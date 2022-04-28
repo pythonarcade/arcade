@@ -66,6 +66,10 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * OpenGL
 
+  * Added :py:attr:`arcade.gl.Texture.swizzle`. This can be used
+    to reorder how components are read from the texture by a shader
+    making it easy to crate simple effects or automatically
+    convert BGR pixel formats to RGB when needed.
   * Added ray marching example with fragment shader
   * Allow reading framebuffer data with 2 and 4 byte component sizes
   * Simplified texture atlas texture coordinates to make them
