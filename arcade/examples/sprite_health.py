@@ -46,7 +46,10 @@ def sprite_off_screen(
 
 class Player(arcade.Sprite):
     def __init__(self, bar_list: arcade.SpriteList) -> None:
-        super().__init__(filename=image_female_person_idle, scale=SPRITE_SCALING_PLAYER)
+        super().__init__(
+            filename=image_female_person_idle,
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.indicator_bar: IndicatorBar = IndicatorBar(
             self, bar_list, (self.center_x, self.center_y)
         )
@@ -55,7 +58,10 @@ class Player(arcade.Sprite):
 
 class Bullet(arcade.Sprite):
     def __init__(self) -> None:
-        super().__init__(filename=image_laser_blue01, scale=SPRITE_SCALING_BULLET)
+        super().__init__(
+            filename=image_laser_blue01,
+            scale=SPRITE_SCALING_BULLET,
+        )
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
         """Updates the bullet's position."""
@@ -245,7 +251,7 @@ class MyGame(arcade.Window):
         self.bullet_list.on_update(delta_time)
 
         # Check if the enemy can attack. If so, shoot a bullet from the
-        # enemy to the player
+        # enemy towards the player
         if self.enemy_timer >= ENEMY_ATTACK_COOLDOWN:
             self.enemy_timer = 0
 
