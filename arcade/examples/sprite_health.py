@@ -272,17 +272,17 @@ class MyGame(arcade.Window):
             self.bullet_list.append(bullet)
 
         # Loop through each bullet
-        for bullet in self.bullet_list:
+        for existing_bullet in self.bullet_list:
             # Check if the bullet has gone off-screen. If so, delete the bullet
-            if sprite_off_screen(bullet):
-                bullet.remove_from_sprite_lists()
+            if sprite_off_screen(existing_bullet):
+                existing_bullet.remove_from_sprite_lists()
                 continue
 
             # Check if the bullet has hit the player
-            if arcade.check_for_collision(bullet, self.player_sprite):
+            if arcade.check_for_collision(existing_bullet, self.player_sprite):
                 # Damage the player and remove the bullet
                 self.player_sprite.health -= BULLET_DAMAGE
-                bullet.remove_from_sprite_lists()
+                existing_bullet.remove_from_sprite_lists()
 
                 # Set the player's indicator bar fullness
                 self.player_sprite.indicator_bar.fullness = (
