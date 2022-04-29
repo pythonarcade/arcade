@@ -186,6 +186,11 @@ Sprite Player Movement
 
    :ref:`easing_example_2`
 
+.. figure:: thumbs/sprite_rotate_around_tank.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_tank`
+
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -214,6 +219,11 @@ Sprite Non-Player Movement
    :figwidth: 170px
 
    :ref:`sprite_collect_rotating`
+
+.. figure:: thumbs/sprite_rotate_around_point.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_point`
 
 Sprite Pathing
 ^^^^^^^^^^^^^^
