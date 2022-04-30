@@ -35,7 +35,13 @@ class Sound:
 
         self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
 
-    def play(self, volume: float = 1.0, pan: float = 0.0, loop: bool = False) -> media.Player:
+    def play(
+        self,
+        volume: float = 1.0,
+        pan: float = 0.0,
+        loop: bool = False,
+        pitch: float = 1.0
+    ) -> media.Player:
         """
         Play the sound.
 
@@ -52,6 +58,7 @@ class Sound:
         player: media.Player = media.Player()
         player.volume = volume
         player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))  # used to mimic panning with 3D audio
+        player.pitch = pitch
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -148,7 +155,11 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
 
 
 def play_sound(
-        sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
+    sound: Sound,
+    volume: float = 1.0,
+    pan: float = 0.0,
+    looping: bool = False,
+    pitch: float = 1.0
 ) -> media.Player:
     """
     Play a sound.
@@ -157,6 +168,7 @@ def play_sound(
     :param float volume: Volume, from 0=quiet to 1=loud
     :param float pan: Pan, from -1=left to 0=centered to 1=right
     :param bool looping: Should we loop the sound over and over?
+    :param float pitch: Change the pitch of the sound which also changes speed, default 1.0
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
@@ -168,7 +180,7 @@ def play_sound(
         )
         raise Exception(msg)
     try:
-        return sound.play(volume, pan, looping)
+        return sound.play(volume, pan, looping, pitch)
     except Exception as ex:
         print("Error playing sound.", ex)
 
