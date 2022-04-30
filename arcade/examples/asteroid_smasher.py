@@ -272,7 +272,7 @@ class MyGame(arcade.Window):
 
             self.bullet_list.append(bullet_sprite)
 
-            arcade.play_sound(self.laser_sound)
+            arcade.play_sound(self.laser_sound, pitch=random.random() * 3 + 0.5)
 
         if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 3
