@@ -16,6 +16,7 @@ from arcade.gui.events import (
     UIMouseDragEvent,
     UIMouseScrollEvent,
 )
+from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 
 
@@ -115,12 +116,17 @@ class UILabel(UIWidget):
         self.layout.width = width
         self.layout.height = height
 
+        bind(self, "rect", self._update_layout)
+
     def fit_content(self):
         """
         Sets the width and height of this UIWidget to contain the whole text.
         """
+        base_width = self.padding_left + self.padding_right + 2 * self.border_width
+        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+
         self.rect = self.rect.resize(
-            self.layout.content_width, self.layout.content_height
+            self.layout.content_width + base_width, self.layout.content_height + base_height
         )
 
     @property
@@ -130,6 +136,7 @@ class UILabel(UIWidget):
     @text.setter
     def text(self, value):
         self.layout.text = value
+        self._update_layout()
         self.trigger_full_render()
 
     def _update_layout(self):
@@ -139,6 +146,8 @@ class UILabel(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
+            layout.x = self.content_rect.x
+            layout.y = self.content_rect.y
             layout.width = self.content_width
             layout.height = self.content_height
             layout.end_update()

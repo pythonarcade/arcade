@@ -143,6 +143,7 @@ Available Elements
 - :class:`UILayout`:
     - :class:`UIBoxLayout` - Places widgets next to each other (vertical or horizontal)
     - :class:`UIAnchorLayout` - Places widgets within itself following anchor information
+    - :class:`UIGridLayout` - Places widgets within a grid
 - Constructs
     - :class:`UIMessageBox` - Popup box with a message text and a few buttons.
 - Mixins

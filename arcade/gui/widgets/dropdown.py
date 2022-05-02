@@ -45,6 +45,8 @@ class UIDropdown(UILayout):
 
         self.register_event_type("on_change")
 
+        self.with_border(color=arcade.color.RED)
+
     @property
     def value(self):
         return self._value
@@ -94,10 +96,11 @@ class UIDropdown(UILayout):
         self._layout.visible = False
 
     def do_layout(self):
-        # print("do layout")
         self._default_button.rect = self.rect
+
+        self._layout.fit_content()  # resize layout to contain widgets
         self._layout.rect = self._layout.rect.align_top(self.bottom - 2).align_left(
-            self.left
+            self._default_button.left
         )
 
     def on_change(self, event: UIOnChangeEvent):

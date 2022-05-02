@@ -34,14 +34,14 @@ class MyView(arcade.View):
             self.label.move(dy=50)
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
         self.mng.enable()
 
     def on_hide_view(self):
         self.mng.disable()
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.mng.draw()
 
 

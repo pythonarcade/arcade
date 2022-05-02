@@ -15,7 +15,7 @@ from typing import (
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
-from arcade import Sprite
+from arcade import Sprite, get_window
 from arcade.gui.events import (
     UIEvent,
     UIMouseMovementEvent,
@@ -199,18 +199,18 @@ class UIWidget(EventDispatcher, ABC):
 
     # TODO add padding, bg, border to constructor
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 100,
-            children: Iterable["UIWidget"] = tuple(),
-            # Properties which might be used by layouts
-            size_hint=None,  # in percentage
-            size_hint_min=None,  # in pixel
-            size_hint_max=None,  # in pixel
-            style=None,
-            **kwargs,
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        children: Iterable["UIWidget"] = tuple(),
+        # Properties which might be used by layouts
+        size_hint=None,  # in percentage
+        size_hint_min=None,  # in pixel
+        size_hint_max=None,  # in pixel
+        style=None,
+        **kwargs,
     ):
         self.style = style or {}
 
@@ -266,7 +266,9 @@ class UIWidget(EventDispatcher, ABC):
         if index is None:
             self._children.append(_ChildEntry(child, kwargs))
         else:
-            self._children.insert(max(len(self.children), index), _ChildEntry(child, kwargs))
+            self._children.insert(
+                max(len(self.children), index), _ChildEntry(child, kwargs)
+            )
 
         return child
 
@@ -488,7 +490,7 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     def with_padding(
-            self, top=..., right=..., bottom=..., left=..., all=...
+        self, top=..., right=..., bottom=..., left=..., all=...
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -524,19 +526,19 @@ class UIWidget(EventDispatcher, ABC):
     @property
     def content_width(self):
         return (
-                self.rect.width
-                - 2 * self.border_width
-                - self.padding_left
-                - self.padding_right
+            self.rect.width
+            - 2 * self.border_width
+            - self.padding_left
+            - self.padding_right
         )
 
     @property
     def content_height(self):
         return (
-                self.rect.height
-                - 2 * self.border_width
-                - self.padding_top
-                - self.padding_bottom
+            self.rect.height
+            - 2 * self.border_width
+            - self.padding_top
+            - self.padding_bottom
         )
 
     @property
@@ -602,16 +604,16 @@ class UIInteractiveWidget(UIWidget):
     _pressed = False
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -650,7 +652,7 @@ class UIInteractiveWidget(UIWidget):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-                event.x, event.y
+            event.x, event.y
         ):
             self.pressed = True
             return EVENT_HANDLED
@@ -663,7 +665,7 @@ class UIInteractiveWidget(UIWidget):
                 return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(
-                event.x, event.y
+            event.x, event.y
         ):
             return self.dispatch_event("on_click", event)
 
@@ -693,17 +695,17 @@ class UIDummy(UIInteractiveWidget):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            color=arcade.color.BLACK,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        color=arcade.color.BLACK,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -714,27 +716,36 @@ class UIDummy(UIInteractiveWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
         )
-        self.color = color
-        self.frame = randint(0, 255)
+        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.border_color = arcade.color.BATTLESHIP_GREY
+
+        self.bg_color = (
+            get_window().background_color
+        )  # ensures a clean surface to draw on
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
+        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+    def on_update(self, dt):
+        self.border_width = 2 if self.hovered else 0
+        self.border_color = (
+            arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
+        )
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        self.frame += 1
-        frame = self.frame % 256
-        surface.clear((self.color[0], self.color[1], self.color[2], frame))
+        surface.clear(self.color)
 
-        if self.hovered:
-            arcade.draw_xywh_rectangle_outline(
-                0,
-                0,
-                self.width,
-                self.height,
-                color=arcade.color.BATTLESHIP_GREY,
-                border_width=3,
-            )
+        # if self.hovered:
+        #     arcade.draw_xywh_rectangle_outline(
+        #         0,
+        #         0,
+        #         self.width,
+        #         self.height,
+        #         color=arcade.color.BATTLESHIP_GREY,
+        #         border_width=3,
+        #     )
 
 
 class UISpriteWidget(UIWidget):
@@ -752,18 +763,18 @@ class UISpriteWidget(UIWidget):
     """
 
     def __init__(
-            self,
-            *,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            sprite: Sprite = None,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        *,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        sprite: Sprite = None,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -836,9 +847,9 @@ class UIWrapper(UILayout, UIWidgetParent):
     """
 
     def __init__(
-            self,
-            *,
-            child: UIWidget,
+        self,
+        *,
+        child: UIWidget,
     ):
         """
         :param child: Child Widget which will be wrapped
@@ -874,17 +885,17 @@ class UISpace(UIWidget):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            color=(0, 0, 0, 0),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        color=(0, 0, 0, 0),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,

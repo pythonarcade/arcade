@@ -1,7 +1,7 @@
-from typing import Iterable, TypeVar
+from typing import Iterable, TypeVar, Tuple
 
 from arcade.gui.property import bind
-from arcade.gui.widgets import UIWidget, UILayout, Rect
+from arcade.gui.widgets import UIWidget, UILayout
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -20,35 +20,49 @@ class UIAnchorLayout(UILayout):
     - align_y: float = 0
 
     """
+
     default_anchor_x = "center"
     default_anchor_y = "center"
 
-    def __init__(self,
-                 x: float = 0,
-                 y: float = 0,
-                 width: float = 100,
-                 height: float = 100,
-                 children: Iterable["UIWidget"] = tuple(),
-                 size_hint=(1, 1),
-                 size_hint_min=None,
-                 size_hint_max=None,
-                 style=None,
-                 **kwargs):
-        super().__init__(x, y, width, height, children, size_hint, size_hint_min, size_hint_max, style, **kwargs)
+    def __init__(
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        children: Iterable["UIWidget"] = tuple(),
+        size_hint=(1, 1),
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs
+    ):
+        super().__init__(
+            x,
+            y,
+            width,
+            height,
+            children,
+            size_hint,
+            size_hint_min,
+            size_hint_max,
+            style,
+            **kwargs
+        )
 
     def do_layout(self):
         for child, data in self._children:
             self._place_child(child, **data)
 
     def add(
-            self,
-            child: W,
-            *,
-            anchor_x: str = None,
-            align_x: float = 0,
-            anchor_y: str = None,
-            align_y: float = 0,
-            **kwargs
+        self,
+        child: W,
+        *,
+        anchor_x: str = None,
+        align_x: float = 0,
+        anchor_y: str = None,
+        align_y: float = 0,
+        **kwargs
     ) -> W:
         return super(UIAnchorLayout, self).add(
             child=child,
@@ -60,12 +74,12 @@ class UIAnchorLayout(UILayout):
         )
 
     def _place_child(
-            self,
-            child: UIWidget,
-            anchor_x: str = None,
-            align_x: float = 0,
-            anchor_y: str = None,
-            align_y: float = 0,
+        self,
+        child: UIWidget,
+        anchor_x: str = None,
+        align_x: float = 0,
+        anchor_y: str = None,
+        align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x
         anchor_y = anchor_y or self.default_anchor_y
@@ -114,18 +128,18 @@ class UIBoxLayout(UILayout):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            vertical=True,
-            align="center",
-            children: Iterable[UIWidget] = tuple(),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            space_between=0,
-            style=None,
-            **kwargs
+        self,
+        x=0,
+        y=0,
+        vertical=True,
+        align="center",
+        children: Iterable[UIWidget] = tuple(),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        space_between=0,
+        style=None,
+        **kwargs
     ):
         self.align = align
         self.vertical = vertical
@@ -151,17 +165,23 @@ class UIBoxLayout(UILayout):
     def _update_size_hints(self):
         required_space_between = max(0, len(self.children) - 1) * self._space_between
 
+        def min_size(child: UIWidget) -> Tuple[float, float]:
+            mw, mh = child.size_hint_min or (None, None)
+            return max(child.width, mw or 0), max(child.height, mh or 0)
+
+        min_child_sizes = [min_size(child) for child in self.children]
+
         if len(self.children) == 0:
             width = 0
             height = 0
         elif self.vertical:
-            width = max(child.width for child in self.children)
-            height_of_children = sum(child.height for child in self.children)
+            width = max(size[0] for size in min_child_sizes)
+            height_of_children = sum(size[1] for size in min_child_sizes)
             height = height_of_children + required_space_between
         else:
-            width_of_children = sum(child.width for child in self.children)
+            width_of_children = sum(size[0] for size in min_child_sizes)
             width = width_of_children + required_space_between
-            height = max(child.height for child in self.children)
+            height = max(size[1] for size in min_child_sizes)
 
         base_width = self.padding_left + self.padding_right + 2 * self.border_width
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
@@ -170,8 +190,11 @@ class UIBoxLayout(UILayout):
     def fit_content(self):
         """
         Resize to fit content, using `self.size_hint_min`
+
+        :return: self
         """
         self.rect = self.rect.resize(*self.size_hint_min)
+        return self
 
     def do_layout(self):
         start_y = self.content_rect.top
@@ -182,35 +205,50 @@ class UIBoxLayout(UILayout):
 
         if self.vertical:
             for child in self.children:
+                new_rect = child.rect
+
+                # process size_hint_min
+                if child.size_hint_min:
+                    new_rect = new_rect.min_size(*child.size_hint_min)
+
+                # align
                 if self.align == "left":
-                    new_rect = child.rect.align_left(start_x)
+                    new_rect = new_rect.align_left(start_x)
                 elif self.align == "right":
-                    new_rect = child.rect.align_right(start_x + self.content_width)
+                    new_rect = new_rect.align_right(start_x + self.content_width)
                 else:
                     center_x = start_x + self.content_width // 2
-                    new_rect = child.rect.align_center_x(center_x)
+                    new_rect = new_rect.align_center_x(center_x)
 
                 new_rect = new_rect.align_top(start_y)
-                if new_rect != child.rect:
-                    child.rect = new_rect
+                child.rect = new_rect
+
                 start_y -= child.height
                 start_y -= self._space_between
         else:
             center_y = start_y - self.content_height // 2
 
             for child in self.children:
+                new_rect = child.rect
+
+                # process size_hint_min
+                if child.size_hint_min:
+                    new_rect = new_rect.min_size(*child.size_hint_min)
+
+                # align
                 if self.align == "top":
-                    new_rect = child.rect.align_top(start_y)
+                    new_rect = new_rect.align_top(start_y)
                 elif self.align == "bottom":
-                    new_rect = child.rect.align_bottom(start_y - self.content_height)
+                    new_rect = new_rect.align_bottom(start_y - self.content_height)
                 else:
-                    new_rect = child.rect.align_center_y(center_y)
+                    new_rect = new_rect.align_center_y(center_y)
 
                 new_rect = new_rect.align_left(start_x)
-                if new_rect != child.rect:
-                    child.rect = new_rect
+                child.rect = new_rect
+
                 start_x += child.width
                 start_x += self._space_between
+
 
 class UIGridLayout(UILayout):
     """
@@ -228,22 +266,37 @@ class UIGridLayout(UILayout):
     :param int column_count: Number of columns in the grid, can be changed
     :param int row_count: Number of rows in the grid, can be changed
     """
-    def __init__(self, x=0,
-                 y=0,
-                 align_horizontal="center",
-                 align_vertical="center",
-                 children: Iterable[UIWidget] = tuple(),
-                 size_hint=None,
-                 size_hint_min=None,
-                 size_hint_max=None,
-                 horizontal_spacing: int = 0,
-                 vertical_spacing: int = 0,
-                 column_count: int = 1,
-                 row_count: int = 1, style=None, **kwargs):
 
-        super(UIGridLayout, self).__init__(x=x, y=y, width=0, height=0, children=children,
-                                           size_hint=size_hint, size_hint_min=size_hint_min,
-                                           size_hint_max=size_hint_max, style=style, **kwargs)
+    def __init__(
+        self,
+        x=0,
+        y=0,
+        align_horizontal="center",
+        align_vertical="center",
+        children: Iterable[UIWidget] = tuple(),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        horizontal_spacing: int = 0,
+        vertical_spacing: int = 0,
+        column_count: int = 1,
+        row_count: int = 1,
+        style=None,
+        **kwargs
+    ):
+
+        super(UIGridLayout, self).__init__(
+            x=x,
+            y=y,
+            width=0,
+            height=0,
+            children=children,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+            style=style,
+            **kwargs
+        )
 
         self._horizontal_spacing = horizontal_spacing
         self._vertical_spacing = vertical_spacing
@@ -279,16 +332,17 @@ class UIGridLayout(UILayout):
 
         base_width = self.padding_left + self.padding_right + 2 * self.border_width
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
-        content_height = sum(max_height_per_row) + (self.row_count - 1) * self._vertical_spacing
-        content_width = sum(max_width_per_column) + (self.column_count - 1) * self._horizontal_spacing
+        content_height = (
+            sum(max_height_per_row) + (self.row_count - 1) * self._vertical_spacing
+        )
+        content_width = (
+            sum(max_width_per_column)
+            + (self.column_count - 1) * self._horizontal_spacing
+        )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
-    def add(self,
-            child: W,
-            col_num: int = 0,
-            row_num: int = 0,
-            **kwargs) -> W:
+    def add(self, child: W, col_num: int = 0, row_num: int = 0, **kwargs) -> W:
         """
         Adds widgets in the grid.
 
