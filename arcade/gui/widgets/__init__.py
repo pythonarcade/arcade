@@ -144,9 +144,15 @@ class Rect(NamedTuple):
         return self.move(dy=diff_y)
 
     def min_size(self, width=0.0, height=0.0):
+        """
+        Sets the size to at least the given min values.
+        """
         return Rect(self.x, self.y, max(width, self.width), max(height, self.height))
 
     def max_size(self, width: float = None, height: float = None):
+        """
+        Limits the size to the given max values.
+        """
         w, h = self.size
         if width:
             w = min(width, self.width)

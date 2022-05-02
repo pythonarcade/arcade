@@ -47,6 +47,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     Supports `size_hint` to grow/shrink direct children dependent on window size.
     Supports `size_hint_min` to ensure size of direct children (e.g. UIBoxLayout).
+    Supports `size_hint_max` to ensure size of direct children (e.g. UIBoxLayout).
 
     .. code:: py
 
@@ -176,6 +177,12 @@ class UIManager(EventDispatcher, UIWidgetParent):
                     shm_w, shm_h = child.size_hint_min
                     child.rect = child.rect.min_size(shm_w or 0, shm_h or 0)
 
+                if child.size_hint_max:
+                    shm_w, shm_h = child.size_hint_max
+                    child.rect = child.rect.max_size(
+                        shm_w or child.width, shm_h or child.height
+                    )
+
                 child._do_layout()
 
     def _do_render(self, force=False):
@@ -252,8 +259,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         # When drawing into the framebuffer we need to set a separate
         # blend function for the alpha component.
         ctx.blend_func = (
-            ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
-            ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA         # Alpha blend func
+            ctx.SRC_ALPHA,
+            ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
+            ctx.ONE,
+            ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
         )
         self._do_render()
 

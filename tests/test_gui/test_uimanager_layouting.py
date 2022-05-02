@@ -46,3 +46,16 @@ def test_supports_size_hint_min(window):
     manager.draw()
 
     assert widget1.size == (120, 200)
+
+
+def test_supports_size_hint_max(window):
+    manager = UIManager()
+
+    widget1 = UIDummy()
+    widget1.size_hint_max = (50, 60)
+
+    manager.add(widget1)
+
+    manager.draw()
+
+    assert widget1.size == (50, 60)
