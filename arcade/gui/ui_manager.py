@@ -233,18 +233,13 @@ class UIManager(EventDispatcher, UIWidgetParent):
         )
         self._do_render()
 
-        # This should cause the framebuffer texture to have the correct alpha
-        # values for blending the texture to the screen when using the following
-        # blend function (Surface):
-        ctx.blend_func = ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA
+        # Reset back to default blend function
+        ctx.blend_func = ctx.BLEND_DEFAULT
 
         # Draw layers
         layers = sorted(self.children.keys())
         for layer in layers:
             self._get_surface(layer).draw()
-
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
 
     def adjust_mouse_coordinates(self, x, y):
         """
