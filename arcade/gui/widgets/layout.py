@@ -263,7 +263,7 @@ class UIGridLayout(UILayout):
         max_width_per_column = [0] * self.column_count
         max_height_per_row = [0] * self.row_count
 
-        child_sorted_row_wise = [[] for _ in range(self.row_count)]
+        child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
 
         for child, data in self._children:
             col_num = data["col_num"]
@@ -275,9 +275,8 @@ class UIGridLayout(UILayout):
             if child.height > max_height_per_row[row_num]:
                 max_height_per_row[row_num] = child.height
 
-            child_sorted_row_wise[row_num].append(child)
+            child_sorted_row_wise[row_num][col_num] = child
 
-        # row wise rendering children
         base_width = self.padding_left + self.padding_right + 2 * self.border_width
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
         content_height = sum(max_height_per_row) + (self.row_count - 1) * self._vertical_spacing
@@ -309,7 +308,7 @@ class UIGridLayout(UILayout):
         max_width_per_column = [0] * self.column_count
         max_height_per_row = [0] * self.row_count
 
-        child_sorted_row_wise = [[] for _ in range(self.row_count)]
+        child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
 
         for child, data in self._children:
             col_num = data["col_num"]
@@ -321,7 +320,7 @@ class UIGridLayout(UILayout):
             if child.height > max_height_per_row[row_num]:
                 max_height_per_row[row_num] = child.height
 
-            child_sorted_row_wise[row_num].append(child)
+            child_sorted_row_wise[row_num][col_num] = child
 
         # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -334,22 +333,24 @@ class UIGridLayout(UILayout):
                 max_width = max_width_per_column[col_num] + self._horizontal_spacing
                 center_x = start_x + max_width // 2
 
-                if self.align_vertical == "top":
-                    new_rect = child.rect.align_top(start_y)
-                elif self.align_vertical == "bottom":
-                    new_rect = child.rect.align_bottom(start_y - max_height)
-                else:
-                    new_rect = child.rect.align_center_y(center_y)
-
-                if self.align_horizontal == "left":
-                    new_rect = new_rect.align_left(start_x)
-                elif self.align_horizontal == "right":
-                    new_rect = new_rect.align_right(start_x + max_width)
-                else:
-                    new_rect = new_rect.align_center_x(center_x)
-
-                if new_rect != child.rect:
-                    child.rect = new_rect
                 start_x += max_width
+
+                if child is not None:
+                    if self.align_vertical == "top":
+                        new_rect = child.rect.align_top(start_y)
+                    elif self.align_vertical == "bottom":
+                        new_rect = child.rect.align_bottom(start_y - max_height)
+                    else:
+                        new_rect = child.rect.align_center_y(center_y)
+
+                    if self.align_horizontal == "left":
+                        new_rect = new_rect.align_left(start_x - max_width)
+                    elif self.align_horizontal == "right":
+                        new_rect = new_rect.align_right(start_x)
+                    else:
+                        new_rect = new_rect.align_center_x(center_x)
+
+                    if new_rect != child.rect:
+                        child.rect = new_rect
 
             start_y -= max_height
