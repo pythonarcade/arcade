@@ -128,7 +128,7 @@ class Texture:
         background color, you can save CPU time and RAM by calling this
         function once, then passing the ``image`` attribute of the
         resulting Texture object to the class constructor for each
-        additional blank Texture instance you would like to create.
+        additional filled Texture instance you would like to create.
         This can be especially helpful if you are creating multiple
         large Textures.
         """
