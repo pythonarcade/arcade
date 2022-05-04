@@ -1375,8 +1375,7 @@ class SpriteSolidColor(Sprite):
 
         # otherwise, generate a filler sprite and add it to the cache
         else:
-            image = PIL.Image.new("RGBA", (width, height), color)
-            texture = Texture(cache_name, image)
+            texture = Texture.create_filled(cache_name, (width, height), color)
             load_texture.texture_cache[cache_name] = texture  # type: ignore
 
         # apply chosen texture to the current sprite
