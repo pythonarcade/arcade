@@ -342,15 +342,17 @@ class UIGridLayout(UILayout):
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
-    def add(self, child: W, col_num: int = 0, row_num: int = 0, **kwargs) -> W:
+    def add(self, child: W, col_num: int = 0, row_num: int = 0, col_span: int = 1, row_span: int = 1, **kwargs) -> W:
         """
         Adds widgets in the grid.
 
         :param UIWidget child: The widget which is to be added in the grid
         :param int col_num: The column number in which the widget is to be added (first column is numbered 0; left)
         :param int row_num: The row number in which the widget is to be added (first row is numbered 0; top)
+        :param int col_span: Number of columns the widget will stretch for.
+        :param int row_span: Number of rows the widget will stretch for.
         """
-        return super().add(child, col_num=col_num, row_num=row_num, **kwargs)
+        return super().add(child, col_num=col_num, row_num=row_num, col_span=col_span, row_span=row_span, **kwargs)
 
     def do_layout(self):
         initial_left_x = self.content_rect.left
@@ -359,37 +361,64 @@ class UIGridLayout(UILayout):
         if not self.children:
             return
 
-        max_width_per_column = [0] * self.column_count
-        max_height_per_row = [0] * self.row_count
-
         child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
+
+        max_width_per_column = [[(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)]
+        max_height_per_row = [[(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)] 
 
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
+            col_span = data['col_span']
+            row_span = data["row_span"]
 
-            if child.width > max_width_per_column[col_num]:
-                max_width_per_column[col_num] = child.width
+            for i in range(col_num, col_span + col_num):
+                max_width_per_column[i][row_num] = (0, 0)
 
-            if child.height > max_height_per_row[row_num]:
-                max_height_per_row[row_num] = child.height
+            max_width_per_column[col_num][row_num] = (child.width, col_span)
 
-            child_sorted_row_wise[row_num][col_num] = child
+            for i in range(row_num, row_span + row_num):
+                max_height_per_row[i][col_num] = (0, 0)
+
+            max_height_per_row[row_num][col_num] = (child.height * row_span, row_span)
+
+            for row in child_sorted_row_wise[row_num: row_num + row_span]:
+                row[col_num: col_num+col_span] = [child]*col_span
+
+        # making max_height_per_row and max_width_per_column uniform
+        for row in max_height_per_row:
+            principal_height_ratio = max(height / (span or 1) for height, span in row)
+            for i, (height, span) in enumerate(row):
+                if height / (span or 1) < principal_height_ratio:
+                    row[i] = (principal_height_ratio * span, span)
+
+        for col in max_width_per_column:
+            principal_width_ratio = max(width / (span or 1) for width, span in col)
+            for i, (width, span) in enumerate(col):
+                if width / (span or 1) < principal_width_ratio:
+                    col[i] = (principal_width_ratio * span, span)
 
         # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
-            max_height = max_height_per_row[row_num] + self._vertical_spacing
-            center_y = start_y - (max_height // 2)
-
+            max_height_row = 0
             start_x = initial_left_x
 
             for col_num, child in enumerate(row):
-                max_width = max_width_per_column[col_num] + self._horizontal_spacing
-                center_x = start_x + max_width // 2
+                max_height = max_height_per_row[row_num][col_num][0] + self._vertical_spacing
+                center_y = start_y - (max_height / 2)
+
+                max_width = max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
+                center_x = start_x + (max_width / 2)
 
                 start_x += max_width
 
-                if child is not None:
+                col_span = max_width_per_column[col_num][row_num][1] or 1
+                row_span = max_height_per_row[row_num][col_num][1] or 1
+
+                if max_height / row_span > max_height_row:
+                    max_height_row = max_height / row_span
+
+                if child is not None and max_width != 0 and max_height != 0:
                     if self.align_vertical == "top":
                         new_rect = child.rect.align_top(start_y)
                     elif self.align_vertical == "bottom":
@@ -407,4 +436,4 @@ class UIGridLayout(UILayout):
                     if new_rect != child.rect:
                         child.rect = new_rect
 
-            start_y -= max_height
+            start_y -= max_height_row

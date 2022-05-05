@@ -11,19 +11,26 @@ class UIMockup(arcade.Window):
         self.manager.enable()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        dummy1 = UIDummy(width=50, height=100)
-        dummy2 = UIDummy(width=100, height=100)
-        dummy3 = UIDummy(width=100, height=50)
-        dummy4 = UIDummy(width=50, height=50)
+        dummy1 = UIDummy(width=100, height=100)
+        dummy2 = UIDummy(width=50, height=50)
+        dummy3 = UIDummy(width=50, height=50)
+        dummy4 = UIDummy(width=200, height=100)
+        dummy5 = UIDummy(width=100, height=100)
+        dummy6 = UIDummy(width=100, height=100)
+        dummy7 = UIDummy(width=100, height=100)
 
         subject = UIGridLayout(
-            column_count=2,
-            row_count=2
+            column_count=4,
+            row_count=3
         ).with_border().with_padding(left=10)
+
         subject.add(dummy1, 0, 0)
         subject.add(dummy2, 0, 1)
         subject.add(dummy3, 1, 0)
         subject.add(dummy4, 1, 1)
+        subject.add(dummy5, 0, 2, col_span=4)
+        subject.add(dummy6, 3, 0, row_span=2)
+        subject.add(dummy7, 2, 1)
 
         anchor = UIAnchorLayout()
         anchor.add(subject)
