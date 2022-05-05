@@ -383,7 +383,7 @@ class UIGridLayout(UILayout):
             max_height_per_row[row_num][col_num] = (child.height * row_span, row_span)
 
             for row in child_sorted_row_wise[row_num: row_num + row_span]:
-                row[col_num: col_num+col_span] = [child]*col_span
+                row[col_num: col_num + col_span] = [child] * col_span
 
         # making max_height_per_row and max_width_per_column uniform
         for row in max_height_per_row:

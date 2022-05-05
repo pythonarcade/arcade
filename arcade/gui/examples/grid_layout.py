@@ -41,6 +41,7 @@ class UIMockup(arcade.Window):
         self.clear()
         self.manager.draw()
 
+
 if __name__ == '__main__':
     window = UIMockup()
     arcade.run()
