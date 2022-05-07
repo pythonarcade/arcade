@@ -17,7 +17,7 @@ uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 import string
 from datetime import datetime
 from pathlib import Path
-from typing import Any, List, Tuple, Optional, Union
+from typing import List, Tuple, Optional, Union
 
 from arcade import get_window
 import arcade
