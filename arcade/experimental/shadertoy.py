@@ -14,8 +14,8 @@ uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
-from arcade.gl.framebuffer import Framebuffer
 import string
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Tuple, Optional, Union
 
@@ -24,6 +24,7 @@ import arcade
 from arcade.context import ArcadeContext
 from arcade.gl import geometry, Texture
 from arcade.gl.program import Program
+from arcade.gl.framebuffer import Framebuffer
 
 
 class ShadertoyBase:
@@ -260,6 +261,7 @@ class ShadertoyBase:
         self.set_uniform('iMouse', (*self._mouse_pos, *self._mouse_buttons))
         self.set_uniform('iResolution', (*self._size, 1.0))
         self.set_uniform('iFrame', self._frame)
+        self.set_uniform('iDate', self._get_date())
 
     def set_uniform(self, name: str, value: Any) -> None:
         """
@@ -272,6 +274,12 @@ class ShadertoyBase:
             self._program[name] = value
         except KeyError:
             pass
+
+    def _get_date(self) -> Tuple[float, float, float, float]:
+        """Create year, month, day, seconds data for iDate"""
+        now = datetime.now()
+        seconds = now.hour * 60 * 60 + now.minute * 60 + now.second + now.microsecond / 1_000_000
+        return now.year, now.month, now.day, seconds
 
     def _set_source(self, source: str):
         """
