@@ -40,6 +40,7 @@ class ShadertoyBase:
         self._source = source
         # Uniforms
         self._mouse_pos = 0.0, 0.0
+        self._mouse_buttons = 0.0, 0.0
         self._time: float = 0.0
         self._time_delta: float = 0.0
         self._frame: int = 0
@@ -55,7 +56,9 @@ class ShadertoyBase:
     @property
     def size(self) -> Tuple[int, int]:
         """
-        Get or set the size in pixels
+        Get or set the size in pixels.
+
+        Mapped to uniform ``iResolution.xy``.
         """
         return self._size
 
@@ -66,7 +69,9 @@ class ShadertoyBase:
     @property
     def time(self) -> float:
         """
-        Get or set the current time
+        Get or set the current time.
+
+        Mapped to uniform ``iTime``.
         """
         return self._time
 
@@ -77,7 +82,9 @@ class ShadertoyBase:
     @property
     def time_delta(self) -> float:
         """
-        Get or set the current delta time
+        Get or set the current delta time.
+
+        Mapped to uniform ``iTimeDelta``.
         """
         return self._time_delta
 
@@ -90,6 +97,8 @@ class ShadertoyBase:
         """
         Get or set the current delta time.
         An alternative to ``time_delta``.
+
+        Mapped to uniform ``iTimeDelta``.
         """
         return self._time_delta
 
@@ -100,7 +109,9 @@ class ShadertoyBase:
     @property
     def frame(self) -> int:
         """
-        Get or set the current frame
+        Get or set the current frame.
+
+        Mapped to uniform ``iFrame``.
         """
         return self._frame
 
@@ -111,13 +122,31 @@ class ShadertoyBase:
     @property
     def mouse_position(self) -> Tuple[float, float]:
         """
-        Get or set the current mouse position
+        Get or set the current mouse position.
+
+        Mapped to uniform ``iMouse.xy``.
         """
         return self._mouse_pos
 
     @mouse_position.setter
     def mouse_position(self, value):
         self._mouse_pos = value
+
+    @property
+    def mouse_buttons(self) -> Tuple[float, float]:
+        """
+        Get or set the mouse button states.
+        Depending on the use case these can contain
+        a non-zero value when buttons are pushed and/or
+        the actual click position.
+
+        Mapped to uniform ``iMouse.zw``.
+        """
+        return self._mouse_buttons
+
+    @mouse_buttons.setter
+    def mouse_button(self, value: Tuple[float, float]):
+        self._mouse_buttons = value
 
     @property
     def channel_0(self) -> Optional[Texture]:
@@ -228,8 +257,8 @@ class ShadertoyBase:
         """Attempt to set all supported uniforms"""
         self.set_uniform('iTime', self._time)
         self.set_uniform('iTimeDelta', self._time_delta)
-        self.set_uniform('iMouse', (self._mouse_pos[0], self._mouse_pos[1]))
-        self.set_uniform('iResolution', self._size)
+        self.set_uniform('iMouse', (*self._mouse_pos, *self._mouse_buttons))
+        self.set_uniform('iResolution', (*self._size, 1.0))
         self.set_uniform('iFrame', self._frame)
 
     def set_uniform(self, name: str, value: Any) -> None:
