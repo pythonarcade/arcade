@@ -45,6 +45,7 @@ class ShadertoyBase:
         self._time: float = 0.0
         self._time_delta: float = 0.0
         self._frame: int = 0
+        self._frame_rate: float = 0.0
         # Shader inputs
         self._channel_0: Optional[Texture] = None
         self._channel_1: Optional[Texture] = None
@@ -119,6 +120,19 @@ class ShadertoyBase:
     @frame.setter
     def frame(self, value):
         self._frame = value
+
+    @property
+    def frame_rate(self) -> float:
+        """
+        Get or set the frame rate.
+
+        Mapped to uniform ``iFrameRate``.
+        """
+        return self._frame_rate
+
+    @frame_rate.setter
+    def frame_rate(self, value: float):
+        self._frame_rate = value
 
     @property
     def mouse_position(self) -> Tuple[float, float]:
@@ -215,6 +229,7 @@ class ShadertoyBase:
         mouse_position: Optional[Tuple[float, float]] = None,
         size: Optional[Tuple[int, int]] = None,
         frame: Optional[int] = None,
+        frame_rate: Optional[float] = None,
     ):
         """
         Render the shadertoy project to the screen.
@@ -230,6 +245,7 @@ class ShadertoyBase:
         self._mouse_pos = mouse_position if mouse_position is not None else self._mouse_pos
         self._size = size if size is not None else self._size
         self._frame = frame if frame is not None else self._frame
+        self._frame_rate = frame_rate if frame_rate is not None else self._frame_rate
         self._render()
 
     def _render(self):
@@ -261,6 +277,7 @@ class ShadertoyBase:
         self.set_uniform('iMouse', (*self._mouse_pos, *self._mouse_buttons))
         self.set_uniform('iResolution', (*self._size, 1.0))
         self.set_uniform('iFrame', self._frame)
+        self.set_uniform('iFrameRate', self._frame_rate)
         self.set_uniform('iDate', self._get_date())
 
     def set_uniform(self, name: str, value: Any) -> None:

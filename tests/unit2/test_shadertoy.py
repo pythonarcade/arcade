@@ -65,6 +65,8 @@ def test_getters_setters(ctx):
     assert st.delta_time == 0.2
     st.time = 100.0
     assert st.time == 100.0
+    st.frame_rate = 60.0
+    assert st.frame_rate == 60.0
 
 
 def check_internals(st: Shadertoy):
