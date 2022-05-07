@@ -145,7 +145,7 @@ class ShadertoyBase:
         return self._mouse_buttons
 
     @mouse_buttons.setter
-    def mouse_button(self, value: Tuple[float, float]):
+    def mouse_buttons(self, value: Tuple[float, float]):
         self._mouse_buttons = value
 
     @property
