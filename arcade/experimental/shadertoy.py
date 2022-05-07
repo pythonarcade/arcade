@@ -17,18 +17,22 @@ uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 from arcade.gl.framebuffer import Framebuffer
 import string
 from pathlib import Path
-from typing import Tuple, Optional, Union
+from typing import Any, Tuple, Optional, Union
 
 from arcade import get_window
 import arcade
 from arcade.context import ArcadeContext
 from arcade.gl import geometry, Texture
+from arcade.gl.program import Program
 
 
 class ShadertoyBase:
     """
     Base class for shadertoy types.
     It can represent the main image or buffers.
+
+    :param Tuple[int,int] size: screen/area size
+    :param str source: The mainImage shader source
     """
     def __init__(self, size: Tuple[int, int], source: str):
         self._ctx = get_window().ctx
@@ -160,14 +164,17 @@ class ShadertoyBase:
         self._channel_3 = value
 
     @property
-    def program(self):
+    def program(self) -> Program:
+        """The shader program"""
         return self._program
 
     @property
     def ctx(self) -> ArcadeContext:
+        """The context"""
         return self._ctx
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: Tuple[int, int]) -> None:
+        """Resize of this shadertoy or buffer"""
         raise NotImplementedError
 
     def render(
@@ -179,7 +186,15 @@ class ShadertoyBase:
         size: Optional[Tuple[int, int]] = None,
         frame: Optional[int] = None,
     ):
-        """Render the shadertoy project to the screen"""
+        """
+        Render the shadertoy project to the screen.
+
+        :param float time: Override the time
+        :param time_delta: Override the time delta
+        :param mouse_position: Override mouse position
+        :param size: Override the size
+        :param frame: Override frame
+        """
         self._time = time if time is not None else self._time
         self._time_delta = time_delta if time_delta is not None else self._time_delta
         self._mouse_pos = mouse_position if mouse_position is not None else self._mouse_pos
@@ -191,10 +206,15 @@ class ShadertoyBase:
         raise NotImplementedError        
 
     def reload(self, source: str):
-        """Update the shader source code"""
+        """
+        Update the shader source code.
+
+        :param str source: New mainImage shader source
+        """
         self._set_source(source)
 
     def _bind_channels(self):
+        """Bind channel textures if set"""
         if self._channel_0:
             self._channel_0.use(0)
         if self._channel_1:
@@ -206,24 +226,21 @@ class ShadertoyBase:
 
     def _set_uniforms(self):
         """Attempt to set all supported uniforms"""
+        self.set_uniform('iTime', self._time)
+        self.set_uniform('iTimeDelta', self._time_delta)
+        self.set_uniform('iMouse', (self._mouse_pos[0], self._mouse_pos[1]))
+        self.set_uniform('iResolution', self._size)
+        self.set_uniform('iFrame', self._frame)
+
+    def set_uniform(self, name: str, value: Any) -> None:
+        """
+        Safely set a uniform caching KeyError.
+
+        :param str name: Name of uniform
+        :param Any value: Value of uniform
+        """
         try:
-            self._program['iTime'] = self._time
-        except KeyError:
-            pass
-        try:
-            self._program['iTimeDelta'] = self._time_delta
-        except KeyError:
-            pass
-        try:
-            self._program['iMouse'] = self._mouse_pos[0], self._mouse_pos[1]
-        except KeyError:
-            pass
-        try:
-            self._program['iResolution'] = self._size
-        except KeyError:
-            pass
-        try:
-            self._program['iFrame'] = self._frame
+            self._program[name] = value
         except KeyError:
             pass
 
@@ -257,9 +274,12 @@ class ShadertoyBase:
 class ShadertoyBuffer(ShadertoyBase):
     """
     An offscreen framebuffer we can render to with the supplied
-    shader or render any other content into. 
-    """
+    shader or render any other content into.
 
+    :param Tuple[int,int] size: Size of framebuffer / texture
+    :param str source: mainImage shader source
+    :param bool repeat: Repeat/wrap mode for the underlying texture
+    """
     def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
         self._texture = self.ctx.texture(self._size, components=4)
@@ -277,10 +297,14 @@ class ShadertoyBuffer(ShadertoyBase):
 
     @property
     def fbo(self) -> Framebuffer:
+        """The framebuffer for this buffer"""
         return self._fbo
 
     @property
     def repeat(self) -> bool:
+        """
+        Get or set texture repeat.
+        """
         return self._repeat
 
     @repeat.setter
@@ -307,7 +331,11 @@ class ShadertoyBuffer(ShadertoyBase):
             self._quad.render(self._program)
 
     def resize(self, size: Tuple[int, int]):
-        """Resize the internal texture"""
+        """
+        Change the internal buffer size.
+
+        :param Tuple[int,int] size: New size
+        """
         if self._size == size:
             return
         self._size = size
@@ -376,20 +404,32 @@ class Shadertoy(ShadertoyBase):
 
     @classmethod
     def create_from_file(cls, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
+        """
+        Create a Shadertoy from a mainImage shader file.
+
+        :param Tuple[int,int] size: Size of shadertoy in pixels
+        :param str path: Path to mainImage shader file
+        """
         path = arcade.resources.resolve_resource_path(path)
         with open(path) as fd:
             source = fd.read()
         return cls(size, source)
 
-    def create_buffer(self, source, repeat: bool = False) -> ShadertoyBuffer:
+    def create_buffer(self, source: str, repeat: bool = False) -> ShadertoyBuffer:
         """
-        Shortcut for creating a buffer.
+        Shortcut for creating a buffer from mainImage shader file.
+
+        :param str source: Path to shader file
+        :param bool repeat: Buffer/texture repeat at borders
         """
         return ShadertoyBuffer(self._size, source, repeat=repeat)
 
     def create_buffer_from_file(self, path: Union[str, Path]) -> ShadertoyBuffer:
         """
-        Shortcut for creating a buffer.
+        Shortcut for creating a ShadertoyBuffer from shaders source.
+        The size of the framebuffer will be the same as the Shadertoy.
+
+        :param str path: Path to shader source
         """
         path = arcade.resources.resolve_resource_path(path)
         with open(path) as fd:
