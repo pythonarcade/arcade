@@ -5,8 +5,6 @@
 Ray-casting Shadows
 ===================
 
-.. contents::
-
 .. image:: example.png
 
 A common effect for many games is **ray-casting**. Having the user only be able to see

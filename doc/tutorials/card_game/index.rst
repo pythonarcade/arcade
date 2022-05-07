@@ -5,8 +5,6 @@
 Solitaire Tutorial
 ==================
 
-.. contents::
-
 .. image:: animated.gif
 
 This solitaire tutorial takes you though the basics of creating a card game, and

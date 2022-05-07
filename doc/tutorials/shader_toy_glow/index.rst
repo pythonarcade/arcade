@@ -3,8 +3,6 @@
 Shader Toy Tutorial - Glow
 ==========================
 
-.. contents::
-
 .. figure:: cyber_fuji_2020.png
    :width: 60%
 
@@ -50,7 +48,21 @@ This program will load a GLSL program and display it. We'll write our shader in 
 .. literalinclude:: shadertoy_demo_2.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 2, 11-16, 20
+    :emphasize-lines: 2, 11-14, 18
+
+.. note::
+
+   The proper way to read in a file to a string is using a **with** statement.
+   For clarity/brevity our code isn't doing that in the presentation. Here's the
+   proper way to do it:
+
+   .. code-block::
+
+        file_name = "circle_1.glsl"
+        with open(file_name) as file:
+            shader_source = file.read()
+        self.shadertoy = Shadertoy(size=self.get_size(),
+                                   main_source=shader_source)
 
 Step 3: Write a shader
 ----------------------
@@ -179,7 +191,7 @@ Python program:
 .. literalinclude:: shadertoy_demo_3.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 19-21
+    :emphasize-lines: 17-19
 
 Then we can use those uniforms in our shader:
 
