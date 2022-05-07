@@ -30,47 +30,20 @@ BUTTON_SIZE = 30
 class SoundButton(arcade.SpriteSolidColor):
     """Button, click-for-sound"""
 
-    def __init__(self, sound_file, pan, volume, center_x, center_y):
+    def __init__(self, sound_file, speed, volume, center_x, center_y):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
-        self.pan = pan
+        self.speed = speed
         self.volume = volume
         self.center_x = center_x
         self.center_y = center_y
 
     def play(self):
         """Play"""
-        self.sound.play(pan=self.pan, volume=self.volume)
+        self.sound.play(speed=self.speed, volume=self.volume)
 
     def draw(self):
         super().draw(self)
-
-
-class AudioStreamButton(arcade.SpriteSolidColor):
-    """Button, click-for-streaming-sound"""
-
-    def __init__(self, sound_file, pan, volume):
-        super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
-        self.sound = arcade.Sound(sound_file, streaming=True)
-        self.pan = pan
-        self.volume = volume
-
-    def play(self):
-        """Play"""
-        self.sound.play(volume=self.volume, pan=self.pan)
-
-    def volume_up(self):
-        vol = self.sound.get_volume()
-        self.sound.set_volume(vol + 0.1)
-        print(f"Volume: {self.sound.get_volume()}")
-
-    def volume_down(self):
-        vol = self.sound.get_volume()
-        self.sound.set_volume(vol - 0.1)
-        print(f"Volume: {self.sound.get_volume()}")
-
-    def stream_position(self):
-        print(f"Current position: {self.sound.get_stream_position()}")
 
 
 class MyGame(arcade.Window):
@@ -92,35 +65,28 @@ class MyGame(arcade.Window):
     def setup(self):
         self.button_sprites = arcade.SpriteList()
 
-        y = SCREEN_HEIGHT / 2 + 150
-        volume = 0.1
-        button = AudioStreamButton(
-            ":resources:music/funkyrobot.mp3", pan=-1.0, volume=volume
-        )
-        button.center_x = BUTTON_SIZE
-        button.center_y = y
-        self.button_sprites.append(button)
-
-        upgrade_sound = ":resources:sounds/upgrade4.wav"
+        upgrade_sound = ":resources:sounds/gameover3.wav"
 
         # fmt: off
         button_params = [
-        #    sound        , pan  , vol , x                          , y
-            [upgrade_sound, -1.0 , 0.1 , BUTTON_SIZE                , SCREEN_HEIGHT / 2 + 50 ],
-            [upgrade_sound, -0.5 , 0.1 , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2 + 50 ],
-            [upgrade_sound,  0   , 0.1 , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2 + 50 ],
-            [upgrade_sound,  0.5 , 0.1 , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2 + 50 ],
-            [upgrade_sound,  1.0 , 0.1 , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2 + 50 ],
-            [upgrade_sound, -1.0 , 0.5 , BUTTON_SIZE                , SCREEN_HEIGHT / 2      ],
-            [upgrade_sound, -0.5 , 0.5 , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2      ],
-            [upgrade_sound,  0   , 0.5 , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2      ],
-            [upgrade_sound,  0.5 , 0.5 , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2      ],
-            [upgrade_sound,  1.0 , 0.5 , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2      ],
-            [upgrade_sound, -1.0 , 1   , BUTTON_SIZE                , SCREEN_HEIGHT / 2 - 50 ],
-            [upgrade_sound, -0.5 , 1   , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2 - 50 ],
-            [upgrade_sound,  0   , 1   , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2 - 50 ],
-            [upgrade_sound,  0.5 , 1   , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2 - 50 ],
-            [upgrade_sound,  1.0 , 1   , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2 - 50 ],
+        #    sound        , speed, vol   , x                          , y
+            [upgrade_sound, 0.1 , 0.1   , BUTTON_SIZE                , SCREEN_HEIGHT / 2 + 50 ],
+            [upgrade_sound, 0.5 , 0.1   , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2 + 50 ],
+            [upgrade_sound, 1.0 , 0.1   , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2 + 50 ],
+            [upgrade_sound, 2.0 , 0.1   , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2 + 50 ],
+            [upgrade_sound, 4.0 , 0.1   , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2 + 50 ],
+            
+            [upgrade_sound, 0.1 , 0.5   , BUTTON_SIZE                , SCREEN_HEIGHT / 2      ],
+            [upgrade_sound, 0.5 , 0.5   , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2      ],
+            [upgrade_sound, 1.0 , 0.5   , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2      ],
+            [upgrade_sound, 2.0 , 0.5   , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2      ],
+            [upgrade_sound, 4.0 , 0.5   , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2      ],
+            
+            [upgrade_sound, 0.1 , 1     , BUTTON_SIZE                , SCREEN_HEIGHT / 2 - 50 ],
+            [upgrade_sound, 0.5 , 1     , SCREEN_WIDTH / 4           , SCREEN_HEIGHT / 2 - 50 ],
+            [upgrade_sound, 1.0 , 1     , SCREEN_WIDTH / 2           , SCREEN_HEIGHT / 2 - 50 ],
+            [upgrade_sound, 2.0 , 1     , SCREEN_WIDTH / 4 * 3       , SCREEN_HEIGHT / 2 - 50 ],
+            [upgrade_sound, 4.0 , 1     , SCREEN_WIDTH - BUTTON_SIZE , SCREEN_HEIGHT / 2 - 50 ],
         ]
         # fmt: on
 

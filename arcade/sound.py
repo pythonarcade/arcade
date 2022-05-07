@@ -40,7 +40,7 @@ class Sound:
         volume: float = 1.0,
         pan: float = 0.0,
         loop: bool = False,
-        pitch: float = 1.0
+        speed: float = 1.0
     ) -> media.Player:
         """
         Play the sound.
@@ -58,7 +58,7 @@ class Sound:
         player: media.Player = media.Player()
         player.volume = volume
         player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))  # used to mimic panning with 3D audio
-        player.pitch = pitch
+        player.pitch = speed # note that the underlying attribute is pitch but "speed" is used because it better describes the behavior see #1198
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -159,7 +159,7 @@ def play_sound(
     volume: float = 1.0,
     pan: float = 0.0,
     looping: bool = False,
-    pitch: float = 1.0
+    speed: float = 1.0
 ) -> media.Player:
     """
     Play a sound.
@@ -168,7 +168,7 @@ def play_sound(
     :param float volume: Volume, from 0=quiet to 1=loud
     :param float pan: Pan, from -1=left to 0=centered to 1=right
     :param bool looping: Should we loop the sound over and over?
-    :param float pitch: Change the pitch of the sound which also changes speed, default 1.0
+    :param float speed: Change the speed of the sound which also changes pitch, default 1.0
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
@@ -180,7 +180,7 @@ def play_sound(
         )
         raise Exception(msg)
     try:
-        return sound.play(volume, pan, looping, pitch)
+        return sound.play(volume, pan, looping, speed)
     except Exception as ex:
         print("Error playing sound.", ex)
 
