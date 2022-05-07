@@ -67,6 +67,11 @@ def test_getters_setters(ctx):
     assert st.time == 100.0
     st.frame_rate = 60.0
     assert st.frame_rate == 60.0
+    st.channel_time[0] = 1.0
+    st.channel_time[1] = 2.0
+    st.channel_time[2] = 3.0
+    st.channel_time[3] = 4.0
+    assert st.channel_time == [1.0, 2.0, 3.0, 4.0]
 
 
 def check_internals(st: Shadertoy):

@@ -17,7 +17,7 @@ uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 import string
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Tuple, Optional, Union
+from typing import Any, List, Tuple, Optional, Union
 
 from arcade import get_window
 import arcade
@@ -46,6 +46,7 @@ class ShadertoyBase:
         self._time_delta: float = 0.0
         self._frame: int = 0
         self._frame_rate: float = 0.0
+        self._channel_time = [0.0, 0.0, 0.0, 0.0]
         # Shader inputs
         self._channel_0: Optional[Texture] = None
         self._channel_1: Optional[Texture] = None
@@ -164,6 +165,10 @@ class ShadertoyBase:
         self._mouse_buttons = value
 
     @property
+    def channel_time(self) -> List[float]:
+        return self._channel_time
+
+    @property
     def channel_0(self) -> Optional[Texture]:
         """Get or set channel 0"""
         return self._channel_0        
@@ -272,25 +277,14 @@ class ShadertoyBase:
 
     def _set_uniforms(self):
         """Attempt to set all supported uniforms"""
-        self.set_uniform('iTime', self._time)
-        self.set_uniform('iTimeDelta', self._time_delta)
-        self.set_uniform('iMouse', (*self._mouse_pos, *self._mouse_buttons))
-        self.set_uniform('iResolution', (*self._size, 1.0))
-        self.set_uniform('iFrame', self._frame)
-        self.set_uniform('iFrameRate', self._frame_rate)
-        self.set_uniform('iDate', self._get_date())
-
-    def set_uniform(self, name: str, value: Any) -> None:
-        """
-        Safely set a uniform caching KeyError.
-
-        :param str name: Name of uniform
-        :param Any value: Value of uniform
-        """
-        try:
-            self._program[name] = value
-        except KeyError:
-            pass
+        self._program.set_uniform_safe('iTime', self._time)
+        self._program.set_uniform_array_safe('iChannelTime', self._channel_time)
+        self._program.set_uniform_safe('iTimeDelta', self._time_delta)
+        self._program.set_uniform_safe('iMouse', (*self._mouse_pos, *self._mouse_buttons))
+        self._program.set_uniform_safe('iResolution', (*self._size, 1.0))
+        self._program.set_uniform_safe('iFrame', self._frame)
+        self._program.set_uniform_safe('iFrameRate', self._frame_rate)
+        self._program.set_uniform_safe('iDate', self._get_date())
 
     def _get_date(self) -> Tuple[float, float, float, float]:
         """Create year, month, day, seconds data for iDate"""
