@@ -28,8 +28,24 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Removed the broken ``Sprite.__lt__`` method
   * Added :py:func:`~arcade.get_angle_radians`
   * Removed ``Texture.draw_transformed``
+  * Add support for changing the pitch while playing a sound. See :py:func:`arcade.play_sound`.
+
+Shadertoy
+
   * Added ``Shadertoy.delta_time`` alias for ``time_delta``
   * Shadertoy should now properly support ``iFrame`` and  ``iTimeDelta``
+  * Add support for :py:meth:`arcade.gl.Program.set_uniform_safe` and
+    :py:meth:`arcade.gl.Program.set_uniform_array_safe`.
+  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.channel_time`
+    attribute. (iChannelTime)
+  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.frame_rate`
+    attribute. (iFrameRate)
+  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.date`
+    attribute. (iDate)
+  * Added some more unit tests.
+  * Add experimental support for running shaders on video.
+  * Improve Shadertoy docstrings.
+  * Set better blending defaults for GUI controls.
 
 * Docs / Tutorials / Examples
 
@@ -69,6 +85,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 Special thanks to
 `Vincent Poulailleau <https://github.com/vpoulailleau>`_
+`Ian Currie <https://github.com/iansedano>`_
 `Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
 `pushfoo <https://github.com/pushfoo>`_,
 `Alejandro Casanovas <https://github.com/janscas>`_,
