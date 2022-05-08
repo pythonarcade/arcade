@@ -27,7 +27,6 @@ REQUIREMENTS_DEV = [
 REQUIREMENTS_DOCS = [
     "Sphinx==4.4.0",
     "sphinx-copybutton==0.5.0",
-    "sphinx-rtd-theme==1.0.0",
     "sphinx-sitemap==2.2.0",
     "dirsync==2.2.5",
     "pyyaml==6.0",
