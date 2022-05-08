@@ -47,6 +47,7 @@ class ShadertoyBase:
         self._frame: int = 0
         self._frame_rate: float = 0.0
         self._channel_time = [0.0, 0.0, 0.0, 0.0]
+        self._channel_resolution = [0] * 3 * 4
         # Shader inputs
         self._channel_0: Optional[Texture] = None
         self._channel_1: Optional[Texture] = None
@@ -177,6 +178,7 @@ class ShadertoyBase:
     def channel_0(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[0:3] = value.width, value.height, 1
         self._channel_0 = value
 
     @property
@@ -188,6 +190,7 @@ class ShadertoyBase:
     def channel_1(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[3:6] = value.width, value.height, 1
         self._channel_1 = value
 
     @property
@@ -199,6 +202,7 @@ class ShadertoyBase:
     def channel_2(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[6:9] = value.width, value.height, 1
         self._channel_2 = value
 
     @property
@@ -210,6 +214,7 @@ class ShadertoyBase:
     def channel_3(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[9:12] = value.width, value.height, 1
         self._channel_3 = value
 
     @property
@@ -282,6 +287,7 @@ class ShadertoyBase:
         self._program.set_uniform_safe('iTimeDelta', self._time_delta)
         self._program.set_uniform_safe('iMouse', (*self._mouse_pos, *self._mouse_buttons))
         self._program.set_uniform_safe('iResolution', (*self._size, 1.0))
+        self._program.set_uniform_array_safe('iChannelResolution', self._channel_resolution)
         self._program.set_uniform_safe('iFrame', self._frame)
         self._program.set_uniform_safe('iFrameRate', self._frame_rate)
         self._program.set_uniform_safe('iDate', self._get_date())

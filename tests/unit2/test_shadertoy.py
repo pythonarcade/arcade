@@ -73,6 +73,22 @@ def test_getters_setters(ctx):
     st.channel_time[3] = 4.0
     assert st.channel_time == [1.0, 2.0, 3.0, 4.0]
 
+    # Channel resolution
+    tx1 = ctx.texture((10, 11))
+    tx2 = ctx.texture((12, 13))
+    tx3 = ctx.texture((14, 15))
+    tx4 = ctx.texture((16, 17))
+    st.channel_0 = tx1
+    st.channel_1 = tx2
+    st.channel_2 = tx3
+    st.channel_3 = tx4
+    assert st._channel_resolution == [
+        10, 11, 1,
+        12, 13, 1,
+        14, 15, 1,
+        16, 17, 1,
+    ]
+
 
 def check_internals(st: Shadertoy):
     assert isinstance(st.program, Program)
