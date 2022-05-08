@@ -301,7 +301,8 @@ class Program:
         if name not in self._uniforms:
             return
 
-        _len = self._uniforms[name].array_length
+        uniform = self._uniforms[name]
+        _len = uniform._array_length * uniform._components
         if _len == 1:
             self.set_uniform_safe(name, value[0])
         else:
