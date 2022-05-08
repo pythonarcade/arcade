@@ -1,5 +1,6 @@
 #version 330
 
+// Sample rate is for sound and can be implemented at a later time
 // uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 uniform float     iTime;                 // shader playback time (in seconds)
 uniform float     iChannelTime[4];       // channel playback time (in seconds)
@@ -7,7 +8,6 @@ uniform vec4      iMouse;                // mouse pixel coords. xy: current (if 
 uniform vec3      iResolution;           // viewport resolution (in pixels)
 uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
 uniform int       iFrame;                // shader playback frame
-
 uniform float     iTimeDelta;            // render time (in seconds)
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 // NOTE: Support 3D and cube samplers
