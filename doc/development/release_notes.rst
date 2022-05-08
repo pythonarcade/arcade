@@ -7,8 +7,8 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.6.14 [UNRELEASED]
--------------------
+Version 2.6.14 [UNRELEASED]
+---------------------------
 
 * Various Improvements
 
@@ -29,23 +29,22 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Added :py:func:`~arcade.get_angle_radians`
   * Removed ``Texture.draw_transformed``
   * Add support for changing the pitch while playing a sound. See :py:func:`arcade.play_sound`.
+  * Set better blending defaults for arcaded GUI
 
-Shadertoy
+* Shadertoy
 
-  * Added ``Shadertoy.delta_time`` alias for ``time_delta``
-  * Shadertoy should now properly support ``iFrame`` and  ``iTimeDelta``
-  * Add support for :py:meth:`arcade.gl.Program.set_uniform_safe` and
-    :py:meth:`arcade.gl.Program.set_uniform_array_safe`.
-  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.channel_time`
-    attribute. (iChannelTime)
-  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.frame_rate`
-    attribute. (iFrameRate)
-  * Add support for :py:attr:`arcade.experimental.ShadertoyBase.date`
-    attribute. (iDate)
-  * Added some more unit tests.
-  * Add experimental support for running shaders on video.
-  * Improve Shadertoy docstrings.
-  * Set better blending defaults for GUI controls.
+  * Added ``Shadertoy.delta_time`` alias for ``time_delta`` (``iTimeDelta``)
+  * Support the ``iFrame`` uniform. Set frame using the
+    :py:attr:`arcade.experimental.ShadertoyBase.frame` attribute
+  * Support the ``iChannelTime`` uniform. Set time for each individual channel using
+    the :py:attr:`arcade.experimental.ShadertoyBase.channel_time` attribute.
+  * Support the ``iFrameRate`` uniform. Set frame rate using the
+    :py:attr:`arcade.experimental.ShadertoyBase.frame_rate` attribute
+  * Support the ``iDate`` uniform. This uniform will be automatically
+    set. See :py:meth:`arcade.experimental.ShadertoyBase._get_date`
+  * Support the ``iChannelResolution`` uniform. This uniform will be automatically set
+  * Added example using video with shadertoy
+  * Improve Shadertoy docstrings + unit tests
 
 * Docs / Tutorials / Examples
 
@@ -63,6 +62,17 @@ Shadertoy
 
 * OpenGL
 
+  * Added new method for safely setting shader program uniforms: 
+    :py:meth:`arcade.gl.Program.set_uniform_safe`. This method will
+    ignore ``KeyError`` if the uniform doesn't exist. This is
+    often practical during development because most GLSL compilers/linkers
+    will remove uniforms that is determined to not affect the outcome
+    of a shader.
+  * Added new method for safely setting a uniform array:
+    :py:meth:`arcade.gl.Program.set_uniform_array_safe`.
+    This is practical during development because uniform arrays
+    are in most cases shortened by GLSL compiler if not all
+    array indices are used by the shader.
   * Added :py:attr:`arcade.gl.Texture.swizzle`. This can be used
     to reorder how components are read from the texture by a shader
     making it easy to crate simple effects or automatically
@@ -96,8 +106,8 @@ and
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.13
-------
+Version 2.6.13
+--------------
 
 *Released 2022-Mar-25*
 
@@ -169,8 +179,8 @@ and
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.12
-------
+Version 2.6.12
+--------------
 
 *Released 2022-Mar-20*
 
@@ -230,8 +240,8 @@ Also thanks to:
 * `bunny-therapist <https://github.com/bunny-therapist>`_ discovering collision bug
 * `Robert Morris <https://github.com/morrissimo>`_ for making us aware of the MacBook issue
 
-2.6.11
-------
+Version 2.6.11
+--------------
 
 *Released 2022-Mar-17*
 
@@ -320,8 +330,8 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.10
-------
+Version 2.6.10
+--------------
 
 *Released 2022-Jan-29*
 
@@ -412,15 +422,15 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.9
------
+Version 2.6.9
+-------------
 
 *Released on 2022-Jan-13*
 
 * Bump version of Pillow from 8.4 to 9.0.0 due to security vulnerability in Pillow.
 
-2.6.8
------
+Version 2.6.8
+-------------
 
 *Released on 2021-Dec-25*
 
@@ -453,8 +463,8 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.7
-------------------
+Version 2.6.7
+-------------
 
 *Released on 2021-Dec-15*
 
@@ -512,8 +522,9 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.6
------
+Version 2.6.6
+-------------
+
 *Released on 2021-Dec-04*
 
 * :class:`~arcade.TileMap` changes:
