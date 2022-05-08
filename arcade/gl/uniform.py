@@ -93,6 +93,7 @@ class Uniform:
         "_name",
         "_data_type",
         "_array_length",
+        "_components",
         "getter",
         "setter",
     )
@@ -103,7 +104,10 @@ class Uniform:
         self._location = location
         self._name = name
         self._data_type = data_type
+        # Array length of the uniform (1 if no array)
         self._array_length = array_length
+        # Number of components (including per array entry)
+        self._components = 0
         self._setup_getters_and_setters()
 
     @property
@@ -121,10 +125,19 @@ class Uniform:
         """Length of the uniform array. If not an array 1 will be returned"""
         return self._array_length
 
+    @property
+    def components(self) -> int:
+        """
+        How many components for the uniform.
+        A vec4 will for example have 4 components.
+        """
+        return self._components
+
     def _setup_getters_and_setters(self):
         """Maps the right getter and setter functions for this uniform"""
         try:
             gl_type, gl_setter, length, count = self._uniform_setters[self._data_type]
+            self._components = length
         except KeyError:
             raise ShaderException(f"Unsupported Uniform type: {self._data_type}")
 
