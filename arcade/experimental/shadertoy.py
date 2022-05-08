@@ -32,6 +32,22 @@ class ShadertoyBase:
     Base class for shadertoy types.
     It can represent the main image or buffers.
 
+    Supported uniforms are::
+
+        uniform float     iTime;                 // shader playback time (in seconds)
+        uniform float     iChannelTime[4];       // channel playback time (in seconds)
+        uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+        uniform vec3      iResolution;           // viewport resolution (in pixels)
+        uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+        uniform int       iFrame;                // shader playback frame
+        uniform float     iTimeDelta;            // render time (in seconds)
+        uniform vec4      iDate;                 // (year, month, day, time in seconds)
+        // Channel textures
+        uniform sampler2D iChannel0;
+        uniform sampler2D iChannel1;
+        uniform sampler2D iChannel2;
+        uniform sampler2D iChannel3;
+
     :param Tuple[int,int] size: screen/area size
     :param str source: The mainImage shader source
     """
