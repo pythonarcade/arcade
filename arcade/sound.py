@@ -11,7 +11,9 @@ from arcade.resources import resolve_resource_path
 import pyglet
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options["audio"] = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
+    pyglet.options["audio"] = tuple(
+        v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
+    )
 else:
     pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
@@ -19,7 +21,7 @@ import pyglet.media as media
 
 
 class Sound:
-    """ This class represents a sound you can play."""
+    """This class represents a sound you can play."""
 
     def __init__(self, file_name: Union[str, Path], streaming: bool = False):
         self.file_name: str = ""
@@ -31,16 +33,20 @@ class Sound:
             )
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
+        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
+            self.file_name, streaming=streaming
+        )
 
-        self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
+        self.min_distance = (
+            100000000  # setting the players to this allows for 2D panning with 3D audio
+        )
 
     def play(
         self,
         volume: float = 1.0,
         pan: float = 0.0,
         loop: bool = False,
-        speed: float = 1.0
+        speed: float = 1.0,
     ) -> media.Player:
         """
         Play the sound.
@@ -49,16 +55,28 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continuously
         """
-        if isinstance(self.source, media.StreamingSource) \
-                and self.source.is_player_source:
-            raise RuntimeError("Tried to play a streaming source more than once."
-                               " Streaming sources should only be played in one instance."
-                               " If you need more use a Static source.")
+        if (
+            isinstance(self.source, media.StreamingSource)
+            and self.source.is_player_source
+        ):
+            raise RuntimeError(
+                "Tried to play a streaming source more than once."
+                " Streaming sources should only be played in one instance."
+                " If you need more use a Static source."
+            )
 
         player: media.Player = media.Player()
         player.volume = volume
-        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))  # used to mimic panning with 3D audio
-        player.pitch = speed # note that the underlying attribute is pitch but "speed" is used because it better describes the behavior see #1198
+        player.position = (
+            pan,
+            0.0,
+            math.sqrt(1 - math.pow(pan, 2)),
+        )  # used to mimic panning with 3D audio
+
+        # Note that the underlying attribute is pitch but "speed" is used
+        # because it describes the behavior better (see #1198)
+        player.pitch = speed
+
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -83,11 +101,11 @@ class Sound:
             media.Source._players.remove(player)
 
     def get_length(self) -> float:
-        """ Get length of audio in seconds """
+        """Get length of audio in seconds"""
         return self.source.duration
 
     def is_complete(self, player: media.Player) -> bool:
-        """ Return true if the sound is done playing. """
+        """Return true if the sound is done playing."""
         if player.time >= self.source.duration:
             return True
         else:
@@ -151,7 +169,9 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
         sound = Sound(file_name, streaming)
         return sound
     except Exception as ex:
-        raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}')
+        raise FileNotFoundError(
+            f'Unable to load sound file: "{file_name}". Exception: {ex}'
+        )
 
 
 def play_sound(
@@ -159,7 +179,7 @@ def play_sound(
     volume: float = 1.0,
     pan: float = 0.0,
     looping: bool = False,
-    speed: float = 1.0
+    speed: float = 1.0,
 ) -> media.Player:
     """
     Play a sound.
@@ -192,11 +212,15 @@ def stop_sound(player: media.Player):
     :param pyglet.media.Player player: Player returned from :func:`play_sound`.
     """
     if isinstance(player, Sound):
-        raise ValueError("stop_sound takes the media player object returned from the play() command, "
-                         "not the loaded Sound object.")
+        raise ValueError(
+            "stop_sound takes the media player object returned from the play() command, "
+            "not the loaded Sound object."
+        )
 
     if not isinstance(player, media.Player):
-        raise ValueError("stop_sound takes a media player object returned from the play() command.")
+        raise ValueError(
+            "stop_sound takes a media player object returned from the play() command."
+        )
 
     player.pause()
     player.delete()
