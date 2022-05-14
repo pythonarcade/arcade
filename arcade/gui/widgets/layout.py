@@ -313,31 +313,48 @@ class UIGridLayout(UILayout):
         self._update_size_hints()
 
     def _update_size_hints(self):
-        max_width_per_column = [0] * self.column_count
-        max_height_per_row = [0] * self.row_count
 
         child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
+
+        max_width_per_column = [[(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)]
+        max_height_per_row = [[(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)] 
 
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
+            col_span = data['col_span']
+            row_span = data["row_span"]
 
-            if child.width > max_width_per_column[col_num]:
-                max_width_per_column[col_num] = child.width
+            for i in range(col_num, col_span + col_num):
+                max_width_per_column[i][row_num] = (0, 0)
 
-            if child.height > max_height_per_row[row_num]:
-                max_height_per_row[row_num] = child.height
+            max_width_per_column[col_num][row_num] = (child.width, col_span)
 
-            child_sorted_row_wise[row_num][col_num] = child
+            for i in range(row_num, row_span + row_num):
+                max_height_per_row[i][col_num] = (0, 0)
+
+            max_height_per_row[row_num][col_num] = (child.height, row_span)
+
+            for row in child_sorted_row_wise[row_num: row_num + row_span]:
+                row[col_num: col_num + col_span] = [child] * col_span
+
+        principal_width_ratio_list = []
+        principal_height_ratio_list = []
+
+        for row in max_height_per_row:
+            principal_height_ratio_list.append(max(height / (span or 1) for height, span in row))
+
+        for col in max_width_per_column:
+            principal_width_ratio_list.append(max(width / (span or 1) for width, span in col))
 
         base_width = self.padding_left + self.padding_right + 2 * self.border_width
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+
         content_height = (
-            sum(max_height_per_row) + (self.row_count - 1) * self._vertical_spacing
+            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         )
         content_width = (
-            sum(max_width_per_column)
-            + (self.column_count - 1) * self._horizontal_spacing
+            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
