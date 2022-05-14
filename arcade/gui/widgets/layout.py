@@ -397,7 +397,7 @@ class UIGridLayout(UILayout):
             for i in range(row_num, row_span + row_num):
                 max_height_per_row[i][col_num] = (0, 0)
 
-            max_height_per_row[row_num][col_num] = (child.height * row_span, row_span)
+            max_height_per_row[row_num][col_num] = (child.height, row_span)
 
             for row in child_sorted_row_wise[row_num: row_num + row_span]:
                 row[col_num: col_num + col_span] = [child] * col_span
@@ -422,15 +422,20 @@ class UIGridLayout(UILayout):
 
             for col_num, child in enumerate(row):
                 max_height = max_height_per_row[row_num][col_num][0] + self._vertical_spacing
-                center_y = start_y - (max_height / 2)
-
                 max_width = max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
-                center_x = start_x + (max_width / 2)
 
-                start_x += max_width
+                if max_width == self._horizontal_spacing:
+                    max_width = 0
+                if max_height == self._vertical_spacing:
+                    max_height = 0
 
                 col_span = max_width_per_column[col_num][row_num][1] or 1
                 row_span = max_height_per_row[row_num][col_num][1] or 1
+
+                center_y = start_y - (max_height / 2)
+                center_x = start_x + (max_width / 2)
+
+                start_x += max_width
 
                 if max_height / row_span > max_height_row:
                     max_height_row = max_height / row_span
