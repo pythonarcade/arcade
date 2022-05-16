@@ -7,11 +7,15 @@ python -m arcade.examples.sound_demo
 
 Each button plays a sound when clicked.
 
-The top left button plays a streaming music track when pressed.
+The top left button plays a streaming music track when pressed. If you
+click it while it's already playing, it will intentionally crash the
+demo to demonstrate how you shouldn't try to play a streaming sound
+that's already playing.
 
-The lower 3 rows of buttons play the same sound with different panning
-and volume. Going from left to right pans the sound from right to left,
-while volume increases as you go down the column.
+The lower 3 rows of buttons play a non-streaming (static) sound with
+different panning and volume. Going from left to right changes the
+panning, which is how much the sound plays in the left speaker vs the
+right speaker. Lower rows play the sound louder than the higher ones.
 """
 
 import typing
@@ -40,15 +44,16 @@ Y_OFFSETS = [50, 0, -50]
 
 class SoundButton(arcade.SpriteSolidColor):
     """
-    Plays a sound when clicked.
+    A sprite that stores settings about how to play a sound.
 
-    You can load a sound as either a static sound or a streaming sound
-    with this class. Streaming should be used for long files that will
-    only have one instance playing, such as music or ambiance tracks.
+    This class can load a sound as either a static sound or a streaming
+    sound. Streaming should be used for long files that will only have
+    one instance playing, such as music or ambiance tracks.
 
-    If you try to play a Sound created with streaming=True while it is
+    If you try to play a sound created with streaming=True while it is
     already playing, it will raise an exception! Non-streaming (static)
-    sounds are fine with it.
+    sounds are fine with it, and can have play() called on them as many
+    times as you want.
     """
 
     def __init__(
@@ -94,7 +99,7 @@ class MyGame(arcade.Window):
 
         # Position the grid of buttons
         # The zip function takes pieces from iterables and returns them
-        # as pairs. For more information, you can see the python doc:
+        # as tuples. For more information, see the python doc:
         # https://docs.python.org/3/library/functions.html#zip
         for vol, y_offset in zip(VOLUME_VARIATION, Y_OFFSETS):
             for pan_setting, x_pos in zip(SOUND_PANNING, BUTTON_X_POSITIONS):
