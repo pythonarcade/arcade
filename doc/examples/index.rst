@@ -328,6 +328,11 @@ Sound
 
    :ref:`sound_demo`
 
+.. figure:: thumbs/sound_speed_demo.png
+   :figwidth: 170px
+
+   :ref:`sound_speed_demo`
+
 .. figure:: thumbs/music_control_demo.png
    :figwidth: 170px
 
