@@ -54,6 +54,7 @@ class Sound:
         :param float volume: Volume, from 0=quiet to 1=loud
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continuously
+        :param float speed: Change the speed of the sound which also changes pitch, default 1.0
         """
         if (
             isinstance(self.source, media.StreamingSource)
