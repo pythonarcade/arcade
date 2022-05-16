@@ -41,9 +41,6 @@ class SoundButton(arcade.SpriteSolidColor):
         """Play"""
         self.sound.play(speed=self.speed, volume=self.volume)
 
-    def draw(self):
-        super().draw(self)
-
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):

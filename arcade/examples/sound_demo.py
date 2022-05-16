@@ -39,9 +39,6 @@ class SoundButton(arcade.SpriteSolidColor):
         """Play"""
         self.sound.play(pan=self.pan, volume=self.volume)
 
-    def draw(self):
-        super().draw(self)
-
 
 class AudioStreamButton(arcade.SpriteSolidColor):
     """Button, click-for-streaming-sound"""
