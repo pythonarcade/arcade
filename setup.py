@@ -25,7 +25,7 @@ REQUIREMENTS_DEV = [
 
 # What is strictly needed for building docs (RTD)
 REQUIREMENTS_DOCS = [
-    "Sphinx==4.4.0",
+    "Sphinx==4.5.0",
     "sphinx-copybutton==0.5.0",
     "sphinx-sitemap==2.2.0",
     "dirsync==2.2.5",
@@ -49,7 +49,7 @@ setup(
     download_url="https://api.arcade.academy",
     install_requires=[
         "pyglet==2.0.dev15",
-        "pillow~=9.0.1",
+        "pillow~=9.1.1",
         "pymunk~=6.2.1",
         "pytiled-parser==2.0.1",
     ],
