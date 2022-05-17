@@ -7,8 +7,114 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.6.13
-------
+Version 2.6.14
+--------------
+
+*Released 2022-May-17*
+
+* Various Improvements
+
+  * Allow specifying hit box parameters in :py:func:`~arcade.load_textures` and
+    :py:func:`~arcade.load_spritesheet`
+  * :py:class:`~arcade.Camera` should no longer apply zoom on the z axis
+  * Promote using :py:meth:`arcade.View.on_show_view` in examples
+    and tutorials
+  * The arcade window and views now expose :py:meth:`arcade.Window.on_enter`
+    :py:meth:`arcade.Window.on_leave`. These events are triggered
+    when the mouse enters and leaves the window area.
+  * Sections should now also support mouse enter/leave events
+  * Hit box calculation methods should raise a more useful
+    error message when the texture is not RGBA.
+  * Slight optimization in updating sprite location in SpriteList
+  * Removed all remaining references to texture transforms
+  * Removed the broken ``Sprite.__lt__`` method
+  * Added :py:func:`~arcade.get_angle_radians`
+  * Removed ``Texture.draw_transformed``
+  * Add support for changing the pitch while playing a sound. See the `speed` parameter in
+    :py:func:`arcade.play_sound`.
+  * Set better blending defaults for arcade GUI
+  * Can now create a texture filled with a single color. See :py:meth:`Texture.create_filled`.
+    The Sprite class will use this when creating a solid colored sprite.
+  * Bump version numbers of Sphinx, Pillow to current release as of 17-May.
+  * Bump Pyglet version to 2.0.dev15. (Thanks Pyglet!)
+
+* Shadertoy
+
+  * Added ``Shadertoy.delta_time`` alias for ``time_delta`` (``iTimeDelta``)
+  * Support the ``iFrame`` uniform. Set frame using the
+    :py:attr:`arcade.experimental.ShadertoyBase.frame` attribute
+  * Support the ``iChannelTime`` uniform. Set time for each individual channel using
+    the :py:attr:`arcade.experimental.ShadertoyBase.channel_time` attribute.
+  * Support the ``iFrameRate`` uniform. Set frame rate using the
+    :py:attr:`arcade.experimental.ShadertoyBase.frame_rate` attribute
+  * Support the ``iDate`` uniform. This uniform will be automatically
+    set. See :py:meth:`arcade.experimental.ShadertoyBase._get_date`
+  * Support the ``iChannelResolution`` uniform. This uniform will be automatically set
+  * Added example using video with shadertoy
+  * Improve Shadertoy docstrings + unit tests
+
+* Docs / Tutorials / Examples
+
+  * Updated install docs
+  * Added tutorial for compiling an arcade game with Nuika
+  * Improved/extended shadertoy tutorials
+  * Added example using textures with shadertoy
+  * Added sprite rotation examples
+  * Clarified the difference between :py:meth:`arcade.View.on_show_view`
+    and :py:meth:`arcade.View.on_show`
+  * Improved UIManager docstrings
+  * Various annotation and docstring improvements
+  * Fixed several broken links in docs
+  * We're now building PDF/EPUB docs
+
+* OpenGL
+
+  * Added new method for safely setting shader program uniforms: 
+    :py:meth:`arcade.gl.Program.set_uniform_safe`. This method will
+    ignore ``KeyError`` if the uniform doesn't exist. This is
+    often practical during development because most GLSL compilers/linkers
+    will remove uniforms that is determined to not affect the outcome
+    of a shader.
+  * Added new method for safely setting a uniform array:
+    :py:meth:`arcade.gl.Program.set_uniform_array_safe`.
+    This is practical during development because uniform arrays
+    are in most cases shortened by GLSL compiler if not all
+    array indices are used by the shader.
+  * Added :py:attr:`arcade.gl.Texture.swizzle`. This can be used
+    to reorder how components are read from the texture by a shader
+    making it easy to crate simple effects or automatically
+    convert BGR pixel formats to RGB when needed.
+  * Added ray marching example with fragment shader
+  * Allow reading framebuffer data with 2 and 4 byte component sizes
+  * Simplified texture atlas texture coordinates to make them
+    easier to use in custom shaders.
+  * Support dumping the atlas texture as RGB
+  * Support dumping the atlas texture with debug lines
+    showing texture borders
+  * We no longer check ``GL_CONTEXT_PROFILE_MASK`` due to
+    missing support in older drivers. Especially GL 3.1 drivers
+    that can in theory run arcade
+  * Various shader cleanups
+
+* Experimental
+
+  * Added a simple profiler class
+
+Special thanks to
+`Vincent Poulailleau <https://github.com/vpoulailleau>`_
+`Ian Currie <https://github.com/iansedano>`_
+`Mohammad Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Darren Eberly <https://github.com/Cleptomania>`_,
+`pvcraven <https://github.com/pvcraven>`_
+and
+`Einar Forselv <https://github.com/einarf>`_
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
+Version 2.6.13
+--------------
 
 *Released 2022-Mar-25*
 
@@ -80,8 +186,8 @@ and
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.12
-------
+Version 2.6.12
+--------------
 
 *Released 2022-Mar-20*
 
@@ -105,7 +211,7 @@ Pyglet's continued development.
 
 * Documentation
 
-  * Work on :ref:`shader_toy_tutorial`.
+  * Work on :ref:`shader_toy_tutorial_glow`.
   * Docstring improvements throughout the code base
   * Many examples are cleaned up
 
@@ -141,8 +247,8 @@ Also thanks to:
 * `bunny-therapist <https://github.com/bunny-therapist>`_ discovering collision bug
 * `Robert Morris <https://github.com/morrissimo>`_ for making us aware of the MacBook issue
 
-2.6.11
-------
+Version 2.6.11
+--------------
 
 *Released 2022-Mar-17*
 
@@ -231,8 +337,8 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.10
-------
+Version 2.6.10
+--------------
 
 *Released 2022-Jan-29*
 
@@ -323,15 +429,15 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.9
------
+Version 2.6.9
+-------------
 
 *Released on 2022-Jan-13*
 
 * Bump version of Pillow from 8.4 to 9.0.0 due to security vulnerability in Pillow.
 
-2.6.8
------
+Version 2.6.8
+-------------
 
 *Released on 2021-Dec-25*
 
@@ -364,8 +470,8 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.7
-------------------
+Version 2.6.7
+-------------
 
 *Released on 2021-Dec-15*
 
@@ -423,8 +529,9 @@ Special thanks to
 for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
 Pyglet's continued development.
 
-2.6.6
------
+Version 2.6.6
+-------------
+
 *Released on 2021-Dec-04*
 
 * :class:`~arcade.TileMap` changes:
@@ -754,12 +861,12 @@ and the documentation.
 
   * `Shadertoy.com <https://www.shadertoy.com/>`_ is a website that makes it easier to write OpenGL shaders.
   * The new :class:`arcade.Shadertoy` class makes it easy to run and interact with these shaders in Arcade.
-  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
+  * See :ref:`shader_toy_tutorial_glow` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
-    .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
+    .. image:: ../tutorials/shader_toy_glow/cyber_fuji_2020.png
        :width: 40%
 
-    .. image:: ../tutorials/shader_toy/star_nest.png
+    .. image:: ../tutorials/shader_toy_glow/star_nest.png
        :width: 40%
 
 * Reworked GUI
@@ -854,7 +961,7 @@ and the documentation.
     .. image:: ../tutorials/raycasting/example.png
        :width: 50%
 
-  * New tutorial for :ref:`shader_toy_tutorial`.
+  * New tutorial for :ref:`shader_toy_tutorial_glow`.
   * Revamped tutorial: :ref:`platformer_tutorial`.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.

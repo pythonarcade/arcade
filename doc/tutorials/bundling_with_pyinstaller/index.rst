@@ -246,16 +246,17 @@ Extra Details
 * Executable one-file bundles produced by PyInstaller's ``--onefile`` flag will start up slower than your original application or the one-folder bundle. This is expected because one-file bundles are ultimately just a compressed folder, so they must take time to uncompress themselves each time the bundle is run.
 * By default, when PyInstaller creates a bundled application, the application opens a console window. You can suppress the creation of the console window by adding the ``--windowed`` flag to the ``pyinstaller`` command.
 * See the PyInstaller documentation below for more details on the topics above, and much more.
+* PyInstaller 4.x was used in this tutorial.
 
 PyInstaller Documentation
 -------------------------
 
 PyInstaller is a flexible tool that can handle a wide variety of different situations.  For further
-reading, here are links to the official PyInstaller documentation:
+reading, here are links to the official PyInstaller documentation and GitHub page:
 
-* PyInstaller home page: http://www.pyinstaller.org/
 * PyInstaller Manual: https://pyinstaller.readthedocs.io/en/stable/
+* PyInstaller GitHub: https://github.com/pyinstaller/pyinstaller
 
 .. _Arcade: http://arcade.academy
-.. _PyInstaller: http://www.pyinstaller.org
+.. _PyInstaller: https://pyinstaller.readthedocs.io/en/stable/
 .. _Pymunk: http://www.pymunk.org/en/latest/

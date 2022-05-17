@@ -140,6 +140,7 @@ from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
 from .geometry_generic import clamp
 from .geometry_generic import get_angle_degrees
+from .geometry_generic import get_angle_radians
 
 from .easing import EasingData
 from .easing import linear
@@ -343,8 +344,6 @@ from .text_pillow import (
 )
 
 
-# --- Generated __all__ ---
-
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
            'AnimatedWalkingSprite',
@@ -498,6 +497,7 @@ __all__ = ['AStarBarrierList',
            'generate_uuid_from_kwargs',
            'get_closest_sprite',
            'get_angle_degrees',
+           'get_angle_radians',
            'get_display_size',
            'get_distance',
            'get_distance_between_sprites',

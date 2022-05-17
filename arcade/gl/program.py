@@ -9,7 +9,7 @@ from ctypes import (
     byref,
     create_string_buffer,
 )
-from typing import Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
+from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
 import weakref
 
 from pyglet import gl
@@ -274,6 +274,39 @@ class Program:
             raise KeyError(f"Uniform with the name `{key}` was not found.")
 
         uniform.setter(value)
+
+    def set_uniform_safe(self, name: str, value: Any):
+        """
+        Safely set a uniform catching KeyError.
+
+        :param str name: The uniform name
+        :param Any value: The uniform value
+        """
+        try:
+            self[name] = value
+        except KeyError:
+            pass
+
+    def set_uniform_array_safe(self, name: str, value: List[Any]):
+        """
+        Safely set a uniform array. Arrays can be shortened
+        by the glsl compiler not all elements are determined
+        to be in use. This function checks the length of the
+        actual array and sets a subset of the values if needed.
+        If the uniform don't exist no action will be done.
+
+        :param str name: Name of uniform
+        :param List[Any] value: List of values
+        """
+        if name not in self._uniforms:
+            return
+
+        uniform = self._uniforms[name]
+        _len = uniform._array_length * uniform._components
+        if _len == 1:
+            self.set_uniform_safe(name, value[0])
+        else:
+            self.set_uniform_safe(name, value[:_len])
 
     def use(self):
         """

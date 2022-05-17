@@ -36,29 +36,25 @@ void main() {
 
     // Upper left
     gl_Position = proj.matrix * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
-    vec3 tex1 = vec3((vec2(0.0, 1.0) * tex_size + tex_offset) * vec2(1, -1), 1.0);
-    gs_uv = tex1.xy / tex1.z;
+    gs_uv =  (vec2(0.0, tex_size.y) + tex_offset) * vec2(1.0, -1.0);
     gs_color = v_color[0];
     EmitVertex();
 
     // lower left
     gl_Position = proj.matrix * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
-    vec3 tex2 = vec3((vec2(0.0, 0.0) * tex_size + tex_offset) * vec2(1, -1), 1.0);
-    gs_uv = tex2.xy / tex2.z;
+    gs_uv = tex_offset * vec2(1.0, -1.0);
     gs_color = v_color[0];
     EmitVertex();
 
     // upper right
     gl_Position = proj.matrix * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
-    vec3 tex3 = vec3((vec2(1.0, 1.0) * tex_size + tex_offset) * vec2(1, -1), 1.0);
-    gs_uv = tex3.xy / tex3.z;
+    gs_uv = (tex_size + tex_offset) * vec2(1.0, -1.0);
     gs_color = v_color[0];
     EmitVertex();
 
     // lower right
     gl_Position = proj.matrix * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
-    vec3 tex4 = vec3((vec2(1.0, 0.0) * tex_size + tex_offset) * vec2(1, -1), 1.0);
-    gs_uv = tex4.xy / tex4.z;
+    gs_uv = (vec2(tex_size.x, 0.0) + tex_offset) * vec2(1.0, -1.0);
     gs_color = v_color[0];
     EmitVertex();
 

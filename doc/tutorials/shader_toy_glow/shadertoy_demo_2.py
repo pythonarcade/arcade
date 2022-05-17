@@ -9,14 +9,11 @@ class MyGame(arcade.Window):
         super().__init__(width=1920, height=1080)
 
         # Load a file and create a shader from it
-        file_name = "circle_6.glsl"
-        self.shadertoy = Shadertoy(size=self.get_size(),
-                                   main_source=open(file_name).read())
+        shader_file_path = "circle_1.glsl"
+        window_size = self.get_size()
+        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
 
     def on_draw(self):
-        # Set uniform data to send to the GLSL shader
-        self.shadertoy.program['pos'] = self.mouse["x"], self.mouse["y"]
-        self.shadertoy.program['color'] = arcade.get_three_float_color(arcade.color.LIGHT_BLUE)
         # Run the GLSL code
         self.shadertoy.render()
 

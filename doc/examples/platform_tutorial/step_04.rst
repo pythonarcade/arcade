@@ -18,8 +18,8 @@ move our player and keep her from running through walls. The ``PhysicsEngineSimp
 class takes two parameters: The moving
 sprite, and a list of sprites the moving sprite can't move through.
 
-For more information about the physics engine we are using here, see
-`PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
+For more information about the physics engine we are using in this tutorial,
+see :py:class:`arcade.PhysicsEngineSimple`.
 
 .. note::
 

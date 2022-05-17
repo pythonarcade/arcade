@@ -67,3 +67,27 @@ def test_load_textures(window):
         on_draw()
         window.flip()
         frame_count += 1
+
+
+def  test_load_spritesheet():
+    textures = arcade.load_spritesheet(
+        ":resources:images/spritesheets/codepage_437.png",
+        sprite_width=9,
+        sprite_height=16,
+        columns=32,
+        count=32*9,
+        hit_box_algorithm=None,
+    )
+    assert len(textures) == 32 * 9
+    assert textures[0].image.size  == (9, 16)
+
+    # Check the byte data of some simple characters
+    # First character is white with 0 alpha
+    assert textures[0].image.tobytes() == b'\xff\xff\xff\x00' * 9 * 16
+    # last tile is just 0 bytes (Not even a character)
+    assert textures[-1].image.tobytes() == b'\x00\x00\x00\x00' * 9 * 16
+    # Char 219 is completely white
+    assert textures[219].image.tobytes() == b'\xff\xff\xff\xff' * 9 * 16
+    # The dot letter has 140 black and 4 white pixels
+    assert textures[46].image.tobytes().count(b'\xff\xff\xff\x00')  == 140
+    assert textures[46].image.tobytes().count(b'\xff\xff\xff\xff')  == 4

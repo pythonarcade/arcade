@@ -213,7 +213,7 @@ class PlayerCharacter(Entity):
 class MainMenu(arcade.View):
     """Class that manages the 'menu' view."""
 
-    def on_show(self):
+    def on_show_view(self):
         """Called when switching to this view."""
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -388,7 +388,7 @@ class GameView(arcade.View):
             walls=self.scene[LAYER_NAME_PLATFORMS]
         )
 
-    def on_show(self):
+    def on_show_view(self):
         self.setup()
 
     def on_draw(self):
@@ -657,7 +657,7 @@ class GameView(arcade.View):
 class GameOverView(arcade.View):
     """Class to manage the game overview"""
 
-    def on_show(self):
+    def on_show_view(self):
         """Called when switching to this view"""
         arcade.set_background_color(arcade.color.BLACK)
 

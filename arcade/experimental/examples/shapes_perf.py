@@ -4,8 +4,8 @@ This is for testing geometry shader shapes. Please keep.
 import time
 import math
 import random
+
 import arcade
-from pyglet import gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -26,17 +26,16 @@ TITLE = "Shape Test"
 # [x] draw_points
 # [ ] draw_polygon_filled
 # [ ] draw_polygon_outline
-# [ ] draw_triangle_filled
-# [ ] draw_triangle_outline
-# [ ] draw_rectangle_outline
-# [ ] draw_xywh_rectangle_outline
-# [ ] draw_rectangle_outline
+# [x] draw_triangle_filled
+# [x] draw_triangle_outline
+# [x] draw_rectangle_outline
+# [x] draw_xywh_rectangle_outline
 # [x] draw_lrtb_rectangle_filled
 # [x] draw_xywh_rectangle_filled
-# [ ] draw_rectangle_filled
-# [ ] draw_scaled_texture_rectangle
-# [ ] draw_texture_rectangle
-# [ ] draw_lrwh_rectangle_textured
+# [x] draw_rectangle_filled
+# [x] draw_scaled_texture_rectangle
+# [x] draw_texture_rectangle
+# [x] draw_lrwh_rectangle_textured
 
 # --- Buffered
 # create_line
@@ -75,6 +74,8 @@ class GameWindow(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, antialiasing=True, resizable=True)
+        self.set_vsync(False)
+
         # Single lines
         self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
         # Line list
@@ -127,7 +128,7 @@ class GameWindow(arcade.Window):
     def do_draw_rectangle(self):
         # 0.1 : 1600
         for x in range(0, SCREEN_WIDTH, 20):
-            for y in range(0, SCREEN_HEIGHT, 15):
+            for y in range(0, SCREEN_HEIGHT, 20):
                 arcade.draw_rectangle_filled(x + 10, y + 8, 10, 10, arcade.color.AZURE)
 
     def do_draw_arc_filled(self):
@@ -138,13 +139,36 @@ class GameWindow(arcade.Window):
             340.0 + math.sin(self.elapsed) * 20.0, 0,
         )
 
-    def draw_point(self):
+    def do_draw_point(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 20):
                 arcade.draw_point(x, y, arcade.color.WHITE, 1)
 
-    def draw_points(self):
+    def do_draw_points(self):
         arcade.draw_points(self.points, arcade.color.WILLPOWER_ORANGE, 1.0)
+
+    def do_draw_rectangle_outline(self):
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 20):
+                arcade.draw_rectangle_outline(x, y, 10, 10, arcade.color.AERO_BLUE, 5, self.elapsed * 100)
+
+    def do_draw_xywh_rectangle_outline(self):
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 20):
+                arcade.draw_xywh_rectangle_outline(x, y, 10, 10, arcade.color.AERO_BLUE, 5)
+
+    def do_draw_triangle_outline(self):
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 20):
+                arcade.draw_triangle_outline(x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE, 2)
+
+    def do_draw_triangle_filled(self):
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 20):
+                arcade.draw_triangle_filled(x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE)
+
+    def do_draw_polygon_outline(self):
+        arcade.draw_polygon_outline(self.points, arcade.color.AERO_BLUE)
 
     def on_draw(self):
         self.clear()
@@ -154,15 +178,20 @@ class GameWindow(arcade.Window):
         # Toggle what to test here
         # self.do_draw_line()
         # self.do_draw_lines()
-        self.draw_line_strip()
+        # self.draw_line_strip()
         # self.do_draw_circle_filled()
         # self.do_draw_ellipse_filled()
         # self.do_draw_circle_outline()
         # self.do_draw_ellipse_outline()
         # self.do_draw_rectangle()
         # self.do_draw_arc_filled()
-        # self.draw_point()
-        # self.draw_points()
+        # self.do_draw_point()
+        # self.do_draw_points()
+        # self.do_draw_rectangle_outline()  # 0.33
+        # self.do_draw_xywh_rectangle_outline()
+        # self.do_draw_triangle_outline()  # 0.42
+        # self.do_draw_triangle_filled()  # 0.26
+        self.do_draw_polygon_outline()
 
         self.ctx.finish()
         self.execution_time += time.time() - start
@@ -177,11 +206,13 @@ class GameWindow(arcade.Window):
             self.execution_time = 0
             self.frames = 0
 
-    def on_resize(self, width, height):
-        gl.glViewport(0, 0, *self.get_framebuffer_size())
-
     def on_update(self, dt):
         self.elapsed += dt
+
+    def on_resize(self, width: float, height: float):
+        w, h = self.get_framebuffer_size()
+        self.ctx.viewport = 0, 0, w, h
+        self.ctx.projection_2d = 0, 800, 0, 600
 
 
 if __name__ == '__main__':

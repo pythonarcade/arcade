@@ -50,6 +50,46 @@ def test_buffers(ctx):
     assert st.buffer_c == buffer_c
     assert st.buffer_d == buffer_d
 
+def test_getters_setters(ctx):
+    st = Shadertoy((120, 130), glsl("fragColor = vec4(1.0, 1.0, 1.0, 1.0);"))
+    assert st.size == (120, 130)
+    st.mouse_position = 10, 20
+    assert st.mouse_position == (10, 20)
+    st.mouse_buttons = 1, 2
+    assert st.mouse_buttons == (1, 2)
+    st.frame = 22
+    assert st.frame == 22
+    st.time_delta = 0.1
+    assert st.time_delta == 0.1
+    st.delta_time = 0.2
+    assert st.delta_time == 0.2
+    st.time = 100.0
+    assert st.time == 100.0
+    st.frame_rate = 60.0
+    assert st.frame_rate == 60.0
+    st.channel_time[0] = 1.0
+    st.channel_time[1] = 2.0
+    st.channel_time[2] = 3.0
+    st.channel_time[3] = 4.0
+    assert st.channel_time == [1.0, 2.0, 3.0, 4.0]
+
+    # Channel resolution
+    tx1 = ctx.texture((10, 11))
+    tx2 = ctx.texture((12, 13))
+    tx3 = ctx.texture((14, 15))
+    tx4 = ctx.texture((16, 17))
+    st.channel_0 = tx1
+    st.channel_1 = tx2
+    st.channel_2 = tx3
+    st.channel_3 = tx4
+    assert st._channel_resolution == [
+        10, 11, 1,
+        12, 13, 1,
+        14, 15, 1,
+        16, 17, 1,
+    ]
+
+
 def check_internals(st: Shadertoy):
     assert isinstance(st.program, Program)
     assert isinstance(st.size, tuple)
@@ -60,6 +100,7 @@ def check_internals(st: Shadertoy):
     assert st.time_delta == 0
     assert st.frame == 0
     assert st.mouse_position == (0, 0)
+    assert st.mouse_buttons == (0, 0)
 
     # Types assigned to channels
     assert st.channel_0 is None or isinstance(st.channel_0, Texture)

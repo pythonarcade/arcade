@@ -36,17 +36,19 @@ class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
 
-    manager = UIManager()
-    manager.enable() # hook up window events
+    .. code:: py
 
-    manager.add(Dummy())
+        manager = UIManager()
+        manager.enable() # hook up window events
 
-    def on_draw():
-        self.clear()
+        manager.add(Dummy())
 
-        ...
+        def on_draw():
+            self.clear()
 
-        manager.draw() # draws the UI on screen
+            ...
+
+            manager.draw() # draws the UI on screen
 
     """
     _enabled = False
@@ -84,6 +86,11 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return widget
 
     def remove(self, child: UIWidget):
+        """
+        Removes the given widget from UIManager.
+
+        :param UIWidget child: widget to remove
+        """
         for children in self.children.values():
             if child in children:
                 children.remove(child)
@@ -215,7 +222,19 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def draw(self):
         # Request Widgets to prepare for next frame
         self._do_layout()
+
+        ctx = self.window.ctx
+
+        # When drawing into the framebuffer we need to set a separate
+        # blend function for the alpha component.
+        ctx.blend_func = (
+            ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
+            ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA         # Alpha blend func
+        )
         self._do_render()
+
+        # Reset back to default blend function
+        ctx.blend_func = ctx.BLEND_DEFAULT
 
         # Draw layers
         layers = sorted(self.children.keys())

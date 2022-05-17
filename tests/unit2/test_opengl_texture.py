@@ -186,3 +186,25 @@ def test_resize(ctx):
     tex.resize((200, 200))
     assert tex.size == (200, 200)
     assert len(tex.read()) == 200 * 200 * 4
+
+
+def test_swizzle(ctx):
+    tex = ctx.texture((10, 10), components=4)
+    assert tex.swizzle == "RGBA"
+
+    tex.swizzle = "ABGR"
+    assert tex.swizzle == "ABGR"
+    tex.swizzle = "0000"
+    assert tex.swizzle == "0000"
+    tex.swizzle = "1111"
+    assert tex.swizzle == "1111"
+    tex.swizzle = "RGBA"
+    assert tex.swizzle == "RGBA"
+
+    # Set swizzle with wrong size
+    with pytest.raises(ValueError):
+        tex.swizzle = "AAAAA"
+
+    # Set sizzle with non-string type
+    with pytest.raises(ValueError):
+        tex.swizzle = 0

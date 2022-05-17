@@ -4,8 +4,6 @@
 Headless Arcade
 ===============
 
-.. contents::
-
 For some applications, it may be that we want to run Arcade, but not open
 up a window. We might want to draw to a buffer and save an image to be
 used in a server or data science visualization. In remote cloud operations,

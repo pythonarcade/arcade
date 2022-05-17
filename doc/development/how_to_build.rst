@@ -1,7 +1,7 @@
 .. _how-to-compile:
 
-How to Compile
-==============
+How to Build
+============
 
 Windows
 ^^^^^^^

@@ -1,10 +1,6 @@
 Installation on Windows
 =======================
 
-.. contents::
-   :depth: 2
-   :local:
-
 To develop with the Arcade library, we need to install Python, then install
 Arcade.
 

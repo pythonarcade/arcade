@@ -106,7 +106,7 @@ class InstructionView(arcade.View):
         super().__init__()
         self.frame_count = 0
 
-    def on_show(self):
+    def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
 

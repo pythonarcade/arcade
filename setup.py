@@ -12,6 +12,31 @@ def get_long_description() -> str:
     with open(fname, "r") as f:
         return f.read()
 
+# Testing and code inspection tools
+REQUIREMENTS_DEV = [
+    "pytest",
+    "flake8",
+    "mypy",
+    "coverage",
+    "coveralls",
+    "pytest-mock",
+    "pytest-cov",
+]
+
+# What is strictly needed for building docs (RTD)
+REQUIREMENTS_DOCS = [
+    "Sphinx==4.5.0",
+    "sphinx-copybutton==0.5.0",
+    "sphinx-sitemap==2.2.0",
+    "dirsync==2.2.5",
+    "pyyaml==6.0",
+    "docutils<0.18",
+    "sphinx-sitemap",
+    "furo",
+    "sphinx_copybutton",
+    "dirsync",
+    "wheel",
+]
 
 setup(
     name="arcade",
@@ -23,27 +48,14 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet==2.0a2",
-        "pillow~=9.0.1",
+        "pyglet==2.0.dev15",
+        "pillow~=9.1.1",
         "pymunk~=6.2.1",
         "pytiled-parser==2.0.1",
     ],
     extras_require={
-        "dev": [
-            "pytest",
-            "flake8",
-            "mypy",
-            "coverage",
-            "coveralls",
-            "pytest-mock",
-            "pytest-cov",
-            "sphinx",
-            "sphinx-sitemap",
-            "sphinx_rtd_theme",
-            "sphinx_copybutton",
-            "dirsync",
-            "wheel",
-        ],
+        "dev": REQUIREMENTS_DEV + REQUIREMENTS_DOCS,
+        "docs": REQUIREMENTS_DOCS,
     },
     packages=find_namespace_packages(
         include=["arcade", "arcade.*"],

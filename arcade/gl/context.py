@@ -1056,8 +1056,6 @@ class Limits:
         #: An estimate of the number of bits of subpixel resolution
         #: that are used to position rasterized geometry in window coordinates
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
-        #: A mask value indicating what context profile is used (core, compat etc.)
-        self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
         #: Minimum required alignment for uniform buffer sizes and offset
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
             gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT

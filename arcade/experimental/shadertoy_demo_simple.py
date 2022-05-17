@@ -18,7 +18,7 @@ class MyGame(arcade.Window):
                 {
                     // Calculate the texture coordinate of the current fragment.
                     // This interpolates from 0,0 to 1,1 from lower left to upper right
-                    vec2 uv = fragCoord.xy / iResolution;
+                    vec2 uv = fragCoord.xy / iResolution.xy;
                     // Write the fragment color
                     fragColor = vec4(uv, 0.0, 1.0);	                
                 }                    

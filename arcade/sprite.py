@@ -82,7 +82,7 @@ class Sprite:
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
           Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
           :data:`PhysicsEnginePlatformer`
           and 'Detailed' for the :data:`PymunkPhysicsEngine`.
@@ -133,12 +133,13 @@ class Sprite:
         :height: Height of the sprite.
         :force: Force being applied to the sprite. Useful when used with Pymunk \
         for physics.
-        :left: Set/query the sprite location by using the left coordinate. This \
-        will be the 'x' of the left of the sprite.
-        :points: Points, in relation to the center of the sprite, that are used \
-        for collision detection. Arcade defaults to creating points for a rectangle \
+        :hit_box: Points, in relation to the center of the sprite, that are used \
+        for collision detection. Arcade defaults to creating a hit box via the \
+        'simple' hit box algorithm \
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
+        :left: Set/query the sprite location by using the left coordinate. This \
+        will be the 'x' of the left of the sprite.
         :position: A list with the (x, y) of where the sprite is.
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
@@ -174,7 +175,7 @@ class Sprite:
         flipped_horizontally: bool = False,
         flipped_vertically: bool = False,
         flipped_diagonally: bool = False,
-        hit_box_algorithm: str = "Simple",
+        hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
         texture: Texture = None,
         angle: float = 0,
@@ -461,17 +462,19 @@ class Sprite:
         self.change_x += -math.sin(self.radians) * speed
         self.change_y += math.cos(self.radians) * speed
 
-    def turn_right(self, theta: float = 90):
+    def turn_right(self, theta: float = 90.0):
         """
-        Rotate the sprite right a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite right by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle -= theta
 
-    def turn_left(self, theta: float = 90):
+    def turn_left(self, theta: float = 90.0):
         """
-        Rotate the sprite left a certain number of degrees.
-        :param theta: change in angle
+        Rotate the sprite left by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
         """
         self.angle += theta
 
@@ -515,9 +518,6 @@ class Sprite:
         :param float collision_radius: Collision radius
         """
         self._collision_radius = collision_radius
-
-    def __lt__(self, other):
-        return self._texture.texture_id.value < other.texture.texture_id.value
 
     def clear_spatial_hashes(self):
         """
@@ -1375,8 +1375,7 @@ class SpriteSolidColor(Sprite):
 
         # otherwise, generate a filler sprite and add it to the cache
         else:
-            image = PIL.Image.new("RGBA", (width, height), color)
-            texture = Texture(cache_name, image)
+            texture = Texture.create_filled(cache_name, (width, height), color)
             load_texture.texture_cache[cache_name] = texture  # type: ignore
 
         # apply chosen texture to the current sprite

@@ -14,21 +14,42 @@ uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
-from arcade.gl.framebuffer import Framebuffer
 import string
+from datetime import datetime
 from pathlib import Path
-from typing import Tuple, Optional, Union
+from typing import List, Tuple, Optional, Union
 
 from arcade import get_window
 import arcade
 from arcade.context import ArcadeContext
 from arcade.gl import geometry, Texture
+from arcade.gl.program import Program
+from arcade.gl.framebuffer import Framebuffer
 
 
 class ShadertoyBase:
     """
     Base class for shadertoy types.
     It can represent the main image or buffers.
+
+    Supported uniforms are::
+
+        uniform float     iTime;                 // shader playback time (in seconds)
+        uniform float     iChannelTime[4];       // channel playback time (in seconds)
+        uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+        uniform vec3      iResolution;           // viewport resolution (in pixels)
+        uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+        uniform int       iFrame;                // shader playback frame
+        uniform float     iTimeDelta;            // render time (in seconds)
+        uniform vec4      iDate;                 // (year, month, day, time in seconds)
+        // Channel textures
+        uniform sampler2D iChannel0;
+        uniform sampler2D iChannel1;
+        uniform sampler2D iChannel2;
+        uniform sampler2D iChannel3;
+
+    :param Tuple[int,int] size: screen/area size
+    :param str source: The mainImage shader source
     """
     def __init__(self, size: Tuple[int, int], source: str):
         self._ctx = get_window().ctx
@@ -36,9 +57,13 @@ class ShadertoyBase:
         self._source = source
         # Uniforms
         self._mouse_pos = 0.0, 0.0
+        self._mouse_buttons = 0.0, 0.0
         self._time: float = 0.0
         self._time_delta: float = 0.0
         self._frame: int = 0
+        self._frame_rate: float = 0.0
+        self._channel_time = [0.0, 0.0, 0.0, 0.0]
+        self._channel_resolution = [0] * 3 * 4
         # Shader inputs
         self._channel_0: Optional[Texture] = None
         self._channel_1: Optional[Texture] = None
@@ -51,7 +76,9 @@ class ShadertoyBase:
     @property
     def size(self) -> Tuple[int, int]:
         """
-        Get or set the size in pixels
+        Get or set the size in pixels.
+
+        Mapped to uniform ``iResolution.xy``.
         """
         return self._size
 
@@ -62,7 +89,9 @@ class ShadertoyBase:
     @property
     def time(self) -> float:
         """
-        Get or set the current time
+        Get or set the current time.
+
+        Mapped to uniform ``iTime``.
         """
         return self._time
 
@@ -73,7 +102,9 @@ class ShadertoyBase:
     @property
     def time_delta(self) -> float:
         """
-        Get or set the current delta time
+        Get or set the current delta time.
+
+        Mapped to uniform ``iTimeDelta``.
         """
         return self._time_delta
 
@@ -82,9 +113,25 @@ class ShadertoyBase:
         self._time_delta = value
 
     @property
+    def delta_time(self) -> float:
+        """
+        Get or set the current delta time.
+        An alternative to ``time_delta``.
+
+        Mapped to uniform ``iTimeDelta``.
+        """
+        return self._time_delta
+
+    @delta_time.setter
+    def delta_time(self, value):
+        self._time_delta = value
+
+    @property
     def frame(self) -> int:
         """
-        Get or set the current frame
+        Get or set the current frame.
+
+        Mapped to uniform ``iFrame``.
         """
         return self._frame
 
@@ -93,15 +140,50 @@ class ShadertoyBase:
         self._frame = value
 
     @property
+    def frame_rate(self) -> float:
+        """
+        Get or set the frame rate.
+
+        Mapped to uniform ``iFrameRate``.
+        """
+        return self._frame_rate
+
+    @frame_rate.setter
+    def frame_rate(self, value: float):
+        self._frame_rate = value
+
+    @property
     def mouse_position(self) -> Tuple[float, float]:
         """
-        Get or set the current mouse position
+        Get or set the current mouse position.
+
+        Mapped to uniform ``iMouse.xy``.
         """
         return self._mouse_pos
 
     @mouse_position.setter
     def mouse_position(self, value):
         self._mouse_pos = value
+
+    @property
+    def mouse_buttons(self) -> Tuple[float, float]:
+        """
+        Get or set the mouse button states.
+        Depending on the use case these can contain
+        a non-zero value when buttons are pushed and/or
+        the actual click position.
+
+        Mapped to uniform ``iMouse.zw``.
+        """
+        return self._mouse_buttons
+
+    @mouse_buttons.setter
+    def mouse_buttons(self, value: Tuple[float, float]):
+        self._mouse_buttons = value
+
+    @property
+    def channel_time(self) -> List[float]:
+        return self._channel_time
 
     @property
     def channel_0(self) -> Optional[Texture]:
@@ -112,6 +194,7 @@ class ShadertoyBase:
     def channel_0(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[0:3] = value.width, value.height, 1
         self._channel_0 = value
 
     @property
@@ -123,6 +206,7 @@ class ShadertoyBase:
     def channel_1(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[3:6] = value.width, value.height, 1
         self._channel_1 = value
 
     @property
@@ -134,6 +218,7 @@ class ShadertoyBase:
     def channel_2(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[6:9] = value.width, value.height, 1
         self._channel_2 = value
 
     @property
@@ -145,17 +230,21 @@ class ShadertoyBase:
     def channel_3(self, value: Texture):
         if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
+        self._channel_resolution[9:12] = value.width, value.height, 1
         self._channel_3 = value
 
     @property
-    def program(self):
+    def program(self) -> Program:
+        """The shader program"""
         return self._program
 
     @property
     def ctx(self) -> ArcadeContext:
+        """The context"""
         return self._ctx
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: Tuple[int, int]) -> None:
+        """Resize of this shadertoy or buffer"""
         raise NotImplementedError
 
     def render(
@@ -166,23 +255,38 @@ class ShadertoyBase:
         mouse_position: Optional[Tuple[float, float]] = None,
         size: Optional[Tuple[int, int]] = None,
         frame: Optional[int] = None,
+        frame_rate: Optional[float] = None,
     ):
-        """Render the shadertoy project to the screen"""
+        """
+        Render the shadertoy project to the screen.
+
+        :param float time: Override the time
+        :param time_delta: Override the time delta
+        :param mouse_position: Override mouse position
+        :param size: Override the size
+        :param frame: Override frame
+        """
         self._time = time if time is not None else self._time
         self._time_delta = time_delta if time_delta is not None else self._time_delta
         self._mouse_pos = mouse_position if mouse_position is not None else self._mouse_pos
         self._size = size if size is not None else self._size
         self._frame = frame if frame is not None else self._frame
+        self._frame_rate = frame_rate if frame_rate is not None else self._frame_rate
         self._render()
 
     def _render(self):
         raise NotImplementedError        
 
     def reload(self, source: str):
-        """Update the shader source code"""
+        """
+        Update the shader source code.
+
+        :param str source: New mainImage shader source
+        """
         self._set_source(source)
 
     def _bind_channels(self):
+        """Bind channel textures if set"""
         if self._channel_0:
             self._channel_0.use(0)
         if self._channel_1:
@@ -194,26 +298,21 @@ class ShadertoyBase:
 
     def _set_uniforms(self):
         """Attempt to set all supported uniforms"""
-        try:
-            self._program['iTime'] = self._time
-        except KeyError:
-            pass
-        try:
-            self._program['iTimeDelta'] = self._time_delta
-        except KeyError:
-            pass
-        try:
-            self._program['iMouse'] = self._mouse_pos[0], self._mouse_pos[1]
-        except KeyError:
-            pass
-        try:
-            self._program['iResolution'] = self._size
-        except KeyError:
-            pass
-        try:
-            self._program['iFrame'] = self._frame
-        except KeyError:
-            pass
+        self._program.set_uniform_safe('iTime', self._time)
+        self._program.set_uniform_array_safe('iChannelTime', self._channel_time)
+        self._program.set_uniform_safe('iTimeDelta', self._time_delta)
+        self._program.set_uniform_safe('iMouse', (*self._mouse_pos, *self._mouse_buttons))
+        self._program.set_uniform_safe('iResolution', (*self._size, 1.0))
+        self._program.set_uniform_array_safe('iChannelResolution', self._channel_resolution)
+        self._program.set_uniform_safe('iFrame', self._frame)
+        self._program.set_uniform_safe('iFrameRate', self._frame_rate)
+        self._program.set_uniform_safe('iDate', self._get_date())
+
+    def _get_date(self) -> Tuple[float, float, float, float]:
+        """Create year, month, day, seconds data for iDate"""
+        now = datetime.now()
+        seconds = now.hour * 60 * 60 + now.minute * 60 + now.second + now.microsecond / 1_000_000
+        return now.year, now.month, now.day, seconds
 
     def _set_source(self, source: str):
         """
@@ -245,9 +344,12 @@ class ShadertoyBase:
 class ShadertoyBuffer(ShadertoyBase):
     """
     An offscreen framebuffer we can render to with the supplied
-    shader or render any other content into. 
-    """
+    shader or render any other content into.
 
+    :param Tuple[int,int] size: Size of framebuffer / texture
+    :param str source: mainImage shader source
+    :param bool repeat: Repeat/wrap mode for the underlying texture
+    """
     def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
         self._texture = self.ctx.texture(self._size, components=4)
@@ -265,10 +367,14 @@ class ShadertoyBuffer(ShadertoyBase):
 
     @property
     def fbo(self) -> Framebuffer:
+        """The framebuffer for this buffer"""
         return self._fbo
 
     @property
     def repeat(self) -> bool:
+        """
+        Get or set texture repeat.
+        """
         return self._repeat
 
     @repeat.setter
@@ -295,7 +401,11 @@ class ShadertoyBuffer(ShadertoyBase):
             self._quad.render(self._program)
 
     def resize(self, size: Tuple[int, int]):
-        """Resize the internal texture"""
+        """
+        Change the internal buffer size.
+
+        :param Tuple[int,int] size: New size
+        """
         if self._size == size:
             return
         self._size = size
@@ -364,20 +474,32 @@ class Shadertoy(ShadertoyBase):
 
     @classmethod
     def create_from_file(cls, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
+        """
+        Create a Shadertoy from a mainImage shader file.
+
+        :param Tuple[int,int] size: Size of shadertoy in pixels
+        :param str path: Path to mainImage shader file
+        """
         path = arcade.resources.resolve_resource_path(path)
         with open(path) as fd:
             source = fd.read()
         return cls(size, source)
 
-    def create_buffer(self, source, repeat: bool = False) -> ShadertoyBuffer:
+    def create_buffer(self, source: str, repeat: bool = False) -> ShadertoyBuffer:
         """
-        Shortcut for creating a buffer.
+        Shortcut for creating a buffer from mainImage shader file.
+
+        :param str source: Path to shader file
+        :param bool repeat: Buffer/texture repeat at borders
         """
         return ShadertoyBuffer(self._size, source, repeat=repeat)
 
     def create_buffer_from_file(self, path: Union[str, Path]) -> ShadertoyBuffer:
         """
-        Shortcut for creating a buffer.
+        Shortcut for creating a ShadertoyBuffer from shaders source.
+        The size of the framebuffer will be the same as the Shadertoy.
+
+        :param str path: Path to shader source
         """
         path = arcade.resources.resolve_resource_path(path)
         with open(path) as fd:

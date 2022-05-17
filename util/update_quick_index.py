@@ -198,7 +198,6 @@ def process_directory(directory, quick_index_file):
             api_file.write(f"{title}\n")
             underline = "-" * len(title)
             api_file.write(f"{underline}\n\n")
-            api_file.write(f".. contents::\n\n")
 
         # Classes
         if len(class_list) > 0:

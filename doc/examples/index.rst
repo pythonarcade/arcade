@@ -3,9 +3,6 @@
 How-To Example Code
 ===================
 
-.. contents::
-   :depth: 1
-   :local:
 
 Starting Templates
 ------------------
@@ -186,6 +183,11 @@ Sprite Player Movement
 
    :ref:`easing_example_2`
 
+.. figure:: thumbs/sprite_rotate_around_tank.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_tank`
+
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -214,6 +216,11 @@ Sprite Non-Player Movement
    :figwidth: 170px
 
    :ref:`sprite_collect_rotating`
+
+.. figure:: thumbs/sprite_rotate_around_point.png
+   :figwidth: 170px
+
+   :ref:`sprite_rotate_around_point`
 
 Sprite Pathing
 ^^^^^^^^^^^^^^
@@ -320,6 +327,11 @@ Sound
    :figwidth: 170px
 
    :ref:`sound_demo`
+
+.. figure:: thumbs/sound_speed_demo.png
+   :figwidth: 170px
+
+   :ref:`sound_speed_demo`
 
 .. figure:: thumbs/music_control_demo.png
    :figwidth: 170px
@@ -704,7 +716,7 @@ Tutorials
 .. figure:: thumbs/shader_toy_tutorial.png
    :figwidth: 170px
 
-   :ref:`shader_toy_tutorial`
+   :ref:`shader_toy_tutorial_glow`
 
 
 Particle System

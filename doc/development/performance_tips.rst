@@ -12,10 +12,6 @@ The three areas where a game
 might experience the greatest slowdowns are collision detection,
 drawing primitive performance, and sprite drawing performance.
 
-.. contents::
-   :depth: 2
-   :local:
-
 .. _collision_detection_performance:
 
 Collision detection performance

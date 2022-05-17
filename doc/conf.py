@@ -39,9 +39,6 @@ RELEASE = VERSION
 
 # -- General configuration ------------------------------------------------
 
-# If your documentation needs a minimal Sphinx version, state it here.
-# needs_sphinx = '1.0'
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -76,9 +73,6 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
-# The encoding of source files.
-# source_encoding = 'utf-8-sig'
-
 # The master toctree document.
 master_doc = 'index'
 
@@ -108,7 +102,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -117,11 +111,39 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
+html_theme_options = {
+    "light_logo": "../_images/arcade-logo.svg",
+    "dark_logo": "../_images/arcade-logo.svg",
+    "light_css_variables": {
+       "font-stack--monospace": "Roboto Mono, Courier, monospace",
+        "toc-font-size": "16px",
+        "sidebar-item-font-size": "16px",
+        "sidebar-item-line-height": "20px",
+    },
+    "dark_css_variables": {
+       "font-stack--monospace": "Roboto Mono, Courier, monospace",
+        "toc-font-size": "16px",
+        "sidebar-item-font-size": "16px",
+        "sidebar-item-line-height": "20px",
+    },
+}
+
+html_title = f"Python Arcade {version}"
+
+html_js_files = [
+    'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js',
+]
+
+
+html_css_files = [
+    'https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css',
+    'css/custom.css',
+]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/favicon-32x32.png'
+# html_logo = '_static/favicon-32x32.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -139,7 +161,7 @@ html_static_path = ['_static']
 html_extra_path = ['html_extra']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Arcadedoc'
+htmlhelp_basename = 'Arcade'
 html_baseurl = 'https://api.arcade.academy/'
 
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
@@ -167,14 +189,63 @@ suppress_warnings = [
     "ref.python",
 ]
 
+# -- Options for LaTeX output ---------------------------------------------
 
-def warn_undocumented_members(app, what, name, obj, options, lines):
+latex_elements = {
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
+
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
+
+    # Additional stuff for the LaTeX preamble.
+    #
+    # 'preamble': '',
+
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
+}
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+latex_documents = [
+    (master_doc, 'Arcade.tex', 'Python Arcade Documentation', author, 'manual'),
+]
+
+
+# -- Options for manual page output ---------------------------------------
+
+# One entry per manual page. List of tuples
+# (source start file, name, description, authors, manual section).
+man_pages = [
+    (master_doc, 'Arcade', 'Python Arcade Documentation', [author], 1)
+]
+
+# -- Options for Texinfo output -------------------------------------------
+
+# Grouping the document tree into Texinfo files. List of tuples
+# (source start file, target name, title, author,
+#  dir menu entry, description, category)
+texinfo_documents = [
+    (
+        master_doc, 'Arcade', 'Python Arcade Documentation',
+        author, 'Arcade', 'Easy to use Python library for creating 2D arcade games.',
+        'Miscellaneous'
+    ),
+]
+
+
+def warn_undocumented_members(_app, what, name, _obj, _options, lines):
     if len(lines) == 0:
         print(f"{what} {name} is undocumented")
         # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
 
 
-def source_read(app, docname, source):
+def source_read(_app, docname, source):
 
     # print(f"  XXX Reading {docname}")
     import os
@@ -209,7 +280,7 @@ def source_read(app, docname, source):
         source[0] = original_text + append_text
 
 
-def post_process(app, exception):
+def post_process(_app, _exception):
     pass
 
 #     try:

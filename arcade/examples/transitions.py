@@ -48,7 +48,7 @@ class MenuView(FadingView):
     def on_update(self, dt):
         self.update_fade(next_view=GameView)
 
-    def on_show(self):
+    def on_show_view(self):
         """ Called when switching to this view"""
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -82,7 +82,7 @@ class GameView(FadingView):
     def on_update(self, dt):
         self.update_fade(next_view=GameOverView)
 
-    def on_show(self):
+    def on_show_view(self):
         """ Called when switching to this view"""
         arcade.set_background_color(arcade.color.ORANGE_PEEL)
 
@@ -105,7 +105,7 @@ class GameOverView(FadingView):
     def on_update(self, dt):
         self.update_fade(next_view=MenuView)
 
-    def on_show(self):
+    def on_show_view(self):
         """ Called when switching to this view"""
         arcade.set_background_color(arcade.color.BLACK)
 

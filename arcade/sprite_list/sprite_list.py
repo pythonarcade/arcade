@@ -32,11 +32,7 @@ from arcade import (
     get_four_float_color,
 )
 from arcade.context import ArcadeContext
-from pyglet.math import (
-    Mat3,
-)
 from arcade.gl.buffer import Buffer
-
 from arcade.gl.vertex_array import Geometry
 
 if TYPE_CHECKING:
@@ -1049,10 +1045,7 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         # print(f"{id(self)} : {id(sprite)} update_location")
-        try:
-            slot = self.sprite_slot[sprite]
-        except KeyError:
-            raise ValueError(id(sprite))
+        slot = self.sprite_slot[sprite]
         # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
         # noinspection PyProtectedMember
@@ -1175,11 +1168,6 @@ class SpriteList:
 
         try:
             self.program["spritelist_color"] = self._color
-        except KeyError:
-            pass
-        # TODO: Should be removed in future versions. No longer in use.
-        try:
-            self.program["TextureTransform"] = Mat3()
         except KeyError:
             pass
 

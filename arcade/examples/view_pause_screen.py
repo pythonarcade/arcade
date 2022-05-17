@@ -12,12 +12,6 @@ python -m arcade.examples.view_pause_screen
 """
 
 import arcade
-import os
-
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
-
 
 WIDTH = 800
 HEIGHT = 600
@@ -25,7 +19,7 @@ SPRITE_SCALING = 0.5
 
 
 class MenuView(arcade.View):
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
@@ -49,7 +43,7 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 50
         self.player_sprite.velocity = [3, 3]
 
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
@@ -87,7 +81,7 @@ class PauseView(arcade.View):
         super().__init__()
         self.game_view = game_view
 
-    def on_show(self):
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.ORANGE)
 
     def on_draw(self):
