@@ -7,8 +7,10 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.6.14 [UNRELEASED]
----------------------------
+Version 2.6.14
+--------------
+
+*Released 2022-May-17*
 
 * Various Improvements
 
@@ -28,8 +30,13 @@ Version 2.6.14 [UNRELEASED]
   * Removed the broken ``Sprite.__lt__`` method
   * Added :py:func:`~arcade.get_angle_radians`
   * Removed ``Texture.draw_transformed``
-  * Add support for changing the pitch while playing a sound. See :py:func:`arcade.play_sound`.
-  * Set better blending defaults for arcaded GUI
+  * Add support for changing the pitch while playing a sound. See the `speed` parameter in
+    :py:func:`arcade.play_sound`.
+  * Set better blending defaults for arcade GUI
+  * Can now create a texture filled with a single color. See :py:meth:`Texture.create_filled`.
+    The Sprite class will use this when creating a solid colored sprite.
+  * Bump version numbers of Sphinx, Pillow to current release as of 17-May.
+  * Bump Pyglet version to 2.0.dev15. (Thanks Pyglet!)
 
 * Shadertoy
 
