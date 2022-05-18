@@ -26,9 +26,6 @@ def test_pymunk():
 @pytest.mark.parametrize("moment_of_inertia_arg_name",
                          (
                              "moment_of_inertia",
-                             # deprecated kwargs for backward-compatibility
-                             "moment",
-                             "moment_of_intertia"
                          ))
 def test_pymunk_add_sprite_moment_backwards_compatibility(moment_of_inertia_arg_name):
     """
@@ -46,11 +43,3 @@ def test_pymunk_add_sprite_moment_backwards_compatibility(moment_of_inertia_arg_
     set_moment = physics_engine.get_physics_object(sprite).body.moment
 
     assert set_moment == arcade.PymunkPhysicsEngine.MOMENT_INF
-
-
-
-
-
-
-
-

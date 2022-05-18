@@ -5,8 +5,14 @@ import pytest
 
 
 def test_ctx(ctx):
-    assert ctx.gl_version >= (3, 3)
-    assert ctx.info.MAX_TEXTURE_SIZE > 4096
+    if ctx.gl_api == "gl":
+        assert ctx.gl_version >= (3, 3)
+    elif ctx.gl_api == "gles":
+        assert ctx.gl_version >= (3, 1)
+    else:
+        raise ValueError(f"Unsupported api: {ctx.gl_api}")
+
+    assert ctx.info.MAX_TEXTURE_SIZE >= 4096
     assert ctx.info.MAX_ARRAY_TEXTURE_LAYERS >= 256
 
     assert ctx.blend_func == ctx.BLEND_DEFAULT

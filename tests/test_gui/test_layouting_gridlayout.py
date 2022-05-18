@@ -1,0 +1,76 @@
+from arcade.gui import UIDummy
+from arcade.gui.widgets import Rect
+from arcade.gui.widgets.layout import UIGridLayout
+
+
+def test_place_widget(window):
+    dummy1 = UIDummy(width=100, height=100)
+    dummy2 = UIDummy(width=100, height=100)
+    dummy3 = UIDummy(width=100, height=100)
+    dummy4 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=2
+    )
+
+    subject.add(dummy1, 0, 0)
+    subject.add(dummy2, 0, 1)
+    subject.add(dummy3, 1, 0)
+    subject.add(dummy4, 1, 1)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    # check that do_layout doesn't manipulate the rect
+    assert subject.rect == (0, 0, 200, 200)
+
+    assert dummy1.position == (0, 100)
+    assert dummy2.position == (0, 0)
+    assert dummy3.position == (100, 100)
+    assert dummy4.position == (100, 0)
+
+
+def test_place_widget_with_different_sizes(window):
+    dummy1 = UIDummy(width=50, height=100)
+    dummy2 = UIDummy(width=100, height=100)
+    dummy3 = UIDummy(width=100, height=50)
+    dummy4 = UIDummy(width=50, height=50)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=2
+    )
+
+    subject.add(dummy1, 0, 0)
+    subject.add(dummy2, 0, 1)
+    subject.add(dummy3, 1, 0)
+    subject.add(dummy4, 1, 1)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    assert subject.rect == (0, 0, 200, 200)
+
+    assert dummy1.position == (25, 100)
+    assert dummy2.position == (0, 0)
+    assert dummy3.position == (100, 125)
+    assert dummy4.position == (125, 25)
+
+
+def test_place_widget_within_content_rect(window):
+    dummy1 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1
+    ).with_padding(left=10, bottom=20)
+
+    subject.add(dummy1, 0, 0)
+
+    assert subject.size_hint_min == (110, 120)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    assert dummy1.position == (10, 20)

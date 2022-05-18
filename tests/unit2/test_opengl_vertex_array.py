@@ -81,7 +81,7 @@ def test_transform(ctx):
         #version 330
         out float value;
         void main() {
-            value = gl_VertexID;
+            value = float(gl_VertexID);
         }
         """
     )

@@ -48,7 +48,8 @@ class App(arcade.Window):
         super().__init__(*SIZE, "Compute Shader", gl_version=(4, 3))
         self.time = 0
         self.cs = self.ctx.compute_shader(source=COMPUTE_SHADER)
-        self.texture = self.ctx.texture(SIZE, components=4)
+        # In gles the texture needs to be immutable (immutable storage, not contents)
+        self.texture = self.ctx.texture(SIZE, components=4, immutable=True)
         self.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
         # Simple program rendering textured retangle to the screen

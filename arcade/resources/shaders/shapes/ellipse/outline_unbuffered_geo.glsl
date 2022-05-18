@@ -1,9 +1,9 @@
 #version 330
 
-#define PI 3.1415926535897932384626433832795
 // 3 points per segment, max of 256 points, so 85 * 3 = 255
 const int MIN_SEGMENTS = 3;
 const int MAX_SEGMENTS = 112;
+const float PI = 3.141592;
 
 layout (points) in;
 // TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
@@ -50,7 +50,7 @@ void main() {
     // Number of vertices is segments * 2 + 2, so we need to emit the initial vertex first
 
     // First outer vertex
-    vec2 p_start = vec2(sin(0), cos(0)) * shape.xy;
+    vec2 p_start = vec2(sin(0.0), cos(0.0)) * shape.xy;
     gl_Position = proj.matrix * vec4((rot * p_start) + center, 0.0, 1.0);
     EmitVertex();
 
@@ -67,7 +67,7 @@ void main() {
         EmitVertex();
     }
     // Last inner vertex to wrap up
-    vec2 p_end = vec2(sin(0), cos(0)) * (shape.xy - vec2(shape.w));
+    vec2 p_end = vec2(sin(0.0), cos(0.0)) * (shape.xy - vec2(shape.w));
     gl_Position = proj.matrix * vec4((rot * p_end) + center, 0.0, 1.0);
     EmitVertex();
 

@@ -1,13 +1,13 @@
 import gc
 from typing import Dict
 
-from arcade.gui._property import _bind, _DictProperty, _ObservableDict
+from arcade.gui.property import bind, DictProperty, _ObservableDict
 from tests.test_gui.test_property import Observer
 
 
 def test_dict_property_gc():
     class MyDictHolder:
-        data = _DictProperty()
+        data = DictProperty()
 
     obj = MyDictHolder()
     obj.data = {}
@@ -26,7 +26,7 @@ def test_dict_property_gc():
 
 def test_dict_property_replace_dict_with_observable():
     class MyDictHolder:
-        data = _DictProperty()
+        data = DictProperty()
 
     obj = MyDictHolder()
     obj.data = {}
@@ -36,11 +36,11 @@ def test_dict_property_replace_dict_with_observable():
 
 def test_dict_property_set():
     class MyDictHolder:
-        data = _DictProperty()
+        data = DictProperty()
 
     observer = Observer()
     obj = MyDictHolder()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data["test"] = 5
 
@@ -49,13 +49,13 @@ def test_dict_property_set():
 
 def test_dict_property_del():
     class MyDictHolder:
-        data = _DictProperty()
+        data = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     del obj.data["test"]
 
@@ -64,11 +64,11 @@ def test_dict_property_del():
 
 def test_dict_property_clear():
     class MyDictHolder:
-        data: Dict = _DictProperty()
+        data: Dict = DictProperty()
 
     obj = MyDictHolder()
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.clear()
 
@@ -77,13 +77,13 @@ def test_dict_property_clear():
 
 def test_dict_property_pop():
     class MyDictHolder:
-        data: Dict = _DictProperty()
+        data: Dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.pop("test")
 
@@ -92,13 +92,13 @@ def test_dict_property_pop():
 
 def test_dict_property_pop_item():
     class MyDictHolder:
-        data: Dict = _DictProperty()
+        data: Dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.popitem()
 
@@ -107,13 +107,13 @@ def test_dict_property_pop_item():
 
 def test_dict_property_set_default():
     class MyDictHolder:
-        data: Dict = _DictProperty()
+        data: Dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.setdefault("test", 5)
 
@@ -122,13 +122,13 @@ def test_dict_property_set_default():
 
 def test_dict_property_update():
     class MyDictHolder:
-        data: Dict = _DictProperty()
+        data: Dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.update({"test": 5})
 

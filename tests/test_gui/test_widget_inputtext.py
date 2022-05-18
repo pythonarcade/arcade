@@ -1,6 +1,7 @@
 from arcade.gui.events import UIEvent
 
-from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxLayout, UIDummy
+from arcade.gui.widgets import UIDummy
+
 
 # TODO add tests
 
@@ -12,8 +13,4 @@ def test_widget():
     widget.on_event(UIEvent(widget))
 
     # THEN
-    assert widget.rect == (0,0,100,100)
-
-
-
-
+    assert widget.rect == (0, 0, 100, 100)

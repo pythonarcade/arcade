@@ -1,12 +1,12 @@
 import gc
 from typing import List
 
-from arcade.gui._property import _bind, _ListProperty, _ObservableList
+from arcade.gui.property import bind, ListProperty, _ObservableList
 from tests.test_gui.test_property import Observer
 
 
 class MyListHolder:
-    data: List = _ListProperty()
+    data: List = ListProperty()
 
 
 def test_list_property_gc():
@@ -37,7 +37,7 @@ def test_list_property_set():
     obj = MyListHolder()
     obj.data.append(1)
 
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
     obj.data[0] = 5
 
     assert observer.called
@@ -48,7 +48,7 @@ def test_list_property_del():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     del obj.data[0]
 
@@ -58,7 +58,7 @@ def test_list_property_del():
 def test_list_property_clear():
     obj = MyListHolder()
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.clear()
 
@@ -70,7 +70,7 @@ def test_list_property_pop():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.pop()
 
@@ -82,7 +82,7 @@ def test_list_property_sort():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.sort()
 
@@ -94,7 +94,7 @@ def test_list_property_update():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.extend([2])
 
@@ -106,7 +106,7 @@ def test_list_property_insert():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.insert(0, 2)
 
@@ -118,7 +118,7 @@ def test_list_property_reverse():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.reverse()
 
@@ -130,7 +130,7 @@ def test_list_property_remove():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data.remove(1)
 
@@ -142,7 +142,7 @@ def test_list_property_imul():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data *= 2
 
@@ -154,7 +154,7 @@ def test_list_property_iadd():
     obj.data.append(1)
 
     observer = Observer()
-    _bind(obj, "data", observer)
+    bind(obj, "data", observer)
 
     obj.data += [2]
 

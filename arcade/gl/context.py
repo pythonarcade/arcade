@@ -1,24 +1,24 @@
-from contextlib import contextmanager
-from ctypes import c_int, c_char_p, cast, c_float
-from collections import deque
 import logging
 import weakref
-from typing import Any, Deque, Dict, List, Tuple, Union, Sequence, Set
+from collections import deque
+from contextlib import contextmanager
+from ctypes import c_char_p, c_float, c_int, cast
+from typing import (Any, Deque, Dict, List, Optional, Sequence, Set, Tuple,
+                    Union)
 
 import pyglet
-from pyglet.window import Window
 from pyglet import gl
+from pyglet.window import Window
 
 from .buffer import Buffer
-from .program import Program
-from .vertex_array import Geometry
-from .framebuffer import Framebuffer, DefaultFrameBuffer
-from typing import Optional
-from .texture import Texture
-from .query import Query
-from .glsl import ShaderSource
-from .types import BufferDescription
 from .compute_shader import ComputeShader
+from .framebuffer import DefaultFrameBuffer, Framebuffer
+from .glsl import ShaderSource
+from .program import Program
+from .query import Query
+from .texture import Texture
+from .types import BufferDescription
+from .vertex_array import Geometry
 
 LOG = logging.getLogger(__name__)
 
@@ -35,6 +35,9 @@ class Context:
 
     #: The active context
     active: Optional["Context"] = None
+
+    #: The OpenGL api. Usually "gl" or "gles".
+    gl_api: str = "gl"
 
     # --- Store the most commonly used OpenGL constants
     # Texture
@@ -156,9 +159,13 @@ class Context:
         gl.GL_STACK_UNDERFLOW: "GL_STACK_UNDERFLOW",
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
+    _valid_apis = ('gl', 'gles')
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
         self._window_ref = weakref.ref(window)
+        if gl_api not in self._valid_apis:
+            raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
+        self.gl_api = gl_api
         self._limits = Limits(self)
         self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
         Context.activate(self)
@@ -176,11 +183,22 @@ class Context:
 
         # Hardcoded states
         # This should always be enabled
-        gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
+        # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
         # Set primitive restart index to -1 by default
-        gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+        if self.gl_api == "gles":
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
+        else:
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+
         self._primitive_restart_index = -1
         self.primitive_restart_index = self._primitive_restart_index
+
+        # Detect support for glProgramUniform.
+        # Assumed to be supported in gles
+        self._ext_separate_shader_objects_enabled = True
+        if self.gl_api == "gl":
+            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
+            self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
 
         # We enable scissor testing by default.
         # This is always set to the same value as the viewport
@@ -415,10 +433,11 @@ class Context:
         else:
             gl.glDisable(self.CULL_FACE)
 
-        if self.PROGRAM_POINT_SIZE in self._flags:
-            gl.glEnable(self.PROGRAM_POINT_SIZE)
-        else:
-            gl.glDisable(self.PROGRAM_POINT_SIZE)
+        if self.gl_api == "gl":
+            if self.PROGRAM_POINT_SIZE in self._flags:
+                gl.glEnable(self.PROGRAM_POINT_SIZE)
+            else:
+                gl.glDisable(self.PROGRAM_POINT_SIZE)
 
     @contextmanager
     def enabled(self, *flags):
@@ -537,7 +556,7 @@ class Context:
         self.fbo.scissor = value
 
     @property
-    def blend_func(self) -> Tuple[int, int]:
+    def blend_func(self) -> Union[Tuple[int, int], Tuple[int, int, int, int]]:
         """
         Get or set the blend function.
         This is tuple specifying how the red, green, blue, and
@@ -579,9 +598,14 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value: Tuple[int, int]):
+    def blend_func(self, value: Union[Tuple[int, int], Tuple[int, int, int, int]]):
         self._blend_func = value
-        gl.glBlendFunc(value[0], value[1])
+        if len(value) == 2:
+            gl.glBlendFunc(value[0], value[1])
+        elif len(value) == 4:
+            gl.glBlendFuncSeparate(value[0], value[1], value[2], value[3])
+        else:
+            ValueError("blend_func takes a tuple of 2 or 4 values")
 
     # def blend_equation(self)
     # def front_face(self)
@@ -628,14 +652,14 @@ class Context:
 
     @point_size.setter
     def point_size(self, value: float):
-        gl.glPointSize(self._point_size)
+        if self.gl_api == "gl":
+            gl.glPointSize(self._point_size)
         self._point_size = value
 
     @property
     def primitive_restart_index(self) -> int:
         """
         Get or set the primitive restart index. Default is ``-1``.
-
         The primitive restart index can be used in index buffers
         to restart a primitive. This is for example useful when you
         use triangle strips or line strips and want to start on
@@ -646,7 +670,8 @@ class Context:
     @primitive_restart_index.setter
     def primitive_restart_index(self, value: int):
         self._primitive_restart_index = value
-        gl.glPrimitiveRestartIndex(value)
+        if self.gl_api == "gl":
+            gl.glPrimitiveRestartIndex(value)
 
     def finish(self) -> None:
         """
@@ -760,6 +785,7 @@ class Context:
         wrap_y: gl.GLenum = None,
         filter: Tuple[gl.GLenum, gl.GLenum] = None,
         samples: int = 0,
+        immutable: bool = False,
     ) -> Texture:
         """Create a 2D Texture.
 
@@ -778,6 +804,8 @@ class Context:
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
         :param int samples: Creates a multisampled texture for values > 0
+        :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
+                               required when using textures with compute shaders.
         """
         return Texture(
             self,
@@ -789,6 +817,7 @@ class Context:
             wrap_y=wrap_y,
             filter=filter,
             samples=samples,
+            immutable=immutable,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
@@ -916,24 +945,24 @@ class Context:
                                           buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
-        source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
+        source_vs = ShaderSource(self, vertex_shader, gl.GL_VERTEX_SHADER)
         source_fs = (
-            ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER)
+            ShaderSource(self, fragment_shader, gl.GL_FRAGMENT_SHADER)
             if fragment_shader
             else None
         )
         source_geo = (
-            ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER)
+            ShaderSource(self, geometry_shader, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
             else None
         )
         source_tc = (
-            ShaderSource(tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
+            ShaderSource(self, tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
             if tess_control_shader
             else None
         )
         source_te = (
-            ShaderSource(tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
+            ShaderSource(self, tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
             if tess_evaluation_shader
             else None
         )
@@ -984,7 +1013,8 @@ class Context:
 
         :param str source: The glsl source
         """
-        return ComputeShader(self, source)
+        src = ShaderSource(self, source, gl.GL_COMPUTE_SHADER)
+        return ComputeShader(self, src.get_source())
 
 
 class ContextStats:
@@ -1092,8 +1122,6 @@ class Limits:
         self.MAX_DEPTH_TEXTURE_SAMPLES = self.get(gl.GL_MAX_DEPTH_TEXTURE_SAMPLES)
         #: Maximum number of simultaneous outputs that may be written in a fragment shader
         self.MAX_DRAW_BUFFERS = self.get(gl.GL_MAX_DRAW_BUFFERS)
-        #: Maximum number of active draw buffers when using dual-source blending
-        self.MAX_DUAL_SOURCE_DRAW_BUFFERS = self.get(gl.GL_MAX_DUAL_SOURCE_DRAW_BUFFERS)
         #: Recommended maximum number of vertex array indices
         self.MAX_ELEMENTS_INDICES = self.get(gl.GL_MAX_ELEMENTS_INDICES)
         #: Recommended maximum number of vertex array vertices
@@ -1135,14 +1163,10 @@ class Limits:
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
         #: Maximum samples for a framebuffer
         self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
-        #: A rough estimate of the largest rectangular texture that the GL can handle
-        self.MAX_RECTANGLE_TEXTURE_SIZE = self.get(gl.GL_MAX_RECTANGLE_TEXTURE_SIZE)
         #: Maximum supported size for renderbuffers
         self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
         #: Maximum number of sample mask words
         self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
-        #: Maximum number of texels allowed in the texel array of a texture buffer object
-        self.MAX_TEXTURE_BUFFER_SIZE = self.get(gl.GL_MAX_TEXTURE_BUFFER_SIZE)
         #: Maximum number of uniform buffer binding points on the context
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
         #: Maximum number of uniform buffer binding points on the context
@@ -1176,7 +1200,7 @@ class Limits:
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         #: The highest supported anisotropy value. Usually 8.0 or 16.0.
-        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         #: The maximum support window or framebuffer viewport.
         #: This is usually the same as the maximum texture size
         self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
@@ -1194,22 +1218,34 @@ class Limits:
 
     def get_int_tuple(self, enum: gl.GLenum, length: int):
         """Get an enum as an int tuple"""
-        values = (c_int * length)()
-        gl.glGetIntegerv(enum, values)
-        return tuple(values)
+        try:
+            values = (c_int * length)()
+            gl.glGetIntegerv(enum, values)
+            return tuple(values)
+        except gl.lib.GLException:
+            return tuple([0] * length)
 
-    def get(self, enum: gl.GLenum) -> int:
+    def get(self, enum: gl.GLenum, default=0) -> int:
         """Get an integer limit"""
-        value = c_int()
-        gl.glGetIntegerv(enum, value)
-        return value.value
+        try:
+            value = c_int()
+            gl.glGetIntegerv(enum, value)
+            return value.value
+        except gl.lib.GLException:
+            return default
 
-    def get_float(self, enum: gl.GLenum) -> float:
+    def get_float(self, enum: gl.GLenum, default=0.0) -> float:
         """Get a float limit"""
-        value = c_float()
-        gl.glGetFloatv(enum, value)
-        return value.value
+        try:
+            value = c_float()
+            gl.glGetFloatv(enum, value)
+            return value.value
+        except gl.lib.GLException:
+            return default
 
     def get_str(self, enum: gl.GLenum) -> str:
         """Get a string limit"""
-        return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
+        try:
+            return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
+        except gl.lib.GLException:
+            return "Unknown"

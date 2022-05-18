@@ -415,9 +415,9 @@ class Framebuffer:
         except Exception:
             raise ValueError(f"Invalid dtype '{dtype}'")
 
-        with self:
+        with self.activate():
             # Configure attachment to read from
-            # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
             if viewport:
                 x, y, width, height = viewport
             else:

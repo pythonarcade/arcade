@@ -14,11 +14,11 @@ class Surface:
     """
 
     def __init__(
-            self,
-            *,
-            size: Tuple[int, int],
-            position: Tuple[int, int] = (0, 0),
-            pixel_ratio: float = 1.0,
+        self,
+        *,
+        size: Tuple[int, int],
+        position: Tuple[int, int] = (0, 0),
+        pixel_ratio: float = 1.0,
     ):
         self.ctx = arcade.get_window().ctx
         self._size = size
@@ -84,7 +84,7 @@ class Surface:
         """The physical size of the buffer"""
         return (
             int(self._size[0] * self._pixel_ratio),
-            int(self._size[1] * self._pixel_ratio)
+            int(self._size[1] * self._pixel_ratio),
         )
 
     @property
@@ -103,14 +103,25 @@ class Surface:
         """Clear the surface"""
         self.fbo.clear(color=color)
 
-    def draw_texture(self, x: float, y: float, width: float, height: float, tex: Texture, angle=0, alpha: int = 255):
-        arcade.draw_lrwh_rectangle_textured(bottom_left_x=x,
-                                            bottom_left_y=y,
-                                            width=width,
-                                            height=height,
-                                            texture=tex,
-                                            angle=angle,
-                                            alpha=alpha)
+    def draw_texture(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        tex: Texture,
+        angle=0,
+        alpha: int = 255,
+    ):
+        arcade.draw_lrwh_rectangle_textured(
+            bottom_left_x=x,
+            bottom_left_y=y,
+            width=width,
+            height=height,
+            texture=tex,
+            angle=angle,
+            alpha=alpha,
+        )
 
     def draw_sprite(self, x, y, width, height, sprite):
         """Draw a sprite to the surface"""

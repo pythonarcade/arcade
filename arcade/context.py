@@ -2,16 +2,18 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
-from arcade.gl.compute_shader import ComputeShader
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
+from contextlib import contextmanager
 
 import pyglet
+from pyglet import gl
+from pyglet.graphics.shader import UniformBufferObject
 from PIL import Image
 
 import arcade
 from arcade.gl import BufferDescription, Context
+from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
 from arcade.gl.vertex_array import Geometry
@@ -39,17 +41,17 @@ class ArcadeContext(Context):
 
     atlas_size = 512, 512
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc"):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
 
-        super().__init__(window, gc_mode=gc_mode)
+        super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
         # Enabled blending by default
         self.enable(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
 
         # Set up a default orthogonal projection for sprites and shapes
-        self._projection_2d_buffer = self.buffer(reserve=128)
-        self._projection_2d_buffer.bind_to_uniform_block(0)
+        self._window_block: UniformBufferObject = window.ubo
+        self.bind_window_block()
         self.projection_2d = (
             0,
             self.screen.width,
@@ -188,7 +190,7 @@ class ArcadeContext(Context):
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
 
-        self.active_program = None
+        # self.active_program = None
         self.point_size = 1.0
 
     def reset(self) -> None:
@@ -197,12 +199,26 @@ class ArcadeContext(Context):
         This is mostly used in unit testing.
         """
         self.screen.use(force=True)
-        self._projection_2d_buffer.bind_to_uniform_block(0)
-        self.active_program = None
+        self.bind_window_block()
+        # self.active_program = None
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0
+
+    def bind_window_block(self) -> None:
+        """
+        Binds the projection and view uniform buffer object.
+        This should always be bound to index 0 so all shaders
+        have access to them.
+        """
+        gl.glBindBufferRange(
+            gl.GL_UNIFORM_BUFFER,
+            0,
+            self._window_block.buffer.id,
+            0,
+            128,  # 32 x 32bit floats (two mat4)
+        )
 
     @property
     def default_atlas(self) -> TextureAtlas:
@@ -246,7 +262,7 @@ class ArcadeContext(Context):
         self._projection_2d_matrix = Mat4.orthogonal_projection(
             value[0], value[1], value[2], value[3], -100, 100,
         )
-        self._projection_2d_buffer.write(self._projection_2d_matrix)
+        self.window.projection = self._projection_2d_matrix
 
     @property
     def projection_2d_matrix(self) -> Mat4:
@@ -264,34 +280,21 @@ class ArcadeContext(Context):
             raise ValueError("projection_matrix must be a Mat4 object")
 
         self._projection_2d_matrix = value
-        self._projection_2d_buffer.write(self._projection_2d_matrix)
+        self.window.projection = self._projection_2d_matrix
 
     @contextmanager
     def pyglet_rendering(self):
-        """Context manager for pyglet rendering.
-        Since arcade and pyglet needs slightly different
-        states we needs some initialization and cleanup.
-
-        Examples::
-
-            with window.ctx.pyglet_rendering():
-                # Draw with pyglet here
         """
-        prev_viewport = self.fbo.viewport
-        # Ensure projection and view matrices are set in pyglet
-        self.window.projection = self._projection_2d_matrix
-        # Global modelview matrix should be set to identity
-        self.window.view = Mat4()
+        Context manager for doing redering with pyglet
+        ensuring context states are reverted. This
+        affects things like blending.
+        """
+        blend_enabled = self.is_enabled(self.BLEND)
         try:
-            yield None
+            yield
         finally:
-            # Force arcade.gl to rebind programs
-            self.active_program = None
-            # Rebind the projection uniform block
-            self._projection_2d_buffer.bind_to_uniform_block(binding=0)
-            self.enable(self.BLEND, pyglet.gl.GL_SCISSOR_TEST)
-            self.blend_func = self.BLEND_DEFAULT
-            self.fbo.viewport = prev_viewport
+            if blend_enabled:
+                self.enable(self.BLEND)
 
     def load_program(
         self,

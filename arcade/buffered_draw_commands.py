@@ -48,8 +48,7 @@ class Shape:
         assert(self.line_width == 1)
         gl.glLineWidth(self.line_width)
 
-        gl.glEnable(gl.GL_PRIMITIVE_RESTART)
-        gl.glPrimitiveRestartIndex(2 ** 32 - 1)
+        gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
 
         self.vao.render(self.program, mode=self.mode)
 

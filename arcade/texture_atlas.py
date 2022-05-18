@@ -35,8 +35,6 @@ if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.gl import Texture as GLTexture
 
-# How many texture coordinates to store
-TEXCOORD_BUFFER_SIZE = 8192
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx
 RESIZE_STEP = 128
@@ -160,12 +158,12 @@ class TextureAtlas:
 
         # Texture containing texture coordinates
         self._uv_texture = self._ctx.texture(
-            (TEXCOORD_BUFFER_SIZE, 1), components=4, dtype="f4"
+            (self.max_width, 1), components=4, dtype="f4"
         )
         self._uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
-        self._uv_data = array("f", [0] * TEXCOORD_BUFFER_SIZE * 4)
+        self._uv_data = array("f", [0] * self.max_width * 4)
         # Free slots in the texture coordinate texture
-        self._uv_slots_free = deque(i for i in range(0, TEXCOORD_BUFFER_SIZE))
+        self._uv_slots_free = deque(i for i in range(0, self.max_width))
         # Map texture names to slots
         self._uv_slots: Dict[str, int] = dict()
         self._uv_data_changed = True
@@ -499,7 +497,7 @@ class TextureAtlas:
 
         # Create new atlas texture and uv texture + fbo
         self._uv_texture = self._ctx.texture(
-            (TEXCOORD_BUFFER_SIZE, 1), components=4, dtype="f4"
+            (self.max_width, 1), components=4, dtype="f4"
         )
         self._texture = self._ctx.texture(size, components=4)
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
@@ -527,7 +525,7 @@ class TextureAtlas:
             self._ctx.atlas_geometry.render(
                 self._ctx.atlas_resize_program,
                 mode=self._ctx.POINTS,
-                vertices=TEXCOORD_BUFFER_SIZE,
+                vertices=self.max_width,
             )
         LOG.info("[%s] Atlas resize took %s seconds", id(self), time.perf_counter() - resize_start)
 
@@ -563,7 +561,7 @@ class TextureAtlas:
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)
         if texture_ids:
-            self._uv_slots_free = deque(i for i in range(TEXCOORD_BUFFER_SIZE))
+            self._uv_slots_free = deque(i for i in range(self.max_width))
             self._uv_slots = dict()
 
     def use_uv_texture(self, unit: int = 0) -> None:

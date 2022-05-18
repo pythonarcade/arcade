@@ -92,7 +92,7 @@ class ComputeShader:
             since ``run()`` already does this for you.
         """
         gl.glUseProgram(self._glo)
-        self._ctx.active_program = self
+        # self._ctx.active_program = self
 
     def run(self, group_x=1, group_y=1, group_z=1) -> None:
         """
@@ -134,8 +134,8 @@ class ComputeShader:
     def __setitem__(self, key, value):
         """Set a uniform value"""
         # Ensure we are setting the uniform on this program
-        if self._ctx.active_program != self:
-            self.use()
+        # if self._ctx.active_program != self:
+        #     self.use()
 
         try:
             uniform = self._uniforms[key]
@@ -192,7 +192,7 @@ class ComputeShader:
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
             self._uniforms[u_name] = Uniform(
-                self._glo, u_location, u_name, u_type, u_size
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
             )
 
     def _introspect_uniform_blocks(self):

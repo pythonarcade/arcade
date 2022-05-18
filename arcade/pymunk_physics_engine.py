@@ -67,9 +67,6 @@ class PymunkPhysicsEngine:
                    max_vertical_velocity: int = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
-                   # the next two arguments are for backwards compatibility with prior versions
-                   moment_of_intertia: Optional[float] = None,  # typo keyword, used by 2.6.2 and 2.6.3
-                   moment: Optional[float] = None  # used prior to 2.6.2
                    ):
         """ Add a sprite to the physics engine.
 
@@ -88,8 +85,6 @@ class PymunkPhysicsEngine:
             :param max_vertical_velocity: maximum velocity on the y axis
             :param radius:
             :param collision_type:
-            :param moment_of_intertia: Deprecated alias of moment_of_inertia compatible with a typo introduced in 2.6.2
-            :param moment: Deprecated alias of moment_of_inertia compatible with versions <= 2.6.1
         """
 
         if damping is not None:
@@ -119,10 +114,6 @@ class PymunkPhysicsEngine:
 
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)  # type: ignore
-
-        # Backwards compatibility for a typo introduced in 2.6.2 and for versions under 2.6.1
-        # The current version is checked first, then the most common older form, then the typo
-        moment_of_inertia = moment_of_inertia or moment or moment_of_intertia
 
         # Default to a box moment_of_inertia
         if moment_of_inertia is None:

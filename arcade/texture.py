@@ -286,7 +286,7 @@ class Texture:
                    center_x: float, center_y: float,
                    width: float,
                    height: float,
-                   angle: float = 0,
+                   angle: float = 0.0,
                    alpha: int = 255):
         """ Draw a texture with a specific width and height. """
 
@@ -302,7 +302,7 @@ class Texture:
 
     def draw_scaled(self, center_x: float, center_y: float,
                     scale: float = 1.0,
-                    angle: float = 0,
+                    angle: float = 0.0,
                     alpha: int = 255):
 
         """
@@ -422,9 +422,9 @@ def load_textures(file_name: Union[str, Path],
 
 
 def load_texture(file_name: Union[str, Path],
-                 x: float = 0,
-                 y: float = 0,
-                 width: float = 0, height: float = 0,
+                 x: int = 0,
+                 y: int = 0,
+                 width: int = 0, height: int = 0,
                  flipped_horizontally: bool = False,
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,

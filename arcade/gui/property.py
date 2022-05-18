@@ -1,4 +1,6 @@
-import warnings
+import sys
+import traceback
+from typing import TypeVar
 from weakref import WeakKeyDictionary, ref
 
 
@@ -6,7 +8,8 @@ class _Obs:
     """
     Internal holder for Property value and change listeners
     """
-    __slots__ = 'value', 'listeners'
+
+    __slots__ = "value", "listeners"
 
     def __init__(self):
         self.value = None
@@ -14,10 +17,14 @@ class _Obs:
         self.listeners = set()
 
 
-class _Property:
+P = TypeVar("P")
+
+
+class Property:
     """
     An observable property which triggers observers when changed.
     """
+
     __slots__ = "name", "default_factory", "obs"
 
     name: str
@@ -57,7 +64,10 @@ class _Property:
             try:
                 listener()
             except Exception:
-                warnings.warn(f"Change listener for {instance}.{self.name} = {value} raised an exception!")
+                print(
+                    f"Change listener for {instance}.{self.name} = {value} raised an exception!", file=sys.stderr
+                )
+                traceback.print_exc()
 
     def bind(self, instance, callback):
         obs = self._get_obs(instance)
@@ -77,7 +87,7 @@ class _Property:
         self.set(instance, value)
 
 
-def _bind(instance, property: str, callback):
+def bind(instance, property: str, callback):
     """
     Binds a function to the change event of the property. A reference to the function will be kept,
     so that it will be still invoked, even if it would normally have been garbage collected.
@@ -101,14 +111,14 @@ def _bind(instance, property: str, callback):
     """
     t = type(instance)
     prop = getattr(t, property)
-    if isinstance(prop, _Property):
+    if isinstance(prop, Property):
         prop.bind(instance, callback)
 
 
 class _ObservableDict(dict):
     # Internal class to observe changes inside a native python dict.
-    def __init__(self, prop: _Property, instance, *largs):
-        self.prop: _Property = prop
+    def __init__(self, prop: Property, instance, *largs):
+        self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
 
@@ -146,7 +156,7 @@ class _ObservableDict(dict):
         self.dispatch()
 
 
-class _DictProperty(_Property):
+class DictProperty(Property):
     """
     Property that represents a dict.
     Only dict are allowed. Any other classes are forbidden.
@@ -162,8 +172,8 @@ class _DictProperty(_Property):
 
 class _ObservableList(list):
     # Internal class to observe changes inside a native python list.
-    def __init__(self, prop: _Property, instance, *largs):
-        self.prop: _Property = prop
+    def __init__(self, prop: Property, instance, *largs):
+        self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
 
@@ -222,7 +232,7 @@ class _ObservableList(list):
         self.dispatch()
 
 
-class _ListProperty(_Property):
+class ListProperty(Property):
     """
     Property that represents a list.
     Only list are allowed. Any other classes are forbidden.

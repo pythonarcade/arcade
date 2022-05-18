@@ -22,14 +22,14 @@ void main() {
 
     // One pixel delta in texture coords
     // We need this to include the texture borders (copy repeating data)
-    vec2 delta_old = vec2(1.0) / size_old;
+    vec2 delta_old = vec2(1.0) / vec2(size_old);
 
     vec4 data_old = texelFetch(texcoords_old, ivec2(gl_PrimitiveIDIn, 0), 0);
     vec4 data_new = texelFetch(texcoords_new, ivec2(gl_PrimitiveIDIn, 0), 0);
 
     // Create quads from the new texture coordinates
-    vec2 pos = data_new.xy * size_new - vec2(1, 1);
-    vec2 size = data_new.zw * size_new + vec2(2.0, 2.0);
+    vec2 pos = data_new.xy * vec2(size_new) - vec2(1.0, 1.0);
+    vec2 size = data_new.zw * vec2(size_new) + vec2(2.0, 2.0);
 
     // Map these with the old texture coordiantes
     vec2 tex_offset = (data_old.xy - delta_old)  * vec2(1.0, -1.0);

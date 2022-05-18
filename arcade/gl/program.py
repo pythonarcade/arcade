@@ -105,6 +105,16 @@ class Program:
         if tess_evaluation_shader:
             shaders.append((tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER))
 
+        # Inject a dummy fragment shader on gles when doing transforms
+        if self._ctx.gl_api == "gles" and not fragment_shader:
+            dummy_frag_src = """
+                #version 310 es
+                precision mediump float;
+                out vec4 fragColor;
+                void main() { fragColor = vec4(1.0); }
+            """
+            shaders.append((dummy_frag_src, gl.GL_FRAGMENT_SHADER))
+
         shaders_id = []
         for shader_code, shader_type in shaders:
             shader = Program.compile_shader(shader_code, shader_type)
@@ -116,6 +126,7 @@ class Program:
             self._configure_varyings()
 
         Program.link(self._glo)
+
         if geometry_shader:
             geometry_in = gl.GLint()
             geometry_out = gl.GLint()
@@ -264,9 +275,10 @@ class Program:
 
     def __setitem__(self, key, value):
         """Set a uniform value"""
+        # NOTE: We don't need this when using glProgramUniform
         # Ensure we are setting the uniform on this program
-        if self._ctx.active_program != self:
-            self.use()
+        # if self._ctx.active_program != self:
+        #     self.use()
 
         try:
             uniform = self._uniforms[key]
@@ -315,9 +327,9 @@ class Program:
         """
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
-        if self._ctx.active_program != self:
-            gl.glUseProgram(self._glo)
-            self._ctx.active_program = self
+        # if self._ctx.active_program != self:
+        gl.glUseProgram(self._glo)
+        # self._ctx.active_program = self
 
     def _configure_varyings(self):
         """Set up transform feedback varyings"""
@@ -409,7 +421,7 @@ class Program:
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
             self._uniforms[u_name] = Uniform(
-                self._glo, u_location, u_name, u_type, u_size
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
             )
 
     def _introspect_uniform_blocks(self):

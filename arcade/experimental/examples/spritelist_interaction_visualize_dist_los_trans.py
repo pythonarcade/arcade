@@ -117,7 +117,7 @@ class SpriteListInteraction(arcade.Window):
             // Helper function converting screen coordinates to texture coordinates.
             // Texture coordinates are normalized (0.0 -> 1.0) were 0,0 is in the
             vec2 screen2texcoord(vec2 pos) {
-                return vec2(pos / textureSize(walls, 0).xy);
+                return vec2(pos / vec2(textureSize(walls, 0).xy));
             }
 
             void main() {
@@ -127,11 +127,11 @@ class SpriteListInteraction(arcade.Window):
                 // Read samples from the wall texture in a line looking for obstacles
                 // We simply make a vector between the origina and the sprite location
                 // and trace pixels in this path with a reasonable step.
-                int steps = int(maxDistance / 2);
+                int numSteps = int(maxDistance / 2.0);
                 vec2 dir = v_position[0] - origin;
-                for (int i = 0; i < steps; i++) {
+                for (int i = 0; i < numSteps; i++) {
                     // Read pixels along the vector
-                    vec2 pos = origin + dir * (float(i) / float(steps));
+                    vec2 pos = origin + dir * (float(i) / float(numSteps));
                     vec4 color = texture(walls, screen2texcoord(pos));
                     // If we find non-zero pixel data we have obstacles in our path!
                     if (color != vec4(0.0)) return;

@@ -5,32 +5,40 @@ from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade.experimental.uistyle import UISliderStyle
-from arcade.gui import UIWidget, Surface, UIEvent, UIMouseMovementEvent, UIMouseDragEvent, UIMousePressEvent, \
-    UIMouseReleaseEvent
-from arcade.gui._property import _Property, _bind
+from arcade.gui import (
+    UIWidget,
+    Surface,
+    UIEvent,
+    UIMouseMovementEvent,
+    UIMouseDragEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
+)
 from arcade.gui.events import UIOnChangeEvent
+from arcade.gui.property import Property, bind
 
 
 class UISlider(UIWidget):
-    value = _Property(0)
-    hovered = _Property(False)
-    pressed = _Property(False)
+    value = Property(0)
+    hovered = Property(False)
+    pressed = Property(False)
 
-    def __init__(self,
-                 *,
-                 value=0,
-                 min_value=0,
-                 max_value=100,
-                 x=0,
-                 y=0,
-                 width=300,
-                 height=20,
-                 size_hint=None,
-                 size_hint_min=None,
-                 size_hint_max=None,
-                 style: Union[UISliderStyle, dict, None] = None,
-                 **kwargs
-                 ):
+    def __init__(
+        self,
+        *,
+        value=0,
+        min_value=0,
+        max_value=100,
+        x=0,
+        y=0,
+        width=300,
+        height=20,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style: Union[UISliderStyle, dict, None] = None,
+        **kwargs,
+    ):
         super().__init__(
             x=x,
             y=y,
@@ -40,37 +48,39 @@ class UISlider(UIWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=ChainMap(style or {}, UISliderStyle()),  # type: ignore
-            **kwargs
+            **kwargs,
         )
 
         self.value = value
         self.vmin = min_value
         self.vmax = max_value
 
-        self.padding = self.height // 3
         self.cursor_radius = self.height // 3
 
         # trigger render on value changes
-        _bind(self, "value", self.trigger_full_render)
-        _bind(self, "hovered", self.trigger_render)
-        _bind(self, "pressed", self.trigger_full_render)
+        bind(self, "value", self.trigger_full_render)
+        bind(self, "hovered", self.trigger_render)
+        bind(self, "pressed", self.trigger_full_render)
 
         self.register_event_type("on_change")
 
     def _x_for_value(self, value):
-        padding = self.padding
-        x = self.x
+        x = self.content_rect.x
         nval = (value - self.vmin) / self.vmax
-        return x + padding + nval * (self.width - 2 * padding)
+        return (
+            x
+            + self.cursor_radius
+            + nval * (self.content_width - 2 * self.cursor_radius)
+        )
 
     @property
     def norm_value(self):
-        """ Normalized value between 0.0 and 1.0"""
+        """Normalized value between 0.0 and 1.0"""
         return (self.value - self.vmin) / self.vmax
 
     @norm_value.setter
     def norm_value(self, value):
-        """ Normalized value between 0.0 and 1.0"""
+        """Normalized value between 0.0 and 1.0"""
         self.value = min(value * (self.vmax - self.vmin) + self.vmin, self.vmax)
 
     @property
@@ -79,12 +89,15 @@ class UISlider(UIWidget):
 
     @value_x.setter
     def value_x(self, nx):
-        padding = self.padding
-        x = min(self.right - padding, max(nx, self.x + padding))
+        cr = self.content_rect
+
+        x = min(cr.right - self.cursor_radius, max(nx, cr.x + self.cursor_radius))
         if self.width == 0:
             self.norm_value = 0
         else:
-            self.norm_value = (x - self.x - padding) / float(self.width - 2 * padding)
+            self.norm_value = (x - cr.x - self.cursor_radius) / float(
+                self.content_width - 2 * self.cursor_radius
+            )
 
     def do_render(self, surface: Surface):
         state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
@@ -92,34 +105,54 @@ class UISlider(UIWidget):
         self.prepare_render(surface)
 
         # TODO accept constructor params
-        slider_height = self.height // 4
+        slider_height = self.content_height // 4
         cursor_radius = self.cursor_radius
 
         slider_left_x = self._x_for_value(self.vmin)
         slider_right_x = self._x_for_value(self.vmax)
         cursor_center_x = self.value_x
 
-        slider_bottom = (self.height - slider_height) // 2
-        slider_center_y = self.height // 2
+        slider_bottom = (self.content_height - slider_height) // 2
+        slider_center_y = self.content_height // 2
 
         # slider
         bg_slider_color = self.style[f"{state}_unfilled_bar"]
         fg_slider_color = self.style[f"{state}_filled_bar"]
 
-        arcade.draw_xywh_rectangle_filled(slider_left_x - self.x, slider_bottom, slider_right_x - slider_left_x,
-                                          slider_height, bg_slider_color)
-        arcade.draw_xywh_rectangle_filled(slider_left_x - self.x, slider_bottom, cursor_center_x - slider_left_x,
-                                          slider_height, fg_slider_color)
+        arcade.draw_xywh_rectangle_filled(
+            slider_left_x - self.content_rect.x,
+            slider_bottom,
+            slider_right_x - slider_left_x,
+            slider_height,
+            bg_slider_color,
+        )
+        arcade.draw_xywh_rectangle_filled(
+            slider_left_x - self.content_rect.x,
+            slider_bottom,
+            cursor_center_x - slider_left_x,
+            slider_height,
+            fg_slider_color,
+        )
 
         # cursor
         border_width = self.style[f"{state}_border_width"]
         cursor_color = self.style[f"{state}_bg"]
         cursor_outline_color = self.style[f"{state}_border"]
 
-        rel_cursor_x = cursor_center_x - self.x
-        arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius, cursor_color)
-        arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius // 4, cursor_outline_color)
-        arcade.draw_circle_outline(rel_cursor_x, slider_center_y, cursor_radius, cursor_outline_color, border_width)
+        rel_cursor_x = cursor_center_x - self.content_rect.x
+        arcade.draw_circle_filled(
+            rel_cursor_x, slider_center_y, cursor_radius, cursor_color
+        )
+        arcade.draw_circle_filled(
+            rel_cursor_x, slider_center_y, cursor_radius // 4, cursor_outline_color
+        )
+        arcade.draw_circle_outline(
+            rel_cursor_x,
+            slider_center_y,
+            cursor_radius,
+            cursor_outline_color,
+            border_width,
+        )
 
     def _cursor_pos(self) -> Tuple[int, int]:
         return self.value_x, self.y + self.height // 2
