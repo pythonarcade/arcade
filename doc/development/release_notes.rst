@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.14
 --------------
 
-*Released 2022-May-17*
+*Released 2022-May-18*
 
 * Various Improvements
 
