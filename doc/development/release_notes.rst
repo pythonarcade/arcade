@@ -36,7 +36,7 @@ Version 2.6.14
   * Can now create a texture filled with a single color. See :py:meth:`Texture.create_filled`.
     The Sprite class will use this when creating a solid colored sprite.
   * Bump version numbers of Sphinx, Pillow to current release as of 17-May.
-  * Bump Pyglet version to 2.0.dev15. (Thanks Pyglet!)
+  * Bump Pyglet version to 2.0.dev16. (Thanks Pyglet!)
 
 * Shadertoy
 
