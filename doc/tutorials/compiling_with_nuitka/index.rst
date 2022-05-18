@@ -34,8 +34,9 @@ on other platforms including Linux and Mac.
     platforms. 
 
     To compile for a different platform than your current one, you may
-    be able to use a Virtual Machine or WINE, but those are not 
-    officially supported and are not covered in this tutorial.
+    be able to use a Virtual Machine or WINE/Proton. However, these
+    options are not officially supported and are not covered in this
+    tutorial.
 
 Compiling a Simple Arcade Script
 --------------------------------
