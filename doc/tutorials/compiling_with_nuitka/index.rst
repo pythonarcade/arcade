@@ -33,9 +33,9 @@ on other platforms including Linux and Mac.
     You can use a Mac or a Linux system to compile your game for those
     platforms. 
 
-    To compile for Windows from Mac or Linux, you may be able to use a
-    Virtual Machine or WINE, but those are not officially supported and
-    are not covered in this tutorial.
+    To compile for a different platform than your current one, you may
+    be able to use a Virtual Machine or WINE, but those are not 
+    officially supported and are not covered in this tutorial.
 
 Compiling a Simple Arcade Script
 --------------------------------
