@@ -206,7 +206,7 @@ class Context:
         gl.glEnable(gl.GL_SCISSOR_TEST)
 
         # States
-        self._blend_func = self.BLEND_DEFAULT
+        self._blend_func: Union[Tuple[int, int], Tuple[int, int, int, int]] = self.BLEND_DEFAULT
         self._point_size = 1.0
         self._flags: Set[int] = set()
 
@@ -559,9 +559,17 @@ class Context:
     def blend_func(self) -> Union[Tuple[int, int], Tuple[int, int, int, int]]:
         """
         Get or set the blend function.
-        This is tuple specifying how the red, green, blue, and
+        This is tuple specifying how the color and
         alpha blending factors are computed for the source
-        and  destination pixel.
+        and destination pixel.
+
+        When using a two component tuple you specify the
+        blend function for the source and the destination.
+
+        When using a four component tuple you specify the
+        blend function for the source color, source alpha
+        destination color and destination alpha. (separate blend
+        functions for color and alpha)
 
         Supported blend functions are::
 
@@ -591,7 +599,7 @@ class Context:
             ctx.blend_func = ctx.ONE, ctx.ONE
             # from the gl module
             from arcade import gl
-            ctx.blend_func = gl.ONE, gl.One
+            ctx.blend_func = gl.ONE, gl.ONE
 
         :type: tuple (src, dst)
         """
@@ -601,9 +609,9 @@ class Context:
     def blend_func(self, value: Union[Tuple[int, int], Tuple[int, int, int, int]]):
         self._blend_func = value
         if len(value) == 2:
-            gl.glBlendFunc(value[0], value[1])
+            gl.glBlendFunc(*value)
         elif len(value) == 4:
-            gl.glBlendFuncSeparate(value[0], value[1], value[2], value[3])
+            gl.glBlendFuncSeparate(*value)
         else:
             ValueError("blend_func takes a tuple of 2 or 4 values")
 
