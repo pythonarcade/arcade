@@ -324,4 +324,5 @@ def setup(app):
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
-    app.connect('html-page-context', add_ga_javascript)
+    # Should be added automatically by RTD.
+    # app.connect('html-page-context', add_ga_javascript)
