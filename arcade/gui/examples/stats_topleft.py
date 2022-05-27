@@ -1,5 +1,6 @@
 import arcade
-from arcade.gui import UIManager, UILabel, UIAnchorWidget, UIBoxLayout
+from arcade.gui import UIManager, UILabel, UIBoxLayout
+from arcade.gui.widgets.layout import UIAnchorLayout
 
 
 class UINumberLabel(UILabel):
@@ -33,10 +34,10 @@ class UIMockup(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Create value labels
-        self.timer = UINumberLabel()
-        wood = UINumberLabel(10)
-        stone = UINumberLabel(20)
-        food = UINumberLabel(30)
+        self.timer = UINumberLabel(value=20, align="right", size_hint_min=(30, 20))
+        wood = UINumberLabel(10, align="right", size_hint_min=(30, 20))
+        stone = UINumberLabel(20, align="right", size_hint_min=(30, 20))
+        food = UINumberLabel(30, align="right", size_hint_min=(30, 20))
 
         # Create a vertical BoxGroup to align labels
         self.columns = UIBoxLayout(
@@ -46,10 +47,10 @@ class UIMockup(arcade.Window):
                 UIBoxLayout(
                     vertical=True,
                     children=[
-                        UILabel(text="Time:", width=50),
-                        UILabel(text="Wood:", width=50),
-                        UILabel(text="Stone:", width=50),
-                        UILabel(text="Food:", width=50),
+                        UILabel(text="Time:", align="left", width=50),
+                        UILabel(text="Wood:", align="left", width=50),
+                        UILabel(text="Stone:", align="left", width=50),
+                        UILabel(text="Food:", align="left", width=50),
                     ],
                 ),
                 # Create one vertical UIBoxLayout per column and add the labels
@@ -58,14 +59,9 @@ class UIMockup(arcade.Window):
         )
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
-        self.manager.add(
-            UIAnchorWidget(
-                align_x=10,
-                anchor_x="left",
-                align_y=-10,
-                anchor_y="top",
-                child=self.columns,
-            )
+        anchor = self.manager.add(UIAnchorLayout())
+        anchor.add(
+            align_x=10, anchor_x="left", align_y=-10, anchor_y="top", child=self.columns
         )
 
     def on_update(self, delta_time: float):

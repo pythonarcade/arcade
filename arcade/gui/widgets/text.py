@@ -146,8 +146,7 @@ class UILabel(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.x = self.content_rect.x
-            layout.y = self.content_rect.y
+            layout.position = 0, 0 # layout always drawn in scissor box
             layout.width = self.content_width
             layout.height = self.content_height
             layout.end_update()
