@@ -1,13 +1,9 @@
 from typing import List
 
 import arcade
-from arcade.gui import (
-    UIFlatButton,
-    UIOnChangeEvent,
-    UIOnClickEvent,
-    UIWidget,
-    UIBoxLayout,
-)
+from arcade.gui.widgets.buttons import UIFlatButton
+from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.widgets.layout import UIBoxLayout
 from arcade.gui.widgets import UILayout
 
 

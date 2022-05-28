@@ -6,7 +6,6 @@ from pyglet.event import EVENT_UNHANDLED
 import arcade
 from arcade.experimental.uistyle import UISliderStyle
 from arcade.gui import (
-    UIWidget,
     Surface,
     UIEvent,
     UIMouseMovementEvent,
@@ -14,6 +13,7 @@ from arcade.gui import (
     UIMousePressEvent,
     UIMouseReleaseEvent,
 )
+from arcade.gui.widgets import UIWidget
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 

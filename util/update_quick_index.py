@@ -53,13 +53,18 @@ titles = {
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
 
     'gui/__init__.py': ['GUI', 'gui.rst'],
-    'gui/_property.py': ['GUI', 'gui.rst'],
     'gui/constructs.py': ['GUI', 'gui.rst'],
     'gui/events.py': ['GUI Events', 'gui_events.rst'],
     'gui/mixins.py': ['GUI', 'gui.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
-    'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/layout.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
@@ -166,6 +171,8 @@ def process_directory(directory, quick_index_file):
                    "sprite_list": "arcade",
                    "text": "arcade",
                    "gui": "arcade.gui",
+                   "property": "arcade.gui.property",
+                   "widgets": "arcade.gui",
                    "tilemap": "arcade.tilemap",
                    }
         package = mapping[directory.name]
@@ -322,9 +329,8 @@ def main():
     text_file.write(table_header_gui)
 
     process_directory(Path("../arcade/gui"), text_file)
-    process_directory(Path("../arcade/gui/elements"), text_file)
-    process_directory(Path("../arcade/gui/events"), text_file)
-    process_directory(Path("../arcade/gui/layouts"), text_file)
+    process_directory(Path("../arcade/gui/widgets"), text_file)
+    process_directory(Path("../arcade/gui/property"), text_file)
 
     text_file.write(f"\n\n")
     text_file.write(f"The arcade.tilemap module\n")

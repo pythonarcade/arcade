@@ -13,15 +13,18 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 *Unreleased*
 
 * GUI
+  * :py:class:`~arcade.gui.widgets.UIWidget`
 
-  * :py:class:`~arcade.gui.widgets.UIWidget`:
     * supports padding, border and background (color and texture)
     * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
-    * `UIWidget.with_...) methods do not wrap the widget anymore, they only change the attributes
+    * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
+
   * New widgets:
+
     * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
+
   * Arcade :py:class:`~arcade.gui.property.Property`:
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
@@ -938,9 +941,9 @@ and the documentation.
 
     * Mixins
 
-        * :class:`~arcade.gui.UIDraggableMixin` - Makes a widget draggable.
-        * :class:`~arcade.gui.UIMouseFilterMixin` - Catches mouse events that occure within the widget boundaries.
-        * :class:`~arcade.gui.UIWindowLikeMixin` - Combination of :class:`~arcade.gui.UIDraggableMixin` and :class:`~arcade.gui.UIMouseFilterMixin`.
+        * :class:`~arcade.gui.mixins.UIDraggableMixin` - Makes a widget draggable.
+        * :class:`~arcade.gui.mixins.UIMouseFilterMixin` - Catches mouse events that occure within the widget boundaries.
+        * :class:`~arcade.gui.mixins.UIWindowLikeMixin` - Combination of :class:`~arcade.gui.mixins.UIDraggableMixin` and :class:`~arcade.gui.UIMouseFilterMixin`.
 
   * WIP
     * UIWidgets contain information about preferred sizes
