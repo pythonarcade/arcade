@@ -33,7 +33,7 @@ class UIDropdown(UILayout):
             text=self._value, width=self.width, height=self.height
         )
 
-        self._default_button.on_click = self._on_button_click
+        self._default_button.on_click = self._on_button_click  # type: ignore
 
         self._layout = UIBoxLayout()
         self._layout.visible = False

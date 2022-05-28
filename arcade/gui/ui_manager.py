@@ -354,7 +354,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.trigger_render()
 
     @property
-    def rect(self) -> Rect:
+    def rect(self) -> Rect:  # type: ignore
         return Rect(0, 0, *self.window.get_size())
 
     def debug(self):

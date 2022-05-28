@@ -97,17 +97,11 @@ class UILabel(UIWidget):
             multiline=multiline,
         )
 
-        if not height:
-            height = self.layout.content_height
-
-        if not width:
-            width = self.layout.content_width
-
         super().__init__(
             x,
             y,
-            width,
-            height,  # type: ignore
+            width or self.layout.content_width,
+            height or self.layout.content_height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
