@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """Set up viewport and projection"""
         self.ctx.viewport = 0, 0, width, height
-        self.program['projection'] = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=60)
+        self.program['projection'] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
 
 
 if __name__ == "__main__":
