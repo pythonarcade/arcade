@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 
 from arcade.window_commands import get_window
 import arcade.gl as gl
@@ -20,9 +20,9 @@ class Background:
 
     def __init__(self,
                  texture: BackgroundTexture,
-                 pos: tuple[float, float],
-                 size: tuple[int, int],
-                 color: Union[tuple[float, float, float], tuple[int, int, int]],
+                 pos: Tuple[float, float],
+                 size: Tuple[int, int],
+                 color: Union[Tuple[float, float, float], Tuple[int, int, int]],
                  shader: gl.Program = None,
                  geometry: gl.Geometry = None):
 
@@ -63,14 +63,14 @@ class Background:
 
     @staticmethod
     def from_file(tex_src: str,
-                  pos: tuple[float, float] = (0.0, 0.0),
-                  size: tuple[int, int] = None,
-                  offset: tuple[float, float] = (0.0, 0.0),
+                  pos: Tuple[float, float] = (0.0, 0.0),
+                  size: Tuple[int, int] = None,
+                  offset: Tuple[float, float] = (0.0, 0.0),
                   scale: float = 1.0,
                   angle: float = 0.0,
                   *,
                   filters=(gl.NEAREST, gl.NEAREST),
-                  color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
+                  color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
                   shader: gl.Program = None,
                   geometry: gl.Geometry = None):
         """
@@ -94,29 +94,29 @@ class Background:
         if size is None:
             size = background_texture.texture.size
 
-        if color is None and color_norm is None:
-            _color = (1.0, 1.0, 1.0)
-        elif color is None or (color is not None and color_norm is not None):
+        if color_norm:
             _color = color_norm
-        else:
+        elif color:
             _color = color[0] / 255, color[1] / 255, color[2] / 255
+        else:
+            _color = (1.0, 1.0, 1.0)
 
         return Background(background_texture, pos, size, _color, shader, geometry)
 
     @property
-    def pos(self) -> tuple[float, float]:
+    def pos(self) -> Tuple[float, float]:
         return self._pos
 
     @pos.setter
-    def pos(self, value: tuple[float, float]):
+    def pos(self, value: Tuple[float, float]):
         self._pos = value
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         return self._size
 
     @size.setter
-    def size(self, value: tuple[int, int]):
+    def size(self, value: Tuple[int, int]):
         self._size = value
         try:
             self.shader['size'] = value
@@ -136,14 +136,14 @@ class Background:
             print("Attempting to set uniform 'blend' when the shader does not have a uniform with that name.")
 
     @property
-    def color(self) -> tuple[int, int, int]:
+    def color(self) -> Tuple[int, int, int]:
         """
         Color in the range of 0-255.
         """
         return int(self._color[0] * 255), int(self._color[1] * 255), int(self._color[2] * 255)
 
     @color.setter
-    def color(self, value: tuple[int, int, int]):
+    def color(self, value: Tuple[int, int, int]):
         """
         Color in the range of 0-255.
         """
@@ -154,18 +154,18 @@ class Background:
             print("Attempting to set uniform 'color' when shader does not have uniform with that name.")
 
     @property
-    def color_norm(self) -> tuple[float, float, float]:
+    def color_norm(self) -> Tuple[float, float, float]:
         return self._color
 
     @color_norm.setter
-    def color_norm(self, value: tuple[float, float, float]):
+    def color_norm(self, value: Tuple[float, float, float]):
         self._color = value
         try:
             self.shader['color'] = self._color
         except KeyError:
             print("Attempting to set uniform 'color' when shader does not have uniform with that name.")
 
-    def draw(self, shift: tuple[float, float] = (0.0, 0.0)):
+    def draw(self, shift: Tuple[float, float] = (0.0, 0.0)):
         try:
             self.shader['pixelTransform'] = self.texture.pixel_transform
         except KeyError:

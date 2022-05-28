@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from PIL import Image
 
 import arcade.gl as gl
@@ -10,7 +12,7 @@ from arcade.background.groups import BackgroundGroup, ParallaxGroup
 
 
 def texture_from_file(tex_src: str,
-                      offset: tuple[float, float] = (0.0, 0.0),
+                      offset: Tuple[float, float] = (0.0, 0.0),
                       scale: float = 1.0,
                       angle: float = 0.0,
                       filters=(gl.NEAREST, gl.NEAREST)) -> BackgroundTexture:
@@ -24,14 +26,14 @@ def texture_from_file(tex_src: str,
 
 
 def background_from_file(tex_src: str,
-                         pos: tuple[float, float] = (0.0, 0.0),
-                         size: tuple[int, int] = None,
-                         offset: tuple[float, float] = (0.0, 0.0),
+                         pos: Tuple[float, float] = (0.0, 0.0),
+                         size: Tuple[int, int] = None,
+                         offset: Tuple[float, float] = (0.0, 0.0),
                          scale: float = 1.0,
                          angle: float = 0.0,
                          *,
                          filters=(gl.NEAREST, gl.NEAREST),
-                         color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
+                         color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
                          shader: gl.Program = None,
                          geometry: gl.Geometry = None) -> Background:
 
@@ -39,11 +41,11 @@ def background_from_file(tex_src: str,
     if size is None:
         size = texture.texture.size
 
-    if color is None and color_norm is None:
-        _color = (1.0, 1.0, 1.0)
-    elif color is None or (color is not None and color_norm is not None):
+    if color_norm:
         _color = color_norm
-    else:
+    elif color:
         _color = color[0] / 255, color[1] / 255, color[2] / 255
+    else:
+        _color = (1.0, 1.0, 1.0)
 
-    return Background(texture, pos, size, color, shader, geometry)
+    return Background(texture, pos, size, _color, shader, geometry)

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List, Tuple
 
 import arcade.gl as gl
 from arcade.background import Background
@@ -11,8 +11,8 @@ class BackgroundGroup:
     The offset of the BackgroundGroup is the same as each background.
     """
 
-    def __init__(self, backgrounds: list[Background] = None):
-        self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
+    def __init__(self, backgrounds: List[Background] = None):
+        self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
 
         self._pos = (0.0, 0.0)
         self._offset = (0.0, 0.0)
@@ -22,7 +22,7 @@ class BackgroundGroup:
         return self._pos
 
     @pos.setter
-    def pos(self, value: tuple[float, float]):
+    def pos(self, value: Tuple[float, float]):
         self._pos = value
 
     @property
@@ -51,7 +51,7 @@ class BackgroundGroup:
         else:
             print("WARNING: Background already in group")
 
-    def extend(self, items: list[Background]):
+    def extend(self, items: List[Background]):
         for item in items:
             self.add(item)
 
@@ -61,14 +61,14 @@ class BackgroundGroup:
 
     def add_from_file(self,
                       tex_src: str,
-                      pos: tuple[float, float] = (0.0, 0.0),
-                      size: tuple[int, int] = None,
-                      offset: tuple[float, float] = (0.0, 0.0),
+                      pos: Tuple[float, float] = (0.0, 0.0),
+                      size: Tuple[int, int] = None,
+                      offset: Tuple[float, float] = (0.0, 0.0),
                       scale: float = 1.0,
                       angle: float = 0.0,
                       *,
                       filters=(gl.NEAREST, gl.NEAREST),
-                      color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
+                      color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
                       shader: gl.Program = None,
                       geometry: gl.Geometry = None):
         background = Background.from_file(tex_src, pos, size, offset, scale, angle,
@@ -87,9 +87,9 @@ class ParallaxGroup:
     The depth does not affect the positioning of layers at all.
     """
 
-    def __init__(self, backgrounds: list[Background] = None, depths: list[float] = None):
-        self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
-        self._depths: list[float] = [] if depths is None else depths
+    def __init__(self, backgrounds: List[Background] = None, depths: List[float] = None):
+        self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
+        self._depths: List[float] = [] if depths is None else depths
 
         if len(self._backgrounds) != len(self._depths):
             raise ValueError("The number of backgrounds does not equal the number of depth values")
@@ -98,19 +98,19 @@ class ParallaxGroup:
         self._offset = (0.0, 0.0)
 
     @property
-    def pos(self) -> tuple[float, float]:
+    def pos(self) -> Tuple[float, float]:
         return self._pos
 
     @pos.setter
-    def pos(self, value: tuple[float, float]):
+    def pos(self, value: Tuple[float, float]):
         self._pos = value
 
     @property
-    def offset(self) -> tuple[float, float]:
+    def offset(self) -> Tuple[float, float]:
         return self._offset
 
     @offset.setter
-    def offset(self, value: tuple[float, float]):
+    def offset(self, value: Tuple[float, float]):
         self._offset = value
         for index, background in enumerate(self._backgrounds):
             depth = self._depths[index]
@@ -140,7 +140,7 @@ class ParallaxGroup:
     def change_depth(self, item: Background, new_depth: float):
         self._depths[self._backgrounds.index(item)] = new_depth
 
-    def extend(self, items: list[Background], depths: list[float]):
+    def extend(self, items: List[Background], depths: List[float]):
         for index, item in enumerate(items):
             self.add(item, depths[index])
 
@@ -150,15 +150,15 @@ class ParallaxGroup:
 
     def add_from_file(self,
                       tex_src: str,
-                      pos: tuple[float, float] = (0.0, 0.0),
-                      size: tuple[int, int] = None,
+                      pos: Tuple[float, float] = (0.0, 0.0),
+                      size: Tuple[int, int] = None,
                       depth: float = 1,
-                      offset: tuple[float, float] = (0.0, 0.0),
+                      offset: Tuple[float, float] = (0.0, 0.0),
                       scale: float = 1.0,
                       angle: float = 0.0,
                       *,
                       filters=(gl.NEAREST, gl.NEAREST),
-                      color: tuple[int, int, int] = None, color_norm: tuple[float, float, float] = None,
+                      color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
                       shader: gl.Program = None,
                       geometry: gl.Geometry = None):
         background = Background.from_file(tex_src, pos, size, offset, scale, angle,

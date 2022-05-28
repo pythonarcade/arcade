@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from PIL import Image
 
 import arcade.gl as gl
@@ -16,7 +18,7 @@ class BackgroundTexture:
     """
 
     def __init__(self, texture: gl.Texture,
-                 offset: tuple[float, float] = (0.0, 0.0),
+                 offset: Tuple[float, float] = (0.0, 0.0),
                  scale: float = 1.0, angle: float = 0.0):
         self.texture = texture
 
@@ -52,11 +54,11 @@ class BackgroundTexture:
         self._angle_transform = Mat3().rotate(value)
 
     @property
-    def offset(self) -> tuple[float, float]:
+    def offset(self) -> Tuple[float, float]:
         return self._offset
 
     @offset.setter
-    def offset(self, value: tuple[float, float]):
+    def offset(self, value: Tuple[float, float]):
         self._offset = value
         self._offset_transform = Mat3().translate(-value[0], value[1])
 
@@ -115,7 +117,7 @@ class BackgroundTexture:
         self.texture.use(unit)
 
     def render_target(self, context: ArcadeContext,
-                      color_attachments: list[gl.Texture] = None,
+                      color_attachments: List[gl.Texture] = None,
                       depth_attachment: gl.Texture = None) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []
@@ -124,7 +126,7 @@ class BackgroundTexture:
 
     @staticmethod
     def from_file(tex_src: str,
-                  offset: tuple[float, float] = (0.0, 0.0),
+                  offset: Tuple[float, float] = (0.0, 0.0),
                   scale: float = 1.0,
                   angle: float = 0.0,
                   filters=(gl.NEAREST, gl.NEAREST)):
