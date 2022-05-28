@@ -128,7 +128,6 @@ html_theme_options = {
         "sidebar-item-font-size": "16px",
         "sidebar-item-line-height": "20px",
     },
-    'analytics_anonymize_ip': False,
 }
 
 html_title = f"Python Arcade {version}"
