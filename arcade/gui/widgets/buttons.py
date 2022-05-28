@@ -26,21 +26,21 @@ class UITextureButton(UIInteractiveWidget):
     """
 
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = None,
-            height: float = None,
-            texture: Texture = None,
-            texture_hovered: Texture = None,
-            texture_pressed: Texture = None,
-            text: str = "",
-            scale: float = None,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = None,
+        height: float = None,
+        texture: Texture = None,
+        texture_hovered: Texture = None,
+        texture_pressed: Texture = None,
+        text: str = "",
+        scale: float = None,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
 
         if width is None and texture is not None:
@@ -158,17 +158,17 @@ class UIFlatButton(UIInteractiveWidget):
     """
 
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 50,
-            text="",
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 50,
+        text="",
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,

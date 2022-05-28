@@ -59,22 +59,34 @@ class BackgroundGroup:
         for background in self._backgrounds:
             background.draw(self.pos)
 
-    def add_from_file(self,
-                      tex_src: str,
-                      pos: Tuple[float, float] = (0.0, 0.0),
-                      size: Tuple[int, int] = None,
-                      offset: Tuple[float, float] = (0.0, 0.0),
-                      scale: float = 1.0,
-                      angle: float = 0.0,
-                      *,
-                      filters=(gl.NEAREST, gl.NEAREST),
-                      color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
-                      shader: gl.Program = None,
-                      geometry: gl.Geometry = None):
-        background = Background.from_file(tex_src, pos, size, offset, scale, angle,
-                                          filters=filters,
-                                          color=color, color_norm=color_norm,
-                                          shader=shader, geometry=geometry)
+    def add_from_file(
+        self,
+        tex_src: str,
+        pos: Tuple[float, float] = (0.0, 0.0),
+        size: Tuple[int, int] = None,
+        offset: Tuple[float, float] = (0.0, 0.0),
+        scale: float = 1.0,
+        angle: float = 0.0,
+        *,
+        filters=(gl.NEAREST, gl.NEAREST),
+        color: Tuple[int, int, int] = None,
+        color_norm: Tuple[float, float, float] = None,
+        shader: gl.Program = None,
+        geometry: gl.Geometry = None
+    ):
+        background = Background.from_file(
+            tex_src,
+            pos,
+            size,
+            offset,
+            scale,
+            angle,
+            filters=filters,
+            color=color,
+            color_norm=color_norm,
+            shader=shader,
+            geometry=geometry,
+        )
         self.add(background)
 
 
@@ -87,12 +99,16 @@ class ParallaxGroup:
     The depth does not affect the positioning of layers at all.
     """
 
-    def __init__(self, backgrounds: List[Background] = None, depths: List[float] = None):
+    def __init__(
+        self, backgrounds: List[Background] = None, depths: List[float] = None
+    ):
         self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
         self._depths: List[float] = [] if depths is None else depths
 
         if len(self._backgrounds) != len(self._depths):
-            raise ValueError("The number of backgrounds does not equal the number of depth values")
+            raise ValueError(
+                "The number of backgrounds does not equal the number of depth values"
+            )
 
         self._pos = (0.0, 0.0)
         self._offset = (0.0, 0.0)
@@ -148,21 +164,33 @@ class ParallaxGroup:
         for background in self._backgrounds:
             background.draw(self.pos)
 
-    def add_from_file(self,
-                      tex_src: str,
-                      pos: Tuple[float, float] = (0.0, 0.0),
-                      size: Tuple[int, int] = None,
-                      depth: float = 1,
-                      offset: Tuple[float, float] = (0.0, 0.0),
-                      scale: float = 1.0,
-                      angle: float = 0.0,
-                      *,
-                      filters=(gl.NEAREST, gl.NEAREST),
-                      color: Tuple[int, int, int] = None, color_norm: Tuple[float, float, float] = None,
-                      shader: gl.Program = None,
-                      geometry: gl.Geometry = None):
-        background = Background.from_file(tex_src, pos, size, offset, scale, angle,
-                                          filters=filters,
-                                          color=color, color_norm=color_norm,
-                                          shader=shader, geometry=geometry)
+    def add_from_file(
+        self,
+        tex_src: str,
+        pos: Tuple[float, float] = (0.0, 0.0),
+        size: Tuple[int, int] = None,
+        depth: float = 1,
+        offset: Tuple[float, float] = (0.0, 0.0),
+        scale: float = 1.0,
+        angle: float = 0.0,
+        *,
+        filters=(gl.NEAREST, gl.NEAREST),
+        color: Tuple[int, int, int] = None,
+        color_norm: Tuple[float, float, float] = None,
+        shader: gl.Program = None,
+        geometry: gl.Geometry = None
+    ):
+        background = Background.from_file(
+            tex_src,
+            pos,
+            size,
+            offset,
+            scale,
+            angle,
+            filters=filters,
+            color=color,
+            color_norm=color_norm,
+            shader=shader,
+            geometry=geometry,
+        )
         self.add(background, depth)

@@ -16,10 +16,11 @@ class UIMockup(arcade.Window):
         dummy3 = UIDummy(width=100, height=50)
         dummy4 = UIDummy(width=50, height=50)
 
-        subject = UIGridLayout(
-            column_count=2,
-            row_count=2
-        ).with_border().with_padding(left=10)
+        subject = (
+            UIGridLayout(column_count=2, row_count=2)
+            .with_border()
+            .with_padding(left=10)
+        )
         subject.add(dummy1, 0, 0)
         subject.add(dummy2, 0, 1)
         subject.add(dummy3, 1, 0)
@@ -34,6 +35,7 @@ class UIMockup(arcade.Window):
         self.clear()
         self.manager.draw()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     window = UIMockup()
     arcade.run()

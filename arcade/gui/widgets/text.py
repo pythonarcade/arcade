@@ -120,7 +120,8 @@ class UILabel(UIWidget):
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
 
         self.rect = self.rect.resize(
-            self.layout.content_width + base_width, self.layout.content_height + base_height
+            self.layout.content_width + base_width,
+            self.layout.content_height + base_height,
         )
 
     @property
@@ -140,7 +141,7 @@ class UILabel(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.position = 0, 0 # layout always drawn in scissor box
+            layout.position = 0, 0  # layout always drawn in scissor box
             layout.width = self.content_width
             layout.height = self.content_height
             layout.end_update()

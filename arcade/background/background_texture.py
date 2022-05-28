@@ -17,9 +17,13 @@ class BackgroundTexture:
     see background_fs.glsl in resources/shaders for an implementation of this.
     """
 
-    def __init__(self, texture: gl.Texture,
-                 offset: Tuple[float, float] = (0.0, 0.0),
-                 scale: float = 1.0, angle: float = 0.0):
+    def __init__(
+        self,
+        texture: gl.Texture,
+        offset: Tuple[float, float] = (0.0, 0.0),
+        scale: float = 1.0,
+        angle: float = 0.0,
+    ):
         self.texture = texture
 
         self._scale = scale
@@ -116,24 +120,34 @@ class BackgroundTexture:
         """
         self.texture.use(unit)
 
-    def render_target(self, context: ArcadeContext,
-                      color_attachments: List[gl.Texture] = None,
-                      depth_attachment: gl.Texture = None) -> gl.Framebuffer:
+    def render_target(
+        self,
+        context: ArcadeContext,
+        color_attachments: List[gl.Texture] = None,
+        depth_attachment: gl.Texture = None,
+    ) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []
-        return context.framebuffer(color_attachments=[self.texture] + color_attachments,
-                                   depth_attachment=depth_attachment)
+        return context.framebuffer(
+            color_attachments=[self.texture] + color_attachments,
+            depth_attachment=depth_attachment,
+        )
 
     @staticmethod
-    def from_file(tex_src: str,
-                  offset: Tuple[float, float] = (0.0, 0.0),
-                  scale: float = 1.0,
-                  angle: float = 0.0,
-                  filters=(gl.NEAREST, gl.NEAREST)):
+    def from_file(
+        tex_src: str,
+        offset: Tuple[float, float] = (0.0, 0.0),
+        scale: float = 1.0,
+        angle: float = 0.0,
+        filters=(gl.NEAREST, gl.NEAREST),
+    ):
         _context = get_window().ctx
 
         with Image.open(resolve_resource_path(tex_src)).convert("RGBA") as img:
-            texture = _context.texture(img.size, data=img.transpose(Image.FLIP_TOP_BOTTOM).tobytes(),
-                                       filter=filters)
+            texture = _context.texture(
+                img.size,
+                data=img.transpose(Image.FLIP_TOP_BOTTOM).tobytes(),
+                filter=filters,
+            )
 
         return BackgroundTexture(texture, offset, scale, angle)

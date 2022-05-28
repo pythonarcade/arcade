@@ -65,7 +65,8 @@ class Property:
                 listener()
             except Exception:
                 print(
-                    f"Change listener for {instance}.{self.name} = {value} raised an exception!", file=sys.stderr
+                    f"Change listener for {instance}.{self.name} = {value} raised an exception!",
+                    file=sys.stderr,
                 )
                 traceback.print_exc()
 

@@ -259,8 +259,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         # When drawing into the framebuffer we need to set a separate
         # blend function for the alpha component.
         ctx.blend_func = (
-            ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
-            ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA         # Alpha blend func
+            ctx.SRC_ALPHA,
+            ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
+            ctx.ONE,
+            ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
         )
         self._do_render()
 

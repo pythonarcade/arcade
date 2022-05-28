@@ -20,26 +20,21 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     """
 
     def __init__(
-            self,
-            *,
-            width: float,
-            height: float,
-            message_text: str,
-            buttons=("Ok",),
-            callback=None
+        self,
+        *,
+        width: float,
+        height: float,
+        message_text: str,
+        buttons=("Ok",),
+        callback=None
     ):
-        super().__init__(
-            size_hint=(1, 1)
-        )
+        super().__init__(size_hint=(1, 1))
         self._callback = callback  # type: ignore
 
         space = 10
 
         # setup frame which will act like the window
-        frame = self.add(UIAnchorLayout(
-            width=width,
-            height=height
-        ))
+        frame = self.add(UIAnchorLayout(width=width, height=height))
         frame.with_padding(all=space)
 
         self._bg_tex = arcade.load_texture(
@@ -72,7 +67,6 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             anchor_x="right",
             anchor_y="bottom",
         )
-
 
     def on_ok(self, event):
         self.parent.remove(self)

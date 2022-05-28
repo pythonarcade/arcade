@@ -21,18 +21,21 @@ PLAYER_SPEED = 300
 
 
 class MyGame(arcade.Window):
-
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
         self.camera = arcade.Camera()
 
         # Load the first background from file. Sized to match the screen
-        self.background_1 = background.Background.from_file(":resources:/images/tiles/sandCenter.png",
-                                                            size=(SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.background_1 = background.Background.from_file(
+            ":resources:/images/tiles/sandCenter.png",
+            size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+        )
 
         # Load the second background from file. Sized to match the screen
-        self.background_2 = background.Background.from_file(":resources:/images/tiles/dirtCenter.png",
-                                                            size=(SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.background_2 = background.Background.from_file(
+            ":resources:/images/tiles/dirtCenter.png",
+            size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+        )
 
         # start with the second background being hidden
         self.background_2.blend = 0.0
@@ -65,8 +68,10 @@ class MyGame(arcade.Window):
         self.camera.move_to((target_x, target_y), 0.1)
 
     def on_update(self, delta_time: float):
-        new_position = (self.player_sprite.center_x + self.x_direction * delta_time,
-                        self.player_sprite.center_y + self.y_direction * delta_time)
+        new_position = (
+            self.player_sprite.center_x + self.x_direction * delta_time,
+            self.player_sprite.center_y + self.y_direction * delta_time,
+        )
         self.player_sprite.position = new_position
 
         # When the player is near x = SCREEN_WIDTH we transition between the two backgrounds.
@@ -127,5 +132,5 @@ def main():
     app.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

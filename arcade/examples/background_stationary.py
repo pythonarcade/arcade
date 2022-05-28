@@ -20,7 +20,6 @@ PLAYER_SPEED = 300
 
 
 class MyGame(arcade.Window):
-
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
         self.camera = arcade.Camera()
@@ -28,7 +27,9 @@ class MyGame(arcade.Window):
         # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
         # Image from:
         # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
-        self.background = background.Background.from_file(":resources:/images/backgrounds/abstract_1.jpg")
+        self.background = background.Background.from_file(
+            ":resources:/images/backgrounds/abstract_1.jpg"
+        )
 
         # Create the player sprite.
         self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
@@ -58,8 +59,10 @@ class MyGame(arcade.Window):
         self.camera.move_to((target_x, target_y), 0.1)
 
     def on_update(self, delta_time: float):
-        new_position = (self.player_sprite.center_x + self.x_direction * delta_time,
-                        self.player_sprite.center_y + self.y_direction * delta_time)
+        new_position = (
+            self.player_sprite.center_x + self.x_direction * delta_time,
+            self.player_sprite.center_y + self.y_direction * delta_time,
+        )
         self.player_sprite.position = new_position
 
         self.pan_camera_to_player()
@@ -102,5 +105,5 @@ def main():
     app.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

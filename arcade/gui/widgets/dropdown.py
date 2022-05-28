@@ -15,7 +15,7 @@ class UIDropdown(UILayout):
     DIVIDER = None
 
     def __init__(
-            self, default: str = None, options: List[str] = None, style=None, **kwargs
+        self, default: str = None, options: List[str] = None, style=None, **kwargs
     ):
         if style is None:
             style = {}

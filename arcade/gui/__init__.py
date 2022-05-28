@@ -32,6 +32,7 @@ from .widgets import UIWidgetParent
 from .widgets import UIWrapper
 
 __all__ = [
+    "UIBoxLayout",
     "UIManager",
     "UIMessageBox",
     "UIKeyEvent",
@@ -42,7 +43,10 @@ __all__ = [
     "UIKeyPressEvent",
     "UIKeyReleaseEvent",
     "UIEvent",
+    "UIFlatButton",
     "UIInteractiveWidget",
+    "UIInputText",
+    "UILabel",
     "UIMouseEvent",
     "UIMouseDragEvent",
     "UIMouseMovementEvent",
@@ -52,9 +56,11 @@ __all__ = [
     "UIOnUpdateEvent",
     "UIOnChangeEvent",
     "UIOnClickEvent",
+    "UITextArea",
     "UITextEvent",
     "UITextMotionEvent",
     "UITextMotionSelectEvent",
+    "UITextureButton",
     "UISpace",
     "UISpriteWidget",
     "UIWidget",

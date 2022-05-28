@@ -113,7 +113,8 @@ class UIBoxLayout(UILayout):
     Places widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
 
-    Hint: UIBoxLayout does not adjust its own size, if children are added. This requires a UIManager or UIAnchorLayout as parent.
+    Hint: UIBoxLayout does not adjust its own size, if children are added.
+    This requires a UIManager or UIAnchorLayout as parent.
     Use `self.fit_content()` to resize, bottom-left is used as anchor point.
 
     :param float x: x coordinate of bottom left
@@ -316,7 +317,9 @@ class UIGridLayout(UILayout):
         max_width_per_column = [0] * self.column_count
         max_height_per_row = [0] * self.row_count
 
-        child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
+        child_sorted_row_wise = [
+            [None for _ in range(self.column_count)] for _ in range(self.row_count)
+        ]
 
         for child, data in self._children:
             col_num = data["col_num"]
@@ -362,7 +365,9 @@ class UIGridLayout(UILayout):
         max_width_per_column = [0] * self.column_count
         max_height_per_row = [0] * self.row_count
 
-        child_sorted_row_wise = [[None for _ in range(self.column_count)] for _ in range(self.row_count)]
+        child_sorted_row_wise = [
+            [None for _ in range(self.column_count)] for _ in range(self.row_count)
+        ]
 
         for child, data in self._children:
             col_num = data["col_num"]
