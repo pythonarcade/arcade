@@ -24,8 +24,13 @@ REQUIREMENTS_DEV = [
 ]
 
 # What is strictly needed for building docs (RTD)
+
+# ALERT
+# PYGMENTS 2.12.0 does not work as of 24-May-2022
+
 REQUIREMENTS_DOCS = [
     "Sphinx==4.5.0",
+    "Pygments==2.10.0",
     "sphinx-copybutton==0.5.0",
     "sphinx-sitemap==2.2.0",
     "dirsync==2.2.5",
@@ -48,7 +53,7 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet==2.0.dev16",
+        "pyglet==2.0.dev18",
         "pillow~=9.1.1",
         "pymunk~=6.2.1",
         "pytiled-parser==2.0.1",

@@ -107,14 +107,8 @@ ul {
 }
 
 /* Make Function API look nice */
-.sig-name {
-    color: black;
-}
-.sig-praram {
-    color: darkgray;
-}
+
 .sig-param .n:first-of-type {
-    color: black;
     margin-left: 10px;
 }
 .sig-param::before {
