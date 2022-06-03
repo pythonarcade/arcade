@@ -28,6 +28,16 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Arcade :py:class:`~arcade.gui.property.Property`:
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
+
+Version 2.6.15
+--------------
+
+* Pin Pygments version to get around a Pygments/Furo incompatibility.
+  (`#1107 <https://github.com/pythonarcade/arcade/issues/1224>`_).
+* Fix Google analytics ID
+* Bump Pyglet version to 2.0.dev16. (Thanks Pyglet!)
+* Fix API colors for Furo theme
+
 Version 2.6.14
 --------------
 
