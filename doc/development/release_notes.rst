@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.15
 --------------
 
-*Unreleased*
+*Released 2022-Jun-03*
 
 * Pin Pygments version to get around a Pygments/Furo incompatibility.
   (`#1224 <https://github.com/pythonarcade/arcade/issues/1224>`_).
