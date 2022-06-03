@@ -32,10 +32,12 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.15
 --------------
 
+*Released 2022-Jun-03*
+
 * Pin Pygments version to get around a Pygments/Furo incompatibility.
-  (`#1107 <https://github.com/pythonarcade/arcade/issues/1224>`_).
+  (`#1224 <https://github.com/pythonarcade/arcade/issues/1224>`_).
 * Fix Google analytics ID
-* Bump Pyglet version to 2.0.dev16. (Thanks Pyglet!)
+* Bump Pyglet version to 2.0.dev18. (Thanks Pyglet!)
 * Fix API colors for Furo theme
 
 Version 2.6.14
@@ -322,7 +324,7 @@ Version 2.6.11
 
 * Misc:
 
-  * Update :class:`aracde.Sprite` to use decorators to declare properties instead of the older method.
+  * Update :class:`arcade.Sprite` to use decorators to declare properties instead of the older method.
   * `#1095 <https://github.com/pythonarcade/arcade/issues/1095>`_,
     Improvements to :class:`arcade.Text` and its documentation.
     We can now also get the pixel size of a Text contents though ``content_width``,
