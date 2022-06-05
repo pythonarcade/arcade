@@ -336,10 +336,12 @@ class Window(pyglet.window.Window):
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
-        Override this function to add mouse functionality.
+        Called repeatedly while the mouse is moving over the window.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
+        Override this function to respond to changes in mouse position.
+
+        :param int x: x position of mouse within the window in pixels
+        :param int y: y position of mouse within the window in pixels
         :param int dx: Change in x since the last time this method was called
         :param int dy: Change in y since the last time this method was called
         """
@@ -347,13 +349,23 @@ class Window(pyglet.window.Window):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         """
-        Override this function to add mouse button functionality.
+        Called once whenever a mouse button gets pressed down.
+
+        Override this function to handle mouse clicks. For an example of
+        how to do this, see arcade's built-in :ref:`aiming and shooting
+        bullets <sprite_bullets_aimed>` demo.
+
+        .. seealso:: :meth:`~.Window.on_mouse_release`
 
         :param int x: x position of the mouse
         :param int y: y position of the mouse
-        :param int button: What button was hit. One of:
-                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
-                           arcade.MOUSE_BUTTON_MIDDLE
+        :param int button: What button was pressed. This will always be
+                           one of the following:
+
+                           * ``arcade.MOUSE_BUTTON_LEFT``
+                           * ``arcade.MOUSE_BUTTON_RIGHT``
+                           * ``arcade.MOUSE_BUTTON_MIDDLE``
+
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
@@ -361,7 +373,9 @@ class Window(pyglet.window.Window):
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         """
-        Override this function to add mouse button functionality.
+        Called repeatedly while the mouse moves with a button down.
+
+        Override this function to handle dragging.
 
         :param int x: x position of mouse
         :param int y: y position of mouse
@@ -375,7 +389,11 @@ class Window(pyglet.window.Window):
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         """
-        Override this function to add mouse button functionality.
+        Called once whenever a mouse button gets released.
+
+        Override this function to respond to mouse button releases. This
+        may be useful when you want to use the duration of a mouse click
+        to affect gameplay.
 
         :param int x: x position of mouse
         :param int y: y position of mouse
@@ -389,21 +407,64 @@ class Window(pyglet.window.Window):
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
-        User moves the scroll wheel.
+        Called repeatedly while a mouse scroll wheel moves.
+
+        Override this function to respond to scroll events. The scroll
+        arguments may be positive or negative to indicate direction, but
+        the units are unstandardized. How many scroll steps you recieve
+        may vary wildly between computers depending a number of factors,
+        including system settings and the input devices used (i.e. mouse
+        scrollwheel, touchpad, etc).
+
+        .. warning:: Not all users can scroll easily!
+
+                     Only some input devices support horizontal
+                     scrolling. Standard vertical scrolling is common,
+                     but some laptop touchpads are hard to use.
+
+                     This means you should be careful about how you use
+                     scrolling. Consider making it optional
+                     to maximize the number of people who can play your
+                     game!
 
         :param int x: x position of mouse
         :param int y: y position of mouse
-        :param int scroll_x: ammout of x pixels scrolled since last call
-        :param int scroll_y: ammout of y pixels scrolled since last call
+        :param int scroll_x: number of steps scrolled horizontally
+                             since the last call of this function
+        :param int scroll_y: number of steps scrolled vertically since
+                             the last call of this function
         """
         pass
 
     def set_mouse_visible(self, visible: bool = True):
         """
-        If true, user can see the mouse cursor while it is over the window. Set false,
-        the mouse is not visible. Default is true.
+        Set whether to show the system's cursor while over the window
 
-        :param bool visible:
+        By default, the system mouse cursor is visible whenever the
+        mouse is over the window. To hide the cursor, pass ``False`` to
+        this function. Pass ``True`` to make the cursor visible again.
+
+        The window will continue receiving mouse events while the cursor
+        is hidden, including movements and clicks. This means that
+        functions like :meth:`~.Window.on_mouse_motion` and
+        t':meth:`~.Window.on_mouse_press` will continue to work normally.
+
+        You can use this behavior to visually replace the system mouse
+        cursor with whatever you want. One example is :ref:`a game
+        character that is always at the most recent mouse position in
+        the window<sprite_collect_coins>`.
+
+        .. note:: Advanced users can try using system cursor state icons
+
+                 It may be possible to use system icons representing
+                 cursor interaction states such as hourglasses or resize
+                 arrows by using features ``arcade.Window`` inherits
+                 from the underlying pyglet window class. See the
+                 `pyglet overview on cursors
+                 <https://pyglet.readthedocs.io/en/master/programming_guide/mouse.html#changing-the-mouse-cursor>`_
+                 for more information.
+
+        :param bool visible: Whether to hide the system mouse cursor
         """
         super().set_mouse_visible(visible)
 
@@ -722,12 +783,17 @@ class Window(pyglet.window.Window):
 
     def set_mouse_platform_visible(self, platform_visible=None):
         """
-        This method is only exposed/overridden because it causes PyCharm
-        to display a warning. This function is
-        setting the platform specific mouse cursor visibility and
-        would only be something an advanced user would care about.
+        .. warning:: You are probably looking for
+                     :meth:`~.Window.set_mouse_visible`!
 
-        See pyglet documentation for details.
+        This method was implemented to prevent PyCharm from displaying
+        linter warnings. Most users will never need to set
+        platform-specific visibility as the defaults from pyglet will
+        usually handle their needs automatically.
+
+        For more information on what this means, see the `relevant
+        pyglet documentation
+        <https://pyglet.readthedocs.io/en/master/modules/window.html#pyglet.window.Window.set_mouse_platform_visible>`_
         """
         super().set_mouse_platform_visible(platform_visible)
 
@@ -749,7 +815,8 @@ class Window(pyglet.window.Window):
 
     def on_mouse_enter(self, x: int, y: int):
         """
-        Called when the mouse was moved into the window.
+        Called once whenever the mouse enters the window area on screen.
+
         This event will not be triggered if the mouse is currently being
         dragged.
 
@@ -760,7 +827,8 @@ class Window(pyglet.window.Window):
 
     def on_mouse_leave(self, x: int, y: int):
         """
-        Called when the mouse was moved outside of the window.
+        Called once whenever the mouse leaves the window area on screen.
+
         This event will not be triggered if the mouse is currently being
         dragged. Note that the coordinates of the mouse pointer will be
         outside of the window rectangle.
