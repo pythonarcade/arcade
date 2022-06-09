@@ -113,9 +113,9 @@ Executed steps within :class:`UIBoxLayout`:
 Size hint support
 +++++++++++++++++
 
-* :class:`UIManager` uses `size_hint` to resize of direct child widgets based on window size
-* :class:`UIManager` uses `size_hint_min` to ensure minimal size of direct child widgets
-* :class:`UIAnchorLayout` uses `size_hint_min` to size :class:`UIBoxLayout`
+* :class:`UIAnchorLayout` supports `size_hint_min`
+* :class:`UIBoxLayout` supports `size_hint`, `size_hint_min`
+* :class:`UIManager` supports `size_hint`, `size_hint_min` (based on window size)
 
 
 UIMixin

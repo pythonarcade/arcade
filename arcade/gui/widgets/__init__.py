@@ -481,7 +481,7 @@ class UIWidget(EventDispatcher, ABC):
         self.padding_left = pl
 
     @property
-    def children(self):
+    def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
 
     def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
