@@ -689,20 +689,27 @@ class Texture:
             )
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
-        """Generate mipmaps for this texture. Leaveing the default arguments
-        will usually does the job. Building mipmaps will create several
-        smaller versions of the texture (256 x 256, 128 x 128, 64 x 64, 32 x 32 etc)
-        helping OpenGL in rendering a nicer version of texture
-        when it's rendered to the screen in smaller version.
+        """Generate mipmaps for this texture.
 
-        Note that mipmaps will only be used if the texture filter is
-        configured with a mipmap-type minification::
+        The default values usually work well.
 
-            # Set up linear interpolating minification filter
-            texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
+        Mipmaps are successively smaller versions of an original
+        texture with special filtering applied. Using mipmaps allows
+        OpenGL to render scaled versions of original textures with fewer
+        scaling artifacts.
+
+        Mipmaps can be made for textures of any size. Each mipmap
+        version halves the width and height of the previous one (e.g.
+        256 x 256, 128 x 128, 64 x 64, etc) down to a minimum of 1 x 1.
+
+        .. note:: Mipmaps will only be used if a texture's filter is
+                  configured with a mipmap-type minification::
+
+                   # Set up linear interpolating minification filter
+                   texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
 
         :param int base: Level the mipmaps start at (usually 0)
-        :param int max_level: The maximum levels to generate
+        :param int max_level: The maximum number of levels to generate
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
