@@ -305,6 +305,8 @@ class ArcadeContext(Context):
         tess_control_shader: Union[str, Path] = None,
         tess_evaluation_shader: Union[str, Path] = None,
         defines: dict = None,
+        varyings: Optional[Sequence[str]] = None,
+        varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """Create a new program given a file names that contain the vertex shader and
         fragment shader. Note that fragment and geometry shader are optional for
@@ -327,6 +329,14 @@ class ArcadeContext(Context):
         :param dict defines: Substitute ``#define`` values in the source
         :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
         :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
+        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+                                                 This is normally not necessary since we auto detect them,
+                                                 but some more complex out structures we can't detect.
+        :param str varyings_capture_mode: The capture mode for transforms.
+                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
+                                          ``"separate"`` means each out attribute will be written separate buffers.
+                                          Based on these settings the `transform()` method will accept a single
+                                          buffer or a list of buffer.
         """
         from arcade.resources import resolve_resource_path
 
@@ -355,6 +365,8 @@ class ArcadeContext(Context):
             tess_control_shader=tess_control_src,
             tess_evaluation_shader=tess_evaluation_src,
             defines=defines,
+            varyings=varyings,
+            varyings_capture_mode=varyings_capture_mode
         )
 
     def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
