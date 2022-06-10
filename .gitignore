@@ -10,8 +10,7 @@
 # virualenvs
 env
 venv*/
-.venv
-.venv36
+.venv*/
 
 # docs
 /doc/resources.rst
