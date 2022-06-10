@@ -695,22 +695,21 @@ class Texture:
 
         Mipmaps are successively smaller versions of an original
         texture with special filtering applied. Using mipmaps allows
-        OpenGL to render scaled versions of original textures faster
-        and with far fewer scaling artifacts.
+        OpenGL to render scaled versions of original textures with fewer
+        scaling artifacts.
 
-        Mipmaps can be made for textures of any size. Each mipmap step
-        is 1/2 the size of the previous one (256 x 256, 128 x 128, 64 x
-        64, etc) down to a minimum size of 1 x 1.
+        Mipmaps can be made for textures of any size. Each mipmap
+        version halves the width and height of the previous one (e.g.
+        256 x 256, 128 x 128, 64 x 64, etc) down to a minimum of 1 x 1.
 
         .. note:: Mipmaps will only be used if a texture's filter is
                   configured with a mipmap-type minification::
 
-                    # Set up linear interpolating minification filter
-                    texture.filter = ctx.LINEAR_MIPMAP_LINEAR,\
- ctx.LINEAR
+                   # Set up linear interpolating minification filter
+                   texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
 
         :param int base: Level the mipmaps start at (usually 0)
-        :param int max_level: The maximum levels to generate
+        :param int max_level: The maximum number of levels to generate
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
