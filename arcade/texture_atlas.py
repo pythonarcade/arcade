@@ -708,7 +708,7 @@ class TextureAtlas:
                 draw.rectangle([p1, p2], outline=border_color, width=1)
 
         if flip:
-            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         return image
 

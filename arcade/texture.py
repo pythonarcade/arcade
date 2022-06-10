@@ -534,13 +534,13 @@ def load_texture(file_name: Union[str, Path],
         image = source_image
 
     if flipped_diagonally:
-        image = image.transpose(PIL.Image.TRANSPOSE)
+        image = image.transpose(PIL.Image.Transpose.TRANSPOSE)
 
     if flipped_horizontally:
-        image = image.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+        image = image.transpose(PIL.Image.Transpose.FLIP_LEFT_RIGHT)
 
     if flipped_vertically:
-        image = image.transpose(PIL.Image.FLIP_TOP_BOTTOM)
+        image = image.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
 
     result = Texture(cache_name, image,
                      hit_box_algorithm=hit_box_algorithm,
