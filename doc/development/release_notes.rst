@@ -28,6 +28,15 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Arcade :py:class:`~arcade.gui.property.Property`:
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
+  * Misc Changes
+
+    * arcade.color_from_hex_string changed to follow the CSS hex string standard
+
+  * OpenGL
+
+    * Support for OpenGL ES 3.1/2
+    * Textures now support immutable storage
+
 
 Version 2.6.15
 --------------
