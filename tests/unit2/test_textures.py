@@ -1,6 +1,7 @@
-import os
-
 import pytest
+import PIL.Image
+import PIL.ImageDraw
+
 import arcade
 from arcade import Texture
 
@@ -56,7 +57,58 @@ def test_texture_constructor_hit_box_algo():
     arcade.cleanup_texture_cache()
 
 
-def test_load_texture_pair(window):
+def test_load_texture():
+    """Create texture with different """
+    path = ":resources:images/test_textures/test_texture.png"
+    # Basic loading
+    tex = arcade.load_texture(path)
+    assert tex.size == (128, 128)
+    assert tex.width == 128
+    assert tex.height == 128
+    assert tex.size == (128, 128)
+    cache_name = ":resources:images/test_textures/test_texture.png-0-0-0-0-False-False-False-Simple "
+    assert tex.name == cache_name
+    assert tex.hit_box_points is not None
+    assert tex._sprite is None
+    assert tex._sprite_list is None
+
+    with pytest.raises(FileNotFoundError):
+        arcade.load_texture("moo")
+
+    # --- Load sub-sections
+    # Upper left
+    tex = arcade.load_texture(path, width=64, height=64)
+    assert tex.size == (64, 64)
+    assert tex.image.getpixel((0, 0)) == (255, 0, 0, 255)
+    # Upper Right
+    tex = arcade.load_texture(path, x=64, width=64, height=64)
+    assert tex.size == (64, 64)
+    assert tex.image.getpixel((0, 0)) == (0, 255, 0, 255)
+    # Lower left
+    tex = arcade.load_texture(path, y=64, width=64, height=64)
+    assert tex.size == (64, 64)
+    assert tex.image.getpixel((0, 0)) == (0, 0, 255, 255)
+    # Lower right
+    tex = arcade.load_texture(path, x=64, y=64, width=64, height=64)
+    assert tex.size == (64, 64)
+    assert tex.image.getpixel((0, 0)) == (255, 0, 255, 255)
+    
+    # Illegal sub-sections
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, width=129)
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, height=129)
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, x=65, width=64)
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, y=65, height=64)
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, x=129)
+    with pytest.raises(ValueError):
+        arcade.load_texture(path, y=129)
+
+
+def test_load_texture_pair():
     """Load texture pair inspecting contents"""
     a, b = arcade.load_texture_pair(":resources:images/test_textures/test_texture.png")
     # Red pixel in upper left corner
@@ -65,6 +117,27 @@ def test_load_texture_pair(window):
     # Green pixel in upper left when mirrored
     assert b.image.getpixel((0, 0)) == (0, 255, 0, 255)
     assert b.size == (128, 128)
+
+
+def test_texture_equality():
+    """Test the eq/ne operator for textures"""
+    t1 = Texture(":resources:images/test_textures/test_texture.png")
+    t2 = Texture(":resources:images/test_textures/test_texture.png")
+
+    # They are equal to themselves
+    assert t1 == t1
+    assert t2 == t2
+    assert (t1 != t1) is False
+    # Texture with the same path/name are equal
+    assert t1 == t2
+    # Should reference the same underlying PIL image
+    assert t1.image == t2.image
+    assert id(t1.image) == id(t2.image)
+    # Handle comparing with other objects
+    assert t1 != "moo"
+    assert t1 != None
+    assert (t1 == None) is False
+    assert (t1 == "moo") is False
 
 
 def test_missing_image():
@@ -97,3 +170,13 @@ def test_crate_empty():
         (128.0, 128.0),
         (-128.0, 128.0)
     )
+
+
+def test_trim_image(window):
+    """Trim whitespace from image"""
+    im = PIL.Image.new("RGBA", size=(100, 100), color=(0, 0, 0, 0))
+    canvas = PIL.ImageDraw.ImageDraw(im)
+    canvas.rectangle((0, 0, 49, 49), fill=(255, 255, 255, 255))
+    im = arcade.trim_image(im)
+    assert im.size == (50, 50)
+    assert im.getpixel((0, 0)) == (255, 255, 255, 255)
