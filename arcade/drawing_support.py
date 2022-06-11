@@ -43,8 +43,17 @@ def get_points_for_thick_line(start_x: float, start_y: float,
 
 def get_four_byte_color(color: Color) -> RGBA:
     """
-    Given a RGB list, it will return RGBA.
-    Given a RGBA list, it will return the same RGBA.
+    Converts a color to RGBA. If the color is already
+    RGBA the original color value will be returned.
+    If the alpha channel is not present a 255 value will be added.
+
+    This function is useful when a mix of RGB and RGBA
+    values are used and you need to enforce RGBA.
+
+    Examples::
+
+        >>> arcade.get_four_byte_color((255, 255, 255))
+        (255, 255, 255, 255)
 
     :param Color color: Three or four byte tuple
 
@@ -56,13 +65,21 @@ def get_four_byte_color(color: Color) -> RGBA:
     elif len(color) == 3:
         return color[0], color[1], color[2], 255
     else:
-        raise ValueError("This isn't a 3 or 4 byte color")
+        raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
 
 
 def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
     """
-    Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
-    returns a RGBA tuple where each item is a scaled float from 0 to 1.
+    Converts an RGB or RGBA byte color to a floating point RGBA color.
+    Basically we divide each component by 255.
+    Float based colors are often used with OpenGL.
+
+    Examples::
+
+        >>> arcade.get_four_float_color((255, 127, 0))
+        (1.0, 0.4980392156862745, 0.0, 1.0)
+        >>> arcade.get_four_float_color((255, 255, 255, 127)) 
+        (1.0, 1.0, 1.0, 0.4980392156862745)
 
     :param Color color: Three or four byte tuple
     :return: Four floats as a RGBA tuple
@@ -77,13 +94,21 @@ def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
 
 def get_three_float_color(color: Color) -> Tuple[float, float, float]:
     """
-    Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
-    returns a RGBA tuple where each item is a scaled float from 0 to 1.
+    Converts an RGB or RGBA byte color to a floating point RGB color.
+    Basically we divide each component by 255.
+    Float based colors are often used with OpenGL.
+
+    Examples:
+
+        >>> arcade.get_three_float_color(arcade.color.RED)
+        (1.0, 0.0, 0.0)
+        >>> arcade.get_three_float_color((255, 255, 255, 255)) 
+        (1.0, 1.0, 1.0)
 
     :param Color color: Three or four byte tuple
     :return: Three floats as a RGB tuple
     """
-    if len(color) == 4 or len(color) == 3:
+    if len(color) in (3, 4):
         return color[0] / 255, color[1] / 255, color[2] / 255  # type: ignore
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
@@ -91,7 +116,13 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float]:
 
 def make_transparent_color(color: Color, transparency: float):
     """
-    Given a RGB color, along with an alpha, returns a RGBA color tuple.
+    Given a RGB color, along with an alpha, returns an RGBA color tuple:
+    ``(R, G, B, transparency)``.
+
+    Example::
+
+        >>> arcade.make_transparent_color((255, 255, 255), 127)
+        (255, 255, 255, 127)
 
     :param Color color: Three or four byte RGBA color
     :param float transparency: Transparency
@@ -103,6 +134,11 @@ def uint24_to_three_byte_color(color: int) -> RGB:
     """
     Given an int between 0 and 16777215, return a RGB color tuple.
 
+    Example::
+
+        >>> arcade.uint24_to_three_byte_color(16777215)
+        (255, 255, 255)
+
     :param int color: 3 byte int
     """
     return (color & (255 << 16)) >> 16, (color & (255 << 8)) >> 8, color & 255
@@ -111,6 +147,11 @@ def uint24_to_three_byte_color(color: int) -> RGB:
 def uint32_to_four_byte_color(color: int) -> RGBA:
     """
     Given an int between 0 and 4294967295, return a RGBA color tuple.
+
+    Example::
+
+        >>> arcade.uint32_to_four_byte_color(4294967295)
+        (255, 255, 255, 255)
 
     :param int color: 4 byte int
     """
@@ -151,6 +192,13 @@ def float_to_byte_color(
     """
     Converts a float colors to a byte color.
     This works for 3 of 4-component colors.
+
+    Example::
+
+        >>> arcade.float_to_byte_color((1.0, 0.5, 0.25, 1.0))
+        (255, 127, 63, 255)
+        >>> arcade.float_to_byte_color((1.0, 0.5, 0.25))      
+        (255, 127, 63)
     """
     if len(color) == 3:
         return int(color[0] * 255), int(color[1] * 255), int(color[2] * 255)
