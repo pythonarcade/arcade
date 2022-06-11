@@ -53,8 +53,29 @@ def test_parse_color():
     with pytest.raises(ValueError):
         arcade.color_from_hex_string("#ff0000ff0")
 
-    color = arcade.color_from_hex_string("ff0000")
-    assert color == (255, 0, 0, 255)
+    # Hash symbol RGBA variants
+    assert arcade.color_from_hex_string("#ffffffff") == (255, 255, 255, 255)
+    assert arcade.color_from_hex_string("#ffffff00") == (255, 255, 255, 0)
+    assert arcade.color_from_hex_string("#ffff00ff") == (255, 255, 0, 255)
+    assert arcade.color_from_hex_string("#ff00ffff") == (255, 0, 255, 255)
+    assert arcade.color_from_hex_string("#00ffffff") == (0, 255, 255, 255)
 
-    color = arcade.color_from_hex_string("#ff0000")
-    assert color == (255, 0, 0, 255)
+    # RGB
+    assert arcade.color_from_hex_string("#ffffff") == (255, 255, 255, 255)
+    assert arcade.color_from_hex_string("#ffff00") == (255, 255, 0, 255)
+    assert arcade.color_from_hex_string("#ff0000") == (255, 0, 0, 255)
+
+    # Without hash
+    assert arcade.color_from_hex_string("ffffff") == (255, 255, 255, 255)
+    assert arcade.color_from_hex_string("ffff00") == (255, 255, 0, 255)
+    assert arcade.color_from_hex_string("ff0000") == (255, 0, 0, 255)
+
+    # Short form
+    assert arcade.color_from_hex_string("#fff") == (255, 255, 255, 255)
+    assert arcade.color_from_hex_string("FFF") == (255, 255, 255, 255)
+
+    with pytest.raises(ValueError):
+        arcade.color_from_hex_string("ppp")
+
+    with pytest.raises(ValueError):
+        arcade.color_from_hex_string("ff")
