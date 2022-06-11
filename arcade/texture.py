@@ -429,7 +429,6 @@ def load_texture(file_name: Union[str, Path],
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
                  can_cache: bool = True,
-                 mirrored: bool = None,
                  hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5) -> Texture:
     """
@@ -482,13 +481,6 @@ def load_texture(file_name: Union[str, Path],
 
     :raises: ValueError
     """
-
-    if mirrored is not None:
-        from warnings import warn
-        warn("In load_texture, the 'mirrored' parameter is deprecated. Use 'flipped_horizontally' instead.",
-             DeprecationWarning)
-        flipped_horizontally = mirrored
-
     # See if we already loaded this texture, and we can just use a cached version.
     cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm} "  # noqa
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
