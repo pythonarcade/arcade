@@ -21,14 +21,6 @@ from arcade import calculate_hit_box_points_detailed
 from arcade.resources import resolve_resource_path
 
 
-def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
-    return (
-        int(lerp(start_color[0], end_color[0], u)),
-        int(lerp(start_color[1], end_color[1], u)),
-        int(lerp(start_color[2], end_color[2], u))
-    )
-
-
 class Texture:
     """
     Class that represents a texture.
@@ -202,8 +194,8 @@ class Texture:
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets
     # A texture's uniqueness is simply based on the name
+    # ------------------------------------------------------------
     def __hash__(self) -> int:
-        """The hash if a texture is the name"""
         return hash(self.name)
 
     def __eq__(self, other) -> bool:
