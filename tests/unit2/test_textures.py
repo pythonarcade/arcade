@@ -108,6 +108,53 @@ def test_load_texture():
         arcade.load_texture(path, y=129)
 
 
+def test_load_textures(window):
+    """Test load_textures with various parameters"""
+    arcade.cleanup_texture_cache()
+    path = ":resources:images/test_textures/test_texture.png"
+    def _load(mirrored=False, flipped=False):
+        return arcade.load_textures(
+            path,
+            image_location_list=[
+                (0, 0, 64, 64),
+                (64, 0, 64, 64),
+                (0, 64, 64, 64),
+                (64, 64, 64, 64),
+            ],
+            mirrored=mirrored,
+            flipped=flipped,
+        )
+    # Load twice to load from disk and then resolve from cache
+    textures = _load()
+    textures = _load()
+    assert len(textures) == 4
+    # Check The contents of the upper right pixel in each texture
+    assert textures[0].image.getpixel((0, 0)) == (255, 0, 0, 255)
+    assert textures[1].image.getpixel((0, 0)) == (0, 255, 0, 255)
+    assert textures[2].image.getpixel((0, 0)) == (0, 0, 255, 255)
+    assert textures[3].image.getpixel((0, 0)) == (255, 0, 255, 255)
+
+    # Load textures with with transforms
+    _load(mirrored=True)
+    _load(flipped=True)
+    _load(mirrored=True, flipped=True)
+
+    # Attempt to load with illegal regions
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(0, 0, 0, 0)])
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(129, 0, 64, 64)])
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(64, 129, 64, 64)])
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(65, 0, 64, 64)])
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(0, 65, 64, 64)])
+
+    with pytest.raises(ValueError):
+        arcade.load_textures(path, image_location_list=[(0, 0, 0, 0, 0)])
+
+
 def test_load_texture_pair():
     """Load texture pair inspecting contents"""
     a, b = arcade.load_texture_pair(":resources:images/test_textures/test_texture.png")
