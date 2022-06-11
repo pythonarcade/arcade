@@ -37,7 +37,7 @@ def test_1():
     assert hitbox == [[80, 80], [80, 120], [120, 120], [120, 80]]
 
 
-def test_1():
+def test_2():
     height = 2
     width = 2
     wall = arcade.SpriteSolidColor(width, height, arcade.color.RED)
