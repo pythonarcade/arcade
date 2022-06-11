@@ -1,11 +1,13 @@
 """
 Move Sprite with Joystick
 
-Simple program to show basic sprite usage.
+An example of one way to use joystick and controller input to move a
+sprite.
 
 Artwork from https://kenney.nl
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python and Arcade are installed, this example can be run from the
+command line with:
 python -m arcade.examples.sprite_move_joystick
 """
 import arcade
@@ -121,10 +123,11 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/"
-                                    "femalePerson_idle.png", SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 50
+        self.player_sprite = Player(
+            ":resources:images/animated_characters/female_person/"
+            "femalePerson_idle.png", SPRITE_SCALING,
+        )
+        self.player_sprite.position = self.width / 2, self.height / 2
         self.all_sprites_list.append(self.player_sprite)
 
     def on_draw(self):
