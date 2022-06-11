@@ -56,6 +56,17 @@ def test_texture_constructor_hit_box_algo():
     arcade.cleanup_texture_cache()
 
 
+def test_load_texture_pair(window):
+    """Load texture pair inspecting contents"""
+    a, b = arcade.load_texture_pair(":resources:images/test_textures/test_texture.png")
+    # Red pixel in upper left corner
+    assert a.image.getpixel((0, 0)) == (255, 0, 0, 255)
+    assert a.size == (128, 128)
+    # Green pixel in upper left when mirrored
+    assert b.image.getpixel((0, 0)) == (0, 255, 0, 255)
+    assert b.size == (128, 128)
+
+
 def test_missing_image():
     """Texture without image raises ValueError when accessing properties"""
     tex = Texture("empty")
