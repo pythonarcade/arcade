@@ -12,7 +12,6 @@ from typing import (
 from arcade import (
     Sprite,
     Point,
-    rotate_point,
     are_polygons_intersecting,
     get_distance_between_sprites,
     is_point_in_polygon,
