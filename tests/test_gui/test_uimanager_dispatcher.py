@@ -33,31 +33,6 @@ def test_handler_pushed():
     )
 
 
-def test_auto_enable_handler_pushed():
-    window = create_autospec(arcade.Window)
-
-    msg = UIManager(window, auto_enable=True)
-
-    window.assert_has_calls(
-        [
-            call.push_handlers(
-                msg.on_resize,
-                msg.on_update,
-                msg.on_mouse_drag,
-                msg.on_mouse_motion,
-                msg.on_mouse_press,
-                msg.on_mouse_release,
-                msg.on_mouse_scroll,
-                msg.on_key_press,
-                msg.on_key_release,
-                msg.on_text,
-                msg.on_text_motion,
-                msg.on_text_motion_select,
-            )
-        ]
-    )
-
-
 def test_handler_not_pushed():
     window = create_autospec(arcade.Window)
 
