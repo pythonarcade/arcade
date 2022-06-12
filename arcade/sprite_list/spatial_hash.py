@@ -134,10 +134,7 @@ class _SpatialHash:
 
         :return: List of close-by sprites
         :rtype: List
-
-
         """
-
         hash_point = self._hash(check_point)
 
         close_by_sprites: List[Sprite] = []
@@ -145,34 +142,6 @@ class _SpatialHash:
         close_by_sprites.extend(new_items)
 
         return close_by_sprites
-
-
-def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
-    """
-    Create a vertex buffer for a set of rectangles.
-    """
-
-    v2f = []
-    for shape in rect_list:
-        x1 = -shape.width / 2 + shape.center_x
-        x2 = shape.width / 2 + shape.center_x
-        y1 = -shape.height / 2 + shape.center_y
-        y2 = shape.height / 2 + shape.center_y
-
-        p1 = [x1, y1]
-        p2 = [x2, y1]
-        p3 = [x2, y2]
-        p4 = [x1, y2]
-
-        if shape.angle:
-            p1 = rotate_point(p1[0], p1[1], shape.center_x, shape.center_y, shape.angle)
-            p2 = rotate_point(p2[0], p2[1], shape.center_x, shape.center_y, shape.angle)
-            p3 = rotate_point(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
-            p4 = rotate_point(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
-
-        v2f.extend([p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]])
-
-    return v2f
 
 
 def get_closest_sprite(
