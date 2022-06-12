@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Dict, Union
+from arcade.resources import shaders  # noqa
 
 #: The absolute path to this directory
 RESOURCE_PATH = Path(__file__).parent.resolve()
