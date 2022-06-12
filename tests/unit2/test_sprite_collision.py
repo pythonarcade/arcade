@@ -1,4 +1,4 @@
-import os
+import pytest
 import arcade
 
 
@@ -130,3 +130,153 @@ def test_sprite_collides_with_list():
     player.center_x = 5
     result = player.collides_with_list(coins)
     assert len(result) == 2, "Should collide with two"
+
+
+def test_get_closest_sprite(window):
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    c = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+
+    a.position = 0, 0
+    b.position = 50, 50
+    c.position = 100, 0
+
+    sl = arcade.SpriteList()
+    sl.extend((c, b))
+
+    # Empty spritelist
+    assert arcade.get_closest_sprite(a, arcade.SpriteList()) is None
+
+    # Default closest sprite
+    sprite, distance = arcade.get_closest_sprite(a, sl)
+    assert sprite == b
+    assert distance == pytest.approx(70.710678)
+
+
+def test_check_for_collision(window):
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sp = arcade.SpriteList()
+
+    # Check various incorrect arguments
+    with pytest.raises(TypeError):
+        arcade.check_for_collision("moo", b)
+    with pytest.raises(TypeError):
+        arcade.check_for_collision(a, "moo")
+    with pytest.raises(TypeError):
+        arcade.check_for_collision(a, sp)
+
+    assert arcade.check_for_collision(a, b) is True
+    b.position = 100, 0
+    assert arcade.check_for_collision(a, b) is False
+
+
+def test_check_for_collision_with_list(window):
+    # TODO: Check that the right collision function is called internally
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sl = arcade.SpriteList()
+    for y in range(40):
+        for x in range(40):
+            sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+            sprite.position = x * 50, y * 50
+            sl.append(sprite)
+
+    with pytest.raises(TypeError):
+        arcade.check_for_collision_with_list("moo", sl)
+    with pytest.raises(TypeError):
+        arcade.check_for_collision_with_list(a, "moo")
+
+    a.position = 100, 100
+    assert len(arcade.check_for_collision_with_list(a, sl)) == 1
+    a.position = 75, 75
+    assert len(arcade.check_for_collision_with_list(a, sl)) == 4
+
+    # With spatial hash
+    sl.enable_spatial_hashing()
+    a.position = 100, 100
+    assert len(arcade.check_for_collision_with_list(a, sl)) == 1
+    a.position = 75, 75
+    assert len(arcade.check_for_collision_with_list(a, sl)) == 4
+
+
+def test_check_for_collision_with_lists(window):
+    # TODO: Check that the right collision function is called internally
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sls = []
+    for y in range(10):
+        for x in range(10):
+            sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+            sprite.position = x * 50, y * 50
+            sl = arcade.SpriteList()
+            sl.append(sprite)
+            sls.append(sl)
+
+    with pytest.raises(TypeError):
+        arcade.check_for_collision_with_lists("moo", sl)
+
+    a.position = 100, 100
+    assert len(arcade.check_for_collision_with_lists(a, sls)) == 1
+    a.position = 75, 75
+    assert len(arcade.check_for_collision_with_lists(a, sls)) == 4
+
+    # With spatial hash
+    for sl in sls:
+        sl.enable_spatial_hashing()
+    a.position = 100, 100
+    assert len(arcade.check_for_collision_with_lists(a, sls)) == 1
+    a.position = 75, 75
+    assert len(arcade.check_for_collision_with_lists(a, sls)) == 4
+
+
+def test_get_sprites_at_point(window):
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sp = arcade.SpriteList()
+    sp.extend((a, b))
+
+    with pytest.raises(TypeError):
+        arcade.get_sprites_at_point((0, 0), "moo")
+
+    assert arcade.get_sprites_at_point((0, 0), sp) == [a, b]
+    b.position = 100, 0
+    assert arcade.get_sprites_at_point((0, 0), sp) == [a]
+    a.position = -100, 0
+    assert arcade.get_sprites_at_point((0, 0), sp) == []
+
+    # With spatial hash
+    sp = arcade.SpriteList(use_spatial_hash=True)
+    sp.extend((a, b))
+    a.position = 0, 0
+    b.position = 0, 0
+    assert arcade.get_sprites_at_point((0, 0), sp) == [a, b]
+    b.position = 1000, 0
+    assert arcade.get_sprites_at_point((0, 0), sp) == [a]
+    a.position = -1000, 0
+    assert arcade.get_sprites_at_point((0, 0), sp) == []
+
+
+def test_get_sprites_at_exact_point(window):
+    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sp = arcade.SpriteList()
+    sp.extend((a, b))
+
+    with pytest.raises(TypeError):
+        arcade.get_sprites_at_exact_point((0, 0), "moo")
+
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a, b]
+    b.position = 1, 0
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a]
+    a.position = -1, 0
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == []
+
+    # With spatial hash
+    sp = arcade.SpriteList(use_spatial_hash=True)
+    sp.extend((a, b))
+    a.position = 0, 0
+    b.position = 0, 0
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a, b]
+    b.position = 1, 0
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a]
+    a.position = -1, 0
+    assert arcade.get_sprites_at_exact_point((0, 0), sp) == []
