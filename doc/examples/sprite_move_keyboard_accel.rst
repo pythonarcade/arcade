@@ -13,4 +13,4 @@ Acceleration and Friction
 .. literalinclude:: ../../arcade/examples/sprite_move_keyboard_accel.py
     :caption: sprite_move_keyboard_accel.py
     :linenos:
-    :emphasize-lines: 20-27, 39, 42, 46, 49, 111-143
+    :emphasize-lines: 24-31, 43, 46, 50, 53, 128-160
