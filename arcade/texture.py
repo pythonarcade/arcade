@@ -17,7 +17,6 @@ from arcade import (
     calculate_hit_box_points_simple,
     calculate_hit_box_points_detailed,
 )
-from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
 from arcade.cache.hit_box import HitBoxCache
 from arcade.cache.image import WeakImageCache
@@ -262,7 +261,7 @@ class Texture:
         return self.width, self.height
 
     @property
-    def hit_box_points(self) -> PointList:
+    def hit_box_points(self):
         if self._hit_box_points is None:
             self.calculate_hit_box_points()
 
