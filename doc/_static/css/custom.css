@@ -3,10 +3,12 @@
 body {
     font-family: Lato, sans-serif;
 }
-p {
+p, ol > li::marker {
     line-height: 30px;
     font-size: 18px;
-    margin: 0 0 24px;
+}
+p {
+   margin: 0 0 24px;
 }
 h1, h2 {
     font-family: Roboto Slab, Georgia, serif;
@@ -57,7 +59,6 @@ a:hover {
 }
 
 li {
-    list-style: disc;
     line-height: 30px;
     margin-left: 24px;
 }
@@ -70,6 +71,10 @@ li p {
 }
 ul {
     margin-left: 0;
+}
+/* use child selector in case someone nests an ol inside a ul */
+ul > li {
+    list-style: disc;
 }
 .section-header {
     display: flex;
