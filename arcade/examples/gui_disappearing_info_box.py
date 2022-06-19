@@ -29,11 +29,12 @@ class MyWindow(arcade.Window):
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout()
 
         # Create a button. Then add a hook to run when we click on the button
-        self.open_message_box_button = arcade.gui.widgets.buttons.UIFlatButton(
+        open_message_box_button = arcade.gui.widgets.buttons.UIFlatButton(
             text="Open", width=200
         )
-        self.open_message_box_button.on_click = self.on_click_open
-        self.v_box.add(self.open_message_box_button)
+        self.v_box.add(open_message_box_button)
+        open_message_box_button.on_click = self.on_click_open
+        self.open_message_box_button = open_message_box_button
 
         # Create a widget to hold the v_box widget, that will center the ok button
         ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
@@ -44,7 +45,7 @@ class MyWindow(arcade.Window):
         self.clear()
         self.manager.draw()
 
-    def on_click_open(self, _) -> None:
+    def on_click_open(self, event) -> None:
         # The code in this function is run when we click the ok button. This code opens
         # the info box which disappears after a certain amount of time
         info_box = arcade.gui.UIDisappearingInfoBox(

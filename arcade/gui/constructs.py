@@ -144,4 +144,5 @@ class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
             self.remove_box(UIBoxDisappearEvent(self))
 
     def remove_box(self, _) -> None:
-        self.parent.remove(self)
+        if self.parent is not None:
+            self.parent.remove(self)
