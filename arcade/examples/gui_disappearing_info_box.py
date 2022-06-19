@@ -54,7 +54,6 @@ class MyWindow(arcade.Window):
             message_text=(
                 "This box will disappear in 3 seconds!"
             ),
-            fit=True
         )
 
         # Hide the open button and add the info box to the UIManager
