@@ -3,7 +3,7 @@
 .. _gui_disappearing_info_box:
 
 Disappearing Info Box
-==============
+=====================
 
 .. image:: gui_disappearing_info_box.png
     :width: 600px
