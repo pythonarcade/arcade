@@ -2,6 +2,7 @@
 Constructs, are prepared widget combinations, you can use for common use-cases
 """
 import arcade
+from arcade.gui.events import UIBoxDisappearEvent
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout
@@ -72,3 +73,75 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         self.parent.remove(self)
         if self._callback is not None:
             self._callback(event.source.text)
+
+
+class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
+    """
+    Represents a simple dialog box that pops up with a message and disappears after a
+    certain amount of time.
+
+    Parameters
+    ----------
+    width: float
+        The width of the message box.
+    height: float
+        The height of the message box.
+    message_text: str
+        The text to display.
+    text_color: int
+        The color of the text in the box.
+    background_color: arcade.Color
+        The color of the background of the box..
+    disappear_time: float
+        The time before the box should disappear.
+    fit: bool
+        Whether the size of the box should be fit to the text inside.
+    """
+
+    def __init__(
+        self,
+        *,
+        width: float = 400,
+        height: float = 150,
+        message_text: str,
+        text_color: arcade.Color = arcade.color.BLACK,
+        background_color: arcade.Color = arcade.color.BABY_BLUE,
+        disappear_time: float = 3,
+        fit: bool = False
+    ) -> None:
+        super().__init__(size_hint=(1, 1))
+        anchor_offset = 10
+
+        # Store various variables needed for this box to function
+        self._time_counter: float = disappear_time
+
+        # Set up the box and its attributes
+        box = self.add(UIAnchorLayout(width=width, height=height))
+        box.with_padding(all=anchor_offset)
+        box.with_background(
+            texture=arcade.Texture.create_filled(
+                "background color", (int(width), int(height)), background_color
+            )
+        )
+        box.add(
+            child=UITextArea(
+                text=message_text,
+                width=width - anchor_offset,
+                height=height - anchor_offset,
+                text_color=text_color,
+            )
+        )
+
+        # Fit the box to the text if needed
+        if fit:
+            box.center_on_screen()
+
+    def on_update(self, delta_time: float) -> None:
+        self._time_counter -= delta_time
+
+        # Check if the box should disappear
+        if self._time_counter <= 0:
+            self.remove_box(UIBoxDisappearEvent(self))
+
+    def remove_box(self, _) -> None:
+        self.parent.remove(self)
