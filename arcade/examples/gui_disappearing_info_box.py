@@ -33,7 +33,7 @@ class MyWindow(arcade.Window):
             text="Open", width=200
         )
         self.v_box.add(open_message_box_button)
-        open_message_box_button.on_click = self.on_click_open
+        open_message_box_button.on_click = self.on_click_open  # type: ignore
         self.open_message_box_button = open_message_box_button
 
         # Create a widget to hold the v_box widget, that will center the ok button
