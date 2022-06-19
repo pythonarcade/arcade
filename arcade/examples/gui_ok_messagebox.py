@@ -46,7 +46,7 @@ class MyWindow(arcade.Window):
                 "coming up with arcade 2.6!"
             ),
             callback=self.on_message_box_close,
-            buttons=["Ok", "Cancel"],
+            buttons=("Ok", "Cancel"),
         )
 
         # hide open button and prevent interaction

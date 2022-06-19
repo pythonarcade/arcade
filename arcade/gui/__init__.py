@@ -15,6 +15,7 @@ from arcade.gui.events import UIOnUpdateEvent
 from arcade.gui.events import UITextEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
+from arcade.gui.events import UIBoxDisappearEvent
 from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets.layout import (
@@ -42,6 +43,7 @@ from arcade.gui.mixins import UIWindowLikeMixin
 __all__ = [
     "UIAnchorLayout",
     "UIBoxLayout",
+    "UIBoxDisappearEvent",
     "UIGridLayout",
     "UIManager",
     "UIMessageBox",
