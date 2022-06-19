@@ -21,69 +21,27 @@ def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
     if image.mode != "RGBA":
         raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")
 
-    left_border = 0
-    good = True
-    while good and left_border < image.width:
-        for row in range(image.height):
-            pos = (left_border, row)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            left_border += 1
-
-    right_border = image.width - 1
-    good = True
-    while good and right_border > 0:
-        for row in range(image.height):
-            pos = (right_border, row)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            right_border -= 1
-
-    top_border = 0
-    good = True
-    while good and top_border < image.height:
-        for column in range(image.width):
-            pos = (column, top_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            top_border += 1
-
-    bottom_border = image.height - 1
-    good = True
-    while good and bottom_border > 0:
-        for column in range(image.width):
-            pos = (column, bottom_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            bottom_border -= 1
-
-    # If the image is empty, return an empty set
-    if bottom_border == 0:
-        return []  # typing: ignore
+    # Convert the image into one channel alpha since we don't care about RGB values
+    image = image.getchannel("A")
+    bbox = image.getbbox()
+    # If there is no bounding box the image is empty
+    if bbox is None:
+        return []
+    else:
+        left_border, top_border, right_border, bottom_border = bbox
+        right_border -= 1
+        bottom_border -= 1
 
     def _check_corner_offset(start_x: int, start_y: int, x_direction: int, y_direction: int) -> int:
-
         bad = False
         offset = 0
         while not bad:
             y = start_y + (offset * y_direction)
             x = start_x
-            for count in range(offset + 1):
-                my_pixel = image.getpixel((x, y))
-                # print(f"({x}, {y}) = {pixel} | ", end="")
-                if my_pixel[3] != 0:
+            for _ in range(offset + 1):
+                alpha = image.getpixel((x, y))
+                # print(f"({x}, {y}) = {my_pixel} | ", end="")
+                if alpha != 0:
                     bad = True
                     break
                 y -= y_direction

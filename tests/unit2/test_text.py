@@ -154,14 +154,13 @@ def test_text_instances(window):
     window.flip()
 
 
-def test_create_text_image(window):
-    pass
+# def test_create_text_image(window):
+#     pass
 
 
-def test_create_text(window):
-    pass
+# def test_create_text(window):
+#     pass
 
 
-def test_create_text_sprite(window):
-    pass
-
+# def test_create_text_sprite(window):
+#     pass

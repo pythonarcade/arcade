@@ -242,11 +242,6 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
-        if hit_box_algorithm not in ["Simple", "Detailed", "None", None]:
-            raise ValueError(
-                "hit_box_algorithm must be 'Simple', 'Detailed', 'None' or None"
-            )
-
         if texture:
             self._texture = texture
             self._textures = [texture]
@@ -979,7 +974,7 @@ class Sprite:
         if self._sprite_list is None:
             from arcade import SpriteList
 
-            self._sprite_list = SpriteList()
+            self._sprite_list = SpriteList(capacity=1)
             self._sprite_list.append(self)
 
         self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)

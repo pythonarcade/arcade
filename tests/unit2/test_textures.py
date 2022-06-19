@@ -45,14 +45,15 @@ def test_texture_constructor_hit_box_algo():
     """
     Test the different hitbox algorithms
     """
-    Texture(name="default")
-    Texture(name="simple", hit_box_algorithm="Simple")
-    Texture(name="detailed", hit_box_algorithm="Detailed")
-    Texture(name="allowsnonehitbox", hit_box_algorithm=None)
-    Texture(name="old_behavior_preserved", hit_box_algorithm="None")
+    image = PIL.Image.new("RGBA", (100, 100), color=(255, 255, 255, 255))
+    Texture(name="default", image=image)
+    Texture(name="simple", image=image, hit_box_algorithm="Simple")
+    Texture(name="detailed", image=image, hit_box_algorithm="Detailed")
+    Texture(name="allowsnonehitbox", image=image,hit_box_algorithm=None)
+    Texture(name="old_behavior_preserved", image=image, hit_box_algorithm="None")
 
     with pytest.raises(ValueError):
-        Texture(name="random", hit_box_algorithm="definitely invalid")
+        Texture(name="random", image=image, hit_box_algorithm="definitely invalid")
 
     arcade.cleanup_texture_cache()
 
@@ -66,8 +67,8 @@ def test_load_texture():
     assert tex.width == 128
     assert tex.height == 128
     assert tex.size == (128, 128)
-    cache_name = ":resources:images/test_textures/test_texture.png-0-0-0-0-False-False-False-Simple "
-    assert tex.name == cache_name
+    # cache_name = ":resources:images/test_textures/test_texture.png-0-0-0-0-False-False-False-Simple "
+    # assert tex.name == cache_name
     assert tex.hit_box_points is not None
     assert tex._sprite is None
     assert tex._sprite_list is None
@@ -168,8 +169,8 @@ def test_load_texture_pair():
 
 def test_texture_equality():
     """Test the eq/ne operator for textures"""
-    t1 = Texture(":resources:images/test_textures/test_texture.png")
-    t2 = Texture(":resources:images/test_textures/test_texture.png")
+    t1 = arcade.load_texture(":resources:images/test_textures/test_texture.png")
+    t2 = arcade.load_texture(":resources:images/test_textures/test_texture.png")
 
     # They are equal to themselves
     assert t1 == t1
@@ -185,23 +186,6 @@ def test_texture_equality():
     assert t1 != None
     assert (t1 == None) is False
     assert (t1 == "moo") is False
-
-
-def test_missing_image():
-    """Texture without image raises ValueError when accessing properties"""
-    tex = Texture("empty")
-
-    with pytest.raises(ValueError):
-        tex.width
-
-    with pytest.raises(ValueError):
-        tex.height
-
-    with pytest.raises(ValueError):
-        tex.size
-
-    with pytest.raises(ValueError):
-        tex.hit_box_points
 
 
 def test_crate_empty():

@@ -17,9 +17,16 @@ from arcade import (
     calculate_hit_box_points_simple,
     calculate_hit_box_points_detailed,
 )
+from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
+from arcade.cache.hit_box import HitBoxCache
+from arcade.cache.image import WeakImageCache
 
 LOG = logging.getLogger(__name__)
+
+#: Global hit box cache
+hit_box_cache = HitBoxCache()
+image_cache = WeakImageCache()
 
 
 class Texture:
@@ -63,6 +70,12 @@ class Texture:
 
 
     """
+    _valid_hit_box_algorithms = [
+        "Simple",
+        "Detailed",
+        "None",
+        None,
+    ]
 
     def __init__(
         self,
@@ -71,20 +84,18 @@ class Texture:
         hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
     ):
-        """
-        Create a texture, given a PIL Image object."""
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
-        if image:
-            assert isinstance(image, PIL.Image.Image)
+        if not isinstance(image, PIL.Image.Image):
+            raise ValueError("A texture must have an image")
+
         self.name = name
         self.image = image
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
-        self._hit_box_points = None
 
-        if hit_box_algorithm not in ["Simple", "Detailed", "None", None]:
+        if hit_box_algorithm not in self._valid_hit_box_algorithms:
             raise ValueError(
                 "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
                 ", or an actual None value."
@@ -93,6 +104,8 @@ class Texture:
         # preserve old behavior in case any users subclassed Texture
         self._hit_box_algorithm = hit_box_algorithm or "None"
         self._hit_box_detail = hit_box_detail
+        self._hit_box_points = None
+        self.calculate_hit_box_points()
 
     @staticmethod
     def build_cache_name(name, x, y, w, h, fh, fv, fd, hba) -> str:
@@ -249,28 +262,32 @@ class Texture:
         return self.width, self.height
 
     @property
-    def hit_box_points(self):
-        if self._hit_box_points is not None:
-            return self._hit_box_points
+    def hit_box_points(self) -> PointList:
+        if self._hit_box_points is None:
+            self.calculate_hit_box_points()
+
+        return self._hit_box_points
+
+    def calculate_hit_box_points(self):
+        """
+        Calculate the hit box points for this texture
+        based on the configured hit box algorithm.
+        This is usually done on texture creation
+        or when the hit box points are requested the first time.
+        """
+        if self._hit_box_algorithm == "Simple":
+            self._hit_box_points = calculate_hit_box_points_simple(self.image)
+        elif self._hit_box_algorithm == "Detailed":
+            self._hit_box_points = calculate_hit_box_points_detailed(
+                self.image, self._hit_box_detail
+            )
         else:
-            if not self.image:
-                raise ValueError(f"Texture '{self.name}' doesn't have an image")
+            p1 = (-self.image.width / 2, -self.image.height / 2)
+            p2 = (self.image.width / 2, -self.image.height / 2)
+            p3 = (self.image.width / 2, self.image.height / 2)
+            p4 = (-self.image.width / 2, self.image.height / 2)
 
-            if self._hit_box_algorithm == "Simple":
-                self._hit_box_points = calculate_hit_box_points_simple(self.image)
-            elif self._hit_box_algorithm == "Detailed":
-                self._hit_box_points = calculate_hit_box_points_detailed(
-                    self.image, self._hit_box_detail
-                )
-            else:
-                p1 = (-self.image.width / 2, -self.image.height / 2)
-                p2 = (self.image.width / 2, -self.image.height / 2)
-                p3 = (self.image.width / 2, self.image.height / 2)
-                p4 = (-self.image.width / 2, self.image.height / 2)
-
-                self._hit_box_points = p1, p2, p3, p4
-
-            return self._hit_box_points
+            self._hit_box_points = p1, p2, p3, p4
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -281,7 +298,7 @@ class Texture:
             self._sprite.texture = self
             self._sprite.textures = [self]
 
-            self._sprite_list = SpriteList()
+            self._sprite_list = SpriteList(capacity=1)
             self._sprite_list.append(self._sprite)
 
     def draw_sized(
