@@ -86,7 +86,6 @@ class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
     :param text_color int: The color of the text in the box.
     :param background_color arcade.Color: The color of the background of the box.
     :param disappear_time float: The time before the box should disappear.
-    :param fit bool: Whether the size of the box should be fit to the text inside.
     """
 
     def __init__(
@@ -98,7 +97,6 @@ class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
         text_color: arcade.Color = arcade.color.BLACK,
         background_color: arcade.Color = arcade.color.BABY_BLUE,
         disappear_time: float = 3,
-        fit: bool = False
     ) -> None:
         super().__init__(size_hint=(1, 1))
         anchor_offset = 10
@@ -106,26 +104,33 @@ class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
         # Store various variables needed for this box to function
         self._time_counter: float = disappear_time
 
-        # Set up the box and its attributes
-        box = self.add(UIAnchorLayout(width=width, height=height))
-        box.with_padding(all=anchor_offset)
-        box.with_background(
+        # Set up the box
+        disappearing_box = UIAnchorLayout(width=width, height=height)
+        disappearing_box.with_padding(all=anchor_offset)
+        disappearing_box.with_background(
             texture=arcade.Texture.create_filled(
-                "background color", (int(width), int(height)), background_color
+                "background color", (int(width), int(height)), background_color,
             )
         )
-        box.add(
-            child=UITextArea(
+        disappearing_box.add(
+            UITextArea(
                 text=message_text,
                 width=width - anchor_offset,
                 height=height - anchor_offset,
                 text_color=text_color,
-            )
+            ),
+            anchor_x="center",
+            anchor_y="top",
         )
+        disappearing_box.center_on_screen()
 
-        # Fit the box to the text if needed
-        if fit:
-            box.center_on_screen()
+        # Add the box to the ui
+        self.add(
+            disappearing_box,
+            anchor_x="center",
+            anchor_y="bottom",
+            align_y=anchor_offset,
+        )
 
     def on_update(self, delta_time: float) -> None:
         self._time_counter -= delta_time
