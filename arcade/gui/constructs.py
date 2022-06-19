@@ -80,22 +80,13 @@ class UIDisappearingInfoBox(UIMouseFilterMixin, UIAnchorLayout):
     Represents a simple dialog box that pops up with a message and disappears after a
     certain amount of time.
 
-    Parameters
-    ----------
-    width: float
-        The width of the message box.
-    height: float
-        The height of the message box.
-    message_text: str
-        The text to display.
-    text_color: int
-        The color of the text in the box.
-    background_color: arcade.Color
-        The color of the background of the box..
-    disappear_time: float
-        The time before the box should disappear.
-    fit: bool
-        Whether the size of the box should be fit to the text inside.
+    :param width float: The width of the message box.
+    :param height float: The height of the message box.
+    :param message_text str: The text to display.
+    :param text_color int: The color of the text in the box.
+    :param background_color arcade.Color: The color of the background of the box.
+    :param disappear_time float: The time before the box should disappear.
+    :param fit bool: Whether the size of the box should be fit to the text inside.
     """
 
     def __init__(
