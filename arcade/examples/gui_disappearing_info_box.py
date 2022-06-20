@@ -57,7 +57,7 @@ class MyWindow(arcade.Window):
             height=BOX_HEIGHT,
             message_text="This box will disappear in 3 seconds!",
             bg_color=arcade.color.BABY_BLUE,
-            buttons=(),
+            buttons=("Ok", "test",),
             disappear=True,
             disappear_time=3,
             callback=self.on_message_box_close,

@@ -66,21 +66,29 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
 
         # Set up buttons
         if buttons:
-            button_group = UIBoxLayout(vertical=False, space_between=10)
+            self._button_group = UIBoxLayout(vertical=False, space_between=10)
             for button_text in buttons:
                 button = UIFlatButton(text=button_text)
                 button.on_click = self.on_ok  # type: ignore
-                button_group.add(button)
+                self._button_group.add(button)
 
             message_box.add(
-                child=button_group,
+                child=self._button_group,
                 anchor_x="right",
                 anchor_y="bottom",
             )
 
+            # Store the rightmost button's text
+            self._rightmost_button_text = self._button_group.children[-1].text
+
     def on_update(self, delta_time: float) -> None:
         if self._disappear:
             self._disappear_time_counter -= delta_time
+
+            # Update the rightmost box's text
+            self._button_group.children[-1].text = (
+                f"{self._rightmost_button_text} ({round(self._disappear_time_counter)})"
+            )
 
             # Check if the box should disappear
             if self._disappear_time_counter <= 0:
