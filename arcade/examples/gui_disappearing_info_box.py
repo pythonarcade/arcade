@@ -1,5 +1,7 @@
 """
-Example code showing how to use the DisappearingInfoBox
+Disappearing Info Box.
+
+An example of how to make info boxes vanish after some amount of time.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_disappearing_info_box
@@ -54,11 +56,7 @@ class MyWindow(arcade.Window):
             width=BOX_WIDTH,
             height=BOX_HEIGHT,
             message_text="This box will disappear in 3 seconds!",
-            background=arcade.Texture.create_filled(
-                "background color",
-                (int(BOX_WIDTH), int(BOX_HEIGHT)),
-                arcade.color.BABY_BLUE,
-            ),
+            bg_color=arcade.color.BABY_BLUE,
             buttons=(),
             disappear=True,
             disappear_time=3,

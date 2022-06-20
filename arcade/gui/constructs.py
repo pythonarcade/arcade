@@ -15,13 +15,16 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     """
     A simple dialog box that displays a message to the user.
 
-    :param width float: The width of the message box.
-    :param height float: The height of the message box.
-    :param message_text str: The message text to display.
-    :param buttons tuple[str, ...]: List of strings, which are shown as buttons.
-    :param disappear bool: Whether the box should disappear after a set time or not.
-    :param disappear_time float: The time before the box should disappear.
-    :param callback Callable: The callback function which will receive the text of the
+    :param float width: The width of the message box.
+    :param float height: The height of the message box.
+    :param str message_text: The message text to display.
+    :param arcade.Color bg_color: The background color of the box.
+    :param arcade.Texture bg_texture: The background texture of the box.
+    :param tuple[str, ...] buttons: List of strings, which are shown as buttons.
+    :param bool disappear: Whether the box should disappear after a set time or not.
+    :param float disappear_time: The time before the box should disappear.
+    :param int padding: The padding size of the box.
+    :param Callable callback: The callback function which will receive the text of the
         clicked button.
     """
 
@@ -31,12 +34,12 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         width: float,
         height: float,
         message_text: str,
-        background: arcade.Texture = arcade.load_texture(
-            ":resources:gui_basic_assets/window/grey_panel.png"
-        ),
+        bg_color: arcade.Color = None,
+        bg_texture: arcade.Texture = None,
         buttons: Tuple[str, ...] = ("Ok",),
         disappear: bool = False,
         disappear_time: float = 3,
+        padding: int = 10,
         callback: Callable = None,
     ) -> None:
         super().__init__(size_hint=(1, 1))
@@ -45,17 +48,16 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         self._callback: Callable = callback  # type: ignore
         self._disappear: bool = disappear
         self._disappear_time_counter: float = disappear_time
-        padding_size = 10
 
         # Set up the box which will act like a window
         message_box = self.add(UIAnchorLayout(width=width, height=height))
-        message_box.with_padding(all=padding_size)
-        message_box.with_background(texture=background)
+        message_box.with_padding(all=padding)
+        message_box.with_background(color=bg_color, texture=bg_texture)
         message_box.add(
             child=UITextArea(
                 text=message_text,
-                width=width - padding_size,
-                height=height - padding_size,
+                width=width - padding,
+                height=height - padding,
                 text_color=arcade.color.BLACK,
             ),
             anchor_x="center",

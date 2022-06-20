@@ -45,6 +45,9 @@ class MyWindow(arcade.Window):
                 "You should have a look on the new GUI features "
                 "coming up with arcade 2.6!"
             ),
+            bg_texture=arcade.load_texture(
+                ":resources:gui_basic_assets/window/grey_panel.png"
+            ),
             callback=self.on_message_box_close,
             buttons=("Ok", "Cancel"),
         )
