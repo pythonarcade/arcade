@@ -51,8 +51,8 @@ Tutorials
         * Compute Shader Tutorial
         * GUI
 
-The Manual
-----------
+Programming Guide
+-----------------
 
 .. container:: twocol
 
@@ -62,6 +62,7 @@ The Manual
         * Pyglet & Arcade
         * OpenGL
         * Fixing Edge Artifacts
+        * Events (Keyboard, mouse, window, etc)
 
     .. container:: rightside
 
