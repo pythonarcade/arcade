@@ -151,3 +151,14 @@ code.literal {
 .dataTables_wrapper .dataTables_filter {
     color: var(--color-foreground-primary);
 }
+
+div.twocol {
+    display: flex;
+}
+div.leftside {
+    flex: 43%;
+}
+
+div.rightside {
+    flex: 43%;
+}
