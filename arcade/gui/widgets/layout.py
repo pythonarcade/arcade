@@ -1,7 +1,8 @@
-from typing import Iterable, TypeVar, Tuple
+from typing import Iterable, TypeVar, Tuple, Any, Callable
 
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
+from arcade.gui.widgets.buttons import UIFlatButton
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -545,3 +546,37 @@ class UIGridLayout(UILayout):
                         child.rect = new_rect
 
             start_y -= max_height_row
+
+
+class UIButtonRow(UIBoxLayout):
+    """"""
+    def __init__(
+        self,
+        align: str = "center",
+        size_hint: Any = (0, 0),
+        size_hint_min: Any = None,
+        size_hint_max: Any = None,
+        space_between: int = 10,
+        style: Any = None,
+        button_labels: Tuple[str, ...] = (),
+        callback: Callable = None,
+    ):
+        super().__init__(
+            vertical=False,
+            align=align,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+            space_between=space_between,
+            style=style
+        )
+        self._callback = callback
+
+        for button_text in button_labels:
+            button = UIFlatButton(text=button_text)
+            button.on_click = self.on_ok  # type: ignore
+            self.add(button)
+
+    def on_ok(self, event):
+        if self._callback:
+            self._callback(event.source.text)

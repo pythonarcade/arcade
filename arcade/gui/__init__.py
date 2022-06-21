@@ -22,6 +22,7 @@ from arcade.gui.widgets.layout import (
     UIAnchorLayout,
     UIGridLayout,
     UILayout,
+    UIButtonRow,
 )
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
@@ -42,6 +43,7 @@ from arcade.gui.mixins import UIWindowLikeMixin
 __all__ = [
     "UIAnchorLayout",
     "UIBoxLayout",
+    "UIButtonRow",
     "UIGridLayout",
     "UIManager",
     "UIMessageBox",
