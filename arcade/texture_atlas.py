@@ -103,7 +103,11 @@ class AtlasRegion:
             ))
 
     def __repr__(self) -> str:
-        return f"<AtlasRegion x={self.x} y={self.y} width={self.width} height={self.height} uvs={self.texture_coordinates}>"
+        return (
+            f"<AtlasRegion x={self.x} y={self.y} width={self.width} "
+            f"height={self.height} uvs={self.texture_coordinates}>"
+        )
+
 
 class TextureAtlas:
     """
