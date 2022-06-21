@@ -22,7 +22,7 @@ to minimize the impact of this operations. For average hardware
 it's something you won't notice runtime.
 
 It's also important to note that texture atlases can only be created
-after the window has been crated. Textures and sprites can be
+after the window has been created. Textures and sprites can be
 created before the window because they don't interact with OpenGL
 directly. This part is usually the most time consuming while
 atlases are very fast to create and build.
