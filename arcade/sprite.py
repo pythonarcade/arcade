@@ -170,8 +170,6 @@ class Sprite:
             image_height: int = 0,
             center_x: float = 0.0,
             center_y: float = 0.0,
-            repeat_count_x: int = 1,  # Unused
-            repeat_count_y: int = 1,  # Unused
             flipped_horizontally: bool = False,
             flipped_vertically: bool = False,
             flipped_diagonally: bool = False,
@@ -1137,8 +1135,6 @@ class AnimatedTimeBasedSprite(Sprite):
             image_height: int = 0,
             center_x: float = 0.0,
             center_y: float = 0.0,
-            _repeat_count_x=1,  # Unused
-            _repeat_count_y=1,  # Unused
     ):
 
         super().__init__(
