@@ -69,22 +69,22 @@ Programming Guide
 .. toctree::
    :maxdepth: 1
 
-   install/index
-   get_started
-   development/directory_structure
-   development/edge_artifacts/index
-   development/how_to_submit_changes
-   development/how_to_contribute
-   development/how_to_build
-   development/logging
-   development/release_checklist
-   pygame_comparison
-   advanced/headless
-   advanced/vsync
-   advanced/textures
-   advanced/texture_atlas
-   advanced/opengl_notes.rst
-   development/performance_tips
+   programming_guide/install/index
+   programming_guide/get_started
+   programming_guide/directory_structure
+   programming_guide/edge_artifacts/index
+   programming_guide/how_to_submit_changes
+   programming_guide/how_to_contribute
+   programming_guide/how_to_build
+   programming_guide/logging
+   programming_guide/release_checklist
+   programming_guide/pygame_comparison
+   programming_guide/headless
+   programming_guide/vsync
+   programming_guide/textures
+   programming_guide/texture_atlas
+   programming_guide/opengl_notes.rst
+   programming_guide/performance_tips
 
 API Docs
 --------
