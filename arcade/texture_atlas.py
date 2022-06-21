@@ -80,12 +80,12 @@ class AtlasRegion:
         self.y = y
         self.width = width
         self.height = height
-        # start_x, start_y, normalized_width, normalized_height
+        # start_x, start_y, width, height
         self.texture_coordinates = (
             self.x / self.atlas.width,
-            (self.atlas.height - self.y - self.height) / self.atlas.height,
+            (self.y + self.height) / self.atlas.height,
             self.width / self.atlas.width,
-            self.height / self.atlas.height,
+            -(self.height / self.atlas.height),
         )
 
     def verify_image_size(self):
@@ -102,6 +102,8 @@ class AtlasRegion:
                 "It's not possible to fit this into the old allocated area in the atlas. "
             ))
 
+    def __repr__(self) -> str:
+        return f"<AtlasRegion x={self.x} y={self.y} width={self.width} height={self.height} uvs={self.texture_coordinates}>"
 
 class TextureAtlas:
     """
@@ -145,7 +147,13 @@ class TextureAtlas:
         self._auto_resize = auto_resize
         self._check_size(self._size)
 
-        self._texture = self._ctx.texture(size, components=4)
+        self._texture = self._ctx.texture(
+            size,
+            components=4,
+            # TODO: Atlas resize shader relies on repeat. Can be fixed.
+            # wrap_x=self._ctx.CLAMP_TO_EDGE,
+            # wrap_y=self._ctx.CLAMP_TO_EDGE,
+        )
         # Creating an fbo makes us able to clear the texture
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
