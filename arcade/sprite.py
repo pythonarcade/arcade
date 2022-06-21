@@ -183,7 +183,7 @@ class Sprite:
         # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
-        self._scale: Tuple[float, float] = scale, scale
+        self._scale: Tuple[float, float] = (scale, scale)
         self._position: Point = (center_x, center_y)
         self._angle = angle
         self.velocity = [0.0, 0.0]
