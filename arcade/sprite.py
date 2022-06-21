@@ -14,6 +14,7 @@ import dataclasses
 
 from typing import (
     Any,
+    Tuple,
     cast,
     Dict,
     List,
@@ -182,7 +183,7 @@ class Sprite:
         # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
-        self._scale: float = scale
+        self._scale: Tuple[float, float] = scale, scale
         self._position: Point = (center_x, center_y)
         self._angle = angle
         self.velocity = [0.0, 0.0]
@@ -322,14 +323,16 @@ class Sprite:
 
         :param Point new_value: New position.
         """
-        if new_value[0] != self._position[0] or new_value[1] != self._position[1]:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position = new_value
-            self.add_spatial_hashes()
+        if new_value == self._position:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_location(self)
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._position = new_value
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_location(self)
 
     def set_position(self, center_x: float, center_y: float):
         """
@@ -412,7 +415,7 @@ class Sprite:
                 point = rotate_point(point[0], point[1], 0, 0, self._angle)
 
             # Get a copy of the point
-            point = [point[0] * self._scale + self._position[0], point[1] * self._scale + self._position[1]]
+            point = [point[0] * self._scale[0] + self._position[0], point[1] * self._scale[1] + self._position[1]]
 
             return point
 
@@ -631,23 +634,47 @@ class Sprite:
 
     @property
     def scale(self) -> float:
-        """Get the scale of the sprite."""
-        return self._scale
+        """
+        Get or set the x and y scale of the sprite.
+        """
+        return self._scale[0]
 
     @scale.setter
     def scale(self, new_value: float):
-        """Set the center x coordinate of the sprite."""
-        if new_value != self._scale:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._scale = new_value
-            if self._texture:
-                self._width = self._texture.width * self._scale
-                self._height = self._texture.height * self._scale
-            self.add_spatial_hashes()
+        if new_value == self._scale[0]:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_size(self)
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._scale = new_value, new_value
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[0]
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
+
+    @property
+    def scale_xy(self) -> Tuple[float, float]:
+        """Get the scale of the sprite."""
+        return self._scale
+
+    @scale_xy.setter
+    def scale_xy(self, new_value: Tuple[float, float]):
+        if new_value == self._scale:
+            return
+
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._scale = new_value
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
         """Rescale the sprite relative to a different point than its center."""
@@ -663,14 +690,16 @@ class Sprite:
     @center_x.setter
     def center_x(self, new_value: float):
         """Set the center x coordinate of the sprite."""
-        if new_value != self._position[0]:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position = (new_value, self._position[1])
-            self.add_spatial_hashes()
+        if new_value == self._position[0]:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_location(self)
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._position = (new_value, self._position[1])
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_location(self)
 
     @property
     def center_y(self) -> float:
@@ -680,14 +709,16 @@ class Sprite:
     @center_y.setter
     def center_y(self, new_value: float):
         """Set the center y coordinate of the sprite."""
-        if new_value != self._position[1]:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position = (self._position[0], new_value)
-            self.add_spatial_hashes()
+        if new_value == self._position[1]:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_location(self)
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._position = (self._position[0], new_value)
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_location(self)
 
     @property
     def change_x(self) -> float:
@@ -717,15 +748,17 @@ class Sprite:
     @angle.setter
     def angle(self, new_value: float):
         """Set the angle of the sprite's rotation."""
-        if new_value != self._angle:
-            self.clear_spatial_hashes()
-            self._angle = new_value
-            self._point_list_cache = None
+        if new_value == self._angle:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_angle(self)
+        self.clear_spatial_hashes()
+        self._angle = new_value
+        self._point_list_cache = None
 
-            self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_angle(self)
+
+        self.add_spatial_hashes()
 
     @property
     def radians(self) -> float:
@@ -987,9 +1020,7 @@ class Sprite:
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-
         if self._hit_box_shape is None:
-
             # Adjust the hitbox
             point_list = []
             for point in self.hit_box:
@@ -997,13 +1028,9 @@ class Sprite:
                 point = [point[0], point[1]]
 
                 # Scale the point
-                if self.scale != 1:
-                    point[0] *= self.scale
-                    point[1] *= self.scale
-
-                # Rotate the point (Don't, should already be rotated.)
-                # if self.angle:
-                #     point = rotate_point(point[0], point[1], 0, 0, self.angle)
+                if self.scale_xy != (1, 1):
+                    point[0] *= self._scale[0]
+                    point[1] *= self._scale[1]
 
                 point_list.append(point)
 
@@ -1015,9 +1042,6 @@ class Sprite:
         self._hit_box_shape.center_y = self.center_y
         self._hit_box_shape.angle = self.angle
         self._hit_box_shape.draw()
-
-        # point_list = self.get_adjusted_hit_box()
-        # draw_polygon_outline(point_list, color, line_thickness)
 
     def update(self):
         """
