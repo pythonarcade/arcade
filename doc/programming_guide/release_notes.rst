@@ -1354,17 +1354,17 @@ Version 2.4 Minor Features
   :data:`arcade.tilemap.process_layer` take in ``hit_box_algorithm`` and
   ``hit_box_detail`` parameters for hit box calculation.
 
-.. figure:: ../images/hit_box_algorithm_none.png
+.. figure:: ../api_docs/images/hit_box_algorithm_none.png
    :width: 40%
 
    hit_box_algorithm = "None"
 
-.. figure:: ../images/hit_box_algorithm_simple.png
+.. figure:: ../api_docs/images/hit_box_algorithm_simple.png
    :width: 55%
 
    hit_box_algorithm = "Simple"
 
-.. figure:: ../images/hit_box_algorithm_detailed.png
+.. figure:: ../api_docs/images/hit_box_algorithm_detailed.png
    :width: 75%
 
    hit_box_algorithm = "Detailed"

@@ -1,3 +1,5 @@
+:hide-toc:
+
 .. image:: images/arcade-logo.svg
     :width: 10%
     :class: right-image
@@ -33,21 +35,17 @@ The Python Arcade Library
       </tr>
    </table>
 
-Example Code
--------------
-
 .. toctree::
    :maxdepth: 1
+   :caption: Example Code
 
    example_code/how_to_examples/index
    example_code/game_jam_2020
    example_code/sample_games
 
-Tutorials
----------
-
 .. toctree::
    :maxdepth: 1
+   :caption: Tutorials
 
    tutorials/platform_tutorial/index
    tutorials/pymunk_platformer/index
@@ -63,13 +61,10 @@ Tutorials
    tutorials/raycasting/index
    tutorials/crt_filter/index
    tutorials/compute_shader/index
-   gui/index
-
-Programming Guide
------------------
 
 .. toctree::
    :maxdepth: 1
+   :caption: Programming Guide
 
    programming_guide/install/index
    programming_guide/get_started
@@ -86,17 +81,16 @@ Programming Guide
    programming_guide/textures
    programming_guide/texture_atlas
    programming_guide/opengl_notes.rst
+   programming_guide/gui/index
    programming_guide/performance_tips
-
-API Docs
---------
 
 .. toctree::
    :maxdepth: 1
+   :caption: API Docs
 
-   quick_index
-   arcade
-   resources
+   api_docs/api/quick_index
+   api_docs/arcade
+   api_docs/resources
 
 Learning Resources
 ------------------
