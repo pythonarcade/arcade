@@ -2,6 +2,8 @@
     :width: 10%
     :class: right-image
 
+.. _main_page:
+
 The Python Arcade Library
 =========================
 
