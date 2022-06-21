@@ -35,6 +35,10 @@ The Python Arcade Library
       </tr>
    </table>
 
+.. image:: images/example_code.svg
+   :alt: Example Code
+   :class: heading-icon
+
 .. toctree::
    :maxdepth: 1
    :caption: Example Code
@@ -42,6 +46,10 @@ The Python Arcade Library
    example_code/how_to_examples/index
    example_code/game_jam_2020
    example_code/sample_games
+
+.. image:: images/learn.svg
+   :alt: Tutorials
+   :class: heading-icon
 
 .. toctree::
    :maxdepth: 1
@@ -61,6 +69,10 @@ The Python Arcade Library
    tutorials/raycasting/index
    tutorials/crt_filter/index
    tutorials/compute_shader/index
+
+.. image:: images/example_games.svg
+   :alt: Programming guide icon
+   :class: heading-icon
 
 .. toctree::
    :maxdepth: 1
@@ -84,6 +96,10 @@ The Python Arcade Library
    programming_guide/gui/index
    programming_guide/performance_tips
 
+.. image:: images/API.svg
+   :alt: API icon
+   :class: heading-icon
+
 .. toctree::
    :maxdepth: 1
    :caption: API Docs
@@ -91,6 +107,10 @@ The Python Arcade Library
    api_docs/api/quick_index
    api_docs/arcade
    api_docs/resources
+
+.. image:: images/performance.svg
+   :alt: Performance icon
+   :class: heading-icon
 
 Learning Resources
 ------------------
@@ -104,6 +124,10 @@ Learning Resources
     * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
     * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
 
+.. image:: images/source.svg
+   :alt: Source icon
+   :class: heading-icon
+
 Source Code
 -----------
 
@@ -112,6 +136,10 @@ Source Code
     * `License <https://github.com/pythonarcade/arcade/blob/development/license.rst>`_
     * `GitHub <https://github.com/pythonarcade/arcade>`_
     * `Release Notes <https://api.arcade.academy/en/latest/development/release_notes.html>`_
+
+.. image:: images/social.svg
+   :alt: Social icon
+   :class: heading-icon
 
 Social
 ------

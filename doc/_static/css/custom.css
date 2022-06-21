@@ -17,6 +17,8 @@ h1, h2 {
     font-family: Roboto Slab, Georgia, serif;
     font-size: 2em;
     text-transform: None;
+    margin-top: 5px;
+    margin-bottom: 8px;
 }
 .sidebar-brand {
   flex-direction: row;
@@ -154,4 +156,13 @@ code.literal {
 
 .toctree-wrapper > ul {
     columns: 2;
+}
+
+.heading-icon {
+    columns: 2;
+    position: relative;
+    left: -20px;
+    top: -4px;
+    float: left;
+    width: 55px;
 }
