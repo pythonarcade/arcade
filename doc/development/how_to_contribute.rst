@@ -30,8 +30,6 @@ Then you can improve these parts of the project:
 * **Test** - Improve the unit testing.
 * **Code** - Contribute bug fixes and enhancements to the code.
 
-A list of enhancements people have requested is available on the :ref:`enhancement_list` page.
-
 .. _Python Arcade SubReddit: https://www.reddit.com/r/pythonarcade
 .. _Github Issue List: https://github.com/pythonarcade/arcade/issues
 .. _reStructuredText: http://www.sphinx-doc.org/en/stable/rest.html

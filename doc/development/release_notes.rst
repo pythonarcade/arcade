@@ -875,7 +875,7 @@ and the documentation.
     * To demonstrate, there is a new :ref:`minimap` example that creates a sprite that has a dynamic minimap
       projected onto it.
 
-    .. image:: ../examples/minimap.png
+    .. image:: ../example_code/how_to_examples/minimap.png
        :width: 50%
        :alt: Screenshot of minimap
 
@@ -889,7 +889,7 @@ and the documentation.
   * Kenney.nl's TTF are now included as build-in resources.
   * See the :ref:`drawing_text` example.
 
-  .. image:: ../examples/drawing_text.png
+  .. image:: ../example_code/how_to_examples/drawing_text.png
      :width: 50%
      :alt: Screenshot of drawing text
 
@@ -913,13 +913,13 @@ and the documentation.
 
 * Reworked GUI
 
-    .. image:: ../examples/gui_flat_button.png
+    .. image:: ../example_code/how_to_examples/gui_flat_button.png
        :width: 40%
 
-    .. image:: ../examples/gui_widgets.png
+    .. image:: ../example_code/how_to_examples/gui_widgets.png
        :width: 40%
 
-    .. image:: ../examples/gui_ok_messagebox.png
+    .. image:: ../example_code/how_to_examples/gui_ok_messagebox.png
        :width: 40%
 
   * UIElements are replaced by UIWidgets
@@ -989,7 +989,7 @@ and the documentation.
 * Added the class :class:`arcade.PerfGraph`, a subclass of Sprite that will graph FPS or time to process a dispatch-able
   event line 'update' or 'on_draw'.
 
-  .. image:: ../examples/performance_statistics.png
+  .. image:: ../example_code/how_to_examples/performance_statistics.png
      :width: 50%
      :alt: Screenshot of performance statistics
 
@@ -1269,17 +1269,17 @@ Arcade 2.4.1 was released 2020-07-13.
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
-.. image:: ../examples/light_demo.png
+.. image:: ../example_code/how_to_examples/light_demo.png
     :width: 30%
     :class: inline-image
     :target: examples/light_demo.html
 
-.. image:: ../examples/astar_pathfinding.png
+.. image:: ../example_code/how_to_examples/astar_pathfinding.png
     :width: 30%
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: ../examples/bloom_defender.png
+.. image:: ../example_code/how_to_examples/bloom_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/bloom_defender.html
@@ -1299,7 +1299,7 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: tutorials/card_game/index.html
 
-.. image:: ../examples/transform_feedback.png
+.. image:: ../example_code/how_to_examples/transform_feedback.png
     :width: 30%
     :class: inline-image
     :target: examples/transform_feedback.html
@@ -1675,7 +1675,7 @@ Version 2.2.6
 * Enhancement: Return list of items hit during physics engine update `Issue 401 <https://github.com/pvcraven/arcade/issues/401>`_
 * Enhancement: Update resources documentation `Issue 549 <https://github.com/pvcraven/arcade/issues/549>`_
 * Enhancement: Add on_update to sprites, which includes delta_time `Issue 266 <https://github.com/pvcraven/arcade/issues/266>`_
-* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement_list`.
+* Enhancement: Close enhancement-related github issues and reference them in the new enhancement list.
 
 Version 2.2.5
 -------------
@@ -1806,7 +1806,7 @@ Version 2.1.0
 --------------
 
 * New file reader for tmx files http://arcade.academy/arcade.html#module-arcade.tilemap
-* Add new view switching framework http://arcade.academy/examples/index.html#view-management
+* Add new view switching framework http://arcade.academy/example_code/how_to_examples/index.html#view-management
 * Fix and Re-enable TravisCI builds https://travis-ci.org/pvcraven/arcade/builds
 
 * New: Collision methods to Sprite `Issue 434 <https://github.com/pvcraven/arcade/issues/434>`_

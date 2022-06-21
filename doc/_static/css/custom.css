@@ -152,13 +152,6 @@ code.literal {
     color: var(--color-foreground-primary);
 }
 
-div.twocol {
-    display: flex;
-}
-div.leftside {
-    flex: 43%;
-}
-
-div.rightside {
-    flex: 43%;
+.toctree-wrapper > ul {
+    columns: 2;
 }

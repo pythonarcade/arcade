@@ -3,22 +3,22 @@
 GUI
 ===
 
-.. figure:: ../examples/thumbs/gui_flat_button.png
+.. figure:: ../example_code/how_to_examples/thumbs/gui_flat_button.png
    :figwidth: 170px
 
    :ref:`gui_flat_button`
 
-.. figure:: ../examples/gui_widgets.png
+.. figure:: ../example_code/how_to_examples/gui_widgets.png
    :figwidth: 170px
 
    :ref:`gui_widgets`
 
-.. figure:: ../examples/gui_ok_messagebox.png
+.. figure:: ../example_code/how_to_examples/gui_ok_messagebox.png
    :figwidth: 170px
 
    :ref:`gui_ok_messagebox`
 
-.. figure:: ../examples/gui_scrollable_text.png
+.. figure:: ../example_code/how_to_examples/gui_scrollable_text.png
    :figwidth: 170px
 
    :ref:`gui_scrollable_text`

@@ -1,3 +1,5 @@
+.. _release_checklist:
+
 Release Checklist
 =================
 

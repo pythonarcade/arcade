@@ -19,7 +19,7 @@ doc/quick_index.rst
 doc/internal/blacklist.rst
 doc/internal/build.rst
 doc/source/quick_index.rst
-doc/examples/thumbs/
+doc/example_code/how_to_examples/thumbs/
 
 # testing
 .pytest_cache/
