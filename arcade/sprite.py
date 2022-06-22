@@ -123,7 +123,6 @@ class Sprite:
         :change_y: Movement vector, in the y direction.
         :change_angle: Change in rotation.
         :color: Color tint the sprite
-        :collision_radius: Used as a fast-check to see if this item is close \
         enough to another item. If this check works, we do a slower more accurate check. \
         You probably don't want to use this field. Instead, set points in the \
         hit box.
@@ -193,7 +192,6 @@ class Sprite:
         # Hit box type info
         self._hit_box_algorithm = hit_box_algorithm
         self._hit_box_detail = hit_box_detail
-        self._collision_radius: Optional[float] = None
 
         # Color
         self._color: RGB = (255, 255, 255)
@@ -480,39 +478,6 @@ class Sprite:
         self.change_x = 0
         self.change_y = 0
         self.change_angle = 0
-
-    @property
-    def collision_radius(self) -> float:
-        """
-        Get the collision radius.
-
-        .. note:: Final collision checking is done via geometry that was
-            set in get_points/set_points. These points are used in the
-            check_for_collision function. This collision_radius variable
-            is used as a "pre-check." We do a super-fast check with
-            collision_radius and see if the sprites are close. If they are,
-            then we look at the geometry and figure if they really are colliding.
-
-        """
-        if not self._collision_radius:
-            self._collision_radius = max(self.width, self.height)
-        return self._collision_radius
-
-    @collision_radius.setter
-    def collision_radius(self, collision_radius: float):
-        """
-        Set the collision radius.
-
-        .. note:: Final collision checking is done via geometry that was
-            set in the hit_box property. These points are used in the
-            check_for_collision function. This collision_radius variable
-            is used as a "pre-check." We do a super-fast check with
-            collision_radius and see if the sprites are close. If they are,
-            then we look at the geometry and figure if they really are colliding.
-
-        :param float collision_radius: Collision radius
-        """
-        self._collision_radius = collision_radius
 
     def clear_spatial_hashes(self):
         """

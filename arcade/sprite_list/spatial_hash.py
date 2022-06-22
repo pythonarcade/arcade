@@ -202,7 +202,7 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :returns: True if sprites overlap.
     :rtype: bool
     """
-    collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
+    collision_radius_sum = max(sprite1._width, sprite1._height) + max(sprite2._width, sprite2._height)
 
     diff_x = sprite1.position[0] - sprite2.position[0]
     diff_x2 = diff_x * diff_x
