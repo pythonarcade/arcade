@@ -202,21 +202,23 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :returns: True if sprites overlap.
     :rtype: bool
     """
-    collision_radius_sum = max(sprite1._width, sprite1._height) + max(sprite2._width, sprite2._height)
+    radius_sum = max(sprite1._width, sprite1._height) + max(sprite2._width, sprite2._height)
+    # Multiply by half of the theoretical max diagonal length for an estimation of distance
+    radius_sum *= 0.71  # 1.42 / 2
+    radius_sum_x2 = radius_sum * radius_sum
 
-    diff_x = sprite1.position[0] - sprite2.position[0]
+    diff_x = sprite1._position[0] - sprite2._position[0]
     diff_x2 = diff_x * diff_x
-
-    if diff_x2 > collision_radius_sum * collision_radius_sum:
+    if diff_x2 > radius_sum_x2:
         return False
 
-    diff_y = sprite1.position[1] - sprite2.position[1]
+    diff_y = sprite1._position[1] - sprite2._position[1]
     diff_y2 = diff_y * diff_y
-    if diff_y2 > collision_radius_sum * collision_radius_sum:
+    if diff_y2 > radius_sum_x2:
         return False
 
     distance = diff_x2 + diff_y2
-    if distance > collision_radius_sum * collision_radius_sum:
+    if distance > radius_sum_x2:
         return False
 
     return are_polygons_intersecting(
