@@ -403,8 +403,6 @@ class GameView(arcade.View):
         # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
         # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
 
-        self.player_sprite.draw_hit_box(arcade.color.RED, 3)
-
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
