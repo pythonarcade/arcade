@@ -1,5 +1,5 @@
 import math
-from typing import List
+from typing import Tuple
 
 
 def get_distance(x1: float, y1: float, x2: float, y2: float):
@@ -18,7 +18,7 @@ def clamp(a, low, high):
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle_degrees: float) -> List[float]:
+                 angle_degrees: float) -> Tuple[float, float]:
     """
     Rotate a point around a center.
 
@@ -45,7 +45,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     x = round(rotated_x + cx, rounding_precision)
     y = round(rotated_y + cy, rounding_precision)
 
-    return [x, y]
+    return x, y
 
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:

@@ -58,7 +58,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     :param float tilt_angle: angle the arc is tilted.
     :param float num_segments: Number of line segments used to draw arc.
     """
-    unrotated_point_list = [[0.0, 0.0]]
+    unrotated_point_list = [(0.0, 0.0)]
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
@@ -69,7 +69,7 @@ def draw_arc_filled(center_x: float, center_y: float,
         x = width * math.cos(theta) / 2
         y = height * math.sin(theta) / 2
 
-        unrotated_point_list.append([x, y])
+        unrotated_point_list.append((x, y))
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -125,8 +125,8 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
         x2 = outside_width * math.cos(theta)
         y2 = outside_height * math.sin(theta)
 
-        unrotated_point_list.append([x1, y1])
-        unrotated_point_list.append([x2, y2])
+        unrotated_point_list.append((x1, y1))
+        unrotated_point_list.append((x2, y2))
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list

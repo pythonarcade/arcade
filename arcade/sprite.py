@@ -6,6 +6,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
+import arcade
 
 from arcade.texture import _build_cache_name
 from arcade.geometry_generic import get_angle_degrees
@@ -27,13 +28,10 @@ import PIL.Image
 from arcade import load_texture
 from arcade import Texture
 from arcade import rotate_point
-from arcade import create_line_loop
-from arcade import ShapeElementList
 from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
-# from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
@@ -191,8 +189,8 @@ class Sprite:
 
         # Hit box and collision property
         self._points: Optional[PointList] = None
-        self._point_list_cache: Optional[PointList] = None
-        self._hit_box_shape: Optional[ShapeElementList] = None
+        self._point_list_cache: Optional[List[Tuple[float, float]]] = None
+        # Hit box type info
         self._hit_box_algorithm = hit_box_algorithm
         self._hit_box_detail = hit_box_detail
         self._collision_radius: Optional[float] = None
@@ -398,32 +396,33 @@ class Sprite:
     def hit_box(self, points: PointList):
         self.set_hit_box(points)
 
-    def get_adjusted_hit_box(self) -> PointList:
+    def get_adjusted_hit_box(self) -> List[Tuple[float, float]]:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
         """
-
         # If we've already calculated the adjusted hit box, use the cached version
         if self._point_list_cache is not None:
             return self._point_list_cache
 
         def _adjust_point(point):
-
-            # Rotate the point
+            # Rotate the point if needed
             if self._angle:
-                point = rotate_point(point[0], point[1], 0, 0, self._angle)
-
-            # Get a copy of the point
-            point = [point[0] * self._scale[0] + self._position[0], point[1] * self._scale[1] + self._position[1]]
-
-            return point
-
-        point_list = [_adjust_point(point) for point in self.hit_box]
+                # Rotate with scaling to not distort it if scale x and y is different
+                point = rotate_point(point[0] * self._scale[0], point[1] * self._scale[1], 0, 0, self._angle)
+                # Apply position
+                return (
+                    point[0] + self._position[0],
+                    point[1] + self._position[1],
+                )
+            # Apply position and scale
+            return (
+                point[0] * self._scale[0] + self._position[0],
+                point[1] * self._scale[1] + self._position[1],
+            )
 
         # Cache the results
-        self._point_list_cache = point_list
-
+        self._point_list_cache = [_adjust_point(point) for point in self.hit_box]
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0):
@@ -650,6 +649,7 @@ class Sprite:
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[0]
+
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
@@ -671,6 +671,7 @@ class Sprite:
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
+
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
@@ -1020,28 +1021,9 @@ class Sprite:
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-        if self._hit_box_shape is None:
-            # Adjust the hitbox
-            point_list = []
-            for point in self.hit_box:
-                # Get a copy of the point
-                point = [point[0], point[1]]
-
-                # Scale the point
-                if self.scale_xy != (1, 1):
-                    point[0] *= self._scale[0]
-                    point[1] *= self._scale[1]
-
-                point_list.append(point)
-
-            shape = create_line_loop(point_list, color, line_thickness)
-            self._hit_box_shape = ShapeElementList()
-            self._hit_box_shape.append(shape)
-
-        self._hit_box_shape.center_x = self.center_x
-        self._hit_box_shape.center_y = self.center_y
-        self._hit_box_shape.angle = self.angle
-        self._hit_box_shape.draw()
+        points = self.get_adjusted_hit_box()
+        points += points[:-1]
+        arcade.draw_line_strip(points, color=color)
 
     def update(self):
         """
