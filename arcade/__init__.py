@@ -61,7 +61,7 @@ if os.environ.get('ARCADE_HEADLESS'):
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
 # Use the old gdi fonts on windows until directwrite is fast/stable
-pyglet.options['win32_gdi_font'] = True
+# pyglet.options['win32_gdi_font'] = True
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
 # This was only needed with pyglet==2.0dev13 and earlier
