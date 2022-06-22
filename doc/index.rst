@@ -63,12 +63,8 @@ The Python Arcade Library
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
    tutorials/compiling_with_nuitka/index
-   tutorials/shader_toy_glow/index
-   tutorials/shader_toy_particles/index
    tutorials/framebuffer/index
-   tutorials/raycasting/index
-   tutorials/crt_filter/index
-   tutorials/compute_shader/index
+   tutorials/shader_tutorials
 
 .. image:: images/example_games.svg
    :alt: Programming guide icon

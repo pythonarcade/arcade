@@ -24,9 +24,11 @@ h1, h2 {
 .toctree-wrapper > ul {
     columns: 2;
 }
+section > h2 {
+    margin-top: 0;
+}
 .toctree-l1 {
     margin-left: 5px;
-    font-size: 17px;
 }
 .toc-outside-links {
     margin-left: 35px;
