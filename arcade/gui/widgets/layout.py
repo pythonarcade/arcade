@@ -595,4 +595,4 @@ class UIButtonRow(UIBoxLayout):
         pass
 
     def _on_click(self, event: UIOnClickEvent) -> None:
-        self.dispatch_event("on_action", UIOnActionEvent(event.source, event.source.text))
+        self.dispatch_event("on_action", UIOnActionEvent(self, event.source, event.source.text))
