@@ -123,9 +123,6 @@ class Sprite:
         :change_y: Movement vector, in the y direction.
         :change_angle: Change in rotation.
         :color: Color tint the sprite
-        enough to another item. If this check works, we do a slower more accurate check. \
-        You probably don't want to use this field. Instead, set points in the \
-        hit box.
         :cur_texture_index: Index of current texture being used.
         :guid: Unique identifier for the sprite. Useful when debugging.
         :height: Height of the sprite.
@@ -157,7 +154,6 @@ class Sprite:
     It is common to over-ride the `update` method and provide mechanics on
     movement or other sprite updates.
     """
-
     def __init__(
             self,
             filename: str = None,
@@ -768,7 +764,6 @@ class Sprite:
         """
         Return the x coordinate of the right-side of the sprite's hit box.
         """
-
         points = self.get_adjusted_hit_box()
 
         # This happens if our point list is empty, such as a completely
@@ -1085,7 +1080,6 @@ class AnimationKeyframe:
     """
     Used in animated sprites.
     """
-
     tile_id: int
     duration: int
     texture: Texture
@@ -1096,7 +1090,6 @@ class AnimatedTimeBasedSprite(Sprite):
     Sprite for platformer games that supports animations. These can
     be automatically created by the Tiled Map Editor.
     """
-
     def __init__(
             self,
             filename: str = None,
@@ -1151,7 +1144,6 @@ class AnimatedWalkingSprite(Sprite):
     For an example, see this section of the platformer tutorial:
     :ref:`platformer_part_twelve`.
     """
-
     def __init__(
             self,
             scale: float = 1.0,
@@ -1323,7 +1315,6 @@ class SpriteSolidColor(Sprite):
     :param int height: Height of the sprite
     :param Color color: Color of the sprite
     """
-
     def __init__(self, width: int, height: int, color: Color):
         """
         Create a solid-color rectangular sprite.
@@ -1351,13 +1342,10 @@ class SpriteCircle(Sprite):
     This sprite is just an elliptical sprite of one solid color. No need to
     use an image file.
 
-
     :param float radius: Radius of the circle
     :param Color color: Color of the circle
     :param bool soft: If True, will add a alpha gradient
-
     """
-
     def __init__(self, radius: int, color: Color, soft: bool = False):
         super().__init__()
 
