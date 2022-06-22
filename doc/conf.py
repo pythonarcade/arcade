@@ -120,13 +120,15 @@ html_theme_options = {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
         "toc-font-size": "16px",
         "sidebar-item-font-size": "16px",
-        "sidebar-item-line-height": "20px",
+        "sidebar-item-line-height": "17px",
     },
     "dark_css_variables": {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
         "toc-font-size": "16px",
         "sidebar-item-font-size": "16px",
-        "sidebar-item-line-height": "20px",
+        "sidebar-item-line-height": "17px",
+        "sidebar-caption-space-above": "0",
+        "sidebar-item-spacing-vertical": "0"
     },
 }
 
@@ -139,7 +141,6 @@ html_js_files = [
 
 html_css_files = [
     'https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css',
-    'css/custom.css',
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
