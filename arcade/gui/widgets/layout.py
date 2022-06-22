@@ -3,6 +3,7 @@ from typing import Iterable, TypeVar, Tuple, Any, Callable
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
 from arcade.gui.widgets.buttons import UIFlatButton
+from arcade.gui.events import UIOnActionEvent, UIOnClickEvent
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -559,8 +560,6 @@ class UIButtonRow(UIBoxLayout):
     :param size_hint_max: Max width and height in pixel.
     :param int space_between: The space between the children.
     :param Any style: Not used.
-    :param Tuple[str, ...] button_labels: The labels for the buttons.
-    :param Callable callback: The callback function which will receive the text of the clicked button.
     """
     def __init__(
         self,
@@ -571,8 +570,6 @@ class UIButtonRow(UIBoxLayout):
         size_hint_max: Any = None,
         space_between: int = 10,
         style: Any = None,
-        button_labels: Tuple[str, ...] = (),
-        callback: Callable = None,
     ):
         super().__init__(
             vertical=vertical,
@@ -583,13 +580,19 @@ class UIButtonRow(UIBoxLayout):
             space_between=space_between,
             style=style
         )
-        self._callback = callback
+        self.register_event_type("on_action")
 
-        for button_text in button_labels:
-            button = UIFlatButton(text=button_text)
-            button.on_click = self.on_ok  # type: ignore
-            self.add(button)
+    def add_button(self, label: str, *, on_click: Callable = None, style: Any = None) -> None:
+        button = UIFlatButton(text=label, style=style)
+        button.on_click = self._on_click  # type: ignore
+        self.add(button)
 
-    def on_ok(self, event):
-        if self._callback:
-            self._callback(event.source.text)
+        if on_click:
+            # Add on_click callback as event handler
+            button.event("on_click")(on_click)
+
+    def on_action(self, event: UIOnActionEvent) -> None:
+        pass
+
+    def _on_click(self, event: UIOnClickEvent) -> None:
+        self.dispatch_event("on_action", UIOnActionEvent(event.source, event.source.text))

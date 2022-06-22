@@ -112,3 +112,8 @@ class UIOnChangeEvent(UIEvent):
 
     old_value: Any
     new_value: Any
+
+
+@dataclass
+class UIOnActionEvent(UIMouseEvent):
+    pass
