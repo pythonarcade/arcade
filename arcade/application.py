@@ -111,11 +111,6 @@ class Window(pyglet.window.Window):
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
-                    red_size=8,
-                    green_size=8,
-                    blue_size=8,
-                    alpha_size=8,
-                    depth_size=24,
                 )
                 display = pyglet.canvas.get_display()
                 screen = display.get_default_screen()
@@ -130,11 +125,6 @@ class Window(pyglet.window.Window):
                 major_version=3,
                 minor_version=3,
                 double_buffer=True,
-                red_size=8,
-                green_size=8,
-                blue_size=8,
-                alpha_size=8,
-                depth_size=24,
             )
         try:
             super().__init__(width=width, height=height, caption=title,
