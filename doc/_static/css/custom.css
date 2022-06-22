@@ -13,7 +13,7 @@ p {
 h1, h2 {
     font-family: Roboto Slab, Georgia, serif;
     font-weight: 500;
-    margin-top: 0em;
+    margin-top: 0;
 }
 .toctree-wrapper.compound .caption {
     font-family: Roboto Slab, Georgia, serif;
@@ -26,6 +26,16 @@ h1, h2 {
     columns: 2;
 }
 .toctree-l1 {
+    margin-left: 5px;
+    font-size: 17px;
+}
+.toc-outside-links {
+    margin-left: 35px;
+}
+.toc-outside-links ul {
+    columns: 2;
+}
+.toc-outside-links li p {
     margin-left: 5px;
     font-size: 17px;
 }

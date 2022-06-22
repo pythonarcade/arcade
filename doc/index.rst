@@ -108,10 +108,6 @@ The Python Arcade Library
    api_docs/arcade
    api_docs/resources
 
-.. image:: images/performance.svg
-   :alt: Performance icon
-   :class: heading-icon
-
 .. image:: images/source.svg
    :alt: Source icon
    :class: heading-icon
@@ -119,7 +115,7 @@ The Python Arcade Library
 Source Code
 -----------
 
-.. container:: toctree-wrapper
+.. container:: toc-outside-links
 
     * `License <https://github.com/pythonarcade/arcade/blob/development/license.rst>`_
     * `GitHub <https://github.com/pythonarcade/arcade>`_
@@ -132,7 +128,7 @@ Source Code
 Social
 ------
 
-.. container:: toctree-wrapper
+.. container:: toc-outside-links
 
     * `Discord (most active spot) <https://discord.gg/ZjGDqMp>`_
     * `Reddit /r/pythonarcade <https://www.reddit.com/r/pythonarcade/>`_
@@ -141,10 +137,14 @@ Social
     * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
     * :ref:`diversity_statement`
 
+.. image:: images/performance.svg
+   :alt: Performance icon
+   :class: heading-icon
+
 Learning Resources
 ------------------
 
-.. container:: toctree-wrapper
+.. container:: toc-outside-links
 
     * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
     * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
