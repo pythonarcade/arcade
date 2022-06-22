@@ -119,16 +119,20 @@ html_theme_options = {
     "light_css_variables": {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
         "toc-font-size": "16px",
-        "sidebar-item-font-size": "16px",
-        "sidebar-item-line-height": "17px",
+        "sidebar-item-font-size": "15px",
+        "sidebar-item-line-height": "20px",
+        "sidebar-caption-space-above": "0",
+        "sidebar-caption-font-size": "18px",
+        "sidebar-item-spacing-vertical": "4px"
     },
     "dark_css_variables": {
        "font-stack--monospace": "Roboto Mono, Courier, monospace",
         "toc-font-size": "16px",
-        "sidebar-item-font-size": "16px",
-        "sidebar-item-line-height": "17px",
+        "sidebar-item-font-size": "15px",
+        "sidebar-item-line-height": "20px",
         "sidebar-caption-space-above": "0",
-        "sidebar-item-spacing-vertical": "0"
+        "sidebar-caption-font-size": "18px",
+        "sidebar-item-spacing-vertical": "4px"
     },
 }
 
