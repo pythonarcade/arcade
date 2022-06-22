@@ -112,18 +112,6 @@ The Python Arcade Library
    :alt: Performance icon
    :class: heading-icon
 
-Learning Resources
-------------------
-
-.. container:: toctree-wrapper
-
-    * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
-    * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
-    * `US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>`_
-    * `US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>`_
-    * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
-    * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
-
 .. image:: images/source.svg
    :alt: Source icon
    :class: heading-icon
@@ -152,6 +140,19 @@ Social
     * `Instagram @PythonArcadeLibrary <https://www.instagram.com/PythonArcadeLibrary/>`_
     * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
     * :ref:`diversity_statement`
+
+Learning Resources
+------------------
+
+.. container:: toctree-wrapper
+
+    * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
+    * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
+    * `US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>`_
+    * `US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>`_
+    * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
+    * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
+
 
 .. raw:: html
 
