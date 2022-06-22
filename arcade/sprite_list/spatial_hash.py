@@ -179,15 +179,16 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :Returns: True or False depending if the sprites intersect.
     :rtype: bool
     """
-    if not isinstance(sprite1, Sprite):
-        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    if isinstance(sprite2, SpriteList):
-        raise TypeError(
-            "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
-            "call check_for_collision_with_list instead of check_for_collision."
-        )
-    elif not isinstance(sprite2, Sprite):
-        raise TypeError("Parameter 2 is not an instance of the Sprite class.")
+    if __debug__:
+        if not isinstance(sprite1, Sprite):
+            raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+        if isinstance(sprite2, SpriteList):
+            raise TypeError(
+                "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
+                "call check_for_collision_with_list instead of check_for_collision."
+            )
+        elif not isinstance(sprite2, Sprite):
+            raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
     return _check_for_collision(sprite1, sprite2)
 
@@ -291,14 +292,15 @@ def check_for_collision_with_list(
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite, Sprite):
-        raise TypeError(
-            f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
-        )
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite, Sprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
+            )
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash and (method == 1 or method == 0):
         # Spatial
@@ -337,8 +339,9 @@ def check_for_collision_with_lists(sprite: Sprite,
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite, Sprite):
-        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+    if __debug__:
+        if not isinstance(sprite, Sprite):
+            raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
     sprites: List[Sprite] = []
 
@@ -373,10 +376,11 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
@@ -403,10 +407,11 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)  # type: ignore
