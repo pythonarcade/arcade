@@ -81,6 +81,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     include_package_data=True,
+        entry_points={'console_scripts': [
+        'arcade = arcade.management:execute_from_command_line',
+    ]},
     project_urls={
         "Documentation": "https://api.arcade.academy/",
         "Example Code": "https://api.arcade.academy/en/latest/examples/index.html",
