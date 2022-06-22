@@ -1022,7 +1022,8 @@ class Sprite:
         :param line_thickness: How thick the box should be
         """
         points = self.get_adjusted_hit_box()
-        points += points[:-1]
+        # NOTE: This is a COPY operation. We don't want to modify the points.
+        points = points + points[:-1]
         arcade.draw_line_strip(points, color=color)
 
     def update(self):
