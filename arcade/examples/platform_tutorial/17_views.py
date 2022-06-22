@@ -398,6 +398,13 @@ class GameView(arcade.View):
         # Draw our Scene
         self.scene.draw()
 
+        # Draw hit boxes.
+        # self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
+
+        self.player_sprite.draw_hit_box(arcade.color.RED, 3)
+
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
@@ -410,12 +417,6 @@ class GameView(arcade.View):
             arcade.csscolor.BLACK,
             18,
         )
-
-        # Draw hit boxes.
-        # for wall in self.wall_list:
-        #     wall.draw_hit_box(arcade.color.BLACK, 3)
-        #
-        # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
 
     def process_keychange(self):
         """
