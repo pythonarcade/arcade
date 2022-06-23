@@ -217,7 +217,7 @@ class VertexArray:
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
             # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
-            # gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
                 mode, vertices, self._index_element_type,
                 first * self._index_element_size, instances
