@@ -295,3 +295,38 @@ def test_sprite_scale_xy(window):
     sprite.scale_xy = 2.0, 4.0
     assert sprite.scale_xy == (2.0, 4.0)
     assert sprite.scale == 2.0
+
+
+def test_rescale_relative_to_point(window):
+    window_center = window.width // 2, window.height // 2
+    window_center_x, window_center_y = window_center
+
+    # a regular case akin to normal usage
+    sprite_1 = arcade.Sprite(":resources:images/items/gold_1.png")
+    sprite_1.position = window_center_x + 50, window_center_y - 50
+    sprite_1.rescale_relative_to_point((0, 0), 3.31)
+    assert sprite_1.scale == 3.31
+    assert sprite_1.center_x == (window_center_x + 50) * 3.31
+    assert sprite_1.center_y == (window_center_y - 50) * 3.31
+    assert sprite_1.width == 64 * 3.31
+    assert sprite_1.height == 64 * 3.31
+
+    # edge case: point is the sprite center, no movement should occur
+    sprite_2 = arcade.Sprite(":resources:images/items/coinSilver_test.png")
+    sprite_2.position = window_center
+    sprite_2.rescale_relative_to_point(sprite_2.position, 2.0)
+    assert sprite_2.scale == 2.0
+    assert sprite_2.center_x == window_center_x
+    assert sprite_2.center_y == window_center_y
+    assert sprite_2.width == 128
+    assert sprite_2.height == 128
+
+    # edge case: scale is 1.0, no movement or size change should occur
+    sprite_3 = arcade.Sprite(":resources:images/items/coinSilver_test.png")
+    sprite_3.position = window_center_x - 81, window_center_y + 81
+    sprite_3.rescale_relative_to_point((50, 40), 1.0)
+    assert sprite_3.scale == 1.0
+    assert sprite_3.center_x == window_center_x - 81
+    assert sprite_3.center_y == window_center_y + 81
+    assert sprite_3.width == 64
+    assert sprite_3.height == 64
