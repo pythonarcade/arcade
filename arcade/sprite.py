@@ -658,9 +658,35 @@ class Sprite:
         :param factor: Multiplier for sprite scale & distance to point.
         :return:
         """
-        self.scale *= factor
-        self.center_x = (self.center_x - point[0]) * factor + point[0]
-        self.center_y = (self.center_y - point[1]) * factor + point[1]
+        # abort if the multiplier wouldn't do anything
+        if factor == 1.0:
+            return
+
+        # clear spatial metadata both locally and in sprite lists
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+
+        # set the scale and, if this sprite has a texture, the size data
+        self._scale = self._scale[0] * factor, self._scale[1] * factor
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        position_changed = point != self._position
+
+        # be lazy about math; only do it if we have to
+        if position_changed:
+            self._position = (
+                    (self._position[0] - point[0]) * factor + point[0],
+                    (self._position[1] - point[1]) * factor + point[1]
+            )
+
+        # rebuild all spatial metadata
+        self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
+            if position_changed:
+                sprite_list.update_location(self)
 
     @property
     def center_x(self) -> float:
