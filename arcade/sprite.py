@@ -1276,14 +1276,13 @@ class AnimatedWalkingSprite(Sprite):
 
 def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     """
-    Given an animated gif, return a AnimatedTimeBasedSprite.
+    Attempt to load an animated GIF as an :class:`AnimatedTimeBasedSprite`.
 
-    Support for transparency in animated gifs in Python is lacking.
-    There are a lot of
-    older animated gifs that are saved weird. The end result is that the
-    often the first frame of an animated gif is the only frame that
-    we correctly get the transparency on. Until the Pillow library better
-    handles this, loading animated gifs will be pretty buggy.
+    Many older GIFs will load with incorrect transparency for every
+    frame but the first. Until the Pillow library handles the quirks of
+    the format better, loading animated GIFs will be pretty buggy. A
+    good workaround is loading GIFs in another program and exporting them
+    as PNGs, either as sprite sheets or a frame per file.
     """
 
     file_name = resolve_resource_path(resource_name)
