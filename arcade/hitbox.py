@@ -5,11 +5,13 @@ import pymunk
 
 from PIL.Image import Image
 from arcade import Point
-from typing import List, Union, Tuple
+from typing import Tuple
 from pymunk import autogeometry
 
+from arcade.arcade_types import PointList
 
-def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
+
+def calculate_hit_box_points_simple(image: Image) -> PointList:
     """
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -97,7 +99,7 @@ def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
 def calculate_hit_box_points_detailed(
     image: Image,
     hit_box_detail: float = 4.5,
-) -> Union[List[Point], Tuple[Point, ...]]:
+) -> PointList:
     """
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.

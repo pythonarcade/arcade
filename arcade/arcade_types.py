@@ -9,10 +9,13 @@ from pytiled_parser import Properties
 RGB = Union[Tuple[int, int, int], List[int]]
 RGBA = Union[Tuple[int, int, int, int], List[int]]
 Color = Union[RGB, RGBA]
-Point = Union[Tuple[float, float], List[float]]
+# Point = Union[Tuple[float, float], List[float]]
+# Vector = Point
+Point = Tuple[float, float]
+Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
-Vector = Point
+Sequence[int]
 PointList = Sequence[Point]
 Rect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]

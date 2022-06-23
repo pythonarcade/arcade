@@ -401,7 +401,6 @@ def draw_line_strip(point_list: PointList,
             if last_point is not None:
                 points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
                 reordered_points = points[1], points[0], points[2], points[3]
-                # noinspection PyUnresolvedReferences
                 triangle_point_list.extend(reordered_points)
             last_point = point
         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
@@ -596,7 +595,7 @@ def draw_triangle_filled(x1: float, y1: float,
     first_point = (x1, y1)
     second_point = (x2, y2)
     third_point = (x3, y3)
-    point_list = (first_point, second_point, third_point)
+    point_list = [first_point, second_point, third_point]
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLES)
 
 
@@ -617,10 +616,10 @@ def draw_triangle_outline(x1: float, y1: float,
     :param Color color: Color of triangle.
     :param float border_width: Width of the border in pixels. Defaults to 1.
     """
-    first_point = [x1, y1]
-    second_point = [x2, y2]
-    third_point = [x3, y3]
-    point_list = (first_point, second_point, third_point)
+    first_point = (x1, y1)
+    second_point = (x2, y2)
+    third_point = (x3, y3)
+    point_list = [first_point, second_point, third_point]
     draw_polygon_outline(point_list, color, border_width)
 
 

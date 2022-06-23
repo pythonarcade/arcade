@@ -184,7 +184,7 @@ class Sprite:
 
         # Hit box and collision property
         self._points: Optional[PointList] = None
-        self._point_list_cache: Optional[List[Tuple[float, float]]] = None
+        self._point_list_cache: Optional[PointList] = None
         # Hit box type info
         self._hit_box_algorithm = hit_box_algorithm
         self._hit_box_detail = hit_box_detail
@@ -326,7 +326,7 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_location(self)
 
-    def set_position(self, center_x: float, center_y: float):
+    def set_position(self, center_x: float, center_y: float) -> None:
         """
         Set a sprite's position
 
@@ -335,7 +335,7 @@ class Sprite:
         """
         self.position = (center_x, center_y)
 
-    def set_hit_box(self, points: PointList):
+    def set_hit_box(self, points: PointList) -> None:
         """
         Set a sprite's hit box. Hit box should be relative to a sprite's center,
         and with a scale of 1.0.
@@ -390,7 +390,7 @@ class Sprite:
     def hit_box(self, points: PointList):
         self.set_hit_box(points)
 
-    def get_adjusted_hit_box(self) -> List[Tuple[float, float]]:
+    def get_adjusted_hit_box(self) -> PointList:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
@@ -399,7 +399,7 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        def _adjust_point(point):
+        def _adjust_point(point) -> Point:
             # Rotate the point if needed
             if self._angle:
                 # Rotate with scaling to not distort it if scale x and y is different
@@ -416,10 +416,10 @@ class Sprite:
             )
 
         # Cache the results
-        self._point_list_cache = [_adjust_point(point) for point in self.hit_box]
+        self._point_list_cache = tuple(_adjust_point(point) for point in self.hit_box)
         return self._point_list_cache
 
-    def forward(self, speed: float = 1.0):
+    def forward(self, speed: float = 1.0) -> None:
         """
         Adjusts a Sprite's movement vector forward.
         This method does not actually move the sprite, just takes the current
@@ -430,7 +430,7 @@ class Sprite:
         self.change_x += math.cos(self.radians) * speed
         self.change_y += math.sin(self.radians) * speed
 
-    def reverse(self, speed: float = 1.0):
+    def reverse(self, speed: float = 1.0) -> None:
         """
         Adjusts a Sprite's movement vector backwards.
         This method does not actually move the sprite, just takes the current
@@ -440,7 +440,7 @@ class Sprite:
         """
         self.forward(-speed)
 
-    def strafe(self, speed: float = 1.0):
+    def strafe(self, speed: float = 1.0) -> None:
         """
         Adjusts a Sprite's movement vector sideways.
         This method does not actually move the sprite, just takes the current
@@ -451,7 +451,7 @@ class Sprite:
         self.change_x += -math.sin(self.radians) * speed
         self.change_y += math.cos(self.radians) * speed
 
-    def turn_right(self, theta: float = 90.0):
+    def turn_right(self, theta: float = 90.0) -> None:
         """
         Rotate the sprite right by the passed number of degrees.
 
@@ -459,7 +459,7 @@ class Sprite:
         """
         self.angle -= theta
 
-    def turn_left(self, theta: float = 90.0):
+    def turn_left(self, theta: float = 90.0) -> None:
         """
         Rotate the sprite left by the passed number of degrees.
 
@@ -467,7 +467,7 @@ class Sprite:
         """
         self.angle += theta
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stop the Sprite's motion.
         """
@@ -475,7 +475,7 @@ class Sprite:
         self.change_y = 0
         self.change_angle = 0
 
-    def clear_spatial_hashes(self):
+    def clear_spatial_hashes(self) -> None:
         """
         Search the sprite lists this sprite is a part of, and remove it
         from any spatial hashes it is a part of.
@@ -490,12 +490,12 @@ class Sprite:
                         "Warning, attempt to remove item from spatial hash that doesn't exist in the hash."
                     )
 
-    def add_spatial_hashes(self):
+    def add_spatial_hashes(self) -> None:
         """
         Add spatial hashes for this sprite in all the sprite lists it is part of.
         """
         for sprite_list in self.sprite_lists:
-            if sprite_list._use_spatial_hash:
+            if sprite_list.spatial_hash:
                 sprite_list.spatial_hash.insert_object_for_box(self)
 
     @property
@@ -617,13 +617,13 @@ class Sprite:
             sprite_list.update_size(self)
 
     @property
-    def scale_xy(self) -> Tuple[float, float]:
+    def scale_xy(self) -> Point:
         """Get the scale of the sprite."""
         return self._scale
 
     @scale_xy.setter
-    def scale_xy(self, new_value: Tuple[float, float]):
-        if new_value == self._scale:
+    def scale_xy(self, new_value: Point):
+        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
             return
 
         self.clear_spatial_hashes()
@@ -728,7 +728,7 @@ class Sprite:
         Converts the degrees representation of self.angle into radians.
         :return: float
         """
-        return self.angle / 180.0 * math.pi
+        return self._angle / 180.0 * math.pi
 
     @radians.setter
     def radians(self, new_value: float):
@@ -782,7 +782,10 @@ class Sprite:
         self.center_x -= diff
 
     @property
-    def texture(self):
+    def texture(self) -> Texture:
+        # TODO: Remove this when we require a texture
+        if not self._texture:
+            raise ValueError("Sprite has not texture")
         return self._texture
 
     @texture.setter
@@ -914,14 +917,14 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
-    def register_sprite_list(self, new_list: "SpriteList"):
+    def register_sprite_list(self, new_list: "SpriteList") -> None:
         """
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.
         """
         self.sprite_lists.append(new_list)
 
-    def register_physics_engine(self, physics_engine):
+    def register_physics_engine(self, physics_engine) -> None:
         """
         Register a physics engine on the sprite.
         This is only needed if you actually need a reference
@@ -940,7 +943,7 @@ class Sprite:
         """Called by the pymunk physics engine if this sprite moves."""
         pass
 
-    def face_point(self, point: Point):
+    def face_point(self, point: Point) -> None:
         """
         Face the sprite towards a point. Assumes sprite image is facing upwards.
 
@@ -951,7 +954,7 @@ class Sprite:
         # Reverse angle because sprite angles are backwards
         self.angle = -angle
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
+    def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
         """
         Draw the sprite.
 
@@ -971,7 +974,7 @@ class Sprite:
 
         self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
 
-    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1):
+    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1) -> None:
         """
         Draw a sprite's hit-box.
 
@@ -983,26 +986,26 @@ class Sprite:
         """
         points = self.get_adjusted_hit_box()
         # NOTE: This is a COPY operation. We don't want to modify the points.
-        points = points + points[:-1]
-        arcade.draw_line_strip(points, color=color)
+        points = tuple(points) + tuple(points[:-1])
+        arcade.draw_line_strip(points, color=color, line_width=line_thickness)
 
-    def update(self):
+    def update(self) -> None:
         """
         Update the sprite.
         """
-        self.position = [
+        self.position = (
             self._position[0] + self.change_x,
             self._position[1] + self.change_y,
-        ]
+        )
         self.angle += self.change_angle
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def on_update(self, delta_time: float = 1 / 60) -> None:
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         """
         pass
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
         Override this to add code that will change
         what image is shown, so the sprite can be
@@ -1012,7 +1015,7 @@ class Sprite:
         """
         pass
 
-    def remove_from_sprite_lists(self):
+    def remove_from_sprite_lists(self) -> None:
         """
         Remove the sprite from all sprite lists.
         """
@@ -1033,7 +1036,7 @@ class Sprite:
         self.physics_engines.clear()
         self.sprite_lists.clear()
 
-    def kill(self):
+    def kill(self) -> None:
         """
         Alias of `remove_from_sprite_lists`
         """
@@ -1062,7 +1065,7 @@ class Sprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self, sprite_list: "SpriteList") -> list:
+    def collides_with_list(self, sprite_list: "SpriteList") -> List["Sprite"]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against
@@ -1116,7 +1119,7 @@ class AnimatedTimeBasedSprite(Sprite):
         self.frames: List[AnimationKeyframe] = []
         self.time_counter = 0.0
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
         Logic for selecting the proper texture to use.
         """
@@ -1171,7 +1174,7 @@ class AnimatedWalkingSprite(Sprite):
         self.last_texture_change_center_x: float = 0.0
         self.last_texture_change_center_y: float = 0.0
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
         Logic for selecting the proper texture to use.
         """
@@ -1271,7 +1274,7 @@ class AnimatedWalkingSprite(Sprite):
             self.height = self._texture.height * self.scale
 
 
-def load_animated_gif(resource_name):
+def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     """
     Given an animated gif, return a AnimatedTimeBasedSprite.
 
@@ -1295,12 +1298,10 @@ def load_animated_gif(resource_name):
     for frame in range(0, image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
-        # print(frame_duration)
         image = image_object.convert("RGBA")
         texture = Texture(f"{resource_name}-{frame}", image)
         sprite.textures.append(texture)
-        frame = AnimationKeyframe(0, frame_duration, texture)
-        sprite.frames.append(frame)
+        sprite.frames.append(AnimationKeyframe(0, frame_duration, texture))
 
     sprite.texture = sprite.textures[0]
     return sprite

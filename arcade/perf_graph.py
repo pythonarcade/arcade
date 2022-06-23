@@ -88,8 +88,7 @@ class PerfGraph(arcade.Sprite):
             x = left_x
             for reading in self.data_to_graph:
                 y = (reading / self.max_data) * max_pixels + bottom_y
-                point = x, y
-                point_list.append(point)
+                point_list.append((x, y))
                 x += 1
 
             # Draw the base line

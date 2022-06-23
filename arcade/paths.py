@@ -18,7 +18,7 @@ Classic A-star algorithm for path finding.
 """
 
 
-def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
+def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,
                      blocking_sprites: SpriteList)\
         -> bool:
