@@ -21,8 +21,11 @@ h1, h2 {
     margin-top: 5px;
     margin-bottom: 8px;
 }
-.toctree-wrapper > ul {
-    columns: 2;
+
+@media screen and (min-width: 700px) {
+    .toctree-wrapper > ul {
+        columns: 2;
+    }
 }
 section > h2 {
     margin-top: 0;

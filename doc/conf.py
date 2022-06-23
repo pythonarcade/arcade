@@ -123,6 +123,7 @@ html_theme_options = {
         "sidebar-item-line-height": "20px",
         "sidebar-caption-space-above": "0",
         "sidebar-caption-font-size": "18px",
+        "sidebar-tree-space-above": "9px",
         "sidebar-item-spacing-vertical": "4px"
     },
     "dark_css_variables": {
@@ -132,6 +133,7 @@ html_theme_options = {
         "sidebar-item-line-height": "20px",
         "sidebar-caption-space-above": "0",
         "sidebar-caption-font-size": "18px",
+        "sidebar-tree-space-above": "9px",
         "sidebar-item-spacing-vertical": "4px"
     },
 }
