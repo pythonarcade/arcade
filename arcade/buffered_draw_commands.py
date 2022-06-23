@@ -62,9 +62,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     :param float line_width:
 
     :Returns Shape:
-
     """
-
     points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     color_list = [color, color, color, color]
     triangle_point_list = points[1], points[0], points[2], points[3]
@@ -152,7 +150,6 @@ def create_line_strip(point_list: PointList,
     :param PointList line_width:
 
     :Returns Shape:
-
     """
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
@@ -185,7 +182,6 @@ def create_line_loop(point_list: PointList,
     :param float line_width:
 
     :Returns Shape:
-
     """
     point_list = list(point_list) + [point_list[0]]
     return create_line_strip(point_list, color, line_width)
@@ -202,7 +198,6 @@ def create_lines(point_list: PointList,
     :param float line_width:
 
     :Returns Shape:
-
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
@@ -249,7 +244,6 @@ def create_polygon(point_list: PointList,
     :param color:
 
     :Returns Shape:
-
     """
     # We assume points were given in order, either clockwise or counter clockwise.
     # Polygon is assumed to be monotone.
@@ -334,7 +328,6 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
     :param float tilt_angle:
 
     Returns: PointList
-
     """
     x1 = -width / 2 + center_x
     y1 = -height / 2 + center_y
@@ -385,7 +378,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     :param float border_width:
     :param float tilt_angle:
     :param bool filled:
-
     """
     data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
 
@@ -436,9 +428,7 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
-
     shape_mode = gl.GL_TRIANGLE_STRIP
     new_point_list = [point_list[0], point_list[1], point_list[3], point_list[2]]
     new_color_list = [color_list[0], color_list[1], color_list[3], color_list[2]]
@@ -456,9 +446,7 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
-
     shape_mode = gl.GL_TRIANGLES
     new_point_list: List[Point] = []
     new_color_list: List[Color] = []
@@ -483,9 +471,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
-
     shape_mode = gl.GL_TRIANGLE_STRIP
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
@@ -503,9 +489,7 @@ def create_ellipse_filled(center_x: float, center_y: float,
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
-
     border_width = 1
     return create_ellipse(center_x, center_y, width, height, color,
                           border_width, tilt_angle, num_segments, filled=True)
@@ -525,9 +509,7 @@ def create_ellipse_outline(center_x: float, center_y: float,
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
-
     return create_ellipse(center_x, center_y, width, height, color,
                           border_width, tilt_angle, num_segments, filled=False)
 
@@ -537,7 +519,6 @@ def create_ellipse(center_x: float, center_y: float,
                    border_width: float = 1,
                    tilt_angle: float = 0, num_segments: int = 32,
                    filled=True) -> Shape:
-
     """
     This creates an ellipse vertex buffer object (VBO).
 
@@ -548,7 +529,6 @@ def create_ellipse(center_x: float, center_y: float,
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-
     """
     # Create an array with the vertex point_list
     point_list = []
@@ -593,7 +573,6 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
 
-
     :param float center_x:
     :param float center_y:
     :param float width:
@@ -604,9 +583,7 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     :param int num_segments:
 
     :Returns Shape:
-
     """
-
     # Create an array with the vertex data
     # Create an array with the vertex point_list
     point_list = [(center_x, center_y)]
@@ -706,7 +683,7 @@ class ShapeElementList(Generic[TShape]):
             )
         ]
         vao = self.ctx.geometry(vao_content, ibo)
-        self.program['Position'] = [self.center_x, self.center_y]
+        self.program['Position'] = self.center_x, self.center_y
         self.program['Angle'] = self.angle
 
         batch.shape.vao = vao
@@ -741,7 +718,7 @@ class ShapeElementList(Generic[TShape]):
         """
         Draw everything in the list.
         """
-        self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Position'] = self._center_x, self._center_y
         self.program['Angle'] = self._angle
 
         for group in self.dirties:
@@ -767,7 +744,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_center_y(self, value: float):
         """Set the center y coordinate of the ShapeElementList."""
         self._center_y = value
-        self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Position'] = self._center_x, self._center_y
 
     center_y = property(_get_center_y, _set_center_y)
 
