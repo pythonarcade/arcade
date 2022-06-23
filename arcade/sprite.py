@@ -654,8 +654,8 @@ class Sprite:
         If the passed point equals the sprite's initial center position,
         the distance will be zero and the sprite will not move.
 
-        :param point: A point to rescale the sprite and distance around.
-        :param factor: A multipler to adjust scale and distance by.
+        :param point: The reference point for rescaling.
+        :param factor: Multiplier for sprite scale & distance to point.
         :return:
         """
         self.scale *= factor
