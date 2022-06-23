@@ -604,7 +604,7 @@ class Sprite:
 
     @scale.setter
     def scale(self, new_value: float):
-        if new_value == self._scale[0]:
+        if new_value == self._scale[0] and new_value == self._scale[1]:
             return
 
         self.clear_spatial_hashes()
