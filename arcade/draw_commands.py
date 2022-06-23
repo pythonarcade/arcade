@@ -165,7 +165,7 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     center_y = start_y + height
     start_angle = 0
     end_angle = 180
-    width = (start_x - end_x)
+    width = start_x - end_x
     draw_arc_filled(center_x, center_y, width, height, color,
                     start_angle, end_angle, tilt_angle)
 
@@ -188,7 +188,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     center_y = start_y + height
     start_angle = 0
     end_angle = 180
-    width = (start_x - end_x)
+    width = start_x - end_x
     draw_arc_outline(center_x, center_y, width, height, color,
                      start_angle, end_angle, border_width, tilt_angle)
 
@@ -278,9 +278,9 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     buffer = ctx.shape_ellipse_unbuffered_buffer
     # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
@@ -323,9 +323,9 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     buffer = ctx.shape_ellipse_outline_unbuffered_buffer
     # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
@@ -361,11 +361,7 @@ def _generic_draw_line_strip(point_list: PointList,
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
-
-    def gen_flatten(my_list):
-        return [item for sublist in my_list for item in sublist]
-
-    vertices = array.array('f', gen_flatten(point_list))
+    vertices = array.array('f', tuple(item for sublist in point_list for item in sublist))
 
     geometry = ctx.generic_draw_line_strip_geometry
     program = ctx.line_vertex_shader
@@ -426,16 +422,16 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     geometry = ctx.shape_line_geometry
     # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
-        data=array.array('f', [start_x, start_y, end_x, end_y]))
+        data=array.array('f', (start_x, start_y, end_x, end_y)))
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
 
@@ -460,9 +456,9 @@ def draw_lines(point_list: PointList,
     geometry = ctx.shape_line_geometry
     # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
@@ -472,7 +468,7 @@ def draw_lines(point_list: PointList,
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
-        data=array.array('f', [v for point in point_list for v in point]))
+        data=array.array('f', tuple(v for point in point_list for v in point)))
     geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
 
 
@@ -510,9 +506,9 @@ def draw_points(point_list: PointList, color: Color, size: float = 1):
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
     # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
@@ -523,7 +519,7 @@ def draw_points(point_list: PointList, color: Color, size: float = 1):
 
     program['color'] = color_normalized
     program['shape'] = size, size, 0
-    buffer.write(data=array.array('f', [v for point in point_list for v in point]))
+    buffer.write(data=array.array('f', tuple(v for point in point_list for v in point)))
     geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
 
 
@@ -541,9 +537,8 @@ def draw_polygon_filled(point_list: PointList,
          in a list. So it is a list of lists.
     :param Color color: The color, specified in RGB or RGBA format.
     """
-
     triangle_points = earclip(point_list)
-    flattened_list = [i for g in triangle_points for i in g]
+    flattened_list = tuple(i for g in triangle_points for i in g)
     _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
 
@@ -591,11 +586,11 @@ def draw_triangle_filled(x1: float, y1: float,
     :param float y3: y value of third coordinate.
     :param Color color: Color of triangle.
     """
-
-    first_point = (x1, y1)
-    second_point = (x2, y2)
-    third_point = (x3, y3)
-    point_list = [first_point, second_point, third_point]
+    point_list = (
+        (x1, y1),
+        (x2, y2),
+        (x3, y3),
+    )
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLES)
 
 
@@ -616,10 +611,11 @@ def draw_triangle_outline(x1: float, y1: float,
     :param Color color: Color of triangle.
     :param float border_width: Width of the border in pixels. Defaults to 1.
     """
-    first_point = (x1, y1)
-    second_point = (x2, y2)
-    third_point = (x3, y3)
-    point_list = [first_point, second_point, third_point]
+    point_list = (
+        (x1, y1),
+        (x2, y2),
+        (x3, y3),
+    )
     draw_polygon_outline(point_list, color, border_width)
 
 
@@ -696,7 +692,6 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     :param float border_width: width of the lines, in pixels.
     :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
-
     i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
     i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
     i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
@@ -707,10 +702,10 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
     o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
 
-    point_list: List[Point] = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
+    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
 
     if tilt_angle != 0:
-        point_list_2: List[Point] = []
+        point_list_2 = []
         for point in point_list:
             new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
             point_list_2.append(new_point)
@@ -730,7 +725,6 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     :param float bottom: The y coordinate of the rectangle bottom.
     :param Color color: The color of the rectangle.
     :Raises AttributeError: Raised if left > right or top < bottom.
-
     """
     if left > right:
         raise AttributeError("Left coordinate {} must be less than or equal "
@@ -759,7 +753,6 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     :param float height: The height of the rectangle.
     :param Color color: The color of the rectangle.
     """
-
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
     draw_rectangle_filled(center_x, center_y, width, height, color)
@@ -814,7 +807,6 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
-
     texture.draw_scaled(center_x, center_y, scale, angle, alpha)
 
 
@@ -835,7 +827,6 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
-
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
