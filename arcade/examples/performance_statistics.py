@@ -1,7 +1,20 @@
 """
 Performance Statistic Displays
 
+This example demonstrates how to use a few performance profiling tools
+built into arcade:
+
+    * arcade.PerfGraph
+    * arcade.get_fps
+
+A large number of sprites are drawn on screen to produce load. You can
+adjust the number of sprites by changing the COIN_COUNT constant below.
+
 Artwork from https://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the
+command line with:
+python -m arcade.examples.background_scrolling
 """
 
 import random
@@ -53,10 +66,10 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables that will hold sprite lists
-        self.coin_list = None
-        self.perf_graph_list = None
-
-        self.frame_count = 0
+        self.coin_list: arcade.SpriteList = None
+        self.perf_graph_list: arcade.SpriteList = None
+        self.frame_count: int = 0
+        self.fps_text: arcade.Text = None
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -90,6 +103,12 @@ class MyGame(arcade.Window):
         # Create a sprite list to put the performance graph into
         self.perf_graph_list = arcade.SpriteList()
 
+        # Create FPS text object
+        self.fps_text = arcade.Text(
+            f"FPS: {arcade.get_fps(60):5.1f}",
+            10, 10, arcade.color.BLACK, 22
+        )
+
         # Create the FPS performance graph
         graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="FPS")
         graph.center_x = GRAPH_WIDTH / 2
@@ -120,9 +139,9 @@ class MyGame(arcade.Window):
         # Draw the graphs
         self.perf_graph_list.draw()
 
-        # Get FPS for the last 60 frames
-        text = f"FPS: {arcade.get_fps(60):5.1f}"
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK, 22)
+        # Get & draw the FPS for the last 60 frames
+        self.fps_text.value = f"FPS: {arcade.get_fps(60):5.1f}"
+        self.fps_text.draw()
 
     def update(self, delta_time):
         """ Update method """
