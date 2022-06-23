@@ -917,7 +917,7 @@ class Sprite:
     def register_sprite_list(self, new_list: "SpriteList"):
         """
         Register this sprite as belonging to a list. We will automatically
-        remove ourselves from the the list when kill() is called.
+        remove ourselves from the list when kill() is called.
         """
         self.sprite_lists.append(new_list)
 
