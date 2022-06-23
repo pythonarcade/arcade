@@ -17,9 +17,7 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from typing import List
 from typing import Tuple
-from typing import TYPE_CHECKING
 
 from arcade import Color
 from arcade import PointList
@@ -29,10 +27,6 @@ from arcade import get_four_byte_color
 from arcade import get_points_for_thick_line
 from arcade import Texture
 from arcade import get_window
-
-
-if TYPE_CHECKING:  # import for mypy only
-    from arcade.arcade_types import Point
 
 
 # --- BEGIN ARC FUNCTIONS # # #
