@@ -196,6 +196,20 @@ def test_sprite_scale(window):
     CHARACTER_SCALING = 0.5
     arcade.set_background_color(arcade.color.AMAZON)
 
+    # ensure normal scaling works correctly
+    gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
+    assert gold_1.scale == 1.0
+    assert gold_1.width, gold_1.height == (64, 64)
+
+    gold_1.scale = 2.0
+    assert gold_1.scale == 2.0
+    assert gold_1.width, gold_1.height == (128, 128)
+
+    gold_1.scale *= 0.25
+    assert gold_1.scale == 0.5
+    assert gold_1.width, gold_1.height == (32, 32)
+
+    # visual spot check
     character_list = arcade.SpriteList()
     character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
     character_sprite.center_x = 150
@@ -289,12 +303,42 @@ def test_sprite_scale_xy(window):
     sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
     assert sprite.scale == 1.0
     assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.width, sprite.height == (20, 20)
+
     sprite.scale = 2.0
     assert sprite.scale == 2.0
     assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width, sprite.height == (40, 40)
+
     sprite.scale_xy = 2.0, 4.0
     assert sprite.scale_xy == (2.0, 4.0)
     assert sprite.scale == 2.0
+    assert sprite.width, sprite.height == (40, 80)
+
+
+def test_sprite_scale_resets_mismatched_xy_settings(window):
+    sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+
+    # check if x dimension is properly reset
+    sprite.scale_xy = 3.0, 2.0
+    sprite.scale = 2.0
+    assert sprite.scale == 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width, sprite.height == (40, 40)
+
+    # check if y dimension is properly reset
+    sprite.scale_xy = 5.0, 3.0
+    sprite.scale = 5.0
+    assert sprite.scale == 5.0
+    assert sprite.scale_xy == (5.0, 5.0)
+    assert sprite.width, sprite.height == (100, 100)
+
+    # check if both dimensions properly reset
+    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 1.0
+    assert sprite.scale == 1.0
+    assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.width, sprite.height == (20, 20)
 
 
 def test_rescale_relative_to_point(window):
