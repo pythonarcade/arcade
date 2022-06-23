@@ -595,7 +595,10 @@ class Sprite:
     @property
     def scale(self) -> float:
         """
-        Get or set the x and y scale of the sprite.
+        Get the sprite's x scale value or set both x & y scale to the same value.
+
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite.
         """
         return self._scale[0]
 
@@ -618,7 +621,7 @@ class Sprite:
 
     @property
     def scale_xy(self) -> Point:
-        """Get the scale of the sprite."""
+        """Get or set the x & y scale of the sprite as a pair of values."""
         return self._scale
 
     @scale_xy.setter
@@ -639,7 +642,22 @@ class Sprite:
             sprite_list.update_size(self)
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
-        """Rescale the sprite relative to a different point than its center."""
+        """
+        Rescale the sprite and its distance from the passed point.
+
+        This function does two things:
+
+        1. Multiply the sprite's ``scale`` attribute by ``factor``
+        2. Scale the distance between the sprite  and  ``point`` by
+           ``factor``
+
+        If the passed point equals the sprite's initial center position,
+        the distance will be zero and the sprite will not move.
+
+        :param point: A point to rescale the sprite and distance around.
+        :param factor: A multipler to adjust scale and distance by.
+        :return:
+        """
         self.scale *= factor
         self.center_x = (self.center_x - point[0]) * factor + point[0]
         self.center_y = (self.center_y - point[1]) * factor + point[1]
