@@ -677,8 +677,8 @@ class Sprite:
         # be lazy about math; only do it if we have to
         if position_changed:
             self._position = (
-                    (self._position[0] - point[0]) * factor + point[0],
-                    (self._position[1] - point[1]) * factor + point[1]
+                (self._position[0] - point[0]) * factor + point[0],
+                (self._position[1] - point[1]) * factor + point[1]
             )
 
         # rebuild all spatial metadata
