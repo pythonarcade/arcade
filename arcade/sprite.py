@@ -647,9 +647,10 @@ class Sprite:
 
         This function does two things:
 
-        1. Multiply the sprite's ``scale`` attribute by ``factor``
-        2. Scale the distance between the sprite  and  ``point`` by
-           ``factor``
+        1. Multiply both values in the sprite's :py:attr:`~scale_xy`
+           value by ``factor``.
+        2. Scale the distance between the sprite and ``point`` by
+           ``factor``.
 
         If the passed point equals the sprite's initial center position,
         the distance will be zero and the sprite will not move.
