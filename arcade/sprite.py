@@ -672,6 +672,7 @@ class Sprite:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
 
+        # detect the edge case where distance to multiply is zero
         position_changed = point != self._position
 
         # be lazy about math; only do it if we have to
