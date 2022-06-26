@@ -418,7 +418,13 @@ def test_rescale_relative_to_point(window):
             center_x=x, center_y=y
         )
 
-    # sprite with same value for x & y scale works correctly
+    # case:
+    #  1. sprite initial scale_xy == (1.0, 1.0) / scale == 1.0
+    #  2. point is the origin in the lower left
+    #  3. factor == 3.31
+    # expected:
+    #  1. sprite is 3.31 times further away from origin to upper right
+    #  2. sprite is now 3.31 times larger
     sprite_1 = sprite_64x64_at_position(
         window_center_x + 50,
         window_center_y - 50
@@ -430,7 +436,13 @@ def test_rescale_relative_to_point(window):
     assert sprite_1.width == 64 * 3.31
     assert sprite_1.height == 64 * 3.31
 
-    # sprite with x scale > y scale works correctly
+    # case:
+    #  1. sprite is offset from center
+    #  2. initial scale_xy values are not equal
+    #  3. factor == 2.0
+    # result:
+    #  1. sprite distance doubled
+    #  2. sprite scale doubled
     sprite_2 = sprite_64x64_at_position(
         window_center_x + 10,
         window_center_y + 10
@@ -444,7 +456,13 @@ def test_rescale_relative_to_point(window):
     assert sprite_2.width == 256
     assert sprite_2.height == 128
 
-    # sprite with y scale > x scale works correctly
+    # case:
+    #  1. sprite is offset from center
+    #  2. initial scale_xy values are not equal
+    #  3. factor == 3.0
+    # result:
+    #  1. sprite distance tripled
+    #  2. sprite scale tripled
     sprite_3 = sprite_64x64_at_position(
         window_center_x - 10,
         window_center_y - 10
@@ -469,7 +487,7 @@ def test_rescale_relative_to_point(window):
     assert sprite_4.height == 128
 
     # edge case: point == sprite center, negative factor
-    # expected : sprite doesn't move, but scale, width, & height < 0
+    # expected : sprite doesn't move, but scale data doubled & negative
     sprite_5 = sprite_64x64_at_position(*window_center)
     sprite_5.rescale_relative_to_point(sprite_5.position, -2.0)
     assert sprite_5.scale == -2.0
@@ -508,14 +526,13 @@ def test_rescale_relative_to_point(window):
     # edge case: point != sprite center, negative factor
     # expected :
     #  1. sprite teleports to opposite side of point
-    #  2. sprite has negative versions of original width & height
+    #  2. sprite has negative versions of scale data
     sprite_8 = sprite_64x64_at_position(
         window_center_x - 81,
         window_center_y + 81
     )
     sprite_8.rescale_relative_to_point(window_center, -1.0)
     assert sprite_8.scale == -1.0
-    # note: these are on the opposite side of the point from original position
     assert sprite_8.center_x == window_center_x + 81
     assert sprite_8.center_y == window_center_y - 81
     assert sprite_8.width == -64
