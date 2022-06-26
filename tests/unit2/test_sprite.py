@@ -315,7 +315,7 @@ def test_sprite_scale_xy(window):
     assert sprite.width, sprite.height == (20, 20)
 
     # setting scale_xy to identical values in each channel works
-    sprite.scale = 2.0
+    sprite.scale_xy = 2.0, 2.0
     assert sprite.scale == 2.0
     assert sprite.scale_xy == (2.0, 2.0)
     assert sprite.width, sprite.height == (40, 40)
