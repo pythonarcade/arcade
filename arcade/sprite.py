@@ -653,7 +653,7 @@ class Sprite:
         2. Scale the distance between the sprite and ``point`` by
            ``factor``.
 
-        If the passed point equals the sprite's initial center position,
+        If ``point`` equals the sprite's :py:attr:`~position`,
         the distance will be zero and the sprite will not move.
 
         :param point: The reference point for rescaling.
@@ -699,23 +699,20 @@ class Sprite:
         """
         Rescale the sprite and its distance from the passed point.
 
-        Instead of scaling along x & y by the same amount, this function
-        lets you scale by different amounts along each axis.
-
-        You can choose to scale a sprite along a single axis if you set
-        the value of the other axis in ``factors_xy`` to ``1.0``. This
-        is very useful for indicator or progress bars. For an example of
-        how to do this, see the following example: :ref:`sprite_health`.
+        This method can scale by different amounts on each axis. To
+        scale along only one axis, set the other axis to ``1.0`` in
+        ``factors_xy``. See :ref:`sprite_health` for an example of how
+        to do this.
 
         Internally, this function does the following:
 
-        1. Multiply the x and y of the sprite's :py:attr:`~scale_xy`
+        1. Multiply the x & y of the sprite's :py:attr:`~scale_xy`
            attribute by the corresponding part from ``factors_xy``.
-        2. Scale the x & y parts of the difference between the sprite's
+        2. Scale the x & y of the difference between the sprite's
            position and ``point`` by the corresponding component from
-          ``factors_xy``.
+           ``factors_xy``.
 
-        If the passed point equals the sprite's initial center position,
+        If ``point`` equals the sprite's :py:attr:`~position`,
         the distance will be zero and the sprite will not move.
 
         :param point: The reference point for rescaling.
