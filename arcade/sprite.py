@@ -701,8 +701,7 @@ class Sprite:
 
         This method can scale by different amounts on each axis. To
         scale along only one axis, set the other axis to ``1.0`` in
-        ``factors_xy``. See :ref:`sprite_health` for an example of how
-        to do this.
+        ``factors_xy``.
 
         Internally, this function does the following:
 
