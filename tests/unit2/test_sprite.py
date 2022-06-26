@@ -493,13 +493,125 @@ def test_rescale_relative_to_point(window):
 
     # edge case: point != sprite center, factor == 1.0
     # expected : no movement or size change occurs
-    sprite_6 = sprite_64x64_at_position(
+    sprite_7 = sprite_64x64_at_position(
         window_center_x - 81,
         window_center_y + 81
     )
-    sprite_6.rescale_relative_to_point((50, 40), 1.0)
-    assert sprite_6.scale == 1.0
-    assert sprite_6.center_x == window_center_x - 81
-    assert sprite_6.center_y == window_center_y + 81
-    assert sprite_6.width == 64
-    assert sprite_6.height == 64
+    sprite_7.rescale_relative_to_point((50, 40), 1.0)
+    assert sprite_7.scale == 1.0
+    assert sprite_7.center_x == window_center_x - 81
+    assert sprite_7.center_y == window_center_y + 81
+    assert sprite_7.width == 64
+    assert sprite_7.height == 64
+
+    # edge case: point != sprite center, negative factor
+    # expected : sprite teleports and has negative width & height
+    sprite_8 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_8.rescale_relative_to_point((50, 40), -1.0)
+    assert sprite_8.scale == 1.0
+
+    # note: these are on the opposite side of the point from original position
+    assert sprite_8.center_x == window_center_x + 81
+    assert sprite_8.center_y == window_center_y - 81
+    assert sprite_8.width == 64
+    assert sprite_8.height == 64
+
+
+def test_rescale_xy_relative_to_point(window):
+    window_center = window.width // 2, window.height // 2
+    window_center_x, window_center_y = window_center
+
+    def sprite_64x64_at_position(x, y):
+        return arcade.Sprite(
+            ":resources:images/items/gold_1.png",
+            center_x=x, center_y=y
+        )
+
+    # sprite with initial _scale[0] == _scale[1] works with identical scale
+    sprite_1 = sprite_64x64_at_position(
+        window_center_x + 50,
+        window_center_y - 50
+    )
+    sprite_1.scale = 3.31
+    sprite_1.rescale_xy_relative_to_point((0, 0), (3.31, 3.31))
+    assert sprite_1.scale == 3.31
+    assert sprite_1.center_x == (window_center_x + 50) * 3.31
+    assert sprite_1.center_y == (window_center_y - 50) * 3.31
+    assert sprite_1.width == 64 * 3.31
+    assert sprite_1.height == 64 * 3.31
+
+    # sprite with x scale > y scale works correctly
+    sprite_2 = sprite_64x64_at_position(
+        window_center_x + 10,
+        window_center_y + 10
+    )
+    sprite_2.scale_xy = 2.0, 1.0
+    sprite_2.rescale_xy_relative_to_point(sprite_2.position, (2.0, 2.0))
+    assert sprite_2.scale_xy == 4.0, 2.0
+    assert sprite_2.center_x == window_center_x + 20
+    assert sprite_2.center_y == window_center_y + 20
+    assert sprite_2.width == 256
+    assert sprite_2.height == 128
+
+    # sprite with y scale > x scale works correctly
+    sprite_3 = sprite_64x64_at_position(
+        window_center_x - 10,
+        window_center_y - 10
+    )
+    sprite_3.scale_xy = 0.5, 1.5
+    sprite_3.rescale_xy_relative_to_point(sprite_2.position, (3.0, 3.0))
+    assert sprite_3.scale_xy == 1.5, 4.5
+    assert sprite_3.center_x == window_center_x - 30
+    assert sprite_3.center_y == window_center_y - 30
+    assert sprite_3.width == 96
+    assert sprite_3.height == 288
+
+    # edge case: point == sprite center, factor > 1
+    # expected: sprite does not move, but scale and dimensions change
+    sprite_4 = sprite_64x64_at_position(*window_center)
+    sprite_4.rescale_xy_relative_to_point(sprite_4.position, (2.0, 2.0))
+    assert sprite_4.scale == 2.0
+    assert sprite_4.center_x == window_center_x
+    assert sprite_4.center_y == window_center_y
+    assert sprite_4.width == 128
+    assert sprite_4.height == 128
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_5 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_5.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_5.scale == 1.0
+    assert sprite_5.center_x == window_center_x - 81
+    assert sprite_5.center_y == window_center_y + 81
+    assert sprite_5.width == 64
+    assert sprite_5.height == 64
+
+    # edge case: point == sprite center, negative factor
+    # expected : sprite doesn't move, but scale, width, & height < 0
+    sprite_6 = sprite_64x64_at_position(*window_center)
+    sprite_6.rescale_xy_relative_to_point(sprite_6.position, (-2.0, -2.0))
+    assert sprite_6.scale == -2.0
+    assert sprite_6.scale_xy == (-2.0, 2.0)
+    assert sprite_6.center_x == window_center_x
+    assert sprite_6.center_y == window_center_y
+    assert sprite_6.width == -128
+    assert sprite_6.height == -128
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_7 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_7.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_7.scale == 1.0
+    assert sprite_7.center_x == window_center_x - 81
+    assert sprite_7.center_y == window_center_y + 81
+    assert sprite_7.width == 64
+    assert sprite_7.height == 64

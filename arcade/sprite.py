@@ -16,6 +16,7 @@ import dataclasses
 from typing import (
     Any,
     Tuple,
+    Iterable,
     cast,
     Dict,
     List,
@@ -681,6 +682,71 @@ class Sprite:
             self._position = (
                 (self._position[0] - point[0]) * factor + point[0],
                 (self._position[1] - point[1]) * factor + point[1]
+            )
+
+        # rebuild all spatial metadata
+        self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_size(self)
+            if position_changed:
+                sprite_list.update_location(self)
+
+    def rescale_xy_relative_to_point(
+            self,
+            point: Point,
+            factors_xy: Iterable[float]
+    ) -> None:
+        """
+        Rescale the sprite and its distance from the passed point.
+
+        Instead of scaling along x & y by the same amount, this function
+        lets you scale by different amounts along each axis.
+
+        You can choose to scale a sprite along a single axis if you set
+        the value of the other axis in ``factors_xy`` to ``1.0``. This
+        is very useful for indicator or progress bars. For an example of
+        how to do this, see the following example: :ref:`sprite_health`.
+
+        Internally, this function does the following:
+
+        1. Multiply the x and y of the sprite's :py:attr:`~scale_xy`
+           attribute by the corresponding part from ``factors_xy``.
+        2. Scale the x & y parts of the difference between the sprite's
+           position and ``point`` by the corresponding component from
+          ``factors_xy``.
+
+        If the passed point equals the sprite's initial center position,
+        the distance will be zero and the sprite will not move.
+
+        :param point: The reference point for rescaling.
+        :param factors_xy: A 2-length iterable containing x and y
+                           multipliers for ``scale`` & distance to
+                           ``point``.
+        :return:
+        """
+        # exit early if nothing would change
+        factor_x, factor_y = factors_xy
+        if factor_x == 1.0 and factor_y == 1.0:
+            return
+
+        # clear spatial metadata both locally and in sprite lists
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+
+        # set the scale and, if this sprite has a texture, the size data
+        self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        # be lazy about math; only do it if we have to
+        position_changed = point != self._position
+
+        # be lazy about math; only do it if we have to
+        if position_changed:
+            self._position = (
+                (self._position[0] - point[0]) * factor_x + point[0],
+                (self._position[1] - point[1]) * factor_y + point[1]
             )
 
         # rebuild all spatial metadata
