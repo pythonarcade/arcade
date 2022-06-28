@@ -738,6 +738,7 @@ Concept Games
 
 .. figure:: https://raw.githubusercontent.com/pythonarcade/asteroids/main/screenshot.png
    :figwidth: 170px
+   :target: https://github.com/pythonarcade/asteroids
 
    `Asteroids with Shaders <https://github.com/pythonarcade/asteroids>`_
 
@@ -749,16 +750,19 @@ Concept Games
 
 .. figure:: thumbs/community-rpg.png
    :figwidth: 170px
+   :target: https://github.com/pythonarcade/community-rpg
 
    `Community RPG <https://github.com/pythonarcade/community-rpg>`_
 
 .. figure:: thumbs/2048.png
    :figwidth: 170px
+   :target: https://github.com/pvcraven/2048
 
    `2048 <https://github.com/pvcraven/2048>`_
 
 .. figure:: thumbs/rogue_like.png
    :figwidth: 170px
+   :target: https://github.com/pythonarcade/roguelike
 
    `Rogue-Like <https://github.com/pythonarcade/roguelike>`_
 
