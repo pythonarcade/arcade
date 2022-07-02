@@ -16,7 +16,7 @@ _max_history: int = 100
 
 def _dispatch_event(self, *args):
     """
-    Dispatch event function that will be monkey-patched over Pyglet's dispatch event function.
+    This function will be monkey-patched over Pyglet's dispatch event function.
     """
     # Name of the dispatched event, like 'on_draw'
     name = args[0]
@@ -52,13 +52,16 @@ def print_timings():
     """
     Print event handler statistics to stdout as a table.
 
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
+
     The statistics consist of:
 
     * how many times each registered event was called
     * the average time for handling each type of event in seconds
-
-    Performance tracking must be enabled with
-    :func:`arcade.enable_timings` before calling this function.
 
     The table looks something like:
 
@@ -87,14 +90,13 @@ def print_timings():
 
 def clear_timings() -> None:
     """
-    Reset all event handler statistics.
-
-    Resets the count and average time for each dispatch event type to
-    zero. :func:`arcade.enable_timings` must be called first to enable
-    tracking.
+    Reset the count & average time for each event type to zero.
 
     Performance tracking must be enabled with
     :func:`arcade.enable_timings` before calling this function.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
     """
     global _timings
     _timings = {}
@@ -117,8 +119,12 @@ def enable_timings(max_history: int = 100) -> None:
     """
     Enable recording of performance information.
 
-    This function must be called before usinng any other performance
-    features, except for :func:`arcade.timings_enabled`.
+    This function must be called before using any other performance
+    features, except for :func:`arcade.timings_enabled`, which can
+    be called at any time.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
 
     :param max_history: How many frames to keep performance info for.
     """
@@ -155,11 +161,14 @@ def get_fps(frame_count: int = 60) -> float:
     """
     Get the FPS over the last ``frame_count`` frames.
 
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
     To get the FPS over the last 30 frames, you would pass 30 instead
     of the default 60.
 
-    Performance tracking must be enabled with
-    :func:`arcade.enable_timings` before calling this function.
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
 
     :param int frame_count: How many frames to calculate the FPS over.
     """

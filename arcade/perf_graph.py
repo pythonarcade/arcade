@@ -10,12 +10,18 @@ class PerfGraph(arcade.Sprite):
     """
     An auto-updating line chart of FPS or event handler execution times.
 
-    It is a subclass of :class:`arcade.Sprite` and can be used with any
-    :class:`SpriteList <arcade.SpriteList>` like a regular sprite.
+    You must use :func:`arcade.enable_timings` to turn on performance
+    tracking for the chart to display data.
 
-    Unlike other :class:`Sprite <arcade.Sprite>` instances, it neither
-    loads an :class:`arcade.Texture` nor accepts one as a constructor
-    argument. Instead, it creates a new internal
+    Aside from instantiation and updating the chart, this class behaves
+    like other :class:`arcade.Sprite` instances. You can use it with
+    :class:`SpriteList <arcade.SpriteList>` normally. See
+    :ref:`performance_statistics_example` for an example of how to use
+    this class.
+
+    Unlike other :class:`Sprite <arcade.Sprite>` instances, this class
+    neither loads an :class:`arcade.Texture` nor accepts one as a
+    constructor argument. Instead, it creates a new internal
     :class:`Texture <arcade.Texture>` instance. The chart is
     automatically redrawn to this internal
     :class:`Texture <arcade.Texture>` every ``update_rate`` seconds.
@@ -74,9 +80,8 @@ class PerfGraph(arcade.Sprite):
         """
         Update the graph by redrawing the internal texture data.
 
-        .. warning:: You do not need to call this method!
-
-                     This function will be called automatically!
+        .. warning:: You do not need to call this method! It will be
+                     called automatically!
 
         :param delta_time: Elapsed time. Passed by the pyglet scheduler
         """
