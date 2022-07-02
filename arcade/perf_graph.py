@@ -58,7 +58,16 @@ class PerfGraph(arcade.Sprite):
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
 
     def remove_from_sprite_lists(self):
+        """
+        Remove the sprite from all lists and cancel the update event.
+
+        :return:
+        """
         super().remove_from_sprite_lists()
+
+        # It is very important to call this to prevent potential
+        # issues such as crashes or excess memory use from failed
+        # garbage collection.
         pyglet.clock.unschedule(self.update)
 
     def update_graph(self, delta_time: float):
