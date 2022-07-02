@@ -1,14 +1,17 @@
 """
-Performance Statistic Displays
+Performance Statistic Display Example
 
 This example demonstrates how to use a few performance profiling tools
 built into arcade:
 
-    * arcade.PerfGraph
-    * arcade.get_fps
+* arcade.enable_timings
+* arcade.PerfGraph
+* arcade.get_fps
+* arcade.print_timings
+* arcade.clear_timings
 
-A large number of sprites are drawn on screen to produce load. You can
-adjust the number of sprites by changing the COIN_COUNT constant below.
+A large number of sprites bounce around the screen to produce load. You
+can adjust the number of sprites by changing the COIN_COUNT constant.
 
 Artwork from https://kenney.nl
 
@@ -27,7 +30,7 @@ SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Arcade - Moving Sprite Stress Test"
+SCREEN_TITLE = "Performance Statistics Display Example"
 
 # Size of performance graphs and distance between them
 GRAPH_WIDTH = 200
@@ -36,6 +39,9 @@ GRAPH_MARGIN = 5
 
 COIN_COUNT = 1500
 
+
+# Turn on tracking for the number of event handler
+# calls and the average execution time of each type.
 arcade.enable_timings()
 
 
@@ -43,10 +49,13 @@ class Coin(arcade.Sprite):
     """ Our coin sprite class """
     def update(self):
         """ Update the sprite. """
-        # Updating the sprite this way is faster than x and y individually.
-        self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
+        # Setting the position is faster than setting x & y individually
+        self.position = (
+            self.position[0] + self.change_x,
+            self.position[1] + self.change_y
+        )
 
-        # Bounce the coin on the edge
+        # Bounce the coin on the edge of the window
         if self.position[0] < 0:
             self.change_x *= -1
         elif self.position[0] > SCREEN_WIDTH:
@@ -65,11 +74,11 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Variables that will hold sprite lists
+        # Variables to hold game objects and performance info
         self.coin_list: arcade.SpriteList = None
         self.perf_graph_list: arcade.SpriteList = None
-        self.frame_count: int = 0
         self.fps_text: arcade.Text = None
+        self.frame_count: int = 0  # for tracking the reset interval
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -82,8 +91,10 @@ class MyGame(arcade.Window):
             coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
-            coin.center_y = random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+            coin.position = (
+                random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE),
+                random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+            )
 
             coin.change_x = random.randrange(-3, 4)
             coin.change_y = random.randrange(-3, 4)
@@ -100,32 +111,34 @@ class MyGame(arcade.Window):
         # Create some coins
         self.add_coins(COIN_COUNT)
 
-        # Create a sprite list to put the performance graph into
+        # Create a sprite list to put the performance graphs into
         self.perf_graph_list = arcade.SpriteList()
 
-        # Create FPS text object
-        self.fps_text = arcade.Text(
-            f"FPS: {arcade.get_fps(60):5.1f}",
-            10, 10, arcade.color.BLACK, 22
-        )
+        # Calculate position helpers for the row of 3 performance graphs
+        row_y = self.height - GRAPH_HEIGHT / 2
+        starting_x = GRAPH_WIDTH / 2
+        step_x = GRAPH_WIDTH + GRAPH_MARGIN
 
         # Create the FPS performance graph
         graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="FPS")
-        graph.center_x = GRAPH_WIDTH / 2
-        graph.center_y = self.height - GRAPH_HEIGHT / 2
+        graph.position = starting_x, row_y
         self.perf_graph_list.append(graph)
 
         # Create the on_update graph
         graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="update")
-        graph.center_x = GRAPH_WIDTH / 2 + (GRAPH_WIDTH + GRAPH_MARGIN)
-        graph.center_y = self.height - GRAPH_HEIGHT / 2
+        graph.position = starting_x + step_x, row_y
         self.perf_graph_list.append(graph)
 
         # Create the on_draw graph
         graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="on_draw")
-        graph.center_x = GRAPH_WIDTH / 2 + (GRAPH_WIDTH + GRAPH_MARGIN) * 2
-        graph.center_y = self.height - GRAPH_HEIGHT / 2
+        graph.position = starting_x + step_x * 2, row_y
         self.perf_graph_list.append(graph)
+
+        # Create a Text object to show the current FPS
+        self.fps_text = arcade.Text(
+            f"FPS: {arcade.get_fps(60):5.1f}",
+            10, 10, arcade.color.BLACK, 22
+        )
 
     def on_draw(self):
         """ Draw everything """
@@ -133,7 +146,7 @@ class MyGame(arcade.Window):
         # Clear the screen
         self.clear()
 
-        # Draw all the sprites
+        # Draw all the coin sprites
         self.coin_list.draw()
 
         # Draw the graphs
