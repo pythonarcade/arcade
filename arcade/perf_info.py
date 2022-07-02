@@ -57,6 +57,9 @@ def print_timings():
     * how many times each registered event was called
     * the average time for handling each type of event in seconds
 
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
     The table looks something like:
 
     .. code-block:: text
@@ -89,6 +92,9 @@ def clear_timings() -> None:
     Resets the count and average time for each dispatch event type to
     zero. :func:`arcade.enable_timings` must be called first to enable
     tracking.
+
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
     """
     global _timings
     _timings = {}
@@ -98,7 +104,11 @@ def get_timings() -> Dict:
     """
     Get a dict of the current dispatch event timings.
 
-    :return: A dict of event timing data
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    :return: A dict of event timing data, consisting of counts and
+             average handler duration.
     """
     return _timings
 
@@ -107,8 +117,8 @@ def enable_timings(max_history: int = 100) -> None:
     """
     Enable recording of performance information.
 
-    This function must be called before any other performance
-    features are used.
+    This function must be called before usinng any other performance
+    features, except for :func:`arcade.timings_enabled`.
 
     :param max_history: How many frames to keep performance info for.
     """
@@ -126,8 +136,8 @@ def disable_timings() -> None:
     """
     Disable collection of timing information.
 
-    :func:`arcade.enable_timings` must be called first to enable
-    collection.
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
     """
     global _pyglets_dispatch_event
 
@@ -148,8 +158,8 @@ def get_fps(frame_count: int = 60) -> float:
     To get the FPS over the last 30 frames, you would pass 30 instead
     of the default 60.
 
-    :func:`arcade.enable_timings` must be called before getting the
-    FPS.
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
 
     :param int frame_count: How many frames to calculate the FPS over.
     """
@@ -169,7 +179,8 @@ def timings_enabled() -> bool:
     """
     Return true if timings are enabled, false otherwise.
 
-    See :func:`arcade.enable_timings` for more information.
+    This function can be used at any time to check if timings are
+    enabled. See :func:`arcade.enable_timings` for more information.
 
     :return: Whether timings are currently enabled.
     """
