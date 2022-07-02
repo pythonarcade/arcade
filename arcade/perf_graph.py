@@ -1,24 +1,45 @@
 from typing import List
 
 import arcade
+from arcade import Color
 import random
 import pyglet.clock
 
 
 class PerfGraph(arcade.Sprite):
     """
-    Create a graph showing performance statistics.
+    An auto-updating line chart of FPS or event handler execution times.
+
+    It is a subclass of :class:`arcade.Sprite` and can be used with any
+    :class:`SpriteList <arcade.SpriteList>` like a regular sprite.
+
+    Unlike other :class:`Sprite <arcade.Sprite>` instances, it neither
+    loads an :class:`arcade.Texture` nor accepts one as a constructor
+    argument. Instead, it creates a new internal
+    :class:`Texture <arcade.Texture>` instance. The chart is
+    automatically redrawn to this internal
+    :class:`Texture <arcade.Texture>` every ``update_rate`` seconds.
+
+    :param width: The width of the chart texture in pixels
+    :param height: The height of the chart texture in pixels
+    :param graph_data: The pyglet event handler or statistic to track
+    :param update_rate: How often the graph updates, in seconds
+    :param background_color: The background color of the chart
+    :param data_line_color: Color of the line tracking drawn
+    :param axis_color: The color to draw the x & y axes in
+    :param font_color: The color of the label font
+    :param font_size: The size of the label font in points
     """
     def __init__(self,
-                 width, height,
+                 width: int, height: int,
                  graph_data: str = "FPS",
                  update_rate: float = 0.1,
-                 background_color=arcade.color.BLACK,
-                 data_line_color=arcade.color.WHITE,
-                 axis_color=arcade.color.DARK_YELLOW,
-                 grid_color=arcade.color.DARK_YELLOW,
-                 font_color=arcade.color.WHITE,
-                 font_size=10):
+                 background_color: Color = arcade.color.BLACK,
+                 data_line_color: Color = arcade.color.WHITE,
+                 axis_color: Color = arcade.color.DARK_YELLOW,
+                 grid_color: Color = arcade.color.DARK_YELLOW,
+                 font_color: Color = arcade.color.WHITE,
+                 font_size: int = 10):
 
         unique_id = str(random.random())
 
@@ -42,7 +63,13 @@ class PerfGraph(arcade.Sprite):
 
     def update_graph(self, delta_time: float):
         """
-        Update the graph.
+        Update the graph by redrawing the internal texture data.
+
+        .. warning:: You do not need to call this method!
+
+                     This function will be called automatically!
+
+        :param delta_time: Elapsed time. Passed by the pyglet scheduler
         """
         bottom_y = 15
         left_x = 25
