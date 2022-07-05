@@ -5,7 +5,7 @@ from typing import Tuple
 def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Get the distance between two points.
-    
+
     :param float x1: x coordinate of the first point
     :param float y1: y coordinate of the first point
     :param float x2: x coordinate of the second point
