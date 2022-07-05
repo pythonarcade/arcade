@@ -70,10 +70,22 @@ class PerfGraph(arcade.Sprite):
         self.left_x = 25
         self.bottom_y = 15
 
+        # set up internal Text object caches
         self.vertical_axis_text_objects = []
-        arcade.Text("0", self.left_x, self.bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")
+        self.all_text_objects = []
 
+        self.vertical_axis_text_objects.append(
+            arcade.Text("0", self.left_x, self.bottom_y,
+                        self.font_color, self.font_size,
+                        anchor_x="right", anchor_y="center"))
 
+        self.bottom_label = arcade.Text(
+            graph_data, 0, 2, self.font_color, self.font_size, align="center", width=int(width))
+
+        self.all_text_objects.extend(self.vertical_axis_text_objects)
+        self.all_text_objects.append(self.bottom_label)
+
+        # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
 
     def remove_from_sprite_lists(self):
@@ -159,22 +171,21 @@ class PerfGraph(arcade.Sprite):
             # Draw left axis
             arcade.draw_line(left_x, bottom_y, self.width, bottom_y, self.axis_color)
 
-            # Draw number labels
-            arcade.draw_text("0", left_x, bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")  # noqa
+            # Draw cached labels
+            for text in self.all_text_objects:
+                text.draw()
 
+            # Draw uncached labels
             increment = self.max_data // 4
             for i in range(1, 4):
                 value = increment * i
                 label = f"{int(value)}"
+
                 # next line equivalent to: ( value / self.max_data ) * max_pixels + bottom_y
                 y = value * y_scaling_factor + bottom_y
                 arcade.draw_text(label, left_x, y, self.font_color, self.font_size, anchor_x="right",
                                  anchor_y="center")
                 arcade.draw_line(left_x, y, self.width, y, self.grid_color)
-
-            # Draw label
-            arcade.draw_text(self.graph_data, 0, 2, self.font_color, self.font_size, align="center",
-                             width=int(self.width))
 
             # Draw graph
             arcade.draw_line_strip(point_list, self.line_color)
