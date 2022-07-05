@@ -35,6 +35,9 @@ class PerfGraph(arcade.Sprite):
     :param axis_color: The color to draw the x & y axes in
     :param font_color: The color of the label font
     :param font_size: The size of the label font in points
+    :param y_axis_data_step: The amount the maximum Y value of the graph
+                             view will shrink or grow by to fit to the
+                             data currently displayed.
     """
     def __init__(self,
                  width: int, height: int,
@@ -45,7 +48,9 @@ class PerfGraph(arcade.Sprite):
                  axis_color: Color = arcade.color.DARK_YELLOW,
                  grid_color: Color = arcade.color.DARK_YELLOW,
                  font_color: Color = arcade.color.WHITE,
-                 font_size: int = 10):
+                 font_size: int = 10,
+                 y_axis_data_step: float = 20.0,
+        ):
 
         unique_id = str(random.random())
 
@@ -61,6 +66,14 @@ class PerfGraph(arcade.Sprite):
         self.max_data = 0.0
         self.font_color = font_color
         self.font_size = font_size
+        self.y_axis_data_step = y_axis_data_step
+        self.left_x = 25
+        self.bottom_y = 15
+
+        self.vertical_axis_text_objects = []
+        arcade.Text("0", self.left_x, self.bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")
+
+
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
 
     def remove_from_sprite_lists(self):
@@ -88,8 +101,9 @@ class PerfGraph(arcade.Sprite):
 
         # Using locals for frequently used values is faster than
         # looking up instance variables repeatedly.
-        bottom_y = 15
-        left_x = 25
+        bottom_y = self.bottom_y
+        left_x = self.left_x
+        y_axis_data_step = self.y_axis_data_step
 
         # Get the sprite list this is part of, return if none
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
@@ -119,9 +133,9 @@ class PerfGraph(arcade.Sprite):
         while len(self.data_to_graph) > self.width - left_x:
             self.data_to_graph.pop(0)
 
-        # Set max data
+        # Calculate the value at the top of the chart
         max_value = max(self.data_to_graph)
-        self.max_data = ((max_value + 1.5) // 20 + 1) * 20.0
+        self.max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
