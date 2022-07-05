@@ -143,7 +143,7 @@ class PerfGraph(arcade.Sprite):
             # Draw number labels
             arcade.draw_text("0", left_x, bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")  # noqa
             increment = self.max_data // 4
-            for i in range(4):
+            for i in range(1, 4):
                 value = increment * i
                 label = f"{int(value)}"
                 y = (value / self.max_data) * max_pixels + bottom_y
