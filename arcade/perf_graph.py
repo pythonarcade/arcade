@@ -137,16 +137,18 @@ class PerfGraph(arcade.Sprite):
         max_value = max(self.data_to_graph)
         self.max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
+        # Calculate draw positions of pixels on the chart
+        max_pixels = self.height - bottom_y
+        point_list = []
+        x = left_x
+        for reading in self.data_to_graph:
+            y = (reading / self.max_data) * max_pixels + bottom_y
+            point_list.append((x, y))
+            x += 1
+
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
-            max_pixels = self.height - bottom_y
-            point_list = []
-            x = left_x
-            for reading in self.data_to_graph:
-                y = (reading / self.max_data) * max_pixels + bottom_y
-                point_list.append((x, y))
-                x += 1
 
             # Draw the base line
             arcade.draw_line(left_x, bottom_y, left_x, self.height, self.axis_color)
