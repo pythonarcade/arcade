@@ -85,6 +85,9 @@ class PerfGraph(arcade.Sprite):
 
         :param delta_time: Elapsed time. Passed by the pyglet scheduler
         """
+
+        # Using locals for frequently used values is faster than
+        # looking up instance variables repeatedly.
         bottom_y = 15
         left_x = 25
 
