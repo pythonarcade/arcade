@@ -146,6 +146,9 @@ class PerfGraph(arcade.Sprite):
             point_list.append((x, y))
             x += 1
 
+        # This is an invariant, no need to recalculate it each update
+        y_scaling_factor = max_pixels / self.max_data
+
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
@@ -158,11 +161,13 @@ class PerfGraph(arcade.Sprite):
 
             # Draw number labels
             arcade.draw_text("0", left_x, bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")  # noqa
+
             increment = self.max_data // 4
             for i in range(1, 4):
                 value = increment * i
                 label = f"{int(value)}"
-                y = (value / self.max_data) * max_pixels + bottom_y
+                # next line equivalent to: ( value / self.max_data ) * max_pixels + bottom_y
+                y = value * y_scaling_factor + bottom_y
                 arcade.draw_text(label, left_x, y, self.font_color, self.font_size, anchor_x="right",
                                  anchor_y="center")
                 arcade.draw_line(left_x, y, self.width, y, self.grid_color)
