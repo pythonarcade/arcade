@@ -64,8 +64,8 @@ class PerfGraph(arcade.Sprite):
         self.axis_color = axis_color
         self.graph_data = graph_data
         self.max_data = 0.0
-        self.font_color = font_color
-        self.font_size = font_size
+        self._font_color = font_color
+        self._font_size = font_size
         self.y_axis_data_step = y_axis_data_step
         self.left_x = 25
         self.bottom_y = 15
@@ -76,17 +76,37 @@ class PerfGraph(arcade.Sprite):
 
         self.vertical_axis_text_objects.append(
             arcade.Text("0", self.left_x, self.bottom_y,
-                        self.font_color, self.font_size,
+                        self._font_color, self._font_size,
                         anchor_x="right", anchor_y="center"))
 
         self.bottom_label = arcade.Text(
-            graph_data, 0, 2, self.font_color, self.font_size, align="center", width=int(width))
+            graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width))
 
         self.all_text_objects.extend(self.vertical_axis_text_objects)
         self.all_text_objects.append(self.bottom_label)
 
         # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
+
+    @property
+    def font_size(self) -> int:
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, new: int):
+        self._font_size = new
+        for text in self.all_text_objects:
+            text.font_size = new
+
+    @property
+    def font_color(self) -> Color:
+        return self._font_color
+
+    @font_color.setter
+    def font_color(self, new: Color):
+        self._font_color = new
+        for text in self.all_text_objects:
+            text.color = new
 
     def remove_from_sprite_lists(self):
         """
@@ -183,7 +203,7 @@ class PerfGraph(arcade.Sprite):
 
                 # next line equivalent to: ( value / self.max_data ) * max_pixels + bottom_y
                 y = value * y_scaling_factor + bottom_y
-                arcade.draw_text(label, left_x, y, self.font_color, self.font_size, anchor_x="right",
+                arcade.draw_text(label, left_x, y, self._font_color, self._font_size, anchor_x="right",
                                  anchor_y="center")
                 arcade.draw_line(left_x, y, self.width, y, self.grid_color)
 
