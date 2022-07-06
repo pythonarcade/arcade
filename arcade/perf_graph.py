@@ -178,8 +178,9 @@ class PerfGraph(arcade.Sprite):
             point_list.append((x, y))
             x += 1
 
-        # This is an invariant, no need to recalculate it each update
-        y_scaling_factor = max_pixels / self.max_data
+        # These are invariants, no need to recalculate them each update
+        value_increment = self.max_data // 4
+        y_increment = max_pixels / 4
 
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
@@ -196,16 +197,16 @@ class PerfGraph(arcade.Sprite):
                 text.draw()
 
             # Draw uncached labels
-            increment = self.max_data // 4
-            for i in range(1, 4):
-                value = increment * i
+            y = bottom_y
+            for i in range(4):
+                value = value_increment * i
                 label = f"{int(value)}"
 
-                # next line equivalent to: ( value / self.max_data ) * max_pixels + bottom_y
-                y = value * y_scaling_factor + bottom_y
                 arcade.draw_text(label, left_x, y, self._font_color, self._font_size, anchor_x="right",
                                  anchor_y="center")
                 arcade.draw_line(left_x, y, self.width, y, self.grid_color)
+
+                y += y_increment
 
             # Draw graph
             arcade.draw_line_strip(point_list, self.line_color)
