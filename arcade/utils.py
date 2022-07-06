@@ -16,6 +16,17 @@ def lerp_vec(v1: Vector, v2: Vector, u: float) -> Vector:
     )
 
 
+def lerp_angle(start_angle: float, end_angle: float, u: float):
+    """Linearly interpolate between two angles in degrees, following the shortest path."""
+    while start_angle - end_angle > 180:
+        end_angle += 360
+
+    while start_angle - end_angle < -180:
+        end_angle -= 360
+
+    return arcade.lerp(start_angle, end_angle, u) % 360
+
+
 def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
     return (
         random.uniform(bottom_left[0], bottom_left[0] + width),
