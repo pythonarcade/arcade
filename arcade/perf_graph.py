@@ -69,21 +69,30 @@ class PerfGraph(arcade.Sprite):
         self.y_axis_data_step = y_axis_data_step
         self.left_x = 25
         self.bottom_y = 15
+        self.max_pixels = self.height - self.bottom_y
+        self._num_subdivisions = 4
+
+        value_increment = self.max_data // self._num_subdivisions
+        y_increment = self.max_pixels / self._num_subdivisions
 
         # set up internal Text object caches
         self.vertical_axis_text_objects = []
         self.all_text_objects = []
 
-        self.vertical_axis_text_objects.append(
-            arcade.Text("0", self.left_x, self.bottom_y,
-                        self._font_color, self._font_size,
-                        anchor_x="right", anchor_y="center"))
-
+        # Create the bottom label text object
         self.bottom_label = arcade.Text(
             graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width))
-
-        self.all_text_objects.extend(self.vertical_axis_text_objects)
         self.all_text_objects.append(self.bottom_label)
+
+        # Create the Y axis text objects
+        for i in range(self._num_subdivisions):
+            self.vertical_axis_text_objects.append(
+                arcade.Text(
+                    f"{int(value_increment * i)}",
+                    self.left_x, self.bottom_y + y_increment * i,
+                    self._font_color, self._font_size,
+                    anchor_x="right", anchor_y="center"))
+        self.all_text_objects.extend(self.vertical_axis_text_objects)
 
         # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
@@ -136,6 +145,7 @@ class PerfGraph(arcade.Sprite):
         bottom_y = self.bottom_y
         left_x = self.left_x
         y_axis_data_step = self.y_axis_data_step
+        vertical_axis_text_objects = self.vertical_axis_text_objects
 
         # Get the sprite list this is part of, return if none
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
@@ -158,6 +168,7 @@ class PerfGraph(arcade.Sprite):
                 avg_timing = sum(timing_list) / len(timing_list)
                 self.data_to_graph.append(avg_timing * 1000)
 
+        # Skip update if there is no data to graph
         if len(self.data_to_graph) == 0:
             return
 
@@ -167,20 +178,24 @@ class PerfGraph(arcade.Sprite):
 
         # Calculate the value at the top of the chart
         max_value = max(self.data_to_graph)
-        self.max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
+        max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
         # Calculate draw positions of pixels on the chart
         max_pixels = self.height - bottom_y
         point_list = []
         x = left_x
         for reading in self.data_to_graph:
-            y = (reading / self.max_data) * max_pixels + bottom_y
+            y = (reading / max_data) * max_pixels + bottom_y
             point_list.append((x, y))
             x += 1
 
-        # These are invariants, no need to recalculate them each update
-        value_increment = self.max_data // 4
-        y_increment = max_pixels / 4
+        # Update the Y axis scale & labels if needed
+        if max_data != self.max_data:
+            self.max_data = max_data
+            value_increment = self.max_data // 4
+            for index in range(1, len(vertical_axis_text_objects)):
+                text_object = vertical_axis_text_objects[index]
+                text_object.text = f"{int(index * value_increment)}"
 
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
@@ -192,21 +207,15 @@ class PerfGraph(arcade.Sprite):
             # Draw left axis
             arcade.draw_line(left_x, bottom_y, self.width, bottom_y, self.axis_color)
 
-            # Draw cached labels
-            for text in self.all_text_objects:
+            # Draw lines & their labels
+            for text in vertical_axis_text_objects:
+                grid_line_y = text.y
+                arcade.draw_line(
+                    left_x, grid_line_y,
+                    self.width, grid_line_y,
+                    self.grid_color)
                 text.draw()
-
-            # Draw uncached labels
-            y = bottom_y
-            for i in range(4):
-                value = value_increment * i
-                label = f"{int(value)}"
-
-                arcade.draw_text(label, left_x, y, self._font_color, self._font_size, anchor_x="right",
-                                 anchor_y="center")
-                arcade.draw_line(left_x, y, self.width, y, self.grid_color)
-
-                y += y_increment
+            self.bottom_label.draw()
 
             # Draw graph
             arcade.draw_line_strip(point_list, self.line_color)
