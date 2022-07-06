@@ -24,7 +24,7 @@ def lerp_angle(start_angle: float, end_angle: float, u: float):
     while start_angle - end_angle < -180:
         end_angle -= 360
 
-    return arcade.lerp(start_angle, end_angle, u) % 360
+    return lerp(start_angle, end_angle, u) % 360
 
 
 def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
