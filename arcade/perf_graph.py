@@ -150,7 +150,7 @@ class PerfGraph(arcade.Sprite):
         # Using self's dimensions will interfere with both rendering
         # and data update when the sprite is scaled up, so we need to
         # use the original texture size instead.
-        texture_width, texture_height = self._texture.size
+        texture_width, texture_height = self._texture.size  # type: ignore
 
         # Get the sprite list this is part of, return if none
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
