@@ -39,18 +39,19 @@ class PerfGraph(arcade.Sprite):
                              view will shrink or grow by to fit to the
                              data currently displayed.
     """
-    def __init__(self,
-                 width: int, height: int,
-                 graph_data: str = "FPS",
-                 update_rate: float = 0.1,
-                 background_color: Color = arcade.color.BLACK,
-                 data_line_color: Color = arcade.color.WHITE,
-                 axis_color: Color = arcade.color.DARK_YELLOW,
-                 grid_color: Color = arcade.color.DARK_YELLOW,
-                 font_color: Color = arcade.color.WHITE,
-                 font_size: int = 10,
-                 y_axis_data_step: float = 20.0,
-        ):
+    def __init__(
+            self,
+            width: int, height: int,
+            graph_data: str = "FPS",
+            update_rate: float = 0.1,
+            background_color: Color = arcade.color.BLACK,
+            data_line_color: Color = arcade.color.WHITE,
+            axis_color: Color = arcade.color.DARK_YELLOW,
+            grid_color: Color = arcade.color.DARK_YELLOW,
+            font_color: Color = arcade.color.WHITE,
+            font_size: int = 10,
+            y_axis_data_step: float = 20.0,
+    ):
 
         unique_id = str(random.random())
 
