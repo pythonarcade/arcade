@@ -596,7 +596,7 @@ class TextureAtlas:
     def render_into(
         self, texture: "Texture",
         projection: Tuple[float, float, float, float] = None,
-    ) -> Framebuffer:
+    ):
         """
         Render directly into a sub-section of the atlas.
         The sub-section is defined by the already allocated space
