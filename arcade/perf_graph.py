@@ -76,23 +76,47 @@ class PerfGraph(arcade.Sprite):
         value_increment = self.max_data // self._num_subdivisions
         y_increment = self.max_pixels / self._num_subdivisions
 
-        # set up internal Text object caches
+        # set up internal Text object & line caches
         self.vertical_axis_text_objects = []
         self.all_text_objects = []
+        self.line_objects = arcade.ShapeElementList()
+
+
 
         # Create the bottom label text object
         self.bottom_label = arcade.Text(
             graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width))
         self.all_text_objects.append(self.bottom_label)
 
-        # Create the Y axis text objects
+        # Create the axes
+        self.line_objects.append((
+            arcade.create_line(  # Y axis
+                self.left_x, self.bottom_y,
+                self.left_x, height,
+                axis_color)))
+        self.line_objects.append((
+            arcade.create_line(  # X axis
+                self.left_x, self.bottom_y,
+                width, self.bottom_y,
+                self.axis_color
+            )))
+
+        # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
+            y_level = self.bottom_y + y_increment * i
             self.vertical_axis_text_objects.append(
                 arcade.Text(
                     f"{int(value_increment * i)}",
-                    self.left_x, self.bottom_y + y_increment * i,
+                    self.left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
+            self.line_objects.append(
+                arcade.create_line(
+                    self.left_x, y_level,
+                    width, y_level,
+                    self.grid_color
+                )
+            )
         self.all_text_objects.extend(self.vertical_axis_text_objects)
 
         # Enable auto-update
@@ -206,22 +230,10 @@ class PerfGraph(arcade.Sprite):
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
 
-            # Draw the base line
-            arcade.draw_line(left_x, bottom_y, left_x, texture_height, self.axis_color)
-
-            # Draw left axis
-            arcade.draw_line(left_x, bottom_y, texture_width, bottom_y, self.axis_color)
-
             # Draw lines & their labels
-            for text in vertical_axis_text_objects:
-                grid_line_y = text.y
-                arcade.draw_line(
-                    left_x, grid_line_y,
-                    texture_width, grid_line_y,
-                    self.grid_color
-                )
+            for text in self.all_text_objects:
                 text.draw()
-            self.bottom_label.draw()
+            self.line_objects.draw()
 
             # Draw graph
             arcade.draw_line_strip(point_list, self.line_color)
