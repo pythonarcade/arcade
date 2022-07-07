@@ -79,13 +79,13 @@ class PerfGraph(arcade.Sprite):
         # set up internal Text object & line caches
         self.vertical_axis_text_objects = []
         self.all_text_objects = []
-        self.line_objects = arcade.ShapeElementList()
-
-
+        self.line_objects: arcade.ShapeElementList = arcade.ShapeElementList()
 
         # Create the bottom label text object
         self.bottom_label = arcade.Text(
-            graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width))
+            graph_data, 0, 2, self._font_color,
+            self._font_size, align="center", width=int(width)
+        )
         self.all_text_objects.append(self.bottom_label)
 
         # Create the axes
