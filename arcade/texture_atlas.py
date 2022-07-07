@@ -593,10 +593,7 @@ class TextureAtlas:
         self._uv_texture.use(unit)
 
     @contextmanager
-    def render_into(
-        self, texture: "Texture",
-        projection: Tuple[float, float, float, float] = None,
-    ):
+    def render_into(self, texture: "Texture", projection: Tuple[float, float, float, float] = None):
         """
         Render directly into a sub-section of the atlas.
         The sub-section is defined by the already allocated space
