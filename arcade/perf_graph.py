@@ -147,6 +147,10 @@ class PerfGraph(arcade.Sprite):
         left_x = self.left_x
         y_axis_data_step = self.y_axis_data_step
         vertical_axis_text_objects = self.vertical_axis_text_objects
+        # Using self's dimensions will interfere with both rendering
+        # and data update when the sprite is scaled up, so we need to
+        # use the original texture size instead.
+        texture_width, texture_height = self._texture.size
 
         # Get the sprite list this is part of, return if none
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
@@ -174,7 +178,7 @@ class PerfGraph(arcade.Sprite):
             return
 
         # Toss old data
-        while len(self.data_to_graph) > self.width - left_x:
+        while len(self.data_to_graph) > texture_width - left_x:
             self.data_to_graph.pop(0)
 
         # Calculate the value at the top of the chart
@@ -182,7 +186,7 @@ class PerfGraph(arcade.Sprite):
         max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
         # Calculate draw positions of pixels on the chart
-        max_pixels = self.height - bottom_y
+        max_pixels = texture_height - bottom_y
         point_list = []
         x = left_x
         for reading in self.data_to_graph:
@@ -203,18 +207,19 @@ class PerfGraph(arcade.Sprite):
             fbo.clear(self.background_color)
 
             # Draw the base line
-            arcade.draw_line(left_x, bottom_y, left_x, self.height, self.axis_color)
+            arcade.draw_line(left_x, bottom_y, left_x, texture_height, self.axis_color)
 
             # Draw left axis
-            arcade.draw_line(left_x, bottom_y, self.width, bottom_y, self.axis_color)
+            arcade.draw_line(left_x, bottom_y, texture_width, bottom_y, self.axis_color)
 
             # Draw lines & their labels
             for text in vertical_axis_text_objects:
                 grid_line_y = text.y
                 arcade.draw_line(
                     left_x, grid_line_y,
-                    self.width, grid_line_y,
-                    self.grid_color)
+                    texture_width, grid_line_y,
+                    self.grid_color
+                )
                 text.draw()
             self.bottom_label.draw()
 
