@@ -18,7 +18,7 @@ def make_named_sprites(amount):
     return spritelist
 
 
-def test_it_can_extend_a_spritelist():
+def test_it_can_extend_a_spritelist_from_a_list():
     spritelist = arcade.SpriteList()
     sprites = []
     for i in range(10):
@@ -27,6 +27,15 @@ def test_it_can_extend_a_spritelist():
     spritelist.extend(sprites)
 
     assert len(spritelist) == 10
+
+
+def test_it_can_extend_a_spritelist_from_a_generator():
+    sprite_list = arcade.SpriteList()
+    sprite_list.extend(
+        (arcade.Sprite(center_x=coord, center_y=coord) for coord in range(5))
+    )
+    for coord, sprite in enumerate(sprite_list):
+        assert sprite.position == (coord, coord)
 
 
 def test_it_can_insert_in_a_spritelist():
