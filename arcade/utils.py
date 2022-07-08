@@ -18,6 +18,9 @@ def lerp_vec(v1: Vector, v2: Vector, u: float) -> Vector:
 
 def lerp_angle(start_angle: float, end_angle: float, u: float):
     """Linearly interpolate between two angles in degrees, following the shortest path."""
+    start_angle %= 360
+    end_angle %= 360
+
     while start_angle - end_angle > 180:
         end_angle += 360
 

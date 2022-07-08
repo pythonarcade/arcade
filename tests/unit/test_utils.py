@@ -46,6 +46,7 @@ def test_lerp_angle_equal():
 
 def test_lerp_angle_effectively_equal():
     assert arcade.lerp_angle(50, 50 + 360, 0.5) == 50
+    assert arcade.lerp_angle(50 - 360, 50, 0.5) == 50
 
 
 def test_rand_in_rect():
