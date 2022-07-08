@@ -126,6 +126,7 @@ from .earclip_module import earclip
 
 from .utils import lerp
 from .utils import lerp_vec
+from .utils import lerp_angle
 from .utils import rand_angle_360_deg
 from .utils import rand_angle_spread_deg
 from .utils import rand_in_circle

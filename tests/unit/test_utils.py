@@ -24,6 +24,31 @@ def test_lerp_vec():
     assert vec[1] == approx(1.5)
 
 
+def test_lerp_angle_normal():
+    assert arcade.lerp_angle(0, 90, 0.5) == 45
+
+
+def test_lerp_angle_backwards():
+    assert arcade.lerp_angle(90, 0, 0.5) == 45
+
+
+def test_lerp_angle_loop_around():
+    assert arcade.lerp_angle(355, 15, 0.5) == 5
+
+
+def test_lerp_angle_loop_around_backwards():
+    assert arcade.lerp_angle(10, 350, 0.5) == 0
+
+
+def test_lerp_angle_equal():
+    assert arcade.lerp_angle(50, 50, 0.5) == 50
+
+
+def test_lerp_angle_effectively_equal():
+    assert arcade.lerp_angle(50, 50 + 360, 0.5) == 50
+    assert arcade.lerp_angle(50 - 360, 50, 0.5) == 50
+
+
 def test_rand_in_rect():
     """Smoke test"""
     arcade.rand_in_rect((10.0, 20.0), 30.5, 5.1)
