@@ -57,7 +57,7 @@ class PerfGraph(arcade.Sprite):
 
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(texture=self.minimap_texture)
-        self.background_color = background_color
+        self._background_color = arcade.get_four_byte_color(background_color)
         self.line_color = data_line_color
         self.grid_color = grid_color
         self.data_to_graph: List[float] = []
@@ -121,6 +121,14 @@ class PerfGraph(arcade.Sprite):
 
         # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
+
+    @property
+    def background_color(self) -> Color:
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, new_color):
+        self._background_color = arcade.get_four_byte_color(new_color)
 
     @property
     def font_size(self) -> int:
