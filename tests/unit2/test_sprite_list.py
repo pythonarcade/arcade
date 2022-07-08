@@ -29,13 +29,32 @@ def test_it_can_extend_a_spritelist_from_a_list():
     assert len(spritelist) == 10
 
 
-def test_it_can_extend_a_spritelist_from_a_generator():
+def test_it_can_extend_a_spritelist_from_a_generator_expression():
     sprite_list = arcade.SpriteList()
     sprite_list.extend(
         (arcade.Sprite(center_x=coord, center_y=coord) for coord in range(5))
     )
     for coord, sprite in enumerate(sprite_list):
         assert sprite.position == (coord, coord)
+
+
+def test_it_can_extend_a_spritelist_from_a_generator_function():
+    sprite_list = arcade.SpriteList()
+
+    def sprite_grid_generator(cols: int, rows: int, cell_size: float):
+        for row in range(rows):
+            for col in range(cols):
+                yield arcade.Sprite(
+                    center_x=col * cell_size,
+                    center_y=row * cell_size
+                )
+
+    sprite_list.extend(sprite_grid_generator(3, 5, 1.0))
+    index = 0
+    for y in range(5):
+        for x in range(3):
+            assert sprite_list[index].position == (x, y)
+            index += 1
 
 
 def test_it_can_insert_in_a_spritelist():
