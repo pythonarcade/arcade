@@ -1,9 +1,36 @@
 from typing import List
 
 import arcade
+from arcade.arcade_types import PygletShape
 from arcade import Color
 import random
 import pyglet.clock
+from pyglet import shapes
+from pyglet.graphics import Batch
+
+
+def opacity_of_color(color: Color) -> int:
+    if len(color) > 3:
+        return color[3]
+    else:
+        return 255
+
+
+def set_pyglet_shape_to_four_byte_color(
+        shape: PygletShape, color: Color
+) -> None:
+    """
+    Set the color and opacity of a pyglet shape from an arcade color.
+
+    If the color is not a four-byte color, it will be converted to one
+    and treated as if an opacity of 255 were passed.
+
+    :param shape: the pyglet shape to set the color and opacity on
+    :param color: the color
+    """
+
+
+shape.color, shape.opacity = color[:3], opacity_of_color(color)
 
 
 class PerfGraph(arcade.Sprite):
@@ -57,29 +84,35 @@ class PerfGraph(arcade.Sprite):
 
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(texture=self.minimap_texture)
-        self._background_color = arcade.get_four_byte_color(background_color)
-        self.line_color = data_line_color
-        self.grid_color = grid_color
-        self.data_to_graph: List[float] = []
         self.proj = 0, self.width, 0, self.height
-        self.axis_color = axis_color
         self.graph_data = graph_data
-        self.max_data = 0.0
-        self._font_color = font_color
+
+        # Convert and store visual style info
+        self._background_color = arcade.get_four_byte_color(background_color)
+        self.line_color = arcade.get_four_byte_color(data_line_color)
+        self.grid_color = arcade.get_four_byte_color(grid_color)
+        self.axis_color = arcade.get_four_byte_color(axis_color)
+        self._font_color = arcade.get_four_byte_color(font_color)
         self._font_size = font_size
-        self.y_axis_data_step = y_axis_data_step
         self.left_x = 25
         self.bottom_y = 15
-        self.max_pixels = self.height - self.bottom_y
         self._num_subdivisions = 4
+
+        # rendering-related variables
+        self.data_to_graph: List[float] = []
+        self.max_data = 0.0
+        self.y_axis_data_step = y_axis_data_step
+        self.max_pixels = self.height - self.bottom_y
 
         value_increment = self.max_data // self._num_subdivisions
         y_increment = self.max_pixels / self._num_subdivisions
 
         # set up internal Text object & line caches
+        self.pyglet_batch = Batch()
         self.vertical_axis_text_objects = []
         self.all_text_objects = []
         self.line_objects: arcade.ShapeElementList = arcade.ShapeElementList()
+        self.grid_lines = []
 
         # Create the bottom label text object
         self.bottom_label = arcade.Text(
@@ -89,17 +122,19 @@ class PerfGraph(arcade.Sprite):
         self.all_text_objects.append(self.bottom_label)
 
         # Create the axes
-        self.line_objects.append((
-            arcade.create_line(  # Y axis
-                self.left_x, self.bottom_y,
-                self.left_x, height,
-                axis_color)))
-        self.line_objects.append((
-            arcade.create_line(  # X axis
-                self.left_x, self.bottom_y,
-                width, self.bottom_y,
-                self.axis_color
-            )))
+        self.x_axis = shapes.Line(
+            self.left_x, self.bottom_y,
+            self.left_x, height,
+            batch=self.pyglet_batch
+        )
+        set_pyglet_shape_to_four_byte_color(self.x_axis, self.axis_color)
+
+        self.y_axis = shapes.Line(
+            self.left_x, self.bottom_y,
+            width, self.bottom_y,
+            batch=self.pyglet_batch
+        )
+        set_pyglet_shape_to_four_byte_color(self.y_axis, self.axis_color)
 
         # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
@@ -110,13 +145,15 @@ class PerfGraph(arcade.Sprite):
                     self.left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
-            self.line_objects.append(
-                arcade.create_line(
+            self.grid_lines.append(
+                shapes.Line(
                     self.left_x, y_level,
                     width, y_level,
-                    self.grid_color
+                    batch=self.pyglet_batch
                 )
             )
+            set_pyglet_shape_to_four_byte_color(self.grid_lines[-1], self.grid_color)
+
         self.all_text_objects.extend(self.vertical_axis_text_objects)
 
         # Enable auto-update
@@ -237,11 +274,11 @@ class PerfGraph(arcade.Sprite):
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
-
             # Draw lines & their labels
             for text in self.all_text_objects:
                 text.draw()
-            self.line_objects.draw()
+
+            self.pyglet_batch.draw()
 
             # Draw graph
             arcade.draw_line_strip(point_list, self.line_color)
