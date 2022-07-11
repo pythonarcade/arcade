@@ -135,6 +135,7 @@ from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 from .utils import generate_uuid_from_kwargs
+from .utils import opacity_of_color
 
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
@@ -539,6 +540,7 @@ __all__ = ['AStarBarrierList',
            'make_soft_circle_texture',
            'make_soft_square_texture',
            'make_transparent_color',
+            'opacity_of_color',
            'open_window',
            'pause',
            'print_timings',
