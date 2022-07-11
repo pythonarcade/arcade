@@ -7,12 +7,7 @@ import pyglet.clock
 from pyglet.shapes import Line
 from pyglet.graphics import Batch
 
-
-def opacity_of_color(color: Color) -> int:
-    if len(color) > 3:
-        return color[3]
-    else:
-        return 255
+from arcade.utils import opacity_of_color
 
 
 def set_line_to_four_byte_color(
