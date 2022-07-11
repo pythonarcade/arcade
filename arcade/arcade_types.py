@@ -4,11 +4,6 @@ Module specifying data custom types used for type hinting.
 from collections import namedtuple
 from typing import List, NamedTuple, Optional, Sequence, Tuple, Union
 
-from pyglet.shapes import (
-    Circle,
-    Ellipse,
-    Line
-)
 from pytiled_parser import Properties
 
 RGB = Union[Tuple[int, int, int], List[int]]
