@@ -100,11 +100,10 @@ class PerfGraph(arcade.Sprite):
         y_increment = self.max_pixels / self._num_subdivisions
 
         # set up internal Text object & line caches
-        self.pyglet_batch = Batch()
+        self._pyglet_batch = Batch()
         self.vertical_axis_text_objects = []
         self.all_text_objects = []
-        self.line_objects: arcade.ShapeElementList = arcade.ShapeElementList()
-        self.grid_lines = []
+        self._grid_lines: List[Line] = []
 
         # Create the bottom label text object
         self.bottom_label = arcade.Text(
@@ -117,14 +116,14 @@ class PerfGraph(arcade.Sprite):
         self.x_axis = Line(
             self.left_x, self.bottom_y,
             self.left_x, height,
-            batch=self.pyglet_batch
+            batch=self._pyglet_batch
         )
         _set_line_to_four_byte_color(self.x_axis, self.axis_color)
 
         self.y_axis = Line(
             self.left_x, self.bottom_y,
             width, self.bottom_y,
-            batch=self.pyglet_batch
+            batch=self._pyglet_batch
         )
         _set_line_to_four_byte_color(self.y_axis, self.axis_color)
 
@@ -137,14 +136,14 @@ class PerfGraph(arcade.Sprite):
                     self.left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
-            self.grid_lines.append(
+            self._grid_lines.append(
                 Line(
                     self.left_x, y_level,
                     width, y_level,
-                    batch=self.pyglet_batch
+                    batch=self._pyglet_batch
                 )
             )
-            _set_line_to_four_byte_color(self.grid_lines[-1], self.grid_color)
+            _set_line_to_four_byte_color(self._grid_lines[-1], self.grid_color)
 
         self.all_text_objects.extend(self.vertical_axis_text_objects)
 
@@ -273,7 +272,7 @@ class PerfGraph(arcade.Sprite):
             for text in self.all_text_objects:
                 text.draw()
 
-            self.pyglet_batch.draw()
+            self._pyglet_batch.draw()
 
             # Draw the data line
             arcade.draw_line_strip(point_list, self.line_color)
