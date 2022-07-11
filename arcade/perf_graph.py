@@ -199,7 +199,8 @@ class PerfGraph(arcade.Sprite):
         .. warning:: You do not need to call this method! It will be
                      called automatically!
 
-        :param delta_time: Elapsed time. Passed by the pyglet scheduler
+        :param delta_time: Elapsed time in seconds. Passed by the pyglet
+                           scheduler.
         """
 
         # Using locals for frequently used values is faster than
