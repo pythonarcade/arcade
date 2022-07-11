@@ -94,10 +94,9 @@ class PerfGraph(arcade.Sprite):
         self.data_to_graph: List[float] = []
         self.max_data = 0.0
         self.y_axis_data_step = y_axis_data_step
-        self.max_pixels = self.height - self.bottom_y
-
-        value_increment = self.max_data // self._num_subdivisions
-        y_increment = self.max_pixels / self._num_subdivisions
+        self._max_pixels = self.height - self.bottom_y
+        self._value_increment = self.max_data // self._num_subdivisions
+        self._y_increment = self._max_pixels / self._num_subdivisions
 
         # set up internal Text object & line caches
         self._pyglet_batch = Batch()
@@ -129,10 +128,10 @@ class PerfGraph(arcade.Sprite):
 
         # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
-            y_level = self.bottom_y + y_increment * i
+            y_level = self.bottom_y + self._y_increment * i
             self.vertical_axis_text_objects.append(
                 arcade.Text(
-                    f"{int(value_increment * i)}",
+                    f"{int(self._value_increment * i)}",
                     self.left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
@@ -209,6 +208,7 @@ class PerfGraph(arcade.Sprite):
         left_x = self.left_x
         y_axis_data_step = self.y_axis_data_step
         vertical_axis_text_objects = self.vertical_axis_text_objects
+        max_pixels = self._max_pixels
 
         # Rendering is done to the internal texture at its original size
         # rather than the outer Sprite's scaled size stored on self.
@@ -249,7 +249,6 @@ class PerfGraph(arcade.Sprite):
         max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
         # Calculate draw positions of each pixel on the data line
-        max_pixels = texture_height - bottom_y
         point_list = []
         x = left_x
         for reading in self.data_to_graph:
