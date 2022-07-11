@@ -175,9 +175,10 @@ class PerfGraph(arcade.Sprite):
 
     @font_color.setter
     def font_color(self, new: Color):
-        self._font_color = new
+        final_color = arcade.get_four_byte_color(new)
+        self._font_color = final_color
         for text in self.all_text_objects:
-            text.color = new
+            text.color = final_color
 
     def remove_from_sprite_lists(self):
         """

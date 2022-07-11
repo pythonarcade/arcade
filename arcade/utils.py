@@ -1,6 +1,7 @@
 import math
 import random
 from io import StringIO
+from typing import cast, Tuple
 
 from arcade import Color
 from arcade.arcade_types import Point, Vector
@@ -172,6 +173,6 @@ def opacity_of_color(color: Color) -> int:
     :return:
     """
     if len(color) > 3:
-        return color[3]
+        return cast(Tuple[int, int, int, int], color)[3]
     else:
         return 255
