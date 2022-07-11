@@ -10,7 +10,7 @@ from pyglet.graphics import Batch
 from arcade.utils import opacity_of_color
 
 
-def set_line_to_four_byte_color(
+def _set_line_to_four_byte_color(
         shape: Line, color: Color
 ) -> None:
     """
@@ -119,14 +119,14 @@ class PerfGraph(arcade.Sprite):
             self.left_x, height,
             batch=self.pyglet_batch
         )
-        set_line_to_four_byte_color(self.x_axis, self.axis_color)
+        _set_line_to_four_byte_color(self.x_axis, self.axis_color)
 
         self.y_axis = Line(
             self.left_x, self.bottom_y,
             width, self.bottom_y,
             batch=self.pyglet_batch
         )
-        set_line_to_four_byte_color(self.y_axis, self.axis_color)
+        _set_line_to_four_byte_color(self.y_axis, self.axis_color)
 
         # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
@@ -144,7 +144,7 @@ class PerfGraph(arcade.Sprite):
                     batch=self.pyglet_batch
                 )
             )
-            set_line_to_four_byte_color(self.grid_lines[-1], self.grid_color)
+            _set_line_to_four_byte_color(self.grid_lines[-1], self.grid_color)
 
         self.all_text_objects.extend(self.vertical_axis_text_objects)
 
