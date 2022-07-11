@@ -26,10 +26,6 @@ Rect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, hei
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 
 
-PygletShape = Union[
-    Circle, Ellipse, Line
-]
-
 class TiledObject(NamedTuple):
     shape: Union[Point, PointList, Rect]
     properties: Optional[Properties] = None
