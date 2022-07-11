@@ -90,7 +90,7 @@ class PerfGraph(arcade.Sprite):
         self.bottom_y = 15
         self._num_subdivisions = 4
 
-        # rendering-related variables
+        # Rendering-related variables
         self.data_to_graph: List[float] = []
         self.max_data = 0.0
         self.y_axis_data_step = y_axis_data_step
@@ -209,14 +209,15 @@ class PerfGraph(arcade.Sprite):
         left_x = self.left_x
         y_axis_data_step = self.y_axis_data_step
         vertical_axis_text_objects = self.vertical_axis_text_objects
-        # Using self's dimensions will interfere with both rendering
-        # and data update when the sprite is scaled up, so we need to
-        # use the original texture size instead.
+
+        # Rendering is done to the internal texture at its original size
+        # rather than the outer Sprite's scaled size stored on self.
         texture_width, texture_height = self._texture.size  # type: ignore
 
-        # Get the sprite list this is part of, return if none
+        # Skip update if there is no SpriteList that can draw this graph
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
             return
+
         sprite_list = self.sprite_lists[0]
 
         # Clear and return if timings are disabled
@@ -247,7 +248,7 @@ class PerfGraph(arcade.Sprite):
         max_value = max(self.data_to_graph)
         max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
-        # Calculate draw positions of pixels on the chart
+        # Calculate draw positions of each pixel on the data line
         max_pixels = texture_height - bottom_y
         point_list = []
         x = left_x
@@ -264,7 +265,7 @@ class PerfGraph(arcade.Sprite):
                 text_object = vertical_axis_text_objects[index]
                 text_object.text = f"{int(index * value_increment)}"
 
-        # Render to the screen
+        # Render to the internal texture
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
             # Draw lines & their labels
@@ -273,5 +274,5 @@ class PerfGraph(arcade.Sprite):
 
             self.pyglet_batch.draw()
 
-            # Draw graph
+            # Draw the data line
             arcade.draw_line_strip(point_list, self.line_color)
