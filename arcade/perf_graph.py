@@ -80,8 +80,8 @@ class PerfGraph(arcade.Sprite):
         # Convert and store visual style info
         self._background_color = arcade.get_four_byte_color(background_color)
         self.line_color = arcade.get_four_byte_color(data_line_color)
-        self.grid_color = arcade.get_four_byte_color(grid_color)
-        self.axis_color = arcade.get_four_byte_color(axis_color)
+        self._grid_color = arcade.get_four_byte_color(grid_color)
+        self._axis_color = arcade.get_four_byte_color(axis_color)
         self._font_color = arcade.get_four_byte_color(font_color)
         self._font_size = font_size
         self._left_x = 25
@@ -116,14 +116,14 @@ class PerfGraph(arcade.Sprite):
             self._left_x, height,
             batch=self._pyglet_batch
         )
-        _set_line_to_four_byte_color(self._x_axis, self.axis_color)
+        _set_line_to_four_byte_color(self._x_axis, self._axis_color)
 
         self._y_axis = Line(
             self._left_x, self._bottom_y,
             width, self._bottom_y,
             batch=self._pyglet_batch
         )
-        _set_line_to_four_byte_color(self._y_axis, self.axis_color)
+        _set_line_to_four_byte_color(self._y_axis, self._axis_color)
 
         # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
@@ -141,7 +141,7 @@ class PerfGraph(arcade.Sprite):
                     batch=self._pyglet_batch
                 )
             )
-            _set_line_to_four_byte_color(self._grid_lines[-1], self.grid_color)
+            _set_line_to_four_byte_color(self._grid_lines[-1], self._grid_color)
 
         self._all_text_objects.extend(self._vertical_axis_text_objects)
 
@@ -155,6 +155,26 @@ class PerfGraph(arcade.Sprite):
     @background_color.setter
     def background_color(self, new_color):
         self._background_color = arcade.get_four_byte_color(new_color)
+
+    @property
+    def grid_color(self) -> Color:
+        return self._grid_color
+
+    @grid_color.setter
+    def grid_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        for grid_line in self._grid_lines:
+            _set_line_to_four_byte_color(grid_line.color, new_color)
+
+    @property
+    def axis_color(self) -> Color:
+        return self._axis_color
+
+    @axis_color.setter
+    def axis_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        _set_line_to_four_byte_color(self._x_axis, new_color)
+        _set_line_to_four_byte_color(self._y_axis, new_color)
 
     @property
     def font_size(self) -> int:
@@ -171,11 +191,11 @@ class PerfGraph(arcade.Sprite):
         return self._font_color
 
     @font_color.setter
-    def font_color(self, new: Color):
-        final_color = arcade.get_four_byte_color(new)
-        self._font_color = final_color
+    def font_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        self._font_color = new_color
         for text in self._all_text_objects:
-            text.color = final_color
+            text.color = new_color
 
     def remove_from_sprite_lists(self):
         """
