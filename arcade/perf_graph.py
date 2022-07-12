@@ -73,11 +73,9 @@ class PerfGraph(arcade.Sprite):
     ):
 
         unique_id = str(random.random())
-
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(texture=self.minimap_texture)
         self.proj = 0, self.width, 0, self.height
-        self.graph_data = graph_data
 
         # Convert and store visual style info
         self._background_color = arcade.get_four_byte_color(background_color)
@@ -86,65 +84,66 @@ class PerfGraph(arcade.Sprite):
         self.axis_color = arcade.get_four_byte_color(axis_color)
         self._font_color = arcade.get_four_byte_color(font_color)
         self._font_size = font_size
-        self.left_x = 25
-        self.bottom_y = 15
+        self._left_x = 25
+        self._bottom_y = 15
         self._num_subdivisions = 4
 
         # Rendering-related variables
-        self.data_to_graph: List[float] = []
-        self.max_data = 0.0
-        self.y_axis_data_step = y_axis_data_step
-        self._max_pixels = self.height - self.bottom_y
-        self._value_increment = self.max_data // self._num_subdivisions
+        self.graph_data = graph_data
+        self._data_to_graph: List[float] = []
+        self._max_data = 0.0
+        self._y_axis_data_step = y_axis_data_step
+        self._max_pixels = self.height - self._bottom_y
+        self._value_increment = self._max_data // self._num_subdivisions
         self._y_increment = self._max_pixels / self._num_subdivisions
 
         # set up internal Text object & line caches
         self._pyglet_batch = Batch()
-        self.vertical_axis_text_objects = []
-        self.all_text_objects = []
+        self._vertical_axis_text_objects: List[arcade.Text] = []
+        self._all_text_objects: List[arcade.Text] = []
         self._grid_lines: List[Line] = []
 
         # Create the bottom label text object
-        self.bottom_label = arcade.Text(
+        self._bottom_label = arcade.Text(
             graph_data, 0, 2, self._font_color,
             self._font_size, align="center", width=int(width)
         )
-        self.all_text_objects.append(self.bottom_label)
+        self._all_text_objects.append(self._bottom_label)
 
         # Create the axes
-        self.x_axis = Line(
-            self.left_x, self.bottom_y,
-            self.left_x, height,
+        self._x_axis = Line(
+            self._left_x, self._bottom_y,
+            self._left_x, height,
             batch=self._pyglet_batch
         )
-        _set_line_to_four_byte_color(self.x_axis, self.axis_color)
+        _set_line_to_four_byte_color(self._x_axis, self.axis_color)
 
-        self.y_axis = Line(
-            self.left_x, self.bottom_y,
-            width, self.bottom_y,
+        self._y_axis = Line(
+            self._left_x, self._bottom_y,
+            width, self._bottom_y,
             batch=self._pyglet_batch
         )
-        _set_line_to_four_byte_color(self.y_axis, self.axis_color)
+        _set_line_to_four_byte_color(self._y_axis, self.axis_color)
 
         # Create the Y scale text objects & lines
         for i in range(self._num_subdivisions):
-            y_level = self.bottom_y + self._y_increment * i
-            self.vertical_axis_text_objects.append(
+            y_level = self._bottom_y + self._y_increment * i
+            self._vertical_axis_text_objects.append(
                 arcade.Text(
                     f"{int(self._value_increment * i)}",
-                    self.left_x, y_level,
+                    self._left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
             self._grid_lines.append(
                 Line(
-                    self.left_x, y_level,
+                    self._left_x, y_level,
                     width, y_level,
                     batch=self._pyglet_batch
                 )
             )
             _set_line_to_four_byte_color(self._grid_lines[-1], self.grid_color)
 
-        self.all_text_objects.extend(self.vertical_axis_text_objects)
+        self._all_text_objects.extend(self._vertical_axis_text_objects)
 
         # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
@@ -164,7 +163,7 @@ class PerfGraph(arcade.Sprite):
     @font_size.setter
     def font_size(self, new: int):
         self._font_size = new
-        for text in self.all_text_objects:
+        for text in self._all_text_objects:
             text.font_size = new
 
     @property
@@ -175,7 +174,7 @@ class PerfGraph(arcade.Sprite):
     def font_color(self, new: Color):
         final_color = arcade.get_four_byte_color(new)
         self._font_color = final_color
-        for text in self.all_text_objects:
+        for text in self._all_text_objects:
             text.color = final_color
 
     def remove_from_sprite_lists(self):
@@ -204,10 +203,10 @@ class PerfGraph(arcade.Sprite):
 
         # Using locals for frequently used values is faster than
         # looking up instance variables repeatedly.
-        bottom_y = self.bottom_y
-        left_x = self.left_x
-        y_axis_data_step = self.y_axis_data_step
-        vertical_axis_text_objects = self.vertical_axis_text_objects
+        bottom_y = self._bottom_y
+        left_x = self._left_x
+        y_axis_data_step = self._y_axis_data_step
+        vertical_axis_text_objects = self._vertical_axis_text_objects
         max_pixels = self._max_pixels
 
         # Rendering is done to the internal texture at its original size
@@ -228,38 +227,38 @@ class PerfGraph(arcade.Sprite):
 
         # Get FPS and add to our historical data
         if self.graph_data == "FPS":
-            self.data_to_graph.append(arcade.get_fps())
+            self._data_to_graph.append(arcade.get_fps())
         else:
             timings = arcade.get_timings()
             if self.graph_data in timings:
                 timing_list = timings[self.graph_data]
                 avg_timing = sum(timing_list) / len(timing_list)
-                self.data_to_graph.append(avg_timing * 1000)
+                self._data_to_graph.append(avg_timing * 1000)
 
         # Skip update if there is no data to graph
-        if len(self.data_to_graph) == 0:
+        if len(self._data_to_graph) == 0:
             return
 
         # Toss old data
-        while len(self.data_to_graph) > texture_width - left_x:
-            self.data_to_graph.pop(0)
+        while len(self._data_to_graph) > texture_width - left_x:
+            self._data_to_graph.pop(0)
 
         # Calculate the value at the top of the chart
-        max_value = max(self.data_to_graph)
+        max_value = max(self._data_to_graph)
         max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
 
         # Calculate draw positions of each pixel on the data line
         point_list = []
         x = left_x
-        for reading in self.data_to_graph:
+        for reading in self._data_to_graph:
             y = (reading / max_data) * max_pixels + bottom_y
             point_list.append((x, y))
             x += 1
 
         # Update the Y axis scale & labels if needed
-        if max_data != self.max_data:
-            self.max_data = max_data
-            value_increment = self.max_data // 4
+        if max_data != self._max_data:
+            self._max_data = max_data
+            value_increment = self._max_data // 4
             for index in range(1, len(vertical_axis_text_objects)):
                 text_object = vertical_axis_text_objects[index]
                 text_object.text = f"{int(index * value_increment)}"
@@ -268,7 +267,7 @@ class PerfGraph(arcade.Sprite):
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
             fbo.clear(self.background_color)
             # Draw lines & their labels
-            for text in self.all_text_objects:
+            for text in self._all_text_objects:
                 text.draw()
 
             self._pyglet_batch.draw()
