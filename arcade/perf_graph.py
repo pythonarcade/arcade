@@ -230,7 +230,7 @@ class PerfGraph(arcade.Sprite):
         max_pixels = self._max_pixels
 
         # Rendering is done to the internal texture at its original size
-        # rather than the outer Sprite's scaled size stored on self.
+        # rather than the scaled size stored on self.
         texture_width, texture_height = self._texture.size  # type: ignore
 
         # Skip update if there is no SpriteList that can draw this graph
