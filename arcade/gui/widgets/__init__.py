@@ -143,11 +143,11 @@ class Rect(NamedTuple):
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=0.0, height=0.0):
+    def min_size(self, width=None, height=None):
         """
         Sets the size to at least the given min values.
         """
-        return Rect(self.x, self.y, max(width, self.width), max(height, self.height))
+        return Rect(self.x, self.y, max(width or 0.0, self.width), max(height or 0.0, self.height))
 
     def max_size(self, width: float = None, height: float = None):
         """
@@ -532,19 +532,19 @@ class UIWidget(EventDispatcher, ABC):
     @property
     def content_width(self):
         return (
-            self.rect.width
-            - 2 * self.border_width
-            - self.padding_left
-            - self.padding_right
+                self.rect.width
+                - 2 * self.border_width
+                - self.padding_left
+                - self.padding_right
         )
 
     @property
     def content_height(self):
         return (
-            self.rect.height
-            - 2 * self.border_width
-            - self.padding_top
-            - self.padding_bottom
+                self.rect.height
+                - 2 * self.border_width
+                - self.padding_top
+                - self.padding_bottom
         )
 
     @property
@@ -606,8 +606,9 @@ class UIInteractiveWidget(UIWidget):
     """
 
     # States
-    _hovered = False
-    _pressed = False
+    hovered = Property(False)
+    pressed = Property(False)
+    disabled = Property(False)
 
     def __init__(
         self,
@@ -633,32 +634,16 @@ class UIInteractiveWidget(UIWidget):
         )
         self.register_event_type("on_click")
 
-    @property
-    def pressed(self):
-        return self._pressed
-
-    @pressed.setter
-    def pressed(self, value):
-        if self._pressed != value:
-            self._pressed = value
-            self.trigger_render()
-
-    @property
-    def hovered(self):
-        return self._hovered
-
-    @hovered.setter
-    def hovered(self, value):
-        if value != self._hovered:
-            self._hovered = value
-            self.trigger_render()
+        bind(self, "pressed", self.trigger_render)
+        bind(self, "hovered", self.trigger_render)
+        bind(self, "disabled", self.trigger_render)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-            event.x, event.y
+                event.x, event.y
         ):
             self.pressed = True
             return EVENT_HANDLED
@@ -671,9 +656,10 @@ class UIInteractiveWidget(UIWidget):
                 return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(
-            event.x, event.y
+                event.x, event.y
         ):
-            return self.dispatch_event("on_click", event)
+            if not self.disabled:
+                return self.dispatch_event("on_click", event)
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -706,11 +692,9 @@ class UIDummy(UIInteractiveWidget):
         y=0,
         width=100,
         height=100,
-        color=arcade.color.BLACK,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
