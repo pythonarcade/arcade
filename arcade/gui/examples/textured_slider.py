@@ -63,7 +63,7 @@ class MyView(View):
         self.manager = UIManager()
 
         bar_tex = arcade.load_texture(":resources:gui_basic_assets/slider_bar.png")
-        thumb_tex = arcade.load_texture(":resources:gui_basic_assets/slider_bar.png")
+        thumb_tex = arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png")
         self.slider = UITextureSlider(bar_tex, thumb_tex)
 
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
@@ -74,6 +74,10 @@ class MyView(View):
 
     def on_hide_view(self):
         self.manager.disable()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.SPACE:
+            self.slider.disabled = not self.slider.disabled
 
     def on_draw(self):
         self.clear()
