@@ -102,5 +102,3 @@ class NinePatchRenderer:
     def height(self, value):
         self._height = value
         self._patch_data_changed = True
-
-
