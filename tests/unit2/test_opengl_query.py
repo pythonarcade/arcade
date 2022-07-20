@@ -5,8 +5,8 @@ from arcade.gl import geometry
 
 def test_create(window: arcade.Window):
     ctx = window.ctx
-    SCREEN_WIDTH, SCREEN_HEIGHT = window.get_framebuffer_size()
-    print(ctx.viewport, ctx.projection_2d)
+    SCREEN_WIDTH, SCREEN_HEIGHT = window.get_size()
+    # print(ctx.viewport, ctx.projection_2d)
 
     program = ctx.program(
         vertex_shader="""
@@ -33,9 +33,9 @@ def test_create(window: arcade.Window):
         with query:
             quad.render(program)
 
-    # gles query doesn't support time and written samples
-    if ctx.gl_api == "gl":
-        assert query.time_elapsed > 0
-        assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
+        # gles query doesn't support time and written samples
+        if ctx.gl_api == "gl":
+            assert query.time_elapsed > 0
+            assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
 
-    assert query.primitives_generated == 2
+        assert query.primitives_generated == 2

@@ -146,7 +146,7 @@ class BackgroundTexture:
         with Image.open(resolve_resource_path(tex_src)).convert("RGBA") as img:
             texture = _context.texture(
                 img.size,
-                data=img.transpose(Image.FLIP_TOP_BOTTOM).tobytes(),
+                data=img.transpose(Image.Transpose.FLIP_TOP_BOTTOM).tobytes(),
                 filter=filters,
             )
 

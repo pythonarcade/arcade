@@ -5,14 +5,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.text_loc_example_start
 """
 import arcade
-import os
-
-# Set the working directory (where we expect to find files) to the same
-# directory this .py file is in. You can leave this out of your own
-# code, but it is needed to easily run the examples using "python -m"
-# as mentioned at the top of this program.
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
@@ -39,7 +31,6 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
-
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()

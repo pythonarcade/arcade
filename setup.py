@@ -53,7 +53,7 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet==2.0.dev18",
+        "pyglet==2.0.dev20",
         "pillow~=9.1.1",
         "pymunk~=6.2.1",
         "pytiled-parser==2.0.1",
@@ -81,6 +81,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     include_package_data=True,
+        entry_points={'console_scripts': [
+        'arcade = arcade.management:execute_from_command_line',
+    ]},
     project_urls={
         "Documentation": "https://api.arcade.academy/",
         "Example Code": "https://api.arcade.academy/en/latest/examples/index.html",

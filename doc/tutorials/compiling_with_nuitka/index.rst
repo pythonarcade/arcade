@@ -1,3 +1,5 @@
+.. _compile_with_nuitka:
+
 Compiling a Game with Nuitka
 ============================
 

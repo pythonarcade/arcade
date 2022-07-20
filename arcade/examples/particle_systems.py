@@ -12,7 +12,6 @@ python -m arcade.examples.particle_systems
 """
 import arcade
 import pyglet
-import os
 import random
 import math
 
@@ -710,13 +709,6 @@ def emitter_39():
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         arcade.set_background_color(arcade.color.BLACK)
 

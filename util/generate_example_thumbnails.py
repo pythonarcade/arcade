@@ -5,8 +5,8 @@ from PIL import Image
 
 
 def main():
-    input_path = pathlib.Path('examples/')
-    output_path = pathlib.Path('examples/thumbs/')
+    input_path = pathlib.Path('example_code/how_to_examples')
+    output_path = pathlib.Path('example_code/how_to_examples/thumbs/')
 
     png_input_files = input_path.glob('*.png')
     gif_input_files = input_path.glob('*.gif')

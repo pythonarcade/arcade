@@ -85,7 +85,7 @@ class MyGame(arcade.Window):
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
         self.enemy_textures = []
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", mirrored=True)
+        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", flipped_horizontally=True)
         self.enemy_textures.append(texture)
         texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
         self.enemy_textures.append(texture)

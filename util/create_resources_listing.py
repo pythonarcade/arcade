@@ -72,7 +72,7 @@ def process_resource_files(out, file_list):
         if process_resource_directory.cell_count % COLUMNS == 0:
             start_row = "*"
         if cur_node.suffix in [".png", ".jpg", ".gif", ".svg"]:
-            out.write(f"    {start_row} - .. image:: ../arcade/{r3}\n\n")
+            out.write(f"    {start_row} - .. image:: ../../arcade/{r3}\n\n")
             out.write(f"        {cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".wav":
@@ -118,7 +118,7 @@ def resources():
     except FileExistsError:
         pass
 
-    out = open("../doc/resources.rst", "w")
+    out = open("../doc/api_docs/resources.rst", "w")
 
     out.write(".. _resources:\n")
     out.write("\n")

@@ -14,30 +14,30 @@ def test_1():
     print()
     hitbox = my_sprite.get_adjusted_hit_box()
     print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
-    assert hitbox == [[90, 90], [90, 110], [110, 110], [110, 90]]
+    assert hitbox == ((90.0, 90.0), (90.0, 110.0), (110.0, 110.0), (110.0, 90.0))
 
     my_sprite.scale = 0.5
     hitbox = my_sprite.get_adjusted_hit_box()
     print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
-    assert hitbox == [[95, 95], [95, 105], [105, 105], [105, 95]]
+    assert hitbox == ((95.0, 95.0), (95.0, 105.0), (105.0, 105.0), (105.0, 95.0))
 
     my_sprite.scale = 1
     hitbox = my_sprite.get_adjusted_hit_box()
     print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
-    assert hitbox == [[90, 90], [90, 110], [110, 110], [110, 90]]
+    assert hitbox == ((90.0, 90.0), (90.0, 110.0), (110.0, 110.0), (110.0, 90.0))
 
     my_sprite.scale = 2.0
     hitbox = my_sprite.get_adjusted_hit_box()
     print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
-    assert hitbox == [[80, 80], [80, 120], [120, 120], [120, 80]]
+    assert hitbox == ((80.0, 80.0), (80.0, 120.0), (120.0, 120.0), (120.0, 80.0))
 
     my_sprite.scale = 2.0
     hitbox = my_sprite.get_adjusted_hit_box()
     print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
-    assert hitbox == [[80, 80], [80, 120], [120, 120], [120, 80]]
+    assert hitbox == ((80.0, 80.0), (80.0, 120.0), (120.0, 120.0), (120.0, 80.0))
 
 
-def test_1():
+def test_2():
     height = 2
     width = 2
     wall = arcade.SpriteSolidColor(width, height, arcade.color.RED)

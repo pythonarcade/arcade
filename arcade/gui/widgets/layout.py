@@ -25,17 +25,17 @@ class UIAnchorLayout(UILayout):
     default_anchor_y = "center"
 
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 100,
-            children: Iterable["UIWidget"] = tuple(),
-            size_hint=(1, 1),
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        children: Iterable["UIWidget"] = tuple(),
+        size_hint=(1, 1),
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs
     ):
         super().__init__(
             x,
@@ -55,14 +55,14 @@ class UIAnchorLayout(UILayout):
             self._place_child(child, **data)
 
     def add(
-            self,
-            child: W,
-            *,
-            anchor_x: str = None,
-            align_x: float = 0,
-            anchor_y: str = None,
-            align_y: float = 0,
-            **kwargs
+        self,
+        child: W,
+        *,
+        anchor_x: str = None,
+        align_x: float = 0,
+        anchor_y: str = None,
+        align_y: float = 0,
+        **kwargs
     ) -> W:
         return super(UIAnchorLayout, self).add(
             child=child,
@@ -74,12 +74,12 @@ class UIAnchorLayout(UILayout):
         )
 
     def _place_child(
-            self,
-            child: UIWidget,
-            anchor_x: str = None,
-            align_x: float = 0,
-            anchor_y: str = None,
-            align_y: float = 0,
+        self,
+        child: UIWidget,
+        anchor_x: str = None,
+        align_x: float = 0,
+        anchor_y: str = None,
+        align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x
         anchor_y = anchor_y or self.default_anchor_y
@@ -124,27 +124,28 @@ class UIBoxLayout(UILayout):
     :param vertical: Layout children vertical (True) or horizontal (False)
     :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
     :param children: Initial children, more can be added
-    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default 0,0 -> minimal size to contain children)
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget`
+                    would like to grow (default 0,0 -> minimal size to contain children)
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
     :param space_between: Space between the children
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=0,
-            height=0,
-            vertical=True,
-            align="center",
-            children: Iterable[UIWidget] = tuple(),
-            size_hint=(0, 0),
-            size_hint_min=None,
-            size_hint_max=None,
-            space_between=0,
-            style=None,
-            **kwargs
+        self,
+        x=0,
+        y=0,
+        width=0,
+        height=0,
+        vertical=True,
+        align="center",
+        children: Iterable[UIWidget] = tuple(),
+        size_hint=(0, 0),
+        size_hint_min=None,
+        size_hint_max=None,
+        space_between=0,
+        style=None,
+        **kwargs
     ):
         self.align = align
         self.vertical = vertical
@@ -211,8 +212,9 @@ class UIBoxLayout(UILayout):
         if self.vertical:
             available_width = self.content_width
             available_height = self.height - self.size_hint_min[1]
-            total_size_hint_height = sum(child.size_hint[1] or 0 for child in self.children if child.size_hint)
-
+            total_size_hint_height = sum(
+                child.size_hint[1] or 0 for child in self.children if child.size_hint
+            )
 
             for child in self.children:
                 new_rect = child.rect
@@ -229,9 +231,13 @@ class UIBoxLayout(UILayout):
 
                     if shh:
                         # Maximal growth to parent.height * shh
-                        available_growth_height = new_rect.height + available_height * (shh / total_size_hint_height)
+                        available_growth_height = new_rect.height + available_height * (
+                            shh / total_size_hint_height
+                        )
                         max_growth_height = self.height * shh
-                        new_rect = new_rect.resize(height=min(available_growth_height, max_growth_height))
+                        new_rect = new_rect.resize(
+                            height=min(available_growth_height, max_growth_height)
+                        )
 
                 # align
                 if self.align == "left":
@@ -252,7 +258,9 @@ class UIBoxLayout(UILayout):
 
             available_height = self.content_height
             available_width = self.width - self.size_hint_min[0]
-            total_size_hint_width = sum(child.size_hint[0] or 0 for child in self.children if child.size_hint)
+            total_size_hint_width = sum(
+                child.size_hint[0] or 0 for child in self.children if child.size_hint
+            )
 
             for child in self.children:
                 new_rect = child.rect
@@ -269,9 +277,13 @@ class UIBoxLayout(UILayout):
 
                     if shw:
                         # Maximal growth to parent.width * shw
-                        available_growth_width = new_rect.width + available_width * (shw / total_size_hint_width)
+                        available_growth_width = new_rect.width + available_width * (
+                            shw / total_size_hint_width
+                        )
                         max_growth_height = self.width * shw
-                        new_rect = new_rect.resize(width=min(available_growth_width, max_growth_height))
+                        new_rect = new_rect.resize(
+                            width=min(available_growth_width, max_growth_height)
+                        )
 
                 # align
                 if self.align == "top":
@@ -306,21 +318,21 @@ class UIGridLayout(UILayout):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            align_horizontal="center",
-            align_vertical="center",
-            children: Iterable[UIWidget] = tuple(),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            horizontal_spacing: int = 0,
-            vertical_spacing: int = 0,
-            column_count: int = 1,
-            row_count: int = 1,
-            style=None,
-            **kwargs
+        self,
+        x=0,
+        y=0,
+        align_horizontal="center",
+        align_vertical="center",
+        children: Iterable[UIWidget] = tuple(),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        horizontal_spacing: int = 0,
+        vertical_spacing: int = 0,
+        column_count: int = 1,
+        row_count: int = 1,
+        style=None,
+        **kwargs
     ):
 
         super(UIGridLayout, self).__init__(
@@ -356,13 +368,17 @@ class UIGridLayout(UILayout):
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
-        max_width_per_column = [[(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)]
-        max_height_per_row = [[(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)]
+        max_width_per_column = [
+            [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
+        ]
+        max_height_per_row = [
+            [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
+        ]
 
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
-            col_span = data['col_span']
+            col_span = data["col_span"]
             row_span = data["row_span"]
 
             for i in range(col_num, col_span + col_num):
@@ -382,24 +398,37 @@ class UIGridLayout(UILayout):
         principal_height_ratio_list = []
 
         for row in max_height_per_row:
-            principal_height_ratio_list.append(max(height / (span or 1) for height, span in row))
+            principal_height_ratio_list.append(
+                max(height / (span or 1) for height, span in row)
+            )
 
         for col in max_width_per_column:
-            principal_width_ratio_list.append(max(width / (span or 1) for width, span in col))
+            principal_width_ratio_list.append(
+                max(width / (span or 1) for width, span in col)
+            )
 
         base_width = self.padding_left + self.padding_right + 2 * self.border_width
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
 
         content_height = (
-                sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         )
         content_width = (
-                sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+            sum(principal_width_ratio_list)
+            + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
-    def add(self, child: W, col_num: int = 0, row_num: int = 0, col_span: int = 1, row_span: int = 1, **kwargs) -> W:
+    def add(
+        self,
+        child: W,
+        col_num: int = 0,
+        row_num: int = 0,
+        col_span: int = 1,
+        row_span: int = 1,
+        **kwargs
+    ) -> W:
         """
         Adds widgets in the grid.
 
@@ -409,7 +438,14 @@ class UIGridLayout(UILayout):
         :param int col_span: Number of columns the widget will stretch for.
         :param int row_span: Number of rows the widget will stretch for.
         """
-        return super().add(child, col_num=col_num, row_num=row_num, col_span=col_span, row_span=row_span, **kwargs)
+        return super().add(
+            child,
+            col_num=col_num,
+            row_num=row_num,
+            col_span=col_span,
+            row_span=row_span,
+            **kwargs
+        )
 
     def do_layout(self):
         initial_left_x = self.content_rect.left
@@ -422,13 +458,17 @@ class UIGridLayout(UILayout):
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
-        max_width_per_column = [[(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)]
-        max_height_per_row = [[(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)]
+        max_width_per_column = [
+            [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
+        ]
+        max_height_per_row = [
+            [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
+        ]
 
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
-            col_span = data['col_span']
+            col_span = data["col_span"]
             row_span = data["row_span"]
 
             for i in range(col_num, col_span + col_num):
@@ -463,8 +503,12 @@ class UIGridLayout(UILayout):
             start_x = initial_left_x
 
             for col_num, child in enumerate(row):
-                max_height = max_height_per_row[row_num][col_num][0] + self._vertical_spacing
-                max_width = max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
+                max_height = (
+                    max_height_per_row[row_num][col_num][0] + self._vertical_spacing
+                )
+                max_width = (
+                    max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
+                )
 
                 if max_width == self._horizontal_spacing:
                     max_width = 0

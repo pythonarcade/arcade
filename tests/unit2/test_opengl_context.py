@@ -2,6 +2,7 @@
 Low level tests for OpenGL 3.3 wrappers.
 """
 import pytest
+from pyglet.math import Mat4
 
 
 def test_ctx(ctx):
@@ -38,7 +39,13 @@ def test_projection(window):
     with pytest.raises(ValueError):
         ctx.projection_2d = 1, 2, 3, 4, 5
 
-    # ctx.projection_2d = 0, window.width, 0, window.height
+
+def test_projection_matrix(window):
+    """Test setting projection matrix directly"""
+    window.ctx.projection_2d_matrix = Mat4()
+
+    with pytest.raises(ValueError):
+        window.ctx.projection_2d_matrix = "moo"
 
 
 def test_point_size(ctx):
@@ -73,7 +80,8 @@ def test_enable_disable(ctx):
 
     ctx.enable_only(ctx.BLEND, ctx.CULL_FACE, ctx.DEPTH_TEST, ctx.PROGRAM_POINT_SIZE)
 
-def test_enabled_only(ctx):
+
+def test_enabled(ctx):
     """Enabled only context manager"""    
     assert ctx.is_enabled(ctx.BLEND)
     assert not ctx.is_enabled(ctx.DEPTH_TEST)
@@ -85,6 +93,7 @@ def test_enabled_only(ctx):
     assert ctx.is_enabled(ctx.BLEND)
     assert not ctx.is_enabled(ctx.DEPTH_TEST)
 
+
 def test_enabled_only(ctx):
     """Enabled only context manager"""    
     assert ctx.is_enabled(ctx.BLEND)
@@ -95,3 +104,13 @@ def test_enabled_only(ctx):
 
     assert ctx.is_enabled(ctx.BLEND)
     assert not ctx.is_enabled(ctx.DEPTH_TEST)
+
+
+def test_load_texture(ctx):
+    # Default flipped and read value of corner pixel
+    texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", build_mipmaps=True)
+    assert texture.read()[:4] == b'\x00\x00\xff\xff'  # Blue
+
+    # Don't flip the texture
+    texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", flip=False, build_mipmaps=True)
+    assert texture.read()[:4] == b'\xff\x00\x00\xff'  # Red

@@ -1,24 +1,36 @@
 import math
-from typing import List
+from typing import Tuple
 
 
-def get_distance(x1: float, y1: float, x2: float, y2: float):
-    """ Get the distance between two points. """
+def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
+    """
+    Get the distance between two points.
+
+    :param float x1: x coordinate of the first point
+    :param float y1: y coordinate of the first point
+    :param float x2: x coordinate of the second point
+    :param float y2: y coordinate of the second point
+    """
     return math.hypot(x1 - x2, y1 - y2)
 
 
-def clamp(a, low, high):
+def clamp(a, low: float, high: float) -> float:
     """ Clamp a number between a range. """
     if a > high:
         return high
-    elif a < low:
+    if a < low:
         return low
-    else:
-        return a
+
+    return a
 
 
-def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle_degrees: float) -> List[float]:
+def rotate_point(
+    x: float,
+    y: float,
+    cx: float,
+    cy: float,
+    angle_degrees: float,
+) -> Tuple[float, float]:
     """
     Rotate a point around a center.
 
@@ -45,7 +57,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     x = round(rotated_x + cx, rounding_precision)
     y = round(rotated_y + cy, rounding_precision)
 
-    return [x, y]
+    return x, y
 
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
@@ -57,7 +69,6 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     :param float x2: x coordinate of the second point
     :param float y2: y coordinate of the second point
     """
-
     x_diff = x2 - x1
     y_diff = y2 - y1
     angle = math.degrees(math.atan2(x_diff, y_diff))
@@ -73,7 +84,6 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     :param float x2: x coordinate of the second point
     :param float y2: y coordinate of the second point
     """
-
     x_diff = x2 - x1
     y_diff = y2 - y1
     angle = math.atan2(x_diff, y_diff)

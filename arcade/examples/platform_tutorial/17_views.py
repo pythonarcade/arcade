@@ -4,7 +4,6 @@ Platformer Game
 python -m arcade.examples.platform_tutorial.11_animate_character
 """
 import math
-import os
 
 import arcade
 
@@ -246,10 +245,6 @@ class GameView(arcade.View):
         """
         super().__init__()
 
-        # Set the path to start with this program
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Track the current state of what key is pressed
         self.left_pressed = False
         self.right_pressed = False
@@ -403,6 +398,11 @@ class GameView(arcade.View):
         # Draw our Scene
         self.scene.draw()
 
+        # Draw hit boxes.
+        # self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
+
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
@@ -415,12 +415,6 @@ class GameView(arcade.View):
             arcade.csscolor.BLACK,
             18,
         )
-
-        # Draw hit boxes.
-        # for wall in self.wall_list:
-        #     wall.draw_hit_box(arcade.color.BLACK, 3)
-        #
-        # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
 
     def process_keychange(self):
         """

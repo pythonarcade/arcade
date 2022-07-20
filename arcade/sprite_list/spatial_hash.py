@@ -12,7 +12,6 @@ from typing import (
 from arcade import (
     Sprite,
     Point,
-    rotate_point,
     are_polygons_intersecting,
     get_distance_between_sprites,
     is_point_in_polygon,
@@ -134,10 +133,7 @@ class _SpatialHash:
 
         :return: List of close-by sprites
         :rtype: List
-
-
         """
-
         hash_point = self._hash(check_point)
 
         close_by_sprites: List[Sprite] = []
@@ -145,34 +141,6 @@ class _SpatialHash:
         close_by_sprites.extend(new_items)
 
         return close_by_sprites
-
-
-def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
-    """
-    Create a vertex buffer for a set of rectangles.
-    """
-
-    v2f = []
-    for shape in rect_list:
-        x1 = -shape.width / 2 + shape.center_x
-        x2 = shape.width / 2 + shape.center_x
-        y1 = -shape.height / 2 + shape.center_y
-        y2 = shape.height / 2 + shape.center_y
-
-        p1 = [x1, y1]
-        p2 = [x2, y1]
-        p3 = [x2, y2]
-        p4 = [x1, y2]
-
-        if shape.angle:
-            p1 = rotate_point(p1[0], p1[1], shape.center_x, shape.center_y, shape.angle)
-            p2 = rotate_point(p2[0], p2[1], shape.center_x, shape.center_y, shape.angle)
-            p3 = rotate_point(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
-            p4 = rotate_point(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
-
-        v2f.extend([p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]])
-
-    return v2f
 
 
 def get_closest_sprite(
@@ -211,15 +179,16 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :Returns: True or False depending if the sprites intersect.
     :rtype: bool
     """
-    if not isinstance(sprite1, Sprite):
-        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    if isinstance(sprite2, SpriteList):
-        raise TypeError(
-            "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
-            "call check_for_collision_with_list instead of check_for_collision."
-        )
-    elif not isinstance(sprite2, Sprite):
-        raise TypeError("Parameter 2 is not an instance of the Sprite class.")
+    if __debug__:
+        if not isinstance(sprite1, Sprite):
+            raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+        if isinstance(sprite2, SpriteList):
+            raise TypeError(
+                "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
+                "call check_for_collision_with_list instead of check_for_collision."
+            )
+        elif not isinstance(sprite2, Sprite):
+            raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
     return _check_for_collision(sprite1, sprite2)
 
@@ -234,21 +203,23 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :returns: True if sprites overlap.
     :rtype: bool
     """
-    collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
+    radius_sum = max(sprite1._width, sprite1._height) + max(sprite2._width, sprite2._height)
+    # Multiply by half of the theoretical max diagonal length for an estimation of distance
+    radius_sum *= 0.71  # 1.42 / 2
+    radius_sum_x2 = radius_sum * radius_sum
 
-    diff_x = sprite1.position[0] - sprite2.position[0]
+    diff_x = sprite1._position[0] - sprite2._position[0]
     diff_x2 = diff_x * diff_x
-
-    if diff_x2 > collision_radius_sum * collision_radius_sum:
+    if diff_x2 > radius_sum_x2:
         return False
 
-    diff_y = sprite1.position[1] - sprite2.position[1]
+    diff_y = sprite1._position[1] - sprite2._position[1]
     diff_y2 = diff_y * diff_y
-    if diff_y2 > collision_radius_sum * collision_radius_sum:
+    if diff_y2 > radius_sum_x2:
         return False
 
     distance = diff_x2 + diff_y2
-    if distance > collision_radius_sum * collision_radius_sum:
+    if distance > radius_sum_x2:
         return False
 
     return are_polygons_intersecting(
@@ -321,14 +292,15 @@ def check_for_collision_with_list(
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite, Sprite):
-        raise TypeError(
-            f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
-        )
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite, Sprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
+            )
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash and (method == 1 or method == 0):
         # Spatial
@@ -367,8 +339,9 @@ def check_for_collision_with_lists(sprite: Sprite,
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite, Sprite):
-        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+    if __debug__:
+        if not isinstance(sprite, Sprite):
+            raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
     sprites: List[Sprite] = []
 
@@ -403,10 +376,11 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
@@ -433,10 +407,11 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError(
-            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-        )
+    if __debug__:
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)  # type: ignore

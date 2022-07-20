@@ -14,6 +14,7 @@ from typing import (
     Any,
     Deque,
     Dict,
+    Iterable,
     Iterator,
     List,
     Optional,
@@ -672,11 +673,11 @@ class SpriteList:
         if self.spatial_hash:
             self.spatial_hash.remove_object(sprite)
 
-    def extend(self, sprites: Union[list, "SpriteList"]):
+    def extend(self, sprites: Union[Iterable[_SpriteType], "SpriteList"]):
         """
-        Extends the current list with the given list
+        Extends the current list with the given iterable
 
-        :param list sprites: list of Sprites to add to the list
+        :param list sprites: Iterable of Sprites to add to the list
         """
         for sprite in sprites:
             self.append(sprite)
