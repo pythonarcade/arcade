@@ -91,7 +91,12 @@ class NinePatchRenderer:
 
     @width.setter
     def width(self, value):
-        self._width = value
+        if value >= self._start[0] + self._end[0] + 1:
+            self._width = value
+        else:
+            print(f"WARNING: Attempted to set the width too low. "
+                  f"Width has been set to minimum of {self._start[0] + self._end[0] + 1}")
+            self._width = self._start[0] + self._end[0] + 1
         self._patch_data_changed = True
 
     @property
@@ -100,5 +105,10 @@ class NinePatchRenderer:
 
     @height.setter
     def height(self, value):
-        self._height = value
+        if value >= self._start[1] + self._end[1] + 1:
+            self._height = value
+        else:
+            print(f"WARNING: Attempted to set the height too low. "
+                  f"Height has been set to minimum of {self._start[1] + self._end[1] + 1}")
+            self._height = self._start[1] + self._end[1] + 1
         self._patch_data_changed = True
