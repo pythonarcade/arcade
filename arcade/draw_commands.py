@@ -794,12 +794,28 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
     """
     Draw a textured rectangle on-screen.
 
+    .. warning:: This method can be slow!
+
+                 Most users should consider using
+                 :py:class:`arcade.Sprite` with
+                 :py:class:`arcade.SpriteList` instead of this
+                 function.
+
+    OpenGL accelerates drawing by using batches to draw multiple things
+    at once. This method doesn't do that.
+
+    If you need finer control or less overhead than arcade allows,
+    consider `pyglet's batching features
+    <https://pyglet.readthedocs.io/en/master/modules/graphics/index.html#batches-and-groups>`_.
+
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
-    :param int texture: identifier of texture returned from load_texture() call
+    :param int texture: identifier of texture returned from
+                        load_texture() call
     :param float scale: scale of texture
     :param float angle: rotation of the rectangle. Defaults to zero.
-    :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    :param float alpha: Transparency of image. 0 is fully transparent,
+                        255 (default) is fully visible
     """
     texture.draw_scaled(center_x, center_y, scale, angle, alpha)
 
