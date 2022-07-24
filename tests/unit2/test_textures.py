@@ -201,13 +201,3 @@ def test_crate_empty():
         (128.0, 128.0),
         (-128.0, 128.0)
     )
-
-
-def test_trim_image(window):
-    """Trim whitespace from image"""
-    im = PIL.Image.new("RGBA", size=(100, 100), color=(0, 0, 0, 0))
-    canvas = PIL.ImageDraw.ImageDraw(im)
-    canvas.rectangle((0, 0, 49, 49), fill=(255, 255, 255, 255))
-    im = arcade.trim_image(im)
-    assert im.size == (50, 50)
-    assert im.getpixel((0, 0)) == (255, 255, 255, 255)
