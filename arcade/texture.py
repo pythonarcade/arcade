@@ -26,8 +26,8 @@ from arcade.resources import resolve_resource_path
 LOG = logging.getLogger(__name__)
 
 #: Global hit box cache
-# hit_box_cache = HitBoxCache()
-# image_cache = WeakImageCache()
+hit_box_cache = HitBoxCache()
+image_cache = WeakImageCache()
 
 
 class Texture:
