@@ -3,12 +3,13 @@ Code related to working with textures.
 """
 import logging
 from pathlib import Path
+from weakref import WeakValueDictionary
 
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional, Tuple, Any, List, Union
+from typing import Dict, Optional, Tuple, Any, List, Union
 from arcade import (
     lerp,
     RectList,
@@ -18,23 +19,24 @@ from arcade import (
     calculate_hit_box_points_detailed,
 )
 from arcade.resources import resolve_resource_path
-from arcade.cache.hit_box import HitBoxCache
-from arcade.cache.image import WeakImageCache
+# from arcade.cache.hit_box import HitBoxCache
+# from arcade.cache.image import WeakImageCache
 
 LOG = logging.getLogger(__name__)
 
 #: Global hit box cache
-hit_box_cache = HitBoxCache()
-image_cache = WeakImageCache()
-
+# hit_box_cache = HitBoxCache()
+# image_cache = WeakImageCache()
 
 class Texture:
     """
-    Class that represents a texture.
+    An arcade.Texture is simply a wrapper for image data as a Pillow image
+    and the hit box data for this image used in collision detection.
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
-    :param str name: Name of texture. Used for caching, so must be unique for each texture.
-    :param PIL.Image.Image image: Image to use as a texture.
+    :param str name: Globally unique name for this texture.
+                     This is used internally for caching and texture atlas.
+    :param PIL.Image.Image image: The image for this texture
     :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
     Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
     :data:`PhysicsEnginePlatformer` \
@@ -56,19 +58,10 @@ class Texture:
            hit_box_algorithm = "Detailed"
 
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-
-    Attributes:
-        :name: Unique name of the texture. Used by load_textures for caching.
-               If you are manually creating a texture, you can just set this
-               to whatever.
-        :image: A :py:class:`PIL.Image.Image` object.
-        :width: Width of the texture in pixels.
-        :height: Height of the texture in pixels.
-        :size: Tuple containing (width, height)
-        :hit_box_points: The computed hit box of the texture
-
-
     """
+    cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+
+    # TODO: Make this more generic?
     _valid_hit_box_algorithms = [
         "Simple",
         "Detailed",
@@ -104,12 +97,22 @@ class Texture:
         self._hit_box_algorithm = hit_box_algorithm or "None"
         self._hit_box_detail = hit_box_detail
         self._hit_box_points = None
+        # TODO: Possibly remove this making it lazy
         self.calculate_hit_box_points()
 
     @staticmethod
-    def build_cache_name(name, x, y, w, h, fh, fv, fd, hba) -> str:
-        """Build the cache name of a texture"""
-        return _build_cache_name(name, x, y, w, h, fh, fv, fd, hba)
+    def build_cache_name(*args) -> str:
+        """
+        Generate cache names from the given parameters
+
+        This is mostly useful when generating textures with many parameters
+
+        :param args: params to format
+        :param separator: separator character or string between params
+
+        :return: Formatted cache string representing passed parameters
+        """
+        return "|".join([f"{arg}" for arg in args])
 
     @classmethod
     def create_filled(cls, name: str, size: Tuple[int, int], color: Color) -> "Texture":
@@ -235,30 +238,18 @@ class Texture:
 
     @property
     def width(self) -> int:
-        """
-        Width of the texture in pixels.
-        """
-        if not self.image:
-            raise ValueError(f"Texture '{self.name}' doesn't have an image")
-
+        """Width of the texture in pixels."""
         return self.image.width
 
     @property
     def height(self) -> int:
-        """
-        Height of the texture in pixels.
-        """
-        if not self.image:
-            raise ValueError(f"Texture '{self.name}' doesn't have an image")
-
+        """Height of the texture in pixels."""
         return self.image.height
 
     @property
     def size(self) -> Tuple[int, int]:
-        """
-        Width and height as a tuple
-        """
-        return self.width, self.height
+        """Width and height as a tuple"""
+        return self.image.size
 
     @property
     def hit_box_points(self):
@@ -281,12 +272,12 @@ class Texture:
                 self.image, self._hit_box_detail
             )
         else:
-            p1 = (-self.image.width / 2, -self.image.height / 2)
-            p2 = (self.image.width / 2, -self.image.height / 2)
-            p3 = (self.image.width / 2, self.image.height / 2)
-            p4 = (-self.image.width / 2, self.image.height / 2)
-
-            self._hit_box_points = p1, p2, p3, p4
+            self._hit_box_points = (
+                (-self.image.width / 2, -self.image.height / 2),
+                (self.image.width / 2, -self.image.height / 2),
+                (self.image.width / 2, self.image.height / 2),
+                (-self.image.width / 2, self.image.height / 2),
+            )
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -381,78 +372,63 @@ def load_textures(
     :raises: ValueError
     """
     LOG.info("load_textures: %s ", file_name)
-    # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = "{}".format(file_name)
-    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
-        source_image = texture.image
-    else:
-        file_name = resolve_resource_path(file_name)
+    image = PIL.Image.open(resolve_resource_path(file_name))
 
-        source_image = PIL.Image.open(file_name)
-        result = Texture(
-            cache_file_name,
-            image=source_image,
-            hit_box_algorithm=hit_box_algorithm,
-            hit_box_detail=hit_box_detail,
-        )
-        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
-
-    source_image_width, source_image_height = source_image.size
-    texture_info_list = []
+    texture_sections = []
     for image_location in image_location_list:
         x, y, width, height = image_location
 
         if width <= 0:
             raise ValueError("Texture has a width of {}, must be > 0.".format(width))
-        if x > source_image_width:
+        if x > image.width:
             raise ValueError(
                 "Can't load texture starting at an x of {} "
-                "when the image is only {} across.".format(x, source_image_width)
+                "when the image is only {} across.".format(x, image.width)
             )
-        if y > source_image_height:
+        if y > image.height:
             raise ValueError(
                 "Can't load texture starting at an y of {} "
-                "when the image is only {} high.".format(y, source_image_height)
+                "when the image is only {} high.".format(y, image.height)
             )
-        if x + width > source_image_width:
+        if x + width > image.width:
             raise ValueError(
                 "Can't load texture ending at an x of {} "
-                "when the image is only {} wide.".format(x + width, source_image_width)
+                "when the image is only {} wide.".format(x + width, image.width)
             )
-        if y + height > source_image_height:
+        if y + height > image.height:
             raise ValueError(
                 "Can't load texture ending at an y of {} "
                 "when the image is only {} high.".format(
-                    y + height, source_image_height
+                    y + height, image.height,
                 )
             )
 
         # See if we already loaded this texture, and we can just use a cached version.
-        cache_name = "{}{}{}{}{}{}{}".format(
+        name = Texture.build_cache_name(
             file_name, x, y, width, height, flipped, mirrored
         )
-        if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-            result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
-        else:
-            image = source_image.crop((x, y, x + width, y + height))
+        try:
+            sub_texture = Texture.cache[name]
+        except KeyError:
+            sub_image = image.crop((x, y, x + width, y + height))
 
             if mirrored:
-                image = PIL.ImageOps.mirror(image)
+                sub_image = PIL.ImageOps.mirror(sub_image)
 
             if flipped:
-                image = PIL.ImageOps.flip(image)
+                sub_image = PIL.ImageOps.flip(sub_image)
 
-            result = Texture(
-                cache_name,
-                image=image,
+            sub_texture = Texture(
+                name,
+                image=sub_image,
                 hit_box_algorithm=hit_box_algorithm,
                 hit_box_detail=hit_box_detail,
             )
-            load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-        texture_info_list.append(result)
+            Texture.cache[name] = sub_texture
 
-    return texture_info_list
+        texture_sections.append(sub_texture)
+
+    return texture_sections
 
 
 def load_texture(
@@ -464,7 +440,6 @@ def load_texture(
     flipped_horizontally: bool = False,
     flipped_vertically: bool = False,
     flipped_diagonally: bool = False,
-    can_cache: bool = True,
     hit_box_algorithm: Optional[str] = "Simple",
     hit_box_detail: float = 4.5,
 ) -> Texture:
@@ -488,9 +463,6 @@ def load_texture(
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param bool can_cache: If a texture has already been loaded, load_texture will return the same texture in order \
-    to save time. Sometimes this is not desirable, as resizing a cached texture will cause all other textures to \
-    resize with it. Setting can_cache to false will prevent this issue at the experience of additional resources.
     :param bool mirrored: Deprecated.
     :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
     Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
@@ -517,69 +489,60 @@ def load_texture(
     :raises: ValueError
     """
     LOG.info("load_texture: %s ", file_name)
-    # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = Texture.build_cache_name(
+
+    # First check if we have a cached version of this texture.
+    name = Texture.build_cache_name(
         file_name,
-        x,
-        y,
-        width,
-        height,
-        flipped_horizontally,
-        flipped_vertically,
-        flipped_diagonally,
+        x, y,
+        width, height,
+        flipped_horizontally, flipped_vertically, flipped_diagonally,
         hit_box_algorithm,
     )
-
-    if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
+    try:
+        return Texture.cache[name]
+    except KeyError:
+        pass
 
     # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = f"{file_name}"
-    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
-        source_image = texture.image
-    else:
-        # If we should pull from local resources, replace with proper path
+    try:
+        texture = Texture.cache[str(file_name)]
+    except KeyError:
         file_name = resolve_resource_path(file_name)
-
-        source_image = PIL.Image.open(file_name).convert("RGBA")
-        result = Texture(
-            cache_file_name,
-            source_image,
+        texture = Texture(
+            str(file_name),
+            PIL.Image.open(file_name).convert("RGBA"),
             hit_box_algorithm=hit_box_algorithm,
             hit_box_detail=hit_box_detail,
         )
-        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
-
-    source_image_width, source_image_height = source_image.size
+        Texture.cache[str(file_name)] = texture
 
     if x != 0 or y != 0 or width != 0 or height != 0:
-        if x > source_image_width:
+        if x > texture.image.width:
             raise ValueError(
                 "Can't load texture starting at an x of {} "
-                "when the image is only {} across.".format(x, source_image_width)
+                "when the image is only {} across.".format(x, texture.image.width)
             )
-        if y > source_image_height:
+        if y > texture.image.height:
             raise ValueError(
                 "Can't load texture starting at an y of {} "
-                "when the image is only {} high.".format(y, source_image_height)
+                "when the image is only {} high.".format(y, texture.image.height)
             )
-        if x + width > source_image_width:
+        if x + width > texture.image.width:
             raise ValueError(
                 "Can't load texture ending at an x of {} "
-                "when the image is only {} wide.".format(x + width, source_image_width)
+                "when the image is only {} wide.".format(x + width, texture.image.width)
             )
-        if y + height > source_image_height:
+        if y + height > texture.image.height:
             raise ValueError(
                 "Can't load texture ending at an y of {} "
                 "when the image is only {} high.".format(
-                    y + height, source_image_height
+                    y + height, texture.image.height
                 )
             )
 
-        image = source_image.crop((x, y, x + width, y + height))
+        image = texture.image.crop((x, y, x + width, y + height))
     else:
-        image = source_image
+        image = texture.image
 
     if flipped_diagonally:
         image = image.transpose(PIL.Image.Transpose.TRANSPOSE)
@@ -590,17 +553,14 @@ def load_texture(
     if flipped_vertically:
         image = image.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
 
-    result = Texture(
-        cache_name,
+    texture = Texture(
+        name,
         image,
         hit_box_algorithm=hit_box_algorithm,
         hit_box_detail=hit_box_detail,
     )
-    load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-    return result
-
-
-load_texture.texture_cache = dict()  # type: ignore
+    Texture.cache[name] = texture
+    return texture
 
 
 def cleanup_texture_cache():
@@ -608,9 +568,8 @@ def cleanup_texture_cache():
     This cleans up the cache of textures. Useful when running unit tests so that
     the next test starts clean.
     """
-    load_texture.texture_cache = dict()
+    Texture.cache = Texture.cache.__class__()
     import gc
-
     gc.collect()
 
 
@@ -678,20 +637,6 @@ def load_spritesheet(
     return texture_list
 
 
-def _build_cache_name(*args: Any, separator: str = "-") -> str:
-    """
-    Generate cache names from the given parameters
-
-    This is mostly useful when generating textures with many parameters
-
-    :param args: params to format
-    :param separator: separator character or string between params
-
-    :return: Formatted cache string representing passed parameters
-    """
-    return separator.join([f"{arg}" for arg in args])
-
-
 def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
@@ -702,11 +647,9 @@ def make_circle_texture(diameter: int, color: Color, name: str = None) -> Textur
 
     :returns: New :class:`Texture` object.
     """
-
-    name = name or _build_cache_name(
+    name = name or Texture.build_cache_name(
         "circle_texture", diameter, color[0], color[1], color[2]
     )
-
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -735,7 +678,7 @@ def make_soft_circle_texture(
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
-    name = name or _build_cache_name(
+    name = Texture.build_cache_name(
         "soft_circle_texture",
         diameter,
         color[0],
@@ -785,8 +728,8 @@ def make_soft_square_texture(
     :returns: New :class:`Texture` object.
     """
     # name must be unique for caching
-    name = name or _build_cache_name(
-        "gradientsquare", size, color, center_alpha, outer_alpha
+    name = name or Texture.build_cache_name(
+        "gradient-square", size, color, center_alpha, outer_alpha
     )
 
     bg_color = (0, 0, 0, 0)  # fully transparent
@@ -801,16 +744,3 @@ def make_soft_square_texture(
             (cur_size, cur_size, size - cur_size, size - cur_size), clr, None
         )
     return Texture(name, img)
-
-
-# --- END TEXTURE FUNCTIONS # # #
-
-
-def trim_image(image: PIL.Image.Image) -> PIL.Image.Image:
-    """
-    Crops the extra whitespace out of an image.
-
-    :returns: New :py:class:`PIL.Image.Image` object.
-    """
-    bbox = image.getbbox()
-    return image.crop(bbox)

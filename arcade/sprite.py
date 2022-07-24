@@ -8,7 +8,6 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 import math
 import arcade
 
-from arcade.texture import _build_cache_name
 from arcade.geometry_generic import get_angle_degrees
 
 import dataclasses
@@ -1321,16 +1320,15 @@ class SpriteSolidColor(Sprite):
         """
         super().__init__()
 
-        cache_name = _build_cache_name("Solid", width, height, color[0], color[1], color[2])
-
+        cache_name = Texture.build_cache_name("Solid", width, height, color[0], color[1], color[2])
+        import arcade
         # use existing texture if it exists
-        if cache_name in load_texture.texture_cache:  # type: ignore
-            texture = load_texture.texture_cache[cache_name]  # type: ignore
-
+        if cache_name in Texture.cache:
+            texture = Texture.cache[cache_name]
         # otherwise, generate a filler sprite and add it to the cache
         else:
             texture = Texture.create_filled(cache_name, (width, height), color)
-            load_texture.texture_cache[cache_name] = texture  # type: ignore
+            Texture.cache[cache_name] = texture
 
         # apply chosen texture to the current sprite
         self.texture = texture
@@ -1348,18 +1346,18 @@ class SpriteCircle(Sprite):
     """
     def __init__(self, radius: int, color: Color, soft: bool = False):
         super().__init__()
-
+        radius = int(radius)
         diameter = radius * 2
 
         # determine the texture's cache name
         if soft:
-            cache_name = _build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
+            cache_name = Texture.build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
         else:
-            cache_name = _build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+            cache_name = Texture.build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
 
         # use the named texture if it was already made
-        if cache_name in load_texture.texture_cache:  # type: ignore
-            texture = load_texture.texture_cache[cache_name]  # type: ignore
+        if cache_name in Texture.cache:  # type: ignore
+            texture = Texture.cache[cache_name]  # type: ignore
 
         # generate the texture if it's not in the cache
         else:
@@ -1368,7 +1366,7 @@ class SpriteCircle(Sprite):
             else:
                 texture = make_circle_texture(diameter, color, name=cache_name)
 
-            load_texture.texture_cache[cache_name] = texture  # type: ignore
+            Texture.cache[cache_name] = texture  # type: ignore
 
         # apply results to the new sprite
         self.texture = texture
@@ -1384,8 +1382,4 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     :return: Distance
     :rtype: float
     """
-    distance = math.sqrt(
-        (sprite1.center_x - sprite2.center_x) ** 2
-        + (sprite1.center_y - sprite2.center_y) ** 2
-    )
-    return distance
+    return arcade.get_distance(*sprite1._position, *sprite2._position)
