@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         # Cameras
         self.camera = None
         self.gui_camera = None
-        
+
         # Text
         self.fps_text = arcade.Text(
             "",
