@@ -34,6 +34,8 @@ class Camera:
         self.position = Vec2(0, 0)
         self.goal_position = Vec2(0, 0)
 
+        self._rotation = 0.0
+
         # Movement Speed, 1.0 is instant
         self.move_speed = 1.0
 
@@ -60,6 +62,17 @@ class Camera:
         self.viewport_width = viewport_width or self._window.width
         self.viewport_height = viewport_height or self._window.height
         self.set_projection()
+
+    @property
+    def rotation(self) -> float:
+        """
+        Get or set the rotation in angles
+        """
+        return self._rotation
+
+    @rotation.setter
+    def rotation(self, value: float):
+        self._rotation = value
 
     def update(self):
         """
@@ -188,6 +201,17 @@ class Camera:
         Select this camera for use. Do this right before you draw.
         """
         self._window.current_camera = self
+
         self.update()
+        # Viewport / projection
         self._window.ctx.viewport = 0, 0, int(self.viewport_width), int(self.viewport_height)
         self._window.ctx.projection_2d_matrix = self.combined_matrix
+
+        # View matrix for rotation
+        rotate = Mat4.from_rotation(self.rotation, (0, 0, 1))
+
+        offset = Vec3(self.position.x, self.position.y, 0)
+        offset += Vec3(self.viewport_width / 2, self.viewport_height / 2, 0)
+        translate_pre = Mat4.from_translation(offset)
+        translate_post = Mat4.from_translation(-offset)
+        self._window.ctx.view_matrix_2d = translate_post @ rotate @ translate_pre

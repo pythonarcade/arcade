@@ -49,6 +49,8 @@ class ArcadeContext(Context):
         self.enable(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
 
+        self._projection_2d_matrix = Mat4()
+        self._view_2d_matrix = Mat4()
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObject = window.ubo
         self.bind_window_block()
@@ -282,10 +284,28 @@ class ArcadeContext(Context):
         self._projection_2d_matrix = value
         self.window.projection = self._projection_2d_matrix
 
+    @property
+    def view_matrix_2d(self) -> Mat4:
+        """
+        Get the current view matrix.
+        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
+
+        :type: pyglet.math.Mat4
+        """
+        return self._view_matrix_2d
+
+    @view_matrix_2d.setter
+    def view_matrix_2d(self, value: Mat4):
+        if not isinstance(value, Mat4):
+            raise ValueError("view_matrix must be a Mat4 object")
+
+        self._view_matrix_2d = value
+        self.window.view = self._view_matrix_2d
+
     @contextmanager
     def pyglet_rendering(self):
         """
-        Context manager for doing redering with pyglet
+        Context manager for doing rendering with pyglet
         ensuring context states are reverted. This
         affects things like blending.
         """
