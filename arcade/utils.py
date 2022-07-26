@@ -1,7 +1,6 @@
 import math
 import random
 from io import StringIO
-
 from arcade.arcade_types import Point, Vector
 
 
