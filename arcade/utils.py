@@ -1,9 +1,7 @@
 import math
 import random
 from io import StringIO
-from typing import cast, Tuple
 
-from arcade import Color
 from arcade.arcade_types import Point, Vector
 
 
