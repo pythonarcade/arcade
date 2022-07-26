@@ -61,6 +61,8 @@ class PerfGraph(arcade.Sprite):
     :param axis_color: The color to draw the x & y axes in
     :param font_color: The color of the label font
     :param font_size: The size of the label font in points
+    :param y_axis_num_lines: How many grid lines should be used to
+                             divide the y scale of the graph.
     :param y_axis_data_step: The amount the maximum Y value of the graph
                              view will shrink or grow by to fit to the
                              data currently displayed.
@@ -77,6 +79,7 @@ class PerfGraph(arcade.Sprite):
             grid_color: Color = arcade.color.DARK_YELLOW,
             font_color: Color = arcade.color.WHITE,
             font_size: int = 10,
+            y_axis_num_lines: int = 4,
             y_axis_data_step: float = 20.0,
     ):
 
@@ -96,9 +99,9 @@ class PerfGraph(arcade.Sprite):
         self._axis_color = arcade.get_four_byte_color(axis_color)
         self._font_color = arcade.get_four_byte_color(font_color)
         self._font_size = font_size
+        self._y_axis_num_lines = y_axis_num_lines
         self._left_x = 25
         self._bottom_y = 15
-        self._num_subdivisions = 4
 
         # Rendering-related variables
         self.graph_data = graph_data
@@ -106,8 +109,8 @@ class PerfGraph(arcade.Sprite):
         self._max_data = 0.0
         self._y_axis_data_step = y_axis_data_step
         self._max_pixels = self.height - self._bottom_y
-        self._value_increment = self._max_data // self._num_subdivisions
-        self._y_increment = self._max_pixels / self._num_subdivisions
+        self._value_increment = self._max_data // self._y_axis_num_lines
+        self._y_increment = self._max_pixels / self._y_axis_num_lines
 
         # set up internal Text object & line caches
 
@@ -141,7 +144,7 @@ class PerfGraph(arcade.Sprite):
         _set_line_to_color(self._y_axis, self._axis_color)
 
         # Create the Y scale text objects & lines
-        for i in range(self._num_subdivisions):
+        for i in range(self._y_axis_num_lines):
             y_level = self._bottom_y + self._y_increment * i
             self._vertical_axis_text_objects.append(
                 arcade.Text(
