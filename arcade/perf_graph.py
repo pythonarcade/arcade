@@ -106,7 +106,10 @@ class PerfGraph(arcade.Sprite):
         self._y_increment = self._max_pixels / self._num_subdivisions
 
         # set up internal Text object & line caches
-        self._pyglet_batch = Batch()
+
+        self._pyglet_batch = Batch()  # Used to draw graph elements
+
+        # Convenient storage for iteration during color updates
         self._vertical_axis_text_objects: List[arcade.Text] = []
         self._all_text_objects: List[arcade.Text] = []
         self._grid_lines: List[Line] = []
