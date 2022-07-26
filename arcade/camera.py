@@ -35,7 +35,7 @@ class Camera:
         self.goal_position = Vec2(0, 0)
 
         self._rotation = 0.0
-        self._anchor = None
+        self._anchor: Optional[Tuple[float, float]] = None
 
         # Movement Speed, 1.0 is instant
         self.move_speed = 1.0
@@ -83,6 +83,11 @@ class Camera:
         """
         Get or set the rotation anchor for the camera.
 
+        By default, the anchor is the center of the screen
+        and the anchor value is `None`. Assigning a custom
+        anchor point will override this behavior.
+        The anchor point is in world / global coordinates.
+
         Example::
 
             # Set the anchor to the center of the world
@@ -94,7 +99,10 @@ class Camera:
 
     @anchor.setter
     def anchor(self, anchor: Optional[Tuple[float, float]]):
-        self._anchor = anchor[0], anchor[1]
+        if anchor is None:
+            self._anchor = None
+        else:
+            self._anchor = anchor[0], anchor[1]
 
     def update(self):
         """
