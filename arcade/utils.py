@@ -160,19 +160,3 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
             guid.write(str(value))
             guid.write("-")
         return guid.getvalue()
-
-
-def opacity_of_color(color: Color) -> int:
-    """
-    Return the opacity for a color, treating RGB colors as fully opaque.
-
-    It does not perform in-depth length checking and leaves that up to
-    tools such as static type checkers or linters built into IDEs.
-
-    :param color: The color to return an opacity value for
-    :return:
-    """
-    if len(color) > 3:
-        return cast(Tuple[int, int, int, int], color)[3]
-    else:
-        return 255
