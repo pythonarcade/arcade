@@ -63,9 +63,9 @@ class PerfGraph(arcade.Sprite):
     :param font_size: The size of the label font in points
     :param y_axis_num_lines: How many grid lines should be used to
                              divide the y scale of the graph.
-    :param y_axis_data_step: The amount the maximum Y value of the graph
-                             view will shrink or grow by to fit to the
-                             data currently displayed.
+    :param view_y_scale_step: The graph's view area will be scaled to a
+                              multiple of this value to fit to the data
+                              currently displayed.
     """
 
     def __init__(
@@ -80,7 +80,7 @@ class PerfGraph(arcade.Sprite):
             font_color: Color = arcade.color.WHITE,
             font_size: int = 10,
             y_axis_num_lines: int = 4,
-            y_axis_data_step: float = 20.0,
+            view_y_scale_step: float = 20.0,
     ):
 
         unique_id = str(random.random())
@@ -107,7 +107,7 @@ class PerfGraph(arcade.Sprite):
         self.graph_data = graph_data
         self._data_to_graph: List[float] = []
         self._max_data = 0.0
-        self._y_axis_data_step = y_axis_data_step
+        self._view_y_scale_step = view_y_scale_step
         self._max_pixels = self.height - self._bottom_y
         self._value_increment = self._max_data // self._y_axis_num_lines
         self._y_increment = self._max_pixels / self._y_axis_num_lines
@@ -270,7 +270,7 @@ class PerfGraph(arcade.Sprite):
         # looking up instance variables repeatedly.
         bottom_y = self._bottom_y
         left_x = self._left_x
-        y_axis_data_step = self._y_axis_data_step
+        view_y_scale_step = self._view_y_scale_step
         vertical_axis_text_objects = self._vertical_axis_text_objects
         max_pixels = self._max_pixels
 
@@ -284,7 +284,7 @@ class PerfGraph(arcade.Sprite):
 
         # Calculate the value at the top of the chart
         max_value = max(self._data_to_graph)
-        max_data = ((max_value + 1.5) // y_axis_data_step + 1) * y_axis_data_step
+        max_data = ((max_value + 1.5) // view_y_scale_step + 1) * view_y_scale_step
 
         # Calculate draw positions of each pixel on the data line
         point_list = []
