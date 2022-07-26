@@ -232,18 +232,6 @@ class PerfGraph(arcade.Sprite):
                            scheduler.
         """
 
-        # Using locals for frequently used values is faster than
-        # looking up instance variables repeatedly.
-        bottom_y = self._bottom_y
-        left_x = self._left_x
-        y_axis_data_step = self._y_axis_data_step
-        vertical_axis_text_objects = self._vertical_axis_text_objects
-        max_pixels = self._max_pixels
-
-        # Rendering is done to the internal texture at its original size
-        # rather than the scaled size stored on self.
-        texture_width, texture_height = self._texture.size  # type: ignore
-
         # Skip update if there is no SpriteList that can draw this graph
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
             return
@@ -257,11 +245,12 @@ class PerfGraph(arcade.Sprite):
             return
 
         # Get FPS and add to our historical data
-        if self.graph_data == "FPS":
+        graph_data = self.graph_data
+        if graph_data == "FPS":
             self._data_to_graph.append(arcade.get_fps())
         else:
             timings = arcade.get_timings()
-            if self.graph_data in timings:
+            if graph_data in timings:
                 timing_list = timings[self.graph_data]
                 avg_timing = sum(timing_list) / len(timing_list)
                 self._data_to_graph.append(avg_timing * 1000)
@@ -269,6 +258,18 @@ class PerfGraph(arcade.Sprite):
         # Skip update if there is no data to graph
         if len(self._data_to_graph) == 0:
             return
+
+        # Using locals for frequently used values is faster than
+        # looking up instance variables repeatedly.
+        bottom_y = self._bottom_y
+        left_x = self._left_x
+        y_axis_data_step = self._y_axis_data_step
+        vertical_axis_text_objects = self._vertical_axis_text_objects
+        max_pixels = self._max_pixels
+
+        # Rendering is done to the internal texture at its original size
+        # rather than the scaled size stored on self.
+        texture_width, texture_height = self._texture.size  # type: ignore
 
         # Toss old data
         while len(self._data_to_graph) > texture_width - left_x:
