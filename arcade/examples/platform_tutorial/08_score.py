@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.08_score
 """
 import arcade
 
