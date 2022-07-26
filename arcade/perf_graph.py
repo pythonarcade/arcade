@@ -85,9 +85,13 @@ class PerfGraph(arcade.Sprite):
         super().__init__(texture=self.minimap_texture)
         self.proj = 0, self.width, 0, self.height
 
-        # Convert and store visual style info
-        self._background_color = arcade.get_four_byte_color(background_color)
+        # The data line is redrawn each update by a function that does
+        # not cache vertices, so there is no need to make this attribute
+        # a property that updates geometry when set.
         self.line_color = arcade.get_four_byte_color(data_line_color)
+
+        # Store visual style info for cached pyglet shape geometry
+        self._background_color = arcade.get_four_byte_color(background_color)
         self._grid_color = arcade.get_four_byte_color(grid_color)
         self._axis_color = arcade.get_four_byte_color(axis_color)
         self._font_color = arcade.get_four_byte_color(font_color)
@@ -267,8 +271,8 @@ class PerfGraph(arcade.Sprite):
         vertical_axis_text_objects = self._vertical_axis_text_objects
         max_pixels = self._max_pixels
 
-        # Rendering is done to the internal texture at its original size
-        # rather than the scaled size stored on self.
+        # We have to render at the internal texture's original size to
+        # prevent distortion and bugs when the sprite is scaled.
         texture_width, texture_height = self._texture.size  # type: ignore
 
         # Toss old data by removing leftmost entries
@@ -297,11 +301,13 @@ class PerfGraph(arcade.Sprite):
 
         # Render to the internal texture
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+
+            # Set the background color
             fbo.clear(self.background_color)
+
             # Draw lines & their labels
             for text in self._all_text_objects:
                 text.draw()
-
             self._pyglet_batch.draw()
 
             # Draw the data line
