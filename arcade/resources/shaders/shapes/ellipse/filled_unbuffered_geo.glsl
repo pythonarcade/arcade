@@ -10,9 +10,10 @@ layout (points) in;
 // TODO: Normally 4096 is supported, but let's stay on the safe side
 layout (triangle_strip, max_vertices = 256) out;
 
-uniform Projection {
-    uniform mat4 matrix;
-} proj;
+uniform WindowBlock {
+    mat4 projection;
+    mat4 view;
+} window;
 
 uniform int segments;
 // [w, h, tilt]
@@ -47,19 +48,19 @@ void main() {
     float st = PI * 2.0 / float(segments_selected);
 
     for (int i = 0; i < segments_selected; i++) {
-        gl_Position = proj.matrix * vec4(center, 0.0, 1.0);
+        gl_Position = window.projection * window.view * vec4(center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
         vec2 p1 = vec2(sin((float(i) + 1.0) * st), cos((float(i) + 1.0) * st)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
-        gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
+        gl_Position = window.projection * window.view * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
         vec2 p2 = vec2(sin(float(i) * st), cos(float(i) * st)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
-        gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
+        gl_Position = window.projection * window.view * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
 
         EndPrimitive();

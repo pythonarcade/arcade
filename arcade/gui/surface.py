@@ -35,9 +35,11 @@ class Surface:
             vertex_shader="""
                 #version 330
 
-                uniform Projection {
-                    uniform mat4 matrix;
-                } proj;
+                uniform WindowBlock {
+                    mat4 projection;
+                    mat4 view;
+                } window;
+
                 uniform vec2 pos;
                 uniform vec2 size;
 
@@ -47,7 +49,7 @@ class Surface:
                 out vec2 uv;
 
                 void main() {
-                    gl_Position = proj.matrix * vec4((in_vert * size) + pos, 0.0, 1.0);
+                    gl_Position = window.projection * window.view * vec4((in_vert * size) + pos, 0.0, 1.0);
                     uv = in_uv;
                 }
                 """,

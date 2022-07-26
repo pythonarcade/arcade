@@ -81,10 +81,11 @@ class SpriteListInteraction(arcade.Window):
             geometry_shader="""
             #version 330
 
-            // This is how we access Arcade's global projection matrix
-            uniform Projection {
-                uniform mat4 matrix;
-            } proj;
+            // This is how we access pyglet's global projection matrix
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             // The position we measure distance from
             uniform vec2 origin;
@@ -114,7 +115,7 @@ class SpriteListInteraction(arcade.Window):
                 if (distance(v_position[0], origin) > maxDistance) return;
 
                 // Read samples from the wall texture in a line looking for obstacles
-                // We simply make a vector between the origina and the sprite location
+                // We simply make a vector between the original and the sprite location
                 // and trace pixels in this path with a reasonable step.
                 int numSteps = int(maxDistance / 2.0);
                 vec2 dir = v_position[0] - origin;
@@ -127,10 +128,10 @@ class SpriteListInteraction(arcade.Window):
                 }
 
                 // First line segment position (origin)
-                gl_Position = proj.matrix * vec4(origin, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(origin, 0.0, 1.0);
                 EmitVertex();
                 // Second line segment position (sprite position)
-                gl_Position = proj.matrix * vec4(v_position[0], 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(v_position[0], 0.0, 1.0);
                 EmitVertex();
                 EndPrimitive();
             }

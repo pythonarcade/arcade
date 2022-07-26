@@ -10,9 +10,10 @@ layout (points) in;
 // TODO: Normally 4096 is supported, but let's stay on the safe side
 layout (triangle_strip, max_vertices = 256) out;
 
-uniform Projection {
-    uniform mat4 matrix;
-} proj;
+uniform WindowBlock {
+    mat4 projection;
+    mat4 view;
+} window;
 
 uniform int segments;
 // [w, h, tilt, thickness]
@@ -51,24 +52,24 @@ void main() {
 
     // First outer vertex
     vec2 p_start = vec2(sin(0.0), cos(0.0)) * shape.xy;
-    gl_Position = proj.matrix * vec4((rot * p_start) + center, 0.0, 1.0);
+    gl_Position = window.projection * window.view * vec4((rot * p_start) + center, 0.0, 1.0);
     EmitVertex();
 
     // Draw cross segments from inner to outer
     for (int i = 0; i < segments_selected; i++) {
         // Inner vertex
         vec2 p1 = vec2(sin(float(i) * st), cos(float(i) * st)) * (shape.xy - vec2(shape.w));
-        gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
+        gl_Position = window.projection * window.view * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Outer vertex
         vec2 p2 = vec2(sin((float(i) + 1.0) * st), cos((float(i) + 1.0) * st)) * shape.xy;
-        gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
+        gl_Position = window.projection * window.view * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
     }
     // Last inner vertex to wrap up
     vec2 p_end = vec2(sin(0.0), cos(0.0)) * (shape.xy - vec2(shape.w));
-    gl_Position = proj.matrix * vec4((rot * p_end) + center, 0.0, 1.0);
+    gl_Position = window.projection * window.view * vec4((rot * p_end) + center, 0.0, 1.0);
     EmitVertex();
 
     EndPrimitive();

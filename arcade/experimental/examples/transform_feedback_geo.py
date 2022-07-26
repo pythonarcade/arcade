@@ -49,9 +49,10 @@ class MyGame(arcade.Window):
             geometry_shader="""
             #version 330
 
-            uniform Projection {
-                mat4 matrix;
-            } proj;
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             // We are receiving points and emitting triangle strip (4 vertices making a quad)
             layout (points) in;
@@ -65,19 +66,19 @@ class MyGame(arcade.Window):
                 vec2 center = gl_in[0].gl_Position.xy;
                 // Emit 4 vertices making a triangle strip representing a quad
 
-                gl_Position = proj.matrix * vec4(center + vec2(-P_SIZE,  P_SIZE), 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(center + vec2(-P_SIZE,  P_SIZE), 0.0, 1.0);
                 uv = vec2(0, 1);
                 EmitVertex();
 
-                gl_Position = proj.matrix * vec4(center + vec2(-P_SIZE, -P_SIZE), 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(center + vec2(-P_SIZE, -P_SIZE), 0.0, 1.0);
                 uv = vec2(0, 0);
                 EmitVertex();
 
-                gl_Position = proj.matrix * vec4(center + vec2( P_SIZE,  P_SIZE), 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(center + vec2( P_SIZE,  P_SIZE), 0.0, 1.0);
                 uv = vec2(1, 1);
                 EmitVertex();
 
-                gl_Position = proj.matrix * vec4(center + vec2( P_SIZE, -P_SIZE), 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(center + vec2( P_SIZE, -P_SIZE), 0.0, 1.0);
                 uv = vec2(1, 0);
                 EmitVertex();
                 EndPrimitive();
