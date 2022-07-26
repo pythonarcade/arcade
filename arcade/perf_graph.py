@@ -271,7 +271,7 @@ class PerfGraph(arcade.Sprite):
         # rather than the scaled size stored on self.
         texture_width, texture_height = self._texture.size  # type: ignore
 
-        # Toss old data
+        # Toss old data by removing leftmost entries
         while len(self._data_to_graph) > texture_width - left_x:
             self._data_to_graph.pop(0)
 
