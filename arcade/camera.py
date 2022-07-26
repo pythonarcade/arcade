@@ -2,7 +2,7 @@
 Camera class
 """
 import math
-from typing import Optional
+from typing import Optional, Tuple
 
 from pyglet.math import Mat4, Vec2, Vec3
 
@@ -35,6 +35,7 @@ class Camera:
         self.goal_position = Vec2(0, 0)
 
         self._rotation = 0.0
+        self._anchor = None
 
         # Movement Speed, 1.0 is instant
         self.move_speed = 1.0
@@ -66,13 +67,34 @@ class Camera:
     @property
     def rotation(self) -> float:
         """
-        Get or set the rotation in angles
+        Get or set the rotation in angles.
+
+        This will rotate the camera clockwise meaning
+        the contents will rotate counter-clockwise.
         """
         return self._rotation
 
     @rotation.setter
     def rotation(self, value: float):
         self._rotation = value
+
+    @property
+    def anchor(self) -> Optional[Tuple[float, float]]:
+        """
+        Get or set the rotation anchor for the camera.
+
+        Example::
+
+            # Set the anchor to the center of the world
+            camera.anchor = 0, 0
+            # Set the anchor to the center of the player
+            camera.anchor = player.position
+        """
+        return self._anchor
+
+    @anchor.setter
+    def anchor(self, anchor: Optional[Tuple[float, float]]):
+        self._anchor = anchor[0], anchor[1]
 
     def update(self):
         """
@@ -171,7 +193,7 @@ class Camera:
         Sets the goal position of the camera.
 
         The camera will lerp towards this position based on the provided speed,
-        updating its position everytime the use() function is called.
+        updating its position every time the use() function is called.
 
         :param Vec2 vector: Vector to move the camera towards.
         :param Vec2 speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
@@ -210,8 +232,13 @@ class Camera:
         # View matrix for rotation
         rotate = Mat4.from_rotation(self.rotation, (0, 0, 1))
 
-        offset = Vec3(self.position.x, self.position.y, 0)
-        offset += Vec3(self.viewport_width / 2, self.viewport_height / 2, 0)
+        # If no anchor is set, use the center of the screen
+        if self._anchor is None:
+            offset = Vec3(self.position.x, self.position.y, 0)
+            offset += Vec3(self.viewport_width / 2, self.viewport_height / 2, 0)
+        else:
+            offset = Vec3(self._anchor[0], self._anchor[1], 0)
+
         translate_pre = Mat4.from_translation(offset)
         translate_post = Mat4.from_translation(-offset)
         self._window.ctx.view_matrix_2d = translate_post @ rotate @ translate_pre
