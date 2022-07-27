@@ -294,7 +294,7 @@ class PerfGraph(arcade.Sprite):
             point_list.append((x, y))
             x += 1
 
-        # Update the Y axis scale & labels if needed
+        # Update the view scale & labels if needed
         if view_max_value != self._view_max_value:
             self._view_max_value = view_max_value
             view_y_legend_increment = self._view_max_value // 4
