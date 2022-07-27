@@ -250,7 +250,6 @@ class PerfGraph(arcade.Sprite):
                 fbo.clear()
             return
 
-
         # Get FPS and add to our historical data
         data_to_graph = self._data_to_graph
         graph_data = self.graph_data
