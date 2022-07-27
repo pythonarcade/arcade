@@ -106,11 +106,11 @@ class PerfGraph(arcade.Sprite):
         # Rendering-related variables
         self.graph_data = graph_data
         self._data_to_graph: List[float] = []
-        self._max_data = 0.0
+        self._view_max_value = 0.0  # We'll calculate this once we have data
         self._view_y_scale_step = view_y_scale_step
         self._max_pixels = self.height - self._bottom_y
-        self._value_increment = self._max_data // self._y_axis_num_lines
         self._y_increment = self._max_pixels / self._y_axis_num_lines
+
 
         # set up internal Text object & line caches
 
@@ -148,7 +148,7 @@ class PerfGraph(arcade.Sprite):
             y_level = self._bottom_y + self._y_increment * i
             self._vertical_axis_text_objects.append(
                 arcade.Text(
-                    f"{int(self._value_increment * i)}",
+                    f"{0.0}",  # This will be changed once data is added
                     self._left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
@@ -284,23 +284,23 @@ class PerfGraph(arcade.Sprite):
 
         # Calculate the value at the top of the chart
         max_value = max(self._data_to_graph)
-        max_data = ((max_value + 1.5) // view_y_scale_step + 1) * view_y_scale_step
+        view_max_value = ((max_value + 1.5) // view_y_scale_step + 1) * view_y_scale_step
 
         # Calculate draw positions of each pixel on the data line
         point_list = []
         x = left_x
         for reading in self._data_to_graph:
-            y = (reading / max_data) * max_pixels + bottom_y
+            y = (reading / view_max_value) * max_pixels + bottom_y
             point_list.append((x, y))
             x += 1
 
         # Update the Y axis scale & labels if needed
-        if max_data != self._max_data:
-            self._max_data = max_data
-            value_increment = self._max_data // 4
+        if view_max_value != self._view_max_value:
+            self._view_max_value = view_max_value
+            view_y_legend_increment = self._view_max_value // 4
             for index in range(1, len(vertical_axis_text_objects)):
                 text_object = vertical_axis_text_objects[index]
-                text_object.text = f"{int(index * value_increment)}"
+                text_object.text = f"{int(index * view_y_legend_increment)}"
 
         # Render to the internal texture
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
