@@ -147,7 +147,7 @@ class PerfGraph(arcade.Sprite):
             y_level = self._bottom_y + self._y_increment * i
             self._vertical_axis_text_objects.append(
                 arcade.Text(
-                    f"{0.0}",  # This will be changed once data is added
+                    f"0",  # Ensure the lowest y axis label is always 0
                     self._left_x, y_level,
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
