@@ -263,7 +263,7 @@ class PerfGraph(arcade.Sprite):
                 data_to_graph.append(avg_timing * 1000)
 
         # Skip update if there is no data to graph
-        if len(self._data_to_graph) == 0:
+        if len(data_to_graph) == 0:
             return
 
         # Using locals for frequently used values is faster than
