@@ -108,8 +108,8 @@ class PerfGraph(arcade.Sprite):
         self._data_to_graph: List[float] = []
         self._view_max_value = 0.0  # We'll calculate this once we have data
         self._view_y_scale_step = view_y_scale_step
-        self._max_pixels = self._texture.height - self._bottom_y  # type: ignore
-        self._y_increment = self._max_pixels / self._y_axis_num_lines
+        self._view_height = self._texture.height - self._bottom_y  # type: ignore
+        self._y_increment = self._view_height / self._y_axis_num_lines
 
         # Set up internal Text object & line caches
 
@@ -272,7 +272,7 @@ class PerfGraph(arcade.Sprite):
         left_x = self._left_x
         view_y_scale_step = self._view_y_scale_step
         vertical_axis_text_objects = self._vertical_axis_text_objects
-        max_pixels = self._max_pixels
+        view_height = self._view_height
 
         # We have to render at the internal texture's original size to
         # prevent distortion and bugs when the sprite is scaled.
@@ -290,7 +290,7 @@ class PerfGraph(arcade.Sprite):
         point_list = []
         x = left_x
         for reading in data_to_graph:
-            y = (reading / view_max_value) * max_pixels + bottom_y
+            y = (reading / view_max_value) * view_height + bottom_y
             point_list.append((x, y))
             x += 1
 
