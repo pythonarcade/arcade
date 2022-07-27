@@ -260,7 +260,7 @@ class PerfGraph(arcade.Sprite):
             if graph_data in timings:
                 timing_list = timings[self.graph_data]
                 avg_timing = sum(timing_list) / len(timing_list)
-                self._data_to_graph.append(avg_timing * 1000)
+                data_to_graph.append(avg_timing * 1000)
 
         # Skip update if there is no data to graph
         if len(self._data_to_graph) == 0:
