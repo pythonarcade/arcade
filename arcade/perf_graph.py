@@ -20,7 +20,7 @@ def _set_line_to_color(
     RGBA support added.
 
     :param line: the pyglet Line to set the color and opacity on
-    :param color: the color
+    :param color: the RGB or RGBA color to set the line to
     """
 
     r, g, b, *alpha = color
