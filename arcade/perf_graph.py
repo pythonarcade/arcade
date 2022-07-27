@@ -16,7 +16,7 @@ def _set_line_to_color(
 
     Pyglet does not yet support RGBA colors on shapes, but that feature
     will likely be merged soon. This function is marked with underscore
-    protection because it will be superflous once pyglet's shapes have
+    protection because it will be superfluous once pyglet's shapes have
     RGBA support added.
 
     :param line: the pyglet Line to set the color and opacity on
