@@ -108,7 +108,7 @@ class PerfGraph(arcade.Sprite):
         self._data_to_graph: List[float] = []
         self._view_max_value = 0.0  # We'll calculate this once we have data
         self._view_y_scale_step = view_y_scale_step
-        self._max_pixels = self.height - self._bottom_y
+        self._max_pixels = self._texture.height - self._bottom_y
         self._y_increment = self._max_pixels / self._y_axis_num_lines
 
         # Set up internal Text object & line caches
