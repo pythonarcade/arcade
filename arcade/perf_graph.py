@@ -250,10 +250,12 @@ class PerfGraph(arcade.Sprite):
                 fbo.clear()
             return
 
+
         # Get FPS and add to our historical data
+        data_to_graph = self._data_to_graph
         graph_data = self.graph_data
         if graph_data == "FPS":
-            self._data_to_graph.append(arcade.get_fps())
+            data_to_graph.append(arcade.get_fps())
         else:
             timings = arcade.get_timings()
             if graph_data in timings:
@@ -278,17 +280,17 @@ class PerfGraph(arcade.Sprite):
         texture_width, texture_height = self._texture.size  # type: ignore
 
         # Toss old data by removing leftmost entries
-        while len(self._data_to_graph) > texture_width - left_x:
-            self._data_to_graph.pop(0)
+        while len(data_to_graph) > texture_width - left_x:
+            data_to_graph.pop(0)
 
         # Calculate the value at the top of the chart
-        max_value = max(self._data_to_graph)
+        max_value = max(data_to_graph)
         view_max_value = ((max_value + 1.5) // view_y_scale_step + 1) * view_y_scale_step
 
         # Calculate draw positions of each pixel on the data line
         point_list = []
         x = left_x
-        for reading in self._data_to_graph:
+        for reading in data_to_graph:
             y = (reading / view_max_value) * max_pixels + bottom_y
             point_list.append((x, y))
             x += 1
