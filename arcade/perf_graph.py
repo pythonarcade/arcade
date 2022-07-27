@@ -103,7 +103,7 @@ class PerfGraph(arcade.Sprite):
         self._left_x = 25
         self._bottom_y = 15
 
-        # Rendering-related variables
+        # Variables for rendering the data line
         self.graph_data = graph_data
         self._data_to_graph: List[float] = []
         self._view_max_value = 0.0  # We'll calculate this once we have data
@@ -111,8 +111,7 @@ class PerfGraph(arcade.Sprite):
         self._max_pixels = self.height - self._bottom_y
         self._y_increment = self._max_pixels / self._y_axis_num_lines
 
-
-        # set up internal Text object & line caches
+        # Set up internal Text object & line caches
 
         self._pyglet_batch = Batch()  # Used to draw graph elements
 
