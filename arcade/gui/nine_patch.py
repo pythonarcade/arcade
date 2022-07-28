@@ -56,6 +56,13 @@ class NinePatchRenderer:
 
         self._patch_data_changed = False
 
+    def adjust_all(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.width = height
+        self._patch_data_changed = True
+
     def draw(self):
         if self._patch_data_changed:
             self._patch_data_changed = False

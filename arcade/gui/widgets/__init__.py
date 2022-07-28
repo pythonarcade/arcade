@@ -26,6 +26,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
+from arcade.gui.nine_patch import NinePatchRenderer
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -802,6 +803,54 @@ class UISpriteWidget(UIWidget):
         self.prepare_render(surface)
         surface.clear(color=(0, 0, 0, 0))
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
+
+
+class UINinePatchWidget(UIWidget):
+    """Create a UI element which uses a 9-patch to control what is rendered.
+
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
+    :param width: width of widget
+    :param height: height of widget
+    :param texture: texture to generate the 9-patch renderer
+    :param start_point: the start coordinate for defining the 9 patches
+    :param end_point: the end coordinate for defining the 9 patches
+    :param atlas: the atlas in which the texture is stored
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
+    """
+
+    def __init__(self,
+                 *,
+                 x=0,
+                 y=0,
+                 width=100,
+                 height=100,
+                 texture: arcade.Texture = None,
+                 start_point=None,
+                 end_point=None,
+                 atlas: arcade.TextureAtlas = None,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x,
+                         y,
+                         width,
+                         height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max,)
+        self._9_patch = NinePatchRenderer(x, y, width, height, start_point, end_point, texture, atlas)
+
+    def do_render(self, surface: Surface):
+        self.prepare_render(Surface)
+        surface.clear(color=(0, 0, 0, 0))
+        self._9_patch.adjust_all(self.x, self.y, self.width, self.height)
+        self._9_patch.draw()
 
 
 class UILayout(UIWidget, UIWidgetParent):
