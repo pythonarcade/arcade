@@ -20,9 +20,6 @@ class Texture:
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
-    NOTE: Currently does not support multisample textures even
-    though ``_samples`` is set.
-
     The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
 
     Supported ``dtype`` values are::

@@ -10,7 +10,6 @@ python -m arcade.examples.full_screen_example
 """
 
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -35,13 +34,6 @@ class MyGame(arcade.Window):
         # Open a window in full screen mode. Remove fullscreen=True if
         # you don't want to start this way.
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # This will get the size of the window, and set the viewport to match.
         # So if the window is 1000x1000, then so will our viewport. If

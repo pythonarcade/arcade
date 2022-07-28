@@ -191,7 +191,7 @@ def process_directory(directory, quick_index_file):
         else:
             continue
 
-        full_api_file_name = "../doc/api/" + api_file_name
+        full_api_file_name = "../doc/api_docs/api/" + api_file_name
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
@@ -297,7 +297,7 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    directory = Path("../doc/api/")
+    directory = Path("../doc/api_docs/api")
     file_list = directory.glob('*.rst')
     for file in file_list:
         os.remove(file)
@@ -306,7 +306,7 @@ def clear_api_directory():
 def main():
     clear_api_directory()
 
-    text_file = open("../doc/quick_index.rst", "w")
+    text_file = open("../doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
     text_file.write(f"The arcade module\n")

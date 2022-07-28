@@ -77,17 +77,18 @@ class RenderIndirect(arcade.Window):
             vertex_shader="""
             #version 330
 
-            // Piggyback on Arcade's global projection matrix
-            uniform Projection {
-                uniform mat4 matrix;
-            } proj;
+            // Piggyback on pyglet's global projection matrix
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             in vec2 in_pos;
             in vec4 in_color;
             out vec4 color;
 
             void main() {
-                gl_Position = proj.matrix * vec4(in_pos, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(in_pos, 0.0, 1.0);
                 color = in_color;
             }
             """,
@@ -104,7 +105,7 @@ class RenderIndirect(arcade.Window):
         )
 
     def gen_data(self, count):
-        # Simple unit quad consiting of 2 rectangles
+        # Simple unit quad consisting of 2 rectangles
         quad = (
             # First triangle
             (-0.5, 0.5),  # Top left

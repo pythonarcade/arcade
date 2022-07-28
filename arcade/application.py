@@ -367,7 +367,7 @@ class Window(pyglet.window.Window):
                            * ``arcade.MOUSE_BUTTON_MIDDLE``
 
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -383,7 +383,7 @@ class Window(pyglet.window.Window):
         :param int dy: Change in y since the last time this method was called
         :param int buttons: Which button is pressed
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -401,7 +401,7 @@ class Window(pyglet.window.Window):
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -470,11 +470,18 @@ class Window(pyglet.window.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         """
+        Called once when a key gets pushed down.
+
         Override this function to add key press functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+        .. tip:: If you want the length of key presses to affect
+                 gameplay, you also need to override
+                 :meth:`~.Window.on_key_release`.
+
+        :param int symbol: Key that was just pushed down
+        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+                              ctrl, num lock) active during this event.
+                              See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -483,11 +490,22 @@ class Window(pyglet.window.Window):
 
     def on_key_release(self, symbol: int, modifiers: int):
         """
+        Called once when a key gets released.
+
         Override this function to add key release functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+        Situations that require handling key releases include:
+
+        * Rythm games where a note must be held for a certain
+          amount of time
+        * 'Charging up' actions that change strength depending on
+          how long a key was pressed
+        * Showing which keys are currently pressed down
+
+        :param int symbol: Key that was just released
+        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+                              ctrl, num lock) active during this event.
+                              See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None
@@ -855,7 +873,7 @@ def open_window(
     :param Number width: Width of the window.
     :param Number height: Height of the window.
     :param str window_title: Title of the window.
-    :param bool resizable: Whether the window can be user-resizable.
+    :param bool resizable: Whether the user can resize the window.
     :param bool antialiasing: Smooth the graphics?
 
     :returns: Handle to window
@@ -893,6 +911,7 @@ class View:
     def add_section(self, section, at_index: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
+
         :param section: the section to add to this section manager
         :param at_index: inserts the section at that index. If None at the end
         """
@@ -962,7 +981,7 @@ class View:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -976,7 +995,7 @@ class View:
         :param int dy: Change in y since the last time this method was called
         :param int _buttons: Which button is pressed
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -990,7 +1009,7 @@ class View:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -1011,7 +1030,7 @@ class View:
 
         :param int symbol: Key that was hit
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -1024,7 +1043,7 @@ class View:
 
         :param int _symbol: Key that was hit
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                               pressed during this event. See :ref:`keyboard_modifiers`.
+                               active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None

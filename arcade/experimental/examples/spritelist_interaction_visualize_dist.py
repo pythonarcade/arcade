@@ -59,9 +59,10 @@ class SpriteListInteraction(arcade.Window):
             #version 330
 
             // This is how we access Arcade's global projection matrix
-            uniform Projection {
-                uniform mat4 matrix;
-            } proj;
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             // The position we measure distance from
             uniform vec2 origin;
@@ -82,10 +83,10 @@ class SpriteListInteraction(arcade.Window):
                 // ONLY emit a line between the sprite and origin when within the distance
                 if (distance(v_position[0], origin) < maxDistance) {
                     // First line segment position (origin)
-                    gl_Position = proj.matrix * vec4(origin, 0.0, 1.0);
+                    gl_Position = window.projection * window.view * vec4(origin, 0.0, 1.0);
                     EmitVertex();
                     // Second line segment position (sprite position)
-                    gl_Position = proj.matrix * vec4(v_position[0], 0.0, 1.0);
+                    gl_Position = window.projection * window.view * vec4(v_position[0], 0.0, 1.0);
                     EmitVertex();
                 }
             }

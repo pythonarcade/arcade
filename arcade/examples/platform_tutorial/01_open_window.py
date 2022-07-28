@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.01_open_window
 """
 import arcade
 

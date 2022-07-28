@@ -164,9 +164,12 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
         line up with the pixels on the screen. Otherwise, tiled pixel art
         may not line up well during render, creating rectangle artifacts.
 
-    .. note:: ``Window.on_resize`` calls ``set_viewport`` by default.
-              If you want to set your own custom viewport during the
-              game, you may need to over-ride the ``on_resize`` method.
+    .. note:: :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              calls ``set_viewport`` by default. If you want to set your
+              own custom viewport during the game, you may need to
+              override the
+              :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              method.
 
     .. note:: For more advanced users
 

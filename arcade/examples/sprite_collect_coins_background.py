@@ -10,7 +10,6 @@ python -m arcade.examples.sprite_collect_coins_background
 """
 import random
 import arcade
-import os
 
 PLAYER_SCALING = 0.5
 COIN_SCALING = 0.25
@@ -30,13 +29,6 @@ class MyGame(arcade.Window):
 
         # Call the parent class initializer
         super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Background image will be stored in this variable
         self.background = None

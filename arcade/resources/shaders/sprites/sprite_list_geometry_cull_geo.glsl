@@ -3,9 +3,10 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-uniform Projection {
-    uniform mat4 matrix;
-} proj;
+uniform WindowBlock {
+    mat4 projection;
+    mat4 view;
+} window;
 
 uniform sampler2D uv_texture;
 
@@ -32,10 +33,10 @@ void main() {
     // Do viewport culling for sprites.
     // We do this in normalized device coordinates to make it simple
     // apply projection to the center point. This is important so we get zooming/scrollig right
-    vec2 ct = (proj.matrix * vec4(center, 0.0, 1.0)).xy;
+    vec2 ct = (window.projection * window.view * vec4(center, 0.0, 1.0)).xy;
     // We can get away with cheaper calculation of size
     // The length of the diagonal is the cheapest estimation in case rotation is applied
-    float st = length(hsize_max * vec2(proj.matrix[0][0], proj.matrix[1][1]));
+    float st = length(hsize_max * vec2(window.projection[0][0], window.projection[1][1]));
     // Discard sprites outside the viewport
     if ((ct.x + st) < -VP_CLIP || (ct.x - st) > VP_CLIP) return;
     if ((ct.y + st) < -VP_CLIP || (ct.y - st) > VP_CLIP) return;
@@ -47,26 +48,26 @@ void main() {
     vec2 tex_size = uv_data.zw;
 
     // Upper left
-    gl_Position = proj.matrix * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
-    gs_uv =  (vec2(0.0, tex_size.y) + tex_offset) * vec2(1.0, -1.0);
+    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+    gs_uv =  vec2(0.0, tex_size.y) + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower left
-    gl_Position = proj.matrix * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
-    gs_uv = tex_offset * vec2(1.0, -1.0);
+    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gs_uv = tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // upper right
-    gl_Position = proj.matrix * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
-    gs_uv = (tex_size + tex_offset) * vec2(1.0, -1.0);
+    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+    gs_uv = tex_size + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower right
-    gl_Position = proj.matrix * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
-    gs_uv = (vec2(tex_size.x, 0.0) + tex_offset) * vec2(1.0, -1.0);
+    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gs_uv = vec2(tex_size.x, 0.0) + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 

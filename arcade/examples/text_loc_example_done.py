@@ -6,14 +6,6 @@ python -m arcade.examples.text_loc_example_done
 """
 import arcade
 import gettext
-import os
-
-# Set the working directory (where we expect to find files) to the same
-# directory this .py file is in. You can leave this out of your own
-# code, but it is needed to easily run the examples using "python -m"
-# as mentioned at the top of this program.
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
 
 # Try to auto-detect the user's language and translate to it
 gettext.install('text_loc_example', localedir='text_loc_example_locale')

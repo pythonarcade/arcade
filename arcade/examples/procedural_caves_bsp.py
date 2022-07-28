@@ -14,7 +14,6 @@ import random
 import arcade
 import timeit
 import math
-import os
 
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
@@ -267,13 +266,6 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         self.grid = None
         self.wall_list = None
         self.player_list = None
@@ -326,8 +318,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING,
-                                         repeat_count_x=column_count)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING)
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count

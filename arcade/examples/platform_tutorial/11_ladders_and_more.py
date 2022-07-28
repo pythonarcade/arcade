@@ -1,8 +1,8 @@
 """
 Platformer Game
-"""
-import os
 
+python -m arcade.examples.platform_tutorial.11_ladders_and_more
+"""
 import arcade
 
 # Constants
@@ -42,13 +42,8 @@ class MyGame(arcade.Window):
         """
         Initializer for the game
         """
-
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the path to start with this program
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Our TileMap Object
         self.tile_map = None

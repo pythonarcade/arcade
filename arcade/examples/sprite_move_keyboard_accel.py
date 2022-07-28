@@ -1,9 +1,13 @@
 """
-Show how to use acceleration and friction
+Acceleration and Friction
+
+Demonstrate how to implement simple acceleration and friction without a
+physics engine.
 
 Artwork from https://kenney.nl
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python and Arcade are installed, this example can be run from the
+command line with:
 python -m arcade.examples.sprite_move_keyboard_accel
 """
 
@@ -62,11 +66,16 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height, title)
 
-        # Variables that will hold sprite lists
+        # Variable to will hold the player sprite list
         self.player_list = None
 
-        # Set up the player info
+        # Create a place to store the player sprite
+        # so it can be  accessed directly.
         self.player_sprite = None
+
+        # Create places to store the speed display Text objects
+        self.x_speed_display = None
+        self.y_speed_display = None
 
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -80,15 +89,23 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
 
-        # Sprite lists
+        # Create a sprite list
         self.player_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                     SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 50
+        self.player_sprite.position = self.width / 2, self.height / 2
         self.player_list.append(self.player_sprite)
+
+        # Create the speed display objects with initial text
+        self.x_speed_display = arcade.Text(
+            f"X Speed: {self.player_sprite.change_x:6.3f}",
+            10, 50, arcade.color.BLACK)
+
+        self.y_speed_display = arcade.Text(
+            f"Y Speed: {self.player_sprite.change_y:6.3f}",
+            10, 70, arcade.color.BLACK)
 
     def on_draw(self):
         """
@@ -101,9 +118,9 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.player_list.draw()
 
-        # Display speed
-        arcade.draw_text(f"X Speed: {self.player_sprite.change_x:6.3f}", 10, 50, arcade.color.BLACK)
-        arcade.draw_text(f"Y Speed: {self.player_sprite.change_y:6.3f}", 10, 70, arcade.color.BLACK)
+        # Draw the speed indicators
+        self.x_speed_display.draw()
+        self.y_speed_display.draw()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -143,9 +160,13 @@ class MyGame(arcade.Window):
             self.player_sprite.change_y = -MAX_SPEED
 
         # Call update to move the sprite
-        # If using a physics engine, call update on it instead of the sprite
-        # list.
+        # IMPORTANT: If using a physics engine, you need to call update
+        # on it instead of the sprite list!
         self.player_list.update()
+
+        # Update the speed displays based on the final speed
+        self.x_speed_display.text = f"X Speed: {self.player_sprite.change_x:6.3f}"
+        self.y_speed_display.text = f"Y Speed: {self.player_sprite.change_y:6.3f}"
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
