@@ -5,8 +5,21 @@ import arcade.gl as gl
 
 
 class NinePatchRenderer:
+    """A 9-patch renderer which take a specific texture and two pixel coordinates.
+    using these coordinates the texture is split into 9 'patches'.
+    each patch is then stretched in specifc ways to keep the edges a specific width/height.
 
-    def __init__(self, x, y, width, height, start, end, texture, atlas):
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
+    :param width: width of 9-patch
+    :param height: height of 9-patch
+    :param start: start coordinate of patch slices
+    :param end: end coordinate of patch slices
+    :param texture: the texture used for the 9-patch
+    :param atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
+    """
+
+    def __init__(self, x, y, width, height, start, end, texture, atlas=None):
         ctx = arcade.get_window()
 
         # ModernGl components for rendering
