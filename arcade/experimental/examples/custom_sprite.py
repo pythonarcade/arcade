@@ -56,10 +56,11 @@ class GeoSprites(arcade.Window):
             layout (points) in;
             layout (triangle_strip, max_vertices = 4) out;            
 
-            // A uniform buffer that will automagically contain arcade's projection matrix
-            uniform Projection {
-                uniform mat4 matrix;
-            } proj;
+            // A uniform buffer that will automagically contain pyglet's projection matrix
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             // Receive the outputs from the vertex shader.
             // Since geometry shader can take multiple values from a vertex
@@ -81,22 +82,22 @@ class GeoSprites(arcade.Window):
                 // The fragment shader will then fill these to triangles in the next stage.
 
                 // Upper left
-                gl_Position = proj.matrix * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
                 uv = vec2(0, 1);
                 EmitVertex();
 
                 // lower left
-                gl_Position = proj.matrix * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
                 uv = vec2(0, 0);
                 EmitVertex();
 
                 // upper right
-                gl_Position = proj.matrix * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
                 uv = vec2(1, 1);
                 EmitVertex();
 
                 // lower right
-                gl_Position = proj.matrix * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * window.view * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
                 uv = vec2(1, 0);
                 EmitVertex();
 
@@ -132,7 +133,7 @@ class GeoSprites(arcade.Window):
         self.texture = self.ctx.load_texture(":resources:images/tiles/boxCrate_double.png")
 
         self.num_sprites = 1000
-        # Make an interlaved buffer with positions and sizes
+        # Make an interleaved buffer with positions and sizes
         self.vertex_buffer = self.ctx.buffer(data=array('f', self.gen_sprites(self.num_sprites)))
         # Mage a geometry object describing the buffer contents for our shader
         self.geometry = self.ctx.geometry(
@@ -145,7 +146,7 @@ class GeoSprites(arcade.Window):
         self.clear()
         # Bind our sprite texture to channel 0
         self.texture.use(unit=0)
-        # Rebder the sprite data with our shader
+        # Render the sprite data with our shader
         self.geometry.render(self.program)
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):

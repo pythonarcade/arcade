@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.11_animate_character
+python -m arcade.examples.platform_tutorial.16_shooting_bullets
 """
 import math
 

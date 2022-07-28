@@ -196,10 +196,11 @@ class App(arcade.Window):
             // and limit the max number of vertices to 4.
             layout (triangle_strip, max_vertices = 4) out;
 
-            // Use arcade's global projection UBO
-            uniform Projection {
-                uniform mat4 matrix;
-            } proj;
+            // Use pyglet's global projection UBO
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 view;
+            } window;
 
             // The input from the vertex shader.
             // These should be unsized arrays since the geometry shader
@@ -222,23 +223,23 @@ class App(arcade.Window):
                 // Calculate the half size to easily emit 4 vertices around the center.
                 vec2 hsize = vec2(v_radius[0]);
 
-                // Configure outout color. This color can change per vertex
+                // Configure out color. This color can change per vertex
                 // but we're using the same color for all vertices of the ball
                 // so we only need to set it once.
                 g_col = v_col[0].rgb;
 
                 // Emit 4 vertices making a rectangle as a triangle strip.
                 // We need to supply separate texture coordinates for each vertex
-                gl_Position = proj.matrix * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
                 g_uv = vec2(0, 1);
                 EmitVertex();
-                gl_Position = proj.matrix * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
                 g_uv = vec2(0, 0);
                 EmitVertex();
-                gl_Position = proj.matrix * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
                 g_uv = vec2(1, 1);
                 EmitVertex();
-                gl_Position = proj.matrix * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = window.projection * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
                 g_uv = vec2(1, 0);
                 EmitVertex();
 

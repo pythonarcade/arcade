@@ -564,10 +564,10 @@ __all__ = ['AStarBarrierList',
            'start_render',
            'stop_sound',
            'timings_enabled',
-           'trim_image',
            'uint24_to_three_byte_color',
            'uint32_to_four_byte_color',
            'unschedule',
+           'trim_image',
            ]
 
 
