@@ -1,10 +1,9 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.11_animate_character
+python -m arcade.examples.platform_tutorial.13_add_enemies
 """
 import math
-import os
 
 import arcade
 
@@ -175,13 +174,8 @@ class MyGame(arcade.Window):
         """
         Initializer for the game
         """
-
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the path to start with this program
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Track the current state of what key is pressed
         self.left_pressed = False

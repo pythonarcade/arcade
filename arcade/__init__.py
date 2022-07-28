@@ -61,7 +61,7 @@ if os.environ.get('ARCADE_HEADLESS'):
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
 # Use the old gdi fonts on windows until directwrite is fast/stable
-pyglet.options['win32_gdi_font'] = True
+# pyglet.options['win32_gdi_font'] = True
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
 # This was only needed with pyglet==2.0dev13 and earlier
@@ -126,6 +126,7 @@ from .earclip_module import earclip
 
 from .utils import lerp
 from .utils import lerp_vec
+from .utils import lerp_angle
 from .utils import rand_angle_360_deg
 from .utils import rand_angle_spread_deg
 from .utils import rand_in_circle
@@ -563,10 +564,10 @@ __all__ = ['AStarBarrierList',
            'start_render',
            'stop_sound',
            'timings_enabled',
-           'trim_image',
            'uint24_to_three_byte_color',
            'uint32_to_four_byte_color',
            'unschedule',
+           'trim_image',
            ]
 
 

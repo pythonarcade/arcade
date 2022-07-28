@@ -470,7 +470,7 @@ class TileMap:
                         my_sprite.height / (scaling * 2)
                     )
 
-                    points = [[sx, sy], [ex, sy], [ex, ey], [sx, ey]]
+                    points = [(sx, sy), (ex, sy), (ex, ey), (sx, ey)]
                 elif isinstance(
                     hitbox, pytiled_parser.tiled_object.Polygon
                 ) or isinstance(hitbox, pytiled_parser.tiled_object.Polyline):
@@ -485,7 +485,7 @@ class TileMap:
                             + hitbox.coordinates.y
                             - my_sprite.height / (scaling * 2)
                         )
-                        adj_point = [adj_x, adj_y]
+                        adj_point = adj_x, adj_y
                         points.append(adj_point)
 
                     if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
@@ -513,7 +513,7 @@ class TileMap:
                     for angle in angles:
                         x = hw * math.cos(angle) + acx
                         y = -(hh * math.sin(angle) + acy)
-                        points.append([x, y])
+                        points.append((x, y))
                 else:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 

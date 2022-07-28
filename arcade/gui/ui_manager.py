@@ -8,7 +8,6 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scrolling
 - TextArea with scroll support
 """
-import warnings
 from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable
 
@@ -67,7 +66,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     _enabled = False
 
-    def __init__(self, window: arcade.Window = None, auto_enable=False):
+    def __init__(self, window: arcade.Window = None):
         super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
@@ -75,12 +74,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._rendered = False
 
         self.register_event_type("on_event")
-
-        if auto_enable:
-            warnings.warn(
-                "`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`"
-            )
-            self.enable()
 
     def add(self, widget: W, *, index=None) -> W:
         """

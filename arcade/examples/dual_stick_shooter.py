@@ -11,7 +11,6 @@ import arcade
 import random
 import time
 import math
-import os
 from typing import cast
 import pprint
 
@@ -389,13 +388,6 @@ class JoyConfigView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-    # Set the working directory (where we expect to find files) to the same
-    # directory this .py file is in. You can leave this out of your own
-    # code, but it is needed to easily run the examples using "python -m"
-    # as mentioned at the top of this program.
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
 
     window.joys = arcade.get_joysticks()
     for j in window.joys:

@@ -283,3 +283,15 @@ def test_visible():
     sprite.visible = True
     assert sprite.visible is True
     assert sprite.alpha == 255
+
+
+def test_sprite_scale_xy(window):
+    sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+    assert sprite.scale == 1.0
+    assert sprite.scale_xy == (1.0, 1.0)
+    sprite.scale = 2.0
+    assert sprite.scale == 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    sprite.scale_xy = 2.0, 4.0
+    assert sprite.scale_xy == (2.0, 4.0)
+    assert sprite.scale == 2.0

@@ -14,7 +14,6 @@ python -m arcade.examples.sprite_follow_simple_2
 import random
 import arcade
 import math
-import os
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
@@ -78,13 +77,6 @@ class MyGame(arcade.Window):
         """ Initializer """
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Variables that will hold sprite lists
         self.player_list = None

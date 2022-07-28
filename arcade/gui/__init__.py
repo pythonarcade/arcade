@@ -17,7 +17,12 @@ from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
 from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
-from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout, UIGridLayout, UILayout
+from arcade.gui.widgets.layout import (
+    UIBoxLayout,
+    UIAnchorLayout,
+    UIGridLayout,
+    UILayout,
+)
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UILabel, UIInputText, UITextArea
@@ -76,10 +81,9 @@ __all__ = [
     "UIWrapper",
     "Surface",
     "Rect",
-
     # Property classes
     "ListProperty",
     "DictProperty",
     "Property",
-    "bind"
+    "bind",
 ]
