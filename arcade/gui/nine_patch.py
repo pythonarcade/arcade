@@ -132,3 +132,49 @@ class NinePatchRenderer:
                   f"Height has been set to minimum of {self._start[1] + self._end[1] + 1}")
             self._height = self._start[1] + self._end[1] + 1
         self._patch_data_changed = True
+
+
+def render_nine_patch(x, y, width, height, start, end, texture, atlas=None):
+    """
+    Renders a 9-patch with provided texture using a static geometry and program. Sligtly slower than using the class,
+    but uses less overall memory.
+    """
+    if render_nine_patch.geometry is None:
+        ctx = arcade.get_window()
+
+        data = array('f', [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0])
+        render_nine_patch.geometry = ctx.geometry([gl.BufferDescription(ctx.Buffer(data=data), '2f', ['in_uv'])],
+                                                  mode=ctx.TRIANGLE_STRIP)
+
+        render_nine_patch.program = ctx.load_program(vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
+                                                     fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl")
+
+        render_nine_patch.program['uv_texture'] = 0
+        render_nine_patch.program['sprite_texture'] = 1
+
+    if not atlas.has_texture(texture) and atlas is not None:
+        print("WARNING: given atlas does not contain given texture. "
+              "Adding texture to atlas")
+        atlas.add(texture)
+
+    render_nine_patch.program["texture_id"] = atlas.get_texture_id(texture.name)
+
+    render_nine_patch.program['patch_data'] = x, y, width, height
+
+    # relative UV texture co-ordinate of end from opposite end
+    end_diff = end[0] - texture.width, end[1] - texture.height
+
+    # texture UV co-ordinate of start and end.
+    render_nine_patch.program['base_uv'] = (start[0] / texture.width, start[1] / texture.height,
+                                            end[0] / texture.width, end[1] / texture.height)
+
+    render_nine_patch.program['var_UV'] = (start[0] / width, start[1] / height,
+                                           1 + (end_diff[0] / width), 1 + (end_diff[1] / height))
+
+    atlas.use_uv_texture(0)
+    atlas.texture.use(1)
+    render_nine_patch.geometry.render(render_nine_patch.program)
+
+
+render_nine_patch.geometry = None
+render_nine_patch.program = None
