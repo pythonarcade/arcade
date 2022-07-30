@@ -185,7 +185,6 @@ from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
-from .texture import trim_image
 
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
@@ -567,7 +566,6 @@ __all__ = ['AStarBarrierList',
            'uint24_to_three_byte_color',
            'uint32_to_four_byte_color',
            'unschedule',
-           'trim_image',
            ]
 
 
