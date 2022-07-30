@@ -100,6 +100,51 @@ class Texture:
         # TODO: Possibly remove this making it lazy
         self.calculate_hit_box_points()
 
+    def flip_left_to_right(self):
+        """
+        Flip the texture left to right / horizontally.
+
+        :return: Texture 
+        """
+        # FLIP_LEFT_RIGHT = 0
+
+    def flip_top_to_bottom(self):
+        """
+        Flip the texture top to bottom / vertically.
+
+        :return: Texture 
+        """
+        # FLIP_TOP_BOTTOM = 1
+
+    def transpose(self):
+        """
+        Transpose the texture. This flips the texture
+        diagonally from lower right to upper left.
+
+        :return: Texture 
+        """
+        # TRANSPOSE = 5
+
+    def transverse(self):
+        """
+        Transverse the texture. This flips the texture
+        diagonally from lower left to upper right.
+
+        :return: Texture 
+        """
+        # TRANSVERSE = 5
+
+    def rotate(self, count: int):
+        """
+        Rotate the texture by a given number of 90 degree steps.
+
+        :param int count: Number of 90 degree steps to rotate.
+        :return: Texture 
+        """
+        # ROTATE_90 = 2
+        # ROTATE_180 = 3
+        # ROTATE_270 = 4
+
     @staticmethod
     def build_cache_name(*args) -> str:
         """
