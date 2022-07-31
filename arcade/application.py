@@ -83,7 +83,7 @@ class Window(pyglet.window.Window):
         title: Optional[str] = 'Arcade Window',
         fullscreen: bool = False,
         resizable: bool = False,
-        update_rate: Optional[float] = 1 / 60,
+        update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: Tuple[int, int] = (3, 3),
         screen: pyglet.canvas.Screen = None,
