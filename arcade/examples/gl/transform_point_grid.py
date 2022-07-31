@@ -11,7 +11,10 @@ so we can keep working on the previous data.
 This is mainly because it's not always safe to
 read and write to the same buffer at the same time.
 
-Increase the window resolution to get more points
+Increase the window resolution to get more points.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.transform_point_grid
 """
 import random
 import time

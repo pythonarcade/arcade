@@ -1,3 +1,10 @@
+"""
+Render some basic geometry with shaders.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.basic_renderer
+"""
+
 import math
 import arcade
 from arcade.gl import geometry
@@ -66,8 +73,6 @@ class MyGame(arcade.Window):
         )
         self.quad_1.render(self.color_program)
         self.quad_2.render(self.uv_program)
-
-        arcade.draw_circle_filled(100, 100, 100, arcade.color.APPLE_GREEN)
 
     def on_update(self, dt):
         self.time += dt

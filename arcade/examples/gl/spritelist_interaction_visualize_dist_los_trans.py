@@ -16,6 +16,9 @@ shader and instead defining some values to output.
 We also need to do a transform() instead of render()
 and supply a buffer for our results. In addition we
 use a Query to count how many results the shader gave us.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los_trans
 """
 import random
 import struct
@@ -39,7 +42,7 @@ class SpriteListInteraction(arcade.Window):
             scale=0.25,            
         )
 
-        # Wall sprites we are checking collission against
+        # Wall sprites we are checking collision against
         self.walls = arcade.SpriteList()
         for _ in range(NUM_WALLS):
             self.walls.append(
@@ -51,7 +54,7 @@ class SpriteListInteraction(arcade.Window):
                 )
             )
 
-        # Genreate some random coins.
+        # Generate some random coins.
         # We make sure they are not placed inside a wall.
         # We give each coin 1 chance to spawn at the right position.
         self.coins = arcade.SpriteList()

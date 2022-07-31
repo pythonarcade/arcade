@@ -9,6 +9,9 @@ checks by using texture lookups. We our walls into a
 texture and read the pixels in a line between the 
 player and the target sprite to check if the path is
 colliding with something.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los
 """
 import random
 import arcade

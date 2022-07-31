@@ -12,6 +12,9 @@ colonies will keep spreading their color.
 Press SPACE to generate new initial data
 
 The cell and window size can be tweaked in the parameters below.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.game_of_life_colors
 """
 import random
 from array import array

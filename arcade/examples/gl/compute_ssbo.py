@@ -19,6 +19,9 @@ We use a geometry shader to on-the-fly create a rectangle for each point.
 The size of each ball is based on the radius stored for each point.
 
 The compute shader in this example works in one dimension for simplicity.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.compute_ssbo
 """
 import random
 import math

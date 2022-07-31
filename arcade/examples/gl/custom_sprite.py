@@ -18,6 +18,9 @@ limiting the number of attributes to make it simple.
 Things like rotation, color, anchor etc can be added.
 
 Hold and drag the mouse to scroll around.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.custom_sprite
 """
 from random import randint
 from array import array

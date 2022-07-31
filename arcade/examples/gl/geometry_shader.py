@@ -1,8 +1,12 @@
 """
 Example showing a simple geometry shader.
+
 We generate a bunch of random points and draw them using POINTS mode.
 The geometry shader if configured to receive points and emit triangle strip.
 We generate two triangles on the fly displaying a quad.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.geometry_shader
 """
 import random
 from array import array
