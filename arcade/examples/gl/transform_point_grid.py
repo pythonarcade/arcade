@@ -48,7 +48,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title, resizable=True)
         self.set_vsync(True)
         self.ctx.disable(self.ctx.BLEND)
-        self.size = self.width // 4, self.height // 4
+        self.size = self.width, self.height
 
         # Two buffers on the gpu with positions
         self.buffer1 = self.ctx.buffer(data=array('f', gen_initial_data(self, *self.size)))
