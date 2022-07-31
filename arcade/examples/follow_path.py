@@ -6,7 +6,7 @@ This example has enemy sprites follow a set path.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_follow_path
+python -m arcade.examples.follow_path
 """
 
 import arcade

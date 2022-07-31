@@ -2,9 +2,10 @@
 Turn and Move Example.
 
 Right-click to cause the tank to move to that point.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.turn_and_move
 """
-
-
 import math
 import arcade
 

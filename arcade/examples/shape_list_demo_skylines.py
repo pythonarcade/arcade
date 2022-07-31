@@ -2,7 +2,7 @@
 City Scape Generator
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.shape_list_skylines
+python -m arcade.examples.shape_list_demo_skylines
 """
 import random
 import arcade
