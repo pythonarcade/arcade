@@ -91,7 +91,6 @@ from .window_commands import get_scaling_factor
 from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
-from .window_commands import run
 from .window_commands import schedule
 from .window_commands import set_background_color
 from .window_commands import set_viewport
