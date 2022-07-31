@@ -129,21 +129,21 @@ class GameOfLife(arcade.Window):
                 bool living = cell(v5);
 
                 // Count how many neighbors is alive
-                int neighbours = 0;
-                if (cell(v1)) neighbours++;
-                if (cell(v2)) neighbours++;
-                if (cell(v3)) neighbours++;
-                if (cell(v4)) neighbours++;
-                if (cell(v6)) neighbours++;
-                if (cell(v7)) neighbours++;
-                if (cell(v8)) neighbours++;
-                if (cell(v9)) neighbours++;
+                int neighbors = 0;
+                if (cell(v1)) neighbors++;
+                if (cell(v2)) neighbors++;
+                if (cell(v3)) neighbors++;
+                if (cell(v4)) neighbors++;
+                if (cell(v6)) neighbors++;
+                if (cell(v7)) neighbors++;
+                if (cell(v8)) neighbors++;
+                if (cell(v9)) neighbors++;
 
                 // Average color for all neighbors
-                vec4 sum = (v1 + v2 + v3 + v4 + v6 + v7 + v8 + v9) / float(neighbours);
+                vec4 sum = (v1 + v2 + v3 + v4 + v6 + v7 + v8 + v9) / float(neighbors);
 
                 if (living) {
-                    if (neighbours == 2 || neighbours == 3) {
+                    if (neighbors == 2 || neighbors == 3) {
                         // The cell lives, but we write out the average color minus a small value
                         fragColor = vec4(sum.rgb - vec3(1.0/255.0), 1.0);
                     } else {
@@ -151,7 +151,7 @@ class GameOfLife(arcade.Window):
                         fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                     }
                 } else {
-                    if (neighbours == 3) {
+                    if (neighbors == 3) {
                         // A new cell was born
                         fragColor = vec4(normalize(sum.rgb), 1.0);
                     } else {
@@ -191,7 +191,7 @@ class GameOfLife(arcade.Window):
             self.quad_fs.render(self.life_program)  # Run the life program
 
             # Draw result to screen
-            self.ctx.screen.use()  # Switch back to redering to screen
+            self.ctx.screen.use()  # Switch back to rendering to screen
             self.texture_2.use()  # Take texture 2 as input
             self.quad_fs.render(self.display_program)  # Display the texture
 
@@ -201,7 +201,7 @@ class GameOfLife(arcade.Window):
         # Otherwise just draw the current texture
         else:
             # Draw the current texture to the screen
-            self.ctx.screen.use()  # Switch back to redering to screen
+            self.ctx.screen.use()  # Switch back to rendering to screen
             self.texture_1.use()  # Take texture 2 as input
             self.quad_fs.render(self.display_program)  # Display the texture
 

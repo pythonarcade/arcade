@@ -26,15 +26,19 @@ class MyGame(arcade.Window):
         self.color_program = self.ctx.program(
             vertex_shader="""
             #version 330
+
             in vec2 in_vert;
+
             void main() {
                 gl_Position = vec4(in_vert, 0.0, 1.0);
             }
             """,
             fragment_shader="""
             #version 330
+
             uniform vec4 color;
             out vec4 out_color;
+
             void main() {
                 out_color = color;
             }
@@ -43,9 +47,11 @@ class MyGame(arcade.Window):
         self.uv_program = self.ctx.program(
             vertex_shader="""
             #version 330
+
             in vec2 in_vert;
             in vec2 in_uv;
             out vec2 v_uv;
+
             void main() {
                 gl_Position = vec4(in_vert, 0.0, 1.0);
                 v_uv = in_uv;
@@ -53,8 +59,10 @@ class MyGame(arcade.Window):
             """,
             fragment_shader="""
             #version 330
+
             in vec2 v_uv;
             out vec4 out_color;
+
             void main() {
                 out_color = vec4(v_uv, 0.0, 1.0);
             }

@@ -34,7 +34,7 @@ class SpriteListInteraction(arcade.Window):
             scale=0.25,            
         )
 
-        # Wall sprites we are checking collission against
+        # Wall sprites we are checking collision against
         self.walls = arcade.SpriteList()
         for _ in range(NUM_WALLS):
             self.walls.append(
@@ -46,7 +46,7 @@ class SpriteListInteraction(arcade.Window):
                 )
             )
 
-        # Genreate some random coins.
+        # Generate some random coins.
         # We make sure they are not placed inside a wall.
         # We give the coins one chance to appear outside walls
         self.coins = arcade.SpriteList()

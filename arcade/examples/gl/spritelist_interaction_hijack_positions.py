@@ -19,7 +19,7 @@ class HijackSpritePositions(arcade.Window):
         super().__init__(720, 720, "Hijack Sprite Positions", resizable=True)
         self.time = 0
 
-        # Genreate lots of coins. We don't care about the initial positions
+        # Generate lots of coins. We don't care about the initial positions
         # since our shader is setting those
         self.coins = arcade.SpriteList()
         for _ in range(NUM_COINS):
@@ -49,7 +49,7 @@ class HijackSpritePositions(arcade.Window):
             out vec2 out_pos;
 
             void main() {
-                // gl_VertexID is the sprite position in the spriteslist.
+                // gl_VertexID is the sprite position in the spritelist.
                 // We can use that to value to create unique positions with
                 // some simple math.
                 float vertId = float(gl_VertexID);
