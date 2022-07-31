@@ -307,7 +307,7 @@ class FireworksApp(arcade.Window):
         )
         self.emitters.append(sparks)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         # prevent list from being mutated (often by callbacks) while iterating over it
         emitters_to_update = self.emitters.copy()
         # update cloud
