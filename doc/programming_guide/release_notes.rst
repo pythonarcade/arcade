@@ -12,6 +12,17 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 *Unreleased*
 
+* Featured
+
+  * Arcade now supports OpenGL ES 3.1/3.2 and have been
+    tested on the raspberry pi 4. Any model using the Cortex-A72
+    cpu should work. Note that you need fairly new mesa drivers
+    to get the new V3D drivers.
+  * Rotation order changed to clockwise
+  * Arcade now supports mixing pyglet and arcade drawing meaning
+    you can for example use pyglet batches.
+  * Added a new system for handling background textures (ADD MORE INFO)
+
 * GUI
   * :py:class:`~arcade.gui.widgets.UIWidget`
 
@@ -19,6 +30,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
+    * Fixed an blending issue when rendering the gui surface to the screen
 
   * New widgets:
 
@@ -31,12 +43,21 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Misc Changes
 
     * arcade.color_from_hex_string changed to follow the CSS hex string standard
+    * Windows Text glyph are now created with DirectWrite instead of GDI
+    * Removal of various deprecated functions and parameters
+    * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
   * OpenGL
 
     * Support for OpenGL ES 3.1/2
     * Textures now support immutable storage
-
+    * Arcade is now using pyglet's projection and view matrix.
+      All functions setting matrixes will update the pyglet window's
+      ``view`` and ``projection`` attributes. Arcade shaders is also
+      using pyglet's ``WindowBlock`` UBO.
+    * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
+      when the extension is available.
+    * Fixed many implicit type conversions in the shader code for wider support.
 
 Version 2.6.15
 --------------
