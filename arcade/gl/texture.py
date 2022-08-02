@@ -43,7 +43,6 @@ class Texture:
     :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
     :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
     :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
-    :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
