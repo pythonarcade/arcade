@@ -5,6 +5,7 @@ from typing import Any, Optional, TYPE_CHECKING
 from pyglet import gl
 
 from .utils import data_to_ctypes
+from arcade.arcade_types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -158,8 +159,16 @@ class Buffer:
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
         return data
 
-    def write(self, data: Any, offset: int = 0):
-        """Write byte data to the buffer.
+    def write(self, data: BufferProtocol, offset: int = 0):
+        """Write byte data to the buffer from a buffer protocol object.
+
+        The ``data`` value can be anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        This includes ``bytes``, ``bytearray``, ``array.array``, and
+        more. You may need to use typing workarounds for non-builtin
+        types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
 
         :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
         :param int offset: The byte offset
