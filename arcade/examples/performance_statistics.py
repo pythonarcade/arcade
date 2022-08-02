@@ -155,7 +155,7 @@ class MyGame(arcade.Window):
         self.fps_text.value = f"FPS: {arcade.get_fps(60):5.1f}"
         self.fps_text.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Update method """
         self.frame_count += 1
 

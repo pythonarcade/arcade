@@ -60,7 +60,8 @@ class Window(pyglet.window.Window):
     :param str title: Title (appears in title bar)
     :param bool fullscreen: Should this be full screen?
     :param bool resizable: Can the user resize the window?
-    :param float update_rate: How frequently to update the window.
+    :param float update_rate: How frequently to run the on_update event.
+    :param float draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
     :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
     :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
@@ -82,7 +83,7 @@ class Window(pyglet.window.Window):
         title: Optional[str] = 'Arcade Window',
         fullscreen: bool = False,
         resizable: bool = False,
-        update_rate: Optional[float] = 1 / 60,
+        update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: Tuple[int, int] = (3, 3),
         screen: pyglet.canvas.Screen = None,
@@ -93,7 +94,8 @@ class Window(pyglet.window.Window):
         center_window: bool = False,
         samples: int = 4,
         enable_polling: bool = True,
-        gl_api: str = "gl"
+        gl_api: str = "gl",
+        draw_rate: float = 1 / 60,
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -138,7 +140,6 @@ class Window(pyglet.window.Window):
         try:
             super().__init__(width=width, height=height, caption=title,
                              resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
-            self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
@@ -149,8 +150,12 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
-        if update_rate:
-            self.set_update_rate(update_rate)
+        # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
+        # is initially set in the call to pyglet.app.run() that is done by the run() function.
+        # run() will pull this draw rate from the Window and use it. Calls to set_draw_rate only need
+        # to be done if changing it after the application has been started.
+        self._draw_rate = draw_rate
+        self.set_update_rate(update_rate)
 
         self.set_vsync(vsync)
 
@@ -255,11 +260,10 @@ class Window(pyglet.window.Window):
 
     def run(self):
         """
-        Shortcut for :py:func:`arcade.run()`.
-
-        For example::
-
-            MyWindow().run()
+        Run the main loop.
+        After the window has been set up, and the event hooks are in place, this is usually one of the last
+        commands on the main program. This is a blocking function starting pyglet's event loop
+        meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
         """
         arcade.run()
 
@@ -302,15 +306,6 @@ class Window(pyglet.window.Window):
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
-    def update(self, delta_time: float):
-        """
-        Move everything. For better consistency in naming, use ``on_update`` instead.
-
-        :param float delta_time: Time interval since the last time the function was called in seconds.
-
-        """
-        pass
-
     def on_update(self, delta_time: float):
         """
         Move everything. Perform collision checks. Do all the game logic here.
@@ -321,18 +316,31 @@ class Window(pyglet.window.Window):
         pass
 
     def _dispatch_updates(self, delta_time: float):
-        self.dispatch_event('update', delta_time)
+        """
+        Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
+        dispatches the on_update events.
+        """
         self.dispatch_event('on_update', delta_time)
 
     def set_update_rate(self, rate: float):
         """
-        Set how often the screen should be updated.
-        For example, self.set_update_rate(1 / 60) will set the update rate to 60 fps
+        Set how often the on_update function should be dispatched.
+        For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
 
         :param float rate: Update frequency in seconds
         """
+        self._update_rate = rate
         pyglet.clock.unschedule(self._dispatch_updates)
         pyglet.clock.schedule_interval(self._dispatch_updates, rate)
+
+    def set_draw_rate(self, rate: float):
+        """
+        Set how often the on_draw function should be run.
+        For example, set.set_draw_rate(1 / 60) will set the draw rate to 60 frames per second.
+        """
+        self._draw_rate = rate
+        pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
+        pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
@@ -881,8 +889,7 @@ def open_window(
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, update_rate=None,
-                     antialiasing=antialiasing)
+    _window = Window(width, height, window_title, resizable=resizable, antialiasing=antialiasing)
     _window.invalid = False
     return _window
 
@@ -931,10 +938,6 @@ class View:
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         self.window.clear(color, normalized, viewport)
-
-    def update(self, delta_time: float):
-        """To be overridden"""
-        pass
 
     def on_update(self, delta_time: float):
         """To be overridden"""

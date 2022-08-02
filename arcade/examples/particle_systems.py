@@ -729,7 +729,7 @@ class MyGame(arcade.Window):
         self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         if self.emitter:
             self.emitter_timeout += 1
             self.emitter.update()
