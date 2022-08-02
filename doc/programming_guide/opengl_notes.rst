@@ -98,16 +98,16 @@ first ``draw()`` call or ``initialize()`` is called.
 Writing Raw Bytes to GL Buffers & Textures
 -----------------------------------------------------------
 
-Some OpenGL classes support writing to them from anything that
-implements the
+Many of arcade's OpenGL classes support creation from or writing to
+any object that supports the
 `buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
-The OpenGL classes that support this include:
+The classes most useful to end users are:
 
 * :py:meth:`arcade.gl.Buffer <arcade.gl.Buffer.write>`
 * :py:meth:`arcade.gl.Texture <arcade.gl.Texture.write>`
 
-This feature can be used for displaying the results of calculations
-such as:
+This functionality can be used for displaying the results of
+calculations such as:
 
 * Scientific visualizations displaying data from numpy arrays
 * Simple console emulators drawing their internal screen buffer
