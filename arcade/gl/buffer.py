@@ -17,11 +17,20 @@ class Buffer:
     They are used for storage of vertex data,
     element data (vertex indexing), uniform block data etc.
 
-    Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+    The ``data`` parameter can be anything that implements the
+    `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+    This includes ``bytes``, ``bytearray``, ``array.array``, and
+    more. You may need to use typing workarounds for non-builtin
+    types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+    information.
+
+    .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
 
     :param Context ctx: The context this buffer belongs to
-    :param Any data: The data this buffer should contain.
-                     It can be bytes or any object supporting the buffer protocol.
+    :param BufferProtocol data: The data this buffer should contain.
+                                It can be a ``bytes`` instance or any
+                                object supporting the buffer protocol.
     :param int reserve: Create a buffer of a specific byte size
     :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
     """
@@ -34,7 +43,7 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self, ctx: "Context", data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
     ):
 
         self._ctx = ctx
