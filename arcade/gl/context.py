@@ -19,6 +19,7 @@ from .query import Query
 from .texture import Texture
 from .types import BufferDescription
 from .vertex_array import Geometry
+from ..arcade_types import BufferProtocol
 
 LOG = logging.getLogger(__name__)
 
@@ -730,7 +731,7 @@ class Context:
     # --- Resource methods ---
 
     def buffer(
-        self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self, *, data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
         """
         Create an OpenGL Buffer object. The buffer will contain all zero-bytes if no data is supplied.
@@ -745,12 +746,21 @@ class Context:
             # Create a buffer with 1000 random 32 bit floats using numpy
             self.ctx.buffer(data=np.random.random(1000).astype("f4"))
 
+
+        The ``data`` parameter can be anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        This includes ``bytes``, ``bytearray``, ``array.array``, and
+        more. You may need to use typing workarounds for non-builtin
+        types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
         The ``usage`` parameter enables the GL implementation to make more intelligent
         decisions that may impact buffer object performance. It does not add any restrictions.
         If in doubt, skip this parameter and revisit when optimizing. The result
         are likely to be different between vendors/drivers or may not have any effect.
 
-        The available values means the following::
+        The available values mean the following::
 
             stream
                 The data contents will be modified once and used at most a few times.
@@ -759,7 +769,8 @@ class Context:
             dynamic
                 The data contents will be modified repeatedly and used many times.
 
-        :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
+        :param BufferProtocol data: The buffer data. This can be a ``bytes`` instance or any
+                                     any other object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         :rtype: :py:class:`~arcade.gl.Buffer`
