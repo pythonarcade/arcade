@@ -649,7 +649,7 @@ class Texture:
         :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
-        :param BufferOrBufferProtocol data: :ref:`~arcade.gl.Buffer` or
+        :param BufferOrBufferProtocol data: :class:`~arcade.gl.Buffer` or
                                             buffer protocol object with
                                             data to write.
         :param int level: The texture level to write
