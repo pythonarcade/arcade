@@ -8,7 +8,7 @@ from pyglet import gl
 from .buffer import Buffer
 from .utils import data_to_ctypes
 from .types import pixel_formats, BufferOrBufferProtocol
-
+from ..arcade_types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -42,7 +42,7 @@ class Texture:
     :param Tuple[int, int] size: The size of the texture
     :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
     :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
+    :param BufferProtocol data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
@@ -114,7 +114,7 @@ class Texture:
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Any = None,
+        data: Optional[BufferProtocol] = None,
         filter: Tuple[gl.GLuint, gl.GLuint] = None,
         wrap_x: gl.GLuint = None,
         wrap_y: gl.GLuint = None,
