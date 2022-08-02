@@ -93,3 +93,40 @@ created with the ``lazy=True`` parameters.
 This ensures OpenGL resources are not created until the
 first ``draw()`` call or ``initialize()`` is called.
 
+.. _prog-guide-gl-buffer-protocol-typing:
+
+Buffer Protocol Typing for Writing to GL Buffers & Textures
+-----------------------------------------------------------
+
+Some OpenGL classes support writing to them from anything that
+implements the
+`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_. These
+include:
+
+* :py:meth:`arcade.gl.Buffer <arcade.gl.Buffer.write>`
+* :py:meth:`arcade.gl.Texture <arcade.gl.Texture.write>`
+
+This feature can be used for displaying the results of calculations
+such as:
+
+* Scientific visualizations displaying data from numpy arrays
+* Emulators drawing screen data
+
+There should be no typing issues when using Python's built-in buffer
+protocol objects as arguments to the ``write`` method of arcade's GL
+objects. We list these built-in types in the
+``arcade.arcade_types.BufferProtocol``
+`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_
+type.
+
+For objects from third-party libraries, your type checker may warn you
+about type mismatches. This is because Python will not support general
+annotations for buffer protocol objects until
+`version 3.12 at the earliest <https://peps.python.org/pep-0688/>`_.
+
+In the meantime, there are workarounds for users who want to write to
+arcade's GL objects from third-party buffer protocol objects:
+
+* use the `typing.cast <https://docs.python.org/3/library/typing.html#typing.cast>`_
+  method to convert the object's type for the linter
+* use ``# type: ignore`` to silence the warnings
