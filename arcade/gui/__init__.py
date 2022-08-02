@@ -13,6 +13,7 @@ from arcade.gui.events import UIOnClickEvent
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.events import UIOnUpdateEvent
 from arcade.gui.events import UITextEvent
+from arcade.gui.events import UIOnActionEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
 from arcade.gui.surface import Surface
@@ -65,6 +66,7 @@ __all__ = [
     "UIMouseReleaseEvent",
     "UIMouseScrollEvent",
     "UIOnUpdateEvent",
+    "UIOnActionEvent",
     "UIOnChangeEvent",
     "UIOnClickEvent",
     "UISlider",

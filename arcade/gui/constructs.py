@@ -12,13 +12,15 @@ from arcade.gui.widgets.text import UITextArea
 class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     """
     A simple dialog box that pops up a message with buttons to close.
-
     Subclass this class or overwrite the 'on_action' event handler with
 
-    box = UIMessageBox(...)
-    @box.event("on_action")
-    def on_action(event: UIOnActionEvent):
-        pass
+    .. code-block:: python
+
+        box = UIMessageBox(...)
+        @box.event("on_action")
+        def on_action(event: UIOnActionEvent):
+            pass
+
 
     :param width: Width of the message box
     :param height: Height of the message box
