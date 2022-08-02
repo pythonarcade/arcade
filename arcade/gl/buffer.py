@@ -1,6 +1,6 @@
 from ctypes import byref, string_at
 import weakref
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from pyglet import gl
 
