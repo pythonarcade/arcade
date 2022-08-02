@@ -19,9 +19,14 @@ class UIMockup(arcade.Window):
         anchor = self.manager.add(UIAnchorLayout())
 
         self.ui_dummy = UIDummy(size_hint_max=(200, None), size_hint=(1, 0.6))
-        self.box = UIBoxLayout(children=[UIDummy(size_hint_max=(50, None), size_hint=(1, 0.3)),
-                                       UIDummy(size_hint_max=(100, None), size_hint=(1, 0.3)), self.ui_dummy, ],
-                             size_hint=(0.5, 0.5))
+        self.box = UIBoxLayout(
+            children=[
+                UIDummy(size_hint_max=(50, None), size_hint=(1, 0.3)),
+                UIDummy(size_hint_max=(100, None), size_hint=(1, 0.3)),
+                self.ui_dummy,
+            ],
+            size_hint=(0.5, 0.5),
+        )
         anchor.add(
             child=self.box,
             anchor_x="center_x",

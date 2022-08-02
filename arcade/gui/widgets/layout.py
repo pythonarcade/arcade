@@ -248,7 +248,7 @@ class UIBoxLayout(UILayout):
                     if shh:
                         # Maximal growth to parent.height * shh
                         available_growth_height = new_rect.height + available_height * (
-                                shh / total_size_hint_height
+                            shh / total_size_hint_height
                         )
                         max_growth_height = self.height * shh
                         new_rect = new_rect.resize(
@@ -295,7 +295,7 @@ class UIBoxLayout(UILayout):
                     if shw:
                         # Maximal growth to parent.width * shw
                         available_growth_width = new_rect.width + available_width * (
-                                shw / total_size_hint_width
+                            shw / total_size_hint_width
                         )
                         max_growth_height = self.width * shw
                         new_rect = new_rect.resize(
@@ -428,11 +428,11 @@ class UIGridLayout(UILayout):
         base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
 
         content_height = (
-                sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         )
         content_width = (
-                sum(principal_width_ratio_list)
-                + self.column_count * self._horizontal_spacing
+            sum(principal_width_ratio_list)
+            + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
@@ -521,10 +521,10 @@ class UIGridLayout(UILayout):
 
             for col_num, child in enumerate(row):
                 max_height = (
-                        max_height_per_row[row_num][col_num][0] + self._vertical_spacing
+                    max_height_per_row[row_num][col_num][0] + self._vertical_spacing
                 )
                 max_width = (
-                        max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
+                    max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
                 )
 
                 if max_width == self._horizontal_spacing:

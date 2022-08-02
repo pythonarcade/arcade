@@ -2,6 +2,7 @@
 Constructs, are prepared widget combinations, you can use for common use-cases
 """
 import arcade
+from arcade.gui.events import UIOnActionEvent
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout
@@ -12,11 +13,17 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     """
     A simple dialog box that pops up a message with buttons to close.
 
+    Subclass this class or overwrite the 'on_action' event handler with
+
+    box = UIMessageBox(...)
+    @box.event("on_action")
+    def on_action(event: UIOnActionEvent):
+        pass
+
     :param width: Width of the message box
     :param height: Height of the message box
-    :param message_text:
+    :param message_text: Text to show as message to the user
     :param buttons: List of strings, which are shown as buttons
-    :param callback: Callback function, will receive the text of the clicked button
     """
 
     def __init__(
@@ -26,15 +33,14 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         height: float,
         message_text: str,
         buttons=("Ok",),
-        callback=None
     ):
         super().__init__(size_hint=(1, 1))
-        self._callback = callback  # type: ignore
+        self.register_event_type("on_action")
 
-        space = 10
+        space = 20
 
         # setup frame which will act like the window
-        frame = self.add(UIAnchorLayout(width=width, height=height))
+        frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
         frame.with_padding(all=space)
 
         self._bg_tex = arcade.load_texture(
@@ -60,7 +66,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button)
-            button.on_click = self.on_ok  # type: ignore
+            button.on_click = self._on_choice  # type: ignore
 
         frame.add(
             child=button_group,
@@ -68,7 +74,10 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             anchor_y="bottom",
         )
 
-    def on_ok(self, event):
+    def _on_choice(self, event):
         self.parent.remove(self)
-        if self._callback is not None:
-            self._callback(event.source.text)
+        self.dispatch_event("on_action", UIOnActionEvent(self, event.source.text))
+
+    def on_action(self, event: UIOnActionEvent):
+        """Called when button was pressed"""
+        pass

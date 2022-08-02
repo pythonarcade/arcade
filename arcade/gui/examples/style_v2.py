@@ -42,7 +42,7 @@ STYLES = [
             bg=arcade.color.DARK_SLATE_GRAY,
             border=arcade.color.DAVY_GREY,
             border_width=2,
-        )
+        ),
     },
     {  # BLUE
         "normal": UIFlatButtonStyle(
@@ -76,8 +76,8 @@ STYLES = [
             bg=arcade.color.GRAY_BLUE,
             border=arcade.color.DAVY_GREY,
             border_width=2,
-        )
-    }
+        ),
+    },
 ]
 
 
@@ -114,13 +114,18 @@ class UIButtonRow(UIBoxLayout):
             size_hint_max=size_hint_max,
             space_between=space_between,
             style=style,
-
         )
         self.register_event_type("on_action")
 
         self.button_factory = button_factory
 
-    def add_button(self, label: str, *, on_click=None, style=None, ):
+    def add_button(
+        self,
+        label: str,
+        *,
+        on_click=None,
+        style=None,
+    ):
         button = self.button_factory(text=label, style=style)
         button.on_click = self._on_click  # type: ignore
         self.add(button)
@@ -135,7 +140,9 @@ class UIButtonRow(UIBoxLayout):
         pass
 
     def _on_click(self, event: UIOnClickEvent):
-        self.dispatch_event("on_action", UIOnActionEvent(event.source, event.source.text))
+        self.dispatch_event(
+            "on_action", UIOnActionEvent(event.source, event.source.text)
+        )
 
 
 class DemoWindow(arcade.Window):
@@ -170,5 +177,5 @@ class DemoWindow(arcade.Window):
         self.manager.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     DemoWindow().run()

@@ -1,6 +1,6 @@
 import arcade
 from arcade import Window, View, Texture
-from arcade.experimental.uistyle import UISliderStyle
+from arcade.experimental.uistyle import UISliderStyle, UISliderDefaultStyle
 from arcade.gui import UIManager, Surface, UIAnchorLayout
 from arcade.gui.widgets.slider import UISlider
 
@@ -13,16 +13,20 @@ class UITextureSlider(UISlider):
     def __init__(self, bar: Texture, thumb: Texture, **kwargs):
         self.bar = bar
         self.thumb = thumb
-        style = UISliderStyle(
-            normal_filled_bar=(180, 180, 140),
-            hovered_filled_bar=(200, 200, 165),
-            pressed_filled_bar=(225, 225, 180),
-        )
+        style = UISliderDefaultStyle
 
         super().__init__(style=style, **kwargs)
 
     def do_render(self, surface: Surface):
-        state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
+        if self.disabled:
+            state = "disabled"
+        elif self.pressed:
+            state = "press"
+        elif self.hovered:
+            state = "hover"
+        else:
+            state = "normal"
+        style: UISliderStyle = self.style[state]
 
         self.prepare_render(surface)
 
@@ -36,13 +40,12 @@ class UITextureSlider(UISlider):
         slider_bottom = (self.height - slider_height) // 2
 
         # slider
-        fg_slider_color = self.style[f"{state}_filled_bar"]
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.x,
             slider_bottom,
             cursor_center_x - slider_left_x,
             slider_height,
-            fg_slider_color,
+            style.filled_bar,
         )
 
         # cursor

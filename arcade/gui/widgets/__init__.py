@@ -147,7 +147,12 @@ class Rect(NamedTuple):
         """
         Sets the size to at least the given min values.
         """
-        return Rect(self.x, self.y, max(width or 0.0, self.width), max(height or 0.0, self.height))
+        return Rect(
+            self.x,
+            self.y,
+            max(width or 0.0, self.width),
+            max(height or 0.0, self.height)
+        )
 
     def max_size(self, width: float = None, height: float = None):
         """
@@ -532,19 +537,19 @@ class UIWidget(EventDispatcher, ABC):
     @property
     def content_width(self):
         return (
-                self.rect.width
-                - 2 * self.border_width
-                - self.padding_left
-                - self.padding_right
+            self.rect.width
+            - 2 * self.border_width
+            - self.padding_left
+            - self.padding_right
         )
 
     @property
     def content_height(self):
         return (
-                self.rect.height
-                - 2 * self.border_width
-                - self.padding_top
-                - self.padding_bottom
+            self.rect.height
+            - 2 * self.border_width
+            - self.padding_top
+            - self.padding_bottom
         )
 
     @property
@@ -643,7 +648,7 @@ class UIInteractiveWidget(UIWidget):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-                event.x, event.y
+            event.x, event.y
         ):
             self.pressed = True
             return EVENT_HANDLED
@@ -652,14 +657,9 @@ class UIInteractiveWidget(UIWidget):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 # Dispatch new on_click event, source is this widget itself
-                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))  # type: ignore
-                return EVENT_HANDLED
-
-        if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(
-                event.x, event.y
-        ):
-            if not self.disabled:
-                return self.dispatch_event("on_click", event)
+                return self.dispatch_event(
+                    "on_click", UIOnClickEvent(self, event.x, event.y)
+                )
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -819,44 +819,6 @@ class UILayout(UIWidget, UIWidgetParent):
 
         # Continue do_layout within subtree
         super()._do_layout()
-
-
-class UIWrapper(UILayout, UIWidgetParent):
-    """
-    # TODO Should this stay?
-    DEPRECATED - UIWrapper will be removed in an upcoming release, please use UILayout instead.
-
-    Wraps a :class:`arcade.gui.UIWidget`.
-
-    :param child: Single child of this wrapper
-    :param padding: space around (top, right, bottom, left)
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: not used
-    """
-
-    def __init__(
-        self,
-        *,
-        child: UIWidget,
-    ):
-        """
-        :param child: Child Widget which will be wrapped
-        :param padding: Space between top, right, bottom, left
-        """
-        super().__init__(
-            *child.rect,
-            children=[child],
-        )
-
-    @property
-    def child(self) -> UIWidget:
-        return self.children[0]
-
-    @child.setter
-    def child(self, value: UIWidget):
-        self.children[0] = value
 
 
 class UISpace(UIWidget):
