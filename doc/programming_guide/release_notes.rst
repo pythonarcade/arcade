@@ -32,14 +32,14 @@ to changes which directly changed the API in a way that is not compatible with h
 Featured Updates
 ~~~~~~~~~~~~~~~~
 
-  * Arcade now supports OpenGL ES 3.1/3.2 and have been
-    tested on the raspberry pi 4. Any model using the Cortex-A72
-    cpu should work. Note that you need fairly new mesa drivers
-    to get the new V3D drivers.
-  * Rotation order changed to clockwise
-  * Arcade now supports mixing pyglet and arcade drawing meaning
-    you can for example use pyglet batches.
-  * Added a new system for handling background textures (ADD MORE INFO)
+* Arcade now supports OpenGL ES 3.1/3.2 and have been
+  tested on the raspberry pi 4. Any model using the Cortex-A72
+  cpu should work. Note that you need fairly new mesa drivers
+  to get the new V3D drivers.
+* Rotation order changed to clockwise
+* Arcade now supports mixing pyglet and arcade drawing meaning
+  you can for example use pyglet batches.
+* Added a new system for handling background textures (ADD MORE INFO)
 
 Changes
 ~~~~~~~
@@ -61,6 +61,7 @@ Changes
   * Removal of the ``update`` function in favor of ``on_update()``
 
 * GUI
+
   * :py:class:`~arcade.gui.widgets.UIWidget`
 
     * supports padding, border and background (color and texture)
@@ -75,14 +76,15 @@ Changes
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
 
   * Arcade :py:class:`~arcade.gui.property.Property`:
+
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
   * Misc Changes
 
-      * arcade.color_from_hex_string changed to follow the CSS hex string standard
-      * Windows Text glyph are now created with DirectWrite instead of GDI
-      * Removal of various deprecated functions and parameters
-      * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
+    * arcade.color_from_hex_string changed to follow the CSS hex string standard
+    * Windows Text glyph are now created with DirectWrite instead of GDI
+    * Removal of various deprecated functions and parameters
+    * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
 * OpenGL
 
