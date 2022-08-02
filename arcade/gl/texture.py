@@ -1,7 +1,6 @@
-from array import array
 from ctypes import byref
 import weakref
-from typing import Any, Optional, Tuple, Union, TYPE_CHECKING
+from typing import Optional, Tuple, Union, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -654,7 +653,8 @@ class Texture:
                                             buffer protocol object with
                                             data to write.
         :param int level: The texture level to write
-        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport: The area of the texture to write. 2 or 4 component tuple
+        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
+          The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
