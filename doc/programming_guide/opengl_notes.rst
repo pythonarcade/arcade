@@ -95,13 +95,13 @@ first ``draw()`` call or ``initialize()`` is called.
 
 .. _prog-guide-gl-buffer-protocol-typing:
 
-Buffer Protocol Typing for Writing to GL Buffers & Textures
+Writing Raw Bytes to GL Buffers & Textures
 -----------------------------------------------------------
 
 Some OpenGL classes support writing to them from anything that
 implements the
-`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_. These
-include:
+`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+The OpenGL classes that support this include:
 
 * :py:meth:`arcade.gl.Buffer <arcade.gl.Buffer.write>`
 * :py:meth:`arcade.gl.Texture <arcade.gl.Texture.write>`
@@ -110,7 +110,7 @@ This feature can be used for displaying the results of calculations
 such as:
 
 * Scientific visualizations displaying data from numpy arrays
-* Emulators drawing screen data
+* Simple console emulators drawing their internal screen buffer
 
 There should be no typing issues when using Python's built-in buffer
 protocol objects as arguments to the ``write`` method of arcade's GL
