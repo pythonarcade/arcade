@@ -10,6 +10,9 @@ done very efficiently with shaders.
 In this example we render content into a framebuffer /
 virtual screen and map that on a texture we can rotate
 in 3D.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.perspective
 """
 
 from array import array

@@ -1,8 +1,12 @@
 """
 Simple instancing example.
+
 We draw a triangle N times using instancing.
 A position offset and color is passed in per instance.
 To make things a bit more interesting we also rotate the triangle.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.instancing
 """
 import random
 from array import array

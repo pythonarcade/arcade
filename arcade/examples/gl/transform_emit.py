@@ -2,7 +2,10 @@
 Example showing how er can emit particles with the gpu.
 We work with transform shaders to do all the logic.
 
-This example was created on a Raspberry PI 4
+This example was created on a Raspberry PI 4.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.transform_emit
 """
 # import struct
 import random

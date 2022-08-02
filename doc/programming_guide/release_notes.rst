@@ -29,7 +29,19 @@ to changes which directly changed the API in a way that is not compatible with h
 * The ``update_rate`` parameter of :py:class:`~arcade.Window` can no longer be set to ``None``. Previously it defaulted
   to ``1 / 60`` however could be set to ``None``. The default is still the same, but setting it to None will not do anything.
 
-Updates
+Featured Updates
+~~~~~~~~~~~~~~~~
+
+  * Arcade now supports OpenGL ES 3.1/3.2 and have been
+    tested on the raspberry pi 4. Any model using the Cortex-A72
+    cpu should work. Note that you need fairly new mesa drivers
+    to get the new V3D drivers.
+  * Rotation order changed to clockwise
+  * Arcade now supports mixing pyglet and arcade drawing meaning
+    you can for example use pyglet batches.
+  * Added a new system for handling background textures (ADD MORE INFO)
+
+Changes
 ~~~~~~~
 
 * :py:class:`~arcade.Window`
@@ -55,6 +67,7 @@ Updates
     * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
+    * Fixed an blending issue when rendering the gui surface to the screen
 
   * New widgets:
 
@@ -64,9 +77,12 @@ Updates
   * Arcade :py:class:`~arcade.gui.property.Property`:
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
-* Misc Changes
+  * Misc Changes
 
-  * arcade.color_from_hex_string changed to follow the CSS hex string standard
+      * arcade.color_from_hex_string changed to follow the CSS hex string standard
+      * Windows Text glyph are now created with DirectWrite instead of GDI
+      * Removal of various deprecated functions and parameters
+      * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
 * OpenGL
 
@@ -77,7 +93,13 @@ Updates
     As an example, the Raspberry Pi 4b only supports OpenGL ES 3.1, however does provide this extension, so is fully compatible
     with Arcade.
   * Textures now support immutable storage
-
+  * Arcade is now using pyglet's projection and view matrix.
+    All functions setting matrixes will update the pyglet window's
+    ``view`` and ``projection`` attributes. Arcade shaders is also
+    using pyglet's ``WindowBlock`` UBO.
+  * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
+    when the extension is available.
+  * Fixed many implicit type conversions in the shader code for wider support.
 
 Version 2.6.15
 --------------

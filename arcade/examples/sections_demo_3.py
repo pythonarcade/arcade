@@ -17,6 +17,9 @@ Note:
  - Section "enable" property to show or hide sections
  - Modal Sections: sections that draw last but capture all events and also stop
    other sections from updating.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sections_demo_3
 """
 from typing import Optional
 from math import sqrt

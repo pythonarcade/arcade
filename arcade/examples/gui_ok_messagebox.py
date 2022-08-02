@@ -1,5 +1,8 @@
 """
 Example code showing how to use the OKMessageBox
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_ok_messagebox
 """
 import arcade
 import arcade.gui

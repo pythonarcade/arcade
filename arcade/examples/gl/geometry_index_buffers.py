@@ -1,7 +1,11 @@
 """
+Indexed geometry example.
+
 Example using index buffers with 1, 2, and 4 byte size.
 In most cases we can get away with unsigned 32 bit integers.
-Still it can be useful to 
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.geometry_index_buffers
 """
 from array import array
 

@@ -8,6 +8,9 @@ are stale, but it can still be a useful tool.
 GPU collision checking can potentially be used if needed.
 
 The window can be resized.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.spritelist_interaction_bouncing_coins
 """
 from array import array
 from random import randint, uniform
@@ -26,7 +29,7 @@ class GPUBouncingCoins(arcade.Window):
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
 
-        # Genreate lots of coins in random positions
+        # Generate lots of coins in random positions
         self.coins = arcade.SpriteList(use_spatial_hash=None)
         for _ in range(NUM_COINS):
             self.coins.append(
