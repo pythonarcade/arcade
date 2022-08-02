@@ -7,7 +7,8 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
-from .types import pixel_formats
+from .types import pixel_formats, BufferOrBufferProtocol
+
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -637,12 +638,24 @@ class Texture:
         else:
             raise ValueError("Unknown gl_api: '{self._ctx.gl_api}'")
 
-    def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
-        """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
+    def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
+        """Write byte data from the passed source to the texture.
 
-        :param Union[bytes,Buffer] data: bytes or a Buffer with data to write
+        The ``data`` value can be either an
+        :py:class:`arcade.gl.Buffer` or anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        The latter category includes ``bytes``, ``bytearray``,
+        ``array.array``, and more. You may need to use typing
+        workarounds for non-builtin types. See
+        :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
+        :param BufferOrBufferProtocol data: :ref:`~arcade.gl.Buffer` or
+                                            buffer protocol object with
+                                            data to write.
         :param int level: The texture level to write
-        :param tuple viewport: The are of the texture to write. 2 or 4 component tuple
+        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport: The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
