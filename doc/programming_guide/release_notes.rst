@@ -7,10 +7,46 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.7.0
------
+Version 2.7.0
+-------------
 
 *Unreleased*
+
+Version 2.7.0 is a major update to Arcade. It is not 100% compatible with the 2.6 API.
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+These are the API changes which could require updates to existing code based on the 2.6 API. Some of these things may
+be repeated in the Updates section of these release notes, however we have compiled the breaking changes here for easy
+easier reference. There may be other behavior changes that could break specific scenarios, but this section is limited
+to changes which directly changed the API in a way that is not compatible with how it was used in 2.6.
+
+* The ``update`` function has been removed from the :py:class:`~arcade.Window`, :py:class:`~arcade.View`,
+  :py:class:`~arcade.Section`, and :py:class:`~arcade.Sectionmanager` classes in favor of the ``on_update()`` function. This function
+  has been the recommended way to use Arcade for a long time now. It works the same as the ``update`` function
+  however it is able to receive a ``delta_time`` parameter which is the time since the last update.
+* The ``update_rate`` parameter of :py:class:`~arcade.Window` can no longer be set to ``None``. Previously it defaulted
+  to ``1 / 60`` however could be set to ``None``. The default is still the same, but setting it to None will not do anything.
+
+Updates
+~~~~~~~
+
+* :py:class:`~arcade.Window`
+
+  * Removal of the ``update`` function in favor of :py:meth:`~arcade.Window.on_update()`
+  * ``update_rate`` parameter in the constructor can no longer be set to ``None``. Must be a float.
+  * Added ``draw_rate`` parameter to constructor, this will control the interval that the :py:meth:`~arcade.Window.on_draw()`
+    function is called at. This can be used with the pre-existing ``update_rate`` parameter which controls
+    :py:meth:`~arcade.Window.on_update()` to achieve separate draw and update rates.
+
+* :py:class:`~arcade.View`
+
+  * Removal of the ``update`` function in favor of :py:meth:`~arcade.View.on_update()`
+
+* :py:class:`~arcade.Section` and :py:class:`~arcade.Sectionmanager`
+
+  * Removal of the ``update`` function in favor of ``on_update()``
 
 * GUI
   * :py:class:`~arcade.gui.widgets.UIWidget`
@@ -28,14 +64,19 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Arcade :py:class:`~arcade.gui.property.Property`:
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
-  * Misc Changes
+* Misc Changes
 
-    * arcade.color_from_hex_string changed to follow the CSS hex string standard
+  * arcade.color_from_hex_string changed to follow the CSS hex string standard
 
-  * OpenGL
+* OpenGL
 
-    * Support for OpenGL ES 3.1/2
-    * Textures now support immutable storage
+  * Support for OpenGL ES 3.1 and 3.2. 3.2 is fully supported, 3.1 is only supported if the ``EXT_geometry_shader`` extension
+    is provided by the driver. This is part of the minimum spec in 3.2 so it is guaranteed to be there. This is the only optional
+    extension that Arcade needs to function with 3.1.
+
+    As an example, the Raspberry Pi 4b only supports OpenGL ES 3.1, however does provide this extension, so is fully compatible
+    with Arcade.
+  * Textures now support immutable storage
 
 
 Version 2.6.15
