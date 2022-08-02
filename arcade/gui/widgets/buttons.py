@@ -205,7 +205,8 @@ class UIFlatButton(UIInteractiveWidget):
 
         border_width = style.get("border_width")
         border_color = style.get("border")
-        if bg_color := style.get("bg"):
+        bg_color = style.get("bg")
+        if bg_color:
             surface.clear(bg_color)
 
         # render button border (which is not the widgets border)
