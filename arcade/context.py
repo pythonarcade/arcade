@@ -275,6 +275,10 @@ class ArcadeContext(Context):
                 f"projection must be a 4-component tuple, not {type(value)}: {value}"
             )
 
+        # Don't try to set zero projection leading to division by zero
+        if self.window.height == 0 or self.window.width == 0:
+            return
+
         self.window.projection = Mat4.orthogonal_projection(
             value[0], value[1], value[2], value[3], -100, 100,
         )

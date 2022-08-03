@@ -69,7 +69,6 @@ def print_timings():
 
         Event          Count Average Time
         -------------- ----- ------------
-        update            60       0.0553
         on_update         60       0.0000
         on_mouse_enter     1       0.0000
         on_mouse_motion   39       0.0000

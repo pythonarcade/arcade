@@ -215,9 +215,6 @@ class Section:
     def on_update(self, delta_time: float):
         pass
 
-    def update(self, delta_time: float):
-        pass
-
     def on_resize(self, width: int, height: int):
         pass
 
@@ -287,7 +284,7 @@ class SectionManager:
             'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
             'on_mouse_release', 'on_mouse_scroll', 'on_mouse_enter',
             'on_mouse_leave', 'on_key_press', 'on_key_release', 'on_draw',
-            'on_update', 'update', 'on_resize'}
+            'on_update', 'on_resize'}
 
     @property
     def sections(self) -> List[Section]:
@@ -367,20 +364,6 @@ class SectionManager:
             if section.enabled and not section.block_updates \
                     and not modal_present:
                 section.on_update(delta_time)
-                if section.modal:
-                    modal_present = True
-
-    def update(self, delta_time: float):
-        """
-        Called on each event loop.
-        First dispatch the view event, then the section ones.
-        """
-        modal_present = False
-        self.view.update(delta_time)
-        for section in self.sections:
-            if section.enabled and not section.block_updates \
-                    and not modal_present:
-                section.update(delta_time)
                 if section.modal:
                     modal_present = True
 

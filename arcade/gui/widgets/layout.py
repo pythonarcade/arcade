@@ -11,7 +11,8 @@ class UIAnchorLayout(UILayout):
     Places children based on anchor values.
     Defaults to `size_hint = (1, 1)`.
 
-    Supports `size_hint_min` of children.
+    Supports `size_hint`, `size_hint_min`, and `size_hint_max`.
+    Children may overlap.
 
     Allowed keyword options for `UIAnchorLayout.add()`
     - anchor_x: str = None - uses `self.default_anchor_x` as default
@@ -84,13 +85,27 @@ class UIAnchorLayout(UILayout):
         anchor_x = anchor_x or self.default_anchor_x
         anchor_y = anchor_y or self.default_anchor_y
 
-        # Handle size_hint_min (e.g. UIBoxLayout)
+        # Handle size_hints
         new_child_rect = child.rect
+
+        if child.size_hint:
+            shw, shh = child.size_hint
+            if shw:
+                new_child_rect = new_child_rect.resize(width=self.content_width * shw)
+
+            if shh:
+                new_child_rect = new_child_rect.resize(height=self.content_height * shw)
 
         if child.size_hint_min:
             new_child_rect = new_child_rect.min_size(*child.size_hint_min)
 
-        # calculate wanted position
+        if child.size_hint_max:
+            new_child_rect = new_child_rect.max_size(*child.size_hint_max)
+
+        # stay in bounds
+        new_child_rect = new_child_rect.max_size(*self.content_size)
+
+        # calculate position
         content_rect = self.content_rect
 
         anchor_x = "center_x" if anchor_x == "center" else anchor_x
@@ -211,7 +226,8 @@ class UIBoxLayout(UILayout):
 
         if self.vertical:
             available_width = self.content_width
-            available_height = self.height - self.size_hint_min[1]
+            # calculate if some space is available for children to grow
+            available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = sum(
                 child.size_hint[1] or 0 for child in self.children if child.size_hint
             )
@@ -257,7 +273,8 @@ class UIBoxLayout(UILayout):
             center_y = start_y - self.content_height // 2
 
             available_height = self.content_height
-            available_width = self.width - self.size_hint_min[0]
+            # calculate if some space is available for children to grow
+            available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = sum(
                 child.size_hint[0] or 0 for child in self.children if child.size_hint
             )

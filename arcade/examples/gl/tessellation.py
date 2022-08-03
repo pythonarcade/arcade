@@ -1,6 +1,9 @@
 """
 Drawing bezier curve using tessellation shader.
 This example is ported from moderngl : https://github.com/moderngl/moderngl/blob/master/examples/tesselation.py
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.tessellation
 """
 from array import array
 

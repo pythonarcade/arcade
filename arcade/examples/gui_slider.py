@@ -10,6 +10,9 @@ changes in its value.
 
 There are two other ways of handling update events. For more
 information on this subject, see the gui_flat_button example.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_slider
 """
 import arcade
 from arcade.gui.widgets.slider import UISlider

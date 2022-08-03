@@ -1,8 +1,7 @@
-from collections import ChainMap
-
 import arcade
 from arcade import Texture
-from arcade.experimental.uistyle import UIFlatButtonStyle
+from arcade.experimental.uistyle import UIFlatButtonStyle_default
+from arcade.gui.property import Property, bind
 from arcade.gui.widgets import UIInteractiveWidget, Surface
 
 
@@ -157,6 +156,8 @@ class UIFlatButton(UIInteractiveWidget):
 
     """
 
+    text = Property("")
+
     def __init__(
         self,
         x: float = 0,
@@ -167,7 +168,7 @@ class UIFlatButton(UIInteractiveWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
+        style=UIFlatButtonStyle_default,
         **kwargs,
     ):
         super().__init__(
@@ -178,24 +179,33 @@ class UIFlatButton(UIInteractiveWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=ChainMap(style or {}, UIFlatButtonStyle()),  # type: ignore
+            style=style
         )
-        self._text = text
+
+        self.text = text
+        bind(self, "text", self.trigger_render)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
+        if self.disabled:
+            state = "disabled"
+        elif self.pressed:
+            state = "press"
+        elif self.hovered:
+            state = "hover"
+        else:
+            state = "normal"
+
+        style = self.style[state]
 
         # Render button
-        font_name = self.style.get(f"{state}_font_name")
-        font_size = self.style.get(f"{state}_font_size")
-        font_color = self.style.get(f"{state}_font_color")
+        font_name = style.get("font_name")
+        font_size = style.get("font_size")
+        font_color = style.get("font_color")
 
-        border_width = self.style.get(f"{state}_border_width")
-        border_color = self.style.get(f"{state}_border")
-        bg_color = self.style.get(f"{state}_bg")
-
-        # render BG (which is not the widgets background)
+        border_width = style.get("border_width")
+        border_color = style.get("border")
+        bg_color = style.get("bg")
         if bg_color:
             surface.clear(bg_color)
 
@@ -228,13 +238,3 @@ class UIFlatButton(UIInteractiveWidget):
                 anchor_y="center",
                 width=self.content_width - 2 * (border_width or 0) - 2 * text_margin,
             )
-
-    # TODO Replace with arcade Property
-    @property
-    def text(self):
-        return self._text
-
-    @text.setter
-    def text(self, value):
-        self._text = value
-        self.trigger_render()

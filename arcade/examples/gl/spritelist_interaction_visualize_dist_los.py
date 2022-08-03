@@ -9,6 +9,9 @@ checks by using texture lookups. We our walls into a
 texture and read the pixels in a line between the 
 player and the target sprite to check if the path is
 colliding with something.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los
 """
 import random
 import arcade
@@ -31,7 +34,7 @@ class SpriteListInteraction(arcade.Window):
             scale=0.25,            
         )
 
-        # Wall sprites we are checking collission against
+        # Wall sprites we are checking collision against
         self.walls = arcade.SpriteList()
         for _ in range(NUM_WALLS):
             self.walls.append(
@@ -43,7 +46,7 @@ class SpriteListInteraction(arcade.Window):
                 )
             )
 
-        # Genreate some random coins.
+        # Generate some random coins.
         # We make sure they are not placed inside a wall.
         # We give the coins one chance to appear outside walls
         self.coins = arcade.SpriteList()

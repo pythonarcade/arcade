@@ -4,10 +4,13 @@ Transforming to multiple buffers.
 This examples hows how we can configure a program
 to transform into multiple buffers. This is done
 by specifying the varyings capture mode. By default
-transforms output all data interlaved to one buffer.
+transforms output all data interleaved to one buffer.
 
 Each out value in the vertex shader will end up
 in a separate buffer with separate capture mode.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.transform_multi
 """
 import struct
 import arcade
@@ -19,7 +22,7 @@ class App(arcade.Window):
         super().__init__(800, 600)
         self.num_invocations = 20
 
-        # Simple transform program outputing the vertex id
+        # Simple transform program outputting the vertex id
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -39,7 +42,7 @@ class App(arcade.Window):
         # Buffer for out_b data
         self.buffer_b = self.ctx.buffer(reserve=self.num_invocations * 4)
 
-        # Create an empty geomtry instance since we don't have
+        # Create an empty geometry instance since we don't have
         # inputs in our vertex shader
         self.geometry = self.ctx.geometry()
         # Force the vertex shader to run 10 times (vertices=10)

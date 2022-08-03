@@ -1,3 +1,14 @@
+"""
+Example showing how to use the easing functions for position.
+Example showing how to use easing for angles.
+
+See:
+https://easings.net/
+...for a great guide on the theory behind how easings can work.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.easing_example_2
+"""
 import arcade
 
 SPRITE_SCALING = 0.5
