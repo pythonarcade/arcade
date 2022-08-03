@@ -3,6 +3,9 @@ Shows how we can use shaders using existing spritelist data.
 
 This examples renders a line between the player position
 and nearby sprites when they are within a certain distance.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.spritelist_interaction_visualize_dist
 """
 import random
 import arcade
@@ -18,7 +21,7 @@ class SpriteListInteraction(arcade.Window):
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "SpriteList Interaction")
 
-        # Genreate some random coins
+        # Generate some random coins
         self.coins = arcade.SpriteList()
         for _ in range(NUM_COINS):
             self.coins.append(

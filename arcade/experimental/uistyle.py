@@ -12,6 +12,9 @@ class _UIStyleDict:
     Can be subclassed by dataclass to be usable as style dict.
     """
 
+    def get(self, key):
+        return self[key] if key in self else None
+
     def __contains__(self, item):
         return hasattr(self, item)
 
@@ -24,46 +27,87 @@ class _UIStyleDict:
 
 @dataclass
 class UISliderStyle(_UIStyleDict):
-    normal_bg: Color = (94, 104, 117)
-    normal_border: Color = (77, 81, 87)
-    normal_border_width: int = 1
-    normal_filled_bar: Color = (50, 50, 50)
-    normal_unfilled_bar: Color = (116, 125, 123)
+    bg: Color
+    border: Color
+    border_width: int
+    filled_bar: Color
+    unfilled_bar: Color
 
-    # hovered
-    hovered_bg: Color = (96, 103, 112)
-    hovered_border: Color = (77, 81, 87)
-    hovered_border_width: int = 2
-    hovered_filled_bar: Color = (50, 50, 50)
-    hovered_unfilled_bar: Color = (116, 125, 123)
 
-    # pressed
-    pressed_bg: Color = (96, 103, 112)
-    pressed_border: Color = (77, 81, 87)
-    pressed_border_width: int = 3
-    pressed_filled_bar: Color = (50, 50, 50)
-    pressed_unfilled_bar: Color = (116, 125, 123)
+UISliderDefaultStyle = {
+    "normal": UISliderStyle(
+        bg=(94, 104, 117),
+        border=(77, 81, 87),
+        border_width=1,
+        filled_bar=(50, 50, 50),
+        unfilled_bar=(116, 125, 123),
+    ),
+    "hover": UISliderStyle(
+        bg=(96, 103, 112),
+        border=(77, 81, 87),
+        border_width=2,
+        filled_bar=(50, 50, 50),
+        unfilled_bar=(116, 125, 123),
+    ),
+    "press": UISliderStyle(
+        bg=(96, 103, 112),
+        border=(77, 81, 87),
+        border_width=3,
+        filled_bar=(50, 50, 50),
+        unfilled_bar=(116, 125, 123),
+    ),
+    # TODO style for disabled
+    "disabled": UISliderStyle(
+        bg=(94, 104, 117),
+        border=(77, 81, 87),
+        border_width=1,
+        filled_bar=(50, 50, 50),
+        unfilled_bar=(116, 125, 123),
+    )
+}
 
 
 @dataclass
 class UIFlatButtonStyle(_UIStyleDict):
-    normal_font_size: int = 12
-    normal_font_name: FontNameOrNames = ("calibri", "arial")
-    normal_font_color: Color = arcade.color.WHITE
-    normal_bg: Color = (21, 19, 21)
-    normal_border: Optional[Color] = None
-    normal_border_width: int = 0
+    font_size: int
+    font_name: FontNameOrNames
+    font_color: Color
+    bg: Color
+    border: Optional[Color]
+    border_width: int
 
-    hovered_font_size: int = 12
-    hovered_font_name: FontNameOrNames = ("calibri", "arial")
-    hovered_font_color: Color = arcade.color.WHITE
-    hovered_bg: Color = (21, 19, 21)
-    hovered_border: Optional[Color] = (77, 81, 87)
-    hovered_border_width: int = 2
 
-    pressed_font_size: int = 12
-    pressed_font_name: FontNameOrNames = ("calibri", "arial")
-    pressed_font_color: Color = arcade.color.BLACK
-    pressed_bg: Color = arcade.color.WHITE
-    pressed_border: Optional[Color] = arcade.color.WHITE
-    pressed_border_width: int = 2
+UIFlatButtonStyle_default = {
+    "normal": UIFlatButtonStyle(
+        font_size=12,
+        font_name=("calibri", "arial"),
+        font_color=arcade.color.WHITE,
+        bg=(21, 19, 21),
+        border=None,
+        border_width=0,
+    ),
+    "hover": UIFlatButtonStyle(
+        font_size=12,
+        font_name=("calibri", "arial"),
+        font_color=arcade.color.WHITE,
+        bg=(21, 19, 21),
+        border=(77, 81, 87),
+        border_width=2,
+    ),
+    "press": UIFlatButtonStyle(
+        font_size=12,
+        font_name=("calibri", "arial"),
+        font_color=arcade.color.BLACK,
+        bg=arcade.color.WHITE,
+        border=arcade.color.WHITE,
+        border_width=2,
+    ),
+    "disabled": UIFlatButtonStyle(
+        font_size=12,
+        font_name=("calibri", "arial"),
+        font_color=arcade.color.WHITE,
+        bg=arcade.color.GRAY,
+        border=None,
+        border_width=2,
+    )
+}

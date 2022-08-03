@@ -9,6 +9,9 @@ the buffer is 8 x 4 = 32 bytes.
 References: 
 http://mattmik.com/files/chip8/mastering/chip8.html
 https://github.com/JohnEarnest/Octo
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.chip8_display
 """
 from array import array
 

@@ -1,3 +1,14 @@
+"""
+When doing offscreen rendering we sometimes also want anti-aliasing with MSAA.
+
+Framebuffers can have attachments for MSAA, but these are somewhat harder
+to read from with a shader. Instead we simply copy the MSAA framebuffer to
+the screen directly. This is allowed to easily read from the MSAA framebuffer.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.multisample_fbo
+"""
+
 import math
 import arcade
 

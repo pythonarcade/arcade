@@ -13,8 +13,11 @@ The Geometry.geometry_indirect method takes an additional
 parameter (a Buffer) containing the info for each rendering call
 to issue.
 
-The format of this buffer depends if we are redering with
+The format of this buffer depends if we are rendering with
 or without index buffer.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.render_indirect
 """
 from random import (
     randint,

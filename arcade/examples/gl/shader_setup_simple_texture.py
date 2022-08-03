@@ -1,5 +1,8 @@
 """
 A very simple example rendering a textured fullscreen rectangle.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.shader_setup_simple_texture
 """
 import arcade
 from arcade.gl import geometry
@@ -23,7 +26,7 @@ class ShaderSetup(arcade.Window):
             // In this example the rectangle geometry we are rendering
             // consists of two triangles.
 
-            // The expected inputs names the geomtry module are using
+            // The expected inputs names the geometry module are using
             in vec2 in_vert;
             in vec2 in_uv;
 
@@ -62,7 +65,7 @@ class ShaderSetup(arcade.Window):
             """
         )
         # Configure the sampler to read from texture channel 0.
-        # Sampler uniforms are simply intergers containing what
+        # Sampler uniforms are simply integers containing what
         # texture channel to read from. Most hardware have 8 to 16 channels.
         self.program["background"] = 0
         # Create geometry for a fullscreen rectangle in normalized device coordinates

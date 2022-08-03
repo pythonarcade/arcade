@@ -5,7 +5,7 @@ Artwork from: https://kenney.nl
 Tiled available from: https://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.camera_example
+python -m arcade.examples.camera_platform
 """
 
 import time

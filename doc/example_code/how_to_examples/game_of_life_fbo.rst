@@ -10,6 +10,6 @@ Game of Life with Frame Buffers
     :align: center
     :alt: Screenshot of game of life
 
-.. literalinclude:: ../../../arcade/experimental/examples/game_of_life_colors.py
+.. literalinclude:: ../../../arcade/examples/gl/game_of_life_colors.py
     :caption: game_of_life_colors.py
     :linenos:

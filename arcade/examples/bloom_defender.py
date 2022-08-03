@@ -4,7 +4,7 @@ Defender Clone.
 This example shows how to create a 'bloom' or 'glow' effect.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.experimental.bloom_defender
+python -m arcade.examples.bloom_defender
 """
 
 import arcade

@@ -13,6 +13,7 @@ from arcade.gui.events import UIOnClickEvent
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.events import UIOnUpdateEvent
 from arcade.gui.events import UITextEvent
+from arcade.gui.events import UIOnActionEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
 from arcade.gui.surface import Surface
@@ -34,7 +35,6 @@ from arcade.gui.widgets.buttons import UITextureButton, UIFlatButton
 from arcade.gui.widgets.slider import UISlider
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets import UIWidgetParent
-from arcade.gui.widgets import UIWrapper
 from arcade.gui.property import ListProperty, DictProperty, Property, bind
 from arcade.gui.mixins import UIDraggableMixin
 from arcade.gui.mixins import UIMouseFilterMixin
@@ -67,6 +67,7 @@ __all__ = [
     "UIMouseReleaseEvent",
     "UIMouseScrollEvent",
     "UIOnUpdateEvent",
+    "UIOnActionEvent",
     "UIOnChangeEvent",
     "UIOnClickEvent",
     "UISlider",
@@ -80,7 +81,6 @@ __all__ = [
     "UITextureButton",
     "UIWidget",
     "UIWidgetParent",
-    "UIWrapper",
     "Surface",
     "Rect",
     "NinePatchRenderer",

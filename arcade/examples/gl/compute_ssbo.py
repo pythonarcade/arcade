@@ -19,6 +19,9 @@ We use a geometry shader to on-the-fly create a rectangle for each point.
 The size of each ball is based on the radius stored for each point.
 
 The compute shader in this example works in one dimension for simplicity.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.compute_ssbo
 """
 import random
 import math
@@ -192,7 +195,7 @@ class App(arcade.Window):
             // Configure the geometry shader to only take one vertex
             // per invocation from the vertex shader.
             layout (points) in;
-            // Configure the geomtry shader to emit triangle strips
+            // Configure the geometry shader to emit triangle strips
             // and limit the max number of vertices to 4.
             layout (triangle_strip, max_vertices = 4) out;
 
@@ -252,7 +255,7 @@ class App(arcade.Window):
             #version 330
 
             // Inputs from the geometry shader.
-            // The fragmet shader runs for every pixel it needs to fill in a triangle.
+            // The fragment shader runs for every pixel it needs to fill in a triangle.
             // These inputs will be an interpolated value based on the distance
             // from each vertex. See. barycentric coordinate.
             in vec2 g_uv;

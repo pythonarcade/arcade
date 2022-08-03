@@ -4,6 +4,32 @@ import arcade
 from arcade import Color
 import random
 import pyglet.clock
+from pyglet.shapes import Line
+from pyglet.graphics import Batch
+
+
+def _set_line_to_color(
+        line: Line, color: Color
+) -> None:
+    """
+    Set the color of a pyglet Line, and optionally its opacity
+
+    Pyglet does not yet support RGBA colors on shapes, but that feature
+    will likely be merged soon. This function is marked with underscore
+    protection because it will be superfluous once pyglet's shapes have
+    RGBA support added.
+
+    :param line: the pyglet Line to set the color and opacity on
+    :param color: the RGB or RGBA color to set the line to
+    """
+
+    r, g, b, *alpha = color
+    line.color = r, g, b
+
+    # set the alpha if any alpha channel data was provided, imitating
+    # the proposed pyglet functionality.
+    if alpha:
+        line.opacity = alpha[0]
 
 
 class PerfGraph(arcade.Sprite):
@@ -35,33 +61,158 @@ class PerfGraph(arcade.Sprite):
     :param axis_color: The color to draw the x & y axes in
     :param font_color: The color of the label font
     :param font_size: The size of the label font in points
+    :param y_axis_num_lines: How many grid lines should be used to
+                             divide the y scale of the graph.
+    :param view_y_scale_step: The graph's view area will be scaled to a
+                              multiple of this value to fit to the data
+                              currently displayed.
     """
-    def __init__(self,
-                 width: int, height: int,
-                 graph_data: str = "FPS",
-                 update_rate: float = 0.1,
-                 background_color: Color = arcade.color.BLACK,
-                 data_line_color: Color = arcade.color.WHITE,
-                 axis_color: Color = arcade.color.DARK_YELLOW,
-                 grid_color: Color = arcade.color.DARK_YELLOW,
-                 font_color: Color = arcade.color.WHITE,
-                 font_size: int = 10):
+
+    def __init__(
+            self,
+            width: int, height: int,
+            graph_data: str = "FPS",
+            update_rate: float = 0.1,
+            background_color: Color = arcade.color.BLACK,
+            data_line_color: Color = arcade.color.WHITE,
+            axis_color: Color = arcade.color.DARK_YELLOW,
+            grid_color: Color = arcade.color.DARK_YELLOW,
+            font_color: Color = arcade.color.WHITE,
+            font_size: int = 10,
+            y_axis_num_lines: int = 4,
+            view_y_scale_step: float = 20.0,
+    ):
 
         unique_id = str(random.random())
-
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(texture=self.minimap_texture)
-        self.background_color = background_color
-        self.line_color = data_line_color
-        self.grid_color = grid_color
-        self.data_to_graph: List[float] = []
         self.proj = 0, self.width, 0, self.height
-        self.axis_color = axis_color
+
+        # The data line is redrawn each update by a function that does
+        # not cache vertices, so there is no need to make this attribute
+        # a property that updates geometry when set.
+        self.line_color = arcade.get_four_byte_color(data_line_color)
+
+        # Store visual style info for cached pyglet shape geometry
+        self._background_color = arcade.get_four_byte_color(background_color)
+        self._grid_color = arcade.get_four_byte_color(grid_color)
+        self._axis_color = arcade.get_four_byte_color(axis_color)
+        self._font_color = arcade.get_four_byte_color(font_color)
+        self._font_size = font_size
+        self._y_axis_num_lines = y_axis_num_lines
+        self._left_x = 25
+        self._bottom_y = 15
+
+        # Variables for rendering the data line
         self.graph_data = graph_data
-        self.max_data = 0.0
-        self.font_color = font_color
-        self.font_size = font_size
+        self._data_to_graph: List[float] = []
+        self._view_max_value = 0.0  # We'll calculate this once we have data
+        self._view_y_scale_step = view_y_scale_step
+        self._view_height = self._texture.height - self._bottom_y  # type: ignore
+        self._y_increment = self._view_height / self._y_axis_num_lines
+
+        # Set up internal Text object & line caches
+
+        self._pyglet_batch = Batch()  # Used to draw graph elements
+
+        # Convenient storage for iteration during color updates
+        self._vertical_axis_text_objects: List[arcade.Text] = []
+        self._all_text_objects: List[arcade.Text] = []
+        self._grid_lines: List[Line] = []
+
+        # Create the bottom label text object
+        self._bottom_label = arcade.Text(
+            graph_data, 0, 2, self._font_color,
+            self._font_size, align="center", width=int(width)
+        )
+        self._all_text_objects.append(self._bottom_label)
+
+        # Create the axes
+        self._x_axis = Line(
+            self._left_x, self._bottom_y,
+            self._left_x, height,
+            batch=self._pyglet_batch
+        )
+        _set_line_to_color(self._x_axis, self._axis_color)
+
+        self._y_axis = Line(
+            self._left_x, self._bottom_y,
+            width, self._bottom_y,
+            batch=self._pyglet_batch
+        )
+        _set_line_to_color(self._y_axis, self._axis_color)
+
+        # Create the Y scale text objects & lines
+        for i in range(self._y_axis_num_lines):
+            y_level = self._bottom_y + self._y_increment * i
+            self._vertical_axis_text_objects.append(
+                arcade.Text(
+                    "0",  # Ensure the lowest y axis label is always 0
+                    self._left_x, y_level,
+                    self._font_color, self._font_size,
+                    anchor_x="right", anchor_y="center"))
+            self._grid_lines.append(
+                Line(
+                    self._left_x, y_level,
+                    width, y_level,
+                    batch=self._pyglet_batch
+                )
+            )
+            _set_line_to_color(self._grid_lines[-1], self._grid_color)
+
+        self._all_text_objects.extend(self._vertical_axis_text_objects)
+
+        # Enable auto-update
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
+
+    @property
+    def background_color(self) -> Color:
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, new_color):
+        self._background_color = arcade.get_four_byte_color(new_color)
+
+    @property
+    def grid_color(self) -> Color:
+        return self._grid_color
+
+    @grid_color.setter
+    def grid_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        for grid_line in self._grid_lines:
+            _set_line_to_color(grid_line.color, new_color)
+
+    @property
+    def axis_color(self) -> Color:
+        return self._axis_color
+
+    @axis_color.setter
+    def axis_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        _set_line_to_color(self._x_axis, new_color)
+        _set_line_to_color(self._y_axis, new_color)
+
+    @property
+    def font_size(self) -> int:
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, new: int):
+        self._font_size = new
+        for text in self._all_text_objects:
+            text.font_size = new
+
+    @property
+    def font_color(self) -> Color:
+        return self._font_color
+
+    @font_color.setter
+    def font_color(self, raw_color: Color):
+        new_color = arcade.get_four_byte_color(raw_color)
+        self._font_color = new_color
+        for text in self._all_text_objects:
+            text.color = new_color
 
     def remove_from_sprite_lists(self):
         """
@@ -83,75 +234,84 @@ class PerfGraph(arcade.Sprite):
         .. warning:: You do not need to call this method! It will be
                      called automatically!
 
-        :param delta_time: Elapsed time. Passed by the pyglet scheduler
+        :param delta_time: Elapsed time in seconds. Passed by the pyglet
+                           scheduler.
         """
-        bottom_y = 15
-        left_x = 25
 
-        # Get the sprite list this is part of, return if none
+        # Skip update if there is no SpriteList that can draw this graph
         if self.sprite_lists is None or len(self.sprite_lists) == 0:
             return
+
         sprite_list = self.sprite_lists[0]
 
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
             with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
-                nothing_color = 0, 0, 0, 0
-                fbo.clear(nothing_color)
+                fbo.clear()
             return
 
         # Get FPS and add to our historical data
-        if self.graph_data == "FPS":
-            self.data_to_graph.append(arcade.get_fps())
+        data_to_graph = self._data_to_graph
+        graph_data = self.graph_data
+        if graph_data == "FPS":
+            data_to_graph.append(arcade.get_fps())
         else:
             timings = arcade.get_timings()
-            if self.graph_data in timings:
+            if graph_data in timings:
                 timing_list = timings[self.graph_data]
                 avg_timing = sum(timing_list) / len(timing_list)
-                self.data_to_graph.append(avg_timing * 1000)
+                data_to_graph.append(avg_timing * 1000)
 
-        if len(self.data_to_graph) == 0:
+        # Skip update if there is no data to graph
+        if len(data_to_graph) == 0:
             return
 
-        # Toss old data
-        while len(self.data_to_graph) > self.width - left_x:
-            self.data_to_graph.pop(0)
+        # Using locals for frequently used values is faster than
+        # looking up instance variables repeatedly.
+        bottom_y = self._bottom_y
+        left_x = self._left_x
+        view_y_scale_step = self._view_y_scale_step
+        vertical_axis_text_objects = self._vertical_axis_text_objects
+        view_height = self._view_height
 
-        # Set max data
-        max_value = max(self.data_to_graph)
-        self.max_data = ((max_value + 1.5) // 20 + 1) * 20.0
+        # We have to render at the internal texture's original size to
+        # prevent distortion and bugs when the sprite is scaled.
+        texture_width, texture_height = self._texture.size  # type: ignore
 
-        # Render to the screen
+        # Toss old data by removing leftmost entries
+        while len(data_to_graph) > texture_width - left_x:
+            data_to_graph.pop(0)
+
+        # Calculate the value at the top of the chart
+        max_value = max(data_to_graph)
+        view_max_value = ((max_value + 1.5) // view_y_scale_step + 1) * view_y_scale_step
+
+        # Calculate draw positions of each pixel on the data line
+        point_list = []
+        x = left_x
+        for reading in data_to_graph:
+            y = (reading / view_max_value) * view_height + bottom_y
+            point_list.append((x, y))
+            x += 1
+
+        # Update the view scale & labels if needed
+        if view_max_value != self._view_max_value:
+            self._view_max_value = view_max_value
+            view_y_legend_increment = self._view_max_value // 4
+            for index in range(1, len(vertical_axis_text_objects)):
+                text_object = vertical_axis_text_objects[index]
+                text_object.text = f"{int(index * view_y_legend_increment)}"
+
+        # Render to the internal texture
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+
+            # Set the background color
             fbo.clear(self.background_color)
-            max_pixels = self.height - bottom_y
-            point_list = []
-            x = left_x
-            for reading in self.data_to_graph:
-                y = (reading / self.max_data) * max_pixels + bottom_y
-                point_list.append((x, y))
-                x += 1
 
-            # Draw the base line
-            arcade.draw_line(left_x, bottom_y, left_x, self.height, self.axis_color)
+            # Draw lines & their labels
+            for text in self._all_text_objects:
+                text.draw()
+            self._pyglet_batch.draw()
 
-            # Draw left axis
-            arcade.draw_line(left_x, bottom_y, self.width, bottom_y, self.axis_color)
-
-            # Draw number labels
-            arcade.draw_text("0", left_x, bottom_y, self.font_color, self.font_size, anchor_x="right", anchor_y="center")  # noqa
-            increment = self.max_data // 4
-            for i in range(4):
-                value = increment * i
-                label = f"{int(value)}"
-                y = (value / self.max_data) * max_pixels + bottom_y
-                arcade.draw_text(label, left_x, y, self.font_color, self.font_size, anchor_x="right",
-                                 anchor_y="center")
-                arcade.draw_line(left_x, y, self.width, y, self.grid_color)
-
-            # Draw label
-            arcade.draw_text(self.graph_data, 0, 2, self.font_color, self.font_size, align="center",
-                             width=int(self.width))
-
-            # Draw graph
+            # Draw the data line
             arcade.draw_line_strip(point_list, self.line_color)

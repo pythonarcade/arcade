@@ -196,6 +196,25 @@ def test_sprite_scale(window):
     CHARACTER_SCALING = 0.5
     arcade.set_background_color(arcade.color.AMAZON)
 
+    # ensure normal scaling works correctly
+    gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
+    assert gold_1.scale == 1.0
+    assert gold_1.width, gold_1.height == (64, 64)
+
+    gold_1.scale = 2.0
+    assert gold_1.scale == 2.0
+    assert gold_1.width, gold_1.height == (128, 128)
+
+    gold_1.scale *= 0.25
+    assert gold_1.scale == 0.5
+    assert gold_1.width, gold_1.height == (32, 32)
+
+    # edge case: negative scale values are supported
+    gold_1.scale *= -1.0
+    assert gold_1.scale == - 0.5
+    assert gold_1.width, gold_1.height == (-32, -32)
+
+    # visual spot check
     character_list = arcade.SpriteList()
     character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
     character_sprite.center_x = 150
@@ -287,11 +306,333 @@ def test_visible():
 
 def test_sprite_scale_xy(window):
     sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+
+    # setting vector equivalent of previous scale doesn't change values
+    sprite.scale = 1.0
+    sprite.scale_xy = (1.0, 1.0)
     assert sprite.scale == 1.0
     assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.width, sprite.height == (20, 20)
+
+    # setting scale_xy to identical values in each channel works
+    sprite.scale_xy = 2.0, 2.0
+    assert sprite.scale == 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width, sprite.height == (40, 40)
+
+    # setting scale_xy with x < y scale works correctly
+    sprite.scale_xy = 1.0, 4.0
+    assert sprite.scale_xy == (1.0, 4.0)
+    assert sprite.scale == 1.0
+    assert sprite.width, sprite.height == (20, 80)
+
+    # setting scale_xy with x > y scale works correctly
+    sprite.scale_xy = 5.0, 3.0
+    assert sprite.scale_xy == (5.0, 3.0)
+    assert sprite.scale == 5.0
+    assert sprite.width, sprite.height == (100, 60)
+
+    # edge case: setting scale_xy with x < 0 works correctly
+    sprite.scale_xy = (-1.0, 1.0)
+    assert sprite.scale == -1.0
+    assert sprite.width == -20
+    assert sprite.height == 20
+
+    # edge case: setting scale_xy with y < 0 works correctly
+    sprite.scale_xy = (1.0, -1.0)
+    assert sprite.scale == 1.0
+    assert sprite.width == 20
+    assert sprite.height == -20
+
+    # edge case: setting scale_xy with x < 0, y < 0 works correctly
+    sprite.scale_xy = (-1.0, -1.0)
+    assert sprite.scale == -1.0
+    assert sprite.width == -20
+    assert sprite.width == -20
+
+
+def test_sprite_scale_resets_mismatched_xy_settings(window):
+    sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+
+    # check if x dimension is properly reset
+    sprite.scale_xy = 3.0, 2.0
     sprite.scale = 2.0
     assert sprite.scale == 2.0
     assert sprite.scale_xy == (2.0, 2.0)
-    sprite.scale_xy = 2.0, 4.0
-    assert sprite.scale_xy == (2.0, 4.0)
-    assert sprite.scale == 2.0
+    assert sprite.width == 40
+    assert sprite.height == 40
+
+    # check if y dimension is properly reset
+    sprite.scale_xy = 5.0, 3.0
+    sprite.scale = 5.0
+    assert sprite.scale == 5.0
+    assert sprite.scale_xy == (5.0, 5.0)
+    assert sprite.width == 100
+    assert sprite.height == 100
+
+    # check if both dimensions properly reset
+    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 1.0
+    assert sprite.scale == 1.0
+    assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.width == 20
+    assert sprite.height == 20
+
+    # edge case: setting negative values works
+    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = -1.0
+    assert sprite.scale == -1.0
+    assert sprite.scale_xy == (-1.0, -1.0)
+    assert sprite.width == -20
+    assert sprite.height == -20
+
+    # edge case: x scale < 0 is reset to positive
+    sprite.scale_xy = -1.0, 1.0
+    sprite.scale = 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width == 40
+    assert sprite.height == 40
+
+    # edge case: y scale < 0 is reset to positive
+    sprite.scale_xy = 1.0, -1.0
+    sprite.scale = 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width == 40
+    assert sprite.height == 40
+
+    # edge case: x < 0, y < 0 is reset to positive
+    sprite.scale_xy = -1.0, -1.0
+    sprite.scale = 2.0
+    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.width == 40
+    assert sprite.height == 40
+
+
+def test_rescale_relative_to_point(window):
+    window_center = window.width // 2, window.height // 2
+    window_center_x, window_center_y = window_center
+
+    def sprite_64x64_at_position(x, y):
+        return arcade.Sprite(
+            ":resources:images/items/gold_1.png",
+            center_x=x, center_y=y
+        )
+
+    # case:
+    #  1. sprite initial scale_xy == (1.0, 1.0) / scale == 1.0
+    #  2. point is the origin in the lower left
+    #  3. factor == 3.31
+    # expected:
+    #  1. sprite is 3.31 times further away from origin to upper right
+    #  2. sprite is now 3.31 times larger
+    sprite_1 = sprite_64x64_at_position(
+        window_center_x + 50,
+        window_center_y - 50
+    )
+    sprite_1.rescale_relative_to_point((0, 0), 3.31)
+    assert sprite_1.scale == 3.31
+    assert sprite_1.center_x == (window_center_x + 50) * 3.31
+    assert sprite_1.center_y == (window_center_y - 50) * 3.31
+    assert sprite_1.width == 64 * 3.31
+    assert sprite_1.height == 64 * 3.31
+
+    # case:
+    #  1. sprite is offset from center
+    #  2. initial scale_xy values are not equal
+    #  3. factor == 2.0
+    # result:
+    #  1. sprite distance doubled
+    #  2. sprite scale doubled
+    sprite_2 = sprite_64x64_at_position(
+        window_center_x + 10,
+        window_center_y + 10
+    )
+    sprite_2.scale_xy = 2.0, 1.0
+    sprite_2.rescale_relative_to_point(window_center, 2.0)
+    assert sprite_2.scale == 4.0
+    assert sprite_2.scale_xy == (4.0, 2.0)
+    assert sprite_2.center_x == window_center_x + 20
+    assert sprite_2.center_y == window_center_y + 20
+    assert sprite_2.width == 256
+    assert sprite_2.height == 128
+
+    # case:
+    #  1. sprite is offset from center
+    #  2. initial scale_xy values are not equal
+    #  3. factor == 3.0
+    # result:
+    #  1. sprite distance tripled
+    #  2. sprite scale tripled
+    sprite_3 = sprite_64x64_at_position(
+        window_center_x - 10,
+        window_center_y - 10
+    )
+    sprite_3.scale_xy = 0.5, 1.5
+    sprite_3.rescale_relative_to_point(window_center, 3.0)
+    assert sprite_3.scale_xy == (1.5, 4.5)
+    assert sprite_3.center_x == window_center_x - 30
+    assert sprite_3.center_y == window_center_y - 30
+    assert sprite_3.width == 96
+    assert sprite_3.height == 288
+
+    # edge case: point == sprite center, factor > 1
+    # expected: sprite does not move, but scale and dimensions change
+    sprite_4 = sprite_64x64_at_position(*window_center)
+    sprite_4.rescale_relative_to_point(sprite_4.position, 2.0)
+    assert sprite_4.scale == 2.0
+    assert sprite_4.scale_xy == (2.0, 2.0)
+    assert sprite_4.center_x == window_center_x
+    assert sprite_4.center_y == window_center_y
+    assert sprite_4.width == 128
+    assert sprite_4.height == 128
+
+    # edge case: point == sprite center, negative factor
+    # expected : sprite doesn't move, but scale data doubled & negative
+    sprite_5 = sprite_64x64_at_position(*window_center)
+    sprite_5.rescale_relative_to_point(sprite_5.position, -2.0)
+    assert sprite_5.scale == -2.0
+    assert sprite_5.scale_xy == (-2.0, -2.0)
+    assert sprite_5.center_x == window_center_x
+    assert sprite_5.center_y == window_center_y
+    assert sprite_5.width == -128
+    assert sprite_5.height == -128
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_6 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_6.rescale_relative_to_point((50, 40), 1.0)
+    assert sprite_6.scale == 1.0
+    assert sprite_6.center_x == window_center_x - 81
+    assert sprite_6.center_y == window_center_y + 81
+    assert sprite_6.width == 64
+    assert sprite_6.height == 64
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_7 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_7.rescale_relative_to_point((50, 40), 1.0)
+    assert sprite_7.scale == 1.0
+    assert sprite_7.center_x == window_center_x - 81
+    assert sprite_7.center_y == window_center_y + 81
+    assert sprite_7.width == 64
+    assert sprite_7.height == 64
+
+    # edge case: point != sprite center, negative factor
+    # expected :
+    #  1. sprite teleports to opposite side of point
+    #  2. sprite has negative versions of scale data
+    sprite_8 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_8.rescale_relative_to_point(window_center, -1.0)
+    assert sprite_8.scale == -1.0
+    assert sprite_8.center_x == window_center_x + 81
+    assert sprite_8.center_y == window_center_y - 81
+    assert sprite_8.width == -64
+    assert sprite_8.height == -64
+
+
+def test_rescale_xy_relative_to_point(window):
+    window_center = window.width // 2, window.height // 2
+    window_center_x, window_center_y = window_center
+
+    def sprite_64x64_at_position(x, y):
+        return arcade.Sprite(
+            ":resources:images/items/gold_1.png",
+            center_x=x, center_y=y
+        )
+
+    # sprite with initial _scale[0] == _scale[1] works with identical scale
+    sprite_1 = sprite_64x64_at_position(
+        window_center_x + 50,
+        window_center_y - 50
+    )
+    sprite_1.rescale_xy_relative_to_point((0, 0), (3.31, 3.31))
+    assert sprite_1.scale == 3.31
+    assert sprite_1.scale_xy == (3.31, 3.31)
+    assert sprite_1.center_x == (window_center_x + 50) * 3.31
+    assert sprite_1.center_y == (window_center_y - 50) * 3.31
+    assert sprite_1.width == 64 * 3.31
+    assert sprite_1.height == 64 * 3.31
+
+    # sprite with x scale > y scale works correctly
+    sprite_2 = sprite_64x64_at_position(
+        window_center_x + 10,
+        window_center_y + 10
+    )
+    sprite_2.scale_xy = 2.0, 1.0
+    sprite_2.rescale_xy_relative_to_point(window_center, (2.0, 2.0))
+    assert sprite_2.scale == 4.0
+    assert sprite_2.scale_xy == (4.0, 2.0)
+    assert sprite_2.center_x == window_center_x + 20
+    assert sprite_2.center_y == window_center_y + 20
+    assert sprite_2.width == 256
+    assert sprite_2.height == 128
+
+    # sprite with y scale > x scale works correctly
+    sprite_3 = sprite_64x64_at_position(
+        window_center_x - 10,
+        window_center_y - 10
+    )
+    sprite_3.scale_xy = 0.5, 1.5
+    sprite_3.rescale_xy_relative_to_point(window_center, (3.0, 3.0))
+    assert sprite_3.scale == 1.5
+    assert sprite_3.scale_xy == (1.5, 4.5)
+    assert sprite_3.center_x == window_center_x - 30
+    assert sprite_3.center_y == window_center_y - 30
+    assert sprite_3.width == 96
+    assert sprite_3.height == 288
+
+    # edge case: point == sprite center, factor > 1
+    # expected: sprite does not move, but scale and dimensions change
+    sprite_4 = sprite_64x64_at_position(*window_center)
+    sprite_4.rescale_xy_relative_to_point(sprite_4.position, (2.0, 2.0))
+    assert sprite_4.scale == 2.0
+    assert sprite_4.center_x == window_center_x
+    assert sprite_4.center_y == window_center_y
+    assert sprite_4.width == 128
+    assert sprite_4.height == 128
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_5 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_5.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_5.scale == 1.0
+    assert sprite_5.center_x == window_center_x - 81
+    assert sprite_5.center_y == window_center_y + 81
+    assert sprite_5.width == 64
+    assert sprite_5.height == 64
+
+    # edge case: point == sprite center, negative factor
+    # expected : sprite doesn't move, but scale, width, & height < 0
+    sprite_6 = sprite_64x64_at_position(*window_center)
+    sprite_6.rescale_xy_relative_to_point(sprite_6.position, (-2.0, -2.0))
+    assert sprite_6.scale == -2.0
+    assert sprite_6.scale_xy == (-2.0, -2.0)
+    assert sprite_6.center_x == window_center_x
+    assert sprite_6.center_y == window_center_y
+    assert sprite_6.width == -128
+    assert sprite_6.height == -128
+
+    # edge case: point != sprite center, factor == 1.0
+    # expected : no movement or size change occurs
+    sprite_7 = sprite_64x64_at_position(
+        window_center_x - 81,
+        window_center_y + 81
+    )
+    sprite_7.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_7.scale == 1.0
+    assert sprite_7.center_x == window_center_x - 81
+    assert sprite_7.center_y == window_center_y + 81
+    assert sprite_7.width == 64
+    assert sprite_7.height == 64

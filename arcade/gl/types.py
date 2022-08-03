@@ -1,9 +1,13 @@
 import re
-from typing import Iterable, List
+from typing import Iterable, List, Union
 
 from pyglet import gl
 
 from .buffer import Buffer
+from arcade.arcade_types import BufferProtocol
+
+
+BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)

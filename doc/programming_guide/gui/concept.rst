@@ -54,23 +54,20 @@ For widgets, that might have transparent areas, they have to request a full rend
 
     Enforced rendering of the whole GUI might be very expensive!
 
-UILayout and UIWrapper
-======================
+UILayout
+========
 
 :class:`UILayout` are widgets, which reserve the option to move or resize children. They might respect special properties
 of a widget like *size_hint*, *size_hint_min*, or *size_hint_max*.
 
-:class:`UIWrapper` are widgets that are used to wrap a single child widget to apply additional effects
-like borders or space around.
 
-
-Algorithm (WIP, not fully implemented)
-......................................
+Algorithm
+.........
 
 :class:`UIManager` triggers the layout and render process right before the actual frame draw.
 This opens the possibility, to adjust to multiple changes only ones.
 
-Executed steps within :class:`UIBoxLayout`:
+Example: Executed steps within :class:`UIBoxLayout`:
 
 1. :meth:`UIBoxLayout.do_layout`
     1. collect current size, size_hint, size_hint_min/max of children
@@ -113,10 +110,15 @@ Executed steps within :class:`UIBoxLayout`:
 Size hint support
 +++++++++++++++++
 
-* :class:`UIAnchorLayout` supports `size_hint_min`
-* :class:`UIBoxLayout` supports `size_hint`, `size_hint_min`
-* :class:`UIManager` supports `size_hint`, `size_hint_min` (based on window size)
-
++--------------------------+------------+----------------+----------------+
+|                          | size_hint  | size_hint_min  | size_hint_max  |
++==========================+============+================+================+
+| :class:`UIAnchorLayout`  | X          | X              | X              |
++--------------------------+------------+----------------+----------------+
+| :class:`UIBoxLayout`     | X          | X              |                |
++--------------------------+------------+----------------+----------------+
+| :class:`UIManager`       | X          | X              |                |
++--------------------------+------------+----------------+----------------+
 
 UIMixin
 =======
@@ -157,9 +159,8 @@ UIEvents
 ========
 
 UIEvents are fully typed dataclasses, which provide information about a event effecting the UI.
-Events are passed top down to every :class:`UIWidget` by the UIManager.
 
-General pyglet window events are converted by the UIManager into UIEvents and passed via dispatch_event
+All pyglet window events are converted by the UIManager into UIEvents and passed via dispatch_event
 to the ``on_event`` callbacks.
 
 Widget specific UIEvents like UIOnClick are dispatched via "on_event" and are then  dispatched as specific event types (like 'on_click')
@@ -174,9 +175,15 @@ Widget specific UIEvents like UIOnClick are dispatched via "on_event" and are th
 - :class:`UITextEvent` - Text input from user
 - :class:`UITextMotionEvent` - Text motion events like arrows
 - :class:`UITextMotionSelectEvent` - Text motion events for selection
+- :class:`UIOnUpdateEvent` - arcade.Window `on_update` callback
+
+Widget specific events
+......................
+
+Widget events are only dispatched as a Pyglet event on a widget itself and are not passed through the widget tree.
+
 - :class:`UIOnClickEvent` - Click event of :class:`UIInteractiveWidget` class
 - :class:`UIOnChangeEvent` - A value of a :class:`UIWidget` has changed
-- :class:`UIOnUpdateEvent` - arcade.Window `on_update` callback
 
 Different Event Systems
 =======================
@@ -203,11 +210,11 @@ To add custom event handling use the decorator syntax to add another listener (`
 UIEvents
 ........
 
-UIEvents are typed representations of events that are passed within the GUI. UIWidgets might define their own UIEvents.
+UIEvents are typed representations of events that are passed within the GUI. UIWidgets might define and dispatch their own subclasses of UIEvents.
 
-_Property
-.........
+Property
+........
 
-``_Property`` is an internal, experimental, pure-Python implementation of Kivy Properties. They are used to detect attribute
+``Property`` is an pure-Python implementation of Kivy Properties. They are used to detect attribute
 changes of UIWidgets and trigger rendering. They should only be used in arcade internal code.
 

@@ -112,3 +112,14 @@ class UIOnChangeEvent(UIEvent):
 
     old_value: Any
     new_value: Any
+
+
+@dataclass
+class UIOnActionEvent(UIEvent):
+    """
+    Notification about an action
+
+    :param Any action: Value describing the action, mostly a string
+    """
+
+    action: Any

@@ -1,7 +1,8 @@
 """
-3D Example
-This example needs pyrr installed for matrix math:
-    pip install pyrr
+3D Example with offscreen rendering.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.3d_cube_with_cubes
 """
 from pyglet.math import Mat4
 

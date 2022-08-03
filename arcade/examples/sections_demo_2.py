@@ -14,6 +14,9 @@ Note:
       one.
     - How keyboard events can be redirected to each section depending on the
       pressed key automatically.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sections_demo_2
 """
 import random
 

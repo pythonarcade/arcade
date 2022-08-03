@@ -1,4 +1,5 @@
 from typing import List
+from unittest.mock import Mock
 
 from arcade.gui.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
 from arcade.gui.widgets import UIDummy
@@ -35,6 +36,7 @@ def test_overlapping_hover_on_widget(uimanager):
 def test_click_on_widget(uimanager):
     # GIVEN
     widget1 = UIDummy()
+    widget1.on_click = Mock()
     uimanager.add(widget1)
 
     # WHEN
@@ -52,6 +54,30 @@ def test_click_on_widget(uimanager):
     assert click_event.source == widget1
     assert click_event.x == widget1.center_x
     assert click_event.y == widget1.center_y
+
+    assert widget1.on_click.called
+
+
+def test_click_on_widget_if_disabled(uimanager):
+    # GIVEN
+    widget1 = UIDummy()
+    widget1.disabled = True
+    widget1.on_click = Mock()
+    uimanager.add(widget1)
+
+    # WHEN
+    with record_ui_events(widget1, "on_event") as records:
+        uimanager.click(widget1.center_x, widget1.center_y)
+
+    # THEN
+    records: List[UIEvent]
+    assert len(records) == 3
+    assert isinstance(records[0], UIMousePressEvent)
+    assert isinstance(records[1], UIMouseReleaseEvent)
+    assert isinstance(records[2], UIOnClickEvent)
+
+    assert not widget1.on_click.called
+
 
 
 def test_click_on_overlay_widget_consumes_events(uimanager):

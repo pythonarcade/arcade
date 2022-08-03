@@ -11,7 +11,10 @@ so we can keep working on the previous data.
 This is mainly because it's not always safe to
 read and write to the same buffer at the same time.
 
-Increase the window resolution to get more points
+Increase the window resolution to get more points.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.transform_point_grid
 """
 import random
 import time
@@ -48,7 +51,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title, resizable=True)
         self.set_vsync(True)
         self.ctx.disable(self.ctx.BLEND)
-        self.size = self.width // 4, self.height // 4
+        self.size = self.width, self.height
 
         # Two buffers on the gpu with positions
         self.buffer1 = self.ctx.buffer(data=array('f', gen_initial_data(self, *self.size)))

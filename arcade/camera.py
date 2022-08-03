@@ -192,6 +192,9 @@ class Camera:
         :param float speed: How fast to shake
         :param float damping: How fast to stop shaking
         """
+        if not isinstance(velocity, Vec2):
+            velocity = Vec2(*velocity)
+
         self.shake_velocity += velocity
         self.shake_speed = speed
         self.shake_damping = damping

@@ -1,7 +1,9 @@
 """
 Rendering to texture with a compute shader
-"""
 
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.compute_texture
+"""
 import arcade
 from arcade.gl import geometry
 
@@ -52,7 +54,7 @@ class App(arcade.Window):
         self.texture = self.ctx.texture(SIZE, components=4, immutable=True)
         self.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
-        # Simple program rendering textured retangle to the screen
+        # Simple program rendering textured rectangle to the screen
         # using normalized device coordinates (no projection)
         self.program = self.ctx.program(
             vertex_shader="""

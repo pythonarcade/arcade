@@ -1,7 +1,9 @@
 """
 Example of Pymunk Physics Engine
-
 Top-down
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pymunk_demo_top_down
 """
 import math
 import random
