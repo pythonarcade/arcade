@@ -430,8 +430,8 @@ class TileMap:
             for key, value in tile.properties.items():
                 my_sprite.properties[key] = value
 
-        if tile.type:
-            my_sprite.properties["type"] = tile.type
+        if tile.class_:
+            my_sprite.properties["class"] = tile.class_
 
         # Add tile ID to sprite properties
         my_sprite.properties["tile_id"] = tile.id
@@ -829,8 +829,8 @@ class TileMap:
                 if cur_object.properties:
                     my_sprite.properties.update(cur_object.properties)
 
-                if cur_object.type:
-                    my_sprite.properties["type"] = cur_object.type
+                if cur_object.class_:
+                    my_sprite.properties["class"] = cur_object.class_
 
                 if cur_object.name:
                     my_sprite.properties["name"] = cur_object.name
@@ -909,7 +909,7 @@ class TileMap:
 
             if shape:
                 tiled_object = TiledObject(
-                    shape, cur_object.properties, cur_object.name, cur_object.type
+                    shape, cur_object.properties, cur_object.name, cur_object.class_
                 )
 
                 if not objects_list:

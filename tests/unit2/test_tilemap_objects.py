@@ -31,7 +31,7 @@ def test_one():
     #
     # Test type and name properties
     #
-    assert sprite_1.properties["type"] == "crate"
+    assert sprite_1.properties["class"] == "crate"
     assert sprite_1.properties["name"] == "crate1"
 
     # #
