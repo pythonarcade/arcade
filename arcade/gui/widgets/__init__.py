@@ -41,12 +41,12 @@ class Rect(NamedTuple):
 
     x: float
     y: float
-    width: float
-    height: float
+    width: int
+    height: int
 
     def move(self, dx: float = 0, dy: float = 0):
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        return Rect(int(self.x + dx), int(self.y + dy), self.width, self.height)
 
     def collide_with_point(self, x, y):
         left, bottom, width, height = self
@@ -68,7 +68,7 @@ class Rect(NamedTuple):
         """
         width = width or self.width
         height = height or self.height
-        return Rect(self.x, self.y, width, height)
+        return Rect(self.x, self.y, int(width), int(height))
 
     @property
     def size(self):
@@ -147,7 +147,7 @@ class Rect(NamedTuple):
         """
         Sets the size to at least the given min values.
         """
-        return Rect(self.x, self.y, max(width, self.width), max(height, self.height))
+        return Rect(int(self.x), int(self.y), int(max(width, self.width)), int(max(height, self.height)))
 
     def max_size(self, width: float = None, height: float = None):
         """
@@ -159,7 +159,7 @@ class Rect(NamedTuple):
         if height:
             h = min(height, self.height)
 
-        return Rect(self.x, self.y, w, h)
+        return Rect(int(self.x), int(self.y), int(w), int(h))
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -208,8 +208,8 @@ class UIWidget(EventDispatcher, ABC):
         self,
         x: float = 0,
         y: float = 0,
-        width: float = 100,
-        height: float = 100,
+        width: int = 100,
+        height: int = 100,
         children: Iterable["UIWidget"] = tuple(),
         # Properties which might be used by layouts
         size_hint=None,  # in percentage
