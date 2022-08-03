@@ -46,7 +46,7 @@ class Rect(NamedTuple):
 
     def move(self, dx: float = 0, dy: float = 0):
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        return Rect(int(self.x + dx), int(self.y + dy), int(self.width), int(self.height))
 
     def collide_with_point(self, x, y):
         left, bottom, width, height = self
@@ -68,7 +68,7 @@ class Rect(NamedTuple):
         """
         width = width or self.width
         height = height or self.height
-        return Rect(self.x, self.y, width, height)
+        return Rect(int(self.x), int(self.y), int(width), int(height))
 
     @property
     def size(self):
@@ -148,10 +148,10 @@ class Rect(NamedTuple):
         Sets the size to at least the given min values.
         """
         return Rect(
-            self.x,
-            self.y,
-            max(width or 0.0, self.width),
-            max(height or 0.0, self.height)
+            int(self.x),
+            int(self.y),
+            int(max(width or 0.0, self.width)),
+            int(max(height or 0.0, self.height))
         )
 
     def max_size(self, width: float = None, height: float = None):
@@ -164,7 +164,7 @@ class Rect(NamedTuple):
         if height:
             h = min(height, self.height)
 
-        return Rect(self.x, self.y, w, h)
+        return Rect(int(self.x), int(self.y), int(w), int(h))
 
 
 W = TypeVar("W", bound="UIWidget")
