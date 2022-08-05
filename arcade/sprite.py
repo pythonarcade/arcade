@@ -218,27 +218,27 @@ class Sprite:
         # Debug properties
         self.guid: Optional[str] = None
 
-        # Sanity check values
-        if image_width < 0:
-            raise ValueError("Width entered is less than zero. Width must be a positive float.")
-
-        if image_height < 0:
-            raise ValueError(
-                "Height entered is less than zero. Height must be a positive float."
-            )
-
-        if image_width == 0 and image_height != 0:
-            raise ValueError("Width can't be zero.")
-
-        if image_height == 0 and image_width != 0:
-            raise ValueError("Height can't be zero.")
-
         if texture:
             self._texture = texture
             self._textures = [texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
         elif filename is not None:
+            # Sanity check values
+            if image_width < 0:
+                raise ValueError("Width entered is less than zero. Width must be a positive float.")
+
+            if image_height < 0:
+                raise ValueError(
+                    "Height entered is less than zero. Height must be a positive float."
+                )
+
+            if image_width == 0 and image_height != 0:
+                raise ValueError("Width can't be zero.")
+
+            if image_height == 0 and image_width != 0:
+                raise ValueError("Height can't be zero.")
+
             self._texture = load_texture(
                 filename,
                 image_x,
@@ -255,6 +255,8 @@ class Sprite:
             # Ignore the texture's scale and use ours
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
+        else:
+            raise ValueError("You must provide either a texture or a filename.")
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
