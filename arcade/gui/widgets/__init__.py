@@ -66,8 +66,8 @@ class Rect(NamedTuple):
         Returns a rect with changed width and height.
         Fix x and y coordinate.
         """
-        width = width or self.width
-        height = height or self.height
+        width = width if width is not None else self.width
+        height = height if height is not None else self.height
         return Rect(self.x, self.y, width, height)
 
     @property
@@ -151,7 +151,7 @@ class Rect(NamedTuple):
             self.x,
             self.y,
             max(width or 0.0, self.width),
-            max(height or 0.0, self.height)
+            max(height or 0.0, self.height),
         )
 
     def max_size(self, width: float = None, height: float = None):
@@ -656,10 +656,13 @@ class UIInteractiveWidget(UIWidget):
         if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
-                # Dispatch new on_click event, source is this widget itself
-                return self.dispatch_event(
-                    "on_click", UIOnClickEvent(self, event.x, event.y)
-                )
+                if not self.disabled:
+                    # Dispatch new on_click event, source is this widget itself
+                    self.dispatch_event(
+                        "on_click", UIOnClickEvent(self, event.x, event.y)
+                    )
+                    # TODO unsure if it makes more sense to mark the event handled if the click event is handled.
+                    return EVENT_HANDLED
 
         if super().on_event(event):
             return EVENT_HANDLED

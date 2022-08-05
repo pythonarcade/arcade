@@ -179,7 +179,7 @@ class UIFlatButton(UIInteractiveWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style
+            style=style,
         )
 
         self.text = text

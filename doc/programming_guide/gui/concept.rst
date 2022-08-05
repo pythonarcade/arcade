@@ -60,6 +60,8 @@ UILayout
 :class:`UILayout` are widgets, which reserve the option to move or resize children. They might respect special properties
 of a widget like *size_hint*, *size_hint_min*, or *size_hint_max*.
 
+The :class:`UIBoxLayout` only resizes a child widgets dimension (x or y axis) if size_hint provides a value which is not `None` for the dimension.
+
 
 Algorithm
 .........
@@ -70,10 +72,10 @@ This opens the possibility, to adjust to multiple changes only ones.
 Example: Executed steps within :class:`UIBoxLayout`:
 
 1. :meth:`UIBoxLayout.do_layout`
-    1. collect current size, size_hint, size_hint_min/max of children
+    1. collect current size, size_hint, size_hint_min of children
     2. calculate the new position and sizes
     3. set position and size of children
-2. recursive call `do_layout` on child layouts (done after :meth:`UIBoxLayout.do_layout`)
+2. recursive call `do_layout` on child layouts (last step in :meth:`UIBoxLayout.do_layout`)
 
 .. code-block::
 
@@ -115,7 +117,7 @@ Size hint support
 +==========================+============+================+================+
 | :class:`UIAnchorLayout`  | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
-| :class:`UIBoxLayout`     | X          | X              |                |
+| :class:`UIBoxLayout`     | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIManager`       | X          | X              |                |
 +--------------------------+------------+----------------+----------------+
@@ -184,6 +186,7 @@ Widget events are only dispatched as a Pyglet event on a widget itself and are n
 
 - :class:`UIOnClickEvent` - Click event of :class:`UIInteractiveWidget` class
 - :class:`UIOnChangeEvent` - A value of a :class:`UIWidget` has changed
+- :class:`UIOnActionEvent` - An action results from interaction with the :class:`UIWidget` (mostly used in constructs)
 
 Different Event Systems
 =======================

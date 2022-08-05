@@ -126,13 +126,18 @@ class UIAnchorLayout(UILayout):
 class UIBoxLayout(UILayout):
     """
     Places widgets next to each other.
-    Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
+    Depending on the vertical attribute, the widgets are placed top to bottom or left to right.
 
     Hint: UIBoxLayout does not adjust its own size if children are added.
     This requires a UIManager or UIAnchorLayout as parent.
     Use `self.fit_content()` to resize, bottom-left is used as anchor point.
 
-    UIBoxLayout supports: size_hint, size_hint_min
+    UIBoxLayout supports: size_hint, size_hint_min, size_hint_max
+
+    If a child widget provides a size_hint for a dimension, the child will be resized within the given range of
+    size_hint_min and size_hint_max (unrestricted if not given).
+    For vertical=True any available space (layout size - min_size of children) will be distributed to the child widgets
+    based on their size_hint.
 
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
@@ -183,12 +188,30 @@ class UIBoxLayout(UILayout):
         # initially update size hints
         self._update_size_hints()
 
+    @staticmethod
+    def _layouting_allowed(child: UIWidget) -> Tuple[bool, bool]:
+        """
+        Checks if size_hint is given for the dimension, which would allow the layout to resize this widget
+
+        :return: horizontal, vertical
+        """
+        sh_w, sh_h = child.size_hint or (None, None)
+        return sh_w is not None, sh_h is not None
+
     def _update_size_hints(self):
         required_space_between = max(0, len(self.children) - 1) * self._space_between
 
         def min_size(child: UIWidget) -> Tuple[float, float]:
-            mw, mh = child.size_hint_min or (None, None)
-            return max(child.width, mw or 0), max(child.height, mh or 0)
+            """
+            Determine min size of a child widget
+            This can be the size_hint_min. If no size_hints are provided the child size has to stay the same and
+            the minimal size is the current size.
+            """
+            h_allowed, v_allowed = UIBoxLayout._layouting_allowed(child)
+            shmn_w, shmn_h = child.size_hint_min or (None, None)
+            shmn_w = shmn_w or 0 if h_allowed else child.width
+            shmn_h = shmn_h or 0 if v_allowed else child.height
+            return shmn_w, shmn_h
 
         min_child_sizes = [min_size(child) for child in self.children]
 
@@ -235,25 +258,39 @@ class UIBoxLayout(UILayout):
             for child in self.children:
                 new_rect = child.rect
 
-                # process size_hint_min
-                if child.size_hint_min:
-                    new_rect = new_rect.min_size(*child.size_hint_min)
+                # collect all size hints
+                sh_w, sh_h = child.size_hint or (None, None)
+                shmn_w, shmn_h = child.size_hint_min or (None, None)
+                shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                # apply size_hint
-                if child.size_hint:
-                    shw, shh = child.size_hint
-                    if shw is not None:
-                        new_rect = new_rect.resize(width=available_width * shw)
+                # apply y-axis
+                if sh_h is not None:
+                    min_height_value = shmn_h or 0
 
-                    if shh:
-                        # Maximal growth to parent.height * shh
-                        available_growth_height = new_rect.height + available_height * (
-                            shh / total_size_hint_height
-                        )
-                        max_growth_height = self.height * shh
-                        new_rect = new_rect.resize(
-                            height=min(available_growth_height, max_growth_height)
-                        )
+                    # Maximal growth to parent.width * shw
+                    available_growth_height = min_height_value + available_height * (
+                        sh_h / total_size_hint_height
+                    )
+                    max_growth_height = self.height * sh_h
+                    new_rect = new_rect.resize(
+                        height=min(available_growth_height, max_growth_height)
+                    )
+
+                    if shmn_h is not None:
+                        new_rect = new_rect.min_size(height=shmn_h)
+                    if shmx_h is not None:
+                        new_rect = new_rect.max_size(height=shmx_h)
+
+                # apply x-axis
+                if sh_w is not None:
+                    new_rect = new_rect.resize(
+                        width=max(available_width * sh_w, shmn_w or 0)
+                    )
+
+                    if shmn_w is not None:
+                        new_rect = new_rect.min_size(width=shmn_w)
+                    if shmx_w is not None:
+                        new_rect = new_rect.max_size(width=shmx_w)
 
                 # align
                 if self.align == "left":
@@ -279,28 +316,54 @@ class UIBoxLayout(UILayout):
                 child.size_hint[0] or 0 for child in self.children if child.size_hint
             )
 
+            # TODO Fix layout algorithm, handle size hints per dimension!
+            # 0. check if any hint given, if not, continue with step 4.
+            #   1. change size to minimal
+            #   2. grow using size_hint
+            #   3. ensure size_hint_max
+            # 4. place child
+
             for child in self.children:
                 new_rect = child.rect
 
-                # process size_hint_min
-                if child.size_hint_min:
-                    new_rect = new_rect.min_size(*child.size_hint_min)
+                # collect all size hints
+                sh_w, sh_h = child.size_hint or (None, None)
+                shmn_w, shmn_h = child.size_hint_min or (None, None)
+                shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                # apply size_hint
-                if child.size_hint:
-                    shw, shh = child.size_hint
-                    if shh is not None:
-                        new_rect = new_rect.resize(height=available_height * shh)
+                # apply x-axis
+                if sh_w is not None:
+                    min_width_value = shmn_w or 0
+                    # new_rect = new_rect.resize(width=min_width_value)  # TODO should not be required!
 
-                    if shw:
-                        # Maximal growth to parent.width * shw
-                        available_growth_width = new_rect.width + available_width * (
-                            shw / total_size_hint_width
-                        )
-                        max_growth_height = self.width * shw
-                        new_rect = new_rect.resize(
-                            width=min(available_growth_width, max_growth_height)
-                        )
+                    # Maximal growth to parent.width * shw
+                    available_growth_width = min_width_value + available_width * (
+                        sh_w / total_size_hint_width
+                    )
+                    max_growth_width = self.width * sh_w
+                    new_rect = new_rect.resize(
+                        width=min(
+                            available_growth_width, max_growth_width
+                        )  # this does not enforce min width
+                    )
+
+                    if shmn_w is not None:
+                        new_rect = new_rect.min_size(width=shmn_w)
+
+                    if shmx_w is not None:
+                        new_rect = new_rect.max_size(width=shmx_w)
+
+                # apply y-axis
+                if sh_h is not None:
+                    new_rect = new_rect.resize(
+                        height=max(available_height * sh_h, shmn_h or 0)
+                    )
+
+                    if shmn_h is not None:
+                        new_rect = new_rect.min_size(height=shmn_h)
+
+                    if shmx_h is not None:
+                        new_rect = new_rect.max_size(height=shmx_h)
 
                 # align
                 if self.align == "top":

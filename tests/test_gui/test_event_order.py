@@ -78,7 +78,7 @@ def test_event_consumed_by_widget(window):
             self.mng.add(button)
 
             @button.event("on_click")
-            def record_mng(event):
+            def record_widget(event):
                 events.append(f"UIFlatButton.on_click")
 
             @self.mng.event("on_event")
