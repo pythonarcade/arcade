@@ -276,7 +276,8 @@ class ArcadeContext(Context):
             )
 
         # Don't try to set zero projection leading to division by zero
-        if self.window.height == 0 or self.window.width == 0:
+        width, height = self.window.get_size()
+        if width == 0 or height == 0:
             return
 
         self.window.projection = Mat4.orthogonal_projection(
