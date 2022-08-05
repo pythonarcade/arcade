@@ -84,6 +84,7 @@ class Texture:
 
         self.name = name
         self.image = image
+        self._transforms = []
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
