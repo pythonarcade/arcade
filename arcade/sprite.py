@@ -255,8 +255,10 @@ class Sprite:
             # Ignore the texture's scale and use ours
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
-        else:
-            raise ValueError("You must provide either a texture or a filename.")
+        # We'll allow creating sprites without textures for now.
+        # The sprite must at some point get a texture assigned before used.
+        # else:
+        #     raise ValueError("You must provide either a texture or a filename.")
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
