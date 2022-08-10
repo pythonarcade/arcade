@@ -14,6 +14,8 @@ class UIAnchorLayout(UILayout):
     Supports `size_hint`, `size_hint_min`, and `size_hint_max`.
     Children may overlap.
 
+    Child are resized based on size_hint. Max and Min size_hints only take effect if a size_hint is given.
+
     Allowed keyword options for `UIAnchorLayout.add()`
     - anchor_x: str = None - uses `self.default_anchor_x` as default
     - align_x: float = 0
@@ -88,19 +90,25 @@ class UIAnchorLayout(UILayout):
         # Handle size_hints
         new_child_rect = child.rect
 
-        if child.size_hint:
-            shw, shh = child.size_hint
-            if shw:
-                new_child_rect = new_child_rect.resize(width=self.content_width * shw)
+        sh_w, sh_h = child.size_hint or (None, None)
+        shmn_w, shmn_h = child.size_hint_min or (None, None)
+        shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-            if shh:
-                new_child_rect = new_child_rect.resize(height=self.content_height * shw)
+        if sh_w is not None:
+            new_child_rect = new_child_rect.resize(width=self.content_width * sh_w)
 
-        if child.size_hint_min:
-            new_child_rect = new_child_rect.min_size(*child.size_hint_min)
+            if shmn_w:
+                new_child_rect = new_child_rect.min_size(width=shmn_w)
+            if shmx_w:
+                new_child_rect = new_child_rect.max_size(width=shmx_w)
 
-        if child.size_hint_max:
-            new_child_rect = new_child_rect.max_size(*child.size_hint_max)
+        if sh_h is not None:
+            new_child_rect = new_child_rect.resize(height=self.content_height * sh_w)
+
+            if shmn_h:
+                new_child_rect = new_child_rect.min_size(height=shmn_h)
+            if shmx_h:
+                new_child_rect = new_child_rect.max_size(height=shmx_h)
 
         # stay in bounds
         new_child_rect = new_child_rect.max_size(*self.content_size)
