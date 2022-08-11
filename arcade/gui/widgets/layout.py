@@ -261,7 +261,7 @@ class UIBoxLayout(UILayout):
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = sum(
                 child.size_hint[1] or 0 for child in self.children if child.size_hint
-            )
+            ) or 1  # prevent division by zero
 
             for child in self.children:
                 new_rect = child.rect
@@ -322,7 +322,7 @@ class UIBoxLayout(UILayout):
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = sum(
                 child.size_hint[0] or 0 for child in self.children if child.size_hint
-            )
+            ) or 1  # prevent division by zero
 
             # TODO Fix layout algorithm, handle size hints per dimension!
             # 0. check if any hint given, if not, continue with step 4.
