@@ -56,7 +56,7 @@ setup(
         "pyglet==2.0.dev22",
         "pillow~=9.1.1",
         "pymunk~=6.2.1",
-        "pytiled-parser~=2.1.1",
+        "pytiled-parser~=2.2.0",
     ],
     extras_require={
         "dev": REQUIREMENTS_DEV + REQUIREMENTS_DOCS,
