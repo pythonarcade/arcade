@@ -42,13 +42,11 @@ void main() {
     if ((ct.x + st) < -VP_CLIP || (ct.x - st) > VP_CLIP) return;
     if ((ct.y + st) < -VP_CLIP || (ct.y - st) > VP_CLIP) return;
 
-    // Emit a quad with the right position, rotation and texture coordinates
     // Read texture coordinates from UV texture here
     vec2 uv0, uv1, uv2, uv3;
     getSpriteUVs(uv_texture, int(v_texture[0]), uv0, uv1, uv2, uv3);
-    // vec4 uv_data = texelFetch(uv_texture, ivec2(v_texture[0], 0), 0);
-    // vec2 tex_offset = uv_data.xy;
-    // vec2 tex_size = uv_data.zw;
+
+    // Emit a quad with the right position, rotation and texture coordinates
 
     // Set the out color for all vertices
     gs_color = v_color[0];
