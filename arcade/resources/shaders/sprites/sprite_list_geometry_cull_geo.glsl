@@ -20,6 +20,7 @@ out vec4 gs_color;
 
 #define VP_CLIP 1.0
 
+
 void main() {
     // Get center of the sprite
     vec2 center = gl_in[0].gl_Position.xy;
@@ -43,31 +44,33 @@ void main() {
 
     // Emit a quad with the right position, rotation and texture coordinates
     // Read texture coordinates from UV texture here
-    vec4 uv_data = texelFetch(uv_texture, ivec2(v_texture[0], 0), 0);
-    vec2 tex_offset = uv_data.xy;
-    vec2 tex_size = uv_data.zw;
+    vec2 uv0, uv1, uv2, uv3;
+    getSpriteUVs(uv_texture, int(v_texture[0]), uv0, uv1, uv2, uv3);
+    // vec4 uv_data = texelFetch(uv_texture, ivec2(v_texture[0], 0), 0);
+    // vec2 tex_offset = uv_data.xy;
+    // vec2 tex_size = uv_data.zw;
 
     // Upper left
     gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
-    gs_uv =  vec2(0.0, tex_size.y) + tex_offset;
+    gs_uv =  uv0;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower left
     gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
-    gs_uv = tex_offset;
+    gs_uv = uv2;
     gs_color = v_color[0];
     EmitVertex();
 
     // upper right
     gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
-    gs_uv = tex_size + tex_offset;
+    gs_uv = uv1;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower right
     gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
-    gs_uv = vec2(tex_size.x, 0.0) + tex_offset;
+    gs_uv = uv3;
     gs_color = v_color[0];
     EmitVertex();
 
