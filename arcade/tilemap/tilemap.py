@@ -48,8 +48,10 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
         width = tile.tileset.tile_width
         height = tile.tileset.tile_height
     else:
-        width = tile.image_width
-        height = tile.image_height
+        image_x = tile.x
+        image_y = tile.y
+        width = tile.width
+        height = tile.height
 
     return image_x, image_y, width, height
 
