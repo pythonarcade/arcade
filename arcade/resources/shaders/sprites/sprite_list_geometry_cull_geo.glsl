@@ -46,8 +46,6 @@ void main() {
     vec2 uv0, uv1, uv2, uv3;
     getSpriteUVs(uv_texture, int(v_texture[0]), uv0, uv1, uv2, uv3);
 
-    // Emit a quad with the right position, rotation and texture coordinates
-
     // Set the out color for all vertices
     gs_color = v_color[0];
     // Upper left
