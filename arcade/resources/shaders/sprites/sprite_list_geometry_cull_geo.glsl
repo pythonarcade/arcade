@@ -50,28 +50,26 @@ void main() {
     // vec2 tex_offset = uv_data.xy;
     // vec2 tex_size = uv_data.zw;
 
+    // Set the out color for all vertices
+    gs_color = v_color[0];
     // Upper left
     gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv =  uv0;
-    gs_color = v_color[0];
     EmitVertex();
 
     // lower left
     gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = uv2;
-    gs_color = v_color[0];
     EmitVertex();
 
     // upper right
     gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv = uv1;
-    gs_color = v_color[0];
     EmitVertex();
 
     // lower right
     gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = uv3;
-    gs_color = v_color[0];
     EmitVertex();
 
     EndPrimitive();
