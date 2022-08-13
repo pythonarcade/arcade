@@ -10,6 +10,7 @@ import PIL.ImageOps
 import PIL.ImageDraw
 
 from typing import Dict, Optional, Tuple, Any, List, Union
+from arcade import texture_transforms as tt
 from arcade import (
     lerp,
     RectList,
@@ -84,7 +85,7 @@ class Texture:
 
         self.name = name
         self.image = image
-        self._transforms = []
+        self._transforms: List[tt.Transform] = []
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
@@ -145,6 +146,18 @@ class Texture:
         # ROTATE_90 = 2
         # ROTATE_180 = 3
         # ROTATE_270 = 4
+
+    def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
+        """
+        Create a new texture from a crop of this texture.
+
+        :param int x: X position to start crop
+        :param int y: Y position to start crop
+        :param int width: Width of crop
+        :param int height: Height of crop
+        :return: Texture 
+        """
+        pass
 
     @staticmethod
     def build_cache_name(*args) -> str:
