@@ -13,7 +13,7 @@ from arcade.arcade_types import Point, PointList
 class Transform:
     """
     Base class for all texture transforms.
-    
+
     Transforms are responsible for transforming the texture
     coordinates and hit box points.
     """

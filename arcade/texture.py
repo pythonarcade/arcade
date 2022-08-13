@@ -9,7 +9,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Dict, Optional, Tuple, Any, List, Union
+from typing import Optional, Tuple, List, Union
 from arcade import texture_transforms as tt
 from arcade import (
     lerp,
@@ -28,6 +28,7 @@ LOG = logging.getLogger(__name__)
 #: Global hit box cache
 # hit_box_cache = HitBoxCache()
 # image_cache = WeakImageCache()
+
 
 class Texture:
     """

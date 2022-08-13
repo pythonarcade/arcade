@@ -1433,7 +1433,6 @@ class SpriteSolidColor(Sprite):
         super().__init__()
 
         cache_name = Texture.build_cache_name("Solid", width, height, color[0], color[1], color[2])
-        import arcade
         # use existing texture if it exists
         if cache_name in Texture.cache:
             texture = Texture.cache[cache_name]

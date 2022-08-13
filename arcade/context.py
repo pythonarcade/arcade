@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, Union, Sequence
+from typing import Dict, Iterable, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
