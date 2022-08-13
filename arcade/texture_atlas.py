@@ -162,6 +162,7 @@ class TextureAtlas:
         self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
+        self._num_slots = self.width // 2
         self._check_size(self._size)
 
         self._texture = self._ctx.texture(
@@ -188,7 +189,7 @@ class TextureAtlas:
         self._uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._uv_data = array("f", [0] * self.max_width * 4)
         # Free slots in the texture coordinate texture
-        self._uv_slots_free = deque(i for i in range(0, self.max_width // 2))
+        self._uv_slots_free = deque(i for i in range(0, self._num_slots))
         # Map texture names to slots
         self._uv_slots: Dict[str, int] = dict()
         self._uv_data_changed = True
@@ -583,7 +584,7 @@ class TextureAtlas:
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)
         if texture_ids:
-            self._uv_slots_free = deque(i for i in range(self.max_width))
+            self._uv_slots_free = deque(i for i in range(self._num_slots))
             self._uv_slots = dict()
 
     def use_uv_texture(self, unit: int = 0) -> None:
