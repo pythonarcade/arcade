@@ -3,7 +3,7 @@ import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import (Any, Deque, Dict, List, Optional, Sequence, Set, Tuple,
+from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
                     Union)
 
 import pyglet
@@ -1031,13 +1031,14 @@ class Context:
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
-    def compute_shader(self, *, source: str) -> ComputeShader:
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> ComputeShader:
         """
         Create a compute shader.
 
         :param str source: The glsl source
+        :param Iterable[str] common: Common / library source injected into compute shader
         """
-        src = ShaderSource(self, source, gl.GL_COMPUTE_SHADER)
+        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return ComputeShader(self, src.get_source())
 
 
