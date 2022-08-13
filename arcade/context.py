@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Dict, Optional, Tuple, Union, Sequence
+from typing import Dict, Iterable, List, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
@@ -90,6 +90,7 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
+            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
@@ -345,6 +346,7 @@ class ArcadeContext(Context):
         geometry_shader: Union[str, Path] = None,
         tess_control_shader: Union[str, Path] = None,
         tess_evaluation_shader: Union[str, Path] = None,
+        common: Iterable[Union[str, Path]] = (),
         defines: dict = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
@@ -367,9 +369,10 @@ class ArcadeContext(Context):
         :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
         :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
         :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
-        :param dict defines: Substitute ``#define`` values in the source
         :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
         :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
+        :param List[Union[str,pathlib.Path]] common: Common files to be included in all shaders
+        :param dict defines: Substitute ``#define`` values in the source
         :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
                                                  but some more complex out structures we can't detect.
@@ -386,6 +389,8 @@ class ArcadeContext(Context):
         geometry_shader_src = None
         tess_control_src = None
         tess_evaluation_src = None
+
+        common_src = [resolve_resource_path(c).read_text() for c in common]
 
         if fragment_shader:
             fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
@@ -405,6 +410,7 @@ class ArcadeContext(Context):
             geometry_shader=geometry_shader_src,
             tess_control_shader=tess_control_src,
             tess_evaluation_shader=tess_evaluation_src,
+            common=common_src,
             defines=defines,
             varyings=varyings,
             varyings_capture_mode=varyings_capture_mode
