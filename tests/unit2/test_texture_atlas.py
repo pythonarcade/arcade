@@ -6,7 +6,7 @@ from arcade import TextureAtlas, load_texture
 
 
 def check_internals(atlas, num_textures):
-    assert len(atlas._uv_slots_free) == atlas.max_width - num_textures
+    assert len(atlas._uv_slots_free) == atlas._num_slots - num_textures
     assert len(atlas._uv_slots) == num_textures
     assert len(atlas._textures) == num_textures
     assert len(atlas._atlas_regions) == num_textures
