@@ -29,6 +29,7 @@ LOG = logging.getLogger(__name__)
 # hit_box_cache = HitBoxCache()
 # image_cache = WeakImageCache()
 
+
 class Texture:
     """
     An arcade.Texture is simply a wrapper for image data as a Pillow image
