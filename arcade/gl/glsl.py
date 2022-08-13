@@ -73,7 +73,7 @@ class ShaderSource:
         """The out attributes for this program"""
         return self._out_attributes
 
-    def inject_common_sources(self, common: Optional[List[str]]) -> None:
+    def inject_common_sources(self, common: Optional[Iterable[str]]) -> None:
         """Inject common source code into the shader source"""
         if not common:
             return

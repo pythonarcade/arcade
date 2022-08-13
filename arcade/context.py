@@ -416,7 +416,7 @@ class ArcadeContext(Context):
             varyings_capture_mode=varyings_capture_mode
         )
 
-    def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
+    def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
         resource handles.
@@ -426,10 +426,12 @@ class ArcadeContext(Context):
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         :param Union[str,pathlib.Path] path: Path to texture
+        :param Iterable[Union[str,pathlib.Path]] common: Common source injected into compute shader
         """
         from arcade.resources import resolve_resource_path
         path = resolve_resource_path(path)
-        return self.compute_shader(source=path.read_text())
+        common_src = [resolve_resource_path(c).read_text() for c in common]
+        return self.compute_shader(source=path.read_text(), common=common_src)
 
     def load_texture(
         self,
