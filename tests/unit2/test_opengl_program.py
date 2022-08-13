@@ -24,6 +24,7 @@ def test_shader_source(ctx):
             out_velocity = in_velocity;
         }
         """,
+        None,
         gl.GL_VERTEX_SHADER,
     )
     if ctx.gl_api == "gl":
@@ -39,7 +40,7 @@ def test_shader_source(ctx):
 
 def test_shader_source_empty(ctx):
     with pytest.raises(ValueError):
-        ShaderSource(ctx, "", gl.GL_VERTEX_SHADER)
+        ShaderSource(ctx, "", None, gl.GL_VERTEX_SHADER)
 
 
 def test_shader_source_missing_version(ctx):
@@ -53,6 +54,7 @@ def test_shader_source_missing_version(ctx):
                 "   gl_Position = vec3(in_vert, 1.0);\n"
                 "}\n"
             ),
+            None,
             gl.GL_VERTEX_SHADER,
         )
 
@@ -68,6 +70,7 @@ def test_shader_source_malformed(ctx):
                 "   gl_Position = vec3(in_vert, 1.0)\n"
                 "}\n"
             ),
+            None,
             gl.GL_VERTEX_SHADER,
         )
     with pytest.raises(ShaderException):
@@ -80,6 +83,7 @@ def test_shader_source_malformed(ctx):
                 "   gl_Position = vec3(in_vert, 1.0)\n"
                 "}\n"
             ),
+            None,
             gl.GL_VERTEX_SHADER,
         )
     wrapper = ShaderSource(
@@ -95,6 +99,7 @@ def test_shader_source_malformed(ctx):
             "   gl_Position = vec3(in_vert, 1.0)\n"
             "}\n"
         ),
+        None,
         gl.GL_VERTEX_SHADER,
     )
     source = wrapper.get_source(defines={'TEST': 1})
@@ -112,6 +117,7 @@ def test_shader_program_broken_out(ctx):
             "   out_vert = in_vert;\n"
             "}\n"
         ),
+        None,
         gl.GL_VERTEX_SHADER,
     )
     wrapper.out_attributes == ['out_vert']
