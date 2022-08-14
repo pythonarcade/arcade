@@ -3,7 +3,7 @@ Drawing text with pyglet label
 """
 import math
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Tuple, Union, Optional
 
 import arcade
 import pyglet
@@ -530,6 +530,57 @@ class Text:
     @position.setter
     def position(self, point: Point):
         self._label.position = point
+
+
+def create_text_sprite(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    multiline: bool = False,
+    rotation: float = 0,
+    texture_atlas: Optional[arcade.TextureAtlas] = None,
+) -> arcade.Sprite:
+    text_object = Text(
+        text,
+        start_x,
+        start_y,
+        color,
+        font_size,
+        width,
+        align,
+        font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        multiline,
+        rotation
+    )
+
+    size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
+    texture = arcade.Texture.create_empty(text, size)
+
+    if not texture_atlas:
+        texture_atlas = arcade.get_window().ctx.default_atlas
+    texture_atlas.add(texture)
+    with texture_atlas.render_into(texture) as fbo:
+        fbo.clear()
+        text_object.draw()
+
+    return arcade.Sprite(
+        center_x=text_object.right - (size[0] / 2),
+        center_y=text_object.top - (size[1] / 2),
+        texture=texture,
+    )
 
 
 def draw_text(

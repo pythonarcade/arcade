@@ -336,10 +336,10 @@ from arcade import experimental
 from .text_pyglet import (
     draw_text,
     load_font,
+    create_text_sprite,
     Text,
 )
 from .text_pillow import (
-    create_text_sprite,
     create_text_image,
     DEFAULT_FONT_NAMES,
 )
