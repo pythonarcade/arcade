@@ -97,29 +97,30 @@ class ArcadeContext(Context):
 
         # Shapes
         self.shape_line_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/line/unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/line/unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/line/unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/line/unbuffered_geo.glsl",
         )
         self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
         )
         self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
         self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/atlas/resize_vs.glsl",
-            geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
-            fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
+            vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
+            geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
+            fragment_shader=":resources:shaders/atlas/resize_fs.glsl",
+            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
