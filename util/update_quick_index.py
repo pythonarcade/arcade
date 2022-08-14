@@ -36,8 +36,6 @@ titles = {
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
-    'text_pillow.py': ['Text - Image/Pillow based', 'text_image.rst'],
-    'text_pyglet.py': ['Text - Pyglet/Glyph based', 'text_pyglet.rst'],
     'texture.py': ['Texture Management', 'texture.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],

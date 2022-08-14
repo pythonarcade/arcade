@@ -3,7 +3,7 @@ from typing import Optional
 
 import arcade
 from arcade import Color
-from arcade.text_pyglet import FontNameOrNames
+from arcade.text import FontNameOrNames
 
 
 class _UIStyleDict:

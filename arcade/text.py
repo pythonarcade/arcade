@@ -549,6 +549,40 @@ def create_text_sprite(
     rotation: float = 0,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
 ) -> arcade.Sprite:
+    """
+    Creates a sprite containing text based off of :py:class:`~arcade.Text`.
+
+    Internally this creates a Text object and an empty texture. It then uses either the
+    provided texture atlas, or gets the default one, and draws the Text object into the
+    texture atlas.
+
+    It then creates a sprite referencing the newly created texture, and positions it
+    accordingly, and that is final result that is returned from the function.
+
+    If you are providing a custom texture atlas, something important to keep in mind is
+    that the resulting Sprite can only be added to SpriteLists which use that atlas. If
+    it is added to a SpriteList which uses a different atlas, you will likely just see
+    a black box drawn in it's place.
+
+    :param str text: Initial text to display. Can be an empty string
+    :param float start_x: x position to align the text's anchor point with
+    :param float start_y: y position to align the text's anchor point with
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param float font_size: Size of the text in points
+    :param float width: A width limit in pixels
+    :param str align: Horizontal alignment; values other than "left" require width to be set
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param bool bold: Whether to draw the text as bold
+    :param bool italic: Whether to draw the text as italic
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+                         Options: "left", "center", or "right"
+    :param str anchor_y: How to calculate the anchor point's y coordinate.
+                         Options: "top", "bottom", "center", or "baseline".
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
+    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
+        newly created texture. The default global atlas will be used if this is None.
+    """
     text_object = Text(
         text,
         start_x,
