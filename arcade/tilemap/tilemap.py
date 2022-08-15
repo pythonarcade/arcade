@@ -128,7 +128,7 @@ class TileMap:
         custom_class - All objects in the layer are created from this class instead of Sprite. \
                        Must be subclass of Sprite.
         custom_class_args - Custom arguments, passed into the constructor of the custom_class
-        texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is
+        texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is \
                         supplied then the one defined at the map level will be used.
 
         For example:
