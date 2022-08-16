@@ -817,9 +817,8 @@ class Window(pyglet.window.Window):
         platform-specific visibility as the defaults from pyglet will
         usually handle their needs automatically.
 
-        For more information on what this means, see the `relevant
-        pyglet documentation
-        <https://pyglet.readthedocs.io/en/master/modules/window.html#pyglet.window.Window.set_mouse_platform_visible>`_
+        For more information on what this means, see the documentation
+        for :py:meth:`pyglet.window.Window.set_mouse_platform_visible`.
         """
         super().set_mouse_platform_visible(platform_visible)
 
