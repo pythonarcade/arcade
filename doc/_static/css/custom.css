@@ -2,6 +2,7 @@
 
 body {
     font-family: Lato, sans-serif;
+    counter-reset: listing;
 }
 p, ol > li::marker {
     line-height: 30px;
@@ -157,7 +158,7 @@ ul > li {
 /* Make code look nice */
 .code-block-caption::before {
     counter-increment: listing;
-    content: "Listing " counter(listing) ": ";
+    content: "Listing " counter(listing) ":\00a0 ";
 }
 .code-block-caption {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
