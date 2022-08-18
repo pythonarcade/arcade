@@ -37,4 +37,10 @@ jobs:
         run: | 
           flake8 arcade
       - name: inspection-code-mypy
+        run: | 
           mypy arcade
+      - name: Setup OpenGL
+        uses: openrndr/setup-opengl@v1.1
+      - name: Test with pytest
+        run: |
+          pytest
