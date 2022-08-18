@@ -2,7 +2,7 @@ name: test
 
 on:
   push:
-    branches: [development, maintenance]
+    branches: [development, maintenance, actions-test]
   pull_request:
     branches: [development, maintenance]
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.10']
         architecture: ['x64']
 
     steps:
@@ -37,6 +37,3 @@ jobs:
         run: | 
           mypy arcade
           flake8 arcade
-      - name: build-docs
-        run: |
-          sphinx-build doc build -W
