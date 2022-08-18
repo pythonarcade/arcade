@@ -39,8 +39,11 @@ jobs:
       - name: inspection-code-mypy
         run: | 
           mypy arcade
-      - name: Setup OpenGL
+      - name: Setup OpenGL try 1
         uses: openrndr/setup-opengl@v1.1
+      - name: Setup OpenGL try 2
+        run: |
+          sudo apt-get install -y --no-install-recommends libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libgl1-mesa-dev
       - name: Test with pytest
         run: |
           pytest
