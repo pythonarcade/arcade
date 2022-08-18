@@ -163,6 +163,14 @@ ul > li {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
+/* Fixes for line numbers not lining up */
+pre .normal {
+    font-size: 13px;
+}
+.highlighttable td.linenos {
+    padding-top: 0;
+}
+
 table.dataTable.display tbody tr.odd {
     background-color: var(--color-background-primary);
 }
