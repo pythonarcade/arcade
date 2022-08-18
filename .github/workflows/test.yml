@@ -27,13 +27,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
 
-      - name: dependencies
+      - name: update-setuptools
         run: |
           python -m pip install -U pip wheel setuptools
-      - name: wheel
+      - name: install-arcade
         run: |
           python -m pip install -e .[dev]
-      - name: code-inspection
+      - name: inspection-code-flake8
         run: | 
-          mypy arcade
           flake8 arcade
+      - name: inspection-code-mypy
+          mypy arcade
