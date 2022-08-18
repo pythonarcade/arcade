@@ -27,8 +27,13 @@ h1, h2 {
         columns: 2;
     }
 }
+.toctree-wrapper.compound > ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 section > h2 {
-    margin-top: 0;
+    margin-top: 5px;
+    margin-bottom: 8px;
 }
 .toctree-l1 {
     margin-left: 5px;
@@ -39,7 +44,7 @@ section > h2 {
 .toc-outside-links ul {
     columns: 2;
 }
-.toc-outside-links li p {
+.toc-outside-links li p, .toc-outside-links ul li {
     margin-left: 5px;
     font-size: 17px;
 }
@@ -96,6 +101,8 @@ li p {
 }
 ul {
     margin-left: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 /* use child selector in case someone nests an ol inside a ul */
 ul > li {
