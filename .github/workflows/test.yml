@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  build:
+  build1:
     name: test
     runs-on: ${{ matrix.os }}
 
@@ -39,11 +39,32 @@ jobs:
       - name: inspection-code-mypy
         run: | 
           mypy arcade
-      - name: Setup OpenGL try 1
-        uses: openrndr/setup-opengl@v1.1
-      - name: Setup OpenGL try 2
-        run: |
-          sudo apt-get install -y --no-install-recommends libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libgl1-mesa-dev
-      - name: Test with pytest
-        run: |
-          pytest
+
+  build2: 
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Configure
+      run: cmake -Bbuild -T host=x64 -A x64
+
+    - name: Build
+      run: cmake --build build --config Debug -j4
+
+    - name: Install 7zip
+      run: choco install 7zip.install
+
+    - name: Install Mesa
+      shell: cmd
+      run: |
+        curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+        "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+        mklink opengl32.dll "x64\opengl32.dll"
+        mklink libglapi.dll "x64\libglapi.dll"
+      working-directory: build\tests\Debug
+
+    - name: Run tests
+      shell: cmd
+      run: call "build\Debug\TestGL.exe"
