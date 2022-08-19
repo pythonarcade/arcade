@@ -759,7 +759,7 @@ class SpriteList:
     def sort(self, *, key=None, reverse: bool = False):
         """
         Sort the spritelist in place using ``<`` comparison between sprites.
-        This function is similar to python's ``list.sort``.
+        This function is similar to python's :py:meth:`list.sort`.
 
         Example sorting sprites based on y axis position using a lambda::
 
