@@ -2,6 +2,7 @@
 
 body {
     font-family: Lato, sans-serif;
+    counter-reset: listing;
 }
 p, ol > li::marker {
     line-height: 30px;
@@ -27,8 +28,13 @@ h1, h2 {
         columns: 2;
     }
 }
+.toctree-wrapper.compound > ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 section > h2 {
-    margin-top: 0;
+    margin-top: 5px;
+    margin-bottom: 8px;
 }
 .toctree-l1 {
     margin-left: 5px;
@@ -39,7 +45,7 @@ section > h2 {
 .toc-outside-links ul {
     columns: 2;
 }
-.toc-outside-links li p {
+.toc-outside-links li p, .toc-outside-links ul li {
     margin-left: 5px;
     font-size: 17px;
 }
@@ -96,6 +102,8 @@ li p {
 }
 ul {
     margin-left: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 /* use child selector in case someone nests an ol inside a ul */
 ul > li {
@@ -150,12 +158,20 @@ ul > li {
 /* Make code look nice */
 .code-block-caption::before {
     counter-increment: listing;
-    content: "Listing " counter(listing) ": ";
+    content: "Listing " counter(listing) ":\00a0 ";
 }
 .code-block-caption {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
+/* Fixes for line numbers not lining up */
+pre .normal {
+    font-size: 13px;
+}
+.highlighttable td.linenos {
+    padding-top: 0;
+}
+
 table.dataTable.display tbody tr.odd {
     background-color: var(--color-background-primary);
 }

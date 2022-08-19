@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
         self.perf_graph_list.append(graph)
 
         # Create the on_update graph
-        graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="update")
+        graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="on_update")
         graph.position = starting_x + step_x, row_y
         self.perf_graph_list.append(graph)
 

@@ -3,7 +3,7 @@ Drawing text with pyglet label
 """
 import math
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Tuple, Union, Optional
 
 import arcade
 import pyglet
@@ -530,6 +530,91 @@ class Text:
     @position.setter
     def position(self, point: Point):
         self._label.position = point
+
+
+def create_text_sprite(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    multiline: bool = False,
+    rotation: float = 0,
+    texture_atlas: Optional[arcade.TextureAtlas] = None,
+) -> arcade.Sprite:
+    """
+    Creates a sprite containing text based off of :py:class:`~arcade.Text`.
+
+    Internally this creates a Text object and an empty texture. It then uses either the
+    provided texture atlas, or gets the default one, and draws the Text object into the
+    texture atlas.
+
+    It then creates a sprite referencing the newly created texture, and positions it
+    accordingly, and that is final result that is returned from the function.
+
+    If you are providing a custom texture atlas, something important to keep in mind is
+    that the resulting Sprite can only be added to SpriteLists which use that atlas. If
+    it is added to a SpriteList which uses a different atlas, you will likely just see
+    a black box drawn in it's place.
+
+    :param str text: Initial text to display. Can be an empty string
+    :param float start_x: x position to align the text's anchor point with
+    :param float start_y: y position to align the text's anchor point with
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param float font_size: Size of the text in points
+    :param float width: A width limit in pixels
+    :param str align: Horizontal alignment; values other than "left" require width to be set
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param bool bold: Whether to draw the text as bold
+    :param bool italic: Whether to draw the text as italic
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+                         Options: "left", "center", or "right"
+    :param str anchor_y: How to calculate the anchor point's y coordinate.
+                         Options: "top", "bottom", "center", or "baseline".
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
+    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
+        newly created texture. The default global atlas will be used if this is None.
+    """
+    text_object = Text(
+        text,
+        start_x,
+        start_y,
+        color,
+        font_size,
+        width,
+        align,
+        font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        multiline,
+        rotation
+    )
+
+    size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
+    texture = arcade.Texture.create_empty(text, size)
+
+    if not texture_atlas:
+        texture_atlas = arcade.get_window().ctx.default_atlas
+    texture_atlas.add(texture)
+    with texture_atlas.render_into(texture) as fbo:
+        fbo.clear()
+        text_object.draw()
+
+    return arcade.Sprite(
+        center_x=text_object.right - (size[0] / 2),
+        center_y=text_object.top - (size[1] / 2),
+        texture=texture,
+    )
 
 
 def draw_text(

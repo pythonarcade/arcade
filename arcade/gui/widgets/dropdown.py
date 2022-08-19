@@ -1,6 +1,8 @@
+from copy import deepcopy
 from typing import List
 
 import arcade
+from arcade.experimental.uistyle import UIFlatButtonStyle_default
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
 from arcade.gui.widgets.layout import UIBoxLayout
@@ -60,6 +62,10 @@ class UIDropdown(UILayout):
     def _update_options(self):
         # generate options
         self._layout.clear()
+
+        active_style = deepcopy(UIFlatButtonStyle_default)
+        active_style["normal"]["bg"] = (55, 66, 81)
+
         for option in self._options:
             if option == self.DIVIDER:
                 self._layout.add(
@@ -74,11 +80,7 @@ class UIDropdown(UILayout):
                     text=option,
                     width=self.width,
                     height=self.height,
-                    style={
-                        "normal_bg": (55, 66, 81)
-                        if self.value == option
-                        else (95, 111, 131)
-                    },
+                    style=active_style if self.value == option else UIFlatButtonStyle_default,
                 )
             )
             button.on_click = self._on_option_click
