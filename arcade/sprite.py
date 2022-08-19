@@ -1084,14 +1084,15 @@ class Sprite:
 
     def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1) -> None:
         """
-        Draw a sprite's hit-box.
+        Draw a sprite's hit box.
 
-        The 'hit box' drawing is cached, so if you change the color/line thickness
-        later, it won't take.
+        The hit box drawing is cached, so if you change the color or line thickness
+        later, it won't take more time.
 
-        :param color: Color of box
-        :param line_thickness: How thick the box should be
+        :param color: Color of hitbox outline
+        :param line_thickness: How thick the hitbox outline should be
         """
+        
         points = self.get_adjusted_hit_box()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
