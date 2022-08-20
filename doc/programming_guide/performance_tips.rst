@@ -91,3 +91,43 @@ Text drawing performance
 
 Arcade's :meth:`arcade.draw_text` can be quite slow. To speed things up, use
 text objects. See :ref:`drawing_text_objects`.
+
+Non-Arcade performance
+----------------------
+
+Sometimes, Arcade isn't responsible for the slowdown of your code. Instead of
+removing stuff and seeing if your game runs faster, you can use a profiler. A
+profiler is for measuring parts of your code and seeing how fast they run. This
+is useful so you can know what is taking up most of the time and causing your
+game to slow down.
+
+There are many great profilers out there, but one we recommend is called
+`cProfile`. You can make it test some code like this:
+
+.. code:: python
+    import cProfile
+    import time
+
+    cProfile.run("time.sleep(5)")
+
+It would return something like this:
+
+.. code:: python
+    4 function calls in 10.009 seconds
+
+        Ordered by: standard name
+
+        ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+             1    0.000    0.000   10.009   10.009 <string>:1(<module>)
+             1    0.000    0.000   10.009   10.009 {built-in method builtins.exec}
+             1   10.009   10.009   10.009   10.009 {built-in method time.sleep}
+             1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects)
+
+ncalls : Number of calls made
+tottime : Total time taken by the function. Time made in calls to sub-functions are excluded.
+percall : Total time for each call
+cumtime : Unlike tottime, this includes time spent in this and all subfunctions that the higher-level function calls. It is most useful and is accurate for recursive functions.
+
+This is really useful for checking how long your code takes and how to optimize
+it. There are many things that you should get into habits, like using list
+comprehension and removing unnecessary variables and functions that do nothing.
