@@ -1,6 +1,7 @@
 """
 Drawing text with pyglet label
 """
+
 import math
 from pathlib import Path
 from typing import Any, Tuple, Union, Optional
@@ -230,7 +231,7 @@ class Text:
         """
         Get or set the current text string to display.
 
-        THe value assigned will be converted to a string.
+        The value assigned will be converted to a string.
         """
         return self._label.text
 
@@ -246,7 +247,7 @@ class Text:
         """
         Get or set the current text string to display.
 
-        THe value assigned will be converted to a string.
+        The value assigned will be converted to a string.
 
         This is an alias for :py:attr:`~arcade.Text.value`
         """
@@ -288,7 +289,7 @@ class Text:
     @property
     def font_name(self) -> FontNameOrNames:
         """
-        Get or set the font name(s) for this label
+        Get or set the font name(s) for the label
         """
         return self._label.font_name
 
@@ -336,7 +337,7 @@ class Text:
     @property
     def color(self) -> Color:
         """
-        Get or set the text color for this label
+        Get or set the text color for the label
         """
         return self._label.color
 
@@ -375,7 +376,7 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of this label        
+        Get the size of the label        
         """
         return self._label.width, self._label.height
 
@@ -444,7 +445,7 @@ class Text:
     @property
     def bold(self) -> bool:
         """
-        Get or set bold state of this label
+        Get or set bold state of the label
         """
         return self._label.bold
 
@@ -455,7 +456,7 @@ class Text:
     @property
     def italic(self) -> bool:
         """
-        Get or set the italic state of this label
+        Get or set the italic state of the label
         """
         return self._label.italic
 
@@ -466,7 +467,7 @@ class Text:
     @property
     def multiline(self) -> bool:
         """
-        Get or set the multiline flag of this label.
+        Get or set the multiline flag of the label.
         """
         return self._label.multiline
 
@@ -476,7 +477,7 @@ class Text:
 
     def draw(self) -> None:
         """
-        Draw this label to the screen at its current ``x`` and ``y`` position.
+        Draw the label to the screen at its current ``x`` and ``y`` position.
 
         .. warning: Cameras affect text drawing!
             If you want to draw a custom GUI that doesn't move with the
