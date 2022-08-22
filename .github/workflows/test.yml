@@ -40,18 +40,12 @@ jobs:
         run: | 
           mypy arcade
 
-  build2: 
+  build2:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
-
-    - name: Configure
-      run: cmake -Bbuild -T host=x64 -A x64
-
-    - name: Build
-      run: cmake --build build --config Debug -j4
 
     - name: Install 7zip
       run: choco install 7zip.install
@@ -64,6 +58,12 @@ jobs:
         mklink opengl32.dll "x64\opengl32.dll"
         mklink libglapi.dll "x64\libglapi.dll"
       working-directory: build\tests\Debug
+
+    - name: Configure
+      run: cmake -Bbuild -T host=x64 -A x64
+
+    - name: Build
+      run: cmake --build build --config Debug -j4
 
     - name: Run tests
       shell: cmd
