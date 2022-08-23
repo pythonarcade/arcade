@@ -3,7 +3,7 @@ name: Create Commit Note Log
 on:
   push:
     tags:
-      - *
+      - "*"
   workflow_dispatch:
     inputs:
       git-tag:
