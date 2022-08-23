@@ -1,43 +1,58 @@
-name: test
+name: Release Note
 
 on:
   push:
-    branches: [development, maintenance, actions-test]
-  pull_request:
-    branches: [development, maintenance]
+    tags:
+      - release/*
   workflow_dispatch:
+    inputs:
+      git-tag:
+        description: tag to create release note
+        required: true
 
 jobs:
-
-  build2:
-    name: test
-    runs-on: windows-latest
-
+  create-release-note:
+    name: Create Release Note
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: setup
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: ${{ matrix.architecture }}
-        submodules: true
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Install Mesa
-      shell: cmd
-      run: |
-        curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
-        "C:\Program Files\7-Zip\7z.exe" x mesa.7z
-        mklink opengl32.dll "x64\opengl32.dll"
-        mklink libglapi.dll "x64\libglapi.dll"
-
-    - name: update-setuptools
-      run: |
-        python -m pip install -U pip wheel setuptools
-
-    - name: install-arcade
-      run: |
-        python -m pip install -e .[dev]
-
-    - name: Test with pytest
-      run: |
-        pytest
+      - name: Set tag from input
+        id: tag-input
+        if: github.event_name == 'workflow_dispatch'
+        run: |-
+          tag=${{ github.event.inputs.git-tag }}
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo ::set-output name=tag::${{ github.event.inputs.git-tag }}
+          else
+            echo "Tag not found"
+            exit 1
+          fi
+      - name: Set tag from commit
+        id: tag-commit
+        if: github.event_name != 'workflow_dispatch'
+        run: |-
+          git_ref="${GITHUB_REF#refs/*/}"
+          echo ::set-output name=tag::$git_ref
+      - name: Get Git commit history
+        id: git-commit
+        run: |-
+          current_tag=${{ steps.tag-input.outputs.tag || steps.tag-commit.outputs.tag }}
+          previous_tag=$(git describe --abbrev=0 --match "release/*" --tags $current_tag^)
+          echo "current_tag=$current_tag"
+          echo "previous_tag=$previous_tag"
+          echo "commit_history"
+          echo "================================================"
+          while read -r;
+          do
+            echo "- $REPLY" | tee -a body.md 
+          done < <(git log --pretty=oneline --abbrev-commit --decorate-refs-exclude=refs/tags $current_tag...$previous_tag)
+          echo "================================================"
+          echo ::set-output name=tag::$current_tag
+      - uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "body.md"
+          tag: ${{ steps.git-commit.outputs.tag }}
+          allowUpdates: true
