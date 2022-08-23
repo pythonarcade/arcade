@@ -40,7 +40,7 @@ jobs:
         id: git-commit
         run: |-
           current_tag=${{ steps.tag-input.outputs.tag || steps.tag-commit.outputs.tag }}
-          previous_tag=$(git describe --abbrev=0 --match "release/*" --tags $current_tag^)
+          previous_tag=$(git describe --abbrev=0 --match "*" --tags $current_tag^)
           echo "current_tag=$current_tag"
           echo "previous_tag=$previous_tag"
           echo "commit_history"
