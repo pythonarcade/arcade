@@ -14,6 +14,9 @@ two buffers so we always work on the previous state.
 Using transforms in this way makes us able to process
 a system that is reacting to external forces in this way.
 There are no predetermined paths and they system just lives on its own.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.transform_feedback
 """
 from array import array
 import math

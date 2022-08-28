@@ -15,7 +15,7 @@ around (see: time_taken), or you can store data on the Window object to share da
 all Views (see: total_score).
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.view_instructions_and_game_over.py
+python -m arcade.examples.view_instructions_and_game_over
 """
 
 import arcade

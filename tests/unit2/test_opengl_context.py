@@ -33,12 +33,21 @@ def test_projection(window):
     ctx.projection_2d = (1, 10, 2, 11)
     assert ctx.projection_2d == (1, 10, 2, 11)
 
+    # Attempt to assign illegal values
     with pytest.raises(ValueError):
         ctx.projection_2d = "moo"
 
     with pytest.raises(ValueError):
         ctx.projection_2d = 1, 2, 3, 4, 5
 
+    # Set matrices directly checking projection
+    # parameter reconstruction
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(0, 100, 0, 200, -100, 100)
+    assert ctx.projection_2d == (0, 100, 0, 200)
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(100, 200, 200, 400, -100, 100)
+    assert ctx.projection_2d == (100, 200, 200, 400)
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(200, 800, 300, 900, -100, 100)
+    assert ctx.projection_2d == (200, 800, 300, 900)
 
 def test_projection_matrix(window):
     """Test setting projection matrix directly"""

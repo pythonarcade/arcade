@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
-from arcade.experimental.uistyle import UISliderStyle
+from arcade.experimental.uistyle import UISliderStyle, UISliderDefaultStyle
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -22,6 +22,7 @@ class UISlider(UIWidget):
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
+    disabled = Property(False)
 
     def __init__(
         self,
@@ -47,7 +48,7 @@ class UISlider(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=ChainMap(style or {}, UISliderStyle()),  # type: ignore
+            style=ChainMap(style or {}, UISliderDefaultStyle),  # type: ignore
             **kwargs,
         )
 
@@ -100,7 +101,15 @@ class UISlider(UIWidget):
             )
 
     def do_render(self, surface: Surface):
-        state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
+        if self.disabled:
+            state = "disabled"
+        elif self.pressed:
+            state = "press"
+        elif self.hovered:
+            state = "hover"
+        else:
+            state = "normal"
+        style = self.style[state]
 
         self.prepare_render(surface)
 
@@ -116,8 +125,8 @@ class UISlider(UIWidget):
         slider_center_y = self.content_height // 2
 
         # slider
-        bg_slider_color = self.style[f"{state}_unfilled_bar"]
-        fg_slider_color = self.style[f"{state}_filled_bar"]
+        bg_slider_color = style["unfilled_bar"]
+        fg_slider_color = style["filled_bar"]
 
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.content_rect.x,
@@ -135,9 +144,9 @@ class UISlider(UIWidget):
         )
 
         # cursor
-        border_width = self.style[f"{state}_border_width"]
-        cursor_color = self.style[f"{state}_bg"]
-        cursor_outline_color = self.style[f"{state}_border"]
+        border_width = style["border_width"]
+        cursor_color = style["bg"]
+        cursor_outline_color = style["border"]
 
         rel_cursor_x = cursor_center_x - self.content_rect.x
         arcade.draw_circle_filled(

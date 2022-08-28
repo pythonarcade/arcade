@@ -1,13 +1,13 @@
 """
 Example showing how to do transitions between views.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.transitions
 """
-
 import arcade
-
 
 WIDTH = 800
 HEIGHT = 600
-
 FADE_RATE = 5
 
 

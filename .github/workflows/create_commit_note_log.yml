@@ -1,0 +1,58 @@
+name: Create Commit Note Log
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      git-tag:
+        description: tag to create notes off of
+        required: true
+
+jobs:
+  create-commit-note-log:
+    name: Create Commit Note Log
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set tag from input
+        id: tag-input
+        if: github.event_name == 'workflow_dispatch'
+        run: |-
+          tag=${{ github.event.inputs.git-tag }}
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo ::set-output name=tag::${{ github.event.inputs.git-tag }}
+          else
+            echo "Tag not found"
+            exit 1
+          fi
+      - name: Set tag from commit
+        id: tag-commit
+        if: github.event_name != 'workflow_dispatch'
+        run: |-
+          git_ref="${GITHUB_REF#refs/*/}"
+          echo ::set-output name=tag::$git_ref
+      - name: Get Git commit history
+        id: git-commit
+        run: |-
+          current_tag=${{ steps.tag-input.outputs.tag || steps.tag-commit.outputs.tag }}
+          previous_tag=$(git describe --abbrev=0 --match "*" --tags $current_tag^)
+          echo "current_tag=$current_tag"
+          echo "previous_tag=$previous_tag"
+          echo "commit_history"
+          echo "=============="
+          while read -r;
+          do
+            echo "- $REPLY" | tee -a body.md 
+          done < <(git log --pretty=oneline --abbrev-commit --decorate-refs-exclude=refs/tags $current_tag...$previous_tag)
+          echo "=============="
+          echo ::set-output name=tag::$current_tag
+      - uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "body.md"
+          tag: ${{ steps.git-commit.outputs.tag }}
+          allowUpdates: true

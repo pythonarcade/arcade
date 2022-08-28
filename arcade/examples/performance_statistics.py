@@ -17,9 +17,8 @@ Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the
 command line with:
-python -m arcade.examples.background_scrolling
+python -m arcade.examples.performance_statistics
 """
-
 import random
 import arcade
 
@@ -125,7 +124,7 @@ class MyGame(arcade.Window):
         self.perf_graph_list.append(graph)
 
         # Create the on_update graph
-        graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="update")
+        graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="on_update")
         graph.position = starting_x + step_x, row_y
         self.perf_graph_list.append(graph)
 
@@ -156,7 +155,7 @@ class MyGame(arcade.Window):
         self.fps_text.value = f"FPS: {arcade.get_fps(60):5.1f}"
         self.fps_text.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Update method """
         self.frame_count += 1
 

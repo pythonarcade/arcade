@@ -247,9 +247,26 @@ class ArcadeContext(Context):
         This projection is used by sprites and shapes and is represented
         by four floats: ``(left, right, bottom, top)``
 
+        When reading this property we reconstruct the projection parameters
+        from pyglet's projection matrix. When setting this property
+        we construct an orthogonal projection matrix and set it in pyglet.
+
         :type: Tuple[float, float, float, float]
         """
-        return self._projection_2d
+        mat = self.window.projection
+
+        # Reconstruct the projection values from the matrix
+        # TODO: Take scale into account
+        width = 2.0 / mat[0]
+        height = 2.0 / mat[5]
+        a = width * mat[12]
+        b = height * mat[13]
+        left = -(width + a) / 2
+        right = left + width
+        bottom = -(height + b) / 2
+        top = bottom + height
+
+        return left, right, bottom, top
 
     @projection_2d.setter
     def projection_2d(self, value: Tuple[float, float, float, float]):
@@ -258,11 +275,14 @@ class ArcadeContext(Context):
                 f"projection must be a 4-component tuple, not {type(value)}: {value}"
             )
 
-        self._projection_2d = value
-        self._projection_2d_matrix = Mat4.orthogonal_projection(
+        # Don't try to set zero projection leading to division by zero
+        width, height = self.window.get_size()
+        if width == 0 or height == 0:
+            return
+
+        self.window.projection = Mat4.orthogonal_projection(
             value[0], value[1], value[2], value[3], -100, 100,
         )
-        self.window.projection = self._projection_2d_matrix
 
     @property
     def projection_2d_matrix(self) -> Mat4:
@@ -270,22 +290,43 @@ class ArcadeContext(Context):
         Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
 
+        This property simply gets and sets pyglet's projection matrix.
+
         :type: pyglet.math.Mat4
         """
-        return self._projection_2d_matrix
+        return self.window.projection
 
     @projection_2d_matrix.setter
     def projection_2d_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("projection_matrix must be a Mat4 object")
 
-        self._projection_2d_matrix = value
-        self.window.projection = self._projection_2d_matrix
+        self.window.projection = value
+
+    @property
+    def view_matrix_2d(self) -> Mat4:
+        """
+        Get the current view matrix.
+        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
+
+        This property simply gets and sets pyglet's view matrix.
+
+        :type: pyglet.math.Mat4
+        """
+        self.window.view
+
+    @view_matrix_2d.setter
+    def view_matrix_2d(self, value: Mat4):
+        if not isinstance(value, Mat4):
+            raise ValueError("view_matrix must be a Mat4 object")
+
+        self._view_matrix_2d = value
+        self.window.view = self._view_matrix_2d
 
     @contextmanager
     def pyglet_rendering(self):
         """
-        Context manager for doing redering with pyglet
+        Context manager for doing rendering with pyglet
         ensuring context states are reverted. This
         affects things like blending.
         """

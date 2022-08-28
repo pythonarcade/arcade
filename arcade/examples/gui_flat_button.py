@@ -1,6 +1,9 @@
 """
 Example code showing how to create a button,
 and the three ways to process button events.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_flat_button
 """
 import arcade
 import arcade.gui

@@ -91,8 +91,8 @@ from .window_commands import get_scaling_factor
 from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
-from .window_commands import run
 from .window_commands import schedule
+from .window_commands import run
 from .window_commands import set_background_color
 from .window_commands import set_viewport
 from .window_commands import set_window
@@ -185,6 +185,7 @@ from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
+from .texture import trim_image
 
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
@@ -332,15 +333,11 @@ from .perf_graph import PerfGraph
 # noinspection PyPep8
 from arcade import experimental
 
-from .text_pyglet import (
+from .text import (
     draw_text,
     load_font,
-    Text,
-)
-from .text_pillow import (
     create_text_sprite,
-    create_text_image,
-    DEFAULT_FONT_NAMES,
+    Text,
 )
 
 
@@ -438,7 +435,6 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
-           'create_text_image',
            'create_text_sprite',
            'create_triangles_filled_with_colors',
            'disable_timings',
@@ -463,7 +459,6 @@ __all__ = ['AStarBarrierList',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
            'draw_scaled_texture_rectangle',
-           'create_text',
            'draw_text',
            'draw_texture_rectangle',
            'draw_triangle_filled',
@@ -517,7 +512,6 @@ __all__ = ['AStarBarrierList',
            'get_timings',
            'get_three_float_color',
            'clear_timings',
-           'create_text_image',
            'get_viewport',
            'get_window',
            'get_fps',
@@ -566,6 +560,7 @@ __all__ = ['AStarBarrierList',
            'uint24_to_three_byte_color',
            'uint32_to_four_byte_color',
            'unschedule',
+           'trim_image',
            ]
 
 

@@ -27,7 +27,6 @@ all dispatched events with the function. The output looks like this:
     on_activate        1       0.0000
     on_resize          1       0.0000
     on_show            1       0.0000
-    update            59       0.0030
     on_update         59       0.0000
     on_expose          1       0.0000
     on_draw           59       0.0021

@@ -4,7 +4,7 @@ Scroll around a large screen.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.sprite_move_scrolling_box
 """
 
 import random

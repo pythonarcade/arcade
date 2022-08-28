@@ -7,18 +7,80 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.7.0
------
+Version 2.7.0
+-------------
 
 *Unreleased*
 
+Version 2.7.0 is a major update to Arcade. It is not 100% compatible with the 2.6 API.
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+These are the API changes which could require updates to existing code based on the 2.6 API. Some of these things may
+be repeated in the Updates section of these release notes, however we have compiled the breaking changes here for easy
+easier reference. There may be other behavior changes that could break specific scenarios, but this section is limited
+to changes which directly changed the API in a way that is not compatible with how it was used in 2.6.
+
+* The ``update`` function has been removed from the :py:class:`~arcade.Window`, :py:class:`~arcade.View`,
+  :py:class:`~arcade.Section`, and :py:class:`~arcade.Sectionmanager` classes in favor of the ``on_update()`` function. This function
+  has been the recommended way to use Arcade for a long time now. It works the same as the ``update`` function
+  however it is able to receive a ``delta_time`` parameter which is the time since the last update.
+* The ``update_rate`` parameter of :py:class:`~arcade.Window` can no longer be set to ``None``. Previously it defaulted
+  to ``1 / 60`` however could be set to ``None``. The default is still the same, but setting it to None will not do anything.
+* Sprites created from the :py:class:`~arcade.TileMap` class would previously set a key in the ``Sprite.properties`` dictionary
+  named ``type``. This key has been renamed to ``class``. This is in keeping with Tiled's renaming of the key and following the Tiled
+  format/API as closely as possible.
+* The ``arcade.text_pillow`` and ``arcade.text_pyglet`` modules have been completely removed. The pillow implementation is gone, and the
+  pyglet one has been renamed to just ``arcade.text``. These modules were largely internal, but it is possible to have referenced them directly.
+* Due to the above change and removal of the pillow text implementation, the :py:func:`~arcade.create_text_sprite` previously referred to
+  the Pillow text implementation, and there was no easy way to create a sprite from Text with the pyglet implementation. This function has
+  been re-worked to use the pyglet based text system. It has no API breaking changes, but the underlying functionality has changed a lot, so
+  if you are using this function it may be worth checking the docs for it again. The main concern for a difference here would be if you
+  are also using any custom :py:class:`~arcade.TextureAtlas`.
+
+Featured Updates
+~~~~~~~~~~~~~~~~
+
+* Arcade now supports OpenGL ES 3.1/3.2 and have been
+  tested on the Raspberry Pi 4. Any model using the Cortex-A72
+  CPU should work. Note that you need fairly new Mesa drivers
+  to get the new V3D drivers.
+* Rotation order changed to clockwise
+* Arcade now supports mixing pyglet and arcade drawing meaning
+  you can for example use pyglet batches, which can draw thousands
+  and thousands of pyglet objects with the cost and performance time
+  of only a few.
+* Added a new system for handling background textures (ADD MORE INFO)
+
+Changes
+~~~~~~~
+
+* :py:class:`~arcade.Window`
+
+  * Removal of the ``update`` function in favor of :py:meth:`~arcade.Window.on_update()`
+  * ``update_rate`` parameter in the constructor can no longer be set to ``None``. Must be a float.
+  * Added ``draw_rate`` parameter to constructor, this will control the interval that the :py:meth:`~arcade.Window.on_draw()`
+    function is called at. This can be used with the pre-existing ``update_rate`` parameter which controls
+    :py:meth:`~arcade.Window.on_update()` to achieve separate draw and update rates.
+
+* :py:class:`~arcade.View`
+
+  * Removal of the ``update`` function in favor of :py:meth:`~arcade.View.on_update()`
+
+* :py:class:`~arcade.Section` and :py:class:`~arcade.Sectionmanager`
+
+  * Removal of the ``update`` function in favor of ``on_update()``
+
 * GUI
+
   * :py:class:`~arcade.gui.widgets.UIWidget`
 
     * supports padding, border and background (color and texture)
     * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
+    * Fixed an blending issue when rendering the gui surface to the screen
 
   * New widgets:
 
@@ -26,17 +88,52 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
 
   * Arcade :py:class:`~arcade.gui.property.Property`:
+
     Properties are observable attributes (supported: primitive, list and dict). Listener can be bound with :py:meth:`~arcade.gui.property.bind`
 
   * Misc Changes
 
     * arcade.color_from_hex_string changed to follow the CSS hex string standard
+    * Windows Text glyph are now created with DirectWrite instead of GDI
+    * Removal of various deprecated functions and parameters
+    * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
-  * OpenGL
+* Text
 
-    * Support for OpenGL ES 3.1/2
-    * Textures now support immutable storage
+  * Complete removal of the old PIL based text system. In Arcade 2.6 we had largely switched to the newer Pyglet based system, however
+    there were still remnants of the PIL implementation around. Namely the :py:func:`~arcade.create_text_sprite` function which has been
+    updated to use the Pyglet system. There's no API breaking change here but if you are using the function it would be worth reading the
+    new docs for it, as there are some different considerations surrounding use of a custom :py:class:`~arcade.TextureAtlas` if you are also
+    doing that. This function should now be much much faster than the old PIL implementation. The texture generation happens almost entirely on
+    the GPU now.
+  * As part of this move, the ``arcade.text_pillow`` module has been removed completely, and the ``arcade.text_pyglet`` module has been re-named
+    just be ``arcade.text``.
 
+* OpenGL
+
+  * Support for OpenGL ES 3.1 and 3.2. 3.2 is fully supported, 3.1 is only supported if the ``EXT_geometry_shader`` extension
+    is provided by the driver. This is part of the minimum spec in 3.2 so it is guaranteed to be there. This is the only optional
+    extension that Arcade needs to function with 3.1.
+
+    As an example, the Raspberry Pi 4b only supports OpenGL ES 3.1, however does provide this extension, so is fully compatible
+    with Arcade.
+  * Textures now support immutable storage
+  * Arcade is now using pyglet's projection and view matrix.
+    All functions setting matrixes will update the pyglet window's
+    ``view`` and ``projection`` attributes. Arcade shaders is also
+    using pyglet's ``WindowBlock`` UBO.
+  * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
+    when the extension is available.
+  * Fixed many implicit type conversions in the shader code for wider support.
+
+* :py:class:`~arcade.TileMap`
+
+  * Added support Tiles defined as a sub-rectangle of an image. See Tiled 1.9 Release notes for more information on this feature.
+  * Changed the ``Sprite.properties`` key "type" to "class" to stay in line with Tiled's re-naming of this key in their API.
+  * You can now define a custom texture atlas for SpriteLists created in a TileMap. You can provide a map default to the ``texture_atlas``
+    parameter of the :py:class:`~arcade.Tilemap` class or the :py:func:`~arcade.load_tilemap` function. This will be used by default on all
+    layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the ``layer_options`` dictionary.
+    If no custom atlas is provided, then the global default atlas will be used(This is how it works pre Arcade 2.7).
 
 Version 2.6.15
 --------------

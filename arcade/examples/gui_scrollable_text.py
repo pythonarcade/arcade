@@ -1,3 +1,7 @@
+"""
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_scrollable_text
+"""
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIInputText, UITextArea

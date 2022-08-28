@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.11_ladders_and_more
 """
 import arcade
 
@@ -199,7 +201,7 @@ class MyGame(arcade.Window):
 
         self.camera.move_to(player_centered, 0.2)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """Movement and game logic"""
         # Move the player with the physics engine
         self.physics_engine.update()

@@ -164,9 +164,12 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
         line up with the pixels on the screen. Otherwise, tiled pixel art
         may not line up well during render, creating rectangle artifacts.
 
-    .. note:: ``Window.on_resize`` calls ``set_viewport`` by default.
-              If you want to set your own custom viewport during the
-              game, you may need to over-ride the ``on_resize`` method.
+    .. note:: :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              calls ``set_viewport`` by default. If you want to set your
+              own custom viewport during the game, you may need to
+              override the
+              :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              method.
 
     .. note:: For more advanced users
 
@@ -252,19 +255,19 @@ def run():
     commands on the main program. This is a blocking function starting pyglet's event loop
     meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
     """
+
     window = get_window()
 
     # Used in some unit test
     if os.environ.get('ARCADE_TEST'):       
-        if window:
-            window.on_update(1 / 60)
-            window.on_draw()
+        window.on_update(window._update_rate)
+        window.on_draw()
     elif window.headless:
         # We are entering headless more an will emulate an event loop
         import time
         # Ensure the initial delta time is not 0 to be
         # more in line with how a normal window works.
-        delta_time = 1 / 60
+        delta_time = window._draw_rate
         last_time = time.perf_counter()
 
         # As long as we have a context --
@@ -286,7 +289,7 @@ def run():
         import sys
         if sys.platform != 'win32':
             # For non windows platforms, just do pyglet run
-            pyglet.app.run()
+            pyglet.app.run(window._draw_rate)
         else:
             # Ok, some Windows platforms have a timer resolution > 15 ms. That can
             # drop our FPS to 32 FPS or so. This reduces resolution so we can keep
@@ -320,7 +323,7 @@ def run():
                 winmm.timeEndPeriod(msecs)
 
             with timer_resolution(msecs=10):
-                pyglet.app.run()
+                pyglet.app.run(window._draw_rate)
 
 
 def exit():

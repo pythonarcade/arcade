@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.07_coins_and_sound
 """
 import arcade
 

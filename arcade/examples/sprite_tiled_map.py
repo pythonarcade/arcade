@@ -60,11 +60,26 @@ class MyGame(arcade.Window):
         self.game_over = False
         self.last_time = None
         self.frame_count = 0
-        self.fps_message = None
 
         # Cameras
         self.camera = None
         self.gui_camera = None
+
+        # Text
+        self.fps_text = arcade.Text(
+            "",
+            start_x=10,
+            start_y=40,
+            color=arcade.color.BLACK,
+            font_size=14
+        )
+        self.distance_text = arcade.Text(
+            "0.0",
+            start_x=10,
+            start_y=20,
+            color=arcade.color.BLACK,
+            font_size=14,
+        )
 
     def setup(self):
         """Set up the game and initialize the variables."""
@@ -142,18 +157,11 @@ class MyGame(arcade.Window):
 
         # Calculate FPS if conditions are met
         if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
+            fps = round(1.0 / (time.time() - self.last_time) * 60)
+            self.fps_text.text = f"FPS: {fps:3d}"
 
         # Draw FPS text
-        if self.fps_message:
-            arcade.draw_text(
-                self.fps_message,
-                10,
-                40,
-                arcade.color.BLACK,
-                14
-            )
+        self.fps_text.draw()
 
         # Get time for every 60 frames
         if self.frame_count % 60 == 0:
@@ -165,10 +173,8 @@ class MyGame(arcade.Window):
 
         # Get distance and draw text
         distance = self.player_sprite.right
-        output = f"Distance: {distance}"
-        arcade.draw_text(
-            output, 10, 20, arcade.color.BLACK, 14
-        )
+        self.distance_text.text = f"Distance: {distance}"
+        self.distance_text.draw()
 
         # Draw game over text if condition met
         if self.game_over:

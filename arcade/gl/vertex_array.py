@@ -15,13 +15,14 @@ index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSI
 
 
 class VertexArray:
-    """Wrapper for Vertex Array Objects (VAOs).
+    """
+    Wrapper for Vertex Array Objects (VAOs).
+
     This objects should not be instantiated from user code.
     Use :py:class:`arcade.gl.Geometry` instead. It will create VAO instances for you
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
     """
-
     __slots__ = (
         "_ctx",
         "glo",
@@ -30,12 +31,10 @@ class VertexArray:
         "_ibo",
         "_index_element_size",
         "_index_element_type",
-        "_content",
         "_num_vertices",
         "__weakref__",
     )
 
-    # TODO: Resolve what VertexArray should actually store
     def __init__(
         self,
         ctx: "Context",
@@ -376,7 +375,7 @@ class Geometry:
 
     Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
 
-    :param Contex ctx: The context this object belongs to
+    :param Context ctx: The context this object belongs to
     :param list content: List of BufferDescriptions
     :param Buffer index_buffer: Index/element buffer
     :param int mode: The default draw mode
@@ -397,8 +396,8 @@ class Geometry:
         self,
         ctx: "Context",
         content: Optional[Sequence[BufferDescription]],
-        index_buffer: Buffer = None,
-        mode=None,
+        index_buffer: Optional[Buffer] = None,
+        mode: int = None,
         index_element_size: int = 4,
     ):
         self._ctx = ctx
@@ -406,13 +405,13 @@ class Geometry:
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
-        self._vao_cache = {}  # type: Dict[str, VertexArray]
-        self._num_vertices = -1
+        self._vao_cache: Dict[str, VertexArray] = {}
+        self._num_vertices: int = -1
         """
-        :param Contex ctx: The context this object belongs to
-        :param list content: List of BufferDescriptions
-        :param Buffer index_buffer: Index/element buffer
-        :param int mode: The default draw mode (optional)
+        :param Context ctx: The context this object belongs to
+        :param list content: (optional) List of BufferDescriptions
+        :param Buffer index_buffer: (optional) Index/element buffer
+        :param int mode: (optional) The default draw mode
         :param int index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
         """
         if self._index_buffer and self._index_element_size not in (1, 2, 4):
