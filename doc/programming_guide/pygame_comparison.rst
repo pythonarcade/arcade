@@ -25,8 +25,8 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - :ref:`API Docs<quick_index>`
      - `API Docs <https://www.pygame.org/docs/>`__
    * - Example code
-     - :ref:`Example Code<example-code>`
-     - `Example Code<https://github.com/pygame/pygame/tree/main/examples>`_
+     - :ref:`Arcade Examples<example-code>`
+     - `Pygame Examples <https://github.com/pygame/pygame/tree/main/examples>`_
    * - License
      - `MIT License`_
      - LGPL_
