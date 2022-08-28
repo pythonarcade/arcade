@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip wheel setuptools
-          python -m pip install pyogg
+          python -m pip install pyogg pymunk
       - name: wheel
         run: |
           python -m pip install -e .[dev]
