@@ -1,4 +1,4 @@
-name: test
+name: Windows self-hosted test
 
 on:
   push:
