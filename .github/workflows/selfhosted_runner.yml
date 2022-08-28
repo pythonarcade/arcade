@@ -23,6 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip wheel setuptools
+          python -m pip install pyogg
       - name: wheel
         run: |
           python -m pip install -e .[dev]
