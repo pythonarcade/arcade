@@ -128,9 +128,9 @@ def _do_intersect(p1, q1, p2, q2):
 
 # Returns true if the point p lies
 # inside the polygon[] with n vertices
-def is_point_in_polygon(x, y, points: list) -> bool:
+def is_point_in_polygon(x: float, y: float, polygon_point_list) -> bool:
     p = x, y
-    n = len(points)
+    n = len(polygon_point_list)
 
     # There must be at least 3 vertices
     # in polygon
@@ -150,23 +150,23 @@ def is_point_in_polygon(x, y, points: list) -> bool:
     while True:
         next_item = (i + 1) % n
 
-        if points[i][1] == p[1]:
+        if polygon_point_list[i][1] == p[1]:
             decrease += 1
 
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
         # segment from 'polygon[i]' to 'polygon[next]'
-        if (_do_intersect(points[i],
-                          points[next_item],
+        if (_do_intersect(polygon_point_list[i],
+                          polygon_point_list[next_item],
                           p, extreme)):
 
             # If the point 'p' is collinear with line
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
-            if _orientation(points[i], p,
-                            points[next_item]) == 0:
-                return not _on_segment(points[i], p,
-                                       points[next_item])
+            if _orientation(polygon_point_list[i], p,
+                            polygon_point_list[next_item]) == 0:
+                return not _on_segment(polygon_point_list[i], p,
+                                       polygon_point_list[next_item])
 
             count += 1
 
