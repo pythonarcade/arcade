@@ -77,10 +77,7 @@ def _on_segment(p: tuple, q: tuple, r: tuple) -> bool:
 # 1 --> Clockwise
 # 2 --> Counterclockwise
 def _orientation(p: tuple, q: tuple, r: tuple) -> int:
-    val = (((q[1] - p[1]) *
-            (r[0] - q[0])) -
-           ((q[0] - p[0]) *
-            (r[1] - q[1])))
+    val = (((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1])))
 
     if val == 0:
         return 0
