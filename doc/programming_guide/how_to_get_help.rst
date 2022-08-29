@@ -52,7 +52,8 @@ For other keyboard layouts, please
 
 .. _help-sharing-code-with-markdown-python:
 
-Once you have found your backtick key, you can format your code like this:
+Once you have found your backtick key, you can format your code like
+this:
 
 .. code-block:: markdown
 
@@ -61,20 +62,22 @@ Once you have found your backtick key, you can format your code like this:
     print("Do stuff!")
     ```
 
-If you want, you can click the button at the top right of the example box
+You can click the button at the top right of the example box
 above to copy this template to your clipboard. You can paste it into
-Discord's message box as below:
+Discord's message box as shown below:
 
 .. image:: ./images/discord_code_entry_desktop.png
-    :alt: The code block from above pasted into Discord's message entry field
+    :alt: The example code block from above pasted into Discord's
+          message entry field.
 
-To format your own code, delete the code between the first and last lines, then
-paste your own code in!
-
-.. _help-sharing-code-with-markdown-terminal:
+To format your own code, delete the code between the first and last
+lines, then paste your own code in!
 
 Terminal output works the same way, except you don't type ``python``
 after the three backticks on the first line:
+
+.. _help-sharing-code-with-markdown-terminal:
+
 
 .. code-block:: markdown
 
@@ -84,7 +87,8 @@ after the three backticks on the first line:
     ```
 
 .. image:: ./images/discord_terminal_entry_desktop.png
-    :alt: The terminal output from earlier pasted into Discord's message entry field
+    :alt: The example terminal output from above pasted into Discord's
+          message entry field.
 
 **Step 3: Post it!**
 
