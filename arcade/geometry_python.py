@@ -62,10 +62,7 @@ def are_polygons_intersecting(poly_a: PointList,
 # the function checks if point q lies
 # on line segment 'pr'
 def _on_segment(p: tuple, q: tuple, r: tuple) -> bool:
-    if ((q[0] <= max(p[0], r[0])) &
-            (q[0] >= min(p[0], r[0])) &
-            (q[1] <= max(p[1], r[1])) &
-            (q[1] >= min(p[1], r[1]))):
+    if ((q[0] <= max(p[0], r[0])) & (q[0] >= min(p[0], r[0])) & (q[1] <= max(p[1], r[1])) & (q[1] >= min(p[1], r[1]))):
         return True
 
     return False
