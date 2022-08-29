@@ -20,10 +20,8 @@ The Python Arcade Library
       <tr>
         <td>
            <h2>
-             <a class="reference external" href="get_started.html">
+             <a class="reference internal" href="programming_guide/get_started.html">
                <img alt="Get started here" src="_images/woman_sprinter.svg" width="48">
-             </a>
-             <a class="reference internal" href="get_started.html#get-started-here">
                <span class="std std-ref">Get Started Here</span>
              </a>
              <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
