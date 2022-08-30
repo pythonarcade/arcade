@@ -103,7 +103,7 @@ class Window(pyglet.window.Window):
             antialiasing = False
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
-        if sys.platform != "win32" and "raspi" in os.uname().nodename:
+        if sys.platform != "win32" and "rasp" in os.uname().nodename:
             gl_version = 3, 1
             gl_api = "gles"
 
