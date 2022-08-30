@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player
@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
@@ -55,6 +55,7 @@ class MyGame(arcade.Window):
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
+        self.player_list.append(self.player_sprite)
 
         # -- Set up the walls
         # Create a series of horizontal walls
@@ -113,6 +114,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.wall_list.draw()
         self.coin_list.draw()
+        self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
         """ Called whenever a key is pressed. """
