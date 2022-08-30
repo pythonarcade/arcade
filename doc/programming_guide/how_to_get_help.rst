@@ -207,10 +207,17 @@ using the
 `markdown formatting for terminal output <help-sharing-code-with-markdown-terminal>`_
 described earlier.
 
-If the output looks like the example below, you either haven't
-`installed arcade <installation-instructions>`_, or
-you need to activate your virtual environment:
+Output like the example below means that something is wrong:
 
 .. code-block:: console
 
     bash: arcade: command not found
+
+The likeliest explanations are:
+
+* Forgetting to activate your virtual environment
+* Not :ref:`installing arcade <installation-instructions>` successfully
+
+If you're confused and need help, that's ok. You can still
+`include the output <help-sharing-with-markdown-terminal>`_ as
+part of a request for help.
