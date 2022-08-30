@@ -94,19 +94,28 @@ lines, then paste your own code in!
 
 .. _help-sharing-with-markdown-terminal:
 
-Terminal output works the same way, except you don't type ``python``
-after the three backticks on the first line:
+Terminal output, such as error traceback, can be formatted in almost the
+exact same way. The difference is that you don't type ``python`` after
+the three backticks on the first line:
 
 .. code-block:: markdown
 
     ```
-    echo "an example command that prints this text to the terminal!"
-    an example command prints this text to the terminal!
+    Traceback (most recent call last):
+      File "/home/user/src/arcade/helpexample.py", line 34, in <module>
+        main()
+      File "/home/user/src/arcade/helpexample.py", line 29, in main
+        window.setup()
+      File "/home/user/src/arcade/helpexample.py", line 17, in setup
+        self.player_sprite = arcade.Sprite(img, 1.0)
+      File "/home/user/src/arcade/arcade/sprite.py", line 243, in __init__
+        self._texture = load_texture(
+      File "/home/user/src/arcade/arcade/texture.py", line 543, in load_texture
+        file_name = resolve_resource_path(file_name)
+      File "/home/user/src/arcade/arcade/resources/__init__.py", line 40, in resolve_resource_path
+        raise FileNotFoundError(f"Cannot locate resource : {path}")
+    FileNotFoundError: Cannot locate resource : my_player_image.png
     ```
-
-.. image:: ./images/discord_terminal_entry_desktop.png
-    :alt: The example terminal output from above pasted into Discord's
-          message entry field.
 
 **Step 3: Post it!**
 
