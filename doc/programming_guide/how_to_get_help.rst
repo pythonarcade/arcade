@@ -14,8 +14,8 @@ category in the channel list:
           an arrow pointing to the help channels.
 
 
-To get help, start by choosing an inactive help channel. Then provide
-the following information:
+To get help, start by choosing an inactive help channel. Then, do your
+best to provide the following information:
 
 #. A very short explanation of what you're trying to do
 #. The problem you're having, with any
@@ -25,7 +25,7 @@ the following information:
 #. Which :ref:`version of arcade <help-basic-environment-info>` you're
    using and how you installed it
 
-Here's an example of what that looks like:
+Here's an example as a series of Discord messages:
 
 .. figure:: ./images/discord_help_example.png
     :scale: 75%
