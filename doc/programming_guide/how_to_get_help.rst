@@ -126,9 +126,10 @@ For reporting bugs on GitHub, the same general formatting principles
 apply, but with a few differences.
 
 You will also have to click Submit new issue instead of pressing enter.
-For more information on GitHub issues and supported markdown syntax,
-please see the following links:
+Please see the following links for more information on reporting bugs,
+GitHub issues, and their supported markdown syntax:
 
+* `How to Report Bugs Effectively <https://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_
 * `GitHub issue creation documentation <https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue>`_
 * `GitHub general markdown guide <https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax>`_
 * `GitHub's code formatting documentation <https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#syntax-highlighting>`_
