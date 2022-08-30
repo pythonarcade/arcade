@@ -85,7 +85,7 @@ You can click the button at the top right of the example box
 above to copy this template to your clipboard. You can paste it into
 Discord's message box as shown below:
 
-.. image:: ./images/discord_code_entry_desktop.png
+.. figure:: ./images/discord_code_entry_desktop.png
     :alt: The example code block from above pasted into Discord's
           message entry field.
 
