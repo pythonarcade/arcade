@@ -3,18 +3,37 @@
 How to Get Help
 ===============
 
-The best place to get help is `the Discord server <https://discord.gg/ZjGDqMp>`_.
+The help channels on the
+`the Discord server <https://discord.gg/ZjGDqMp>`_ are the best place
+to get help. They are located under the HELP category, which is the 3rd
+category in the channel list:
 
-To get help effectively, you need to provide the following information
-about your project and development environment:
+.. figure:: ./images/discord_help_channels.png
+    :scale: 50%
+    :alt: A screenshot of the Discord server's channel categories with
+          an arrow pointing to the help channels.
 
-#. Your code, with proper formatting
-#. Any exceptions or errors (ex: ``IndexError``)
-#. How you :ref:`installed arcade <installation-instructions>` (``pip install arcade``, via git, etc)
-#. Your arcade version number
-#. Basic system information such as OS and Python version
 
-This page will explain how to get and share all of the above.
+To get help, start by choosing an inactive help channel. Then provide
+the following information:
+
+#. A very short explanation of what you're trying to do
+#. The problem you're having, with any
+   :ref:`error output formatted properly <help-sharing-with-markdown-terminal>`
+#. Your code, with
+   :ref:`proper formatting <help-sharing-with-markdown-python>`
+#. Which :ref:`version of arcade <help-basic-environment-info>` you're
+   using and how you installed it
+
+Here's an example of what that looks like:
+
+.. figure:: ./images/discord_help_example.png
+    :scale: 75%
+    :alt: An example of a good series of messages requesting help,
+          including all the point above.
+
+The rest of this page will explain how to format your messages like the
+example above.
 
 .. _help-sharing-code:
 
@@ -24,10 +43,10 @@ Sharing & Formatting Your Code
 To help you effectively, other people need to be able to see your code.
 There are two preferred ways of showing it to them:
 
-#. :ref:`Pasting into Discord <help-sharing-code-with-markdown>`
-#. :ref:`Using a code hosting service <help-sharing-code-with-hosting>`
+#. :ref:`Pasting into Discord <help-sharing-with-markdown-python>`
+#. :ref:`Using a code hosting service <help-sharing-with-code-hosting>`
 
-.. _help-sharing-code-with-markdown:
+.. _help-sharing-with-markdown:
 
 Formatting for Discord & Github Issues
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +69,7 @@ For other keyboard layouts, please
 
 **Step 2: Format & Paste**
 
-.. _help-sharing-code-with-markdown-python:
+.. _help-sharing-with-markdown-python:
 
 Once you have found your backtick key, you can format your code like
 this:
@@ -73,11 +92,10 @@ Discord's message box as shown below:
 To format your own code, delete the code between the first and last
 lines, then paste your own code in!
 
+.. _help-sharing-with-markdown-terminal:
+
 Terminal output works the same way, except you don't type ``python``
 after the three backticks on the first line:
-
-.. _help-sharing-code-with-markdown-terminal:
-
 
 .. code-block:: markdown
 
@@ -104,7 +122,7 @@ GitHub's markdown syntax, please see the following links:
 * `GitHub's code formatting documentation <https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#syntax-highlighting>`_
 
 
-.. _help-sharing-code-with-hosting:
+.. _help-sharing-with-code-hosting:
 
 Code Hosting
 ~~~~~~~~~~~~
