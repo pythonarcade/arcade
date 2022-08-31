@@ -3,10 +3,9 @@
 How to Get Help
 ===============
 
-The help channels on the
-`the Discord server <https://discord.gg/ZjGDqMp>`_ are the best place
-to get help. They are located under the HELP category, which is the 3rd
-category in the channel list:
+The best places to get help are the help channels on the
+`the Discord server <https://discord.gg/ZjGDqMp>`_. They are located
+in the 3rd category from the top in the channel list:
 
 .. figure:: ./images/discord_help_channels.png
     :scale: 50%
@@ -14,8 +13,13 @@ category in the channel list:
           an arrow pointing to the help channels.
 
 
-To get help, start by choosing an inactive help channel. Then, do your
-best to provide the following information:
+To get help, start by choosing an inactive help channel. Inactive means
+that the last message was sent a day or more ago. If all the help
+channels have been active in that time, choose the one in with the
+earliest last message.
+
+Once you have chosen a channel, do your best to provide the following
+information:
 
 #. A very short explanation of what you're trying to do
 #. The problem you're having, with any
@@ -25,7 +29,8 @@ best to provide the following information:
 #. Which :ref:`version of arcade <help-basic-environment-info>` you're
    using and how you installed it
 
-Here's an example as a series of Discord messages:
+Here's an example as a series of Discord messages (click or tap to
+enlarge):
 
 .. figure:: ./images/discord_help_example.png
     :scale: 75%
@@ -40,11 +45,13 @@ example above.
 Sharing & Formatting Your Code
 ------------------------------
 
-To help you effectively, other people need to be able to see your code.
-There are two preferred ways of showing it to them:
+Other people need to be able to see your code to help you. There are two
+preferred ways of showing it to them:
 
-#. :ref:`Pasting into Discord <help-sharing-with-markdown-python>`
+#. :ref:`Pasting into Discord <help-sharing-with-markdown-python>` for
+   small amounts of code
 #. :ref:`Using a code hosting service <help-sharing-with-code-hosting>`
+   for 1 or more files
 
 .. _help-sharing-with-markdown:
 
@@ -52,20 +59,20 @@ Formatting for Discord & Github Issues
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to format code and terminal output when posting it.
-Doing so helps other people understand what you've pasted.
+Formatting helps other people understand what you've pasted.
 
 Both Discord & GitHub issues use the same 3 steps below.
 
 **Step 1 : Find your Backtick Key**
 
-The \` characters below are not regular single quotes or apostrophes.
-They're called backticks.
+The \` characters below are not single quotes or apostrophes. They're
+called backticks.
 
-On standard US keyboards, the backtick key the same one used to type a
-tilda (`~`). You can find it to the left of the 1 key.
+On standard US keyboards, the backtick key is the same one used to type
+a tilda (`~`). You can find it to the left of the 1 key.
 
 For other keyboard layouts, please
-`see this StackOverflow answer <https://superuser.com/a/254077>`_.
+`see this StackExchange answer <https://superuser.com/a/254077>`_.
 
 **Step 2: Format & Paste**
 
@@ -81,16 +88,14 @@ this:
     print("Do stuff!")
     ```
 
-You can click the button at the top right of the example box
-above to copy this template to your clipboard. You can paste it into
+If you cannot type a backtick on your keyboard, you can copy the example
+above to your clipboard. For convenience, clicking the icon at the top
+right of the example box will copy it for you. You can paste it into
 Discord's message box as shown below:
 
 .. figure:: ./images/discord_code_entry_desktop.png
     :alt: The example code block from above pasted into Discord's
           message entry field.
-
-To format your own code, delete the code between the first and last
-lines, then paste your own code in!
 
 .. _help-sharing-with-markdown-terminal:
 
@@ -119,7 +124,7 @@ the three backticks on the first line:
 
 **Step 3: Post it!**
 
-On discord, you can now press enter to send your message like any
+On Discord, you can now press enter to send your message like any
 other formatted text.
 
 For reporting bugs on GitHub, the same general formatting principles
@@ -140,40 +145,37 @@ GitHub issues, and their supported markdown syntax:
 Code Hosting
 ~~~~~~~~~~~~
 
-Code hosting services will automatically format your code for you.
+Code hosting services provide a formatted web view of your code which
+you can share with a link.
 
-To share single files or code snippets without a signup, you can use
+To share code snippets or single files without a signup, you can use
 `the code pasting service <https://paste.pythondiscord.com/>`_
 provided by the `Python Discord <https://www.pythondiscord.com/>`_.
 If you're ok with signing up for something, there are also
 `GitHub Gists <https://docs.github.com/en/get-started/writing-on-github/editing-and-sharing-content-with-gists/creating-gists>`_.
-Afterwards, you can paste a link in discord or another chat application.
+Afterwards, you can paste a link in Discord or another chat application.
 
-For advanced users, a more complicated yet more effective way to share
-code is to use a git hosting service. This is an advanced topic that
-will take effort to learn, but it has many benefits. Some of them
+A more advanced way to share code is to use a git hosting service. It
+takes effort to learn how to use git, but it has many benefits. Some of them
 include:
 
-* Easy backup
+* Easy backup & undo
 * Easier collaboration with others
 * Allow people to view your entire project's source to help you better
-
 
 Popular Git hosting options include:
 
 * `GitHub <https://github.com>`_
 * `GitLab <https://gitlab.com>`_
 
-These services will usually automatically provide formatting as part of
-their web interfaces.
-
 .. _help-basic-environment-info:
 
 Arcade Version & Basic Environment Info
 ---------------------------------------
 
-This section assumes that you've installed arcade by following the
-:ref:`installation-instructions`.
+This section assumes you have
+:ref:`installed arcade <installation-instructions>` and activated your
+virtual environment.
 
 To get basic information about your current arcade version and
 environment, run this from within your development environment:
@@ -199,12 +201,11 @@ The output should should look something like this:
     platform: linux
 
 
-It's ok if the output looks different from the example above as long as
-it has entries for all of the same fields. If it doesn't look right, that's
-still useful to people helping.
+It's ok if the output looks different from the example above. The second
+half of each line may change to reflect your arcade version, hardware,
+and operating system.
 
-Either way, you can copy and paste the output into Discord or GitHub
-using the
+You can copy and paste the output into Discord or GitHub using the
 `markdown formatting for terminal output <help-sharing-code-with-markdown-terminal>`_
 described earlier.
 
@@ -214,11 +215,11 @@ Output like the example below means that something is wrong:
 
     bash: arcade: command not found
 
-The likeliest explanations are:
+You should still `include the output <help-sharing-with-markdown-terminal>`_
+as part of a request for help.
+
+If you want to try fixing the problem yourself before getting help,
+the likeliest explanations for the error message above are:
 
 * Forgetting to activate your virtual environment
 * Not :ref:`installing arcade <installation-instructions>` successfully
-
-If you're confused and need help, that's ok. You can still
-`include the output <help-sharing-with-markdown-terminal>`_ as
-part of a request for help.
