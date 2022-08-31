@@ -16,6 +16,12 @@ If you are familiar with Python package management you can just
 "pip install" Arcade.
 For more detailed instructions see :ref:`installation-instructions`.
 
+Getting Help
+------------
+
+If you get stuck, you can always ask for help! See the page on
+:ref:`how-to-get-help` for more information.
+
 Starting Tutorials
 ------------------
 
