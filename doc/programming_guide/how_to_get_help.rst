@@ -63,7 +63,8 @@ Formatting helps other people understand what you've pasted.
 
 Both Discord & GitHub issues use the same 3 steps below.
 
-**Step 1 : Find your Backtick Key**
+Step 1 : Find your Backtick Key
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The \` characters below are not single quotes or apostrophes. They're
 called backticks.
@@ -74,9 +75,15 @@ a tilda (`~`). You can find it to the left of the 1 key.
 For other keyboard layouts, please
 `see this StackExchange answer <https://superuser.com/a/254077>`_.
 
-**Step 2: Format & Paste**
+Step 2: Format & Paste
+^^^^^^^^^^^^^^^^^^^^^^
+
+Formatting Python code is nearly identical to formatting terminal output.
 
 .. _help-sharing-with-markdown-python:
+
+Formatting Code
+"""""""""""""""
 
 Once you have found your backtick key, you can format your code like
 this:
@@ -98,6 +105,9 @@ Discord's message box as shown below:
           message entry field.
 
 .. _help-sharing-with-markdown-terminal:
+
+Formatting Terminal Output
+""""""""""""""""""""""""""
 
 Terminal output, such as error traceback, can be formatted in almost the
 exact same way. The difference is that you don't type ``python`` after
@@ -122,7 +132,8 @@ the three backticks on the first line:
     FileNotFoundError: Cannot locate resource : my_player_image.png
     ```
 
-**Step 3: Post it!**
+Step 3: Post it!
+^^^^^^^^^^^^^^^^
 
 On Discord, you can now press enter to send your message like any
 other formatted text.
