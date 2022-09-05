@@ -3,12 +3,12 @@ Pymunk Physics Engine
 """
 import logging
 import math
-from typing import Callable, Dict, List, Optional, Union, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import pymunk
+from pyglet.math import Vec2
 
 from arcade import Sprite
-from pyglet.math import Vec2
 
 LOG = logging.getLogger(__name__)
 
@@ -263,6 +263,12 @@ class PymunkPhysicsEngine:
         if physics_object.body is None:
             raise PymunkException("Tried to set a position, but this physics object has no 'body' set.")
         physics_object.body.position = position
+
+    def set_rotation(self, sprite: Sprite, rotation: float):
+        physics_object = self.get_physics_object(sprite)
+        if physics_object.body is None:
+            raise PymunkException("Tried to set a rotation, but this physics object has no 'body' set.")
+        physics_object.body.angle = math.radians(rotation)
 
     def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
