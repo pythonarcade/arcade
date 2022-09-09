@@ -108,6 +108,7 @@ class Window(pyglet.window.Window):
                 config = pyglet.gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
+                    opengl_api="gl",
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
@@ -124,6 +125,7 @@ class Window(pyglet.window.Window):
             config = pyglet.gl.Config(
                 major_version=3,
                 minor_version=3,
+                opengl_api="gl",
                 double_buffer=True,
             )
         try:

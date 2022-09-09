@@ -1206,9 +1206,12 @@ class Limits:
 
     def get_float(self, enum: gl.GLenum) -> float:
         """Get a float limit"""
-        value = c_float()
-        gl.glGetFloatv(enum, value)
-        return value.value
+        try:
+            value = c_float()
+            gl.glGetFloatv(enum, value)
+            return value.value
+        except Exception:
+            return 0.0
 
     def get_str(self, enum: gl.GLenum) -> str:
         """Get a string limit"""
