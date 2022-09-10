@@ -43,7 +43,7 @@ def run_examples(indices_in_range, index_skip_list):
         print(f"=================== Example {idx + 1:3} of {len(examples)}: {example}")
         # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
 
-        cmd = 'venv/bin/python -m ' + example
+        cmd = 'python -m ' + example
         # print(cmd)
         result = subprocess.check_output(cmd, shell=True)
         if result:
