@@ -37,6 +37,3 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
-      - name: Run examples
-        run: |
-          python -m tests\test_examples\run_all_examples.py
