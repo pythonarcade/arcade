@@ -308,7 +308,7 @@ class PymunkPhysicsEngine:
 
         def _f3(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            pre_handler(sprite_a, sprite_b, arbiter, space, data)
+            return pre_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f4(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
