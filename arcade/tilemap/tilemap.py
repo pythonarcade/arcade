@@ -48,8 +48,10 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
         width = tile.tileset.tile_width
         height = tile.tileset.tile_height
     else:
-        width = tile.image_width
-        height = tile.image_height
+        image_x = tile.x
+        image_y = tile.y
+        width = tile.width
+        height = tile.height
 
     return image_x, image_y, width, height
 
@@ -430,8 +432,8 @@ class TileMap:
             for key, value in tile.properties.items():
                 my_sprite.properties[key] = value
 
-        if tile.type:
-            my_sprite.properties["type"] = tile.type
+        if tile.class_:
+            my_sprite.properties["type"] = tile.class_
 
         # Add tile ID to sprite properties
         my_sprite.properties["tile_id"] = tile.id
@@ -829,8 +831,8 @@ class TileMap:
                 if cur_object.properties:
                     my_sprite.properties.update(cur_object.properties)
 
-                if cur_object.type:
-                    my_sprite.properties["type"] = cur_object.type
+                if cur_object.class_:
+                    my_sprite.properties["type"] = cur_object.class_
 
                 if cur_object.name:
                     my_sprite.properties["name"] = cur_object.name
@@ -909,7 +911,7 @@ class TileMap:
 
             if shape:
                 tiled_object = TiledObject(
-                    shape, cur_object.properties, cur_object.name, cur_object.type
+                    shape, cur_object.properties, cur_object.name, cur_object.class_
                 )
 
                 if not objects_list:
