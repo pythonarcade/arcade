@@ -1,16 +1,14 @@
 """
 Drawing text with pyglet label
 """
-
-import math
 from pathlib import Path
-from typing import Any, Tuple, Union, Optional
+from typing import Any, Optional, Tuple, Union
+
+import pyglet
 
 import arcade
-import pyglet
 from arcade.arcade_types import Color, Point
 from arcade.draw_commands import get_four_byte_color
-from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
 
 
@@ -81,7 +79,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     return font_name
 
 
-def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None:
+def _draw_label(label: pyglet.text.Label) -> None:
     """
 
     Helper for drawing pyglet labels with rotation within arcade.
@@ -94,25 +92,8 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
     """
     window = arcade.get_window()
 
-    # execute view matrix magic to rotate cleanly
-    if rotation:
-        angle_radians = math.radians(rotation)
-        x = label.x
-        y = label.y
-        # Create a matrix translating the label to 0,0
-        # then rotating it and then move it back
-        r_view = Mat4.from_rotation(angle_radians, (0, 0, 1))
-        t1_view = Mat4.from_translation((-x, -y, 0))
-        t2_view = Mat4.from_translation((x, y, 0))
-        final_view = t1_view @ r_view @ t2_view
-        window.view = final_view
-
     with window.ctx.pyglet_rendering():
         label.draw()
-
-    # Reset the view matrix
-    if rotation:
-        window.view = Mat4()
 
 
 class Text:
@@ -198,7 +179,9 @@ class Text:
         anchor_x: str = "left",
         anchor_y: str = "baseline",
         multiline: bool = False,
-        rotation: float = 0
+        rotation: float = 0,
+        batch: Optional[pyglet.graphics.Batch] = None,
+        group: Optional[pyglet.graphics.Group] = None
     ):
         """Build a text object"""
 
@@ -222,9 +205,27 @@ class Text:
             align=align,
             bold=bold,
             italic=italic,
-            multiline=multiline
+            multiline=multiline,
+            rotation=rotation,
+            batch=batch,
+            group=group
         )
-        self.rotation = rotation
+
+    @property
+    def batch(self) -> pyglet.graphics.Batch:
+        return self._label.batch
+
+    @batch.setter
+    def batch(self, batch: pyglet.graphics.Batch):
+        self._label.batch = batch
+
+    @property
+    def group(self) -> pyglet.graphics.Group:
+        return self._label.group
+
+    @group.setter
+    def group(self, group: pyglet.graphics.Group):
+        self._label.group = group
 
     @property
     def value(self) -> str:
@@ -333,6 +334,14 @@ class Text:
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
         self._label.anchor_y = anchor_y
+
+    @property
+    def rotation(self) -> float:
+        return self._label.rotation
+
+    @rotation.setter
+    def rotation(self, rotation: float):
+        self._label.rotation = rotation
 
     @property
     def color(self) -> Color:
@@ -486,7 +495,7 @@ class Text:
             :ref:`sprite_move_scrolling`.
 
         """
-        _draw_label_with_rotation(self._label, self.rotation)
+        _draw_label(self._label)
 
     def draw_debug(    
         self,
@@ -516,7 +525,7 @@ class Text:
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
 
-        _draw_label_with_rotation(self._label, self.rotation)
+        _draw_label(self._label)
 
     @property
     def position(self) -> Point:
@@ -608,12 +617,12 @@ def create_text_sprite(
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
-        fbo.clear()
+        fbo.clear((0, 0, 0, 255))
         text_object.draw()
 
     return arcade.Sprite(
         center_x=text_object.right - (size[0] / 2),
-        center_y=text_object.top - (size[1] / 2),
+        center_y=text_object.top,
         texture=texture,
     )
 
@@ -792,7 +801,7 @@ def draw_text(
 
     color = get_four_byte_color(color)
     # Cache the states that are expensive to change
-    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}"
+    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     cache = arcade.get_window().ctx.pyglet_label_cache
     label = cache.get(key)
     if align != "center" and align != "left" and align != "right":
@@ -818,6 +827,7 @@ def draw_text(
             bold=bold,
             italic=italic,
             multiline=multiline,
+            rotation=rotation
         )
         cache[key] = label
 
@@ -828,5 +838,7 @@ def draw_text(
         label.position = start_x, start_y
     if label.color != color:
         label.color = color
+    if label.rotation != rotation:
+        label.rotation = rotation
 
-    _draw_label_with_rotation(label, rotation)
+    _draw_label(label)
