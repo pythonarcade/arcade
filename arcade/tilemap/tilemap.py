@@ -771,6 +771,8 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
+        shape = None
+
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
             if isinstance(cur_object, pytiled_parser.tiled_object.Tile):

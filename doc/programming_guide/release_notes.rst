@@ -43,12 +43,14 @@ Featured Updates
 ~~~~~~~~~~~~~~~~
 
 * Arcade now supports OpenGL ES 3.1/3.2 and have been
-  tested on the raspberry pi 4. Any model using the Cortex-A72
-  cpu should work. Note that you need fairly new mesa drivers
+  tested on the Raspberry Pi 4. Any model using the Cortex-A72
+  CPU should work. Note that you need fairly new Mesa drivers
   to get the new V3D drivers.
 * Rotation order changed to clockwise
 * Arcade now supports mixing pyglet and arcade drawing meaning
-  you can for example use pyglet batches.
+  you can for example use pyglet batches, which can draw thousands
+  and thousands of pyglet objects with the cost and performance time
+  of only a few.
 * Added a new system for handling background textures (ADD MORE INFO)
 
 Changes
