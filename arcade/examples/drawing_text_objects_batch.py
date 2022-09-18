@@ -1,9 +1,14 @@
 """
-Example showing how to draw text to the screen using Text objects.
-This is much faster than using draw_text
+This is the same as the examples for drawing text using the one-off draw_text function
+as well as the Text objects example. This takes it one step further though. Here we are
+creating Text objects, and then adding them to a Pyglet Batch object, and drawing them
+all with one draw command.
+
+Using this method, we can draw thousands and thousands of text objects with nearly the
+same cost as drawing just one Text object directly.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.drawing_text_objects
+python -m arcade.examples.drawing_text_objects_batch
 """
 import arcade
 import pyglet.graphics
