@@ -27,10 +27,8 @@ def are_polygons_intersecting(poly_a: PointList,
     shapely_polygon_a = Polygon(poly_a)
     shapely_polygon_b = Polygon(poly_b)
 
-    r2 = False
     r1 = shapely_polygon_a.intersects(shapely_polygon_b)
-    if r1:
-        r2 = shapely_polygon_a.touches(shapely_polygon_b)
+    r2 = shapely_polygon_a.touches(shapely_polygon_b) if r1 else False
     return r1 and not r2
 
 

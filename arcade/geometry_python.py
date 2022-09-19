@@ -78,10 +78,7 @@ def _orientation(p: tuple, q: tuple, r: tuple) -> int:
 
     if val == 0:
         return 0
-    if val > 0:
-        return 1  # Collinear
-    else:
-        return 2  # Clock or counterclock
+    return 1 if val > 0 else 2
 
 
 def _do_intersect(p1, q1, p2, q2):

@@ -66,8 +66,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     color_list = [color, color, color, color]
     triangle_point_list = points[1], points[0], points[2], points[3]
-    shape = create_triangles_filled_with_colors(triangle_point_list, color_list)
-    return shape
+    return create_triangles_filled_with_colors(triangle_point_list, color_list)
 
 
 def create_line_generic_with_colors(point_list: PointList,
@@ -128,13 +127,7 @@ def create_line_generic(point_list: PointList,
     just changing the OpenGL type for the line drawing.
     """
     colors = [get_four_byte_color(color)] * len(point_list)
-    shape = create_line_generic_with_colors(
-        point_list,
-        colors,
-        shape_mode,
-        line_width)
-
-    return shape
+    return create_line_generic_with_colors(point_list, colors, shape_mode, line_width)
 
 
 def create_line_strip(point_list: PointList,
@@ -153,22 +146,21 @@ def create_line_strip(point_list: PointList,
     """
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
-    else:
-        triangle_point_list: List[Point] = []
-        new_color_list: List[Color] = []
-        for i in range(1, len(point_list)):
-            start_x = point_list[i - 1][0]
-            start_y = point_list[i - 1][1]
-            end_x = point_list[i][0]
-            end_y = point_list[i][1]
-            color1 = color
-            color2 = color
-            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-            new_color_list += color1, color2, color1, color2
-            triangle_point_list += points[1], points[0], points[2], points[3]
 
-        shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-        return shape
+    triangle_point_list: List[Point] = []
+    new_color_list: List[Color] = []
+    for i in range(1, len(point_list)):
+        start_x = point_list[i - 1][0]
+        start_y = point_list[i - 1][1]
+        end_x = point_list[i][0]
+        end_y = point_list[i][1]
+        color1 = color
+        color2 = color
+        points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+        new_color_list += color1, color2, color1, color2
+        triangle_point_list += points[1], points[0], points[2], points[3]
+
+    return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
 
 def create_line_loop(point_list: PointList,
@@ -208,22 +200,20 @@ def create_lines_with_colors(point_list: PointList,
 
     if line_width == 1:
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
-    else:
+    triangle_point_list: List[Point] = []
+    new_color_list: List[Color] = []
+    for i in range(1, len(point_list), 2):
+        start_x = point_list[i - 1][0]
+        start_y = point_list[i - 1][1]
+        end_x = point_list[i][0]
+        end_y = point_list[i][1]
+        color1 = color_list[i - 1]
+        color2 = color_list[i]
+        points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+        new_color_list += color1, color1, color2, color2
+        triangle_point_list += points[1], points[0], points[2], points[3]
 
-        triangle_point_list: List[Point] = []
-        new_color_list: List[Color] = []
-        for i in range(1, len(point_list), 2):
-            start_x = point_list[i - 1][0]
-            start_y = point_list[i - 1][1]
-            end_x = point_list[i][0]
-            end_y = point_list[i][1]
-            color1 = color_list[i - 1]
-            color2 = color_list[i]
-            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-            new_color_list += color1, color1, color2, color2
-            triangle_point_list += points[1], points[0], points[2], points[3]
-
-        return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
+    return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
 
 def create_polygon(point_list: PointList,
@@ -347,12 +337,7 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
         x3, y3 = rotate_point(x3, y3, center_x, center_y, tilt_angle)
         x4, y4 = rotate_point(x4, y4, center_x, center_y, tilt_angle)
 
-    data = [(x1, y1),
-            (x2, y2),
-            (x3, y3),
-            (x4, y4)]
-
-    return data
+    return [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
 
 
 def create_rectangle(center_x: float, center_y: float, width: float,
@@ -382,7 +367,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
 
     if filled:
-        shape_mode = gl.GL_TRIANGLE_STRIP
         data[-2:] = reversed(data[-2:])
     else:
 
@@ -406,15 +390,13 @@ def create_rectangle(center_x: float, center_y: float, width: float,
             data = point_list_2
 
         border_width = 1
-        shape_mode = gl.GL_TRIANGLE_STRIP
+            # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
-        # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+            # shape_mode = gl.GL_LINE_STRIP
+            # data.append(data[0])
 
-        # shape_mode = gl.GL_LINE_STRIP
-        # data.append(data[0])
-
-    shape = create_line_generic(data, color, shape_mode, border_width)
-    return shape
+    shape_mode = gl.GL_TRIANGLE_STRIP
+    return create_line_generic(data, color, shape_mode, border_width)
 
 
 def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:

@@ -20,16 +20,12 @@ Classic A-star algorithm for path finding.
 
 def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,
-                     blocking_sprites: SpriteList)\
-        -> bool:
+                     blocking_sprites: SpriteList) -> bool:
     original_pos = moving_sprite.position
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
     moving_sprite.position = original_pos
-    if len(hit_list) > 0:
-        return True
-    else:
-        return False
+    return len(hit_list) > 0
 
 
 def _heuristic(start: Point, goal: Point):
@@ -60,11 +56,7 @@ class _AStarGraph(object):
                  bottom: int,
                  top: int,
                  diagonal_movement: bool):
-        if barriers is set:
-            self.barriers = barriers
-        else:
-            self.barriers = set(barriers)
-
+        self.barriers = barriers if barriers is set else set(barriers)
         self.left = left
         self.right = right
         self.top = top
@@ -264,10 +256,4 @@ def astar_calculate_path(start_point: Point,
     graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)  # type: ignore
     result = _AStarSearch(mod_start, mod_end, graph)
 
-    if result is None:
-        return None
-
-    # Currently 'result' is in grid locations. We need to convert them to pixel
-    # locations.
-    revised_result = [_expand(p, grid_size) for p in result]
-    return revised_result
+    return None if result is None else [_expand(p, grid_size) for p in result]
