@@ -2,11 +2,15 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function(event) {
-        $('#quickapi').DataTable( {
+        $('table#quickapi').DataTable( {
           "paging":   false,
           "dom": '<"bottom"flp><"clear">'
         } );
-        $('#quickapigui').DataTable( {
+        $('table#quickapigui').DataTable( {
+          "paging":   false,
+          "dom": '<"bottom"flp><"clear">'
+        } );
+        $('table#tilemap').DataTable( {
           "paging":   false,
           "dom": '<"bottom"flp><"clear">'
         } );

@@ -41,3 +41,12 @@ click the easy-to-miss gear icon and "Add"
 
 You should get a warning at the top of the screen that 'arcade' is not installed.
 Go ahead and install it. Then try running the starting template.
+
+Sound Support
+-------------
+
+Support for ``.ogg`` Ogg Vorbis files and ``mp3`` files
+can be added via `HomeBrew <https://brew.sh/>`_ with:
+
+``brew install ffmpeg``
+

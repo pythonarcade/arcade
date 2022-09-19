@@ -186,10 +186,22 @@ class IndicatorBar:
 class MyGame(arcade.Window):
     def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+        # Create sprite lists
         self.bullet_list = arcade.SpriteList()
         self.bar_list = arcade.SpriteList()
+        self.player_sprite_list = arcade.SpriteList()
+        self.enemy_sprite_list = arcade.SpriteList()
+
+        # Create player sprite
         self.player_sprite = Player(self.bar_list)
+        self.player_sprite_list.append(self.player_sprite)
+
+        # Create enemy Sprite
         self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
+        self.enemy_sprite_list.append(self.enemy_sprite)
+
+        # Create text objects
         self.top_text: arcade.Text = arcade.Text(
             "Dodge the bullets by moving the mouse!",
             self.width // 2,
@@ -219,8 +231,8 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw all the sprites
-        self.player_sprite.draw()
-        self.enemy_sprite.draw()
+        self.player_sprite_list.draw()
+        self.enemy_sprite_list.draw()
         self.bullet_list.draw()
         self.bar_list.draw()
 
