@@ -307,9 +307,7 @@ class SectionManager:
 
     def get_section_by_name(self, name: str) -> Optional[Section]:
         """ Returns the first section with the given name """
-        sections = [section for section in self.sections if
-                    section.name == name]
-        if sections:
+        if sections := [section for section in self.sections if section.name == name]:
             return sections[0]
         return None
 
