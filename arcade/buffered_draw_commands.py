@@ -200,7 +200,7 @@ def create_lines_with_colors(point_list: PointList,
 
     if line_width == 1:
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
-    
+
     triangle_point_list: List[Point] = []
     new_color_list: List[Color] = []
     for i in range(1, len(point_list), 2):

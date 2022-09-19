@@ -26,8 +26,10 @@ def calculate_hit_box_points_simple(image: Image) -> PointList:
     # Convert the image into one channel alpha since we don't care about RGB values
     image = image.getchannel("A")
     bbox = image.getbbox()
+    # If there is no bounding box the image is empty
     if bbox is None:
         return []
+
     left_border, top_border, right_border, bottom_border = bbox
     right_border -= 1
     bottom_border -= 1
