@@ -715,10 +715,8 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     if left > right:
         raise AttributeError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
 
-
     if bottom > top:
         raise AttributeError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
-
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2

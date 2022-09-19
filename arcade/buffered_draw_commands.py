@@ -391,10 +391,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
             data = point_list_2
 
         border_width = 1
-            # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
-
-            # shape_mode = gl.GL_LINE_STRIP
-            # data.append(data[0])
 
     shape_mode = gl.GL_TRIANGLE_STRIP
     return create_line_generic(data, color, shape_mode, border_width)

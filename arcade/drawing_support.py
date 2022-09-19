@@ -182,7 +182,6 @@ def color_from_hex_string(code: str) -> RGBA:
     elif len(code) == 8:
         return int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
 
-
     raise ValueError(f"Improperly formatted color: '{code}'")
 
 
