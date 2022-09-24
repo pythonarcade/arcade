@@ -19,6 +19,11 @@ Version 2.6.16
 * Update pymunk physics engine to return pre handler (`#1322 <https://github.com/pythonarcade/arcade/issues/1322>`_)
 * Bump Pyglet version to 2.0dev23
 * Few PEP-8 fixes
+* Fix perspective example
+
+*Note:* Development continues on version 2.7, which will be another leap
+forward in Arcade development. Feel free to check out the 'development' branch
+for the 2.7 changes.
 
 Version 2.6.15
 --------------
