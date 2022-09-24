@@ -59,7 +59,7 @@ class Perspective(arcade.Window):
         )
 
         # # Matrix for perspective projection
-        self.proj = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=75)
+        self.proj = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
         # # Configure the projection in the shader
         self.program["projection"] = self.proj
 
@@ -136,7 +136,7 @@ class Perspective(arcade.Window):
 
     def on_resize(self, width: float, height: float):
         super().on_resize(width, height)
-        self.program["projection"] = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=75)
+        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
 
 
 Perspective().run()
