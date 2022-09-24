@@ -1017,11 +1017,7 @@ class Sprite:
 
     @visible.setter
     def visible(self, value: bool):
-        if value:
-            self._alpha = 255
-        else:
-            self._alpha = 0
-
+        self._alpha = 255 if value else 0
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1402,7 +1398,7 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     # print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
-    for frame in range(0, image_object.n_frames):
+    for frame in range(image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
         image = image_object.convert("RGBA")

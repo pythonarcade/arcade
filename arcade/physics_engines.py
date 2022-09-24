@@ -282,10 +282,7 @@ class PhysicsEnginePlatformer:
         self.walls: List[SpriteList]
 
         if ladders:
-            if isinstance(ladders, SpriteList):
-                self.ladders = [ladders]
-            else:
-                self.ladders = list(ladders)
+            self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self.ladders = None
 
@@ -298,10 +295,7 @@ class PhysicsEnginePlatformer:
             self.platforms = []
 
         if walls:
-            if isinstance(walls, SpriteList):
-                self.walls = [walls]
-            else:
-                self.walls = list(walls)
+            self.walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
             self.walls = []
 

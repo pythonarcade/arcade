@@ -99,10 +99,7 @@ class Camera:
 
     @anchor.setter
     def anchor(self, anchor: Optional[Tuple[float, float]]):
-        if anchor is None:
-            self._anchor = None
-        else:
-            self._anchor = anchor[0], anchor[1]
+        self._anchor = None if anchor is None else (anchor[0], anchor[1])
 
     def update(self):
         """

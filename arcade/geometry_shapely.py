@@ -31,6 +31,7 @@ def are_polygons_intersecting(poly_a: PointList,
     r1 = shapely_polygon_a.intersects(shapely_polygon_b)
     if r1:
         r2 = shapely_polygon_a.touches(shapely_polygon_b)
+
     return r1 and not r2
 
 
