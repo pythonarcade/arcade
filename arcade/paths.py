@@ -256,4 +256,10 @@ def astar_calculate_path(start_point: Point,
     graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)  # type: ignore
     result = _AStarSearch(mod_start, mod_end, graph)
 
-    return None if result is None else [_expand(p, grid_size) for p in result]
+    if result is None:
+        return None
+
+    # Currently 'result' is in grid locations. We need to convert them to pixel
+    # locations.
+    revised_result = [_expand(p, grid_size) for p in result]
+    return revised_result

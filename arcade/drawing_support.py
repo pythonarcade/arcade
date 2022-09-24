@@ -107,7 +107,7 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float]:
     :param Color color: Three or four byte tuple
     :return: Three floats as a RGB tuple
     """
-    if len(color) in {3, 4}:
+    if len(color) in (3, 4):
         return color[0] / 255, color[1] / 255, color[2] / 255  # type: ignore
     else:
         raise ValueError("This isn't a 3 or 4 byte color")

@@ -1507,4 +1507,8 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     :return: Distance
     :rtype: float
     """
-    return math.sqrt((sprite1.center_x - sprite2.center_x) ** 2 + (sprite1.center_y - sprite2.center_y) ** 2)
+    distance = math.sqrt(
+        (sprite1.center_x - sprite2.center_x) ** 2
+        + (sprite1.center_y - sprite2.center_y) ** 2
+    )
+    return distance

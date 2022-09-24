@@ -179,7 +179,8 @@ def get_fps(frame_count: int = 60) -> float:
 
     start_time = _frame_times[-frame_count]
     total_time = cur_time - start_time
-    return frame_count / total_time
+    fps = frame_count / total_time
+    return fps
 
 
 def timings_enabled() -> bool:
