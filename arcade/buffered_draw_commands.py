@@ -45,7 +45,7 @@ class Shape:
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
         """
-        assert(self.line_width == 1)
+        assert self.line_width == 1
         gl.glLineWidth(self.line_width)
 
         gl.glEnable(gl.GL_PRIMITIVE_RESTART)

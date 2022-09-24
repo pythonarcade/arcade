@@ -161,7 +161,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
                     if len(collision_check) > 0:
                         cur_y_change -= cur_x_change
                     else:
-                        while(len(collision_check) == 0) and cur_y_change > 0:
+                        while len(collision_check) == 0 and cur_y_change > 0:
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
@@ -223,7 +223,7 @@ class PhysicsEngineSimple:
         """
         Create a simple physics engine.
         """
-        assert(isinstance(player_sprite, Sprite))
+        assert isinstance(player_sprite, Sprite)
 
         if walls:
             if isinstance(walls, SpriteList):
