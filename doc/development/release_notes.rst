@@ -7,6 +7,19 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.16
+--------------
+
+*Released 2022-Sept-24*
+
+* Fix code highlights in two examples
+* Fix data tables in quick index. (`#1312 <https://github.com/pythonarcade/arcade/issues/1312>`_)
+* Fix issues running in headless mode
+* Support Tiled 1.9 via PyTiled Parser 2.2.0 (`#1324 <https://github.com/pythonarcade/arcade/issues/1324>`_)
+* Update pymunk physics engine to return pre handler (`#1322 <https://github.com/pythonarcade/arcade/issues/1322>`_)
+* Bump Pyglet version to 2.0dev23
+* Few PEP-8 fixes
+
 Version 2.6.15
 --------------
 
