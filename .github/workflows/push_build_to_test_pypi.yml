@@ -11,9 +11,6 @@ jobs:
     # This environment is defined in GitHub to hold our secrets
     environment: deploy-pypi-test
 
-    # This environment is defined in GitHub to hold our secrets
-    environment: deploy-pypi-test
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
