@@ -1,4 +1,4 @@
-name: Distribute build to PyPi Test
+name: Distribute build to PyPi Production
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # This environment is defined in GitHub to hold our secrets
-    environment: deploy-pypi-test
+    environment: deploy-pypi-prod
 
     steps:
       - uses: actions/checkout@v3
@@ -34,5 +34,5 @@ jobs:
           python3 -m twine upload dist/*
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
-          TWINE_REPOSITORY: testpypi
+          TWINE_PASSWORD: ${{ secrets.TWINE_PROD_TOKEN }}
+          TWINE_REPOSITORY: pypi
