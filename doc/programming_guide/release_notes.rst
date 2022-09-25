@@ -135,6 +135,25 @@ Changes
     layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the ``layer_options`` dictionary.
     If no custom atlas is provided, then the global default atlas will be used(This is how it works pre Arcade 2.7).
 
+Version 2.6.16
+--------------
+
+*Released 2022-Sept-24*
+
+* Support Tiled 1.9 via PyTiled Parser 2.2.0 (`#1324 <https://github.com/pythonarcade/arcade/issues/1324>`_)
+* Headless rendering with EGL should now work again
+* Fix code highlights in two examples
+* Fix data tables in quick index. (`#1312 <https://github.com/pythonarcade/arcade/issues/1312>`_)
+* Fix issues running in headless mode
+* Update pymunk physics engine to return pre handler (`#1322 <https://github.com/pythonarcade/arcade/issues/1322>`_)
+* Bump Pyglet version to 2.0dev23
+* Few PEP-8 fixes
+* Fix perspective example
+
+*Note:* Development continues on version 2.7, which will be another leap
+forward in Arcade development. Feel free to check out the 'development' branch
+for the 2.7 changes.
+
 Version 2.6.15
 --------------
 
