@@ -20,7 +20,7 @@ class NinePatchRenderer:
     """
 
     def __init__(self, x, y, width, height, start, end, texture, atlas=None):
-        ctx = arcade.get_window()
+        ctx = arcade.get_window().ctx
 
         # ModernGl components for rendering
         self.program = ctx.load_program(vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
@@ -30,12 +30,12 @@ class NinePatchRenderer:
         self.program['sprite_texture'] = 1
 
         data = array('f', [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0])
-        self.geometry = ctx.geometry([gl.BufferDescription(ctx.Buffer(data=data), '2f', ['in_uv'])],
+        self.geometry = ctx.geometry([gl.BufferDescription(ctx.buffer(data=data), '2f', ['in_uv'])],
                                      mode=ctx.TRIANGLE_STRIP)
 
         # References for the texture
         self._atlas = ctx.default_atlas if atlas is None else atlas
-        if not self._atlas.has_texture(texture) and atlas is not None:
+        if not self._atlas.has_texture(texture):
             print("WARNING: given atlas does not contain given texture. "
                   "Adding texture to atlas")
             self._atlas.add(texture)
@@ -64,7 +64,7 @@ class NinePatchRenderer:
         self.program['base_uv'] = (start[0] / texture.width, start[1] / texture.height,
                                    end[0] / texture.width, end[1] / texture.height)
 
-        self.program['var_UV'] = (self._start[0] / width, self._start[1] / height,
+        self.program['var_uv'] = (self._start[0] / width, self._start[1] / height,
                                   1 + (self._end_diff[0] / width), 1 + (self._end_diff[1] / height))
 
         self._patch_data_changed = False

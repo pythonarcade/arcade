@@ -822,7 +822,6 @@ class UINinePatchWidget(UIWidget):
                  size_hint=None,
                  size_hint_min=None,
                  size_hint_max=None,
-                 style=None,
                  **kwargs):
         super().__init__(x,
                          y,
@@ -834,9 +833,9 @@ class UINinePatchWidget(UIWidget):
         self._9_patch = NinePatchRenderer(x, y, width, height, start_point, end_point, texture, atlas)
 
     def do_render(self, surface: Surface):
-        self.prepare_render(Surface)
-        surface.clear(color=(0, 0, 0, 0))
-        self._9_patch.adjust_all(self.x, self.y, self.width, self.height)
+        self.prepare_render(surface)
+        surface.clear(color=(120, 120, 120, 255))
+        self._9_patch.adjust_all(0, 0, self.width, self.height)
         self._9_patch.draw()
 
 
