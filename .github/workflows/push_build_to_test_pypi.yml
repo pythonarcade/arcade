@@ -7,6 +7,9 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    
+    # This environment is defined in GitHub to hold our secrets
+    environment: deploy-pypi-test
 
     steps:
       - uses: actions/checkout@v3
