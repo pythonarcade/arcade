@@ -263,3 +263,34 @@ def astar_calculate_path(start_point: Point,
     # locations.
     revised_result = [_expand(p, grid_size) for p in result]
     return revised_result
+
+
+def dda_step(start: Point, end: Point):
+    """
+    Bresenham's line algorithm
+
+    :param Point start:
+    :param Point end:
+    :return: List of points
+    """
+    x1, y1 = start
+    x2, y2 = end
+
+    dx = x2 - x1
+    dy = y2 - y1
+
+    steps = max(abs(dx), abs(dy))
+
+    x_inc = dx / steps
+    y_inc = dy / steps
+
+    x = x1
+    y = y1
+
+    points = []
+    for _ in range(steps):
+        points.append((int(x), int(y)))
+        x += x_inc
+        y += y_inc
+
+    return points
