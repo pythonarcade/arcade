@@ -4,17 +4,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.10
+          python-version: 3.x
 
-      - name: "Installs and upgrades pip, installs other dependencies and installs the package from setup.py"
+      - name: Install dependencies
         run: |
           # Upgrade pip
           python3 -m pip install --upgrade pip
