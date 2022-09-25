@@ -241,9 +241,7 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         self.clear()
