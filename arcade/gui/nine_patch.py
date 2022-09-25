@@ -140,10 +140,10 @@ def render_nine_patch(x, y, width, height, start, end, texture, atlas=None):
     but uses less overall memory.
     """
     if render_nine_patch.geometry is None:
-        ctx = arcade.get_window()
+        ctx = arcade.get_window().ctx
 
         data = array('f', [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0])
-        render_nine_patch.geometry = ctx.geometry([gl.BufferDescription(ctx.Buffer(data=data), '2f', ['in_uv'])],
+        render_nine_patch.geometry = ctx.geometry([gl.BufferDescription(ctx.buffer(data=data), '2f', ['in_uv'])],
                                                   mode=ctx.TRIANGLE_STRIP)
 
         render_nine_patch.program = ctx.load_program(vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
@@ -168,7 +168,7 @@ def render_nine_patch(x, y, width, height, start, end, texture, atlas=None):
     render_nine_patch.program['base_uv'] = (start[0] / texture.width, start[1] / texture.height,
                                             end[0] / texture.width, end[1] / texture.height)
 
-    render_nine_patch.program['var_UV'] = (start[0] / width, start[1] / height,
+    render_nine_patch.program['var_uv'] = (start[0] / width, start[1] / height,
                                            1 + (end_diff[0] / width), 1 + (end_diff[1] / height))
 
     atlas.use_uv_texture(0)
