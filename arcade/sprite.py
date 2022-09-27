@@ -917,24 +917,14 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
 
-    def set_texture(self, texture_no: int):
+    def set_texture(self, texture_no: int) -> None:
         """
         Sets texture by texture id. Should be renamed because it takes
         a number rather than a texture, but keeping
         this for backwards compatibility.
         """
-        if self.textures[texture_no] == self._texture:
-            return
-
         texture = self.textures[texture_no]
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._texture = texture
-        self._width = texture.width * self.scale
-        self._height = texture.height * self.scale
-        self.add_spatial_hashes()
-        for sprite_list in self.sprite_lists:
-            sprite_list.update_texture(self)
+        self.texture = texture
 
     @property
     def color(self) -> RGB:
