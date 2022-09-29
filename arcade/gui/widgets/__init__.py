@@ -167,6 +167,22 @@ class Rect(NamedTuple):
 
         return Rect(self.x, self.y, w, h)
 
+    def union(self, rect: "Rect"):
+        """
+        Returns a new Rect that is the union of this rect and another.
+        The union is the smallest rectangle that contains theses two rectangles.
+        """
+        x = min(self.x, rect.x)
+        y = min(self.y, rect.y)
+        right = max(self.right, rect.right)
+        top = max(self.top, rect.top)
+        return Rect(
+            x=x,
+            y=y,
+            width=right - x,
+            height=top - y
+        )
+
 
 W = TypeVar("W", bound="UIWidget")
 
