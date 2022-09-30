@@ -808,34 +808,43 @@ class UINinePatchWidget(UIWidget):
     :param size_hint_max: max width and height in pixel
     :param style: not used
     """
-
-    def __init__(self,
-                 *,
-                 x=0,
-                 y=0,
-                 width=100,
-                 height=100,
-                 texture: arcade.Texture = None,
-                 start_point=None,
-                 end_point=None,
-                 atlas: arcade.TextureAtlas = None,
-                 size_hint=None,
-                 size_hint_min=None,
-                 size_hint_max=None,
-                 **kwargs):
-        super().__init__(x,
-                         y,
-                         width,
-                         height,
-                         size_hint=size_hint,
-                         size_hint_min=size_hint_min,
-                         size_hint_max=size_hint_max,)
-        self._9_patch = NinePatchRenderer(x, y, width, height, start_point, end_point, texture, atlas)
+    def __init__(
+        self,
+        *,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        texture: arcade.Texture,
+        start_point=None,
+        end_point=None,
+        atlas: arcade.TextureAtlas = None,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        **kwargs,
+    ):
+        super().__init__(
+            x,
+            y,
+            width,
+            height,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+        )
+        self._9_patch = NinePatchRenderer(
+            position=(x, y), 
+            size=(width, height),
+            start=start_point,
+            end=end_point,
+            texture=texture,
+            atlas=atlas
+        )
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        surface.clear(color=(120, 120, 120, 255))
-        self._9_patch.adjust_all(0, 0, self.width, self.height)
+        surface.clear()
         self._9_patch.draw()
 
 

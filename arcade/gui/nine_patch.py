@@ -1,180 +1,142 @@
-from array import array
+from typing import Optional, Tuple
 
 import arcade
 import arcade.gl as gl
 
 
 class NinePatchRenderer:
-    """A 9-patch renderer which take a specific texture and two pixel coordinates.
-    using these coordinates the texture is split into 9 'patches'.
-    each patch is then stretched in specifc ways to keep the edges a specific width/height.
-
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param width: width of 9-patch
-    :param height: height of 9-patch
-    :param start: start coordinate of patch slices
-    :param end: end coordinate of patch slices
-    :param texture: the texture used for the 9-patch
-    :param atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
     """
+    A 9-patch renderer which take a specific texture and two pixel coordinates.
 
-    def __init__(self, x, y, width, height, start, end, texture, atlas=None):
-        ctx = arcade.get_window().ctx
+    Using these coordinates the texture is split into 9 'patches'.
+    each patch is then stretched in specific ways to keep the edges a specific width/height.
 
-        # ModernGl components for rendering
-        self.program = ctx.load_program(vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
-                                        fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl")
+    :param tuple position: The lower left corner of the patch
+    :param tuple size: The size of the patch
+    :param start: start coordinate of patch slices (lower left)
+    :param end: end coordinate of patch slices (upper right)
+    :param Texture texture: The texture used for the 9-patch
+    :param TextureAtlas atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
+    """
+    def __init__(
+        self,
+        *,
+        position: Tuple[float, float],
+        size: Tuple[float, float],
+        start: Tuple[float, float],
+        end: Tuple[float, float],
+        texture: arcade.Texture,
+        atlas: Optional[arcade.TextureAtlas] = None
+    ):
+        self._ctx = arcade.get_window().ctx
 
-        self.program['uv_texture'] = 0
+        # TODO: Cache in context
+        self._program = self.ctx.load_program(
+            vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
+            geometry_shader=":resources:shaders/gui/nine_patch_gs.glsl",
+            fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
+        )
+        # Configure texture channels
+        self.program.set_uniform_safe('uv_texture', 0)
         self.program['sprite_texture'] = 1
 
-        data = array('f', [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0])
-        self.geometry = ctx.geometry([gl.BufferDescription(ctx.buffer(data=data), '2f', ['in_uv'])],
-                                     mode=ctx.TRIANGLE_STRIP)
+        # TODO: Cache in context
+        self._geometry = self.ctx.geometry()
 
         # References for the texture
-        self._atlas = ctx.default_atlas if atlas is None else atlas
-        if not self._atlas.has_texture(texture):
-            print("WARNING: given atlas does not contain given texture. "
-                  "Adding texture to atlas")
-            self._atlas.add(texture)
+        self._atlas = atlas or self.ctx.default_atlas
         self._texture = texture
-
-        self.program['texture_id'] = self._atlas.get_texture_id(self._texture.name)
+        self._set_texture(texture)
 
         # Bottom left position.
-        self._x = x
-        self._y = y
-
-        # Size, edge inclusive.
-        self._width = width
-        self._height = height
-
-        self.program['patch_data'] = x, y, width, height
+        self._position = position
+        self._size = size
 
         # pixel texture co-ordinate start and end of central box.
         self._start = start
         self._end = end
 
-        # relative UV texture co-ordinate of end from opposite end
-        self._end_diff = self._end[0] - texture.width, self._end[1] - texture.height
+    @property
+    def ctx(self) -> arcade.ArcadeContext:
+        """
+        The OpenGL context for this renderer.
+        """
+        return self._ctx
 
-        # texture UV co-ordinate of start and end.
-        self.program['base_uv'] = (start[0] / texture.width, start[1] / texture.height,
-                                   end[0] / texture.width, end[1] / texture.height)
+    @property
+    def texture(self) -> arcade.Texture:
+        """
+        Get or set the texture.
+        """
+        return self._texture
 
-        self.program['var_uv'] = (self._start[0] / width, self._start[1] / height,
-                                  1 + (self._end_diff[0] / width), 1 + (self._end_diff[1] / height))
+    @texture.setter
+    def texture(self, texture: arcade.Texture):
+        self._set_texture(texture)
 
-        self._patch_data_changed = False
+    @property
+    def program(self) -> gl.program.Program:
+        """
+        Get or set the shader program.
+        Returns the default shader if no shader is assigned.
+        """
+        return self._program
 
-    def adjust_all(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.width = height
-        self._patch_data_changed = True
+    @program.setter
+    def program(self, program: gl.program.Program):
+        self._program = program
+
+    @property
+    def position(self) -> Tuple[float, float]:
+        """
+        Get or set the patch position.
+        This is the lower left corner of the patch.
+        """
+        return self._position
+
+    @position.setter
+    def position(self, position: Tuple[float, float]):
+        self._position = position
+
+    @property
+    def size(self) -> Tuple[float, float]:
+        """
+        Get or set the patch size.
+        """
+        return self._size
+
+    @size.setter
+    def size(self, size: Tuple[float, float]):
+        self._size = size
+
+    def _set_texture(self, texture: arcade.Texture):
+        if not self._atlas.has_texture(texture):
+            self._atlas.add(texture)
+        self._texture = texture
 
     def draw(self):
-        if self._patch_data_changed:
-            self._patch_data_changed = False
-            self.program['patch_data'] = self._x, self._y, self._width, self._height
-            self.program['var_uv'] = (self._start[0] / self._width, self._start[1] / self._height,
-                                      1 + (self._end_diff[0] / self._width), 1 + (self._end_diff[1] / self._height))
+        """
+        Draw the 9-patch.
+        """
+        self.program.set_uniform_safe('texture_id', self._atlas.get_texture_id(self._texture.name))
+
+        self.program['start'] = self._start
+        self.program['end'] = self._end
+        self.program['size'] = self._size
+        self.program['t_size'] = self._texture.size
+        print(self._size, self._texture.size)
 
         self._atlas.use_uv_texture(0)
         self._atlas.texture.use(1)
-        self.geometry.render(self.program)
+        self._geometry.render(self._program, vertices=1)
 
-    @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, value):
-        self._x = value
-        self._patch_data_changed = True
-
-    @property
-    def y(self):
-        return self._y
-
-    @y.setter
-    def y(self, value):
-        self._y = value
-        self._patch_data_changed = True
-
-    @property
-    def width(self):
-        return self._width
-
-    @width.setter
-    def width(self, value):
-        if value >= self._start[0] + self._end[0] + 1:
-            self._width = value
-        else:
-            print(f"WARNING: Attempted to set the width too low. "
-                  f"Width has been set to minimum of {self._start[0] + self._end[0] + 1}")
-            self._width = self._start[0] + self._end[0] + 1
-        self._patch_data_changed = True
-
-    @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, value):
-        if value >= self._start[1] + self._end[1] + 1:
-            self._height = value
-        else:
-            print(f"WARNING: Attempted to set the height too low. "
-                  f"Height has been set to minimum of {self._start[1] + self._end[1] + 1}")
-            self._height = self._start[1] + self._end[1] + 1
-        self._patch_data_changed = True
-
-
-def render_nine_patch(x, y, width, height, start, end, texture, atlas=None):
-    """
-    Renders a 9-patch with provided texture using a static geometry and program. Sligtly slower than using the class,
-    but uses less overall memory.
-    """
-    if render_nine_patch.geometry is None:
-        ctx = arcade.get_window()
-
-        data = array('f', [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0])
-        render_nine_patch.geometry = ctx.geometry([gl.BufferDescription(ctx.Buffer(data=data), '2f', ['in_uv'])],
-                                                  mode=ctx.TRIANGLE_STRIP)
-
-        render_nine_patch.program = ctx.load_program(vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
-                                                     fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl")
-
-        render_nine_patch.program['uv_texture'] = 0
-        render_nine_patch.program['sprite_texture'] = 1
-
-    if not atlas.has_texture(texture) and atlas is not None:
-        print("WARNING: given atlas does not contain given texture. "
-              "Adding texture to atlas")
-        atlas.add(texture)
-
-    render_nine_patch.program["texture_id"] = atlas.get_texture_id(texture.name)
-
-    render_nine_patch.program['patch_data'] = x, y, width, height
-
-    # relative UV texture co-ordinate of end from opposite end
-    end_diff = end[0] - texture.width, end[1] - texture.height
-
-    # texture UV co-ordinate of start and end.
-    render_nine_patch.program['base_uv'] = (start[0] / texture.width, start[1] / texture.height,
-                                            end[0] / texture.width, end[1] / texture.height)
-
-    render_nine_patch.program['var_UV'] = (start[0] / width, start[1] / height,
-                                           1 + (end_diff[0] / width), 1 + (end_diff[1] / height))
-
-    atlas.use_uv_texture(0)
-    atlas.texture.use(1)
-    render_nine_patch.geometry.render(render_nine_patch.program)
-
-
-render_nine_patch.geometry = None
-render_nine_patch.program = None
+    def reload_shader(self):
+        print("reloading shader")
+        self._program = self.ctx.load_program(
+            vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
+            geometry_shader=":resources:shaders/gui/nine_patch_gs.glsl",
+            fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
+        )
+        # Configure texture channels
+        self.program.set_uniform_safe('uv_texture', 0)
+        self.program['sprite_texture'] = 1
