@@ -18,6 +18,7 @@ class NinePatchRenderer:
     :param Texture texture: The texture used for the 9-patch
     :param TextureAtlas atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
     """
+
     def __init__(
         self,
         *,
@@ -37,8 +38,8 @@ class NinePatchRenderer:
             fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
         )
         # Configure texture channels
-        self.program.set_uniform_safe('uv_texture', 0)
-        self.program['sprite_texture'] = 1
+        self.program.set_uniform_safe("uv_texture", 0)
+        self.program["sprite_texture"] = 1
 
         # TODO: Cache in context
         self._geometry = self.ctx.geometry()
@@ -118,13 +119,14 @@ class NinePatchRenderer:
         """
         Draw the 9-patch.
         """
-        self.program.set_uniform_safe('texture_id', self._atlas.get_texture_id(self._texture.name))
+        self.program.set_uniform_safe(
+            "texture_id", self._atlas.get_texture_id(self._texture.name)
+        )
 
-        self.program['start'] = self._start
-        self.program['end'] = self._end
-        self.program['size'] = self._size
-        self.program['t_size'] = self._texture.size
-        print(self._size, self._texture.size)
+        self.program["start"] = self._start
+        self.program["end"] = self._end
+        self.program["size"] = self._size
+        self.program["t_size"] = self._texture.size
 
         self._atlas.use_uv_texture(0)
         self._atlas.texture.use(1)
@@ -138,5 +140,5 @@ class NinePatchRenderer:
             fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
         )
         # Configure texture channels
-        self.program.set_uniform_safe('uv_texture', 0)
-        self.program['sprite_texture'] = 1
+        self.program.set_uniform_safe("uv_texture", 0)
+        self.program["sprite_texture"] = 1

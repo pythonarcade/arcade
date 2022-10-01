@@ -808,6 +808,7 @@ class UINinePatchWidget(UIWidget):
     :param size_hint_max: max width and height in pixel
     :param style: not used
     """
+
     def __init__(
         self,
         *,
@@ -834,13 +835,19 @@ class UINinePatchWidget(UIWidget):
             size_hint_max=size_hint_max,
         )
         self._9_patch = NinePatchRenderer(
-            position=(x, y), 
+            position=(x, y),
             size=(width, height),
             start=start_point,
             end=end_point,
             texture=texture,
-            atlas=atlas
+            atlas=atlas,
         )
+
+        bind(self, "rect", self._update_ninepatch_size)
+
+    def _update_ninepatch_size(self):
+        self._9_patch.position = self.rect.position
+        self._9_patch.size = self.rect.size
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)

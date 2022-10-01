@@ -1,6 +1,6 @@
 import arcade
 from arcade import load_texture
-from arcade.gui import UIManager, UINinePatchWidget
+from arcade.gui import UIManager, UINinePatchWidget, UIAnchorLayout
 
 
 class MyView(arcade.View):
@@ -11,19 +11,20 @@ class MyView(arcade.View):
 
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
         self.nine_patch_widget = UINinePatchWidget(
-            width=300,
-            height=200,
             texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
-            start_point=(10, 10),
-            end_point=(190, 190)
+            start_point=(5, 5),
+            end_point=(95, 95),
+            size_hint=(0.5, 0.5),
         )
 
-        self.nine_patch_widget.center_on_screen()
-        self.mng.add(self.nine_patch_widget)
+        self.mng.add(UIAnchorLayout(children=[self.nine_patch_widget]))
 
     def on_show_view(self):
         self.window.background_color = arcade.color.WHITE
         self.mng.enable()
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        print(self.nine_patch_widget.width)
 
     def on_hide_view(self):
         self.mng.disable()
@@ -34,6 +35,6 @@ class MyView(arcade.View):
 
 
 if __name__ == "__main__":
-    window = arcade.Window()
+    window = arcade.Window(resizable=True)
     window.show_view(MyView())
     arcade.run()
