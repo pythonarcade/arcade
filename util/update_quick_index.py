@@ -56,6 +56,7 @@ titles = {
     'gui/mixins.py': ['GUI', 'gui.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/nine_patch.py': ['GUI', 'gui.rst'],
     'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],

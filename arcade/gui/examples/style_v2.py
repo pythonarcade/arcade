@@ -134,9 +134,7 @@ class UIButtonRow(UIBoxLayout):
         pass
 
     def _on_click(self, event: UIOnClickEvent):
-        self.dispatch_event(
-            "on_action", UIOnActionEvent(self, event.source.text)
-        )
+        self.dispatch_event("on_action", UIOnActionEvent(self, event.source.text))
 
 
 class DemoWindow(arcade.Window):

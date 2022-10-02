@@ -80,7 +80,9 @@ class UIDropdown(UILayout):
                     text=option,
                     width=self.width,
                     height=self.height,
-                    style=active_style if self.value == option else UIFlatButtonStyle_default,
+                    style=active_style
+                    if self.value == option
+                    else UIFlatButtonStyle_default,
                 )
             )
             button.on_click = self._on_option_click
