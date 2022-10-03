@@ -4,9 +4,9 @@ import arcade
 import arcade.gl as gl
 
 
-class NinePatchRenderer:
+class NinePatchTexture:
     """
-    A 9-patch renderer which take a specific texture and two pixel coordinates.
+    A 9-patch texture which take a specific texture and two pixel coordinates.
 
     Using these coordinates the texture is split into 9 'patches'.
     each patch is then stretched in specific ways to keep the edges a specific width/height.
