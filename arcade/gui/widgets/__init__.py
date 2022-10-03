@@ -196,19 +196,18 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    _children: List[_ChildEntry] = ListProperty()  # type: ignore
-
     rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
-    border_width: int = Property(0)  # type: ignore
-    border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
+
+    _children: List[_ChildEntry] = ListProperty()  # type: ignore
+    _border_width: int = Property(0)  # type: ignore
+    _border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
     _bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
-    # _bg_texture: Optional[arcade.Texture] = Property(None)  # type: ignore
     _bg_ninepatch: Optional[NinePatchTexture] = Property(None)  # type: ignore
-    padding_top: int = Property(0)  # type: ignore
-    padding_right: int = Property(0)  # type: ignore
-    padding_bottom: int = Property(0)  # type: ignore
-    padding_left: int = Property(0)  # type: ignore
+    _padding_top: int = Property(0)  # type: ignore
+    _padding_right: int = Property(0)  # type: ignore
+    _padding_bottom: int = Property(0)  # type: ignore
+    _padding_left: int = Property(0)  # type: ignore
 
     # TODO add padding, bg, border to constructor
     def __init__(
@@ -247,14 +246,14 @@ class UIWidget(EventDispatcher, ABC):
             self, "visible", self.trigger_full_render
         )  # TODO maybe trigger_parent_render would be enough
         bind(self, "_children", self.trigger_render)
-        bind(self, "border_width", self.trigger_render)
-        bind(self, "border_color", self.trigger_render)
+        bind(self, "_border_width", self.trigger_render)
+        bind(self, "_border_color", self.trigger_render)
         bind(self, "_bg_color", self.trigger_render)
         bind(self, "_bg_ninepatch", self.trigger_render)
-        bind(self, "padding_top", self.trigger_render)
-        bind(self, "padding_right", self.trigger_render)
-        bind(self, "padding_bottom", self.trigger_render)
-        bind(self, "padding_left", self.trigger_render)
+        bind(self, "_padding_top", self.trigger_render)
+        bind(self, "_padding_right", self.trigger_render)
+        bind(self, "_padding_bottom", self.trigger_render)
+        bind(self, "_padding_left", self.trigger_render)
 
     def trigger_render(self):
         """
@@ -372,14 +371,14 @@ class UIWidget(EventDispatcher, ABC):
             self._bg_ninepatch.draw()
 
         # draw border
-        if self.border_width and self.border_color:
+        if self._border_width and self._border_color:
             arcade.draw_xywh_rectangle_outline(
                 0,
                 0,
                 self.width,
                 self.height,
-                color=self.border_color,
-                border_width=self.border_width * 2,
+                color=self._border_color,
+                border_width=self._border_width * 2,
             )
 
     def prepare_render(self, surface):
@@ -468,10 +467,10 @@ class UIWidget(EventDispatcher, ABC):
     @property
     def padding(self):
         return (
-            self.padding_top,
-            self.padding_right,
-            self.padding_bottom,
-            self.padding_left,
+            self._padding_top,
+            self._padding_right,
+            self._padding_bottom,
+            self._padding_left,
         )
 
     @padding.setter
@@ -483,10 +482,10 @@ class UIWidget(EventDispatcher, ABC):
             args = args + args  # type: ignore
 
         pt, pr, pb, pl = args  # type: ignore # self.padding = 10, 20, 30, 40
-        self.padding_top = pt
-        self.padding_right = pr
-        self.padding_bottom = pb
-        self.padding_left = pl
+        self._padding_top = pt
+        self._padding_right = pr
+        self._padding_bottom = pb
+        self._padding_left = pl
 
     @property
     def children(self) -> List["UIWidget"]:
@@ -499,8 +498,8 @@ class UIWidget(EventDispatcher, ABC):
         :param color: border color
         :return: self
         """
-        self.border_width = width
-        self.border_color = color
+        self._border_width = width
+        self._border_color = color
         return self
 
     def with_padding(
@@ -513,13 +512,13 @@ class UIWidget(EventDispatcher, ABC):
         if all is not ...:
             self.padding = all
         if top is not ...:
-            self.padding_top = top
+            self._padding_top = top
         if right is not ...:
-            self.padding_right = right
+            self._padding_right = right
         if bottom is not ...:
-            self.padding_bottom = bottom
+            self._padding_bottom = bottom
         if left is not ...:
-            self.padding_left = left
+            self._padding_left = left
         return self
 
     def with_background(self,
@@ -569,25 +568,25 @@ class UIWidget(EventDispatcher, ABC):
     def content_width(self):
         return (
             self.rect.width
-            - 2 * self.border_width
-            - self.padding_left
-            - self.padding_right
+            - 2 * self._border_width
+            - self._padding_left
+            - self._padding_right
         )
 
     @property
     def content_height(self):
         return (
             self.rect.height
-            - 2 * self.border_width
-            - self.padding_top
-            - self.padding_bottom
+            - 2 * self._border_width
+            - self._padding_top
+            - self._padding_bottom
         )
 
     @property
     def content_rect(self):
         return Rect(
-            self.left + self.border_width + self.padding_left,
-            self.bottom + self.border_width + self.padding_bottom,
+            self.left + self._border_width + self._padding_left,
+            self.bottom + self._border_width + self._padding_bottom,
             self.content_width,
             self.content_height,
         )
