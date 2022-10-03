@@ -235,8 +235,8 @@ class UIBoxLayout(UILayout):
             width = width_of_children + required_space_between
             height = max(size[1] for size in min_child_sizes)
 
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
@@ -505,8 +505,8 @@ class UIGridLayout(UILayout):
                 max(width / (span or 1) for width, span in col)
             )
 
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         content_height = (
             sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing

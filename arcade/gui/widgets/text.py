@@ -116,8 +116,8 @@ class UILabel(UIWidget):
         """
         Sets the width and height of this UIWidget to contain the whole text.
         """
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
             self.layout.content_width + base_width,
