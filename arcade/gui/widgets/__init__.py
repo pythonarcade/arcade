@@ -26,7 +26,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.gui.nine_patch import NinePatchRenderer
+from arcade.gui.nine_patch import NinePatchTexture
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -202,8 +202,9 @@ class UIWidget(EventDispatcher, ABC):
     visible: bool = Property(True)  # type: ignore
     border_width: int = Property(0)  # type: ignore
     border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
-    bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
-    bg_texture: Optional[arcade.Texture] = Property(None)  # type: ignore
+    _bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
+    # _bg_texture: Optional[arcade.Texture] = Property(None)  # type: ignore
+    _bg_ninepatch: Optional[NinePatchTexture] = Property(None)  # type: ignore
     padding_top: int = Property(0)  # type: ignore
     padding_right: int = Property(0)  # type: ignore
     padding_bottom: int = Property(0)  # type: ignore
@@ -211,18 +212,18 @@ class UIWidget(EventDispatcher, ABC):
 
     # TODO add padding, bg, border to constructor
     def __init__(
-        self,
-        x: float = 0,
-        y: float = 0,
-        width: float = 100,
-        height: float = 100,
-        children: Iterable["UIWidget"] = tuple(),
-        # Properties which might be used by layouts
-        size_hint=None,  # in percentage
-        size_hint_min=None,  # in pixel
-        size_hint_max=None,  # in pixel
-        style=None,
-        **kwargs,
+            self,
+            x: float = 0,
+            y: float = 0,
+            width: float = 100,
+            height: float = 100,
+            children: Iterable["UIWidget"] = tuple(),
+            # Properties which might be used by layouts
+            size_hint=None,  # in percentage
+            size_hint_min=None,  # in pixel
+            size_hint_max=None,  # in pixel
+            style=None,
+            **kwargs,
     ):
         self.style = style or {}
 
@@ -248,8 +249,8 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "_children", self.trigger_render)
         bind(self, "border_width", self.trigger_render)
         bind(self, "border_color", self.trigger_render)
-        bind(self, "bg_color", self.trigger_render)
-        bind(self, "bg_texture", self.trigger_render)
+        bind(self, "_bg_color", self.trigger_render)
+        bind(self, "_bg_ninepatch", self.trigger_render)
         bind(self, "padding_top", self.trigger_render)
         bind(self, "padding_right", self.trigger_render)
         bind(self, "padding_bottom", self.trigger_render)
@@ -363,11 +364,12 @@ class UIWidget(EventDispatcher, ABC):
         surface.limit(*self.rect)
 
         # draw background
-        if self.bg_color:
-            surface.clear(self.bg_color)
-
-        if self.bg_texture:
-            surface.draw_texture(0, 0, self.width, self.height, tex=self.bg_texture)
+        if self._bg_color:
+            surface.clear(self._bg_color)
+        # draw background texture
+        if self._bg_ninepatch:
+            self._bg_ninepatch.size = self.size
+            self._bg_ninepatch.draw()
 
         # draw border
         if self.border_width and self.border_color:
@@ -502,7 +504,7 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     def with_padding(
-        self, top=..., right=..., bottom=..., left=..., all=...
+            self, top=..., right=..., bottom=..., left=..., all=...
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -520,15 +522,43 @@ class UIWidget(EventDispatcher, ABC):
             self.padding_left = left
         return self
 
-    def with_background(self, color=..., texture=...) -> "UIWidget":
+    def with_background(self,
+                        *,
+                        color=...,
+                        texture=...,
+                        start: Tuple[int, int] = None,
+                        end: Tuple[int, int] = None
+                        ) -> "UIWidget":
+
         """
-        Convenience function to set background color or texture.
+        Set widgets background.
+
+        A color or texture can be used for background,
+        if a texture is given, start and end point can be added to use the texture as ninepatch.
+
+        :param arcade.Color color: A color used as background
+        :param arcade.Texture texture: A texture used as background
+        :param Tuple[int, int] start: bottom left point for nine patch splitting
+        :param Tuple[int, int] end: top right point for nine patch splitting
         :return: self
         """
         if color is not ...:
-            self.bg_color = color
+            self._bg_color = color
+
         if texture is not ...:
-            self.bg_texture = texture
+            if start is None:
+                start = (0, 0)
+            if end is None:
+                end = texture.size
+
+            self._bg_ninepatch = NinePatchTexture(
+                position=self.position,
+                size=self.size,
+                start=start,
+                end=end,
+                texture=texture
+            )
+
         return self
 
     @property
@@ -617,16 +647,16 @@ class UIInteractiveWidget(UIWidget):
     disabled = Property(False)
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        style=None,
-        **kwargs,
+            self,
+            x=0,
+            y=0,
+            width=100,
+            height=100,
+            size_hint=None,
+            size_hint_min=None,
+            size_hint_max=None,
+            style=None,
+            **kwargs,
     ):
         super().__init__(
             x,
@@ -649,7 +679,7 @@ class UIInteractiveWidget(UIWidget):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-            event.x, event.y
+                event.x, event.y
         ):
             self.pressed = True
             return EVENT_HANDLED
@@ -691,15 +721,15 @@ class UIDummy(UIInteractiveWidget):
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        **kwargs,
+            self,
+            x=0,
+            y=0,
+            width=100,
+            height=100,
+            size_hint=None,
+            size_hint_min=None,
+            size_hint_max=None,
+            **kwargs,
     ):
         super().__init__(
             x,
@@ -757,18 +787,18 @@ class UISpriteWidget(UIWidget):
     """
 
     def __init__(
-        self,
-        *,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
-        sprite: Sprite = None,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        style=None,
-        **kwargs,
+            self,
+            *,
+            x=0,
+            y=0,
+            width=100,
+            height=100,
+            sprite: Sprite = None,
+            size_hint=None,
+            size_hint_min=None,
+            size_hint_max=None,
+            style=None,
+            **kwargs,
     ):
         super().__init__(
             x,
@@ -790,69 +820,6 @@ class UISpriteWidget(UIWidget):
         self.prepare_render(surface)
         surface.clear(color=(0, 0, 0, 0))
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
-
-
-class UINinePatchWidget(UIWidget):
-    """Create a UI element which uses a 9-patch to control what is rendered.
-
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param width: width of widget
-    :param height: height of widget
-    :param texture: texture to generate the 9-patch renderer
-    :param start_point: the start coordinate for defining the 9 patches
-    :param end_point: the end coordinate for defining the 9 patches
-    :param atlas: the atlas in which the texture is stored
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: not used
-    """
-
-    def __init__(
-        self,
-        *,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
-        texture: arcade.Texture,
-        start_point=None,
-        end_point=None,
-        atlas: arcade.TextureAtlas = None,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        **kwargs,
-    ):
-        super().__init__(
-            x,
-            y,
-            width,
-            height,
-            size_hint=size_hint,
-            size_hint_min=size_hint_min,
-            size_hint_max=size_hint_max,
-        )
-        self._9_patch = NinePatchRenderer(
-            position=(x, y),
-            size=(width, height),
-            start=start_point,
-            end=end_point,
-            texture=texture,
-            atlas=atlas,
-        )
-
-        bind(self, "rect", self._update_ninepatch_size)
-
-    def _update_ninepatch_size(self):
-        self._9_patch.position = self.rect.position
-        self._9_patch.size = self.rect.size
-
-    def do_render(self, surface: Surface):
-        self.prepare_render(surface)
-        surface.clear()
-        self._9_patch.draw()
 
 
 class UILayout(UIWidget, UIWidgetParent):
@@ -904,17 +871,17 @@ class UISpace(UIWidget):
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
-        color=(0, 0, 0, 0),
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        style=None,
-        **kwargs,
+            self,
+            x=0,
+            y=0,
+            width=100,
+            height=100,
+            color=(0, 0, 0, 0),
+            size_hint=None,
+            size_hint_min=None,
+            size_hint_max=None,
+            style=None,
+            **kwargs,
     ):
         super().__init__(
             x,
