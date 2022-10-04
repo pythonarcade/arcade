@@ -33,7 +33,7 @@ class MyView(View):
         self.mng.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = Window()
     window.show_view(MyView())
     window.run()
