@@ -28,6 +28,7 @@ from arcade.gui.widgets.layout import (
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UILabel, UIInputText, UITextArea
+from arcade.gui.widgets.toggle import UITextureToggle
 from arcade.gui.widgets import UISpace
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
@@ -78,6 +79,7 @@ __all__ = [
     "UITextMotionEvent",
     "UITextMotionSelectEvent",
     "UITextureButton",
+    "UITextureToggle",
     "UIWidget",
     "UIWidgetParent",
     "Surface",
