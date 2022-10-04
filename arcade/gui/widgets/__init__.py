@@ -227,18 +227,18 @@ class UIWidget(EventDispatcher, ABC):
 
     # TODO add padding, bg, border to constructor
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 100,
-            children: Iterable["UIWidget"] = tuple(),
-            # Properties which might be used by layouts
-            size_hint=None,  # in percentage
-            size_hint_min=None,  # in pixel
-            size_hint_max=None,  # in pixel
-            style=None,
-            **kwargs,
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        children: Iterable["UIWidget"] = tuple(),
+        # Properties which might be used by layouts
+        size_hint=None,  # in percentage
+        size_hint_min=None,  # in pixel
+        size_hint_max=None,  # in pixel
+        style=None,
+        **kwargs,
     ):
         self.style = style or {}
 
@@ -519,7 +519,7 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     def with_padding(
-            self, top=..., right=..., bottom=..., left=..., all=...
+        self, top=..., right=..., bottom=..., left=..., all=...
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -537,13 +537,14 @@ class UIWidget(EventDispatcher, ABC):
             self._padding_left = left
         return self
 
-    def with_background(self,
-                        *,
-                        color=...,
-                        texture=...,
-                        start: Tuple[int, int] = None,
-                        end: Tuple[int, int] = None
-                        ) -> "UIWidget":
+    def with_background(
+        self,
+        *,
+        color=...,
+        texture=...,
+        start: Tuple[int, int] = None,
+        end: Tuple[int, int] = None,
+    ) -> "UIWidget":
 
         """
         Set widgets background.
@@ -571,7 +572,7 @@ class UIWidget(EventDispatcher, ABC):
                 size=self.size,
                 start=start,
                 end=end,
-                texture=texture
+                texture=texture,
             )
 
         return self
@@ -662,16 +663,16 @@ class UIInteractiveWidget(UIWidget):
     disabled = Property(False)
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -694,7 +695,7 @@ class UIInteractiveWidget(UIWidget):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-                event.x, event.y
+            event.x, event.y
         ):
             self.pressed = True
             return EVENT_HANDLED
@@ -736,15 +737,15 @@ class UIDummy(UIInteractiveWidget):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -802,18 +803,18 @@ class UISpriteWidget(UIWidget):
     """
 
     def __init__(
-            self,
-            *,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            sprite: Sprite = None,
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        *,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        sprite: Sprite = None,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,
@@ -886,17 +887,17 @@ class UISpace(UIWidget):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            color=(0, 0, 0, 0),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            style=None,
-            **kwargs,
+        self,
+        x=0,
+        y=0,
+        width=100,
+        height=100,
+        color=(0, 0, 0, 0),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style=None,
+        **kwargs,
     ):
         super().__init__(
             x,

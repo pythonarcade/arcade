@@ -29,12 +29,12 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     """
 
     def __init__(
-            self,
-            *,
-            width: float,
-            height: float,
-            message_text: str,
-            buttons=("Ok",),
+        self,
+        *,
+        width: float,
+        height: float,
+        message_text: str,
+        buttons=("Ok",),
     ):
         super().__init__(size_hint=(1, 1))
         self.register_event_type("on_action")
