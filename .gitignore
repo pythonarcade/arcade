@@ -9,6 +9,10 @@
 
 # virualenvs
 env
+.env
+.venv
+ENV/
+env*/
 venv*/
 .venv*/
 
