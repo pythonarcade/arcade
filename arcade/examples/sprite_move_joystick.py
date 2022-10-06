@@ -24,6 +24,7 @@ DEAD_ZONE = 0.05
 
 class Player(arcade.Sprite):
     """ Player sprite """
+
     def __init__(self, filename, scale):
         super().__init__(filename, scale)
 
@@ -41,9 +42,9 @@ class Player(arcade.Sprite):
             # Push this object as a handler for joystick events.
             # Required for the on_joy* events to be called.
             self.joystick.push_handlers(self)
+            self.error_text = None
         else:
             # Handle if there are no joysticks.
-            print("There are no joysticks, plug in a joystick and run again.")
             self.joystick = None
 
     def update(self):
@@ -82,17 +83,17 @@ class Player(arcade.Sprite):
     # noinspection PyMethodMayBeStatic
     def on_joybutton_press(self, _joystick, button):
         """ Handle button-down event for the joystick """
-        print("Button {} down".format(button))
+        print(f"Button {button} down")
 
     # noinspection PyMethodMayBeStatic
     def on_joybutton_release(self, _joystick, button):
         """ Handle button-up event for the joystick """
-        print("Button {} up".format(button))
+        print(f"Button {button} up")
 
     # noinspection PyMethodMayBeStatic
     def on_joyhat_motion(self, _joystick, hat_x, hat_y):
         """ Handle hat events """
-        print("Hat ({}, {})".format(hat_x, hat_y))
+        print(f"Hat ({hat_x}, {hat_y})")
 
 
 class MyGame(arcade.Window):
@@ -116,6 +117,16 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
+        self.error_text = arcade.Text(
+            "There are no joysticks, plug in a joystick and run again.",
+            10,
+            10,
+            arcade.color.WHITE,
+            22,
+            width=SCREEN_WIDTH,
+            align="center",
+        )
+
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -125,7 +136,8 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = Player(
             ":resources:images/animated_characters/female_person/"
-            "femalePerson_idle.png", SPRITE_SCALING,
+            "femalePerson_idle.png",
+            SPRITE_SCALING,
         )
         self.player_sprite.position = self.width / 2, self.height / 2
         self.all_sprites_list.append(self.player_sprite)
@@ -140,6 +152,10 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.all_sprites_list.draw()
+
+        # Print an error if there is no joystick
+        if not self.player_sprite.joystick:
+            self.error_text.draw()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
