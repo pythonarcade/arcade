@@ -239,12 +239,9 @@ class MyGame(arcade.Window):
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
-        print(f"Total wall blocks: {len(self.wall_list)}")
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         self.clear()

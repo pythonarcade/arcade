@@ -110,6 +110,7 @@ def test_shring_child_to_min_size(window):
     assert subject.rect == (0, 0, 400, 400)
     assert dummy.size == (200, 150)
 
+
 def test_grow_child_within_bounds(window):
     subject = UIAnchorLayout(width=400, height=400)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, 2)))
@@ -118,3 +119,13 @@ def test_grow_child_within_bounds(window):
 
     assert subject.rect == (0, 0, 400, 400)
     assert dummy.size == (400, 400)
+
+
+def test_only_adjust_size_if_size_hint_is_given_for_dimension(window):
+    subject = UIAnchorLayout(width=400, height=400)
+    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200)))
+
+    subject._do_layout()
+
+    assert subject.rect == (0, 0, 400, 400)
+    assert dummy.size == (400, 100)

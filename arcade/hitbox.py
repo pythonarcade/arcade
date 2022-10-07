@@ -29,10 +29,10 @@ def calculate_hit_box_points_simple(image: Image) -> PointList:
     # If there is no bounding box the image is empty
     if bbox is None:
         return []
-    else:
-        left_border, top_border, right_border, bottom_border = bbox
-        right_border -= 1
-        bottom_border -= 1
+
+    left_border, top_border, right_border, bottom_border = bbox
+    right_border -= 1
+    bottom_border -= 1
 
     def _check_corner_offset(start_x: int, start_y: int, x_direction: int, y_direction: int) -> int:
         bad = False
@@ -123,10 +123,7 @@ def calculate_hit_box_points_detailed(
 
         point_tuple = sample_point[0], sample_point[1]
         color = image.getpixel(point_tuple)
-        if color[3] > 0:
-            return 255
-        else:
-            return 0
+        return 255 if color[3] > 0 else 0
 
     # Do a quick check if it is a full tile
     p1 = 0, 0

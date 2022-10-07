@@ -1020,11 +1020,7 @@ class Sprite:
 
     @visible.setter
     def visible(self, value: bool):
-        if value:
-            self._alpha = 255
-        else:
-            self._alpha = 0
-
+        self._alpha = 255 if value else 0
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1405,7 +1401,7 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     # print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
-    for frame in range(0, image_object.n_frames):
+    for frame in range(image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
         image = image_object.convert("RGBA")
@@ -1419,12 +1415,19 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
 
 class SpriteSolidColor(Sprite):
     """
-    This sprite is just a rectangular sprite of one solid color. No need to
-    use an image file.
+    A rectangular sprite of the given ``width``, ``height``, and ``color``.
 
-    :param int width: Width of the sprite
-    :param int height: Height of the sprite
-    :param Color color: Color of the sprite
+    The texture is automatically generated instead of loaded from a
+    file.
+
+    There may be a stutter the first time a combination of ``width``,
+    ``height``, and ``color`` is used due to texture generation. All
+    subsequent calls for the same combination will run faster because
+    they will re-use the texture generated earlier.
+
+    :param int width: Width of the sprite in pixels
+    :param int height: Height of the sprite in pixels
+    :param Color color: The color of the sprite as an RGB or RGBA tuple
     """
     def __init__(self, width: int, height: int, color: Color):
         """
@@ -1448,12 +1451,24 @@ class SpriteSolidColor(Sprite):
 
 class SpriteCircle(Sprite):
     """
-    This sprite is just an elliptical sprite of one solid color. No need to
-    use an image file.
+    A circle of the specified `radius <https://simple.wikipedia.org/wiki/Radius>`_.
 
-    :param float radius: Radius of the circle
-    :param Color color: Color of the circle
-    :param bool soft: If True, will add a alpha gradient
+    The texture is automatically generated instead of loaded from a
+    file.
+
+    There may be a stutter the first time a combination of ``radius``,
+    ``color``, and ``soft`` is used due to texture generation. All
+    subsequent calls for the same combination will run faster because
+    they will re-use the texture generated earlier.
+
+    For a gradient fill instead of a solid color, set ``soft`` to
+    ``True``. The circle will fade from an opaque center to transparent
+    at the edges.
+
+    :param int radius: Radius of the circle in pixels
+    :param Color color: The Color of the sprite as an RGB or RGBA tuple
+    :param bool soft: If ``True``, the circle will fade from an opaque
+                      center to transparent edges.
     """
     def __init__(self, radius: int, color: Color, soft: bool = False):
         super().__init__()

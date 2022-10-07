@@ -20,7 +20,7 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
     ear_vertex = []
     triangles = []
 
-    polygon = [point for point in polygon]
+    polygon = list(polygon)
 
     if _is_clockwise(polygon):
         polygon.reverse()

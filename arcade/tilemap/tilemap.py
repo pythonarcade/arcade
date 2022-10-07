@@ -12,17 +12,23 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
+
 from arcade import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
     Sprite,
     SpriteList,
+    get_window,
     load_texture,
 )
+
+if TYPE_CHECKING:
+    from arcade import TextureAtlas
+
 from arcade.arcade_types import Point, TiledObject
 from arcade.geometry_generic import rotate_point
 from arcade.resources import resolve_resource_path
@@ -48,8 +54,10 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
         width = tile.tileset.tile_width
         height = tile.tileset.tile_height
     else:
-        width = tile.image_width
-        height = tile.image_height
+        image_x = tile.x
+        image_y = tile.y
+        width = tile.width
+        height = tile.height
 
     return image_x, image_y, width, height
 
@@ -104,6 +112,8 @@ class TileMap:
     :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
+    :param Optional[arcade.TextureAtlas] texture_atlas: A default texture atlas to use for the
+            SpriteLists created by this map. If not supplied the global default atlas will be used.
 
 
     The `layer_options` parameter can be used to specify per layer arguments.
@@ -118,6 +128,8 @@ class TileMap:
         custom_class - All objects in the layer are created from this class instead of Sprite. \
                        Must be subclass of Sprite.
         custom_class_args - Custom arguments, passed into the constructor of the custom_class
+        texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is \
+                        supplied then the one defined at the map level will be used.
 
         For example:
 
@@ -165,6 +177,7 @@ class TileMap:
         hit_box_detail: float = 4.5,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
+        texture_atlas: Optional["TextureAtlas"] = None,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -189,6 +202,9 @@ class TileMap:
                 "Attempted to load an infinite TileMap. Arcade currently cannot load "
                 "infinite maps. Disable the infinite map property and re-save the file."
             )
+
+        if not texture_atlas:
+            texture_atlas = get_window().ctx.default_atlas
 
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width
@@ -217,6 +233,7 @@ class TileMap:
             "offset": self.offset,
             "custom_class": None,
             "custom_class_args": {},
+            "texture_atlas": texture_atlas,
         }
 
         for layer in self.tiled_map.layers:
@@ -573,6 +590,7 @@ class TileMap:
     def _process_image_layer(
         self,
         layer: pytiled_parser.ImageLayer,
+        texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
@@ -582,7 +600,7 @@ class TileMap:
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
-        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
+        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
 
         map_source = self.tiled_map.map_file
         map_directory = os.path.dirname(map_source)
@@ -663,6 +681,7 @@ class TileMap:
     def _process_tile_layer(
         self,
         layer: pytiled_parser.TileLayer,
+        texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
@@ -672,7 +691,7 @@ class TileMap:
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
-        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
+        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
         map_array = layer.data
 
         # Loop through the layer and add in the list
@@ -736,6 +755,7 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
+        texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
@@ -751,11 +771,13 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
+        shape = None
+
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
             if isinstance(cur_object, pytiled_parser.tiled_object.Tile):
                 if not sprite_list:
-                    sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
+                    sprite_list = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
 
                 tile = self._get_tile_by_gid(cur_object.gid)
                 my_sprite = self._create_sprite_from_tile(
@@ -904,6 +926,8 @@ class TileMap:
                     y = -(hh * math.sin(angle) + cy)
                     point = [x + offset[0], y + offset[1]]
                     shape.append(point)
+            elif isinstance(cur_object, pytiled_parser.tiled_object.Text):
+                pass
             else:
                 continue
 
@@ -928,6 +952,7 @@ def load_tilemap(
     hit_box_algorithm: str = "Simple",
     hit_box_detail: float = 4.5,
     offset: Vec2 = Vec2(0, 0),
+    texture_atlas: Optional["TextureAtlas"] = None,
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -959,6 +984,7 @@ def load_tilemap(
         hit_box_algorithm=hit_box_algorithm,
         hit_box_detail=hit_box_detail,
         offset=offset,
+        texture_atlas=texture_atlas,
     )
 
 

@@ -28,17 +28,29 @@ to changes which directly changed the API in a way that is not compatible with h
   however it is able to receive a ``delta_time`` parameter which is the time since the last update.
 * The ``update_rate`` parameter of :py:class:`~arcade.Window` can no longer be set to ``None``. Previously it defaulted
   to ``1 / 60`` however could be set to ``None``. The default is still the same, but setting it to None will not do anything.
+* Sprites created from the :py:class:`~arcade.TileMap` class would previously set a key in the ``Sprite.properties`` dictionary
+  named ``type``. This key has been renamed to ``class``. This is in keeping with Tiled's renaming of the key and following the Tiled
+  format/API as closely as possible.
+* The ``arcade.text_pillow`` and ``arcade.text_pyglet`` modules have been completely removed. The pillow implementation is gone, and the
+  pyglet one has been renamed to just ``arcade.text``. These modules were largely internal, but it is possible to have referenced them directly.
+* Due to the above change and removal of the pillow text implementation, the :py:func:`~arcade.create_text_sprite` previously referred to
+  the Pillow text implementation, and there was no easy way to create a sprite from Text with the pyglet implementation. This function has
+  been re-worked to use the pyglet based text system. It has no API breaking changes, but the underlying functionality has changed a lot, so
+  if you are using this function it may be worth checking the docs for it again. The main concern for a difference here would be if you
+  are also using any custom :py:class:`~arcade.TextureAtlas`.
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
 
 * Arcade now supports OpenGL ES 3.1/3.2 and have been
-  tested on the raspberry pi 4. Any model using the Cortex-A72
-  cpu should work. Note that you need fairly new mesa drivers
+  tested on the Raspberry Pi 4. Any model using the Cortex-A72
+  CPU should work. Note that you need fairly new Mesa drivers
   to get the new V3D drivers.
 * Rotation order changed to clockwise
 * Arcade now supports mixing pyglet and arcade drawing meaning
-  you can for example use pyglet batches.
+  you can for example use pyglet batches, which can draw thousands
+  and thousands of pyglet objects with the cost and performance time
+  of only a few.
 * Added a new system for handling background textures (ADD MORE INFO)
 
 Changes
@@ -86,6 +98,17 @@ Changes
     * Removal of various deprecated functions and parameters
     * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
+* Text
+
+  * Complete removal of the old PIL based text system. In Arcade 2.6 we had largely switched to the newer Pyglet based system, however
+    there were still remnants of the PIL implementation around. Namely the :py:func:`~arcade.create_text_sprite` function which has been
+    updated to use the Pyglet system. There's no API breaking change here but if you are using the function it would be worth reading the
+    new docs for it, as there are some different considerations surrounding use of a custom :py:class:`~arcade.TextureAtlas` if you are also
+    doing that. This function should now be much much faster than the old PIL implementation. The texture generation happens almost entirely on
+    the GPU now.
+  * As part of this move, the ``arcade.text_pillow`` module has been removed completely, and the ``arcade.text_pyglet`` module has been re-named
+    just be ``arcade.text``.
+
 * OpenGL
 
   * Support for OpenGL ES 3.1 and 3.2. 3.2 is fully supported, 3.1 is only supported if the ``EXT_geometry_shader`` extension
@@ -102,6 +125,34 @@ Changes
   * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
     when the extension is available.
   * Fixed many implicit type conversions in the shader code for wider support.
+
+* :py:class:`~arcade.TileMap`
+
+  * Added support Tiles defined as a sub-rectangle of an image. See Tiled 1.9 Release notes for more information on this feature.
+  * Changed the ``Sprite.properties`` key "type" to "class" to stay in line with Tiled's re-naming of this key in their API.
+  * You can now define a custom texture atlas for SpriteLists created in a TileMap. You can provide a map default to the ``texture_atlas``
+    parameter of the :py:class:`~arcade.Tilemap` class or the :py:func:`~arcade.load_tilemap` function. This will be used by default on all
+    layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the ``layer_options`` dictionary.
+    If no custom atlas is provided, then the global default atlas will be used(This is how it works pre Arcade 2.7).
+
+Version 2.6.16
+--------------
+
+*Released 2022-Sept-24*
+
+* Support Tiled 1.9 via PyTiled Parser 2.2.0 (`#1324 <https://github.com/pythonarcade/arcade/issues/1324>`_)
+* Headless rendering with EGL should now work again
+* Fix code highlights in two examples
+* Fix data tables in quick index. (`#1312 <https://github.com/pythonarcade/arcade/issues/1312>`_)
+* Fix issues running in headless mode
+* Update pymunk physics engine to return pre handler (`#1322 <https://github.com/pythonarcade/arcade/issues/1322>`_)
+* Bump Pyglet version to 2.0dev23
+* Few PEP-8 fixes
+* Fix perspective example
+
+*Note:* Development continues on version 2.7, which will be another leap
+forward in Arcade development. Feel free to check out the 'development' branch
+for the 2.7 changes.
 
 Version 2.6.15
 --------------

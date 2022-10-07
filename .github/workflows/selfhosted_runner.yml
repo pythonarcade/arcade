@@ -1,4 +1,4 @@
-name: GitHub Ubuntu test
+name: Windows self-hosted test
 
 on:
   push:
@@ -10,27 +10,20 @@ on:
 jobs:
 
   build:
-    name: test
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        architecture: ['x64']
-
+    name: Self Hosted Testing
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2      
-      - name: setup
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
+          python-version: "3.10"
 
-      - name: dependencies
+      - name: Install dependencies part 1
         run: |
           python -m pip install -U pip wheel setuptools
-      - name: wheel
+          python -m pip install pyogg pymunk
+      - name: Install dependencies part 2
         run: |
           python -m pip install -e .[dev]
       - name: code-inspection
@@ -40,3 +33,6 @@ jobs:
       - name: build-docs
         run: |
           sphinx-build doc build -W
+      - name: Test with pytest
+        run: |
+          pytest

@@ -332,15 +332,11 @@ from .perf_graph import PerfGraph
 # noinspection PyPep8
 from arcade import experimental
 
-from .text_pyglet import (
+from .text import (
     draw_text,
     load_font,
-    Text,
-)
-from .text_pillow import (
     create_text_sprite,
-    create_text_image,
-    DEFAULT_FONT_NAMES,
+    Text,
 )
 
 
@@ -438,7 +434,6 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
-           'create_text_image',
            'create_text_sprite',
            'create_triangles_filled_with_colors',
            'disable_timings',
@@ -463,7 +458,6 @@ __all__ = ['AStarBarrierList',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
            'draw_scaled_texture_rectangle',
-           'create_text',
            'draw_text',
            'draw_texture_rectangle',
            'draw_triangle_filled',
@@ -517,7 +511,6 @@ __all__ = ['AStarBarrierList',
            'get_timings',
            'get_three_float_color',
            'clear_timings',
-           'create_text_image',
            'get_viewport',
            'get_window',
            'get_fps',

@@ -1,11 +1,14 @@
-.. _currently supported by the PSF: https://devguide.python.org/#status-of-python-branches
+.. _currently supported by the PSF: https://devguide.python.org/versions/#supported-versions
 
 Installation for Obsolete Python Versions
 =========================================
 
 Arcade aims to support the same Python versions
-`currently supported by the PSF`_. You are strongly encouraged to upgrade to
-one of these if at all possible.
+`currently supported by the PSF`_.
+
+You are strongly encouraged to upgrade to one of the versions listed at the
+link above, with the exception of 3.11 or later. Some of arcade's dependencies
+have not yet been ported for those versions.
 
 If you absolutely cannot upgrade to Python 3.7 or later, you can try using an
 older and unsupported version of Arcade.
@@ -31,4 +34,3 @@ You can attempt to install these versions via the command line through pip,
 or by installing from source from github. Check the tags on Arcade's 
 `github page <https://github.com/pythonarcade/arcade>`_ for additional commit
 IDs.
-

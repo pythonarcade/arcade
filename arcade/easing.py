@@ -38,15 +38,14 @@ def smoothstep(percent: float) -> float:
     """
     Function for smoothstep easing.
     """
-    percent = percent * percent * (3.0 - 2.0 * percent)
-    return percent
+    return percent**2 * (3.0 - 2.0 * percent)
 
 
 def ease_in(percent: float) -> float:
     """
     Function for quadratic ease-in easing.
     """
-    return percent * percent
+    return percent**2
 
 
 def ease_out(percent: float) -> float:
@@ -178,9 +177,7 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
     """
     done = False
     easing_data.cur_period += delta_time
-    if easing_data.cur_period >= easing_data.end_period:
-        easing_data.cur_period = easing_data.end_period
-
+    easing_data.cur_period = min(easing_data.cur_period, easing_data.end_period)
     percent = easing_data.cur_period / easing_data.end_period
 
     angle = easing(percent, easing_data)
@@ -236,11 +233,8 @@ def ease_update(easing_data: EasingData, delta_time: float) -> Tuple:
     """
     Update easing between two values/
     """
-    done = False
     easing_data.cur_period += delta_time
-    if easing_data.cur_period >= easing_data.end_period:
-        easing_data.cur_period = easing_data.end_period
-
+    easing_data.cur_period = min(easing_data.cur_period, easing_data.end_period)
     if easing_data.end_period == 0:
         percent = 1.0
         value = easing_data.end_value
@@ -248,7 +242,5 @@ def ease_update(easing_data: EasingData, delta_time: float) -> Tuple:
         percent = easing_data.cur_period / easing_data.end_period
         value = easing(percent, easing_data)
 
-    if percent >= 1.0:
-        done = True
-
+    done = percent >= 1.0
     return done, value

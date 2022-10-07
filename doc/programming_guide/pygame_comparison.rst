@@ -25,8 +25,8 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - :ref:`API Docs<quick_index>`
      - `API Docs <https://www.pygame.org/docs/>`__
    * - Example code
-     - :ref:`Example Code<example-code>`
-     - N/A
+     - :ref:`Arcade Examples<example-code>`
+     - `Pygame Examples <https://github.com/pygame/pygame/tree/main/examples>`_
    * - License
      - `MIT License`_
      - LGPL_
@@ -91,8 +91,8 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
        `PyMunk <tutorials/pymunk_platformer/index.html>`_
      - None
    * - Event Management
-     - Pyglet-based
-     - No (or add `Pygame Zero <https://pygame-zero.readthedocs.io/en/stable/>`_)
+     - Pyglet-based, write functions to handle events
+     - Write your own event loop. Can get around this by add-ons like `Pygame Zero <https://pygame-zero.readthedocs.io/en/stable/>`_)
    * - View Support
      - `Yes <tutorials/views/index.html>`__
      - No

@@ -123,17 +123,11 @@ class UIButtonRow(UIBoxLayout):
         self,
         label: str,
         *,
-        on_click=None,
         style=None,
     ):
         button = self.button_factory(text=label, style=style)
         button.on_click = self._on_click  # type: ignore
         self.add(button)
-
-        if on_click:
-            # Add on_click callback as event handler
-            button.event("on_click")(on_click)
-
         return button
 
     def on_action(self, event: UIOnActionEvent):
@@ -141,7 +135,7 @@ class UIButtonRow(UIBoxLayout):
 
     def _on_click(self, event: UIOnClickEvent):
         self.dispatch_event(
-            "on_action", UIOnActionEvent(event.source, event.source.text)
+            "on_action", UIOnActionEvent(self, event.source.text)
         )
 
 
@@ -160,17 +154,19 @@ class DemoWindow(arcade.Window):
         anchor = self.manager.add(UIAnchorLayout())
         row = anchor.add(UIButtonRow(button_factory=UIFlatButton))
 
-        def on_click(event: UIOnClickEvent):
-            event.source.style = choice(STYLES)
+        button1 = row.add_button("Click me to switch style")
+
+        @button1.event("on_click")
+        def change_style(event: UIOnClickEvent):
             btn: UIFlatButton = event.source
+            btn.style = choice([s for s in STYLES if s is not btn.style])
             btn.trigger_render()
 
-        button = row.add_button("Click me to switch style", on_click=on_click)
+        button2 = row.add_button("Toggle disable")
 
+        @button2.event("on_click")
         def toggle(*_):
-            button.disabled = not button.disabled
-
-        row.add_button("Toggle disable", on_click=toggle)
+            button1.disabled = not button1.disabled
 
     def on_draw(self):
         self.clear()

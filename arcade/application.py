@@ -103,7 +103,7 @@ class Window(pyglet.window.Window):
             antialiasing = False
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
-        if sys.platform != "win32" and "raspi" in os.uname().nodename:
+        if sys.platform != "win32" and "rasp" in os.uname().nodename:
             gl_version = 3, 1
             gl_api = "gles"
 
@@ -648,7 +648,7 @@ class Window(pyglet.window.Window):
         :param int frames:
         """
         start_time = time.time()
-        for i in range(frames):
+        for _ in range(frames):
             self.switch_to()
             self.dispatch_events()
             self.dispatch_event('on_draw')
@@ -764,10 +764,11 @@ class Window(pyglet.window.Window):
         LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
 
         # Attempt to handle static draw setups
-        if self.static_display and self.flip_count > 0:
-            return
-        elif self.static_display:
-            self.flip_count += 1
+        if self.static_display:
+            if self.flip_count > 0:
+                return
+            else:
+                self.flip_count += 1
 
         super().flip()
 
@@ -817,9 +818,8 @@ class Window(pyglet.window.Window):
         platform-specific visibility as the defaults from pyglet will
         usually handle their needs automatically.
 
-        For more information on what this means, see the `relevant
-        pyglet documentation
-        <https://pyglet.readthedocs.io/en/master/modules/window.html#pyglet.window.Window.set_mouse_platform_visible>`_
+        For more information on what this means, see the documentation
+        for :py:meth:`pyglet.window.Window.set_mouse_platform_visible`.
         """
         super().set_mouse_platform_visible(platform_visible)
 
@@ -902,11 +902,7 @@ class View:
     def __init__(self,
                  window: Window = None):
 
-        if window is None:
-            self.window = arcade.get_window()
-        else:
-            self.window = window
-
+        self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
         self.section_manager: SectionManager = SectionManager(self)
 

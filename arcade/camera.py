@@ -67,7 +67,7 @@ class Camera:
     @property
     def rotation(self) -> float:
         """
-        Get or set the rotation in angles.
+        Get or set the rotation in degrees.
 
         This will rotate the camera clockwise meaning
         the contents will rotate counter-clockwise.
@@ -99,10 +99,7 @@ class Camera:
 
     @anchor.setter
     def anchor(self, anchor: Optional[Tuple[float, float]]):
-        if anchor is None:
-            self._anchor = None
-        else:
-            self._anchor = anchor[0], anchor[1]
+        self._anchor = None if anchor is None else (anchor[0], anchor[1])
 
     def update(self):
         """
@@ -241,7 +238,7 @@ class Camera:
         self._window.ctx.projection_2d_matrix = self.combined_matrix
 
         # View matrix for rotation
-        rotate = Mat4.from_rotation(self.rotation, (0, 0, 1))
+        rotate = Mat4.from_rotation(math.radians(self._rotation), (0, 0, 1))
 
         # If no anchor is set, use the center of the screen
         if self._anchor is None:

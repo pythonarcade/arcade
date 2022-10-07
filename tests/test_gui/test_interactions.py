@@ -40,7 +40,7 @@ def test_click_on_widget(uimanager):
     uimanager.add(widget1)
 
     # WHEN
-    with record_ui_events(widget1, "on_event") as records:
+    with record_ui_events(widget1, "on_event", "on_click") as records:
         uimanager.click(widget1.center_x, widget1.center_y)
 
     # THEN
@@ -66,18 +66,16 @@ def test_click_on_widget_if_disabled(uimanager):
     uimanager.add(widget1)
 
     # WHEN
-    with record_ui_events(widget1, "on_event") as records:
+    with record_ui_events(widget1, "on_event", "on_click") as records:
         uimanager.click(widget1.center_x, widget1.center_y)
 
     # THEN
     records: List[UIEvent]
-    assert len(records) == 3
+    assert len(records) == 2
     assert isinstance(records[0], UIMousePressEvent)
     assert isinstance(records[1], UIMouseReleaseEvent)
-    assert isinstance(records[2], UIOnClickEvent)
 
     assert not widget1.on_click.called
-
 
 
 def test_click_on_overlay_widget_consumes_events(uimanager):
@@ -88,8 +86,8 @@ def test_click_on_overlay_widget_consumes_events(uimanager):
     uimanager.add(widget2)
 
     # WHEN
-    with record_ui_events(widget1, "on_event") as w1_records:
-        with record_ui_events(widget2, "on_event") as w2_records:
+    with record_ui_events(widget1, "on_click") as w1_records:
+        with record_ui_events(widget2, "on_click") as w2_records:
             uimanager.click(widget1.center_x, widget1.center_y)
 
     # THEN
@@ -99,8 +97,8 @@ def test_click_on_overlay_widget_consumes_events(uimanager):
 
     # events are dispatched on widget2
     w2_records: List[UIEvent]
-    assert len(w2_records) == 3
-    click_event = w2_records[2]
+    assert len(w2_records) == 1
+    click_event = w2_records[0]
     assert isinstance(click_event, UIOnClickEvent)
     assert click_event.source == widget2
     assert click_event.x == widget2.center_x

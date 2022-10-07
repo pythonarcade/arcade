@@ -1,15 +1,14 @@
 """
 Drawing text with pyglet label
 """
-import math
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Optional, Tuple, Union
+
+import pyglet
 
 import arcade
-import pyglet
 from arcade.arcade_types import Color, Point
 from arcade.draw_commands import get_four_byte_color
-from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
 
 
@@ -80,7 +79,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     return font_name
 
 
-def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None:
+def _draw_label(label: pyglet.text.Label) -> None:
     """
 
     Helper for drawing pyglet labels with rotation within arcade.
@@ -93,25 +92,8 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
     """
     window = arcade.get_window()
 
-    # execute view matrix magic to rotate cleanly
-    if rotation:
-        angle_radians = math.radians(rotation)
-        x = label.x
-        y = label.y
-        # Create a matrix translating the label to 0,0
-        # then rotating it and then move it back
-        r_view = Mat4.from_rotation(angle_radians, (0, 0, 1))
-        t1_view = Mat4.from_translation((-x, -y, 0))
-        t2_view = Mat4.from_translation((x, y, 0))
-        final_view = t1_view @ r_view @ t2_view
-        window.view = final_view
-
     with window.ctx.pyglet_rendering():
         label.draw()
-
-    # Reset the view matrix
-    if rotation:
-        window.view = Mat4()
 
 
 class Text:
@@ -197,7 +179,9 @@ class Text:
         anchor_x: str = "left",
         anchor_y: str = "baseline",
         multiline: bool = False,
-        rotation: float = 0
+        rotation: float = 0,
+        batch: Optional[pyglet.graphics.Batch] = None,
+        group: Optional[pyglet.graphics.Group] = None
     ):
         """Build a text object"""
 
@@ -221,16 +205,34 @@ class Text:
             align=align,
             bold=bold,
             italic=italic,
-            multiline=multiline
+            multiline=multiline,
+            rotation=rotation,
+            batch=batch,
+            group=group
         )
-        self.rotation = rotation
+
+    @property
+    def batch(self) -> pyglet.graphics.Batch:
+        return self._label.batch
+
+    @batch.setter
+    def batch(self, batch: pyglet.graphics.Batch):
+        self._label.batch = batch
+
+    @property
+    def group(self) -> pyglet.graphics.Group:
+        return self._label.group
+
+    @group.setter
+    def group(self, group: pyglet.graphics.Group):
+        self._label.group = group
 
     @property
     def value(self) -> str:
         """
         Get or set the current text string to display.
 
-        THe value assigned will be converted to a string.
+        The value assigned will be converted to a string.
         """
         return self._label.text
 
@@ -246,7 +248,7 @@ class Text:
         """
         Get or set the current text string to display.
 
-        THe value assigned will be converted to a string.
+        The value assigned will be converted to a string.
 
         This is an alias for :py:attr:`~arcade.Text.value`
         """
@@ -288,7 +290,7 @@ class Text:
     @property
     def font_name(self) -> FontNameOrNames:
         """
-        Get or set the font name(s) for this label
+        Get or set the font name(s) for the label
         """
         return self._label.font_name
 
@@ -334,9 +336,17 @@ class Text:
         self._label.anchor_y = anchor_y
 
     @property
+    def rotation(self) -> float:
+        return self._label.rotation
+
+    @rotation.setter
+    def rotation(self, rotation: float):
+        self._label.rotation = rotation
+
+    @property
     def color(self) -> Color:
         """
-        Get or set the text color for this label
+        Get or set the text color for the label
         """
         return self._label.color
 
@@ -375,7 +385,7 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of this label        
+        Get the size of the label        
         """
         return self._label.width, self._label.height
 
@@ -444,7 +454,7 @@ class Text:
     @property
     def bold(self) -> bool:
         """
-        Get or set bold state of this label
+        Get or set bold state of the label
         """
         return self._label.bold
 
@@ -455,7 +465,7 @@ class Text:
     @property
     def italic(self) -> bool:
         """
-        Get or set the italic state of this label
+        Get or set the italic state of the label
         """
         return self._label.italic
 
@@ -466,7 +476,7 @@ class Text:
     @property
     def multiline(self) -> bool:
         """
-        Get or set the multiline flag of this label.
+        Get or set the multiline flag of the label.
         """
         return self._label.multiline
 
@@ -476,7 +486,7 @@ class Text:
 
     def draw(self) -> None:
         """
-        Draw this label to the screen at its current ``x`` and ``y`` position.
+        Draw the label to the screen at its current ``x`` and ``y`` position.
 
         .. warning: Cameras affect text drawing!
             If you want to draw a custom GUI that doesn't move with the
@@ -485,7 +495,7 @@ class Text:
             :ref:`sprite_move_scrolling`.
 
         """
-        _draw_label_with_rotation(self._label, self.rotation)
+        _draw_label(self._label)
 
     def draw_debug(    
         self,
@@ -515,7 +525,7 @@ class Text:
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
 
-        _draw_label_with_rotation(self._label, self.rotation)
+        _draw_label(self._label)
 
     @property
     def position(self) -> Point:
@@ -530,6 +540,91 @@ class Text:
     @position.setter
     def position(self, point: Point):
         self._label.position = point
+
+
+def create_text_sprite(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    multiline: bool = False,
+    rotation: float = 0,
+    texture_atlas: Optional[arcade.TextureAtlas] = None,
+) -> arcade.Sprite:
+    """
+    Creates a sprite containing text based off of :py:class:`~arcade.Text`.
+
+    Internally this creates a Text object and an empty texture. It then uses either the
+    provided texture atlas, or gets the default one, and draws the Text object into the
+    texture atlas.
+
+    It then creates a sprite referencing the newly created texture, and positions it
+    accordingly, and that is final result that is returned from the function.
+
+    If you are providing a custom texture atlas, something important to keep in mind is
+    that the resulting Sprite can only be added to SpriteLists which use that atlas. If
+    it is added to a SpriteList which uses a different atlas, you will likely just see
+    a black box drawn in it's place.
+
+    :param str text: Initial text to display. Can be an empty string
+    :param float start_x: x position to align the text's anchor point with
+    :param float start_y: y position to align the text's anchor point with
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param float font_size: Size of the text in points
+    :param float width: A width limit in pixels
+    :param str align: Horizontal alignment; values other than "left" require width to be set
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param bool bold: Whether to draw the text as bold
+    :param bool italic: Whether to draw the text as italic
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+                         Options: "left", "center", or "right"
+    :param str anchor_y: How to calculate the anchor point's y coordinate.
+                         Options: "top", "bottom", "center", or "baseline".
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
+    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
+        newly created texture. The default global atlas will be used if this is None.
+    """
+    text_object = Text(
+        text,
+        start_x,
+        start_y,
+        color,
+        font_size,
+        width,
+        align,
+        font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        multiline,
+        rotation
+    )
+
+    size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
+    texture = arcade.Texture.create_empty(text, size)
+
+    if not texture_atlas:
+        texture_atlas = arcade.get_window().ctx.default_atlas
+    texture_atlas.add(texture)
+    with texture_atlas.render_into(texture) as fbo:
+        fbo.clear((0, 0, 0, 255))
+        text_object.draw()
+
+    return arcade.Sprite(
+        center_x=text_object.right - (size[0] / 2),
+        center_y=text_object.top,
+        texture=texture,
+    )
 
 
 def draw_text(
@@ -706,7 +801,7 @@ def draw_text(
 
     color = get_four_byte_color(color)
     # Cache the states that are expensive to change
-    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}"
+    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     cache = arcade.get_window().ctx.pyglet_label_cache
     label = cache.get(key)
     if align != "center" and align != "left" and align != "right":
@@ -732,6 +827,7 @@ def draw_text(
             bold=bold,
             italic=italic,
             multiline=multiline,
+            rotation=rotation
         )
         cache[key] = label
 
@@ -742,5 +838,7 @@ def draw_text(
         label.position = start_x, start_y
     if label.color != color:
         label.color = color
+    if label.rotation != rotation:
+        label.rotation = rotation
 
-    _draw_label_with_rotation(label, rotation)
+    _draw_label(label)

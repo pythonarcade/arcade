@@ -306,8 +306,8 @@ def test_vertical_resize_child_according_size_hint_half(window):
 
 def test_vertical_resize_children_according_size_hint(window):
     box = UIBoxLayout(width=300, height=400, vertical=True)
-    dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
-    dummy_2 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
+    dummy_1 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(1, 1)))
+    dummy_2 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(0.5, 0.5)))
 
     box._do_layout()
 
@@ -347,8 +347,8 @@ def test_horizontal_resize_child_according_size_hint_half(window):
 
 def test_horizontal_resize_children_according_size_hint(window):
     box = UIBoxLayout(width=300, height=400, vertical=False)
-    dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
-    dummy_2 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
+    dummy_1 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(1, 1)))
+    dummy_2 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(0.5, 0.5)))
 
     box._do_layout()
 

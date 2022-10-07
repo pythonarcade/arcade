@@ -16,12 +16,7 @@ def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
 
 def clamp(a, low: float, high: float) -> float:
     """ Clamp a number between a range. """
-    if a > high:
-        return high
-    if a < low:
-        return low
-
-    return a
+    return high if a > high else max(a, low)
 
 
 def rotate_point(
@@ -71,8 +66,7 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
-    angle = math.degrees(math.atan2(x_diff, y_diff))
-    return angle
+    return math.degrees(math.atan2(x_diff, y_diff))
 
 
 def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
@@ -86,5 +80,4 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
-    angle = math.atan2(x_diff, y_diff)
-    return angle
+    return math.atan2(x_diff, y_diff)
