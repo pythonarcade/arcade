@@ -135,7 +135,7 @@ class MyGame(arcade.Window):
                          DEFAULT_FONT_SIZE,
                          font_name="Kenney Rocket Square")
 
-        start_y -= DEFAULT_LINE_HEIGHT8
+        start_y -= DEFAULT_LINE_HEIGHT
         # When trying to use system fonts, it can be risky to specify
         # only a single font because someone else's computer might not
         # have it installed. This is especially true if they run a
