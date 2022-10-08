@@ -33,7 +33,7 @@ def run_examples(indices_in_range, index_skip_list):
 
     file_path = os.path.dirname(os.path.abspath(__file__))
     print(file_path)
-    os.chdir(file_path+"/../..")
+    os.chdir(f"{file_path}/../..")
     # run examples
     for (idx, example) in enumerate(examples):
         if indices_in_range is not None and idx not in indices_in_range:
@@ -43,10 +43,9 @@ def run_examples(indices_in_range, index_skip_list):
         print(f"=================== Example {idx + 1:3} of {len(examples)}: {example}")
         # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
 
-        # Directly call venv, necessary for github action runner
-        cmd = 'python -m ' + example
+        cmd = f'python -m {example}'
+        print(cmd)
 
-        # print(cmd)
         result = subprocess.check_output(cmd, shell=True)
         if result:
             print(f"ERROR: Got a result of: {result}.")
