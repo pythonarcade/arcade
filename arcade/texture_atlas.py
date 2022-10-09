@@ -46,7 +46,11 @@ LOG = logging.getLogger(__name__)
 
 class AtlasRegion:
     """
-    Stores information about where a texture is located
+    Stores information about where a texture is located.
+
+    The texture coordinates are stored as a tuple of 8 floats
+    (4 points, 2 floats each) in the following order:
+    upper_left, upper_right, lower_left, lower_right.
 
     :param str atlas: The atlas this region belongs to
     :param str texture: The arcade texture
@@ -168,9 +172,8 @@ class TextureAtlas:
         self._texture = self._ctx.texture(
             size,
             components=4,
-            # TODO: Atlas resize shader relies on repeat. Can be fixed.
-            # wrap_x=self._ctx.CLAMP_TO_EDGE,
-            # wrap_y=self._ctx.CLAMP_TO_EDGE,
+            wrap_x=self._ctx.CLAMP_TO_EDGE,
+            wrap_y=self._ctx.CLAMP_TO_EDGE,
         )
         # Creating an fbo makes us able to clear the texture
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
@@ -181,6 +184,7 @@ class TextureAtlas:
 
         # A set of textures this atlas contains for fast lookups + set operations
         self._textures: List["Texture"] = []
+        self._images = []
 
         # Texture containing texture coordinates
         self._uv_texture = self._ctx.texture(
