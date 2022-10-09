@@ -184,7 +184,7 @@ class TextureAtlas:
 
         # A set of textures this atlas contains for fast lookups + set operations
         self._textures: List["Texture"] = []
-        self._images = []
+        # self._images = []
 
         # Texture containing texture coordinates
         self._uv_texture = self._ctx.texture(
