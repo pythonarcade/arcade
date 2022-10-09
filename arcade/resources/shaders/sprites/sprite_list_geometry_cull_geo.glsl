@@ -31,10 +31,11 @@ void main() {
         cos(angle), sin(angle),
         -sin(angle), cos(angle)
     );
+    mat4 mvp = window.projection * window.view;
     // Do viewport culling for sprites.
     // We do this in normalized device coordinates to make it simple
     // apply projection to the center point. This is important so we get zooming/scrollig right
-    vec2 ct = (window.projection * window.view * vec4(center, 0.0, 1.0)).xy;
+    vec2 ct = (mvp * vec4(center, 0.0, 1.0)).xy;
     // We can get away with cheaper calculation of size
     // The length of the diagonal is the cheapest estimation in case rotation is applied
     float st = length(hsize_max * vec2(window.projection[0][0], window.projection[1][1]));
@@ -49,22 +50,22 @@ void main() {
     // Set the out color for all vertices
     gs_color = v_color[0];
     // Upper left
-    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv =  uv0;
     EmitVertex();
 
     // lower left
-    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = uv2;
     EmitVertex();
 
     // upper right
-    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv = uv1;
     EmitVertex();
 
     // lower right
-    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = uv3;
     EmitVertex();
 

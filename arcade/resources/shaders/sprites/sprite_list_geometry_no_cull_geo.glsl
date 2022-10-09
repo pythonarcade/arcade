@@ -29,6 +29,7 @@ void main() {
         cos(angle), sin(angle),
         -sin(angle), cos(angle)
     );
+    mat4 mvp = window.projection * window.view;
     // Emit a quad with the right position, rotation and texture coordinates
     // Read texture coordinates from UV texture here
     vec4 uv_data = texelFetch(uv_texture, ivec2(v_texture[0], 0), 0);
@@ -36,25 +37,25 @@ void main() {
     vec2 tex_size = uv_data.zw;
 
     // Upper left
-    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv =  vec2(0.0, tex_size.y) + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower left
-    gl_Position = window.projection * window.view * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // upper right
-    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
     gs_uv = tex_size + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
 
     // lower right
-    gl_Position = window.projection * window.view * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
     gs_uv = vec2(tex_size.x, 0.0) + tex_offset;
     gs_color = v_color[0];
     EmitVertex();
