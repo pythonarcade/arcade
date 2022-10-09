@@ -17,86 +17,93 @@ class Transform:
     Transforms are responsible for transforming the texture
     coordinates and hit box points.
     """
+    #: How texture coordinates order should be changed
+    #: for this transform.
+    order = 0, 1, 2, 3
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
         center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         """Transforms hit box points."""
-        raise NotImplementedError
+        return points
 
-    @staticmethod
-    def transform_texture_coordinate(
-        uv_1: Point,
-        uv_2: Point,
-        uv_3: Point,
-        uv_4: Point,
-    ) -> Tuple[Point, Point, Point, Point]:
-        """Transforms texture coordinates."""
-        raise NotImplementedError
+    @classmethod
+    def transform_vertex_order(cls, order: Tuple[int, int, int, int]) -> Tuple[int, int, int, int]:
+        """
+        Transforms and exiting vertex order with this transform.
+        This gives us important metadata on how to quickly transform
+        the texture coordinates without iterating all applied transforms.
+        """
+        return (
+            order[cls.order[0]],
+            order[cls.order[1]],
+            order[cls.order[2]],
+            order[cls.order[3]],
+        )
+
+    @classmethod
+    def transform_texture_coordinates_order(
+        cls,
+        texture_coordinates: Tuple[float, float, float, float, float, float, float, float],
+        order: Tuple[int, int, int, int],
+    ) -> Iterable[Point]:
+        """Change texture coordinates order."""
+        uvs = texture_coordinates
+        return (
+            uvs[cls.order[0]],
+            uvs[cls.order[0]],
+            uvs[cls.order[1]],
+            uvs[cls.order[1]],
+            uvs[cls.order[2]],
+            uvs[cls.order[2]],
+            uvs[cls.order[3]],
+            uvs[cls.order[3]],
+        )
 
 
 class RotateTransform(Transform):
     """
     Rotate 90 degrees clockwise.
     """
+    order = 3, 0, 1, 2
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
         center: Tuple[float, float] = (0, 0),
     ) -> PointList:
-        return [arcade.rotate_point(point[0], point[1], 0, 0, 90) for point in points]
-
-    @staticmethod
-    def transform_texture_coordinate(
-        uv_1: Point,
-        uv_2: Point,
-        uv_3: Point,
-        uv_4: Point,
-    ) -> Tuple[Point, Point, Point, Point]:
-        return uv_4, uv_1, uv_2, uv_3
+        return tuple(arcade.rotate_point(point[0], point[1], 0, 0, 90) for point in points)
 
 
 class FlipLeftToRightTransform(Transform):
     """
     Flip texture horizontally / left to right.
     """
+    order = 2, 3, 0, 1
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
         center: Tuple[float, float] = (0, 0),
     ) -> PointList:
-        raise NotImplementedError
+        return tuple((-point[0], point[1]) for point in points)
 
-    @staticmethod
-    def transform_texture_coordinate(
-        uv_1: Point,
-        uv_2: Point,
-        uv_3: Point,
-        uv_4: Point,
-    ) -> Tuple[Point, Point, Point, Point]:
-        return uv_3, uv_4, uv_1, uv_2 
 
 
 class FlipTopToBottomTransform(Transform):
     """
     Flip texture vertically / top to bottom.
     """
+    oder = 1, 2, 3, 0
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
         center: Tuple[float, float] = (0, 0),
     ) -> PointList:
-        raise NotImplementedError
-
-    @staticmethod
-    def transform_texture_coordinate(
-        uv_1: Point,
-        uv_2: Point,
-        uv_3: Point,
-        uv_4: Point,
-    ) -> Tuple[Point, Point, Point, Point]:
-        return uv_2, uv_3, uv_4, uv_1
+        return tuple((point[0], -point[1]) for point in points)
 
 
 def normalize(transforms: Iterable[Transform]):
@@ -109,4 +116,4 @@ def normalize(transforms: Iterable[Transform]):
     :param transforms: List of transforms
     :return: Normalized list of transforms
     """
-    raise NotImplementedError
+    return []

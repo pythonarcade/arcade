@@ -2,6 +2,7 @@
 Code related to working with textures.
 """
 import logging
+from typing import Optional, Tuple, List, Union, TYPE_CHECKING
 from pathlib import Path
 from weakref import WeakValueDictionary
 
@@ -9,7 +10,6 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional, Tuple, List, Union
 from arcade import texture_transforms as tt
 from arcade import (
     lerp,
@@ -22,6 +22,10 @@ from arcade import (
 from arcade.resources import resolve_resource_path
 # from arcade.cache.hit_box import HitBoxCache
 # from arcade.cache.image import WeakImageCache
+
+if TYPE_CHECKING:
+    from arcade.sprite import Sprite
+    from arcade.sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
 
@@ -78,14 +82,15 @@ class Texture:
         hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
     ):
-        from arcade.sprite import Sprite
-        from arcade.sprite_list import SpriteList
-
         if not isinstance(image, PIL.Image.Image):
             raise ValueError("A texture must have an image")
 
         self.name = name
         self.image = image
+        # The order of the texture coordinates when mapping
+        # to a sprite/quad. This order is changed when the
+        # texture is flipped or rotated.
+        self._vertex_order = 0, 1, 2, 3
         self._transforms: List[tt.Transform] = []
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
@@ -100,6 +105,7 @@ class Texture:
         self._hit_box_algorithm = hit_box_algorithm or "None"
         self._hit_box_detail = hit_box_detail
         self._hit_box_points = None
+
         # TODO: Possibly remove this making it lazy
         self.calculate_hit_box_points()
 
