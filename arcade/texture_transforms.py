@@ -6,8 +6,19 @@ We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
 from typing import Iterable, Tuple
+from enum import Enum
 import arcade
-from arcade.arcade_types import Point, PointList
+from arcade.arcade_types import PointList
+
+
+class VertexOrder(Enum):
+    """
+    Order for texture coordinates.
+    """
+    UPPER_LEFT = 0
+    UPPER_RIGHT = 1
+    LOWER_LEFT = 2
+    LOWER_RIGHT = 3
 
 
 class Transform:
@@ -19,7 +30,13 @@ class Transform:
     """
     #: How texture coordinates order should be changed
     #: for this transform.
-    order = 0, 1, 2, 3
+    #: upper_left, upper_right, lower_left, lower_right
+    order = (
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_RIGHT.value,
+    )
 
     @staticmethod
     def transform_hit_box_points(
@@ -48,7 +65,7 @@ class Transform:
         cls,
         texture_coordinates: Tuple[float, float, float, float, float, float, float, float],
         order: Tuple[int, int, int, int],
-    ) -> Iterable[Point]:
+    ) -> Tuple[float, float, float, float, float, float, float, float]:
         """Change texture coordinates order."""
         uvs = texture_coordinates
         return (
@@ -67,7 +84,12 @@ class RotateTransform(Transform):
     """
     Rotate 90 degrees clockwise.
     """
-    order = 3, 0, 1, 2
+    order = (
+        VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_RIGHT.value,
+    )
 
     @staticmethod
     def transform_hit_box_points(
@@ -81,7 +103,12 @@ class FlipLeftToRightTransform(Transform):
     """
     Flip texture horizontally / left to right.
     """
-    order = 2, 3, 0, 1
+    order = (
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value, 
+    )
 
     @staticmethod
     def transform_hit_box_points(
@@ -91,12 +118,16 @@ class FlipLeftToRightTransform(Transform):
         return tuple((-point[0], point[1]) for point in points)
 
 
-
 class FlipTopToBottomTransform(Transform):
     """
     Flip texture vertically / top to bottom.
     """
-    oder = 1, 2, 3, 0
+    order = (
+        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.UPPER_RIGHT.value,
+    )
 
     @staticmethod
     def transform_hit_box_points(
@@ -104,6 +135,44 @@ class FlipTopToBottomTransform(Transform):
         center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple((point[0], -point[1]) for point in points)
+
+
+class TransposeTransform(Transform):
+    """
+    Transpose texture.
+    """
+    order = (
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_LEFT.value,
+    )
+
+    @staticmethod
+    def transform_hit_box_points(
+        points: PointList,
+        center: Tuple[float, float] = (0, 0),
+    ) -> PointList:
+        return tuple((point[1], point[0]) for point in points)
+
+
+class TransverseTransform(Transform):
+    """
+    Transverse texture.
+    """
+    order = (
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_RIGHT.value,
+    )
+
+    @staticmethod
+    def transform_hit_box_points(
+        points: PointList,
+        center: Tuple[float, float] = (0, 0),
+    ) -> PointList:
+        return tuple((-point[1], -point[0]) for point in points)
 
 
 def normalize(transforms: Iterable[Transform]):
