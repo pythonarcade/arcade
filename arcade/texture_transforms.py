@@ -41,7 +41,6 @@ class Transform:
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         """Transforms hit box points."""
         return points
@@ -69,18 +68,18 @@ class Transform:
         """Change texture coordinates order."""
         uvs = texture_coordinates
         return (
-            uvs[cls.order[0]],
-            uvs[cls.order[0]],
-            uvs[cls.order[1]],
-            uvs[cls.order[1]],
-            uvs[cls.order[2]],
-            uvs[cls.order[2]],
-            uvs[cls.order[3]],
-            uvs[cls.order[3]],
+            uvs[order[0]],
+            uvs[order[0]],
+            uvs[order[1]],
+            uvs[order[1]],
+            uvs[order[2]],
+            uvs[order[2]],
+            uvs[order[3]],
+            uvs[order[3]],
         )
 
 
-class RotateTransform(Transform):
+class Rotate90Transform(Transform):
     """
     Rotate 90 degrees clockwise.
     """
@@ -94,9 +93,44 @@ class RotateTransform(Transform):
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple(arcade.rotate_point(point[0], point[1], 0, 0, 90) for point in points)
+
+
+class Rotate180Transform(Transform):
+    """
+    Rotate 180 degrees clockwise.
+    """
+    order = (
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.UPPER_LEFT.value,
+    )
+
+    @staticmethod
+    def transform_hit_box_points(
+        points: PointList,
+    ) -> PointList:
+        return tuple(arcade.rotate_point(point[0], point[1], 0, 0, 180) for point in points)
+
+
+class Rotate270Transform(Transform):
+    """
+    Rotate 270 degrees clockwise.
+    """
+    order = (
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_LEFT.value,
+    )
+
+    @staticmethod
+    def transform_hit_box_points(
+        points: PointList,
+    ) -> PointList:
+        return tuple(arcade.rotate_point(point[0], point[1], 0, 0, 270) for point in points)
 
 
 class FlipLeftToRightTransform(Transform):
@@ -113,7 +147,6 @@ class FlipLeftToRightTransform(Transform):
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple((-point[0], point[1]) for point in points)
 
@@ -132,7 +165,6 @@ class FlipTopToBottomTransform(Transform):
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple((point[0], -point[1]) for point in points)
 
@@ -151,7 +183,6 @@ class TransposeTransform(Transform):
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple((point[1], point[0]) for point in points)
 
@@ -170,7 +201,6 @@ class TransverseTransform(Transform):
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
-        center: Tuple[float, float] = (0, 0),
     ) -> PointList:
         return tuple((-point[1], -point[0]) for point in points)
 
