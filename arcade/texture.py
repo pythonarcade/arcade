@@ -125,10 +125,19 @@ class Texture:
         """
         # FLIP_TOP_BOTTOM = 1
 
+    def flip_diagonally(self) -> "Texture":
+        """
+        Returns a new texture that is flipped diagonally from this texture.
+        This is an alias for :func:`transpose`.
+
+        :return: Texture 
+        """
+        return self.transpose()
+
     def transpose(self) -> "Texture":
         """
-        Transpose the texture. This flips the texture
-        diagonally from lower right to upper left.
+        Returns a new texture that is transposed from this texture.
+        This flips the texture diagonally from lower right to upper left.
 
         :return: Texture 
         """
@@ -136,8 +145,8 @@ class Texture:
 
     def transverse(self) -> "Texture":
         """
-        Transverse the texture. This flips the texture
-        diagonally from lower left to upper right.
+        Returns a new texture that is transverse from this texture.
+        This flips the texture diagonally from lower left to upper right.
 
         :return: Texture 
         """
