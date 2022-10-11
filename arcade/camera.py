@@ -41,6 +41,7 @@ class SimpleCamera:
         self._projection: FourFloatTuple = projection or (0, self._window.width, 0, self._window.height)
 
         # Matrixes
+
         # Projection Matrix is used to apply the camera viewport size
         self._projection_matrix: Mat4 = Mat4()
         # View Matrix is what the camera is looking at(position)
