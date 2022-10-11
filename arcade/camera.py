@@ -471,7 +471,7 @@ class Camera(SimpleCamera):
         if update_view_matrix:
             self._set_view_matrix()  # this will also set the combined matrix
 
-    def shake(self, velocity: Vec2, speed: float = 1.5, damping: float = 0.9) -> None:
+    def shake(self, velocity: Union[Vec2, tuple], speed: float = 1.5, damping: float = 0.9) -> None:
         """
         Add a camera shake.
 
