@@ -22,7 +22,7 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.camera = arcade.Camera()
+        self.camera = arcade.SimpleCamera()
 
         # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
         # Image from:
@@ -95,7 +95,7 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.UP:
             self.y_direction -= PLAYER_SPEED
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.camera.resize(width, height)
 
