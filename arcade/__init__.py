@@ -99,7 +99,7 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 
-from .camera import Camera, BaseCamera, AdvanceCamera
+from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -348,6 +348,7 @@ __all__ = ['AStarBarrierList',
            'ArcadeContext',
            'AtlasRegion',
            'Camera',
+           'SimpleCamera',
            'Color',
            'DEFAULT_FONT_NAMES',
            'EasingData',

@@ -58,7 +58,7 @@ class ShadertoyVideo(arcade.Window):
         self.shadertoy.time += delta_time
         self.next_frame()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize(self.get_framebuffer_size())
 

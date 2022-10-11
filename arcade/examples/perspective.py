@@ -137,7 +137,7 @@ class Perspective(arcade.Window):
             arcade.set_viewport(0, self.fbo.width, 0, self.fbo.height)
             self.spritelist.draw()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
 

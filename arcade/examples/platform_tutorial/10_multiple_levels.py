@@ -83,8 +83,9 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
-        self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        viewport = (0, 0, self.width, self.height)
+        self.camera = arcade.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.SimpleCamera(viewport=viewport)
 
         # Map name
         map_name = f":resources:tiled_maps/map2_level_{self.level}.json"

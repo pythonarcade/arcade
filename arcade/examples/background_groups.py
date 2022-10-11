@@ -28,7 +28,7 @@ class MyGame(arcade.Window):
         # Set the background color to equal to that of the first background.
         self.background_color = (5, 44, 70)
 
-        self.camera = arcade.Camera()
+        self.camera = arcade.SimpleCamera()
 
         # create a background group which will hold all the backgrounds.
         self.backgrounds = background.BackgroundGroup()
@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.UP:
             self.y_direction -= PLAYER_SPEED
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.camera.resize(width, height)
 

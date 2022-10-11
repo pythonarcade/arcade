@@ -32,7 +32,7 @@ class MyGame(arcade.Window):
         self.left_pressed = False
         self.right_pressed = False
 
-        self.camera = arcade.Camera(width, height)
+        self.camera = arcade.SimpleCamera()
 
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """

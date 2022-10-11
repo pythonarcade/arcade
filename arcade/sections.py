@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set
 
-from arcade import Camera, get_window
+from arcade import SimpleCamera, get_window
 
 if TYPE_CHECKING:
     from arcade import View
@@ -55,7 +55,7 @@ class Section:
         self._top: int = bottom + height
 
         # optional section camera
-        self.camera: Optional[Camera] = None
+        self.camera: Optional[SimpleCamera] = None
 
     def __repr__(self):
         name = f'Section {self.name}' if self.name else 'Section'
@@ -272,8 +272,9 @@ class SectionManager:
 
         # generic camera to reset after a custom camera is use
         # this camera is set to the whole viewport
-        self.camera: Camera = Camera(self.view.window.width,
-                                     self.view.window.height)
+        self.camera: SimpleCamera = SimpleCamera(viewport=(0, 0,
+                                                           self.view.window.width,
+                                                           self.view.window.height))
 
         # Holds the section the mouse is currently on top
         self.mouse_over_section: Optional[Section] = None
