@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 import time
-from typing import Tuple, Optional, Union
+from typing import Tuple, Optional
 
 import pyglet
 
@@ -28,8 +28,6 @@ MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
 _window: 'Window'
-
-ArcadeCameras = Union[arcade.Camera, arcade.BaseCamera, arcade.AdvanceCamera]  # type alias
 
 
 def get_screens():
@@ -170,7 +168,7 @@ class Window(pyglet.window.Window):
         set_window(self)
 
         self._current_view: Optional[View] = None
-        self.current_camera: Optional[ArcadeCameras] = None
+        self.current_camera: Optional[arcade.SimpleCamera] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
