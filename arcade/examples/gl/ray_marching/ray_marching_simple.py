@@ -32,7 +32,7 @@ class RayMarcherSimple(arcade.Window):
         self.time += delta_time
         self.program["iTime"] = self.time
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.set_aspect_ratio(width, height)
 
