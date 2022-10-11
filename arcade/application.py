@@ -526,7 +526,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         """
         Override this function to add custom code to be called any time the window
         is resized. The main responsibility of this method is updating
