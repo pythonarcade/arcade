@@ -15,7 +15,7 @@ from typing import (
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
-from arcade import Sprite, get_window
+from arcade import Sprite, get_window, Texture
 from arcade.gui.events import (
     UIEvent,
     UIMouseMovementEvent,
@@ -219,7 +219,7 @@ class UIWidget(EventDispatcher, ABC):
     _border_width: int = Property(0)  # type: ignore
     _border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
     _bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
-    _bg_ninepatch: Optional[NinePatchTexture] = Property(None)  # type: ignore
+    _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
     _padding_top: int = Property(0)  # type: ignore
     _padding_right: int = Property(0)  # type: ignore
     _padding_bottom: int = Property(0)  # type: ignore
@@ -265,7 +265,7 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "_border_width", self.trigger_render)
         bind(self, "_border_color", self.trigger_render)
         bind(self, "_bg_color", self.trigger_render)
-        bind(self, "_bg_ninepatch", self.trigger_render)
+        bind(self, "_bg_tex", self.trigger_render)
         bind(self, "_padding_top", self.trigger_render)
         bind(self, "_padding_right", self.trigger_render)
         bind(self, "_padding_bottom", self.trigger_render)
@@ -382,9 +382,14 @@ class UIWidget(EventDispatcher, ABC):
         if self._bg_color:
             surface.clear(self._bg_color)
         # draw background texture
-        if self._bg_ninepatch:
-            self._bg_ninepatch.size = self.size
-            self._bg_ninepatch.draw()
+        if self._bg_tex:
+            surface.draw_texture(
+                x=0,
+                y=0,
+                width=self.width,
+                height=self.height,
+                tex=self._bg_tex
+            )
 
         # draw border
         if self._border_width and self._border_color:
@@ -507,6 +512,9 @@ class UIWidget(EventDispatcher, ABC):
     def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
 
+    def resize(self, *, width=None, height=None):
+        self.rect = self.rect.resize(width=width, height=height)
+
     def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
         """
         Sets border properties
@@ -541,9 +549,7 @@ class UIWidget(EventDispatcher, ABC):
         self,
         *,
         color=...,
-        texture=...,
-        start: Tuple[int, int] = None,
-        end: Tuple[int, int] = None,
+        texture: Union[None, Texture, NinePatchTexture] = ...,
     ) -> "UIWidget":
 
         """
@@ -553,27 +559,14 @@ class UIWidget(EventDispatcher, ABC):
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
         :param arcade.Color color: A color used as background
-        :param arcade.Texture texture: A texture used as background
-        :param Tuple[int, int] start: bottom left point for nine patch splitting
-        :param Tuple[int, int] end: top right point for nine patch splitting
+        :param arcade.Texture texture: A texture or ninepatch texture used as background
         :return: self
         """
         if color is not ...:
             self._bg_color = color
 
         if texture is not ...:
-            if start is None:
-                start = (0, 0)
-            if end is None:
-                end = texture.size
-
-            self._bg_ninepatch = NinePatchTexture(
-                position=self.position,
-                size=self.size,
-                start=start,
-                end=end,
-                texture=texture,
-            )
+            self._bg_tex = texture
 
         return self
 

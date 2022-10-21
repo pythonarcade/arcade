@@ -1,6 +1,9 @@
+from typing import Union
+
 import arcade
 from arcade import Texture
 from arcade.experimental.uistyle import UIFlatButtonStyle_default
+from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind
 from arcade.gui.widgets import UIInteractiveWidget, Surface
 
@@ -30,9 +33,9 @@ class UITextureButton(UIInteractiveWidget):
         y: float = 0,
         width: float = None,
         height: float = None,
-        texture: Texture = None,
-        texture_hovered: Texture = None,
-        texture_pressed: Texture = None,
+        texture: Union[Texture, NinePatchTexture] = None,
+        texture_hovered: Union[Texture, NinePatchTexture] = None,
+        texture_pressed: Union[Texture, NinePatchTexture] = None,
         text: str = "",
         scale: float = None,
         size_hint=None,
@@ -43,14 +46,14 @@ class UITextureButton(UIInteractiveWidget):
     ):
 
         if width is None and texture is not None:
-            width = texture.width
+            width = texture.size[0]
 
         if height is None and texture is not None:
-            height = texture.height
+            height = texture.size[1]
 
         if scale is not None and texture is not None:
-            height = texture.height * scale
-            width = texture.width * scale
+            width = texture.size[0] * scale
+            height = texture.size[1] * scale
 
         super().__init__(
             x,

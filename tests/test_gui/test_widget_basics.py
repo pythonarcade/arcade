@@ -108,3 +108,16 @@ def test_widget_content_rect_affected_by_border_width():
     # THEN
     assert widget.rect == (0, 0, 100, 100)
     assert widget.content_rect == (10, 10, 80, 80)
+
+
+def test_widget_resize():
+    # GIVEN
+    widget = UIWidget(x=0, y=0, width=100, height=100)
+    widget.with_border(10)
+
+    # WHEN
+    widget.resize(width=50, height=50)
+
+    # THEN
+    assert widget.rect == (0, 0, 50, 50)
+    assert widget.content_rect == (10, 10, 30, 30)
