@@ -403,8 +403,8 @@ class UIGridLayout(UILayout):
     Places widget in a grid layout.
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
-    :param float align_horizontal: Align children in orthogonal direction (x: left, center, right)
-    :param float align_vertical: Align children in orthogonal direction (y: top, center, bottom)
+    :param str align_horizontal: Align children in orthogonal direction (x: left, center, right)
+    :param str align_vertical: Align children in orthogonal direction (y: top, center, bottom)
     :param Iterable[UIWidget] children: Initial children, more can be added
     :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
     :param size_hint_min: Min width and height in pixel
