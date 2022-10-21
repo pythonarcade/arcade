@@ -71,7 +71,6 @@ class Texture:
     _valid_hit_box_algorithms = [
         "Simple",
         "Detailed",
-        "None",
         None,
     ]
 
@@ -97,8 +96,9 @@ class Texture:
 
         if hit_box_algorithm not in self._valid_hit_box_algorithms:
             raise ValueError(
-                "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
-                ", or an actual None value."
+                "hit_box_algorithm must be one of: {}".format(
+                    ", ".join(str(v) for v in self._valid_hit_box_algorithms)
+                )
             )
 
         # preserve old behavior in case any users subclassed Texture
