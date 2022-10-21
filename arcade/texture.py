@@ -2,7 +2,7 @@
 Code related to working with textures.
 """
 import logging
-from typing import Optional, Tuple, List, Union, TYPE_CHECKING
+from typing import Callable, Optional, Tuple, List, Union, TYPE_CHECKING
 from pathlib import Path
 from weakref import WeakValueDictionary
 
@@ -67,12 +67,11 @@ class Texture:
     """
     cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
-    # TODO: Make this more generic?
-    _valid_hit_box_algorithms = [
-        "Simple",
-        "Detailed",
-        None,
-    ]
+    _hit_box_funcs = {
+        "simple": calculate_hit_box_points_simple,
+        "detailed": calculate_hit_box_points_detailed,
+        "none": None,  # For backwards compatibility
+    }
 
     def __init__(
         self,
@@ -94,20 +93,52 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
-        if hit_box_algorithm not in self._valid_hit_box_algorithms:
-            raise ValueError(
-                "hit_box_algorithm must be one of: {}".format(
-                    ", ".join(str(v) for v in self._valid_hit_box_algorithms)
-                )
-            )
-
-        # preserve old behavior in case any users subclassed Texture
-        self._hit_box_algorithm = hit_box_algorithm or "None"
+        self._hit_box_func: Optional["function"] = None
+        self._hit_box_algorithm: Optional[str] = None
+        if hit_box_algorithm is not None:
+            if not isinstance(hit_box_algorithm, str):
+                raise ValueError(
+                    f"hit_box_algorithm must be a string or None, not {hit_box_algorithm}")
+            self._hit_box_algorithm = hit_box_algorithm.lower()
+            try:
+                self._hit_box_func = self._hit_box_funcs[self._hit_box_algorithm]
+            except KeyError:
+                raise ValueError(
+                    "hit_box_algorithm must be None or one of: {}".format(
+                        ", ".join(str(v) for v in self._hit_box_funcs.keys())
+                    ))
+        else:
+            self._hit_box_algorithm = None
         self._hit_box_detail = hit_box_detail
         self._hit_box_points = None
 
         # TODO: Possibly remove this making it lazy
         self.calculate_hit_box_points()
+
+    @classmethod
+    def register_hit_box_algorithm(cls, name: str, func: Callable) -> None:
+        """
+        Register a hit box function.
+
+        This function must be given a name such as the default
+        "Simple" and "Detailed" ones. The supplied function must
+        take a PIL image and an float value representing detail
+        and return the hit box points.
+
+        The names are case insensitive are stored in lowercase.
+
+        Example::
+
+            # A custom hit box function. Ideally it would inspect the image
+            def my_hit_box_func(image: PIL.Image, detail: float):
+                return ((0, 0), (0, 1), (1, 1), (1, 0))
+
+            Texture.register_hit_box_function("MyHitBoxAlgo", my_hit_box_func)
+
+        :param str name: Name of the hit box algorithm
+        :param Callable func: Function to calculate hit box points
+        """
+        cls._hit_box_funcs[name.lower()] = func
 
     def flip_left_to_right(self) -> "Texture":
         """
@@ -340,12 +371,8 @@ class Texture:
         This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        if self._hit_box_algorithm == "Simple":
-            self._hit_box_points = calculate_hit_box_points_simple(self.image)
-        elif self._hit_box_algorithm == "Detailed":
-            self._hit_box_points = calculate_hit_box_points_detailed(
-                self.image, self._hit_box_detail
-            )
+        if self._hit_box_func:
+            self._hit_box_points = self._hit_box_func(self.image, self._hit_box_detail)
         else:
             self._hit_box_points = (
                 (-self.image.width / 2, -self.image.height / 2),

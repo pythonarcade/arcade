@@ -11,7 +11,7 @@ from pymunk import autogeometry
 from arcade.arcade_types import PointList
 
 
-def calculate_hit_box_points_simple(image: Image) -> PointList:
+def calculate_hit_box_points_simple(image: Image, *args) -> PointList:
     """
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.

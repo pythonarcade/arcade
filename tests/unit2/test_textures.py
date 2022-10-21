@@ -49,7 +49,7 @@ def test_texture_constructor_hit_box_algo():
     Texture(name="default", image=image)
     Texture(name="simple", image=image, hit_box_algorithm="Simple")
     Texture(name="detailed", image=image, hit_box_algorithm="Detailed")
-    Texture(name="allowsnonehitbox", image=image,hit_box_algorithm=None)
+    Texture(name="allows_none_hitbox", image=image, hit_box_algorithm=None)
     Texture(name="old_behavior_preserved", image=image, hit_box_algorithm="None")
 
     with pytest.raises(ValueError):
@@ -194,7 +194,7 @@ def test_crate_empty():
     tex = Texture.create_empty("empty", size)
     assert tex.name == "empty"
     assert tex.size == size
-    assert tex._hit_box_algorithm == 'None'
+    assert tex._hit_box_algorithm == None
     assert tex.hit_box_points == (
         (-128.0, -128.0),
         (128.0, -128.0),
