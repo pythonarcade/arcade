@@ -549,7 +549,7 @@ class UIWidget(EventDispatcher, ABC):
         self,
         *,
         color=...,
-        texture: Union[None, Texture, NinePatchTexture] = ...,
+        texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
 
         """
