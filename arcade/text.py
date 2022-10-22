@@ -171,7 +171,6 @@ class Text:
         text: str,
         start_x: float,
         start_y: float,
-        start_z: float = 0,
         color: Color = arcade.color.WHITE,
         font_size: float = 12,
         width: int = 0,
@@ -184,7 +183,8 @@ class Text:
         multiline: bool = False,
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
-        group: Optional[pyglet.graphics.Group] = None
+        group: Optional[pyglet.graphics.Group] = None,
+        start_z: float = 0
     ):
         """Build a text object"""
 
@@ -554,7 +554,6 @@ def create_text_sprite(
     text: str,
     start_x: float,
     start_y: float,
-    start_z: float = 0,
     color: Color = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -567,6 +566,7 @@ def create_text_sprite(
     multiline: bool = False,
     rotation: float = 0,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
+    start_z: float = 0
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -607,7 +607,6 @@ def create_text_sprite(
         text,
         start_x,
         start_y,
-        start_z,
         color,
         font_size,
         width,
@@ -618,7 +617,8 @@ def create_text_sprite(
         anchor_x,
         anchor_y,
         multiline,
-        rotation
+        rotation,
+        start_z=start_z
     )
 
     size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
@@ -642,7 +642,6 @@ def draw_text(
     text: Any,
     start_x: float,
     start_y: float,
-    start_z: float = 0,
     color: Color = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -654,6 +653,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
+    start_z: float = 0
 ):
     """
     A simple way for beginners to draw text.
