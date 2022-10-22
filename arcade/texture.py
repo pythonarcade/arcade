@@ -19,6 +19,7 @@ from arcade import (
     calculate_hit_box_points_simple,
     calculate_hit_box_points_detailed,
 )
+from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
 # from arcade.cache.hit_box import HitBoxCache
 # from arcade.cache.image import WeakImageCache
@@ -110,10 +111,7 @@ class Texture:
         else:
             self._hit_box_algorithm = None
         self._hit_box_detail = hit_box_detail
-        self._hit_box_points = None
-
-        # TODO: Possibly remove this making it lazy
-        self.calculate_hit_box_points()
+        self._hit_box_points: PointList = self._calculate_hit_box_points()
 
     @classmethod
     def register_hit_box_algorithm(cls, name: str, func: Callable) -> None:
@@ -358,13 +356,41 @@ class Texture:
         return self.image.size
 
     @property
-    def hit_box_points(self):
+    def hit_box_points(self) -> PointList:
+        """
+        Get or set the hit box points for this texture.
+        """
         if self._hit_box_points is None:
             self.calculate_hit_box_points()
 
         return self._hit_box_points
 
-    def calculate_hit_box_points(self):
+    @hit_box_points.setter
+    def hit_box_points(self, value: PointList):
+        """
+        Get or set the hit box points for this texture.
+
+        Note that setting custom hit box points should ideally
+        be done at initialization before the texture is
+        used by any sprites. This is because the points
+        are transformed and cached in the sprite itself.
+
+        Hit box points can be defined clockwise or counter-clockwise,
+        but they have to be connected. They also have to be convex
+        depending on the collision algorithm.
+
+        :param PointList value: New hit box points
+        """
+        self._hit_box_points = value
+
+    @property
+    def hit_box_algorithm(self) -> Optional[str]:
+        """
+        (read only) The algorithm used to calculate the hit box for this texture.
+        """
+        return self._hit_box_algorithm
+
+    def _calculate_hit_box_points(self):
         """
         Calculate the hit box points for this texture
         based on the configured hit box algorithm.
@@ -372,14 +398,15 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         if self._hit_box_func:
-            self._hit_box_points = self._hit_box_func(self.image, self._hit_box_detail)
-        else:
-            self._hit_box_points = (
-                (-self.image.width / 2, -self.image.height / 2),
-                (self.image.width / 2, -self.image.height / 2),
-                (self.image.width / 2, self.image.height / 2),
-                (-self.image.width / 2, self.image.height / 2),
-            )
+            return self._hit_box_func(self.image, self._hit_box_detail)
+
+        # Fall back to simple rectangle
+        return (
+            (-self.image.width / 2, -self.image.height / 2),
+            (self.image.width / 2, -self.image.height / 2),
+            (self.image.width / 2, self.image.height / 2),
+            (-self.image.width / 2, self.image.height / 2),
+        )
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
