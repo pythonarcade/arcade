@@ -221,44 +221,22 @@ class Texture:
     @classmethod
     def create_filled(cls, name: str, size: Tuple[int, int], color: Color) -> "Texture":
         """
-        Create a texture completely filled with the passed color.
+        Create a filled texture. This is an alias for :py:meth:`create_empty`.
 
-        The hit box of the returned Texture will be set to a rectangle
-        with the dimensions in ``size`` because all pixels are filled
-        with the same color.
-
-        :param str name: The unique name for this texture
-        :param Tuple[int,int] size: The xy size of the internal image
-        :param Color color: the color to fill the texture with
-
-        This function has multiple uses, including:
-
-            - A helper for pre-blending backgrounds into terrain tiles
-            - Fillers to stand in for state-specific textures
-            - Quick filler assets for various proofs of concept
-
-        Be careful of your RAM usage when using this function. The
-        Texture this method returns will have a new internal RGBA
-        Pillow image which uses 4 bytes for every pixel in it.
-        This will quickly add up if you create many large Textures.
-
-        If you want to create more than one filled texture with the same
-        background color, you can save CPU time and RAM by calling this
-        function once, then passing the ``image`` attribute of the
-        resulting Texture object to the class constructor for each
-        additional filled Texture instance you would like to create.
-        This can be especially helpful if you are creating multiple
-        large Textures.
+        :param str name: Name of the texture
+        :param Tuple[int, int] size: Size of the texture
+        :param Color color: Color of the texture
+        :return: Texture 
         """
-        return Texture(
-            name,
-            # ensure pillow gets the 1 byte / channel it expects
-            image=PIL.Image.new("RGBA", size, get_four_byte_color(color)),
-            hit_box_algorithm=None,
-        )
+        return cls.create_empty(name, size, color)
 
     @classmethod
-    def create_empty(cls, name: str, size: Tuple[int, int]) -> "Texture":
+    def create_empty(
+        cls,
+        name: str,
+        size: Tuple[int, int],
+        color: Color = (0, 0, 0, 0),
+    ) -> "Texture":
         """
         Create a texture with all pixels set to transparent black.
 
@@ -313,7 +291,7 @@ class Texture:
         """
         return Texture(
             name,
-            image=PIL.Image.new("RGBA", size, (0, 0, 0, 0)),
+            image=PIL.Image.new("RGBA", size, get_four_byte_color(color)),
             hit_box_algorithm=None,
         )
 
