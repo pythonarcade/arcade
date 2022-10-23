@@ -28,9 +28,9 @@ jobs:
           python3 -m pip install -e .
 
       # Upload to TestPyPI
-      - name: Build and Upload to TestPyPI
+      - name: Build and Upload to PyPI
         run: |
-          python3 setup sdist bdist_wheel
+          python3 setup.py sdist bdist_wheel
           python3 -m twine upload dist/*
         env:
           TWINE_USERNAME: __token__
