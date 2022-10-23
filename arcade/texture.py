@@ -2,7 +2,7 @@
 Code related to working with textures.
 """
 import logging
-from typing import Callable, Optional, Tuple, List, Union, TYPE_CHECKING
+from typing import Any, Callable, Optional, Tuple, List, Union, TYPE_CHECKING
 from pathlib import Path
 from weakref import WeakValueDictionary
 
@@ -29,10 +29,6 @@ if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
-
-#: Global hit box cache
-# hit_box_cache = HitBoxCache()
-# image_cache = WeakImageCache()
 
 
 class Texture:
@@ -69,6 +65,7 @@ class Texture:
     cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
     _hit_box_funcs = {
+        "default": calculate_hit_box_points_simple,
         "simple": calculate_hit_box_points_simple,
         "detailed": calculate_hit_box_points_detailed,
         "none": None,  # For backwards compatibility
@@ -78,7 +75,7 @@ class Texture:
         self,
         name: str,
         image: PIL.Image.Image = None,
-        hit_box_algorithm: Optional[str] = "Simple",
+        hit_box_algorithm: Optional[str] = "default",
         hit_box_detail: float = 4.5,
     ):
         if not isinstance(image, PIL.Image.Image):
@@ -90,7 +87,10 @@ class Texture:
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
+        # List of transforms applied to this texture
         self._transforms: List[tt.Transform] = []
+
+        # Internal sprite stuff for drawing
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
@@ -100,6 +100,7 @@ class Texture:
             if not isinstance(hit_box_algorithm, str):
                 raise ValueError(
                     f"hit_box_algorithm must be a string or None, not {hit_box_algorithm}")
+
             self._hit_box_algorithm = hit_box_algorithm.lower()
             try:
                 self._hit_box_func = self._hit_box_funcs[self._hit_box_algorithm]
@@ -114,9 +115,11 @@ class Texture:
         self._hit_box_points: PointList = self._calculate_hit_box_points()
 
     @classmethod
-    def register_hit_box_algorithm(cls, name: str, func: Callable) -> None:
+    def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
         """
         Register a hit box function.
+
+        Can also be used to change the default hit box algorithm.
 
         This function must be given a name such as the default
         "Simple" and "Detailed" ones. The supplied function must
@@ -131,7 +134,10 @@ class Texture:
             def my_hit_box_func(image: PIL.Image, detail: float):
                 return ((0, 0), (0, 1), (1, 1), (1, 0))
 
-            Texture.register_hit_box_function("MyHitBoxAlgo", my_hit_box_func)
+            Texture.register_hit_box_algorithm("MyHitBoxAlgo", my_hit_box_func)
+
+            # Change the default hit box algorithm to simple bounding box
+            Texture.register_hit_box_algorithm("default", None)
 
         :param str name: Name of the hit box algorithm
         :param Callable func: Function to calculate hit box points
