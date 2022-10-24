@@ -5,7 +5,8 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
-from typing import Iterable, Tuple
+from copy import copy
+from typing import Dict, Iterable, List, Tuple, Type
 from enum import Enum
 import arcade
 from arcade.arcade_types import PointList
@@ -205,14 +206,42 @@ class TransverseTransform(Transform):
         return tuple((-point[1], -point[0]) for point in points)
 
 
-def normalize(transforms: Iterable[Transform]):
-    """
-    Normalize a list of transforms.
 
-    This will remove redundant transforms and
-    combine transforms where possible.
+# Shortest representation for each vertex order
+# >>> list(permutations(range(4), 4)) 
+TRANSFORM_SHORTCUTS: Dict[Tuple[int, int, int, int], List[Type[Transform]]] = {
+    (0, 1, 2, 3): [],
+    # (0, 1, 3, 2): [],
+    # (0, 2, 1, 3): [],
+    # (0, 2, 3, 1): [],
+    # (0, 3, 1, 2): [],
+    # (0, 3, 2, 1): [],
+    # (1, 0, 2, 3): [],
+    # (1, 0, 3, 2): [],
+    # (1, 2, 0, 3): [],
+    # (1, 2, 3, 0): [],
+    # (1, 3, 0, 2): [],
+    # (1, 3, 2, 0): [],
+    # (2, 0, 1, 3): [],
+    # (2, 0, 3, 1): [],
+    # (2, 1, 0, 3): [],
+    # (2, 1, 3, 0): [],
+    # (2, 3, 0, 1): [],
+    # (2, 3, 1, 0): [],
+    # (3, 0, 1, 2): [],
+    # (3, 0, 2, 1): [],
+    # (3, 1, 0, 2): [],
+    # (3, 1, 2, 0): [],
+    # (3, 2, 0, 1): [],
+    # (3, 2, 1, 0): [],
+}
 
-    :param transforms: List of transforms
-    :return: Normalized list of transforms
+
+def get_shortest_transform(vertex_order: Tuple[int, int, int, int]) -> List[Type[Transform]]:
     """
-    return []
+    Returns the shortest list of transforms representing the given vertex order.
+    """
+    transforms = TRANSFORM_SHORTCUTS.get(vertex_order, None)
+    if transforms is None:
+        raise ValueError(f"Cannot normalize vertex order: {vertex_order}")
+    return copy(transforms)

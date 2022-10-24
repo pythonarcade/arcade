@@ -28,6 +28,7 @@ from arcade.texture_transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
+    get_shortest_transform,
 )
 from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
@@ -170,9 +171,8 @@ class Texture:
             hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
         )
-        texture._transforms = copy.copy(self._transforms)
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        texture._transforms.append(transform)
+        texture._transforms = get_shortest_transform(texture._vertex_order)
         return texture
 
     def flip_left_to_right(self) -> "Texture":
