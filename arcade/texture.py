@@ -2,7 +2,8 @@
 Code related to working with textures.
 """
 import logging
-from typing import Any, Callable, Optional, Tuple, List, Union, TYPE_CHECKING
+import copy
+from typing import Callable, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 from weakref import WeakValueDictionary
 
@@ -10,7 +11,6 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade import texture_transforms as tt
 from arcade import (
     lerp,
     RectList,
@@ -18,6 +18,16 @@ from arcade import (
     get_four_byte_color,
     calculate_hit_box_points_simple,
     calculate_hit_box_points_detailed,
+)
+from arcade.texture_transforms import (
+    Transform,
+    FlipLeftToRightTransform,
+    FlipTopToBottomTransform,
+    Rotate90Transform,
+    Rotate180Transform,
+    Rotate270Transform,
+    TransposeTransform,
+    TransverseTransform,
 )
 from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
@@ -61,6 +71,8 @@ class Texture:
            hit_box_algorithm = "Detailed"
 
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+    :param PointList hit_box_points: List of points for the hit box (Optional).
+                                     Completely overrides the hit box algorithm.
     """
     cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
@@ -77,31 +89,32 @@ class Texture:
         image: PIL.Image.Image = None,
         hit_box_algorithm: Optional[str] = "default",
         hit_box_detail: float = 4.5,
+        hit_box_points: Optional[PointList] = None,
     ):
         if not isinstance(image, PIL.Image.Image):
             raise ValueError("A texture must have an image")
 
-        self.name = name
-        self.image = image
+        self._name = name
+        self._image = image
         # The order of the texture coordinates when mapping
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
         # List of transforms applied to this texture
-        self._transforms: List[tt.Transform] = []
+        self._transforms: List[Type[Transform]] = []
 
         # Internal sprite stuff for drawing
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
         self._hit_box_func: Optional["function"] = None
-        self._hit_box_algorithm: Optional[str] = None
-        if hit_box_algorithm is not None:
-            if not isinstance(hit_box_algorithm, str):
+        self._hit_box_algorithm: Optional[str] = hit_box_algorithm
+        if self._hit_box_algorithm is not None and hit_box_points is None:
+            if not isinstance(self._hit_box_algorithm, str):
                 raise ValueError(
                     f"hit_box_algorithm must be a string or None, not {hit_box_algorithm}")
 
-            self._hit_box_algorithm = hit_box_algorithm.lower()
+            self._hit_box_algorithm = self._hit_box_algorithm.lower()
             try:
                 self._hit_box_func = self._hit_box_funcs[self._hit_box_algorithm]
             except KeyError:
@@ -109,10 +122,8 @@ class Texture:
                     "hit_box_algorithm must be None or one of: {}".format(
                         ", ".join(str(v) for v in self._hit_box_funcs.keys())
                     ))
-        else:
-            self._hit_box_algorithm = None
         self._hit_box_detail = hit_box_detail
-        self._hit_box_points: PointList = self._calculate_hit_box_points()
+        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
     @classmethod
     def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
@@ -144,13 +155,33 @@ class Texture:
         """
         cls._hit_box_funcs[name.lower()] = func
 
+    def _new_texture_transformed(self, transform: Type[Transform]) -> "Texture":
+        """
+        Create a new texture with the given transform applied.
+
+        :param Transform transform: Transform to apply
+        :return: New texture
+        """
+        points = transform.transform_hit_box_points(self._hit_box_points)
+        texture = Texture(
+            name=self._name,
+            image=self._image,
+            # Not relevant, but copy over the value
+            hit_box_algorithm=self._hit_box_algorithm,
+            hit_box_points=points,
+        )
+        texture._transforms = copy.copy(self._transforms)
+        texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
+        texture._transforms.append(transform)
+        return texture
+
     def flip_left_to_right(self) -> "Texture":
         """
         Flip the texture left to right / horizontally.
 
         :return: Texture 
         """
-        # FLIP_LEFT_RIGHT = 0
+        return self._new_texture_transformed(FlipLeftToRightTransform)
 
     def flip_top_to_bottom(self) -> "Texture":
         """
@@ -158,7 +189,7 @@ class Texture:
 
         :return: Texture 
         """
-        # FLIP_TOP_BOTTOM = 1
+        return self._new_texture_transformed(FlipTopToBottomTransform)
 
     def flip_diagonally(self) -> "Texture":
         """
@@ -176,7 +207,7 @@ class Texture:
 
         :return: Texture 
         """
-        # TRANSPOSE = 5
+        return self._new_texture_transformed(TransposeTransform)
 
     def transverse(self) -> "Texture":
         """
@@ -185,7 +216,7 @@ class Texture:
 
         :return: Texture 
         """
-        # TRANSVERSE = 5
+        return self._new_texture_transformed(TransverseTransform)
 
     def rotate(self, count: int) -> "Texture":
         """
@@ -194,9 +225,12 @@ class Texture:
         :param int count: Number of 90 degree steps to rotate.
         :return: Texture 
         """
-        # ROTATE_90 = 2
-        # ROTATE_180 = 3
-        # ROTATE_270 = 4
+        angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
+        count = count % 4
+        transform = angles[count]
+        if transform is None:
+            return self
+        return self._new_texture_transformed(transform)
 
     def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
         """
@@ -208,7 +242,7 @@ class Texture:
         :param int height: Height of crop
         :return: Texture 
         """
-        pass
+        raise NotImplementedError()
 
     @staticmethod
     def build_cache_name(*args) -> str:
@@ -325,47 +359,67 @@ class Texture:
     # ------------------------------------------------------------
 
     @property
+    def name(self) -> str:
+        """
+        The name of the texture (read only).
+
+        :return: str 
+        """
+        return self._name
+
+    @property
+    def image(self) -> PIL.Image.Image:
+        """
+        The image of the texture (read only).
+
+        :return: PIL.Image.Image 
+        """
+        return self._image
+
+    @image.setter
+    def image(self, image: PIL.Image.Image):
+        """
+        Set the image of the texture.
+
+        .. warning::
+
+            This is an advanced function. Be absolutely sure
+            you know the consequences of changing the image.
+            It can cause problems with the texture atlas and
+            hit box points.
+
+        :param PIL.Image.Image image: The image to set
+        """
+        self._image = image
+
+    @property
     def width(self) -> int:
         """Width of the texture in pixels."""
-        return self.image.width
+        return self._image.width
 
     @property
     def height(self) -> int:
         """Height of the texture in pixels."""
-        return self.image.height
+        return self._image.height
 
     @property
     def size(self) -> Tuple[int, int]:
         """Width and height as a tuple"""
-        return self.image.size
+        return self._image.size
 
     @property
     def hit_box_points(self) -> PointList:
         """
-        Get or set the hit box points for this texture.
+        Get the hit box points for this texture.
+
+        Custom hit box points must be supplied during texture creation.
+
+        :return: PointList
         """
         if self._hit_box_points is None:
             self.calculate_hit_box_points()
 
         return self._hit_box_points
-
-    @hit_box_points.setter
-    def hit_box_points(self, value: PointList):
-        """
-        Get or set the hit box points for this texture.
-
-        Note that setting custom hit box points should ideally
-        be done at initialization before the texture is
-        used by any sprites. This is because the points
-        are transformed and cached in the sprite itself.
-
-        Hit box points can be defined clockwise or counter-clockwise,
-        but they have to be connected. They also have to be convex
-        depending on the collision algorithm.
-
-        :param PointList value: New hit box points
-        """
-        self._hit_box_points = value
 
     @property
     def hit_box_algorithm(self) -> Optional[str]:
@@ -382,14 +436,14 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         if self._hit_box_func:
-            return self._hit_box_func(self.image, self._hit_box_detail)
+            return self._hit_box_func(self._image, self._hit_box_detail)
 
         # Fall back to simple rectangle
         return (
-            (-self.image.width / 2, -self.image.height / 2),
-            (self.image.width / 2, -self.image.height / 2),
-            (self.image.width / 2, self.image.height / 2),
-            (-self.image.width / 2, self.image.height / 2),
+            (-self._image.width / 2, -self._image.height / 2),
+            (self._image.width / 2, -self._image.height / 2),
+            (self._image.width / 2, self._image.height / 2),
+            (-self._image.width / 2, self._image.height / 2),
         )
 
     def _create_cached_sprite(self):
