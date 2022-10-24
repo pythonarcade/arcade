@@ -1,6 +1,6 @@
 import arcade
 from arcade import load_texture
-from arcade.gui import UIManager, UIAnchorLayout, UIWidget
+from arcade.gui import UIManager, UIAnchorLayout, UIWidget, NinePatchTexture
 
 
 class MyView(arcade.View):
@@ -12,9 +12,11 @@ class MyView(arcade.View):
         # Setup widget and use background with ninepatch information
         self.nine_patch_widget = UIWidget(size_hint=(0.5, 0.5))
         self.nine_patch_widget.with_background(
-            texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
-            start=(7, 7),
-            end=(93, 93),
+            texture=NinePatchTexture(
+                texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
+                start=(7, 7),
+                end=(93, 93),
+            )
         )
 
         self.mng.add(UIAnchorLayout(children=[self.nine_patch_widget]))
