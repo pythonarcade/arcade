@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import arcade
 from arcade import Color
-from arcade.experimental.uistyle import _UIStyleDict
+from arcade.gui.widgets.style import UIStyleBase
 
 
 @dataclass
-class ExampleStyleDict(_UIStyleDict):
+class ExampleStyleDict(UIStyleBase):
     some_color: Color
     some_int: int
 
@@ -55,7 +55,7 @@ def test_write_attrs():
 
 def test_defaults_behavior_using_inheritance():
     @dataclass
-    class DefaultStyle(_UIStyleDict):
+    class DefaultStyle(UIStyleBase):
         some_int: int = 42
         some_color: arcade.Color = arcade.color.WHITE
 

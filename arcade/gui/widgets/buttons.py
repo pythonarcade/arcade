@@ -1,14 +1,16 @@
-from typing import Union
+from dataclasses import dataclass
+from typing import Optional, Dict, Union
 
 import arcade
-from arcade import Texture
-from arcade.experimental.uistyle import UIFlatButtonStyle_default
+from arcade import Texture, Color
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import Property, bind
+from arcade.gui.property import Property, bind, DictProperty
 from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.widgets.style import UIStyleBase, UIStyledWidget
+from arcade.text import FontNameOrNames
 
 
-class UITextureButton(UIInteractiveWidget):
+class UITextureButton(UIInteractiveWidget, UIStyledWidget):
     """
     A button with an image for the face of the button.
 
@@ -27,6 +29,40 @@ class UITextureButton(UIInteractiveWidget):
     :param size_hint_max: max width and height in pixel
     """
 
+    text: Optional[str] = Property()  # type: ignore
+
+    _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
+
+    @dataclass
+    class UIStyle(UIStyleBase):
+        font_size: int = 12
+        font_name: FontNameOrNames = ("calibri", "arial")
+        font_color: Color = arcade.color.WHITE
+        border_width: int = 2
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(
+
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.WHITE,
+            border_width=2,
+        ),
+        "press": UIStyle(
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.BLACK,
+            border_width=2,
+        ),
+        "disabled": UIStyle(
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.WHITE,
+            border_width=2,
+        )
+    }
+
     def __init__(
         self,
         x: float = 0,
@@ -36,12 +72,13 @@ class UITextureButton(UIInteractiveWidget):
         texture: Union[Texture, NinePatchTexture] = None,
         texture_hovered: Union[Texture, NinePatchTexture] = None,
         texture_pressed: Union[Texture, NinePatchTexture] = None,
+        texture_disabled: Union[Texture, NinePatchTexture] = None,
         text: str = "",
         scale: float = None,
+        style: Dict[str, UIStyleBase] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
 
@@ -56,74 +93,82 @@ class UITextureButton(UIInteractiveWidget):
             height = texture.size[1] * scale
 
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            style=style or self.DEFAULT_STYLE,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
 
-        self._tex = texture
-        self._tex_hovered = texture_hovered
-        self._tex_pressed = texture_pressed
-        self._style = style or {}
+        self._textures = {}
+
+        if texture:
+            self._textures["normal"] = texture
+        if texture_hovered:
+            self._textures["hover"] = texture_hovered
+        if texture_pressed:
+            self._textures["press"] = texture_pressed
+        if texture_disabled:
+            self._textures["disabled"] = texture_disabled
+
         self._text = text
 
-    @property
-    def text(self):
-        return self._text
+        bind(self, "_textures", self.trigger_render)
+        bind(self, "text", self.trigger_render)
 
-    @text.setter
-    def text(self, value):
-        self._text = value
-        self.trigger_render()
+    def get_current_state(self) -> str:
+        if self.pressed:
+            return "press"
+        elif self.hovered:
+            return "hover"
+        elif self.disabled:
+            return "disabled"
+        else:
+            return "normal"
 
     @property
     def texture(self):
-        return self._tex
+        return self._textures["normal"]
 
     @texture.setter
     def texture(self, value: Texture):
-        self._tex = value
+        self._textures["normal"] = value
         self.trigger_render()
 
     @property
     def texture_hovered(self):
-        return self._tex_hovered
+        return self._textures["hover"]
 
     @texture_hovered.setter
     def texture_hovered(self, value: Texture):
-        self._tex_hovered = value
+        self._textures["hover"] = value
         self.trigger_render()
 
     @property
     def texture_pressed(self):
-        return self._tex_pressed
+        return self._textures["press"]
 
     @texture_pressed.setter
     def texture_pressed(self, value: Texture):
-        self._tex_pressed = value
+        self._textures["press"] = value
         self.trigger_render()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
 
-        tex = self._tex
-        if self.pressed and self._tex_pressed:
-            tex = self._tex_pressed
-        elif self.hovered and self._tex_hovered:
-            tex = self._tex_hovered
-
-        if tex:
-            surface.draw_texture(0, 0, self.width, self.height, tex)
+        current_state = self.get_current_state()
+        current_texture = self._textures.get(current_state)
+        if current_texture:
+            surface.draw_texture(0, 0, self.width, self.height, current_texture)
 
         if self.text:
             text_margin = 2
-            font_size = self._style.get("font_size", 15)
-            font_color = self._style.get("font_color", arcade.color.WHITE)
-            border_width = self._style.get("border_width", 2)
+            style = self.get_current_style()
+
             # border_color = self._style.get("border_color", None)
             # bg_color = self._style.get("bg_color", (21, 19, 21))
 
@@ -137,16 +182,17 @@ class UITextureButton(UIInteractiveWidget):
                 text=self.text,
                 start_x=start_x,
                 start_y=start_y,
-                font_size=font_size,
-                color=font_color,
+                font_size=style.get("font_size", 15),
+                font_name=style.get("font_name", 15),
+                color=style.get("font_color", arcade.color.WHITE),
                 align="center",
                 anchor_x="center",
                 anchor_y="center",
-                width=self.width - 2 * border_width - 2 * text_margin,
+                width=self.width - 2 * style.get("border_width", 2) - 2 * text_margin,
             )
 
 
-class UIFlatButton(UIInteractiveWidget):
+class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
     """
     A text button, with support for background color and a border.
 
@@ -160,6 +206,43 @@ class UIFlatButton(UIInteractiveWidget):
     """
 
     text = Property("")
+
+    @dataclass
+    class UIStyle(UIStyleBase):
+        font_size: int = 12
+        font_name: FontNameOrNames = ("calibri", "arial")
+        font_color: Color = arcade.color.WHITE
+        bg: Color = (21, 19, 21)
+        border: Optional[Color] = None
+        border_width: int = 0
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.WHITE,
+            bg=(21, 19, 21),
+            border=(77, 81, 87),
+            border_width=2,
+        ),
+        "press": UIStyle(
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.BLACK,
+            bg=arcade.color.WHITE,
+            border=arcade.color.WHITE,
+            border_width=2,
+        ),
+        "disabled": UIStyle(
+            font_size=12,
+            font_name=("calibri", "arial"),
+            font_color=arcade.color.WHITE,
+            bg=arcade.color.GRAY,
+            border=None,
+            border_width=2,
+        )
+    }
 
     def __init__(
         self,
@@ -175,31 +258,33 @@ class UIFlatButton(UIInteractiveWidget):
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style or UIFlatButtonStyle_default,
+            style=style or self.DEFAULT_STYLE,
+            **kwargs
         )
 
         self.text = text
         bind(self, "text", self.trigger_render)
 
+    def get_current_state(self) -> str:
+        if self.pressed:
+            return "press"
+        elif self.hovered:
+            return "hover"
+        elif self.disabled:
+            return "disabled"
+        else:
+            return "normal"
+
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        if self.disabled:
-            state = "disabled"
-        elif self.pressed:
-            state = "press"
-        elif self.hovered:
-            state = "hover"
-        else:
-            state = "normal"
-
-        style = self.style[state]
+        style = self.get_current_style()
 
         # Render button
         font_name = style.get("font_name")
@@ -233,9 +318,9 @@ class UIFlatButton(UIInteractiveWidget):
                 text=self.text,
                 start_x=start_x,
                 start_y=start_y,
-                font_name=font_name,  # type: ignore
-                font_size=font_size,  # type: ignore
-                color=font_color,  # type: ignore
+                font_name=font_name,
+                font_size=font_size,
+                color=font_color,
                 align="center",
                 anchor_x="center",
                 anchor_y="center",

@@ -2,16 +2,15 @@ from random import choice
 from typing import Any
 
 import arcade
-from arcade.experimental.uistyle import UIFlatButtonStyle_default, UIFlatButtonStyle
 from arcade.gui import UIManager, UIOnClickEvent
 from arcade.gui.events import UIOnActionEvent
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIAnchorLayout, UIBoxLayout
 
 STYLES = [
-    UIFlatButtonStyle_default,
+    UIFlatButton.DEFAULT_STYLE,
     {  # RED
-        "normal": UIFlatButtonStyle(
+        "normal": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
@@ -19,7 +18,7 @@ STYLES = [
             border=None,
             border_width=0,
         ),
-        "hover": UIFlatButtonStyle(
+        "hover": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
@@ -27,7 +26,7 @@ STYLES = [
             border=arcade.color.RED_ORANGE,
             border_width=2,
         ),
-        "press": UIFlatButtonStyle(
+        "press": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.BLACK,
@@ -35,7 +34,7 @@ STYLES = [
             border=arcade.color.RED_DEVIL,
             border_width=2,
         ),
-        "disabled": UIFlatButtonStyle(
+        "disabled": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.GRAY,
@@ -45,7 +44,7 @@ STYLES = [
         ),
     },
     {  # BLUE
-        "normal": UIFlatButtonStyle(
+        "normal": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
@@ -53,7 +52,7 @@ STYLES = [
             border=None,
             border_width=0,
         ),
-        "hover": UIFlatButtonStyle(
+        "hover": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
@@ -61,7 +60,7 @@ STYLES = [
             border=arcade.color.BLUE_BELL,
             border_width=2,
         ),
-        "press": UIFlatButtonStyle(
+        "press": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.BLACK,
@@ -69,7 +68,7 @@ STYLES = [
             border=arcade.color.BLUE_GRAY,
             border_width=2,
         ),
-        "disabled": UIFlatButtonStyle(
+        "disabled": UIFlatButton.UIStyle(
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.GRAY,

@@ -228,6 +228,7 @@ class UIWidget(EventDispatcher, ABC):
     # TODO add padding, bg, border to constructor
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
@@ -237,11 +238,8 @@ class UIWidget(EventDispatcher, ABC):
         size_hint=None,  # in percentage
         size_hint_min=None,  # in pixel
         size_hint_max=None,  # in pixel
-        style=None,
         **kwargs,
     ):
-        self.style = style or {}
-
         self._rendered = False
         self.rect = Rect(x, y, width, height)
         self.parent: Optional[UIWidgetParent] = None
@@ -301,6 +299,10 @@ class UIWidget(EventDispatcher, ABC):
         return child
 
     def remove(self, child: "UIWidget"):
+        """
+        Removes a child from the UIManager which was directly added to it.
+        This will not remove widgets which are added to a child of UIManager.
+        """
         child.parent = None
         for c in self._children:
             if c.child == child:
@@ -657,6 +659,7 @@ class UIInteractiveWidget(UIWidget):
 
     def __init__(
         self,
+        *,
         x=0,
         y=0,
         width=100,
@@ -664,18 +667,17 @@ class UIInteractiveWidget(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style,
+            **kwargs,
         )
         self.register_event_type("on_click")
 
@@ -741,10 +743,10 @@ class UIDummy(UIInteractiveWidget):
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
@@ -806,17 +808,17 @@ class UISpriteWidget(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs
         )
         self._sprite = sprite
 
@@ -893,10 +895,10 @@ class UISpace(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
