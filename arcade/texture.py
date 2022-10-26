@@ -126,137 +126,75 @@ class Texture:
         self._hit_box_detail = hit_box_detail
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
-    @classmethod
-    def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
+    @property
+    def name(self) -> str:
         """
-        Register a hit box function.
+        The name of the texture (read only).
 
-        Can also be used to change the default hit box algorithm.
-
-        This function must be given a name such as the default
-        "Simple" and "Detailed" ones. The supplied function must
-        take a PIL image and an float value representing detail
-        and return the hit box points.
-
-        The names are case insensitive are stored in lowercase.
-
-        Example::
-
-            # A custom hit box function. Ideally it would inspect the image
-            def my_hit_box_func(image: PIL.Image, detail: float):
-                return ((0, 0), (0, 1), (1, 1), (1, 0))
-
-            Texture.register_hit_box_algorithm("MyHitBoxAlgo", my_hit_box_func)
-
-            # Change the default hit box algorithm to simple bounding box
-            Texture.register_hit_box_algorithm("default", None)
-
-        :param str name: Name of the hit box algorithm
-        :param Callable func: Function to calculate hit box points
+        :return: str 
         """
-        cls._hit_box_funcs[name.lower()] = func
+        return self._name
 
-    def _new_texture_transformed(self, transform: Type[Transform]) -> "Texture":
+    @property
+    def image(self) -> PIL.Image.Image:
         """
-        Create a new texture with the given transform applied.
+        The image of the texture (read only).
 
-        :param Transform transform: Transform to apply
-        :return: New texture
+        :return: PIL.Image.Image 
         """
-        points = transform.transform_hit_box_points(self._hit_box_points)
-        texture = Texture(
-            name=self._name,
-            image=self._image,
-            # Not relevant, but copy over the value
-            hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_points=points,
-        )
-        texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        texture._transforms = get_shortest_transform(texture._vertex_order)
-        return texture
+        return self._image
 
-    def flip_left_to_right(self) -> "Texture":
+    @image.setter
+    def image(self, image: PIL.Image.Image):
         """
-        Flip the texture left to right / horizontally.
+        Set the image of the texture.
 
-        :return: Texture 
+        .. warning::
+
+            This is an advanced function. Be absolutely sure
+            you know the consequences of changing the image.
+            It can cause problems with the texture atlas and
+            hit box points.
+
+        :param PIL.Image.Image image: The image to set
         """
-        return self._new_texture_transformed(FlipLeftToRightTransform)
+        self._image = image
 
-    def flip_top_to_bottom(self) -> "Texture":
+    @property
+    def width(self) -> int:
+        """Width of the texture in pixels."""
+        return self._image.width
+
+    @property
+    def height(self) -> int:
+        """Height of the texture in pixels."""
+        return self._image.height
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """Width and height as a tuple"""
+        return self._image.size
+
+    @property
+    def hit_box_points(self) -> PointList:
         """
-        Flip the texture top to bottom / vertically.
+        Get the hit box points for this texture.
 
-        :return: Texture 
+        Custom hit box points must be supplied during texture creation.
+
+        :return: PointList
         """
-        return self._new_texture_transformed(FlipTopToBottomTransform)
+        if self._hit_box_points is None:
+            self.calculate_hit_box_points()
 
-    def flip_diagonally(self) -> "Texture":
+        return self._hit_box_points
+
+    @property
+    def hit_box_algorithm(self) -> Optional[str]:
         """
-        Returns a new texture that is flipped diagonally from this texture.
-        This is an alias for :func:`transpose`.
-
-        :return: Texture 
+        (read only) The algorithm used to calculate the hit box for this texture.
         """
-        return self.transpose()
-
-    def transpose(self) -> "Texture":
-        """
-        Returns a new texture that is transposed from this texture.
-        This flips the texture diagonally from lower right to upper left.
-
-        :return: Texture 
-        """
-        return self._new_texture_transformed(TransposeTransform)
-
-    def transverse(self) -> "Texture":
-        """
-        Returns a new texture that is transverse from this texture.
-        This flips the texture diagonally from lower left to upper right.
-
-        :return: Texture 
-        """
-        return self._new_texture_transformed(TransverseTransform)
-
-    def rotate(self, count: int) -> "Texture":
-        """
-        Rotate the texture by a given number of 90 degree steps.
-
-        :param int count: Number of 90 degree steps to rotate.
-        :return: Texture 
-        """
-        angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
-        count = count % 4
-        transform = angles[count]
-        if transform is None:
-            return self
-        return self._new_texture_transformed(transform)
-
-    def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
-        """
-        Create a new texture from a crop of this texture.
-
-        :param int x: X position to start crop
-        :param int y: Y position to start crop
-        :param int width: Width of crop
-        :param int height: Height of crop
-        :return: Texture 
-        """
-        raise NotImplementedError()
-
-    @staticmethod
-    def build_cache_name(*args) -> str:
-        """
-        Generate cache names from the given parameters
-
-        This is mostly useful when generating textures with many parameters
-
-        :param args: params to format
-        :param separator: separator character or string between params
-
-        :return: Formatted cache string representing passed parameters
-        """
-        return "|".join([f"{arg}" for arg in args])
+        return self._hit_box_algorithm
 
     @classmethod
     def create_filled(cls, name: str, size: Tuple[int, int], color: Color) -> "Texture":
@@ -335,6 +273,138 @@ class Texture:
             hit_box_algorithm=None,
         )
 
+    @staticmethod
+    def build_cache_name(*args) -> str:
+        """
+        Generate cache names from the given parameters
+
+        This is mostly useful when generating textures with many parameters
+
+        :param args: params to format
+        :param separator: separator character or string between params
+
+        :return: Formatted cache string representing passed parameters
+        """
+        return "|".join([f"{arg}" for arg in args])
+
+    @classmethod
+    def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
+        """
+        Register a hit box function.
+
+        Can also be used to change the default hit box algorithm.
+
+        This function must be given a name such as the default
+        "Simple" and "Detailed" ones. The supplied function must
+        take a PIL image and an float value representing detail
+        and return the hit box points.
+
+        The names are case insensitive are stored in lowercase.
+
+        Example::
+
+            # A custom hit box function. Ideally it would inspect the image
+            def my_hit_box_func(image: PIL.Image, detail: float):
+                return ((0, 0), (0, 1), (1, 1), (1, 0))
+
+            Texture.register_hit_box_algorithm("MyHitBoxAlgo", my_hit_box_func)
+
+            # Change the default hit box algorithm to simple bounding box
+            Texture.register_hit_box_algorithm("default", None)
+
+        :param str name: Name of the hit box algorithm
+        :param Callable func: Function to calculate hit box points
+        """
+        cls._hit_box_funcs[name.lower()] = func
+
+    def flip_left_to_right(self) -> "Texture":
+        """
+        Flip the texture left to right / horizontally.
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(FlipLeftToRightTransform)
+
+    def flip_top_to_bottom(self) -> "Texture":
+        """
+        Flip the texture top to bottom / vertically.
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(FlipTopToBottomTransform)
+
+    def flip_diagonally(self) -> "Texture":
+        """
+        Returns a new texture that is flipped diagonally from this texture.
+        This is an alias for :func:`transpose`.
+
+        :return: Texture 
+        """
+        return self.transpose()
+
+    def transpose(self) -> "Texture":
+        """
+        Returns a new texture that is transposed from this texture.
+        This flips the texture diagonally from lower right to upper left.
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(TransposeTransform)
+
+    def transverse(self) -> "Texture":
+        """
+        Returns a new texture that is transverse from this texture.
+        This flips the texture diagonally from lower left to upper right.
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(TransverseTransform)
+
+    def rotate(self, count: int) -> "Texture":
+        """
+        Rotate the texture by a given number of 90 degree steps.
+
+        :param int count: Number of 90 degree steps to rotate.
+        :return: Texture 
+        """
+        angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
+        count = count % 4
+        transform = angles[count]
+        if transform is None:
+            return self
+        return self._new_texture_transformed(transform)
+
+    def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
+        """
+        Create a new texture from a crop of this texture.
+
+        :param int x: X position to start crop
+        :param int y: Y position to start crop
+        :param int width: Width of crop
+        :param int height: Height of crop
+        :return: Texture 
+        """
+        raise NotImplementedError()
+
+    def _new_texture_transformed(self, transform: Type[Transform]) -> "Texture":
+        """
+        Create a new texture with the given transform applied.
+
+        :param Transform transform: Transform to apply
+        :return: New texture
+        """
+        points = transform.transform_hit_box_points(self._hit_box_points)
+        texture = Texture(
+            name=self._name,
+            image=self._image,
+            # Not relevant, but copy over the value
+            hit_box_algorithm=self._hit_box_algorithm,
+            hit_box_points=points,
+        )
+        texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
+        texture._transforms = get_shortest_transform(texture._vertex_order)
+        return texture
+
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets
     # A texture's uniqueness is simply based on the name
@@ -355,78 +425,6 @@ class Texture:
         if not isinstance(other, self.__class__):
             return True
         return self.name != other.name
-
-    # ------------------------------------------------------------
-
-    @property
-    def name(self) -> str:
-        """
-        The name of the texture (read only).
-
-        :return: str 
-        """
-        return self._name
-
-    @property
-    def image(self) -> PIL.Image.Image:
-        """
-        The image of the texture (read only).
-
-        :return: PIL.Image.Image 
-        """
-        return self._image
-
-    @image.setter
-    def image(self, image: PIL.Image.Image):
-        """
-        Set the image of the texture.
-
-        .. warning::
-
-            This is an advanced function. Be absolutely sure
-            you know the consequences of changing the image.
-            It can cause problems with the texture atlas and
-            hit box points.
-
-        :param PIL.Image.Image image: The image to set
-        """
-        self._image = image
-
-    @property
-    def width(self) -> int:
-        """Width of the texture in pixels."""
-        return self._image.width
-
-    @property
-    def height(self) -> int:
-        """Height of the texture in pixels."""
-        return self._image.height
-
-    @property
-    def size(self) -> Tuple[int, int]:
-        """Width and height as a tuple"""
-        return self._image.size
-
-    @property
-    def hit_box_points(self) -> PointList:
-        """
-        Get the hit box points for this texture.
-
-        Custom hit box points must be supplied during texture creation.
-
-        :return: PointList
-        """
-        if self._hit_box_points is None:
-            self.calculate_hit_box_points()
-
-        return self._hit_box_points
-
-    @property
-    def hit_box_algorithm(self) -> Optional[str]:
-        """
-        (read only) The algorithm used to calculate the hit box for this texture.
-        """
-        return self._hit_box_algorithm
 
     def _calculate_hit_box_points(self):
         """
