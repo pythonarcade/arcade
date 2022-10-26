@@ -151,7 +151,7 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize((width, height))
 

@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.resize(width, height)
+        self.camera.resize(width, height, resize_projection=True)
 
         # This is to ensure the background covers the entire screen.
         self.background.size = (width, height)

@@ -206,8 +206,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """ Resize window """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(int(width), int(height), resize_projection=True)
+        self.camera_gui.resize(int(width), int(height), resize_projection=True)
 
 
 def main():

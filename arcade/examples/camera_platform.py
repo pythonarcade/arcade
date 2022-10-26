@@ -156,8 +156,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """Resize window"""
-        self.camera.resize(width, height)
-        self.gui_camera.resize(width, height)
+        self.camera.resize(width, height, resize_projection=True)
+        self.gui_camera.resize(width, height, resize_projection=True)
 
     def on_draw(self):
         """Render the screen."""

@@ -195,10 +195,10 @@ class MyGame(arcade.Window):
                         self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, speed)
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        self.camera_sprites.resize(width, height, resize_projection=True)
+        self.camera_gui.resize(width, height, resize_projection=True)
         self.shadertoy.resize((width, height))
 
 
