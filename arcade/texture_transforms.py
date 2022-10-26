@@ -210,30 +210,30 @@ class TransverseTransform(Transform):
 # Shortest representation for each vertex order
 # >>> list(permutations(range(4), 4)) 
 TRANSFORM_SHORTCUTS: Dict[Tuple[int, int, int, int], List[Type[Transform]]] = {
-    (0, 1, 2, 3): [],
-    # (0, 1, 3, 2): [],
-    # (0, 2, 1, 3): [],
+    (0, 1, 2, 3): [],  # default
+    # (0, 1, 3, 2): [],  # Impossible
+    (0, 2, 1, 3): [TransverseTransform],
     # (0, 2, 3, 1): [],
     # (0, 3, 1, 2): [],
     # (0, 3, 2, 1): [],
     # (1, 0, 2, 3): [],
-    # (1, 0, 3, 2): [],
+    (1, 0, 3, 2): [FlipLeftToRightTransform],
     # (1, 2, 0, 3): [],
-    # (1, 2, 3, 0): [],
+    (1, 2, 3, 0): [Rotate270Transform],
     # (1, 3, 0, 2): [],
     # (1, 3, 2, 0): [],
     # (2, 0, 1, 3): [],
     # (2, 0, 3, 1): [],
     # (2, 1, 0, 3): [],
     # (2, 1, 3, 0): [],
-    # (2, 3, 0, 1): [],
+    (2, 3, 0, 1): [Rotate180Transform],
     # (2, 3, 1, 0): [],
-    # (3, 0, 1, 2): [],
+    (3, 0, 1, 2): [Rotate90Transform],
     # (3, 0, 2, 1): [],
     # (3, 1, 0, 2): [],
-    # (3, 1, 2, 0): [],
+    (3, 1, 2, 0): [TransposeTransform],
     # (3, 2, 0, 1): [],
-    # (3, 2, 1, 0): [],
+    (3, 2, 1, 0): [TransposeTransform, TransverseTransform],
 }
 
 
