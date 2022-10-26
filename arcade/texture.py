@@ -2,8 +2,7 @@
 Code related to working with textures.
 """
 import logging
-import copy
-from typing import Callable, Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Callable, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 from weakref import WeakValueDictionary
 
@@ -77,11 +76,11 @@ class Texture:
     """
     cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
-    _hit_box_funcs = {
+    _hit_box_funcs: Dict[str, Optional[Callable]] = {
         "default": calculate_hit_box_points_simple,
         "simple": calculate_hit_box_points_simple,
         "detailed": calculate_hit_box_points_detailed,
-        "none": None,  # For backwards compatibility
+        "none": None,
     }
 
     def __init__(
@@ -108,7 +107,7 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
-        self._hit_box_func: Optional["function"] = None
+        self._hit_box_func: Optional[Callable] = None
         self._hit_box_algorithm: Optional[str] = hit_box_algorithm
         if self._hit_box_algorithm is not None and hit_box_points is None:
             if not isinstance(self._hit_box_algorithm, str):

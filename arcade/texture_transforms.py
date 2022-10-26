@@ -6,7 +6,7 @@ We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
 from copy import copy
-from typing import Dict, Iterable, List, Tuple, Type
+from typing import Dict, List, Tuple, Type
 from enum import Enum
 import arcade
 from arcade.arcade_types import PointList
@@ -204,7 +204,6 @@ class TransverseTransform(Transform):
         points: PointList,
     ) -> PointList:
         return tuple((-point[1], -point[0]) for point in points)
-
 
 
 # Shortest representation for each vertex order
