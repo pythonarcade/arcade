@@ -393,7 +393,7 @@ class SectionManager:
         Called when the window is resized.
         First dispatch the view event, then the section ones.
         """
-        self.camera.resize(width, height)  # resize the default camera
+        self.camera.resize(width, height, resize_projection=True)  # resize the default camera
         self.view.on_resize(width, height)  # call resize on the view
         for section in self.sections:
             if section.enabled:
