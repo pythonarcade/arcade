@@ -465,7 +465,20 @@ class Texture:
         angle: float = 0.0,
         alpha: int = 255,
     ):
-        """Draw a texture with a specific width and height."""
+        """
+        Draw a texture with a specific width and height.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
+
+        :param float center_x: X position to draw texture
+        :param float center_y: Y position to draw texture
+        :param float width: Width to draw texture
+        :param float height: Height to draw texture
+        :param float angle: Angle to draw texture
+        :param int alpha: Alpha value to draw texture
+        """
 
         self._create_cached_sprite()
         if self._sprite and self._sprite_list:
@@ -487,6 +500,10 @@ class Texture:
     ):
         """
         Draw the texture.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
 
         :param float center_x: X location of where to draw the texture.
         :param float center_y: Y location of where to draw the texture.
