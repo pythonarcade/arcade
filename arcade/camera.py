@@ -38,7 +38,8 @@ class SimpleCamera:
         # viewport is the space the camera will hold on the screen (left, bottom, width, height)
         self._viewport: FourIntTuple = viewport or (0, 0, self._window.width, self._window.height)
         # projection is what you want to project into the camera viewport (left, right, bottom, top)
-        self._projection: FourFloatTuple = projection or (0, self._window.width, 0, self._window.height)
+        self._projection: FourFloatTuple = projection or (0, self._window.width,
+                                                          0, self._window.height)
 
         # Matrixes
 
@@ -46,7 +47,8 @@ class SimpleCamera:
         self._projection_matrix: Mat4 = Mat4()
         # View Matrix is what the camera is looking at(position)
         self._view_matrix: Mat4 = Mat4()
-        # We multiply projection and view matrices to get combined, this is what actually gets sent to GL context
+        # We multiply projection and view matrices to get combined,
+        #  this is what actually gets sent to GL context
         self._combined_matrix: Mat4 = Mat4()
 
         # Position
@@ -184,16 +186,21 @@ class SimpleCamera:
         """
         return Vec2(*self.position) + Vec2(*camera_vector)
 
-    def resize(self, viewport_width: int, viewport_height: int) -> None:
+    def resize(self, viewport_width: int, viewport_height: int, *,
+               resize_projection: bool = False) -> None:
         """
         Resize the camera's viewport. Call this when the window resizes.
 
         :param int viewport_width: Width of the viewport
         :param int viewport_height: Height of the viewport
+        :param bool resize_projection: if True the projection will also be resized
 
         """
         new_viewport = (self._viewport[0], self._viewport[1], viewport_width, viewport_height)
         self.set_viewport(new_viewport)
+        if resize_projection:
+            self.projection = (self._projection[0], viewport_width,
+                               self._projection[2], viewport_height)
 
     def update(self):
         """
@@ -266,7 +273,8 @@ class Camera(SimpleCamera):
         self._anchor: Optional[Tuple[float, float]] = anchor  # (x, y) to anchor the camera rotation
 
         # Matrixes
-        # Rotation matrix holds the matrix used to compute the rotation set in window.ctx.view_matrix_2d
+        # Rotation matrix holds the matrix used to compute the
+        #  rotation set in window.ctx.view_matrix_2d
         self._rotation_matrix: Mat4 = Mat4()
 
         # Init matrixes
@@ -293,7 +301,8 @@ class Camera(SimpleCamera):
             right *= self._zoom
             top *= self._zoom
 
-        self._projection_matrix = Mat4.orthogonal_projection(left, right, bottom, top, self._near, self._far)
+        self._projection_matrix = Mat4.orthogonal_projection(left, right, bottom, top, self._near,
+                                                             self._far)
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -311,7 +320,8 @@ class Camera(SimpleCamera):
             (result_position[1] / ((self.viewport_height * self._zoom) / 2)),
             0
         )
-        self._view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(Vec3(self._zoom, self._zoom, 1.0)))
+        self._view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(
+            Vec3(self._zoom, self._zoom, 1.0)))
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -345,7 +355,8 @@ class Camera(SimpleCamera):
         self._zoom = zoom
 
         # Changing the zoom affects both projection_matrix and view_matrix
-        self._set_projection_matrix(update_combined_matrix=False)  # combined matrix will be set in the next call
+        self._set_projection_matrix(
+            update_combined_matrix=False)  # combined matrix will be set in the next call
         self._set_view_matrix()
 
     @property
