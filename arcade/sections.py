@@ -397,7 +397,7 @@ class SectionManager:
         Called on each event loop.
         First dispatch the view event, then the section ones.
         It automatically calls camera.use() for each section that has a camera and resets the camera
-         effects by calling the default SectionManager camera afterwards if needed.
+        effects by calling the default SectionManager camera afterwards if needed.
         """
         if self.view_draw_first is True:
             self.view.on_draw()
@@ -539,8 +539,7 @@ class SectionManager:
 
     def on_mouse_motion(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
         """
-        This method dispatches the on_mouse_motion and also calculates
-         if on_mouse_enter/leave should be fired
+        This method dispatches the on_mouse_motion and also calculates if on_mouse_enter/leave should be fired
         """
         before_section = self.mouse_over_section
         current_section = self.get_section(x, y)
@@ -563,8 +562,7 @@ class SectionManager:
 
     def on_mouse_drag(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
         """
-        This method dispatches the on_mouse_drag and also calculates
-         if on_mouse_enter/leave should be fired
+        This method dispatches the on_mouse_drag and also calculates if on_mouse_enter/leave should be fired
         """
         before_section = self.mouse_over_section
         current_section = self.get_section(x, y)
