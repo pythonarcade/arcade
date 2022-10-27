@@ -300,10 +300,12 @@ class SectionManager:
         # Holds the section the mouse is currently on top
         self.mouse_over_section: Optional[Section] = None
 
-        # True will call view.on_draw before sections on_draw False after, None will not call view on_draw
+        # True will call view.on_draw before sections on_draw, False after, None will not call view on_draw
         self.view_draw_first: Optional[bool] = True
-        # True will call view.on_update before sections on_update False after, None will not call view on_update
+        # True will call view.on_update before sections on_update, False after, None will not call view on_update
         self.view_update_first: Optional[bool] = True
+        # True will call view.on_resize before sections on_resize, False after, None will not call view on_resize
+        self.view_resize_first: Optional[bool] = True
 
         # Events that the section manager should handle (instead of the View) if sections are present in a View
         self.managed_events: Set = {
@@ -418,10 +420,13 @@ class SectionManager:
         First dispatch the view event, then the section ones.
         """
         self.camera.resize(width, height)  # resize the default camera
-        self.view.on_resize(width, height)  # call resize on the view
+        if self.view_resize_first is True:
+            self.view.on_resize(width, height)  # call resize on the view
         for section in self.sections:
             if section.enabled:
                 section.on_resize(width, height)
+        if self.view_resize_first is False:
+            self.view.on_resize(width, height)  # call resize on the view
 
     def disable_all_keyboard_events(self) -> None:
         """ Removes the keyboard events handling from all sections """
@@ -591,7 +596,6 @@ class SectionManager:
             # clear the section the mouse is over as it's out of the screen
             kwargs['current_section'], self.mouse_over_section = self.mouse_over_section, None
             return self.dispatch_mouse_event('on_mouse_leave', x, y, *args, **kwargs)
-
         return False
 
     def on_key_press(self, *args, **kwargs) -> Optional[bool]:
