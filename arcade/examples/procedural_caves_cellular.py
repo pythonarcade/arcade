@@ -315,13 +315,13 @@ class GameView(arcade.View):
         self.camera_sprites.move_to(position, speed)
         self.camera_sprites.update()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height), resize_projection=True)
-        self.camera_gui.resize(int(width), int(height), resize_projection=True)
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
     def on_update(self, delta_time):
         """ Movement and game logic """

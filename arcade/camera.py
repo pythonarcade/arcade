@@ -187,7 +187,7 @@ class SimpleCamera:
         return Vec2(*self.position) + Vec2(*camera_vector)
 
     def resize(self, viewport_width: int, viewport_height: int, *,
-               resize_projection: bool = False) -> None:
+               resize_projection: bool = True) -> None:
         """
         Resize the camera's viewport. Call this when the window resizes.
 

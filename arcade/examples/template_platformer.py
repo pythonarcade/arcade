@@ -204,10 +204,10 @@ class MyGame(arcade.Window):
         # Position the camera
         self.center_camera_to_player()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """ Resize window """
-        self.camera_sprites.resize(int(width), int(height), resize_projection=True)
-        self.camera_gui.resize(int(width), int(height), resize_projection=True)
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

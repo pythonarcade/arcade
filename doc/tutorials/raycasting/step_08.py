@@ -197,8 +197,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera_sprites.resize(width, height, resize_projection=True)
-        self.camera_gui.resize(width, height, resize_projection=True)
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
         self.shadertoy.resize((width, height))
 
 

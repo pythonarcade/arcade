@@ -97,7 +97,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.resize(width, height, resize_projection=True)
+        self.camera.resize(width, height)
 
 
 def main():
