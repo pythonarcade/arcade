@@ -37,8 +37,14 @@ class SimpleCamera:
         # store the viewport and projection tuples
         # viewport is the space the camera will hold on the screen (left, bottom, width, height)
         self._viewport: FourIntTuple = viewport or (0, 0, self._window.width, self._window.height)
+
         # projection is what you want to project into the camera viewport (left, right, bottom, top)
-        self._projection: FourFloatTuple = projection or (0, self._window.width, 0, self._window.height)
+        self._projection: FourFloatTuple = projection or (0, self._window.width,
+                                                          0, self._window.height)
+        if viewport is not None and projection is None:
+            # if viewport is provided but projection is not, projection
+            # will match the provided viewport
+            self._projection = (viewport[0], viewport[2], viewport[1], viewport[3])
 
         # Matrixes
 
@@ -46,7 +52,8 @@ class SimpleCamera:
         self._projection_matrix: Mat4 = Mat4()
         # View Matrix is what the camera is looking at(position)
         self._view_matrix: Mat4 = Mat4()
-        # We multiply projection and view matrices to get combined, this is what actually gets sent to GL context
+        # We multiply projection and view matrices to get combined,
+        #  this is what actually gets sent to GL context
         self._combined_matrix: Mat4 = Mat4()
 
         # Position
@@ -106,6 +113,16 @@ class SimpleCamera:
         self._projection = new_projection or (0, self._window.width, 0, self._window.height)
         self._set_projection_matrix()
 
+    @property
+    def viewport_to_projection_width_ratio(self):
+        """ The ratio of viewport width to projection width """
+        return self.viewport_width / (self._projection[1] - self._projection[0])
+
+    @property
+    def viewport_to_projection_height_ratio(self):
+        """ The ratio of viewport height to projection height """
+        return self.viewport_height / (self._projection[3] - self._projection[2])
+
     def _set_projection_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
         Helper method. This will just precompute the projection and combined matrix
@@ -163,16 +180,14 @@ class SimpleCamera:
         """
         Centers the camera on coordinates
         """
-        position = self.position
-
         if not isinstance(vector, Vec2):
             vector = Vec2(*vector)
-        if not isinstance(position, Vec2):
-            position = Vec2(*position)
 
+        # get the center of the camera viewport
         center = Vec2(self.viewport_width / 2, self.viewport_height / 2)
 
-        target = vector + position - center
+        # move to the vector substracting the center
+        target = vector - center
 
         self.move_to(target, speed)
 
@@ -184,16 +199,21 @@ class SimpleCamera:
         """
         return Vec2(*self.position) + Vec2(*camera_vector)
 
-    def resize(self, viewport_width: int, viewport_height: int) -> None:
+    def resize(self, viewport_width: int, viewport_height: int, *,
+               resize_projection: bool = True) -> None:
         """
         Resize the camera's viewport. Call this when the window resizes.
 
         :param int viewport_width: Width of the viewport
         :param int viewport_height: Height of the viewport
+        :param bool resize_projection: if True the projection will also be resized
 
         """
         new_viewport = (self._viewport[0], self._viewport[1], viewport_width, viewport_height)
         self.set_viewport(new_viewport)
+        if resize_projection:
+            self.projection = (self._projection[0], viewport_width,
+                               self._projection[2], viewport_height)
 
     def update(self):
         """
@@ -266,7 +286,8 @@ class Camera(SimpleCamera):
         self._anchor: Optional[Tuple[float, float]] = anchor  # (x, y) to anchor the camera rotation
 
         # Matrixes
-        # Rotation matrix holds the matrix used to compute the rotation set in window.ctx.view_matrix_2d
+        # Rotation matrix holds the matrix used to compute the
+        #  rotation set in window.ctx.view_matrix_2d
         self._rotation_matrix: Mat4 = Mat4()
 
         # Init matrixes
@@ -293,7 +314,8 @@ class Camera(SimpleCamera):
             right *= self._zoom
             top *= self._zoom
 
-        self._projection_matrix = Mat4.orthogonal_projection(left, right, bottom, top, self._near, self._far)
+        self._projection_matrix = Mat4.orthogonal_projection(left, right, bottom, top, self._near,
+                                                             self._far)
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -311,7 +333,8 @@ class Camera(SimpleCamera):
             (result_position[1] / ((self.viewport_height * self._zoom) / 2)),
             0
         )
-        self._view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(Vec3(self._zoom, self._zoom, 1.0)))
+        self._view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(
+            Vec3(self._zoom, self._zoom, 1.0)))
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -345,7 +368,8 @@ class Camera(SimpleCamera):
         self._zoom = zoom
 
         # Changing the zoom affects both projection_matrix and view_matrix
-        self._set_projection_matrix(update_combined_matrix=False)  # combined matrix will be set in the next call
+        self._set_projection_matrix(
+            update_combined_matrix=False)  # combined matrix will be set in the next call
         self._set_view_matrix()
 
     @property
