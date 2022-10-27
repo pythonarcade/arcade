@@ -39,13 +39,12 @@ class SimpleCamera:
         self._viewport: FourIntTuple = viewport or (0, 0, self._window.width, self._window.height)
 
         # projection is what you want to project into the camera viewport (left, right, bottom, top)
+        self._projection: FourFloatTuple = projection or (0, self._window.width,
+                                                          0, self._window.height)
         if viewport is not None and projection is None:
             # if viewport is provided but projection is not, projection
             # will match the provided viewport
             self._projection: FourFloatTuple = (viewport[0], viewport[2], viewport[1], viewport[3])
-        else:
-            self._projection: FourFloatTuple = projection or (0, self._window.width,
-                                                              0, self._window.height)
 
         # Matrixes
 
