@@ -431,7 +431,7 @@ class SectionManager:
     def disable_all_keyboard_events(self) -> None:
         """ Removes the keyboard events handling from all sections """
         for section in self.sections:
-            section.accept_keyboard_events = False
+            section.accept_keyboard_keys = False
 
     def get_section(self, x: int, y: int) -> Optional[Section]:
         """ Returns the first section based on x,y position """
