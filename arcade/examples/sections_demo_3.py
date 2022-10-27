@@ -264,9 +264,8 @@ class GameView(arcade.View):
                                           400, 200)
 
         # we set accept_keyboard_events to False (default to True)
-        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT,
-                                self.window.width, INFO_BAR_HEIGHT,
-                                accept_keyboard_events=False)
+        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,
+                                accept_keyboard_keys=False)
 
         # as prevent_dispatch is on by default, we let pass the events to the
         # following Section: the map
