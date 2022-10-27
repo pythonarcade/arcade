@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import arcade
 from arcade import Color
-from arcade.gui.widgets.style import UIStyleBase
+from arcade.gui.style import UIStyleBase
 
 
 @dataclass

@@ -2,8 +2,8 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Mapping
 
-from arcade.gui.widgets import UIWidget
 from arcade.gui.property import DictProperty
+from arcade.gui.widgets import UIWidget
 
 
 @dataclass
@@ -31,7 +31,7 @@ class UIStyleBase:
 
 class UIStyledWidget(UIWidget):
     # TODO detect StyleBase changes, so that style changes can trigger rendering.
-    style = DictProperty()
+    style: Mapping = DictProperty()  # type: ignore
 
     def __init__(self, *, style: Mapping[str, UIStyleBase], **kwargs):
         self.style = style

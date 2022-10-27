@@ -15,7 +15,7 @@ from arcade.gui import (
 )
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
-from arcade.gui.widgets.style import UIStyleBase, UIStyledWidget
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 
 class UISlider(UIStyledWidget):
