@@ -37,19 +37,17 @@ class UIAnchorLayout(UILayout):
         size_hint=(1, 1),
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
-            children,
-            size_hint,
-            size_hint_min,
-            size_hint_max,
-            style,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            children=children,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
             **kwargs
         )
 

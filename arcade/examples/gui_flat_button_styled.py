@@ -8,7 +8,7 @@ import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
-from arcade.experimental.uistyle import UIFlatButtonStyle, UIFlatButtonStyle_default
+from arcade.gui import UIFlatButton
 
 
 class MyWindow(arcade.Window):
@@ -25,7 +25,7 @@ class MyWindow(arcade.Window):
 
         # Render button
         red_style = {
-            "normal": UIFlatButtonStyle(
+            "normal": UIFlatButton.UIStyle(
                 font_size=12,
                 font_name=("calibri", "arial"),
                 font_color=arcade.color.WHITE,
@@ -33,7 +33,7 @@ class MyWindow(arcade.Window):
                 border=None,
                 border_width=0,
             ),
-            "hover": UIFlatButtonStyle(
+            "hover": UIFlatButton.UIStyle(
                 font_size=12,
                 font_name=("calibri", "arial"),
                 font_color=arcade.color.WHITE,
@@ -41,7 +41,7 @@ class MyWindow(arcade.Window):
                 border=arcade.color.RED,
                 border_width=2,
             ),
-            "press": UIFlatButtonStyle(
+            "press": UIFlatButton.UIStyle(
                 font_size=12,
                 font_name=("calibri", "arial"),
                 font_color=arcade.color.WHITE,
@@ -49,7 +49,7 @@ class MyWindow(arcade.Window):
                 border=arcade.color.REDWOOD,
                 border_width=2,
             ),
-            "disabled": UIFlatButtonStyle(
+            "disabled": UIFlatButton.UIStyle(
                 font_size=12,
                 font_name=("calibri", "arial"),
                 font_color=arcade.color.WHITE,
@@ -64,7 +64,7 @@ class MyWindow(arcade.Window):
 
         # Create the buttons
         demo_button_1 = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Demo 1", width=200, style=UIFlatButtonStyle_default
+            text="Demo 1", width=200, style=UIFlatButton.DEFAULT_STYLE
         )
         demo_button_2 = arcade.gui.widgets.buttons.UIFlatButton(
             text="Demo 2", width=200, style=red_style

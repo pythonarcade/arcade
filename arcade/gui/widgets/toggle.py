@@ -31,7 +31,6 @@ class UITextureToggle(UIInteractiveWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs
     ):
         # Generate hover and pressed texture by changing the brightness
@@ -71,8 +70,7 @@ class UITextureToggle(UIInteractiveWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style,
-            **kwargs
+            **kwargs,
         )
 
     def _dispatch_on_change_event(self):

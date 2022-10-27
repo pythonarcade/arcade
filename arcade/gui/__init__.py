@@ -16,6 +16,7 @@ from arcade.gui.events import UITextEvent
 from arcade.gui.events import UIOnActionEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.ui_manager import UIManager
@@ -72,6 +73,8 @@ __all__ = [
     "UIOnChangeEvent",
     "UIOnClickEvent",
     "UISlider",
+    "UIStyleBase",
+    "UIStyledWidget",
     "UISpace",
     "UISpriteWidget",
     "UITextArea",
