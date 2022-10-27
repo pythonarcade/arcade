@@ -113,6 +113,16 @@ class SimpleCamera:
         self._projection = new_projection or (0, self._window.width, 0, self._window.height)
         self._set_projection_matrix()
 
+    @property
+    def viewport_to_projection_width_ratio(self):
+        """ The ratio of viewport width to projection width """
+        return self.viewport_width / (self._projection[1] - self._projection[0])
+
+    @property
+    def viewport_to_projection_height_ratio(self):
+        """ The ratio of viewport height to projection height """
+        return self.viewport_height / (self._projection[3] - self._projection[2])
+
     def _set_projection_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
         Helper method. This will just precompute the projection and combined matrix
@@ -170,16 +180,14 @@ class SimpleCamera:
         """
         Centers the camera on coordinates
         """
-        position = self.position
-
         if not isinstance(vector, Vec2):
             vector = Vec2(*vector)
-        if not isinstance(position, Vec2):
-            position = Vec2(*position)
 
+        # get the center of the camera viewport
         center = Vec2(self.viewport_width / 2, self.viewport_height / 2)
 
-        target = vector + position - center
+        # move to the vector substracting the center
+        target = vector - center
 
         self.move_to(target, speed)
 
