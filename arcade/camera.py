@@ -44,7 +44,7 @@ class SimpleCamera:
         if viewport is not None and projection is None:
             # if viewport is provided but projection is not, projection
             # will match the provided viewport
-            self._projection: FourFloatTuple = (viewport[0], viewport[2], viewport[1], viewport[3])
+            self._projection = (viewport[0], viewport[2], viewport[1], viewport[3])
 
         # Matrixes
 
