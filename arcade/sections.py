@@ -300,6 +300,9 @@ class SectionManager:
         # Holds the section the mouse is currently on top
         self.mouse_over_section: Optional[Section] = None
 
+        self.view_draw_first: bool = True  # True will call view.draw before sections on_draw False after
+        self.view_update_first: bool = True  # True will call view.update before sections on_draw False after
+
         # Events that the section manager should handle (instead of the View) if sections are present in a View
         self.managed_events: Set = {
             'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
@@ -375,12 +378,15 @@ class SectionManager:
         Called on each event loop. First dispatch the view event, then the section ones.
         """
         modal_present = False
-        self.view.on_update(delta_time)
+        if self.view_update_first:
+            self.view.on_update(delta_time)
         for section in self.sections:
             if section.enabled and not section.block_updates and not modal_present:
                 section.on_update(delta_time)
                 if section.modal:
                     modal_present = True
+        if not self.view_update_first:
+            self.view.on_update(delta_time)
 
     def on_draw(self) -> None:
         """
@@ -389,7 +395,8 @@ class SectionManager:
         It automatically calls camera.use() for each section that has a camera and resets the camera
          effects by calling the default SectionManager camera afterwards if needed.
         """
-        self.view.on_draw()
+        if self.view_draw_first:
+            self.view.on_draw()
         for section in self._sections_draw:  # iterate over sections_draw
             if not section.enabled:
                 continue
@@ -400,6 +407,8 @@ class SectionManager:
             if section.camera:
                 # reset to the default camera after the section is drawn
                 self.camera.use()
+        if not self.view_draw_first:
+            self.view.on_draw()
 
     def on_resize(self, width: int, height: int) -> None:
         """
