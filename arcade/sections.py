@@ -58,7 +58,7 @@ class Section:
         # arcade keyboard keys to accept.
         self.accept_keyboard_keys: Union[bool, Iterable] = accept_keyboard_keys
         # arcade moouse events to accept.
-        self.accept_mouse_events:  Union[bool, Iterable] = accept_mouse_events
+        self.accept_mouse_events: Union[bool, Iterable] = accept_mouse_events
 
         # prevents events to propagate
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}
