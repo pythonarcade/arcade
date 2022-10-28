@@ -481,7 +481,7 @@ class SectionManager:
         return [section for section in self._sections if section.enabled and section.mouse_is_on_top(x, y)]
 
     def dispatch_mouse_event(self, event: str, x: int, y: int, *args,
-                             current_section: Optional[Section], **kwargs) -> Optional[bool]:
+                             current_section: Optional[Section] = None, **kwargs) -> Optional[bool]:
         """ Generic method to dispatch mouse events to the correct Sections """
 
         if current_section:
