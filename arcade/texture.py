@@ -273,18 +273,20 @@ class Texture:
         )
 
     @staticmethod
-    def build_cache_name(*args) -> str:
+    def build_cache_name(name, *args) -> str:
         """
         Generate cache names from the given parameters
 
         This is mostly useful when generating textures with many parameters
 
+        :param str name: Name of the texture
         :param args: params to format
         :param separator: separator character or string between params
 
         :return: Formatted cache string representing passed parameters
         """
-        return "|".join([f"{arg}" for arg in args])
+        values = [str(name)] + [str(arg) for arg in args]
+        return "|".join([v for v in values])
 
     @classmethod
     def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
