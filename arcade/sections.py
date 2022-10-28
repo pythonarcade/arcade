@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set
+import math
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -21,7 +22,8 @@ class Section:
                  prevent_dispatch: Optional[Iterable] = None,
                  prevent_dispatch_view: Optional[Iterable] = None,
                  local_mouse_coordinates: bool = False,
-                 enabled: bool = True, modal: bool = False):
+                 enabled: bool = True, modal: bool = False,
+                 draw_order: int = 1):
         """
         :param int left: the left position of this section
         :param int bottom: the bottom position of this section
@@ -41,6 +43,12 @@ class Section:
         :param bool local_mouse_coordinates: if True the section mouse events will receive x, y coordinates section
             related to the section dimensions and position (not related to the screen)
         :param bool enabled: if False the section will not capture any events
+        :param bool modal: if True the section will be a modal section: will prevent updates and event captures on
+            other sections. Will also draw last (on top) but capture events first.
+        :param int draw_order: Must be bigger than zero. The order this section will have when on_draw is called.
+            The lower the number the earlier this will get draw.
+            This can be different from the event capture order or the on_update order which is defined by the insertion
+            order.
         """
         # name of the section
         self.name: Optional[str] = name
@@ -52,6 +60,11 @@ class Section:
         self._enabled: bool = enabled  # enables or disables this section
         # prevent the following sections from receiving input events and updating
         self._modal: bool = modal
+
+        # set draw_order: the lower the number the earlier this will get draw
+        self._draw_order: int = 0
+        self.draw_order = draw_order
+
         # if True 'update' and 'on_update' will not trigger in this section
         self.block_updates: bool = False
 
@@ -116,6 +129,18 @@ class Section:
         receiving input events and updating)
         """
         return self._modal
+
+    @property
+    def draw_order(self) -> int:
+        return self._draw_order
+
+    @draw_order.setter
+    def draw_order(self, value: int) -> None:
+        if value < 1:
+            raise ValueError(f'draw_order must be greater than zero')
+        self._draw_order = value
+        if self.section_manager is not None:
+            self.section_manager.sort_sections_draw_order()
 
     @property
     def left(self) -> int:
@@ -340,11 +365,13 @@ class SectionManager:
             return sections[0]
         return None
 
-    def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
+    def add_section(self, section: "Section", at_index: Optional[int] = None,
+                    at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to this Section Manager
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index. If None at the end
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
         """
         if not isinstance(section, Section):
             raise ValueError('You can only add Section instances')
@@ -354,10 +381,11 @@ class SectionManager:
         else:
             self._sections.insert(at_index, section)
         # keep sections order updated in the lists of sections to draw
-        # modals go first
-        self._sections.sort(key=lambda s: 0 if s.modal else 1)
-        # modals go last
-        self._sections_draw = sorted(self._sections, key=lambda s: 1 if s.modal else 0)
+        self.sort_section_event_order()
+        if at_draw_order is None:
+            self.sort_sections_draw_order()
+        else:
+            section.draw_order = at_draw_order  # this will trigger self.sort_section_draw_order
 
     def remove_section(self, section: Section) -> None:
         """ Removes a section from this section manager """
@@ -365,10 +393,18 @@ class SectionManager:
         self._sections.remove(section)
 
         # keep sections order updated in the lists of sections
+        self.sort_section_event_order()
+        self.sort_sections_draw_order()
+
+    def sort_section_event_order(self) -> None:
+        """ This will sort sections on event capture order (and update) based on insertion order and section.modal """
         # modals go first
         self._sections.sort(key=lambda s: 0 if s.modal else 1)
+
+    def sort_sections_draw_order(self) -> None:
+        """ This will sort sections on draw order based on section.draw_order and section.modal """
         # modals go last
-        self._sections_draw = sorted(self._sections, key=lambda s: 1 if s.modal else 0)
+        self._sections_draw = sorted(self._sections, key=lambda s: math.inf if s.modal else s.draw_order)
 
     def clear_sections(self) -> None:
         """ Removes all sections """
@@ -384,7 +420,7 @@ class SectionManager:
         modal_present = False
         if self.view_update_first is True:
             self.view.on_update(delta_time)
-        for section in self.sections:
+        for section in self._sections:
             if section.enabled and not section.block_updates and not modal_present:
                 section.on_update(delta_time)
                 if section.modal:
