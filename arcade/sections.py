@@ -137,7 +137,7 @@ class Section:
     @draw_order.setter
     def draw_order(self, value: int) -> None:
         if value < 1:
-            raise ValueError(f'draw_order must be greater than zero')
+            raise ValueError('draw_order must be greater than zero')
         self._draw_order = value
         if self.section_manager is not None:
             self.section_manager.sort_sections_draw_order()
