@@ -920,14 +920,15 @@ class View:
         """ Return if the View has sections """
         return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None) -> None:
+    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index. If None at the end
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
         """
-        return self.section_manager.add_section(section, at_index)
+        self.section_manager.add_section(section, at_index, at_draw_order)
 
     def clear(
         self,

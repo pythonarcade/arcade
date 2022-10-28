@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set
+import math
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -21,7 +22,8 @@ class Section:
                  prevent_dispatch: Optional[Iterable] = None,
                  prevent_dispatch_view: Optional[Iterable] = None,
                  local_mouse_coordinates: bool = False,
-                 enabled: bool = True, modal: bool = False):
+                 enabled: bool = True, modal: bool = False,
+                 draw_order: int = 1):
         """
         :param int left: the left position of this section
         :param int bottom: the bottom position of this section
@@ -41,6 +43,12 @@ class Section:
         :param bool local_mouse_coordinates: if True the section mouse events will receive x, y coordinates section
             related to the section dimensions and position (not related to the screen)
         :param bool enabled: if False the section will not capture any events
+        :param bool modal: if True the section will be a modal section: will prevent updates and event captures on
+            other sections. Will also draw last (on top) but capture events first.
+        :param int draw_order: Must be bigger than zero. The order this section will have when on_draw is called.
+            The lower the number the earlier this will get draw.
+            This can be different from the event capture order or the on_update order which is defined by the insertion
+            order.
         """
         # name of the section
         self.name: Optional[str] = name
@@ -52,6 +60,11 @@ class Section:
         self._enabled: bool = enabled  # enables or disables this section
         # prevent the following sections from receiving input events and updating
         self._modal: bool = modal
+
+        # set draw_order: the lower the number the earlier this will get draw
+        self._draw_order: int = 0
+        self.draw_order = draw_order
+
         # if True 'update' and 'on_update' will not trigger in this section
         self.block_updates: bool = False
 
@@ -116,6 +129,18 @@ class Section:
         receiving input events and updating)
         """
         return self._modal
+
+    @property
+    def draw_order(self) -> int:
+        return self._draw_order
+
+    @draw_order.setter
+    def draw_order(self, value: int) -> None:
+        if value < 1:
+            raise ValueError('draw_order must be greater than zero')
+        self._draw_order = value
+        if self.section_manager is not None:
+            self.section_manager.sort_sections_draw_order()
 
     @property
     def left(self) -> int:
@@ -298,7 +323,7 @@ class SectionManager:
                                                            self.view.window.height))
 
         # Holds the section the mouse is currently on top
-        self.mouse_over_section: Optional[Section] = None
+        self.mouse_over_sections: List[Section] = []
 
         # True will call view.on_draw before sections on_draw, False after, None will not call view on_draw
         self.view_draw_first: Optional[bool] = True
@@ -340,11 +365,13 @@ class SectionManager:
             return sections[0]
         return None
 
-    def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
+    def add_section(self, section: "Section", at_index: Optional[int] = None,
+                    at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to this Section Manager
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index. If None at the end
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
         """
         if not isinstance(section, Section):
             raise ValueError('You can only add Section instances')
@@ -354,10 +381,11 @@ class SectionManager:
         else:
             self._sections.insert(at_index, section)
         # keep sections order updated in the lists of sections to draw
-        # modals go first
-        self._sections.sort(key=lambda s: 0 if s.modal else 1)
-        # modals go last
-        self._sections_draw = sorted(self._sections, key=lambda s: 1 if s.modal else 0)
+        self.sort_section_event_order()
+        if at_draw_order is None:
+            self.sort_sections_draw_order()
+        else:
+            section.draw_order = at_draw_order  # this will trigger self.sort_section_draw_order
 
     def remove_section(self, section: Section) -> None:
         """ Removes a section from this section manager """
@@ -365,10 +393,18 @@ class SectionManager:
         self._sections.remove(section)
 
         # keep sections order updated in the lists of sections
+        self.sort_section_event_order()
+        self.sort_sections_draw_order()
+
+    def sort_section_event_order(self) -> None:
+        """ This will sort sections on event capture order (and update) based on insertion order and section.modal """
         # modals go first
         self._sections.sort(key=lambda s: 0 if s.modal else 1)
+
+    def sort_sections_draw_order(self) -> None:
+        """ This will sort sections on draw order based on section.draw_order and section.modal """
         # modals go last
-        self._sections_draw = sorted(self._sections, key=lambda s: 1 if s.modal else 0)
+        self._sections_draw = sorted(self._sections, key=lambda s: math.inf if s.modal else s.draw_order)
 
     def clear_sections(self) -> None:
         """ Removes all sections """
@@ -384,7 +420,7 @@ class SectionManager:
         modal_present = False
         if self.view_update_first is True:
             self.view.on_update(delta_time)
-        for section in self.sections:
+        for section in self._sections:
             if section.enabled and not section.block_updates and not modal_present:
                 section.on_update(delta_time)
                 if section.modal:
@@ -433,31 +469,37 @@ class SectionManager:
         for section in self.sections:
             section.accept_keyboard_keys = False
 
-    def get_section(self, x: int, y: int) -> Optional[Section]:
+    def get_first_section(self, x: int, y: int) -> Optional[Section]:
         """ Returns the first section based on x,y position """
-        for section in self.sections:
+        for section in self._sections:
             if section.enabled and section.mouse_is_on_top(x, y):
                 return section
         return None
 
-    def dispatch_mouse_event(self, event: str, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        """ Generic method to dispatch mouse events to the correct Section """
-        # check if the affected section has been already computed
-        prevent_dispatch = EVENT_UNHANDLED
+    def get_sections(self, x: int, y: int) -> List[Section]:
+        """ Returns a list of sections based on x,y position """
+        return [section for section in self._sections if section.enabled and section.mouse_is_on_top(x, y)]
 
-        section_pre_computed = 'current_section' in kwargs
-        if section_pre_computed:
-            section = kwargs['current_section']
-            # remove the section from the kwargs,
-            # so it arrives clean to the event handler
-            del kwargs['current_section']
+    def dispatch_mouse_event(self, event: str, x: int, y: int, *args,
+                             current_section: Optional[Section], **kwargs) -> Optional[bool]:
+        """ Generic method to dispatch mouse events to the correct Sections """
+
+        if current_section:
+            # affected section is already pre-computed
+            sections = [current_section]
         else:
-            # get the section from mouse position
-            section = self.get_section(x, y)
-        if section:
+            # get the sections from mouse position
+            sections = self.get_sections(x, y)
+
+        prevent_dispatch = EVENT_UNHANDLED
+        prevent_dispatch_view = EVENT_UNHANDLED
+
+        for section in sections:
+            if prevent_dispatch is EVENT_HANDLED:
+                break
             mouse_events_allowed = section.accept_mouse_events
             if mouse_events_allowed is False:
-                prevent_dispatch = EVENT_UNHANDLED
+                continue
             if mouse_events_allowed is True or event in mouse_events_allowed:  # event allowed
                 # get the method to call from the section
                 method = getattr(section, event, None)
@@ -469,24 +511,28 @@ class SectionManager:
 
                     # call the section method
                     prevent_dispatch = method(*position, *args, **kwargs)
-                    # prevent dispatch if modal
+
+                    # mark prevent dispatch as handled if section is modal
                     prevent_dispatch = EVENT_HANDLED if section.modal else prevent_dispatch
+
+                    # check if section prevents dispatching this event any further in the section stack
                     if prevent_dispatch is EVENT_HANDLED or any(
                             test in section.prevent_dispatch for test in [True, event]):
                         # prevent_dispatch attributte from section only affects if
                         #  the method is implemented in the same section
                         prevent_dispatch = EVENT_HANDLED
-        if section and any(test in section.prevent_dispatch_view for test in [True, event]):
-            # if the section prevents dispatching events to the view return
-            return prevent_dispatch
 
-        # call the method from the view.
-        view_prevent_dispatch = EVENT_UNHANDLED
-        method = getattr(self.view, event, None)  # get the method from the view
-        if method:
-            # call the view method
-            view_prevent_dispatch = method(x, y, *args, **kwargs)
-        return view_prevent_dispatch or prevent_dispatch
+            if any(test in section.prevent_dispatch_view for test in [True, event]):
+                # check if the section prevents dispatching events to the view
+                prevent_dispatch_view = EVENT_HANDLED
+
+        if prevent_dispatch_view is EVENT_UNHANDLED:
+            # call the method from the view.
+            method = getattr(self.view, event, None)  # get the method from the view
+            if method:
+                # call the view method
+                prevent_dispatch_view = method(x, y, *args, **kwargs)
+        return prevent_dispatch_view or prevent_dispatch
 
     def dispatch_keyboard_event(self, event, *args, **kwargs) -> Optional[bool]:
         """
@@ -530,71 +576,84 @@ class SectionManager:
         return EVENT_UNHANDLED
 
     def on_mouse_press(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        return self.dispatch_mouse_event('on_mouse_press', x, y, *args,
-                                         **kwargs)
+        return self.dispatch_mouse_event('on_mouse_press', x, y, *args, **kwargs)
 
     def on_mouse_release(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        return self.dispatch_mouse_event('on_mouse_release', x, y, *args,
-                                         **kwargs)
+        return self.dispatch_mouse_event('on_mouse_release', x, y, *args, **kwargs)
+
+    def dispatch_mouse_enter_leave_events(self, event_origin: str, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+        """
+        This helper method will dispatch mouse enter / leave events to sections
+        based on 'on_mouse_motion' and 'on_mouse_drag' events.
+        """
+        before_sections = self.mouse_over_sections
+        current_sections = self.get_sections(x, y)
+
+        prevent_dispatch_origin = EVENT_UNHANDLED  # prevent dispatch for the origin mouse event
+
+        prevent_dispatch_el = EVENT_UNHANDLED  # prevent dispatch for enter/leave events
+        for section in before_sections:
+            if section not in current_sections:
+                if prevent_dispatch_el is EVENT_HANDLED:
+                    break
+                # dispatch on_mouse_leave to before_section
+                prevent_dispatch_el = self.dispatch_mouse_event('on_mouse_leave', x, y, current_section=section)
+
+        prevent_dispatch_el = EVENT_UNHANDLED
+        for section in current_sections:
+            if section not in before_sections:
+                if prevent_dispatch_el is EVENT_UNHANDLED:
+                    # dispatch on_mouse_enter to current_section
+                    prevent_dispatch_el = self.dispatch_mouse_event('on_mouse_enter', x, y, current_section=section)
+            if prevent_dispatch_origin is EVENT_UNHANDLED:
+                prevent_dispatch_origin = self.dispatch_mouse_event(event_origin, x, y, *args, **kwargs)
+
+        # at the end catch the sections the mouse is moving over
+        self.mouse_over_sections = current_sections
+
+        return prevent_dispatch_origin  # note: the result from mouse enter/leave events is ignored here
 
     def on_mouse_motion(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
         """
         This method dispatches the on_mouse_motion and also calculates if on_mouse_enter/leave should be fired
         """
-        before_section = self.mouse_over_section
-        current_section = self.get_section(x, y)
-        if before_section is not current_section:
-            self.mouse_over_section = current_section
-            if before_section:
-                # dispatch on_mouse_leave to before_section
-                # (result from this call is ignored)
-                self.dispatch_mouse_event('on_mouse_leave', x, y, current_section=before_section)
-            if current_section:
-                # dispatch on_mouse_enter to current_section
-                # (result from this call is ignored)
-                self.dispatch_mouse_event('on_mouse_enter', x, y, current_section=current_section)
-        if current_section is not None:
-            kwargs['current_section'] = current_section
-        return self.dispatch_mouse_event('on_mouse_motion', x, y, *args, **kwargs)
-
-    def on_mouse_scroll(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        return self.dispatch_mouse_event('on_mouse_scroll', x, y, *args, **kwargs)
+        return self.dispatch_mouse_enter_leave_events('on_mouse_motion', x, y, *args, **kwargs)
 
     def on_mouse_drag(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
         """
         This method dispatches the on_mouse_drag and also calculates if on_mouse_enter/leave should be fired
         """
-        before_section = self.mouse_over_section
-        current_section = self.get_section(x, y)
-        if before_section is not current_section:
-            self.mouse_over_section = current_section
-            if before_section:
-                # dispatch on_mouse_leave to before_section
-                # (result from this call is ignored)
-                self.dispatch_mouse_event('on_mouse_leave', x, y, current_section=before_section)
-            if current_section:
-                # dispatch on_mouse_enter to current_section
-                # (result from this call is ignored)
-                self.dispatch_mouse_event('on_mouse_enter', x, y, current_section=current_section)
-        if current_section is not None:
-            kwargs['current_section'] = current_section
-        return self.dispatch_mouse_event('on_mouse_drag', x, y, *args, **kwargs)
+        return self.dispatch_mouse_enter_leave_events('on_mouse_drag', x, y, *args, **kwargs)
+
+    def on_mouse_scroll(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+        return self.dispatch_mouse_event('on_mouse_scroll', x, y, *args, **kwargs)
 
     def on_mouse_enter(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        current_section = self.get_section(x, y)
-        # set the section the mouse is over
-        self.mouse_over_section = current_section
-        # pass the correct section to the dispatch event,
-        # so it is not computed again
-        kwargs['current_section'] = current_section
-        return self.dispatch_mouse_event('on_mouse_enter', x, y, *args, **kwargs)
+        """ Triggered when the mouse enters the window space """
+        current_sections = self.get_sections(x, y)
+
+        # set the sections the mouse is over
+        self.mouse_over_sections = current_sections
+
+        prevent_dispatch = EVENT_UNHANDLED
+        for section in current_sections:
+            if prevent_dispatch is EVENT_HANDLED:
+                break
+            prevent_dispatch = self.dispatch_mouse_event('on_mouse_enter', x, y, *args, **kwargs,
+                                                         current_section=section)
+        return prevent_dispatch
 
     def on_mouse_leave(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
-        if self.mouse_over_section:
-            # clear the section the mouse is over as it's out of the screen
-            kwargs['current_section'], self.mouse_over_section = self.mouse_over_section, None
-            return self.dispatch_mouse_event('on_mouse_leave', x, y, *args, **kwargs)
-        return False
+        """ Triggered when the mouse leaves the window space """
+        prevent_dispatch = EVENT_UNHANDLED
+        for section in self.mouse_over_sections:
+            if prevent_dispatch is EVENT_HANDLED:
+                break
+            prevent_dispatch = self.dispatch_mouse_event('on_mouse_leave', x, y, *args, **kwargs,
+                                                         current_section=section)
+        # clear the sections the mouse is over as it's out of the screen
+        self.mouse_over_sections = []
+        return prevent_dispatch
 
     def on_key_press(self, *args, **kwargs) -> Optional[bool]:
         return self.dispatch_keyboard_event('on_key_press', *args, **kwargs)
@@ -603,13 +662,19 @@ class SectionManager:
         return self.dispatch_keyboard_event('on_key_release', *args, **kwargs)
 
     def on_show_view(self) -> None:
-        """ Called when the view is shown """
+        """
+        Called when the view is shown
+        The View.on_show_view is called before this by the Window.show_view method
+        """
         for section in self.sections:
             if section.enabled:
                 section.on_show_section()
 
     def on_hide_view(self) -> None:
-        """ Called when the view is hide """
+        """
+        Called when the view is hide
+        The View.on_hide_view is called before this by the Window.hide_view method
+        """
         for section in self.sections:
             if section.enabled:
                 section.on_hide_section()
