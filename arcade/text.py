@@ -79,7 +79,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     return font_name
 
 
-def _draw_label(label: pyglet.text.Label) -> None:
+def _draw_label(label: 'arcade.Text') -> None:
     """
 
     Helper for drawing pyglet labels with rotation within arcade.
@@ -90,10 +90,7 @@ def _draw_label(label: pyglet.text.Label) -> None:
     :param pyglet.text.Label label: a pyglet label to wrap and draw
     :param float rotation: rotate this many degrees from horizontal around anchor
     """
-    window = arcade.get_window()
-
-    with window.ctx.pyglet_rendering():
-        label.draw()
+    label.draw()
 
 
 class Text:
@@ -539,7 +536,11 @@ class Text:
 
     @position.setter
     def position(self, point: Point):
-        self._label.position = point[0], point[1], 0.0
+        # Starting with Pyglet 2.0b2 label positions take a z parameter.
+        if len(self._label.position) == 3:
+            self._label.position = point[0], point[1], 0.0
+        else:
+            self._label.position = point[0], point[1]
 
 
 def create_text_sprite(
