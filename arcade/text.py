@@ -539,7 +539,7 @@ class Text:
 
     @position.setter
     def position(self, point: Point):
-        self._label.position = point
+        self._label.position = point[0], point[1], 0.0
 
 
 def create_text_sprite(
@@ -572,7 +572,7 @@ def create_text_sprite(
     If you are providing a custom texture atlas, something important to keep in mind is
     that the resulting Sprite can only be added to SpriteLists which use that atlas. If
     it is added to a SpriteList which uses a different atlas, you will likely just see
-    a black box drawn in it's place.
+    a black box drawn in its place.
 
     :param str text: Initial text to display. Can be an empty string
     :param float start_x: x position to align the text's anchor point with
@@ -725,7 +725,7 @@ def draw_text(
 
         * - ``"left"`` `(default)`
           - Text drawn with its left side at ``start_x``
-          - Anchor point at the left side of the text's bounding box
+          - Anchor point on the left side of the text's bounding box
 
         * - ``"center"``
           - Text drawn horizontally centered on ``start_x``
@@ -733,7 +733,7 @@ def draw_text(
 
         * - ``"right"``
           - Text drawn with its right side at ``start_x``
-          - Anchor placed at the right side of the text's bounding box
+          - Anchor placed on the right side of the text's bounding box
 
 
     .. list-table:: Values allowed by ``anchor_y``
@@ -793,7 +793,7 @@ def draw_text(
        being drawn
 
     This function is less efficient than using :py:class:`~arcade.Text`
-    because some of the steps above can be repeated each time a call is
+    because some steps above can be repeated each time a call is
     made rather than fully cached as with the class.
 
     """
@@ -802,7 +802,7 @@ def draw_text(
     color = get_four_byte_color(color)
     # Cache the states that are expensive to change
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
-    cache = arcade.get_window().ctx.pyglet_label_cache
+    cache = arcade.get_window().ctx.label_cache
     label = cache.get(key)
     if align != "center" and align != "left" and align != "right":
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -813,10 +813,10 @@ def draw_text(
     if not label:
         adjusted_font = _attempt_font_name_resolution(font_name)
 
-        label = pyglet.text.Label(
+        label = arcade.Text(
             text=str(text),
-            x=start_x,
-            y=start_y,
+            start_x=start_x,
+            start_y=start_y,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,

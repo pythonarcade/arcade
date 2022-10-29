@@ -188,7 +188,7 @@ class ArcadeContext(Context):
         self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
+        self.label_cache: Dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -434,7 +434,7 @@ class ArcadeContext(Context):
     ) -> Texture:
         """
         Loads and creates an OpenGL 2D texture.
-        Currently all textures are converted to RGBA for simplicity.
+        Currently, all textures are converted to RGBA for simplicity.
 
         Example::
 
@@ -454,7 +454,7 @@ class ArcadeContext(Context):
         image = Image.open(str(path))
 
         if flip:
-            image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         texture = self.texture(
             image.size, components=4, data=image.convert("RGBA").tobytes()
