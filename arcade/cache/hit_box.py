@@ -16,6 +16,8 @@ from typing import Dict, Optional, Union
 from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
 
+# TODO: include version number in cache file
+
 
 class HitBoxCache:
     """
@@ -23,6 +25,8 @@ class HitBoxCache:
     These are calculated when loading a texture
     depending on the selected hit box algorithm.
     """
+    VERSION = 1
+
     def __init__(self):
         self._entries: Dict[str, PointList] = {}
 

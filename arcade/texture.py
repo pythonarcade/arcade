@@ -31,8 +31,8 @@ from arcade.texture_transforms import (
 )
 from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
-# from arcade.cache.hit_box import HitBoxCache
-# from arcade.cache.image import WeakImageCache
+from arcade.cache.hit_box import HitBoxCache
+from arcade.cache.image import ImageCache
 
 if TYPE_CHECKING:
     from arcade.sprite import Sprite
@@ -75,6 +75,8 @@ class Texture:
                                      Completely overrides the hit box algorithm.
     """
     cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+    image_cache = ImageCache()
+    hit_box_cache = HitBoxCache()
 
     _hit_box_funcs: Dict[str, Optional[Callable]] = {
         "default": calculate_hit_box_points_simple,
@@ -287,6 +289,17 @@ class Texture:
         """
         values = [str(name)] + [str(arg) for arg in args]
         return "|".join([v for v in values])
+
+    # Texture name
+    # ------------
+    # name, xy, size, hit_box_algorithm, vertex_order
+    # 
+    # Image name
+    # ----------
+    # name, xy, size
+    # 
+    # Hit Box name
+    # name, xy, size, hit_box_algorithm, vertex_order
 
     @classmethod
     def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
