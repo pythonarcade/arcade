@@ -339,7 +339,7 @@ class Texture:
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-        
+
         :return: Texture 
         """
         return self._new_texture_transformed(FlipLeftToRightTransform)
