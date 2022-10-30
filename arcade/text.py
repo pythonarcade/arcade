@@ -95,6 +95,7 @@ def _draw_label(label: 'arcade.Text') -> None:
     with window.ctx.pyglet_rendering():
         label.draw()
 
+
 class Text:
     """
     An object-oriented way to draw text to the screen.
