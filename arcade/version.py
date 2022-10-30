@@ -1,15 +1,19 @@
-import os.path
+import os
 
 
-dirname = os.path.dirname(__file__) or '.'
-my_path = f"{dirname}/VERSION"
+def _get_version():
+    _dirname = os.path.dirname(__file__) or '.'
+    _my_path = f"{_dirname}/VERSION"
 
-try:
-    text_file = open(my_path, "r")
-    data = text_file.read().strip()
-    text_file.close()
-except:
-    print(f"ERROR: Unable to load version number via {my_path}.")
-    data = "0.0.0"
+    try:
+        text_file = open(_my_path, "r")
+        data = text_file.read().strip()
+        text_file.close()
+    except Exception as e:
+        print(f"ERROR: Unable to load version number via {_my_path}.")
+        data = "0.0.0"
 
-VERSION = data
+    return data
+
+
+VERSION = _get_version()
