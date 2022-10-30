@@ -10,7 +10,7 @@ def _rreplace(s, old, new, occurrence):
 
 def _get_version():
     dirname = os.path.dirname(__file__) or '.'
-    my_path = f"{dirname}/VERSION"
+    my_path = f"{dirname}/arcade/VERSION"
 
     try:
         text_file = open(my_path, "r")
