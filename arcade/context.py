@@ -454,7 +454,7 @@ class ArcadeContext(Context):
         image = Image.open(str(path))
 
         if flip:
-            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         texture = self.texture(
             image.size, components=4, data=image.convert("RGBA").tobytes()

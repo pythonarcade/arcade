@@ -17,7 +17,7 @@ def load_font(path: Union[str, Path]) -> None:
     Load fonts in a file (usually .ttf) adding them to a global font registry.
 
     A file can contain one or multiple fonts. Each font has a name.
-    Open the font file to find the actually name(s). These names
+    Open the font file to find the actual name(s). These names
     are used to select font when drawing text.
 
     Examples::
@@ -28,7 +28,7 @@ def load_font(path: Union[str, Path]) -> None:
         # Load a font using a custom resource handle
         arcade.load_font(":font:Custom.ttf")
 
-    :param font_name:
+    :param path: A string, or an array of paths with fonts.
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
@@ -88,10 +88,12 @@ def _draw_label(label: 'arcade.Text') -> None:
     so that both arcade.Text and arcade.draw_text can make use of it.
 
     :param pyglet.text.Label label: a pyglet label to wrap and draw
-    :param float rotation: rotate this many degrees from horizontal around anchor
     """
-    label.draw()
+    window = arcade.get_window()
 
+    # window.ctx.reset()
+    with window.ctx.pyglet_rendering():
+        label.draw()
 
 class Text:
     """
