@@ -4,13 +4,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  # --- Bump version
+  bump-version:
+
+    runs-on: ubuntu-latest
+    environment: deploy-pypi-test
+
+    steps:
+      - uses: actions/checkout@v3
+      # See https://github.com/marketplace/actions/bump-versions
+      - name: Bump versions
+        uses: remorses/bump-version@js
+        with:
+            version_file: ./VERSION
+            prerelease_tag: dev
+        env:
+            GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+
+  # --- Deploy to pypi
   deploy:
 
     runs-on: ubuntu-latest
-
-    # This environment is defined in GitHub to hold our secrets
     environment: deploy-pypi-test
-
+    needs: bump-version
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
