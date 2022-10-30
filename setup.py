@@ -1,14 +1,38 @@
 #!/usr/bin/env python
-import sys
-from os import path
+import os
 from setuptools import find_namespace_packages, setup
-from arcade.version import VERSION
+
+
+def _rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
+
+
+def _get_version():
+    dirname = os.path.dirname(__file__) or '.'
+    my_path = f"{dirname}/VERSION"
+
+    try:
+        text_file = open(my_path, "r")
+        data = text_file.read().strip()
+        text_file.close()
+        data = _rreplace(data, '.', '', 1)
+    except Exception as e:
+        print(f"ERROR: Unable to load version number via '{my_path}'.")
+        print(f"Files in that directory: {os.listdir(my_path)}")
+        data = "0.0.0"
+
+    return data
+
+
+VERSION = _get_version()
 
 
 def get_long_description() -> str:
-    fname = path.join(path.dirname(path.abspath(__file__)), "README.rst")
+    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.rst")
     with open(fname, "r") as f:
         return f.read()
+
 
 # Testing and code inspection tools
 REQUIREMENTS_DEV = [
@@ -81,7 +105,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     include_package_data=True,
-        entry_points={'console_scripts': [
+    entry_points={'console_scripts': [
         'arcade = arcade.management:execute_from_command_line',
     ]},
     project_urls={

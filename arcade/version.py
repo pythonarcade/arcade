@@ -30,7 +30,7 @@ def _get_version():
         text_file = open(my_path, "r")
         data = text_file.read().strip()
         text_file.close()
-        data = rreplace(data, '.', '', 1)
+        data = _rreplace(data, '.', '', 1)
     except Exception as e:
         print(f"ERROR: Unable to load version number via '{my_path}'.")
         print(f"Files in that directory: {os.listdir(my_path)}")
@@ -40,4 +40,3 @@ def _get_version():
 
 
 VERSION = _get_version()
-print(VERSION)
