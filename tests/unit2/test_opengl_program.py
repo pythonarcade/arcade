@@ -343,4 +343,4 @@ def test_uniform_block(ctx):
     vao = ctx.geometry()
     ubo_buffer.bind_to_uniform_block(0)
     vao.transform(program, buffer, vertices=1)
-    assert struct.unpack('2f', buffer.read()) == (1, 1)
+    assert struct.unpack('2f', buffer.read()) == pytest.approx((1, 1), 0.01)

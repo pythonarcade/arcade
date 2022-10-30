@@ -37,19 +37,17 @@ class UIAnchorLayout(UILayout):
         size_hint=(1, 1),
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
-            children,
-            size_hint,
-            size_hint_min,
-            size_hint_max,
-            style,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            children=children,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
             **kwargs
         )
 
@@ -235,8 +233,8 @@ class UIBoxLayout(UILayout):
             width = width_of_children + required_space_between
             height = max(size[1] for size in min_child_sizes)
 
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
@@ -259,9 +257,14 @@ class UIBoxLayout(UILayout):
             available_width = self.content_width
             # calculate if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
-            total_size_hint_height = sum(
-                child.size_hint[1] or 0 for child in self.children if child.size_hint
-            ) or 1  # prevent division by zero
+            total_size_hint_height = (
+                sum(
+                    child.size_hint[1] or 0
+                    for child in self.children
+                    if child.size_hint
+                )
+                or 1
+            )  # prevent division by zero
 
             for child in self.children:
                 new_rect = child.rect
@@ -320,9 +323,14 @@ class UIBoxLayout(UILayout):
             available_height = self.content_height
             # calculate if some space is available for children to grow
             available_width = max(0, self.width - self.size_hint_min[0])
-            total_size_hint_width = sum(
-                child.size_hint[0] or 0 for child in self.children if child.size_hint
-            ) or 1  # prevent division by zero
+            total_size_hint_width = (
+                sum(
+                    child.size_hint[0] or 0
+                    for child in self.children
+                    if child.size_hint
+                )
+                or 1
+            )  # prevent division by zero
 
             # TODO Fix layout algorithm, handle size hints per dimension!
             # 0. check if any hint given, if not, continue with step 4.
@@ -393,8 +401,8 @@ class UIGridLayout(UILayout):
     Places widget in a grid layout.
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
-    :param float align_horizontal: Align children in orthogonal direction (x: left, center, right)
-    :param float align_vertical: Align children in orthogonal direction (y: top, center, bottom)
+    :param str align_horizontal: Align children in orthogonal direction (x: left, center, right)
+    :param str align_vertical: Align children in orthogonal direction (y: top, center, bottom)
     :param Iterable[UIWidget] children: Initial children, more can be added
     :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
     :param size_hint_min: Min width and height in pixel
@@ -479,8 +487,10 @@ class UIGridLayout(UILayout):
 
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
-            for row in child_sorted_row_wise[row_num: row_num + row_span]:
-                row[col_num: col_num + col_span] = [child] * col_span
+            for row in child_sorted_row_wise[
+                row_num : row_num + row_span  # noqa: E203
+            ]:
+                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_width_ratio_list = []
         principal_height_ratio_list = []
@@ -495,8 +505,8 @@ class UIGridLayout(UILayout):
                 max(width / (span or 1) for width, span in col)
             )
 
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         content_height = (
             sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
@@ -569,8 +579,10 @@ class UIGridLayout(UILayout):
 
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
-            for row in child_sorted_row_wise[row_num: row_num + row_span]:
-                row[col_num: col_num + col_span] = [child] * col_span
+            for row in child_sorted_row_wise[
+                row_num : row_num + row_span  # noqa: E203
+            ]:
+                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         # making max_height_per_row and max_width_per_column uniform
         for row in max_height_per_row:

@@ -40,8 +40,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.Camera(width, height)
-        self.camera_gui = arcade.Camera(width, height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
         self.generate_sprites()
 
@@ -195,7 +195,7 @@ class MyGame(arcade.Window):
                         self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, speed)
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.camera_sprites.resize(width, height)
         self.camera_gui.resize(width, height)

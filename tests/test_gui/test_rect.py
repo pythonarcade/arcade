@@ -146,3 +146,15 @@ def test_rect_max_size_only_height():
 
     # THEN
     assert new_rect == (10, 20, 100, 80)
+
+
+def test_rect_union():
+    # GIVEN
+    rect_a = Rect(0, 5, 10, 5)
+    rect_b = Rect(5, 0, 15, 8)
+
+    # WHEN
+    new_rect = rect_a.union(rect_b)
+
+    # THEN
+    assert new_rect == (0, 0, 20, 10)

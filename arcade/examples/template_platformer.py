@@ -65,8 +65,8 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Setup the Cameras
-        self.camera_sprites = arcade.Camera(self.width, self.height)
-        self.camera_gui = arcade.Camera(self.width, self.height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
@@ -204,10 +204,10 @@ class MyGame(arcade.Window):
         # Position the camera
         self.center_camera_to_player()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """ Resize window """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

@@ -75,7 +75,6 @@ class UILabel(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
 
@@ -95,16 +94,18 @@ class UILabel(UIWidget):
             align=align,
             dpi=dpi,
             multiline=multiline,
+            **kwargs,
         )
 
         super().__init__(
-            x,
-            y,
-            width or self.layout.content_width,
-            height or self.layout.content_height,
+            x=x,
+            y=y,
+            width=width or self.layout.content_width,
+            height=height or self.layout.content_height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
 
         self.layout.width = width
@@ -116,8 +117,8 @@ class UILabel(UIWidget):
         """
         Sets the width and height of this UIWidget to contain the whole text.
         """
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
             self.layout.content_width + base_width,
@@ -215,17 +216,17 @@ class UIInputText(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
         # fixme workaround for https://github.com/pyglet/pyglet/issues/529
         init_text = False
@@ -378,17 +379,17 @@ class UITextArea(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.

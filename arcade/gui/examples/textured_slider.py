@@ -1,6 +1,5 @@
 import arcade
 from arcade import Window, View, Texture
-from arcade.experimental.uistyle import UISliderStyle, UISliderDefaultStyle
 from arcade.gui import UIManager, Surface, UIAnchorLayout
 from arcade.gui.widgets.slider import UISlider
 
@@ -10,23 +9,15 @@ class UITextureSlider(UISlider):
     Slider using
     """
 
-    def __init__(self, bar: Texture, thumb: Texture, **kwargs):
+    def __init__(self, bar: Texture, thumb: Texture, style=None, **kwargs):
         self.bar = bar
         self.thumb = thumb
-        style = UISliderDefaultStyle
+        style = style or UISlider.DEFAULT_STYLE
 
         super().__init__(style=style, **kwargs)
 
     def do_render(self, surface: Surface):
-        if self.disabled:
-            state = "disabled"
-        elif self.pressed:
-            state = "press"
-        elif self.hovered:
-            state = "hover"
-        else:
-            state = "normal"
-        style: UISliderStyle = self.style[state]
+        style: UISlider.UIStyle = self.get_current_style()  # type: ignore
 
         self.prepare_render(surface)
 

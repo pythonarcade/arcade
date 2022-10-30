@@ -291,8 +291,9 @@ class GameView(arcade.View):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
-        self.camera = arcade.Camera(self.window.width, self.window.height)
-        self.gui_camera = arcade.Camera(self.window.width, self.window.height)
+        viewport = (0, 0, self.window.width, self.window.height)
+        self.camera = arcade.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.SimpleCamera(viewport=viewport)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"
@@ -494,13 +495,13 @@ class GameView(arcade.View):
         self.camera.zoom(-0.01 * scroll_y)
 
     def center_camera_to_player(self, speed=0.2):
-        screen_center_x = self.camera.scale * (self.player_sprite.center_x - (self.camera.viewport_width / 2))
-        screen_center_y = self.camera.scale * (self.player_sprite.center_y - (self.camera.viewport_height / 2))
+        screen_center_x = (self.player_sprite.center_x - (self.camera.viewport_width / 2))
+        screen_center_y = (self.player_sprite.center_y - (self.camera.viewport_height / 2))
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
             screen_center_y = 0
-        player_centered = (screen_center_x, screen_center_y)    
+        player_centered = (screen_center_x, screen_center_y)
 
         self.camera.move_to(player_centered, speed)
 

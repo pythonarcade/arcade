@@ -1,6 +1,8 @@
 """
 Constructs, are prepared widget combinations, you can use for common use-cases
 """
+from arcade.gui.nine_patch import NinePatchTexture
+
 import arcade
 from arcade.gui.events import UIOnActionEvent
 from arcade.gui.mixins import UIMouseFilterMixin
@@ -45,8 +47,12 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
         frame.with_padding(all=space)
 
-        self._bg_tex = arcade.load_texture(
-            ":resources:gui_basic_assets/window/grey_panel.png"
+        self._bg_tex = NinePatchTexture(
+            start=(7, 7),
+            end=(93, 93),
+            texture=arcade.load_texture(
+                ":resources:gui_basic_assets/window/grey_panel.png"
+            )
         )
         frame.with_background(texture=self._bg_tex)
 
@@ -67,8 +73,8 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         button_group = UIBoxLayout(vertical=False, space_between=10)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
-            button_group.add(button)
-            button.on_click = self._on_choice  # type: ignore
+        button_group.add(button)
+        button.on_click = self._on_choice  # type: ignore
 
         frame.add(
             child=button_group,

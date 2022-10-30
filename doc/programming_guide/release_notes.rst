@@ -81,6 +81,16 @@ Changes
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
     * Fixed an blending issue when rendering the gui surface to the screen
+    * Support nine patch information to draw background texture
+    * Removed some attributes from public interface, use ``UIWidget.with_`` methods
+        * ``UIWidget.border_width``
+        * ``UIWidget.border_color``
+        * ``UIWidget.bg_color``
+        * ``UIWidget.bg_texture``
+        * ``UIWidget.padding_top``
+        * ``UIWidget.padding_right``
+        * ``UIWidget.padding_bottom``
+        * ``UIWidget.padding_left``
 
   * New widgets:
 

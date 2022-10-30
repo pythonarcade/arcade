@@ -81,7 +81,7 @@ class HijackSpritePositions(arcade.Window):
         # Update the bendyness value
         self.position_program["bend"] = math.cos(self.time) / 400
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.position_program["size"] = width, height
 
