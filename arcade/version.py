@@ -2,8 +2,10 @@ import os
 
 
 # open text file in read mode
+path = f"{os.path.dirname(__file__)}\VERSION"
+
 try:
-    text_file = open(f"{os.path.dirname(__file__)}\VERSION", "r")
+    text_file = open(path, "r")
 
     # read whole file to a string
     data = text_file.read().strip()
@@ -11,7 +13,7 @@ try:
     # close file
     text_file.close()
 except:
-    print("ERROR: Unable to load version number.")
+    print(f"ERROR: Unable to load version number via {path}.")
     data = "0.0.0"
 
 VERSION = data
