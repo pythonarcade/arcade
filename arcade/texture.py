@@ -181,7 +181,8 @@ class Texture:
         """
         Get the hit box points for this texture.
 
-        Custom hit box points must be supplied during texture creation.
+        Custom hit box points must be supplied during texture creation
+        and should ideally not be changed after creation.
 
         :return: PointList
         """
@@ -275,20 +276,20 @@ class Texture:
         )
 
     @staticmethod
-    def build_cache_name(name, *args) -> str:
+    def build_cache_name(name, *args, separator: str = "|") -> str:
         """
         Generate cache names from the given parameters
 
         This is mostly useful when generating textures with many parameters
 
         :param str name: Name of the texture
-        :param args: params to format
+        :param args: optional parameters
         :param separator: separator character or string between params
 
         :return: Formatted cache string representing passed parameters
         """
         values = [str(name)] + [str(arg) for arg in args]
-        return "|".join([v for v in values])
+        return separator.join([v for v in values])
 
     # Texture name
     # ------------
@@ -335,6 +336,10 @@ class Texture:
         """
         Flip the texture left to right / horizontally.
 
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+        
         :return: Texture 
         """
         return self._new_texture_transformed(FlipLeftToRightTransform)
@@ -342,6 +347,10 @@ class Texture:
     def flip_top_to_bottom(self) -> "Texture":
         """
         Flip the texture top to bottom / vertically.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
 
         :return: Texture 
         """
@@ -352,6 +361,10 @@ class Texture:
         Returns a new texture that is flipped diagonally from this texture.
         This is an alias for :func:`transpose`.
 
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
         :return: Texture 
         """
         return self.transpose()
@@ -360,6 +373,10 @@ class Texture:
         """
         Returns a new texture that is transposed from this texture.
         This flips the texture diagonally from lower right to upper left.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
 
         :return: Texture 
         """
@@ -370,6 +387,10 @@ class Texture:
         Returns a new texture that is transverse from this texture.
         This flips the texture diagonally from lower left to upper right.
 
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
         :return: Texture 
         """
         return self._new_texture_transformed(TransverseTransform)
@@ -377,6 +398,10 @@ class Texture:
     def rotate(self, count: int) -> "Texture":
         """
         Rotate the texture by a given number of 90 degree steps.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
 
         :param int count: Number of 90 degree steps to rotate.
         :return: Texture 
