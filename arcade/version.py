@@ -1,19 +1,15 @@
-import os
+import os.path
 
 
-# open text file in read mode
-path = f"{os.path.dirname(__file__)}\VERSION"
+dirname = os.path.dirname(__file__) or '.'
+my_path = f"{dirname}/VERSION"
 
 try:
-    text_file = open(path, "r")
-
-    # read whole file to a string
+    text_file = open(my_path, "r")
     data = text_file.read().strip()
-
-    # close file
     text_file.close()
 except:
-    print(f"ERROR: Unable to load version number via {path}.")
+    print(f"ERROR: Unable to load version number via {my_path}.")
     data = "0.0.0"
 
 VERSION = data
