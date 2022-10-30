@@ -11,9 +11,8 @@ jobs:
     environment: deploy-pypi-test
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
-      # See https://github.com/marketplace/actions/bump-versions
       - name: Bump versions
         uses: remorses/bump-version@js
         with:
