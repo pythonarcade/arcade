@@ -79,7 +79,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     return font_name
 
 
-def _draw_label(label: 'arcade.Text') -> None:
+def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     """
 
     Helper for drawing pyglet labels with rotation within arcade.
@@ -89,6 +89,7 @@ def _draw_label(label: 'arcade.Text') -> None:
 
     :param pyglet.text.Label label: a pyglet label to wrap and draw
     """
+    assert isinstance(label, pyglet.text.Label)
     window = arcade.get_window()
 
     # window.ctx.reset()
@@ -495,7 +496,7 @@ class Text:
             :ref:`sprite_move_scrolling`.
 
         """
-        _draw_label(self._label)
+        _draw_pyglet_label(self._label)
 
     def draw_debug(    
         self,
@@ -525,7 +526,7 @@ class Text:
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
 
-        _draw_label(self._label)
+        _draw_pyglet_label(self._label)
 
     @property
     def position(self) -> Point:
@@ -845,4 +846,4 @@ def draw_text(
     if label.rotation != rotation:
         label.rotation = rotation
 
-    _draw_label(label)
+    label.draw()
