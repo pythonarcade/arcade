@@ -38,6 +38,9 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         message_text: str,
         buttons=("Ok",),
     ):
+        if not buttons:
+            raise ValueError("At least a single value has to be available for `buttons`")
+
         super().__init__(size_hint=(1, 1))
         self.register_event_type("on_action")
 
@@ -47,24 +50,22 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
         frame.with_padding(all=space)
 
-        self._bg_tex = NinePatchTexture(
+        frame.with_background(texture=NinePatchTexture(
             start=(7, 7),
             end=(93, 93),
             texture=arcade.load_texture(
                 ":resources:gui_basic_assets/window/grey_panel.png"
             )
-        )
-        frame.with_background(texture=self._bg_tex)
+        ))
 
         # Setup text
-        self._text_area = UITextArea(
-            text=message_text,
-            width=width - space,
-            height=height - space,
-            text_color=arcade.color.BLACK,
-        )
         frame.add(
-            child=self._text_area,
+            child=UITextArea(
+                text=message_text,
+                width=width - space,
+                height=height - space,
+                text_color=arcade.color.BLACK,
+            ),
             anchor_x="center",
             anchor_y="top",
         )
