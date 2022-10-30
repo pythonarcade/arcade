@@ -11,6 +11,7 @@ jobs:
     environment: deploy-pypi-test
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v3
       # See https://github.com/marketplace/actions/bump-versions
       - name: Bump versions
@@ -28,6 +29,7 @@ jobs:
     environment: deploy-pypi-test
     needs: bump-version
     steps:
+      - name: Checkout
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v3
