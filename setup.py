@@ -2,9 +2,7 @@
 import sys
 from os import path
 from setuptools import find_namespace_packages, setup
-
-with open("arcade/version.py") as file:
-    exec(file.read())
+from arcade.version import VERSION
 
 
 def get_long_description() -> str:
