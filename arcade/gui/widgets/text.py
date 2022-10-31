@@ -228,11 +228,6 @@ class UIInputText(UIWidget):
             size_hint_max=size_hint_max,
             **kwargs,
         )
-        # fixme workaround for https://github.com/pyglet/pyglet/issues/529
-        init_text = False
-        if text == "":
-            init_text = True
-            text = " "
 
         self._active = False
         self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
@@ -250,9 +245,6 @@ class UIInputText(UIWidget):
         self.caret = Caret(self.layout, color=(0, 0, 0))
 
         self._blink_state = self._get_caret_blink_state()
-
-        if init_text:
-            self.text = ""
 
     def _get_caret_blink_state(self):
         return self.caret._visible and self._active and self.caret._blink_visible
