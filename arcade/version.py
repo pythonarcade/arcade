@@ -10,9 +10,12 @@ will go to:
 Problem is, python doesn't like that last period:
 2.7.3-dev.5
 should be
-2.7.3-dev5
+2.7.3.dev5
 ...and our github action doesn't like that pattern.
-So this will delete that last period.
+So this will delete that last period and flip around the dash.
+
+ALSO note that this bumps the version AFTER the deploy.
+So if we are at version 2.7.3.dev5 that's the version deploy. Bump will bump it to dev6.
 """
 import os
 
@@ -31,6 +34,7 @@ def _get_version():
         data = text_file.read().strip()
         text_file.close()
         data = _rreplace(data, '.', '', 1)
+        data = _rreplace(data, '-', '.', 1)
     except Exception as e:
         print(f"ERROR: Unable to load version number via '{my_path}'.")
         print(f"Files in that directory: {os.listdir(my_path)}")
