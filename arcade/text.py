@@ -182,7 +182,8 @@ class Text:
         multiline: bool = False,
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
-        group: Optional[pyglet.graphics.Group] = None
+        group: Optional[pyglet.graphics.Group] = None,
+        z: int = 0,
     ):
         """Build a text object"""
 
@@ -197,6 +198,7 @@ class Text:
             text=text,
             x=start_x,
             y=start_y,
+            z=z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -287,6 +289,19 @@ class Text:
         if self._label.y == y:
             return
         self._label.y = y
+
+    @property
+    def z(self) -> float:
+        """
+        Get or set the z position of the label
+        """
+        return self._label.z
+
+    @z.setter
+    def z(self, z: float):
+        if self._label.z == z:
+            return
+        self._label.z = z
 
     @property
     def font_name(self) -> FontNameOrNames:
@@ -540,11 +555,7 @@ class Text:
 
     @position.setter
     def position(self, point: Point):
-        # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(self._label.position) == 3:
-            self._label.position = point[0], point[1], 0.0
-        else:
-            self._label.position = point[0], point[1]
+        self._label.position = *point, self._label.z
 
 
 def create_text_sprite(
@@ -647,6 +658,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
+    z: int = 0
 ):
     """
     A simple way for beginners to draw text.
@@ -673,6 +685,7 @@ def draw_text(
     :param Any text: Text to display. The object passed in will be converted to a string
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
+    :param float z: z axis of the text, to arrange draw order
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
@@ -822,6 +835,7 @@ def draw_text(
             text=str(text),
             start_x=start_x,
             start_y=start_y,
+            z=z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -839,11 +853,14 @@ def draw_text(
     # These updates are quite expensive
     if label.text != text:
         label.text = str(text)
-    if label.x != start_x or label.y != start_y:
-        label.position = start_x, start_y
+
+    label.begin_update()  # changing text and color is not possible at the same point in time.
+    if label.x != start_x or label.y != start_y or label.z != z:
+        label.position = start_x, start_y, z
     if label.color != color:
         label.color = color
     if label.rotation != rotation:
         label.rotation = rotation
+    label.end_update()
 
     label.draw()
