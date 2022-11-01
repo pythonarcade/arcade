@@ -100,12 +100,12 @@ class UISlider(UIStyledWidget):
         self.register_event_type("on_change")
 
     def get_current_state(self) -> str:
-        if self.pressed:
+        if self.disabled:
+            return "disabled"
+        elif self.pressed:
             return "press"
         elif self.hovered:
             return "hover"
-        elif self.disabled:
-            return "disabled"
         else:
             return "normal"
 
