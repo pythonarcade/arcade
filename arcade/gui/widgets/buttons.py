@@ -121,12 +121,12 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
         bind(self, "text", self.trigger_render)
 
     def get_current_state(self) -> str:
-        if self.pressed:
+        if self.disabled:
+            return "disabled"
+        elif self.pressed:
             return "press"
         elif self.hovered:
             return "hover"
-        elif self.disabled:
-            return "disabled"
         else:
             return "normal"
 
@@ -273,12 +273,12 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
         bind(self, "text", self.trigger_render)
 
     def get_current_state(self) -> str:
-        if self.pressed:
+        if self.disabled:
+            return "disabled"
+        elif self.pressed:
             return "press"
         elif self.hovered:
             return "hover"
-        elif self.disabled:
-            return "disabled"
         else:
             return "normal"
 
