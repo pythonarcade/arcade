@@ -557,11 +557,19 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
 
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._width
-                old_points = self._points
-                self._points = [(point[0] * scale, point[1]) for point in old_points]
+            # If current width is not zero, rescale current hitbox
+            if self._width != 0.0:
+
+                # If there is a hit box, rescale it to the new width
+                if self._points:
+                    scale = new_value / self._width
+                    old_points = self._points
+                    self._points = [(point[0] * scale, point[1]) for point in old_points]
+            
+            else:
+
+                # Redefine hit box points
+                self._points = self.create_hit_box_points(new_value, self._height)
 
             self._width = new_value
             self.add_spatial_hashes()
@@ -581,11 +589,19 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
 
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._height
-                old_points = self._points
-                self._points = [(point[0], point[1] * scale) for point in old_points]
+            # If current width is not zero, rescale current hitbox
+            if self._width != 0.0:
+
+                # If there is a hit box, rescale it to the new width
+                if self._points:
+                    scale = new_value / self._height
+                    old_points = self._points
+                    self._points = [(point[0], point[1] * scale) for point in old_points]
+
+            else:
+
+                # Redefine hit box points
+                self._points = self.create_hit_box_points(self._width, new_value)
 
             self._height = new_value
             self.add_spatial_hashes()
@@ -641,6 +657,24 @@ class Sprite:
 
         for sprite_list in self.sprite_lists:
             sprite_list.update_size(self)
+
+    def create_hit_box_points(self, width: float, height: float):
+        """
+        Return all 4 hit box points given a width and height value.
+        :param width: Width size of the hit box.
+        :param height: Height size of the hit box.
+        :return:
+        """
+
+        width /= 2.0
+        height /= 2.0
+
+        x1, y1 = -width, -height
+        x2, y2 = +width, -height
+        x3, y3 = +width, +height
+        x4, y4 = -width, +height
+
+        return ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
         """
