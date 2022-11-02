@@ -252,6 +252,10 @@ class SpriteList:
         """Return the length of the sprite list."""
         return len(self.sprite_list)
 
+    def __contains__(self, sprite: Sprite) -> bool:
+        """Return if the sprite list contains the given sprite"""
+        return sprite in self.sprite_slot
+
     def __iter__(self) -> Iterator[Sprite]:
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
