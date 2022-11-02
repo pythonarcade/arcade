@@ -557,14 +557,11 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
 
-            # If current width is not zero, rescale current hitbox
-            if self._width != 0.0:
-
-                # If there is a hit box, rescale it to the new width
-                if self._points:
-                    scale = new_value / self._width
-                    old_points = self._points
-                    self._points = [(point[0] * scale, point[1]) for point in old_points]
+            # If there is a hit box, rescale it to the new width. If current width is not zero, rescale current hitbox
+            if self._points and self._width:
+                scale = new_value / self._width
+                old_points = self._points
+                self._points = [(point[0] * scale, point[1]) for point in old_points]
             
             else:
 
@@ -589,14 +586,11 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
 
-            # If current width is not zero, rescale current hitbox
-            if self._width != 0.0:
-
-                # If there is a hit box, rescale it to the new width
-                if self._points:
-                    scale = new_value / self._height
-                    old_points = self._points
-                    self._points = [(point[0], point[1] * scale) for point in old_points]
+            # If there is a hit box, rescale it to the new width
+            if self._points and self._height:
+                scale = new_value / self._height
+                old_points = self._points
+                self._points = [(point[0], point[1] * scale) for point in old_points]
 
             else:
 
