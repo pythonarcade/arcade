@@ -292,6 +292,19 @@ class Text:
         self._label.y = y
 
     @property
+    def start_z(self) -> float:
+        """
+        Get or set the z position of the label
+        """
+        return self._label.z
+
+    @start_z.setter
+    def start_z(self, start_z: float):
+        if self._label.z == start_z:
+            return
+        self._label.z = start_z
+
+    @property
     def font_name(self) -> FontNameOrNames:
         """
         Get or set the font name(s) for the label
@@ -544,10 +557,10 @@ class Text:
     @position.setter
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(self._label.position) == 3:
-            self._label.position = point[0], point[1], 0.0
+        if len(point) == 3:
+            self._label.position = point
         else:
-            self._label.position = point[0], point[1]
+            self._label.position = *point, self._label.z
 
 
 def create_text_sprite(
@@ -848,8 +861,8 @@ def draw_text(
     # These updates are quite expensive
     if label.text != text:
         label.text = str(text)
-    if label.x != start_x or label.y != start_y:
-        label.position = start_x, start_y
+    if label.x != start_x or label.y != start_y or label.start_z != start_z:
+        label.position = start_x, start_y, start_z  # type: ignore
     if label.color != color:
         label.color = color
     if label.rotation != rotation:
