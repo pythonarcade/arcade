@@ -562,7 +562,7 @@ class Sprite:
                 scale = new_value / self._width
                 old_points = self._points
                 self._points = [(point[0] * scale, point[1]) for point in old_points]
-            
+
             else:
 
                 # Redefine hit box points
