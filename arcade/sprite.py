@@ -1163,8 +1163,8 @@ class Sprite:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against
-        :return: SpriteList of all overlapping Sprites from the original SpriteList
-        :rtype: SpriteList
+        :return: List of all overlapping Sprites from the original SpriteList
+        :rtype: list
         """
         from arcade import check_for_collision_with_list
 
