@@ -862,7 +862,7 @@ def draw_text(
     if label.text != text:
         label.text = str(text)
     if label.x != start_x or label.y != start_y or label.start_z != start_z:
-        label.position = start_x, start_y, start_z
+        label.position = start_x, start_y, start_z  # type: ignore
     if label.color != color:
         label.color = color
     if label.rotation != rotation:
