@@ -111,9 +111,8 @@ There are many great profilers out there, but one we recommend is called
 
     cProfile.run("time.sleep(5)")
 
-It would return something like this:
+It would print something like this::
 
-.. code:: python
     4 function calls in 10.009 seconds
 
         Ordered by: standard name
