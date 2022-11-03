@@ -104,7 +104,8 @@ game to slow down.
 There are many great profilers out there, but one we recommend is called
 `cProfile`. You can make it test some code like this:
 
-.. code:: python
+.. code-block:: python
+
     import cProfile
     import time
 
