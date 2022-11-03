@@ -54,7 +54,7 @@ setup(
     download_url="https://api.arcade.academy",
     install_requires=[
         "pyglet==2.0.dev23",
-        "pillow~=9.1.1",
+        "pillow~=9.3.0",
         "pymunk~=6.2.1",
         "pytiled-parser==2.2.0",
     ],
@@ -77,6 +77,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
