@@ -627,7 +627,7 @@ class ShapeElementList(Generic[TShape]):
         self.shape_list.remove(item)
         group = (item.mode, item.line_width)
         self.batches[group].items.remove(item)
-        self.dirties.add(group)
+        self.dirties.remove(group)
 
     def _refresh_shape(self, group):
         # Create a buffer large enough to hold all the shapes buffers
