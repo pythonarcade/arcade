@@ -118,6 +118,8 @@ Changes
     the GPU now.
   * As part of this move, the ``arcade.text_pillow`` module has been removed completely, and the ``arcade.text_pyglet`` module has been re-named
     just be ``arcade.text``.
+  * :py:func:`~arcade.draw_text` and :py:class:`~arcade.Text` both now accept a ``start_z`` parameter. This will allow advanced usage to set the Z
+    position of the underlying Label. This parameter defaults to 0 and does not change any existing usage.
 
 * OpenGL
 

@@ -121,6 +121,7 @@ class Text:
     :param str text: Initial text to display. Can be an empty string
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
+    :param float start_z: z position to align the text's anchor point with
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
@@ -182,7 +183,8 @@ class Text:
         multiline: bool = False,
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
-        group: Optional[pyglet.graphics.Group] = None
+        group: Optional[pyglet.graphics.Group] = None,
+        start_z: float = 0
     ):
         """Build a text object"""
 
@@ -197,6 +199,7 @@ class Text:
             text=text,
             x=start_x,
             y=start_y,
+            z=start_z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -551,7 +554,7 @@ def create_text_sprite(
     text: str,
     start_x: float,
     start_y: float,
-    color: Color,
+    color: Color = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -563,6 +566,7 @@ def create_text_sprite(
     multiline: bool = False,
     rotation: float = 0,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
+    start_z: float = 0
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -582,6 +586,7 @@ def create_text_sprite(
     :param str text: Initial text to display. Can be an empty string
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
+    :param float start_z: z position to align the text's anchor point with
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
@@ -612,7 +617,8 @@ def create_text_sprite(
         anchor_x,
         anchor_y,
         multiline,
-        rotation
+        rotation,
+        start_z=start_z
     )
 
     size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
@@ -647,6 +653,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
+    start_z: float = 0
 ):
     """
     A simple way for beginners to draw text.
@@ -673,6 +680,7 @@ def draw_text(
     :param Any text: Text to display. The object passed in will be converted to a string
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
+    :param float start_z: z position to align the text's anchor point with
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
@@ -822,6 +830,7 @@ def draw_text(
             text=str(text),
             start_x=start_x,
             start_y=start_y,
+            start_z=start_z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
