@@ -348,6 +348,14 @@ class SectionManager:
         """ Returns true if sections are available """
         return bool(self.sections)
 
+    @property
+    def is_current_view(self) -> bool:
+        """
+        Returns if this section manager view is the current on the view window
+        a.k.a.: is the view that is currently being shown
+        """
+        return self.view.window.current_view is self.view
+
     def disable(self) -> None:
         """ Disable all sections """
         for section in self.sections:
@@ -387,8 +395,17 @@ class SectionManager:
         else:
             section.draw_order = at_draw_order  # this will trigger self.sort_section_draw_order
 
+        # trigger on_show_section if the view is the current one and section is enabled:
+        if self.is_current_view and section.enabled:
+            section.on_show_section()
+
     def remove_section(self, section: Section) -> None:
         """ Removes a section from this section manager """
+
+        # trigger on_hide_section if the view is the current one and section is enabled
+        if self.is_current_view and section.enabled:
+            section.on_hide_section()
+
         section._view = None
         self._sections.remove(section)
 
