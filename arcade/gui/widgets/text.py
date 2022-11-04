@@ -38,10 +38,6 @@ class UILabel(UIWidget):
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
-    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``,
-                         ``"center"`` or ``"right"``.
-    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``,
-                         ``"baseline"``, ``"center"`` or ``"top"``.
     :param str align: Horizontal alignment of text on a line, only applies if a width is supplied.
                       One of ``"left"``, ``"center"`` or ``"right"``.
     :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
@@ -67,8 +63,6 @@ class UILabel(UIWidget):
         bold=False,
         italic=False,
         stretch=False,
-        anchor_x="left",
-        anchor_y="bottom",
         align="left",
         dpi=None,
         multiline: bool = False,
@@ -77,7 +71,6 @@ class UILabel(UIWidget):
         size_hint_max=None,
         **kwargs,
     ):
-
         # Use Pyglet's Label for text rendering
         self.layout = pyglet.text.Label(
             text=text,
@@ -89,8 +82,6 @@ class UILabel(UIWidget):
             bold=bold,
             italic=italic,
             stretch=stretch,
-            anchor_x=anchor_x,
-            anchor_y=anchor_y,
             align=align,
             dpi=dpi,
             multiline=multiline,
@@ -151,36 +142,6 @@ class UILabel(UIWidget):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
-
-
-# class _Arcade_Caret(Caret):
-#     def _update(self, line=None, update_ideal_x=True):
-#         if line is None:
-#             line = self._layout.get_line_from_position(self._position)
-#             self._ideal_line = None
-#         else:
-#             self._ideal_line = line
-#         x, y = self._layout.get_point_from_position(self._position, line)
-#         if update_ideal_x:
-#             self._ideal_x = x
-#
-#         # x -= self._layout.view_x
-#         # y -= self._layout.view_y
-#         # add 1px offset to make caret visible on line start
-#         x += self._layout.x + 1
-#
-#         y += self._layout.y + self._layout.height
-#
-#         font = self._layout.document.get_font(max(0, self._position - 1))
-#         self._list.position[:] = [x, y + font.descent, x, y + font.ascent]
-#
-#         if self._mark is not None:
-#             self._layout.set_selection(
-#                 min(self._position, self._mark), max(self._position, self._mark)
-#             )
-#
-#         self._layout.ensure_line_visible(line)
-#         self._layout.ensure_x_visible(x)
 
 
 class UIInputText(UIWidget):
