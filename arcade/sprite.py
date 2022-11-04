@@ -343,7 +343,6 @@ class Sprite:
         Points will be scaled with get_adjusted_hit_box.
         """
         self._point_list_cache = None
-        self._hit_box_shape = None
         self._points = points
 
     def get_hit_box(self) -> PointList:
