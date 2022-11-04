@@ -202,6 +202,9 @@ class UIInputText(UIWidget):
     :param style: not used
     """
 
+    # move layout one pixel into the scissor box, so the caret is also shown at position 0
+    LAYOUT_OFFSET = 1
+
     def __init__(
         self,
         x: float = 0,
@@ -240,21 +243,23 @@ class UIInputText(UIWidget):
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
-            self.doc, width, height, multiline=multiline
+            self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
         )
+        self.layout.x += self.LAYOUT_OFFSET
         self.caret = Caret(self.layout, color=(0, 0, 0))
+        self.caret.visible = False
 
         self._blink_state = self._get_caret_blink_state()
 
     def _get_caret_blink_state(self):
-        return self.caret._visible and self._active and self.caret._blink_visible
+        return self.caret.visible and self._active and self.caret._blink_visible
 
     def on_update(self, dt):
         # Only trigger render if blinking state changed
         current_state = self._get_caret_blink_state()
         if self._blink_state != current_state:
             self._blink_state = current_state
-            self.trigger_render()
+            self.trigger_full_render()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         # if not active, check to activate, return
@@ -269,7 +274,7 @@ class UIInputText(UIWidget):
         # if active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                x, y = event.x - self.x, event.y - self.y
+                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
@@ -293,7 +298,7 @@ class UIInputText(UIWidget):
             if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
                 event.x, event.y
             ):
-                x, y = event.x - self.x, event.y - self.y
+                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers
@@ -311,11 +316,11 @@ class UIInputText(UIWidget):
     def _update_layout(self):
         # Update Pyglet layout size
         layout = self.layout
-        layout_size = layout.width, layout.height
+        layout_size = layout.width - self.LAYOUT_OFFSET, layout.height
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.width = self.content_width
+            layout.width = self.content_width - self.LAYOUT_OFFSET
             layout.height = self.content_height
             layout.end_update()
 
