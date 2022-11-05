@@ -97,15 +97,15 @@ class SpriteList:
     """
     def __init__(
             self,
-            use_spatial_hash=None,
+            use_spatial_hash: Optional[bool] = None,
             spatial_hash_cell_size=128,
             is_static=False,
-            atlas: "TextureAtlas" = None,
+            atlas: Optional["TextureAtlas"] = None,
             capacity: int = 100,
             lazy: bool = False,
             visible: bool = True,
     ):
-        self.ctx = None
+        self.ctx: Optional[ArcadeContext] = None
         self.program = None
         if atlas:
             self._atlas: TextureAtlas = atlas
