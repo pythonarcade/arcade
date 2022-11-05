@@ -220,7 +220,7 @@ class Window(pyglet.window.Window):
             self,
             color: Optional[Color] = None,
             normalized: bool = False,
-            viewport: Tuple[int, int, int, int] = None,
+            viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.

@@ -780,8 +780,8 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Union[Texture, List[Texture]] = None,
-        depth_attachment: Texture = None
+        color_attachments: Optional[Union[Texture, List[Texture]]] = None,
+        depth_attachment: Optional[Texture] = None
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -941,10 +941,10 @@ class Context:
         self,
         *,
         vertex_shader: str,
-        fragment_shader: str = None,
-        geometry_shader: str = None,
-        tess_control_shader: str = None,
-        tess_evaluation_shader: str = None,
+        fragment_shader: Optional[str] = None,
+        geometry_shader: Optional[str] = None,
+        tess_control_shader: Optional[str] = None,
+        tess_evaluation_shader: Optional[str] = None,
         defines: Dict[str, str] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",

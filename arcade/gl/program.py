@@ -9,7 +9,7 @@ from ctypes import (
     byref,
     create_string_buffer,
 )
-from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
+from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union, Optional
 import weakref
 
 from pyglet import gl
@@ -70,11 +70,11 @@ class Program:
         ctx: "Context",
         *,
         vertex_shader: str,
-        fragment_shader: str = None,
-        geometry_shader: str = None,
-        tess_control_shader: str = None,
-        tess_evaluation_shader: str = None,
-        varyings: List[str] = None,
+        fragment_shader: Optional[str] = None,
+        geometry_shader: Optional[str] = None,
+        tess_control_shader: Optional[str] = None,
+        tess_evaluation_shader: Optional[str] = None,
+        varyings: Optional[List[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ):
         """Create a Program."""
