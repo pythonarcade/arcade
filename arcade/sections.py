@@ -550,8 +550,8 @@ class SectionManager:
         :param current_section: the section this mouse event should be delivered to. If None, will retrive all
         sections that should recieve this event based on x, y coordinates
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
 
+        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
 
         sections: Union[list, Generator]
