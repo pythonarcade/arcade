@@ -547,10 +547,9 @@ class SectionManager:
         :param x: the x axis coordinate
         :param y: the y axis coordinate
         :param args: any other position arguments that should be deliverd to the dispatched event
-        :param current_section: the section this mouse event should be delivered to. If None, will retrive all
+        :param current_section: the section this mouse event should be delivered to. If None, will retrive all \
         sections that should recieve this event based on x, y coordinates
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
 
