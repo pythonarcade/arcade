@@ -117,7 +117,7 @@ Views and are handled by a special :class:`SectionManager` inside the
 :class:`View`. Don't worry, 99% of the time you won't need to interact with the
 :class:`SectionManager`.
 
-To create a :class:`Section` start by inheriting from ``arcade.Section`
+To create a :class:`Section` start by inheriting from ``arcade.Section``.
 
 Based on the :class:`Section` configuration your section will start receiving
 events from the View :class:`SectionManager`. A :class:`Section` has all the
