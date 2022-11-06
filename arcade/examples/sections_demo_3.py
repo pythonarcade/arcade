@@ -259,9 +259,9 @@ class GameView(arcade.View):
 
         # create and store the modal, so we can set
         # self.modal_section.enabled = True to show it
-        self.modal_section = ModalSection(self.window.width / 3,
+        self.modal_section = ModalSection((self.window.width / 2) - 150,
                                           (self.window.height / 2) - 100,
-                                          400, 200)
+                                          300, 200)
 
         # we set accept_keyboard_events to False (default to True)
         self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,

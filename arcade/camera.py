@@ -489,7 +489,7 @@ class Camera(SimpleCamera):
 
             # Come up with a new velocity, pulled by opposite vector and damped
             self.shake_velocity += opposite_vector
-            self.shake_velocity *= Vec2(self.shake_damping, self.shake_damping)
+            self.shake_velocity *= self.shake_damping
 
             update_view_matrix = True
 
