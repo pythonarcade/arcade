@@ -1423,18 +1423,20 @@ class SpriteSolidColor(Sprite):
         Create a solid-color rectangular sprite.
         """
         super().__init__()
+        color_rgba = arcade.get_four_byte_color(color)
 
-        cache_name = build_cache_name("Solid", width, height, color[0], color[1], color[2])
+        cache_name = build_cache_name("Solid", width, height, 255, 255, 255, 255)
         # use existing texture if it exists
         if cache_name in Texture.cache:
             texture = Texture.cache[cache_name]
         # otherwise, generate a filler sprite and add it to the cache
         else:
-            texture = Texture.create_filled(cache_name, (width, height), color)
+            texture = Texture.create_filled(cache_name, (width, height), (255, 255, 255, 255))
             Texture.cache[cache_name] = texture
 
         # apply chosen texture to the current sprite
         self.texture = texture
+        self.color = color_rgba
         self._points = texture.hit_box_points
 
 
