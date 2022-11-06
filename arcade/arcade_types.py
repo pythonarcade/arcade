@@ -9,8 +9,8 @@ from typing import List, NamedTuple, Optional, Sequence, Tuple, Union
 from pytiled_parser import Properties
 
 
-RGB = Union[Tuple[int, int, int], List[int]]
-RGBA = Union[Tuple[int, int, int, int], List[int]]
+RGB = Tuple[int, int, int]
+RGBA = Tuple[int, int, int, int]
 Color = Union[RGB, RGBA]
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point

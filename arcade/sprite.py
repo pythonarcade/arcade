@@ -11,7 +11,6 @@ from typing import (
     Any,
     Tuple,
     Iterable,
-    cast,
     Dict,
     List,
     Optional,
@@ -29,7 +28,7 @@ from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-from arcade.arcade_types import RGB, Point, PointList
+from arcade.arcade_types import RGBA, Point, PointList
 from arcade.cache import build_cache_name
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -186,8 +185,7 @@ class Sprite:
         self._hit_box_detail = hit_box_detail
 
         # Color
-        self._color: RGB = (255, 255, 255)
-        self._alpha: int = 255
+        self._color: RGBA = 255, 255, 255, 255
 
         # Custom sprite properties
         self._properties: Optional[Dict[str, Any]] = None
@@ -936,41 +934,40 @@ class Sprite:
             sprite_list.update_texture(self)
 
     @property
-    def color(self) -> RGB:
+    def color(self) -> RGBA:
         """
-        Return the RGB color associated with the sprite.
+        Get or set the RGB/RGBA color associated with the sprite.
+
+        Example usage::
+
+            print(sprite.color)
+            sprite.color = arcade.color.RED
+            sprite.color = 255, 0, 0
+            sprite.color = 255, 0, 0, 128
         """
         return self._color
 
     @color.setter
-    def color(self, color: Color):
-        """
-        Set the current sprite color as a RGB value
-        """
-        if color is None:
-            raise ValueError("Color must be three or four ints from 0-255")
-
-        if len(color) == 3:
+    def color(self, color: RGBA):
+        if len(color) == 4:
             if (
-                self._color[0] == color[0]
+                self._color == color[0]
+                and self._color[1] == color[1]
+                and self._color[2] == color[2]
+                and self._color[3] == color[3]
+            ):
+                return
+            self._color = color[0], color[1], color[2], color[3]
+        elif len(color) == 3:
+            if (
+                self._color == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
             ):
                 return
-        elif len(color) == 4:
-            color = cast(List, color)  # Prevent typing error
-            if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-                and self.alpha == color[3]
-            ):
-                return
-            self.alpha = color[3]
+            self._color = color[0], color[1], color[2], self._color[3] 
         else:
             raise ValueError("Color must be three or four ints from 0-255")
-
-        self._color = color[0], color[1], color[2]
 
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
@@ -980,19 +977,15 @@ class Sprite:
         """
         Return the alpha associated with the sprite.
         """
-        return self._alpha
+        return self._color[3]
 
     @alpha.setter
     def alpha(self, alpha: int):
         """
         Set the current sprite color as a value
         """
-        if alpha < 0 or alpha > 255:
-            raise ValueError(
-                f"Invalid value for alpha. Must be 0 to 255, received {alpha}"
-            )
+        self._color = self._color[0], self._color[1], self._color[2], int(alpha)
 
-        self._alpha = int(alpha)
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1012,11 +1005,11 @@ class Sprite:
 
         :rtype: bool
         """
-        return self._alpha > 0
+        return self._color[3] > 0
 
     @visible.setter
     def visible(self, value: bool):
-        self._alpha = 255 if value else 0
+        self._color = self._color[0], self._color[1], self._color[2], 255 if value else 0
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1470,12 +1463,15 @@ class SpriteCircle(Sprite):
         super().__init__()
         radius = int(radius)
         diameter = radius * 2
+        color_rgba = arcade.get_four_byte_color(color)
 
-        # determine the texture's cache name
+        # NOTE: We are only creating white textures. The actual color is
+        #       is applied in the shader through the sprite's color attribute.
+        # determine the texture's cache name.
         if soft:
-            cache_name = build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
+            cache_name = build_cache_name("circle_texture_soft", diameter, 255, 255, 255, 255)
         else:
-            cache_name = build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+            cache_name = build_cache_name("circle_texture", diameter, 255, 255, 255, 255)
 
         # use the named texture if it was already made
         if cache_name in Texture.cache:  # type: ignore
@@ -1484,14 +1480,15 @@ class SpriteCircle(Sprite):
         # generate the texture if it's not in the cache
         else:
             if soft:
-                texture = make_soft_circle_texture(diameter, color, name=cache_name)
+                texture = make_soft_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
             else:
-                texture = make_circle_texture(diameter, color, name=cache_name)
+                texture = make_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
 
             Texture.cache[cache_name] = texture  # type: ignore
 
         # apply results to the new sprite
         self.texture = texture
+        self.color = color_rgba
         self._points = self.texture.hit_box_points
 
 

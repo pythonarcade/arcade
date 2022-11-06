@@ -84,6 +84,18 @@ class TextureCacheEntry:
             vertex_order=vertex_order,
         )
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, TextureCacheEntry):
+            return False
+        return all((
+            self._name == other._name,
+            self._xy == other._xy,
+            self._size == other._size,
+            self._hit_box_algorithm == other._hit_box_algorithm,
+            self._hit_box_detail == other._hit_box_detail,
+            self._vertex_order == other._vertex_order,
+        ))
+
     def __str__(self) -> str:
         return build_texture_cache_name(
             self._name,
