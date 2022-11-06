@@ -4,7 +4,7 @@ Code related to working with textures.
 import logging
 from typing import Callable, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from weakref import WeakValueDictionary
+# from weakref import WeakValueDictionary
 
 import PIL.Image
 import PIL.ImageOps
@@ -33,6 +33,7 @@ from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
 from arcade.cache.hit_box import HitBoxCache
 from arcade.cache.image import ImageCache
+from arcade.cache import build_cache_name
 
 if TYPE_CHECKING:
     from arcade.sprite import Sprite
@@ -74,7 +75,8 @@ class Texture:
     :param PointList hit_box_points: List of points for the hit box (Optional).
                                      Completely overrides the hit box algorithm.
     """
-    cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+    # cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+    cache: Dict[str, "Texture"] = dict()
     image_cache = ImageCache()
     hit_box_cache = HitBoxCache()
 
@@ -275,33 +277,6 @@ class Texture:
             hit_box_algorithm=None,
         )
 
-    @staticmethod
-    def build_cache_name(name, *args, separator: str = "|") -> str:
-        """
-        Generate cache names from the given parameters
-
-        This is mostly useful when generating textures with many parameters
-
-        :param str name: Name of the texture
-        :param args: optional parameters
-        :param separator: separator character or string between params
-
-        :return: Formatted cache string representing passed parameters
-        """
-        values = [str(name)] + [str(arg) for arg in args]
-        return separator.join([v for v in values])
-
-    # Texture name
-    # ------------
-    # name, xy, size, hit_box_algorithm, vertex_order
-    # 
-    # Image name
-    # ----------
-    # name, xy, size
-    # 
-    # Hit Box name
-    # name, xy, size, hit_box_algorithm, vertex_order
-
     @classmethod
     def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
         """
@@ -331,6 +306,17 @@ class Texture:
         :param Callable func: Function to calculate hit box points
         """
         cls._hit_box_funcs[name.lower()] = func
+
+    def remove_from_cache(self) -> None:
+        """
+        Remove this texture from the cache.
+
+        :return: None
+        """
+        try:
+            del self.cache[self._name]
+        except KeyError:
+            pass
 
     def flip_left_to_right(self) -> "Texture":
         """
@@ -625,7 +611,7 @@ def load_textures(
             )
 
         # See if we already loaded this texture, and we can just use a cached version.
-        name = Texture.build_cache_name(
+        name = build_cache_name(
             file_name, x, y, width, height, flipped, mirrored
         )
         try:
@@ -712,7 +698,7 @@ def load_texture(
     LOG.info("load_texture: %s ", file_name)
 
     # First check if we have a cached version of this texture.
-    name = Texture.build_cache_name(
+    name = build_cache_name(
         file_name,
         x, y,
         width, height,
@@ -868,7 +854,7 @@ def make_circle_texture(diameter: int, color: Color, name: str = None) -> Textur
 
     :returns: New :class:`Texture` object.
     """
-    name = name or Texture.build_cache_name(
+    name = name or build_cache_name(
         "circle_texture", diameter, color[0], color[1], color[2]
     )
     bg_color = (0, 0, 0, 0)  # fully transparent
@@ -899,7 +885,7 @@ def make_soft_circle_texture(
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
-    name = Texture.build_cache_name(
+    name = build_cache_name(
         "soft_circle_texture",
         diameter,
         color[0],
@@ -949,7 +935,7 @@ def make_soft_square_texture(
     :returns: New :class:`Texture` object.
     """
     # name must be unique for caching
-    name = name or Texture.build_cache_name(
+    name = name or build_cache_name(
         "gradient-square", size, color, center_alpha, outer_alpha
     )
 

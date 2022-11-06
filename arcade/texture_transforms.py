@@ -66,7 +66,12 @@ class Transform:
         texture_coordinates: Tuple[float, float, float, float, float, float, float, float],
         order: Tuple[int, int, int, int],
     ) -> Tuple[float, float, float, float, float, float, float, float]:
-        """Change texture coordinates order."""
+        """
+        Change texture coordinates order.
+
+        :param texture_coordinates: Texture coordinates to transform
+        :param order: The new order
+        """
         uvs = texture_coordinates
         return (
             uvs[order[0]],

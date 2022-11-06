@@ -6,12 +6,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
-import arcade
-
-from arcade.geometry_generic import get_angle_degrees
-
 import dataclasses
-
 from typing import (
     Any,
     Tuple,
@@ -22,9 +17,10 @@ from typing import (
     Optional,
     TYPE_CHECKING,
 )
-
 import PIL.Image
 
+import arcade
+from arcade.geometry_generic import get_angle_degrees
 from arcade import load_texture
 from arcade import Texture
 from arcade import rotate_point
@@ -33,8 +29,8 @@ from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-
 from arcade.arcade_types import RGB, Point, PointList
+from arcade.cache import build_cache_name
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -1435,7 +1431,7 @@ class SpriteSolidColor(Sprite):
         """
         super().__init__()
 
-        cache_name = Texture.build_cache_name("Solid", width, height, color[0], color[1], color[2])
+        cache_name = build_cache_name("Solid", width, height, color[0], color[1], color[2])
         # use existing texture if it exists
         if cache_name in Texture.cache:
             texture = Texture.cache[cache_name]
@@ -1477,9 +1473,9 @@ class SpriteCircle(Sprite):
 
         # determine the texture's cache name
         if soft:
-            cache_name = Texture.build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
+            cache_name = build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
         else:
-            cache_name = Texture.build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+            cache_name = build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
 
         # use the named texture if it was already made
         if cache_name in Texture.cache:  # type: ignore
