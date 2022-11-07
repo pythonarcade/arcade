@@ -115,7 +115,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
         if texture_disabled:
             self._textures["disabled"] = texture_disabled
 
-        self._text = text
+        self.text = text
 
         bind(self, "_textures", self.trigger_render)
         bind(self, "text", self.trigger_render)
