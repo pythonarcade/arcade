@@ -123,7 +123,7 @@ def set_window(window: "Window") -> None:
     _window = window
 
 
-def get_scaling_factor(window: "Window" = None) -> float:
+def get_scaling_factor(window: Optional["Window"] = None) -> float:
     """
     Gets the scaling factor of the given Window.
     This is the ratio between the window and framebuffer size.

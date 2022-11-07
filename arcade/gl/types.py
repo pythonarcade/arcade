@@ -1,5 +1,5 @@
 import re
-from typing import Iterable, List, Union
+from typing import Optional, Iterable, List, Union
 
 from pyglet import gl
 
@@ -211,7 +211,7 @@ class BufferDescription:
         buffer: Buffer,
         formats: str,
         attributes: Iterable[str],
-        normalized: Iterable[str] = None,
+        normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
 

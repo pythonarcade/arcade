@@ -16,8 +16,8 @@ LOG = logging.getLogger(__name__)
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
-                 body: pymunk.Body = None,
-                 shape: pymunk.Shape = None):
+                 body: Optional[pymunk.Body] = None,
+                 shape: Optional[pymunk.Shape] = None):
         """ Init """
         self.body: Optional[pymunk.Body] = body
         self.shape: Optional[pymunk.Shape] = shape
@@ -61,10 +61,10 @@ class PymunkPhysicsEngine:
                    moment_of_inertia: Optional[float] = None,  # correct spelling
                    body_type: int = DYNAMIC,
                    damping: Optional[float] = None,
-                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] = None,
-                   max_velocity: int = None,
-                   max_horizontal_velocity: int = None,
-                   max_vertical_velocity: int = None,
+                   gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None,
+                   max_velocity: Optional[int] = None,
+                   max_horizontal_velocity: Optional[int] = None,
+                   max_vertical_velocity: Optional[int] = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
                    ):
@@ -280,10 +280,10 @@ class PymunkPhysicsEngine:
     def add_collision_handler(self,
                               first_type: str,
                               second_type: str,
-                              begin_handler: Callable = None,
-                              pre_handler: Callable = None,
-                              post_handler: Callable = None,
-                              separate_handler: Callable = None):
+                              begin_handler: Optional[Callable] = None,
+                              pre_handler: Optional[Callable] = None,
+                              post_handler: Optional[Callable] = None,
+                              separate_handler: Optional[Callable] = None):
         """ Add code to handle collisions between objects. """
 
         if first_type not in self.collision_types:

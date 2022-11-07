@@ -277,7 +277,7 @@ class Window(pyglet.window.Window):
     def set_fullscreen(self,
                        fullscreen: bool = True,
                        screen: Optional['Window'] = None,
-                       mode: ScreenMode = None,
+                       mode: Optional[ScreenMode] = None,
                        width: Optional[float] = None,
                        height: Optional[float] = None):
         """
@@ -902,7 +902,7 @@ class View:
     """
 
     def __init__(self,
-                 window: Window = None):
+                 window: Optional[Window] = None):
 
         self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
@@ -934,7 +934,7 @@ class View:
         self,
         color: Optional[Color] = None,
         normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.

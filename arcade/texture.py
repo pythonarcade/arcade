@@ -79,7 +79,7 @@ class Texture:
     def __init__(
         self,
         name: str,
-        image: PIL.Image.Image = None,
+        image: Optional[PIL.Image.Image] = None,
         hit_box_algorithm: Optional[str] = "Simple",
         hit_box_detail: float = 4.5,
     ):
@@ -692,7 +692,7 @@ def _build_cache_name(*args: Any, separator: str = "-") -> str:
     return separator.join([f"{arg}" for arg in args])
 
 
-def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
+def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
 
@@ -719,7 +719,7 @@ def make_soft_circle_texture(
     color: Color,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: str = None,
+    name: Optional[str] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
@@ -771,7 +771,7 @@ def make_soft_square_texture(
     color: Color,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: str = None,
+    name: Optional[str] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.

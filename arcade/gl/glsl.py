@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Optional, Dict, List
 import re
 
 from pyglet import gl
@@ -65,7 +65,7 @@ class ShaderSource:
         """The out attributes for this program"""
         return self._out_attributes
 
-    def get_source(self, *, defines: Dict[str, str] = None) -> str:
+    def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
         """Return the shader source
 
         :param dict defines: Defines to replace in the source.

@@ -15,7 +15,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
     sys.exit("The Arcade Library requires Python 3.7 or higher.")
 
 
-def configure_logging(level: int = None):
+def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
     :param int level: The log level. Defaults to DEBUG.
     """
@@ -339,6 +339,7 @@ from .text import (
     create_text_sprite,
     Text,
 )
+from typing import Optional
 
 
 __all__ = ['AStarBarrierList',
