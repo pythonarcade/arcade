@@ -90,6 +90,7 @@ The Python Arcade Library
    programming_guide/opengl_notes.rst
    programming_guide/gui/index
    programming_guide/performance_tips
+   programming_guide/sections
 
 .. image:: images/API.svg
    :alt: API icon
