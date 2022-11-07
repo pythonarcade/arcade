@@ -8,6 +8,7 @@ A Python simple, easy to use module for creating 2D games.
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
+from typing import Optional
 
 from pathlib import Path
 
@@ -339,8 +340,6 @@ from .text import (
     create_text_sprite,
     Text,
 )
-from typing import Optional
-
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
