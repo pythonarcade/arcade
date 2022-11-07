@@ -1,5 +1,5 @@
 from random import choice
-from typing import Any
+from typing import Optional, Any
 
 import arcade
 from arcade.gui import UIManager, UIOnClickEvent
@@ -99,10 +99,10 @@ class UIButtonRow(UIBoxLayout):
         vertical: bool = False,
         align: str = "center",
         size_hint: Any = (0, 0),
-        size_hint_min: Any = None,
-        size_hint_max: Any = None,
+        size_hint_min: Optional[Any] = None,
+        size_hint_max: Optional[Any] = None,
         space_between: int = 10,
-        style: Any = None,
+        style: Optional[Any] = None,
         button_factory: type = UIFlatButton,
     ):
         super().__init__(

@@ -1,4 +1,4 @@
-from typing import Iterable, TypeVar, Tuple
+from typing import Iterable, TypeVar, Tuple, Optional
 
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
@@ -59,9 +59,9 @@ class UIAnchorLayout(UILayout):
         self,
         child: W,
         *,
-        anchor_x: str = None,
+        anchor_x: Optional[str] = None,
         align_x: float = 0,
-        anchor_y: str = None,
+        anchor_y: Optional[str] = None,
         align_y: float = 0,
         **kwargs
     ) -> W:
@@ -77,9 +77,9 @@ class UIAnchorLayout(UILayout):
     def _place_child(
         self,
         child: UIWidget,
-        anchor_x: str = None,
+        anchor_x: Optional[str] = None,
         align_x: float = 0,
-        anchor_y: str = None,
+        anchor_y: Optional[str] = None,
         align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x

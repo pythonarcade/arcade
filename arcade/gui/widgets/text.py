@@ -333,7 +333,7 @@ class UITextArea(UIWidget):
         font_size: float = 12,
         text_color: arcade.Color = (255, 255, 255, 255),
         multiline: bool = True,
-        scroll_speed: float = None,
+        scroll_speed: Optional[float] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
