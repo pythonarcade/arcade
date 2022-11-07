@@ -110,7 +110,7 @@ class Map:
         )
 
         # Let's make some sprites for the map itself
-        self.sprites = arcade.SpriteList()
+        self.sprites: arcade.SpriteList = arcade.SpriteList()
         # Some random 128x128 tile images
         texture_paths = [
             ":resources:images/tiles/boxCrate_double.png",

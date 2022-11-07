@@ -91,7 +91,7 @@ class Scene:
         if name in self.name_mapping:
             self.name_mapping[name].append(sprite)
         else:
-            new_list = SpriteList()
+            new_list: SpriteList = SpriteList()
             new_list.append(sprite)
             self.add_sprite_list(name=name, sprite_list=new_list)
 

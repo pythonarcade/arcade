@@ -111,14 +111,14 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name, gl_type, components, bytes_per_component, offset=0, location=0
+        self, name: str, gl_type: gl.GLenum, components: int, bytes_per_component: int, offset=0, location=0
     ):
-        self.name = name  # type: str
-        self.gl_type = gl_type  # type: gl.GLenum
-        self.components = components  # type: int
-        self.bytes_per_component = bytes_per_component  # type: int
-        self.offset = offset  # type: int
-        self.location = location  # type: int
+        self.name: str = name
+        self.gl_type = gl_type
+        self.components = components
+        self.bytes_per_component = bytes_per_component
+        self.offset = offset
+        self.location = location
 
     @property
     def bytes_total(self) -> int:
@@ -319,13 +319,12 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name, enum, gl_type, gl_size, components):
-
-        self.name = name  # type: str
-        self.enum = enum  # type: gl.GLenum
-        self.gl_type = gl_type  # type: gl.GLenum
-        self.gl_size = gl_size  # type: int
-        self.components = components  # type: int
+    def __init__(self, name: str, enum: gl.GLenum, gl_type: gl.GLenum, gl_size: int, components: int):
+        self.name = name
+        self.enum = enum
+        self.gl_type = gl_type
+        self.gl_size = gl_size
+        self.components = components
 
     @property
     def size(self) -> int:
