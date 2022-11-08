@@ -157,7 +157,7 @@ class Sprite:
     """
     def __init__(
             self,
-            filename: str = None,
+            filename: Optional[str] = None,
             scale: float = 1.0,
             image_x: int = 0,
             image_y: int = 0,
@@ -170,7 +170,7 @@ class Sprite:
             flipped_diagonally: bool = False,
             hit_box_algorithm: Optional[str] = "Simple",
             hit_box_detail: float = 4.5,
-            texture: Texture = None,
+            texture: Optional[Texture] = None,
             angle: float = 0.0,
     ):
         """ Constructor """
@@ -1188,7 +1188,7 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            filename: str = None,
+            filename: Optional[str] = None,
             scale: float = 1.0,
             image_x: int = 0,
             image_y: int = 0,

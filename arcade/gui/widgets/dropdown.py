@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import List
+from typing import Optional, List
 
 import arcade
 from arcade.gui.widgets.buttons import UIFlatButton
@@ -12,7 +12,7 @@ class UIDropdown(UILayout):
     DIVIDER = None
 
     def __init__(
-        self, default: str = None, options: List[str] = None, style=None, **kwargs
+        self, default: Optional[str] = None, options: Optional[List[str]] = None, style=None, **kwargs
     ):
         if style is None:
             style = {}

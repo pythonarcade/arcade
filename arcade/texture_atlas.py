@@ -14,7 +14,7 @@ https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 import math
 import time
 import logging
-from typing import Dict, List, Tuple, Sequence, TYPE_CHECKING
+from typing import Optional, Dict, List, Tuple, Sequence, TYPE_CHECKING
 from array import array
 
 import PIL
@@ -138,9 +138,9 @@ class TextureAtlas:
         size: Tuple[int, int],
         *,
         border: int = 1,
-        textures: Sequence["Texture"] = None,
+        textures: Optional[Sequence["Texture"]] = None,
         auto_resize: bool = True,
-        ctx: "ArcadeContext" = None,
+        ctx: Optional["ArcadeContext"] = None,
     ):
 
         self._ctx = ctx or arcade.get_window().ctx
@@ -595,7 +595,7 @@ class TextureAtlas:
     @contextmanager
     def render_into(
         self, texture: "Texture",
-        projection: Tuple[float, float, float, float] = None,
+        projection: Optional[Tuple[float, float, float, float]] = None,
     ):
         """
         Render directly into a sub-section of the atlas.

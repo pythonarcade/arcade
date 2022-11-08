@@ -207,7 +207,7 @@ class Map(Section):
 
         self.ball = Ball(20, COLOR_3)
         self.ball.position = 60, 60
-        self.sprite_list = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList = arcade.SpriteList()
         self.sprite_list.append(self.ball)
 
         self.pressed_key: Optional[int] = None

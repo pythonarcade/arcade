@@ -21,7 +21,7 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
-    Union,
+    Union, Generic,
 )
 
 from arcade import (
@@ -52,7 +52,7 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 _DEFAULT_CAPACITY = 100
 
 
-class SpriteList:
+class SpriteList(Generic[_SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.
     Drawing single sprites will not get you anywhere performance wise
@@ -95,15 +95,16 @@ class SpriteList:
     :param bool visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
+
     def __init__(
-            self,
-            use_spatial_hash: Optional[bool] = None,
-            spatial_hash_cell_size=128,
-            is_static=False,
-            atlas: Optional["TextureAtlas"] = None,
-            capacity: int = 100,
-            lazy: bool = False,
-            visible: bool = True,
+        self,
+        use_spatial_hash: Optional[bool] = None,
+        spatial_hash_cell_size=128,
+        is_static=False,
+        atlas: Optional["TextureAtlas"] = None,
+        capacity: int = 100,
+        lazy: bool = False,
+        visible: bool = True,
     ):
         self.ctx: Optional[ArcadeContext] = None
         self.program = None
@@ -127,13 +128,13 @@ class SpriteList:
         self._sprite_buffer_free_slots: Deque[int] = deque()
 
         # Sprites added before the window/context is created
-        self._deferred_sprites: Set[Sprite] = set()
+        self._deferred_sprites: Set[_SpriteType] = set()
 
         # List of sprites in the sprite list
-        self.sprite_list: List[Sprite] = []
+        self.sprite_list: List[_SpriteType] = []
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
-        self.sprite_slot: Dict[Sprite, int] = dict()
+        self.sprite_slot: Dict[_SpriteType, int] = dict()
         # TODO: Figure out what to do with this. Might be obsolete.
         self.is_static = is_static
 
@@ -256,14 +257,14 @@ class SpriteList:
         """Return if the sprite list contains the given sprite"""
         return sprite in self.sprite_slot
 
-    def __iter__(self) -> Iterator[Sprite]:
+    def __iter__(self) -> Iterator[_SpriteType]:
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, index: int, sprite: Sprite):
+    def __setitem__(self, index: int, sprite: _SpriteType):
         """Replace a sprite at a specific index"""
         # print(f"{id(self)} : {id(sprite)} __setitem__({index})")
 
@@ -420,7 +421,7 @@ class SpriteList:
 
         This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
         instance with name ``in_size``.
-        """        
+        """
         if self._sprite_size_buf is None:
             raise ValueError("SpriteList is not initialized")
         return self._sprite_size_buf
@@ -519,7 +520,7 @@ class SpriteList:
         self._grow_sprite_buffers()  # We might need to increase our buffers
         return buff_slot
 
-    def index(self, sprite: Sprite) -> int:
+    def index(self, sprite: _SpriteType) -> int:
         """
         Return the index of a sprite in the spritelist
 
@@ -580,7 +581,7 @@ class SpriteList:
             self._initialized = False
             self._init_deferred()
 
-    def pop(self, index: int = -1) -> Sprite:
+    def pop(self, index: int = -1) -> _SpriteType:
         """
         Pop off the last sprite, or the given index, from the list
 
@@ -894,7 +895,7 @@ class SpriteList:
         for texture in texture_list:
             self._atlas.add(texture)
 
-    def _update_all(self, sprite: Sprite):
+    def _update_all(self, sprite: _SpriteType):
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -971,7 +972,7 @@ class SpriteList:
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_position(self, sprite: Sprite) -> None:
+    def update_position(self, sprite: _SpriteType) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -988,7 +989,7 @@ class SpriteList:
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def update_color(self, sprite: Sprite) -> None:
+    def update_color(self, sprite: _SpriteType) -> None:
         """
         Called by the Sprite class to update position, angle, size and color
         of the specified sprite.
@@ -1007,7 +1008,7 @@ class SpriteList:
         self._sprite_color_data[slot * 4 + 3] = int(sprite._alpha)
         self._sprite_color_changed = True
 
-    def update_size(self, sprite: Sprite) -> None:
+    def update_size(self, sprite: _SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1019,7 +1020,7 @@ class SpriteList:
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_height(self, sprite: Sprite):
+    def update_height(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1030,7 +1031,7 @@ class SpriteList:
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_width(self, sprite: Sprite):
+    def update_width(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1042,7 +1043,7 @@ class SpriteList:
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
-    def update_location(self, sprite: Sprite):
+    def update_location(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the location in this sprite.
         Necessary for batch drawing of items.
@@ -1057,7 +1058,7 @@ class SpriteList:
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def update_angle(self, sprite: Sprite):
+    def update_angle(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
