@@ -101,7 +101,7 @@ class UIAnchorLayout(UILayout):
                 new_child_rect = new_child_rect.max_size(width=shmx_w)
 
         if sh_h is not None:
-            new_child_rect = new_child_rect.resize(height=self.content_height * sh_w)
+            new_child_rect = new_child_rect.resize(height=self.content_height * sh_h)
 
             if shmn_h:
                 new_child_rect = new_child_rect.min_size(height=shmn_h)
