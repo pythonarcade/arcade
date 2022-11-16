@@ -1,6 +1,8 @@
+from typing import Union
+
 import arcade
 from arcade import Window, View, Texture
-from arcade.gui import UIManager, Surface, UIAnchorLayout
+from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
 from arcade.gui.widgets.slider import UISlider
 
 
@@ -9,7 +11,12 @@ class UITextureSlider(UISlider):
     Slider using
     """
 
-    def __init__(self, bar: Texture, thumb: Texture, style=None, **kwargs):
+    def __init__(self,
+                 bar: Union[Texture, NinePatchTexture],
+                 thumb: Union[Texture, NinePatchTexture],
+                 style=None,
+                 **kwargs
+                 ):
         self.bar = bar
         self.thumb = thumb
         style = style or UISlider.DEFAULT_STYLE
