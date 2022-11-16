@@ -91,6 +91,14 @@ class NinePatchTexture:
         """
         return self.texture.size
 
+    @property
+    def width(self):
+        return self.texture.width
+
+    @property
+    def height(self):
+        return self.texture.height
+
     def draw_sized(
         self,
         *,

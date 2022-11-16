@@ -83,6 +83,7 @@ class UILabel(UIWidget):
             italic=italic,
             stretch=stretch,
             align=align,
+            anchor_y="bottom",  # position text bottom left, to fit into scissor box
             dpi=dpi,
             multiline=multiline,
             **kwargs,
