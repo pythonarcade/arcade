@@ -1112,7 +1112,7 @@ class Sprite:
     def remove_from_sprite_lists(self) -> None:
         """
         Remove the sprite from all sprite lists.
-        
+
         * Remove from sprite lists
         * Remove from physics engines
         """
