@@ -37,7 +37,7 @@ from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:  # Handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
 
 FACE_RIGHT = 1
@@ -110,8 +110,8 @@ class Sprite:
 
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
-        :angle: Rotation angle in degrees. Sprites rotate counter-clock-wise.
-        :radians: Rotation angle in radians. Sprites rotate counter-clock-wise.
+        :angle: Rotation angle in degrees. Sprites rotate counterclockwise.
+        :radians: Rotation angle in radians. Sprites rotate counterclockwise.
         :bottom: Set/query the sprite location by using the bottom coordinate. \
         This will be the 'y' of the bottom of the sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
@@ -152,7 +152,7 @@ class Sprite:
         :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
         :width: Width of the sprite
 
-    It is common to over-ride the `update` method and provide mechanics on
+    It is common to override the `update` method and provide mechanics on
     movement or other sprite updates.
     """
     def __init__(
@@ -659,25 +659,25 @@ class Sprite:
         :param factor: Multiplier for sprite scale & distance to point.
         :return:
         """
-        # abort if the multiplier wouldn't do anything
+        # Abort if the multiplier wouldn't do anything
         if factor == 1.0:
             return
 
-        # clear spatial metadata both locally and in sprite lists
+        # Clear spatial metadata both locally and in sprite lists
         self.clear_spatial_hashes()
         self._point_list_cache = None
 
-        # set the scale and, if this sprite has a texture, the size data
+        # Set the scale and, if this sprite has a texture, the size data
         self._scale = self._scale[0] * factor, self._scale[1] * factor
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
 
-        # detect the edge case where distance to multiply is zero
-        position_changed = point != self._position
+        # Detect the edge case where distance to multiply is zero
+        changed_position = point != self._position
 
         # be lazy about math; only do it if we have to
-        if position_changed:
+        if changed_position:
             self._position = (
                 (self._position[0] - point[0]) * factor + point[0],
                 (self._position[1] - point[1]) * factor + point[1]
@@ -687,7 +687,7 @@ class Sprite:
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_size(self)
-            if position_changed:
+            if changed_position:
                 sprite_list.update_location(self)
 
     def rescale_xy_relative_to_point(
@@ -719,32 +719,32 @@ class Sprite:
                            ``point``.
         :return:
         """
-        # exit early if nothing would change
+        # Exit early if nothing would change
         factor_x, factor_y = factors_xy
         if factor_x == 1.0 and factor_y == 1.0:
             return
 
-        # clear spatial metadata both locally and in sprite lists
+        # Clear spatial metadata both locally and in sprite lists
         self.clear_spatial_hashes()
         self._point_list_cache = None
 
-        # set the scale and, if this sprite has a texture, the size data
+        # Set the scale and, if this sprite has a texture, the size data
         self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
 
-        # detect the edge case where the distance to multiply is 0
+        # Detect the edge case where the distance to multiply is 0
         position_changed = point != self._position
 
-        # be lazy about math; only do it if we have to
+        # Be lazy about math; only do it if we have to
         if position_changed:
             self._position = (
                 (self._position[0] - point[0]) * factor_x + point[0],
                 (self._position[1] - point[1]) * factor_y + point[1]
             )
 
-        # rebuild all spatial metadata
+        # Rebuild all spatial metadata
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_size(self)
@@ -1049,7 +1049,8 @@ class Sprite:
 
     def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
         """
-        Draw the sprite.
+        Draw the sprite using OpenGL rendering. If the sprite is not added to a sprite list a new
+        one will be created and the sprite added to it.
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
@@ -1111,6 +1112,9 @@ class Sprite:
     def remove_from_sprite_lists(self) -> None:
         """
         Remove the sprite from all sprite lists.
+        
+        * Remove from sprite lists
+        * Remove from physics engines
         """
         if len(self.sprite_lists) > 0:
             # We can't modify a list as we iterate through it, so create a copy.
@@ -1423,16 +1427,16 @@ class SpriteSolidColor(Sprite):
 
         cache_name = _build_cache_name("Solid", width, height, color[0], color[1], color[2])
 
-        # use existing texture if it exists
+        # Use existing texture if it exists
         if cache_name in load_texture.texture_cache:  # type: ignore
             texture = load_texture.texture_cache[cache_name]  # type: ignore
 
-        # otherwise, generate a filler sprite and add it to the cache
+        # Otherwise, generate a filler sprite and add it to the cache
         else:
             texture = Texture.create_filled(cache_name, (width, height), color)
             load_texture.texture_cache[cache_name] = texture  # type: ignore
 
-        # apply chosen texture to the current sprite
+        # Apply chosen texture to the current sprite
         self.texture = texture
         self._points = texture.hit_box_points
 
@@ -1463,26 +1467,26 @@ class SpriteCircle(Sprite):
 
         diameter = radius * 2
 
-        # determine the texture's cache name
+        # Determine the texture's cache name
         if soft:
             cache_name = _build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
         else:
             cache_name = _build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
 
-        # use the named texture if it was already made
+        # Use the named texture if it was already made
         if cache_name in load_texture.texture_cache:  # type: ignore
             texture = load_texture.texture_cache[cache_name]  # type: ignore
 
-        # generate the texture if it's not in the cache
+        # Generate the texture if it's not in the cache
         else:
             if soft:
                 texture = make_soft_circle_texture(diameter, color, name=cache_name)
             else:
                 texture = make_circle_texture(diameter, color, name=cache_name)
 
-            load_texture.texture_cache[cache_name] = texture  # type: ignore
+            load_texture.texture_cache[cache_name] = texture  #type: ignore
 
-        # apply results to the new sprite
+        # Apply results to the new sprite
         self.texture = texture
         self._points = self.texture.hit_box_points
 
@@ -1491,9 +1495,9 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
     Returns the distance between the center of two given sprites
 
-    :param Sprite sprite1: Sprite one
-    :param Sprite sprite2: Sprite two
-    :return: Distance
+    :param Sprite sprite1: First sprite to get distance between
+    :param Sprite sprite2: Second sprite to get distance between
+    :return: Distance the two given sprites
     :rtype: float
     """
     distance = math.sqrt(
