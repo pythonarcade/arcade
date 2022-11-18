@@ -1484,7 +1484,7 @@ class SpriteCircle(Sprite):
             else:
                 texture = make_circle_texture(diameter, color, name=cache_name)
 
-            load_texture.texture_cache[cache_name] = texture  #type: ignore
+            load_texture.texture_cache[cache_name] = texture  # type: ignore
 
         # Apply results to the new sprite
         self.texture = texture
