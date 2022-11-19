@@ -30,6 +30,7 @@ from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
 from arcade.arcade_types import RGBA, Point, PointList
 from arcade.cache import build_cache_name
+from arcade.texture import SolidColorTexture
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -1418,6 +1419,8 @@ class SpriteSolidColor(Sprite):
     :param int height: Height of the sprite in pixels
     :param Color color: The color of the sprite as an RGB or RGBA tuple
     """
+    _default_image = PIL.Image.new("RGBA", (32, 32), (255, 255, 255, 255))
+
     def __init__(self, width: int, height: int, color: Color):
         """
         Create a solid-color rectangular sprite.
@@ -1431,13 +1434,14 @@ class SpriteSolidColor(Sprite):
             texture = Texture.cache[cache_name]
         # otherwise, generate a filler sprite and add it to the cache
         else:
-            texture = Texture.create_filled(cache_name, (width, height), (255, 255, 255, 255))
+            # texture = Texture.create_filled(cache_name, (w, h), (255, 255, 255, 255))
+
+            texture = SolidColorTexture("sprite_solid_color", width, height, self._default_image)
             Texture.cache[cache_name] = texture
 
         # apply chosen texture to the current sprite
         self.texture = texture
-        self.color = color_rgba
-        self._points = texture.hit_box_points
+        self._color = color_rgba
 
 
 class SpriteCircle(Sprite):
