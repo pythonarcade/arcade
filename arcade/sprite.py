@@ -1408,12 +1408,9 @@ class SpriteSolidColor(Sprite):
     A rectangular sprite of the given ``width``, ``height``, and ``color``.
 
     The texture is automatically generated instead of loaded from a
-    file.
-
-    There may be a stutter the first time a combination of ``width``,
-    ``height``, and ``color`` is used due to texture generation. All
-    subsequent calls for the same combination will run faster because
-    they will re-use the texture generated earlier.
+    file. Internally only a single global texture is used for this
+    sprite type, so concerns about memory usage non-existent regardless
+    of size or number of sprite variations.
 
     :param int width: Width of the sprite in pixels
     :param int height: Height of the sprite in pixels
@@ -1426,22 +1423,8 @@ class SpriteSolidColor(Sprite):
         Create a solid-color rectangular sprite.
         """
         super().__init__()
-        color_rgba = arcade.get_four_byte_color(color)
-
-        cache_name = build_cache_name("Solid", width, height, 255, 255, 255, 255)
-        # use existing texture if it exists
-        if cache_name in Texture.cache:
-            texture = Texture.cache[cache_name]
-        # otherwise, generate a filler sprite and add it to the cache
-        else:
-            # texture = Texture.create_filled(cache_name, (w, h), (255, 255, 255, 255))
-
-            texture = SolidColorTexture("sprite_solid_color", width, height, self._default_image)
-            Texture.cache[cache_name] = texture
-
-        # apply chosen texture to the current sprite
-        self.texture = texture
-        self._color = color_rgba
+        self.texture = SolidColorTexture("sprite_solid_color", width, height, self._default_image)
+        self._color = arcade.get_four_byte_color(color)
 
 
 class SpriteCircle(Sprite):
