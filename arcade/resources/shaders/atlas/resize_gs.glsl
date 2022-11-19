@@ -27,9 +27,9 @@ void main() {
     getSpriteUVs(texcoords_new, int(gl_PrimitiveIDIn), new_uv0, new_uv1, new_uv2, new_uv3);
    
     // Lower left corner flipped * size - one pixel
-    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new) - vec2(1.0);
+    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new); //- vec2(1.0);
     // absolute value of the diagonal * size + two pixels
-    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(2.0);
+    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new); // + vec2(2.0);
 
     // upper left
     uv = old_uv0;
