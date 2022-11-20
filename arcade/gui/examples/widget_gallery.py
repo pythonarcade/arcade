@@ -5,7 +5,8 @@ Dummy widgets indicate hovered, pressed and clicked.
 
 import arcade
 from arcade import load_texture
-from arcade.gui import UIManager, UITextureButton, UIGridLayout, NinePatchTexture
+from arcade.gui import UIManager, UITextureButton, UIGridLayout, NinePatchTexture, UILabel, UITextureToggle
+from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
 
 
@@ -45,12 +46,25 @@ class UIMockup(arcade.Window):
             col_num=0,
             row_num=1)
 
-        button = UITextureButton(
-            texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
-        )
-        button.rect = button.rect.resize(width=150, height=80)
+        grid.add(
+            child=UILabel(text="abcdefghijklmnopqrstuvwäöüABCDEFG"),
+            col_num=0,
+            row_num=2)
+
+        grid.add(
+            child=UITextureToggle(
+                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
+                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png")
+            ),
+            col_num=0,
+            row_num=3)
+        grid.add(
+            child=UITextureSlider(
+                bar=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
+                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
+            ),
+            col_num=0,
+            row_num=4)
 
     def on_draw(self):
         self.clear()

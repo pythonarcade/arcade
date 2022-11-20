@@ -67,15 +67,15 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
         self,
         x: float = 0,
         y: float = 0,
-        width: float = None,
-        height: float = None,
-        texture: Union[Texture, NinePatchTexture] = None,
-        texture_hovered: Union[Texture, NinePatchTexture] = None,
-        texture_pressed: Union[Texture, NinePatchTexture] = None,
-        texture_disabled: Union[Texture, NinePatchTexture] = None,
+        width: Optional[float] = None,
+        height: Optional[float] = None,
+        texture: Union[None, Texture, NinePatchTexture] = None,
+        texture_hovered: Union[None, Texture, NinePatchTexture] = None,
+        texture_pressed: Union[None, Texture, NinePatchTexture] = None,
+        texture_disabled: Union[None, Texture, NinePatchTexture] = None,
         text: str = "",
-        scale: float = None,
-        style: Dict[str, UIStyleBase] = None,
+        scale: Optional[float] = None,
+        style: Optional[Dict[str, UIStyleBase]] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -115,7 +115,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
         if texture_disabled:
             self._textures["disabled"] = texture_disabled
 
-        self._text = text
+        self.text = text
 
         bind(self, "_textures", self.trigger_render)
         bind(self, "text", self.trigger_render)

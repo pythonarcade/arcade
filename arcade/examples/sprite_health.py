@@ -188,10 +188,10 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Create sprite lists
-        self.bullet_list = arcade.SpriteList()
-        self.bar_list = arcade.SpriteList()
-        self.player_sprite_list = arcade.SpriteList()
-        self.enemy_sprite_list = arcade.SpriteList()
+        self.bullet_list: arcade.SpriteList = arcade.SpriteList()
+        self.bar_list: arcade.SpriteList = arcade.SpriteList()
+        self.player_sprite_list: arcade.SpriteList = arcade.SpriteList()
+        self.enemy_sprite_list: arcade.SpriteList = arcade.SpriteList()
 
         # Create player sprite
         self.player_sprite = Player(self.bar_list)

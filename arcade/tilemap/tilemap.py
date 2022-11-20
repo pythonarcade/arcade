@@ -114,6 +114,7 @@ class TileMap:
             can be overridden with the layer_options dict.
     :param Optional[arcade.TextureAtlas] texture_atlas: A default texture atlas to use for the
             SpriteLists created by this map. If not supplied the global default atlas will be used.
+    :param bool lazy: SpriteLists will be created lazily.
 
 
     The `layer_options` parameter can be used to specify per layer arguments.
@@ -178,6 +179,7 @@ class TileMap:
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
         texture_atlas: Optional["TextureAtlas"] = None,
+        lazy: bool = False,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -205,6 +207,8 @@ class TileMap:
 
         if not texture_atlas:
             texture_atlas = get_window().ctx.default_atlas
+
+        self._lazy = lazy
 
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width
@@ -600,7 +604,11 @@ class TileMap:
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
-        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
+        sprite_list: SpriteList = SpriteList(
+            use_spatial_hash=use_spatial_hash,
+            atlas=texture_atlas,
+            lazy=self._lazy,
+        )
 
         map_source = self.tiled_map.map_file
         map_directory = os.path.dirname(map_source)
@@ -691,7 +699,11 @@ class TileMap:
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
-        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
+        sprite_list: SpriteList = SpriteList(
+            use_spatial_hash=use_spatial_hash,
+            atlas=texture_atlas,
+            lazy=self._lazy,
+        )
         map_array = layer.data
 
         # Loop through the layer and add in the list
@@ -777,7 +789,11 @@ class TileMap:
             # shape: Optional[Union[Point, PointList, Rect]] = None
             if isinstance(cur_object, pytiled_parser.tiled_object.Tile):
                 if not sprite_list:
-                    sprite_list = SpriteList(use_spatial_hash=use_spatial_hash, atlas=texture_atlas)
+                    sprite_list = SpriteList(
+                        use_spatial_hash=use_spatial_hash,
+                        atlas=texture_atlas,
+                        lazy=self._lazy,
+                    )
 
                 tile = self._get_tile_by_gid(cur_object.gid)
                 my_sprite = self._create_sprite_from_tile(
@@ -953,6 +969,7 @@ def load_tilemap(
     hit_box_detail: float = 4.5,
     offset: Vec2 = Vec2(0, 0),
     texture_atlas: Optional["TextureAtlas"] = None,
+    lazy: bool = False,
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -975,6 +992,7 @@ def load_tilemap(
     :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
+    :param bool lazy: SpriteLists will be created lazily.
     """
     return TileMap(
         map_file=map_file,
@@ -985,6 +1003,7 @@ def load_tilemap(
         hit_box_detail=hit_box_detail,
         offset=offset,
         texture_atlas=texture_atlas,
+        lazy=lazy,
     )
 
 

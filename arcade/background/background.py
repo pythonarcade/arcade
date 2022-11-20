@@ -1,4 +1,4 @@
-from typing import Union, Tuple
+from typing import Optional, Union, Tuple
 
 from arcade.window_commands import get_window
 import arcade.gl as gl
@@ -24,8 +24,8 @@ class Background:
         pos: Tuple[float, float],
         size: Tuple[int, int],
         color: Union[Tuple[float, float, float], Tuple[int, int, int]],
-        shader: gl.Program = None,
-        geometry: gl.Geometry = None,
+        shader: Optional[gl.Program] = None,
+        geometry: Optional[gl.Geometry] = None,
     ):
 
         if shader is None:
@@ -81,16 +81,16 @@ class Background:
     def from_file(
         tex_src: str,
         pos: Tuple[float, float] = (0.0, 0.0),
-        size: Tuple[int, int] = None,
+        size: Optional[Tuple[int, int]] = None,
         offset: Tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Tuple[int, int, int] = None,
-        color_norm: Tuple[float, float, float] = None,
-        shader: gl.Program = None,
-        geometry: gl.Geometry = None
+        color: Optional[Tuple[int, int, int]] = None,
+        color_norm: Optional[Tuple[float, float, float]] = None,
+        shader: Optional[gl.Program] = None,
+        geometry: Optional[gl.Geometry] = None
     ):
         """
         This will generate a Background from an input image source. The generated texture is not stored in the

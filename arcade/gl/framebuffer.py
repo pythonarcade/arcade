@@ -346,7 +346,7 @@ class Framebuffer:
         *,
         depth: float = 1.0,
         normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """
         Clears the framebuffer::

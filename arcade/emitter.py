@@ -5,7 +5,7 @@ over their lifetime
 
 import arcade
 from arcade.particle import Particle
-from typing import Callable, cast
+from typing import Optional, Callable, cast
 from arcade.utils import _Vec2
 from arcade.arcade_types import Point, Vector
 
@@ -109,8 +109,8 @@ class Emitter:
         emit_controller: EmitController,
         particle_factory: Callable[["Emitter"], Particle],
         change_xy: Vector = (0.0, 0.0),
-        emit_done_cb: Callable[["Emitter"], None] = None,
-        reap_cb: Callable[[], None] = None
+        emit_done_cb: Optional[Callable[["Emitter"], None]] = None,
+        reap_cb: Optional[Callable[[], None]] = None
     ):
         # Note Self-reference with type annotations:
         #     https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations

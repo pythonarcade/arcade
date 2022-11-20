@@ -155,7 +155,7 @@ class Rect(NamedTuple):
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: float = None, height: float = None):
+    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
         """
         Limits the size to the given max values.
         """
@@ -804,7 +804,7 @@ class UISpriteWidget(UIWidget):
         y=0,
         width=100,
         height=100,
-        sprite: Sprite = None,
+        sprite: Optional[Sprite] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,

@@ -4,9 +4,11 @@ Run All Examples
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m tests.test_examples.run_all_examples
 """
-import subprocess
-import os
 import glob
+import os
+import subprocess
+
+import pytest
 
 EXAMPLE_SUBDIR = "../../arcade/examples"
 
@@ -25,8 +27,8 @@ def _get_examples(start_path):
     return examples
 
 
-def run_examples(indices_in_range, index_skip_list):
-    """Run all examples in the arcade/examples directory"""
+def find_examples(indices_in_range, index_skip_list):
+    """List all examples in the arcade/examples directory"""
     examples = _get_examples(EXAMPLE_SUBDIR)
     examples.sort()
     print(f"Found {len(examples)} examples in {EXAMPLE_SUBDIR}")
@@ -34,32 +36,37 @@ def run_examples(indices_in_range, index_skip_list):
     file_path = os.path.dirname(os.path.abspath(__file__))
     print(file_path)
     os.chdir(f"{file_path}/../..")
-    # run examples
+
     for (idx, example) in enumerate(examples):
         if indices_in_range is not None and idx not in indices_in_range:
             continue
         if index_skip_list is not None and idx in index_skip_list:
             continue
-        print(f"=================== Example {idx + 1:3} of {len(examples)}: {example}")
-        # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
 
-        cmd = f'python -m {example}'
-        print(cmd)
-
-        result = subprocess.check_output(cmd, shell=True)
-        if result:
-            print(f"ERROR: Got a result of: {result}.")
-        assert not result
+        yield f'python -m {example}'
 
 
-def test_all_examples():
+def list_examples(indices_in_range, index_skip_list):
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
+    return list(find_examples(indices_in_range, index_skip_list))
+
+
+@pytest.mark.parametrize(
+    "cmd",
+    argvalues=list_examples(
+        indices_in_range=None,
+        index_skip_list=None
+    )
+)
+def test_all(cmd):
     # Set an environment variable that will just run on_update() and on_draw()
     # once, then quit.
-    os.environ['ARCADE_TEST'] = "TRUE"
+    test_env = os.environ.copy()
+    test_env["ARCADE_TEST"] = "TRUE"
 
-    indices_in_range = None
-    index_skip_list = None
-    run_examples(indices_in_range, index_skip_list)
+    result = subprocess.check_output(cmd, shell=True, env=test_env)
+    if result:
+        print(f"ERROR: Got a result of: {result}.")
+    assert not result

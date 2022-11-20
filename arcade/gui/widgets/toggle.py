@@ -1,3 +1,5 @@
+from typing import Optional
+
 from PIL import ImageEnhance
 from arcade.gui.surface import Surface
 
@@ -25,8 +27,8 @@ class UITextureToggle(UIInteractiveWidget):
         y: float = 0,
         width: float = 100,
         height: float = 50,
-        on_texture: Texture = None,
-        off_texture: Texture = None,
+        on_texture: Optional[Texture] = None,
+        off_texture: Optional[Texture] = None,
         value=False,
         size_hint=None,
         size_hint_min=None,

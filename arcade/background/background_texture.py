@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import Optional, List, Tuple
 
 from PIL import Image
 
@@ -123,8 +123,8 @@ class BackgroundTexture:
     def render_target(
         self,
         context: ArcadeContext,
-        color_attachments: List[gl.Texture] = None,
-        depth_attachment: gl.Texture = None,
+        color_attachments: Optional[List[gl.Texture]] = None,
+        depth_attachment: Optional[gl.Texture] = None,
     ) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []

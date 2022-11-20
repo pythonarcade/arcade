@@ -27,8 +27,8 @@ class SimpleCamera:
     """
 
     def __init__(self, *,
-                 viewport: FourIntTuple = None,
-                 projection: FourFloatTuple = None,
+                 viewport: Optional[FourIntTuple] = None,
+                 projection: Optional[FourFloatTuple] = None,
                  window: Optional["arcade.Window"] = None) -> None:
 
         # Reference to Context, used to update projection matrix
@@ -489,7 +489,7 @@ class Camera(SimpleCamera):
 
             # Come up with a new velocity, pulled by opposite vector and damped
             self.shake_velocity += opposite_vector
-            self.shake_velocity *= Vec2(self.shake_damping, self.shake_damping)
+            self.shake_velocity *= self.shake_damping
 
             update_view_matrix = True
 

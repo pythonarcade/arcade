@@ -17,7 +17,7 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 from arcade import Color
 from arcade import PointList
@@ -877,7 +877,7 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     return tuple(int(i) for i in a[:components])
 
 
-def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> PIL.Image.Image:
+def get_image(x: int = 0, y: int = 0, width: Optional[int] = None, height: Optional[int] = None) -> PIL.Image.Image:
     """
     Get an image from the screen.
 

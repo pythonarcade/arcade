@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Dict, Optional, Tuple, Union, Sequence
+from typing import Any, Dict, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
@@ -341,11 +341,11 @@ class ArcadeContext(Context):
         self,
         *,
         vertex_shader: Union[str, Path],
-        fragment_shader: Union[str, Path] = None,
-        geometry_shader: Union[str, Path] = None,
-        tess_control_shader: Union[str, Path] = None,
-        tess_evaluation_shader: Union[str, Path] = None,
-        defines: dict = None,
+        fragment_shader: Optional[Union[str, Path]] = None,
+        geometry_shader: Optional[Union[str, Path]] = None,
+        tess_control_shader: Optional[Union[str, Path]] = None,
+        tess_evaluation_shader: Optional[Union[str, Path]] = None,
+        defines: Optional[Dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:

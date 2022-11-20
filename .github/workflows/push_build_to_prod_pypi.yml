@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+            token: ${{ secrets.MY_TOKEN }}
       - name: Bump versions
         uses: remorses/bump-version@js
         with:

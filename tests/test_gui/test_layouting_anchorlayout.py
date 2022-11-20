@@ -81,14 +81,24 @@ def test_grow_child_half(window):
     assert dummy.rect == (100, 100, 200, 200)
 
 
-def test_grow_child_full(window):
+def test_grow_child_full_width(window):
     subject = UIAnchorLayout(width=400, height=400)
-    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
+    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(1, 0.5)))
 
     subject._do_layout()
 
     assert subject.rect == (0, 0, 400, 400)
-    assert dummy.rect == (0, 0, 400, 400)
+    assert dummy.rect == (0, 100, 400, 200)
+
+
+def test_grow_child_full_height(window):
+    subject = UIAnchorLayout(width=400, height=400)
+    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.5, 1)))
+
+    subject._do_layout()
+
+    assert subject.rect == (0, 0, 400, 400)
+    assert dummy.rect == (100, 0, 200, 400)
 
 
 def test_grow_child_to_max_size(window):
@@ -101,7 +111,7 @@ def test_grow_child_to_max_size(window):
     assert dummy.size == (200, 150)
 
 
-def test_shring_child_to_min_size(window):
+def test_shrink_child_to_min_size(window):
     subject = UIAnchorLayout(width=400, height=400)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150)))
 
