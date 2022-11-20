@@ -1,5 +1,5 @@
 """
-Drawing text with pyglet label
+Draw and display text with pyglet labels and batching.
 """
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
@@ -14,7 +14,8 @@ from arcade.resources import resolve_resource_path
 
 def load_font(path: Union[str, Path]) -> None:
     """
-    Load fonts in a file (usually .ttf) adding them to a global font registry.
+    Load fonts in a file (usually ``*.ttf``) adding them to a global
+    font registry.
 
     A file can contain one or multiple fonts. Each font has a name.
     Open the font file to find the actual name(s). These names
@@ -29,7 +30,7 @@ def load_font(path: Union[str, Path]) -> None:
         arcade.load_font(":font:Custom.ttf")
 
     :param path: A string, or an array of paths with fonts.
-    :raises FileNotFoundError: if the font specified wasn't found
+    :raises FileNotFoundError: If the font specified wasn't found.
     :return:
     """
     file_path = resolve_resource_path(path)
@@ -52,7 +53,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     the original behavior of this code before it was encapsulated.
 
     :param Union[str, Tuple[str, ...]] font_name:
-    :return: Either a resolved path or the original tuple
+    :return: Either a resolved path or the original tuple.
     """
     if font_name:
 
@@ -62,7 +63,8 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
         elif isinstance(font_name, tuple):
             font_list = font_name
         else:
-            raise TypeError("font_name parameter must be a string, or a tuple of strings that specify a font name.")
+            raise TypeError("font_name parameter must be a string, or a tuple of "
+                            "strings that specify a font name.")
 
         for font in font_list:
             try:
@@ -75,19 +77,19 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
             except FileNotFoundError:
                 pass
 
-    # failed to find it ourselves, hope pyglet can make sense of it
+    # Failed to find it ourselves, hope pyglet can make sense of it
     return font_name
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     """
-
     Helper for drawing pyglet labels with rotation within arcade.
 
-    Originally part of draw_text in this module, now abstracted and improved
-    so that both arcade.Text and arcade.draw_text can make use of it.
+    Originally part of ``draw_text`` in this module, now abstracted and improved
+    so that both :py:class:`~arcade.Text` and :py:func:`~arcade.draw_text` can
+    make use of it.
 
-    :param pyglet.text.Label label: a pyglet label to wrap and draw
+    :param pyglet.text.Label label: A pyglet label to wrap and draw.
     """
     assert isinstance(label, pyglet.text.Label)
     window = arcade.get_window()
@@ -118,23 +120,23 @@ class Text:
     :py:func:`~arcade.draw_text`. See its documentation for in-depth
     explanation for how to use each of them. For example code, see :ref:`drawing_text_objects`.
 
-    :param str text: Initial text to display. Can be an empty string
-    :param float start_x: x position to align the text's anchor point with
-    :param float start_y: y position to align the text's anchor point with
-    :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
-    :param float font_size: Size of the text in points
-    :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bool bold: Whether to draw the text as bold
-    :param bool italic: Whether to draw the text as italic
+    :param str text: Initial text to display. Can be an empty string.
+    :param float start_x: x position to align the text's anchor point with.
+    :param float start_y: y position to align the text's anchor point with.
+    :param float start_z: z position to align the text's anchor point with.
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers.
+    :param float font_size: Size of the text in points.
+    :param float width: A width limit in pixels. It's used for multiline text.
+    :param str align: Horizontal alignment; values other than "left" require width to be set.
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names.
+    :param bool bold: Whether to draw the text as bold.
+    :param bool italic: Whether to draw the text as italic.
     :param str anchor_x: How to calculate the anchor point's x coordinate.
-                         Options: "left", "center", or "right"
+                         Options: "left", "center", or "right".
     :param str anchor_y: How to calculate the anchor point's y coordinate.
                          Options: "top", "bottom", "center", or "baseline".
-    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
-    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping.
+    :param float rotation: Rotation in degrees, counterclockwise from horizontal.
 
     All constructor arguments other than ``text`` have a corresponding
     property. To access the current text, use the ``value`` property
@@ -155,7 +157,7 @@ class Text:
 
     ``rotation`` allows for the text to be rotated around the anchor
     point by the passed number of degrees. Positive values rotate
-    counter-clockwise from horizontal, while negative values rotate
+    counterclockwise from horizontal, while negative values rotate
     clockwise:
 
         .. figure:: ../images/text_rotation_degrees.png
@@ -234,7 +236,7 @@ class Text:
     @property
     def value(self) -> str:
         """
-        Get or set the current text string to display.
+        Current text string to display.
 
         The value assigned will be converted to a string.
         """
@@ -250,7 +252,7 @@ class Text:
     @property
     def text(self) -> str:
         """
-        Get or set the current text string to display.
+        Current text string to display.
 
         The value assigned will be converted to a string.
 
@@ -268,7 +270,7 @@ class Text:
     @property
     def x(self) -> float:
         """
-        Get or set the x position of the label
+        X position of the label.
         """
         return self._label.x
 
@@ -281,7 +283,7 @@ class Text:
     @property
     def y(self) -> float:
         """
-        Get or set the y position of the label
+        Y position of the label.
         """
         return self._label.y
 
@@ -294,7 +296,7 @@ class Text:
     @property
     def start_z(self) -> float:
         """
-        Get or set the z position of the label
+        Z position, or draw order, of the label.
         """
         return self._label.z
 
@@ -307,7 +309,7 @@ class Text:
     @property
     def font_name(self) -> FontNameOrNames:
         """
-        Get or set the font name(s) for the label
+        Font name(s) for the label.
         """
         return self._label.font_name
 
@@ -318,7 +320,7 @@ class Text:
     @property
     def font_size(self) -> float:
         """
-        Get or set the font size of the label
+        Font size of the label.
         """
         return self._label.font_size
 
@@ -329,9 +331,9 @@ class Text:
     @property
     def anchor_x(self) -> str:
         """
-        Get or set the horizontal anchor.
+        Horizontal anchor for the label.
 
-        Options: "left", "center", or "right"
+        Options: "left", "center", or "right".
         """
         return self._label.anchor_x
 
@@ -342,9 +344,9 @@ class Text:
     @property
     def anchor_y(self) -> str:
         """
-        Get or set the vertical anchor.
+        Vertical anchor of the label.
 
-        Options : "top", "bottom", "center", or "baseline"
+        Options: "top", "bottom", "center", or "baseline".
         """
         return self._label.anchor_y
 
@@ -363,7 +365,7 @@ class Text:
     @property
     def color(self) -> Color:
         """
-        Get or set the text color for the label
+        Text in RGB or RGBA color for the label.
         """
         return self._label.color
 
@@ -374,7 +376,8 @@ class Text:
     @property
     def width(self) -> int:
         """
-        Get or set the width of the label in pixels.
+        Width of the label in pixels.
+
         This value affects text flow when multiline text is used.
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_width`
@@ -388,7 +391,8 @@ class Text:
     @property
     def height(self) -> int:
         """
-        Get or set the height of the label in pixels
+        Height of the label in pixels
+
         This value affects text flow when multiline text is used.
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_height`
@@ -402,21 +406,21 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of the label        
+        Size of the label.    
         """
         return self._label.width, self._label.height
 
     @property
     def content_width(self) -> int:
         """
-        Get the pixel width of the text contents
+        Pixel width of the text contents.
         """
         return self._label.content_width
 
     @property
     def content_height(self) -> int:
         """
-        Get the pixel height of the text content.
+        Pixel height of the text content.
         """
         return self._label.content_height
 
@@ -451,7 +455,7 @@ class Text:
     @property
     def content_size(self) -> Tuple[int, int]:
         """
-        Get the pixel width and height of the text contents.
+        Pixel width and height of the text contents.
         """
         return self._label.content_width, self._label.content_height
 
@@ -461,8 +465,7 @@ class Text:
 
     @align.setter
     def align(self, align: str):
-
-        # duplicates the logic used in the rest of this module
+        # Duplicates the logic used in the rest of this module
         if align != "left":
             self.multiline = True
 
@@ -471,7 +474,7 @@ class Text:
     @property
     def bold(self) -> bool:
         """
-        Get or set bold state of the label
+        Bold state of the label.
         """
         return self._label.bold
 
@@ -482,7 +485,7 @@ class Text:
     @property
     def italic(self) -> bool:
         """
-        Get or set the italic state of the label
+        Italic state of the label.
         """
         return self._label.italic
 
@@ -493,7 +496,7 @@ class Text:
     @property
     def multiline(self) -> bool:
         """
-        Get or set the multiline flag of the label.
+        Multiline flag of the label.
         """
         return self._label.multiline
 
@@ -524,9 +527,9 @@ class Text:
         Draw test with debug geometry showing the content
         area, outline and the anchor point.
 
-        :param Color anchor_color: Color of the anchor point
-        :param Color background_color: Color the content background
-        :param Color outline_color: Color of the content outline
+        :param Color anchor_color: Color of the anchor point.
+        :param Color background_color: Color the content background.
+        :param Color outline_color: Color of the content outline.
         """
         left = self.left
         right = self.right
@@ -596,23 +599,23 @@ def create_text_sprite(
     it is added to a SpriteList which uses a different atlas, you will likely just see
     a black box drawn in its place.
 
-    :param str text: Initial text to display. Can be an empty string
-    :param float start_x: x position to align the text's anchor point with
-    :param float start_y: y position to align the text's anchor point with
-    :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
-    :param float font_size: Size of the text in points
-    :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bool bold: Whether to draw the text as bold
-    :param bool italic: Whether to draw the text as italic
+    :param str text: Initial text to display. Can be an empty string.
+    :param float start_x: x position to align the text's anchor point with.
+    :param float start_y: y position to align the text's anchor point with.
+    :param float start_z: z position to align the text's anchor point with.
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers.
+    :param float font_size: Size of the text in points.
+    :param float width: A width limit in pixels.
+    :param str align: Horizontal alignment; values other than "left" require width to be set.
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names.
+    :param bool bold: Whether to draw the text as bold.
+    :param bool italic: Whether to draw the text as italic.
     :param str anchor_x: How to calculate the anchor point's x coordinate.
-                         Options: "left", "center", or "right"
+                         Options: "left", "center", or "right".
     :param str anchor_y: How to calculate the anchor point's y coordinate.
                          Options: "top", "bottom", "center", or "baseline".
-    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
-    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping.
+    :param float rotation: Rotation in degrees, counterclockwise from horizontal.
     :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
         newly created texture. The default global atlas will be used if this is None.
     """
@@ -690,21 +693,21 @@ def draw_text(
 
     Example code can be found at :ref:`drawing_text`.
 
-    :param Any text: Text to display. The object passed in will be converted to a string
-    :param float start_x: x position to align the text's anchor point with
-    :param float start_y: y position to align the text's anchor point with
-    :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
-    :param float font_size: Size of the text in points
-    :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bool bold: Whether to draw the text as bold
-    :param bool italic: Whether to draw the text as italic
-    :param str anchor_x: How to calculate the anchor point's x coordinate
-    :param str anchor_y: How to calculate the anchor point's y coordinate
-    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
-    :param float rotation: rotation in degrees, counter-clockwise from horizontal
+    :param Any text: Text to display. The object passed in will be converted to a string.
+    :param float start_x: x position to align the text's anchor point with.
+    :param float start_y: y position to align the text's anchor point with.
+    :param float start_z: z position to align the text's anchor point with.
+    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers.
+    :param float font_size: Size of the text in points.
+    :param float width: A width limit in pixels.
+    :param str align: Horizontal alignment; values other than "left" require width to be set.
+    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names.
+    :param bool bold: Whether to draw the text as bold.
+    :param bool italic: Whether to draw the text as italic.
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+    :param str anchor_y: How to calculate the anchor point's y coordinate.
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping.
+    :param float rotation: Rotation in degrees, counterclockwise from horizontal.
 
     By default, the text is placed so that:
 
@@ -791,7 +794,7 @@ def draw_text(
 
     ``rotation`` allows for the text to be rotated around the anchor
     point by the passed number of degrees. Positive values rotate
-    counter-clockwise from horizontal, while negative values rotate
+    counterclockwise from horizontal, while negative values rotate
     clockwise:
 
         .. figure:: ../images/text_rotation_degrees.png
