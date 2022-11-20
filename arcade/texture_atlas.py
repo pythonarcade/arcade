@@ -166,7 +166,7 @@ class TextureAtlas:
         self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
-        self._num_slots = self.width // 2
+        self._num_slots = self.max_width // 2
         self._check_size(self._size)
 
         self._texture = self._ctx.texture(
@@ -341,6 +341,12 @@ class TextureAtlas:
 
         :return: The x, y texture_id, TextureRegion
         """
+        if len(self._uv_slots_free) == 0:
+            raise AllocatorException((
+                "No more free texture slots in the atlas.   "
+                f"Max number of slots: {self._num_slots}"
+            ))
+
         # Allocate space for texture
         try:
             x, y = self._allocator.alloc(
