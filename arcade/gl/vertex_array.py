@@ -40,7 +40,7 @@ class VertexArray:
         ctx: "Context",
         program: Program,
         content: Sequence[BufferDescription],
-        index_buffer: Buffer = None,
+        index_buffer: Optional[Buffer] = None,
         index_element_size: int = 4,
     ):
         self._ctx = ctx
@@ -397,7 +397,7 @@ class Geometry:
         ctx: "Context",
         content: Optional[Sequence[BufferDescription]],
         index_buffer: Optional[Buffer] = None,
-        mode: int = None,
+        mode: Optional[int] = None,
         index_element_size: int = 4,
     ):
         self._ctx = ctx
@@ -480,9 +480,9 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: gl.GLenum = None,
+        mode: Optional[gl.GLenum] = None,
         first: int = 0,
-        vertices: int = None,
+        vertices: Optional[int] = None,
         instances: int = 1,
     ) -> None:
         """Render the geometry with a specific program.
@@ -536,7 +536,7 @@ class Geometry:
         program: Program,
         buffer: Buffer,
         *,
-        mode: gl.GLuint = None,
+        mode: Optional[gl.GLuint] = None,
         count: int = -1,
         first: int = 0,
         stride: int = 0,
@@ -590,7 +590,7 @@ class Geometry:
         buffer: Union[Buffer, List[Buffer]],
         *,
         first: int = 0,
-        vertices: int = None,
+        vertices: Optional[int] = None,
         instances: int = 1,
         buffer_offset: int = 0,
     ) -> None:

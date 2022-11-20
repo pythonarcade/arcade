@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable
+from typing import List, Dict, TypeVar, Iterable, Optional
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -66,7 +66,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     _enabled = False
 
-    def __init__(self, window: arcade.Window = None):
+    def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
@@ -106,7 +106,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: UIWidget = None) -> Iterable[UIWidget]:
+    def walk_widgets(self, *, root: Optional[UIWidget] = None) -> Iterable[UIWidget]:
         """walks through widget tree, in reverse draw order (most top drawn widget first)"""
         layer = 0
         children = root.children if root else self.children[layer]

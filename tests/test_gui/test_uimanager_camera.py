@@ -9,7 +9,7 @@ from pyglet.math import Vec2
 def test_ui_manager_respects_camera_viewport(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
-    camera = arcade.Camera(window=window, viewport_width=window.width, viewport_height=window.height)
+    camera = arcade.Camera(viewport=(0, 0, window.width, window.height), window=window)
 
     # WHEN
     camera.viewport = 0, 0, 300, 200
@@ -25,7 +25,7 @@ def test_ui_manager_respects_camera_viewport(uimanager, window):
 def test_ui_manager_respects_camera_pos(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
-    camera = arcade.Camera(window=window, viewport_width=window.width, viewport_height=window.height)
+    camera = arcade.Camera(viewport=(0, 0, window.width, window.height), window=window)
 
     # WHEN
     camera.position = Vec2(-100, -100)

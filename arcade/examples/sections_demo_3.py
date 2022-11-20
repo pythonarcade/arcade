@@ -207,7 +207,7 @@ class Map(Section):
 
         self.ball = Ball(20, COLOR_3)
         self.ball.position = 60, 60
-        self.sprite_list = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList = arcade.SpriteList()
         self.sprite_list.append(self.ball)
 
         self.pressed_key: Optional[int] = None
@@ -259,14 +259,13 @@ class GameView(arcade.View):
 
         # create and store the modal, so we can set
         # self.modal_section.enabled = True to show it
-        self.modal_section = ModalSection(self.window.width / 3,
+        self.modal_section = ModalSection((self.window.width / 2) - 150,
                                           (self.window.height / 2) - 100,
-                                          400, 200)
+                                          300, 200)
 
         # we set accept_keyboard_events to False (default to True)
-        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT,
-                                self.window.width, INFO_BAR_HEIGHT,
-                                accept_keyboard_events=False)
+        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,
+                                accept_keyboard_keys=False)
 
         # as prevent_dispatch is on by default, we let pass the events to the
         # following Section: the map

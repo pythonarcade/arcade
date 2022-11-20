@@ -81,6 +81,16 @@ Changes
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
     * Fixed an blending issue when rendering the gui surface to the screen
+    * Support nine patch information to draw background texture
+    * Removed some attributes from public interface, use ``UIWidget.with_`` methods
+        * ``UIWidget.border_width``
+        * ``UIWidget.border_color``
+        * ``UIWidget.bg_color``
+        * ``UIWidget.bg_texture``
+        * ``UIWidget.padding_top``
+        * ``UIWidget.padding_right``
+        * ``UIWidget.padding_bottom``
+        * ``UIWidget.padding_left``
 
   * New widgets:
 
@@ -108,6 +118,8 @@ Changes
     the GPU now.
   * As part of this move, the ``arcade.text_pillow`` module has been removed completely, and the ``arcade.text_pyglet`` module has been re-named
     just be ``arcade.text``.
+  * :py:func:`~arcade.draw_text` and :py:class:`~arcade.Text` both now accept a ``start_z`` parameter. This will allow advanced usage to set the Z
+    position of the underlying Label. This parameter defaults to 0 and does not change any existing usage.
 
 * OpenGL
 

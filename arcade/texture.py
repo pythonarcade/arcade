@@ -90,7 +90,7 @@ class Texture:
     def __init__(
         self,
         name: str,
-        image: PIL.Image.Image = None,
+        image: PIL.Image.Image,
         hit_box_algorithm: Optional[str] = "default",
         hit_box_detail: float = 4.5,
         hit_box_points: Optional[PointList] = None,
@@ -913,7 +913,7 @@ def make_soft_circle_texture(
     color: Color,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: str = None,
+    name: Optional[str] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
@@ -965,7 +965,7 @@ def make_soft_square_texture(
     color: Color,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: str = None,
+    name: Optional[str] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.

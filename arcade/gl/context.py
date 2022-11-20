@@ -780,8 +780,8 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Union[Texture, List[Texture]] = None,
-        depth_attachment: Texture = None
+        color_attachments: Optional[Union[Texture, List[Texture]]] = None,
+        depth_attachment: Optional[Texture] = None
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -800,9 +800,9 @@ class Context:
         components: int = 4,
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
-        wrap_x: gl.GLenum = None,
-        wrap_y: gl.GLenum = None,
-        filter: Tuple[gl.GLenum, gl.GLenum] = None,
+        wrap_x: Optional[gl.GLenum] = None,
+        wrap_y: Optional[gl.GLenum] = None,
+        filter: Optional[Tuple[gl.GLenum, gl.GLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
     ) -> Texture:
@@ -855,8 +855,8 @@ class Context:
     def geometry(
         self,
         content: Optional[Sequence[BufferDescription]] = None,
-        index_buffer: Buffer = None,
-        mode: int = None,
+        index_buffer: Optional[Buffer] = None,
+        mode: Optional[int] = None,
         index_element_size: int = 4,
     ):
         """
@@ -946,7 +946,7 @@ class Context:
         tess_control_shader: Optional[str] = None,
         tess_evaluation_shader: Optional[str] = None,
         common: Optional[List[str]] = None,
-        defines: Dict[str, str] = None,
+        defines: Optional[Dict[str, str]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:

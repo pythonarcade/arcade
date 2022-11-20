@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Dict, Iterable, Optional, Tuple, Union, Sequence
+from typing import Any, Iterable, Dict, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
@@ -190,7 +190,7 @@ class ArcadeContext(Context):
         self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
+        self.label_cache: Dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -343,12 +343,12 @@ class ArcadeContext(Context):
         self,
         *,
         vertex_shader: Union[str, Path],
-        fragment_shader: Union[str, Path] = None,
-        geometry_shader: Union[str, Path] = None,
-        tess_control_shader: Union[str, Path] = None,
-        tess_evaluation_shader: Union[str, Path] = None,
+        fragment_shader: Optional[Union[str, Path]] = None,
+        geometry_shader: Optional[Union[str, Path]] = None,
+        tess_control_shader: Optional[Union[str, Path]] = None,
+        tess_evaluation_shader: Optional[Union[str, Path]] = None,
         common: Iterable[Union[str, Path]] = (),
-        defines: dict = None,
+        defines: Optional[Dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
@@ -443,7 +443,7 @@ class ArcadeContext(Context):
     ) -> Texture:
         """
         Loads and creates an OpenGL 2D texture.
-        Currently all textures are converted to RGBA for simplicity.
+        Currently, all textures are converted to RGBA for simplicity.
 
         Example::
 

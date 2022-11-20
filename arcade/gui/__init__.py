@@ -16,7 +16,9 @@ from arcade.gui.events import UITextEvent
 from arcade.gui.events import UIOnActionEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
+from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets.layout import (
     UIBoxLayout,
@@ -27,6 +29,7 @@ from arcade.gui.widgets.layout import (
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UILabel, UIInputText, UITextArea
+from arcade.gui.widgets.toggle import UITextureToggle
 from arcade.gui.widgets import UISpace
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
@@ -70,6 +73,8 @@ __all__ = [
     "UIOnChangeEvent",
     "UIOnClickEvent",
     "UISlider",
+    "UIStyleBase",
+    "UIStyledWidget",
     "UISpace",
     "UISpriteWidget",
     "UITextArea",
@@ -77,10 +82,12 @@ __all__ = [
     "UITextMotionEvent",
     "UITextMotionSelectEvent",
     "UITextureButton",
+    "UITextureToggle",
     "UIWidget",
     "UIWidgetParent",
     "Surface",
     "Rect",
+    "NinePatchTexture",
     # Property classes
     "ListProperty",
     "DictProperty",

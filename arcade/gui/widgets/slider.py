@@ -1,10 +1,10 @@
-from collections import ChainMap
-from typing import Optional, Tuple, Union
+from dataclasses import dataclass
+from typing import Optional, Tuple, Union, Mapping
 
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
-from arcade.experimental.uistyle import UISliderStyle, UISliderDefaultStyle
+from arcade import Color
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -13,16 +13,49 @@ from arcade.gui import (
     UIMousePressEvent,
     UIMouseReleaseEvent,
 )
-from arcade.gui.widgets import UIWidget
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 
-class UISlider(UIWidget):
+class UISlider(UIStyledWidget):
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
     disabled = Property(False)
+
+    @dataclass
+    class UIStyle(UIStyleBase):
+        bg: Color = (94, 104, 117)
+        border: Color = (77, 81, 87)
+        border_width: int = 1
+        filled_bar: Color = (50, 50, 50)
+        unfilled_bar: Color = (116, 125, 123)
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(
+            bg=(96, 103, 112),
+            border=(77, 81, 87),
+            border_width=2,
+            filled_bar=(50, 50, 50),
+            unfilled_bar=(116, 125, 123),
+        ),
+        "press": UIStyle(
+            bg=(96, 103, 112),
+            border=(77, 81, 87),
+            border_width=3,
+            filled_bar=(50, 50, 50),
+            unfilled_bar=(116, 125, 123),
+        ),
+        "disabled": UIStyle(
+            bg=(94, 104, 117),
+            border=(77, 81, 87),
+            border_width=1,
+            filled_bar=(50, 50, 50),
+            unfilled_bar=(116, 125, 123),
+        )
+    }
 
     def __init__(
         self,
@@ -37,7 +70,7 @@ class UISlider(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[UISliderStyle, dict, None] = None,
+        style: Union[Mapping[str, UIStyleBase], None] = None,  # typing: ignore
         **kwargs,
     ):
         super().__init__(
@@ -48,7 +81,7 @@ class UISlider(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=ChainMap(style or {}, UISliderDefaultStyle),  # type: ignore
+            style=style or UISlider.DEFAULT_STYLE,
             **kwargs,
         )
 
@@ -59,11 +92,22 @@ class UISlider(UIWidget):
         self.cursor_radius = self.height // 3
 
         # trigger render on value changes
-        bind(self, "value", self.trigger_full_render)
+        bind(self, "value", self.trigger_render)
         bind(self, "hovered", self.trigger_render)
-        bind(self, "pressed", self.trigger_full_render)
+        bind(self, "pressed", self.trigger_render)
+        bind(self, "disabled", self.trigger_render)
 
         self.register_event_type("on_change")
+
+    def get_current_state(self) -> str:
+        if self.disabled:
+            return "disabled"
+        elif self.pressed:
+            return "press"
+        elif self.hovered:
+            return "hover"
+        else:
+            return "normal"
 
     def _x_for_value(self, value):
         x = self.content_rect.x
@@ -101,15 +145,7 @@ class UISlider(UIWidget):
             )
 
     def do_render(self, surface: Surface):
-        if self.disabled:
-            state = "disabled"
-        elif self.pressed:
-            state = "press"
-        elif self.hovered:
-            state = "hover"
-        else:
-            state = "normal"
-        style = self.style[state]
+        style = self.get_current_style()
 
         self.prepare_render(surface)
 
@@ -125,8 +161,8 @@ class UISlider(UIWidget):
         slider_center_y = self.content_height // 2
 
         # slider
-        bg_slider_color = style["unfilled_bar"]
-        fg_slider_color = style["filled_bar"]
+        bg_slider_color = style.get("unfilled_bar", (116, 125, 123))
+        fg_slider_color = style.get("filled_bar", (50, 50, 50))
 
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.content_rect.x,
@@ -144,9 +180,9 @@ class UISlider(UIWidget):
         )
 
         # cursor
-        border_width = style["border_width"]
-        cursor_color = style["bg"]
-        cursor_outline_color = style["border"]
+        border_width = style.get("border_width", 1)
+        cursor_color = style.get("bg", (94, 104, 117))
+        cursor_outline_color = style.get("border", (77, 81, 87))
 
         rel_cursor_x = cursor_center_x - self.content_rect.x
         arcade.draw_circle_filled(

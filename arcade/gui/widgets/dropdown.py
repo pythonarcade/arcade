@@ -1,8 +1,7 @@
 from copy import deepcopy
-from typing import List
+from typing import Optional, List
 
 import arcade
-from arcade.experimental.uistyle import UIFlatButtonStyle_default
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
 from arcade.gui.widgets.layout import UIBoxLayout
@@ -13,7 +12,7 @@ class UIDropdown(UILayout):
     DIVIDER = None
 
     def __init__(
-        self, default: str = None, options: List[str] = None, style=None, **kwargs
+        self, default: Optional[str] = None, options: Optional[List[str]] = None, style=None, **kwargs
     ):
         if style is None:
             style = {}
@@ -63,7 +62,8 @@ class UIDropdown(UILayout):
         # generate options
         self._layout.clear()
 
-        active_style = deepcopy(UIFlatButtonStyle_default)
+        # is there another way then deepcopy, does it matter? ("premature optimization is the root of all evil")
+        active_style = deepcopy(UIFlatButton.DEFAULT_STYLE)
         active_style["normal"]["bg"] = (55, 66, 81)
 
         for option in self._options:
@@ -80,7 +80,9 @@ class UIDropdown(UILayout):
                     text=option,
                     width=self.width,
                     height=self.height,
-                    style=active_style if self.value == option else UIFlatButtonStyle_default,
+                    style=active_style
+                    if self.value == option
+                    else UIFlatButton.DEFAULT_STYLE,
                 )
             )
             button.on_click = self._on_option_click

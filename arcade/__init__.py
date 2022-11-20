@@ -8,6 +8,7 @@ A Python simple, easy to use module for creating 2D games.
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
+from typing import Optional
 
 from pathlib import Path
 
@@ -15,7 +16,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
     sys.exit("The Arcade Library requires Python 3.7 or higher.")
 
 
-def configure_logging(level: int = None):
+def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
     :param int level: The log level. Defaults to DEBUG.
     """
@@ -99,7 +100,7 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 
-from .camera import Camera
+from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -339,7 +340,6 @@ from .text import (
     Text,
 )
 
-
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
            'AnimatedWalkingSprite',
@@ -347,6 +347,7 @@ __all__ = ['AStarBarrierList',
            'ArcadeContext',
            'AtlasRegion',
            'Camera',
+           'SimpleCamera',
            'Color',
            'DEFAULT_FONT_NAMES',
            'EasingData',

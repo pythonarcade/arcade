@@ -1,4 +1,4 @@
-from typing import Union, List, Tuple
+from typing import Optional, Union, List, Tuple
 
 import arcade.gl as gl
 from arcade.background import Background
@@ -11,7 +11,7 @@ class BackgroundGroup:
     The offset of the BackgroundGroup is the same as each background.
     """
 
-    def __init__(self, backgrounds: List[Background] = None):
+    def __init__(self, backgrounds: Optional[List[Background]] = None):
         self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
 
         self._pos = (0.0, 0.0)
@@ -63,16 +63,16 @@ class BackgroundGroup:
         self,
         tex_src: str,
         pos: Tuple[float, float] = (0.0, 0.0),
-        size: Tuple[int, int] = None,
+        size: Optional[Tuple[int, int]] = None,
         offset: Tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Tuple[int, int, int] = None,
-        color_norm: Tuple[float, float, float] = None,
-        shader: gl.Program = None,
-        geometry: gl.Geometry = None
+        color: Optional[Tuple[int, int, int]] = None,
+        color_norm: Optional[Tuple[float, float, float]] = None,
+        shader: Optional[gl.Program] = None,
+        geometry: Optional[gl.Geometry] = None
     ):
         background = Background.from_file(
             tex_src,
@@ -100,7 +100,7 @@ class ParallaxGroup:
     """
 
     def __init__(
-        self, backgrounds: List[Background] = None, depths: List[float] = None
+        self, backgrounds: Optional[List[Background]] = None, depths: Optional[List[float]] = None
     ):
         self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
         self._depths: List[float] = [] if depths is None else depths
@@ -168,17 +168,17 @@ class ParallaxGroup:
         self,
         tex_src: str,
         pos: Tuple[float, float] = (0.0, 0.0),
-        size: Tuple[int, int] = None,
+        size: Optional[Tuple[int, int]] = None,
         depth: float = 1,
         offset: Tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Tuple[int, int, int] = None,
-        color_norm: Tuple[float, float, float] = None,
-        shader: gl.Program = None,
-        geometry: gl.Geometry = None
+        color: Optional[Tuple[int, int, int]] = None,
+        color_norm: Optional[Tuple[float, float, float]] = None,
+        shader: Optional[gl.Program] = None,
+        geometry: Optional[gl.Geometry] = None
     ):
         background = Background.from_file(
             tex_src,

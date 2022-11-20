@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         )
 
         # start_x and start_y make the start point for the text. We draw a dot to make it
-        # easy too see the text in relation to its start x and y.
+        # easy to see the text in relation to its start x and y.
         start_x = 10
         start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         self.fonts = arcade.Text(
@@ -207,7 +207,7 @@ class MyGame(arcade.Window):
         )
 
         # start_x and start_y make the start point for the text.
-        # We draw a dot to make it easy too see the text in relation to
+        # We draw a dot to make it easy to see the text in relation to
         # its start x and y.
         start_y -= DEFAULT_LINE_HEIGHT
 

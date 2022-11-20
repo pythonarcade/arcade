@@ -152,7 +152,7 @@ class Sprite:
     """
     def __init__(
             self,
-            filename: str = None,
+            filename: Optional[str] = None,
             scale: float = 1.0,
             image_x: int = 0,
             image_y: int = 0,
@@ -165,7 +165,7 @@ class Sprite:
             flipped_diagonally: bool = False,
             hit_box_algorithm: Optional[str] = "Simple",
             hit_box_detail: float = 4.5,
-            texture: Texture = None,
+            texture: Optional[Texture] = None,
             angle: float = 0.0,
     ):
         """ Constructor """
@@ -341,7 +341,6 @@ class Sprite:
         Points will be scaled with get_adjusted_hit_box.
         """
         self._point_list_cache = None
-        self._hit_box_shape = None
         self._points = points
 
     def get_hit_box(self) -> PointList:
@@ -915,24 +914,14 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
 
-    def set_texture(self, texture_no: int):
+    def set_texture(self, texture_no: int) -> None:
         """
         Sets texture by texture id. Should be renamed because it takes
         a number rather than a texture, but keeping
         this for backwards compatibility.
         """
-        if self.textures[texture_no] == self._texture:
-            return
-
         texture = self.textures[texture_no]
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._texture = texture
-        self._width = texture.width * self.scale
-        self._height = texture.height * self.scale
-        self.add_spatial_hashes()
-        for sprite_list in self.sprite_lists:
-            sprite_list.update_texture(self)
+        self.texture = texture
 
     @property
     def color(self) -> RGBA:
@@ -1166,8 +1155,8 @@ class Sprite:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against
-        :return: SpriteList of all overlapping Sprites from the original SpriteList
-        :rtype: SpriteList
+        :return: List of all overlapping Sprites from the original SpriteList
+        :rtype: list
         """
         from arcade import check_for_collision_with_list
 
@@ -1192,7 +1181,7 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            filename: str = None,
+            filename: Optional[str] = None,
             scale: float = 1.0,
             image_x: int = 0,
             image_y: int = 0,

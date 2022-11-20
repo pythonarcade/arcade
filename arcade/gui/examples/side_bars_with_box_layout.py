@@ -41,5 +41,5 @@ class DemoWindow(arcade.Window):
         self.manager.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     DemoWindow().run()

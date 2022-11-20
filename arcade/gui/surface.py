@@ -1,10 +1,11 @@
 from contextlib import contextmanager
-from typing import Tuple
+from typing import Tuple, Union
 
 import arcade
 from arcade import Texture
 from arcade.gl import Framebuffer
 from arcade.gl import geometry
+from arcade.gui.nine_patch import NinePatchTexture
 
 
 class Surface:
@@ -111,19 +112,31 @@ class Surface:
         y: float,
         width: float,
         height: float,
-        tex: Texture,
+        tex: Union[Texture, NinePatchTexture],
         angle=0,
         alpha: int = 255,
     ):
-        arcade.draw_lrwh_rectangle_textured(
-            bottom_left_x=x,
-            bottom_left_y=y,
-            width=width,
-            height=height,
-            texture=tex,
-            angle=angle,
-            alpha=alpha,
-        )
+        if isinstance(tex, NinePatchTexture):
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a position != (0,0) yet")
+
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a angle != 0 yet")
+
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a alpha != 255 yet")
+
+            tex.draw_sized(size=(width, height))
+        else:
+            arcade.draw_lrwh_rectangle_textured(
+                bottom_left_x=x,
+                bottom_left_y=y,
+                width=width,
+                height=height,
+                texture=tex,
+                angle=angle,
+                alpha=alpha,
+            )
 
     def draw_sprite(self, x, y, width, height, sprite):
         """Draw a sprite to the surface"""

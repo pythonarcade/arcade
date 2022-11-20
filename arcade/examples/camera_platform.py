@@ -129,8 +129,9 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.gui_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera = arcade.Camera(viewport=viewport)
+        self.gui_camera = arcade.Camera(viewport=viewport)
 
         # Center camera on user
         self.pan_camera_to_user()

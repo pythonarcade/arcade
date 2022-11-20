@@ -4,33 +4,47 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  # --- Bump version
+  bump-version:
 
     runs-on: ubuntu-latest
-
-    # This environment is defined in GitHub to hold our secrets
-    environment: deploy-pypi-prod
+    environment: deploy-pypi-test
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+            token: ${{ secrets.MY_TOKEN }}
+      - name: Bump versions
+        uses: remorses/bump-version@js
+        with:
+            version_file: ./arcade/VERSION
+            prerelease_tag: dev
+        env:
+            GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+
+  # --- Deploy to pypi
+  deploy-to-pypi-prod:
+
+    runs-on: ubuntu-latest
+    environment: deploy-pypi-prod
+    needs: bump-version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4.3.0
         with:
           python-version: 3.x
-
       - name: Install dependencies
         run: |
-          # Upgrade pip
           python3 -m pip install --upgrade pip
           python3 -m pip install setuptools wheel twine
           python3 -m pip install pyogg pymunk
-          # Pull dev packages from 
           python3 -m pip install -e .
-
-      # Upload to TestPyPI
-      - name: Build and Upload to TestPyPI
+      - name: Build and Upload to Prod PyPI
         run: |
-          python3 setup sdist bdist_wheel
+          python3 setup.py sdist bdist_wheel
           python3 -m twine upload dist/*
         env:
           TWINE_USERNAME: __token__

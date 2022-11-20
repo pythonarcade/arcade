@@ -1,21 +1,47 @@
 #!/usr/bin/env python
-import sys
-from os import path
+import os
 from setuptools import find_namespace_packages, setup
 
-with open("arcade/version.py") as file:
-    exec(file.read())
+
+def _rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
+
+
+def _get_version():
+    dirname = os.path.dirname(__file__) or '.'
+    my_path = f"{dirname}/arcade/VERSION"
+
+    try:
+        text_file = open(my_path, "r")
+        data = text_file.read().strip()
+        text_file.close()
+        data = _rreplace(data, '.', '', 1)
+        data = _rreplace(data, '-', '.', 1)
+
+    except Exception as e:
+        print(f"ERROR: Unable to load version number via '{my_path}'.")
+        print(f"Files in that directory: {os.listdir(my_path)}")
+        data = "0.0.0"
+
+    return data
+
+
+VERSION = _get_version()
 
 
 def get_long_description() -> str:
-    fname = path.join(path.dirname(path.abspath(__file__)), "README.rst")
+    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.rst")
     with open(fname, "r") as f:
         return f.read()
+
 
 # Testing and code inspection tools
 REQUIREMENTS_DEV = [
     "pytest",
     "flake8",
+    # importlib-metadata: drop after arcade drops Python 3.7 support (https://github.com/PyCQA/flake8/issues/1701)
+    "importlib-metadata==4.13.0",
     "mypy",
     "coverage",
     "coveralls",
@@ -53,9 +79,9 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet==2.0.dev23",
-        "pillow~=9.2.0",
-        "pymunk~=6.2.1",
+        "pyglet==2.0.0",
+        "pillow~=9.3.0",
+        "pymunk~=6.3.0",
         "pytiled-parser~=2.2.0",
     ],
     extras_require={
@@ -66,22 +92,22 @@ setup(
         include=["arcade", "arcade.*"],
         exclude=[],
     ),
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     include_package_data=True,
-        entry_points={'console_scripts': [
+    entry_points={'console_scripts': [
         'arcade = arcade.management:execute_from_command_line',
     ]},
     project_urls={

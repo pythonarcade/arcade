@@ -168,7 +168,7 @@ class Window(pyglet.window.Window):
         set_window(self)
 
         self._current_view: Optional[View] = None
-        self.current_camera: Optional[arcade.Camera] = None
+        self.current_camera: Optional[arcade.SimpleCamera] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
@@ -220,7 +220,7 @@ class Window(pyglet.window.Window):
             self,
             color: Optional[Color] = None,
             normalized: bool = False,
-            viewport: Tuple[int, int, int, int] = None,
+            viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -277,7 +277,7 @@ class Window(pyglet.window.Window):
     def set_fullscreen(self,
                        fullscreen: bool = True,
                        screen: Optional['Window'] = None,
-                       mode: ScreenMode = None,
+                       mode: Optional[ScreenMode] = None,
                        width: Optional[float] = None,
                        height: Optional[float] = None):
         """
@@ -526,7 +526,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         """
         Override this function to add custom code to be called any time the window
         is resized. The main responsibility of this method is updating
@@ -697,25 +697,27 @@ class Window(pyglet.window.Window):
         self._current_view = new_view
         if new_view.has_sections:
             section_manager_managed_events = new_view.section_manager.managed_events
-            self.push_handlers(
-                **{
-                    event_type: getattr(new_view.section_manager, event_type, None)
-                    for event_type in section_manager_managed_events
-                }
-            )
+            section_handlers = {event_type: getattr(new_view.section_manager, event_type, None) for event_type in
+                                section_manager_managed_events}
+            if section_handlers:
+                self.push_handlers(
+                    **section_handlers
+                )
         else:
             section_manager_managed_events = set()
 
         # Note: Excluding on_show because this even can trigger multiple times.
         #       It should only be called once when the view is shown.
-        self.push_handlers(
-            **{
-                event_type: getattr(new_view, event_type, None)
-                for event_type in self.event_types
-                if event_type != 'on_show' and event_type not in section_manager_managed_events
-                and hasattr(new_view, event_type)
-            }
-        )
+        view_handlers = {
+            event_type: getattr(new_view, event_type, None)
+            for event_type in self.event_types
+            if event_type != 'on_show' and event_type not in section_manager_managed_events and hasattr(new_view,
+                                                                                                        event_type)
+        }
+        if view_handlers:
+            self.push_handlers(
+                **view_handlers
+            )
         self._current_view.on_show()
         self._current_view.on_show_view()
         if self._current_view.has_sections:
@@ -900,31 +902,39 @@ class View:
     """
 
     def __init__(self,
-                 window: Window = None):
+                 window: Optional[Window] = None):
 
         self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
-        self.section_manager: SectionManager = SectionManager(self)
+        self._section_manager: Optional[SectionManager] = None
+
+    @property
+    def section_manager(self) -> SectionManager:
+        """ lazy instantiation of the section manager """
+        if self._section_manager is None:
+            self._section_manager = SectionManager(self)
+        return self._section_manager
 
     @property
     def has_sections(self) -> bool:
         """ Return if the View has sections """
         return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None) -> None:
+    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index. If None at the end
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
         """
-        return self.section_manager.add_section(section, at_index)
+        self.section_manager.add_section(section, at_index, at_draw_order)
 
     def clear(
         self,
         color: Optional[Color] = None,
         normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.

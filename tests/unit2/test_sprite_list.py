@@ -139,7 +139,11 @@ def test_spritelist_lazy():
         )
     assert len(spritelist) == 100
     assert spritelist.spatial_hash
-
+    assert spritelist._initialized is False
+    spritelist.initialize()
+    assert spritelist._initialized
+    assert spritelist._sprite_pos_buf
+    assert spritelist._geometry
 
 def test_sort(ctx):
     s1 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)

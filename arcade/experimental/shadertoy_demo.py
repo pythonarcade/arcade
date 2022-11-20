@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.shadertoy.mouse_position = x, y
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize((width, height))
 

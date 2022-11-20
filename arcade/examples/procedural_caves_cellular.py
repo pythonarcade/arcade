@@ -155,8 +155,8 @@ class GameView(arcade.View):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera(self.window.width, self.window.height)
-        self.camera_gui = arcade.Camera(self.window.width, self.window.height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -315,13 +315,13 @@ class GameView(arcade.View):
         self.camera_sprites.move_to(position, speed)
         self.camera_sprites.update()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
