@@ -27,27 +27,35 @@ void main() {
     getSpriteUVs(texcoords_new, int(gl_PrimitiveIDIn), new_uv0, new_uv1, new_uv2, new_uv3);
    
     // Lower left corner flipped * size - one pixel
-    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new); //- vec2(1.0);
+    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new) - vec2(1.0);
     // absolute value of the diagonal * size + two pixels
-    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new); // + vec2(2.0);
+    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(2.0);
 
+    // We need to offset the old coordiantes by one pixel to include the borders
+    vec2 pix_offset = vec2(1.0) / vec2(size_old);
+    // (
+    //     0.015625, 0.015625,  # minus, minus
+    //     0.265625, 0.015625,  # plus, minus
+    //     0.015625, 0.265625,  # minus, plus
+    //     0.265625, 0.265625   # plus, plus
+    // )
     // upper left
-    uv = old_uv0;
+    uv = old_uv0 - pix_offset;
     gl_Position = projection * vec4(pos + vec2(0.0, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower left
-    uv = old_uv2;
+    uv = old_uv2 + vec2(-pix_offset.x, pix_offset.y);
     gl_Position = projection * vec4(pos, 0.0, 1.0);
     EmitVertex();
 
     // upper right
-    uv = old_uv1;
+    uv = old_uv1 + vec2(pix_offset.x, -pix_offset.y);
     gl_Position = projection * vec4(pos + vec2(size.x, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower right
-    uv = old_uv3;
+    uv = old_uv3 + pix_offset;
     gl_Position = projection * vec4(pos + vec2(size.x, 0.0), 0.0, 1.0);
     EmitVertex();
 
