@@ -902,10 +902,9 @@ class Sprite:
         if texture == self._texture:
             return
 
-        if not isinstance(texture, Texture):
-            raise ValueError(f"The 'texture' parameter must be an instance of arcade.Texture."
-                             f"It is an instance of '{type(texture)}'.")
-        assert isinstance(texture, Texture)
+        if __debug__ and not isinstance(texture, Texture):
+            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
+                            f" but is an instance of '{type(texture)}'.")
 
         self.clear_spatial_hashes()
         self._point_list_cache = None
