@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Iterable, Union
+from typing import Optional, Iterable, List, Union
 
 from pyglet import gl
 
@@ -214,7 +214,6 @@ class BufferDescription:
         normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
-
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
@@ -222,13 +221,13 @@ class BufferDescription:
         #: List of normalized attributes
         self.normalized = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
-        self.instanced = instanced  # type: bool
+        self.instanced: bool = instanced
         #: Formats of each attribute
-        self.formats = []  # type: List[AttribFormat]
+        self.formats: List[AttribFormat] = []
         #: The byte stride of the buffer
-        self.stride = -1  # type: int
+        self.stride: int = -1
         #: Number of vertices in the buffer
-        self.num_vertices = -1  # type: int
+        self.num_vertices: int = -1
 
         if not isinstance(buffer, Buffer):
             raise ValueError("buffer parameter must be an arcade.gl.Buffer")
