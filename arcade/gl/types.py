@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Iterable, List, Union
+from typing import Optional, Iterable, Union
 
 from pyglet import gl
 
