@@ -108,6 +108,9 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
 
         if texture:
             self._textures["normal"] = texture
+            self._textures["hover"] = texture
+            self._textures["press"] = texture
+            self._textures["disabled"] = texture
         if texture_hovered:
             self._textures["hover"] = texture_hovered
         if texture_pressed:
