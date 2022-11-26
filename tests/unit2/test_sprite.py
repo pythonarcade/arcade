@@ -1,3 +1,5 @@
+import pytest as pytest
+
 import arcade
 
 frame_counter = 0
@@ -118,6 +120,15 @@ def test_sprite_2(window):
 
     window.on_draw = on_draw
     window.test(2)
+
+
+@pytest.mark.parametrize('not_a_texture', [
+    1, "not_a_texture", (1, 2, 3)
+])
+def test_sprite_texture_setter_raises_type_error_when_given_non_texture(not_a_texture):
+    sprite = arcade.Sprite(":resources:images/items/coinGold.png", 1.0)
+    with pytest.raises(TypeError):
+        sprite.texture = not_a_texture
 
 
 def test_sprite_sizes(window: arcade.Window):
