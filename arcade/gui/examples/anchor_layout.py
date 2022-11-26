@@ -19,38 +19,38 @@ class UIMockup(arcade.Window):
         anchor = self.manager.add(UIAnchorLayout())
 
         anchor.add(
-            child=UIDummy(color=arcade.color.RED),
+            child=UIDummy(),
             anchor_x="center_x",
             anchor_y="top",
         )
 
         anchor.add(
-            child=UIDummy(color=arcade.color.BLUE),
+            child=UIDummy(),
             anchor_x="right",
             anchor_y="center_y",
         )
 
         anchor.add(
-            child=UIDummy(color=arcade.color.GREEN),
+            child=UIDummy(),
             anchor_x="center_x",
             anchor_y="center_y",
         )
 
         anchor.add(
-            child=UIDummy(color=arcade.color.YELLOW),
+            child=UIDummy(),
             anchor_x="left",
             anchor_y="bottom",
         )
 
         anchor.add(
-            child=UIDummy(color=arcade.color.ORANGE),
+            child=UIDummy(),
             anchor_x="left",
             align_x=20,
             anchor_y="center_y",
         )
 
         anchor.add(
-            child=UIDummy(color=arcade.color.ORANGE),
+            child=UIDummy(),
             anchor_x="right",
             align_x=-40,
             anchor_y="bottom",
