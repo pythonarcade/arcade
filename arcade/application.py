@@ -74,6 +74,8 @@ class Window(pyglet.window.Window):
                          Usually this is 2, 4, 8 or 16.
     :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
+    :param bool file_drops: If true, file drops from external applications will be enabled. This is useful for
+                            creating a user interface to recieve external map files, JSON settings, etc.
     """
 
     def __init__(
@@ -96,6 +98,7 @@ class Window(pyglet.window.Window):
         enable_polling: bool = True,
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
+        file_drops: bool = False,
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -129,7 +132,7 @@ class Window(pyglet.window.Window):
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
-        # If we still don't have a config 
+        # If we still don't have a config
         if not config:
             config = pyglet.gl.Config(
                 major_version=gl_version[0],
@@ -139,7 +142,8 @@ class Window(pyglet.window.Window):
             )
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
+                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style,
+                             file_drops=file_drops)
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
@@ -268,7 +272,10 @@ class Window(pyglet.window.Window):
         arcade.run()
 
     def close(self):
-        """ Close the Window. """
+        """
+        Close the window. All pyglet events are removed and events are unscheduled. One a window is closed,
+        its OpenGL context cannot be used anymore.
+        """
         super().close()
         # Make sure we don't reference the window any more
         set_window(None)
@@ -311,7 +318,6 @@ class Window(pyglet.window.Window):
         Move everything. Perform collision checks. Do all the game logic here.
 
         :param float delta_time: Time interval since the last time the function was called.
-
         """
         pass
 
@@ -325,7 +331,8 @@ class Window(pyglet.window.Window):
     def set_update_rate(self, rate: float):
         """
         Set how often the on_update function should be dispatched.
-        For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
+        For example, ``self.set_update_rate(1 / 60)`` will set the update rate to 60 times per
+        second (60 fps).
 
         :param float rate: Update frequency in seconds
         """
@@ -335,8 +342,9 @@ class Window(pyglet.window.Window):
 
     def set_draw_rate(self, rate: float):
         """
-        Set how often the on_draw function should be run.
-        For example, set.set_draw_rate(1 / 60) will set the draw rate to 60 frames per second.
+        Set how often the :py:meth:`~arcade.Window.on_draw()` function should be run.
+        For example, ``self.set_draw_rate(1 / 60)`` will set the draw rate to 60 frames per
+        second.
         """
         self._draw_rate = rate
         pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
@@ -374,7 +382,7 @@ class Window(pyglet.window.Window):
                            * ``arcade.MOUSE_BUTTON_RIGHT``
                            * ``arcade.MOUSE_BUTTON_MIDDLE``
 
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param int modifiers: Bitwise 'and' of all modifiers (Shift, Ctrl, Num Lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -405,9 +413,13 @@ class Window(pyglet.window.Window):
 
         :param int x: x position of mouse
         :param int y: y position of mouse
-        :param int button: What button was hit. One of:
-                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
-                           arcade.MOUSE_BUTTON_MIDDLE
+        :param int button: What button was pressed. This will always be
+                           one of the following:
+
+                           * ``arcade.MOUSE_BUTTON_LEFT``
+                           * ``arcade.MOUSE_BUTTON_RIGHT``
+                           * ``arcade.MOUSE_BUTTON_MIDDLE``
+
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
@@ -435,11 +447,11 @@ class Window(pyglet.window.Window):
                      to maximize the number of people who can play your
                      game!
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int scroll_x: number of steps scrolled horizontally
+        :param int x: X position of mouse
+        :param int y: Y position of mouse
+        :param int scroll_x: Number of steps scrolled horizontally
                              since the last call of this function
-        :param int scroll_y: number of steps scrolled vertically since
+        :param int scroll_y: Number of steps scrolled vertically since
                              the last call of this function
         """
         pass
@@ -558,8 +570,8 @@ class Window(pyglet.window.Window):
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
 
-        :param float width: width in pixels.
-        :param float height: height in pixels.
+        :param float width: Width in pixels
+        :param float height: Height in pixels
         """
 
         if self._resizable:
@@ -672,7 +684,8 @@ class Window(pyglet.window.Window):
         Calling this function is the same as setting the
         :py:attr:`arcade.Window.current_view` attribute.
 
-        :param View new_view: View to show
+        :param View new_view: instance of :py:class:`arcade.View`
+                              to show
         """
         if not isinstance(new_view, View):
             raise ValueError("Must pass an arcade.View object to "
@@ -1050,8 +1063,8 @@ class View:
         """
         Override this function to add key release functionality.
 
-        :param int _symbol: Key that was hit
-        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param int _symbol: Key that was pressed
+        :param int _modifiers: Bitwise 'and' of all modifiers (Shift, Ctrl, Num Lock)
                                active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
@@ -1086,7 +1099,7 @@ class View:
         dragged. Note that the coordinates of the mouse pointer will be
         outside of the window rectangle.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
+        :param int x: X position of mouse
+        :param int y: Y position of mouse
         """
         pass

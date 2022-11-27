@@ -1,6 +1,9 @@
 """
-This submodule has functions that control opening, closing, rendering, and otherwise managing windows.
-It also has commands for scheduling pauses and scheduling interval functions.
+Functions that control opening, closing, rendering, and otherwise managing windows.
+In this submodule are also commands for scheduling pauses and scheduling interval
+functions.
+
+Most of the functions here are completely built upon pyglet's functions and methods.
 """
 
 import gc
@@ -32,8 +35,8 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
 
     The size of the primary monitor is returned by default.
 
-    :param int screen_id: The screen number
-    :return: Tuple containing the width and height of the screen
+    :param int screen_id: Screen number and id.
+    :return: Tuple containing the width and height of the screen.
     :rtype: tuple
     """
     display = pyglet.canvas.Display()
@@ -43,12 +46,12 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
 
 def get_projection() -> Mat4:
     """
-    Returns the current projection matrix used by sprites and shapes in arcade.
+    Return the current projection matrix used by sprites and shapes in arcade.
 
-    This is a shortcut for ```window.ctx.projection_2d_matrix``.
+    This is a shortcut for ``window.ctx.projection_2d_matrix``.
 
-    :return: Projection matrix
-    :rtype: Mat4
+    :return: Current rojection matrix.
+    :rtype: A pyglet ``pyglet.math.Mat4``
     """
     return get_window().ctx.projection_2d_matrix
 
@@ -62,7 +65,7 @@ def create_orthogonal_projection(
     far: float = -1,
 ) -> Mat4:
     """
-    Creates an orthogonal projection matrix. Used internally with the
+    Create an orthogonal projection matrix. Used internally with the
     OpenGL shaders. It creates the same matrix as the deprecated/removed
     ``glOrtho`` OpenGL function.
 
@@ -75,7 +78,7 @@ def create_orthogonal_projection(
                        rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
     :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: pyglet.math.Mat4
+    :rtype: A pyglet ``pyglet.math.Mat4``.
 
     .. seealso:: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
     """
@@ -84,7 +87,12 @@ def create_orthogonal_projection(
 
 def pause(seconds: Number) -> None:
     """
-    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
+    Pause for the specified number of seconds. This is a convenience function that just
+    calls ``time.sleep()``. Note that the application will lag. In platforms such as
+    Windows, a prompt will be displayed that the window is lagging and asks to close it.
+
+    During this time all events will be paused, and user interactions will not be
+    registered.
 
     .. Warning::
 
@@ -100,6 +108,7 @@ def get_window() -> "Window":
     """
     Return a handle to the current window.
 
+    :rtype: :py:class:`~arcade.Window`
     :return: Handle to the current window.
     """
     if _window is None:
@@ -125,11 +134,11 @@ def set_window(window: "Window") -> None:
 
 def get_scaling_factor(window: Optional["Window"] = None) -> float:
     """
-    Gets the scaling factor of the given Window.
+    Return the scaling factor of the given window.
     This is the ratio between the window and framebuffer size.
     If no window is supplied the currently active window will be used.
 
-    :param Window window: Handle to window we want to get scaling factor of.
+    :param Window window: Handle to window we want to get the scaling factor.
 
     :return: Scaling factor. E.g., 2.0 would indicate the framebuffer
              width and height being 2.0 times the window width and height.
@@ -145,7 +154,7 @@ def get_scaling_factor(window: Optional["Window"] = None) -> float:
 
 def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     """
-    This sets what coordinates the window will cover.
+    Set the window viewport (what coordinates the window will cover).
 
     .. tip:: Beginners will want to use :py:class:`~arcade.Camera`.
              It provides easy to use support for common tasks
@@ -204,9 +213,9 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
 
 def get_viewport() -> Tuple[float, float, float, float]:
     """
-    Get the current viewport settings.
+    Return the current viewport settings.
 
-    :return: Tuple of floats, with ``(left, right, bottom, top)``
+    :return: Tuple of floats, with ``(left, right, bottom, top)``.
 
     """
     return get_window().ctx.projection_2d
@@ -214,7 +223,7 @@ def get_viewport() -> Tuple[float, float, float, float]:
 
 def close_window() -> None:
     """
-    Closes the current window, and then runs garbage collection. The garbage collection
+    Close the current window, and then run garbage collection. The garbage collection
     is necessary to prevent crashing when opening/closing windows rapidly (usually during
     unit tests).
     """
@@ -234,7 +243,7 @@ def close_window() -> None:
 
 def finish_render():
     """
-    Swap buffers and displays what has been drawn.
+    Swap buffers and display what has been drawn.
 
     .. Warning::
 
@@ -251,6 +260,7 @@ def finish_render():
 def run():
     """
     Run the main loop.
+
     After the window has been set up, and the event hooks are in place, this is usually one of the last
     commands on the main program. This is a blocking function starting pyglet's event loop
     meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
@@ -328,14 +338,14 @@ def run():
 
 def exit():
     """
-    Exits the application.
+    Exit the application.
     """
     pyglet.app.exit()
 
 
 def start_render() -> None:
     """
-    Clears the window.
+    Clear the window.
 
     More practical alternatives to this function is 
     :py:meth:`arcade.Window.clear`
@@ -346,7 +356,7 @@ def start_render() -> None:
 
 def set_background_color(color: Color) -> None:
     """
-    Set the color :py:meth:`arcade.Window.clear()` will use
+    Set the color :py:meth:`arcade.Window.clear` will use
     when clearing the window. This only needs to be called
     when the background color changes.
 
@@ -391,7 +401,7 @@ def schedule(function_pointer: Callable, interval: Number):
         # Unschedule
 
     :param Callable function_pointer: Pointer to the function to be called.
-    :param Number interval: Interval to call the function (float or integer)
+    :param Number interval: Interval to call the function (float or integer).
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
