@@ -897,8 +897,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.width * self.scale
-        self._height = texture.height * self.scale
+        self._width = texture.width * self._scale[0]
+        self._height = texture.height * self._scale[1]
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
