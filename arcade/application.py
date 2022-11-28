@@ -258,7 +258,7 @@ class Window(pyglet.window.Window):
     def background_color(self, value: Color):
         self._background_color = value
 
-    def run(self):
+    def run(self) -> None:
         """
         Run the main loop.
         After the window has been set up, and the event hooks are in place, this is usually one of the last
@@ -295,7 +295,7 @@ class Window(pyglet.window.Window):
         """
         super().set_fullscreen(fullscreen, screen, mode, width, height)
 
-    def center_window(self):
+    def center_window(self) -> None:
         """
         Center the window on the screen.
         """

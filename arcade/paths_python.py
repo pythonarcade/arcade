@@ -9,7 +9,7 @@ def has_line_of_sight(point_1: Point,
                       point_2: Point,
                       walls: SpriteList,
                       max_distance: int = -1,
-                      check_resolution: int = 2):
+                      check_resolution: int = 2) -> bool:
     """
     Determine if we have line of sight between two points. Try to make sure
     that spatial hashing is enabled on the wall SpriteList or this will be

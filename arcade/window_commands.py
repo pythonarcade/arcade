@@ -326,7 +326,7 @@ def run():
                 pyglet.app.run(window._draw_rate)
 
 
-def exit():
+def exit() -> None:
     """
     Exits the application.
     """
@@ -368,7 +368,7 @@ def set_background_color(color: Color) -> None:
     get_window().background_color = color
 
 
-def schedule(function_pointer: Callable, interval: Number):
+def schedule(function_pointer: Callable, interval: float):
     """
     Schedule a function to be automatically called every ``interval``
     seconds. The function/callable needs to take a delta time argument
@@ -391,7 +391,7 @@ def schedule(function_pointer: Callable, interval: Number):
         # Unschedule
 
     :param Callable function_pointer: Pointer to the function to be called.
-    :param Number interval: Interval to call the function (float or integer)
+    :param float interval: Interval to call the function (float or integer)
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
