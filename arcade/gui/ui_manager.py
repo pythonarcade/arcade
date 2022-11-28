@@ -192,7 +192,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         self._rendered = True
 
-    def enable(self):
+    def enable(self) -> None:
         """
         Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
 
@@ -216,7 +216,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 self.on_text_motion_select,
             )
 
-    def disable(self):
+    def disable(self) -> None:
         """
         Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
@@ -243,7 +243,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def on_update(self, time_delta):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
-    def draw(self):
+    def draw(self) -> None:
         # Request Widgets to prepare for next frame
         self._do_layout()
 

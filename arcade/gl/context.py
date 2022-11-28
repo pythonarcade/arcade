@@ -1017,7 +1017,7 @@ class Context:
             varyings_capture_mode=varyings_capture_mode,
         )
 
-    def query(self, *, samples=True, time=True, primitives=True):
+    def query(self, *, samples=True, time=True, primitives=True) -> Query:
         """
         Create a query object for measuring rendering calls in opengl.
 
