@@ -85,9 +85,9 @@ def test_place_widgets_with_col_row_span(window):
     dummy6 = UIDummy(width=100, height=200)
 
     subject = UIGridLayout(
-            column_count=3,
-            row_count=3,
-            )
+        column_count=3,
+        row_count=3,
+    )
 
     subject.add(dummy1, 0, 0)
     subject.add(dummy2, 0, 1)
@@ -95,7 +95,6 @@ def test_place_widgets_with_col_row_span(window):
     subject.add(dummy4, 1, 1)
     subject.add(dummy5, 0, 2, col_span=2)
     subject.add(dummy6, 2, 0, row_span=3)
-
 
     subject.rect = Rect(0, 0, *subject.size_hint_min)
     subject.do_layout()
@@ -106,3 +105,60 @@ def test_place_widgets_with_col_row_span(window):
     assert dummy4.position == (100, 100)
     assert dummy5.position == (0, 0)
     assert dummy6.position == (200, 50)
+
+
+def test_fit_content_by_default(window):
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1,
+    )
+
+    assert subject.size_hint == (0, 0)
+
+
+def test_growth_child(window):
+    dummy1 = UIDummy(width=100, height=100, size_hint=(1, 1))
+
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1,
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.resize(width=200, height=300)
+    subject.do_layout()
+
+    assert dummy1.size == (200, 300)
+
+
+def test_shrink_child(window):
+    dummy1 = UIDummy(width=100, height=100, size_hint=(1, 1))
+
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1,
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.resize(width=50, height=60)
+    subject.do_layout()
+
+    assert dummy1.size == (50, 60)
+
+
+def test_adjust_child_size_relative(window):
+    dummy1 = UIDummy(width=100, height=100, size_hint=(0.5, 0.5))
+
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1,
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.resize(width=100, height=200)
+    subject.do_layout()
+
+    assert dummy1.size == (50, 100)
