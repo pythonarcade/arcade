@@ -35,7 +35,7 @@ def test_sprites_at_point():
 
 
 def test_sprite_collides_with_point():
-    sprite = arcade.Sprite(center_x=0, center_y=0)
+    sprite = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
     sprite.width = 2
     sprite.height = 2
 
@@ -65,15 +65,15 @@ def test_sprite_collides_with_point():
 
 
 def test_sprite_collides_with_sprite():
-    sprite_one = arcade.Sprite(center_x=0, center_y=0)
+    sprite_one = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
     sprite_one.width = 10
     sprite_one.height = 10
 
-    sprite_two = arcade.Sprite(center_x=0, center_y=0)
+    sprite_two = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
     sprite_two.width = 10
     sprite_two.height = 10
 
-    sprite_three = arcade.Sprite(center_x=0, center_y=0)
+    sprite_three = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
     sprite_three.width = 1
     sprite_three.height = 1
 
@@ -107,12 +107,14 @@ def test_sprite_collides_with_sprite():
 def test_sprite_collides_with_list():
     coins = arcade.SpriteList()
     for x in range(0, 50, 10):
-        coin = arcade.Sprite(center_x=x, center_y=0)
+        coin = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+        coin.position = x, 0
         coin.width = 10
         coin.height = 10
         coins.append(coin)
 
-    player = arcade.Sprite(center_x=100, center_y=100)
+    player = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    player.position = 100, 100
     player.width = 10
     player.height = 10
 
