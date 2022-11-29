@@ -553,13 +553,7 @@ class Sprite:
         if new_value != self._width:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._width
-                old_points = self._points
-                self._points = [(point[0] * scale, point[1]) for point in old_points]
-
+            self._scale = new_value / self.texture.width, self._scale[1]
             self._width = new_value
             self.add_spatial_hashes()
 
@@ -577,13 +571,7 @@ class Sprite:
         if new_value != self._height:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-
-            # If there is a hit box, rescale it to the new width
-            if self._points:
-                scale = new_value / self._height
-                old_points = self._points
-                self._points = [(point[0], point[1] * scale) for point in old_points]
-
+            self._scale = self._scale[0], new_value / self.texture.height
             self._height = new_value
             self.add_spatial_hashes()
 
@@ -610,7 +598,7 @@ class Sprite:
         self._scale = new_value, new_value
         if self._texture:
             self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
 
         self.add_spatial_hashes()
 
@@ -907,8 +895,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.width * self.scale
-        self._height = texture.height * self.scale
+        self._width = texture.width * self._scale[0]
+        self._height = texture.height * self._scale[1]
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
@@ -1059,7 +1047,7 @@ class Sprite:
 
         self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
 
-    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1) -> None:
+    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box.
 

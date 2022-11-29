@@ -226,7 +226,7 @@ class SimpleCamera:
                 self.moving = False
             self._set_view_matrix()  # this will alse set the combined matrix
 
-    def use(self):
+    def use(self) -> None:
         """
         Select this camera for use. Do this right before you draw.
         """
