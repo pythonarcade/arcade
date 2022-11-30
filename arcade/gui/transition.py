@@ -1,20 +1,11 @@
-import math
 from abc import ABC, abstractmethod
 from typing import Callable, Any, Optional, List, TypeVar
 
 from pyglet.event import EventDispatcher
 
+from arcade import linear
+
 T = TypeVar("T", bound="TransitionBase")
-
-
-class EaseFunctions:
-    @staticmethod
-    def linear(x: float):
-        return x
-
-    @staticmethod
-    def sine(x: float):
-        return 1 - math.cos((x * math.pi) / 2)
 
 
 class TransitionBase(ABC):
@@ -109,7 +100,7 @@ class TransitionAttr(EventTransitionBase):
         attribute,
         duration: float,
         start=None,
-        ease_function=EaseFunctions.linear,
+        ease_function=linear,
         delay=0.0,
         mutation_function: Callable[[Any, str, float], None] = setattr,
     ):
@@ -149,7 +140,7 @@ class TransitionAttrIncr(TransitionAttr):
         increment: float,
         attribute,
         duration: float,
-        ease_function=EaseFunctions.linear,
+        ease_function=linear,
         delay=0.0,
         mutation_function: Callable[[Any, str, float], None] = setattr,
     ):

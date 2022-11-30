@@ -28,7 +28,6 @@ from arcade.gui.widgets.layout import (
 )
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.transition import (
-    EaseFunctions,
     TransitionBase,
     EventTransitionBase,
     TransitionAttr,
@@ -100,7 +99,6 @@ __all__ = [
     "Rect",
     "NinePatchTexture",
     # Transitions
-    "EaseFunctions",
     "TransitionBase",
     "EventTransitionBase",
     "TransitionAttr",

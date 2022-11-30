@@ -60,7 +60,7 @@ Transitions
 
 To animate a UIWidget, use :meth:`UIWidget.add_transition` and add a :class:`Transition`.
 A :class:`Transition` can be used to manipulate a value over time.
-:class:`EaseFunctions` provides a few easing functions.
+Arcade provides a few easing functions listed below.
 
 .. code-block::
 
@@ -81,6 +81,25 @@ Arcade provides following transitions:
 - :class:`TransitionDelay` - Used to pause :class:`TransitionChain`
 
 > Be aware, that transitions may interfere with :class:`UILayout` positioning.
+
+
+Easing functions
+................
+
+You can check out all of these functions using `python -m arcade.examples.easing_example_1`
+
+- :meth:`arcade.linear`
+- :meth:`arcade.smoothstep`
+- :meth:`arcade.ease_in`
+- :meth:`arcade.ease_out`
+- :meth:`arcade.ease_in_out`
+- :meth:`arcade.ease_out_elastic`
+- :meth:`arcade.ease_out_bounce`
+- :meth:`arcade.ease_in_back`
+- :meth:`arcade.ease_out_back`
+- :meth:`arcade.ease_in_sin`
+- :meth:`arcade.ease_out_sin`
+- :meth:`arcade.ease_in_out_sin`
 
 
 UILayout
