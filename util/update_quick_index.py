@@ -65,6 +65,7 @@ titles = {
     'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
+    'gui/transition.py': ['Transition', 'gui_transition.rst'],
     'gui/style.py': ['GUI Style', 'gui_style.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],

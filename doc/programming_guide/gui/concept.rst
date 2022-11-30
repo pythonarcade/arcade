@@ -54,6 +54,35 @@ For widgets, that might have transparent areas, they have to request a full rend
 
     Enforced rendering of the whole GUI might be very expensive!
 
+
+Transitions
+===========
+
+To animate a UIWidget, use :meth:`UIWidget.add_transition` and add a :class:`Transition`.
+A :class:`Transition` can be used to manipulate a value over time.
+:class:`EaseFunctions` provides a few easing functions.
+
+.. code-block::
+
+    widget = UIWidget()
+    # move a widgets center_x from 0 to 100 within 2 seconds
+    widget.add_transition(Transition(attribute="center_x", start=0, end=100, duration=2))
+
+Transactions can also be chained to be executed sequentially using the `+` operator
+or combined for parallel execution with the `|` operator.
+
+Arcade provides following transitions:
+
+- :class:`TransitionAttr` - Change value over time (start til end)
+- :class:`TransitionAttrIncr` - Increment value over time
+- :class:`TransitionAttrSet` - Set value after time
+- :class:`TransitionParallel` - Execute multiple transactions parallel
+- :class:`TransitionChain` - Execute multiple transactions sequentially
+- :class:`TransitionDelay` - Used to pause :class:`TransitionChain`
+
+> Be aware, that transitions may interfere with :class:`UILayout` positioning.
+
+
 UILayout
 ========
 
@@ -118,6 +147,8 @@ Size hint support
 | :class:`UIAnchorLayout`  | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIBoxLayout`     | X          | X              | X              |
++--------------------------+------------+----------------+----------------+
+| :class:`UIGridLayout`    |            |                |                |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIManager`       | X          | X              |                |
 +--------------------------+------------+----------------+----------------+
