@@ -250,7 +250,7 @@ class MyGame(arcade.Window):
 
         # Draw to the 'slight bloom' layer
         self.slight_bloom_screen.use()
-        self.slight_bloom_screen.clear((0, 0, 0, 0))
+        self.slight_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,
@@ -262,7 +262,7 @@ class MyGame(arcade.Window):
 
         # # Draw to the 'intense bloom' layer
         self.intense_bloom_screen.use()
-        self.intense_bloom_screen.clear((0, 0, 0, 0))
+        self.intense_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,
