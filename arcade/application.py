@@ -17,6 +17,7 @@ import arcade
 from arcade import get_display_size
 from arcade import set_viewport
 from arcade import set_window
+from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.arcade_types import Color
 from arcade import SectionManager
@@ -176,7 +177,7 @@ class Window(pyglet.window.Window):
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         set_viewport(0, self.width, 0, self.height)
-        self._background_color: Color = (0, 0, 0, 0)
+        self._background_color: Color = TRANSPARENT_BLACK
 
         # See if we should center the window
         if center_window:
