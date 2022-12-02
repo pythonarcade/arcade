@@ -184,10 +184,14 @@ class SimpleCamera:
             vector = Vec2(*vector)
 
         # get the center of the camera viewport
-        center = Vec2(self.viewport_width / 2, self.viewport_height / 2)
+        center = Vec2(self.viewport_width, self.viewport_height) / 2
+
+        # adjust vector to projection ratio
+        vector = Vec2(vector.x * self.viewport_to_projection_width_ratio,
+                      vector.y * self.viewport_to_projection_height_ratio)
 
         # move to the vector substracting the center
-        target = vector - center
+        target = (vector - center)
 
         self.move_to(target, speed)
 
