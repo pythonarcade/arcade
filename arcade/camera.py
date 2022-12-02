@@ -114,6 +114,15 @@ class SimpleCamera:
         self._set_projection_matrix()
 
     @property
+    def scale(self) -> Tuple[float, float]:
+        """
+        Returns the x, y scale from the difference of projection to view.
+        """
+        _, _, vw, vh = self._viewport
+        _, pw, _, ph = self._projection
+        return vw / pw, vh / ph
+
+    @property
     def viewport_to_projection_width_ratio(self):
         """ The ratio of viewport width to projection width """
         return self.viewport_width / (self._projection[1] - self._projection[0])
