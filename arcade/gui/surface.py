@@ -3,6 +3,7 @@ from typing import Tuple, Union
 
 import arcade
 from arcade import Texture
+from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gl import geometry
 from arcade.gui.nine_patch import NinePatchTexture
@@ -102,7 +103,7 @@ class Surface:
     def height(self) -> int:
         return self._size[1]
 
-    def clear(self, color: arcade.Color = (0, 0, 0, 0)):
+    def clear(self, color: arcade.Color = TRANSPARENT_BLACK):
         """Clear the surface"""
         self.fbo.clear(color=color)
 
