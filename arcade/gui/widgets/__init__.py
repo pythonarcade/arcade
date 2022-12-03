@@ -102,7 +102,7 @@ class Rect(NamedTuple):
 
     @property
     def center(self):
-        return self.left, self.bottom
+        return self.center_x, self.center_y
 
     @property
     def position(self):
