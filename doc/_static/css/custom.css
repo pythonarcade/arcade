@@ -189,6 +189,10 @@ table.colorTable {
     border-spacing: 5px;
 }
 
+table.colorTable tr > td:nth-child(3) {
+    border: 1px solid black;
+}
+
 table.colorTable tr > td:nth-child(3) > div {
     display: block;
     width: 80px;
