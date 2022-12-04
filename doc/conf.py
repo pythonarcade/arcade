@@ -271,19 +271,24 @@ def source_read(_app, docname, source):
 
         original_text = source[0]
         append_text = "\n\n.. raw:: html\n\n"
-        append_text += "    <table>"
+        append_text += "    <table class='colorTable'><tbody>\n"
         color_file = open(filename)
 
         for line in color_file:
             match = p.match(line)
+
             if match:
-                append_text += "    <tr><td>"
-                append_text += match.group(1)
-                append_text += "</td><td>"
-                append_text += match.group(2)
-                append_text += f"<td style='width:80px;background-color:rgba{match.group(2)};'>&nbsp;</td>"
-                append_text += "    </td></tr>\n"
-        append_text += "    </table>"
+                color_variable_name = match.group(1)
+                color_rgba_string = match.group(2).strip('()')
+                color_rgb_string = color_rgba_string[:color_rgba_string.rfind(',')]
+
+                append_text += "    <tr>"
+                append_text += f"<td>{color_variable_name}</td>"
+                append_text += f"<td>({color_rgba_string})</td>"
+                append_text += f"<td style='background-color:rgba({color_rgb_string}, 1.0);'><div></div></td>"
+                append_text += "</tr>\n"
+
+        append_text += "    </tbody></table>"
         source[0] = original_text + append_text
 
 
