@@ -1,5 +1,6 @@
 import arcade
-from arcade.gui import UIManager, TransitionChain, TransitionAttr, EaseFunctions, TransitionAttrIncr
+from arcade import linear
+from arcade.gui import UIManager, TransitionChain, TransitionAttr, TransitionAttrIncr
 from arcade.gui.transition import TransitionAttrSet
 from arcade.gui.widgets.buttons import UIFlatButton
 
@@ -34,7 +35,7 @@ class DemoWindow(arcade.Window):
                 attribute="center_y",
                 increment=100,
                 duration=1,
-                ease_function=EaseFunctions.sine
+                ease_function=linear
             ))
 
             # Go back
@@ -42,13 +43,13 @@ class DemoWindow(arcade.Window):
                 attribute="center_x",
                 end=start_x,
                 duration=1,
-                ease_function=EaseFunctions.sine
+                ease_function=linear
             ))
             chain.add(TransitionAttr(
                 attribute="center_y",
                 end=start_y,
                 duration=1,
-                ease_function=EaseFunctions.sine
+                ease_function=linear
             ))
             chain.add(TransitionAttrSet(attribute="disabled", value=False, duration=0))
 
