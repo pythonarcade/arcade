@@ -279,13 +279,13 @@ def source_read(_app, docname, source):
 
             if match:
                 color_variable_name = match.group(1)
-                color_rgba_string = match.group(2).strip('()')
-                color_rgb_string = color_rgba_string[:color_rgba_string.rfind(',')]
+                color_tuple = tuple(int(num) for num in match.group(2).strip('()').split(','))
+                color_rgb_string = ', '.join(str(i) for i in color_tuple[:3])
 
                 append_text += "    <tr>"
                 append_text += f"<td>{color_variable_name}</td>"
-                append_text += f"<td>({color_rgba_string})</td>"
-                append_text += f"<td style='background-color:rgba({color_rgb_string}, 1.0);'><div></div></td>"
+                append_text += f"<td>{color_tuple}</td>"
+                append_text += f"<td style='background-color:rgba({color_rgb_string}, {color_tuple[3] / 255});'><div></div></td>"
                 append_text += "</tr>\n"
 
         append_text += "    </tbody></table>"
