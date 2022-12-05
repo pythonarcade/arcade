@@ -70,7 +70,11 @@ def test_clear_removes_all_children(window):
     widget1 = UIDummy(x=50, y=50, width=100, height=100)
     manager.add(widget1)
 
+    widget2 = UIDummy(x=50, y=50, width=100, height=100)
+    manager.add(widget2)
+
     manager.clear()
 
     assert widget1.parent is None
+    assert widget2.parent is None
     assert list(manager.walk_widgets()) == []

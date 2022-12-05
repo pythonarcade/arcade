@@ -240,7 +240,7 @@ class MyGame(arcade.Window):
 
         # Draw to the 'bloom' layer
         self.bloom_screen.use()
-        self.bloom_screen.clear((0, 0, 0, 0))
+        self.bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,

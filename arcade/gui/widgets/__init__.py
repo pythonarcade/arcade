@@ -16,6 +16,7 @@ from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade import Sprite, get_window, Texture
+from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
     UIMouseMovementEvent,
@@ -101,7 +102,7 @@ class Rect(NamedTuple):
 
     @property
     def center(self):
-        return self.left, self.bottom
+        return self.center_x, self.center_y
 
     @property
     def position(self):
@@ -829,7 +830,7 @@ class UISpriteWidget(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        surface.clear(color=(0, 0, 0, 0))
+        surface.clear(color=TRANSPARENT_BLACK)
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
@@ -887,7 +888,7 @@ class UISpace(UIWidget):
         y=0,
         width=100,
         height=100,
-        color=(0, 0, 0, 0),
+        color=TRANSPARENT_BLACK,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
