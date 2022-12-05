@@ -170,13 +170,14 @@ class TextureAtlas:
         self._num_slots = self.max_width // 2
         self._check_size(self._size)
 
+        # The atlas texture
         self._texture = self._ctx.texture(
             size,
             components=4,
             wrap_x=self._ctx.CLAMP_TO_EDGE,
             wrap_y=self._ctx.CLAMP_TO_EDGE,
         )
-        # Creating an fbo makes us able to clear the texture
+        # Creating an fbo makes us able to clear the texture and render to it
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # A dictionary of all the allocated regions
@@ -482,26 +483,6 @@ class TextureAtlas:
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
         return texture.name in self._atlas_regions
-
-    # TODO: Possibly let user decide the resize function
-    # def resize(self, size: Tuple[int, int]) -> None:
-    #     """
-    #     Resize the texture atlas.
-    #     This will cause a full rebuild.
-
-    #     :param Tuple[int,int]: The new size
-    #     """
-    #     # if size == self._size:
-    #     #     return
-
-    #     self._check_size(size)
-    #     self._size = size
-    #     self._texture = None
-    #     self._fbo = None
-    #     gc.collect()  # Try to force garbage collection of the gl resource asap
-    #     self._texture = self._ctx.texture(size, components=4)
-    #     self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
-    #     self.rebuild()
 
     def resize(self, size: Tuple[int, int]) -> None:
         """
