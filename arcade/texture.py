@@ -14,7 +14,6 @@ from arcade import (
     lerp,
     RectList,
     Color,
-    get_four_byte_color,
     calculate_hit_box_points_simple,
     calculate_hit_box_points_detailed,
 )
@@ -30,6 +29,7 @@ from arcade.texture_transforms import (
     get_shortest_transform,
 )
 from arcade.arcade_types import PointList
+from arcade.color import TRANSPARENT_BLACK
 from arcade.resources import resolve_resource_path
 from arcade.cache.hit_box import HitBoxCache
 from arcade.cache.image import ImageCache
@@ -273,7 +273,7 @@ class Texture:
         """
         return Texture(
             name,
-            image=PIL.Image.new("RGBA", size, get_four_byte_color(color)),
+            image=PIL.Image.new("RGBA", size, TRANSPARENT_BLACK),
             hit_box_algorithm=None,
         )
 
@@ -901,7 +901,7 @@ def make_circle_texture(diameter: int, color: Color, name: str = None) -> Textur
     name = name or build_cache_name(
         "circle_texture", diameter, color[0], color[1], color[2]
     )
-    bg_color = (0, 0, 0, 0)  # fully transparent
+    bg_color = TRANSPARENT_BLACK  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
@@ -939,7 +939,7 @@ def make_soft_circle_texture(
         outer_alpha,
     )  # name must be unique for caching
 
-    bg_color = (0, 0, 0, 0)  # fully transparent
+    bg_color = TRANSPARENT_BLACK
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     max_radius = int(diameter // 2)
@@ -983,7 +983,7 @@ def make_soft_square_texture(
         "gradient-square", size, color, center_alpha, outer_alpha
     )
 
-    bg_color = (0, 0, 0, 0)  # fully transparent
+    bg_color = TRANSPARENT_BLACK
     img = PIL.Image.new("RGBA", (size, size), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     half_size = int(size // 2)

@@ -60,6 +60,14 @@ def test_rect_align_center_y():
     assert new_rect == (10, -50, 100, 200)
 
 
+def test_rect_center():
+    # WHEN
+    rect = Rect(0, 0, 100, 200)
+
+    # THEN
+    assert rect.center == (50, 100)
+
+
 def test_rect_align_top():
     # GIVEN
     rect = Rect(10, 20, 100, 200)
