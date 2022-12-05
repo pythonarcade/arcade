@@ -90,7 +90,7 @@ class ShaderSource:
             lines = source.split("\n")
             self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
 
-    def get_source(self, *, defines: Dict[str, str] = None) -> str:
+    def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
         """Return the shader source
 
         :param dict defines: Defines to replace in the source.

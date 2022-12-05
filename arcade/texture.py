@@ -888,7 +888,7 @@ def load_spritesheet(
     return texture_list
 
 
-def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
+def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
 
