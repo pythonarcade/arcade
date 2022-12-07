@@ -18,7 +18,7 @@ FourFloatTuple = Tuple[float, float, float, float]
 
 class SimpleCamera:
     """
-    A simple camera that allows to change the viewport, the projection and can move around.
+    A simple camera that allows to change the viewport, the projection, the zoom and can move around.
     That's it.
     See arcade.Camera for more advance stuff.
 
@@ -118,9 +118,44 @@ class SimpleCamera:
         """
         Returns the x, y scale from the difference of projection to view.
         """
-        _, _, vw, vh = self._viewport
-        _, pw, _, ph = self._projection
-        return vw / pw, vh / ph
+        return self.projection_to_viewport_width_ratio, self.projection_to_viewport_height_ratio
+
+    @scale.setter
+    def scale(self, new_scale: Tuple[int, int]) -> None:
+        """
+        Sets the x, y scale by modifiyng the projection
+        """
+        sx, sy = new_scale
+
+        if sx <= 0 or sy <= 0:
+            raise ValueError("Scale must be greater than zero")
+
+        left, _, bottom, _ = self._projection
+        _, _, width, height = self._viewport
+
+        # apply new scale
+
+        self.projection = (left, width * sx, bottom, height * sy)
+
+    @property
+    def zoom(self) -> float:
+        """ The zoom applied to the projection based on the width scale """
+        return self.scale[0]
+
+    @zoom.setter
+    def zoom(self, zoom: float) -> None:
+        """ Apply a zoom to the projection """
+        self.scale = zoom, zoom
+
+    @property
+    def projection_to_viewport_width_ratio(self):
+        """ The ratio of viewport width to projection width """
+        return (self._projection[1] - self._projection[0]) / self.viewport_width
+
+    @property
+    def projection_to_viewport_height_ratio(self):
+        """ The ratio of viewport height to projection height """
+        return (self._projection[3] - self._projection[2]) / self.viewport_height
 
     @property
     def viewport_to_projection_width_ratio(self):
@@ -255,7 +290,7 @@ class SimpleCamera:
 
 class Camera(SimpleCamera):
     """
-    The Camera class is used for controlling the visible viewport, zoom and rotation.
+    The Camera class is used for controlling the visible viewport, the projection, zoom and rotation.
     It is very useful for separating a scrolling screen of sprites, and a GUI overlay.
     For an example of this in action, see :ref:`sprite_move_scrolling`.
 
@@ -276,9 +311,6 @@ class Camera(SimpleCamera):
             anchor: Optional[Tuple[float, float]] = None,
             window: Optional["arcade.Window"] = None,
     ):
-
-        # Zoom
-        self._zoom: float = zoom
 
         # Near and Far
         self._near: int = -1
@@ -303,8 +335,12 @@ class Camera(SimpleCamera):
         #  rotation set in window.ctx.view_matrix_2d
         self._rotation_matrix: Mat4 = Mat4()
 
+        # apply provided zoom
+        if zoom != 1.0:
+            self.zoom = zoom
+
         # Init matrixes
-        # This will precompute the rotaion matrix
+        # This will precompute the rotation matrix
         self._set_rotation_matrix()
 
     def set_viewport(self, viewport: FourIntTuple) -> None:
@@ -321,33 +357,7 @@ class Camera(SimpleCamera):
 
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
-        # apply zoom
-        left, right, bottom, top = self._projection
-        if self._zoom != 1.0:
-            right *= self._zoom
-            top *= self._zoom
-
-        self._projection_matrix = Mat4.orthogonal_projection(left, right, bottom, top, self._near,
-                                                             self._far)
-        if update_combined_matrix:
-            self._set_combined_matrix()
-
-    def _set_view_matrix(self, *, update_combined_matrix: bool = True) -> None:
-        """
-        Helper method. This will just precompute the view and combined matrix
-
-        :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
-        """
-
-        # Figure out our 'real' position plus the shake
-        result_position = self.position + self.shake_offset
-        result_position = Vec3(
-            (result_position[0] / ((self.viewport_width * self._zoom) / 2)),
-            (result_position[1] / ((self.viewport_height * self._zoom) / 2)),
-            0
-        )
-        self._view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(
-            Vec3(self._zoom, self._zoom, 1.0)))
+        self._projection_matrix = Mat4.orthogonal_projection(*self._projection, self._near, self._far)
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -366,24 +376,6 @@ class Camera(SimpleCamera):
         translate_post = Mat4.from_translation(-offset)
 
         self._rotation_matrix = translate_post @ rotate @ translate_pre
-
-    @property
-    def zoom(self) -> float:
-        """ The zoom applied to the projection"""
-        return self._zoom
-
-    @zoom.setter
-    def zoom(self, zoom: float) -> None:
-        """
-        Update the zoom of the camera. This also updates the projection matrix with an orthogonal
-        projection based on the projection size of the camera and the zoom applied.
-        """
-        self._zoom = zoom
-
-        # Changing the zoom affects both projection_matrix and view_matrix
-        self._set_projection_matrix(
-            update_combined_matrix=False)  # combined matrix will be set in the next call
-        self._set_view_matrix()
 
     @property
     def near(self) -> int:
