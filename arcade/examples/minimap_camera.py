@@ -8,10 +8,8 @@ python -m arcade.examples.minimap
 """
 
 import random
-from uuid import uuid4
 
 import arcade
-from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
