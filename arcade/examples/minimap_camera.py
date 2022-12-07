@@ -157,10 +157,10 @@ class MyGame(arcade.Window):
                 self.selected_camera.zoom -= 0.1
         elif key == arcade.key.I:
             l, b, w, h = self.camera_minimap.viewport
-            self.camera_minimap.viewport = l+100, b+100, w-100, h-100
+            self.camera_minimap.viewport = l + 100, b + 100, w - 100, h - 100
         elif key == arcade.key.K:
             l, b, w, h = self.camera_minimap.viewport
-            self.camera_minimap.viewport = l-100, b-100, w+100, h+100
+            self.camera_minimap.viewport = l - 100, b - 100, w + 100, h + 100
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
