@@ -4,7 +4,7 @@ Work with a mini-map
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.minimap
+python -m arcade.examples.minimap_camera
 """
 
 import random
