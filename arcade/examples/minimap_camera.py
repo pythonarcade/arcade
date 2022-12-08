@@ -182,11 +182,6 @@ class MyGame(arcade.Window):
 
         # Center the minimap viewport to the player in the minimap
         self.camera_minimap.center(self.player_sprite.position, CAMERA_SPEED)
-        # print(self.camera_sprites.position, self.camera_sprites.get_adjusted_position(),
-        #       self.camera_minimap.position, self.camera_minimap.get_adjusted_position())
-        # print(self.camera_sprites.sync(self.camera_minimap))
-        print(self.camera_minimap.scale)
-        print(self.camera_minimap.projection)
 
     def on_resize(self, width: int, height: int):
         """
