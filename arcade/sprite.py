@@ -180,7 +180,7 @@ class Sprite:
         self._scale: Tuple[float, float] = (scale, scale)
         self._position: Point = (center_x, center_y)
         self._angle = angle
-        self.velocity = [0.0, 0.0]
+        self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
 
         # Hit box and collision property
@@ -778,6 +778,27 @@ class Sprite:
             sprite_list.update_location(self)
 
     @property
+    def velocity(self) -> Point:
+        """
+        Get or set the velocity of the sprite.
+
+        The x and y velocity can also be set separately using the
+        ``sprite.change_x`` and ``sprite.change_y`` properties.
+
+        Example::
+
+            sprite.velocity = 1.0, 0.0
+
+        Returns:
+            Tuple[float, float]
+        """
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, new_value: Point):
+        self._velocity = new_value
+
+    @property
     def change_x(self) -> float:
         """Get the velocity in the x plane of the sprite."""
         return self.velocity[0]
@@ -785,7 +806,7 @@ class Sprite:
     @change_x.setter
     def change_x(self, new_value: float):
         """Set the velocity in the x plane of the sprite."""
-        self.velocity[0] = new_value
+        self._velocity = new_value, self._velocity[1]
 
     @property
     def change_y(self) -> float:
@@ -795,7 +816,7 @@ class Sprite:
     @change_y.setter
     def change_y(self, new_value: float):
         """Set the velocity in the y plane of the sprite."""
-        self.velocity[1] = new_value
+        self._velocity = self._velocity[0], new_value
 
     @property
     def angle(self) -> float:
