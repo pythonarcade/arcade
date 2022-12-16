@@ -105,9 +105,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 children.remove(child)
                 child.parent = None
                 self.trigger_render()
-            else:
-                print()
-        print()
 
     def walk_widgets(self, *, root: Optional[UIWidget] = None) -> Iterable[UIWidget]:
         """walks through widget tree, in reverse draw order (most top drawn widget first)"""
