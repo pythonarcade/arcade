@@ -252,7 +252,7 @@ class Text:
     @property
     def text(self) -> str:
         """
-        Current text string to display.
+        Get or set the current text string to display.
 
         The value assigned will be converted to a string.
 
@@ -309,7 +309,7 @@ class Text:
     @property
     def font_name(self) -> FontNameOrNames:
         """
-        Font name(s) for the label.
+        Get or set the font name(s) for the label.
         """
         return self._label.font_name
 
@@ -320,7 +320,7 @@ class Text:
     @property
     def font_size(self) -> float:
         """
-        Font size of the label.
+        Get or set the font size of the label.
         """
         return self._label.font_size
 
@@ -331,7 +331,7 @@ class Text:
     @property
     def anchor_x(self) -> str:
         """
-        Horizontal anchor for the label.
+        Get or set the horizontal anchor for the label.
 
         Options: "left", "center", or "right".
         """
@@ -344,7 +344,7 @@ class Text:
     @property
     def anchor_y(self) -> str:
         """
-        Vertical anchor of the label.
+        Get or set the vertical anchor of the label.
 
         Options: "top", "bottom", "center", or "baseline".
         """
@@ -376,7 +376,7 @@ class Text:
     @property
     def width(self) -> int:
         """
-        Width of the label in pixels.
+        Get or set Width of the label in pixels.
 
         This value affects text flow when multiline text is used.
         If you are looking for the physical size if the text, see
@@ -391,7 +391,7 @@ class Text:
     @property
     def height(self) -> int:
         """
-        Height of the label in pixels
+        Get or set Height of the label in pixels
 
         This value affects text flow when multiline text is used.
         If you are looking for the physical size if the text, see
@@ -474,7 +474,7 @@ class Text:
     @property
     def bold(self) -> bool:
         """
-        Bold state of the label.
+        Get or set bold state of the label.
         """
         return self._label.bold
 
@@ -485,7 +485,7 @@ class Text:
     @property
     def italic(self) -> bool:
         """
-        Italic state of the label.
+        Get or set italic state of the label.
         """
         return self._label.italic
 
@@ -496,7 +496,7 @@ class Text:
     @property
     def multiline(self) -> bool:
         """
-        Multiline flag of the label.
+        Get or set multiline flag of the label.
         """
         return self._label.multiline
 
