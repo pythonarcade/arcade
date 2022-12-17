@@ -130,7 +130,8 @@ class Texture:
             raise ValueError("A texture must have an image")
 
         self._name = name
-        self._image = image
+        self._image_data = ImageData(image)
+        self._size = image.width, image.height
         # The order of the texture coordinates when mapping
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
@@ -176,7 +177,7 @@ class Texture:
 
         :return: PIL.Image.Image 
         """
-        return self._image
+        return self._image_data.image
 
     @image.setter
     def image(self, image: PIL.Image.Image):
@@ -192,22 +193,25 @@ class Texture:
 
         :param PIL.Image.Image image: The image to set
         """
-        self._image = image
+        if image.size != self._image_data.image.size:
+            raise ValueError("New image must be the same size as the old image")
+
+        self._image_data.image = image
 
     @property
     def width(self) -> int:
         """Width of the texture in pixels."""
-        return self._image.width
+        return self._size[0]
 
     @property
     def height(self) -> int:
         """Height of the texture in pixels."""
-        return self._image.height
+        return self._size[1]
 
     @property
     def size(self) -> Tuple[int, int]:
         """Width and height as a tuple"""
-        return self._image.size
+        return self._size
 
     @property
     def hit_box_points(self) -> PointList:
@@ -490,14 +494,14 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         if self._hit_box_func:
-            return self._hit_box_func(self._image, self._hit_box_detail)
+            return self._hit_box_func(self.image, self._hit_box_detail)
 
         # Fall back to simple rectangle
         return (
-            (-self._image.width / 2, -self._image.height / 2),
-            (self._image.width / 2, -self._image.height / 2),
-            (self._image.width / 2, self._image.height / 2),
-            (-self._image.width / 2, self._image.height / 2),
+            (-self._size[0] / 2, -self._size[1] / 2),
+            (self._size[0] / 2, -self._size[1] / 2),
+            (self._size[0] / 2, self._size[1] / 2),
+            (-self._size[0] / 2, self._size[1] / 2),
         )
 
     def _create_cached_sprite(self):
