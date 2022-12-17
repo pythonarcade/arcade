@@ -56,11 +56,11 @@ import pyglet
 if os.environ.get('ARCADE_HEADLESS'):
     pyglet.options["headless"] = True
 
-# Disable shadow windows until issues with intel GPUs
-# on Windows and elsewhere are better understood.
-# Originally, this only disabled them for macs where
-# the 2.1 shadow context cannot be upgrade to a 3.3+ core
-pyglet.options['shadow_window'] = False
+# Disable shadow window on macs and in headless mode.
+# Intel on windows might need this disabled too, but we'll see how that goes
+if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS'):
+    pyglet.options['shadow_window'] = False
+
 # Use the old gdi fonts on windows until directwrite is fast/stable
 # pyglet.options['win32_gdi_font'] = True
 
