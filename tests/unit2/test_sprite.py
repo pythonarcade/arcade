@@ -5,6 +5,17 @@ import arcade
 frame_counter = 0
 
 
+def test_velocity():
+    sprite = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    sprite.velocity = 1, 2
+    assert sprite.velocity == (1, 2)
+    assert sprite.change_x == 1
+    assert sprite.change_y == 2
+    sprite.change_x = 3
+    sprite.change_y = 4
+    assert sprite.velocity == (3, 4)
+
+
 def test_sprite(window: arcade.Window):
     CHARACTER_SCALING = 0.5
     arcade.set_background_color(arcade.color.AMAZON)
