@@ -2,6 +2,7 @@
 Code related to working with textures.
 """
 import logging
+import hashlib
 from typing import Callable, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 # from weakref import WeakValueDictionary
@@ -40,6 +41,36 @@ if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
+
+
+class ImageData:
+    """
+    A class holding the image for a texture
+    with other metadata such as the hash.
+    This information is used internally by the
+    texture atlas to identify unique textures.
+
+    If a hash is not provided, it will be calculated.
+    It's important that all hashes are of the same type.
+    By default, the hash is calculated using the sha256 algorithm.
+
+    :param PIL.Image.Image image: The image for this texture
+    :param str hash: The hash of the image
+    """
+    hash_func = "sha256"
+
+    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
+        self.image = image
+        self.hash = hash or self.calculate_hash(image)
+
+    @classmethod
+    def calculate_hash(cls, image: PIL.Image.Image) -> str:
+        """
+        Calculates the hash of an image
+        """
+        hash = hashlib.new(cls.hash_func)
+        hash.update(image.tobytes())
+        return hash.hexdigest()
 
 
 class Texture:
