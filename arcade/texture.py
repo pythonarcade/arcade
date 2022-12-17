@@ -121,7 +121,7 @@ class Texture:
     def __init__(
         self,
         name: str,
-        image: PIL.Image.Image,
+        image: Union[PIL.Image.Image, ImageData],
         hit_box_algorithm: Optional[str] = "default",
         hit_box_detail: float = 4.5,
         hit_box_points: Optional[PointList] = None,
@@ -130,7 +130,14 @@ class Texture:
             raise ValueError("A texture must have an image")
 
         self._name = name
-        self._image_data = ImageData(image)
+        if isinstance(image, PIL.Image.Image):
+            self._image_data = ImageData(image)
+        elif isinstance(image, ImageData):
+            self._image_data = image
+        else:
+            raise ValueError("image must be an instance of PIL.Image.Image or ImageData")
+
+        # Set the size of the texture since this is immutable
         self._size = image.width, image.height
         # The order of the texture coordinates when mapping
         # to a sprite/quad. This order is changed when the
@@ -197,6 +204,20 @@ class Texture:
             raise ValueError("New image must be the same size as the old image")
 
         self._image_data.image = image
+
+    @property
+    def image_data(self) -> ImageData:
+        """
+        The image data of the texture (read only).
+
+        This is a simple wrapper around the image
+        containing metadata like hash and is used
+        to determine the uniqueness of the image
+        in texture atlases.
+
+        :return: ImageData 
+        """
+        return self._image_data
 
     @property
     def width(self) -> int:
@@ -456,7 +477,7 @@ class Texture:
         points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
             name=self._name,
-            image=self._image,
+            image=self.image_data,
             # Not relevant, but copy over the value
             hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
