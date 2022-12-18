@@ -198,9 +198,10 @@ class Framebuffer:
     def _set_scissor(self, value):
         self._scissor = value
 
-        if self._scissor is not None:
-            # If the framebuffer is bound we need to set the scissor box.
-            # Otherwise it will be set on use()
+        if self._scissor is None:
+            if self._ctx.active_framebuffer == self:
+                gl.glScissor(*self._viewport)
+        else:
             if self._ctx.active_framebuffer == self:
                 gl.glScissor(*self._scissor)
 
@@ -351,10 +352,11 @@ class Framebuffer:
         """
         Clears the framebuffer::
 
-            # Clear framebuffer using the color red in normalized form
-            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
             # Clear the framebuffer using arcade's colors (not normalized)
             fb.clear(color=arcade.color.WHITE)
+
+            # Clear framebuffer using the color red in normalized form
+            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
 
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
@@ -365,8 +367,12 @@ class Framebuffer:
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
+            scissor_values = self._scissor
+
             if viewport:
-                gl.glScissor(*viewport)
+                self.scissor = viewport
+            else:
+                self.scissor = None
 
             if normalized:
                 # If the colors are already normalized we can pass them right in
@@ -388,11 +394,7 @@ class Framebuffer:
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-            if viewport:
-                if self._scissor is None:
-                    gl.glScissor(*self._viewport)
-                else:
-                    gl.glScissor(*self._scissor)
+            self.scissor = scissor_values
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
