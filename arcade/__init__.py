@@ -99,6 +99,7 @@ from .window_commands import set_viewport
 from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
+from .window_commands import schedule_once
 
 from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
@@ -561,6 +562,7 @@ __all__ = ['AStarBarrierList',
            'uint24_to_three_byte_color',
            'uint32_to_four_byte_color',
            'unschedule',
+           'schedule_once',
            'trim_image',
            ]
 
