@@ -411,3 +411,24 @@ def unschedule(function_pointer: Callable):
     :param Callable function_pointer: Pointer to the function to be unscheduled.
     """
     pyglet.clock.unschedule(function_pointer)
+
+
+def schedule_once(function_pointer: Callable, delay: float):
+    """
+    Schedule a function to be automatically called once after ``delay``
+    seconds. The function/callable needs to take a delta time argument
+    similar to ``on_update``. This is a float representing the number
+    of seconds since it was scheduled or called.
+
+    Example::
+
+        def some_action(delta_time):
+            print(delta_time)
+
+        # Call the function once after 1 second
+        arcade.schedule_one(some_action, 1)
+
+    :param Callable function_pointer: Pointer to the function to be called.
+    :param float delay: Delay in seconds
+    """
+    pyglet.clock.schedule_once(function_pointer, delay)
