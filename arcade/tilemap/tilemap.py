@@ -359,10 +359,20 @@ class TileMap:
                 tileset.image is not None
                 and tileset_key <= tile_gid < tileset_key + tileset.tile_count
             ):
+                tile_id = tile_gid - tileset_key
+                existing_ref = None
+                if tileset.tiles is not None:
+                    if (tile_gid - tileset_key) in tileset.tiles:
+                        existing_ref = tileset.tiles[tile_id]
+                        existing_ref.image = tileset.image
+
                 # No specific tile info, but there is a tile sheet
-                tile_ref = pytiled_parser.Tile(
-                    id=(tile_gid - tileset_key), image=tileset.image
-                )
+                if existing_ref:
+                    tile_ref = existing_ref
+                else:
+                    tile_ref = pytiled_parser.Tile(
+                        id=(tile_id), image=tileset.image
+                    )
             elif tileset.tiles is None and tileset.image is not None:
                 # Not in this tileset, move to the next
                 continue
