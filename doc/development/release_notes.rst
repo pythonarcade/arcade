@@ -7,6 +7,16 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.17
+--------------
+
+*Released 2022-Dec-30*
+
+* Bump Pillow to 9.3.0
+* Bump PyMunk to 6.4.0
+* Add explicit compatability tag for 3.11
+* Drop 3.7 as part of the test suite
+
 Version 2.6.16
 --------------
 
