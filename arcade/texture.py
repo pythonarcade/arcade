@@ -54,6 +54,9 @@ class ImageData:
     It's important that all hashes are of the same type.
     By default, the hash is calculated using the sha256 algorithm.
 
+    The ability to provide a hash directly is mainly there
+    for ensuring we can load and save texture atlases to disk.
+
     :param PIL.Image.Image image: The image for this texture
     :param str hash: The hash of the image
     """
@@ -66,7 +69,9 @@ class ImageData:
     @classmethod
     def calculate_hash(cls, image: PIL.Image.Image) -> str:
         """
-        Calculates the hash of an image
+        Calculates the hash of an image.
+
+        The algorithm used is defined by the ``hash_func`` class variable.
         """
         hash = hashlib.new(cls.hash_func)
         hash.update(image.tobytes())
@@ -180,16 +185,7 @@ class Texture:
     @property
     def image(self) -> PIL.Image.Image:
         """
-        The image of the texture (read only).
-
-        :return: PIL.Image.Image 
-        """
-        return self._image_data.image
-
-    @image.setter
-    def image(self, image: PIL.Image.Image):
-        """
-        Set the image of the texture.
+        Get or set the image of the texture.
 
         .. warning::
 
@@ -200,6 +196,10 @@ class Texture:
 
         :param PIL.Image.Image image: The image to set
         """
+        return self._image_data.image
+
+    @image.setter
+    def image(self, image: PIL.Image.Image):
         if image.size != self._image_data.image.size:
             raise ValueError("New image must be the same size as the old image")
 
@@ -507,17 +507,26 @@ class Texture:
             return True
         return self.name != other.name
 
-    def _calculate_hit_box_points(self):
+    def _calculate_hit_box_points(self) -> PointList:
         """
         Calculate the hit box points for this texture
         based on the configured hit box algorithm.
         This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        if self._hit_box_func:
-            return self._hit_box_func(self.image, self._hit_box_detail)
+        # If we have a function it should be calculated
+        # NOTE: We can assume hit_box_algorithm is a string if
+        #       hit_box_func is set.
+        if self._hit_box_func and self._hit_box_algorithm:
+            # Check if we have cached points
+            points = self.hit_box_cache.get(self._image_data.hash, self._hit_box_algorithm)
+            if points is None:
+                points = self._hit_box_func(self.image, self._hit_box_detail)
+                self.hit_box_cache.put(self._image_data.hash, self._hit_box_algorithm, points)
 
-        # Fall back to simple rectangle
+            return points
+
+        # Otherwise we are just using bounding box
         return (
             (-self._size[0] / 2, -self._size[1] / 2),
             (self._size[0] / 2, -self._size[1] / 2),
