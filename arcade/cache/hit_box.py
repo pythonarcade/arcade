@@ -80,7 +80,7 @@ class HitBoxCache:
         hit_box_algorithm = hit_box_algorithm.lower()
         self._entries[f"{hash}-{hit_box_algorithm}"] = tuple(points)
 
-    def save(self, path: Union[str, Path]) -> None:
+    def save(self, path: Union[str, Path], indent: int = 0) -> None:
         """
         Save the hit box cache to disk.
 
@@ -88,9 +88,10 @@ class HitBoxCache:
         reduce the time it takes to load textures.
 
         :param Path path: The path to save the cache to
+        :param int indent: The indentation level for the json file
         """
         with open(path, mode="w") as fd:
-            fd.write(json.dumps(self._entries, indent=2))
+            fd.write(json.dumps(self._entries, indent=indent))
 
     def clear(self) -> None:
         """
