@@ -9,6 +9,7 @@ from arcade.cache.hit_box import HitBoxCache
 RESOURCE_DIR = Path(__file__).parent.parent / "arcade" / "resources"
 INCLUDE_SUFFIXES = set([".png", ".jpg", ".jpeg"])
 DESTINATION_PATH = RESOURCE_DIR / "cache" / "hit_box_cache.json"
+# DESTINATION_PATH = RESOURCE_DIR / "cache" / "hit_box_cache.json.gz"
 
 print()
 print("Scanning directory for images:", RESOURCE_DIR)

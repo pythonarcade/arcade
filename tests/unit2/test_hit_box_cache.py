@@ -50,16 +50,17 @@ def test_put_illegal_points(cache):
         cache.put("c", "simple", [1, 2])
 
 
-def test_save_load(tmp_path, cache):
+@pytest.mark.parametrize("file_type", ["json", "json.gz"])
+def test_save_load(tmp_path, cache, file_type):
     cache.put("a", "simple", [1, 2, 3, 4])
     cache.put("b", "simple", [5, 6, 7, 8])
     cache.put("b", "detailed", [9, 10, 11, 12])
 
-    cache.save(tmp_path / "cache.json")
+    cache.save(tmp_path / file_type)
     cache.clear()
     assert len(cache) == 0
 
-    cache.load(tmp_path / "cache.json")
+    cache.load(tmp_path / file_type)
     assert cache.get("a", "simple") == (1, 2, 3, 4)
     assert cache.get("b", "simple") == (5, 6, 7, 8)
     assert cache.get("b", "detailed") == (9, 10, 11, 12)
