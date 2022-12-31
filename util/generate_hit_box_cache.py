@@ -2,6 +2,7 @@
 Generates a cache of hit boxes for all the built in resources.
 """
 import sys
+import time
 from pathlib import Path
 import arcade
 from arcade.cache.hit_box import HitBoxCache
@@ -10,6 +11,8 @@ RESOURCE_DIR = Path(__file__).parent.parent / "arcade" / "resources"
 INCLUDE_SUFFIXES = set([".png", ".jpg", ".jpeg"])
 DESTINATION_PATH = RESOURCE_DIR / "cache" / "hit_box_cache.json"
 # DESTINATION_PATH = RESOURCE_DIR / "cache" / "hit_box_cache.json.gz"
+
+time_start = time.time()
 
 print()
 print("Scanning directory for images:", RESOURCE_DIR)
@@ -58,3 +61,4 @@ else:
     print("Cache file loaded correctly.")
 
 print("Ignored the following suffixes:", ignored_suffixes)
+print("Duration:", time.time() - time_start, "seconds")
