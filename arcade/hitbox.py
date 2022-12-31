@@ -143,16 +143,15 @@ def calculate_hit_box_points_detailed(
     # Get the bounding box
     logo_bb = pymunk.BB(-1, -1, image.width, image.height)
 
-    # Set of lines that trace the image
-    line_set = autogeometry.PolylineSet()
-
     # How often to sample?
-    downres = 1
-    horizontal_samples = int(image.width / downres)
-    vertical_samples = int(image.height / downres)
+    down_res = 1
+    horizontal_samples = int(image.width / down_res)
+    vertical_samples = int(image.height / down_res)
 
     # Run the trace
     # Get back one or more sets of lines covering stuff.
+    # We want the one that covers the most of the sprite
+    # or the line set might just be a hole in the sprite.
     line_sets = autogeometry.march_soft(
         logo_bb,
         horizontal_samples, vertical_samples,
@@ -163,16 +162,16 @@ def calculate_hit_box_points_detailed(
         return []
 
     selected_line_set = line_sets[0]
-    selected_range = None
-    if len(line_set) > 1:
+    selected_area = None
+    if len(line_sets) > 1:
         # We have more than one line set. Try and find one that covers most of
         # the sprite.
-        for line in line_set:
+        for line_set in line_sets:
             min_x = None
             min_y = None
             max_x = None
             max_y = None
-            for point in line:
+            for point in line_set:
                 if min_x is None or point.x < min_x:
                     min_x = point.x
                 if max_x is None or point.x > max_x:
@@ -185,27 +184,29 @@ def calculate_hit_box_points_detailed(
             if min_x is None or max_x is None or min_y is None or max_y is None:
                 raise ValueError("No points in bounding box.")
 
-            my_range = max_x - min_x + max_y + min_y
-            if selected_range is None or my_range > selected_range:
-                selected_range = my_range
-                selected_line_set = line
+            area = (max_x - min_x) * (max_y - min_y)
+            # print(f"Area: {area} = ({max_x} - {min_x}) * ({max_y} - {min_y})")
+            if selected_area is None or area > selected_area:
+                selected_area = area
+                selected_line_set = line_set
 
     # Reduce number of vertices
-    # original_points = len(selected_line_set)
-    selected_line_set = autogeometry.simplify_curves(selected_line_set,
-                                                     hit_box_detail)
-    # downsampled_points = len(selected_line_set)
+    selected_line_set = autogeometry.simplify_curves(
+        selected_line_set,
+        hit_box_detail,
+    )
 
     # Convert to normal points, offset fo 0,0 is center, flip the y
     hh = image.height / 2
     hw = image.width / 2
     points = []
     for vec2 in selected_line_set:
-        point = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)  # type: ignore
-        points.append(point)
+        point_tuple = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)
+        points.append(point_tuple)
 
+    # Remove duplicate end point
     if len(points) > 1 and points[0] == points[-1]:
         points.pop()
 
-    # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")  # noqa
-    return points  # type: ignore
+    # Return immutable data
+    return tuple(points)
