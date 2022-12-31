@@ -91,7 +91,10 @@ class HitBoxCache:
         :param int indent: The indentation level for the json file
         """
         with open(path, mode="w") as fd:
-            fd.write(json.dumps(self._entries, indent=indent))
+            if indent == 0:
+                fd.write(json.dumps(self._entries))
+            else:
+                fd.write(json.dumps(self._entries, indent=indent))
 
     def clear(self) -> None:
         """
