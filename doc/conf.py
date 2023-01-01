@@ -78,7 +78,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Python Arcade Library'
-copyright = '2022, Paul Vincent Craven'
+copyright = '2023, Paul Vincent Craven'
 author = 'Paul Vincent Craven'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -171,19 +171,7 @@ htmlhelp_basename = 'Arcade'
 html_baseurl = 'https://api.arcade.academy/'
 
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
-html_codeblock_linenos_style = 'table'
-
-# -- Options for manual page output ---------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'arcade', 'Arcade Documentation',
-     [author], 1)
-]
-
-# If true, show URL addresses after external links.
-# man_show_urls = False
+# html_codeblock_linenos_style = 'table'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
@@ -193,55 +181,6 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
 # Fix: "more than one target found for cross-reference 'Texture'"
 suppress_warnings = [
     "ref.python",
-]
-
-# -- Options for LaTeX output ---------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'Arcade.tex', 'Python Arcade Documentation', author, 'manual'),
-]
-
-
-# -- Options for manual page output ---------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'Arcade', 'Python Arcade Documentation', [author], 1)
-]
-
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc, 'Arcade', 'Python Arcade Documentation',
-        author, 'Arcade', 'Easy to use Python library for creating 2D arcade games.',
-        'Miscellaneous'
-    ),
 ]
 
 

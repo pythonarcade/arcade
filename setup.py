@@ -55,10 +55,10 @@ REQUIREMENTS_DEV = [
 # PYGMENTS 2.12.0 does not work as of 24-May-2022
 
 REQUIREMENTS_DOCS = [
-    "Sphinx==5.1.1",
-    "Pygments==2.13.0",
-    "sphinx-copybutton==0.5.0",
-    "sphinx-sitemap==2.2.0",
+    "Sphinx==6.0.0",
+    "Pygments==2.14.0",
+    "sphinx-copybutton==0.5.1",
+    "sphinx-sitemap==2.4.0",
     "dirsync==2.2.5",
     "pyyaml==6.0",
     "docutils==0.19",
@@ -79,7 +79,7 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet~=2.0.0",
+        "pyglet~=2.0.2.1",
         "pillow~=9.3.0",
         "pymunk~=6.4.0",
         "pytiled-parser~=2.2.0",
