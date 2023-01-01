@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Type
 from PIL.Image import Image
 from arcade import PointList
 from .base import HitBoxAlgorithm
@@ -7,12 +7,12 @@ from .simple import SimpleHitBoxAlgorithm
 from .detailed import DetailedHitBoxAlgorithm
 
 #: Registry for hit box algorithms.
-algorithms: Dict[str, HitBoxAlgorithm] = {}
+algorithms: Dict[str, Type[HitBoxAlgorithm]] = {}
 #: The default hit box algorithm.
-default_algorithm: HitBoxAlgorithm = SimpleHitBoxAlgorithm
+default_algorithm: Type[HitBoxAlgorithm] = SimpleHitBoxAlgorithm
 
 
-def get_algorithm(name: str) -> HitBoxAlgorithm:
+def get_algorithm(name: str) -> Type[HitBoxAlgorithm]:
     """
     Returns a hit box algorithm by name.
 
@@ -26,7 +26,7 @@ def get_algorithm(name: str) -> HitBoxAlgorithm:
         raise ValueError(f"Unknown hit box algorithm '{name}'")
 
 
-def register_algorithm(algorithm: HitBoxAlgorithm):
+def register_algorithm(algorithm: Type[HitBoxAlgorithm]):
     """
     Registers a hit box algorithm.
 
