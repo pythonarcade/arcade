@@ -519,10 +519,11 @@ class Texture:
         #       hit_box_func is set.
         if self._hit_box_func and self._hit_box_algorithm:
             # Check if we have cached points
-            points = self.hit_box_cache.get(self._image_data.hash, self._hit_box_algorithm)
+            keys = [self._image_data.hash, self._hit_box_algorithm, self._hit_box_detail]
+            points = self.hit_box_cache.get(keys)
             if points is None:
                 points = self._hit_box_func(self.image, self._hit_box_detail)
-                self.hit_box_cache.put(self._image_data.hash, self._hit_box_algorithm, points)
+                self.hit_box_cache.put(keys, points)
 
             return points
 
