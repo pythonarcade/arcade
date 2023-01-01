@@ -1,4 +1,3 @@
-from typing import Tuple
 from PIL.Image import Image
 from arcade import PointList
 
