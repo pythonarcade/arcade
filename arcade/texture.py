@@ -3,8 +3,9 @@ Code related to working with textures.
 """
 import logging
 import hashlib
-from typing import Callable, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
+from arcade import hitbox
 # from weakref import WeakValueDictionary
 
 import PIL.Image
@@ -15,8 +16,6 @@ from arcade import (
     lerp,
     RectList,
     Color,
-    calculate_hit_box_points_simple,
-    calculate_hit_box_points_detailed,
 )
 from arcade.texture_transforms import (
     Transform,
@@ -116,13 +115,6 @@ class Texture:
     image_cache = ImageCache()
     hit_box_cache = HitBoxCache()
 
-    _hit_box_funcs: Dict[str, Optional[Callable]] = {
-        "default": calculate_hit_box_points_simple,
-        "simple": calculate_hit_box_points_simple,
-        "detailed": calculate_hit_box_points_detailed,
-        "none": None,
-    }
-
     def __init__(
         self,
         name: str,
@@ -155,21 +147,14 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
-        self._hit_box_func: Optional[Callable] = None
         self._hit_box_algorithm: Optional[str] = hit_box_algorithm
-        if self._hit_box_algorithm is not None and hit_box_points is None:
+        if self._hit_box_algorithm is not None:
             if not isinstance(self._hit_box_algorithm, str):
                 raise ValueError(
                     f"hit_box_algorithm must be a string or None, not {hit_box_algorithm}")
 
             self._hit_box_algorithm = self._hit_box_algorithm.lower()
-            try:
-                self._hit_box_func = self._hit_box_funcs[self._hit_box_algorithm]
-            except KeyError:
-                raise ValueError(
-                    "hit_box_algorithm must be None or one of: {}".format(
-                        ", ".join(str(v) for v in self._hit_box_funcs.keys())
-                    ))
+
         self._hit_box_detail = hit_box_detail
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
@@ -244,9 +229,6 @@ class Texture:
 
         :return: PointList
         """
-        if self._hit_box_points is None:
-            self.calculate_hit_box_points()
-
         return self._hit_box_points
 
     @property
@@ -332,36 +314,6 @@ class Texture:
             image=PIL.Image.new("RGBA", size, TRANSPARENT_BLACK),
             hit_box_algorithm=None,
         )
-
-    @classmethod
-    def register_hit_box_algorithm(cls, name: str, func: Optional[Callable] = None) -> None:
-        """
-        Register a hit box function.
-
-        Can also be used to change the default hit box algorithm.
-
-        This function must be given a name such as the default
-        "Simple" and "Detailed" ones. The supplied function must
-        take a PIL image and an float value representing detail
-        and return the hit box points.
-
-        The names are case insensitive are stored in lowercase.
-
-        Example::
-
-            # A custom hit box function. Ideally it would inspect the image
-            def my_hit_box_func(image: PIL.Image, detail: float):
-                return ((0, 0), (0, 1), (1, 1), (1, 0))
-
-            Texture.register_hit_box_algorithm("MyHitBoxAlgo", my_hit_box_func)
-
-            # Change the default hit box algorithm to simple bounding box
-            Texture.register_hit_box_algorithm("default", None)
-
-        :param str name: Name of the hit box algorithm
-        :param Callable func: Function to calculate hit box points
-        """
-        cls._hit_box_funcs[name.lower()] = func
 
     def remove_from_cache(self) -> None:
         """
@@ -507,6 +459,8 @@ class Texture:
             return True
         return self.name != other.name
 
+    # ------------------------------------------------------------
+
     def _calculate_hit_box_points(self) -> PointList:
         """
         Calculate the hit box points for this texture
@@ -514,26 +468,28 @@ class Texture:
         This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        # If we have a function it should be calculated
-        # NOTE: We can assume hit_box_algorithm is a string if
-        #       hit_box_func is set.
-        if self._hit_box_func and self._hit_box_algorithm:
-            # Check if we have cached points
-            keys = [self._image_data.hash, self._hit_box_algorithm, self._hit_box_detail]
-            points = self.hit_box_cache.get(keys)
-            if points is None:
-                points = self._hit_box_func(self.image, self._hit_box_detail)
-                self.hit_box_cache.put(keys, points)
+        # Handle some legacy cases:
+        # Use bounding algo if not set
+        algo_name = self._hit_box_algorithm or "bounding"
+        if algo_name == "none":
+            algo_name = "bounding"
 
+        # Check if we're using default algo
+        if algo_name == "default":
+            algo_name = hitbox.default_algorithm.name
+
+        # Check if we have cached points
+        keys = [self._image_data.hash, algo_name, self._hit_box_detail]
+        points = self.hit_box_cache.get(keys)
+        if points:
             return points
 
-        # Otherwise we are just using bounding box
-        return (
-            (-self._size[0] / 2, -self._size[1] / 2),
-            (self._size[0] / 2, -self._size[1] / 2),
-            (self._size[0] / 2, self._size[1] / 2),
-            (-self._size[0] / 2, self._size[1] / 2),
-        )
+        # Calculate points with the selected algorithm
+        algo = hitbox.get_algorithm(algo_name)
+        points = algo.calculate(self.image, hit_box_algorithm=self._hit_box_detail)
+        self.hit_box_cache.put(keys, points)
+
+        return points
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
