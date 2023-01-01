@@ -11,7 +11,7 @@ Depending on the hit box algorithm a hit box is calculated:
 import gzip
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 from collections import OrderedDict
 
 from arcade.arcade_types import PointList
