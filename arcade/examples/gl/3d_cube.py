@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         translate = Mat4.from_translation((0, 0, -1.75))
         rx = Mat4.from_rotation(self.time, (1, 0, 0))
         ry = Mat4.from_rotation(self.time * 0.77, (0, 1, 0))
-        modelview = rx @ ry @ translate
+        modelview = translate @ rx @ ry
         self.program['modelview'] = modelview
 
         self.cube.render(self.program)
