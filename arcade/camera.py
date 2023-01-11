@@ -3,6 +3,7 @@ Camera class
 """
 import math
 from typing import Optional, Tuple, Union, List, TYPE_CHECKING
+from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec2, Vec3
 
@@ -238,6 +239,15 @@ class SimpleCamera:
         # set Viewport / projection
         self._window.ctx.viewport = self._viewport  # sets viewport of the camera
         self._window.ctx.projection_2d_matrix = self._combined_matrix  # sets projection position and zoom
+        
+    @contextmanager
+    def activate(self):
+        previous_camera = self.window.active_camera
+        try:
+            self.use()
+            yield
+        finally:
+            previous_camrea.use()
 
 
 class Camera(SimpleCamera):
