@@ -40,8 +40,6 @@ def get_long_description() -> str:
 REQUIREMENTS_DEV = [
     "pytest",
     "flake8",
-    # importlib-metadata: drop after arcade drops Python 3.7 support (https://github.com/PyCQA/flake8/issues/1701)
-    "importlib-metadata==4.13.0",
     "mypy",
     "coverage",
     "coveralls",
