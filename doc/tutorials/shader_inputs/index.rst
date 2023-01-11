@@ -5,7 +5,7 @@ Shaders are graphics programs that run on GPU and can be used for many varied pu
 
 Here we look at some very simple shader programs and learn how to pass data to and from shaders
 
-Basic Pygame Program
+Basic Arcade Program
 ~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: empty_project.py
