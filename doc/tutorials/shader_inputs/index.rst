@@ -17,14 +17,12 @@ Basic Shader Program
 
 From here we add a very basic shader and draw it to the screen. This shader simply sets color and alpha based on the horizontal coordinate of the pixel. 
 
-.. sidebar:: Adding Shaders
+We have to define vertex shader and fragment shader programs.
 
-    We have to define vertex shader and fragment shader programs.
+* Vertex shaders run on each passed coorninate and can modify it. Here we use it only to pass on the coordinate on to the fragment shader
+* Fragment shaders set color for each passed pixel. Here we set a fixed color for every pixel and vary alpha based on horizontal position
 
-    * Vertex shaders run on each passed coorninate and can modify it. Here we use it only to pass on the coordinate on to the fragment shader
-    * Fragment shaders set color for each passed pixel. Here we set a fixed color for every pixel and vary alpha based on horizontal position
-
-    We need to pass the shader the pixel coordinates so create an object `quad_fs` to facilitate it.
+We need to pass the shader the pixel coordinates so create an object `quad_fs` to facilitate it.
 
 .. literalinclude:: basic_shader.py
     :caption: Simple shader
@@ -36,11 +34,9 @@ Passing Data To The Shader
 
 To pass data to the shader program we can define `uniforms <https://www.khronos.org/opengl/wiki/Uniform_(GLSL)>`_. Uniforms are global shader variables that act as parameters passed from outside the shader program.
 
-.. sidebar:: Adding Uniforms
+We have to define uniform within the shader and then register the python variable with the shader program before rendering.
 
-    We have to define uniform within the shader and then register the python variable with the shader program before rendering.
-
-    It is important to make sure that the uniform type is appropriate for the data being passed.
+It is important to make sure that the uniform type is appropriate for the data being passed.
 
 .. literalinclude:: uniforms.py
     :caption: Uniforms
@@ -52,8 +48,7 @@ Accessing Textures From The Shader
 
 To make the shader more useful we may wish to pass textures to it.
 
-.. sidebar:: Adding Texture Channels
-    Here we create to textures (and associated framebuffers) and pass them to the shader as uniform sampler objects. Unlike other uniforms we need to assign a reference to an integer texture channel (rather than directly to the python object) and `.use()` the texture to bind it to that channel. 
+Here we create to textures (and associated framebuffers) and pass them to the shader as uniform sampler objects. Unlike other uniforms we need to assign a reference to an integer texture channel (rather than directly to the python object) and `.use()` the texture to bind it to that channel. 
 
 .. literalinclude:: textures.py
     :caption: Textures
@@ -65,10 +60,9 @@ Drawing To Texture From The Shader
 
 Finally we have an example of reading from and writing to the same texture with a shader.
 
-.. sidebar:: Writing to a framebuffer
-    We use the `with fbo:` syntax to tell arcade that we wish to render to the new frambuffer rather than default one. 
+We use the `with fbo:` syntax to tell arcade that we wish to render to the new frambuffer rather than default one. 
 
-    Once the shader has updated the framebuffer we need to copy its contents to the screen to be displayed.
+Once the shader has updated the framebuffer we need to copy its contents to the screen to be displayed.
 
 .. literalinclude:: texture_write.py
     :caption: Textures
