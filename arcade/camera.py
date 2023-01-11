@@ -239,7 +239,7 @@ class SimpleCamera:
         # set Viewport / projection
         self._window.ctx.viewport = self._viewport  # sets viewport of the camera
         self._window.ctx.projection_2d_matrix = self._combined_matrix  # sets projection position and zoom
-        
+
     @contextmanager
     def activate(self):
         previous_camera = self.window.active_camera
