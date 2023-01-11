@@ -247,7 +247,7 @@ class SimpleCamera:
             self.use()
             yield
         finally:
-            previous_camrea.use()
+            previous_camera.use()
 
 
 class Camera(SimpleCamera):
