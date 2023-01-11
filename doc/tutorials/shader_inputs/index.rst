@@ -22,7 +22,7 @@ We have to define vertex shader and fragment shader programs.
 * Vertex shaders run on each passed coorninate and can modify it. Here we use it only to pass on the coordinate on to the fragment shader
 * Fragment shaders set color for each passed pixel. Here we set a fixed color for every pixel and vary alpha based on horizontal position
 
-We need to pass the shader the pixel coordinates so create an object `quad_fs` to facilitate it.
+We need to pass the shader the pixel coordinates so create an object ``quad_fs`` to facilitate it.
 
 .. literalinclude:: basic_shader.py
     :caption: Simple shader
@@ -48,7 +48,7 @@ Accessing Textures From The Shader
 
 To make the shader more useful we may wish to pass textures to it.
 
-Here we create to textures (and associated framebuffers) and pass them to the shader as uniform sampler objects. Unlike other uniforms we need to assign a reference to an integer texture channel (rather than directly to the python object) and `.use()` the texture to bind it to that channel. 
+Here we create to textures (and associated framebuffers) and pass them to the shader as uniform sampler objects. Unlike other uniforms we need to assign a reference to an integer texture channel (rather than directly to the python object) and ``.use()`` the texture to bind it to that channel. 
 
 .. literalinclude:: textures.py
     :caption: Textures
@@ -60,7 +60,7 @@ Drawing To Texture From The Shader
 
 Finally we have an example of reading from and writing to the same texture with a shader.
 
-We use the `with fbo:` syntax to tell arcade that we wish to render to the new frambuffer rather than default one. 
+We use the ``with fbo:`` syntax to tell arcade that we wish to render to the new frambuffer rather than default one. 
 
 Once the shader has updated the framebuffer we need to copy its contents to the screen to be displayed.
 
