@@ -11,6 +11,7 @@ The better gui for arcade
 from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional
 
+from pyglet.math import Mat4
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
@@ -257,16 +258,29 @@ class UIManager(EventDispatcher, UIWidgetParent):
             ctx.ONE,
             ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
         )
+
+        # Reset view matrix so content is not rendered into
+        # the surface with offset
+        prev_view = self.window.view
+        prev_proj = self.window.projection
+        self.window.view = Mat4()
+        self.window.projection = Mat4()
+
         with ctx.enabled(ctx.BLEND):
             self._do_render()
+
+        # Restore view/proj matrix allowing the surface to be scrolled
+        self.window.view = prev_view
+        self.window.projection = prev_proj
 
         # Reset back to default blend function
         ctx.blend_func = ctx.BLEND_DEFAULT
 
         # Draw layers
-        layers = sorted(self.children.keys())
-        for layer in layers:
-            self._get_surface(layer).draw()
+        with ctx.enabled(ctx.BLEND):
+            layers = sorted(self.children.keys())
+            for layer in layers:
+                self._get_surface(layer).draw()
 
         # Reset back to default blend function
         ctx.blend_func = ctx.BLEND_DEFAULT
@@ -288,6 +302,17 @@ class UIManager(EventDispatcher, UIWidgetParent):
         # proj_width, proj_height = pr - pl, pt - pb
         # dx, dy = proj_width / vw, proj_height / vh
         # return (x - vx) * dx, (y - vy) * dy
+
+        # NOTE: For now we just take view and projection scrolling into account
+        #       This doesn't support rotation and scaling
+        # Get x and y translation in the view matrix
+        x -= self.window.view[12]
+        y -= self.window.view[13]
+        # Get x and y translation in the projection matrix
+        proj_2d = self.window.ctx.projection_2d
+        x += proj_2d[0]
+        y += proj_2d[2]
+        # Return adjusted coordinates
         return x, y
 
     def on_event(self, event) -> bool:
