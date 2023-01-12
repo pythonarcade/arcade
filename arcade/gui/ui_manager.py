@@ -264,6 +264,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         prev_view = self.window.view
         prev_proj = self.window.projection
         self.window.view = Mat4()
+        self.window.projection = Mat4()
 
         with ctx.enabled(ctx.BLEND):
             self._do_render()
