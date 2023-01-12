@@ -257,7 +257,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
             ctx.ONE,
             ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
         )
-        self._do_render()
+        with ctx.enabled(ctx.BLEND):
+            self._do_render()
 
         # Reset back to default blend function
         ctx.blend_func = ctx.BLEND_DEFAULT
