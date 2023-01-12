@@ -276,9 +276,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         ctx.blend_func = ctx.BLEND_DEFAULT
 
         # Draw layers
-        layers = sorted(self.children.keys())
-        for layer in layers:
-            self._get_surface(layer).draw()
+        with ctx.enabled(ctx.BLEND):
+            layers = sorted(self.children.keys())
+            for layer in layers:
+                self._get_surface(layer).draw()
 
         # Reset back to default blend function
         ctx.blend_func = ctx.BLEND_DEFAULT
