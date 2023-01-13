@@ -24,6 +24,7 @@ for the Python Arcade library. See also:
     api/text
     api/tilemap
     api/texture
+    api/texture_transforms
     api/texture_atlas
     api/perf_info
     api/physics_engines

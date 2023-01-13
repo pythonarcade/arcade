@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Dict, Iterable, List, Optional
 import re
 
 from pyglet import gl
@@ -10,7 +10,8 @@ from .types import SHADER_TYPE_NAMES
 class ShaderSource:
     """
     GLSL source container for making source parsing simpler.
-    We support locating out attributes and applying #defines values.
+    We support locating out attributes, applying #defines values
+    and injecting common source.
 
     This wrapper should ideally contain an unmodified version
     of the original source for caching. Getting the specific
@@ -20,11 +21,18 @@ class ShaderSource:
     this way and don't contain several statements on one line.
 
     :param Context ctx: The context this framebuffer belongs to
-    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
+    :param str source: The source code
+    :common List[str] common: Common source code to inject
+    :param int source_type: The shader type
     :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
-
-    def __init__(self, ctx: gl.Context, source: str, source_type: gl.GLenum):
+    def __init__(
+        self,
+        ctx: gl.Context,
+        source: str,
+        common: Optional[Iterable[str]],
+        source_type: gl.GLenum,
+    ):
         """Create a shader source wrapper."""
         self._source = source.strip()
         self._type = source_type
@@ -37,11 +45,8 @@ class ShaderSource:
         self._version = self._find_glsl_version()
 
         if ctx.gl_api == "gles":
+            # TODO: Use the version from the context
             self._lines[0] = "#version 310 es"
-            # if self._lines[1].startswith("#"):
-            #     self._lines.insert(2, "precision mediump float;")
-            # else:
-            #    self._lines.insert(1, "precision mediump float;")
             self._lines.insert(1, "precision mediump float;")
 
             if self._type == gl.GL_GEOMETRY_SHADER:
@@ -51,6 +56,9 @@ class ShaderSource:
                 self._lines.insert(1, "precision mediump image2D;")
 
             self._version = self._find_glsl_version()
+
+        # Inject common source
+        self.inject_common_sources(common)
 
         if self._type in [gl.GL_VERTEX_SHADER, gl.GL_GEOMETRY_SHADER]:
             self._parse_out_attributes()
@@ -64,6 +72,23 @@ class ShaderSource:
     def out_attributes(self) -> List[str]:
         """The out attributes for this program"""
         return self._out_attributes
+
+    def inject_common_sources(self, common: Optional[Iterable[str]]) -> None:
+        """Inject common source code into the shader source"""
+        if not common:
+            return
+
+        # Find the main function
+        for line_number, line in enumerate(self._lines):
+            if "main()" in line:
+                break
+        else:
+            raise ShaderException("No main() function found when injecting common source")
+
+        # Insert all common sources
+        for source in common:
+            lines = source.split("\n")
+            self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
 
     def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
         """Return the shader source

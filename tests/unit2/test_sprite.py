@@ -308,6 +308,12 @@ def test_sprite_removal(window):
     arcade.cleanup_texture_cache()
 
 
+def test_sprite_circle(window):
+    # TODO: Improve this
+    sprite = arcade.SpriteCircle(50, arcade.color.RED)
+    sprite = arcade.SpriteCircle(50, arcade.color.RED, soft=True)
+
+
 def test_visible():
     sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
 

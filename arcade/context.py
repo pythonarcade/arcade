@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union, Sequence
+from typing import Any, Iterable, Dict, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
@@ -90,35 +90,37 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
+            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
 
         # Shapes
         self.shape_line_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/line/unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/line/unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/line/unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/line/unbuffered_geo.glsl",
         )
         self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
         )
         self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
         self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/atlas/resize_vs.glsl",
-            geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
-            fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
+            vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
+            geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
+            fragment_shader=":resources:shaders/atlas/resize_fs.glsl",
+            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
@@ -345,6 +347,7 @@ class ArcadeContext(Context):
         geometry_shader: Optional[Union[str, Path]] = None,
         tess_control_shader: Optional[Union[str, Path]] = None,
         tess_evaluation_shader: Optional[Union[str, Path]] = None,
+        common: Iterable[Union[str, Path]] = (),
         defines: Optional[Dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
@@ -367,9 +370,10 @@ class ArcadeContext(Context):
         :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
         :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
         :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
-        :param dict defines: Substitute ``#define`` values in the source
         :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
         :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
+        :param List[Union[str,pathlib.Path]] common: Common files to be included in all shaders
+        :param dict defines: Substitute ``#define`` values in the source
         :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
                                                  but some more complex out structures we can't detect.
@@ -386,6 +390,8 @@ class ArcadeContext(Context):
         geometry_shader_src = None
         tess_control_src = None
         tess_evaluation_src = None
+
+        common_src = [resolve_resource_path(c).read_text() for c in common]
 
         if fragment_shader:
             fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
@@ -405,12 +411,13 @@ class ArcadeContext(Context):
             geometry_shader=geometry_shader_src,
             tess_control_shader=tess_control_src,
             tess_evaluation_shader=tess_evaluation_src,
+            common=common_src,
             defines=defines,
             varyings=varyings,
             varyings_capture_mode=varyings_capture_mode
         )
 
-    def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
+    def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
         resource handles.
@@ -420,10 +427,12 @@ class ArcadeContext(Context):
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         :param Union[str,pathlib.Path] path: Path to texture
+        :param Iterable[Union[str,pathlib.Path]] common: Common source injected into compute shader
         """
         from arcade.resources import resolve_resource_path
         path = resolve_resource_path(path)
-        return self.compute_shader(source=path.read_text())
+        common_src = [resolve_resource_path(c).read_text() for c in common]
+        return self.compute_shader(source=path.read_text(), common=common_src)
 
     def load_texture(
         self,

@@ -902,30 +902,21 @@ class SpriteList(Generic[_SpriteType]):
         """
         slot = self.sprite_slot[sprite]
         # position
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
         # size
-        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
-        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
         # angle
-        # noinspection PyProtectedMember
         self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
         # color
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4] = sprite._color[0]
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 1] = sprite._color[1]
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 2] = sprite._color[2]
-        # noinspection PyProtectedMember
-        self._sprite_color_data[slot * 4 + 3] = sprite._alpha
+        self._sprite_color_data[slot * 4 + 3] = sprite._color[3]
         self._sprite_color_changed = True
 
         # texture
@@ -933,11 +924,9 @@ class SpriteList(Generic[_SpriteType]):
             self._deferred_sprites.add(sprite)
             return
 
-        # noinspection PyProtectedMember
         if not sprite._texture:
             return
 
-        # noinspection PyProtectedMember
         tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
@@ -953,11 +942,9 @@ class SpriteList(Generic[_SpriteType]):
             self._deferred_sprites.add(sprite)
             return
 
-        # noinspection PyProtectedMember
         if not sprite._texture:
             return
 
-        # noinspection PyProtectedMember
         tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
@@ -966,9 +953,7 @@ class SpriteList(Generic[_SpriteType]):
 
         # Update size in cas the sprite was initialized without size
         # NOTE: There should be a better way to do this
-        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
-        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
@@ -983,9 +968,7 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
@@ -998,14 +981,10 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
-        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
-        # noinspection PyProtectedMember
-        self._sprite_color_data[slot * 4 + 3] = int(sprite._alpha)
+        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
         self._sprite_color_changed = True
 
     def update_size(self, sprite: _SpriteType) -> None:
@@ -1039,7 +1018,6 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
@@ -1052,9 +1030,7 @@ class SpriteList(Generic[_SpriteType]):
         """
         # print(f"{id(self)} : {id(sprite)} update_location")
         slot = self.sprite_slot[sprite]
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
-        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 

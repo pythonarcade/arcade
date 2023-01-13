@@ -6,26 +6,20 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
-import arcade
-
-from arcade.texture import _build_cache_name
-from arcade.geometry_generic import get_angle_degrees
-
 import dataclasses
-
 from typing import (
     Any,
     Tuple,
     Iterable,
-    cast,
     Dict,
     List,
     Optional,
     TYPE_CHECKING,
 )
-
 import PIL.Image
 
+import arcade
+from arcade.geometry_generic import get_angle_degrees
 from arcade import load_texture
 from arcade import Texture
 from arcade import rotate_point
@@ -34,8 +28,9 @@ from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-
-from arcade.arcade_types import RGB, Point, PointList
+from arcade.arcade_types import RGBA, Point, PointList
+from arcade.cache import build_cache_name
+from arcade.texture import SolidColorTexture
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -191,8 +186,7 @@ class Sprite:
         self._hit_box_detail = hit_box_detail
 
         # Color
-        self._color: RGB = (255, 255, 255)
-        self._alpha: int = 255
+        self._color: RGBA = 255, 255, 255, 255
 
         # Custom sprite properties
         self._properties: Optional[Dict[str, Any]] = None
@@ -219,27 +213,27 @@ class Sprite:
         # Debug properties
         self.guid: Optional[str] = None
 
-        # Sanity check values
-        if image_width < 0:
-            raise ValueError("Width entered is less than zero. Width must be a positive float.")
-
-        if image_height < 0:
-            raise ValueError(
-                "Height entered is less than zero. Height must be a positive float."
-            )
-
-        if image_width == 0 and image_height != 0:
-            raise ValueError("Width can't be zero.")
-
-        if image_height == 0 and image_width != 0:
-            raise ValueError("Height can't be zero.")
-
         if texture:
             self._texture = texture
             self._textures = [texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
         elif filename is not None:
+            # Sanity check values
+            if image_width < 0:
+                raise ValueError("Width entered is less than zero. Width must be a positive float.")
+
+            if image_height < 0:
+                raise ValueError(
+                    "Height entered is less than zero. Height must be a positive float."
+                )
+
+            if image_width == 0 and image_height != 0:
+                raise ValueError("Width can't be zero.")
+
+            if image_height == 0 and image_width != 0:
+                raise ValueError("Height can't be zero.")
+
             self._texture = load_texture(
                 filename,
                 image_x,
@@ -256,6 +250,10 @@ class Sprite:
             # Ignore the texture's scale and use ours
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
+        # We'll allow creating sprites without textures for now.
+        # The sprite must at some point get a texture assigned before used.
+        # else:
+        #     raise ValueError("You must provide either a texture or a filename.")
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
@@ -934,41 +932,40 @@ class Sprite:
         self.texture = texture
 
     @property
-    def color(self) -> RGB:
+    def color(self) -> RGBA:
         """
-        Return the RGB color associated with the sprite.
+        Get or set the RGB/RGBA color associated with the sprite.
+
+        Example usage::
+
+            print(sprite.color)
+            sprite.color = arcade.color.RED
+            sprite.color = 255, 0, 0
+            sprite.color = 255, 0, 0, 128
         """
         return self._color
 
     @color.setter
-    def color(self, color: Color):
-        """
-        Set the current sprite color as a RGB value
-        """
-        if color is None:
-            raise ValueError("Color must be three or four ints from 0-255")
-
-        if len(color) == 3:
+    def color(self, color: RGBA):
+        if len(color) == 4:
             if (
-                self._color[0] == color[0]
+                self._color == color[0]
+                and self._color[1] == color[1]
+                and self._color[2] == color[2]
+                and self._color[3] == color[3]
+            ):
+                return
+            self._color = color[0], color[1], color[2], color[3]
+        elif len(color) == 3:
+            if (
+                self._color == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
             ):
                 return
-        elif len(color) == 4:
-            color = cast(List, color)  # Prevent typing error
-            if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-                and self.alpha == color[3]
-            ):
-                return
-            self.alpha = color[3]
+            self._color = color[0], color[1], color[2], self._color[3] 
         else:
             raise ValueError("Color must be three or four ints from 0-255")
-
-        self._color = color[0], color[1], color[2]
 
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
@@ -978,19 +975,15 @@ class Sprite:
         """
         Return the alpha associated with the sprite.
         """
-        return self._alpha
+        return self._color[3]
 
     @alpha.setter
     def alpha(self, alpha: int):
         """
         Set the current sprite color as a value
         """
-        if alpha < 0 or alpha > 255:
-            raise ValueError(
-                f"Invalid value for alpha. Must be 0 to 255, received {alpha}"
-            )
+        self._color = self._color[0], self._color[1], self._color[2], int(alpha)
 
-        self._alpha = int(alpha)
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1010,11 +1003,11 @@ class Sprite:
 
         :rtype: bool
         """
-        return self._alpha > 0
+        return self._color[3] > 0
 
     @visible.setter
     def visible(self, value: bool):
-        self._alpha = 255 if value else 0
+        self._color = self._color[0], self._color[1], self._color[2], 255 if value else 0
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
@@ -1412,37 +1405,23 @@ class SpriteSolidColor(Sprite):
     A rectangular sprite of the given ``width``, ``height``, and ``color``.
 
     The texture is automatically generated instead of loaded from a
-    file.
-
-    There may be a stutter the first time a combination of ``width``,
-    ``height``, and ``color`` is used due to texture generation. All
-    subsequent calls for the same combination will run faster because
-    they will re-use the texture generated earlier.
+    file. Internally only a single global texture is used for this
+    sprite type, so concerns about memory usage non-existent regardless
+    of size or number of sprite variations.
 
     :param int width: Width of the sprite in pixels
     :param int height: Height of the sprite in pixels
     :param Color color: The color of the sprite as an RGB or RGBA tuple
     """
+    _default_image = PIL.Image.new("RGBA", (32, 32), (255, 255, 255, 255))
+
     def __init__(self, width: int, height: int, color: Color):
         """
         Create a solid-color rectangular sprite.
         """
         super().__init__()
-
-        cache_name = _build_cache_name("Solid", width, height, color[0], color[1], color[2])
-
-        # use existing texture if it exists
-        if cache_name in load_texture.texture_cache:  # type: ignore
-            texture = load_texture.texture_cache[cache_name]  # type: ignore
-
-        # otherwise, generate a filler sprite and add it to the cache
-        else:
-            texture = Texture.create_filled(cache_name, (width, height), color)
-            load_texture.texture_cache[cache_name] = texture  # type: ignore
-
-        # apply chosen texture to the current sprite
-        self.texture = texture
-        self._points = texture.hit_box_points
+        self.texture = SolidColorTexture("sprite_solid_color", width, height, self._default_image)
+        self._color = arcade.get_four_byte_color(color)
 
 
 class SpriteCircle(Sprite):
@@ -1468,30 +1447,34 @@ class SpriteCircle(Sprite):
     """
     def __init__(self, radius: int, color: Color, soft: bool = False):
         super().__init__()
-
+        radius = int(radius)
         diameter = radius * 2
+        color_rgba = arcade.get_four_byte_color(color)
 
-        # determine the texture's cache name
+        # NOTE: We are only creating white textures. The actual color is
+        #       is applied in the shader through the sprite's color attribute.
+        # determine the texture's cache name.
         if soft:
-            cache_name = _build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
+            cache_name = build_cache_name("circle_texture_soft", diameter, 255, 255, 255, 255)
         else:
-            cache_name = _build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+            cache_name = build_cache_name("circle_texture", diameter, 255, 255, 255, 255)
 
         # use the named texture if it was already made
-        if cache_name in load_texture.texture_cache:  # type: ignore
-            texture = load_texture.texture_cache[cache_name]  # type: ignore
+        if cache_name in Texture.cache:  # type: ignore
+            texture = Texture.cache[cache_name]  # type: ignore
 
         # generate the texture if it's not in the cache
         else:
             if soft:
-                texture = make_soft_circle_texture(diameter, color, name=cache_name)
+                texture = make_soft_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
             else:
-                texture = make_circle_texture(diameter, color, name=cache_name)
+                texture = make_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
 
-            load_texture.texture_cache[cache_name] = texture  # type: ignore
+            Texture.cache[cache_name] = texture  # type: ignore
 
         # apply results to the new sprite
         self.texture = texture
+        self.color = color_rgba
         self._points = self.texture.hit_box_points
 
 
@@ -1504,8 +1487,4 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     :return: Distance
     :rtype: float
     """
-    distance = math.sqrt(
-        (sprite1.center_x - sprite2.center_x) ** 2
-        + (sprite1.center_y - sprite2.center_y) ** 2
-    )
-    return distance
+    return arcade.get_distance(*sprite1._position, *sprite2._position)

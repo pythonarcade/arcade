@@ -3,7 +3,7 @@ import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import (Any, Deque, Dict, List, Optional, Sequence, Set, Tuple,
+from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
                     Union)
 
 import pyglet
@@ -945,6 +945,7 @@ class Context:
         geometry_shader: Optional[str] = None,
         tess_control_shader: Optional[str] = None,
         tess_evaluation_shader: Optional[str] = None,
+        common: Optional[List[str]] = None,
         defines: Optional[Dict[str, str]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
@@ -956,6 +957,7 @@ class Context:
         :param str geometry_shader: geometry shader source (optional)
         :param str tess_control_shader: tessellation control shader source (optional)
         :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
+        :param list common: Common shader sources injected into all shaders
         :param dict defines: Substitute #defines values in the source (optional)
         :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
@@ -967,24 +969,24 @@ class Context:
                                           buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
-        source_vs = ShaderSource(self, vertex_shader, gl.GL_VERTEX_SHADER)
+        source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
-            ShaderSource(self, fragment_shader, gl.GL_FRAGMENT_SHADER)
+            ShaderSource(self, fragment_shader, common, gl.GL_FRAGMENT_SHADER)
             if fragment_shader
             else None
         )
         source_geo = (
-            ShaderSource(self, geometry_shader, gl.GL_GEOMETRY_SHADER)
+            ShaderSource(self, geometry_shader, common, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
             else None
         )
         source_tc = (
-            ShaderSource(self, tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
+            ShaderSource(self, tess_control_shader, common, gl.GL_TESS_CONTROL_SHADER)
             if tess_control_shader
             else None
         )
         source_te = (
-            ShaderSource(self, tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
+            ShaderSource(self, tess_evaluation_shader, common, gl.GL_TESS_EVALUATION_SHADER)
             if tess_evaluation_shader
             else None
         )
@@ -1029,13 +1031,14 @@ class Context:
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
-    def compute_shader(self, *, source: str) -> ComputeShader:
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> ComputeShader:
         """
         Create a compute shader.
 
         :param str source: The glsl source
+        :param Iterable[str] common: Common / library source injected into compute shader
         """
-        src = ShaderSource(self, source, gl.GL_COMPUTE_SHADER)
+        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return ComputeShader(self, src.get_source())
 
 

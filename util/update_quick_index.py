@@ -37,6 +37,7 @@ titles = {
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
     'texture.py': ['Texture Management', 'texture.rst'],
+    'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
@@ -91,6 +92,7 @@ def get_member_list(filepath):
     Take a file, and return all the classes, functions, and data declarations in it
     """
     file_pointer = open(filepath, encoding="utf8")
+    print("Processing: ", filepath)
     filename = filepath.name
 
     class_re = re.compile("^class ([A-Za-z0-9]+[^\(:]*)")
@@ -128,7 +130,7 @@ def get_member_list(filepath):
     return type_list, class_list, function_list
 
 
-def process_directory(directory, quick_index_file):
+def process_directory(directory: Path, quick_index_file):
     """
     Take a directory and process all the files in it.
     """
@@ -168,15 +170,17 @@ def process_directory(directory, quick_index_file):
 
         type_list, class_list, function_list = get_member_list(path)
 
-        mapping = {"arcade": "arcade",
-                   "sprite_list": "arcade",
-                   "text": "arcade",
-                   "gui": "arcade.gui",
-                   "property": "arcade.gui.property",
-                   "widgets": "arcade.gui",
-                   "tilemap": "arcade.tilemap",
-                   }
-        package = mapping[directory.name]
+        mapping = {
+            "arcade": "arcade",
+            "sprite_list": "arcade",
+            "text": "arcade",
+            "gui": "arcade.gui",
+            "property": "arcade.gui.property",
+            "widgets": "arcade.gui",
+            "tilemap": "arcade.tilemap",
+            "texture_transforms.py": "arcade.texture_transforms",
+        }
+        package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
         path_name = prepend + path.name
 
@@ -228,9 +232,6 @@ def process_directory(directory, quick_index_file):
                     api_file.write(f"    :inherited-members:\n")
 
                 api_file.write("\n")
-
-                if "UIMockup" in full_class_name:
-                    print(f"AAAAA {full_api_file_name}")
 
                 # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")

@@ -20,46 +20,42 @@ void main() {
     ivec2 size_old = textureSize(atlas_old, 0).xy;
     ivec2 size_new = textureSize(atlas_new, 0).xy;
 
-    // One pixel delta in texture coords
-    // We need this to include the texture borders (copy repeating data)
-    vec2 delta_old = vec2(1.0) / vec2(size_old);
+    // Read texture coordinates from UV texture here
+    vec2 old_uv0, old_uv1, old_uv2, old_uv3;
+    getSpriteUVs(texcoords_old, int(gl_PrimitiveIDIn), old_uv0, old_uv1, old_uv2, old_uv3);
+    vec2 new_uv0, new_uv1, new_uv2, new_uv3;
+    getSpriteUVs(texcoords_new, int(gl_PrimitiveIDIn), new_uv0, new_uv1, new_uv2, new_uv3);
+   
+    // Lower left corner flipped * size - one pixel
+    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new) - vec2(1.0);
+    // absolute value of the diagonal * size + two pixels
+    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(2.0);
 
-    // Read texture coordinates from uv textures
-    vec4 data_old = texelFetch(texcoords_old, ivec2(gl_PrimitiveIDIn, 0), 0);
-    vec4 data_new = texelFetch(texcoords_new, ivec2(gl_PrimitiveIDIn, 0), 0);
-    // uv data is created to read textures upside down so we need to transform them
-    // The y size is negative
-    data_old.w = abs(data_old.w);
-    data_new.w = abs(data_new.w);
-    // Reverse the y position
-    data_old.y = 1.0 - data_old.y;
-    data_new.y = 1.0 - data_new.y;
-
-    // Create quads from the new texture coordinates
-    vec2 pos = data_new.xy * vec2(size_new) - vec2(1.0, 1.0);
-    vec2 size = data_new.zw * vec2(size_new) + vec2(2.0, 2.0);
-
-    // Map these with the old texture coordiantes
-    vec2 tex_offset = (data_old.xy - delta_old) * vec2(1.0, -1.0);
-    vec2 tex_size = (data_old.zw + delta_old * 2.0) * vec2(1.0, -1.0);
-
+    // We need to offset the old coordiantes by one pixel to include the borders
+    vec2 pix_offset = vec2(1.0) / vec2(size_old);
+    // (
+    //     0.015625, 0.015625,  # minus, minus
+    //     0.265625, 0.015625,  # plus, minus
+    //     0.015625, 0.265625,  # minus, plus
+    //     0.265625, 0.265625   # plus, plus
+    // )
     // upper left
-    uv = tex_offset + vec2(0.0, tex_size.y);
+    uv = old_uv0 - pix_offset;
     gl_Position = projection * vec4(pos + vec2(0.0, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower left
-    uv = tex_offset;
+    uv = old_uv2 + vec2(-pix_offset.x, pix_offset.y);
     gl_Position = projection * vec4(pos, 0.0, 1.0);
     EmitVertex();
 
     // upper right
-    uv = tex_offset + vec2(tex_size.x, tex_size.y);
+    uv = old_uv1 + vec2(pix_offset.x, -pix_offset.y);
     gl_Position = projection * vec4(pos + vec2(size.x, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower right
-    uv = tex_offset + vec2(tex_size.x, 0.0);
+    uv = old_uv3 + pix_offset;
     gl_Position = projection * vec4(pos + vec2(size.x, 0.0), 0.0, 1.0);
     EmitVertex();
 
