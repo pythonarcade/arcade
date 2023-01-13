@@ -108,14 +108,13 @@ The Python Arcade Library
    :alt: Source icon
    :class: heading-icon
 
-Source Code
------------
+.. toctree::
+   :maxdepth: 1
+   :caption: Source Code
 
-.. container:: toc-outside-links
-
-    * `License <https://github.com/pythonarcade/arcade/blob/development/license.rst>`_
-    * `GitHub <https://github.com/pythonarcade/arcade>`_
-    * `Release Notes <https://api.arcade.academy/en/latest/development/release_notes.html>`_
+   GitHub <https://github.com/pythonarcade/arcade>
+   programming_guide/release_notes
+   License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
 
 .. image:: images/social.svg
    :alt: Social icon
