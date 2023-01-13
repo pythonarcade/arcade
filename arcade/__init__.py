@@ -191,16 +191,6 @@ from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
 
-from .texture_transforms import FlipLeftToRightTransform
-from .texture_transforms import FlipTopToBottomTransform
-from .texture_transforms import Rotate180Transform
-from .texture_transforms import Rotate270Transform
-from .texture_transforms import Rotate90Transform
-from .texture_transforms import Transform
-from .texture_transforms import TransposeTransform
-from .texture_transforms import TransverseTransform
-from .texture_transforms import VertexOrder
-
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
 from .buffered_draw_commands import ShapeElementList
@@ -417,15 +407,6 @@ __all__ = [
     'ImageData',
     'get_shortest_transform',
     'TextureAtlas',
-    'FlipLeftToRightTransform',
-    'FlipTopToBottomTransform',
-    'Rotate180Transform',
-    'Rotate270Transform',
-    'Rotate90Transform',
-    'Transform',
-    'TransposeTransform',
-    'TransverseTransform',
-    'VertexOrder',
     'TileMap',
     'VERSION',
     'Vector',
