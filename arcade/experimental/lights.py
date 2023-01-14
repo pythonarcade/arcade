@@ -10,17 +10,25 @@ class Light:
     HARD = 1.0
     SOFT = 0.0
 
-    def __init__(self, center_x: float, center_y: float,
-                 radius: float = 50.0, color: Tuple[int, int, int] = (255, 255, 255),
-                 mode: str = 'hard'):
-        """Create a Light.
+    def __init__(
+        self,
+        center_x: float,
+        center_y: float,
+        radius: float = 50.0,
+        color: Color = (255, 255, 255),
+        mode: str = 'hard',
+    ):
+        """
+        Create a Light.
 
         Note: It's important to separate lights that don't change properties
-        and static ones with the `usage` parameter.
+        and static ones with the ``usage`` parameter.
 
-        :param Tuple[float, float] position: the position of the light
-        :param float radius: The radius of the light
-        :param str mode: `hard` or `soft`
+        :param float center_x: X position of the light
+        :param float center_y: Y position of the light
+        :param float radius: Radius of the light
+        :param Color color: Color of the light
+        :param str mode: 'hard' or 'soft' light
         """
         if not (isinstance(color, tuple) or isinstance(color, list)):
             raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
@@ -32,8 +40,11 @@ class Light:
         self._center_y = center_y
         self._radius = radius
         self._attenuation = Light.HARD if mode == 'hard' else Light.SOFT
-        self._color = color
+        self._color = color[:3]
         self._light_layer: Optional[LightLayer] = None
+
+        if len(self._color) != 3:
+            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -61,7 +72,8 @@ class Light:
 class LightLayer(RenderTargetTexture):
 
     def __init__(self, width: int, height: int):
-        """Create a LightLayer
+        """
+        Create a LightLayer
 
         The size of a layer should ideally be of the same size and the screen.
 
