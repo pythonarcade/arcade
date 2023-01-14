@@ -154,8 +154,9 @@ class MyGame(arcade.Window):
         self.perf_graph_list.draw()
 
         # Get & draw the FPS for the last 60 frames
-        self.fps_text.value = f"FPS: {arcade.get_fps(60):5.1f}"
-        self.fps_text.draw()
+        if arcade.timings_enabled():
+            self.fps_text.value = f"FPS: {arcade.get_fps(60):5.1f}"
+            self.fps_text.draw()
 
     def on_update(self, delta_time):
         """ Update method """
@@ -168,6 +169,13 @@ class MyGame(arcade.Window):
 
         # Move the coins
         self.coin_list.update()
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.SPACE:
+            if arcade.timings_enabled():
+                arcade.disable_timings()
+            else:
+                arcade.enable_timings()
 
 
 def main():
