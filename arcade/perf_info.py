@@ -129,10 +129,13 @@ def enable_timings(max_history: int = 100) -> None:
     """
     global _pyglets_dispatch_event, _max_history
 
-    if _pyglets_dispatch_event is not None:
+    if pyglet.window.BaseWindow.dispatch_event == _dispatch_event:
         raise ValueError("Timings already enabled.")
 
+    # Save the original pyglet dispatch event function
     _pyglets_dispatch_event = pyglet.window.BaseWindow.dispatch_event
+
+    # Override the pyglet dispatch event function
     pyglet.window.BaseWindow.dispatch_event = _dispatch_event
     _max_history = max_history
 
@@ -144,14 +147,11 @@ def disable_timings() -> None:
     Performance tracking must be enabled with
     :func:`arcade.enable_timings` before calling this function.
     """
-    global _pyglets_dispatch_event
-
-    if _pyglets_dispatch_event is None:
+    if pyglet.window.BaseWindow.dispatch_event != _dispatch_event:
         raise ValueError("Timings are not enabled.")
 
     # Restore the original pyglet dispatch event function
-    pyglet.window.BaseWindow.dispatch_event = _dispatch_event
-    _pyglets_dispatch_event = None
+    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event
 
     clear_timings()
 
@@ -192,4 +192,4 @@ def timings_enabled() -> bool:
 
     :return: Whether timings are currently enabled.
     """
-    return _pyglets_dispatch_event is not None
+    return pyglet.window.BaseWindow.dispatch_event == _dispatch_event
