@@ -53,6 +53,23 @@ class AtlasRegion:
     (4 points, 2 floats each) in the following order:
     upper_left, upper_right, lower_left, lower_right.
 
+    Layout::
+
+        (0, 1)                                 (1, 1)
+        +--------------------------------------+
+        |          Atlas Texture               |
+        |                                      |
+        | (2)               (3)                |
+        +-----------------+                    |
+        |   Texture       |                    |
+        |                 |                    |
+        |                 |                    |
+        |                 |                    |
+        |                 |                    |
+        | (0)             | (1)                |
+        +-----------------+--------------------+
+        (0, 0)                                 (1, 0)
+
     :param str atlas: The atlas this region belongs to
     :param str texture: The arcade texture
     :param int x: The x position of the texture
