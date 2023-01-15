@@ -25,9 +25,9 @@ def test_empty_image():
 
     result = arcade.calculate_hit_box_points_simple(texture.image)
     print(result)
-    assert result == []
+    assert result == ()
 
     result = arcade.calculate_hit_box_points_detailed(texture.image)
     print(result)
-    assert result == []
+    assert result == ()
 
