@@ -68,4 +68,4 @@ def test_draw_position(ctx, texture):
     patch.draw_sized(size=(200, 200), position=(0, 0))
     patch.draw_sized(size=(200, 200), position=(200, 200))
     patch.draw_sized(size=(200, 200), position=(400, 400))
-    arcade.get_image().save("test_draw_position.png")
+    # arcade.get_image().save("test_draw_position.png")
