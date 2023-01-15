@@ -75,7 +75,7 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
     def trace_image(self, image: Image) -> PolylineSet:
         """
         Trace the image and return a list of line sets.
-        
+
         These line sets represent the outline of the image or the outline of the
         holes in the image. If more than one line set is returned it's important
         to pick the one that covers the most of the image.
