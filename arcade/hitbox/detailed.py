@@ -43,10 +43,17 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
         if len(line_set) > 4:
             line_set = simplify_curves(line_set, hit_box_detail)
 
-        points = self.to_points_list(image, line_set)
-        return points
+        return self.to_points_list(image, line_set)
 
-    def to_points_list(self, image: Image, line_set: List[Vec2d]):
+    def to_points_list(self, image: Image, line_set: List[Vec2d]) -> PointList:
+        """
+        Convert a line set to a list of points.
+
+        Coordinates are offset so ``(0,0)`` is the center of the image.
+
+        :param Image image: Image to trace.
+        :param List[Vec2d] line_set: Line set to convert.
+        """
         # Convert to normal points, offset fo 0,0 is center, flip the y
         hh = image.height / 2.0
         hw = image.width / 2.0
@@ -138,7 +145,7 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
         # We have more than one line set.
         # Try and find one that covers most of the sprite.
         selected_line_set = line_sets[0]
-        max_area = None
+        largest_area = -1.0
 
         for line_set in line_sets:
             min_x = None
@@ -160,9 +167,8 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
 
             # Calculate the area of the bounding box
             area = (max_x - min_x) * (max_y - min_y)
-
-            if max_area is None or area > max_area:
-                max_area = area
+            if area > largest_area:
+                largest_area = area
                 selected_line_set = line_set
 
         return selected_line_set
