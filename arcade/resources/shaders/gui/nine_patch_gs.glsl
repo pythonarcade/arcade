@@ -17,6 +17,8 @@ uniform vec2 start;
 // Upper right: Border in pixels
 uniform vec2 end;
 
+// The xp position of the patch
+uniform vec2 position = vec2(0.0, 0.0);
 // Size of the patch in pixels
 uniform vec2 size;
 // Size of the texture in pixels
@@ -29,25 +31,25 @@ out vec2 uv;
 
 void main() {
     // Patch points starting from upper left row by row
-    vec2 p1 = vec2(0.0, size.y);
-    vec2 p2 = vec2(start.x, size.y);
-    vec2 p3 = vec2(size.x - (t_size.x - end.x), size.y);
-    vec2 p4 = vec2(size.x, size.y);
+    vec2 p1 = position + vec2(0.0, size.y);
+    vec2 p2 = position + vec2(start.x, size.y);
+    vec2 p3 = position + vec2(size.x - (t_size.x - end.x), size.y);
+    vec2 p4 = position + vec2(size.x, size.y);
 
-    vec2 p5 = vec2(0.0, size.y - start.y);
-    vec2 p6 = vec2(start.x, size.y - start.y);
-    vec2 p7 = vec2(size.x - (t_size.x - end.x), size.y - start.y);
-    vec2 p8 = vec2(size.x, size.y - start.y);
+    vec2 p5 = position + vec2(0.0, size.y - start.y);
+    vec2 p6 = position + vec2(start.x, size.y - start.y);
+    vec2 p7 = position + vec2(size.x - (t_size.x - end.x), size.y - start.y);
+    vec2 p8 = position + vec2(size.x, size.y - start.y);
 
-    vec2 p9 = vec2(0.0, start.y);
-    vec2 p10 = vec2(start.x, start.y);
-    vec2 p11 = vec2(size.x - (t_size.x - end.x), start.y);
-    vec2 p12 = vec2(size.x, start.y);
+    vec2 p9 = position + vec2(0.0, start.y);
+    vec2 p10 = position + vec2(start.x, start.y);
+    vec2 p11 = position + vec2(size.x - (t_size.x - end.x), start.y);
+    vec2 p12 = position + vec2(size.x, start.y);
 
-    vec2 p13 = vec2(0.0, 0.0);
-    vec2 p14 = vec2(start.x, 0.0);
-    vec2 p15 = vec2(size.x - (t_size.x - end.x), 0.0);
-    vec2 p16 = vec2(size.x, 0.0);
+    vec2 p13 = position + vec2(0.0, 0.0);
+    vec2 p14 = position + vec2(start.x, 0.0);
+    vec2 p15 = position + vec2(size.x - (t_size.x - end.x), 0.0);
+    vec2 p16 = position + vec2(size.x, 0.0);
 
     // <AtlasRegion 
     //     x=1 y=1 

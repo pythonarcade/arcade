@@ -51,8 +51,10 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         frame.with_padding(all=space)
 
         frame.with_background(texture=NinePatchTexture(
-            start=(7, 7),
-            end=(93, 93),
+            left=7,
+            right=7,
+            bottom=7,
+            top=7,
             texture=arcade.load_texture(
                 ":resources:gui_basic_assets/window/grey_panel.png"
             )
