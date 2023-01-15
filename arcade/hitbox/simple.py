@@ -11,8 +11,7 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
     """
     name = "simple"
 
-    @classmethod
-    def calculate(cls, image: Image, **kwargs) -> PointList:
+    def calculate(self, image: Image, **kwargs) -> PointList:
         """
         Given an RGBA image, this returns points that make up a hit box around it. Attempts
         to trim out transparent pixels.

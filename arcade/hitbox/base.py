@@ -9,6 +9,5 @@ class HitBoxAlgorithm:
     """
     name = "base"
 
-    @classmethod
-    def calculate(cls, image: Image, **kwargs) -> PointList:
+    def calculate(self, image: Image, **kwargs) -> PointList:
         raise NotImplementedError
