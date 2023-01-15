@@ -14,8 +14,10 @@ class MyView(arcade.View):
         self.nine_patch_widget.with_background(
             texture=NinePatchTexture(
                 texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
-                start=(7, 7),
-                end=(93, 93),
+                left=7,
+                right=7,
+                bottom=7,
+                top=7,
             )
         )
 
