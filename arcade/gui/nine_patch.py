@@ -80,6 +80,8 @@ class NinePatchTexture:
         self._bottom = bottom
         self._top = top
 
+        self._check_sizes()
+
     @property
     def ctx(self) -> arcade.ArcadeContext:
         """The OpenGL context."""
@@ -171,6 +173,7 @@ class NinePatchTexture:
     def draw_sized(
         self,
         *,
+        position: Tuple[float, float] = (0, 0),
         size: Tuple[float, float],
         **kwargs
     ):
@@ -184,6 +187,7 @@ class NinePatchTexture:
             "texture_id", self._atlas.get_texture_id(self._texture.name)
         )
 
+        self.program["position"] = position
         self.program["start"] = self._left, self._bottom
         self.program["end"] = self.width - self._right, self.height - self._top
         self.program["size"] = size
@@ -192,3 +196,23 @@ class NinePatchTexture:
         self._atlas.use_uv_texture(0)
         self._atlas.texture.use(1)
         self._geometry.render(self._program, vertices=1)
+
+    def _check_sizes(self):
+        """
+        Check if borders are valid
+        """
+        # Sanity check values
+        if self._left < 0:
+            raise ValueError("Left border must be a positive integer")
+        if self._right < 0:
+            raise ValueError("Right border must be a positive integer")
+        if self._bottom < 0:
+            raise ValueError("Bottom border must be a positive integer")
+        if self._top < 0:
+            raise ValueError("Top border must be a positive integer")
+
+        # Sanity check texture size
+        if self._left + self._right > self._texture.width:
+            raise ValueError("Left and right border must be smaller than texture width")
+        if self._bottom + self._top > self._texture.height:
+            raise ValueError("Bottom and top border must be smaller than texture height")
