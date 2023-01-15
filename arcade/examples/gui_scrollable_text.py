@@ -34,8 +34,10 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         bg_tex = NinePatchTexture(
-            start=(5, 5),
-            end=(95, 95),
+            left=5,
+            right=5,
+            top=5,
+            bottom=5,
             texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"))
         text_area = UITextArea(
             x=100,
