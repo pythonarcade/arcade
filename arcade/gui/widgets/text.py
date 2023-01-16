@@ -1,11 +1,15 @@
 from typing import Optional
 
 import pyglet
+from pyglet.text import Label
+
+from arcade.gui.widgets.layout import UIAnchorLayout
 from pyglet.event import EVENT_UNHANDLED, EVENT_HANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
+
 from arcade.gui.events import (
     UIEvent,
     UIMousePressEvent,
@@ -78,7 +82,6 @@ class UILabel(UIWidget):
             font_size=font_size,
             color=arcade.get_four_byte_color(text_color),
             width=width,
-            height=height,
             bold=bold,
             italic=italic,
             stretch=stretch,
@@ -88,7 +91,6 @@ class UILabel(UIWidget):
             multiline=multiline,
             **kwargs,
         )
-
         super().__init__(
             x=x,
             y=y,
@@ -113,8 +115,8 @@ class UILabel(UIWidget):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
-            self.layout.content_width + base_width,
-            self.layout.content_height + base_height,
+            self.layout.content_width + base_width + 1,
+            self.layout.content_height + base_height + 1,
         )
 
     @property
@@ -143,6 +145,60 @@ class UILabel(UIWidget):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
+
+
+class UITextWidget(UIAnchorLayout):
+    """
+    Adds the ability to add text to a widget.
+    The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
+    """
+
+    def __init__(self, text: str = "", **kwargs):
+        super().__init__(text=text, **kwargs)
+        self._label = UILabel(
+            text=text,
+            multiline=True,
+            width=1000
+        )  # width 1000 try to prevent line wrap
+        self.add(self._label)
+        self.ui_label.fit_content()
+
+    def place_text(self,
+                   anchor_x: Optional[str] = None,
+                   align_x: float = 0,
+                   anchor_y: Optional[str] = None,
+                   align_y: float = 0,
+                   **kwargs):
+        """
+        This allows to place widgets text within the widget using UIAnchorLayout parameters.
+        """
+        self.remove(self._label)
+        self.add(
+            child=self._label,
+            anchor_x=anchor_x,
+            align_x=align_x,
+            anchor_y=anchor_y,
+            align_y=align_y,
+            **kwargs
+        )
+
+    @property
+    def text(self):
+        return self._label.text
+
+    @text.setter
+    def text(self, value):
+        self.ui_label.text = value
+        self.ui_label.fit_content()
+        self.trigger_render()
+
+    @property
+    def ui_label(self) -> UILabel:
+        return self._label
+
+    @property
+    def label(self) -> Label:
+        return self._label.layout
 
 
 class UIInputText(UIWidget):

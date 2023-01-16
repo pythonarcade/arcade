@@ -65,6 +65,22 @@ class UIAnchorLayout(UILayout):
         align_y: float = 0,
         **kwargs
     ) -> W:
+        """
+        Add a widget to this :class:`UIWidget` as a child.
+        Added widgets will receive ui events and be rendered.
+
+        By default, the latest added widget will receive ui events first and will be rendered on top of others.
+
+        The widgets will be automatically placed within this widget.
+
+        :param child: widget to add
+        :param anchor_x: anchor for x-axis, can be left, center, right
+        :param align_x: offset for the given anchor
+        :param anchor_y: anchor for y-axis, can be top, center, bottom
+        :param align_y: offset for the given anchor
+
+        :return: given child
+        """
         return super(UIAnchorLayout, self).add(
             child=child,
             anchor_x=anchor_x,
