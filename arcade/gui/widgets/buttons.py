@@ -4,13 +4,14 @@ from typing import Optional, Dict, Union
 import arcade
 from arcade import Texture, Color
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import Property, bind, DictProperty
-from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
+from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget):
+class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A button with an image for the face of the button.
 
@@ -29,8 +30,6 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
     :param size_hint_max: max width and height in pixel
     """
 
-    text: Optional[str] = Property()  # type: ignore
-
     _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
 
     @dataclass
@@ -43,7 +42,6 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
@@ -101,6 +99,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            text=text,
             **kwargs,
         )
 
@@ -118,10 +117,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
         if texture_disabled:
             self._textures["disabled"] = texture_disabled
 
-        self.text = text
-
         bind(self, "_textures", self.trigger_render)
-        bind(self, "text", self.trigger_render)
 
     def get_current_state(self) -> str:
         if self.disabled:
@@ -163,39 +159,31 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget):
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
 
+        style = self.get_current_style()
+
+        # update label
+        self.apply_style(style)
+
         current_state = self.get_current_state()
         current_texture = self._textures.get(current_state)
         if current_texture:
             surface.draw_texture(0, 0, self.width, self.height, current_texture)
 
-        if self.text:
-            text_margin = 2
-            style = self.get_current_style()
+    def apply_style(self, style: UIStyleBase):
+        """
+        Callback which is called right before rendering to apply changes for rendering.
+        """
+        font_name = style.get("font_name")
+        font_size = style.get("font_size")
+        font_color = style.get("font_color")
 
-            # border_color = self._style.get("border_color", None)
-            # bg_color = self._style.get("bg_color", (21, 19, 21))
-
-            start_x = self.width // 2
-            start_y = self.height // 2 + 4
-
-            if self.pressed:
-                start_y -= 2
-
-            arcade.draw_text(
-                text=self.text,
-                start_x=start_x,
-                start_y=start_y,
-                font_size=style.get("font_size", 15),
-                font_name=style.get("font_name", 15),
-                color=style.get("font_color", arcade.color.WHITE),
-                align="center",
-                anchor_x="center",
-                anchor_y="center",
-                width=self.width - 2 * style.get("border_width", 2) - 2 * text_margin,
-            )
+        self._label.layout.begin_update()
+        self._label.layout.font_name = font_name
+        self._label.layout.font_size = font_size
+        self._label.layout.color = font_color
 
 
-class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
+class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
 
@@ -207,8 +195,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
     :param style: Used to style the button
 
     """
-
-    text = Property("")
 
     @dataclass
     class UIStyle(UIStyleBase):
@@ -269,11 +255,11 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=style or self.DEFAULT_STYLE,
+            text=text,
             **kwargs
         )
 
-        self.text = text
-        bind(self, "text", self.trigger_render)
+        self.add(self._label)
 
     def get_current_state(self) -> str:
         if self.disabled:
@@ -289,11 +275,10 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
         self.prepare_render(surface)
         style = self.get_current_style()
 
-        # Render button
-        font_name = style.get("font_name")
-        font_size = style.get("font_size")
-        font_color = style.get("font_color")
+        # update label
+        self.apply_style(style)
 
+        # Render button
         border_width = style.get("border_width")
         border_color = style.get("border")
         bg_color = style.get("bg")
@@ -311,21 +296,15 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget):
                 border_width=border_width,
             )
 
-        # render text
-        if self.text and font_color:
-            start_x = self.content_width // 2
-            start_y = self.content_height // 2
+    def apply_style(self, style: UIStyleBase):
+        """
+        Callback which is called right before rendering to apply changes for rendering.
+        """
+        font_name = style.get("font_name")
+        font_size = style.get("font_size")
+        font_color = style.get("font_color")
 
-            text_margin = 2
-            arcade.draw_text(
-                text=self.text,
-                start_x=start_x,
-                start_y=start_y,
-                font_name=font_name,
-                font_size=font_size,
-                color=font_color,
-                align="center",
-                anchor_x="center",
-                anchor_y="center",
-                width=self.content_width - 2 * (border_width or 0) - 2 * text_margin,
-            )
+        self._label.layout.begin_update()
+        self._label.layout.font_name = font_name
+        self._label.layout.font_size = font_size
+        self._label.layout.color = font_color

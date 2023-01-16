@@ -687,6 +687,9 @@ class UIInteractiveWidget(UIWidget):
         bind(self, "disabled", self.trigger_render)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        if super().on_event(event):
+            return EVENT_HANDLED
+
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
@@ -706,9 +709,6 @@ class UIInteractiveWidget(UIWidget):
                     )
                     # TODO unsure if it makes more sense to mark the event handled if the click event is handled.
                     return EVENT_HANDLED
-
-        if super().on_event(event):
-            return EVENT_HANDLED
 
         return EVENT_UNHANDLED
 

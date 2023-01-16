@@ -103,3 +103,30 @@ def test_click_on_overlay_widget_consumes_events(uimanager):
     assert click_event.source == widget2
     assert click_event.x == widget2.center_x
     assert click_event.y == widget2.center_y
+
+
+def test_click_consumed_by_nested_widget(uimanager):
+    # GIVEN
+    widget1 = UIDummy()
+    widget2 = UIDummy()
+    widget1.add(widget2)
+    uimanager.add(widget1)
+
+    # WHEN
+    with record_ui_events(widget1, "on_click") as w1_records:
+        with record_ui_events(widget2, "on_click") as w2_records:
+            uimanager.click(widget1.center_x, widget1.center_y)
+
+    # THEN
+    # events are consumed before they get to underlying widget
+    w1_records: List[UIEvent]
+    assert len(w1_records) == 0
+
+    # events are dispatched on widget2
+    w2_records: List[UIEvent]
+    assert len(w2_records) == 1
+    click_event = w2_records[0]
+    assert isinstance(click_event, UIOnClickEvent)
+    assert click_event.source == widget2
+    assert click_event.x == widget2.center_x
+    assert click_event.y == widget2.center_y
