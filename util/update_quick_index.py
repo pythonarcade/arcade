@@ -64,6 +64,7 @@ titles = {
     'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
     'gui/style.py': ['GUI Style', 'gui_style.rst'],
 
