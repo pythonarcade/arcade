@@ -7,7 +7,7 @@ Compiling a Game with Nuitka
     :width: 30%
     :class: right-image
 
-So you have successully written your dream game with Arcade and now, you want
+So you have successfully written your dream game with Arcade and now, you want
 to share it with your friends and family. Good idea! But there is a *small* issue.
 Sadly, they are not a tech geek as big as you are and don't have any knowledge
 about Python and its working :(. Though :ref:`bundle_into_redistributable` *is* a good option, the 
@@ -60,13 +60,13 @@ Converting that code to a standalone executable is as easy as:
     python -m nuitka 17_views.py --standalone --enable-plugin=numpy
 
 Now sit back and relax. Might as well go and grab a cup of coffee since compilation
-takes time, sometimes maybe upto 2 hours, depending on your machine's specs.
+takes time, sometimes maybe up to 2 hours, depending on your machine's specs.
 After the process is finished, two new folders named ``17_views.py.dist`` and
 ``17_views.py.build`` will popup. You can safely ignore the build folder for now.
 Just go to the dis folder and run ``17_views.exe`` file , present in there. If there are no
 errors, then the application should work perfectly. 
 
-Congratulations! You have successully compiled your Python code to a standalone executable!
+Congratulations! You have successfully compiled your Python code to a standalone executable!
 
 Note: If you want to compile the code to a single file instead of a folder, just remove the ``standalone``
 flag and add the ``onefile`` flag!
