@@ -210,6 +210,7 @@ class Context:
         self._blend_func: Union[Tuple[int, int], Tuple[int, int, int, int]] = self.BLEND_DEFAULT
         self._point_size = 1.0
         self._flags: Set[int] = set()
+        self._wireframe = False
 
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
@@ -619,6 +620,24 @@ class Context:
     # def blend_equation(self)
     # def front_face(self)
     # def cull_face(self)
+
+    @property
+    def wireframe(self) -> bool:
+        """
+        Get or set the wireframe mode.
+        When enabled all primitives will be rendered as lines.
+
+        :type: bool
+        """
+        return self._wireframe
+
+    @wireframe.setter
+    def wireframe(self, value: bool):
+        self._wireframe = value
+        if value:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        else:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
 
     @property
     def patch_vertices(self) -> int:
