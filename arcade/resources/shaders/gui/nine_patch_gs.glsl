@@ -36,10 +36,11 @@ void main() {
     vec2 p3 = position + vec2(size.x - (t_size.x - end.x), size.y);
     vec2 p4 = position + vec2(size.x, size.y);
 
-    vec2 p5 = position + vec2(0.0, size.y - start.y);
-    vec2 p6 = position + vec2(start.x, size.y - start.y);
-    vec2 p7 = position + vec2(size.x - (t_size.x - end.x), size.y - start.y);
-    vec2 p8 = position + vec2(size.x, size.y - start.y);
+    float y = size.y - (t_size.y - end.y);
+    vec2 p5 = position + vec2(0.0, y);
+    vec2 p6 = position + vec2(start.x, y);
+    vec2 p7 = position + vec2(size.x - (t_size.x - end.x), y);
+    vec2 p8 = position + vec2(size.x, y);
 
     vec2 p9 = position + vec2(0.0, start.y);
     vec2 p10 = position + vec2(start.x, start.y);

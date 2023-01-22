@@ -175,6 +175,7 @@ class NinePatchTexture:
         *,
         position: Tuple[float, float] = (0, 0),
         size: Tuple[float, float],
+        pixelated: bool = False,
         **kwargs
     ):
         """
@@ -186,6 +187,10 @@ class NinePatchTexture:
         self.program.set_uniform_safe(
             "texture_id", self._atlas.get_texture_id(self._texture.name)
         )
+        if pixelated:
+            self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
+        else:
+            self._atlas.texture.filter = self._ctx.LINEAR, self._ctx.LINEAR
 
         self.program["position"] = position
         self.program["start"] = self._left, self._bottom

@@ -2,7 +2,7 @@ import arcade
 import pytest
 
 # Reduce the atlas size
-arcade.ArcadeContext.atlas_size = (2048, 2048)
+arcade.ArcadeContext.atlas_size = 2048, 2048
 
 WINDOW = None
 
@@ -35,11 +35,16 @@ def prepare_window(window: arcade.Window):
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
     window.on_update = lambda dt: None
-    window.update = lambda dt: None
 
 
 @pytest.fixture(scope="function")
 def ctx():
+    """
+    Per function context.
+
+    The main purpose of this is to ensure that the context is reset
+    between each test function and the window is flipped.
+    """
     window = create_window()
     arcade.set_window(window)
     try:
@@ -49,8 +54,28 @@ def ctx():
         window.flip()
 
 
+@pytest.fixture(scope="session")
+def ctx_static():
+    """
+    Context that is shared between tests
+    This is the same global context.
+    Module scoped fixtures can inject this context.
+    """
+    window = create_window()
+    arcade.set_window(window)
+    prepare_window(window)
+    yield window.ctx
+
+
 @pytest.fixture(scope="function")
 def window():
+    """
+    Global window that is shared between tests.
+
+    This just returns the global window, but ensures that the context
+    is reset between each test function and the window is flipped
+    between each test function.
+    """
     window = create_window()
     arcade.set_window(window)
     try:
