@@ -17,6 +17,7 @@ from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
 from arcade.gl.vertex_array import Geometry
+from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
@@ -474,3 +475,27 @@ class ArcadeContext(Context):
             texture.build_mipmaps()
 
         return texture
+
+    def get_framebuffer_image(
+        self,
+        fbo: Framebuffer,
+        components: int = 4,
+        flip=True,
+    ) -> Image:
+        """
+        Shortcut method for reading data from a framebuffer and converting it to a PIL image.
+
+        :param Framebuffer fbo: Framebuffer to get image from
+        :param int components: Number of components to read
+        :param bool flip: Flip the image upside down
+        """
+        mode = "RGBA"[:components]
+        image = Image.frombuffer(
+            mode,
+            (fbo.width, fbo.height),
+            fbo.read(components=components),
+        )
+        if flip:
+            image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+
+        return image
