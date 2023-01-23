@@ -1,14 +1,14 @@
 """
-Move Sprite with Joystick
+Move Sprite with Controller
 
-An example of one way to use joystick and controller input to move a
+An example of one way to use controller and controller input to move a
 sprite.
 
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the
 command line with:
-python -m arcade.examples.sprite_move_joystick
+python -m arcade.examples.sprite_move_controller
 """
 import arcade
 
@@ -16,7 +16,7 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Move Sprite with Joystick Example"
+SCREEN_TITLE = "Move Sprite with Controller Example"
 
 MOVEMENT_SPEED = 5
 DEAD_ZONE = 0.05
@@ -28,42 +28,41 @@ class Player(arcade.Sprite):
     def __init__(self, filename, scale):
         super().__init__(filename, scale)
 
-        # Get list of game controllers that are available
-        joysticks = arcade.get_joysticks()
+        self.controller = None
+
+        controllers = arcade.get_controllers()
 
         # If we have any...
-        if joysticks:
+        if controllers:
             # Grab the first one in  the list
-            self.joystick = joysticks[0]
+            self.controller = controllers[0]
 
             # Open it for input
-            self.joystick.open()
+            self.controller.open()
 
-            # Push this object as a handler for joystick events.
-            # Required for the on_joy* events to be called.
-            self.joystick.push_handlers(self)
-            self.error_text = None
-        else:
-            # Handle if there are no joysticks.
-            self.joystick = None
+            # Push this object as a handler for controller events.
+            # Required for the controller events to be called.
+            self.controller.push_handlers(self)
 
     def update(self):
         """ Move the player """
 
-        # If there is a joystick, grab the speed.
-        if self.joystick:
+        # If there is a controller, grab the speed.
+        if self.controller:
 
             # x-axis
-            self.change_x = self.joystick.x * MOVEMENT_SPEED
-            # Set a "dead zone" to prevent drive from a centered joystick
-            if abs(self.change_x) < DEAD_ZONE:
+            movement_x = self.controller.leftx
+            if abs(movement_x) < DEAD_ZONE:
                 self.change_x = 0
+            else:
+                self.change_x = movement_x * MOVEMENT_SPEED
 
             # y-axis
-            self.change_y = -self.joystick.y * MOVEMENT_SPEED
-            # Set a "dead zone" to prevent drive from a centered joystick
-            if abs(self.change_y) < DEAD_ZONE:
+            movement_y = self.controller.lefty
+            if abs(movement_y) < DEAD_ZONE:
                 self.change_y = 0
+            else:
+                self.change_y = movement_y * MOVEMENT_SPEED
 
         # Move the player
         self.center_x += self.change_x
@@ -81,19 +80,19 @@ class Player(arcade.Sprite):
             self.top = SCREEN_HEIGHT - 1
 
     # noinspection PyMethodMayBeStatic
-    def on_joybutton_press(self, _joystick, button):
-        """ Handle button-down event for the joystick """
-        print(f"Button {button} down")
+    def on_button_press(self, controller, button_name):
+        """ Handle button-down event for the controller """
+        print(f"Button {button_name} down")
 
     # noinspection PyMethodMayBeStatic
-    def on_joybutton_release(self, _joystick, button):
-        """ Handle button-up event for the joystick """
-        print(f"Button {button} up")
+    def on_button_release(self, controller, button_name):
+        """ Handle button-up event for the controller """
+        print(f"Button {button_name} up")
 
     # noinspection PyMethodMayBeStatic
-    def on_joyhat_motion(self, _joystick, hat_x, hat_y):
+    def on_stick_motion(self, controller, stick_name, x, y):
         """ Handle hat events """
-        print(f"Hat ({hat_x}, {hat_y})")
+        print(f"Movement on stick {stick_name}: ({x}, {y})")
 
 
 class MyGame(arcade.Window):
@@ -118,7 +117,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.error_text = arcade.Text(
-            "There are no joysticks, plug in a joystick and run again.",
+            "There are no controllers, plug in a controller and run again.",
             10,
             10,
             arcade.color.WHITE,
@@ -153,8 +152,8 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.all_sprites_list.draw()
 
-        # Print an error if there is no joystick
-        if not self.player_sprite.joystick:
+        # Print an error if there is no controller
+        if not self.player_sprite.controller:
             self.error_text.draw()
 
     def on_update(self, delta_time):

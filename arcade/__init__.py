@@ -255,6 +255,9 @@ if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
 
+from .controller import ControllerManager
+from .controller import get_controllers
+
 from .emitter import EmitBurst
 from .emitter import EmitController
 from .emitter import EmitInterval
@@ -354,6 +357,7 @@ __all__ = [
     'Camera',
     'SimpleCamera',
     'Color',
+    'ControllerManager',
     'EasingData',
     'EmitBurst',
     'EmitController',
@@ -505,6 +509,7 @@ __all__ = [
     'get_distance_between_sprites',
     'get_four_byte_color',
     'get_four_float_color',
+    'get_controllers',
     'get_game_controllers',
     'get_image',
     'get_joysticks',
