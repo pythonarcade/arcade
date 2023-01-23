@@ -16,6 +16,6 @@ def get_controllers():
 class ControllerManager(pyglet.input.ControllerManager):
     """A ControllerManager provides an interface for handling connect/disconnect events.
 
-    Please see Pyglet documentation for more information: https://pyglet.readthedocs.io/en/latest/programming_guide/input.html#controllermanager
+    Please see Pyglet docs: https://pyglet.readthedocs.io/en/latest/programming_guide/input.html#controllermanager
     """
     pass
