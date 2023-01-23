@@ -112,12 +112,12 @@ Changes
 
 * Controller Input
 
-  * Previously controllers were usable via the :py:module:`~arcade.joysticks` module. This module is still available in 2.7 for backwards
-    compatibility, however it should largely be seen as deprecated. This module existed basically just as an alias to the Pyglet joysticks
-    module. We now have a new :py:module:`~arcade.controller` module, which is similarly just an alias to Pyglt's newer Controller API.
-    This change should make a much wider selection of controllers able to work with Arcade, and perform much better than the old Joystick module.
-  * Example code for using controllers has been updated to make use of the new Controller API instead of the Joysticks API. There is no longer
-    example code showing the use of joysticks as it should almost never be used in favor of controller.
+  * Previously controllers were usable via the ``arcade.joysticks`` module. This module is still available in 2.7 and onwards.
+    It should largely be seen as deprecated for most people who want basic controller support. This module existed basically just as an alias to
+    the Pyglet joysticks module. We now have a new ``arcade.controller`` module, which is similarly just an alias to Pyglt's newer
+    Controller API. This change should make a much wider selection of controllers able to work with Arcade, and provide newer functionality and be
+    easier to use for most cases than the joystick module. The joystick module may still be useful if you need specialty controllers such as racing
+    wheels or flight sticks. All existing example code has been updated to use the new controller API.
 
 * Text
 
