@@ -21,6 +21,9 @@ jobs:
 
       - name: Install dependencies part 1
         run: |
+          rm -rf .venv
+          python -m venv .venv
+          source .venv/bin/activate
           python -m pip install -U pip wheel setuptools
           python -m pip install pyogg pymunk
       - name: Install dependencies part 2
