@@ -25,7 +25,7 @@ jobs:
           python -m pip install pyogg pymunk
       - name: Install dependencies part 2
         run: |
-          python -m pip install -e .[dev]
+          python -m pip install -I -e .[dev]
       - name: code-inspection
         run: | 
           mypy arcade
