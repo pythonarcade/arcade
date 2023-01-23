@@ -4,6 +4,7 @@ Run All Examples
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m tests.test_examples.run_all_examples
 """
+import pyglet
 import glob
 import os
 import subprocess
@@ -63,10 +64,11 @@ def list_examples(indices_in_range, index_skip_list):
 def test_all(cmd):
     # Set an environment variable that will just run on_update() and on_draw()
     # once, then quit.
+    import pyglet
     test_env = os.environ.copy()
     test_env["ARCADE_TEST"] = "TRUE"
 
     result = subprocess.check_output(cmd, shell=True, env=test_env)
-    if result:
+    if result and pyglet.__version__ != "2.0.3":
         print(f"ERROR: Got a result of: {result}.")
     assert not result
