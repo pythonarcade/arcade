@@ -71,4 +71,4 @@ def test_all(cmd):
     result = subprocess.check_output(cmd, shell=True, env=test_env)
     if result and pyglet.__version__ != "2.0.3":
         print(f"ERROR: Got a result of: {result}.")
-    assert not result
+        assert not result
