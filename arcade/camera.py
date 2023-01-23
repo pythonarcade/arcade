@@ -2,14 +2,14 @@
 Camera class
 """
 import math
-from typing import Optional, Tuple, Union, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
 
 if TYPE_CHECKING:
-    from arcade import Point, SpriteList, Sprite
+    from arcade import Point, Sprite, SpriteList
 
 # type aliases
 FourIntTuple = Tuple[int, int, int, int]
@@ -152,7 +152,7 @@ class SimpleCamera:
 
     def _set_combined_matrix(self) -> None:
         """ Helper method. This will just precompute the combined matrix"""
-        self._combined_matrix = self._projection_matrix @ self._view_matrix
+        self._combined_matrix = self._view_matrix @ self._projection_matrix
 
     def move_to(self, vector: Union[Vec2, tuple], speed: float = 1.0) -> None:
         """

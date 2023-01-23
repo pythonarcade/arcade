@@ -118,7 +118,7 @@ class Perspective(arcade.Window):
         # Move the plane into camera view and rotate it
         translate = Mat4.from_translation((0, 0, -2))
         rotate = Mat4.from_rotation(self.time / 2, (1, 0, 0))
-        self.program["model"] = rotate @ translate
+        self.program["model"] = translate @ rotate
 
         # Scroll the texture coordinates
         self.program["scroll"] = 0, -self.time / 5
