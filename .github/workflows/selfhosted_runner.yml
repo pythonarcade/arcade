@@ -28,14 +28,18 @@ jobs:
           python -m pip install pyogg pymunk
       - name: Install dependencies part 2
         run: |
+          source .venv/bin/activate
           python -m pip install -I -e .[dev]
       - name: code-inspection
         run: | 
+          source .venv/bin/activate
           mypy arcade
           flake8 arcade
       - name: build-docs
         run: |
+          source .venv/bin/activate
           sphinx-build doc build -W
       - name: Test with pytest
         run: |
+          source .venv/bin/activate
           pytest
