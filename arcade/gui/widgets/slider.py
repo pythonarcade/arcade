@@ -92,7 +92,7 @@ class UISlider(UIStyledWidget):
         self.cursor_radius = self.height // 3
 
         # trigger render on value changes
-        bind(self, "value", self.trigger_render)
+        bind(self, "value", self.trigger_full_render)
         bind(self, "hovered", self.trigger_render)
         bind(self, "pressed", self.trigger_render)
         bind(self, "disabled", self.trigger_render)

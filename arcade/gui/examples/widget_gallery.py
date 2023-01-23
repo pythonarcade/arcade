@@ -21,36 +21,52 @@ class UIMockup(arcade.Window):
         grid = anchor.add(UIGridLayout(
             size_hint=(0.9, 0.9),
             column_count=2,
-            row_count=5,
+            row_count=6,
             vertical_spacing=5,
             horizontal_spacing=5
         ))
 
+        # Texture buttons using nine patch textures
         grid.add(
             child=UITextureButton(
                 texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
                 texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
                 texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
             ))
+
+        # Texture buttons using nine patch textures
         grid.add(
             child=UITextureButton(
-                texture=NinePatchTexture(texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-                                         start=(0, 0), end=(190, 49)),
+                texture=NinePatchTexture(
+                    left=5,
+                    right=5,
+                    bottom=5,
+                    top=5,
+                    texture=load_texture(":resources:gui_basic_assets/red_button_normal.png")),
                 texture_hovered=NinePatchTexture(
-                    texture=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-                    start=(100, 50), end=(190, 49)),
+                    left=5,
+                    right=5,
+                    bottom=5,
+                    top=5,
+                    texture=load_texture(":resources:gui_basic_assets/red_button_hover.png")),
                 texture_pressed=NinePatchTexture(
+                    left=5,
+                    right=5,
+                    bottom=5,
+                    top=5,
                     texture=load_texture(":resources:gui_basic_assets/red_button_press.png"),
-                    start=(100, 50), end=(190, 49)),
+                )
             ),
             col_num=0,
             row_num=1)
 
+        # Some text
         grid.add(
             child=UILabel(text="abcdefghijklmnopqrstuvwäöüABCDEFG"),
             col_num=0,
             row_num=2)
 
+        # Simple toggle
         grid.add(
             child=UITextureToggle(
                 on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
@@ -58,6 +74,8 @@ class UIMockup(arcade.Window):
             ),
             col_num=0,
             row_num=3)
+
+        # Simple slider
         grid.add(
             child=UITextureSlider(
                 bar=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
@@ -65,6 +83,22 @@ class UIMockup(arcade.Window):
             ),
             col_num=0,
             row_num=4)
+
+        # Scaled slider using ninepatch texture
+        grid.add(
+            child=UITextureSlider(
+                bar=NinePatchTexture(
+                    texture=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
+                    left=30,
+                    right=33,
+                    bottom=18,
+                    top=18,
+                ),
+                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
+                height=40
+            ),
+            col_num=0,
+            row_num=5)
 
     def on_draw(self):
         self.clear()
