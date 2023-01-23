@@ -31,6 +31,7 @@ for the Python Arcade library. See also:
     api/utility
     api/geometry
     api/game_controller
+    api/joysticks
     api/window
     api/sound
     api/path_finding
