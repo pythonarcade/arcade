@@ -654,4 +654,8 @@ class UIGridLayout(UILayout):
         :param height: Base height on which the widget is to be resized.
         """
         for child, _ in self._children:
-            child.resize(width=width*child.size_hint[0], height=height*child.size_hint[1])
+            size_hint_width = 0
+            size_hint_height = 0
+            if child.size_hint:
+                size_hint_width, size_hint_height = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
+            child.resize(width=(width*size_hint_width) or child.width, height=(height*size_hint_height) or child.height)

@@ -115,6 +115,20 @@ def test_fit_content_by_default(window):
 
     assert subject.size_hint == (0, 0)
 
+def test_resize_child_with_none_size_hint(window):
+    dummy1 = UIDummy(width=100, height=100, size_hint=(None, None))
+
+    subject = UIGridLayout(
+        column_count=1,
+        row_count=1,
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.resize(width=200, height=200)
+    subject.do_layout()
+
+    assert dummy1.size == (100, 100)
 
 def test_growth_child(window):
     dummy1 = UIDummy(width=100, height=100, size_hint=(1, 1))
