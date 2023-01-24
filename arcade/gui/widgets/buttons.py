@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict, Union
 
 import arcade
-from arcade import Texture, Color
+from arcade import Texture, Color, get_four_byte_color
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -180,7 +180,8 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         self._label.layout.begin_update()
         self._label.layout.font_name = font_name
         self._label.layout.font_size = font_size
-        self._label.layout.color = font_color
+        self._label.layout.color = get_four_byte_color(font_color) if font_color else font_color
+        self._label.layout.end_update()
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -307,5 +308,5 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         self._label.layout.begin_update()
         self._label.layout.font_name = font_name
         self._label.layout.font_size = font_size
-        self._label.layout.color = font_color
+        self._label.layout.color = get_four_byte_color(font_color) if font_color else font_color
         self._label.layout.end_update()

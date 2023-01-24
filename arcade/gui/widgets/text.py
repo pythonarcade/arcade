@@ -125,7 +125,7 @@ class UILabel(UIWidget):
 
     @text.setter
     def text(self, value):
-        self.layout.text = value
+        self.layout.text = value  # triggers full render
         self._update_layout()
         self.trigger_full_render()
 
