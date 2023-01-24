@@ -420,7 +420,7 @@ class UIGridLayout(UILayout):
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
-        size_hint=None,
+        size_hint=(0, 0),
         size_hint_min=None,
         size_hint_max=None,
         horizontal_spacing: int = 0,
@@ -645,3 +645,13 @@ class UIGridLayout(UILayout):
                         child.rect = new_rect
 
             start_y -= max_height_row
+
+    def resize(self, width, height):
+        """
+        Resizes each widget to the given width and height with respect to the widget's size hint.
+
+        :param width: Base width on which the widget is to be resized.
+        :param height: Base height on which the widget is to be resized.
+        """
+        for child, _ in self._children:
+            child.resize(width=width*child.size_hint[0], height=height*child.size_hint[1])
