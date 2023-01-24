@@ -110,6 +110,15 @@ Changes
     * Removal of various deprecated functions and parameters
     * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
 
+* Controller Input
+
+  * Previously controllers were usable via the ``arcade.joysticks`` module. This module is still available in 2.7 and onwards.
+    It should largely be seen as deprecated for most people who want basic controller support. This module existed basically just as an alias to
+    the Pyglet joysticks module. We now have a new ``arcade.controller`` module, which is similarly just an alias to Pyglt's newer
+    Controller API. This change should make a much wider selection of controllers able to work with Arcade, and provide newer functionality and be
+    easier to use for most cases than the joystick module. The joystick module may still be useful if you need specialty controllers such as racing
+    wheels or flight sticks. All existing example code has been updated to use the new controller API.
+
 * Text
 
   * Complete removal of the old PIL based text system. In Arcade 2.6 we had largely switched to the newer Pyglet based system, however

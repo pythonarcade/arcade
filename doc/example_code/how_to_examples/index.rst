@@ -178,9 +178,9 @@ Sprite Player Movement
 
 .. figure:: thumbs/sprite_collect_coins.png
    :figwidth: 170px
-   :target: sprite_move_joystick.html
+   :target: sprite_move_controller.html
 
-   :ref:`sprite_move_joystick`
+   :ref:`sprite_move_controller`
 
 .. figure:: thumbs/sprite_move_angle.png
    :figwidth: 170px

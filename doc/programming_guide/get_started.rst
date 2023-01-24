@@ -64,7 +64,7 @@ Arcade Skill Tree
       :ref:`sprite_move_keyboard_better`
     * Keyboard with acceleration, de-acceleration: :ref:`sprite_move_keyboard_accel`
     * Keyboard, rotate and move forward/back like a space ship: :ref:`sprite_move_angle`
-  * Game Controller - :ref:`sprite_move_joystick`
+  * Game Controller - :ref:`sprite_move_controller`
 
     * Game controller buttons - *Supported, but documentation needed.*
 
