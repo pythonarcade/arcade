@@ -54,6 +54,54 @@ For widgets, that might have transparent areas, they have to request a full rend
 
     Enforced rendering of the whole GUI might be very expensive!
 
+
+Transitions
+===========
+
+To animate a UIWidget, use :meth:`UIWidget.add_transition` and add a :class:`Transition`.
+A :class:`Transition` can be used to manipulate a value over time.
+Arcade provides a few easing functions listed below.
+
+.. code-block::
+
+    widget = UIWidget()
+    # move a widgets center_x from 0 to 100 within 2 seconds
+    widget.add_transition(Transition(attribute="center_x", start=0, end=100, duration=2))
+
+Transactions can also be chained to be executed sequentially using the `+` operator
+or combined for parallel execution with the `|` operator.
+
+Arcade provides following transitions:
+
+- :class:`TransitionAttr` - Change value over time (start til end)
+- :class:`TransitionAttrIncr` - Increment value over time
+- :class:`TransitionAttrSet` - Set value after time
+- :class:`TransitionParallel` - Execute multiple transactions parallel
+- :class:`TransitionChain` - Execute multiple transactions sequentially
+- :class:`TransitionDelay` - Used to pause :class:`TransitionChain`
+
+> Be aware, that transitions may interfere with :class:`UILayout` positioning.
+
+
+Easing functions
+................
+
+You can check out all of these functions using `python -m arcade.examples.easing_example_1`
+
+- :meth:`arcade.linear`
+- :meth:`arcade.smoothstep`
+- :meth:`arcade.ease_in`
+- :meth:`arcade.ease_out`
+- :meth:`arcade.ease_in_out`
+- :meth:`arcade.ease_out_elastic`
+- :meth:`arcade.ease_out_bounce`
+- :meth:`arcade.ease_in_back`
+- :meth:`arcade.ease_out_back`
+- :meth:`arcade.ease_in_sin`
+- :meth:`arcade.ease_out_sin`
+- :meth:`arcade.ease_in_out_sin`
+
+
 UILayout
 ========
 
@@ -118,6 +166,8 @@ Size hint support
 | :class:`UIAnchorLayout`  | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIBoxLayout`     | X          | X              | X              |
++--------------------------+------------+----------------+----------------+
+| :class:`UIGridLayout`    |            |                |                |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIManager`       | X          | X              |                |
 +--------------------------+------------+----------------+----------------+

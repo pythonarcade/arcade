@@ -27,6 +27,16 @@ from arcade.gui.widgets.layout import (
     UILayout,
 )
 from arcade.gui.widgets import UIDummy, Rect
+from arcade.gui.transition import (
+    TransitionBase,
+    EventTransitionBase,
+    TransitionAttr,
+    TransitionAttrIncr,
+    TransitionChain,
+    TransitionParallel,
+    TransitionDelay,
+    TransitionAttrSet,
+)
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UILabel, UIInputText, UITextArea, UITextWidget
 from arcade.gui.widgets.toggle import UITextureToggle
@@ -91,6 +101,15 @@ __all__ = [
     "Surface",
     "Rect",
     "NinePatchTexture",
+    # Transitions
+    "TransitionBase",
+    "EventTransitionBase",
+    "TransitionAttr",
+    "TransitionAttrIncr",
+    "TransitionAttrSet",
+    "TransitionChain",
+    "TransitionParallel",
+    "TransitionDelay",
     # Property classes
     "ListProperty",
     "DictProperty",
