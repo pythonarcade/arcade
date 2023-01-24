@@ -2,7 +2,7 @@ import arcade
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Basic Pygame Template"
+SCREEN_TITLE = "Basic Arcade Template"
 
 
 class MyWindow(arcade.Window):
