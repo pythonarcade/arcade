@@ -115,64 +115,29 @@ def test_fit_content_by_default(window):
 
     assert subject.size_hint == (0, 0)
 
-def test_resize_child_with_none_size_hint(window):
-    dummy1 = UIDummy(width=100, height=100, size_hint=(None, None))
+def test_adjust_children_size_relative(window):
+    dummy1 = UIDummy(width=100, height=100)
+    dummy2 = UIDummy(width=50, height=50, size_hint=(.75, .75))
+    dummy3 = UIDummy(width=100, height=100, size_hint=(.5, .5), size_hint_min=(60, 60))
+    dummy4 = UIDummy(width=100, height=100)
 
     subject = UIGridLayout(
-        column_count=1,
-        row_count=1,
+        column_count=2,
+        row_count=2,
     )
 
     subject.add(dummy1, 0, 0)
+    subject.add(dummy2, 0, 1)
+    subject.add(dummy3, 1, 0)
+    subject.add(dummy4, 1, 1)
 
-    subject.resize(width=200, height=200)
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
     subject.do_layout()
+
+    # check that do_layout doesn't manipulate the rect
+    assert subject.rect == (0, 0, 200, 200)
 
     assert dummy1.size == (100, 100)
-
-def test_growth_child(window):
-    dummy1 = UIDummy(width=100, height=100, size_hint=(1, 1))
-
-    subject = UIGridLayout(
-        column_count=1,
-        row_count=1,
-    )
-
-    subject.add(dummy1, 0, 0)
-
-    subject.resize(width=200, height=300)
-    subject.do_layout()
-
-    assert dummy1.size == (200, 300)
-
-
-def test_shrink_child(window):
-    dummy1 = UIDummy(width=100, height=100, size_hint=(1, 1))
-
-    subject = UIGridLayout(
-        column_count=1,
-        row_count=1,
-    )
-
-    subject.add(dummy1, 0, 0)
-
-    subject.resize(width=50, height=60)
-    subject.do_layout()
-
-    assert dummy1.size == (50, 60)
-
-
-def test_adjust_child_size_relative(window):
-    dummy1 = UIDummy(width=100, height=100, size_hint=(0.5, 0.5))
-
-    subject = UIGridLayout(
-        column_count=1,
-        row_count=1,
-    )
-
-    subject.add(dummy1, 0, 0)
-
-    subject.resize(width=100, height=200)
-    subject.do_layout()
-
-    assert dummy1.size == (50, 100)
+    assert dummy2.size == (75, 75)
+    assert dummy3.size == (60, 60)
+    assert dummy4.size == (100, 100)
