@@ -9,19 +9,36 @@ W = TypeVar("W", bound="UIWidget")
 class UIAnchorLayout(UILayout):
     """
     Places children based on anchor values.
-    Defaults to `size_hint = (1, 1)`.
+    
+    Defaults to ``size_hint = (1, 1)``.
 
-    Supports `size_hint`, `size_hint_min`, and `size_hint_max`.
-    Children may overlap.
+    Supports the options ``size_hint``, ``size_hint_min``, and
+    ``size_hint_max``. Children are allowed to overlap.
 
-    Child are resized based on size_hint. Max and Min size_hints only take effect if a size_hint is given.
+    Child are resized based on ``size_hint``. Maximum and minimum
+    ``size_hint``s only take effect if a ``size_hint`` is given.
 
-    Allowed keyword options for `UIAnchorLayout.add()`
-    - anchor_x: str = None - uses `self.default_anchor_x` as default
-    - align_x: float = 0
-    - anchor_y: str = None - uses `self.default_anchor_y` as default
-    - align_y: float = 0
+    Allowed keyword options for
+    :py:meth:`~arcade.gui.UIAnchorLayout.add`::
+    - ``anchor_x``: ``str`` = ``None``
+    
+      Horizontal anchor position for the layout. The class constant
+      :py:attr:`~arcade.gui.UIAnchorLayout.default_anchor_x` is used as
+      default.
 
+    - ``anchor_y``: ``str`` = ``None``
+    
+      Vertical anchor position for the layout. The class constant
+      :py:attr:`~arcade.gui.UIAnchorLayout.default_anchor_y` is used as
+      default.
+
+    - ``align_x``: ``float`` = 0
+      
+      Horizontal alignment for the layout.
+
+    - ``align_y``: ``float`` = 0
+      
+      Vertical alignement for the layout.
     """
 
     default_anchor_x = "center"
@@ -66,20 +83,22 @@ class UIAnchorLayout(UILayout):
         **kwargs
     ) -> W:
         """
-        Add a widget to this :class:`UIWidget` as a child.
-        Added widgets will receive ui events and be rendered.
+        Add a widget to the layout as a child. Added widgets will receive
+        all user-interface events and be rendered.
 
-        By default, the latest added widget will receive ui events first and will be rendered on top of others.
+        By default, the latest added widget will receive events first and will
+        be rendered on top of others. The widgets will be automatically placed
+        within this widget.
 
-        The widgets will be automatically placed within this widget.
+        :param child: Specified child widget to add.
+        :param anchor_x: Horizontal anchor. Valid options are ``left``,
+                         ``right``, and ``center``.
+        :param align_x: Offset or padding for the horizontal anchor.
+        :param anchor_y: Vertical anchor. Valid options are ``top``,
+                         ``center``, and ``bottom``.
+        :param align_y: Offset or padding for the vertical anchor.
 
-        :param child: widget to add
-        :param anchor_x: anchor for x-axis, can be left, center, right
-        :param align_x: offset for the given anchor
-        :param anchor_y: anchor for y-axis, can be top, center, bottom
-        :param align_y: offset for the given anchor
-
-        :return: given child
+        :return: Given child that was just added to the layout.
         """
         return super(UIAnchorLayout, self).add(
             child=child,
@@ -124,10 +143,10 @@ class UIAnchorLayout(UILayout):
             if shmx_h:
                 new_child_rect = new_child_rect.max_size(height=shmx_h)
 
-        # stay in bounds
+        # Stay in bounds
         new_child_rect = new_child_rect.max_size(*self.content_size)
 
-        # calculate position
+        # Calculate position
         content_rect = self.content_rect
 
         anchor_x = "center_x" if anchor_x == "center" else anchor_x
@@ -140,37 +159,49 @@ class UIAnchorLayout(UILayout):
         own_anchor_y_value = getattr(content_rect, anchor_y)
         diff_y = own_anchor_y_value + align_y - child_anchor_y_value
 
-        # check if changes are required
+        # Check if changes are required
         if diff_x or diff_y or child.rect != new_child_rect:
             child.rect = new_child_rect.move(diff_x, diff_y)
 
 
 class UIBoxLayout(UILayout):
     """
-    Places widgets next to each other.
-    Depending on the vertical attribute, the widgets are placed top to bottom or left to right.
+    Place widgets next to each other. Depending on the
+    :py:class:`~arcade.gui.UIBoxLayout.vertical` attribute, the widgets are
+    placed top to bottom or left to right.
 
-    Hint: UIBoxLayout does not adjust its own size if children are added.
-    This requires a UIManager or UIAnchorLayout as parent.
-    Use `self.fit_content()` to resize, bottom-left is used as anchor point.
+    .. hint::
+        
+        :py:class:`~arcade.gui.UIBoxLayout` does not adjust its
+        own size if children are added. This requires a
+        :py:class:`~arcade.gui.UIManager` or a
+        :py:class:`~arcade.gui.UIAnchorLayout` as a parent.
 
-    UIBoxLayout supports: size_hint, size_hint_min, size_hint_max
+    Use :py:meth:`arcade.gui.UIBoxLayout.fit_content` to resize the layout. The
+    bottom-left corner is used as the default anchor point.
 
-    If a child widget provides a size_hint for a dimension, the child will be resized within the given range of
-    size_hint_min and size_hint_max (unrestricted if not given).
-    For vertical=True any available space (layout size - min_size of children) will be distributed to the child widgets
-    based on their size_hint.
+    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param vertical: Layout children vertical (True) or horizontal (False)
-    :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
-    :param children: Initial children, more can be added
-    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget`
-                    would like to grow (default 0,0 -> minimal size to contain children)
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param space_between: Space between the children
+    If a child widget provides a ``size_hint`` for a dimension, the child will
+    be resized within the given range of ``size_hint_min`` and
+    ``size_hint_max`` (unrestricted if not given). If the parameter
+    ``vertical`` is True, any available space (``layout size - min_size`` of
+    children) will be distributed to the child widgets based on their
+    ``size_hint``.
+
+    :param float x: ``x`` coordinate of the bottom left corner.
+    :param float y: ``y`` coordinate of the bottom left corner.
+    :param vertical: Layout children vertical (True) or horizontal (False).
+    :param align: Align children in orthogonal direction::
+                  - ``x``: ``left``, ``center``, and ``right``
+                  - ``y``: ``top``, ``center``, and ``bottom``
+    :param children: Initial list of children. More can be added later.
+    :param size_hint: Size hint for the :py:class:`~arcade.gui.UILayout` if
+                      the widget would like to grow. Defaults to ``0, 0`` ->
+                      minimal size to contain children.
+    :param size_hint_min: Minimum width and height in pixels.
+    :param size_hint_max: Maximum width and height in pixels.
+    :param space_between: Space in pixels between the children.
     """
 
     def __init__(
@@ -207,32 +238,39 @@ class UIBoxLayout(UILayout):
 
         bind(self, "_children", self._update_size_hints)
 
-        # initially update size hints
+        # Initially update size hints
         self._update_size_hints()
 
     @staticmethod
     def _layouting_allowed(child: UIWidget) -> Tuple[bool, bool]:
         """
-        Checks if size_hint is given for the dimension, which would allow the layout to resize this widget
+        Checks if ``size_hint`` is given for the dimension. This would allow
+        the layout to resize this widget.
 
-        :return: horizontal, vertical
+        :return: Horizontal and vertical.
         """
         sh_w, sh_h = child.size_hint or (None, None)
+        
         return sh_w is not None, sh_h is not None
 
     def _update_size_hints(self):
-        required_space_between = max(0, len(self.children) - 1) * self._space_between
+        required_space_between = max(0, len(self.children) - 1) * \
+            self._space_between
 
         def min_size(child: UIWidget) -> Tuple[float, float]:
             """
-            Determine min size of a child widget
-            This can be the size_hint_min. If no size_hints are provided the child size has to stay the same and
-            the minimal size is the current size.
+            Determine the minimum size of a child widget.
+            
+            This can be the minimum size hint (``size_hint_min``). If no size
+            hints are provided the child size has to stay the same and the
+            minimal size is the current size.
             """
             h_allowed, v_allowed = UIBoxLayout._layouting_allowed(child)
+            
             shmn_w, shmn_h = child.size_hint_min or (None, None)
             shmn_w = shmn_w or 0 if h_allowed else child.width
             shmn_h = shmn_h or 0 if v_allowed else child.height
+            
             return shmn_w, shmn_h
 
         min_child_sizes = [min_size(child) for child in self.children]
@@ -240,22 +278,28 @@ class UIBoxLayout(UILayout):
         if len(self.children) == 0:
             width = 0
             height = 0
+
         elif self.vertical:
             width = max(size[0] for size in min_child_sizes)
             height_of_children = sum(size[1] for size in min_child_sizes)
             height = height_of_children + required_space_between
+
         else:
             width_of_children = sum(size[0] for size in min_child_sizes)
             width = width_of_children + required_space_between
             height = max(size[1] for size in min_child_sizes)
 
-        base_width = self._padding_left + self._padding_right + 2 * self._border_width
-        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
+        base_width = self._padding_left + self._padding_right + 2 \
+                        * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 \
+                        * self._border_width
+        
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
         """
-        Resize to fit content, using `self.size_hint_min`
+        Resize to fit content, using
+        the :py:attr:`~arcade.gui.UIBoxLayout.size_hint_min` attribute.
 
         :return: self
         """
@@ -271,7 +315,8 @@ class UIBoxLayout(UILayout):
 
         if self.vertical:
             available_width = self.content_width
-            # calculate if some space is available for children to grow
+            
+            # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
                 sum(
@@ -280,24 +325,24 @@ class UIBoxLayout(UILayout):
                     if child.size_hint
                 )
                 or 1
-            )  # prevent division by zero
+            )  # Prevent division by zero
 
             for child in self.children:
                 new_rect = child.rect
 
-                # collect all size hints
+                # Collect all size hints
                 sh_w, sh_h = child.size_hint or (None, None)
                 shmn_w, shmn_h = child.size_hint_min or (None, None)
                 shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                # apply y-axis
+                # Apply y-axis
                 if sh_h is not None:
                     min_height_value = shmn_h or 0
 
                     # Maximal growth to parent.width * shw
-                    available_growth_height = min_height_value + available_height * (
-                        sh_h / total_size_hint_height
-                    )
+                    available_growth_height = min_height_value + \
+                        available_height * ( sh_h / total_size_hint_height
+                                           )
                     max_growth_height = self.height * sh_h
                     new_rect = new_rect.resize(
                         height=min(available_growth_height, max_growth_height)
@@ -305,10 +350,11 @@ class UIBoxLayout(UILayout):
 
                     if shmn_h is not None:
                         new_rect = new_rect.min_size(height=shmn_h)
+
                     if shmx_h is not None:
                         new_rect = new_rect.max_size(height=shmx_h)
 
-                # apply x-axis
+                # Apply x-axis
                 if sh_w is not None:
                     new_rect = new_rect.resize(
                         width=max(available_width * sh_w, shmn_w or 0)
@@ -319,11 +365,12 @@ class UIBoxLayout(UILayout):
                     if shmx_w is not None:
                         new_rect = new_rect.max_size(width=shmx_w)
 
-                # align
+                # Align the children
                 if self.align == "left":
                     new_rect = new_rect.align_left(start_x)
                 elif self.align == "right":
-                    new_rect = new_rect.align_right(start_x + self.content_width)
+                    new_rect = new_rect.align_right(
+                        start_x + self.content_width)
                 else:
                     center_x = start_x + self.content_width // 2
                     new_rect = new_rect.align_center_x(center_x)
@@ -337,7 +384,8 @@ class UIBoxLayout(UILayout):
             center_y = start_y - self.content_height // 2
 
             available_height = self.content_height
-            # calculate if some space is available for children to grow
+            
+            # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
                 sum(
@@ -346,37 +394,41 @@ class UIBoxLayout(UILayout):
                     if child.size_hint
                 )
                 or 1
-            )  # prevent division by zero
+            )  # Prevent division by zero
 
-            # TODO Fix layout algorithm, handle size hints per dimension!
-            # 0. check if any hint given, if not, continue with step 4.
-            #   1. change size to minimal
-            #   2. grow using size_hint
-            #   3. ensure size_hint_max
-            # 4. place child
+            # TODO
+            # Fix layout algorithm and handle size hints per dimension!
+            #
+            # 0. Check if any hints are given. If not, continue with step 4.
+            #   1. Change size to minimal.
+            #   2. Grow using size_hint.
+            #   3. Ensure size_hint_max.
+            # 4. Place child
 
             for child in self.children:
                 new_rect = child.rect
 
-                # collect all size hints
+                # Collect all size hints
                 sh_w, sh_h = child.size_hint or (None, None)
+                
                 shmn_w, shmn_h = child.size_hint_min or (None, None)
                 shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                # apply x-axis
+                # Apply x-axis
                 if sh_w is not None:
                     min_width_value = shmn_w or 0
-                    # new_rect = new_rect.resize(width=min_width_value)  # TODO should not be required!
+                    
+                    # TODO: this should not be required
+                    # new_rect = new_rect.resize(width=min_width_value)
 
                     # Maximal growth to parent.width * shw
-                    available_growth_width = min_width_value + available_width * (
-                        sh_w / total_size_hint_width
-                    )
+                    available_growth_width = min_width_value + available_width \
+                        * (sh_w / total_size_hint_width)
                     max_growth_width = self.width * sh_w
                     new_rect = new_rect.resize(
                         width=min(
                             available_growth_width, max_growth_width
-                        )  # this does not enforce min width
+                        )   # This does not enforce the minimum width
                     )
 
                     if shmn_w is not None:
@@ -385,7 +437,7 @@ class UIBoxLayout(UILayout):
                     if shmx_w is not None:
                         new_rect = new_rect.max_size(width=shmx_w)
 
-                # apply y-axis
+                # Apply vertical axis
                 if sh_h is not None:
                     new_rect = new_rect.resize(
                         height=max(available_height * sh_h, shmn_h or 0)
@@ -397,7 +449,7 @@ class UIBoxLayout(UILayout):
                     if shmx_h is not None:
                         new_rect = new_rect.max_size(height=shmx_h)
 
-                # align
+                # Align all children
                 if self.align == "top":
                     new_rect = new_rect.align_top(start_y)
                 elif self.align == "bottom":
