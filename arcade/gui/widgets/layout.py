@@ -9,7 +9,7 @@ W = TypeVar("W", bound="UIWidget")
 class UIAnchorLayout(UILayout):
     """
     Places children based on anchor values.
-    
+
     Defaults to ``size_hint = (1, 1)``.
 
     Supports the options ``size_hint``, ``size_hint_min``, and
@@ -21,23 +21,23 @@ class UIAnchorLayout(UILayout):
     Allowed keyword options for
     :py:meth:`~arcade.gui.UIAnchorLayout.add`::
     - ``anchor_x``: ``str`` = ``None``
-    
+
       Horizontal anchor position for the layout. The class constant
       :py:attr:`~arcade.gui.UIAnchorLayout.default_anchor_x` is used as
       default.
 
     - ``anchor_y``: ``str`` = ``None``
-    
+
       Vertical anchor position for the layout. The class constant
       :py:attr:`~arcade.gui.UIAnchorLayout.default_anchor_y` is used as
       default.
 
     - ``align_x``: ``float`` = 0
-      
+
       Horizontal alignment for the layout.
 
     - ``align_y``: ``float`` = 0
-      
+
       Vertical alignement for the layout.
     """
 
@@ -171,7 +171,7 @@ class UIBoxLayout(UILayout):
     placed top to bottom or left to right.
 
     .. hint::
-        
+
         :py:class:`~arcade.gui.UIBoxLayout` does not adjust its
         own size if children are added. This requires a
         :py:class:`~arcade.gui.UIManager` or a
@@ -250,7 +250,7 @@ class UIBoxLayout(UILayout):
         :return: Horizontal and vertical.
         """
         sh_w, sh_h = child.size_hint or (None, None)
-        
+
         return sh_w is not None, sh_h is not None
 
     def _update_size_hints(self):
@@ -260,17 +260,17 @@ class UIBoxLayout(UILayout):
         def min_size(child: UIWidget) -> Tuple[float, float]:
             """
             Determine the minimum size of a child widget.
-            
+
             This can be the minimum size hint (``size_hint_min``). If no size
             hints are provided the child size has to stay the same and the
             minimal size is the current size.
             """
             h_allowed, v_allowed = UIBoxLayout._layouting_allowed(child)
-            
+
             shmn_w, shmn_h = child.size_hint_min or (None, None)
             shmn_w = shmn_w or 0 if h_allowed else child.width
             shmn_h = shmn_h or 0 if v_allowed else child.height
-            
+
             return shmn_w, shmn_h
 
         min_child_sizes = [min_size(child) for child in self.children]
@@ -293,7 +293,7 @@ class UIBoxLayout(UILayout):
                         * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 \
                         * self._border_width
-        
+
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
@@ -315,7 +315,7 @@ class UIBoxLayout(UILayout):
 
         if self.vertical:
             available_width = self.content_width
-            
+
             # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
@@ -384,7 +384,7 @@ class UIBoxLayout(UILayout):
             center_y = start_y - self.content_height // 2
 
             available_height = self.content_height
-            
+
             # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
@@ -410,14 +410,14 @@ class UIBoxLayout(UILayout):
 
                 # Collect all size hints
                 sh_w, sh_h = child.size_hint or (None, None)
-                
+
                 shmn_w, shmn_h = child.size_hint_min or (None, None)
                 shmx_w, shmx_h = child.size_hint_max or (None, None)
 
                 # Apply x-axis
                 if sh_w is not None:
                     min_width_value = shmn_w or 0
-                    
+
                     # TODO: this should not be required
                     # new_rect = new_rect.resize(width=min_width_value)
 
