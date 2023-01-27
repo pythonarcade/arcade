@@ -17,6 +17,7 @@ import arcade
 from arcade import get_display_size
 from arcade import set_viewport
 from arcade import set_window
+from arcade import clear_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.arcade_types import Color
@@ -125,7 +126,8 @@ class Window(pyglet.window.Window):
                 )
                 display = pyglet.canvas.get_display()
                 screen = display.get_default_screen()
-                config = screen.get_best_config(config)
+                if screen:
+                    config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
@@ -272,7 +274,7 @@ class Window(pyglet.window.Window):
         """ Close the Window. """
         super().close()
         # Make sure we don't reference the window any more
-        set_window(None)
+        clear_window()
         pyglet.clock.unschedule(self._dispatch_updates)
 
     def set_fullscreen(self,

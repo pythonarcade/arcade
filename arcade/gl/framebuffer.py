@@ -59,7 +59,7 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment=None
+        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture] = None
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,7 +71,7 @@ class Framebuffer:
             if isinstance(color_attachments, list)
             else [color_attachments]
         )
-        self._depth_attachment = depth_attachment
+        self._depth_attachment: Optional[Texture] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None

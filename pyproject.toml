@@ -1,3 +1,7 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+include = ["arcade"]
+exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]

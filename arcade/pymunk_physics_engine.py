@@ -298,17 +298,20 @@ class PymunkPhysicsEngine:
 
         def _f1(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            should_process_collision = False
+            if sprite_a is not None and sprite_b is not None and begin_handler is not None:
+                should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
             return should_process_collision
 
         def _f2(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            if sprite_a is not None and sprite_b is not None:
+            if sprite_a is not None and sprite_b is not None and post_handler is not None:
                 post_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f3(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            return pre_handler(sprite_a, sprite_b, arbiter, space, data)
+            if pre_handler is not None:
+                return pre_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f4(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
@@ -342,20 +345,22 @@ class PymunkPhysicsEngine:
                 continue
 
             original_position = sprite.position
-            new_position = physics_object.body.position
-            new_angle = math.degrees(physics_object.body.angle)
 
-            # Calculate change in location, used in call-back
-            dx = new_position[0] - original_position[0]
-            dy = new_position[1] - original_position[1]
-            d_angle = new_angle - sprite.angle
+            if physics_object.body:
+                new_position = physics_object.body.position
+                new_angle = math.degrees(physics_object.body.angle)
 
-            # Update sprite to new location
-            sprite.position = new_position
-            sprite.angle = new_angle
+                # Calculate change in location, used in call-back
+                dx = new_position[0] - original_position[0]
+                dy = new_position[1] - original_position[1]
+                d_angle = new_angle - sprite.angle
 
-            # Notify sprite we moved, in case animation needs to be updated
-            sprite.pymunk_moved(self, dx, dy, d_angle)
+                # Update sprite to new location
+                sprite.position = new_position
+                sprite.angle = new_angle
+
+                # Notify sprite we moved, in case animation needs to be updated
+                sprite.pymunk_moved(self, dx, dy, d_angle)
 
     def step(self,
              delta_time: float = 1 / 60.0,

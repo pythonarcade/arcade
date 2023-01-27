@@ -97,7 +97,7 @@ def get_member_list(filepath):
     print("Processing: ", filepath)
     filename = filepath.name
 
-    class_re = re.compile("^class ([A-Za-z0-9]+[^\(:]*)")
+    class_re = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
     function_re = re.compile("^def ([a-z][a-z0-9_]*)")
     type_re = re.compile("^([A-Za-z][A-Za-z0-9_]*) = ")
 

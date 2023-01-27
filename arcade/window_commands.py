@@ -123,6 +123,14 @@ def set_window(window: "Window") -> None:
     _window = window
 
 
+def clear_window():
+    """
+    Clear the window handle.
+    """
+    global _window
+    _window = None
+
+
 def get_scaling_factor(window: Optional["Window"] = None) -> float:
     """
     Gets the scaling factor of the given Window.
