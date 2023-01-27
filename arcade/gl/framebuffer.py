@@ -262,7 +262,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Texture:
+    def depth_attachment(self) -> Optional[Texture]:
         """
         Depth attachment
 
@@ -559,7 +559,7 @@ class DefaultFrameBuffer(Framebuffer):
         self._height = height
 
         # HACK: Signal the default framebuffer having depth buffer
-        self._depth_attachment = True
+        self._depth_attachment = True  # type: ignore
 
     def _get_viewport(self) -> Tuple[int, int, int, int]:
         """

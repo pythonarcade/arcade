@@ -826,6 +826,9 @@ class SpriteList(Generic[_SpriteType]):
 
     def _recalculate_spatial_hashes(self):
         if self._use_spatial_hash:
+            if not self.spatial_hash:
+                from .spatial_hash import _SpatialHash
+                self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
