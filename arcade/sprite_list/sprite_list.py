@@ -32,7 +32,6 @@ from arcade import (
     float_to_byte_color,
     get_four_float_color,
 )
-from arcade.context import ArcadeContext
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -106,7 +105,6 @@ class SpriteList(Generic[_SpriteType]):
         lazy: bool = False,
         visible: bool = True,
     ):
-        self.ctx: Optional[ArcadeContext] = None
         self.program = None
         if atlas:
             self._atlas: TextureAtlas = atlas
@@ -198,7 +196,7 @@ class SpriteList(Generic[_SpriteType]):
         if self._initialized:
             return
 
-        self.ctx: ArcadeContext = get_window().ctx
+        self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         self._atlas: TextureAtlas = (
             getattr(self, "_atlas", None) or self.ctx.default_atlas

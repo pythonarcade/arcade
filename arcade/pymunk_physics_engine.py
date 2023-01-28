@@ -315,7 +315,8 @@ class PymunkPhysicsEngine:
 
         def _f4(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            separate_handler(sprite_a, sprite_b, arbiter, space, data)
+            if separate_handler:
+                separate_handler(sprite_a, sprite_b, arbiter, space, data)
 
         h = self.space.add_collision_handler(first_type_id, second_type_id)
         if begin_handler:
@@ -340,13 +341,13 @@ class PymunkPhysicsEngine:
             # Get physics object for this sprite
             physics_object = self.sprites[sprite]
 
-            # Item is sleeping, skip
-            if physics_object.body.is_sleeping:
-                continue
-
             original_position = sprite.position
 
             if physics_object.body:
+                # Item is sleeping, skip
+                if physics_object.body.is_sleeping:
+                    continue
+
                 new_position = physics_object.body.position
                 new_angle = math.degrees(physics_object.body.angle)
 

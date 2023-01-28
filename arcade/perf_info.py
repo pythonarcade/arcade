@@ -27,7 +27,7 @@ def _dispatch_event(self, *args):
         _frame_times.append(start_time)
 
     # Call Pyglet's dispatch event function
-    if _pyglets_dispatch_event:
+    if _pyglets_dispatch_event is not None:
         _pyglets_dispatch_event(self, *args)
 
     # Stop the clock

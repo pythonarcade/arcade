@@ -3,10 +3,10 @@ from PIL.Image import Image
 import pymunk
 from pymunk.autogeometry import (
     PolylineSet,
-    Vec2d,
     march_soft,
     simplify_curves,
 )
+from pymunk import Vec2d
 from arcade import Point, PointList
 from .base import HitBoxAlgorithm
 

@@ -102,14 +102,10 @@ class _Vec2:
 
     __slots__ = ['x', 'y']
 
-    def __init__(self, x, y=None):
-        try:
-            # see if first argument is an iterable with two items
-            self.x: float = x[0]
-            self.y: float = x[1]
-        except TypeError:
-            self.x: float = x
-            self.y: float = y
+    def __init__(self, x: float, y: float):
+        # see if first argument is an iterable with two items
+        self.x: float = x
+        self.y: float = y
 
     @staticmethod
     def from_polar(angle, radius):
