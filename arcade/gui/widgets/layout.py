@@ -341,8 +341,7 @@ class UIBoxLayout(UILayout):
 
                     # Maximal growth to parent.width * shw
                     available_growth_height = min_height_value + \
-                        available_height * ( sh_h / total_size_hint_height
-                                           )
+                        available_height * (sh_h / total_size_hint_height)
                     max_growth_height = self.height * sh_h
                     new_rect = new_rect.resize(
                         height=min(available_growth_height, max_growth_height)
@@ -453,7 +452,8 @@ class UIBoxLayout(UILayout):
                 if self.align == "top":
                     new_rect = new_rect.align_top(start_y)
                 elif self.align == "bottom":
-                    new_rect = new_rect.align_bottom(start_y - self.content_height)
+                    new_rect = new_rect.align_bottom(
+                       start_y - self.content_height)
                 else:
                     new_rect = new_rect.align_center_y(center_y)
 
@@ -466,19 +466,28 @@ class UIBoxLayout(UILayout):
 
 class UIGridLayout(UILayout):
     """
-    Places widget in a grid layout.
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param str align_horizontal: Align children in orthogonal direction (x: left, center, right)
-    :param str align_vertical: Align children in orthogonal direction (y: top, center, bottom)
-    :param Iterable[UIWidget] children: Initial children, more can be added
-    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
-    :param size_hint_min: Min width and height in pixel
-    :param size_hint_max: Max width and height in pixel
-    :param horizontal_spacing: Space between columns
-    :param vertical_spacing: Space between rows
-    :param int column_count: Number of columns in the grid, can be changed
-    :param int row_count: Number of rows in the grid, can be changed
+    Place widgets in a grid layout. This is similar to tkinter's ``grid``
+    layout geometry manager.
+
+    :param float x: ``x`` coordinate of bottom left corner.
+    :param float y: ``y`` coordinate of bottom left corner.
+    :param str align_horizontal: Align children in orthogonal direction.
+                                 Options include ``left``, ``center``, and
+                                 ``right``.
+    :param str align_vertical: Align children in orthogonal direction. Options
+                               include ``top``, ``center``, and ``bottom``.
+    :param Iterable[UIWidget] children: Initial list of children. More can be
+                                        added later.
+    :param size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if the
+                      :py:class:`~arcade.gui.UIWidget` would like to grow.
+    :param size_hint_min: Minimum width and height in pixels.
+    :param size_hint_max: Maximum width and height in pixels.
+    :param horizontal_spacing: Space between columns.
+    :param vertical_spacing: Space between rows.
+    :param int column_count: Number of columns in the grid. This can be changed
+                             later.
+    :param int row_count: Number of rows in the grid. This can be changed
+                          later.
     """
 
     def __init__(
@@ -523,11 +532,10 @@ class UIGridLayout(UILayout):
 
         bind(self, "_children", self._update_size_hints)
 
-        # initially update size hints
+        # Initially update size hints
         self._update_size_hints()
 
     def _update_size_hints(self):
-
         child_sorted_row_wise = [
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
@@ -573,18 +581,22 @@ class UIGridLayout(UILayout):
                 max(width / (span or 1) for width, span in col)
             )
 
-        base_width = self._padding_left + self._padding_right + 2 * self._border_width
-        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
+        base_width = self._padding_left + self._padding_right + \
+                     2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + \
+                     2 * self._border_width
 
         content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+            sum(principal_height_ratio_list) + self.row_count * \
+                self._vertical_spacing
         )
         content_width = (
             sum(principal_width_ratio_list)
             + self.column_count * self._horizontal_spacing
         )
 
-        self.size_hint_min = (base_width + content_width, base_height + content_height)
+        self.size_hint_min = (base_width + content_width,
+                              base_height + content_height)
 
     def add(
         self,
@@ -596,11 +608,14 @@ class UIGridLayout(UILayout):
         **kwargs
     ) -> W:
         """
-        Adds widgets in the grid.
+        Add a widget to the grid layout.
 
-        :param UIWidget child: The widget which is to be added in the grid
-        :param int col_num: The column number in which the widget is to be added (first column is numbered 0; left)
-        :param int row_num: The row number in which the widget is to be added (first row is numbered 0; top)
+        :param UIWidget child: Specified child widget to add.
+        :param int col_num: Column index in which the widget is to be added.
+                            The first column is numbered 0; which is the top
+                            left corner.
+        :param int row_num: The row number in which the widget is to be added.
+                            The first row is numbered 0; which is the
         :param int col_span: Number of columns the widget will stretch for.
         :param int row_span: Number of rows the widget will stretch for.
         """
@@ -652,7 +667,7 @@ class UIGridLayout(UILayout):
             ]:
                 row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
-        # making max_height_per_row and max_width_per_column uniform
+        # Making max_height_per_row and max_width_per_column uniform
         for row in max_height_per_row:
             principal_height_ratio = max(height / (span or 1) for height, span in row)
             for i, (height, span) in enumerate(row):
@@ -665,17 +680,19 @@ class UIGridLayout(UILayout):
                 if width / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
 
-        # row wise rendering children
+        # Row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
             max_height_row = 0
             start_x = initial_left_x
 
             for col_num, child in enumerate(row):
                 max_height = (
-                    max_height_per_row[row_num][col_num][0] + self._vertical_spacing
+                    max_height_per_row[row_num][col_num][0] + \
+                        self._vertical_spacing
                 )
                 max_width = (
-                    max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
+                    max_width_per_column[col_num][row_num][0] + \
+                        self._horizontal_spacing
                 )
 
                 if max_width == self._horizontal_spacing:
