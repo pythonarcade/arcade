@@ -824,9 +824,10 @@ class UISpriteWidget(UIWidget):
         self._sprite = sprite
 
     def on_update(self, dt):
-        self._sprite.update()
-        self._sprite.update_animation(dt)
-        self.trigger_render()
+        if self._sprite:
+            self._sprite.update()
+            self._sprite.update_animation(dt)
+            self.trigger_render()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)

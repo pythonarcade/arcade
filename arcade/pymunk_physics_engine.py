@@ -88,19 +88,19 @@ class PymunkPhysicsEngine:
         """
 
         if damping is not None:
-            sprite.pymunk.damping = damping
+            sprite.pymunk.damping = damping  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if gravity is not None:
-            sprite.pymunk.gravity = gravity
+            sprite.pymunk.gravity = gravity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_velocity is not None:
-            sprite.pymunk.max_velocity = max_velocity
+            sprite.pymunk.max_velocity = max_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_vertical_velocity is not None:
-            sprite.pymunk.max_vertical_velocity = max_vertical_velocity
+            sprite.pymunk.max_vertical_velocity = max_vertical_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_horizontal_velocity is not None:
-            sprite.pymunk.max_horizontal_velocity = max_horizontal_velocity
+            sprite.pymunk.max_horizontal_velocity = max_horizontal_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         # See if the sprite already has been added
         if sprite in self.sprites:
@@ -127,7 +127,7 @@ class PymunkPhysicsEngine:
         body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
-        def velocity_callback(my_body, my_gravity, my_damping, dt):
+        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float):
             """ Used for custom damping, gravity, and max_velocity. """
 
             # Custom damping
@@ -163,7 +163,7 @@ class PymunkPhysicsEngine:
             if max_vertical_velocity:
                 velocity = my_body.velocity[1]
                 if abs(velocity) > max_vertical_velocity:
-                    velocity = max_horizontal_velocity * math.copysign(1, velocity)
+                    velocity = max_vertical_velocity * math.copysign(1, velocity)
                     my_body.velocity = pymunk.Vec2d(my_body.velocity.x, velocity)
 
         # Add callback if we need to do anything custom on this body

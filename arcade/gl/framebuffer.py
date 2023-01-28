@@ -297,7 +297,8 @@ class Framebuffer:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._prev_fbo.use()
+        if self._prev_fbo:
+            self._prev_fbo.use()
 
     @contextmanager
     def activate(self):

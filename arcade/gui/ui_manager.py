@@ -157,6 +157,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         layers = sorted(self.children.keys())
         for layer in layers:
             surface = self._get_surface(layer)
+            if not surface:
+                raise ValueError("No surface exists for this layer.")
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
@@ -184,6 +186,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         force = force or not self._rendered
         for layer in layers:
             surface = self._get_surface(layer)
+
+            if surface is None:
+                raise ValueError("Surface is None for layer, can't render.")
+
             with surface.activate():
                 if force:
                     surface.clear()

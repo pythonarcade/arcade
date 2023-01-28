@@ -481,7 +481,7 @@ class ArcadeContext(Context):
         fbo: Framebuffer,
         components: int = 4,
         flip=True,
-    ) -> Image:
+    ) -> Image.Image:
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
 

@@ -91,7 +91,7 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
                     or sample_point[1] >= image.height:
                 return 0
 
-            point_tuple = sample_point[0], sample_point[1]
+            point_tuple = int(sample_point[0]), int(sample_point[1])
             color = image.getpixel(point_tuple)
             return 255 if color[3] > 0 else 0
 
