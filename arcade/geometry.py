@@ -1,7 +1,7 @@
 shapely_exists = False
 
 try:
-    import shapely  # noqa: F401  pyright: reportMissingImports=false
+    import shapely  # noqa: F401
     shapely_exists = True
 except ImportError:
     pass
