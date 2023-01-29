@@ -115,6 +115,7 @@ def test_fit_content_by_default(window):
 
     assert subject.size_hint == (0, 0)
 
+
 def test_adjust_children_size_relative(window):
     dummy1 = UIDummy(width=100, height=100)
     dummy2 = UIDummy(width=50, height=50, size_hint=(.75, .75))
@@ -140,4 +141,32 @@ def test_adjust_children_size_relative(window):
     assert dummy1.size == (100, 100)
     assert dummy2.size == (75, 75)
     assert dummy3.size == (60, 60)
+    assert dummy4.size == (100, 100)
+
+
+def test_does_not_adjust_children_without_size_hint(window):
+    dummy1 = UIDummy(width=100, height=100)
+    dummy2 = UIDummy(width=50, height=50, size_hint=(.75, None))
+    dummy3 = UIDummy(width=50, height=50, size_hint=(None, .75))
+    dummy4 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=2,
+    )
+
+    subject.add(dummy1, 0, 0)
+    subject.add(dummy2, 0, 1)
+    subject.add(dummy3, 1, 0)
+    subject.add(dummy4, 1, 1)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    # check that do_layout doesn't manipulate the rect
+    assert subject.rect == (0, 0, 200, 200)
+
+    assert dummy1.size == (100, 100)
+    assert dummy2.size == (75, 50)
+    assert dummy3.size == (50, 75)
     assert dummy4.size == (100, 100)

@@ -253,15 +253,6 @@ class UIBoxLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
-    def fit_content(self):
-        """
-        Resize to fit content, using `self.size_hint_min`
-
-        :return: self
-        """
-        self.rect = self.rect.resize(*self.size_hint_min)
-        return self
-
     def do_layout(self):
         start_y = self.content_rect.top
         start_x = self.content_rect.left
@@ -415,6 +406,15 @@ class UIBoxLayout(UILayout):
 class UIGridLayout(UILayout):
     """
     Places widget in a grid layout.
+
+    Defaults to ``size_hint = (0, 0)``.
+
+    Supports the options ``size_hint``, ``size_hint_min``, and
+    ``size_hint_max``.
+
+    Children are resized based on ``size_hint``. Maximum and minimum
+    ``size_hint``s only take effect if a ``size_hint`` is given.
+
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
     :param str align_horizontal: Align children in orthogonal direction (x: left, center, right)
@@ -652,7 +652,8 @@ class UIGridLayout(UILayout):
                     max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
                 )
 
-                # re-assigning max_width and max_height to remove empty rows and columns as spacing is added to all cells.
+                # re-assigning max_width and max_height to remove
+                # empty rows and columns as spacing is added to all cells.
                 if max_width == self._horizontal_spacing:
                     max_width = 0
                 if max_height == self._vertical_spacing:
@@ -670,14 +671,14 @@ class UIGridLayout(UILayout):
 
                     sh_w, sh_h = 0, 0
                     if child.size_hint:
-                        sh_w, sh_h  = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
+                        sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
                     shmn_w, shmn_h = child.size_hint_min or (None, None)
                     shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                    new_width = max(shmn_w or 0, sh_w*max_width or child.width)
+                    new_width = max(shmn_w or 0, sh_w * max_width or child.width)
                     if shmx_w:
                         new_width = min(shmx_w, new_width)
-                    new_height = max(shmn_h or 0, sh_h*max_height or child.height)
+                    new_height = max(shmn_h or 0, sh_h * max_height or child.height)
                     if shmx_h:
                         new_height = min(shmx_h, new_height)
                     new_rect = new_rect.resize(width=new_width, height=new_height)

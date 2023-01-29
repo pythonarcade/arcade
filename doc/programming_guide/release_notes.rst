@@ -69,7 +69,7 @@ Changes
 
   * Removal of the ``update`` function in favor of :py:meth:`~arcade.View.on_update()`
 
-* :py:class:`~arcade.Section` and :py:class:`~arcade.Sectionmanager`
+* :py:class:`~arcade.Section` and :py:class:`~arcade.SectionManager`
 
   * Removal of the ``update`` function in favor of ``on_update()``
 
@@ -78,7 +78,7 @@ Changes
   * :py:class:`~arcade.gui.widgets.UIWidget`
 
     * Supports padding, border and background (color and texture)
-    * Visibility: visible=False will prevent rendering of the widget. It will also not receive any ui events
+    * Visibility: visible=False will prevent rendering of the widget. It will also not receive any UI events
     * Dropped :py:meth:`~arcade.gui.widget.UIWidget.with_space_around()`
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
     * Fixed an blending issue when rendering the gui surface to the screen
@@ -102,6 +102,14 @@ Changes
 
     * Properties are observable attributes (supported: primitive, list and dict).
       Listener can be bound with :py:meth:`~arcade.gui.property.bind`
+
+  * All :py:class:`~arcade.gui.UILayout`s support ``size_hint``, ``size_hint_min``, ``size_hint_max``.
+
+    * :py:class:`~arcade.gui.UIBoxLayout`
+    * :py:class:`~arcade.gui.UIAnchorLayout`
+    * :py:class:`~arcade.gui.UIGridLayout` (`PR1478 <https://github.com/pythonarcade/arcade/pull/1478>`_)
+
+  * Replaces deprecated usage of :py:func:`~arcade.draw_text`
 
   * Misc Changes
 
