@@ -31,6 +31,25 @@ def test_place_widget(window):
     assert dummy4.position == (100, 0)
 
 
+def test_can_handle_empty_cells(window):
+    dummy1 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=2
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    # check that do_layout doesn't manipulate the rect
+    assert subject.rect == (0, 0, 200, 200)
+
+    assert dummy1.position == (0, 100)
+
+
 def test_place_widget_with_different_sizes(window):
     dummy1 = UIDummy(width=50, height=100)
     dummy2 = UIDummy(width=100, height=100)
