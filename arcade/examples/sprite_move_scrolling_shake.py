@@ -10,6 +10,7 @@ python -m arcade.examples.sprite_move_scrolling
 import random
 import math
 import arcade
+from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -157,7 +158,7 @@ class MyGame(arcade.Window):
             # How 'far' to shake
             shake_amplitude = 10
             # Calculate a vector based on that
-            shake_vector = (
+            shake_vector = Vec2(
                 math.cos(shake_direction) * shake_amplitude,
                 math.sin(shake_direction) * shake_amplitude
             )
@@ -179,7 +180,7 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = (
+        position = Vec2(
             self.player_sprite.center_x - self.width / 2,
             self.player_sprite.center_y - self.height / 2
         )
