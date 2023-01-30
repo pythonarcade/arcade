@@ -145,7 +145,8 @@ class Camera:
         """
         Add a camera shake.
 
-        :param Vec2 velocity: Vector to start moving the camera
+        :param Vec2 velocity: Vector to start moving the camera. Needs to be
+                              a pyglet.math.Vec2.
         :param float speed: How fast to shake
         :param float damping: How fast to stop shaking
         """
