@@ -45,9 +45,9 @@ def test_can_handle_empty_cells(window):
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
-    assert subject.rect == (0, 0, 200, 200)
+    assert subject.rect == (0, 0, 100, 100)
 
-    assert dummy1.position == (0, 100)
+    assert dummy1.position == (0, 0)
 
 
 def test_place_widget_with_different_sizes(window):

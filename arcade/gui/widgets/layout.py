@@ -643,8 +643,6 @@ class UIGridLayout(UILayout):
             start_x = initial_left_x
 
             for col_num, child in enumerate(row):
-                new_rect = child.rect
-
                 max_height = (
                     max_height_per_row[row_num][col_num][0] + self._vertical_spacing
                 )
@@ -668,6 +666,7 @@ class UIGridLayout(UILayout):
                 start_x += max_width
 
                 if child is not None and max_width != 0 and max_height != 0:
+                    new_rect = child.rect
 
                     sh_w, sh_h = 0, 0
                     if child.size_hint:
