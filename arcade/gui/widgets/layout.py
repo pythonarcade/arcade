@@ -253,15 +253,6 @@ class UIBoxLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
-    def fit_content(self):
-        """
-        Resize to fit content, using `self.size_hint_min`
-
-        :return: self
-        """
-        self.rect = self.rect.resize(*self.size_hint_min)
-        return self
-
     def do_layout(self):
         start_y = self.content_rect.top
         start_x = self.content_rect.left
@@ -415,6 +406,15 @@ class UIBoxLayout(UILayout):
 class UIGridLayout(UILayout):
     """
     Places widget in a grid layout.
+
+    Defaults to ``size_hint = (0, 0)``.
+
+    Supports the options ``size_hint``, ``size_hint_min``, and
+    ``size_hint_max``.
+
+    Children are resized based on ``size_hint``. Maximum and minimum
+    ``size_hint``s only take effect if a ``size_hint`` is given.
+
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
     :param str align_horizontal: Align children in orthogonal direction (x: left, center, right)
@@ -436,7 +436,7 @@ class UIGridLayout(UILayout):
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
-        size_hint=None,
+        size_hint=(0, 0),
         size_hint_min=None,
         size_hint_max=None,
         horizontal_spacing: int = 0,
@@ -474,6 +474,16 @@ class UIGridLayout(UILayout):
         # initially update size hints
         self._update_size_hints()
 
+    @staticmethod
+    def _layouting_allowed(child: UIWidget) -> Tuple[bool, bool]:
+        """
+        Checks if size_hint is given for the dimension, which would allow the layout to resize this widget
+
+        :return: horizontal, vertical
+        """
+        sh_w, sh_h = child.size_hint or (None, None)
+        return sh_w is not None, sh_h is not None
+
     def _update_size_hints(self):
 
         child_sorted_row_wise = [
@@ -487,21 +497,35 @@ class UIGridLayout(UILayout):
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
+        def min_size(child: UIWidget) -> Tuple[float, float]:
+            """
+            Determine min size of a child widget
+            This can be the size_hint_min. If no size_hints are provided the child size has to stay the same and
+            the minimal size is the current size.
+            """
+            h_allowed, v_allowed = UIGridLayout._layouting_allowed(child)
+            shmn_w, shmn_h = child.size_hint_min or (None, None)
+            shmn_w = shmn_w or 0 if h_allowed else child.width
+            shmn_h = shmn_h or 0 if v_allowed else child.height
+            return shmn_w, shmn_h
+
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
             col_span = data["col_span"]
             row_span = data["row_span"]
 
+            shmn_w, shmn_h = min_size(child)
+
             for i in range(col_num, col_span + col_num):
                 max_width_per_column[i][row_num] = (0, 0)
 
-            max_width_per_column[col_num][row_num] = (child.width, col_span)
+            max_width_per_column[col_num][row_num] = (shmn_w, col_span)
 
             for i in range(row_num, row_span + row_num):
                 max_height_per_row[i][col_num] = (0, 0)
 
-            max_height_per_row[row_num][col_num] = (child.height, row_span)
+            max_height_per_row[row_num][col_num] = (shmn_h, row_span)
 
             for row in child_sorted_row_wise[
                 row_num : row_num + row_span  # noqa: E203
@@ -626,12 +650,14 @@ class UIGridLayout(UILayout):
                     max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
                 )
 
+                # re-assigning max_width and max_height to remove
+                # empty rows and columns as spacing is added to all cells.
                 if max_width == self._horizontal_spacing:
                     max_width = 0
                 if max_height == self._vertical_spacing:
                     max_height = 0
 
-                col_span = max_width_per_column[col_num][row_num][1] or 1
+                # col_span = max_width_per_column[col_num][row_num][1] or 1
                 row_span = max_height_per_row[row_num][col_num][1] or 1
 
                 center_y = start_y - (max_height / 2)
@@ -639,16 +665,29 @@ class UIGridLayout(UILayout):
 
                 start_x += max_width
 
-                if max_height / row_span > max_height_row:
-                    max_height_row = max_height / row_span
-
                 if child is not None and max_width != 0 and max_height != 0:
+                    new_rect = child.rect
+
+                    sh_w, sh_h = 0, 0
+                    if child.size_hint:
+                        sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
+                    shmn_w, shmn_h = child.size_hint_min or (None, None)
+                    shmx_w, shmx_h = child.size_hint_max or (None, None)
+
+                    new_width = max(shmn_w or 0, sh_w * max_width or child.width)
+                    if shmx_w:
+                        new_width = min(shmx_w, new_width)
+                    new_height = max(shmn_h or 0, sh_h * max_height or child.height)
+                    if shmx_h:
+                        new_height = min(shmx_h, new_height)
+                    new_rect = new_rect.resize(width=new_width, height=new_height)
+
                     if self.align_vertical == "top":
-                        new_rect = child.rect.align_top(start_y)
+                        new_rect = new_rect.align_top(start_y)
                     elif self.align_vertical == "bottom":
-                        new_rect = child.rect.align_bottom(start_y - max_height)
+                        new_rect = new_rect.align_bottom(start_y - max_height)
                     else:
-                        new_rect = child.rect.align_center_y(center_y)
+                        new_rect = new_rect.align_center_y(center_y)
 
                     if self.align_horizontal == "left":
                         new_rect = new_rect.align_left(start_x - max_width)
@@ -657,7 +696,11 @@ class UIGridLayout(UILayout):
                     else:
                         new_rect = new_rect.align_center_x(center_x)
 
-                    if new_rect != child.rect:
-                        child.rect = new_rect
+                    child.rect = new_rect
+
+                # this is required due to row-wise rendering as start_y doesn't resets like start_x
+                actual_row_height = max_height / row_span
+                if actual_row_height > max_height_row:
+                    max_height_row = actual_row_height
 
             start_y -= max_height_row

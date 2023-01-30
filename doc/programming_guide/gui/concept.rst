@@ -60,7 +60,7 @@ UILayout
 :class:`UILayout` are widgets, which reserve the option to move or resize children. They might respect special properties
 of a widget like *size_hint*, *size_hint_min*, or *size_hint_max*.
 
-The :class:`UIBoxLayout` only resizes a child widgets dimension (x or y axis) if size_hint provides a value which is not `None` for the dimension.
+The :class:`UILayout` only resize a child's dimension (x or y axis) if size_hint provides a value for the axis, which is not `None` for the dimension.
 
 
 Algorithm
@@ -118,6 +118,8 @@ Size hint support
 | :class:`UIAnchorLayout`  | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIBoxLayout`     | X          | X              | X              |
++--------------------------+------------+----------------+----------------+
+| :class:`UIGridLayout`    | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 | :class:`UIManager`       | X          | X              |                |
 +--------------------------+------------+----------------+----------------+

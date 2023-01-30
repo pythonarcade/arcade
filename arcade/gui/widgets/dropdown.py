@@ -2,10 +2,10 @@ from copy import deepcopy
 from typing import Optional, List
 
 import arcade
-from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
-from arcade.gui.widgets.layout import UIBoxLayout
 from arcade.gui.widgets import UILayout, UIWidget
+from arcade.gui.widgets.buttons import UIFlatButton
+from arcade.gui.widgets.layout import UIBoxLayout
 
 
 class UIDropdown(UILayout):
@@ -98,10 +98,11 @@ class UIDropdown(UILayout):
     def do_layout(self):
         self._default_button.rect = self.rect
 
-        self._layout.fit_content()  # resize layout to contain widgets
-        self._layout.rect = self._layout.rect.align_top(self.bottom - 2).align_left(
-            self._default_button.left
-        )
+        # resize layout to contain widgets
+        self._layout.rect = self._layout.rect \
+            .resize(*self._layout.size_hint_min) \
+            .align_top(self.bottom - 2) \
+            .align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
         pass
