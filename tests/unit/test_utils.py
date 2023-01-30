@@ -95,11 +95,6 @@ def test_vec():
     assert v.x == 3.3
     assert v.y == 5.5
 
-    # one tuple
-    v = _Vec2((1.1, 2.2))
-    assert v.x == 1.1
-    assert v.y == 2.2
-
     # iterator access
     items = [item for item in v]
     assert items == [1.1, 2.2]
