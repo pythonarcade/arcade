@@ -52,7 +52,10 @@ class MyWindow(arcade.Window):
             void main()
             {
                 // Set pixel color as a combination of the two textures
-                fragColor = mix(texture(t0, uv), texture(t1, uv), smoothstep(0.0, 1.0, uv.x));
+                fragColor = mix(
+                    texture(t0, uv), 
+                    texture(t1, uv), 
+                    smoothstep(0.0, 1.0, uv.x));
                 // Set the alpha based on time
                 fragColor.w = sin(time);
             }

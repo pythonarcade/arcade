@@ -47,7 +47,8 @@ class MyWindow(arcade.Window):
             void main()
             {
                 // Overwrite this pixel with the colour from its neighbour
-                fragColor = texelFetch(t0, ivec2(gl_FragCoord.xy) + ivec2(-1, -1), 0);
+                ivec2 pos = ivec2(gl_FragCoord.xy) + ivec2(-1, -1);
+                fragColor = texelFetch(t0, pos, 0);
             }
             """
         )
