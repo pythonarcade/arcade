@@ -1,4 +1,4 @@
-from typing import Iterable, TypeVar, Tuple, Optional
+from typing import Iterable, List, TypeVar, Tuple, Optional
 
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
@@ -624,18 +624,41 @@ class UIGridLayout(UILayout):
             ]:
                 row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
+        principal_height_ratio_list = []
+        principal_width_ratio_list = []
+
         # making max_height_per_row and max_width_per_column uniform
         for row in max_height_per_row:
             principal_height_ratio = max(height / (span or 1) for height, span in row)
+            principal_height_ratio_list.append(principal_height_ratio)
             for i, (height, span) in enumerate(row):
                 if height / (span or 1) < principal_height_ratio:
                     row[i] = (principal_height_ratio * span, span)
 
         for col in max_width_per_column:
             principal_width_ratio = max(width / (span or 1) for width, span in col)
+            principal_width_ratio_list.append(principal_width_ratio)
             for i, (width, span) in enumerate(col):
                 if width / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
+
+        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+        content_width = sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+
+        def ratio(dimensions: List) -> List:
+            """
+            Used to calculate ratio of the elements based on the minimum value in the parameter.
+            :param dimension: List containing max height or width of the cells.
+            """
+            ratio_value = min([dimension for dimension in dimensions if dimension])
+            return [dimension/ratio_value for dimension in dimensions]
+
+        expandable_height_ratio = ratio(principal_width_ratio_list)
+        expandable_width_ratio = ratio(principal_height_ratio_list)
+
+        total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
+        total_available_width = self.content_rect.right - content_width - self.content_rect.left
+        
 
         # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -643,12 +666,17 @@ class UIGridLayout(UILayout):
             start_x = initial_left_x
 
             for col_num, child in enumerate(row):
-                max_height = (
-                    max_height_per_row[row_num][col_num][0] + self._vertical_spacing
-                )
-                max_width = (
-                    max_width_per_column[col_num][row_num][0] + self._horizontal_spacing
-                )
+
+                constant_height = max_height_per_row[row_num][col_num][0]
+                height_expand_ratio = expandable_height_ratio[row_num]
+                available_height = constant_height + total_available_height * height_expand_ratio
+                max_height = available_height + self._vertical_spacing
+
+                constant_width = max_width_per_column[col_num][row_num][0]
+                width_expand_ratio = expandable_width_ratio[col_num]
+                available_width = constant_width + total_available_width * width_expand_ratio
+                max_width = available_width + self._horizontal_spacing
+
 
                 # re-assigning max_width and max_height to remove
                 # empty rows and columns as spacing is added to all cells.
@@ -667,19 +695,24 @@ class UIGridLayout(UILayout):
 
                 if child is not None and max_width != 0 and max_height != 0:
                     new_rect = child.rect
-
                     sh_w, sh_h = 0, 0
+
+                    available_height = constant_height + total_available_height * height_expand_ratio
+                    available_width = constant_width + total_available_width * width_expand_ratio
+
                     if child.size_hint:
                         sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
                     shmn_w, shmn_h = child.size_hint_min or (None, None)
                     shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                    new_width = max(shmn_w or 0, sh_w * max_width or child.width)
-                    if shmx_w:
-                        new_width = min(shmx_w, new_width)
-                    new_height = max(shmn_h or 0, sh_h * max_height or child.height)
+                    new_height = max(shmn_h or 0, sh_h * available_height or child.height)
                     if shmx_h:
                         new_height = min(shmx_h, new_height)
+
+                    new_width = max(shmn_w or 0, sh_w * available_width or child.width)
+                    if shmx_w:
+                        new_width = min(shmx_w, new_width)
+
                     new_rect = new_rect.resize(width=new_width, height=new_height)
 
                     if self.align_vertical == "top":
