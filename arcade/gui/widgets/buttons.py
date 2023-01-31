@@ -171,16 +171,16 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
     def apply_style(self, style: UIStyleBase):
         """
-        Callback which is called right before rendering to apply changes for rendering.
+        Callback which is called right before rendering to apply
+        changes to underlying text representation for rendering.
         """
         font_name = style.get("font_name")
         font_size = style.get("font_size")
         font_color = style.get("font_color")
 
-        self._label.layout.begin_update()
-        self._label.layout.font_name = font_name
-        self._label.layout.font_size = font_size
-        self._label.layout.color = font_color
+        self._label.label.font_name = font_name
+        self._label.label.font_size = font_size
+        self._label.label.color = font_color
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -304,8 +304,8 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         font_size = style.get("font_size")
         font_color = style.get("font_color")
 
-        self._label.layout.begin_update()
-        self._label.layout.font_name = font_name
-        self._label.layout.font_size = font_size
-        self._label.layout.color = font_color
-        self._label.layout.end_update()
+        # self._label.layout.begin_update()
+        self._label.label.font_name = font_name
+        self._label.label.font_size = font_size
+        self._label.label.color = font_color
+        # self._label.layout.end_update()
