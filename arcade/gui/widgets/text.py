@@ -1,14 +1,11 @@
 from typing import Optional
 
 import pyglet
-
-from arcade.gui.widgets.layout import UIAnchorLayout
 from pyglet.event import EVENT_UNHANDLED, EVENT_HANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
-
 from arcade.gui.events import (
     UIEvent,
     UIMousePressEvent,
@@ -21,6 +18,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
+from arcade.gui.widgets.layout import UIAnchorLayout
 
 
 class UILabel(UIWidget):
@@ -80,7 +78,7 @@ class UILabel(UIWidget):
             font_name=font_name,
             font_size=font_size,
             color=text_color,
-            width=int(width) if width else None,
+            width=int(width) if width else 0,
             bold=bold,
             italic=italic,
             align=align,
@@ -99,8 +97,8 @@ class UILabel(UIWidget):
             **kwargs,
         )
 
-        self.label.width = width
-        self.label.height = height
+        self.label.width = int(width) if width else 0
+        self.label.height = int(height) if height else 0
 
         bind(self, "rect", self._update_layout)
 
