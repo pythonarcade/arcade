@@ -131,10 +131,8 @@ class MyGame(arcade.Window):
             dump_controller(controller)
         if controllers:
             self.connect_controller(controllers[0])
-            print("Using controller: {}".format(self.controller.device))
             arcade.window_commands.schedule(self.debug_controller_state, 0.1)
-        if not self.controller:
-            print("No controller present, using keyboard controls")
+
         arcade.window_commands.schedule(self.spawn_enemy, ENEMY_SPAWN_INTERVAL)
 
         @self.controller_manager.event
