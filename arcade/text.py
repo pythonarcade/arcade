@@ -215,6 +215,16 @@ class Text:
             group=group
         )
 
+    def __enter__(self):
+        """
+        Update multiple attributes of this text,
+        using efficient update mechanism of the underlying ``pyglet.Label``
+        """
+        self._label.begin_update()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._label.end_update()
+
     @property
     def batch(self) -> pyglet.graphics.Batch:
         return self._label.batch
@@ -514,7 +524,7 @@ class Text:
         """
         _draw_pyglet_label(self._label)
 
-    def draw_debug(    
+    def draw_debug(
         self,
         anchor_color: Color = arcade.color.RED,
         background_color: Color = arcade.color.DARK_BLUE,
