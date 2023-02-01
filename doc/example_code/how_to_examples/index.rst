@@ -725,6 +725,17 @@ Frame Buffers
 
    :ref:`perspective`
 
+.. _opengl:
+
+OpenGL
+^^^^^^
+
+.. figure:: thumbs/normal_mapping.png
+   :figwidth: 170px
+   :target: normal_mapping.html
+
+   :ref:`normal_mapping`
+
 .. _concept_games:
 
 Concept Games
