@@ -76,8 +76,8 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         button_group = UIBoxLayout(vertical=False, space_between=10)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
-        button_group.add(button)
-        button.on_click = self._on_choice  # type: ignore
+            button_group.add(button)
+            button.on_click = self._on_choice  # type: ignore
 
         frame.add(
             child=button_group,
@@ -86,7 +86,8 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         )
 
     def _on_choice(self, event):
-        self.parent.remove(self)
+        if self.parent:
+            self.parent.remove(self)
         self.dispatch_event("on_action", UIOnActionEvent(self, event.source.text))
 
     def on_action(self, event: UIOnActionEvent):

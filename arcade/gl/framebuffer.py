@@ -59,7 +59,7 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment=None
+        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture] = None
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,7 +71,7 @@ class Framebuffer:
             if isinstance(color_attachments, list)
             else [color_attachments]
         )
-        self._depth_attachment = depth_attachment
+        self._depth_attachment: Optional[Texture] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -262,7 +262,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Texture:
+    def depth_attachment(self) -> Optional[Texture]:
         """
         Depth attachment
 
@@ -297,7 +297,8 @@ class Framebuffer:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._prev_fbo.use()
+        if self._prev_fbo:
+            self._prev_fbo.use()
 
     @contextmanager
     def activate(self):
@@ -559,7 +560,7 @@ class DefaultFrameBuffer(Framebuffer):
         self._height = height
 
         # HACK: Signal the default framebuffer having depth buffer
-        self._depth_attachment = True
+        self._depth_attachment = True  # type: ignore
 
     def _get_viewport(self) -> Tuple[int, int, int, int]:
         """

@@ -21,7 +21,7 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
-    Union, Generic,
+    Union, Generic, Callable
 )
 
 from arcade import (
@@ -32,7 +32,6 @@ from arcade import (
     float_to_byte_color,
     get_four_float_color,
 )
-from arcade.context import ArcadeContext
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -106,7 +105,6 @@ class SpriteList(Generic[_SpriteType]):
         lazy: bool = False,
         visible: bool = True,
     ):
-        self.ctx: Optional[ArcadeContext] = None
         self.program = None
         if atlas:
             self._atlas: TextureAtlas = atlas
@@ -198,7 +196,7 @@ class SpriteList(Generic[_SpriteType]):
         if self._initialized:
             return
 
-        self.ctx: ArcadeContext = get_window().ctx
+        self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         self._atlas: TextureAtlas = (
             getattr(self, "_atlas", None) or self.ctx.default_atlas
@@ -761,12 +759,12 @@ class SpriteList(Generic[_SpriteType]):
 
         self._sprite_index_changed = True
 
-    def sort(self, *, key=None, reverse: bool = False):
+    def sort(self, *, key: Callable, reverse: bool = False):
         """
         Sort the spritelist in place using ``<`` comparison between sprites.
         This function is similar to python's :py:meth:`list.sort`.
 
-        Example sorting sprites based on y axis position using a lambda::
+        Example sorting sprites based on y-axis position using a lambda::
 
             # Normal order
             spritelist.sort(key=lambda x: x.position[1])
@@ -826,6 +824,9 @@ class SpriteList(Generic[_SpriteType]):
 
     def _recalculate_spatial_hashes(self):
         if self._use_spatial_hash:
+            if not self.spatial_hash:
+                from .spatial_hash import _SpatialHash
+                self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
@@ -1074,27 +1075,27 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_index_changed,
         )
 
-        if self._sprite_pos_changed:
+        if self._sprite_pos_changed and self._sprite_pos_buf:
             self._sprite_pos_buf.write(self._sprite_pos_data)
             self._sprite_pos_changed = False
 
-        if self._sprite_size_changed:
+        if self._sprite_size_changed and self._sprite_size_buf:
             self._sprite_size_buf.write(self._sprite_size_data)
             self._sprite_size_changed = False
 
-        if self._sprite_angle_changed:
+        if self._sprite_angle_changed and self._sprite_angle_buf:
             self._sprite_angle_buf.write(self._sprite_angle_data)
             self._sprite_angle_changed = False
 
-        if self._sprite_color_changed:
+        if self._sprite_color_changed and self._sprite_color_buf:
             self._sprite_color_buf.write(self._sprite_color_data)
             self._sprite_color_changed = False
 
-        if self._sprite_texture_changed:
+        if self._sprite_texture_changed and self._sprite_texture_buf:
             self._sprite_texture_buf.write(self._sprite_texture_data)
             self._sprite_texture_changed = False
 
-        if self._sprite_index_changed:
+        if self._sprite_index_changed and self._sprite_index_buf:
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
@@ -1148,13 +1149,15 @@ class SpriteList(Generic[_SpriteType]):
             else:
                 self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
-        try:
-            self.program["spritelist_color"] = self._color
-        except KeyError:
-            pass
+        if not self.program:
+            raise ValueError("Attempting to render without 'program' field being set.")
+
+        self.program["spritelist_color"] = self._color
 
         self._atlas.texture.use(0)
         self._atlas.use_uv_texture(1)
+        if not self._geometry:
+            raise ValueError("Attempting to render without '_geometry' field being set.")
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
@@ -1210,7 +1213,8 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_color_data.extend([0] * extend_by * 4)
         self._sprite_texture_data.extend([0] * extend_by)
 
-        if self._initialized:
+        if self._initialized and self._sprite_pos_buf and self._sprite_size_buf \
+                and self._sprite_angle_buf and self._sprite_color_buf and self._sprite_texture_buf:
             self._sprite_pos_buf.orphan(size=self._buf_capacity * 4 * 2)
             self._sprite_size_buf.orphan(size=self._buf_capacity * 4 * 2)
             self._sprite_angle_buf.orphan(size=self._buf_capacity * 4)
@@ -1246,7 +1250,7 @@ class SpriteList(Generic[_SpriteType]):
         )
 
         self._sprite_index_data.extend([0] * extend_by)
-        if self._initialized:
+        if self._initialized and self._sprite_index_buf:
             self._sprite_index_buf.orphan(size=self._idx_capacity * 4)
 
         self._sprite_index_changed = True

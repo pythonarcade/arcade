@@ -86,6 +86,11 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         if height is None and texture is not None:
             height = texture.size[1]
 
+        if width is None:
+            raise ValueError("Unable to determine a width.")
+        if height is None:
+            raise ValueError("Unable to determine a height.")
+
         if scale is not None and texture is not None:
             width = texture.size[0] * scale
             height = texture.size[1] * scale

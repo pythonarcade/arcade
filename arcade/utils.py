@@ -102,14 +102,10 @@ class _Vec2:
 
     __slots__ = ['x', 'y']
 
-    def __init__(self, x, y=None):
-        try:
-            # see if first argument is an iterable with two items
-            self.x = x[0]
-            self.y = x[1]
-        except TypeError:
-            self.x = x
-            self.y = y
+    def __init__(self, x: float, y: float):
+        # see if first argument is an iterable with two items
+        self.x: float = x
+        self.y: float = y
 
     @staticmethod
     def from_polar(angle, radius):
@@ -142,7 +138,7 @@ class _Vec2:
     def __repr__(self):
         return f"Vec2({self.x},{self.y})"
 
-    def rotated(self, angle):
+    def rotated(self, angle: float):
         """Returns the new vector resulting when this vector is rotated by the given angle in degrees"""
         rads = math.radians(angle)
         cosine = math.cos(rads)

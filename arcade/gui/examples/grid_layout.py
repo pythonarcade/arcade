@@ -27,12 +27,12 @@ class UIMockup(arcade.Window):
             .with_padding()
         )
 
-        subject.add(dummy1, 0, 0)
-        subject.add(dummy2, 0, 1)
-        subject.add(dummy3, 1, 0)
-        subject.add(dummy4, 1, 1)
-        subject.add(dummy5, 0, 2, col_span=2)
-        subject.add(dummy6, 2, 0, row_span=3)
+        subject.add(child=dummy1, col_num=0, row_num=0)
+        subject.add(child=dummy2, col_num=0, row_num=1)
+        subject.add(child=dummy3, col_num=1, row_num=0)
+        subject.add(child=dummy4, col_num=1, row_num=1)
+        subject.add(child=dummy5, col_num=0, row_num=2, col_span=2)
+        subject.add(child=dummy6, col_num=2, row_num=0, row_span=3)
 
         anchor = UIAnchorLayout()
         anchor.add(subject)

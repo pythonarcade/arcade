@@ -661,10 +661,10 @@ class UIInteractiveWidget(UIWidget):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
+        x: float = 0,
+        y: float = 0,
+        width: float,
+        height: float,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -824,9 +824,10 @@ class UISpriteWidget(UIWidget):
         self._sprite = sprite
 
     def on_update(self, dt):
-        self._sprite.update()
-        self._sprite.update_animation(dt)
-        self.trigger_render()
+        if self._sprite:
+            self._sprite.update()
+            self._sprite.update_animation(dt)
+            self.trigger_render()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)

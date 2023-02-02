@@ -145,7 +145,7 @@ def easing(percent: float, easing_data: EasingData) -> float:
         easing_data.ease_function(percent)
 
 
-def ease_angle(start_angle, end_angle, *, time=None, rate=None, ease_function=linear):
+def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None, ease_function: Callable = linear):
     """
     Set up easing for angles.
     """
@@ -161,6 +161,9 @@ def ease_angle(start_angle, end_angle, *, time=None, rate=None, ease_function=li
 
     if rate is not None:
         time = diff / rate
+
+    if time is None:
+        raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
 
     easing_data = EasingData(start_value=start_angle,
                              end_value=end_angle,
@@ -194,13 +197,16 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
     return done, angle
 
 
-def ease_value(start_value, end_value, *, time=None, rate=None, ease_function=linear):
+def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ease_function=linear):
     """
     Get an easing value
     """
     if rate is not None:
         diff = abs(start_value - end_value)
         time = diff / rate
+
+    if time is None:
+        raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
 
     easing_data = EasingData(start_value=start_value,
                              end_value=end_value,

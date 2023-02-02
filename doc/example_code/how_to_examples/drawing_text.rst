@@ -2,8 +2,8 @@
 
 .. _drawing_text:
 
-Drawing Text
-============
+Slow but Easy Text Drawing
+==========================
 
 .. image:: drawing_text.png
     :width: 500px

@@ -13,7 +13,7 @@ import itertools
 from collections import defaultdict
 import pyglet.gl as gl
 
-from typing import List, Iterable, Sequence
+from typing import List, Iterable, Sequence, Optional
 from typing import TypeVar
 from typing import Generic
 from typing import cast
@@ -24,6 +24,9 @@ from arcade import get_four_byte_color
 from arcade import get_window
 from arcade import get_points_for_thick_line
 from arcade.gl import BufferDescription
+from arcade.gl import Geometry
+from arcade.gl import Program
+from arcade.gl import Buffer
 
 from .geometry_generic import rotate_point
 
@@ -34,17 +37,22 @@ class Shape:
     shapes can be drawn faster in batch.
     """
     def __init__(self):
-        self.vao = None
-        self.vbo = None
-        self.program = None
-        self.mode = None
-        self.line_width = 1
+        self.vao: Optional[Geometry] = None
+        self.vbo: Optional[Buffer] = None
+        self.ibo: Optional[Buffer] = None
+        self.program: Optional[Program] = None
+        self.mode: Optional[int] = None
+        self.line_width: float = 1
 
     def draw(self):
         """
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
         """
+        if self.vao is None:
+            raise ValueError("VAO attribute not set before calling draw()")
+        if self.program is None:
+            raise ValueError("Program attribute not set before calling draw()")
         self.vao.render(self.program, mode=self.mode)
 
 
@@ -86,6 +94,7 @@ def create_line_generic_with_colors(point_list: PointList,
     """
     window = get_window()
     ctx = window.ctx
+
     program = ctx.line_generic_with_colors_program
 
     # Ensure colors have 4 components

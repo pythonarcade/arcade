@@ -2,8 +2,8 @@
 
 .. _drawing_text_objects:
 
-Drawing with Text Objects
-=========================
+Fast Text Drawing
+=================
 
 .. image:: drawing_text_objects.png
     :width: 500px

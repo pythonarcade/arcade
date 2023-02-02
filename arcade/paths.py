@@ -3,7 +3,7 @@ Path-related functions.
 
 """
 from arcade import Point, check_for_collision_with_list, SpriteList, Sprite
-from typing import Union, List, Tuple, Set
+from typing import Union, List, Tuple, Set, Optional
 
 import sys
 
@@ -94,7 +94,7 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
+def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[Point]]:
     G = {}  # Actual movement cost to each position from the start position
     F = {}  # Estimated movement cost of start to end going via this position
 
@@ -120,7 +120,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
                 current = pos
 
         # Check if we have reached the goal
-        if current == end:
+        if current == end and current is not None:
             # Retrace our route backward
             path = [current]
             while current in came_from:

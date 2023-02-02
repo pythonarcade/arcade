@@ -127,6 +127,7 @@ class FadeParticle(LifetimeParticle):
         super().__init__(filename_or_texture, change_xy, lifetime, center_xy, angle, change_angle, scale, start_alpha,
                          mutation_callback)
         self.start_alpha = start_alpha
+        self.alpha = start_alpha
         self.end_alpha = end_alpha
 
     def update(self):
@@ -135,4 +136,4 @@ class FadeParticle(LifetimeParticle):
         a = arcade.utils.lerp(self.start_alpha,
                               self.end_alpha,
                               self.lifetime_elapsed / self.lifetime_original)
-        self.alpha = clamp(a, 0, 255)
+        self.alpha = int(clamp(a, 0, 255))

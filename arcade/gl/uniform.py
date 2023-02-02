@@ -166,18 +166,21 @@ class Uniform:
     @staticmethod
     def _create_getter_func(program_id, location, gl_getter, c_array, length):
         """ Create a function for getting/setting OpenGL data. """
-        if length == 1:
-            def getter_func():
-                """ Get single-element OpenGL uniform data. """
-                gl_getter(program_id, location, c_array)
-                return c_array[0]
-        else:
-            def getter_func():
-                """ Get list of OpenGL uniform data. """
-                gl_getter(program_id, location, c_array)
-                return tuple(c_array)
 
-        return getter_func
+        def getter_func1():
+            """ Get single-element OpenGL uniform data. """
+            gl_getter(program_id, location, c_array)
+            return c_array[0]
+
+        def getter_func2():
+            """ Get list of OpenGL uniform data. """
+            gl_getter(program_id, location, c_array)
+            return tuple(c_array)
+
+        if length == 1:
+            return getter_func1
+        else:
+            return getter_func2
 
     @staticmethod
     def _create_setter_func(
