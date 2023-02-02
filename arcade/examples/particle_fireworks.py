@@ -312,7 +312,6 @@ class FireworksApp(arcade.Window):
 
     def on_update(self, delta_time):
         # prevent list from being mutated (often by callbacks) while iterating over it
-        print("Update")
         emitters_to_update = self.emitters.copy()
         # update cloud
         if self.cloud.center_x > SCREEN_WIDTH:
@@ -324,17 +323,14 @@ class FireworksApp(arcade.Window):
         to_del = [e for e in emitters_to_update if e.can_reap()]
         for e in to_del:
             self.emitters.remove(e)
-        print("Update done")
 
     def on_draw(self):
-        print("Start draw")
         self.clear()
         for e in self.emitters:
             e.draw()
         arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
         arcade.draw_lrtb_rectangle_filled(mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
-        print("End draw")
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
