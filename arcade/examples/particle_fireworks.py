@@ -7,8 +7,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.particle_fireworks
 """
 import arcade
-from arcade import Point, Vector
-from arcade.utils import _Vec2  # bring in "private" class
+from arcade import Point
+from pyglet.math import Vec2
 import random
 import pyglet
 
@@ -104,7 +104,7 @@ def make_puff(prev_emitter):
         emit_controller=arcade.EmitBurst(4),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=PUFF_TEXTURE,
-            change_xy=(_Vec2(arcade.rand_in_circle((0.0, 0.0), 0.4)) + _Vec2(0.3, 0.0)).as_tuple(),
+            change_xy=pyglet.math.Vec2(arcade.rand_in_circle((0.0, 0.0), 0.4)) + pyglet.math.Vec2(0.3, 0.0),
             lifetime=4.0
         )
     )
@@ -116,7 +116,7 @@ class AnimatedAlphaParticle(arcade.LifetimeParticle):
     def __init__(
             self,
             filename_or_texture: arcade.FilenameOrTexture,
-            change_xy: Vector,
+            change_xy: Vec2,
             start_alpha: int = 0,
             duration1: float = 1.0,
             mid_alpha: int = 255,
@@ -188,13 +188,16 @@ class FireworksApp(arcade.Window):
         )
         self.emitters.append(stars)
 
+        x, y = arcade.rand_in_circle(center=(0.0, 0.0), radius=0.04)
+        change_vec2 = Vec2(x, y) + Vec2(0.1, 0)
+        change_tuple = change_vec2.x, change_vec2.y
         self.cloud = arcade.Emitter(
             center_xy=(50, 500),
             change_xy=(0.15, 0),
             emit_controller=arcade.EmitMaintainCount(60),
             particle_factory=lambda emitter: AnimatedAlphaParticle(
                 filename_or_texture=random.choice(CLOUD_TEXTURES),
-                change_xy=(_Vec2(arcade.rand_in_circle((0.0, 0.0), 0.04)) + _Vec2(0.1, 0)).as_tuple(),
+                change_xy=change_tuple,
                 start_alpha=0,
                 duration1=random.uniform(5.0, 10.0),
                 mid_alpha=255,
@@ -248,7 +251,7 @@ class FireworksApp(arcade.Window):
             emit_controller=arcade.EmitBurst(random.randint(30, 40)),
             particle_factory=lambda emitter: arcade.FadeParticle(
                 filename_or_texture=spark_texture,
-                change_xy=arcade.rand_in_circle((0.0, 0.0), 9.0),
+                change_xy=arcade.rand_in_circle(center=(0.0, 0.0), radius=9.0),
                 lifetime=random.uniform(0.5, 1.2),
                 mutation_callback=firework_spark_mutator
             )
@@ -278,7 +281,7 @@ class FireworksApp(arcade.Window):
             emit_controller=arcade.EmitBurst(20),
             particle_factory=lambda emitter: arcade.FadeParticle(
                 filename_or_texture=ring_texture,
-                change_xy=arcade.rand_on_circle((0.0, 0.0), 5.0) + arcade.rand_in_circle((0.0, 0.0), 0.25),
+                change_xy=arcade.rand_on_circle(center=(0.0, 0.0), radius=5.0),
                 lifetime=random.uniform(1.0, 1.6),
                 mutation_callback=firework_spark_mutator
             )
@@ -296,7 +299,7 @@ class FireworksApp(arcade.Window):
             emit_controller=arcade.EmitBurst(random.randint(30, 40)),
             particle_factory=lambda emitter: AnimatedAlphaParticle(
                 filename_or_texture=spark_texture,
-                change_xy=arcade.rand_in_circle((0.0, 0.0), 9.0),
+                change_xy=arcade.rand_in_circle(center=(0.0, 0.0), radius=9.0),
                 start_alpha=255,
                 duration1=random.uniform(0.6, 1.0),
                 mid_alpha=0,
@@ -309,6 +312,7 @@ class FireworksApp(arcade.Window):
 
     def on_update(self, delta_time):
         # prevent list from being mutated (often by callbacks) while iterating over it
+        print("Update")
         emitters_to_update = self.emitters.copy()
         # update cloud
         if self.cloud.center_x > SCREEN_WIDTH:
@@ -320,14 +324,17 @@ class FireworksApp(arcade.Window):
         to_del = [e for e in emitters_to_update if e.can_reap()]
         for e in to_del:
             self.emitters.remove(e)
+        print("Update done")
 
     def on_draw(self):
+        print("Start draw")
         self.clear()
         for e in self.emitters:
             e.draw()
         arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
         arcade.draw_lrtb_rectangle_filled(mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
+        print("End draw")
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
