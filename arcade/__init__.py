@@ -583,17 +583,17 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, 'is_pyglet_doc_run', False):
     # Auto load fonts
-    load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
-    load_font(":resources:fonts/ttf/Kenney Future.ttf")
-    load_font(":resources:fonts/ttf/Kenney Future Narrow.ttf")
-    load_font(":resources:fonts/ttf/Kenney High.ttf")
-    load_font(":resources:fonts/ttf/Kenney High Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney Mini.ttf")
-    load_font(":resources:fonts/ttf/Kenney Mini Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney Pixel.ttf")
-    load_font(":resources:fonts/ttf/Kenney Pixel Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney Rocket.ttf")
-    load_font(":resources:fonts/ttf/Kenney Rocket Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Blocks.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Future.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Future_Narrow.ttf")
+    load_font(":resources:fonts/ttf/Kenney_High.ttf")
+    load_font(":resources:fonts/ttf/Kenney_High_Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Mini.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Mini_Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Pixel.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Pixel_Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Rocket.ttf")
+    load_font(":resources:fonts/ttf/Kenney_Rocket_Square.ttf")
 
     # Load additional game controller mappings to Pyglet
     try:
