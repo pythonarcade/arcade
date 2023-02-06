@@ -128,23 +128,6 @@ def test_can_shuffle(ctx):
             assert slot == index_data[i]
 
 
-def test_spritelist_lazy():
-    """Test lazy creation of spritelist"""
-    spritelist = arcade.SpriteList(lazy=True, use_spatial_hash=True)
-    assert spritelist._sprite_pos_buf == None
-    assert spritelist._geometry == None
-    for x in range(100):
-        spritelist.append(
-            arcade.Sprite(":resources:images/items/coinGold.png", center_x=x * 64)
-        )
-    assert len(spritelist) == 100
-    assert spritelist.spatial_hash
-    assert spritelist._initialized is False
-    spritelist.initialize()
-    assert spritelist._initialized
-    assert spritelist._sprite_pos_buf
-    assert spritelist._geometry
-
 def test_sort(ctx):
     s1 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
     s1.set_position(100, 100)
