@@ -18,7 +18,6 @@ from typing import (
     Iterator,
     List,
     Optional,
-    Set,
     Tuple,
     TypeVar,
     Union, Generic, Callable
@@ -61,7 +60,7 @@ class SpriteList(Generic[_SpriteType]):
     can contain tens of thousands of sprites without any issues.
     Sprites outside the viewport/window will not be rendered.
 
-    If the spriteslist are going to be used for collision it's a good
+    If the spritelist are going to be used for collision it's a good
     idea to enable spatial hashing. Especially if no sprites are moving.
     This will make collision checking **a lot** faster.
     In technical terms collision checking is ``O(1)`` with spatial hashing
@@ -124,9 +123,6 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_slots = 0
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
         self._sprite_buffer_free_slots: Deque[int] = deque()
-
-        # Sprites added before the window/context is created
-        self._deferred_sprites: Set[_SpriteType] = set()
 
         # List of sprites in the sprite list
         self.sprite_list: List[_SpriteType] = []
@@ -228,8 +224,8 @@ class SpriteList(Generic[_SpriteType]):
 
         self._initialized = True
 
-        # Load all the textures and write texture coordinates into buffers
-        for sprite in self._deferred_sprites:
+        # Load all the textures and write texture coordinates into buffers.
+        for sprite in self.sprite_list:
             # noinspection PyProtectedMember
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
@@ -237,8 +233,6 @@ class SpriteList(Generic[_SpriteType]):
             if hasattr(sprite, "textures"):
                 for texture in sprite.textures or []:
                     self._atlas.add(texture)
-
-        self._deferred_sprites = None
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
@@ -563,7 +557,6 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_buffer_slots = 0
         self._sprite_index_slots = 0
         self._sprite_buffer_free_slots = deque()
-        self._deferred_sprites = set()
 
         # Reset buffers
         # Python representation of buffer data
@@ -920,9 +913,9 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_color_data[slot * 4 + 3] = sprite._color[3]
         self._sprite_color_changed = True
 
-        # texture
+        # Don't deal with textures if spritelist is not initialized.
+        # This can often mean we don't have a context/window yet.
         if not self._initialized:
-            self._deferred_sprites.add(sprite)
             return
 
         if not sprite._texture:
@@ -940,7 +933,6 @@ class SpriteList(Generic[_SpriteType]):
         # We cannot interact with texture atlases unless the context
         # is created. We defer all texture initialization for later
         if not self._initialized:
-            self._deferred_sprites.add(sprite)
             return
 
         if not sprite._texture:
