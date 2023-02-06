@@ -189,3 +189,24 @@ def test_does_not_adjust_children_without_size_hint(window):
     assert dummy2.size == (75, 50)
     assert dummy3.size == (50, 75)
     assert dummy4.size == (100, 100)
+
+
+def test_size_hint_and_spacing(window):
+    dummy1 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=2,
+        horizontal_spacing=10,
+        vertical_spacing=10,
+    )
+
+    subject.add(dummy1, 0, 0)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    assert dummy1.size == (100, 100)
+
+    subject.do_layout()
+    assert dummy1.size == (100, 100)

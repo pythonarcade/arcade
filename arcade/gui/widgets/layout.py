@@ -650,15 +650,14 @@ class UIGridLayout(UILayout):
             Used to calculate ratio of the elements based on the minimum value in the parameter.
             :param dimension: List containing max height or width of the cells.
             """
-            ratio_value = min([dimension for dimension in dimensions if dimension])
-            return [dimension/ratio_value for dimension in dimensions]
+            ratio_value = sum(dimensions)
+            return [dimension / ratio_value for dimension in dimensions]
 
         expandable_height_ratio = ratio(principal_width_ratio_list)
         expandable_width_ratio = ratio(principal_height_ratio_list)
 
         total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
-        total_available_width = self.content_rect.right - content_width - self.content_rect.left
-        
+        total_available_width = self.content_rect.right - content_width - self.content_rect.left  
 
         # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -676,7 +675,6 @@ class UIGridLayout(UILayout):
                 width_expand_ratio = expandable_width_ratio[col_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
                 max_width = available_width + self._horizontal_spacing
-
 
                 # re-assigning max_width and max_height to remove
                 # empty rows and columns as spacing is added to all cells.
