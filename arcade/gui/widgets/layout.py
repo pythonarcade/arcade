@@ -650,7 +650,7 @@ class UIGridLayout(UILayout):
             Used to calculate ratio of the elements based on the minimum value in the parameter.
             :param dimension: List containing max height or width of the cells.
             """
-            ratio_value = sum(dimensions)
+            ratio_value = sum(dimensions) or 1
             return [dimension / ratio_value for dimension in dimensions]
 
         expandable_height_ratio = ratio(principal_width_ratio_list)
@@ -667,12 +667,12 @@ class UIGridLayout(UILayout):
             for col_num, child in enumerate(row):
 
                 constant_height = max_height_per_row[row_num][col_num][0]
-                height_expand_ratio = expandable_height_ratio[row_num]
+                height_expand_ratio = expandable_height_ratio[col_num]
                 available_height = constant_height + total_available_height * height_expand_ratio
                 max_height = available_height + self._vertical_spacing
 
                 constant_width = max_width_per_column[col_num][row_num][0]
-                width_expand_ratio = expandable_width_ratio[col_num]
+                width_expand_ratio = expandable_width_ratio[row_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
                 max_width = available_width + self._horizontal_spacing
 
@@ -683,9 +683,6 @@ class UIGridLayout(UILayout):
                 if max_height == self._vertical_spacing:
                     max_height = 0
 
-                # col_span = max_width_per_column[col_num][row_num][1] or 1
-                row_span = max_height_per_row[row_num][col_num][1] or 1
-
                 center_y = start_y - (max_height / 2)
                 center_x = start_x + (max_width / 2)
 
@@ -694,9 +691,6 @@ class UIGridLayout(UILayout):
                 if child is not None and max_width != 0 and max_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
-
-                    available_height = constant_height + total_available_height * height_expand_ratio
-                    available_width = constant_width + total_available_width * width_expand_ratio
 
                     if child.size_hint:
                         sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
@@ -729,7 +723,8 @@ class UIGridLayout(UILayout):
 
                     child.rect = new_rect
 
-                # this is required due to row-wise rendering as start_y doesn't resets like start_x
+                # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
+                row_span = max_height_per_row[row_num][col_num][1] or 1
                 actual_row_height = max_height / row_span
                 if actual_row_height > max_height_row:
                     max_height_row = actual_row_height
