@@ -74,7 +74,9 @@ This is what this somehow looks without sections:
 
 This code can and often become long and with a lot of checks to know what to do.
 
-By using Sections this is what looks like:
+By using Sections, you can improve this code and automate this cimple checks.
+
+This is what looks like using Sections:
 
 
 .. code:: py
@@ -161,17 +163,29 @@ Properties of a :class:`Section`:
     will prevent dispatching all handled events.
     By passing ``prevent_dispatch={'on_mouse_press'}`` all events will propagate
     down the event capture stream except the ``on_mouse_press`` event.
+    Note that passing ``prevent_dispatch=None`` (the default) is the same as passing
+    ``prevent_dispatch={True}`` which means "prevent all events" from dispatching to other sections.
+    You can also set ``prevent_dispatch={False}`` to dispatch all events to other sections.
 
 **prevent_dispatch_view:**
-    This allows to tell if a :class:`Section` if events (and what events) should
+    This allows to tell a :class:`Section` if events (and what events) should
     not be dispatched to the underlying :class:`View`.
     This is handy if you want to do some action in the :class:`View` code whether
     or not the event was handled by another :class:`Section`. By default a
     :class:`Section` will prevent dispatching all handled events to the :class:`View`.
+    Note that passing ``prevent_dispatch=None`` (the default) is the same as passing
+    ``prevent_dispatch={True}`` which means "prevent all events" from dispatching to the view.
+    You can also set ``prevent_dispatch={False}`` to dispatch all events to other sections.
+    **Also note that in order for the view to receive any event, ALL the sections need to allow
+    the dispatch of that particular event. If at least one section prevents it, the event will not
+    be delivered to the view.**
 
 **local_mouse_coordinates:**
     If True the section mouse events will receive x, y coordinates section
     related to the section dimensions and position (not related to the screen).
+    **Note that although this seems very usefull, section local coordinates doesn't work with
+    arcade collision methods. You can use :class:`Section` ``get_xy_screen_relative`` to transform local
+    mouse coordinates to screen coordinates that work with arcade collision methods**
 
 **enabled:**
     By default all sections are enabled. This allows to tell if this particuar
@@ -179,6 +193,7 @@ Properties of a :class:`Section`:
     enabled, it will not capture any event, draw, update, etc. It will be
     as it didn't exist.
     You can enable and disable sections at any time allowing some cool efects.
+    Nota that setting this property will trigger the section ``on_show_section`` or ``on_hide_section`` events.
 
 **modal:**
     This tells the :class:`SectionManager` that this :class:`Section` is modal.
@@ -189,10 +204,13 @@ Properties of a :class:`Section`:
 
 **draw_order:**
     This allows to define the draw order this :class:`Section` will have.
+    The lower the number the earlier this section will get draw.
     This is handy when you have overlaping sections and you want some
     :class:`Section` to be drawn ontop of another.
     By default sections will be draw in the order they are added (except modal
-    sections).
+    sections which no matter what will be drawn last).
+    Note that this can be different from the event capture order or the on_update order
+    which is defined by the insertion order in the :class:`SectionManager`.
 
 Other handy :class:`Section` properties:
 
@@ -205,6 +223,7 @@ Handy :class:`Section`: methods:
 - mouse_is_on_top: this will tell if given a x, y coodinate, the mouse is on top of the section.
 - get_xy_screen_relative: get screen x, y coordinates from x, y section coordinates.
 - get_xy_section_relative: get section x, y coordinates from x, y screen coordinates.
+
 
 
 Sections configuration and logic with an example
@@ -267,6 +286,11 @@ Lets look what this configuration may look:
             self.popup = PopUp(message='', popup_left, popup_bottom, popup_width,
                                popup_height, enabled=False, modal=True)
 
+            self.add_section(self.map)
+            self.add_section(self.menu)
+            self.add_section(self.panel)
+            self.add_section(self.popup)
+
         def close():
             self.popup.message = 'Are you sure you want to close the view?'
             self.popup.enabled = True
@@ -276,7 +300,7 @@ Lets go step by step.
 First we configure a Map section that will hold the map. This Section will start at
 left, bottom = 0,0 and will not occupy the whole screen.
 Mouse events that occur outside of this coordinates will not be handled by the Map
-event handlers. So Map will only needs to take care of what happens inside the map.
+event handlers. So Map will only need to take care of what happens inside the map.
 
 Second we configure a Menu section that will hold some buttons. This menu takes the top
 space of the screen that the Map has left. The Map + the Menu will occupy 100% of the height
@@ -300,14 +324,15 @@ Section Unique Events
 
 There a few unique events that belong to sections and are somehow special in the way they are triggered:
 
-**``on_mouse_enter`` and ``on_mouse_leave``:**
+* ``on_mouse_enter`` and ``on_mouse_leave``:
     These events are triggered on two ocasions: when the mouse enters/leaves the
     view and when the :class:`SectionManager` detects by mouse motion (or dragging)
     that the mouse has enter / leaved the section dimensions.
 
-**``on_show_section`` and ``on_hide_section``:**
-    There events are triggered only when the section is enabled and under
+* ``on_show_section`` and ``on_hide_section``:
+    There events are triggered only when the section **is enabled** and under
     certain circumstances that must be known:
+
     - When the section is added or removed from the :class:`SectionManager` and the :class:`View` is currently being shown
     - When the section is enabled or disabled
     - When Window calls ``on_show_view`` or ``on_hide_view``
@@ -321,6 +346,7 @@ Behind the scenes, when sections are added to the :class:`View` the
 the :class:`View` itself.
 
 You can access the :class:`SectionManager` by accessing the ``View.section_manager``.
+Note that if you don't use Sections, the section manager inside the View will not be used nor created.
 
 Usually you won't need to work with the :class:`SectionManager`, but there are
 some cases where you will need to work with it.
@@ -339,7 +365,7 @@ Also there are three attributes that can be configured in the :class:`SectionMan
 that are useful and important sometimes.
 
 By default, ``on_draw``, ``on_update`` and ``on_resize`` are events that will always
-be triggered in the :class:`View` before the any section has triggered them.
+be triggered in the :class:`View` before any section has triggered them.
 This is the default but you can configure this with the following attributes:
 
 -``view_draw_first``
