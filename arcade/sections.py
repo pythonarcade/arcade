@@ -115,7 +115,7 @@ class Section:
 
     @property
     def enabled(self) -> bool:
-        """ enables or disables this section """
+        """ Enables or disables this section """
         return self._enabled
 
     @enabled.setter
@@ -138,10 +138,18 @@ class Section:
 
     @property
     def draw_order(self) -> int:
+        """
+        Returns the draw order state
+        The lower the number the earlier this section will get draw
+        """
         return self._draw_order
 
     @draw_order.setter
     def draw_order(self, value: int) -> None:
+        """
+        Sets this section draw order
+        The lower the number the earlier this section will get draw
+        """
         self._draw_order = value
         if self.section_manager is not None:
             self.section_manager.sort_sections_draw_order()

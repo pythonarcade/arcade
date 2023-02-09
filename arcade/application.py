@@ -921,7 +921,10 @@ class View:
     @property
     def has_sections(self) -> bool:
         """ Return if the View has sections """
-        return self.section_manager.has_sections
+        if self._section_manager is None:
+            return False
+        else:
+            return self.section_manager.has_sections
 
     def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
