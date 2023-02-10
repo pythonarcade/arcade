@@ -39,7 +39,7 @@ Sprite Lists
 Sprites are managed in lists. The ``SpriteList`` class optimizes drawing, movement,
 and collision detection.
 
-We are using three logical groups in our game. A ``player_list`` for the player.
+We are using two logical groups in our game. A ``player_list`` for the player.
 A ``wall_list`` for walls we can't move through.
 
 .. code-block::
