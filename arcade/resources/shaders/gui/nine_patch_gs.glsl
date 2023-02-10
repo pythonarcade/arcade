@@ -18,7 +18,7 @@ uniform vec2 start;
 uniform vec2 end;
 
 // The xp position of the patch
-uniform vec2 position = vec2(0.0, 0.0);
+uniform vec2 position;
 // Size of the patch in pixels
 uniform vec2 size;
 // Size of the texture in pixels
@@ -64,7 +64,7 @@ void main() {
     // Get texture coordinates
     vec2 uv0, uv1, uv2, uv3;
     getSpriteUVs(uv_texture, int(texture_id), uv0, uv1, uv2, uv3);
-    vec2 atlas_size = textureSize(sprite_texture, 0);
+    vec2 atlas_size = vec2(textureSize(sprite_texture, 0));
     // Corner offsets (upper left, upper, right, lower left, lower right)
     // This is the global texture coordiante offset in the entire atlas
     float left = start.x;
