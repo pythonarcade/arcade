@@ -397,23 +397,34 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        _angle = self._angle
+        angle_radians = math.radians(self._angle)
         _scale_x, _scale_y = self._scale
         _position_x, _position_y = self._position
+        cos_angle = math.cos(angle_radians)
+        sin_angle = math.sin(angle_radians)
         def _adjust_point(point) -> Point:
+            x, y = point
+            x *= _scale_x
+            y *= _scale_y
             # Rotate the point if needed
-            if _angle:
+            if angle_radians:
                 # Rotate with scaling to not distort it if scale x and y is different
-                point = rotate_point(point[0] * _scale_x, point[1] * _scale_y, 0, 0, _angle)
+                rotated_x = x * cos_angle - y * sin_angle
+                rotated_y = x * sin_angle + y * cos_angle
+
+                # translate back
+                rounding_precision = 2
+                x = round(rotated_x, rounding_precision)
+                y = round(rotated_y, rounding_precision)
                 # Apply position
                 return (
-                    point[0] + _position_x,
-                    point[1] + _position_y,
+                    x + _position_x,
+                    y + _position_y,
                 )
             # Apply position and scale
             return (
-                point[0] * _scale_x + _position_x,
-                point[1] * _scale_y + _position_y,
+                x + _position_x,
+                y + _position_y,
             )
 
         # Cache the results
