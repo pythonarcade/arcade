@@ -22,6 +22,7 @@ from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.arcade_types import Color
 from arcade import SectionManager
+from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
 
@@ -105,7 +106,7 @@ class Window(pyglet.window.Window):
             antialiasing = False
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
-        if sys.platform != "win32" and "rasp" in os.uname().nodename:
+        if is_raspberry_pi():
             gl_version = 3, 1
             gl_api = "gles"
 
