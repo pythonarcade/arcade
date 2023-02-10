@@ -518,8 +518,7 @@ class Sprite:
         if len(points) == 0:
             return self.center_y
 
-        y_points = [point[1] for point in points]
-        return min(y_points)
+        return min(point[1] for point in points)
 
     @bottom.setter
     def bottom(self, amount: float):
@@ -542,8 +541,7 @@ class Sprite:
         if len(points) == 0:
             return self.center_y
 
-        y_points = [point[1] for point in points]
-        return max(y_points)
+        return max(point[1] for point in points)
 
     @top.setter
     def top(self, amount: float):
@@ -873,8 +871,7 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        x_points = [point[0] for point in points]
-        return min(x_points)
+        return min(point[0] for point in points)
 
     @left.setter
     def left(self, amount: float):
@@ -895,8 +892,7 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        x_points = [point[0] for point in points]
-        return max(x_points)
+        return max(point[0] for point in points)
 
     @right.setter
     def right(self, amount: float):
