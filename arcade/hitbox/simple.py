@@ -93,4 +93,5 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
             result.append(_r(p8, h, w))
 
         # Remove duplicates
-        return tuple(dict.fromkeys(result))  # type: ignore
+        points = tuple(dict.fromkeys(result))  # type: ignore
+        return (points, len(points) == 8)

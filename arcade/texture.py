@@ -156,7 +156,11 @@ class Texture:
             self._hit_box_algorithm = self._hit_box_algorithm.lower()
 
         self._hit_box_detail = hit_box_detail
-        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
+        self._hit_box_parallel = False
+        if hit_box_points:
+            self._hit_box_points = hit_box_points
+        else:
+            self._hit_box_points, self._hit_box_parallel = self._calculate_hit_box_points()
 
     @property
     def name(self) -> str:
@@ -480,14 +484,14 @@ class Texture:
 
         # Check if we have cached points
         keys = [self._image_data.hash, algo_name, self._hit_box_detail]
-        points = self.hit_box_cache.get(keys)
-        if points:
-            return points
+        points_opt = self.hit_box_cache.get(keys)
+        if points_opt:
+            return points_opt
 
         # Calculate points with the selected algorithm
         algo = hitbox.get_algorithm(algo_name)
         points = algo.calculate(self.image, hit_box_algorithm=self._hit_box_detail)
-        self.hit_box_cache.put(keys, points)
+        self.hit_box_cache.put(keys, points[0], points[1])
 
         return points
 

@@ -10,8 +10,8 @@ from arcade import PointList
 _PRECISION = 2
 
 
-def are_polygons_intersecting(poly_a: PointList,
-                              poly_b: PointList) -> bool:
+def are_polygons_intersecting(poly_a: PointList, poly_a_parallel: bool,
+                              poly_b: PointList, poly_b_parallel: bool) -> bool:
     """
     Return True if two polygons intersect.
 
@@ -22,10 +22,11 @@ def are_polygons_intersecting(poly_a: PointList,
     :rtype bool:
     """
 
-    for polygon in (poly_a, poly_b):
+    for (polygon, parallel) in ((poly_a, poly_a_parallel), (poly_b, poly_b_parallel)):
 
         len_polygon = len(polygon)
-        for i1 in range(len_polygon):
+        range_max = len_polygon // 2 if parallel else len_polygon
+        for i1 in range(range_max):
             i2 = (i1 + 1) % len_polygon
             projection_1 = polygon[i1]
             projection_2 = polygon[i2]

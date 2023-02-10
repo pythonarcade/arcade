@@ -19,9 +19,9 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
         :Returns: List of points
         """
         size = image.size
-        return (
+        return ((
             (-size[0] / 2, -size[1] / 2),
             (size[0] / 2, -size[1] / 2),
             (size[0] / 2, size[1] / 2),
             (-size[0] / 2, size[1] / 2),
-        )
+        ), True)

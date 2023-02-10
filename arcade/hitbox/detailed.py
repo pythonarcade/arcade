@@ -43,7 +43,7 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
         if len(line_set) > 4:
             line_set = simplify_curves(line_set, hit_box_detail)
 
-        return self.to_points_list(image, line_set)
+        return (self.to_points_list(image, line_set), False)
 
     def to_points_list(self, image: Image, line_set: List[Vec2d]) -> PointList:
         """

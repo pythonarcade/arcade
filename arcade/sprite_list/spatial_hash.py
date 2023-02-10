@@ -229,7 +229,7 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
         return False
 
     return are_polygons_intersecting(
-        sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box()
+        sprite1.get_adjusted_hit_box(), sprite1._hit_box_parallel, sprite2.get_adjusted_hit_box(), sprite2._hit_box_parallel
     )
 
 

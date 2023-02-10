@@ -33,7 +33,7 @@ class HitBoxCache:
     VERSION = 1
 
     def __init__(self):
-        self._entries: OrderedDict[str, PointList] = OrderedDict()
+        self._entries: OrderedDict[str, (PointList, bool)] = OrderedDict()
 
     def __len__(self) -> int:
         return len(self._entries)
@@ -57,7 +57,7 @@ class HitBoxCache:
         key = self._gen_key(*keys)
         return self._entries.get(key, None)
 
-    def put(self, keys: List[Any], points: PointList) -> None:
+    def put(self, keys: List[Any], points: PointList, opt = False) -> None:
         """
         Store hit box points usually for a texture.
 
@@ -78,7 +78,7 @@ class HitBoxCache:
             raise ValueError(f"Hit box must have at least 3 points: {points}")
 
         key = self._gen_key(*keys)
-        self._entries[key] = tuple(points)
+        self._entries[key] = (tuple(points), opt)
 
     def load(self, path: Union[str, Path]) -> None:
         """

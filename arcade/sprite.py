@@ -257,6 +257,7 @@ class Sprite:
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
+            self._hit_box_parallel = self._texture._hit_box_parallel
 
     @property
     def properties(self) -> Dict[str, Any]:
@@ -359,6 +360,7 @@ class Sprite:
         # If there is no hitbox, use the width/height to get one
         if self._points is None and self._texture:
             self._points = self._texture.hit_box_points
+            self._hit_box_parallel = self._texture._hit_box_parallel
 
         if self._points is None and self._width:
             x1, y1 = -self._width / 2, -self._height / 2
@@ -1482,6 +1484,7 @@ class SpriteCircle(Sprite):
         self.texture = texture
         self.color = color_rgba
         self._points = self.texture.hit_box_points
+        self._hit_box_parallel = self.texture._hit_box_parallel
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
