@@ -56,9 +56,10 @@ import pyglet
 if os.environ.get('ARCADE_HEADLESS'):
     pyglet.options["headless"] = True
 
+from .utils import is_raspberry_pi
+
 # Disable shadow window on macs and in headless mode.
-# Intel on windows might need this disabled too, but we'll see how that goes
-if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS'):
+if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or is_raspberry_pi():
     pyglet.options['shadow_window'] = False
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
@@ -127,18 +128,21 @@ from .arcade_types import TiledObject
 
 from .earclip_module import earclip
 
-from .utils import lerp
-from .utils import lerp_vec
-from .utils import lerp_angle
-from .utils import rand_angle_360_deg
-from .utils import rand_angle_spread_deg
-from .utils import rand_in_circle
-from .utils import rand_in_rect
-from .utils import rand_on_circle
-from .utils import rand_on_line
-from .utils import rand_vec_magnitude
-from .utils import rand_vec_spread_deg
+from .math import lerp
+from .math import lerp_vec
+from .math import lerp_angle
+from .math import rand_angle_360_deg
+from .math import rand_angle_spread_deg
+from .math import rand_in_circle
+from .math import rand_in_rect
+from .math import rand_on_circle
+from .math import rand_on_line
+from .math import rand_vec_magnitude
+from .math import rand_vec_spread_deg
+
 from .utils import generate_uuid_from_kwargs
+from .utils import is_raspberry_pi
+from .utils import get_raspberry_pi_info
 
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
@@ -502,6 +506,8 @@ __all__ = [
     'finish_render',
     'float_to_byte_color',
     'generate_uuid_from_kwargs',
+    'is_raspberry_pi',
+    'get_raspberry_pi_info',
     'get_closest_sprite',
     'get_angle_degrees',
     'get_angle_radians',

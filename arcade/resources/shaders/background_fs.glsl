@@ -5,11 +5,8 @@ in vec2 frag_uv;
 uniform sampler2D backgroundTexture;
 
 uniform mat3 pixelTransform;
-
-uniform float blend = 1;
-
+uniform float blend;
 uniform vec3 color;
-
 uniform vec2 pos;
 uniform vec2 size;
 
@@ -22,7 +19,7 @@ void main() {
     vec2 adjusted = (pixelTransform * vec3(adjustedUV, 1.0)).xy;
 
     adjusted = adjusted / texSize;
-    fragColor = texture(backgroundTexture, adjusted, 0);
+    fragColor = texture(backgroundTexture, adjusted);
     fragColor.rgb *= color;
     fragColor.a *= blend;
 }

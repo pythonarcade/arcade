@@ -657,7 +657,7 @@ class UIGridLayout(UILayout):
         expandable_width_ratio = ratio(principal_height_ratio_list)
 
         total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
-        total_available_width = self.content_rect.right - content_width - self.content_rect.left  
+        total_available_width = self.content_rect.right - content_width - self.content_rect.left
 
         # row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -669,26 +669,12 @@ class UIGridLayout(UILayout):
                 constant_height = max_height_per_row[row_num][col_num][0]
                 height_expand_ratio = expandable_height_ratio[col_num]
                 available_height = constant_height + total_available_height * height_expand_ratio
-                max_height = available_height + self._vertical_spacing
 
                 constant_width = max_width_per_column[col_num][row_num][0]
                 width_expand_ratio = expandable_width_ratio[row_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
-                max_width = available_width + self._horizontal_spacing
 
-                # re-assigning max_width and max_height to remove
-                # empty rows and columns as spacing is added to all cells.
-                if max_width == self._horizontal_spacing:
-                    max_width = 0
-                if max_height == self._vertical_spacing:
-                    max_height = 0
-
-                center_y = start_y - (max_height / 2)
-                center_x = start_x + (max_width / 2)
-
-                start_x += max_width
-
-                if child is not None and max_width != 0 and max_height != 0:
+                if child is not None and available_width != 0 and available_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
 
@@ -707,15 +693,23 @@ class UIGridLayout(UILayout):
 
                     new_rect = new_rect.resize(width=new_width, height=new_height)
 
+                    cell_height = constant_height + self._vertical_spacing
+                    cell_width = constant_width + self._horizontal_spacing
+
+                    center_y = start_y - (cell_height / 2)
+                    center_x = start_x + (cell_width / 2)
+
+                    start_x += cell_width
+
                     if self.align_vertical == "top":
                         new_rect = new_rect.align_top(start_y)
                     elif self.align_vertical == "bottom":
-                        new_rect = new_rect.align_bottom(start_y - max_height)
+                        new_rect = new_rect.align_bottom(start_y - cell_height)
                     else:
                         new_rect = new_rect.align_center_y(center_y)
 
                     if self.align_horizontal == "left":
-                        new_rect = new_rect.align_left(start_x - max_width)
+                        new_rect = new_rect.align_left(start_x - cell_width)
                     elif self.align_horizontal == "right":
                         new_rect = new_rect.align_right(start_x)
                     else:
@@ -725,7 +719,7 @@ class UIGridLayout(UILayout):
 
                 # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
                 row_span = max_height_per_row[row_num][col_num][1] or 1
-                actual_row_height = max_height / row_span
+                actual_row_height = cell_height / row_span
                 if actual_row_height > max_height_row:
                     max_height_row = actual_row_height
 
