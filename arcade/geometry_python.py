@@ -50,7 +50,7 @@ def are_polygons_intersecting(poly_a: PointList,
                 if max_b is None or projected > max_b:
                     max_b = projected
 
-            if cast(float, max_a) <= cast(float, min_b) or cast(float, max_b) <= cast(float, min_a):
+            if max_a <= min_b or max_b <= min_a:
                 return False
 
     return True
