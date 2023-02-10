@@ -428,7 +428,7 @@ class Sprite:
             )
 
         # Cache the results
-        self._point_list_cache = tuple(_adjust_point(point) for point in self.hit_box)
+        self._point_list_cache = tuple([_adjust_point(point) for point in self.hit_box])
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
