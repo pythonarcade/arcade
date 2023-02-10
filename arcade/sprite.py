@@ -412,14 +412,10 @@ class Sprite:
                 rotated_x = x * cos_angle - y * sin_angle
                 rotated_y = x * sin_angle + y * cos_angle
 
-                # translate back
-                rounding_precision = 2
-                x = round(rotated_x, rounding_precision)
-                y = round(rotated_y, rounding_precision)
                 # Apply position
                 return (
-                    x + _position_x,
-                    y + _position_y,
+                    rotated_x + _position_x,
+                    rotated_y + _position_y,
                 )
             # Apply position and scale
             return (
