@@ -308,7 +308,7 @@ def check_for_collision_with_list(
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    if sprite_list.spatial_hash and (method == 1 or method == 0):
+    if (method == 1 or method == 0) and sprite_list.spatial_hash:
         # Spatial
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
