@@ -4,7 +4,6 @@ Various utility functions.
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
 """
-
 import platform
 import sys
 from typing import Tuple
@@ -32,7 +31,7 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
 def is_raspberry_pi() -> bool:
     """
     Determine if the host is a rasberry pi.
-    
+
     :returns: bool
     """
     return get_raspberry_pi_info()[0]
@@ -42,7 +41,7 @@ def get_raspberry_pi_info() -> Tuple[bool, str, str]:
     """
     Determine if the host is a raspberry pi
     with additional info.
-    
+
     :returns: 3 component tuple.
               bool (is host a raspi)
               str (architechture)
@@ -53,11 +52,11 @@ def get_raspberry_pi_info() -> Tuple[bool, str, str]:
     architecture = platform.machine()
     model_name = ""
 
-	# The platform for raspi should always be linux
-    if not sys.platform  == "linux":
+    # The platform for raspi should always be linux
+    if not sys.platform == "linux":
         return False, 0, ""
 
-	# Check for model info file
+    # Check for model info file
     MODEL_PATH = Path("/sys/firmware/devicetree/base/model")
     if MODEL_PATH.exists():
         try:

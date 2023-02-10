@@ -1,6 +1,5 @@
 import math
 import random
-from pathlib import Path
 from arcade.arcade_types import Point, Vector
 
 
