@@ -220,8 +220,8 @@ def create_lines_with_colors(point_list: PointList,
         color1 = color_list[i - 1]
         color2 = color_list[i]
         points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-        new_color_list += color1, color1, color2, color2
-        triangle_point_list += points[1], points[0], points[2], points[3]
+        new_color_list += color1, color1, color2, color1, color2, color2
+        triangle_point_list += points[0], points[1], points[2], points[0], points[2], points[3]
 
     return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
@@ -460,7 +460,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
     """
-    shape_mode = gl.GL_TRIANGLE_STRIP
+    shape_mode = gl.GL_TRIANGLES
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
 
