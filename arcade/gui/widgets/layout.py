@@ -674,7 +674,7 @@ class UIGridLayout(UILayout):
                 width_expand_ratio = expandable_width_ratio[row_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
 
-                if child is not None and available_width != 0 and available_height != 0:
+                if child is not None and constant_width != 0 and constant_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
 
