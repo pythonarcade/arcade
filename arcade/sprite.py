@@ -402,7 +402,7 @@ class Sprite:
         _position_x, _position_y = self._position
         cos_angle = math.cos(angle_radians)
         sin_angle = math.sin(angle_radians)
-        def _adjust_point(point) -> Point:
+        def _adjust_point(point, /) -> Point:
             x, y = point
             x *= _scale_x
             y *= _scale_y
