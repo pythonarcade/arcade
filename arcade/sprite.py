@@ -5,7 +5,7 @@ For information on Spatial Hash Maps, see:
 https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
 """
 
-import math
+from math import cos, sin, radians, sqrt, pi
 import dataclasses
 from typing import (
     Any,
@@ -397,11 +397,11 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        angle_radians = math.radians(self._angle)
+        angle_radians = radians(self._angle)
         _scale_x, _scale_y = self._scale
         _position_x, _position_y = self._position
-        cos_angle = math.cos(angle_radians)
-        sin_angle = math.sin(angle_radians)
+        cos_angle = cos(angle_radians)
+        sin_angle = sin(angle_radians)
         def _adjust_point(point, /) -> Point:
             x, y = point
             x *= _scale_x
@@ -439,8 +439,8 @@ class Sprite:
 
         :param speed: speed factor
         """
-        self.change_x += math.cos(self.radians) * speed
-        self.change_y += math.sin(self.radians) * speed
+        self.change_x += cos(self.radians) * speed
+        self.change_y += sin(self.radians) * speed
 
     def reverse(self, speed: float = 1.0) -> None:
         """
@@ -460,8 +460,8 @@ class Sprite:
 
         :param speed: speed factor
         """
-        self.change_x += -math.sin(self.radians) * speed
-        self.change_y += math.cos(self.radians) * speed
+        self.change_x += -sin(self.radians) * speed
+        self.change_y += cos(self.radians) * speed
 
     def turn_right(self, theta: float = 90.0) -> None:
         """
@@ -856,14 +856,14 @@ class Sprite:
         Converts the degrees representation of self.angle into radians.
         :return: float
         """
-        return self._angle / 180.0 * math.pi
+        return self._angle / 180.0 * pi
 
     @radians.setter
     def radians(self, new_value: float):
         """
         Converts a radian value into degrees and stores it into angle.
         """
-        self.angle = new_value * 180.0 / math.pi
+        self.angle = new_value * 180.0 / pi
 
     @property
     def left(self) -> float:
@@ -1290,7 +1290,7 @@ class AnimatedWalkingSprite(Sprite):
         x2 = self.last_texture_change_center_x
         y1 = self.center_y
         y2 = self.last_texture_change_center_y
-        distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        distance = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         texture_list: List[Texture] = []
 
         change_direction = False
