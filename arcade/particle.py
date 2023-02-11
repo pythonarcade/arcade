@@ -5,6 +5,7 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 from arcade.sprite import Sprite
 from arcade.draw_commands import Texture
 import arcade.utils
+from arcade.math import lerp
 from arcade.arcade_types import Point, Vector
 from typing import Union
 from arcade.geometry_generic import clamp
@@ -133,7 +134,7 @@ class FadeParticle(LifetimeParticle):
     def update(self):
         """Advance the Particle's simulation"""
         super().update()
-        a = arcade.utils.lerp(self.start_alpha,
-                              self.end_alpha,
-                              self.lifetime_elapsed / self.lifetime_original)
+        a = lerp(self.start_alpha,
+                 self.end_alpha,
+                 self.lifetime_elapsed / self.lifetime_original)
         self.alpha = int(clamp(a, 0, 255))
