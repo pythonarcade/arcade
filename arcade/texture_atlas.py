@@ -233,7 +233,7 @@ class TextureAtlas:
         # Free slots in the texture coordinate texture for images and textures
         self._image_uv_slots_free = deque(i for i in range(0, self._num_image_slots))
         self._texture_uv_slots_free = deque(i for i in range(0, self._num_texture_slots))
-    
+
         # Keep track of which slot each texture or image is in
         self._image_uv_slots: Dict[str, int] = dict()
         self._texture_uv_slots: Dict[str, int] = dict()

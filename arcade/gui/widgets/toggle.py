@@ -41,10 +41,10 @@ class UITextureToggle(UIInteractiveWidget):
         self.normal_on_tex = on_texture
         enhancer = ImageEnhance.Brightness(self.normal_on_tex.image)
         self.hover_on_tex = Texture(
-            name=self.normal_on_tex.name + "_brighter", image=enhancer.enhance(1.5)
+            enhancer.enhance(1.5), name=self.normal_on_tex.cache_name + "_brighter",
         )
         self.pressed_on_tex = Texture(
-            name=self.normal_on_tex.name + "_darker", image=enhancer.enhance(0.5)
+            enhancer.enhance(0.5), name=self.normal_on_tex.cache_name + "_darker",
         )
 
         if off_texture is None:
@@ -52,10 +52,10 @@ class UITextureToggle(UIInteractiveWidget):
         self.normal_off_tex = off_texture
         enhancer = ImageEnhance.Brightness(self.normal_off_tex.image)
         self.hover_off_tex = Texture(
-            name=self.normal_off_tex.name + "_brighter", image=enhancer.enhance(1.5)
+            enhancer.enhance(1.5), name=self.normal_off_tex.cache_name + "_brighter",
         )
         self.pressed_off_tex = Texture(
-            name=self.normal_off_tex.name + "_darker", image=enhancer.enhance(0.5)
+            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker", 
         )
 
         self.value = value
