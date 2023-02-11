@@ -192,7 +192,8 @@ class TextureAtlas:
         self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
-        self._num_slots = self.max_width // 2
+        self._num_image_slots = self.max_width // 2
+        self._num_texture_slots = self.max_width // 2
         self._check_size(self._size)
 
         # The atlas texture
@@ -208,27 +209,38 @@ class TextureAtlas:
         # by rendering the old atlas into the new one.
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
-        # A dictionary of all the allocated regions
+        # A dictionary of all the allocated regions for images in the atlas
         # The key is the cache name for a texture
-        self._image_regions: Dict[str, AtlasRegion] = dict()
+        self._atlas_regions: Dict[str, AtlasRegion] = dict()
 
         # A list of all the images this atlas contains
         self._images: List[ImageData] = []
         # A set of textures this atlas contains for fast lookups + set operations
         self._textures: List["Texture"] = []
 
-        # Texture containing texture coordinates for images
+        # Texture containing texture coordinates for images and textures
         self._image_uv_texture = self._ctx.texture(
             (self.max_width, 1), components=4, dtype="f4"
         )
+        self._texture_uv_texture = self._ctx.texture(
+            (self.max_width, 1), components=4, dtype="f4"
+        )
         self._image_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
+        self._texture_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._image_uv_data = array("f", [0] * self.max_width * 4)
+        self._texture_uv_data = array("f", [0] * self.max_width * 4)
 
-        # Free slots in the texture coordinate texture
-        self._uv_slots_free = deque(i for i in range(0, self._num_slots))
-        # Map texture names to slots
-        self._uv_slots: Dict[str, int] = dict()
+        # Free slots in the texture coordinate texture for images and textures
+        self._image_uv_slots_free = deque(i for i in range(0, self._num_image_slots))
+        self._texture_uv_slots_free = deque(i for i in range(0, self._num_texture_slots))
+    
+        # Keep track of which slot each texture or image is in
+        self._image_uv_slots: Dict[str, int] = dict()
+        self._texture_uv_slots: Dict[str, int] = dict()
+
+        # Dirty flags for when texture coordinates are changed for each type
         self._image_uv_data_changed = True
+        self._texture_uv_data_changed = True
 
         # Add all the textures
         for tex in textures or []:
@@ -373,10 +385,10 @@ class TextureAtlas:
 
         :return: The x, y texture_id, TextureRegion
         """
-        if len(self._uv_slots_free) == 0:
+        if len(self._image_uv_slots_free) == 0:
             raise AllocatorException((
                 "No more free texture slots in the atlas.   "
-                f"Max number of slots: {self._num_slots}"
+                f"Max number of slots: {self._num_image_slots}"
             ))
 
         # Allocate space for texture
@@ -401,21 +413,21 @@ class TextureAtlas:
             texture.image.width,
             texture.image.height,
         )
-        self._image_regions[texture.name] = region
+        self._atlas_regions[texture.name] = region
         # Get the existing slot for this texture or grab a new one.
         # Existing slots for textures will only happen when re-building
         # the atlas since we want to keep the same slots to avoid
         # re-building the sprite list
-        existing_slot = self._uv_slots.get(texture.name)
-        slot = existing_slot if existing_slot is not None else self._uv_slots_free.popleft()
-        self._uv_slots[texture.name] = slot
+        existing_slot = self._image_uv_slots.get(texture.name)
+        slot = existing_slot if existing_slot is not None else self._image_uv_slots_free.popleft()
+        self._image_uv_slots[texture.name] = slot
 
         # Put texture coordinates into uv buffer
         offset = slot * 8
         for i in range(8):
             self._image_uv_data[offset + i] = region.texture_coordinates[i]
 
-        self._uv_data_changed = True
+        self._image_uv_data_changed = True
         self._textures.append(texture)
         return x, y, slot, region
 
@@ -464,11 +476,11 @@ class TextureAtlas:
         :param Texture texture: The texture to remove
         """
         self._textures.remove(texture)
-        del self._image_regions[texture.name]
+        del self._atlas_regions[texture.name]
         # Reclaim the uv slot
-        slot = self._uv_slots[texture.name]
-        del self._uv_slots[texture.name]
-        self._uv_slots_free.appendleft(slot)
+        slot = self._image_uv_slots[texture.name]
+        del self._image_uv_slots[texture.name]
+        self._image_uv_slots_free.appendleft(slot)
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -484,7 +496,7 @@ class TextureAtlas:
 
         :param Texture texture: The texture to update
         """
-        region = self._image_regions[texture.name]
+        region = self._atlas_regions[texture.name]
         region.verify_image_size()
         viewport = (
             region.x,
@@ -500,7 +512,7 @@ class TextureAtlas:
 
         :return: The AtlasRegion for the given texture name
         """
-        return self._image_regions[name]
+        return self._atlas_regions[name]
 
     def get_texture_id(self, name: str) -> int:
         """
@@ -508,11 +520,11 @@ class TextureAtlas:
 
         :return: The texture id for the given texture name
         """
-        return self._uv_slots[name]
+        return self._image_uv_slots[name]
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
-        return texture.name in self._image_regions
+        return texture.name in self._atlas_regions
 
     def resize(self, size: Tuple[int, int]) -> None:
         """
@@ -554,7 +566,7 @@ class TextureAtlas:
 
         # Write the new UV data
         self._image_uv_texture.write(self._image_uv_data, 0)
-        self._uv_data_changed = False
+        self._image_uv_data_changed = False
 
         # Bind textures for atlas copy shader
         texture_old.use(0)
@@ -603,11 +615,11 @@ class TextureAtlas:
         if texture:
             self._fbo.clear()
         self._textures = []
-        self._image_regions = dict()
+        self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)
         if texture_ids:
-            self._uv_slots_free = deque(i for i in range(self._num_slots))
-            self._uv_slots = dict()
+            self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
+            self._image_uv_slots = dict()
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
@@ -619,9 +631,9 @@ class TextureAtlas:
 
         :param int unit: The texture unit to bind the uv texture
         """
-        if self._uv_data_changed:
+        if self._image_uv_data_changed:
             self._image_uv_texture.write(self._image_uv_data, 0)
-            self._uv_data_changed = False
+            self._image_uv_data_changed = False
 
         self._image_uv_texture.use(unit)
 
@@ -653,7 +665,7 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
-        region = self._image_regions[texture.name]
+        region = self._atlas_regions[texture.name]
         proj_prev = self._ctx.projection_2d
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)
@@ -749,7 +761,7 @@ class TextureAtlas:
 
         if self.border == 1 and draw_borders:
             draw = ImageDraw.Draw(image)
-            for rg in self._image_regions.values():
+            for rg in self._atlas_regions.values():
                 p1 = rg.x - 1, rg.y - 1
                 p2 = rg.x + rg.width, rg.y + rg.height
                 draw.rectangle([p1, p2], outline=border_color, width=1)
