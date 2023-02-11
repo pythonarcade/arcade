@@ -226,7 +226,7 @@ class SimpleCamera:
         if not isinstance(vector, Vec2):
             vector2: Vec2 = Vec2(*vector)
         else:
-            vector2: Vec2 = vector
+            vector2 = vector
 
         # get the center of the camera viewport
         center = Vec2(self.viewport_width, self.viewport_height) / 2
