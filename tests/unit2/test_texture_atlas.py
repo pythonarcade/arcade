@@ -73,15 +73,15 @@ def test_rebuild(ctx):
     atlas = TextureAtlas((104, 104), border=1)
     slot_a, region_a = atlas.add(tex_big)
     slot_b, region_b = atlas.add(tex_small)
-    region_a = atlas.get_region_info(tex_big.name)
-    region_b = atlas.get_region_info(tex_small.name)
+    region_a = atlas.get_region_info(tex_big.cache_name)
+    region_b = atlas.get_region_info(tex_small.cache_name)
 
     # Re-build and check states
     atlas.rebuild()
-    assert slot_a == atlas.get_texture_id(tex_big.name)
-    assert slot_b == atlas.get_texture_id(tex_small.name)
-    region_aa = atlas.get_region_info(tex_big.name)
-    region_bb = atlas.get_region_info(tex_small.name)
+    assert slot_a == atlas.get_texture_id(tex_big.cache_name)
+    assert slot_b == atlas.get_texture_id(tex_small.cache_name)
+    region_aa = atlas.get_region_info(tex_big.cache_name)
+    region_bb = atlas.get_region_info(tex_small.cache_name)
 
     # The textures have switched places in the atlas and should
     # have the same left position
@@ -206,8 +206,8 @@ def test_update_texture_image(ctx):
 def test_resize(ctx):
     """Attempt to resize the atlas"""
     atlas = TextureAtlas((50, 100), border=0, auto_resize=False)
-    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
-    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
+    t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
+    t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
     atlas.add(t1)
     atlas.add(t2)
     atlas.resize((50, 100))
@@ -218,8 +218,8 @@ def test_resize(ctx):
     # Resize past max size
     atlas = TextureAtlas((50, 50), border=0)
     atlas._max_size = 60, 60
-    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
-    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
+    t1 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
+    t2 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
     atlas.add(t1)
     with pytest.raises(AllocatorException):
         atlas.add(t2)

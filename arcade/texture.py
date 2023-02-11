@@ -44,10 +44,8 @@ LOG = logging.getLogger(__name__)
 
 class ImageData:
     """
-    A class holding the image for a texture
-    with other metadata such as the hash.
-    This information is used internally by the
-    texture atlas to identify unique textures.
+    A class holding the image for a texture with other metadata such as the hash.
+    This information is used internally by the texture atlas to identify unique textures.
 
     If a hash is not provided, it will be calculated.
     It's important that all hashes are of the same type.
@@ -104,13 +102,10 @@ class Texture:
     and the hit box data for this image used in collision detection.
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
-    :param str name: Globally unique name for this texture.
-                     This is used internally for caching and texture atlas.
-    :param PIL.Image.Image image: The image for this texture
-    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
-    Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
-    :data:`PhysicsEnginePlatformer` \
-    and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+    :param PIL.Image.Image image: The image or ImageData for this texture
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
+           Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
+    :data:`PhysicsEnginePlatformer` and 'Detailed' for the :data:`PymunkPhysicsEngine`.
 
         .. figure:: ../images/hit_box_algorithm_none.png
            :width: 40%
@@ -130,6 +125,8 @@ class Texture:
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
     :param PointList hit_box_points: List of points for the hit box (Optional).
                                      Completely overrides the hit box algorithm.
+    :param str name: Optional unique name for the texture. Can be used to make this texture
+                     globally unique. By default the hash of the pixel data is used.
     """
     # cache: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
     cache: Dict[str, "Texture"] = dict()
@@ -138,22 +135,22 @@ class Texture:
 
     def __init__(
         self,
-        name: str,
         image: Union[PIL.Image.Image, ImageData],
+        *,
         hit_box_algorithm: Optional[str] = "default",
         hit_box_detail: float = 4.5,
         hit_box_points: Optional[PointList] = None,
+        name: Optional[str] = None,
     ):
-        if not isinstance(image, PIL.Image.Image) and not isinstance(image, ImageData):
-            raise ValueError("A texture must have an image")
-
-        self._name = name
         if isinstance(image, PIL.Image.Image):
             self._image_data = ImageData(image)
         elif isinstance(image, ImageData):
             self._image_data = image
         else:
-            raise ValueError("image must be an instance of PIL.Image.Image or ImageData")
+            raise ValueError(
+                "image must be an instance of PIL.Image.Image or ImageData, "
+                f"not {type(image)}"
+            )
 
         # Set the size of the texture since this is immutable
         self._size = image.width, image.height
@@ -168,25 +165,52 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
-        self._hit_box_algorithm: Optional[str] = hit_box_algorithm
-        if self._hit_box_algorithm is not None:
-            if not isinstance(self._hit_box_algorithm, str):
-                raise ValueError(
-                    f"hit_box_algorithm must be a string or None, not {hit_box_algorithm}")
+        # Handle hit box algorithm parameters
+        # -- Handle some legacy cases:
+        if hit_box_algorithm == "default":
+            self._hit_box_algorithm = hitbox.default_algorithm.name
+        # Old bounding box algorithm fallback
+        elif hit_box_algorithm in ["None", "none", None]:
+            self._hit_box_algorithm = "bounding"
+        else:
+            if not isinstance(hit_box_algorithm, str):
+                raise ValueError("hit_box_algorithm must be a string")
+            self._hit_box_algorithm = hit_box_algorithm
 
-            self._hit_box_algorithm = self._hit_box_algorithm.lower()
+        # Attempt to look up the algorithm
+        hitbox.get_algorithm(self._hit_box_algorithm)
 
         self._hit_box_detail = hit_box_detail
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
+        # Generate the unique name for this texture
+        self._name = name
+        # Optional filename for debugging
+        self._file_name: Optional[str] = None
+
     @property
-    def name(self) -> str:
+    def cache_name(self) -> str:
         """
-        The name of the texture (read only).
+        The name of the texture used for caching (read only).
 
         :return: str 
         """
-        return self._name
+        return f"{self._name or self._image_data.hash}|{self._vertex_order}|{self._hit_box_algorithm}"
+
+    @property
+    def file_name(self) -> Optional[str]:
+        """
+        Get or set the file name of the texture.
+
+        This is simply metadata useful for debugging.
+
+        :return: str
+        """
+        return self._file_name
+
+    @file_name.setter
+    def file_name(self, file_name: str):
+        self._file_name = file_name
 
     @property
     def image(self) -> PIL.Image.Image:
@@ -331,9 +355,9 @@ class Texture:
 
         """
         return Texture(
-            name,
             image=PIL.Image.new("RGBA", size, TRANSPARENT_BLACK),
             hit_box_algorithm=None,
+            name=name,
         )
 
     def remove_from_cache(self) -> None:
@@ -343,7 +367,7 @@ class Texture:
         :return: None
         """
         try:
-            del self.cache[self._name]
+            del self.cache[self.cache_name]
         except KeyError:
             pass
 
@@ -449,12 +473,12 @@ class Texture:
         """
         points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
-            name=self._name,
-            image=self.image_data,
+            self.image_data,
             # Not relevant, but copy over the value
             hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
         )
+        texture.file_name = self.file_name
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
         texture._transforms = get_shortest_transform(texture._vertex_order)
         return texture
@@ -464,21 +488,21 @@ class Texture:
     # A texture's uniqueness is simply based on the name
     # ------------------------------------------------------------
     def __hash__(self) -> int:
-        return hash(self.name)
+        return hash(self.cache_name)
 
     def __eq__(self, other) -> bool:
         if other is None:
             return False
         if not isinstance(other, self.__class__):
             return False
-        return self.name == other.name
+        return self.cache_name == other.cache_name
 
     def __ne__(self, other) -> bool:
         if other is None:
             return True
         if not isinstance(other, self.__class__):
             return True
-        return self.name != other.name
+        return self.cache_name != other.cache_name
 
     # ------------------------------------------------------------
 
@@ -489,16 +513,7 @@ class Texture:
         This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        # Handle some legacy cases:
-        # Use bounding algo if not set
-        algo_name = self._hit_box_algorithm or "bounding"
-        if algo_name == "none":
-            algo_name = "bounding"
-
-        # Check if we're using default algo
-        if algo_name == "default":
-            algo_name = hitbox.default_algorithm.name
-
+        algo_name = self._hit_box_algorithm
         # Check if we have cached points
         keys = [self._image_data.hash, algo_name, self._hit_box_detail]
         points = self.hit_box_cache.get(keys)
@@ -616,10 +631,10 @@ class SolidColorTexture(Texture):
             (-width / 2, height / 2)
         )
         super().__init__(
-            name,
             image=image,
             hit_box_algorithm=None,
             hit_box_points=hit_box_points,
+            name=name,
         )
         # Override the width and height
         self._width = width
@@ -713,11 +728,11 @@ def load_textures(
                 sub_image = PIL.ImageOps.flip(sub_image)
 
             sub_texture = Texture(
-                name,
-                image=sub_image,
+                sub_image,
                 hit_box_algorithm=hit_box_algorithm,
                 hit_box_detail=hit_box_detail,
             )
+            sub_image.file_name = name
             Texture.cache[name] = sub_texture
 
         texture_sections.append(sub_texture)
@@ -803,7 +818,6 @@ def load_texture(
     except KeyError:
         file_name = resolve_resource_path(file_name)
         texture = Texture(
-            str(file_name),
             PIL.Image.open(file_name).convert("RGBA"),
             hit_box_algorithm=hit_box_algorithm,
             hit_box_detail=hit_box_detail,
@@ -848,11 +862,11 @@ def load_texture(
         image = image.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
 
     texture = Texture(
-        name,
         image,
         hit_box_algorithm=hit_box_algorithm,
         hit_box_detail=hit_box_detail,
     )
+    texture.file_name = str(file_name)
     Texture.cache[name] = texture
     return texture
 
@@ -921,11 +935,11 @@ def load_spritesheet(
             (start_x, start_y, start_x + sprite_width, start_y + sprite_height)
         )
         texture = Texture(
-            f"{file_name}-{sprite_no}",
-            image=image,
+            image,
             hit_box_algorithm=hit_box_algorithm,
             hit_box_detail=hit_box_detail,
         )
+        texture.file_name = str(file_name)
         texture_list.append(texture)
 
     return texture_list
@@ -948,7 +962,7 @@ def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None)
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    return Texture(name, img)
+    return Texture(img, name=name)
 
 
 def make_soft_circle_texture(
@@ -1000,7 +1014,7 @@ def make_soft_circle_texture(
             fill=clr,
         )
 
-    return Texture(name, img)
+    return Texture(img, name=name)
 
 
 def make_soft_square_texture(
@@ -1033,8 +1047,7 @@ def make_soft_square_texture(
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
-        # draw.ellipse((center - radius, center - radius, center + radius, center + radius), fill=clr)
         draw.rectangle(
             (cur_size, cur_size, size - cur_size, size - cur_size), clr, None
         )
-    return Texture(name, img)
+    return Texture(img, name=name)

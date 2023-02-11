@@ -133,7 +133,7 @@ class AtlasRegion:
         """
         if self.texture.image.size != (self.width, self.height):
             raise ValueError((
-                f"Texture '{self.texture.name}' change their internal image "
+                f"Texture '{self.texture.cache_name}' change their internal image "
                 f"size from {self.width}x{self.height} to "
                 f"{self.texture.image.size[0]}x{self.texture.image.size[1]}. "
                 "It's not possible to fit this into the old allocated area in the atlas. "
@@ -354,16 +354,16 @@ class TextureAtlas:
         :return: texture_id, AtlasRegion tuple
         """
         if self.has_texture(texture):
-            slot = self.get_texture_id(texture.name)
-            region = self.get_region_info(texture.name)
+            slot = self.get_texture_id(texture.cache_name)
+            region = self.get_region_info(texture.cache_name)
             return slot, region
 
-        LOG.info("Attempting to add texture: %s", texture.name)
+        LOG.info("Attempting to add texture: %s", texture.cache_name)
 
         try:
             x, y, slot, region = self.allocate(texture)
         except AllocatorException:
-            LOG.info("[%s] No room for %s size %s", id(self), texture.name, texture.image.size)
+            LOG.info("[%s] No room for %s size %s", id(self), texture.cache_name, texture.image.size)
             if self._auto_resize:
                 width = min(self.width * 2, self.max_width)
                 height = min(self.height * 2, self.max_height)
@@ -399,10 +399,10 @@ class TextureAtlas:
             )
         except AllocatorException:
             raise AllocatorException(
-                f"No more space for texture {texture.name} size={texture.image.size}"
+                f"No more space for texture {texture.cache_name} size={texture.image.size}"
             )
 
-        LOG.debug("Allocated new space for texture %s : %s %s", texture.name, x, y)
+        LOG.debug("Allocated new space for texture %s : %s %s", texture.cache_name, x, y)
 
         # Store a texture region for this allocation
         region = AtlasRegion(
@@ -413,14 +413,14 @@ class TextureAtlas:
             texture.image.width,
             texture.image.height,
         )
-        self._atlas_regions[texture.name] = region
+        self._atlas_regions[texture.cache_name] = region
         # Get the existing slot for this texture or grab a new one.
         # Existing slots for textures will only happen when re-building
         # the atlas since we want to keep the same slots to avoid
         # re-building the sprite list
-        existing_slot = self._image_uv_slots.get(texture.name)
+        existing_slot = self._image_uv_slots.get(texture.cache_name)
         slot = existing_slot if existing_slot is not None else self._image_uv_slots_free.popleft()
-        self._image_uv_slots[texture.name] = slot
+        self._image_uv_slots[texture.cache_name] = slot
 
         # Put texture coordinates into uv buffer
         offset = slot * 8
@@ -476,10 +476,10 @@ class TextureAtlas:
         :param Texture texture: The texture to remove
         """
         self._textures.remove(texture)
-        del self._atlas_regions[texture.name]
+        del self._atlas_regions[texture.cache_name]
         # Reclaim the uv slot
-        slot = self._image_uv_slots[texture.name]
-        del self._image_uv_slots[texture.name]
+        slot = self._image_uv_slots[texture.cache_name]
+        del self._image_uv_slots[texture.cache_name]
         self._image_uv_slots_free.appendleft(slot)
 
     def update_texture_image(self, texture: "Texture"):
@@ -496,7 +496,7 @@ class TextureAtlas:
 
         :param Texture texture: The texture to update
         """
-        region = self._atlas_regions[texture.name]
+        region = self._atlas_regions[texture.cache_name]
         region.verify_image_size()
         viewport = (
             region.x,
@@ -524,7 +524,7 @@ class TextureAtlas:
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
-        return texture.name in self._atlas_regions
+        return texture.cache_name in self._atlas_regions
 
     def resize(self, size: Tuple[int, int]) -> None:
         """
@@ -665,7 +665,7 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
-        region = self._atlas_regions[texture.name]
+        region = self._atlas_regions[texture.cache_name]
         proj_prev = self._ctx.projection_2d
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)

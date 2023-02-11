@@ -4,6 +4,7 @@ import PIL.ImageDraw
 
 import arcade
 from arcade import Texture
+from arcade import hitbox
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -192,9 +193,9 @@ def test_crate_empty():
     """Create empty texture"""
     size = (256, 256)
     tex = Texture.create_empty("empty", size)
-    assert tex.name == "empty"
+    assert tex.file_name is None
     assert tex.size == size
-    assert tex._hit_box_algorithm == None
+    assert tex._hit_box_algorithm == "bounding"
     assert tex.hit_box_points == (
         (-128.0, -128.0),
         (128.0, -128.0),
