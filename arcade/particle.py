@@ -4,7 +4,6 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 
 from arcade.sprite import Sprite
 from arcade.draw_commands import Texture
-import arcade.utils
 from arcade.math import lerp
 from arcade.arcade_types import Point, Vector
 from typing import Union
