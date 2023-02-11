@@ -68,7 +68,6 @@ def create_textures():
     """ Create a list of images for sprites based on the global colors. """
     new_textures = []
     for color in colors:
-        arcade.create_
         image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
         new_textures.append(arcade.Texture(image))
     return new_textures
