@@ -309,8 +309,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         font_size = style.get("font_size")
         font_color = style.get("font_color")
 
-        # self._label.layout.begin_update()
         self._label.label.font_name = font_name
         self._label.label.font_size = font_size
         self._label.label.color = font_color
-        # self._label.layout.end_update()
