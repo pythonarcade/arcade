@@ -141,11 +141,12 @@ html_theme_options = {
 html_title = f"Python Arcade {version}"
 
 html_js_files = [
-    'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js',
+    'https://code.jquery.com/jquery-3.6.3.min.js',
+    'https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js',
 ]
 
 html_css_files = [
-    'https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css',
+    'https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css',
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
