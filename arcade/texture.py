@@ -76,6 +76,27 @@ class ImageData:
         hash.update(image.tobytes())
         return hash.hexdigest()
 
+    @property
+    def width(self) -> int:
+        """
+        The width of the image
+        """
+        return self.image.width
+
+    @property
+    def height(self) -> int:
+        """
+        The height of the image
+        """
+        return self.image.height
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        The size of the image
+        """
+        return self.image.size
+
 
 class Texture:
     """
@@ -123,7 +144,7 @@ class Texture:
         hit_box_detail: float = 4.5,
         hit_box_points: Optional[PointList] = None,
     ):
-        if not isinstance(image, PIL.Image.Image):
+        if not isinstance(image, PIL.Image.Image) and not isinstance(image, ImageData):
             raise ValueError("A texture must have an image")
 
         self._name = name
