@@ -30,7 +30,7 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
 
 def is_raspberry_pi() -> bool:
     """
-    Determine if the host is a rasberry pi.
+    Determine if the host is a raspberry pi.
 
     :returns: bool
     """
@@ -54,7 +54,7 @@ def get_raspberry_pi_info() -> Tuple[bool, str, str]:
 
     # The platform for raspi should always be linux
     if not sys.platform == "linux":
-        return False, 0, ""
+        return False, "", ""
 
     # Check for model info file
     MODEL_PATH = Path("/sys/firmware/devicetree/base/model")
