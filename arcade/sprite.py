@@ -1392,7 +1392,8 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
         image = image_object.convert("RGBA")
-        texture = Texture(f"{resource_name}-{frame}", image)
+        texture = Texture(image)
+        texture.file_name = f"{resource_name}-{frame}"
         sprite.textures.append(texture)
         sprite.frames.append(AnimationKeyframe(0, frame_duration, texture))
 
