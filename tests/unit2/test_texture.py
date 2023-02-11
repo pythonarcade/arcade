@@ -43,4 +43,4 @@ def test_hitbox_algo_selection():
 
     # Legacy boundary algorithm
     texture = arcade.Texture(image, hit_box_algorithm=None)
-    assert texture.hit_box_algorithm == "bounding"
+    assert texture.hit_box_algorithm == "bounding_box"

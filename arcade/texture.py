@@ -171,7 +171,7 @@ class Texture:
             self._hit_box_algorithm = hitbox.default_algorithm.name
         # Old bounding box algorithm fallback
         elif hit_box_algorithm in ["None", "none", None]:
-            self._hit_box_algorithm = "bounding"
+            self._hit_box_algorithm = "bounding_box"
         else:
             if not isinstance(hit_box_algorithm, str):
                 raise ValueError("hit_box_algorithm must be a string")
