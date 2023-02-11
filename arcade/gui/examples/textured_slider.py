@@ -11,12 +11,13 @@ class UITextureSlider(UISlider):
     Slider using
     """
 
-    def __init__(self,
-                 bar: Union[Texture, NinePatchTexture],
-                 thumb: Union[Texture, NinePatchTexture],
-                 style=None,
-                 **kwargs
-                 ):
+    def __init__(
+        self,
+        bar: Union[Texture, NinePatchTexture],
+        thumb: Union[Texture, NinePatchTexture],
+        style=None,
+        **kwargs
+    ):
         self.bar = bar
         self.thumb = thumb
         style = style or UISlider.DEFAULT_STYLE

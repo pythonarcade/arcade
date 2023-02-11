@@ -44,10 +44,10 @@ class UIMockup(arcade.Window):
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/larger.png"),
                 width=30,
-                height=30
+                height=30,
             ),
             anchor_x="left",
-            align_x=10
+            align_x=10,
         )
         grid.add(flat_with_icon_left, row_num=0, col_num=1)
 
@@ -58,10 +58,10 @@ class UIMockup(arcade.Window):
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=30,
-                height=30
+                height=30,
             ),
             anchor_x="right",
-            align_x=-10
+            align_x=-10,
         )
         grid.add(flat_with_icon_right, row_num=1, col_num=1)
 
@@ -71,19 +71,19 @@ class UIMockup(arcade.Window):
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=30,
-                height=30
+                height=30,
             ),
             anchor_x="left",
-            align_x=10
+            align_x=10,
         )
         flat_with_icon_right.add(
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=30,
-                height=30
+                height=30,
             ),
             anchor_x="right",
-            align_x=-10
+            align_x=-10,
         )
         grid.add(flat_with_icon_right, row_num=2, col_num=1)
 
@@ -92,8 +92,12 @@ class UIMockup(arcade.Window):
             text="UITextureButton",
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture_hovered=load_texture(
+                ":resources:gui_basic_assets/red_button_hover.png"
+            ),
+            texture_pressed=load_texture(
+                ":resources:gui_basic_assets/red_button_press.png"
+            ),
         )
         grid.add(texture_button, row_num=0, col_num=2)
 
@@ -102,17 +106,21 @@ class UIMockup(arcade.Window):
             text="UITextureButton",
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture_hovered=load_texture(
+                ":resources:gui_basic_assets/red_button_hover.png"
+            ),
+            texture_pressed=load_texture(
+                ":resources:gui_basic_assets/red_button_press.png"
+            ),
         )
         texture_button_with_icon_left.add(
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=25,
-                height=25
+                height=25,
             ),
             anchor_x="left",
-            align_x=10
+            align_x=10,
         )
         grid.add(texture_button_with_icon_left, row_num=1, col_num=2)
 
@@ -121,18 +129,22 @@ class UIMockup(arcade.Window):
             text="UITextureButton\nwith a second line",
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture_hovered=load_texture(
+                ":resources:gui_basic_assets/red_button_hover.png"
+            ),
+            texture_pressed=load_texture(
+                ":resources:gui_basic_assets/red_button_press.png"
+            ),
         )
         texture_button_with_icon_left.place_text(anchor_x="left", align_x=45)
         texture_button_with_icon_left.add(
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=25,
-                height=25
+                height=25,
             ),
             anchor_x="left",
-            align_x=10
+            align_x=10,
         )
         grid.add(texture_button_with_icon_left, row_num=2, col_num=2)
 
@@ -146,20 +158,24 @@ class UIMockup(arcade.Window):
             child=UIImage(
                 texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
                 width=25,
-                height=25
+                height=25,
             ),
             anchor_x="left",
-            align_x=10
+            align_x=10,
         )
         toggle = texture_button_with_toggle.add(
             child=UITextureToggle(
-                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png"),
-                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
+                on_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_red.png"
+                ),
+                off_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_green.png"
+                ),
                 width=60,
-                height=30
+                height=30,
             ),
             anchor_x="right",
-            align_x=-10
+            align_x=-10,
         )
 
         @toggle.event
