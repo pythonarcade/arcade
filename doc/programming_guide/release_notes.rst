@@ -5,12 +5,12 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.7.1
+Version 3.0.0
 -------------
 
-*Unreleased*
+*Unreleased. You can grab pre-release versions from PyPi.*
 
-Version 2.7.1 is a major update to Arcade. It is not 100% compatible with the 2.6 API.
+Version 3.0.0 is a major update to Arcade. It is not 100% compatible with the 2.6 API.
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~

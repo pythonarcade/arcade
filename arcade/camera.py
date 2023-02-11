@@ -121,7 +121,7 @@ class SimpleCamera:
         return self.projection_to_viewport_width_ratio, self.projection_to_viewport_height_ratio
 
     @scale.setter
-    def scale(self, new_scale: Tuple[int, int]) -> None:
+    def scale(self, new_scale: Tuple[float, float]) -> None:
         """
         Sets the x, y scale by modifiyng the projection
         """
@@ -134,7 +134,6 @@ class SimpleCamera:
         _, _, width, height = self._viewport
 
         # apply new scale
-
         self.projection = (left, width * sx, bottom, height * sy)
 
     @property
@@ -225,17 +224,19 @@ class SimpleCamera:
         Centers the camera on coordinates
         """
         if not isinstance(vector, Vec2):
-            vector = Vec2(*vector)
+            vector2: Vec2 = Vec2(*vector)
+        else:
+            vector2 = vector
 
         # get the center of the camera viewport
         center = Vec2(self.viewport_width, self.viewport_height) / 2
 
         # adjust vector to projection ratio
-        vector = Vec2(vector.x * self.viewport_to_projection_width_ratio,
-                      vector.y * self.viewport_to_projection_height_ratio)
+        vector2 = Vec2(vector2.x * self.viewport_to_projection_width_ratio,
+                       vector2.y * self.viewport_to_projection_height_ratio)
 
         # move to the vector substracting the center
-        target = (vector - center)
+        target = (vector2 - center)
 
         self.move_to(target, speed)
 
