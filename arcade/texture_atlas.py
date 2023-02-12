@@ -17,7 +17,6 @@ import time
 import logging
 from typing import (
     Dict,
-    List,
     Optional,
     Tuple,
     Sequence,
@@ -65,7 +64,7 @@ class AtlasRegion:
         |                                      |
         | (2)               (3)                |
         +-----------------+                    |
-        |   Texture       |                    |
+        |   Image         |                    |
         |                 |                    |
         |                 |                    |
         |                 |                    |
@@ -98,7 +97,6 @@ class AtlasRegion:
         width: int,
         height: int,
     ):
-        # self.atlas = atlas
         self.x = x
         self.y = y
         self.width = width
@@ -144,6 +142,22 @@ class AtlasRegion:
         )
 
 
+class ImageDataRefCounter:
+    def __init__(self) -> None:
+        self._data: Dict[str, int] = {}
+
+    def inc_ref(self, image_data: "ImageData") -> None:
+        self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
+
+    def dec_ref(self, image_data: "ImageData") -> None:
+        self._data[image_data.hash] -= 1
+        if self._data[image_data.hash] == 0:
+            del self._data[image_data.hash]
+
+    def get_refs(self, image_data: "ImageData") -> int:
+        return self._data.get(image_data.hash, 0)
+
+
 class TextureAtlas:
     """
     A texture atlas with a size in a context.
@@ -167,7 +181,7 @@ class TextureAtlas:
     Several textures can share the same image with different transforms
     applied. The transforms are simply changing the order of the texture
     coordinates to flip, rotate or mirror the image.
- 
+
     :param Tuple[int, int] size: The width and height of the atlas in pixels
     :param int border: Currently no effect; Should always be 1 to avoid textures bleeding
     :param Sequence[arcade.Texture] textures: The texture for this atlas
@@ -210,6 +224,10 @@ class TextureAtlas:
         # The key is the cache name for a texture
         self._image_regions: Dict[str, AtlasRegion] = dict()
         self._texture_regions: Dict[str, AtlasRegion] = dict()
+        # Ref counter for images and textures. Per atlas we need to keep
+        # track of ho many times an image is used in textures to determine
+        # when to remove an image from the atlas.
+        self._image_ref_count = ImageDataRefCounter()
 
         # A list of all the images this atlas contains
         self._images: WeakSet[ImageData] = WeakSet()
@@ -367,7 +385,7 @@ class TextureAtlas:
             region = self.get_texture_region_info(texture.atlas_name)
             return slot, region
 
-        LOG.info("Attempting to add texture: %s | %s", texture.atlas_name, texture.file_name)
+        LOG.info("Attempting to add texture: %s | %s", texture.atlas_name, texture.origin)
 
         # Add the image if we don't already have it.
         # If the atlas is full we will try to resize it.
@@ -388,6 +406,7 @@ class TextureAtlas:
 
             self.write_image(texture.image_data.image, x, y)
 
+        self._image_ref_count.inc_ref(texture.image_data)
         return self._allocate_texture(texture)
 
     def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
@@ -410,12 +429,11 @@ class TextureAtlas:
         self._texture_uv_slots[texture.atlas_name] = slot
         image_region = self.get_image_region_info(texture.image_data.hash)
         texture_region = copy.deepcopy(image_region)
+        # Since we copy the original image region we can always apply the
+        # transform without worrying about multiple transforms.
         texture_region.texture_coordinates = Transform.transform_texture_coordinates_order(
             texture_region.texture_coordinates, texture._vertex_order
         )
-        print("file", texture.file_name)
-        print("image coordinates  ", image_region.texture_coordinates)
-        print("texture coordinates", texture_region.texture_coordinates)
         self._texture_regions[texture.atlas_name] = texture_region
 
         # Put texture coordinates into uv buffer
@@ -426,7 +444,6 @@ class TextureAtlas:
 
         self._textures.add(texture)
         return slot, texture_region
-
 
     def allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
         """
@@ -523,17 +540,28 @@ class TextureAtlas:
         """
         Remove a texture from the atlas.
 
-        This doesn't remove the image from the underlying texture.
-        To physically remove the data you need to ``rebuild()``.
+        This doesn't erase the pixel data from the atlas texture
+        itself, but leaves the area unclaimed.
 
         :param Texture texture: The texture to remove
         """
         self._textures.remove(texture)
-        del self._image_regions[texture.atlas_name]
-        # Reclaim the uv slot
+        # Reclaim the texture uv slot
+        del self._texture_regions[texture.atlas_name]
         slot = self._image_uv_slots[texture.atlas_name]
         del self._image_uv_slots[texture.atlas_name]
         self._image_uv_slots_free.appendleft(slot)
+
+        # Decrement the reference count for the image
+        self._image_ref_count.dec_ref(texture.image_data)
+
+        # Reclaim the image in the atlas if it's not used by any other texture
+        if self._image_ref_count.get_refs(texture.image_data) == 0:
+            self._images.remove(texture.image_data)
+            del self._image_regions[texture.image_data.hash]
+            slot = self._image_uv_slots[texture.image_data.hash]
+            del self._image_uv_slots[texture.image_data.hash]
+            self._image_uv_slots_free.appendleft(slot)
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -559,44 +587,47 @@ class TextureAtlas:
         )
         self._texture.write(texture.image.tobytes(), 0, viewport=viewport)
 
-    def get_image_region_info(self, name: str) -> AtlasRegion:
+    def get_image_region_info(self, hash: str) -> AtlasRegion:
         """
-        Get the region info for a texture
+        Get the region info for and image by has
+
+        :param str hash: The hash of the image
+        :return: The AtlasRegion for the given texture name
+        """
+        return self._image_regions[hash]
+
+    def get_texture_region_info(self, atlas_name: str) -> AtlasRegion:
+        """
+        Get the region info for a texture by atlas name
 
         :return: The AtlasRegion for the given texture name
         """
-        return self._image_regions[name]
+        return self._texture_regions[atlas_name]
 
-    def get_texture_region_info(self, name: str) -> AtlasRegion:
+    def get_texture_id(self, atlas_name: str) -> int:
         """
-        Get the region info for a texture
+        Get the uv slot for a texture by atlas name
 
-        :return: The AtlasRegion for the given texture name
-        """
-        return self._texture_regions[name]
-
-    def get_texture_id(self, name: str) -> int:
-        """
-        Get the uv slot for a texture name
-
+        :param str atlas_name: The name of the texture in the atlas
         :return: The texture id for the given texture name
         """
-        return self._texture_uv_slots[name]
+        return self._texture_uv_slots[atlas_name]
 
-    def get_image_id(self, name: str) -> int:
+    def get_image_id(self, hash: str) -> int:
         """
-        Get the uv slot for a texture name
+        Get the uv slot for a image by hash
 
+        :param str hash: The hash of the image
         :return: The texture id for the given texture name
         """
-        return self._image_uv_slots[name]
+        return self._image_uv_slots[hash]
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
         return texture in self._textures
 
     def has_image(self, image_data: "ImageData") -> bool:
-        """Check if a texture is already in the atlas"""
+        """Check if a image is already in the atlas"""
         return image_data in self._images
 
     def resize(self, size: Tuple[int, int]) -> None:
@@ -613,6 +644,7 @@ class TextureAtlas:
         """
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
 
+        # Only resize if the size actually changed
         if size == self._size:
             return
 
@@ -622,27 +654,40 @@ class TextureAtlas:
         self._size = size
         # Keep the old atlas texture and uv texture
         uv_texture_old = self._image_uv_texture
-        texture_old = self._texture
+        # Keep a reference to the old atlas texture so we can copy it into the new one
+        atlas_texture_old = self._texture
         self._image_uv_texture.write(self._image_uv_data, 0)
 
-        # Create new atlas texture and uv texture + fbo
+        # Create new image uv texture as input for the copy shader
         self._image_uv_texture = self._ctx.texture(
             (self.max_width, 1), components=4, dtype="f4"
         )
+        # Create new atlas texture and framebuffer
         self._texture = self._ctx.texture(size, components=4)
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
-        textures = self._textures
-        self.clear(texture_ids=False, texture=False)
-        for texture in sorted(textures, key=lambda x: x.image.size[1]):
-            self.allocate(texture)
+        # Allocate space for all images in the new atlas
+        images = list(self._images)
+        self.clear(clear_texture_ids=False, texture=False)
+        for image in sorted(images, key=lambda x: x.height):
+            self.allocate(image)
 
-        # Write the new UV data
+        # Write the new image uv data
         self._image_uv_texture.write(self._image_uv_data, 0)
         self._image_uv_data_changed = False
 
+        # Update the texture regions. We need to copy the image regions
+        # and re-apply the transforms on each texture
+        for texture in self._textures:
+            image_region = self._image_regions[texture.image_data.hash]
+            region = copy.deepcopy(image_region)
+            region.texture_coordinates = Transform.transform_texture_coordinates_order(
+                region.texture_coordinates, texture._vertex_order,
+            )
+            self._texture_regions[texture.atlas_name] = region
+
         # Bind textures for atlas copy shader
-        texture_old.use(0)
+        atlas_texture_old.use(0)
         self._texture.use(1)
         uv_texture_old.use(2)
         self._image_uv_texture.use(3)
@@ -662,20 +707,24 @@ class TextureAtlas:
     def rebuild(self) -> None:
         """Rebuild the underlying atlas texture.
 
-        This method also tries to organize the textures
-        more efficiently ordering them by size.
-        The texture ids will persist so the sprite list
-        don't need to be rebuilt.
+        This method also tries to organize the textures more efficiently ordering them by size.
+        The texture ids will persist so the sprite list don't need to be rebuilt.
         """
         # Hold a reference to the old textures
-        textures = self._textures
+        textures = list(self._textures)
         # Clear the atlas but keep the uv slot mapping
         self.clear(texture_ids=False)
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self.add(texture)
 
-    def clear(self, texture_ids: bool = True, texture: bool = True) -> None:
+    def clear(
+        self,
+        *,
+        clear_image_ids: bool = True,
+        clear_texture_ids: bool = True,
+        texture: bool = True,
+    ) -> None:
         """
         Clear and reset the texture atlas.
         Note that also clearing "texture_ids" makes the atlas
@@ -688,11 +737,15 @@ class TextureAtlas:
         if texture:
             self._fbo.clear()
         self._textures = WeakSet()
+        self._image_ref_count = ImageDataRefCounter()
         self._image_regions = dict()
         self._allocator = Allocator(*self._size)
-        if texture_ids:
+        if clear_image_ids:
             self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
             self._image_uv_slots = dict()
+        if clear_texture_ids:
+            self._texture_uv_slots_free = deque(i for i in range(self._num_texture_slots))
+            self._texture_uv_slots = dict()
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
@@ -907,3 +960,12 @@ class TextureAtlas:
                 "Attempting to create or resize an atlas to "
                 f"{size} past its maximum size of {self._max_size}"
             )
+
+    def print_contents(self):
+        """Debug method to print the contents of the atlas"""
+        print("Textures:")
+        for texture in self._textures:
+            print("->", texture)
+        print("Images:")
+        for image in self._images:
+            print("->", image)

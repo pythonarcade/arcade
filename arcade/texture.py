@@ -95,6 +95,27 @@ class ImageData:
         """
         return self.image.size
 
+    # ImageData uniqueness is based on the hash
+    # -----------------------------------------
+    def __hash__(self) -> int:
+        return hash(self.hash)
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return False
+        if not isinstance(other, self.__class__):
+            return False
+        return self.hash == other.hash
+
+    def __ne__(self, other) -> bool:
+        if other is None:
+            return True
+        if not isinstance(other, self.__class__):
+            return True
+        return self.hash != other.hash
+
+    # -----------------------------------------
+
     def __repr__(self):
         return f"<ImageData width={self.width}, height={self.height}, hash={self.hash}>"
 
@@ -192,7 +213,7 @@ class Texture:
         # Generate the unique name for this texture
         self._name = name
         # Optional filename for debugging
-        self._file_name: Optional[str] = None
+        self._origin: Optional[str] = None
 
     @property
     def cache_name(self) -> str:
@@ -213,19 +234,19 @@ class Texture:
         return f"{self._name or self._image_data.hash}|{self._vertex_order}"
 
     @property
-    def file_name(self) -> Optional[str]:
+    def origin(self) -> Optional[str]:
         """
-        Get or set the file name of the texture.
+        User defined metadata for the origin of this texture.
 
         This is simply metadata useful for debugging.
 
         :return: str
         """
-        return self._file_name
+        return self._origin
 
-    @file_name.setter
-    def file_name(self, file_name: str):
-        self._file_name = file_name
+    @origin.setter
+    def origin(self, value: str):
+        self._origin = value
 
     @property
     def image(self) -> PIL.Image.Image:
@@ -517,7 +538,7 @@ class Texture:
             hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
         )
-        texture.file_name = self.file_name
+        texture.origin = self.origin
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
         texture._transforms = get_shortest_transform(texture._vertex_order)
         return texture
@@ -544,7 +565,7 @@ class Texture:
         return self.cache_name != other.cache_name
 
     def __repr__(self) -> str:
-        return f"<Texture {self.file_name} {self.cache_name}>"
+        return f"<Texture origin={self.origin} cache_name={self.cache_name}>"
 
     # ------------------------------------------------------------
 
@@ -774,7 +795,7 @@ def load_textures(
                 hit_box_algorithm=hit_box_algorithm,
                 hit_box_detail=hit_box_detail,
             )
-            sub_image.file_name = name
+            sub_image.origin = name
             Texture.cache[name] = sub_texture
 
         texture_sections.append(sub_texture)
@@ -908,7 +929,7 @@ def load_texture(
         hit_box_algorithm=hit_box_algorithm,
         hit_box_detail=hit_box_detail,
     )
-    texture.file_name = str(file_name)
+    texture.origin = str(file_name)
     Texture.cache[name] = texture
     return texture
 
@@ -981,7 +1002,7 @@ def load_spritesheet(
             hit_box_algorithm=hit_box_algorithm,
             hit_box_detail=hit_box_detail,
         )
-        texture.file_name = str(file_name)
+        texture.origin = str(file_name)
         texture_list.append(texture)
 
     return texture_list
