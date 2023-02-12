@@ -17,15 +17,6 @@ def test_create_override_name():
     assert texture.cache_name == f"test|{texture._vertex_order}|{texture.hit_box_algorithm}"
 
 
-def test_rotate():
-    texture = arcade.Texture(Image.new("RGBA", (10, 10)))
-    texture_rot90 = texture.rotate(90)
-
-    assert texture._vertex_order != texture_rot90._vertex_order
-    assert texture.cache_name != texture_rot90.cache_name
-    assert texture.image_data == texture_rot90.image_data
-
-
 def test_hitbox_algo_selection():
     image = Image.new("RGBA", (10, 10), color=(255, 255, 255, 255))
 
@@ -44,3 +35,12 @@ def test_hitbox_algo_selection():
     # Legacy boundary algorithm
     texture = arcade.Texture(image, hit_box_algorithm=None)
     assert texture.hit_box_algorithm == "bounding_box"
+
+
+def test_rotate():
+    texture = arcade.Texture(Image.new("RGBA", (10, 10)))
+    texture_rot90 = texture.rotate_90()
+
+    assert texture._vertex_order != texture_rot90._vertex_order
+    assert texture.cache_name != texture_rot90.cache_name
+    assert texture.image_data == texture_rot90.image_data

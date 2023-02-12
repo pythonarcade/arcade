@@ -95,6 +95,12 @@ class ImageData:
         """
         return self.image.size
 
+    def __repr__(self):
+        return f"<ImageData width={self.width}, height={self.height}, hash={self.hash}>"
+
+    def __del__(self):
+        print("ImageData.__del__", self)
+
 
 class Texture:
     """
@@ -196,6 +202,15 @@ class Texture:
         :return: str 
         """
         return f"{self._name or self._image_data.hash}|{self._vertex_order}|{self._hit_box_algorithm}"
+
+    @property
+    def atlas_name(self) -> str:
+        """
+        The name of the texture used for the texture atlas (read only).
+
+        :return: str 
+        """
+        return f"{self._name or self._image_data.hash}|{self._vertex_order}"
 
     @property
     def file_name(self) -> Optional[str]:
@@ -434,7 +449,7 @@ class Texture:
         """
         return self._new_texture_transformed(TransverseTransform)
 
-    def rotate(self, count: int) -> "Texture":
+    def rotate_90(self, count: int = 1) -> "Texture":
         """
         Rotate the texture by a given number of 90 degree steps.
 
@@ -451,6 +466,30 @@ class Texture:
         if transform is None:
             return self
         return self._new_texture_transformed(transform)
+
+    def rotate_180(self) -> "Texture":
+        """
+        Rotate the texture 180 degrees.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(Rotate180Transform)
+
+    def rotate_270(self) -> "Texture":
+        """
+        Rotate the texture 270 degrees.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
+        :return: Texture 
+        """
+        return self._new_texture_transformed(Rotate270Transform)
 
     def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
         """

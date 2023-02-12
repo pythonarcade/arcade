@@ -9,7 +9,7 @@ def check_internals(atlas, num_textures):
     assert len(atlas._image_uv_slots_free) == atlas._num_image_slots - num_textures
     assert len(atlas._image_uv_slots) == num_textures
     assert len(atlas._textures) == num_textures
-    assert len(atlas._atlas_regions) == num_textures
+    assert len(atlas._image_regions) == num_textures
 
 
 def test_create(ctx):

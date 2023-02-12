@@ -74,14 +74,14 @@ class Transform:
         """
         uvs = texture_coordinates
         return (
-            uvs[order[0]],
-            uvs[order[0]],
-            uvs[order[1]],
-            uvs[order[1]],
-            uvs[order[2]],
-            uvs[order[2]],
-            uvs[order[3]],
-            uvs[order[3]],
+            uvs[order[0] * 2],
+            uvs[order[0] * 2 + 1],
+            uvs[order[1] * 2],
+            uvs[order[1] * 2 + 1],
+            uvs[order[2] * 2],
+            uvs[order[2] * 2 + 1],
+            uvs[order[3] * 2],
+            uvs[order[3] * 2 + 1],
         )
 
 
@@ -224,10 +224,10 @@ TRANSFORM_SHORTCUTS: Dict[Tuple[int, int, int, int], List[Type[Transform]]] = {
     (1, 0, 3, 2): [FlipLeftToRightTransform],
     # (1, 2, 0, 3): [],
     (1, 2, 3, 0): [Rotate270Transform],
-    # (1, 3, 0, 2): [],
+    (1, 3, 0, 2): [Rotate270Transform],
     # (1, 3, 2, 0): [],
     # (2, 0, 1, 3): [],
-    # (2, 0, 3, 1): [],
+    (2, 0, 3, 1): [Rotate90Transform],
     # (2, 1, 0, 3): [],
     # (2, 1, 3, 0): [],
     (2, 3, 0, 1): [Rotate180Transform],
