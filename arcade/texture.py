@@ -120,7 +120,8 @@ class ImageData:
         return f"<ImageData width={self.width}, height={self.height}, hash={self.hash}>"
 
     def __del__(self):
-        print("ImageData.__del__", self)
+        pass
+        # print("ImageData.__del__", self)
 
 
 class Texture:
@@ -565,7 +566,13 @@ class Texture:
         return self.cache_name != other.cache_name
 
     def __repr__(self) -> str:
-        return f"<Texture origin={self.origin} cache_name={self.cache_name}>"
+        origin = getattr(self, "origin", None)
+        cache_name = getattr(self, "cache_name", None)
+        return f"<Texture origin={origin} cache_name={cache_name}>"
+
+    def __del__(self):
+        pass
+        # print("DELETE", self)
 
     # ------------------------------------------------------------
 

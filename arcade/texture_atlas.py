@@ -157,6 +157,9 @@ class ImageDataRefCounter:
     def get_refs(self, image_data: "ImageData") -> int:
         return self._data.get(image_data.hash, 0)
 
+    def __len__(self) -> int:
+        return len(self._data)
+
 
 class TextureAtlas:
     """
@@ -425,7 +428,8 @@ class TextureAtlas:
             ))
 
         # Add the texture to the atlas
-        slot = self._texture_uv_slots_free.popleft()
+        existing_slot = self._texture_uv_slots.get(texture.atlas_name)
+        slot = existing_slot or self._texture_uv_slots_free.popleft()
         self._texture_uv_slots[texture.atlas_name] = slot
         image_region = self.get_image_region_info(texture.image_data.hash)
         texture_region = copy.deepcopy(image_region)
@@ -653,10 +657,10 @@ class TextureAtlas:
         self._check_size(size)
         self._size = size
         # Keep the old atlas texture and uv texture
-        uv_texture_old = self._image_uv_texture
+        self._image_uv_texture.write(self._image_uv_data, 0)
+        image_uv_texture_old = self._image_uv_texture
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
-        self._image_uv_texture.write(self._image_uv_data, 0)
 
         # Create new image uv texture as input for the copy shader
         self._image_uv_texture = self._ctx.texture(
@@ -668,7 +672,8 @@ class TextureAtlas:
 
         # Allocate space for all images in the new atlas
         images = list(self._images)
-        self.clear(clear_texture_ids=False, texture=False)
+        # Clear the atlas without wiping the image and texture ids
+        self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
         for image in sorted(images, key=lambda x: x.height):
             self.allocate(image)
 
@@ -679,17 +684,15 @@ class TextureAtlas:
         # Update the texture regions. We need to copy the image regions
         # and re-apply the transforms on each texture
         for texture in self._textures:
-            image_region = self._image_regions[texture.image_data.hash]
-            region = copy.deepcopy(image_region)
-            region.texture_coordinates = Transform.transform_texture_coordinates_order(
-                region.texture_coordinates, texture._vertex_order,
-            )
-            self._texture_regions[texture.atlas_name] = region
+            self._allocate_texture(texture)            
+
+        self.texture_uv_texture.write(self._texture_uv_data)
+        self._texture_uv_data_changed = False
 
         # Bind textures for atlas copy shader
         atlas_texture_old.use(0)
         self._texture.use(1)
-        uv_texture_old.use(2)
+        image_uv_texture_old.use(2)
         self._image_uv_texture.use(3)
         self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(
             0, self.width, self.height, 0,
@@ -702,7 +705,10 @@ class TextureAtlas:
                 mode=self._ctx.POINTS,
                 vertices=self.max_width,
             )
-        LOG.info("[%s] Atlas resize took %s seconds", id(self), time.perf_counter() - resize_start)
+
+        duration = time.perf_counter() - resize_start
+        LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
+        # print(duration)
 
     def rebuild(self) -> None:
         """Rebuild the underlying atlas texture.
@@ -713,7 +719,7 @@ class TextureAtlas:
         # Hold a reference to the old textures
         textures = list(self._textures)
         # Clear the atlas but keep the uv slot mapping
-        self.clear(texture_ids=False)
+        self.clear(clear_image_ids=False, clear_texture_ids=False)
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self.add(texture)
