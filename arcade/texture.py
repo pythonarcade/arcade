@@ -543,6 +543,9 @@ class Texture:
             return True
         return self.cache_name != other.cache_name
 
+    def __repr__(self) -> str:
+        return f"<Texture {self.file_name} {self.cache_name}>"
+
     # ------------------------------------------------------------
 
     def _calculate_hit_box_points(self) -> PointList:
