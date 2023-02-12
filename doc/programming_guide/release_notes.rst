@@ -475,7 +475,7 @@ Version 2.6.11
 
 * New Example Code:
 
-  * Add parallax example: :ref:`parallax`.
+  * Add parallax example: :ref:`background_parallax`.
   * Add GUI flat button styling example: :ref:`gui_flat_button_styled`.
   * Add :ref:`perspective` example.
 
