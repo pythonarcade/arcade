@@ -552,8 +552,8 @@ class TextureAtlas:
         self._textures.remove(texture)
         # Reclaim the texture uv slot
         del self._texture_regions[texture.atlas_name]
-        slot = self._image_uv_slots[texture.atlas_name]
-        del self._image_uv_slots[texture.atlas_name]
+        slot = self._texture_uv_slots[texture.atlas_name]
+        del self._texture_uv_slots[texture.atlas_name]
         self._image_uv_slots_free.appendleft(slot)
 
         # Decrement the reference count for the image
