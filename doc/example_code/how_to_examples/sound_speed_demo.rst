@@ -2,8 +2,8 @@
 
 .. _sound_speed_demo:
 
-Sound Demo
-==========
+Sound Speed Demo
+================
 
 .. image:: sound_speed_demo.png
     :width: 600px
