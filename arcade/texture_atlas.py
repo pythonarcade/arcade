@@ -429,7 +429,7 @@ class TextureAtlas:
 
         # Add the texture to the atlas
         existing_slot = self._texture_uv_slots.get(texture.atlas_name)
-        slot = existing_slot or self._texture_uv_slots_free.popleft()
+        slot = existing_slot if existing_slot is not None else self._texture_uv_slots_free.popleft()
         self._texture_uv_slots[texture.atlas_name] = slot
         image_region = self.get_image_region_info(texture.image_data.hash)
         texture_region = copy.deepcopy(image_region)
@@ -444,9 +444,10 @@ class TextureAtlas:
         offset = slot * 8
         for i in range(8):
             self._texture_uv_data[offset + i] = texture_region.texture_coordinates[i]
-        self._texture_uv_data_changed = True
 
+        self._texture_uv_data_changed = True
         self._textures.add(texture)
+
         return slot, texture_region
 
     def allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
@@ -554,7 +555,7 @@ class TextureAtlas:
         del self._texture_regions[texture.atlas_name]
         slot = self._texture_uv_slots[texture.atlas_name]
         del self._texture_uv_slots[texture.atlas_name]
-        self._image_uv_slots_free.appendleft(slot)
+        self._texture_uv_slots_free.appendleft(slot)
 
         # Decrement the reference count for the image
         self._image_ref_count.dec_ref(texture.image_data)
@@ -743,8 +744,10 @@ class TextureAtlas:
         if texture:
             self._fbo.clear()
         self._textures = WeakSet()
+        self._images = WeakSet()
         self._image_ref_count = ImageDataRefCounter()
         self._image_regions = dict()
+        self._texture_regions = dict()
         self._allocator = Allocator(*self._size)
         if clear_image_ids:
             self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
