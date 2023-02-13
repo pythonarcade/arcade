@@ -171,7 +171,7 @@ class Texture:
         name: Optional[str] = None,
     ):
         if isinstance(image, PIL.Image.Image):
-            self._image_data = ImageData(image)
+            self._image_data = ImageData(image, hash=name)
         elif isinstance(image, ImageData):
             self._image_data = image
         else:
