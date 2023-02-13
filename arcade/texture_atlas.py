@@ -671,8 +671,9 @@ class TextureAtlas:
         self._texture = self._ctx.texture(size, components=4)
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
-        # Allocate space for all images in the new atlas
+        # Store old images and textures before clearing the atlas
         images = list(self._images)
+        textures = list(self._textures)
         # Clear the atlas without wiping the image and texture ids
         self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
         for image in sorted(images, key=lambda x: x.height):
@@ -684,7 +685,7 @@ class TextureAtlas:
 
         # Update the texture regions. We need to copy the image regions
         # and re-apply the transforms on each texture
-        for texture in self._textures:
+        for texture in textures:
             self._allocate_texture(texture)            
 
         self.texture_uv_texture.write(self._texture_uv_data)
@@ -804,7 +805,7 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
-        region = self._image_regions[texture.atlas_name]
+        region = self._texture_regions[texture.atlas_name]
         proj_prev = self._ctx.projection_2d
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)

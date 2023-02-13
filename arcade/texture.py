@@ -960,12 +960,8 @@ def load_texture_pair(file_name: str, hit_box_algorithm: str = "Simple"):
     :param str hit_box_algorithm: The hit box algorithm
     """
     LOG.info("load_texture_pair: %s ", file_name)
-    return [
-        load_texture(file_name, hit_box_algorithm=hit_box_algorithm),
-        load_texture(
-            file_name, flipped_horizontally=True, hit_box_algorithm=hit_box_algorithm
-        ),
-    ]
+    texture = load_texture(file_name, hit_box_algorithm=hit_box_algorithm)
+    return [texture, texture.flip_left_to_right()]
 
 
 def load_spritesheet(
