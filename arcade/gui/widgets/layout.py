@@ -189,9 +189,6 @@ class UIBoxLayout(UILayout):
         style=None,
         **kwargs
     ):
-        self.align = align
-        self.vertical = vertical
-        self._space_between = space_between
         super().__init__(
             x=x,
             y=y,
@@ -205,7 +202,12 @@ class UIBoxLayout(UILayout):
             **kwargs
         )
 
+        self.align = align
+        self.vertical = vertical
+        self._space_between = space_between
+
         bind(self, "_children", self._update_size_hints)
+        bind(self, "_border_width", self._update_size_hints)
 
         # initially update size hints
         self._update_size_hints()
@@ -470,6 +472,7 @@ class UIGridLayout(UILayout):
         self.align_vertical = align_vertical
 
         bind(self, "_children", self._update_size_hints)
+        bind(self, "_border_width", self._update_size_hints)
 
         # initially update size hints
         self._update_size_hints()
