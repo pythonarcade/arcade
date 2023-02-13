@@ -210,3 +210,18 @@ def test_size_hint_and_spacing(window):
 
     subject.do_layout()
     assert dummy1.size == (100, 100)
+
+def test_empty_cells(window):
+    dummy1 = UIDummy(width=100, height=100)
+
+    subject = UIGridLayout(
+        column_count=3,
+        row_count=3,
+    )
+
+    subject.add(dummy1, 2, 2)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    assert dummy1.position == (0, 0)

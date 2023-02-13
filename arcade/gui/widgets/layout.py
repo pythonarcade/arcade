@@ -717,10 +717,10 @@ class UIGridLayout(UILayout):
 
                     child.rect = new_rect
 
-                # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
-                row_span = max_height_per_row[row_num][col_num][1] or 1
-                actual_row_height = cell_height / row_span
-                if actual_row_height > max_height_row:
-                    max_height_row = actual_row_height
+                    # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
+                    row_span = max_height_per_row[row_num][col_num][1] or 1
+                    actual_row_height = cell_height / row_span
+                    if actual_row_height > max_height_row:
+                        max_height_row = actual_row_height
 
             start_y -= max_height_row
