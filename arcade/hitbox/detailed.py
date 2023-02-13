@@ -13,7 +13,16 @@ from .base import HitBoxAlgorithm
 
 class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
     name = "detailed"
-    default_hit_box_detail = 4.5
+    default_detail = 4.5
+
+    def create_param_str(self, **kwargs) -> str:
+        """
+        Convert all the parameters for this algorithm into a string.
+        This is used for texture and hit box caching. It's important
+        that the parameter order is consistent.
+        """
+        detail = kwargs.get("detail") or self.default_detail
+        return f"detail={detail}"
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """
@@ -26,7 +35,7 @@ class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
 
         :Returns: List of points
         """
-        hit_box_detail = kwargs.get("hit_box_detail", self.default_hit_box_detail)
+        hit_box_detail = kwargs.get("hit_box_detail", self.default_detail)
 
         if image.mode != "RGBA":
             raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")
