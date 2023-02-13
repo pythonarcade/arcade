@@ -45,6 +45,7 @@ if TYPE_CHECKING:
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx
 RESIZE_STEP = 128
+UV_TEXTURE_WIDTH = 4096
 LOG = logging.getLogger(__name__)
 
 
@@ -143,6 +144,10 @@ class AtlasRegion:
 
 
 class ImageDataRefCounter:
+    """
+    Helper class to keep track of how many times an image is used
+    by a texture in the atlas to determine when it's safe to remove it.
+    """
     def __init__(self) -> None:
         self._data: Dict[str, int] = {}
 
@@ -190,6 +195,9 @@ class TextureAtlas:
     :param Sequence[arcade.Texture] textures: The texture for this atlas
     :param bool auto_resize: Automatically resize the atlas when full
     :param Context ctx: The context for this atlas (will use window context if left empty)
+    :param int capacity: The number of textures the atlas keeps track of.
+                         This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
+                         This value can affect the performance of the atlas.
     """
     def __init__(
         self,
@@ -199,6 +207,7 @@ class TextureAtlas:
         textures: Optional[Sequence["Texture"]] = None,
         auto_resize: bool = True,
         ctx: Optional["ArcadeContext"] = None,
+        capacity: int = 4,
     ):
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
@@ -206,8 +215,13 @@ class TextureAtlas:
         self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
-        self._num_image_slots = self.max_width // 2
-        self._num_texture_slots = self.max_width // 2
+        # Decides the number of texture and images the atlas can hold.
+        # Must be a multiple of UV_TEXTURE_WIDTH due texture coordinates being
+        # stored in a float32 texture.
+        if not isinstance(capacity, int) or capacity < 1:
+            raise ValueError("Capacity must be a positive integer")
+        self._num_image_slots = UV_TEXTURE_WIDTH * capacity  # 16k
+        self._num_texture_slots = UV_TEXTURE_WIDTH * capacity  # 16k
         self._check_size(self._size)
 
         # The atlas texture
@@ -238,11 +252,16 @@ class TextureAtlas:
         self._textures: WeakSet["Texture"] = WeakSet()
 
         # Texture containing texture coordinates for images and textures
+        # The 4096 width is a safe constant for all GL implementations
         self._image_uv_texture = self._ctx.texture(
-            (self.max_width, 1), components=4, dtype="f4"
+            (UV_TEXTURE_WIDTH, self._num_texture_slots * 2 // UV_TEXTURE_WIDTH),
+            components=4,
+            dtype="f4",
         )
         self._texture_uv_texture = self._ctx.texture(
-            (self.max_width, 1), components=4, dtype="f4"
+            (UV_TEXTURE_WIDTH, self._num_image_slots * 2 // UV_TEXTURE_WIDTH),
+            components=4,
+            dtype="f4",
         )
         self._image_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._texture_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
@@ -528,7 +547,6 @@ class TextureAtlas:
             image.width + 2,
             image.height + 2,
         )
-        # print(image.size, viewport,"|", x, y, self._border)
 
         # Pad the 1-pixel border with repeating data
         tmp = Image.new('RGBA', (image.width + 2, image.height + 2))
@@ -665,7 +683,9 @@ class TextureAtlas:
 
         # Create new image uv texture as input for the copy shader
         self._image_uv_texture = self._ctx.texture(
-            (self.max_width, 1), components=4, dtype="f4"
+            (UV_TEXTURE_WIDTH, self._num_image_slots * 2 // UV_TEXTURE_WIDTH),
+            components=4,
+            dtype="f4",
         )
         # Create new atlas texture and framebuffer
         self._texture = self._ctx.texture(size, components=4)
