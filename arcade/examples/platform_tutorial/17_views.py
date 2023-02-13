@@ -58,9 +58,9 @@ def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
+    texture = arcade.load_texture(filename)
     return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True),
+        texture, texture.flip_left_to_right()
     ]
 
 
@@ -475,6 +475,8 @@ class GameView(arcade.View):
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
+        if key == arcade.key.P:
+            self.window.ctx.default_atlas.save("atlas.png")
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = False
