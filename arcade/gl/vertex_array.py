@@ -138,15 +138,12 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
         # Lookup dict for BufferDescription attrib names
-        # print(content)
         descr_attribs = {
             attr.name: (descr, attr) for descr in content for attr in descr.formats
         }
-        # print('->', descr_attribs)
 
         # Build the vao according to the shader's attribute specifications
         for i, prog_attr in enumerate(program.attributes):
-            # print('prog_attr', prog_attr)
             # Do we actually have an attribute with this name in buffer descriptions?
             if prog_attr.name.startswith("gl_"):
                 continue
@@ -159,10 +156,6 @@ class VertexArray:
                         f"Buffer descriptions: {content}"
                     )
                 )
-
-            # TODO: Sanity check this
-            # if buff_descr.instanced and i == 0:
-            #     raise ValueError("The first vertex attribute cannot be a per instance attribute.")
 
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
@@ -182,16 +175,45 @@ class VertexArray:
             normalized = (
                 gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
             )
-            gl.glVertexAttribPointer(
-                prog_attr.location,  # attrib location
-                attr_descr.components,  # 1, 2, 3 or 4
-                attr_descr.gl_type,  # GL_FLOAT etc
-                normalized,  # normalize
-                buff_descr.stride,
-                c_void_p(attr_descr.offset),
-            )
+
+            if attr_descr.gl_type == gl.GL_FLOAT:
+                gl.glVertexAttribPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    normalized,  # normalize
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            elif attr_descr.gl_type == gl.GL_DOUBLE:
+                gl.glVertexAttribLPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            elif attr_descr.gl_type == gl.GL_INT:
+                gl.glVertexAttribIPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            elif attr_descr.gl_type == gl.GL_UNSIGNED_INT:
+                gl.glVertexAttribIPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            else:
+                raise ValueError(f"Unsupported attribute type: {attr_descr.gl_type}")
+
             # print((
-            #     f"gl.glVertexAttribPointer(\n"
+            #     f"gl.glVertexAttribXPointer(\n"
             #     f"    {prog_attr.location},  # attrib location\n"
             #     f"    {attr_descr.components},  # 1, 2, 3 or 4\n"
             #     f"    {attr_descr.gl_type},  # GL_FLOAT etc\n"
