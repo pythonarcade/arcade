@@ -5,12 +5,11 @@ from weakref import WeakValueDictionary
 if TYPE_CHECKING:
     from arcade import Texture
 
-# Cache by:
-# - Texture.cache_name
-# - Texture.origin or absolute path to the file
 
 class TextureBucket:
-
+    """
+    A simple dict based cache for textures.
+    """
     def __init__(self):
         self._entries: Dict[str, "Texture"] = {}
 
@@ -43,12 +42,28 @@ class TextureBucket:
 
 
 class WeakTextureBucket(TextureBucket):
-
+    """
+    A simple WeakValueDictionary based cache for textures.
+    """
     def __init__(self):
         self._entries: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
 
 class TextureCache:
+    """
+    A cache for arcade textures.
+
+    The creation of a texture is an expensive operation for several reasons.
+    * Creating a texture from a file has a cost
+    * Creating a texture from a PIL image has a cost
+    * Once the texture is created it's expensive to calculate hit box points
+
+    This cache is intended to reduce the cost of creating textures by reusing
+    existing ones. We also re-use the internal images on the existing textures
+    for making different configurations of the same texture such as flipped
+    and rotated versions including textures with different hit box configurations
+    for the same image.
+    """
 
     def __init__(self):
         self._strong_entries = TextureBucket()
@@ -93,7 +108,9 @@ class TextureCache:
 
     def get_file(self, file_path: str) -> Optional["Texture"]:
         """
-        Get a texture from the cache by file path
+        Get a texture from the cache by file path.
+
+        :param file_path: The path to the file the texture was loaded from
         """
         return (
             self._strong_file_entries.get(file_path)
@@ -103,8 +120,12 @@ class TextureCache:
     def delete(self, texture_or_name: Union["Texture", str], ignore_error: bool = True) -> None:
         """
         Delete a texture from the cache by cache name.
+
+        :param texture_or_name: The texture or cache name to delete
+        :param ignore_error: If True, ignore errors when deleting
         """
         from arcade import Texture
+
         if isinstance(texture_or_name, Texture):
             texture = texture_or_name
             name = texture.cache_name
@@ -133,6 +154,7 @@ class TextureCache:
         self._weak_file_entries.clear()
 
     def get_all_textures(self) -> List["Texture"]:
+        """Get all unique textures in the cache"""
         return (
             list(self._strong_entries._entries.values())
             + list(self._weak_entires._entries.values())
