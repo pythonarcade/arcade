@@ -54,7 +54,7 @@ def get_raspberry_pi_info() -> Tuple[bool, str, str]:
 
     # The platform for raspi should always be linux
     if not sys.platform == "linux":
-        return False, 0, ""
+        return False, "", ""
 
     # Check for model info file
     MODEL_PATH = Path("/sys/firmware/devicetree/base/model")
