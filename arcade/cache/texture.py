@@ -174,7 +174,7 @@ class TextureCache:
 
     def __getitem__(self, name: str) -> Optional["Texture"]:
         return self.get(name)
-    
+
     def __setitem__(self, name: str, texture: "Texture") -> None:
         self.put(texture, strong=True)
 

@@ -31,7 +31,7 @@ from arcade.arcade_types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.resources import resolve_resource_path
 from arcade.cache.hit_box import HitBoxCache
-from arcade.cache.texture import TextureCache
+from arcade import cache
 
 if TYPE_CHECKING:
     from arcade.sprite import Sprite
@@ -154,7 +154,7 @@ class Texture:
     :param str name: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
-    cache = TextureCache()
+    cache = cache.TextureCache()
     hit_box_cache = HitBoxCache()
 
     def __init__(
@@ -194,7 +194,7 @@ class Texture:
 
         # Attempt to look up the algorithm
         if hit_box_algorithm is None:
-            self._hit_box_algorithm =  hitbox.default_algorithm
+            self._hit_box_algorithm = hitbox.default_algorithm
         else:
             self._hit_box_algorithm = hitbox.get_algorithm(hit_box_algorithm)
 
@@ -732,16 +732,6 @@ class SolidColorTexture(Texture):
         return self._height
 
 
-def get_cached_texture_or_image(file_name: Union[str, Path]) -> Tuple[PIL.Image.Image, Texture]]:
-    """
-    Get a cached texture.
-
-    :param str file_name: Name of the file to get the texture from.
-    :return: The texture or None if not found
-    """
-    return Texture._texture_cache.get(file_name)
-
-
 def load_textures(
     file_name: Union[str, Path],
     image_location_list: RectList,
@@ -806,7 +796,7 @@ def load_textures(
             )
 
         # See if we already loaded this texture, and we can just use a cached version.
-        name = build_cache_name(
+        name = cache.crate_str_from_values(
             file_name, x, y, width, height, flipped, mirrored
         )
         try:
@@ -881,18 +871,18 @@ def load_texture(
     file_path = resolve_resource_path(file_path)
     file_path_str = str(file_path)
 
-    # Check if we already have a texture using this image
+    # Check if ths file was already loaded and in cache
     image_texture = Texture.cache.get_file(file_path_str)
     # TODO: Do we need a separate image cache?
     # TODO: Make function for generating cache name gen(hash, algo, args)
     # TODO: Make thus logic into a reusable function for other texture loading functions
+
     # Do we have a texture with this image?
     if image_texture:
         # Attempt to find a texture with the same configuration
-        algo = hitbox.get_algorithm(hit_box_algorithm or hitbox.default_algorithm.name)
         name = Texture.create_cache_name(
             hash=image_texture.image_data.hash,
-            hit_box_algorithm=algo,
+            hit_box_algorithm=hitbox.get_algorithm(hit_box_algorithm or hitbox.default_algorithm.name),
             hit_box_args=hit_box_args or {},
         )
         texture = Texture.cache.get(name)
@@ -999,7 +989,7 @@ def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None)
 
     :returns: New :class:`Texture` object.
     """
-    name = name or build_cache_name(
+    name = name or cache.crate_str_from_values(
         "circle_texture", diameter, color[0], color[1], color[2]
     )
     bg_color = TRANSPARENT_BLACK  # fully transparent
@@ -1028,9 +1018,8 @@ def make_soft_circle_texture(
     :returns: New :class:`Texture` object.
     :rtype: arcade.Texture
     """
-    # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
-    # in list of points?) particle?
-    name = build_cache_name(
+    # Name must be unique for caching
+    name = cache.crate_str_from_values(
         "soft_circle_texture",
         diameter,
         color[0],
@@ -1038,13 +1027,14 @@ def make_soft_circle_texture(
         color[2],
         center_alpha,
         outer_alpha,
-    )  # name must be unique for caching
+    )
 
     bg_color = TRANSPARENT_BLACK
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     max_radius = int(diameter // 2)
-    center = max_radius  # for readability
+    center = max_radius
+
     for radius in range(max_radius, 0, -1):
         alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
         clr = (color[0], color[1], color[2], alpha)
@@ -1079,19 +1069,22 @@ def make_soft_square_texture(
 
     :returns: New :class:`Texture` object.
     """
-    # name must be unique for caching
-    name = name or build_cache_name(
+    # Build name used for caching
+    name = name or cache.crate_str_from_values(
         "gradient-square", size, color, center_alpha, outer_alpha
     )
 
+    # Generate the soft square image
     bg_color = TRANSPARENT_BLACK
     img = PIL.Image.new("RGBA", (size, size), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     half_size = int(size // 2)
+
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
         draw.rectangle(
             (cur_size, cur_size, size - cur_size, size - cur_size), clr, None
         )
+
     return Texture(img, name=name)

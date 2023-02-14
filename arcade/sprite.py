@@ -32,6 +32,7 @@ from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
 from arcade.arcade_types import RGBA, Point, PointList
 from arcade.texture import SolidColorTexture
+from arcade import cache
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -1415,9 +1416,9 @@ class SpriteCircle(Sprite):
         #       is applied in the shader through the sprite's color attribute.
         # determine the texture's cache name.
         if soft:
-            cache_name = build_cache_name("circle_texture_soft", diameter, 255, 255, 255, 255)
+            cache_name = cache.crate_str_from_values("circle_texture_soft", diameter, 255, 255, 255, 255)
         else:
-            cache_name = build_cache_name("circle_texture", diameter, 255, 255, 255, 255)
+            cache_name = cache.crate_str_from_values("circle_texture", diameter, 255, 255, 255, 255)
 
         # use the named texture if it was already made
         if cache_name in Texture.cache:  # type: ignore
@@ -1430,7 +1431,7 @@ class SpriteCircle(Sprite):
             else:
                 texture = make_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
 
-            Texture.cache[cache_name] = texture  # type: ignore
+            Texture.cache[cache_name] = texture
 
         # apply results to the new sprite
         self.texture = texture
