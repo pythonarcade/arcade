@@ -1,0 +1,1 @@
+ window.joys = arcade.get_joysticks()#gets the joystick
