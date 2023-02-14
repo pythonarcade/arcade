@@ -166,8 +166,6 @@ class VertexArray:
                     )
                 )
 
-            # TODO: Compare gltype between buffer descr and program attr
-
             gl.glEnableVertexAttribArray(prog_attr.location)
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
@@ -176,7 +174,29 @@ class VertexArray:
                 gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
             )
 
-            if attr_descr.gl_type == gl.GL_FLOAT:
+            # Map attributes groups
+            float_types = (gl.GL_FLOAT, gl.GL_HALF_FLOAT)
+            double_types = (gl.GL_DOUBLE,)
+            int_types = (
+                gl.GL_INT, gl.GL_UNSIGNED_INT,
+                gl.GL_SHORT, gl.GL_UNSIGNED_SHORT,
+                gl.GL_BYTE, gl.GL_UNSIGNED_BYTE,
+            )
+            attrib_type = attr_descr.gl_type
+            # Normalized integers must be mapped as floats
+            if attrib_type in int_types and buff_descr.normalized:
+                attrib_type = prog_attr.gl_type
+
+            # Sanity check attribute types between shader and buffer description
+            if attrib_type != prog_attr.gl_type:
+                raise ValueError(
+                    (
+                        f"Program attribute '{prog_attr.name}' has type {prog_attr.gl_type} "
+                        f"while the buffer description has type {attr_descr.gl_type}. "
+                    )
+                )
+
+            if attrib_type in float_types:
                 gl.glVertexAttribPointer(
                     prog_attr.location,  # attrib location
                     attr_descr.components,  # 1, 2, 3 or 4
@@ -185,23 +205,15 @@ class VertexArray:
                     buff_descr.stride,
                     c_void_p(attr_descr.offset),
                 )
-            elif attr_descr.gl_type == gl.GL_DOUBLE:
+            elif attrib_type in double_types:
                 gl.glVertexAttribLPointer(
                     prog_attr.location,  # attrib location
                     attr_descr.components,  # 1, 2, 3 or 4
-                    attr_descr.gl_type,  # GL_FLOAT etc
+                    attr_descr.gl_type,  # GL_DOUBLE etc
                     buff_descr.stride,
                     c_void_p(attr_descr.offset),
                 )
-            elif attr_descr.gl_type == gl.GL_INT:
-                gl.glVertexAttribIPointer(
-                    prog_attr.location,  # attrib location
-                    attr_descr.components,  # 1, 2, 3 or 4
-                    attr_descr.gl_type,  # GL_FLOAT etc
-                    buff_descr.stride,
-                    c_void_p(attr_descr.offset),
-                )
-            elif attr_descr.gl_type == gl.GL_UNSIGNED_INT:
+            elif attrib_type in int_types:
                 gl.glVertexAttribIPointer(
                     prog_attr.location,  # attrib location
                     attr_descr.components,  # 1, 2, 3 or 4
