@@ -1,6 +1,7 @@
 from typing import Any, List
 from .hit_box import HitBoxCache
 from .texture import TextureCache
+from .image_data import ImageDataCache
 
 
 def crate_str_from_values(*args, sep: str = "_") -> str:
@@ -39,4 +40,6 @@ __all__ = [
     "HitBoxCache",
     "TextureCache",
     "crate_str_from_list",
+    "crate_str_from_values",
+    "ImageDataCache",
 ]
