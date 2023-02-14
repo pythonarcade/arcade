@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         # Set up the player
         # Character image from kenney.nl
         img = ":resources:images/animated_characters/female_person/femalePerson_idle.png"
-        self.player_sprite = arcade.Sprite(img, SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(img, scale_x=SPRITE_SCALING_PLAYER, scale_y=SPRITE_SCALING_PLAYER)
         self.player_sprite.position = 50, 50
         self.player_list.append(self.player_sprite)
 
@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 SPRITE_SCALING_COIN)
+                                 scale_x=SPRITE_SCALING_COIN, scale_y=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

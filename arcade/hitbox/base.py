@@ -7,7 +7,10 @@ class HitBoxAlgorithm:
     Base class for hit box algorithms. Hit box algorithms are used to calculate the
     points that make up a hit box for a sprite.
     """
+    #: The name of the algorithm
     name = "base"
+    #: Should points for this algorithm be cached?
+    cache = True
 
     def create_param_str(self, **kwargs) -> str:
         """

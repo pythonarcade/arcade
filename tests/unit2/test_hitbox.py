@@ -41,4 +41,4 @@ def test_param_str():
     # Detailed has a detail parameter for the number of points
     # Test default value and specifying a value
     assert detailed.create_param_str() == "detail=4.5"
-    assert simple.create_param_str(detail=10.0) == "detail=10.0"
+    assert detailed.create_param_str(detail=10.0) == "detail=10.0"

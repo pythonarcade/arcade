@@ -15,7 +15,9 @@ from typing import (
     List,
     Optional,
     TYPE_CHECKING,
+    Union,
 )
+from pathlib import Path
 import PIL.Image
 
 import arcade
@@ -29,7 +31,6 @@ from arcade import Color
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
 from arcade.arcade_types import RGBA, Point, PointList
-from arcade.cache import build_cache_name
 from arcade.texture import SolidColorTexture
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -151,29 +152,20 @@ class Sprite:
     movement or other sprite updates.
     """
     def __init__(
-            self,
-            filename: Optional[str] = None,
-            scale: float = 1.0,
-            image_x: int = 0,
-            image_y: int = 0,
-            image_width: int = 0,
-            image_height: int = 0,
-            center_x: float = 0.0,
-            center_y: float = 0.0,
-            flipped_horizontally: bool = False,
-            flipped_vertically: bool = False,
-            flipped_diagonally: bool = False,
-            hit_box_algorithm: Optional[str] = "Simple",
-            hit_box_detail: float = 4.5,
-            texture: Optional[Texture] = None,
-            angle: float = 0.0,
+        self,
+        path_or_texture: Union[str, Path, Texture],
+        *,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
+        scale: float = 1.0,
+        angle: float = 0.0,
     ):
         """ Constructor """
         # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
-        self._scale: Tuple[float, float] = (scale, scale)
-        self._position: Point = (center_x, center_y)
+        self._scale: Tuple[float, float] = scale, scale
+        self._position: Point = center_x, center_y
         self._angle = angle
         self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
@@ -181,9 +173,6 @@ class Sprite:
         # Hit box and collision property
         self._points: Optional[PointList] = None
         self._point_list_cache: Optional[PointList] = None
-        # Hit box type info
-        self._hit_box_algorithm = hit_box_algorithm
-        self._hit_box_detail = hit_box_detail
 
         # Color
         self._color: RGBA = 255, 255, 255, 255
@@ -213,47 +202,20 @@ class Sprite:
         # Debug properties
         self.guid: Optional[str] = None
 
-        if texture:
-            self._texture = texture
-            self._textures = [texture]
+        if isinstance(path_or_texture, Texture):
+            self._texture = path_or_texture
+            self._textures = [path_or_texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
-        elif filename is not None:
-            # Sanity check values
-            if image_width < 0:
-                raise ValueError("Width entered is less than zero. Width must be a positive float.")
-
-            if image_height < 0:
-                raise ValueError(
-                    "Height entered is less than zero. Height must be a positive float."
-                )
-
-            if image_width == 0 and image_height != 0:
-                raise ValueError("Width can't be zero.")
-
-            if image_height == 0 and image_width != 0:
-                raise ValueError("Height can't be zero.")
-
-            self._texture = load_texture(
-                filename,
-                image_x,
-                image_y,
-                image_width,
-                image_height,
-                flipped_horizontally=flipped_horizontally,
-                flipped_vertically=flipped_vertically,
-                flipped_diagonally=flipped_diagonally,
-                hit_box_algorithm=hit_box_algorithm,
-                hit_box_detail=hit_box_detail,
-            )
+        elif isinstance(path_or_texture, (str, Path)):
+            self._texture = load_texture(path_or_texture)
             self.textures = [self._texture]
             # Ignore the texture's scale and use ours
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
-        # We'll allow creating sprites without textures for now.
-        # The sprite must at some point get a texture assigned before used.
+        # TODO: Enforce texture or not?
         # else:
-        #     raise ValueError("You must provide either a texture or a filename.")
+        #     raise ValueError("The first parameter must be a string, Path, or Texture.")
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
@@ -1242,17 +1204,14 @@ class AnimatedWalkingSprite(Sprite):
     :ref:`platformer_part_twelve`.
     """
     def __init__(
-            self,
-            scale: float = 1.0,
-            image_x: int = 0,
-            image_y: int = 0,
-            center_x: float = 0.0,
-            center_y: float = 0.0,
+        self,
+        scale: float = 1.0,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
     ):
         super().__init__(
+            None,
             scale=scale,
-            image_x=image_x,
-            image_y=image_y,
             center_x=center_x,
             center_y=center_y,
         )

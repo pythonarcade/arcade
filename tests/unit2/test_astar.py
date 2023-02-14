@@ -18,13 +18,13 @@ def test_astar(window):
 
     # Set up the player
     player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                           SPRITE_SCALING)
+                           scale=SPRITE_SCALING)
     player.center_x = SPRITE_SIZE * 1
     player.center_y = SPRITE_SIZE * 1
     player_list.append(player)
 
     # Set enemies
-    enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
+    enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING)
     enemy.center_x = SPRITE_SIZE * 5
     enemy.center_y = SPRITE_SIZE * 5
     enemy_list.append(enemy)
@@ -73,27 +73,27 @@ def test_astar(window):
     assert path == [(160, 160), (128, 128), (96, 96), (64, 64), (32, 32)]
     # print("Path 2", path)
 
-    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
     sprite.center_y = SPRITE_SIZE * 1
     wall_list.append(sprite)
 
-    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
     sprite.center_y = SPRITE_SIZE * 2
     wall_list.append(sprite)
 
-    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
     sprite.center_y = SPRITE_SIZE * 3
     wall_list.append(sprite)
 
-    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
     sprite.center_y = SPRITE_SIZE * 4
     wall_list.append(sprite)
 
-    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
     sprite.center_y = SPRITE_SIZE * 5
     wall_list.append(sprite)

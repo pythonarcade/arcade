@@ -11,13 +11,14 @@ Depending on the hit box algorithm a hit box is calculated:
 import gzip
 import json
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Optional, Union, TYPE_CHECKING
 from collections import OrderedDict
 
 from arcade.arcade_types import PointList
 from arcade.resources import resolve_resource_path
 
-# TODO: include version number in cache file
+if TYPE_CHECKING:
+    from arcade import Texture
 
 
 class HitBoxCache:
@@ -41,44 +42,56 @@ class HitBoxCache:
     def __iter__(self):
         return iter(self._entries)
 
-    def get(self, keys: List[Any]) -> Optional[PointList]:
+    def get(self, name_or_texture: Union[str, "Texture"]) -> Optional[PointList]:
         """
         Get the hit box points for a texture with a given hash
         and hit box algorithm.
 
         Example::
 
-            # Get points with key "hash-simple"
-            cache.get(["hash", "simple"])
+            # Get cached hit box for texture
+            points = cache.get(texture)
+            # Get a cache entry by string
+            points = cache.get("hash|(0, 1, 2, 3)|simple|")
 
         :param keys: List of keys to use for the cache entry
         :param str hit_box_algorithm: The hit box algorithm used
         """
-        key = self._gen_key(*keys)
-        return self._entries.get(key, None)
+        from arcade import Texture
 
-    def put(self, keys: List[Any], points: PointList) -> None:
+        if isinstance(name_or_texture, Texture):
+            return self._entries.get(name_or_texture.cache_name, None)
+        elif isinstance(name_or_texture, str):
+            return self._entries.get(name_or_texture, None)
+        else:
+            raise TypeError(f"Expected str or Texture: {name_or_texture}")
+
+    def put(self, name_or_texture: Union[str, "Texture"], points: PointList) -> None:
         """
-        Store hit box points usually for a texture.
-
-        Keys are joined as strings with a "-" separator.
+        Store hit box points for a texture.
 
         Example::
 
-            # Simple hit box points
-            cache.put(["hash", "simple"], points)
-            # Detailed hit box points
-            cache.put(["hash", "detailed", 4.5], points)
+            # Cache hit box for texture
+            cache.put(texture, points)
+            # Cache with custom string
+            cache.put("my_custom_points", points)
 
         :param List[Any] keys: List of keys to use for the cache entry
         :param PointList points: The hit box points
         """
+        from arcade import Texture
+
         # Points can be empty OR have at least 3 points
         if len(points) < 3 and len(points) != 0:
             raise ValueError(f"Hit box must have at least 3 points: {points}")
 
-        key = self._gen_key(*keys)
-        self._entries[key] = tuple(points)
+        if isinstance(name_or_texture, Texture):
+            self._entries[name_or_texture.cache_name] = tuple(points)
+        elif isinstance(name_or_texture, str):
+            self._entries[name_or_texture] = tuple(points)
+        else:
+            raise TypeError(f"Expected str or Texture: {name_or_texture}")
 
     def load(self, path: Union[str, Path]) -> None:
         """
@@ -133,7 +146,3 @@ class HitBoxCache:
 
     def __repr__(self) -> str:
         return f"HitBoxCache(entries={len(self)})"
-
-    def _gen_key(self, *args) -> str:
-        """Standardized way to generate a key"""
-        return "-".join(str(v).lower() for v in args)

@@ -9,12 +9,12 @@ def test_create():
     assert texture.height == 10
     assert texture.origin is None
     assert texture.image_data.hash == "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5"
-    assert texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm}"
+    assert texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm.name}|"
 
 
 def test_create_override_name():
     texture = arcade.Texture(Image.new("RGBA", (10, 10)), name="test")
-    assert texture.cache_name == f"test|{texture._vertex_order}|{texture.hit_box_algorithm}"
+    assert texture.cache_name == f"test|{texture._vertex_order}|{texture.hit_box_algorithm.name}|"
 
 
 def test_hitbox_algo_selection():
@@ -22,19 +22,19 @@ def test_hitbox_algo_selection():
 
     # Default algorithm
     texture = arcade.Texture(image)
-    assert texture.hit_box_algorithm is hitbox.default_algorithm.name
+    assert texture.hit_box_algorithm is hitbox.default_algorithm
+
+    # Bounding box algorithm
+    texture = arcade.Texture(image, hit_box_algorithm="bounding_box")
+    assert texture.hit_box_algorithm == hitbox.get_algorithm("bounding_box")
 
     # Simple algorithm
     texture = arcade.Texture(image, hit_box_algorithm="simple")
-    assert texture.hit_box_algorithm == "simple"
+    assert texture.hit_box_algorithm == hitbox.get_algorithm("simple")
 
     # Detailed algorithm
     texture = arcade.Texture(image, hit_box_algorithm="detailed")
-    assert texture.hit_box_algorithm == "detailed"
-
-    # Legacy boundary algorithm
-    texture = arcade.Texture(image, hit_box_algorithm=None)
-    assert texture.hit_box_algorithm == "bounding_box"
+    assert texture.hit_box_algorithm == hitbox.get_algorithm("detailed")
 
 
 def test_rotate():
