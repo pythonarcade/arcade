@@ -2,14 +2,20 @@ from typing import Dict
 from PIL.Image import Image
 from arcade import PointList
 from .base import HitBoxAlgorithm
-from .bounding import BoundingHitBoxAlgorithm
+from .bounding_box import BoundingHitBoxAlgorithm
 from .simple import SimpleHitBoxAlgorithm
-from .detailed import DetailedHitBoxAlgorithm
+from .pymunk import PymunkHitBoxAlgorithm
 
 #: Registry for hit box algorithms.
 algorithms: Dict[str, HitBoxAlgorithm] = {}
 #: The default hit box algorithm.
-default_algorithm: HitBoxAlgorithm = SimpleHitBoxAlgorithm()
+default: HitBoxAlgorithm = SimpleHitBoxAlgorithm()
+#: The detailed hit box algorithm.
+detailed = PymunkHitBoxAlgorithm()
+#: The simple hit box algorithm.
+simple = SimpleHitBoxAlgorithm()
+#: The bounding box hit box algorithm.
+bounding_box = BoundingHitBoxAlgorithm()
 
 
 def get_algorithm(name: str) -> HitBoxAlgorithm:
@@ -38,7 +44,7 @@ def register_algorithm(algorithm: HitBoxAlgorithm):
 # Register algorithms
 register_algorithm(BoundingHitBoxAlgorithm())
 register_algorithm(SimpleHitBoxAlgorithm())
-register_algorithm(DetailedHitBoxAlgorithm())
+register_algorithm(PymunkHitBoxAlgorithm())
 
 
 # Temporary functions for backwards compatibility
@@ -68,4 +74,4 @@ def calculate_hit_box_points_detailed(
 
     :Returns: List of points
     """
-    return get_algorithm("detailed").calculate(image, hit_box_detail=hit_box_detail)
+    return get_algorithm("pymunk").calculate(image, hit_box_detail=hit_box_detail)

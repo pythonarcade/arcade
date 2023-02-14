@@ -1,3 +1,4 @@
+from typing import Any
 from PIL.Image import Image
 from arcade import PointList
 
@@ -22,3 +23,6 @@ class HitBoxAlgorithm:
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         raise NotImplementedError
+
+    def __call__(self, *args: Any, **kwds: Any) -> "HitBoxAlgorithm":
+        return self.__class__(*args, **kwds)
