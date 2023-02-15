@@ -1,6 +1,8 @@
 """
 Parallax scrolling layers move slower the "farther" away they are.
 
+Use the right and left arrow keys to move the car.
+
 Arcade's ParallaxGroup allows you to implement this technique quickly
 to create more satisfying backgrounds to your games. The example below
 demonstrates how to fake an endless world by adjusting ParallaxGroup's
