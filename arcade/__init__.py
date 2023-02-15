@@ -217,6 +217,7 @@ from .buffered_draw_commands import create_rectangle_filled_with_colors
 from .buffered_draw_commands import create_rectangle_outline
 from .buffered_draw_commands import create_rectangles_filled_with_colors
 from .buffered_draw_commands import create_triangles_filled_with_colors
+from .buffered_draw_commands import create_triangles_strip_filled_with_colors
 from .buffered_draw_commands import get_rectangle_points
 
 from .draw_commands import draw_arc_filled
