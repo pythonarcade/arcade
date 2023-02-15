@@ -1,6 +1,7 @@
+import pytest
 import arcade
 from arcade import hitbox
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 def test_create():
@@ -32,3 +33,37 @@ def test_rotate():
     assert texture._vertex_order != texture_rot90._vertex_order
     assert texture.cache_name != texture_rot90.cache_name
     assert texture.image_data == texture_rot90.image_data
+
+
+def test_crop():
+    # Create a texture with 4 sections with different colors
+    image = Image.new("RGBA", (10, 10))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, 4, 4), fill=(255, 0, 0, 255))
+    draw.rectangle((5, 0, 9, 5), fill=(0, 255, 0, 255))
+    draw.rectangle((0, 5, 5, 9), fill=(0, 0, 255, 255))
+    draw.rectangle((5, 5, 9, 9), fill=(255, 255, 255, 255))
+    texture = arcade.Texture(image)
+
+    # Conditions returning th same texture (no crop, same size)
+    assert texture == texture.crop(0, 0, 0, 0)
+    assert texture == texture.crop(0, 0, 10, 10)
+
+    with pytest.raises(ValueError):
+        texture.crop(-1, -1, -1, -1)
+
+    # Crop the four sections
+    texture_red = texture.crop(0, 0, 5, 5)
+    texture_green = texture.crop(5, 0, 5, 5)
+    texture_blue = texture.crop(0, 5, 5, 5)
+    texture_white = texture.crop(5, 5, 5, 5)
+
+    assert texture_red.image.size == (5, 5)
+    assert texture_green.image.size == (5, 5)
+    assert texture_blue.image.size == (5, 5)
+    assert texture_white.image.size == (5, 5)
+
+    assert texture_red.image.tobytes() == b"\xff\x00\x00\xff" * 25
+    assert texture_green.image.tobytes() == b"\x00\xff\x00\xff" * 25
+    assert texture_blue.image.tobytes() == b"\x00\x00\xff\xff" * 25
+    assert texture_white.image.tobytes() == b"\xff\xff\xff\xff" * 25

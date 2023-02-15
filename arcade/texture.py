@@ -502,7 +502,11 @@ class Texture:
 
     def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
         """
-        Create a new texture from a crop of this texture.
+        Create a new texture from a sub-section of this texture.
+
+        If the crop is the same size as the original texture or
+        the crop is 0 width or height, the original texture is
+        returned.
 
         :param int x: X position to start crop
         :param int y: Y position to start crop
@@ -510,7 +514,37 @@ class Texture:
         :param int height: Height of crop
         :return: Texture 
         """
-        raise NotImplementedError()
+        # Return self if the crop is the same size as the original image
+        if (width == self.image.width 
+            and height == self.image.height
+            and x == 0
+            and y == 0
+            ):
+            return self
+
+        # Return self width and height is 0
+        if width == 0 and height == 0:
+            return self
+
+        # Sanity check the crop values
+        if x < 0 or y < 0 or width < 0 or height < 0:
+            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
+        if x >= self.image.width:
+            raise ValueError(f"x position is outside of texture: {x}")
+        if y >= self.image.height:
+            raise ValueError(f"y position is outside of texture: {y}")
+        if x + width - 1 >= self.image.width:
+            raise ValueError(f"width is outside of texture: {width + x}")
+        if y + height -1 >= self.image.height:
+            raise ValueError(f"height is outside of texture: {height + y}")
+
+        area = (x, y, x + width, y + height)
+        image = self.image.crop(area)
+        image_data = ImageData(image)
+        return Texture(
+            image_data,
+            hit_box_algorithm=self._hit_box_algorithm,
+        )        
 
     def _new_texture_transformed(self, transform: Type[Transform]) -> "Texture":
         """
@@ -800,12 +834,24 @@ def load_textures(
 def load_texture(
     file_path: Union[str, Path],
     *,
+    x: int = 0,
+    y: int = 0,
+    width: int = 0,
+    height: int = 0,
     hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Load an image from disk and create a texture.
 
+    The ``x``, ``y``, ``width``, and ``height`` parameters are used to
+    specify a sub-rectangle of the image to load. If not specified, the
+    entire image is loaded.
+
     :param str file_name: Name of the file to that holds the texture.
+    :param int x: X coordinate of the texture in the image.
+    :param int y: Y coordinate of the texture in the image.
+    :param int width: Width of the texture in the image.
+    :param int height: Height of the texture in the image.
     :param str hit_box_algorithm: 
     :returns: New :class:`Texture` object.
     :raises: ValueError
@@ -827,7 +873,7 @@ def load_texture(
         texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
         cache.texture_cache.put(texture, file_path=file_path_str)
 
-    return texture
+    return texture.crop(x, y, width, height)
 
 
 def cleanup_texture_cache():
