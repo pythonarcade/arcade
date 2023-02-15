@@ -79,7 +79,7 @@ class MyGame(arcade.Window):
 
         # Create & position the player sprite in the center of the camera's view
         self.player_sprite = arcade.Sprite(
-            f":resources:/images/miami_synth_parallax/car/car-idle.png",
+            ":resources:/images/miami_synth_parallax/car/car-idle.png",
             center_x=self.camera.viewport_width // 2, scale=PIXEL_SCALE
         )
         self.player_sprite.bottom = 0
