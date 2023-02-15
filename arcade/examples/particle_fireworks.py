@@ -104,7 +104,7 @@ def make_puff(prev_emitter):
         emit_controller=arcade.EmitBurst(4),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=PUFF_TEXTURE,
-            change_xy=pyglet.math.Vec2(arcade.rand_in_circle((0.0, 0.0), 0.4)) + pyglet.math.Vec2(0.3, 0.0),
+            change_xy=pyglet.math.Vec2(*arcade.rand_in_circle((0.0, 0.0), 0.4)) + pyglet.math.Vec2(0.3, 0.0),
             lifetime=4.0
         )
     )
