@@ -35,7 +35,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCALED_BG_LAYER_HEIGHT_PX, SCREEN_TITLE, resizable=True)
 
-        # Set the background color to match the sky in the tiles
+        # Set the background color to match the sky in the background images
         self.background_color = (162, 84, 162, 255)
 
         self.camera = arcade.SimpleCamera()
