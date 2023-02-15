@@ -209,6 +209,11 @@ class UIBoxLayout(UILayout):
         bind(self, "_children", self._update_size_hints)
         bind(self, "_border_width", self._update_size_hints)
 
+        bind(self, "_padding_left", self._update_size_hints)
+        bind(self, "_padding_right", self._update_size_hints)
+        bind(self, "_padding_top", self._update_size_hints)
+        bind(self, "_padding_bottom", self._update_size_hints)
+
         # initially update size hints
         self._update_size_hints()
 
@@ -473,6 +478,11 @@ class UIGridLayout(UILayout):
 
         bind(self, "_children", self._update_size_hints)
         bind(self, "_border_width", self._update_size_hints)
+
+        bind(self, "_padding_left", self._update_size_hints)
+        bind(self, "_padding_right", self._update_size_hints)
+        bind(self, "_padding_top", self._update_size_hints)
+        bind(self, "_padding_bottom", self._update_size_hints)
 
         # initially update size hints
         self._update_size_hints()
