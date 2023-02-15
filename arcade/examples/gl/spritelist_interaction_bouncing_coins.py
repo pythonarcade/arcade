@@ -38,7 +38,6 @@ class GPUBouncingCoins(arcade.Window):
                     scale=0.25,
                     center_x=randint(0, WINDOW_WIDTH),
                     center_y=randint(0, WINDOW_HEIGHT),
-                    hit_box_algorithm=None,
                 )
             )
         # Ensure internal buffer data are up to date
