@@ -131,7 +131,7 @@ class Sprite:
             self._texture = load_texture(path_or_texture)
 
         if self._texture:
-            self._textures = [self._texture]
+            self.textures = [self._texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
             if not self._points:
