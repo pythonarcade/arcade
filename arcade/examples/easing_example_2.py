@@ -25,7 +25,7 @@ class Player(arcade.Sprite):
         """ Set up the player """
 
         # Call the parent init
-        super().__init__(image, scale)
+        super().__init__(image, scale=scale)
 
         self.easing_angle_data = None
         self.easing_x_data = None

@@ -28,7 +28,7 @@ class Enemy(arcade.Sprite):
     """
 
     def __init__(self, image, scale, position_list):
-        super().__init__(image, scale)
+        super().__init__(image, scale=scale)
         self.position_list = position_list
         self.cur_position = 0
         self.speed = ENEMY_SPEED
@@ -111,8 +111,9 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)

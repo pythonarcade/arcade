@@ -77,14 +77,14 @@ class MyGame(arcade.Window):
         # Set up the player
         resource = ":resources:images/animated_characters/" \
                    "female_person/femalePerson_idle.png"
-        self.player = arcade.Sprite(resource, SPRITE_SCALING)
+        self.player = arcade.Sprite(resource, scale=SPRITE_SCALING)
         self.player.center_x = SPRITE_SIZE * 5
         self.player.center_y = SPRITE_SIZE * 1
         self.player_list.append(self.player)
 
         # Set enemies
         resource = ":resources:images/animated_characters/zombie/zombie_idle.png"
-        enemy = arcade.Sprite(resource, SPRITE_SCALING)
+        enemy = arcade.Sprite(resource, scale=SPRITE_SCALING)
         enemy.center_x = SPRITE_SIZE * 4
         enemy.center_y = SPRITE_SIZE * 7
         self.enemy_list.append(enemy)
@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
         for column in range(10):
             for row in range(15):
                 sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                       SPRITE_SCALING)
+                                       scale=SPRITE_SCALING)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height

@@ -22,7 +22,7 @@ class MyGame(arcade.Window):
 
         self.backgrounds = arcade.SpriteList()
 
-        self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
+        self.player_sprite = arcade.SpriteSolidColor(20, 30, color=arcade.color.PURPLE)
         self.player_sprite.bottom = 0
         self.player_sprite.center_x = self.width / 2
         self.player_list = arcade.SpriteList()
