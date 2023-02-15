@@ -36,7 +36,7 @@ def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
     )
 
 
-def rand_in_circle(center: Point, radius: float):
+def rand_in_circle(center: Point, radius: float) -> Point:
     """
     Generate a point in a circle, or can think of it as a vector pointing
     a random direction with a random magnitude <= radius
