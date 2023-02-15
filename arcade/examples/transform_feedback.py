@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
         self.time = 0
 
         # Program to visualize the points
-        self.points_progran = self.ctx.program(
+        self.points_program = self.ctx.program(
             vertex_shader="""
             #version 330
             in vec2 in_pos;
@@ -139,7 +139,7 @@ class MyGame(arcade.Window):
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
         # Render the result (Draw buffer_2)
-        self.vao_2.render(self.points_progran, mode=self.ctx.POINTS)
+        self.vao_2.render(self.points_program, mode=self.ctx.POINTS)
 
         # Swap around stuff around so we transform back and fourth between the two buffers
         self.gravity_1, self.gravity_2 = self.gravity_2, self.gravity_1

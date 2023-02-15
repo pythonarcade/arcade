@@ -61,7 +61,7 @@ class PerfGraph(arcade.Sprite):
 
         unique_id = str(random.random())
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
-        super().__init__(texture=self.minimap_texture)
+        super().__init__(self.minimap_texture)
         self.proj = 0, self.width, 0, self.height
 
         # The data line is redrawn each update by a function that does

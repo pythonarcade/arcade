@@ -47,7 +47,7 @@ def sprite_off_screen(
 class Player(arcade.Sprite):
     def __init__(self, bar_list: arcade.SpriteList) -> None:
         super().__init__(
-            filename=image_female_person_idle,
+            image_female_person_idle,
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
@@ -59,7 +59,7 @@ class Player(arcade.Sprite):
 class Bullet(arcade.Sprite):
     def __init__(self) -> None:
         super().__init__(
-            filename=image_laser_blue01,
+            image_laser_blue01,
             scale=SPRITE_SCALING_BULLET,
         )
 
@@ -113,12 +113,12 @@ class IndicatorBar:
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._box_width + border_size,
             self._box_height + border_size,
-            background_color,
+            color=background_color,
         )
         self._full_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._box_width,
             self._box_height,
-            full_color,
+            color=full_color,
         )
         self.sprite_list.append(self._background_box)
         self.sprite_list.append(self._full_box)
@@ -198,7 +198,7 @@ class MyGame(arcade.Window):
         self.player_sprite_list.append(self.player_sprite)
 
         # Create enemy Sprite
-        self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
+        self.enemy_sprite = arcade.Sprite(image_zombie_idle, scale=SPRITE_SCALING_ENEMY)
         self.enemy_sprite_list.append(self.enemy_sprite)
 
         # Create text objects

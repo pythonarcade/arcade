@@ -22,10 +22,10 @@ SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
 class Coin(arcade.Sprite):
 
-    def __init__(self, filename, sprite_scaling):
+    def __init__(self, filename, scale):
         """ Constructor. """
         # Call the parent class (Sprite) constructor
-        super().__init__(filename, sprite_scaling)
+        super().__init__(filename, scale=scale)
 
         # Current angle in radians
         self.circle_angle = 0
@@ -78,8 +78,10 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
@@ -88,7 +90,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
+            coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
 
             # Position the center of the circle the coin will orbit
             coin.circle_center_x = random.randrange(SCREEN_WIDTH)

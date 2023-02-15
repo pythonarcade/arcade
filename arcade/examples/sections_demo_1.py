@@ -24,7 +24,7 @@ class Box(arcade.SpriteSolidColor):
     """ This is a Solid Sprite that represents a GREEN Box on the screen """
 
     def __init__(self, section):
-        super().__init__(100, 100, arcade.color.APPLE_GREEN)
+        super().__init__(100, 100, color=arcade.color.APPLE_GREEN)
         self.section = section
 
     def on_update(self, delta_time: float = 1 / 60):

@@ -84,11 +84,7 @@ class MyGame(arcade.Window):
 
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
-        self.enemy_textures = []
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", flipped_horizontally=True)
-        self.enemy_textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
-        self.enemy_textures.append(texture)
+        self.enemy_textures = arcade.load_texture_pair(":resources:images/enemies/slimeBlue.png")
 
         # Create rows and columns of enemies
         x_count = 7
@@ -99,17 +95,14 @@ class MyGame(arcade.Window):
         y_spacing = 40
         for x in range(x_start, x_spacing * x_count + x_start, x_spacing):
             for y in range(y_start, y_spacing * y_count + y_start, y_spacing):
-
                 # Create the enemy instance
                 # enemy image from kenney.nl
-                enemy = arcade.Sprite()
-                enemy.scale = SPRITE_SCALING_enemy
-                enemy.texture = self.enemy_textures[1]
-
-                # Position the enemy
-                enemy.center_x = x
-                enemy.center_y = y
-
+                enemy = arcade.Sprite(
+                    self.enemy_textures[1],
+                    scale=SPRITE_SCALING_enemy,
+                    center_x=x,
+                    center_y=y
+                )
                 # Add the enemy to the lists
                 self.enemy_list.append(enemy)
 
@@ -131,7 +124,7 @@ class MyGame(arcade.Window):
                            shield_block_height):
                 shield_sprite = arcade.SpriteSolidColor(shield_block_width,
                                                         shield_block_height,
-                                                        arcade.color.WHITE)
+                                                        color=arcade.color.WHITE)
                 shield_sprite.center_x = x
                 shield_sprite.center_y = y
                 self.shield_list.append(shield_sprite)
@@ -155,8 +148,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 40
         self.player_list.append(self.player_sprite)
@@ -215,7 +209,7 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.gun_sound)
 
             # Create a bullet
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
 
             # The image points to the right, and we want it to point up. So
             # rotate it.
@@ -277,7 +271,7 @@ class MyGame(arcade.Window):
             # a chance to fire.
             if random.randrange(chance) == 0 and enemy.center_x not in x_spawn:
                 # Create a bullet
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", SPRITE_SCALING_LASER)
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=SPRITE_SCALING_LASER)
 
                 # Angle down.
                 bullet.angle = 180

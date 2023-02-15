@@ -157,10 +157,8 @@ class MyGame(arcade.Window):
         self.board_sprite_list = arcade.SpriteList()
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
-                sprite = arcade.Sprite()
-                for texture in texture_list:
-                    sprite.append_texture(texture)
-                sprite.set_texture(0)
+                sprite = arcade.Sprite(texture_list[0])
+                sprite.textures = texture_list
                 sprite.center_x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 sprite.center_y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 

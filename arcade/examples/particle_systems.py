@@ -719,7 +719,7 @@ class MyGame(arcade.Window):
         self.label = None
         self.emitter = None
         self.emitter_timeout = 0
-        self.obj = arcade.Sprite(":resources:images/pinball/bumper.png", 0.2, center_x=0, center_y=15)
+        self.obj = arcade.Sprite(":resources:images/pinball/bumper.png", scale=0.2, center_x=0, center_y=15)
         self.obj.change_x = 3
         pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
 

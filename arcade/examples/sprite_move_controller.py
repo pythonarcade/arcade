@@ -26,7 +26,7 @@ class Player(arcade.Sprite):
     """ Player sprite """
 
     def __init__(self, filename, scale):
-        super().__init__(filename, scale)
+        super().__init__(filename, scale=scale)
 
         self.controller = None
 

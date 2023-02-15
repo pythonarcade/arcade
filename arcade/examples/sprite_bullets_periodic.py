@@ -16,7 +16,7 @@ class EnemySprite(arcade.Sprite):
 
     def __init__(self, image_file, scale, bullet_list, time_between_firing):
         """ Set up the enemy """
-        super().__init__(image_file, scale)
+        super().__init__(image_file, scale=scale)
 
         # How long has it been since we last fired?
         self.time_since_last_firing = 0.0
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", 0.5)
+        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
