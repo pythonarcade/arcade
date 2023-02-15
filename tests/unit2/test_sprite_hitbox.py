@@ -1,9 +1,10 @@
 import arcade
+from arcade import hitbox
 
 
 def test_1():
     # setup
-    my_sprite = arcade.Sprite()
+    my_sprite = arcade.Sprite(arcade.make_soft_square_texture(20, arcade.color.RED, 0, 255))
     hit_box = [-10, -10], [-10, 10], [10, 10], [10, -10]
     my_sprite.set_hit_box(hit_box)
     my_sprite.scale = 1.0
@@ -40,7 +41,7 @@ def test_1():
 def test_2():
     height = 2
     width = 2
-    wall = arcade.SpriteSolidColor(width, height, arcade.color.RED)
+    wall = arcade.SpriteSolidColor(width, height, color=arcade.color.RED)
     wall.position = 0, 0
 
     assert wall.height == height
@@ -57,7 +58,7 @@ def test_2():
 
     height = 128
     width = 128
-    wall = arcade.SpriteSolidColor(width, height, arcade.color.RED)
+    wall = arcade.SpriteSolidColor(width, height, color=arcade.color.RED)
     wall.position = 0, 0
 
     assert wall.height == height
@@ -89,7 +90,8 @@ def test_2():
     assert hit_box[2] == (width / 2, height / 2)
     assert hit_box[3] == (-width / 2, height / 2)
 
-    wall = arcade.Sprite(":resources:images/items/coinGold.png", hit_box_algorithm="Detailed")
+    texture = arcade.load_texture(":resources:images/items/coinGold.png", hit_box_algorithm=hitbox.algo_detailed)
+    wall = arcade.Sprite(texture)
     wall.position = 0, 0
 
     hit_box = wall.get_hit_box()

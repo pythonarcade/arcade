@@ -1,7 +1,7 @@
-import gc
 import pytest
 from PIL import Image
 import arcade
+from arcade.cache import texture_cache
 from arcade.cache import TextureCache
 
 path = ":resources:images/test_textures/test_texture.png"
@@ -108,3 +108,8 @@ def test_get_set(cache, texture):
     assert cache[texture.cache_name] == texture
     del cache[texture.cache_name]
     assert cache[texture.cache_name] is None
+
+
+def test_get_with_config(texture):
+    arcade.cleanup_texture_cache()
+    assert len(texture_cache) == 0

@@ -5,10 +5,10 @@ from PIL import Image
 
 def test_module():
     # Make sure the module is loaded
-    assert hitbox.default
-    assert hitbox.detailed
-    assert hitbox.simple
-    assert hitbox.bounding_box
+    assert hitbox.algo_default
+    assert hitbox.algo_detailed
+    assert hitbox.algo_simple
+    assert hitbox.algo_bounding_box
 
 
 def test_calculate_hit_box_points_simple():
@@ -38,22 +38,16 @@ def test_calculate_hit_box_points_detailed():
 
 
 def test_param_str():
-    simple = hitbox.get_algorithm("simple")
-    bounding = hitbox.get_algorithm("bounding_box")
-    detailed = hitbox.get_algorithm("pymunk")
-
     # These algos don't have any parameters
-    assert simple.create_param_str() == ""
-    assert bounding.create_param_str() == ""
+    assert hitbox.algo_simple.param_str == ""
+    assert hitbox.algo_bounding_box.param_str == ""
 
     # Detailed has a detail parameter for the number of points
     # Test default value and specifying a value
-    assert detailed.create_param_str() == "detail=4.5"
-    assert detailed.create_param_str(detail=10.0) == "detail=10.0"
+    assert hitbox.algo_detailed.param_str == "detail=4.5"
+    assert hitbox.algo_detailed(detail=10.0).param_str == "detail=10.0"
 
 
 def test_call_override():
-    algo = hitbox.get_algorithm("pymunk")
-    assert algo.detail == 4.5
-    algo = algo(detail=10.0)
-    assert algo.detail == 10.0
+    assert hitbox.algo_detailed.detail == 4.5
+    assert hitbox.algo_detailed(detail=10.0).detail == 10.0

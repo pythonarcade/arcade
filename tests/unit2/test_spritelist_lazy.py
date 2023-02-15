@@ -22,7 +22,7 @@ def test_create():
 
 def test_create_2(window):
     spritelist = arcade.SpriteList(lazy=True)
-    sprite = arcade.SpriteSolidColor(10, 10, (255, 255, 255, 255))
+    sprite = arcade.SpriteSolidColor(10, 10, color=(255, 255, 255, 255))
     spritelist.append(sprite)
     spritelist.remove(sprite)
 

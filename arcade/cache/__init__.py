@@ -3,6 +3,10 @@ from .hit_box import HitBoxCache
 from .texture import TextureCache
 from .image_data import ImageDataCache
 
+texture_cache = TextureCache()
+image_data_cache = ImageDataCache()
+hit_box_cache = HitBoxCache()
+
 
 def crate_str_from_values(*args, sep: str = "_") -> str:
     """

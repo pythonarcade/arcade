@@ -1,6 +1,8 @@
 import pytest
+import arcade.cache
 from arcade import Texture, load_texture
-from arcade.cache.hit_box import HitBoxCache
+from arcade.cache import HitBoxCache
+from arcade import hitbox
 
 
 @pytest.fixture(scope="function")
@@ -67,22 +69,21 @@ def test_save_load(tmp_path, cache, file_type):
 
 
 def test_load_texture():
-    Texture.hit_box_cache = HitBoxCache()
-    Texture.cache.clear()
+    arcade.cache.hit_box_cache = HitBoxCache()
     file = ":resources:images/space_shooter/playerShip1_orange.png"
 
     # We don't cache hit boxes with no algo
-    texture = load_texture(file, hit_box_algorithm="bounding_box")
-    assert Texture.hit_box_cache.get(texture.cache_name) is None
+    texture = load_texture(file, hit_box_algorithm=hitbox.algo_bounding_box)
+    assert arcade.cache.hit_box_cache.get(texture.cache_name) is None
 
     # We cache hit boxes with an algo
-    texture_1 = load_texture(file, hit_box_algorithm="simple")
-    texture_2 = load_texture(file, hit_box_algorithm="detailed")
-    assert len(Texture.cache) == 3
-    assert len(Texture.hit_box_cache) == 2
+    texture_1 = load_texture(file, hit_box_algorithm=hitbox.algo_simple)
+    texture_2 = load_texture(file, hit_box_algorithm=hitbox.algo_detailed)
+    assert len(arcade.cache.texture_cache) == 3
+    assert len(arcade.cache.hit_box_cache) == 2
 
-    points_1 = Texture.hit_box_cache.get(texture_1)
-    points_2 = Texture.hit_box_cache.get(texture_2)
+    points_1 = arcade.cache.hit_box_cache.get(texture_1)
+    points_2 = arcade.cache.hit_box_cache.get(texture_2)
     assert points_1 is not None
     assert points_2 is not None
     assert points_1 != points_2

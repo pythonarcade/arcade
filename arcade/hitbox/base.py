@@ -13,11 +13,12 @@ class HitBoxAlgorithm:
     #: Should points for this algorithm be cached?
     cache = True
 
-    def create_param_str(self, **kwargs) -> str:
+    @property
+    def param_str(self) -> str:
         """
-        Convert all the parameters for this algorithm into a string.
-        This is used for texture and hit box caching. It's important
-        that the parameter order is consistent.
+        Return a string representation of the parameters used to create this algorithm.
+
+        This is used in caching.
         """
         return ""
 

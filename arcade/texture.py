@@ -3,7 +3,7 @@ Code related to working with textures.
 """
 import logging
 import hashlib
-from typing import Any, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 from arcade import hitbox
 
@@ -30,7 +30,7 @@ from arcade.texture_transforms import (
 from arcade.arcade_types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.resources import resolve_resource_path
-from arcade.cache.hit_box import HitBoxCache
+from arcade.cache import HitBoxCache
 from arcade import cache
 
 if TYPE_CHECKING:
@@ -129,48 +129,26 @@ class Texture:
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
     :param PIL.Image.Image image: The image or ImageData for this texture
-    :param str hit_box_algorithm: One of 'bounding_box', 'simple' or 'detailed'.
-           Defaults to 'bounding_box'. Use 'simple' for the :data:`PhysicsEngineSimple`,
-    :data:`PhysicsEnginePlatformer` and 'detailed' for the :data:`PymunkPhysicsEngine`.
-
-        .. figure:: ../images/hit_box_algorithm_none.png
-           :width: 40%
-
-           hit_box_algorithm = "bounding_box"
-
-        .. figure:: ../images/hit_box_algorithm_simple.png
-           :width: 55%
-
-           hit_box_algorithm = "simple"
-
-        .. figure:: ../images/hit_box_algorithm_detailed.png
-           :width: 75%
-
-           hit_box_algorithm = "detailed"
-
-    :param dict hit_box_args: A dictionary of arguments to pass to the hit box algorithm.
+    :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
     :param PointList hit_box_points: List of points for the hit box (Optional).
                                      Completely overrides the hit box algorithm.
     :param str name: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
-    cache = cache.TextureCache()
-    hit_box_cache = HitBoxCache()
-
     def __init__(
         self,
         image: Union[PIL.Image.Image, ImageData],
         *,
-        hit_box_algorithm: Optional[str] = None,
-        hit_box_args: Optional[Dict[str, Any]] = None,
+        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
         hit_box_points: Optional[PointList] = None,
-        name: Optional[str] = None,
+        hash: Optional[str] = None,
+        **kwargs,
     ):
         # Overrides the hash
-        self._name = name
+        self._hash = hash
 
         if isinstance(image, PIL.Image.Image):
-            self._image_data = ImageData(image, hash=name)
+            self._image_data = ImageData(image, hash=hash)
         elif isinstance(image, ImageData):
             self._image_data = image
         else:
@@ -192,13 +170,11 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
 
-        # Attempt to look up the algorithm
-        if hit_box_algorithm is None:
-            self._hit_box_algorithm = hitbox.default_algorithm
-        else:
-            self._hit_box_algorithm = hitbox.get_algorithm(hit_box_algorithm)
-
-        self._hit_box_args = hit_box_args or {}
+        self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
+        if not isinstance(self._hit_box_algorithm, hitbox.HitBoxAlgorithm):
+            raise ValueError(
+                f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
+            )
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
@@ -212,9 +188,8 @@ class Texture:
         :return: str 
         """
         return Texture.create_cache_name(
-            hash=self._name or self._image_data.hash,
+            hash=self._hash or self._image_data.hash,
             hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_args=self._hit_box_args,
             vertex_order=self._vertex_order,
         )
 
@@ -224,7 +199,6 @@ class Texture:
         *,
         hash: str,
         hit_box_algorithm: hitbox.HitBoxAlgorithm,
-        hit_box_args: Dict[str, Any] = {},
         vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3),
     ) -> str:
         """
@@ -236,9 +210,8 @@ class Texture:
         :param Tuple[int, int, int, int] vertex_order: The vertex order
         :return: str
         """
-        params = hit_box_algorithm.create_param_str(**hit_box_args)
         return (
-            f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{params}"
+            f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
         )
 
     @property
@@ -248,7 +221,7 @@ class Texture:
 
         :return: str 
         """
-        return f"{self._name or self._image_data.hash}|{self._vertex_order}"
+        return f"{self._hash or self._image_data.hash}|{self._vertex_order}"
 
     @property
     def origin(self) -> Optional[str]:
@@ -409,8 +382,8 @@ class Texture:
         """
         return Texture(
             image=PIL.Image.new("RGBA", size, TRANSPARENT_BLACK),
-            hit_box_algorithm=None,
-            name=name,
+            hash=name,
+            hit_box_algorithm=hitbox.algo_bounding_box,
         )
 
     def remove_from_cache(self, ignore_error: bool = True) -> None:
@@ -420,7 +393,7 @@ class Texture:
         :param bool ignore_error: If True, ignore errors if the texture is not in the cache
         :return: None
         """
-        Texture.cache.delete(self, ignore_error=True)
+        cache.texture_cache.delete(self)
 
     def flip_left_to_right(self) -> "Texture":
         """
@@ -550,7 +523,7 @@ class Texture:
         texture = Texture(
             self.image_data,
             # Not relevant, but copy over the value
-            hit_box_algorithm=self._hit_box_algorithm.name,
+            hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
         )
         texture.origin = self.origin
@@ -596,18 +569,15 @@ class Texture:
         hit box algorithm. This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        key = self.cache_name
-        algo = self._hit_box_algorithm
-
         # Check if we have cached points
-        points = self.hit_box_cache.get(key)
+        points = cache.hit_box_cache.get(self.cache_name)
         if points:
             return points
 
         # Calculate points with the selected algorithm
-        points = algo.calculate(self.image, **self._hit_box_args)
-        if algo.cache:
-            self.hit_box_cache.put(key, points)
+        points = self._hit_box_algorithm.calculate(self.image)
+        if self._hit_box_algorithm.cache:
+            cache.hit_box_cache.put(self.cache_name, points)
 
         return points
 
@@ -616,10 +586,8 @@ class Texture:
         from arcade.sprite_list import SpriteList
 
         if self._sprite is None:
-            self._sprite = Sprite()
-            self._sprite.texture = self
+            self._sprite = Sprite(self)
             self._sprite.textures = [self]
-
             self._sprite_list = SpriteList(capacity=1)
             self._sprite_list.append(self._sprite)
 
@@ -737,8 +705,7 @@ def load_textures(
     image_location_list: RectList,
     mirrored: bool = False,
     flipped: bool = False,
-    hit_box_algorithm: Optional[str] = "Simple",
-    hit_box_detail: float = 4.5,
+    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
 ) -> List[Texture]:
     """
     Load a set of textures from a single image file.
@@ -764,7 +731,14 @@ def load_textures(
     :raises: ValueError
     """
     LOG.info("load_textures: %s ", file_name)
-    image = PIL.Image.open(resolve_resource_path(file_name))
+    file_name_str = str(file_name)
+    hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
+
+    image_data = cache.image_data_cache.get(file_name_str)
+    if not image_data:
+        image_data = ImageData(PIL.Image.open(resolve_resource_path(file_name)))
+        cache.image_data_cache.put(file_name_str, image_data)
+    image = image_data.image
 
     texture_sections = []
     for image_location in image_location_list:
@@ -799,9 +773,8 @@ def load_textures(
         name = cache.crate_str_from_values(
             file_name, x, y, width, height, flipped, mirrored
         )
-        try:
-            sub_texture = Texture.cache[name]
-        except KeyError:
+        sub_texture = cache.texture_cache.get_with_config(name, hit_box_algorithm)
+        if not sub_texture:
             sub_image = image.crop((x, y, x + width, y + height))
 
             if mirrored:
@@ -810,13 +783,14 @@ def load_textures(
             if flipped:
                 sub_image = PIL.ImageOps.flip(sub_image)
 
+            image_data = ImageData(sub_image)
+            cache.image_data_cache.put(name, image_data)
             sub_texture = Texture(
-                sub_image,
+                image_data,
                 hit_box_algorithm=hit_box_algorithm,
-                hit_box_detail=hit_box_detail,
             )
             sub_image.origin = name
-            Texture.cache[name] = sub_texture
+            cache.texture_cache.put(sub_texture)
 
         texture_sections.append(sub_texture)
 
@@ -826,84 +800,33 @@ def load_textures(
 def load_texture(
     file_path: Union[str, Path],
     *,
-    hit_box_algorithm: Optional[str] = None,
-    hit_box_args: Optional[Dict[str, Any]] = None,
+    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Load an image from disk and create a texture.
 
-    Note: If the code is to load only part of the image, the given `x`, `y`
-    coordinates will start with the origin `(0, 0)` in the upper left of the
-    image. When drawing, Arcade uses `(0, 0)` in the lower left corner.
-    Be careful with this reversal.
-
-    For a longer explanation of why computers sometimes start in the upper
-    left, see:
-    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
-
     :param str file_name: Name of the file to that holds the texture.
-    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
-    Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
-    :data:`PhysicsEnginePlatformer` \
-    and 'Detailed' for the :data:`PymunkPhysicsEngine`.
-
-        .. figure:: ../images/hit_box_algorithm_none.png
-           :width: 40%
-
-           hit_box_algorithm = "None"
-
-        .. figure:: ../images/hit_box_algorithm_simple.png
-           :width: 55%
-
-           hit_box_algorithm = "Simple"
-
-        .. figure:: ../images/hit_box_algorithm_detailed.png
-           :width: 75%
-
-           hit_box_algorithm = "Detailed"
-
-    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+    :param str hit_box_algorithm: 
     :returns: New :class:`Texture` object.
     :raises: ValueError
     """
     LOG.info("load_texture: %s ", file_path)
-
     file_path = resolve_resource_path(file_path)
     file_path_str = str(file_path)
+    hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
 
     # Check if ths file was already loaded and in cache
-    image_texture = Texture.cache.get_file(file_path_str)
-    # TODO: Do we need a separate image cache?
-    # TODO: Make function for generating cache name gen(hash, algo, args)
-    # TODO: Make thus logic into a reusable function for other texture loading functions
+    image_data = cache.image_data_cache.get(file_path_str)
+    if not image_data:
+        image_data = ImageData(PIL.Image.open(file_path).convert("RGBA"))
+        cache.image_data_cache.put(file_path_str, image_data)
 
-    # Do we have a texture with this image?
-    if image_texture:
-        # Attempt to find a texture with the same configuration
-        name = Texture.create_cache_name(
-            hash=image_texture.image_data.hash,
-            hit_box_algorithm=hitbox.get_algorithm(hit_box_algorithm or hitbox.default_algorithm.name),
-            hit_box_args=hit_box_args or {},
-        )
-        texture = Texture.cache.get(name)
-        if texture:
-            return texture
-        else:
-            # Use the texture we found, but create a new one with the new settings
-            texture = Texture(
-                image_texture.image_data,
-                hit_box_algorithm=hit_box_algorithm,
-                hit_box_args=hit_box_args,
-            )
-            Texture.cache.put(texture, file_path=file_path_str)
-            return texture
+    # Attempt to find a texture with the same configuration
+    texture = cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
+    if not texture:
+        texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
+        cache.texture_cache.put(texture, file_path=file_path_str)
 
-    texture = Texture(
-        PIL.Image.open(file_path).convert("RGBA"),
-        hit_box_algorithm=hit_box_algorithm,
-        hit_box_args=hit_box_args,
-    )
-    Texture.cache.put(texture, file_path=file_path_str)
     return texture
 
 
@@ -912,10 +835,14 @@ def cleanup_texture_cache():
     This cleans up the cache of textures. Useful when running unit tests so that
     the next test starts clean.
     """
-    Texture.cache.clear()
+    cache.texture_cache.clear()
+    cache.image_data_cache.clear()
 
 
-def load_texture_pair(file_name: str, hit_box_algorithm: str = "Simple"):
+def load_texture_pair(
+    file_name: str,
+    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None
+) -> Tuple[Texture, Texture]:
     """
     Load a texture pair, with the second being a mirror image of the first.
     Useful when doing animations and the character can face left/right.
@@ -925,7 +852,7 @@ def load_texture_pair(file_name: str, hit_box_algorithm: str = "Simple"):
     """
     LOG.info("load_texture_pair: %s ", file_name)
     texture = load_texture(file_name, hit_box_algorithm=hit_box_algorithm)
-    return [texture, texture.flip_left_to_right()]
+    return texture, texture.flip_left_to_right()
 
 
 def load_spritesheet(
@@ -935,8 +862,7 @@ def load_spritesheet(
     columns: int,
     count: int,
     margin: int = 0,
-    hit_box_algorithm: Optional[str] = "Simple",
-    hit_box_args: Optional[Dict[str, Any]] = None,
+    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
 ) -> List[Texture]:
     """
     :param str file_name: Name of the file to that holds the texture.
@@ -945,20 +871,15 @@ def load_spritesheet(
     :param int columns: Number of tiles wide the image is.
     :param int count: Number of tiles in the image.
     :param int margin: Margin between images
-    :param str hit_box_algorithm: One of None, 'None', 'Simple' (default) or 'Detailed'.
-    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+    :param str hit_box_algorithm: The hit box algorithm
     :returns List: List of :class:`Texture` objects.
     """
     LOG.info("load_spritesheet: %s ", file_name)
     texture_list = []
 
-    # If we should pull from local resources, replace with proper path
+    # TODO: Support caching?
     file_name = resolve_resource_path(file_name)
-    texture = Texture.cache.get_file(str(file_name))
-    if texture:
-        source_image = texture.image_data.image
-    else:
-        source_image = PIL.Image.open(file_name).convert("RGBA")
+    source_image = PIL.Image.open(file_name).convert("RGBA")
 
     for sprite_no in range(count):
         row = sprite_no // columns
@@ -971,7 +892,6 @@ def load_spritesheet(
         texture = Texture(
             image,
             hit_box_algorithm=hit_box_algorithm,
-            hit_box_args=hit_box_args,
         )
         texture.origin = f"{file_name}|{sprite_no}"
         texture_list.append(texture)
@@ -979,7 +899,12 @@ def load_spritesheet(
     return texture_list
 
 
-def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None) -> Texture:
+def make_circle_texture(
+    diameter: int,
+    color: Color,
+    name: Optional[str] = None,
+    hitbox_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
 
@@ -996,7 +921,7 @@ def make_circle_texture(diameter: int, color: Color, name: Optional[str] = None)
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    return Texture(img, name=name)
+    return Texture(ImageData(img, hash=name), hit_box_algorithm=hitbox_algorithm)
 
 
 def make_soft_circle_texture(
@@ -1005,6 +930,7 @@ def make_soft_circle_texture(
     center_alpha: int = 255,
     outer_alpha: int = 0,
     name: Optional[str] = None,
+    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
@@ -1014,6 +940,7 @@ def make_soft_circle_texture(
     :param int center_alpha: Alpha value of the circle at its center.
     :param int outer_alpha: Alpha value of the circle at its edges.
     :param str name: Custom or pre-chosen name for this texture
+    :param str hit_box_algorithm: The hit box algorithm
 
     :returns: New :class:`Texture` object.
     :rtype: arcade.Texture
@@ -1048,7 +975,7 @@ def make_soft_circle_texture(
             fill=clr,
         )
 
-    return Texture(img, name=name)
+    return Texture(ImageData(img, name), hit_box_algorithm=hit_box_algorithm)
 
 
 def make_soft_square_texture(

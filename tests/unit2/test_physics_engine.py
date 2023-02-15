@@ -12,7 +12,10 @@ def test_physics_engine(window):
     window.clear()
 
     character_list = arcade.SpriteList()
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=CHARACTER_SCALING,
+    )
     character_sprite.center_x = 250
     character_sprite.center_y = 250
     character_sprite.change_x = 5
@@ -21,12 +24,12 @@ def test_physics_engine(window):
 
     wall_list = arcade.SpriteList()
 
-    sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", CHARACTER_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=CHARACTER_SCALING)
     sprite.position = (330, 330)
     sprite.angle = 90
     wall_list.append(sprite)
 
-    sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", CHARACTER_SCALING)
+    sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=CHARACTER_SCALING)
     sprite.position = (170, 170)
     sprite.angle = 45
     wall_list.append(sprite)

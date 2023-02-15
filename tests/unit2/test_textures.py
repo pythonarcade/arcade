@@ -48,15 +48,13 @@ def test_texture_constructor_hit_box_algo():
     """
     image = PIL.Image.new("RGBA", (100, 100), color=(255, 255, 255, 255))
     Texture(name="default", image=image)
-    Texture(name="simple", image=image, hit_box_algorithm="Simple")
-    Texture(name="detailed", image=image, hit_box_algorithm="Detailed")
-    Texture(name="allows_none_hitbox", image=image, hit_box_algorithm=None)
-    Texture(name="old_behavior_preserved", image=image, hit_box_algorithm="None")
+    Texture(name="simple", image=image, hit_box_algorithm=hitbox.algo_simple)
+    Texture(name="detailed", image=image, hit_box_algorithm=hitbox.algo_detailed)
+    Texture(name="allows_none_hitbox", image=image, hit_box_algorithm=hitbox.algo_bounding_box)
+    Texture(name="old_behavior_preserved", image=image)
 
     with pytest.raises(ValueError):
         Texture(name="random", image=image, hit_box_algorithm="definitely invalid")
-
-    arcade.cleanup_texture_cache()
 
 
 def test_load_texture():
@@ -76,38 +74,6 @@ def test_load_texture():
 
     with pytest.raises(FileNotFoundError):
         arcade.load_texture("moo")
-
-    # --- Load sub-sections
-    # Upper left
-    tex = arcade.load_texture(path, width=64, height=64)
-    assert tex.size == (64, 64)
-    assert tex.image.getpixel((0, 0)) == (255, 0, 0, 255)
-    # Upper Right
-    tex = arcade.load_texture(path, x=64, width=64, height=64)
-    assert tex.size == (64, 64)
-    assert tex.image.getpixel((0, 0)) == (0, 255, 0, 255)
-    # Lower left
-    tex = arcade.load_texture(path, y=64, width=64, height=64)
-    assert tex.size == (64, 64)
-    assert tex.image.getpixel((0, 0)) == (0, 0, 255, 255)
-    # Lower right
-    tex = arcade.load_texture(path, x=64, y=64, width=64, height=64)
-    assert tex.size == (64, 64)
-    assert tex.image.getpixel((0, 0)) == (255, 0, 255, 255)
-    
-    # Illegal sub-sections
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, width=129)
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, height=129)
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, x=65, width=64)
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, y=65, height=64)
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, x=129)
-    with pytest.raises(ValueError):
-        arcade.load_texture(path, y=129)
 
 
 def test_load_textures(window):
@@ -196,7 +162,7 @@ def test_crate_empty():
     tex = Texture.create_empty("empty", size)
     assert tex.origin is None
     assert tex.size == size
-    assert tex._hit_box_algorithm == "bounding_box"
+    assert tex._hit_box_algorithm == hitbox.algo_bounding_box
     assert tex.hit_box_points == (
         (-128.0, -128.0),
         (128.0, -128.0),

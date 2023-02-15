@@ -5,7 +5,7 @@ import arcade
 def test_sprites_at_point():
 
     coin_list = arcade.SpriteList()
-    sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     coin_list.append(sprite)
 
     # print()
@@ -35,7 +35,7 @@ def test_sprites_at_point():
 
 
 def test_sprite_collides_with_point():
-    sprite = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    sprite = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
     sprite.width = 2
     sprite.height = 2
 
@@ -65,15 +65,15 @@ def test_sprite_collides_with_point():
 
 
 def test_sprite_collides_with_sprite():
-    sprite_one = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    sprite_one = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
     sprite_one.width = 10
     sprite_one.height = 10
 
-    sprite_two = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    sprite_two = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
     sprite_two.width = 10
     sprite_two.height = 10
 
-    sprite_three = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    sprite_three = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
     sprite_three.width = 1
     sprite_three.height = 1
 
@@ -107,13 +107,13 @@ def test_sprite_collides_with_sprite():
 def test_sprite_collides_with_list():
     coins = arcade.SpriteList()
     for x in range(0, 50, 10):
-        coin = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+        coin = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
         coin.position = x, 0
         coin.width = 10
         coin.height = 10
         coins.append(coin)
 
-    player = arcade.SpriteSolidColor(32, 32, arcade.csscolor.RED)
+    player = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
     player.position = 100, 100
     player.width = 10
     player.height = 10
@@ -135,9 +135,9 @@ def test_sprite_collides_with_list():
 
 
 def test_get_closest_sprite(window):
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
-    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
-    c = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    c = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
 
     a.position = 0, 0
     b.position = 50, 50
@@ -156,8 +156,8 @@ def test_get_closest_sprite(window):
 
 
 def test_check_for_collision(window):
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
-    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     sp = arcade.SpriteList()
 
     # Check various incorrect arguments
@@ -175,11 +175,11 @@ def test_check_for_collision(window):
 
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     sl = arcade.SpriteList()
     for y in range(40):
         for x in range(40):
-            sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+            sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
             sprite.position = x * 50, y * 50
             sl.append(sprite)
 
@@ -203,11 +203,11 @@ def test_check_for_collision_with_list(window):
 
 def test_check_for_collision_with_lists(window):
     # TODO: Check that the right collision function is called internally
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     sls = []
     for y in range(10):
         for x in range(10):
-            sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+            sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
             sprite.position = x * 50, y * 50
             sl = arcade.SpriteList()
             sl.append(sprite)
@@ -231,8 +231,8 @@ def test_check_for_collision_with_lists(window):
 
 
 def test_get_sprites_at_point(window):
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
-    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     sp = arcade.SpriteList()
     sp.extend((a, b))
 
@@ -258,8 +258,8 @@ def test_get_sprites_at_point(window):
 
 
 def test_get_sprites_at_exact_point(window):
-    a = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
-    b = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     sp = arcade.SpriteList()
     sp.extend((a, b))
 

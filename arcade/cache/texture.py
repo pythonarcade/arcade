@@ -3,7 +3,8 @@ from pathlib import Path
 from weakref import WeakValueDictionary
 
 if TYPE_CHECKING:
-    from arcade import Texture
+    from arcade import Texture, ImageData
+    from arcade.hitbox import HitBoxAlgorithm
 
 
 class TextureBucket:
@@ -100,11 +101,29 @@ class TextureCache:
     def get(self, name: str) -> Optional["Texture"]:
         """
         Get a texture from the cache by cache name
+
+        :param name: The cache name of the texture
+        :return: The texture if found, otherwise None
         """
         return (
             self._strong_entries.get(name)
             or self._weak_entires.get(name)
         )
+
+    def get_with_config(self, hash: str, hit_box_algorithm: "HitBoxAlgorithm") -> Optional["Texture"]:
+        """
+        Attempts to find a texture with a specific configuration.
+
+        :param image_data: The image data to search for
+        :param hit_box_algorithm: The hit box algorithm to search for
+        :return: The texture if found, otherwise None
+        """
+        from arcade import Texture
+        name = Texture.create_cache_name(
+            hash=hash,
+            hit_box_algorithm=hit_box_algorithm,
+        )
+        return self.get(name)
 
     def get_file(self, file_path: str) -> Optional["Texture"]:
         """

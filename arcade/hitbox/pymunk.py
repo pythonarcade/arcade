@@ -25,14 +25,14 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     def __init__(self, *, detail: Optional[float] = None):
         self.detail = detail or self.default_detail
 
-    def create_param_str(self, **kwargs) -> str:
+    @property
+    def param_str(self) -> str:
         """
-        Convert all the parameters for this algorithm into a string.
-        This is used for texture and hit box caching. It's important
-        that the parameter order is consistent.
+        Return a string representation of the parameters used to create this algorithm.
+
+        This is used in caching.
         """
-        detail = kwargs.get("detail") or self.detail
-        return f"detail={detail}"
+        return f"detail={self.detail}"
 
     def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
         """Create a new instance with new default values"""

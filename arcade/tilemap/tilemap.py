@@ -446,7 +446,7 @@ class TileMap:
                 )
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
             args = {
-                "filename": image_file,
+                "path_or_texture": image_file,
                 "scale": scaling,
                 "image_x": image_x,
                 "image_y": image_y,

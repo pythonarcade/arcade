@@ -6,45 +6,14 @@ from .bounding_box import BoundingHitBoxAlgorithm
 from .simple import SimpleHitBoxAlgorithm
 from .pymunk import PymunkHitBoxAlgorithm
 
-#: Registry for hit box algorithms.
-algorithms: Dict[str, HitBoxAlgorithm] = {}
-#: The default hit box algorithm.
-default: HitBoxAlgorithm = SimpleHitBoxAlgorithm()
-#: The detailed hit box algorithm.
-detailed = PymunkHitBoxAlgorithm()
 #: The simple hit box algorithm.
-simple = SimpleHitBoxAlgorithm()
+algo_simple = SimpleHitBoxAlgorithm()
+#: The detailed hit box algorithm.
+algo_detailed = PymunkHitBoxAlgorithm()
 #: The bounding box hit box algorithm.
-bounding_box = BoundingHitBoxAlgorithm()
-
-
-def get_algorithm(name: str) -> HitBoxAlgorithm:
-    """
-    Returns a hit box algorithm by name.
-
-    :param str name: Name of the algorithm.
-
-    :Returns: Hit box algorithm
-    """
-    try:
-        return algorithms[name.lower()]
-    except KeyError:
-        raise ValueError(f"Unknown hit box algorithm '{name}'")
-
-
-def register_algorithm(algorithm: HitBoxAlgorithm):
-    """
-    Registers a hit box algorithm.
-
-    :param HitBoxAlgorithm algorithm: Algorithm to register.
-    """
-    algorithms[algorithm.name.lower()] = algorithm
-
-
-# Register algorithms
-register_algorithm(BoundingHitBoxAlgorithm())
-register_algorithm(SimpleHitBoxAlgorithm())
-register_algorithm(PymunkHitBoxAlgorithm())
+algo_bounding_box = BoundingHitBoxAlgorithm()
+#: The default hit box algorithm.
+algo_default = algo_simple
 
 
 # Temporary functions for backwards compatibility
@@ -57,7 +26,7 @@ def calculate_hit_box_points_simple(image: Image, *args) -> PointList:
 
     :Returns: List of points
     """
-    return get_algorithm("simple").calculate(image)
+    return algo_simple.calculate(image)
 
 
 def calculate_hit_box_points_detailed(
@@ -74,4 +43,4 @@ def calculate_hit_box_points_detailed(
 
     :Returns: List of points
     """
-    return get_algorithm("pymunk").calculate(image, hit_box_detail=hit_box_detail)
+    return algo_detailed.calculate(image, detail=hit_box_detail)

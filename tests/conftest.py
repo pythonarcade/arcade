@@ -23,9 +23,7 @@ def prepare_window(window: arcade.Window):
     window.switch_to()
     ctx = window.ctx
     ctx._default_atlas = None  # Clear the global atlas
-    arcade.Texture.cache.clear()
-    arcade.Texture.hit_box_cache.clear()
-
+    arcade.cleanup_texture_cache()  # Clear the global texture cache
     window.hide_view()  # Disable views if any is active
 
     # Reset context (various states)
