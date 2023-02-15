@@ -53,25 +53,25 @@ class MyGame(arcade.Window):
         # pass a correct size value when adding a layer. We calculated
         # this above.
         self.backgrounds.add_from_file(
-            ":resources:/images/miami_synth_parallax/Layers/back.png",
+            ":resources:/images/miami_synth_parallax/layers/back.png",
             size=bg_layer_size_px,
             depth=10.0,
             scale=PIXEL_SCALE
         )
         self.backgrounds.add_from_file(
-            ":resources:/images/miami_synth_parallax/Layers/buildings.png",
+            ":resources:/images/miami_synth_parallax/layers/buildings.png",
             size=bg_layer_size_px,
             depth=5.0,
             scale=PIXEL_SCALE
         )
         self.backgrounds.add_from_file(
-            ":resources:/images/miami_synth_parallax/Layers/palms.png",
+            ":resources:/images/miami_synth_parallax/layers/palms.png",
             size=bg_layer_size_px,
             depth=3.0,
             scale=PIXEL_SCALE
         )
         self.backgrounds.add_from_file(
-            ":resources:/images/miami_synth_parallax/Layers/highway.png",
+            ":resources:/images/miami_synth_parallax/layers/highway.png",
             size=bg_layer_size_px,
             depth=1.0,
             scale=PIXEL_SCALE
@@ -79,7 +79,7 @@ class MyGame(arcade.Window):
 
         # Create & position the player sprite in the center of the camera's view
         self.player_sprite = arcade.Sprite(
-            f":resources:/images/miami_synth_parallax/Car/car-idle.png",
+            f":resources:/images/miami_synth_parallax/car/car-idle.png",
             center_x=self.camera.viewport_width // 2, scale=PIXEL_SCALE
         )
         self.player_sprite.bottom = 0
