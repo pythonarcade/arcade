@@ -3,7 +3,7 @@ from pathlib import Path
 from weakref import WeakValueDictionary
 
 if TYPE_CHECKING:
-    from arcade import Texture, ImageData
+    from arcade import Texture
     from arcade.hitbox import HitBoxAlgorithm
 
 

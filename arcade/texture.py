@@ -210,6 +210,11 @@ class Texture:
         :param Tuple[int, int, int, int] vertex_order: The vertex order
         :return: str
         """
+        if not isinstance(hash, str):
+            raise TypeError(f"Expected str, got {type(hash)}")
+        if not isinstance(hit_box_algorithm, hitbox.HitBoxAlgorithm):
+            raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
+
         return (
             f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
         )
@@ -873,7 +878,12 @@ def load_texture(
         texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
         cache.texture_cache.put(texture, file_path=file_path_str)
 
-    return texture.crop(x, y, width, height)
+    # If the crop values give us a different texture, return that instead
+    texture_cropped = texture.crop(x, y, width, height)
+    if texture_cropped != texture:
+        texture = texture_cropped
+
+    return texture
 
 
 def cleanup_texture_cache():
