@@ -76,7 +76,7 @@ class Sprite:
     """
     def __init__(
         self,
-        path_or_texture: Union[str, Path, Texture],
+        path_or_texture: Optional[Union[str, Path, Texture]],
         *,
         center_x: float = 0.0,
         center_y: float = 0.0,
@@ -1068,14 +1068,13 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            filename: Optional[str] = None,
+            path_or_texture: Optional[Union[str, Texture]],
             center_x: float = 0.0,
             center_y: float = 0.0,
             scale: float = 1.0,
     ):
-
         super().__init__(
-            filename,
+            path_or_texture,
             scale=scale,
             center_x=center_x,
             center_y=center_y,
@@ -1252,8 +1251,6 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     image_object = PIL.Image.open(file_name)
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")
-
-    # print(image_object.n_frames)
 
     sprite = AnimatedTimeBasedSprite()
     for frame in range(image_object.n_frames):

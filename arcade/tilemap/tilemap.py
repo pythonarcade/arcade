@@ -426,7 +426,7 @@ class TileMap:
                     """
                 )
             # print(custom_class.__name__)
-            args = {"filename": image_file, "scale": scaling}
+            args = {"path_or_texture": image_file, "scale": scaling}
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
             if not custom_class:
