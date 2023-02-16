@@ -106,8 +106,6 @@ from .application import Window
 from .application import get_screens
 from .application import open_window
 
-from .earclip_module import earclip
-
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
 from .geometry_generic import get_angle_degrees

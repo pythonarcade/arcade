@@ -17,7 +17,7 @@ import PIL.ImageDraw
 import pyglet.gl as gl
 
 from arcade.types import Color, PointList
-from arcade import earclip
+from arcade.earclip import earclip
 from .geometry_generic import rotate_point
 from arcade import (
     get_four_byte_color,
