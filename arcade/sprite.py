@@ -235,27 +235,15 @@ class Sprite:
         Specify a hit box unadjusted for translation, rotation, or scale.
         You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
         """
-        # If there is no hitbox, use the width/height to get one
-        if self._points is None and self._texture:
+        # Use existing points if we have them
+        if self._points is not None:
+            return self._points
+
+        # If we don't already have points, try to get them from the texture
+        if self._texture:
             self._points = self._texture.hit_box_points
-
-        if self._points is None and self._width:
-            x1, y1 = -self._width / 2, -self._height / 2
-            x2, y2 = +self._width / 2, -self._height / 2
-            x3, y3 = +self._width / 2, +self._height / 2
-            x4, y4 = -self._width / 2, +self._height / 2
-
-            self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
-
-        if self._points is None and self.texture is not None:
-            self._points = self.texture.hit_box_points
-
-        if self._points is None:
-            raise ValueError(
-                "Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
-                "Sprite.texture is set to a texture before trying to draw or do collision testing.\n"
-                "Alternatively, manually call Sprite.set_hit_box with points for your hitbox."
-            )
+        else:
+            raise ValueError("Sprite has no hit box points due to missing texture")
 
         return self._points
 
