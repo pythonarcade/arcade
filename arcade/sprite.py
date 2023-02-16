@@ -411,9 +411,11 @@ class Sprite:
             y *= scale_y
 
             # Rotate the point if needed
-            if radians:
-                x = x * rad_cos - y * rad_sin
-                y = x * rad_sin + y * rad_cos
+            if rad:
+                rot_x = x * rad_cos - y * rad_sin
+                rot_y = x * rad_sin + y * rad_cos
+                x = rot_x
+                y = rot_y
 
             # Apply position
             return (
