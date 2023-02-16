@@ -30,7 +30,7 @@ from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-from arcade.arcade_types import RGBA, Point, PointList
+from arcade.types import RGBA, Point, PointList
 from arcade.texture import SolidColorTexture
 from arcade import cache, hitbox
 

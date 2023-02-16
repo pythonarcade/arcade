@@ -3,12 +3,10 @@ Convenience functions that provide a much simpler interface to Emitters and Part
 
 These trade away some flexibility in favor of simplicity to allow beginners to start using particle systems.
 """
-
 import arcade
 import random
 from typing import Sequence, Type
-from arcade.arcade_types import Point
-from arcade.particle import FilenameOrTexture
+from arcade.types import Point, FilenameOrTexture
 
 
 def make_burst_emitter(

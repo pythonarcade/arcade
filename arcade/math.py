@@ -1,6 +1,11 @@
 import math
 import random
-from arcade.arcade_types import Point, Vector
+from arcade.types import Point, Vector
+
+
+def clamp(a, low: float, high: float) -> float:
+    """ Clamp a number between a range. """
+    return high if a > high else max(a, low)
 
 
 def lerp(v1: float, v2: float, u: float) -> float:

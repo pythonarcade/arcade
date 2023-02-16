@@ -4,7 +4,7 @@ from typing import Optional, Iterable, List, Union
 from pyglet import gl
 
 from .buffer import Buffer
-from arcade.arcade_types import BufferProtocol
+from arcade.types import BufferProtocol
 
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]

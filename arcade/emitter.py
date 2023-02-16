@@ -7,7 +7,7 @@ import arcade
 from arcade.particle import Particle
 from typing import Optional, Callable, cast
 from arcade.math import _Vec2
-from arcade.arcade_types import Point, Vector
+from arcade.types import Point, Vector
 
 
 ##########

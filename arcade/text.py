@@ -7,7 +7,7 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.arcade_types import Color, Point
+from arcade.types import Color, Point
 from arcade.draw_commands import get_four_byte_color
 from arcade.resources import resolve_resource_path
 

@@ -30,7 +30,7 @@ from arcade import (
 if TYPE_CHECKING:
     from arcade import TextureAtlas
 
-from arcade.arcade_types import Point, TiledObject
+from arcade.types import Point, TiledObject
 from arcade.geometry_generic import rotate_point
 from arcade.resources import resolve_resource_path
 from pyglet.math import Vec2

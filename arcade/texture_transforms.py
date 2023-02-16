@@ -9,7 +9,7 @@ from copy import copy
 from typing import Dict, List, Tuple, Type
 from enum import Enum
 import arcade
-from arcade.arcade_types import PointList
+from arcade.types import PointList
 
 
 class VertexOrder(Enum):

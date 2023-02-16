@@ -11,11 +11,9 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade import (
-    lerp,
-    RectList,
-    Color,
-)
+from arcade import RectList, Color
+from arcade.math import lerp
+
 from arcade.texture_transforms import (
     Transform,
     FlipLeftToRightTransform,
@@ -27,7 +25,7 @@ from arcade.texture_transforms import (
     TransverseTransform,
     get_shortest_transform,
 )
-from arcade.arcade_types import PointList
+from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.resources import resolve_resource_path
 from arcade.cache import HitBoxCache

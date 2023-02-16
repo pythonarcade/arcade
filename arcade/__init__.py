@@ -56,31 +56,22 @@ import pyglet
 if os.environ.get('ARCADE_HEADLESS'):
     pyglet.options["headless"] = True
 
-from .utils import is_raspberry_pi
+from arcade import utils
 
 # Disable shadow window on macs and in headless mode.
-if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or is_raspberry_pi():
+if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_raspberry_pi():
     pyglet.options['shadow_window'] = False
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
 # pyglet.options['win32_gdi_font'] = True
 
-# HACK: Increase pyglet's glyph atlas size to minimize issues
-# This was only needed with pyglet==2.0dev13 and earlier
-# when we were chasing down a text glitch when new atlases
-# were created (Creating new IndexedVertexDomains)
-# if not getattr(sys, 'is_pyglet_doc_run', False):
-#     pyglet.font.base.Font.texture_width = 4096
-#     pyglet.font.base.Font.texture_height = 4096
-
-# noinspection PyPep8
+# Module imports
 from arcade import color
-# noinspection PyPep8
 from arcade import csscolor
-# noinspection PyPep8
 from arcade import key
-# noinspection PyPep8
 from arcade import resources
+from arcade import types
+from arcade import math
 
 # --- Generated imports ---
 from .window_commands import close_window
@@ -115,63 +106,62 @@ from .application import Window
 from .application import get_screens
 from .application import open_window
 
-from .arcade_types import Color
-from .arcade_types import NamedPoint
-from .arcade_types import Point
-from .arcade_types import PointList
-from .arcade_types import RGB
-from .arcade_types import RGBA
-from .arcade_types import Rect
-from .arcade_types import RectList
-from .arcade_types import Vector
-from .arcade_types import TiledObject
+from .types import Color
+from .types import NamedPoint
+from .types import Point
+from .types import PointList
+from .types import RGB
+from .types import RGBA
+from .types import Rect
+from .types import RectList
+from .types import Vector
+from .types import TiledObject
 
 from .earclip_module import earclip
 
-from .math import lerp
-from .math import lerp_vec
-from .math import lerp_angle
-from .math import rand_angle_360_deg
-from .math import rand_angle_spread_deg
-from .math import rand_in_circle
-from .math import rand_in_rect
-from .math import rand_on_circle
-from .math import rand_on_line
-from .math import rand_vec_magnitude
-from .math import rand_vec_spread_deg
+# from .math import lerp
+# from .math import lerp_vec
+# from .math import lerp_angle
+# from .math import rand_angle_360_deg
+# from .math import rand_angle_spread_deg
+# from .math import rand_in_circle
+# from .math import rand_in_rect
+# from .math import rand_on_circle
+# from .math import rand_on_line
+# from .math import rand_vec_magnitude
+# from .math import rand_vec_spread_deg
 
-from .utils import generate_uuid_from_kwargs
-from .utils import is_raspberry_pi
-from .utils import get_raspberry_pi_info
+# from .utils import generate_uuid_from_kwargs
+# from .utils import is_raspberry_pi
+# from .utils import get_raspberry_pi_info
 
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
-from .geometry_generic import clamp
 from .geometry_generic import get_angle_degrees
 from .geometry_generic import get_angle_radians
 
-from .easing import EasingData
-from .easing import linear
-from .easing import smoothstep
-from .easing import ease_in
-from .easing import ease_out
-from .easing import ease_in_out
-from .easing import ease_out_elastic
-from .easing import ease_out_bounce
-from .easing import ease_in_back
-from .easing import ease_out_back
-from .easing import ease_in_sin
-from .easing import ease_out_sin
-from .easing import ease_in_out_sin
-from .easing import easing
-from .easing import ease_angle
-from .easing import ease_angle_update
-from .easing import ease_update
-from .easing import ease_value
-from .easing import ease_position
+# from .easing import EasingData
+# from .easing import linear
+# from .easing import smoothstep
+# from .easing import ease_in
+# from .easing import ease_out
+# from .easing import ease_in_out
+# from .easing import ease_out_elastic
+# from .easing import ease_out_bounce
+# from .easing import ease_in_back
+# from .easing import ease_out_back
+# from .easing import ease_in_sin
+# from .easing import ease_out_sin
+# from .easing import ease_in_out_sin
+# from .easing import easing
+# from .easing import ease_angle
+# from .easing import ease_angle_update
+# from .easing import ease_update
+# from .easing import ease_value
+# from .easing import ease_position
 
-from .hitbox import calculate_hit_box_points_detailed
-from .hitbox import calculate_hit_box_points_simple
+# from .hitbox import calculate_hit_box_points_detailed
+# from .hitbox import calculate_hit_box_points_simple
 
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
@@ -274,7 +264,6 @@ from .emitter import EmitterIntervalWithTime
 from .emitter_simple import make_burst_emitter
 from .emitter_simple import make_interval_emitter
 
-from .particle import FilenameOrTexture
 from .particle import EternalParticle
 from .particle import FadeParticle
 from .particle import LifetimeParticle
@@ -363,7 +352,6 @@ __all__ = [
     'SimpleCamera',
     'Color',
     'ControllerManager',
-    'EasingData',
     'EmitBurst',
     'EmitController',
     'EmitInterval',
@@ -377,7 +365,6 @@ __all__ = [
     'FACE_RIGHT',
     'FACE_UP',
     'FadeParticle',
-    'FilenameOrTexture',
     'LifetimeParticle',
     'MOUSE_BUTTON_LEFT',
     'MOUSE_BUTTON_MIDDLE',
@@ -423,12 +410,11 @@ __all__ = [
     'Window',
     'are_polygons_intersecting',
     'astar_calculate_path',
-    'calculate_hit_box_points_detailed',
-    'calculate_hit_box_points_simple',
+    # 'calculate_hit_box_points_detailed',
+    # 'calculate_hit_box_points_simple',
     'check_for_collision',
     'check_for_collision_with_list',
     'check_for_collision_with_lists',
-    'clamp',
     'cleanup_texture_cache',
     'close_window',
     'color_from_hex_string',
@@ -481,33 +467,11 @@ __all__ = [
     'draw_triangle_outline',
     'draw_xywh_rectangle_filled',
     'draw_xywh_rectangle_outline',
-    'ease_angle',
-    'ease_value',
-    'ease_position',
-    'easing',
-    'ease_in',
-    'ease_in_out',
-    'ease_out_elastic',
-    'ease_out_bounce',
-    'ease_in_back',
-    'ease_out_back',
-    'ease_in_sin',
-    'ease_out_sin',
-    'ease_in_out_sin',
-    'ease_out',
-    'smoothstep',
-    'linear',
-    'ease_angle_update',
-    'ease_update',
-    'ease_position',
     'earclip',
     'enable_timings',
     'exit',
     'finish_render',
     'float_to_byte_color',
-    'generate_uuid_from_kwargs',
-    'is_raspberry_pi',
-    'get_raspberry_pi_info',
     'get_closest_sprite',
     'get_angle_degrees',
     'get_angle_radians',
@@ -537,9 +501,6 @@ __all__ = [
     'has_line_of_sight',
     'is_point_in_polygon',
     'isometric_grid_to_screen',
-    'lerp',
-    'lerp_vec',
-    'lerp_angle',
     'load_animated_gif',
     'load_font',
     'load_sound',
@@ -557,14 +518,6 @@ __all__ = [
     'pause',
     'print_timings',
     'play_sound',
-    'rand_angle_360_deg',
-    'rand_angle_spread_deg',
-    'rand_in_circle',
-    'rand_in_rect',
-    'rand_on_circle',
-    'rand_on_line',
-    'rand_vec_magnitude',
-    'rand_vec_spread_deg',
     'read_tmx',
     'load_tilemap',
     'rotate_point',

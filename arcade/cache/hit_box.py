@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Optional, Union, TYPE_CHECKING
 from collections import OrderedDict
 
-from arcade.arcade_types import PointList
+from arcade.types import PointList
 from arcade.resources import resolve_resource_path
 
 if TYPE_CHECKING:

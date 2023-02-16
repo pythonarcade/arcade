@@ -8,7 +8,6 @@ import platform
 import sys
 from typing import Tuple
 from pathlib import Path
-from io import StringIO
 
 
 def generate_uuid_from_kwargs(**kwargs) -> str:
@@ -20,12 +19,7 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
     if len(kwargs) == 0:
         raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
 
-    with StringIO() as guid:
-        for key, value in kwargs.items():
-            guid.write(str(key))
-            guid.write(str(value))
-            guid.write("-")
-        return guid.getvalue()
+    return "|".join(f"{key}={str(value)}" for key, value in kwargs.items())
 
 
 def is_raspberry_pi() -> bool:
@@ -44,7 +38,7 @@ def get_raspberry_pi_info() -> Tuple[bool, str, str]:
 
     :returns: 3 component tuple.
               bool (is host a raspi)
-              str (architechture)
+              str (architecture)
               str (model name)
     """
     # armv7l is raspi 32 bit

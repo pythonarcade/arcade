@@ -19,7 +19,7 @@ from arcade import set_window
 from arcade import clear_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.arcade_types import Color
+from arcade.types import Color
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 

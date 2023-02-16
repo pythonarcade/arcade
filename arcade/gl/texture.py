@@ -7,7 +7,7 @@ from pyglet import gl
 from .buffer import Buffer
 from .utils import data_to_ctypes
 from .types import pixel_formats, BufferOrBufferProtocol
-from ..arcade_types import BufferProtocol
+from ..types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
