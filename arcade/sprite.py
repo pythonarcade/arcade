@@ -1056,7 +1056,7 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            path_or_texture: Optional[Union[str, Texture]],
+            path_or_texture: Optional[Union[str, Texture]] = None,
             center_x: float = 0.0,
             center_y: float = 0.0,
             scale: float = 1.0,
