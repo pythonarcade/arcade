@@ -454,6 +454,7 @@ __all__ = [
     'create_rectangles_filled_with_colors',
     'create_text_sprite',
     'create_triangles_filled_with_colors',
+    'create_triangles_strip_filled_with_colors',
     'disable_timings',
     'draw_arc_filled',
     'draw_arc_outline',
