@@ -219,6 +219,14 @@ class Texture:
             f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
         )
 
+    @classmethod
+    def create_image_cache_name(
+        cls,
+        path: Union[str, Path],
+        crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+    ):
+        return f"{str(path)}|{crop}"
+
     @property
     def atlas_name(self) -> str:
         """
@@ -794,67 +802,42 @@ def load_textures(
     :raises: ValueError
     """
     LOG.info("load_textures: %s ", file_name)
+    file_name = resolve_resource_path(file_name)
     file_name_str = str(file_name)
     hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
+    image_cache_name = Texture.create_image_cache_name(file_name_str)
 
-    image_data = cache.image_data_cache.get(file_name_str)
+    # Do we have the image in the cache?
+    image_data = cache.image_data_cache.get(image_cache_name)
     if not image_data:
         image_data = ImageData(PIL.Image.open(resolve_resource_path(file_name)))
-        cache.image_data_cache.put(file_name_str, image_data)
+        cache.image_data_cache.put(image_cache_name, image_data)
     image = image_data.image
 
     texture_sections = []
     for image_location in image_location_list:
         x, y, width, height = image_location
 
-        if width <= 0:
-            raise ValueError("Texture has a width of {}, must be > 0.".format(width))
-        if x > image.width:
-            raise ValueError(
-                "Can't load texture starting at an x of {} "
-                "when the image is only {} across.".format(x, image.width)
-            )
-        if y > image.height:
-            raise ValueError(
-                "Can't load texture starting at an y of {} "
-                "when the image is only {} high.".format(y, image.height)
-            )
-        if x + width > image.width:
-            raise ValueError(
-                "Can't load texture ending at an x of {} "
-                "when the image is only {} wide.".format(x + width, image.width)
-            )
-        if y + height > image.height:
-            raise ValueError(
-                "Can't load texture ending at an y of {} "
-                "when the image is only {} high.".format(
-                    y + height, image.height,
-                )
-            )
+        # Check if we have already created this sub-image
+        image_cache_name = Texture.create_image_cache_name(file_name_str, (x, y, width, height))
+        sub_image = cache.image_data_cache.get(image_cache_name)
+        if not sub_image:
+            sub_image = ImageData(image.crop((x, y, x + width, y + height)))
+            cache.image_data_cache.put(image_cache_name, sub_image)            
 
-        # See if we already loaded this texture, and we can just use a cached version.
-        name = cache.crate_str_from_values(
-            file_name, x, y, width, height, flipped, mirrored
-        )
-        sub_texture = cache.texture_cache.get_with_config(name, hit_box_algorithm)
+        # Do we have a texture for this sub-image?
+        texture_cache_name = Texture.create_cache_name(hash=sub_image.hash, hit_box_algorithm=hit_box_algorithm)
+        sub_texture = cache.texture_cache.get(texture_cache_name)
         if not sub_texture:
-            sub_image = image.crop((x, y, x + width, y + height))
-
-            if mirrored:
-                sub_image = PIL.ImageOps.mirror(sub_image)
-
-            if flipped:
-                sub_image = PIL.ImageOps.flip(sub_image)
-
-            image_data = ImageData(sub_image)
-            cache.image_data_cache.put(name, image_data)
-            sub_texture = Texture(
-                image_data,
-                hit_box_algorithm=hit_box_algorithm,
-            )
-            sub_image.origin = name
+            sub_texture = Texture(sub_image, hit_box_algorithm=hit_box_algorithm)
             cache.texture_cache.put(sub_texture)
 
+        if mirrored:
+            sub_texture = sub_texture.flip_left_to_right()
+        if flipped:
+            sub_texture = sub_texture.flip_top_to_bottom()
+
+        sub_texture.origin = image_cache_name
         texture_sections.append(sub_texture)
 
     return texture_sections
@@ -889,12 +872,13 @@ def load_texture(
     file_path = resolve_resource_path(file_path)
     file_path_str = str(file_path)
     hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
+    image_cache_name = Texture.create_image_cache_name(file_path_str, (x, y, width, height))
 
     # Check if ths file was already loaded and in cache
-    image_data = cache.image_data_cache.get(file_path_str)
+    image_data = cache.image_data_cache.get(image_cache_name)
     if not image_data:
         image_data = ImageData(PIL.Image.open(file_path).convert("RGBA"))
-        cache.image_data_cache.put(file_path_str, image_data)
+        cache.image_data_cache.put(image_cache_name, image_data)
 
     # Attempt to find a texture with the same configuration
     texture = cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)

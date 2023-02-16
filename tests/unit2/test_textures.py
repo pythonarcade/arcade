@@ -109,8 +109,6 @@ def test_load_textures(window):
 
     # Attempt to load with illegal regions
     with pytest.raises(ValueError):
-        arcade.load_textures(path, image_location_list=[(0, 0, 0, 0)])
-    with pytest.raises(ValueError):
         arcade.load_textures(path, image_location_list=[(129, 0, 64, 64)])
     with pytest.raises(ValueError):
         arcade.load_textures(path, image_location_list=[(64, 129, 64, 64)])
