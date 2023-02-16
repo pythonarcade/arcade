@@ -8,7 +8,10 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 3.0.0
 -------------
 
-*Unreleased. You can grab pre-release versions from PyPi.*
+*Unreleased*
+
+You can grab pre-release versions from PyPi. See the available versions from the
+`Arcade PyPi Release History <https://pypi.org/project/arcade/#history>`_.
 
 Version 3.0.0 is a major update to Arcade. It is not 100% compatible with the 2.6 API.
 
@@ -22,7 +25,7 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
-* Rotation order changed to clockwise
+* Rotation for Sprites has changed to clockwise.
 * The deprecated ``update()`` function has been removed from the
   :py:class:`~arcade.Window`, :py:class:`~arcade.View`,
   :py:class:`~arcade.Section`, and :py:class:`~arcade.SectionManager` classes.
@@ -41,6 +44,8 @@ API in a way that is not compatible with how it was used in 2.6.
   been re-worked to use the pyglet based text system. It has no API breaking changes, but the underlying functionality has changed a lot, so
   if you are using this function it may be worth checking the docs for it again. The main concern for a difference here would be if you
   are also using any custom :py:class:`~arcade.TextureAtlas`.
+* The GUI package has been changed significantly.
+*
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -83,6 +88,7 @@ Changes
     * ``UIWidget.with_`` methods do not wrap the widget anymore, they only change the attributes
     * Fixed an blending issue when rendering the gui surface to the screen
     * Support nine patch information to draw background texture
+    * Performance improvements
     * Removed some attributes from public interface, use ``UIWidget.with_`` methods
         * ``UIWidget.border_width``
         * ``UIWidget.border_color``
@@ -92,6 +98,7 @@ Changes
         * ``UIWidget.padding_right``
         * ``UIWidget.padding_bottom``
         * ``UIWidget.padding_left``
+    * Update and add example code.
 
   * New widgets:
 
@@ -148,23 +155,27 @@ Changes
 
     As an example, the Raspberry Pi 4b only supports OpenGL ES 3.1, however does provide this extension, so is fully compatible
     with Arcade.
-  * Textures now support immutable storage
+  * Textures now support immutable storage for OpenGL ES compatability.
   * Arcade is now using Pyglet's projection and view matrix.
-    All functions setting matrices will update the pyglet window's
-    ``view`` and ``projection`` attributes. Arcade shaders is also
-    using Pyglet's ``WindowBlock`` UBO.
+    All functions setting matrices will update the Pyglet window's
+    ``view`` and ``projection`` attributes. Arcade shaders is also using Pyglet's ``WindowBlock`` UBO.
   * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
     when the extension is available.
   * Fixed many implicit type conversions in the shader code for wider support.
 
-* :py:class:`~arcade.TileMap`
+* :py:class:`~arcade.tilemap.TileMap`
 
-  * Added support Tiles defined as a sub-rectangle of an image. See Tiled 1.9 Release notes for more information on this feature.
-  * Changed the ``Sprite.properties`` key "type" to "class" to stay in line with Tiled's re-naming of this key in their API.
-  * You can now define a custom texture atlas for SpriteLists created in a TileMap. You can provide a map default to the ``texture_atlas``
-    parameter of the :py:class:`~arcade.Tilemap` class or the :py:func:`~arcade.load_tilemap` function. This will be used by default on all
-    layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the ``layer_options`` dictionary.
-    If no custom atlas is provided, then the global default atlas will be used(This is how it works pre Arcade 2.7).
+  * Added support Tiles defined as a sub-rectangle of an image. See
+    `Tiled 1.9 Release Notes <https://www.mapeditor.org/2022/06/25/tiled-1-9-released.html>`_ for more information on
+    this feature.
+  * Changed the ``Sprite.properties`` key "type" to "class" to stay in line with Tiled's re-naming of this key in their
+    API.
+  * You can now define a custom texture atlas for SpriteLists created in a TileMap. You can provide a map default to
+    the ``texture_atlas`` parameter of the :py:class:`~arcade.tilemap.Tilemap` class or the
+    :py:func:`~arcade.tilemap.load_tilemap` function. This will be used by default on all
+    layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the
+    ``layer_options`` dictionary.
+    If no custom atlas is provided, then the global default atlas will be used (This is how it works pre-Arcade 3.0).
 
 Special thanks to
 `Einar Forselv <https://github.com/einarf>`_
@@ -172,8 +183,9 @@ Special thanks to
 `pushfoo <https://github.com/pushfoo>`_,
 `Maic Siemering <https://github.com/eruvanos>`_,
 `Cleptomania <https://github.com/Cleptomania>`_,
-`Aspect1103 <https://github.com/Aspect1103>`_,@janscas
-`janscas <https://github.com/janscas>`_,
+`Aspect1103 <https://github.com/Aspect1103>`_,
+`Alejandro Casanovas <https://github.com/janscas>`_,
+`Ibrahim <https://github.com/Ibrahim2750mi>`_,
 and
 `pvcraven <https://github.com/pvcraven>`_
 for their contributions to this release. Also, thanks to everyone on the Pyglet
@@ -463,7 +475,7 @@ Version 2.6.11
 
 * New Example Code:
 
-  * Add parallax example: :ref:`parallax`.
+  * Add parallax example: :ref:`background_parallax`.
   * Add GUI flat button styling example: :ref:`gui_flat_button_styled`.
   * Add :ref:`perspective` example.
 

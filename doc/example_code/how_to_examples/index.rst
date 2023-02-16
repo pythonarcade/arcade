@@ -76,7 +76,6 @@ Drawing with Loops
 
    :ref:`nested_loops_bottom_left_triangle`
 
-
 Animating Drawing Primitives
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -103,7 +102,6 @@ Animating Drawing Primitives
    :target: snow.html
 
    :ref:`snow`
-
 
 .. _shape-element-lists:
 
@@ -134,7 +132,6 @@ Faster Drawing with ShapeElementLists
 
    :ref:`gradients`
 
-
 .. _sprites:
 
 Sprites
@@ -142,8 +139,8 @@ Sprites
 
 .. _sprite_player_movement:
 
-Sprite Player Movement
-^^^^^^^^^^^^^^^^^^^^^^
+Player Movement
+^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_collect_coins.png
    :figwidth: 170px
@@ -168,7 +165,6 @@ Sprite Player Movement
    :target: sprite_move_keyboard_accel.html
 
    :ref:`sprite_move_keyboard_accel`
-
 
 .. figure:: thumbs/sprite_face_left_or_right.png
    :figwidth: 170px
@@ -218,8 +214,8 @@ Sprite Player Movement
 
    :ref:`sprite_rotate_around_tank`
 
-Sprite Non-Player Movement
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Non-Player Movement
+^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_collect_coins_move_down.png
    :figwidth: 170px
@@ -239,7 +235,6 @@ Sprite Non-Player Movement
 
    :ref:`sprite_bouncing_coins`
 
-
 .. figure:: thumbs/sprite_collect_coins_move_circle.png
    :figwidth: 170px
    :target: sprite_collect_coins_move_circle.html
@@ -258,8 +253,8 @@ Sprite Non-Player Movement
 
    :ref:`sprite_rotate_around_point`
 
-Sprite Pathing
-^^^^^^^^^^^^^^
+Calculating a Path
+^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/follow_path.png
    :figwidth: 170px
@@ -290,7 +285,6 @@ Sprite Pathing
    :target: astar_pathfinding.html
 
    :ref:`astar_pathfinding`
-
 
 Sprite Properties
 ^^^^^^^^^^^^^^^^^
@@ -373,8 +367,11 @@ Shooting with Sprites
 
    :ref:`sprite_explosion_particles`
 
-Sound
+Audio
 -----
+
+Sound Effects
+^^^^^^^^^^^^^
 
 .. figure:: thumbs/sound_demo.png
    :figwidth: 170px
@@ -388,14 +385,50 @@ Sound
 
    :ref:`sound_speed_demo`
 
+Music
+^^^^^
+
 .. figure:: thumbs/music_control_demo.png
    :figwidth: 170px
    :target: music_control_demo.html
 
    :ref:`music_control_demo`
 
-Camera Use
-----------
+Display Management
+------------------
+
+Resizable Windows
+^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/resizable_window.png
+   :figwidth: 170px
+   :target: resizable_window.html
+
+   :ref:`resizable_window`
+
+.. figure:: thumbs/full_screen_example.png
+   :figwidth: 170px
+   :target: full_screen_example.html
+
+   :ref:`full_screen_example`
+
+Backgrounds
+^^^^^^^^^^^
+
+.. figure:: thumbs/sprite_collect_coins_background.png
+   :figwidth: 170px
+   :target: sprite_collect_coins_background.html
+
+   :ref:`sprite_collect_coins_background`
+
+.. figure:: thumbs/background_parallax.png
+   :figwidth: 170px
+   :target: background_parallax.html
+
+   :ref:`background_parallax`
+
+Cameras
+^^^^^^^
 
 .. figure:: thumbs/sprite_move_scrolling.png
    :figwidth: 170px
@@ -420,6 +453,61 @@ Camera Use
    :target: camera_platform.html
 
    :ref:`camera_platform`
+
+View Management
+---------------
+
+.. _view-examples:
+
+Instruction and Game Over Screens
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+   :target: view_screens_minimal.html
+
+   :ref:`view_screens_minimal`
+
+.. figure:: thumbs/view_instructions_and_game_over.png
+   :figwidth: 170px
+   :target: view_instructions_and_game_over.html
+
+   :ref:`view_instructions_and_game_over`
+
+.. figure:: thumbs/view_pause_screen.png
+   :figwidth: 170px
+   :target: view_pause_screen.html
+
+   :ref:`view_pause_screen`
+
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+   :target: transitions.html
+
+   :ref:`transitions`
+
+.. _section_examples:
+
+Sectioning a View
+^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/sections_demo_1.png
+   :figwidth: 170px
+   :target: sections_demo_1.html
+
+   :ref:`sections_demo_1`
+
+.. figure:: thumbs/sections_demo_2.png
+   :figwidth: 170px
+   :target: sections_demo_2.html
+
+   :ref:`sections_demo_2`
+
+.. figure:: thumbs/sections_demo_3.png
+   :figwidth: 170px
+   :target: sections_demo_3.html
+
+   :ref:`sections_demo_3`
 
 Platformers
 -----------
@@ -463,9 +551,8 @@ Basic Platformers
 
    :ref:`platformer_tutorial`
 
-
-Using Tiled Map Editor to Create Maps
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Tiled Map Editor
+^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_tiled_map.png
    :figwidth: 170px
@@ -506,76 +593,6 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
-View Management
----------------
-
-.. _view-examples:
-
-Instruction Screens and Game Over Screens
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/view_screens_minimal.png
-   :figwidth: 170px
-   :target: view_screens_minimal.html
-
-   :ref:`view_screens_minimal`
-
-.. figure:: thumbs/view_instructions_and_game_over.png
-   :figwidth: 170px
-   :target: view_instructions_and_game_over.html
-
-   :ref:`view_instructions_and_game_over`
-
-.. figure:: thumbs/view_pause_screen.png
-   :figwidth: 170px
-   :target: view_pause_screen.html
-
-   :ref:`view_pause_screen`
-
-.. figure:: thumbs/view_screens_minimal.png
-   :figwidth: 170px
-   :target: transitions.html
-
-   :ref:`transitions`
-
-Resizable Window and Fullscreen Games
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/resizable_window.png
-   :figwidth: 170px
-   :target: resizable_window.html
-
-   :ref:`resizable_window`
-
-.. figure:: thumbs/full_screen_example.png
-   :figwidth: 170px
-   :target: full_screen_example.html
-
-   :ref:`full_screen_example`
-
-.. _section_examples:
-
-Dividing a View Into Sections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/sections_demo_1.png
-   :figwidth: 170px
-   :target: sections_demo_1.html
-
-   :ref:`sections_demo_1`
-
-.. figure:: thumbs/sections_demo_2.png
-   :figwidth: 170px
-   :target: sections_demo_2.html
-
-   :ref:`sections_demo_2`
-
-.. figure:: thumbs/sections_demo_3.png
-   :figwidth: 170px
-   :target: sections_demo_3.html
-
-   :ref:`sections_demo_3`
-
 Graphical User Interface
 ------------------------
 
@@ -615,7 +632,6 @@ Graphical User Interface
 
    :ref:`gui_slider`
 
-
 Grid-Based Games
 ----------------
 
@@ -654,7 +670,6 @@ Grid-Based Games
    :target: conway_alpha.html
 
    :ref:`conway_alpha`
-
 
 Advanced
 --------
@@ -780,18 +795,6 @@ Concept Games
 Odds and Ends
 -------------
 
-.. figure:: thumbs/sprite_collect_coins_background.png
-   :figwidth: 170px
-   :target: sprite_collect_coins_background.html
-
-   :ref:`sprite_collect_coins_background`
-
-.. figure:: thumbs/parallax.png
-   :figwidth: 170px
-   :target: parallax.html
-
-   :ref:`parallax`
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
    :target: timer.html
@@ -809,6 +812,21 @@ Odds and Ends
    :target: text_loc_example.html
 
    :ref:`text_loc_example`
+
+Particle System
+^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/particle_fireworks.png
+   :figwidth: 170px
+   :target: particle_fireworks.html
+
+   :ref:`particle_fireworks`
+
+.. figure:: thumbs/particle_systems.png
+   :figwidth: 170px
+   :target: particle_systems.html
+
+   :ref:`particle_systems`
 
 Tutorials
 ---------
@@ -848,22 +866,6 @@ Tutorials
    :target: shader_toy_tutorial_glow.html
 
    :ref:`shader_toy_tutorial_glow`
-
-
-Particle System
-^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/particle_fireworks.png
-   :figwidth: 170px
-   :target: particle_fireworks.html
-
-   :ref:`particle_fireworks`
-
-.. figure:: thumbs/particle_systems.png
-   :figwidth: 170px
-   :target: particle_systems.html
-
-   :ref:`particle_systems`
 
 Stress Tests
 ------------

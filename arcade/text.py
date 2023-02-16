@@ -191,7 +191,7 @@ class Text:
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-        if align != "left":
+        if align not in ("left", "right"):
             multiline = True
 
         adjusted_font = _attempt_font_name_resolution(font_name)

@@ -189,9 +189,6 @@ class UIBoxLayout(UILayout):
         style=None,
         **kwargs
     ):
-        self.align = align
-        self.vertical = vertical
-        self._space_between = space_between
         super().__init__(
             x=x,
             y=y,
@@ -205,7 +202,17 @@ class UIBoxLayout(UILayout):
             **kwargs
         )
 
+        self.align = align
+        self.vertical = vertical
+        self._space_between = space_between
+
         bind(self, "_children", self._update_size_hints)
+        bind(self, "_border_width", self._update_size_hints)
+
+        bind(self, "_padding_left", self._update_size_hints)
+        bind(self, "_padding_right", self._update_size_hints)
+        bind(self, "_padding_top", self._update_size_hints)
+        bind(self, "_padding_bottom", self._update_size_hints)
 
         # initially update size hints
         self._update_size_hints()
@@ -470,6 +477,12 @@ class UIGridLayout(UILayout):
         self.align_vertical = align_vertical
 
         bind(self, "_children", self._update_size_hints)
+        bind(self, "_border_width", self._update_size_hints)
+
+        bind(self, "_padding_left", self._update_size_hints)
+        bind(self, "_padding_right", self._update_size_hints)
+        bind(self, "_padding_top", self._update_size_hints)
+        bind(self, "_padding_bottom", self._update_size_hints)
 
         # initially update size hints
         self._update_size_hints()
@@ -674,7 +687,7 @@ class UIGridLayout(UILayout):
                 width_expand_ratio = expandable_width_ratio[row_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
 
-                if child is not None and available_width != 0 and available_height != 0:
+                if child is not None and constant_width != 0 and constant_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
 
@@ -717,10 +730,10 @@ class UIGridLayout(UILayout):
 
                     child.rect = new_rect
 
-                # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
-                row_span = max_height_per_row[row_num][col_num][1] or 1
-                actual_row_height = cell_height / row_span
-                if actual_row_height > max_height_row:
-                    max_height_row = actual_row_height
+                    # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
+                    row_span = max_height_per_row[row_num][col_num][1] or 1
+                    actual_row_height = cell_height / row_span
+                    if actual_row_height > max_height_row:
+                        max_height_row = actual_row_height
 
             start_y -= max_height_row

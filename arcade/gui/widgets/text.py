@@ -1,15 +1,11 @@
 from typing import Optional
 
 import pyglet
-from pyglet.text import Label
-
-from arcade.gui.widgets.layout import UIAnchorLayout
 from pyglet.event import EVENT_UNHANDLED, EVENT_HANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
-
 from arcade.gui.events import (
     UIEvent,
     UIMousePressEvent,
@@ -22,6 +18,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
+from arcade.gui.widgets.layout import UIAnchorLayout
 
 
 class UILabel(UIWidget):
@@ -66,44 +63,42 @@ class UILabel(UIWidget):
         text_color: arcade.Color = (255, 255, 255, 255),
         bold=False,
         italic=False,
-        stretch=False,
         align="left",
-        dpi=None,
         multiline: bool = False,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
     ):
-        # Use Pyglet's Label for text rendering
-        self.layout = pyglet.text.Label(
+        # Use Arcade wrapper of pyglet.Label for text rendering
+        self.label = arcade.Text(
+            start_x=x,
+            start_y=y,
             text=text,
             font_name=font_name,
             font_size=font_size,
-            color=arcade.get_four_byte_color(text_color),
-            width=width,
+            color=text_color,
+            width=int(width) if width else 0,
             bold=bold,
             italic=italic,
-            stretch=stretch,
             align=align,
             anchor_y="bottom",  # position text bottom left, to fit into scissor box
-            dpi=dpi,
             multiline=multiline,
             **kwargs,
         )
         super().__init__(
             x=x,
             y=y,
-            width=width or self.layout.content_width,
-            height=height or self.layout.content_height,
+            width=width or self.label.content_width,
+            height=height or self.label.content_height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             **kwargs,
         )
 
-        self.layout.width = width
-        self.layout.height = height
+        self.label.width = int(width) if width else 0
+        self.label.height = int(height) if height else 0
 
         bind(self, "rect", self._update_layout)
 
@@ -115,36 +110,34 @@ class UILabel(UIWidget):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
-            self.layout.content_width + base_width + 1,
-            self.layout.content_height + base_height + 1,
+            self.label.content_width + base_width + 1,
+            self.label.content_height + base_height + 1,
         )
 
     @property
     def text(self):
-        return self.layout.text
+        return self.label.text
 
     @text.setter
     def text(self, value):
-        self.layout.text = value
+        self.label.text = value
         self._update_layout()
         self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
-        layout = self.layout
+        layout = self.label
         layout_size = layout.width, layout.height
 
         if layout_size != self.content_size:
-            layout.begin_update()
             layout.position = 0, 0, 0  # layout always drawn in scissor box
             layout.width = self.content_width
             layout.height = self.content_height
-            layout.end_update()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+            self.label.draw()
 
 
 class UITextWidget(UIAnchorLayout):
@@ -162,6 +155,8 @@ class UITextWidget(UIAnchorLayout):
         )  # width 1000 try to prevent line wrap
         self.add(self._label)
         self.ui_label.fit_content()
+
+        bind(self, "rect", self.ui_label.fit_content)
 
     def place_text(self,
                    anchor_x: Optional[str] = None,
@@ -197,8 +192,8 @@ class UITextWidget(UIAnchorLayout):
         return self._label
 
     @property
-    def label(self) -> Label:
-        return self._label.layout
+    def label(self) -> arcade.Text:
+        return self._label.label
 
 
 class UIInputText(UIWidget):
@@ -228,7 +223,7 @@ class UIInputText(UIWidget):
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 50,
+        height: float = 24,
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,

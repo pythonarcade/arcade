@@ -13,15 +13,16 @@ class UIMockup(arcade.Window):
 
         dummy1 = UIDummy(width=100, height=100)
         dummy2 = UIDummy(width=50, height=50)
-        dummy3 = UIDummy(width=50, height=50)
+        dummy3 = UIDummy(width=50, height=50, size_hint=(.5, .5))
         dummy4 = UIDummy(width=100, height=100)
         dummy5 = UIDummy(width=200, height=100)
-        dummy6 = UIDummy(width=100, height=200)
+        dummy6 = UIDummy(width=100, height=300)
 
         subject = (
             UIGridLayout(
                 column_count=3,
                 row_count=3,
+                size_hint=(.5, .5),
             )
             .with_border()
             .with_padding()
