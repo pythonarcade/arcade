@@ -481,6 +481,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     shape_mode = gl.GL_TRIANGLES
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
+
 def create_triangles_strip_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple triangles using a vertex buffer object. 
@@ -502,6 +503,7 @@ def create_triangles_strip_filled_with_colors(point_list, color_list) -> Shape:
     """
     shape_mode = gl.GL_TRIANGLE_STRIP
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
+
 
 def create_ellipse_filled(center_x: float, center_y: float,
                           width: float, height: float, color: Color,
