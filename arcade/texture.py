@@ -420,9 +420,33 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self._new_texture_transformed(FlipTopToBottomTransform)
+
+    def flip_horizontally(self) -> "Texture":
+        """
+        Flip the texture left to right / horizontally.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
+        :return: Texture
+        """
+        return self.flip_left_to_right()
+
+    def flip_vertically(self) -> "Texture":
+        """
+        Flip the texture top to bottom / vertically.
+
+        This returns a new texture with the same image data, but
+        has updated hit box data and a transform that will be
+        applied to the image when it's drawn (GPU side).
+
+        :return: Texture
+        """
+        return self.flip_top_to_bottom()
 
     def flip_diagonally(self) -> "Texture":
         """
@@ -876,6 +900,7 @@ def load_texture(
     texture = cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
     if not texture:
         texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
+        texture.origin = file_path_str
         cache.texture_cache.put(texture, file_path=file_path_str)
 
     # If the crop values give us a different texture, return that instead
