@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union, Mapping
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
-from arcade import Color
+from arcade.types import Color
 from arcade.gui import (
     Surface,
     UIEvent,

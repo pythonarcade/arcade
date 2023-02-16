@@ -24,13 +24,13 @@ from typing import (
 )
 
 from arcade import (
-    Color,
     Sprite,
     get_window,
     gl,
     float_to_byte_color,
     get_four_float_color,
 )
+from arcade.types import Color
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 

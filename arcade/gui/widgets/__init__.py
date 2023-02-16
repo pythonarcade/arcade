@@ -16,6 +16,7 @@ from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade import Sprite, get_window, Texture
+from arcade.types import Color
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -218,8 +219,8 @@ class UIWidget(EventDispatcher, ABC):
 
     _children: List[_ChildEntry] = ListProperty()  # type: ignore
     _border_width: int = Property(0)  # type: ignore
-    _border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
-    _bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
+    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
+    _bg_color: Optional[Color] = Property(None)  # type: ignore
     _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
     _padding_top: int = Property(0)  # type: ignore
     _padding_right: int = Property(0)  # type: ignore
@@ -561,7 +562,7 @@ class UIWidget(EventDispatcher, ABC):
         A color or texture can be used for background,
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
-        :param arcade.Color color: A color used as background
+        :param Color color: A color used as background
         :param arcade.Texture texture: A texture or ninepatch texture used as background
         :return: self
         """

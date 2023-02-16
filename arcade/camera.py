@@ -7,9 +7,10 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
+from arcade.types import Point
 
 if TYPE_CHECKING:
-    from arcade import Point, Sprite, SpriteList
+    from arcade import Sprite, SpriteList
 
 # type aliases
 FourIntTuple = Tuple[int, int, int, int]

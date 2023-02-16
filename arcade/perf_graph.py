@@ -1,11 +1,12 @@
+import random
 from typing import List
 
-import arcade
-from arcade import Color
-import random
 import pyglet.clock
 from pyglet.shapes import Line
 from pyglet.graphics import Batch
+
+import arcade
+from arcade.types import Color
 
 
 class PerfGraph(arcade.Sprite):

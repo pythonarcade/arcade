@@ -6,13 +6,14 @@ Use a fireworks display to demonstrate "real-world" uses of Emitters and Particl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.particle_fireworks
 """
-import arcade
-from arcade import Point
+import pyglet
 from pyglet.math import Vec2
+
+import arcade
+from arcade.types import Point
 from arcade.math import rand_in_rect, clamp, lerp, rand_in_circle, rand_on_circle
 from arcade.types import FilenameOrTexture
 import random
-import pyglet
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

@@ -10,7 +10,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade import RectList, Color
+from arcade.types import RectList, Color
 from arcade.math import lerp
 
 from arcade.texture_transforms import (

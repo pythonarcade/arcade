@@ -1,6 +1,6 @@
 from typing import Any
 from PIL.Image import Image
-from arcade import PointList
+from arcade.types import PointList
 
 
 class HitBoxAlgorithm:

@@ -1,9 +1,9 @@
 from array import array
 from typing import Iterable, Tuple, Sequence, List, Optional
 
-from arcade import Color
 from arcade import gl
 from arcade.experimental.texture_render_target import RenderTargetTexture
+from arcade.types import Color
 
 
 class Light:

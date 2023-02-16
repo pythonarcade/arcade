@@ -22,6 +22,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_rotate_around_tank
 """
 import arcade
+from arcade.types import Point
 import math
 
 
@@ -55,7 +56,7 @@ class RotatingSprite(arcade.Sprite):
     Other games might not rotate the sprite. For example, moving
     platforms in a platformer wouldn't rotate.
     """
-    def rotate_around_point(self, point: arcade.Point, degrees: float):
+    def rotate_around_point(self, point: Point, degrees: float):
         """
         Rotate the sprite around a point by the set amount of degrees
 

@@ -1,4 +1,5 @@
-from arcade import get_window, get_scaling_factor, Color
+from arcade import get_window, get_scaling_factor
+from arcade.types import Color
 from arcade.gl import geometry
 from arcade.gl.texture import Texture
 

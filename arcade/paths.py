@@ -1,21 +1,15 @@
 """
-Path-related functions.
-
+Classic A-star algorithm for path finding.
 """
-from arcade import Point, check_for_collision_with_list, SpriteList, Sprite
-from typing import Union, List, Tuple, Set, Optional
-
 import sys
-
+from arcade.types import Point
+from arcade import check_for_collision_with_list, SpriteList, Sprite
+from typing import Union, List, Tuple, Set, Optional
 
 if 'shapely' in sys.modules:
     from .paths_shapely import has_line_of_sight  # noqa: F401
 else:
     from .paths_python import has_line_of_sight  # noqa: F401
-
-"""
-Classic A-star algorithm for path finding.
-"""
 
 
 def _spot_is_blocked(position: Point,

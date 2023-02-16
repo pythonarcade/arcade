@@ -8,7 +8,8 @@ helper function to create a Scene directly from a TileMap object.
 
 from typing import Dict, List, Optional
 
-from arcade import Color, Sprite, SpriteList
+from arcade import Sprite, SpriteList
+from arcade.types import Color
 from arcade.tilemap import TileMap
 
 

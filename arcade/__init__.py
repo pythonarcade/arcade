@@ -106,62 +106,12 @@ from .application import Window
 from .application import get_screens
 from .application import open_window
 
-from .types import Color
-from .types import NamedPoint
-from .types import Point
-from .types import PointList
-from .types import RGB
-from .types import RGBA
-from .types import Rect
-from .types import RectList
-from .types import Vector
-from .types import TiledObject
-
 from .earclip_module import earclip
-
-# from .math import lerp
-# from .math import lerp_vec
-# from .math import lerp_angle
-# from .math import rand_angle_360_deg
-# from .math import rand_angle_spread_deg
-# from .math import rand_in_circle
-# from .math import rand_in_rect
-# from .math import rand_on_circle
-# from .math import rand_on_line
-# from .math import rand_vec_magnitude
-# from .math import rand_vec_spread_deg
-
-# from .utils import generate_uuid_from_kwargs
-# from .utils import is_raspberry_pi
-# from .utils import get_raspberry_pi_info
 
 from .geometry_generic import get_distance
 from .geometry_generic import rotate_point
 from .geometry_generic import get_angle_degrees
 from .geometry_generic import get_angle_radians
-
-# from .easing import EasingData
-# from .easing import linear
-# from .easing import smoothstep
-# from .easing import ease_in
-# from .easing import ease_out
-# from .easing import ease_in_out
-# from .easing import ease_out_elastic
-# from .easing import ease_out_bounce
-# from .easing import ease_in_back
-# from .easing import ease_out_back
-# from .easing import ease_in_sin
-# from .easing import ease_out_sin
-# from .easing import ease_in_out_sin
-# from .easing import easing
-# from .easing import ease_angle
-# from .easing import ease_angle_update
-# from .easing import ease_update
-# from .easing import ease_value
-# from .easing import ease_position
-
-# from .hitbox import calculate_hit_box_points_detailed
-# from .hitbox import calculate_hit_box_points_simple
 
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
@@ -350,7 +300,6 @@ __all__ = [
     'AtlasRegion',
     'Camera',
     'SimpleCamera',
-    'Color',
     'ControllerManager',
     'EmitBurst',
     'EmitController',
@@ -369,22 +318,15 @@ __all__ = [
     'MOUSE_BUTTON_LEFT',
     'MOUSE_BUTTON_MIDDLE',
     'MOUSE_BUTTON_RIGHT',
-    'NamedPoint',
     'NoOpenGLException',
     'Particle',
     'PerfGraph',
     'PhysicsEnginePlatformer',
     'PhysicsEngineSimple',
-    'Point',
-    'PointList',
     'PyMunk',
     'PymunkException',
     'PymunkPhysicsEngine',
     'PymunkPhysicsObject',
-    'RGB',
-    'RGBA',
-    'Rect',
-    'RectList',
     'Section',
     'SectionManager',
     'Scene',
@@ -396,7 +338,6 @@ __all__ = [
     'SpriteList',
     'SpriteSolidColor',
     'TShape',
-    'TiledObject',
     'Text',
     'Texture',
     'SolidColorTexture',
@@ -405,13 +346,10 @@ __all__ = [
     'TextureAtlas',
     'TileMap',
     'VERSION',
-    'Vector',
     'View',
     'Window',
     'are_polygons_intersecting',
     'astar_calculate_path',
-    # 'calculate_hit_box_points_detailed',
-    # 'calculate_hit_box_points_simple',
     'check_for_collision',
     'check_for_collision_with_list',
     'check_for_collision_with_lists',

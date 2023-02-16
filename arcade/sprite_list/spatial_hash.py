@@ -1,6 +1,5 @@
 import logging
 import struct
-
 from typing import (
     Iterable,
     List,
@@ -11,12 +10,12 @@ from typing import (
 
 from arcade import (
     Sprite,
-    Point,
     are_polygons_intersecting,
     get_distance_between_sprites,
     is_point_in_polygon,
     get_window,
 )
+from arcade.types import Point
 from .sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 from typing import Tuple
 from PIL.Image import Image
-from arcade import Point, PointList
+from arcade.types import Point, PointList
 from .base import HitBoxAlgorithm
 
 

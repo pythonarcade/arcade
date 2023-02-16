@@ -1,5 +1,5 @@
 from PIL.Image import Image
-from arcade import PointList
+from arcade.types import PointList
 from .base import HitBoxAlgorithm
 from .bounding_box import BoundingHitBoxAlgorithm
 from .simple import SimpleHitBoxAlgorithm

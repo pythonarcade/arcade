@@ -22,15 +22,16 @@ import PIL.Image
 
 import arcade
 from arcade.geometry_generic import get_angle_degrees
-from arcade import load_texture
-from arcade import Texture
-from arcade import rotate_point
-from arcade import make_soft_circle_texture
-from arcade import make_circle_texture
-from arcade import Color
+from arcade import (
+    load_texture,
+    Texture,
+    make_soft_circle_texture,
+    make_circle_texture,
+    rotate_point,
+)
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-from arcade.types import RGBA, Point, PointList
+from arcade.types import Color, RGBA, Point, PointList
 from arcade.texture import SolidColorTexture
 from arcade import cache, hitbox
 

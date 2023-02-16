@@ -15,6 +15,7 @@ from arcade.resources import (
     image_laser_blue01,
     image_zombie_idle,
 )
+from arcade.types import Color
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
@@ -79,8 +80,8 @@ class IndicatorBar:
     :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
     bar components.
     :param Tuple[float, float] position: The initial position of the bar.
-    :param arcade.Color full_color: The color of the bar.
-    :param arcade.Color background_color: The background color of the bar.
+    :param Color full_color: The color of the bar.
+    :param Color background_color: The background color of the bar.
     :param int width: The width of the bar.
     :param int height: The height of the bar.
     :param int border_size: The size of the bar's border.
@@ -91,8 +92,8 @@ class IndicatorBar:
         owner: Player,
         sprite_list: arcade.SpriteList,
         position: Tuple[float, float] = (0, 0),
-        full_color: arcade.Color = arcade.color.GREEN,
-        background_color: arcade.Color = arcade.color.BLACK,
+        full_color: Color = arcade.color.GREEN,
+        background_color: Color = arcade.color.BLACK,
         width: int = 100,
         height: int = 4,
         border_size: int = 4,

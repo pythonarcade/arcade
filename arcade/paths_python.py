@@ -1,9 +1,9 @@
 from arcade import (
-    Point,
     SpriteList,
     get_distance,
     get_sprites_at_point,
 )
+from arcade.types import Point
 from arcade.math import lerp_vec
 
 

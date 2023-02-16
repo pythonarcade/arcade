@@ -7,7 +7,7 @@ from pymunk.autogeometry import (
     simplify_curves,
 )
 from pymunk import Vec2d
-from arcade import Point, PointList
+from arcade.types import Point, PointList
 from .base import HitBoxAlgorithm
 
 
