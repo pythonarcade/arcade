@@ -14,6 +14,7 @@ import arcade
 import pyglet
 import random
 import math
+from arcade.math import *
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -53,7 +54,7 @@ def emitter_0():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -69,7 +70,7 @@ def emitter_1():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=1.0,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -85,7 +86,7 @@ def emitter_2():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -101,9 +102,9 @@ def emitter_3():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_in_circle((0.0, 0.0), 100),
+            center_xy=rand_in_circle((0.0, 0.0), 100),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -118,9 +119,9 @@ def emitter_4():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_on_circle((0.0, 0.0), 100),
+            center_xy=rand_on_circle((0.0, 0.0), 100),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -137,9 +138,9 @@ def emitter_5():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_in_rect(centering_offset, width, height),
+            center_xy=rand_in_rect(centering_offset, width, height),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -154,9 +155,9 @@ def emitter_6():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+            center_xy=rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -171,7 +172,7 @@ def emitter_7():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -187,7 +188,7 @@ def emitter_8():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_rect((-2.0, -2.0), 4.0, 4.0),
+            change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -203,7 +204,7 @@ def emitter_9():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_vec_magnitude(45, 1.0, 4.0),
+            change_xy=rand_vec_magnitude(45, 1.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -219,7 +220,7 @@ def emitter_10():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_vec_spread_deg(90, 45, 2.0),
+            change_xy=rand_vec_spread_deg(90, 45, 2.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -235,7 +236,7 @@ def emitter_11():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_on_line((-2, 1), (2, 1)),
+            change_xy=rand_on_line((-2, 1), (2, 1)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -251,7 +252,7 @@ def emitter_12():
         emit_controller=arcade.EmitInterval(0.02),
         particle_factory=lambda emitter: arcade.EternalParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -266,7 +267,7 @@ def emitter_13():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -282,7 +283,7 @@ def emitter_14():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=1.0,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -298,7 +299,7 @@ def emitter_15():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -314,9 +315,9 @@ def emitter_16():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_in_circle((0.0, 0.0), 100),
+            center_xy=rand_in_circle((0.0, 0.0), 100),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -331,9 +332,9 @@ def emitter_17():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_on_circle((0.0, 0.0), 100),
+            center_xy=rand_on_circle((0.0, 0.0), 100),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -350,9 +351,9 @@ def emitter_18():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_in_rect(centering_offset, width, height),
+            center_xy=rand_in_rect(centering_offset, width, height),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -367,9 +368,9 @@ def emitter_19():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=arcade.rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+            center_xy=rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -384,7 +385,7 @@ def emitter_20():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -400,7 +401,7 @@ def emitter_21():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_rect((-2.0, -2.0), 4.0, 4.0),
+            change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -432,7 +433,7 @@ def emitter_23():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 8, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_vec_magnitude(45, 1.0, 4.0),
+            change_xy=rand_vec_magnitude(45, 1.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -448,7 +449,7 @@ def emitter_24():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_vec_spread_deg(90, 45, 2.0),
+            change_xy=rand_vec_spread_deg(90, 45, 2.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -464,7 +465,7 @@ def emitter_25():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_on_line((-2, 1), (2, 1)),
+            change_xy=rand_on_line((-2, 1), (2, 1)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -480,7 +481,7 @@ def emitter_26():
         emit_controller=arcade.EmitterIntervalWithCount(0.4, 5),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=0.6,
             alpha=128
@@ -496,7 +497,7 @@ def emitter_27():
         emit_controller=arcade.EmitMaintainCount(3),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_on_circle((0.0, 0.0), 2.0),
+            change_xy=rand_on_circle((0.0, 0.0), 2.0),
             lifetime=random.uniform(1.0, 3.0),
         )
     )
@@ -510,7 +511,7 @@ def emitter_28():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=random.choice((TEXTURE, TEXTURE2, TEXTURE3)),
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE
         )
@@ -525,7 +526,7 @@ def emitter_29():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=random.uniform(0.1, 0.8),
             alpha=DEFAULT_ALPHA
@@ -541,7 +542,7 @@ def emitter_30():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=int(random.uniform(32, 128))
@@ -557,7 +558,7 @@ def emitter_31():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE2,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             angle=45,
             scale=DEFAULT_SCALE
@@ -573,7 +574,7 @@ def emitter_32():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE2,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             change_angle=2,
             scale=DEFAULT_SCALE
@@ -589,7 +590,7 @@ def emitter_33():
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE
         )
@@ -605,7 +606,7 @@ def emitter_34():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=random.choice(textures),
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE
         )
@@ -622,7 +623,7 @@ def emitter_35():
         emit_controller=arcade.EmitterIntervalWithTime(0.01, 1.0),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=random.choice(textures),
-            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST * 2),
+            change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST * 2),
             lifetime=random.uniform(1.0, 3.5),
             angle=random.uniform(0, 360),
             change_angle=random.uniform(-3, 3),
@@ -651,7 +652,7 @@ def emitter_36():
         emit_controller=arcade.EmitInterval(0.005),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0), 0.1),
+            change_xy=rand_in_circle((0.0, 0.0), 0.1),
             lifetime=random.uniform(1.5, 5.5),
             scale=random.uniform(0.05, 0.2)
         )

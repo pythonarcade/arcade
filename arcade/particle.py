@@ -13,7 +13,7 @@ class Particle(Sprite):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            path_or_texture: FilenameOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0.0,
@@ -22,13 +22,7 @@ class Particle(Sprite):
             alpha: int = 255,
             mutation_callback=None
     ):
-        if isinstance(filename_or_texture, Texture):
-            super().__init__(None, scale=scale)
-            self.append_texture(filename_or_texture)
-            self.set_texture(0)
-        else:
-            super().__init__(filename_or_texture, scale=scale)
-
+        super().__init__(path_or_texture, scale=scale)
         self.center_x = center_xy[0]
         self.center_y = center_xy[1]
         self.change_x = change_xy[0]
