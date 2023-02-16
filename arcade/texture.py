@@ -5,7 +5,6 @@ import logging
 import hashlib
 from typing import Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from arcade import hitbox
 
 import PIL.Image
 import PIL.ImageOps
@@ -28,8 +27,9 @@ from arcade.texture_transforms import (
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.resources import resolve_resource_path
-from arcade.cache import HitBoxCache
+from arcade.hitbox import HitBoxAlgorithm
 from arcade import cache
+from arcade import hitbox
 
 if TYPE_CHECKING:
     from arcade.sprite import Sprite
@@ -137,7 +137,7 @@ class Texture:
         self,
         image: Union[PIL.Image.Image, ImageData],
         *,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         hit_box_points: Optional[PointList] = None,
         hash: Optional[str] = None,
         **kwargs,
@@ -169,7 +169,7 @@ class Texture:
         self._sprite_list: Optional[SpriteList] = None
 
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
-        if not isinstance(self._hit_box_algorithm, hitbox.HitBoxAlgorithm):
+        if not isinstance(self._hit_box_algorithm, HitBoxAlgorithm):
             raise ValueError(
                 f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
             )
@@ -196,7 +196,7 @@ class Texture:
         cls,
         *,
         hash: str,
-        hit_box_algorithm: hitbox.HitBoxAlgorithm,
+        hit_box_algorithm: HitBoxAlgorithm,
         vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3),
     ) -> str:
         """
@@ -210,7 +210,7 @@ class Texture:
         """
         if not isinstance(hash, str):
             raise TypeError(f"Expected str, got {type(hash)}")
-        if not isinstance(hit_box_algorithm, hitbox.HitBoxAlgorithm):
+        if not isinstance(hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
         return (
@@ -314,7 +314,7 @@ class Texture:
         return self._hit_box_points
 
     @property
-    def hit_box_algorithm(self) -> hitbox.HitBoxAlgorithm:
+    def hit_box_algorithm(self) -> HitBoxAlgorithm:
         """
         (read only) The algorithm used to calculate the hit box for this texture.
         """
@@ -550,11 +550,7 @@ class Texture:
         :return: Texture 
         """
         # Return self if the crop is the same size as the original image
-        if (width == self.image.width 
-            and height == self.image.height
-            and x == 0
-            and y == 0
-            ):
+        if (width == self.image.width and height == self.image.height and x == 0 and y == 0):
             return self
 
         # Return self width and height is 0
@@ -570,7 +566,7 @@ class Texture:
             raise ValueError(f"y position is outside of texture: {y}")
         if x + width - 1 >= self.image.width:
             raise ValueError(f"width is outside of texture: {width + x}")
-        if y + height -1 >= self.image.height:
+        if y + height - 1 >= self.image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
         area = (x, y, x + width, y + height)
@@ -774,7 +770,7 @@ def load_textures(
     image_location_list: RectList,
     mirrored: bool = False,
     flipped: bool = False,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> List[Texture]:
     """
     Load a set of textures from a single image file.
@@ -848,7 +844,7 @@ def load_texture(
     y: int = 0,
     width: int = 0,
     height: int = 0,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Load an image from disk and create a texture.
@@ -904,7 +900,7 @@ def cleanup_texture_cache():
 
 def load_texture_pair(
     file_name: str,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None
 ) -> Tuple[Texture, Texture]:
     """
     Load a texture pair, with the second being a mirror image of the first.
@@ -925,7 +921,7 @@ def load_spritesheet(
     columns: int,
     count: int,
     margin: int = 0,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> List[Texture]:
     """
     :param str file_name: Name of the file to that holds the texture.
@@ -966,7 +962,7 @@ def make_circle_texture(
     diameter: int,
     color: Color,
     name: Optional[str] = None,
-    hitbox_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hitbox_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
@@ -993,7 +989,7 @@ def make_soft_circle_texture(
     center_alpha: int = 255,
     outer_alpha: int = 0,
     name: Optional[str] = None,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.

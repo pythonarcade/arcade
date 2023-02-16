@@ -1,4 +1,3 @@
-from typing import Dict
 from PIL.Image import Image
 from arcade import PointList
 from .base import HitBoxAlgorithm
@@ -44,3 +43,17 @@ def calculate_hit_box_points_detailed(
     :Returns: List of points
     """
     return algo_detailed.calculate(image, detail=hit_box_detail)
+
+
+__all__ = [
+    "HitBoxAlgorithm",
+    "SimpleHitBoxAlgorithm",
+    "PymunkHitBoxAlgorithm",
+    "BoundingHitBoxAlgorithm",
+    "algo_simple",
+    "algo_detailed",
+    "algo_bounding_box",
+    "algo_default",
+    "calculate_hit_box_points_simple",
+    "calculate_hit_box_points_detailed",
+]

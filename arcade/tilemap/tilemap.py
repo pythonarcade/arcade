@@ -24,8 +24,8 @@ from arcade import (
     SpriteList,
     get_window,
     load_texture,
-    hitbox,
 )
+from arcade.hitbox import HitBoxAlgorithm
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -173,7 +173,7 @@ class TileMap:
         scaling: float = 1.0,
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
         use_spatial_hash: Optional[bool] = None,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
         texture_atlas: Optional["TextureAtlas"] = None,
@@ -403,7 +403,7 @@ class TileMap:
         self,
         tile: pytiled_parser.Tile,
         scaling: float = 1.0,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Sprite:
@@ -606,7 +606,7 @@ class TileMap:
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
@@ -698,7 +698,7 @@ class TileMap:
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
@@ -774,7 +774,7 @@ class TileMap:
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
@@ -967,7 +967,7 @@ def load_tilemap(
     scaling: float = 1.0,
     layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     use_spatial_hash: Optional[bool] = None,
-    hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     offset: Vec2 = Vec2(0, 0),
     texture_atlas: Optional["TextureAtlas"] = None,
     lazy: bool = False,
