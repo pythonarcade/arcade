@@ -535,6 +535,22 @@ class Texture:
         """
         return self._new_texture_transformed(Rotate270Transform)
 
+    @staticmethod
+    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
+        """
+        Validate the crop values for a given image.
+        """
+        if x < 0 or y < 0 or width < 0 or height < 0:
+            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
+        if x >= image.width:
+            raise ValueError(f"x position is outside of texture: {x}")
+        if y >= image.height:
+            raise ValueError(f"y position is outside of texture: {y}")
+        if x + width - 1 >= image.width:
+            raise ValueError(f"width is outside of texture: {width + x}")
+        if y + height - 1 >= image.height:
+            raise ValueError(f"height is outside of texture: {height + y}")
+
     def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
         """
         Create a new texture from a sub-section of this texture.
@@ -557,17 +573,7 @@ class Texture:
         if width == 0 and height == 0:
             return self
 
-        # Sanity check the crop values
-        if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
-        if x >= self.image.width:
-            raise ValueError(f"x position is outside of texture: {x}")
-        if y >= self.image.height:
-            raise ValueError(f"y position is outside of texture: {y}")
-        if x + width - 1 >= self.image.width:
-            raise ValueError(f"width is outside of texture: {width + x}")
-        if y + height - 1 >= self.image.height:
-            raise ValueError(f"height is outside of texture: {height + y}")
+        self.validate_crop(self.image, x, y, width, height)
 
         area = (x, y, x + width, y + height)
         image = self.image.crop(area)
@@ -816,6 +822,7 @@ def load_textures(
         image_cache_name = Texture.create_image_cache_name(file_name_str, (x, y, width, height))
         sub_image = cache.image_data_cache.get(image_cache_name)
         if not sub_image:
+            Texture.validate_crop(image, x, y, width, height)
             sub_image = ImageData(image.crop((x, y, x + width, y + height)))
             cache.image_data_cache.put(image_cache_name, sub_image)            
 
