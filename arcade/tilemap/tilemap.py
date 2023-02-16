@@ -442,7 +442,7 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height)
+            texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height)  # type: ignore
             if tile.flipped_diagonally:
                 texture = texture.flip_diagonally()
             if tile.flipped_horizontally:
@@ -451,7 +451,7 @@ class TileMap:
                 texture = texture.flip_vertically()
 
             args = {
-                "path_or_texture": texture,
+                "path_or_texture": texture,  # type: ignore
                 "scale": scaling,
             }
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
