@@ -655,9 +655,9 @@ def create_text_sprite(
         text_object.draw()
 
     return arcade.Sprite(
+        texture,
         center_x=text_object.right - (size[0] / 2),
         center_y=text_object.top,
-        texture=texture,
     )
 
 
