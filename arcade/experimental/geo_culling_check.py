@@ -16,7 +16,10 @@ class GeoCullingTest(arcade.Window):
     def __init__(self):
         super().__init__(800, 400, "Cull test", resizable=True)
         self.proj = self.ctx.projection_2d
-        self.texture = arcade.Texture("weird_texture", image=PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)))
+        self.texture = arcade.Texture(
+            PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)),
+            hash="weird_texture",
+        )
 
         self.spritelist = arcade.SpriteList()
         self.spritelist.append(Sprite(
@@ -25,7 +28,7 @@ class GeoCullingTest(arcade.Window):
         )
         for i in range(0, 360, 36):
             self.spritelist.append(
-                arcade.Sprite(texture=self.texture, center_x=400, center_y=300, angle=i)
+                arcade.Sprite(self.texture, center_x=400, center_y=300, angle=i)
             )
 
         self.spritelist.append(Sprite(":resources:images/items/gold_1.png", center_x=400, center_y=300))

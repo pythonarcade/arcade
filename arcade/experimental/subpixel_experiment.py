@@ -39,7 +39,6 @@ class MyGame(arcade.Window):
                         resource,
                         center_x=x + sprite_size // 2,
                         center_y=y + sprite_size // 2,
-                        hit_box_algorithm='None',
                     )
                     # Add sprite if correct size and get to the next sprite in the grid
                     if sprite.width == 128 and sprite.height == 128:
