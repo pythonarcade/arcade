@@ -79,7 +79,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     color_list = [color, color, color, color]
     triangle_point_list = points[1], points[0], points[2], points[3]
-    return create_triangles_filled_with_colors(triangle_point_list, color_list)
+    return create_triangles_strip_filled_with_colors(triangle_point_list, color_list)
 
 
 def create_line_generic_with_colors(point_list: PointList,
@@ -174,7 +174,7 @@ def create_line_strip(point_list: PointList,
         new_color_list += color1, color2, color1, color2
         triangle_point_list += points[1], points[0], points[2], points[3]
 
-    return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
+    return create_triangles_strip_filled_with_colors(triangle_point_list, new_color_list)
 
 
 def create_line_loop(point_list: PointList,
@@ -211,6 +211,16 @@ def create_lines(point_list: PointList,
 def create_lines_with_colors(point_list: PointList,
                              color_list: Sequence[Color],
                              line_width: float = 1):
+    """
+    Create a line segments to be rendered later. This works faster than draw_line because
+    the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    :param PointList point_list: Line segments start and end point tuples list
+    :param Color color: Three or four byte tuples list for every point
+    :param float line_width:
+
+    :Returns Shape:
+    """
 
     if line_width == 1:
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
@@ -225,8 +235,8 @@ def create_lines_with_colors(point_list: PointList,
         color1 = color_list[i - 1]
         color2 = color_list[i]
         points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-        new_color_list += color1, color1, color2, color2
-        triangle_point_list += points[1], points[0], points[2], points[3]
+        new_color_list += color1, color1, color2, color1, color2, color2
+        triangle_point_list += points[0], points[1], points[2], points[0], points[2], points[3]
 
     return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
@@ -455,7 +465,9 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
 
 def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     """
-    This function creates multiple rectangle/quads using a vertex buffer object.
+    This function creates multiple triangles using a vertex buffer object.
+    Triangles are build for every 3 sequential vertices with step of 3 vertex
+    Total amount of triangles to be rendered: len(point_list) / 3
 
     The function returns a Shape object that can be drawn with ``my_shape.draw()``.
     Don't create the shape in the draw method, create it in the setup method and then
@@ -464,6 +476,35 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
+
+    :param PointList point_list: Triangles vertices tuples.
+    :param Color color: Three or four byte tuples list for every point
+
+    :Returns Shape:
+
+    """
+    shape_mode = gl.GL_TRIANGLES
+    return create_line_generic_with_colors(point_list, color_list, shape_mode)
+
+
+def create_triangles_strip_filled_with_colors(point_list, color_list) -> Shape:
+    """
+    This function creates multiple triangles using a vertex buffer object. 
+    Triangles are built for every 3 sequential vertices with step of 1 vertex
+    Total amount of triangles to be rendered: len(point_list) - 2
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
+    :param PointList point_list: Triangles vertices tuples.
+    :param Color color: Three or four byte tuples list for every point
+
+    :Returns Shape:
     """
     shape_mode = gl.GL_TRIANGLE_STRIP
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
