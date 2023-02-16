@@ -20,7 +20,7 @@ NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
 Sequence[int]
 PointList = Sequence[Point]
-Rect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
+Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 
 
