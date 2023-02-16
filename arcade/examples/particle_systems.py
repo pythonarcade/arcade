@@ -14,7 +14,14 @@ import arcade
 import pyglet
 import random
 import math
-from arcade.math import *
+from arcade.math import (
+    rand_in_circle,
+    rand_on_circle,
+    rand_in_rect,
+    rand_on_line,
+    rand_vec_magnitude,
+    rand_vec_spread_deg,
+)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
