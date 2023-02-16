@@ -443,12 +443,12 @@ class TileMap:
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
             texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height)
-            if tile.flipped_horizontally:
-                texture = texture.flip_horizontal()
-            if tile.flipped_vertically:
-                texture = texture.flip_vertical()
             if tile.flipped_diagonally:
-                texture = texture.flip_diagonal()
+                texture = texture.flip_diagonally()
+            if tile.flipped_horizontally:
+                texture = texture.flip_horizontally()
+            if tile.flipped_vertically:
+                texture = texture.flip_vertically()
 
             args = {
                 "path_or_texture": texture,
