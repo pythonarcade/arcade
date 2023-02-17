@@ -8,19 +8,27 @@ from .geometry_python import (
     are_lines_intersecting,
     is_point_in_box,
 )
-try:
+
+# Shapely is disabled due to https://github.com/pythonarcade/arcade/pull/1535
+# We are leaving the code in-place to make it easier for someone to revisit
+# in the future and improve shapely's performance.
+use_shapely = False
+# try:
+#     import shapely  # noqa: F401
+#     use_shapely = True
+# except ImportError:
+#     use_shapely = False
+
+if use_shapely:
     from .geometry_shapely import (
         are_polygons_intersecting,
         is_point_in_polygon,
     )
-    shapely_installed = True
-except ImportError:
+else:
     from .geometry_python import (
         are_polygons_intersecting,
         is_point_in_polygon,
     )
-    shapely_installed = False
-
 
 __all__ = [
     "are_polygons_intersecting",
