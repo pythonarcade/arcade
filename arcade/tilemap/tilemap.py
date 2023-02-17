@@ -568,13 +568,13 @@ class TileMap:
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
-                frame_tile = self._get_tile_by_id(tile.tileset, frame.tile_id)
+                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)
                 if frame_tile:
                     image_file = _get_image_source(frame_tile, map_directory)
 
-                    if frame_tile.image and image_file:
+                    if not frame_tile.tileset.image and image_file:
                         texture = load_texture(image_file)
-                    elif not frame_tile.image and image_file:
+                    elif image_file:
                         # No image for tile, pull from tilesheet
                         (
                             image_x,
