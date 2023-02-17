@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ "$1" == "disabled" ]
+if [ "$2" == "disabled" ]
 then
     export DISABLE_SHAPELY=true
 fi
-python -m benchmarks.collisions.bench
+python -m benchmarks.$1.bench

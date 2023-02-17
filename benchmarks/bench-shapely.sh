@@ -15,4 +15,4 @@ hyperfine \
     --export-markdown benchmarks/results.md \
     --warmup 1 --runs 2 \
     --parameter-list shapely 'enabled,disabled' \
-    'bash ./benchmarks/bench-shapely-helper.sh {shapely}'
+    'bash ./benchmarks/bench-shapely-helper.sh '"$bench_name"' {shapely}'
