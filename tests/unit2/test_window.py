@@ -33,7 +33,7 @@ def test_window(window: arcade.Window):
     p = arcade.get_projection()
     assert isinstance(p, Mat4)
 
-    v = arcade.get_viewport()
+    v = window.get_viewport()
     assert v[0] == 0
     assert v[1] == width
     assert v[2] == 0

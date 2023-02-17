@@ -90,7 +90,6 @@ from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_projection
-from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
 from .window_commands import schedule
@@ -338,7 +337,6 @@ __all__ = [
     'get_three_float_color',
     'create_text_sprite',
     'clear_timings',
-    'get_viewport',
     'get_window',
     'get_fps',
     'has_line_of_sight',

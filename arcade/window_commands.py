@@ -9,7 +9,6 @@ import os
 
 import pyglet
 
-from numbers import Number
 from typing import (
     Callable,
     Optional,
@@ -54,7 +53,7 @@ def get_projection() -> Mat4:
     return get_window().ctx.projection_2d_matrix
 
 
-def pause(seconds: Number) -> None:
+def pause(seconds: float) -> None:
     """
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
 
