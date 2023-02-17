@@ -113,7 +113,7 @@ def get_window() -> "Window":
     return _window
 
 
-def set_window(window: "Window") -> None:
+def set_window(window: Optional["Window"]) -> None:
     """
     Set a handle to the current window.
 
@@ -121,14 +121,6 @@ def set_window(window: "Window") -> None:
     """
     global _window
     _window = window
-
-
-def clear_window():
-    """
-    Clear the window handle.
-    """
-    global _window
-    _window = None
 
 
 def get_scaling_factor(window: Optional["Window"] = None) -> float:

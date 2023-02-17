@@ -100,7 +100,6 @@ from .window_commands import run
 from .window_commands import set_background_color
 from .window_commands import set_viewport
 from .window_commands import set_window
-from .window_commands import clear_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
@@ -371,7 +370,6 @@ __all__ = [
     'set_background_color',
     'set_viewport',
     'set_window',
-    'clear_window',
     'start_render',
     'stop_sound',
     'timings_enabled',

@@ -16,7 +16,6 @@ import arcade
 from arcade import get_display_size
 from arcade import set_viewport
 from arcade import set_window
-from arcade import clear_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.types import Color
@@ -274,7 +273,7 @@ class Window(pyglet.window.Window):
         """ Close the Window. """
         super().close()
         # Make sure we don't reference the window any more
-        clear_window()
+        set_window(None)
         pyglet.clock.unschedule(self._dispatch_updates)
 
     def set_fullscreen(self,
