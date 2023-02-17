@@ -153,16 +153,6 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     window.ctx.projection_2d = left, right, bottom, top
 
 
-def get_viewport() -> Tuple[float, float, float, float]:
-    """
-    Get the current viewport settings.
-
-    :return: Tuple of floats, with ``(left, right, bottom, top)``
-
-    """
-    return get_window().ctx.projection_2d
-
-
 def close_window() -> None:
     """
     Closes the current window, and then runs garbage collection. The garbage collection
