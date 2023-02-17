@@ -8,8 +8,8 @@ Arcade welcomes contributions, including:
 * Corrections & additions to the documentation 
 * Improvements to the tests
 
-If you're looking for a way to contribute, you can [the currently active issues](https://github.com/pythonarcade/arcade/issues)
-to get started.
+If you're looking for a way to contribute, try checking [the currently active issues](https://github.com/pythonarcade/arcade/issues)
+for one that needs work.
 
 ## Before Making Changes 
 
@@ -18,10 +18,10 @@ Before working on an improvement, please make sure to
 does not already exist for it.
 
 Tips:
-1. Try to keep the PRs to reasonable sizes
+1. Try to keep individual PRs to reasonable sizes
 2. If you want to make large changes, please discuss them with Arcade's developers beforehand
 
-Discussion can happen in a GitHub issues comments or on the [Arcade discord server](https://discord.gg/ZjGDqMp).
+Discussion can happen in a GitHub issue's comments or on [Arcade's Discord server](https://discord.gg/ZjGDqMp).
 
 ## After Making Changes
 
@@ -39,7 +39,7 @@ This guide assumes you've already done the following:
 2. [Installed git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 3. [Forked the repo on GitHub](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) 
 4. [Cloned your fork locally](https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository)
-5. Changed into your local copy of the arcade directory in the terminal
+5. Changed directories into your local arcade clone's folder
 
 [Creating & using a virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments)
 is also strongly recommended.
@@ -63,8 +63,8 @@ in this repo for current tests.
 
 ### Testing Code Changes
 
-First, run `mypy` and `flake8` from inside the arcade folder. If these
-report any issues, you should fix them.
+First, run `mypy` and `flake8` from inside the arcade folder. You should fix
+any issues they report.
 
 Then run the framework's automated tests with the following command:
 
@@ -92,7 +92,6 @@ Start a local web server to preview the doc:
 python -m http.server -d build/html
 ```
 
-Open [http://localhost:8000](http://localhost:8000) in your browser to
-browse & preview the doc.
+You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the doc.
 
 Be sure to re-run build & refresh to update after making changes!
