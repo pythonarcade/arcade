@@ -2,6 +2,7 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
+from pathlib import Path
 from collections import namedtuple
 from collections.abc import ByteString
 from typing import List, NamedTuple, Optional, Sequence, Tuple, Union, TYPE_CHECKING
@@ -25,7 +26,7 @@ PointList = Sequence[Point]
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 
-FilenameOrTexture = Union[str, "Texture"]
+PathOrTexture = Optional[Union[str, Path, "Texture"]]
 
 
 class TiledObject(NamedTuple):

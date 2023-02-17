@@ -13,7 +13,7 @@ from pyglet.math import Vec2
 import arcade
 from arcade.types import Point
 from arcade.math import rand_in_rect, clamp, lerp, rand_in_circle, rand_on_circle
-from arcade.types import FilenameOrTexture
+from arcade.types import PathOrTexture
 from arcade.particles import (
     Emitter,
     LifetimeParticle,
@@ -127,7 +127,7 @@ class AnimatedAlphaParticle(LifetimeParticle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vec2,
             start_alpha: int = 0,
             duration1: float = 1.0,

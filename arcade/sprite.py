@@ -15,7 +15,6 @@ from typing import (
     List,
     Optional,
     TYPE_CHECKING,
-    Union,
 )
 from pathlib import Path
 import PIL.Image
@@ -31,7 +30,7 @@ from arcade import (
 )
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-from arcade.types import Color, RGBA, Point, PointList
+from arcade.types import Color, RGBA, Point, PointList, PathOrTexture
 from arcade.texture import SolidColorTexture
 from arcade import cache, hitbox
 
@@ -77,7 +76,7 @@ class Sprite:
     """
     def __init__(
         self,
-        path_or_texture: Optional[Union[str, Path, Texture]],
+        path_or_texture: PathOrTexture = None,
         *,
         center_x: float = 0.0,
         center_y: float = 0.0,
@@ -1057,7 +1056,7 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            path_or_texture: Optional[Union[str, Texture]] = None,
+            path_or_texture: PathOrTexture = None,
             center_x: float = 0.0,
             center_y: float = 0.0,
             scale: float = 1.0,

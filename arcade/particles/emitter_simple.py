@@ -6,7 +6,7 @@ These trade away some flexibility in favor of simplicity to allow beginners to s
 import random
 
 from typing import Sequence, Type
-from arcade.types import Point, FilenameOrTexture
+from arcade.types import Point, PathOrTexture
 from arcade.math import rand_in_circle, rand_on_circle
 from .particle import LifetimeParticle, FadeParticle
 from .emitter import Emitter, EmitBurst, EmitterIntervalWithTime
@@ -14,7 +14,7 @@ from .emitter import Emitter, EmitBurst, EmitterIntervalWithTime
 
 def make_burst_emitter(
         center_xy: Point,
-        filenames_and_textures: Sequence[FilenameOrTexture],
+        filenames_and_textures: Sequence[PathOrTexture],
         particle_count: int,
         particle_speed: float,
         particle_lifetime_min: float,
@@ -39,7 +39,7 @@ def make_burst_emitter(
 
 def make_interval_emitter(
         center_xy: Point,
-        filenames_and_textures: Sequence[FilenameOrTexture],
+        filenames_and_textures: Sequence[PathOrTexture],
         emit_interval: float,
         emit_duration: float,
         particle_speed: float,

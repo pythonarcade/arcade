@@ -4,7 +4,7 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
 from arcade.types import Point, Vector
-from arcade.types import FilenameOrTexture
+from arcade.types import PathOrTexture
 
 
 class Particle(Sprite):
@@ -12,7 +12,7 @@ class Particle(Sprite):
 
     def __init__(
             self,
-            path_or_texture: FilenameOrTexture,
+            path_or_texture: PathOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0.0,
@@ -50,7 +50,7 @@ class EternalParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
@@ -72,7 +72,7 @@ class LifetimeParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
@@ -102,7 +102,7 @@ class FadeParticle(LifetimeParticle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
