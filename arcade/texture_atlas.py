@@ -719,7 +719,7 @@ class TextureAtlas:
         image_uv_texture_old.use(2)
         self._image_uv_texture.use(3)
         self._ctx.atlas_resize_program["projection"] = Mat4.orthogonal_projection(
-            0, self.width, self.height, 0,
+            0, self.width, self.height, 0, -100, 100,
         )
 
         with self._fbo.activate():
