@@ -39,9 +39,8 @@ def test_window(window: arcade.Window):
     assert v[2] == 0
     assert v[3] == height
 
-    factor = arcade.get_scaling_factor()
-    assert factor > 0
-    factor = arcade.get_scaling_factor(w)
+    factor = window.get_pixel_ratio()
+    assert isinstance(factor, float) 
     assert factor > 0
 
     arcade.start_render()

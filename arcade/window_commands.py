@@ -123,26 +123,6 @@ def set_window(window: Optional["Window"]) -> None:
     _window = window
 
 
-def get_scaling_factor(window: Optional["Window"] = None) -> float:
-    """
-    Gets the scaling factor of the given Window.
-    This is the ratio between the window and framebuffer size.
-    If no window is supplied the currently active window will be used.
-
-    :param Window window: Handle to window we want to get scaling factor of.
-
-    :return: Scaling factor. E.g., 2.0 would indicate the framebuffer
-             width and height being 2.0 times the window width and height.
-             This means one "window pixel" is actual a 2 x 2 square of pixels
-             in the framebuffer.
-    :rtype: float
-    """
-    if window:
-        return window.get_pixel_ratio()
-    else:
-        return get_window().get_pixel_ratio()
-
-
 def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     """
     This sets what coordinates the window will cover.

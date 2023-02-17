@@ -1,4 +1,4 @@
-from arcade import get_window, get_scaling_factor
+from arcade import get_window
 from arcade.types import Color
 from arcade.gl import geometry
 from arcade.gl.texture import Texture
@@ -45,6 +45,6 @@ class RenderTargetTexture:
 
     def resize(self, width: int, height: int):
         """Resize the the internal texture"""
-        pixel_scale = get_scaling_factor(self.window)
+        pixel_scale = self.window.get_pixel_scale()
         self._size = width * pixel_scale, height * pixel_scale
         self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
