@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         color1 = (69, 137, 133, 127)
         color2 = (7, 67, 88, 127)
         shape = shape_list.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
-                                                         inside_color=color1, outside_color=color2)
+                                                             inside_color=color1, outside_color=color2)
         self.shapes.append(shape)
 
     def on_draw(self):

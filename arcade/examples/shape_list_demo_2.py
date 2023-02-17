@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
                     center_y=y,
                     width=SQUARE_WIDTH,
                     height=SQUARE_HEIGHT,
-                    color= arcade.color.DARK_BLUE,
+                    color=arcade.color.DARK_BLUE,
                 )
                 self.shape_list.append(shape)
 
