@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import arcade
-from arcade import Color
+from arcade.types import Color
 from arcade.gui.style import UIStyleBase
 
 
@@ -57,11 +57,11 @@ def test_defaults_behavior_using_inheritance():
     @dataclass
     class DefaultStyle(UIStyleBase):
         some_int: int = 42
-        some_color: arcade.Color = arcade.color.WHITE
+        some_color: Color = arcade.color.WHITE
 
     @dataclass
     class DefaultStyleSubclass(DefaultStyle):
-        some_color: arcade.Color = arcade.color.GREEN
+        some_color: Color = arcade.color.GREEN
         some_str: str = "Arcade"
         some_other_str: str = "is cool!"
 
