@@ -26,7 +26,11 @@ titles = {
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
     'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
     'sound.py': ['Sound', 'sound.rst'],
-    'sprite.py': ['Sprites', 'sprites.rst'],
+    'sprite/__init__.py': ['Sprites', 'sprites.rst'],
+    'sprite/base.py': ['Sprites', 'sprites.rst'],
+    'sprite/simple.py': ['Sprites', 'sprites.rst'],
+    'sprite/animated.py': ['Sprites', 'sprites.rst'],
+    'sprite/enums.py': ['Sprites', 'sprites.rst'],
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
@@ -177,6 +181,7 @@ def process_directory(directory: Path, quick_index_file):
 
         mapping = {
             "arcade": "arcade",
+            "sprite": "arcade",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
@@ -207,6 +212,8 @@ def process_directory(directory: Path, quick_index_file):
             continue
 
         full_api_file_name = "../doc/api_docs/api/" + api_file_name
+
+        # print(package, title, api_file_name, full_api_file_name)
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
@@ -332,6 +339,7 @@ def main():
 
     process_directory(Path("../arcade"), text_file)
     process_directory(Path("../arcade/sprite_list"), text_file)
+    process_directory(Path("../arcade/sprite"), text_file)
     process_directory(Path("../arcade/text"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
