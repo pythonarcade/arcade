@@ -22,6 +22,7 @@ from arcade.math import (
     rand_vec_magnitude,
     rand_vec_spread_deg,
 )
+from arcade import particles
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -56,10 +57,10 @@ def sine_wave(t, min_x, max_x, wavelength):
 # Example emitters
 def emitter_0():
     """Burst, emit from center, particle with lifetime"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -72,10 +73,10 @@ def emitter_0():
 
 def emitter_1():
     """Burst, emit from center, particle lifetime 1.0 seconds"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=1.0,
@@ -88,10 +89,10 @@ def emitter_1():
 
 def emitter_2():
     """Burst, emit from center, particle lifetime random in range"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
@@ -104,10 +105,10 @@ def emitter_2():
 
 def emitter_3():
     """Burst, emit in circle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -121,10 +122,10 @@ def emitter_3():
 
 def emitter_4():
     """Burst, emit on circle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -140,10 +141,10 @@ def emitter_5():
     """Burst, emit in rectangle"""
     width, height = 200, 100
     centering_offset = (-width / 2, -height / 2)
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -157,10 +158,10 @@ def emitter_5():
 
 def emitter_6():
     """Burst, emit on line"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -174,10 +175,10 @@ def emitter_6():
 
 def emitter_7():
     """Burst, emit from center, velocity fixed speed around 360 degrees"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT // 4),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -190,10 +191,10 @@ def emitter_7():
 
 def emitter_8():
     """Burst, emit from center, velocity in rectangle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -206,10 +207,10 @@ def emitter_8():
 
 def emitter_9():
     """Burst, emit from center, velocity in fixed angle and random speed"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT // 4),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_vec_magnitude(45, 1.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -222,10 +223,10 @@ def emitter_9():
 
 def emitter_10():
     """Burst, emit from center, velocity from angle with spread"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT // 4),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_vec_spread_deg(90, 45, 2.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -238,10 +239,10 @@ def emitter_10():
 
 def emitter_11():
     """Burst, emit from center, velocity along a line"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT // 4),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT // 4),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_on_line((-2, 1), (2, 1)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -254,10 +255,10 @@ def emitter_11():
 
 def emitter_12():
     """Infinite emitting w/ eternal particle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitInterval(0.02),
-        particle_factory=lambda emitter: arcade.EternalParticle(
+        emit_controller=particles.EmitInterval(0.02),
+        particle_factory=lambda emitter: particles.EternalParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             scale=DEFAULT_SCALE,
@@ -269,10 +270,10 @@ def emitter_12():
 
 def emitter_13():
     """Interval, emit particle every 0.01 seconds for one second"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -285,10 +286,10 @@ def emitter_13():
 
 def emitter_14():
     """Interval, emit from center, particle lifetime 1.0 seconds"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=1.0,
@@ -301,10 +302,10 @@ def emitter_14():
 
 def emitter_15():
     """Interval, emit from center, particle lifetime random in range"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
@@ -317,10 +318,10 @@ def emitter_15():
 
 def emitter_16():
     """Interval, emit in circle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -334,10 +335,10 @@ def emitter_16():
 
 def emitter_17():
     """Interval, emit on circle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -353,10 +354,10 @@ def emitter_18():
     """Interval, emit in rectangle"""
     width, height = 200, 100
     centering_offset = (-width / 2, -height / 2)
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -370,10 +371,10 @@ def emitter_18():
 
 def emitter_19():
     """Interval, emit on line"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=(0.0, 0.0),
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -387,10 +388,10 @@ def emitter_19():
 
 def emitter_20():
     """Interval, emit from center, velocity fixed speed around 360 degrees"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_on_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -403,10 +404,10 @@ def emitter_20():
 
 def emitter_21():
     """Interval, emit from center, velocity in rectangle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -419,10 +420,10 @@ def emitter_21():
 
 def emitter_22():
     """Interval, emit from center, velocity in fixed angle and speed"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(0.2, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(0.2, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=(1.0, 1.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -435,10 +436,10 @@ def emitter_22():
 
 def emitter_23():
     """Interval, emit from center, velocity in fixed angle and random speed"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 8, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 8, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_vec_magnitude(45, 1.0, 4.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -451,10 +452,10 @@ def emitter_23():
 
 def emitter_24():
     """Interval, emit from center, velocity from angle with spread"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_vec_spread_deg(90, 45, 2.0),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -467,10 +468,10 @@ def emitter_24():
 
 def emitter_25():
     """Interval, emit from center, velocity along a line"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_on_line((-2, 1), (2, 1)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -483,10 +484,10 @@ def emitter_25():
 
 def emitter_26():
     """Interval, emit particles every 0.4 seconds and stop after emitting 5"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithCount(0.4, 5),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithCount(0.4, 5),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -499,10 +500,10 @@ def emitter_26():
 
 def emitter_27():
     """Maintain a steady count of particles"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitMaintainCount(3),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitMaintainCount(3),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_on_circle((0.0, 0.0), 2.0),
             lifetime=random.uniform(1.0, 3.0),
@@ -513,10 +514,10 @@ def emitter_27():
 
 def emitter_28():
     """random particle textures"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=random.choice((TEXTURE, TEXTURE2, TEXTURE3)),
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -528,10 +529,10 @@ def emitter_28():
 
 def emitter_29():
     """random particle scale"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -544,10 +545,10 @@ def emitter_29():
 
 def emitter_30():
     """random particle alpha"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -560,10 +561,10 @@ def emitter_30():
 
 def emitter_31():
     """Constant particle angle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE2,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -576,10 +577,10 @@ def emitter_31():
 
 def emitter_32():
     """animate particle angle"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL * 5, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE2,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -592,10 +593,10 @@ def emitter_32():
 
 def emitter_33():
     """Particles that fade over time"""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.FadeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.FadeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -608,10 +609,10 @@ def emitter_33():
 def emitter_34():
     """Dynamically generated textures, burst emitting, fading particles"""
     textures = [arcade.make_soft_circle_texture(48, p) for p in (arcade.color.GREEN, arcade.color.BLUE_GREEN)]
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
-        particle_factory=lambda emitter: arcade.FadeParticle(
+        emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
+        particle_factory=lambda emitter: particles.FadeParticle(
             filename_or_texture=random.choice(textures),
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
@@ -625,10 +626,10 @@ def emitter_35():
     """Use most features"""
     soft_circle = arcade.make_soft_circle_texture(80, (255, 64, 64))
     textures = (TEXTURE, TEXTURE2, TEXTURE3, TEXTURE4, TEXTURE5, TEXTURE6, TEXTURE7, soft_circle)
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(0.01, 1.0),
-        particle_factory=lambda emitter: arcade.FadeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(0.01, 1.0),
+        particle_factory=lambda emitter: particles.FadeParticle(
             filename_or_texture=random.choice(textures),
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST * 2),
             lifetime=random.uniform(1.0, 3.5),
@@ -643,7 +644,7 @@ def emitter_35():
 def emitter_36():
     """Moving emitter. Particles spawn relative to emitter."""
 
-    class MovingEmitter(arcade.Emitter):
+    class MovingEmitter(particles.Emitter):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.elapsed = 0.0
@@ -656,8 +657,8 @@ def emitter_36():
 
     e = MovingEmitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitInterval(0.005),
-        particle_factory=lambda emitter: arcade.FadeParticle(
+        emit_controller=particles.EmitInterval(0.005),
+        particle_factory=lambda emitter: particles.FadeParticle(
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), 0.1),
             lifetime=random.uniform(1.5, 5.5),
@@ -669,10 +670,10 @@ def emitter_36():
 
 def emitter_37():
     """Rotating emitter. Particles initial velocity is relative to emitter's angle."""
-    e = arcade.Emitter(
+    e = particles.Emitter(
         center_xy=CENTER_POS,
-        emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
-        particle_factory=lambda emitter: arcade.LifetimeParticle(
+        emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
+        particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=(0.0, 2.0),
             lifetime=2.0,
@@ -685,7 +686,7 @@ def emitter_37():
 
 def emitter_38():
     """Use simple emitter interface to create a burst emitter"""
-    e = arcade.make_burst_emitter(
+    e = particles.make_burst_emitter(
         center_xy=CENTER_POS,
         filenames_and_textures=(TEXTURE, TEXTURE3, TEXTURE4),
         particle_count=50,
@@ -700,7 +701,7 @@ def emitter_38():
 
 def emitter_39():
     """Use simple emitter interface to create an interval emitter"""
-    e = arcade.make_interval_emitter(
+    e = particles.make_interval_emitter(
         center_xy=CENTER_POS,
         filenames_and_textures=(TEXTURE, TEXTURE3, TEXTURE4),
         emit_interval=0.01,

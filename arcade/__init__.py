@@ -122,10 +122,6 @@ from .drawing_support import color_from_hex_string
 from .drawing_support import float_to_byte_color
 
 from .texture import Texture
-from .texture import SolidColorTexture
-from .texture import ImageData
-from .texture import get_shortest_transform
-from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
 from .texture import load_texture
 from .texture import load_texture_pair
@@ -133,6 +129,10 @@ from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
+# from .texture import SolidColorTexture
+# from .texture import ImageData
+# from .texture import get_shortest_transform
+from .texture import cleanup_texture_cache
 
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
@@ -190,10 +190,6 @@ from .draw_commands import get_pixel
 from .geometry import are_polygons_intersecting
 from .geometry import is_point_in_polygon
 
-from .isometric import create_isometric_grid_lines
-from .isometric import isometric_grid_to_screen
-from .isometric import screen_to_isometric_grid
-
 # We don't have joysticks game controllers in headless mode
 if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
@@ -201,22 +197,6 @@ if not pyglet.options["headless"]:
 
 from .controller import ControllerManager
 from .controller import get_controllers
-
-from .emitter import EmitBurst
-from .emitter import EmitController
-from .emitter import EmitInterval
-from .emitter import EmitMaintainCount
-from .emitter import Emitter
-from .emitter import EmitterIntervalWithCount
-from .emitter import EmitterIntervalWithTime
-
-from .emitter_simple import make_burst_emitter
-from .emitter_simple import make_interval_emitter
-
-from .particle import EternalParticle
-from .particle import FadeParticle
-from .particle import LifetimeParticle
-from .particle import Particle
 
 from .sound import Sound
 from .sound import load_sound
@@ -267,7 +247,7 @@ from .paths import astar_calculate_path
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
-from .texture_atlas import AtlasRegion
+# from .texture_atlas import AtlasRegion
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
@@ -279,8 +259,6 @@ from .perf_info import disable_timings
 
 from .perf_graph import PerfGraph
 
-
-# noinspection PyPep8
 from arcade import experimental
 
 from .text import (
@@ -296,29 +274,17 @@ __all__ = [
     'AnimatedWalkingSprite',
     'AnimationKeyframe',
     'ArcadeContext',
-    'AtlasRegion',
     'Camera',
     'SimpleCamera',
     'ControllerManager',
-    'EmitBurst',
-    'EmitController',
-    'EmitInterval',
-    'EmitMaintainCount',
-    'Emitter',
-    'EmitterIntervalWithCount',
-    'EmitterIntervalWithTime',
-    'EternalParticle',
     'FACE_DOWN',
     'FACE_LEFT',
     'FACE_RIGHT',
     'FACE_UP',
-    'FadeParticle',
-    'LifetimeParticle',
     'MOUSE_BUTTON_LEFT',
     'MOUSE_BUTTON_MIDDLE',
     'MOUSE_BUTTON_RIGHT',
     'NoOpenGLException',
-    'Particle',
     'PerfGraph',
     'PhysicsEnginePlatformer',
     'PhysicsEngineSimple',
@@ -339,9 +305,6 @@ __all__ = [
     'TShape',
     'Text',
     'Texture',
-    'SolidColorTexture',
-    'ImageData',
-    'get_shortest_transform',
     'TextureAtlas',
     'TileMap',
     'VERSION',
@@ -352,14 +315,12 @@ __all__ = [
     'check_for_collision',
     'check_for_collision_with_list',
     'check_for_collision_with_lists',
-    'cleanup_texture_cache',
     'close_window',
     'color_from_hex_string',
     'create_ellipse',
     'create_ellipse_filled',
     'create_ellipse_filled_with_colors',
     'create_ellipse_outline',
-    'create_isometric_grid_lines',
     'create_line',
     'create_line_generic',
     'create_line_generic_with_colors',
@@ -405,7 +366,6 @@ __all__ = [
     'draw_triangle_outline',
     'draw_xywh_rectangle_filled',
     'draw_xywh_rectangle_outline',
-    'earclip',
     'enable_timings',
     'exit',
     'finish_render',
@@ -438,7 +398,6 @@ __all__ = [
     'get_fps',
     'has_line_of_sight',
     'is_point_in_polygon',
-    'isometric_grid_to_screen',
     'load_animated_gif',
     'load_font',
     'load_sound',
@@ -446,9 +405,7 @@ __all__ = [
     'load_texture',
     'load_texture_pair',
     'load_textures',
-    'make_burst_emitter',
     'make_circle_texture',
-    'make_interval_emitter',
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'make_transparent_color',
@@ -461,7 +418,6 @@ __all__ = [
     'rotate_point',
     'run',
     'schedule',
-    'screen_to_isometric_grid',
     'set_background_color',
     'set_viewport',
     'set_window',
@@ -473,6 +429,15 @@ __all__ = [
     'uint32_to_four_byte_color',
     'unschedule',
     'schedule_once',
+    'cleanup_texture_cache',
+    'experimental',
+    'isometric',
+    'color',
+    'csscolor',
+    'key',
+    'resources',
+    'types',
+    'math',
 ]
 
 __version__ = VERSION

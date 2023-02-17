@@ -2,15 +2,13 @@
 Emitter - Invisible object that determines when Particles are emitted, actually emits them, and manages them
 over their lifetime
 """
-
 import arcade
-from arcade.particle import Particle
+from .particle import Particle
 from typing import Optional, Callable, cast
 from arcade.math import _Vec2
 from arcade.types import Point, Vector
 
 
-##########
 class EmitController:
     """Base class for how a client configure the rate at which an Emitter emits Particles
 
@@ -112,8 +110,6 @@ class Emitter:
         emit_done_cb: Optional[Callable[["Emitter"], None]] = None,
         reap_cb: Optional[Callable[[], None]] = None
     ):
-        # Note Self-reference with type annotations:
-        #     https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations
         self.change_x = change_xy[0]
         self.change_y = change_xy[1]
 
