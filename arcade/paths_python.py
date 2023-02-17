@@ -27,6 +27,9 @@ def has_line_of_sight(point_1: Point,
     distance = get_distance(point_1[0], point_1[1],
                             point_2[0], point_2[1])
     steps = int(distance // check_resolution)
+    if distance == 0:
+        sprite_list = get_sprites_at_point(point_1, walls)
+        return not (len(sprite_list) > 0)
     for step in range(steps + 1):
         step_distance = step * check_resolution
         u = step_distance / distance

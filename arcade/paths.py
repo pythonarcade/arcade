@@ -2,11 +2,20 @@
 Classic A-star algorithm for path finding.
 """
 import sys
+import os
 from arcade.types import Point
 from arcade import check_for_collision_with_list, SpriteList, Sprite
 from typing import Union, List, Tuple, Set, Optional
 
-if 'shapely' in sys.modules:
+shapely_exists = False
+try:
+    import shapely  # noqa: F401
+    shapely_exists = True
+except ImportError:
+    pass
+use_shapely = shapely_exists and not os.environ.get("DISABLE_SHAPELY")
+print("Use shapely for has_line_of_sight: " + str(use_shapely))
+if use_shapely:
     from .paths_shapely import has_line_of_sight  # noqa: F401
 else:
     from .paths_python import has_line_of_sight  # noqa: F401
