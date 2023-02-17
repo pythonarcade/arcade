@@ -31,7 +31,6 @@ class SpriteSolidColor(Sprite):
         self,
         width: int,
         height: int,
-        *,
         center_x: float = 0,
         center_y: float = 0,
         color: Color = (255, 255, 255, 255),
