@@ -6,6 +6,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
+from math import sin, cos, radians
 import dataclasses
 from typing import (
     Any,
@@ -22,7 +23,6 @@ import arcade
 from arcade.geometry_generic import get_angle_degrees
 from arcade import load_texture
 from arcade import Texture
-from arcade import rotate_point
 from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
@@ -397,24 +397,34 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
+        rad = radians(self._angle)
+        scale_x, scale_y = self._scale
+        position_x, position_y = self._position
+        rad_cos = cos(rad)
+        rad_sin = sin(rad)
+
         def _adjust_point(point) -> Point:
+            x, y = point
+
+            # Apply scaling
+            x *= scale_x
+            y *= scale_y
+
             # Rotate the point if needed
-            if self._angle:
-                # Rotate with scaling to not distort it if scale x and y is different
-                point = rotate_point(point[0] * self._scale[0], point[1] * self._scale[1], 0, 0, self._angle)
-                # Apply position
-                return (
-                    point[0] + self._position[0],
-                    point[1] + self._position[1],
-                )
-            # Apply position and scale
+            if rad:
+                rot_x = x * rad_cos - y * rad_sin
+                rot_y = x * rad_sin + y * rad_cos
+                x = rot_x
+                y = rot_y
+
+            # Apply position
             return (
-                point[0] * self._scale[0] + self._position[0],
-                point[1] * self._scale[1] + self._position[1],
+                x + position_x,
+                y + position_y,
             )
 
         # Cache the results
-        self._point_list_cache = tuple(_adjust_point(point) for point in self.hit_box)
+        self._point_list_cache = tuple([_adjust_point(point) for point in self.hit_box])
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
