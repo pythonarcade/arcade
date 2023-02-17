@@ -46,6 +46,7 @@ API in a way that is not compatible with how it was used in 2.6.
   if you are using this function it may be worth checking the docs for it again. The main concern for a difference here would be if you
   are also using any custom :py:class:`~arcade.TextureAtlas`.
 * The GUI package has been changed significantly.
+* Buffered shapes (shape list items) have been moved to their own sub-module.
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -206,6 +207,7 @@ Changes
 * Shape list
 
   * Add in :py:func:`arcade.create_triangles_strip_filled_with_colors`
+  * Moved all buffered items that can be added to a shape list to `arcade.shape_list`
 
 * Documentation
 
