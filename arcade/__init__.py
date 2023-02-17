@@ -129,9 +129,6 @@ from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
-# from .texture import SolidColorTexture
-# from .texture import ImageData
-# from .texture import get_shortest_transform
 from .texture import cleanup_texture_cache
 
 from .buffered_draw_commands import TShape
@@ -247,7 +244,6 @@ from .paths import astar_calculate_path
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
-# from .texture_atlas import AtlasRegion
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
