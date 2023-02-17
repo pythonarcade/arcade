@@ -13,7 +13,7 @@ for the Python Arcade library. See also:
     :maxdepth: 1
     :caption: Arcade
 
-    api/arcade_types
+    api/types
     api/drawing_primitives
     api/drawing_batch
     api/drawing_utilities
@@ -35,10 +35,12 @@ for the Python Arcade library. See also:
     api/window
     api/sound
     api/path_finding
-    api/particle_emitter
     api/version
     api/isometric
+    api/earclip
+    api/easing
     api/open_gl
+    api/math
     gl/index
 
 .. _arcade-api-gui:

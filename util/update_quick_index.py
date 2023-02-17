@@ -5,25 +5,19 @@ import re
 import os
 from pathlib import Path
 titles = {
-    'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
     'application.py': ['Window and View', 'window.rst'],
     'buffered_draw_commands.py': ['Drawing - Batch', 'drawing_batch.rst'],
     'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-    'earclip_module.py': ['Geometry Support', 'geometry.rst'],
-    'emitter.py': ['Particles', 'particle_emitter.rst'],
-    'emitter_simple.py': ['Particles', 'particle_emitter.rst'],
     'geometry.py': ['Geometry Support', 'geometry.rst'],
     'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
-    'easing.py': ['Geometry Support', 'geometry.rst'],
     'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
     'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'controller.py': ['Game Controller Support', 'game_controller.rst'],
     'joysticks.py': ['Joystick Support', 'joysticks.rst'],
-    'particle.py': ['Particles', 'particle_emitter.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
     'paths_python.py': ['Pathfinding', 'path_finding.rst'],
     'paths_shapely.py': ['Pathfinding', 'path_finding.rst'],
@@ -39,6 +33,12 @@ titles = {
     'text.py': ['Text', 'text.rst'],
     'texture.py': ['Texture Management', 'texture.rst'],
     'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'utils.py': ['Utils', 'utils.rst'],
+    'math.py': ['Math', 'math.rst'],
+    'isometric.py': ['Isometric', 'isometric.rst'],
+    'types.py': ['Types', 'types.rst'],
+    'easing.py': ['Easing', 'easing.rst'],
+    'earclip.py': ['Earclip', 'earclip.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
@@ -87,7 +87,13 @@ titles = {
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 
-
+# Module and class members to exclude
+EXCLUDED_MEMBERS = [
+    "ImageData",
+    "AtlasRegion",
+    "SolidColorTexture",
+    "ImageDataRefCounter",
+]
 
 def get_member_list(filepath):
     """
@@ -152,9 +158,6 @@ def process_directory(directory: Path, quick_index_file):
         if "test" in path.name:
             continue
 
-        if "math.py" in path.name:
-            continue
-
         if "geometry_python.py" in path.name:
             continue
 
@@ -181,14 +184,19 @@ def process_directory(directory: Path, quick_index_file):
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
             "texture_transforms.py": "arcade.texture_transforms",
+            "isometric.py": "arcade.isometric",
+            "particles": "arcade.particles",
+            "types.py": "arcade.types",
+            "utils.py": "arcade.utils",
+            "easing.py": "arcade.easing",
+            "math.py": "arcade.math",
+            "earclip.py": "arcade.earclip",
         }
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
         path_name = prepend + path.name
 
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
-
-            # Print title
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
         elif path_name not in titles:
@@ -216,6 +224,8 @@ def process_directory(directory: Path, quick_index_file):
         # Classes
         if len(class_list) > 0:
             for item in class_list:
+                if item in EXCLUDED_MEMBERS:
+                    continue
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
@@ -242,6 +252,8 @@ def process_directory(directory: Path, quick_index_file):
         # Functions
         if len(function_list) > 0:
             for item in function_list:
+                if item in EXCLUDED_MEMBERS:
+                    continue
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
