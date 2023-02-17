@@ -17,7 +17,6 @@ from typing import (
     TYPE_CHECKING
 )
 from arcade.types import Color
-from pyglet.math import Mat4
 
 if TYPE_CHECKING:
     from arcade import Window
