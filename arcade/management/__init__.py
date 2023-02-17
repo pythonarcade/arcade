@@ -34,6 +34,7 @@ def show_info():
     print('pyglet version:', pyglet.__version__)
     print('PIL version:', PIL.__version__)
 
+
 def start_project(path_str: str):
     path = Path(path_str)
     if path.exists():
