@@ -35,7 +35,11 @@ titles = {
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
-    'texture.py': ['Texture Management', 'texture.rst'],
+    'texture/__init__.py': ['Texture Management', 'texture.rst'],
+    'texture/texture.py': ['Texture Management', 'texture.rst'],
+    'texture/loading.py': ['Texture Management', 'texture.rst'],
+    'texture/generate.py': ['Texture Management', 'texture.rst'],
+    'texture/solid_color.py': ['Texture Management', 'texture.rst'],
     'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
     'utils.py': ['Utils', 'utils.rst'],
     'math.py': ['Math', 'math.rst'],
@@ -182,6 +186,7 @@ def process_directory(directory: Path, quick_index_file):
         mapping = {
             "arcade": "arcade",
             "sprite": "arcade",
+            "texture": "arcade",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
@@ -340,6 +345,7 @@ def main():
     process_directory(Path("../arcade"), text_file)
     process_directory(Path("../arcade/sprite_list"), text_file)
     process_directory(Path("../arcade/sprite"), text_file)
+    process_directory(Path("../arcade/texture"), text_file)
     process_directory(Path("../arcade/text"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
