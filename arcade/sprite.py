@@ -17,20 +17,22 @@ from typing import (
     Optional,
     TYPE_CHECKING,
 )
+from pathlib import Path
 import PIL.Image
 
 import arcade
 from arcade.geometry_generic import get_angle_degrees
-from arcade import load_texture
-from arcade import Texture
-from arcade import make_soft_circle_texture
-from arcade import make_circle_texture
-from arcade import Color
+from arcade import (
+    load_texture,
+    Texture,
+    make_soft_circle_texture,
+    make_circle_texture,
+)
 from arcade.color import BLACK
 from arcade.resources import resolve_resource_path
-from arcade.arcade_types import RGBA, Point, PointList
-from arcade.cache import build_cache_name
+from arcade.types import Color, RGBA, Point, PointList, PathOrTexture
 from arcade.texture import SolidColorTexture
+from arcade import cache, hitbox
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -66,114 +68,27 @@ class Sprite:
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/examples/index.html#sprites
 
-    :param str filename: Filename of an image that represents the sprite.
-    :param float scale: Scale the image up or down. Scale of 1.0 is none.
-    :param float image_x: X offset to sprite within sprite sheet.
-    :param float image_y: Y offset to sprite within sprite sheet.
-    :param float image_width: Width of the sprite
-    :param float image_height: Height of the sprite
+    :param str path_or_texture: Path to the image file, or a texture object.
     :param float center_x: Location of the sprite
     :param float center_y: Location of the sprite
-    :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
-    :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
-    :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'.
-          Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
-          :data:`PhysicsEnginePlatformer`
-          and 'Detailed' for the :data:`PymunkPhysicsEngine`.
-    :param Texture texture: Specify the texture directly.
+    :param float scale: Scale the image up or down. Scale of 1.0 is none.
     :param float angle: The initial rotation of the sprite in degrees
-
-    This will ignore all hit box and image size arguments.
-
-        .. figure:: ../images/hit_box_algorithm_none.png
-           :width: 40%
-
-           hit_box_algorithm = "None"
-
-        .. figure:: ../images/hit_box_algorithm_simple.png
-           :width: 55%
-
-           hit_box_algorithm = "Simple"
-
-        .. figure:: ../images/hit_box_algorithm_detailed.png
-           :width: 75%
-
-           hit_box_algorithm = "Detailed"
-
-    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-
-    Attributes:
-        :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
-        :angle: Rotation angle in degrees. Sprites rotate counter-clock-wise.
-        :radians: Rotation angle in radians. Sprites rotate counter-clock-wise.
-        :bottom: Set/query the sprite location by using the bottom coordinate. \
-        This will be the 'y' of the bottom of the sprite.
-        :boundary_left: Used in movement. Left boundary of moving sprite.
-        :boundary_right: Used in movement. Right boundary of moving sprite.
-        :boundary_top: Used in movement. Top boundary of moving sprite.
-        :boundary_bottom: Used in movement. Bottom boundary of moving sprite.
-        :center_x: X location of the center of the sprite
-        :center_y: Y location of the center of the sprite
-        :change_x: Movement vector, in the x direction.
-        :change_y: Movement vector, in the y direction.
-        :change_angle: Change in rotation.
-        :color: Color tint the sprite
-        :cur_texture_index: Index of current texture being used.
-        :guid: Unique identifier for the sprite. Useful when debugging.
-        :height: Height of the sprite.
-        :force: Force being applied to the sprite. Useful when used with Pymunk \
-        for physics.
-        :hit_box: Points, in relation to the center of the sprite, that are used \
-        for collision detection. Arcade defaults to creating a hit box via the \
-        'simple' hit box algorithm \
-        that encompass the image. If you are creating a ramp or making better \
-        hit-boxes, you can custom-set these.
-        :left: Set/query the sprite location by using the left coordinate. This \
-        will be the 'x' of the left of the sprite.
-        :position: A list with the (x, y) of where the sprite is.
-        :right: Set/query the sprite location by using the right coordinate. \
-        This will be the 'y=x' of the right of the sprite.
-        :sprite_lists: List of all the sprite lists this sprite is part of.
-        :texture: :class:`arcade.Texture` class with the current texture. Setting a new texture does \
-        **not** update the hit box of the sprite. This can be done with \
-        ``my_sprite.hit_box = my_sprite.texture.hit_box_points``. New textures will be centered \
-        on the current center_x/center_y.
-        :textures: List of textures associated with this sprite.
-        :top: Set/query the sprite location by using the top coordinate. This \
-        will be the 'y' of the top of the sprite.
-        :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 \
-        is 1/2 height and width.
-        :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
-        :width: Width of the sprite
-
-    It is common to over-ride the `update` method and provide mechanics on
-    movement or other sprite updates.
     """
     def __init__(
-            self,
-            filename: Optional[str] = None,
-            scale: float = 1.0,
-            image_x: int = 0,
-            image_y: int = 0,
-            image_width: int = 0,
-            image_height: int = 0,
-            center_x: float = 0.0,
-            center_y: float = 0.0,
-            flipped_horizontally: bool = False,
-            flipped_vertically: bool = False,
-            flipped_diagonally: bool = False,
-            hit_box_algorithm: Optional[str] = "Simple",
-            hit_box_detail: float = 4.5,
-            texture: Optional[Texture] = None,
-            angle: float = 0.0,
+        self,
+        path_or_texture: PathOrTexture = None,
+        *,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
+        scale: float = 1.0,
+        angle: float = 0.0,
     ):
         """ Constructor """
         # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
-        self._scale: Tuple[float, float] = (scale, scale)
-        self._position: Point = (center_x, center_y)
+        self._scale: Tuple[float, float] = scale, scale
+        self._position: Point = center_x, center_y
         self._angle = angle
         self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
@@ -181,9 +96,6 @@ class Sprite:
         # Hit box and collision property
         self._points: Optional[PointList] = None
         self._point_list_cache: Optional[PointList] = None
-        # Hit box type info
-        self._hit_box_algorithm = hit_box_algorithm
-        self._hit_box_detail = hit_box_detail
 
         # Color
         self._color: RGBA = 255, 255, 255, 255
@@ -204,7 +116,7 @@ class Sprite:
 
         self.sprite_lists: List["SpriteList"] = []
         self.physics_engines: List[Any] = []
-        self._sprite_list: Optional["SpriteList"] = None  # Used for Sprite.draw()
+        self._sprite_list: Optional["SpriteList"] = None
 
         # Pymunk specific properties
         self._pymunk: Optional[PyMunk] = None
@@ -213,50 +125,17 @@ class Sprite:
         # Debug properties
         self.guid: Optional[str] = None
 
-        if texture:
-            self._texture = texture
-            self._textures = [texture]
-            self._width = self._texture.width * scale
-            self._height = self._texture.height * scale
-        elif filename is not None:
-            # Sanity check values
-            if image_width < 0:
-                raise ValueError("Width entered is less than zero. Width must be a positive float.")
+        if isinstance(path_or_texture, Texture):
+            self._texture = path_or_texture
+        elif isinstance(path_or_texture, (str, Path)):
+            self._texture = load_texture(path_or_texture)
 
-            if image_height < 0:
-                raise ValueError(
-                    "Height entered is less than zero. Height must be a positive float."
-                )
-
-            if image_width == 0 and image_height != 0:
-                raise ValueError("Width can't be zero.")
-
-            if image_height == 0 and image_width != 0:
-                raise ValueError("Height can't be zero.")
-
-            self._texture = load_texture(
-                filename,
-                image_x,
-                image_y,
-                image_width,
-                image_height,
-                flipped_horizontally=flipped_horizontally,
-                flipped_vertically=flipped_vertically,
-                flipped_diagonally=flipped_diagonally,
-                hit_box_algorithm=hit_box_algorithm,
-                hit_box_detail=hit_box_detail,
-            )
+        if self._texture:
             self.textures = [self._texture]
-            # Ignore the texture's scale and use ours
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
-        # We'll allow creating sprites without textures for now.
-        # The sprite must at some point get a texture assigned before used.
-        # else:
-        #     raise ValueError("You must provide either a texture or a filename.")
-
-        if self._texture and not self._points:
-            self._points = self._texture.hit_box_points
+            if not self._points:
+                self._points = self._texture.hit_box_points
 
     @property
     def properties(self) -> Dict[str, Any]:
@@ -356,27 +235,15 @@ class Sprite:
         Specify a hit box unadjusted for translation, rotation, or scale.
         You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
         """
-        # If there is no hitbox, use the width/height to get one
-        if self._points is None and self._texture:
+        # Use existing points if we have them
+        if self._points is not None:
+            return self._points
+
+        # If we don't already have points, try to get them from the texture
+        if self._texture:
             self._points = self._texture.hit_box_points
-
-        if self._points is None and self._width:
-            x1, y1 = -self._width / 2, -self._height / 2
-            x2, y2 = +self._width / 2, -self._height / 2
-            x3, y3 = +self._width / 2, +self._height / 2
-            x4, y4 = -self._width / 2, +self._height / 2
-
-            self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
-
-        if self._points is None and self.texture is not None:
-            self._points = self.texture.hit_box_points
-
-        if self._points is None:
-            raise ValueError(
-                "Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
-                "Sprite.texture is set to a texture before trying to draw or do collision testing.\n"
-                "Alternatively, manually call Sprite.set_hit_box with points for your hitbox."
-            )
+        else:
+            raise ValueError("Sprite has no hit box points due to missing texture")
 
         return self._points
 
@@ -1199,23 +1066,14 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
             self,
-            filename: Optional[str] = None,
-            scale: float = 1.0,
-            image_x: int = 0,
-            image_y: int = 0,
-            image_width: int = 0,
-            image_height: int = 0,
+            path_or_texture: PathOrTexture = None,
             center_x: float = 0.0,
             center_y: float = 0.0,
+            scale: float = 1.0,
     ):
-
         super().__init__(
-            filename=filename,
+            path_or_texture,
             scale=scale,
-            image_x=image_x,
-            image_y=image_y,
-            image_width=image_width,
-            image_height=image_height,
             center_x=center_x,
             center_y=center_y,
         )
@@ -1252,17 +1110,14 @@ class AnimatedWalkingSprite(Sprite):
     :ref:`platformer_part_twelve`.
     """
     def __init__(
-            self,
-            scale: float = 1.0,
-            image_x: int = 0,
-            image_y: int = 0,
-            center_x: float = 0.0,
-            center_y: float = 0.0,
+        self,
+        scale: float = 1.0,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
     ):
         super().__init__(
+            None,
             scale=scale,
-            image_x=image_x,
-            image_y=image_y,
             center_x=center_x,
             center_y=center_y,
         )
@@ -1395,14 +1250,13 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")
 
-    # print(image_object.n_frames)
-
     sprite = AnimatedTimeBasedSprite()
     for frame in range(image_object.n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info['duration']
         image = image_object.convert("RGBA")
-        texture = Texture(f"{resource_name}-{frame}", image)
+        texture = Texture(image)
+        texture.origin = f"{resource_name}|{frame}"
         sprite.textures.append(texture)
         sprite.frames.append(AnimationKeyframe(0, frame_duration, texture))
 
@@ -1425,13 +1279,24 @@ class SpriteSolidColor(Sprite):
     """
     _default_image = PIL.Image.new("RGBA", (32, 32), (255, 255, 255, 255))
 
-    def __init__(self, width: int, height: int, color: Color):
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        *,
+        center_x: float = 0,
+        center_y: float = 0,
+        color: Color = (255, 255, 255, 255),
+    ):
         """
         Create a solid-color rectangular sprite.
         """
-        super().__init__()
-        self.texture = SolidColorTexture("sprite_solid_color", width, height, self._default_image)
-        self._color = arcade.get_four_byte_color(color)
+        super().__init__(
+            SolidColorTexture("sprite_solid_color", width, height, self._default_image),
+            center_x=center_x,
+            center_y=center_y,
+        )
+        self.color = arcade.get_four_byte_color(color)
 
 
 class SpriteCircle(Sprite):
@@ -1456,34 +1321,38 @@ class SpriteCircle(Sprite):
                       center to transparent edges.
     """
     def __init__(self, radius: int, color: Color, soft: bool = False):
-        super().__init__()
         radius = int(radius)
         diameter = radius * 2
         color_rgba = arcade.get_four_byte_color(color)
 
-        # NOTE: We are only creating white textures. The actual color is
-        #       is applied in the shader through the sprite's color attribute.
+        # We are only creating white textures. The actual color is
+        # is applied in the shader through the sprite's color attribute.
         # determine the texture's cache name.
         if soft:
-            cache_name = build_cache_name("circle_texture_soft", diameter, 255, 255, 255, 255)
+            cache_name = cache.crate_str_from_values("circle_texture_soft", diameter, 255, 255, 255, 255)
         else:
-            cache_name = build_cache_name("circle_texture", diameter, 255, 255, 255, 255)
+            cache_name = cache.crate_str_from_values("circle_texture", diameter, 255, 255, 255, 255)
 
-        # use the named texture if it was already made
-        if cache_name in Texture.cache:  # type: ignore
-            texture = Texture.cache[cache_name]  # type: ignore
-
-        # generate the texture if it's not in the cache
-        else:
+        # Get existing texture from cache if possible
+        texture = cache.texture_cache.get_with_config(cache_name, hitbox.algo_simple)
+        if not texture:
             if soft:
-                texture = make_soft_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
+                texture = make_soft_circle_texture(
+                    diameter,
+                    color=(255, 255, 255, 255),
+                    name=cache_name,
+                    hit_box_algorithm=hitbox.algo_simple,
+                )
             else:
-                texture = make_circle_texture(diameter, (255, 255, 255, 255), name=cache_name)
-
-            Texture.cache[cache_name] = texture  # type: ignore
+                texture = make_circle_texture(
+                    diameter,
+                    color=(255, 255, 255, 255),
+                    name=cache_name,
+                )
+            cache.texture_cache.put(texture)
 
         # apply results to the new sprite
-        self.texture = texture
+        super().__init__(texture)
         self.color = color_rgba
         self._points = self.texture.hit_box_points
 

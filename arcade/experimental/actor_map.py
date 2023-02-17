@@ -10,6 +10,7 @@ from typing import Tuple
 
 import arcade
 from arcade.gl import geometry
+from arcade import hitbox
 
 
 class ActorMap(arcade.Window):
@@ -123,6 +124,10 @@ class Map:
             ":resources:images/tiles/dirtCenter_rounded.png",
             ":resources:images/tiles/dirtCenter.png",
         ]
+        self.textures = [
+            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box) 
+            for path in texture_paths
+        ]
 
         tex_size = 128
         step_x = self.size[1] // tex_size * 4
@@ -133,7 +138,7 @@ class Map:
             for x in range(step_x):
                 self.sprites.append(
                     arcade.Sprite(
-                        random.choice(texture_paths),
+                        random.choice(self.textures),
                         center_x=16 + x * 32,
                         center_y=16 + y * 32,
                         scale=0.25,

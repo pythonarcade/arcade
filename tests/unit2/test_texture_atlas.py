@@ -3,18 +3,45 @@ import pytest
 from pyglet.image.atlas import AllocatorException
 import arcade
 from arcade import TextureAtlas, load_texture
+from arcade.gl import Texture as GLTexture, Framebuffer
 
 
-def check_internals(atlas, num_textures):
-    assert len(atlas._uv_slots_free) == atlas._num_slots - num_textures
-    assert len(atlas._uv_slots) == num_textures
+def check_internals(atlas: arcade.TextureAtlas, *, num_textures = 0, num_images = 0):
+    # Images
+    assert len(atlas._images) == num_images
+    assert len(atlas._image_uv_slots) == num_textures
+    assert len(atlas._image_uv_slots_free) == atlas._num_image_slots - num_images
+    assert len(atlas._image_regions) == num_images
+
+    # Textures
     assert len(atlas._textures) == num_textures
-    assert len(atlas._atlas_regions) == num_textures
+    assert len(atlas._texture_uv_slots) == num_textures
+    assert len(atlas._texture_uv_slots_free) == atlas._num_texture_slots - num_images    
+    assert len(atlas._texture_regions) == num_images
+
+    # Misc
+    assert len(atlas._image_ref_count) == num_images
+    # TODO: Check the size of these when when texture row allocation is fixed
+    # atlas._image_uv_data
+    # atlas._texture_uv_data
 
 
 def test_create(ctx):
-    TextureAtlas((100, 100), border=1)
-    TextureAtlas((100, 200), border=0)
+    atlas = TextureAtlas((100, 200))
+    assert atlas.width == 100
+    assert atlas.height == 200
+    assert atlas.size == (100, 200)
+    assert atlas.border == 1
+    assert atlas.auto_resize is True
+    assert isinstance(atlas.max_size, tuple)
+    assert atlas.max_size > (0, 0)
+    assert isinstance(atlas.texture, GLTexture)
+    assert isinstance(atlas.image_uv_texture, GLTexture)
+    assert isinstance(atlas.texture_uv_texture, GLTexture)
+    assert isinstance(atlas.fbo, Framebuffer)
+    assert atlas._image_uv_data_changed is True
+    assert atlas._texture_uv_data_changed is True
+    check_internals(atlas, num_images=0, num_textures=0)
 
 
 def test_add(ctx):
@@ -26,11 +53,11 @@ def test_add(ctx):
     slot_b, region_b = atlas.add(tex_b)
     assert slot_a == 0
     assert slot_b == 1
-    check_internals(atlas, 2)
+    check_internals(atlas, num_images=2, num_textures=2)
     # Add existing textures
     assert slot_a == atlas.add(tex_a)[0]
     assert slot_b == atlas.add(tex_b)[0]
-    check_internals(atlas, 2)
+    check_internals(atlas, num_images=2, num_textures=2)
     atlas.use_uv_texture()
 
 
@@ -41,22 +68,22 @@ def test_remove(ctx):
     atlas = TextureAtlas((200, 200), border=1)
     slot_a, region_a = atlas.add(tex_a)
     slot_b, region_b = atlas.add(tex_b)
-    check_internals(atlas, 2)
+    check_internals(atlas, num_images=2, num_textures=2)
     atlas.remove(tex_a)
-    check_internals(atlas, 1)
+    check_internals(atlas, num_images=1, num_textures=1)
     atlas.rebuild()
-    check_internals(atlas, 1)
+    check_internals(atlas, num_images=1, num_textures=1)
     atlas.remove(tex_b)
-    check_internals(atlas, 0)
+    check_internals(atlas, num_images=0, num_textures=0)
     atlas.rebuild()
-    check_internals(atlas, 0)
+    check_internals(atlas,  num_images=0, num_textures=0)
 
 
 def test_add_overflow(ctx):
     """Ensure AllocatorException is raised when atlas is full"""
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
-    atlas = TextureAtlas((100, 100), border=1, auto_resize=False)
+    atlas = TextureAtlas((100, 100), auto_resize=False)
     slot_a, region = atlas.add(tex_a)
     assert slot_a == 0
     # Atlas should be full at this point
@@ -73,15 +100,15 @@ def test_rebuild(ctx):
     atlas = TextureAtlas((104, 104), border=1)
     slot_a, region_a = atlas.add(tex_big)
     slot_b, region_b = atlas.add(tex_small)
-    region_a = atlas.get_region_info(tex_big.name)
-    region_b = atlas.get_region_info(tex_small.name)
+    region_a = atlas.get_texture_region_info(tex_big.atlas_name)
+    region_b = atlas.get_texture_region_info(tex_small.atlas_name)
 
     # Re-build and check states
     atlas.rebuild()
-    assert slot_a == atlas.get_texture_id(tex_big.name)
-    assert slot_b == atlas.get_texture_id(tex_small.name)
-    region_aa = atlas.get_region_info(tex_big.name)
-    region_bb = atlas.get_region_info(tex_small.name)
+    assert slot_a == atlas.get_texture_id(tex_big.atlas_name)
+    assert slot_b == atlas.get_texture_id(tex_small.atlas_name)
+    region_aa = atlas.get_texture_region_info(tex_big.atlas_name)
+    region_bb = atlas.get_texture_region_info(tex_small.atlas_name)
 
     # The textures have switched places in the atlas and should
     # have the same left position
@@ -90,7 +117,7 @@ def test_rebuild(ctx):
     assert region_b.texture_coordinates[0] != region_bb.texture_coordinates[0]
     assert region_a.texture_coordinates[0] != region_aa.texture_coordinates[0]
 
-    check_internals(atlas, 2)
+    check_internals(atlas, num_images=2, num_textures=2)
 
 
 def test_clear(ctx):
@@ -100,9 +127,9 @@ def test_clear(ctx):
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
     atlas.add(tex_a)
     atlas.add(tex_b)
-    check_internals(atlas, 2)
+    check_internals(atlas, num_images=2, num_textures=2)
     atlas.clear()
-    check_internals(atlas, 0)
+    check_internals(atlas, num_images=0, num_textures=0)
 
 
 def test_to_image(ctx):
@@ -156,19 +183,20 @@ def test_calculate_minimum_size(ctx):
     size = TextureAtlas.calculate_minimum_size(textures)
     atlas = TextureAtlas(size, textures=textures)
     # We have two duplicate textures in the list
-    check_internals(atlas, len(textures) - 2)
+    count = len(textures) - 2
+    check_internals(atlas, num_images=count, num_textures=count)
     assert size == (320, 320)
 
     textures = textures[:len(textures) // 2]
     size = TextureAtlas.calculate_minimum_size(textures)
     atlas = TextureAtlas(size, textures=textures)
-    check_internals(atlas, len(textures))
+    check_internals(atlas, num_textures=len(textures), num_images=len(textures))
     assert size == (192, 192)
 
     textures = textures[:len(textures) // 2]
     size = TextureAtlas.calculate_minimum_size(textures)
     atlas = TextureAtlas(size, textures=textures)
-    check_internals(atlas, len(textures))
+    check_internals(atlas, num_images=len(textures), num_textures=len(textures))
     assert size == (64, 64)
 
     # Empty list should at least create the minimum atlas
@@ -206,20 +234,21 @@ def test_update_texture_image(ctx):
 def test_resize(ctx):
     """Attempt to resize the atlas"""
     atlas = TextureAtlas((50, 100), border=0, auto_resize=False)
-    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
-    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
+    t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
+    t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
     atlas.add(t1)
     atlas.add(t2)
     atlas.resize((50, 100))
 
+    # Make atlas so small the current textures won't fit
     with pytest.raises(AllocatorException):
         atlas.resize((50, 99))
 
     # Resize past max size
     atlas = TextureAtlas((50, 50), border=0)
     atlas._max_size = 60, 60
-    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
-    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
+    t1 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
+    t2 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
     atlas.add(t1)
     with pytest.raises(AllocatorException):
         atlas.add(t2)

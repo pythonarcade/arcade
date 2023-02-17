@@ -10,7 +10,7 @@ def make_named_sprites(amount):
     sprites = []
     for i in range(amount):
         c = i + 1
-        sprite = arcade.SpriteSolidColor(16, 16, (c, c, c, 1))
+        sprite = arcade.SpriteSolidColor(16, 16, color=(c, c, c, 1))
         sprite.name = i
         sprites.append(sprite)
 
@@ -22,7 +22,7 @@ def test_it_can_extend_a_spritelist_from_a_list():
     spritelist = arcade.SpriteList()
     sprites = []
     for i in range(10):
-        sprites.append(arcade.Sprite())
+        sprites.append(arcade.SpriteSolidColor(width=16, height=16, color=arcade.color.RED))
 
     spritelist.extend(sprites)
 
@@ -32,7 +32,16 @@ def test_it_can_extend_a_spritelist_from_a_list():
 def test_it_can_extend_a_spritelist_from_a_generator_expression():
     sprite_list = arcade.SpriteList()
     sprite_list.extend(
-        (arcade.Sprite(center_x=coord, center_y=coord) for coord in range(5))
+        (
+            arcade.SpriteSolidColor(
+                width=32,
+                height=32,
+                center_x=coord,
+                center_y=coord,
+                color=arcade.color.RED,
+            )
+            for coord in range(5)
+        )
     )
     for coord, sprite in enumerate(sprite_list):
         assert sprite.position == (coord, coord)
@@ -44,7 +53,10 @@ def test_it_can_extend_a_spritelist_from_a_generator_function():
     def sprite_grid_generator(cols: int, rows: int, cell_size: float):
         for row in range(rows):
             for col in range(cols):
-                yield arcade.Sprite(
+                yield arcade.SpriteSolidColor(
+                    width=32,
+                    height=32,
+                    color=arcade.color.RED,
                     center_x=col * cell_size,
                     center_y=row * cell_size
                 )
@@ -60,7 +72,7 @@ def test_it_can_extend_a_spritelist_from_a_generator_function():
 def test_it_can_insert_in_a_spritelist():
     spritelist = make_named_sprites(2)
 
-    sprite = arcade.Sprite()
+    sprite = arcade.SpriteSolidColor(16, 16, color=arcade.color.RED)
     sprite.name = 2
     spritelist.insert(1, sprite)
 
@@ -104,8 +116,8 @@ def test_setitem(ctx):
         spritelist[0] = spritelist[1]
 
     # Assign new sprite
-    spritelist[0] = arcade.SpriteSolidColor(16, 16, arcade.color.RED)
-    spritelist.insert(0, arcade.SpriteSolidColor(16, 16, arcade.color.BLUE))
+    spritelist[0] = arcade.SpriteSolidColor(16, 16, color=arcade.color.RED)
+    spritelist.insert(0, arcade.SpriteSolidColor(16, 16, color=arcade.color.BLUE))
 
     spritelist.draw()
 
@@ -129,13 +141,13 @@ def test_can_shuffle(ctx):
 
 
 def test_sort(ctx):
-    s1 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s1 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
     s1.set_position(100, 100)
 
-    s2 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s2 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
     s2.set_position(110, 100)
 
-    s3 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s3 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
     s3.set_position(120, 100)
 
     sprites_v1 = [s1, s2, s3]
@@ -169,6 +181,7 @@ def test_clear(ctx):
     assert len(sp._sprite_pos_data) == 100 * 2
     assert sp._sprite_index_buf.size == 100 * 4
     assert sp._sprite_pos_buf.size == 100 * 4 * 2
+
 
 def test_color():
     """Spritelist color"""

@@ -45,7 +45,7 @@ class ShipSprite(arcade.Sprite):
         """ Set up the space ship. """
 
         # Call the parent Sprite constructor
-        super().__init__(filename, scale)
+        super().__init__(filename, scale=scale)
 
         # Info on where we are going.
         # Angle comes in automatically from the parent class.
@@ -181,18 +181,16 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite(":resources:images/space_shooter/"
-                                        "playerShip1_orange.png",
-                                        SCALE)
+        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png",
+                                        scale=SCALE)
         self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite(":resources:images/space_shooter/"
-                                 "playerLife1_orange.png",
-                                 SCALE)
+            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png",
+                                 scale=SCALE)
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
@@ -205,7 +203,7 @@ class MyGame(arcade.Window):
                       ":resources:images/space_shooter/meteorGrey_big4.png")
         for i in range(STARTING_ASTEROID_COUNT):
             image_no = random.randrange(4)
-            enemy_sprite = AsteroidSprite(image_list[image_no], SCALE)
+            enemy_sprite = AsteroidSprite(image_list[image_no], scale=SCALE)
             enemy_sprite.guid = "Asteroid"
 
             enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
@@ -254,9 +252,8 @@ class MyGame(arcade.Window):
         """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
-            bullet_sprite = TurningSprite(":resources:images/space_shooter/"
-                                          "laserBlue01.png",
-                                          SCALE)
+            bullet_sprite = TurningSprite(":resources:images/space_shooter/laserBlue01.png",
+                                          scale=SCALE)
             bullet_sprite.guid = "Bullet"
 
             bullet_speed = 13
@@ -307,7 +304,7 @@ class MyGame(arcade.Window):
                               ":resources:images/space_shooter/meteorGrey_med2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              SCALE * 1.5)
+                                              scale=SCALE * 1.5)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -328,7 +325,7 @@ class MyGame(arcade.Window):
                               ":resources:images/space_shooter/meteorGrey_small2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              SCALE * 1.5)
+                                              scale=SCALE * 1.5)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -349,7 +346,7 @@ class MyGame(arcade.Window):
                               ":resources:images/space_shooter/meteorGrey_tiny2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              SCALE * 1.5)
+                                              scale=SCALE * 1.5)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x

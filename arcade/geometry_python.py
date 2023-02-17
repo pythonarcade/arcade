@@ -1,10 +1,8 @@
 """
 Functions for calculating geometry.
 """
-
 from typing import cast
-
-from arcade import PointList
+from arcade.types import PointList
 
 
 _PRECISION = 2

@@ -44,7 +44,7 @@ class Player(Section):
         self.key_down: int = key_down
 
         # the player paddle
-        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, BLACK)
+        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, color=BLACK)
 
         # player score
         self.score: int = 0

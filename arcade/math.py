@@ -1,6 +1,11 @@
 import math
 import random
-from arcade.arcade_types import Point, Vector
+from arcade.types import Point, Vector
+
+
+def clamp(a, low: float, high: float) -> float:
+    """ Clamp a number between a range. """
+    return high if a > high else max(a, low)
 
 
 def lerp(v1: float, v2: float, u: float) -> float:
@@ -36,7 +41,7 @@ def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
     )
 
 
-def rand_in_circle(center: Point, radius: float):
+def rand_in_circle(center: Point, radius: float) -> Point:
     """
     Generate a point in a circle, or can think of it as a vector pointing
     a random direction with a random magnitude <= radius

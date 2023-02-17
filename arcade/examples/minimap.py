@@ -87,7 +87,7 @@ class MyGame(arcade.Window):
             for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -100,9 +100,11 @@ class MyGame(arcade.Window):
         # Construct the minimap
         size = (MINIMAP_WIDTH, MINIMAP_HEIGHT)
         self.minimap_texture = arcade.Texture.create_empty(str(uuid4()), size)
-        self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
-                                            center_y=self.height - MINIMAP_HEIGHT / 2,
-                                            texture=self.minimap_texture)
+        self.minimap_sprite = arcade.Sprite(
+            self.minimap_texture,
+            center_x=MINIMAP_WIDTH / 2,
+            center_y=self.height - MINIMAP_HEIGHT / 2,
+        )
 
         self.minimap_sprite_list = arcade.SpriteList()
         self.minimap_sprite_list.append(self.minimap_sprite)

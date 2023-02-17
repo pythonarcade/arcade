@@ -15,6 +15,7 @@ from arcade.resources import (
     image_laser_blue01,
     image_zombie_idle,
 )
+from arcade.types import Color
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
@@ -47,7 +48,7 @@ def sprite_off_screen(
 class Player(arcade.Sprite):
     def __init__(self, bar_list: arcade.SpriteList) -> None:
         super().__init__(
-            filename=image_female_person_idle,
+            image_female_person_idle,
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
@@ -59,7 +60,7 @@ class Player(arcade.Sprite):
 class Bullet(arcade.Sprite):
     def __init__(self) -> None:
         super().__init__(
-            filename=image_laser_blue01,
+            image_laser_blue01,
             scale=SPRITE_SCALING_BULLET,
         )
 
@@ -79,8 +80,8 @@ class IndicatorBar:
     :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
     bar components.
     :param Tuple[float, float] position: The initial position of the bar.
-    :param arcade.Color full_color: The color of the bar.
-    :param arcade.Color background_color: The background color of the bar.
+    :param Color full_color: The color of the bar.
+    :param Color background_color: The background color of the bar.
     :param int width: The width of the bar.
     :param int height: The height of the bar.
     :param int border_size: The size of the bar's border.
@@ -91,8 +92,8 @@ class IndicatorBar:
         owner: Player,
         sprite_list: arcade.SpriteList,
         position: Tuple[float, float] = (0, 0),
-        full_color: arcade.Color = arcade.color.GREEN,
-        background_color: arcade.Color = arcade.color.BLACK,
+        full_color: Color = arcade.color.GREEN,
+        background_color: Color = arcade.color.BLACK,
         width: int = 100,
         height: int = 4,
         border_size: int = 4,
@@ -113,12 +114,12 @@ class IndicatorBar:
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._box_width + border_size,
             self._box_height + border_size,
-            background_color,
+            color=background_color,
         )
         self._full_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._box_width,
             self._box_height,
-            full_color,
+            color=full_color,
         )
         self.sprite_list.append(self._background_box)
         self.sprite_list.append(self._full_box)
@@ -198,7 +199,7 @@ class MyGame(arcade.Window):
         self.player_sprite_list.append(self.player_sprite)
 
         # Create enemy Sprite
-        self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
+        self.enemy_sprite = arcade.Sprite(image_zombie_idle, scale=SPRITE_SCALING_ENEMY)
         self.enemy_sprite_list.append(self.enemy_sprite)
 
         # Create text objects

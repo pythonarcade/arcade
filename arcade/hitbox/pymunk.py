@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from PIL.Image import Image
 import pymunk
 from pymunk.autogeometry import (
@@ -7,26 +7,48 @@ from pymunk.autogeometry import (
     simplify_curves,
 )
 from pymunk import Vec2d
-from arcade import Point, PointList
+from arcade.types import Point, PointList
 from .base import HitBoxAlgorithm
 
 
-class DetailedHitBoxAlgorithm(HitBoxAlgorithm):
-    name = "detailed"
-    default_hit_box_detail = 4.5
+class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
+    """
+    Hit box point algorithm that uses pymunk to calculate the points.
 
-    def calculate(self, image: Image, **kwargs) -> PointList:
+    This is a more accurate algorithm generating more points. The
+    point count can be controlled with the ``detail`` parameter.
+    """
+    name = "pymunk"
+    #: The default detail when creating a new instance.
+    default_detail = 4.5
+
+    def __init__(self, *, detail: Optional[float] = None):
+        self.detail = detail or self.default_detail
+
+    @property
+    def param_str(self) -> str:
         """
-        Given an RGBA image, this returns points that make up a hit box around it. Attempts
-        to trim out transparent pixels.
+        Return a string representation of the parameters used to create this algorithm.
+
+        This is used in caching.
+        """
+        return f"detail={self.detail}"
+
+    def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
+        """Create a new instance with new default values"""
+        return PymunkHitBoxAlgorithm(detail=detail or self.detail)
+
+    def calculate(self, image: Image, detail: Optional[float] = None, **kwargs) -> PointList:
+        """
+        Given an RGBA image, this returns points that make up a hit box around it.
 
         :param Image image: Image get hit box from.
-        :param int hit_box_detail: How detailed to make the hit box. There's a
-                                   trade-off in number of points vs. accuracy.
+        :param int detail: How detailed to make the hit box. There's a
+                           trade-off in number of points vs. accuracy.
 
         :Returns: List of points
         """
-        hit_box_detail = kwargs.get("hit_box_detail", self.default_hit_box_detail)
+        hit_box_detail = detail or self.detail
 
         if image.mode != "RGBA":
             raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")

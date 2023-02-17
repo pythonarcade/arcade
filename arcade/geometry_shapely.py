@@ -5,7 +5,7 @@ Functions for calculating geometry.
 from shapely import speedups  # type: ignore
 from shapely.geometry import Polygon, Point  # type: ignore
 
-from arcade import PointList
+from arcade.types import PointList
 
 _PRECISION = 2
 

@@ -185,7 +185,7 @@ class NinePatchTexture:
         """
         # TODO support to draw at a given position
         self.program.set_uniform_safe(
-            "texture_id", self._atlas.get_texture_id(self._texture.name)
+            "texture_id", self._atlas.get_texture_id(self._texture.atlas_name)
         )
         if pixelated:
             self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST

@@ -65,7 +65,7 @@ class SoundButton(arcade.SpriteSolidColor):
         center_y=0,
         streaming=False
     ):
-        super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
+        super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file, streaming=streaming)
         self.pan = pan
         self.volume = volume

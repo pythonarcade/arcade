@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING
 from pyglet import gl
 
 from .utils import data_to_ctypes
-from arcade.arcade_types import BufferProtocol
+from arcade.types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context

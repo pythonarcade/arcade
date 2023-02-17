@@ -19,7 +19,7 @@ from .query import Query
 from .texture import Texture
 from .types import BufferDescription
 from .vertex_array import Geometry
-from ..arcade_types import BufferProtocol
+from ..types import BufferProtocol
 
 LOG = logging.getLogger(__name__)
 

@@ -186,7 +186,7 @@ class MyGame(arcade.Window):
 
         # Image from kenney.nl
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
-                                           SPRITE_SCALING_PLAYER)
+                                           scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -197,7 +197,7 @@ class MyGame(arcade.Window):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png",
-                                 SPRITE_SCALING_COIN)
+                                 scale=SPRITE_SCALING_COIN)
             coin.angle = 180
 
             # Position the coin
@@ -239,7 +239,7 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.

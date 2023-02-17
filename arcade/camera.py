@@ -7,9 +7,10 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
+from arcade.types import Point
 
 if TYPE_CHECKING:
-    from arcade import Point, Sprite, SpriteList
+    from arcade import Sprite, SpriteList
 
 # type aliases
 FourIntTuple = Tuple[int, int, int, int]
@@ -123,7 +124,7 @@ class SimpleCamera:
     @scale.setter
     def scale(self, new_scale: Tuple[float, float]) -> None:
         """
-        Sets the x, y scale by modifiyng the projection
+        Sets the x, y scale by modifying the projection
         """
         sx, sy = new_scale
 
@@ -168,7 +169,7 @@ class SimpleCamera:
 
     def _set_projection_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
-        Helper method. This will just precompute the projection and combined matrix
+        Helper method. This will just pre-compute the projection and combined matrix
 
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
@@ -178,7 +179,7 @@ class SimpleCamera:
 
     def _set_view_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
-        Helper method. This will just precompute the view and combined matrix
+        Helper method. This will just pre-compute the view and combined matrix
 
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
@@ -194,7 +195,7 @@ class SimpleCamera:
             self._set_combined_matrix()
 
     def _set_combined_matrix(self) -> None:
-        """ Helper method. This will just precompute the combined matrix"""
+        """ Helper method. This will just pre-compute the combined matrix"""
         self._combined_matrix = self._view_matrix @ self._projection_matrix
 
     def move_to(self, vector: Union[Vec2, tuple], speed: float = 1.0) -> None:
@@ -273,7 +274,7 @@ class SimpleCamera:
             self.position = self.position.lerp(self.goal_position, self.move_speed)
             if self.position == self.goal_position:
                 self.moving = False
-            self._set_view_matrix()  # this will alse set the combined matrix
+            self._set_view_matrix()  # this will also set the combined matrix
 
     def use(self) -> None:
         """
@@ -341,7 +342,7 @@ class Camera(SimpleCamera):
             self.zoom = zoom
 
         # Init matrixes
-        # This will precompute the rotation matrix
+        # This will pre-compute the rotation matrix
         self._set_rotation_matrix()
 
     def set_viewport(self, viewport: FourIntTuple) -> None:
@@ -354,7 +355,7 @@ class Camera(SimpleCamera):
 
     def _set_projection_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
-        Helper method. This will just precompute the projection and combined matrix
+        Helper method. This will just pre-compute the projection and combined matrix
 
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """

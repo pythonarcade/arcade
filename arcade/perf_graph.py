@@ -1,11 +1,12 @@
+import random
 from typing import List
 
-import arcade
-from arcade import Color
-import random
 import pyglet.clock
 from pyglet.shapes import Line
 from pyglet.graphics import Batch
+
+import arcade
+from arcade.types import Color
 
 
 class PerfGraph(arcade.Sprite):
@@ -61,7 +62,7 @@ class PerfGraph(arcade.Sprite):
 
         unique_id = str(random.random())
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
-        super().__init__(texture=self.minimap_texture)
+        super().__init__(self.minimap_texture)
         self.proj = 0, self.width, 0, self.height
 
         # The data line is redrawn each update by a function that does

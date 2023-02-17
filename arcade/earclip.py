@@ -3,7 +3,7 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from arcade import Point, PointList
+from arcade.types import Point, PointList
 from typing import List, Tuple
 
 

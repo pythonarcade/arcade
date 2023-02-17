@@ -96,7 +96,7 @@ class MyGame(arcade.Window):
 
         # Set up the player, specifically placing it at these coordinates.
         src = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        self.player_sprite = arcade.Sprite(src, CHARACTER_SCALING)
+        self.player_sprite = arcade.Sprite(src, scale=CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)

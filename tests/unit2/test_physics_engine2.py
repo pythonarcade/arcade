@@ -290,13 +290,13 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
 def test_main(window: arcade.Window):
     character_list = arcade.SpriteList()
     wall_list = arcade.SpriteList()
-    moving_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.RED)
+    moving_sprite = arcade.SpriteSolidColor(width=10, height=10, color=arcade.color.RED)
     character_list.append(moving_sprite)
 
-    wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
+    wall_sprite = arcade.SpriteSolidColor(width=10, height=10, color=arcade.color.BLUE)
     wall_list.append(wall_sprite)
 
-    wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
+    wall_sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.BLUE)
     wall_sprite.position = OUT_OF_THE_WAY
     wall_list.append(wall_sprite)
 

@@ -1,7 +1,9 @@
 from pathlib import Path
 import shutil
 import sys
+import pyglet
 import arcade
+import PIL
 
 EXAMPLE_PATH = Path(__file__).parent.parent.resolve() / "examples"
 
@@ -29,6 +31,8 @@ def show_info():
     print('version:', window.ctx.gl_version)
     print('python:', sys.version)
     print('platform:', sys.platform)
+    print('pyglet version:', pyglet.__version__)
+    print('PIL version:', PIL.__version__)
 
 
 def start_project(path_str: str):

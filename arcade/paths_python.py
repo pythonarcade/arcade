@@ -1,8 +1,10 @@
-from arcade import Point
-from arcade import SpriteList
-from arcade import get_distance
-from arcade import lerp_vec
-from arcade import get_sprites_at_point
+from arcade import (
+    SpriteList,
+    get_distance,
+    get_sprites_at_point,
+)
+from arcade.types import Point
+from arcade.math import lerp_vec
 
 
 def has_line_of_sight(point_1: Point,

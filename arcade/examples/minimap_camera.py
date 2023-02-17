@@ -97,7 +97,7 @@ class MyGame(arcade.Window):
             for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)

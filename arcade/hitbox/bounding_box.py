@@ -1,5 +1,5 @@
 from PIL.Image import Image
-from arcade import PointList
+from arcade.types import PointList
 from .base import HitBoxAlgorithm
 
 
@@ -7,7 +7,8 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
     """
     A simple hit box algorithm that returns a hit box around the entire image.
     """
-    name = "bounding"
+    name = "bounding_box"
+    cache = False
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """

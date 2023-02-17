@@ -6,7 +6,7 @@ def test_pymunk():
     physics_engine = arcade.PymunkPhysicsEngine(damping=1.0,
                                                 gravity=(0, -100))
 
-    my_sprite = arcade.SpriteSolidColor(50, 50, arcade.color.WHITE)
+    my_sprite = arcade.SpriteSolidColor(50, 50, color=arcade.color.WHITE)
 
     assert my_sprite.center_x == 0
     assert my_sprite.center_y == 0
@@ -33,7 +33,7 @@ def test_pymunk_add_sprite_moment_backwards_compatibility(moment_of_inertia_arg_
     """
     physics_engine = arcade.PymunkPhysicsEngine(damping=1.0, gravity=(0,0))
 
-    sprite = arcade.SpriteSolidColor(32, 32, arcade.color.RED)
+    sprite = arcade.SpriteSolidColor(32, 32, color=arcade.color.RED)
 
     # Choose a non-default value that we can check was set
     kwargs = {moment_of_inertia_arg_name: arcade.PymunkPhysicsEngine.MOMENT_INF}

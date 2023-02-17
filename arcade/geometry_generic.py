@@ -14,11 +14,6 @@ def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
     return math.hypot(x1 - x2, y1 - y2)
 
 
-def clamp(a, low: float, high: float) -> float:
-    """ Clamp a number between a range. """
-    return high if a > high else max(a, low)
-
-
 def rotate_point(
     x: float,
     y: float,

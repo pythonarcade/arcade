@@ -6,10 +6,9 @@ Many of these commands are slow, because they load everything to the
 graphics card each time a shape is drawn. For faster drawing, see the
 Buffered Draw Commands.
 """
-# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
-
-import math
 import array
+import math
+from typing import Optional, Tuple
 
 import PIL.Image
 import PIL.ImageOps
@@ -17,17 +16,15 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from typing import Optional, Tuple
-
-from arcade import Color
-from arcade import PointList
-from arcade import earclip
+from arcade.types import Color, PointList
+from arcade.earclip import earclip
 from .geometry_generic import rotate_point
-from arcade import get_four_byte_color
-from arcade import get_points_for_thick_line
-from arcade import Texture
-from arcade import get_window
-
+from arcade import (
+    get_four_byte_color,
+    get_points_for_thick_line,
+    Texture,
+    get_window,
+)
 
 # --- BEGIN ARC FUNCTIONS # # #
 

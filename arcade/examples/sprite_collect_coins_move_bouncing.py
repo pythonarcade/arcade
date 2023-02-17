@@ -24,9 +24,9 @@ SCREEN_TITLE = "Sprite Collect Moving and Bouncing Coins Example"
 
 class Coin(arcade.Sprite):
 
-    def __init__(self, filename, sprite_scaling):
+    def __init__(self, filename, scale):
 
-        super().__init__(filename, sprite_scaling)
+        super().__init__(filename, scale=scale)
 
         self.change_x = 0
         self.change_y = 0
@@ -84,8 +84,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
@@ -95,7 +97,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

@@ -59,7 +59,7 @@ class ModalSection(Section):
         super().__init__(left, bottom, width, height, modal=True, enabled=False)
 
         # modal button
-        self.button = arcade.SpriteSolidColor(100, 50, arcade.color.RED)
+        self.button = arcade.SpriteSolidColor(100, 50, color=arcade.color.RED)
         pos = self.left + self.width / 2, self.bottom + self.height / 2
         self.button.position = pos
 
@@ -140,7 +140,7 @@ class Panel(Section):
     @staticmethod
     def new_button(color):
         # helper to create new buttons
-        return arcade.SpriteSolidColor(100, 50, color)
+        return arcade.SpriteSolidColor(100, 50, color=color)
 
     def draw_button_stop(self):
         arcade.draw_text('Press button to stop the ball', self.left + 10,

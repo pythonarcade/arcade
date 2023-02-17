@@ -45,7 +45,7 @@ class Player(arcade.SpriteSolidColor):
     """ Player ship """
     def __init__(self):
         """ Set up player """
-        super().__init__(40, 10, arcade.color.SLATE_GRAY)
+        super().__init__(40, 10, color=arcade.color.SLATE_GRAY)
         self.face_right = True
 
     def accelerate_up(self):
@@ -219,14 +219,14 @@ class MyGame(arcade.Window):
 
         # Add stars
         for i in range(80):
-            sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
+            sprite = arcade.SpriteSolidColor(4, 4, color=arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
             self.star_sprite_list.append(sprite)
 
         # Add enemies
         for i in range(20):
-            sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
+            sprite = arcade.SpriteSolidColor(20, 20, color=arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
             self.enemy_sprite_list.append(sprite)

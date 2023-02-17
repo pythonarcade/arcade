@@ -5,24 +5,29 @@ This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
-
-from array import array
-import struct
-import math
-import itertools
 from collections import defaultdict
+import itertools
+import math
+import struct
+from array import array
+from typing import (
+    List,
+    Iterable,
+    Sequence,
+    Optional,
+    TypeVar,
+    Generic,
+    cast,
+)
+
 import pyglet.gl as gl
 
-from typing import List, Iterable, Sequence, Optional
-from typing import TypeVar
-from typing import Generic
-from typing import cast
-
-from arcade import Color
-from arcade import Point, PointList
-from arcade import get_four_byte_color
-from arcade import get_window
-from arcade import get_points_for_thick_line
+from arcade.types import Color, Point, PointList
+from arcade import (
+    get_four_byte_color,
+    get_window,
+    get_points_for_thick_line,
+)
 from arcade.gl import BufferDescription
 from arcade.gl import Geometry
 from arcade.gl import Program

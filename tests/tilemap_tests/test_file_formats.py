@@ -17,13 +17,13 @@ def test_csv_left_up():
     wall_list = my_map.sprite_lists["Blocking Sprites"]
 
     assert wall_list[0].position == (64, 1216)
-    assert "dirtCenter" in wall_list[0].texture.name
+    assert "dirtCenter" in wall_list[0].texture.origin
 
     assert wall_list[1].position == (1216, 1216)
-    assert "grassCenter" in wall_list[1].texture.name
+    assert "grassCenter" in wall_list[1].texture.origin
 
     assert wall_list[2].position == (64, 64)
-    assert "boxCrate" in wall_list[2].texture.name
+    assert "boxCrate" in wall_list[2].texture.origin
 
 
 def test_csv_right_down():
@@ -40,13 +40,13 @@ def test_csv_right_down():
     wall_list = my_map.sprite_lists["Blocking Sprites"]
 
     assert wall_list[0].position == (64, 1216)
-    assert "dirtCenter" in wall_list[0].texture.name
+    assert "dirtCenter" in wall_list[0].texture.origin
 
     assert wall_list[1].position == (1216, 1216)
-    assert "grassCenter" in wall_list[1].texture.name
+    assert "grassCenter" in wall_list[1].texture.origin
 
     assert wall_list[2].position == (64, 64)
-    assert "boxCrate" in wall_list[2].texture.name
+    assert "boxCrate" in wall_list[2].texture.origin
 
 
 def test_base_64_zlib():
@@ -63,13 +63,13 @@ def test_base_64_zlib():
     wall_list = my_map.sprite_lists["Blocking Sprites"]
 
     assert wall_list[0].position == (64, 1216)
-    assert "dirtCenter" in wall_list[0].texture.name
+    assert "dirtCenter" in wall_list[0].texture.origin
 
     assert wall_list[1].position == (1216, 1216)
-    assert "grassCenter" in wall_list[1].texture.name
+    assert "grassCenter" in wall_list[1].texture.origin
 
     assert wall_list[2].position == (64, 64)
-    assert "boxCrate" in wall_list[2].texture.name
+    assert "boxCrate" in wall_list[2].texture.origin
 
 
 def test_base_64_gzip():
@@ -85,11 +85,12 @@ def test_base_64_gzip():
     assert "Blocking Sprites" in my_map.sprite_lists
     wall_list = my_map.sprite_lists["Blocking Sprites"]
 
+    assert len(wall_list) == 3
     assert wall_list[0].position == (64, 1216)
-    assert "dirtCenter" in wall_list[0].texture.name
+    assert "dirtCenter" in wall_list[0].texture.origin
 
     assert wall_list[1].position == (1216, 1216)
-    assert "grassCenter" in wall_list[1].texture.name
+    assert "grassCenter" in wall_list[1].texture.origin
 
     assert wall_list[2].position == (64, 64)
-    assert "boxCrate" in wall_list[2].texture.name
+    assert "boxCrate" in wall_list[2].texture.origin

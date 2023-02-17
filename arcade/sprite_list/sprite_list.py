@@ -24,13 +24,13 @@ from typing import (
 )
 
 from arcade import (
-    Color,
     Sprite,
     get_window,
     gl,
     float_to_byte_color,
     get_four_float_color,
 )
+from arcade.types import Color
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -613,9 +613,13 @@ class SpriteList(Generic[_SpriteType]):
             self.spatial_hash.insert_object_for_box(sprite)
 
         # Load additional textures attached to the sprite
-        if hasattr(sprite, "textures") and self._initialized:
-            for texture in sprite.textures or []:
-                self._atlas.add(texture)
+        # if hasattr(sprite, "textures") and self._initialized:
+        #     for texture in sprite.textures or []:
+        #         self._atlas.add(texture)
+        if self._initialized:
+            if sprite.texture is None:
+                raise ValueError("Sprite must have a texture when added to a SpriteList")
+            self._atlas.add(sprite.texture)
 
     def swap(self, index_1: int, index_2: int):
         """

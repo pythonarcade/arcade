@@ -6,7 +6,7 @@ frame_counter = 0
 
 
 def test_velocity():
-    sprite = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
     sprite.velocity = 1, 2
     assert sprite.velocity == (1, 2)
     assert sprite.change_x == 1
@@ -24,37 +24,37 @@ def test_sprite(window: arcade.Window):
     frame_counter = 0
 
     character_list = arcade.SpriteList()
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     character_sprite.center_x = 50
     character_sprite.center_y = 50
     character_sprite.change_x = 2
     character_sprite.change_y = 2
     character_list.append(character_sprite)
 
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     character_sprite.center_x = 150
     character_sprite.center_y = 50
     character_list.append(character_sprite)
 
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     character_sprite.center_x = 200
     character_sprite.center_y = 50
     character_sprite.angle = 45
     character_list.append(character_sprite)
 
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     character_sprite.center_x = 250
     character_sprite.center_y = 50
     character_sprite.angle = 90
     character_list.append(character_sprite)
 
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale= CHARACTER_SCALING)
     character_sprite.center_x = 300
     character_sprite.center_y = 50
     character_sprite.angle = 180
     character_list.append(character_sprite)
 
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     character_sprite.center_x = 300
     character_sprite.center_y = 50
     character_sprite.angle = 90
@@ -68,13 +68,13 @@ def test_sprite(window: arcade.Window):
     character_list.append(character_sprite)
 
     coin_list = arcade.SpriteList()
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", CHARACTER_SCALING)
+    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
     sprite.position = (130, 130)
     sprite.set_position(130, 130)
     sprite.angle = 90
     coin_list.append(sprite)
 
-    individual_coin = arcade.Sprite(":resources:images/items/coinGold.png", CHARACTER_SCALING)
+    individual_coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
     individual_coin.position = (230, 230)
 
     def on_draw():
@@ -116,7 +116,7 @@ def test_sprite_2(window):
     CHARACTER_SCALING = 1.0
     arcade.set_background_color(arcade.color.AMAZON)
 
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", CHARACTER_SCALING)
+    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
     sprite.center_x = 50
     sprite.center_y = 50
 
@@ -137,7 +137,7 @@ def test_sprite_2(window):
     1, "not_a_texture", (1, 2, 3)
 ])
 def test_sprite_texture_setter_raises_type_error_when_given_non_texture(not_a_texture):
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", 1.0)
+    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=1.0)
     with pytest.raises(TypeError):
         sprite.texture = not_a_texture
 
@@ -156,7 +156,7 @@ def test_sprite_sizes(window: arcade.Window):
         my_color = (i * 40, 0, 255)
         center_x = SPACING + (i * SPACING)
         center_y = ROW_SPACING
-        character_sprite = arcade.SpriteSolidColor(my_width, my_height, my_color)
+        character_sprite = arcade.SpriteSolidColor(my_width, my_height, color=my_color)
         character_sprite.center_x = center_x
         character_sprite.center_y = center_y
         character_list.append(character_sprite)
@@ -167,7 +167,7 @@ def test_sprite_sizes(window: arcade.Window):
         my_color = (0, i * 40, 255)
         center_x = SPACING + (i * SPACING)
         center_y = ROW_SPACING * 2
-        character_sprite = arcade.SpriteSolidColor(my_width, my_height, my_color)
+        character_sprite = arcade.SpriteSolidColor(my_width, my_height, color=my_color)
         character_sprite.center_x = center_x
         character_sprite.center_y = center_y
         character_list.append(character_sprite)
@@ -238,7 +238,10 @@ def test_sprite_scale(window):
 
     # visual spot check
     character_list = arcade.SpriteList()
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=CHARACTER_SCALING,
+    )
     character_sprite.center_x = 150
     character_sprite.center_y = 150
     character_list.append(character_sprite)
@@ -266,17 +269,17 @@ def test_sprite_removal(window):
 
     character_list = arcade.SpriteList()
 
-    sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     sprite_1.center_x = 150
     sprite_1.center_y = 150
     character_list.append(sprite_1)
 
-    sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     sprite_2.center_x = 250
     sprite_2.center_y = 250
     character_list.append(sprite_2)
 
-    sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
     sprite_3.center_x = 250
     sprite_3.center_y = 250
     character_list.append(sprite_3)
@@ -333,7 +336,7 @@ def test_visible():
 
 
 def test_sprite_scale_xy(window):
-    sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+    sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
     # setting vector equivalent of previous scale doesn't change values
     sprite.scale = 1.0
@@ -380,7 +383,7 @@ def test_sprite_scale_xy(window):
 
 
 def test_sprite_scale_resets_mismatched_xy_settings(window):
-    sprite = arcade.SpriteSolidColor(20, 20, arcade.color.WHITE)
+    sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
     # check if x dimension is properly reset
     sprite.scale_xy = 3.0, 2.0
@@ -443,7 +446,8 @@ def test_rescale_relative_to_point(window):
     def sprite_64x64_at_position(x, y):
         return arcade.Sprite(
             ":resources:images/items/gold_1.png",
-            center_x=x, center_y=y
+            center_x=x,
+            center_y=y,
         )
 
     # case:

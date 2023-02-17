@@ -1,15 +1,10 @@
 """
 Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
 """
-
 from arcade.sprite import Sprite
-from arcade.draw_commands import Texture
-from arcade.math import lerp
-from arcade.arcade_types import Point, Vector
-from typing import Union
-from arcade.geometry_generic import clamp
-
-FilenameOrTexture = Union[str, Texture]
+from arcade.math import lerp, clamp
+from arcade.types import Point, Vector
+from arcade.types import PathOrTexture
 
 
 class Particle(Sprite):
@@ -17,7 +12,7 @@ class Particle(Sprite):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            path_or_texture: PathOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0.0,
@@ -26,13 +21,7 @@ class Particle(Sprite):
             alpha: int = 255,
             mutation_callback=None
     ):
-        if isinstance(filename_or_texture, Texture):
-            super().__init__(None, scale=scale)
-            self.append_texture(filename_or_texture)
-            self.set_texture(0)
-        else:
-            super().__init__(filename_or_texture, scale=scale)
-
+        super().__init__(path_or_texture, scale=scale)
         self.center_x = center_xy[0]
         self.center_y = center_xy[1]
         self.change_x = change_xy[0]
@@ -61,7 +50,7 @@ class EternalParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
@@ -83,7 +72,7 @@ class LifetimeParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
@@ -113,7 +102,7 @@ class FadeParticle(LifetimeParticle):
 
     def __init__(
             self,
-            filename_or_texture: FilenameOrTexture,
+            filename_or_texture: PathOrTexture,
             change_xy: Vector,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),

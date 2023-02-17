@@ -41,7 +41,7 @@ class MyGame(arcade.Window):
         self.background_2.blend = 0.0
 
         # Create the player sprite.
-        self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
+        self.player_sprite = arcade.SpriteSolidColor(20, 30, color=arcade.color.PURPLE)
         self.player_sprite.center_y = self.camera.viewport_height // 2
         self.player_sprite.center_x = self.camera.viewport_width // 2
 

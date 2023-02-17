@@ -32,8 +32,7 @@ def create_ninepatch(
         (left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1),
         fill=(255, 0, 0, 255)
     )
-    texture =  arcade.Texture(
-        f"ninepatch-{left}-{right}-{bottom}-{top}", image=patch_image)
+    texture = arcade.Texture(patch_image)
 
     # Create the expected image
     expected_image = Image.new("RGBA", patch_size, (255, 255, 255, 255))
