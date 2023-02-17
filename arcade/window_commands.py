@@ -41,18 +41,6 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     return screen.width, screen.height
 
 
-def get_projection() -> Mat4:
-    """
-    Returns the current projection matrix used by sprites and shapes in arcade.
-
-    This is a shortcut for ```window.ctx.projection_2d_matrix``.
-
-    :return: Projection matrix
-    :rtype: Mat4
-    """
-    return get_window().ctx.projection_2d_matrix
-
-
 def pause(seconds: float) -> None:
     """
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().

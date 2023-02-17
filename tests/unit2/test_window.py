@@ -30,9 +30,6 @@ def test_window(window: arcade.Window):
     w.set_mouse_visible(True)
     w.set_size(width, height)
 
-    p = arcade.get_projection()
-    assert isinstance(p, Mat4)
-
     v = window.get_viewport()
     assert v[0] == 0
     assert v[1] == width

@@ -89,7 +89,6 @@ from .window_commands import close_window
 from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
-from .window_commands import get_projection
 from .window_commands import get_window
 from .window_commands import pause
 from .window_commands import schedule
@@ -329,7 +328,6 @@ __all__ = [
     'get_joysticks',
     'get_pixel',
     'get_points_for_thick_line',
-    'get_projection',
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
