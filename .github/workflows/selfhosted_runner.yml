@@ -43,5 +43,6 @@ jobs:
         run: |
           source .venv/bin/activate
           which python
-          python -c "import pyglet; print(pyglet.__version__)"
+          python -c "import pyglet; print('pyglet version', pyglet.__version__)"
+          python -c "import PIL; print('Pillow version', PIL.__version__)"
           pytest
