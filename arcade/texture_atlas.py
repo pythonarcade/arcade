@@ -207,7 +207,7 @@ class TextureAtlas:
         textures: Optional[Sequence["Texture"]] = None,
         auto_resize: bool = True,
         ctx: Optional["ArcadeContext"] = None,
-        capacity: int = 4,
+        capacity: int = 2,
     ):
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
@@ -265,8 +265,8 @@ class TextureAtlas:
         )
         self._image_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._texture_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
-        self._image_uv_data = array("f", [0] * self.max_width * 4)
-        self._texture_uv_data = array("f", [0] * self.max_width * 4)
+        self._image_uv_data = array("f", [0] * self._num_image_slots * 8)
+        self._texture_uv_data = array("f", [0] * self._num_texture_slots * 8)
 
         # Free slots in the texture coordinate texture for images and textures
         self._image_uv_slots_free = deque(i for i in range(0, self._num_image_slots))

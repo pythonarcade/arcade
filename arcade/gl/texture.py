@@ -127,6 +127,7 @@ class Texture:
         self._width, self._height = size
         self._dtype = dtype
         self._components = components
+        self._component_size = 0
         self._alignment = 1
         self._target = target
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
@@ -161,9 +162,6 @@ class Texture:
             )
 
         gl.glBindTexture(self._target, self._glo)
-
-        if data is not None:
-            byte_length, data = data_to_ctypes(data)
 
         self._texture_2d(data)
 
@@ -208,6 +206,9 @@ class Texture:
                 f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
             )
         _format, _internal_format, self._type, self._component_size = format_info
+        if data is not None:
+            byte_length, data = data_to_ctypes(data)
+            self._validate_data_size(data, byte_length, self._width, self._height)
 
         # If we are dealing with a multisampled texture we have less options
         if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE:
@@ -361,6 +362,15 @@ class Texture:
         :type: int
         """
         return self._components
+
+    @property
+    def component_size(self) -> int:
+        """
+        Size in bytes of each component
+
+        :type: int
+        """
+        return self._component_size
 
     @property
     def depth(self) -> bool:
@@ -681,6 +691,7 @@ class Texture:
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)
+            self._validate_data_size(data, byte_size, w, h)
             gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
@@ -695,6 +706,18 @@ class Texture:
                 self._format,  # format
                 self._type,  # type
                 data,  # pixel data
+            )
+
+    def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
+        """Validate the size of the data to be written to the texture"""
+        expected_size = width * height * self._component_size * self._components
+        if byte_size != expected_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match expected size {expected_size}"
+            )
+        if len(byte_data) != byte_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match reported size {expected_size}"
             )
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
