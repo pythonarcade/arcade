@@ -184,22 +184,6 @@ def close_window() -> None:
     gc.collect()
 
 
-def finish_render():
-    """
-    Swap buffers and displays what has been drawn.
-
-    .. Warning::
-
-        If you are extending the :py:class:`~arcade.Window` class, this function
-        should not be called. The event loop will automatically swap the window
-        framebuffer for you after ``on_draw``.
-
-    """
-    get_window().static_display = True
-    get_window().flip_count = 0
-    get_window().flip()
-
-
 def run():
     """
     Run the main loop.
@@ -294,6 +278,22 @@ def start_render() -> None:
     or :py:meth:`arcade.View.clear`.
     """
     get_window().clear()
+
+
+def finish_render():
+    """
+    Swap buffers and displays what has been drawn.
+
+    .. Warning::
+
+        If you are extending the :py:class:`~arcade.Window` class, this function
+        should not be called. The event loop will automatically swap the window
+        framebuffer for you after ``on_draw``.
+
+    """
+    get_window().static_display = True
+    get_window().flip_count = 0
+    get_window().flip()
 
 
 def set_background_color(color: Color) -> None:
