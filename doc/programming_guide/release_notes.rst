@@ -25,7 +25,8 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
-* Rotation for Sprites has changed to clockwise.
+* :py:meth:`arcade.Sprite.angle` has changed to clockwise. So everything rotates different now.
+* Signature for Sprite creation has changed.
 * The deprecated ``update()`` function has been removed from the
   :py:class:`~arcade.Window`, :py:class:`~arcade.View`,
   :py:class:`~arcade.Section`, and :py:class:`~arcade.SectionManager` classes.
@@ -34,7 +35,7 @@ API in a way that is not compatible with how it was used in 2.6.
   parameter which holds the time in seconds since the last update.
 * The ``update_rate`` parameter of :py:class:`~arcade.Window` can no longer be set to ``None``. Previously it defaulted
   to ``1 / 60`` however could be set to ``None``. The default is still the same, but setting it to None will not do anything.
-* Sprites created from the :py:class:`~arcade.TileMap` class would previously set a key in the ``Sprite.properties`` dictionary
+* Sprites created from the :py:class:`~arcade.tilemap.TileMap` class would previously set a key in the ``Sprite.properties`` dictionary
   named ``type``. This key has been renamed to ``class``. This is in keeping with Tiled's renaming of the key and following the Tiled
   format/API as closely as possible.
 * The ``arcade.text_pillow`` and ``arcade.text_pyglet`` modules have been completely removed. The Pillow implementation is gone, and the
@@ -45,19 +46,22 @@ API in a way that is not compatible with how it was used in 2.6.
   if you are using this function it may be worth checking the docs for it again. The main concern for a difference here would be if you
   are also using any custom :py:class:`~arcade.TextureAtlas`.
 * The GUI package has been changed significantly.
-*
+* Buffered shapes (shape list items) have been moved to their own sub-module.
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
 
+* Arcade now supports mixing Pyglet and Arcade drawing. This means
+  you can, for example, use Pyglet batches. Pyglet batches can draw thousands
+  of Pyglet objects with the cost and performance time of only a few.
+* The code behind the texture atlas Arcade creates for each SpriteList  has
+  been reworked to be faster and more efficient. Reversed/flipped sprites are
+  no longer duplicated.
+* Added a new system for handling background textures (ADD MORE INFO)
 * Arcade now supports OpenGL ES 3.1/3.2 and have been
   tested on the Raspberry Pi 4. Any model using the Cortex-A72
   CPU should work. Note that you need fairly new Mesa drivers
   to get the new V3D drivers.
-* Arcade now supports mixing Pyglet and Arcade drawing. This means
-  you can, for example, use Pyglet batches. Pyglet batches can draw thousands
-  of Pyglet objects with the cost and performance time of only a few.
-* Added a new system for handling background textures (ADD MORE INFO)
 
 Changes
 ~~~~~~~
@@ -66,8 +70,10 @@ Changes
 
   * Removal of the ``update`` function in favor of :py:meth:`~arcade.Window.on_update()`
   * ``update_rate`` parameter in the constructor can no longer be set to ``None``. Must be a float.
-  * Added ``draw_rate`` parameter to constructor, this will control the interval that the :py:meth:`~arcade.Window.on_draw()`
-    function is called at. This can be used with the pre-existing ``update_rate`` parameter which controls
+  * Added ``draw_rate`` parameter to constructor
+    :py:meth:`~arcade.Window.__init__`, this will control the interval that the
+    :py:meth:`~arcade.Window.on_draw()` function is called at. This can be used
+    with the pre-existing ``update_rate`` parameter which controls
     :py:meth:`~arcade.Window.on_update()` to achieve separate draw and update rates.
 
 * :py:class:`~arcade.View`
@@ -76,7 +82,7 @@ Changes
 
 * :py:class:`~arcade.Section` and :py:class:`~arcade.SectionManager`
 
-  * Removal of the ``update`` function in favor of ``on_update()``
+  * Removal of the ``update`` function in favor of :py:meth:`arcade.Section.on_update()`
 
 * GUI
 
@@ -123,16 +129,31 @@ Changes
     * :py:meth:`arcade.color_from_hex_string` changed to follow the CSS hex string standard
     * Windows Text glyph are now created with DirectWrite instead of GDI
     * Removal of various deprecated functions and parameters
-    * OpenGL examples moved to ``examples/gl`` from ``experiments/examples``
+    * OpenGL examples moved to
+      `examples/gl <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gl>`_
+      from ``experiments/examples``
+
+* Sprites
+
+    * The method signature for :py:meth:`arcade.Sprite.__init__` has been changed. (May break old code.)
+    * The sprite code has been cleaned up and broken into parts.
+    * :py:meth:`arcade.Sprite.angle` now rotates clockwise. Why it ever rotated
+      the other way, and why it lasted so long, we do not know.
 
 * Controller Input
 
-  * Previously controllers were usable via the ``arcade.joysticks`` module. This module is still available in 2.7 and onwards.
-    It should largely be seen as deprecated for most people who want basic controller support. This module existed basically just as an alias to
-    the Pyglet joysticks module. We now have a new ``arcade.controller`` module, which is similarly just an alias to Pyglt's newer
-    Controller API. This change should make a much wider selection of controllers able to work with Arcade, and provide newer functionality and be
-    easier to use for most cases than the joystick module. The joystick module may still be useful if you need specialty controllers such as racing
-    wheels or flight sticks. All existing example code has been updated to use the new controller API.
+  * Previously controllers were usable via the ``arcade.joysticks`` module. This
+    module is still available in 3.0.
+    However, it should largely be seen as deprecated for most people who want
+    basic controller support. This module existed basically just as an alias to
+    the Pyglet joysticks module. We now have a new ``arcade.controller`` module,
+    which is similarly just an alias to Pyglet's newer
+    Controller API. This change should make a much wider selection of controllers
+    able to work with Arcade, and provide newer functionality and be
+    easier to use for most cases than the joystick module. The joystick module
+    may still be useful if you need specialty controllers such as racing
+    wheels or flight sticks. All existing example code has been updated to use
+    the new controller API.
 
 * Text
 
@@ -176,6 +197,23 @@ Changes
     layers, however it can be overridden on a per-layer basis as defined by the new ``texture_atlas`` key in the
     ``layer_options`` dictionary.
     If no custom atlas is provided, then the global default atlas will be used (This is how it works pre-Arcade 3.0).
+  * Fix for animated tiles from sprite sheets
+
+* Collision Detection
+
+  * Collision detection is now even faster.
+  * Remove Shapely for collision detection as 3.11 is faster without it.
+
+* Shape list
+
+  * Add in :py:func:`arcade.create_triangles_strip_filled_with_colors`
+  * Moved all buffered items that can be added to a shape list to `arcade.shape_list`
+
+* Documentation
+
+  * :ref:`example-code` code page has been reorganized
+  * `CONTRIBUTING.md <https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_ page has been updated
+  * Improve :ref:`background_parallax` example
 
 Special thanks to
 `Einar Forselv <https://github.com/einarf>`_
@@ -186,10 +224,13 @@ Special thanks to
 `Aspect1103 <https://github.com/Aspect1103>`_,
 `Alejandro Casanovas <https://github.com/janscas>`_,
 `Ibrahim <https://github.com/Ibrahim2750mi>`_,
+`Andrew <https://github.com/cspotcode>`_,
+`Alexander <https://github.com/ccntrq>`_,
+`kosvitko <https://github.com/kosvitko>`_,
 and
 `pvcraven <https://github.com/pvcraven>`_
-for their contributions to this release. Also, thanks to everyone on the Pyglet
-team! We depend heavily on Pyglet's continued development.
+for their contributions to this release. Also, thanks to everyone on the
+`Pyglet`_ team! We depend heavily on Pyglet's continued development.
 
 Version 2.6.16
 --------------
