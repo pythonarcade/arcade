@@ -58,10 +58,9 @@ class Sprite:
     def __init__(
         self,
         path_or_texture: PathOrTexture = None,
-        *,
+        scale: float = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,
-        scale: float = 1.0,
         angle: float = 0.0,
     ):
         """ Constructor """
