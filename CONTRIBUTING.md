@@ -8,16 +8,29 @@ Arcade welcomes contributions, including:
 * Corrections & additions to the documentation 
 * Improvements to the tests
 
+If you're looking for a way to contribute, you can [the currently active issues](https://github.com/pythonarcade/arcade/issues)
+to get started.
+
 ## Before Making Changes 
 
-Before working on an improvement, please 
+Before working on an improvement, please make sure to
 [open an issue](https://github.com/pythonarcade/arcade/issues) if one
-does not already exist for it. 
+does not already exist for it.
+
+Tips:
+1. Try to keep the PRs to reasonable sizes
+2. If you want to make large changes, please discuss them with Arcade's developers beforehand
+
+Discussion can happen in a GitHub issues comments or on the [Arcade discord server](https://discord.gg/ZjGDqMp).
+
+## After Making Changes
 
 After you finish your changes, you should do the following:
-1. Test them locally
+1. Test your changes with Arcade's test suite as well as `mypy` & `flake8`
 2. Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests)
 from your fork to Arcade's development branch.
+
+The rest of the guide will help you get to this point.
 
 ## Requirements 
 
@@ -26,14 +39,14 @@ This guide assumes you've already done the following:
 2. [Installed git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 3. [Forked the repo on GitHub](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) 
 4. [Cloned your fork locally](https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository)
-5. Changed into your local clone in the terminal
+5. Changed into your local copy of the arcade directory in the terminal
 
 [Creating & using a virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments)
 is also strongly recommended.
 
 ## Installing Arcade in Editable Mode
 
-To install all necessary project dependencies, run this command in your
+To install all necessary development dependencies, run this command in your
 terminal from inside the top level of the arcade directory:
 
 ```shell
@@ -50,7 +63,10 @@ in this repo for current tests.
 
 ### Testing Code Changes
 
-To run the framework's automated tests, use the following command.
+First, run `mypy` and `flake8` from inside the arcade folder. If these
+report any issues, you should fix them.
+
+Then run the framework's automated tests with the following command:
 
 ```shell
 pytest --ignore=tests/test_examples
@@ -58,7 +74,7 @@ pytest --ignore=tests/test_examples
 
 ### Building & Testing Documentation
 
-You can build documentation locally using the following steps.
+You can build & preview documentation locally using the following steps.
 
 Change into the doc directory:
 ```commandline
