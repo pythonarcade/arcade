@@ -69,8 +69,10 @@ Changes
 
   * Removal of the ``update`` function in favor of :py:meth:`~arcade.Window.on_update()`
   * ``update_rate`` parameter in the constructor can no longer be set to ``None``. Must be a float.
-  * Added ``draw_rate`` parameter to constructor, this will control the interval that the :py:meth:`~arcade.Window.on_draw()`
-    function is called at. This can be used with the pre-existing ``update_rate`` parameter which controls
+  * Added ``draw_rate`` parameter to constructor
+    :py:meth:`~arcade.Window.__init__`, this will control the interval that the
+    :py:meth:`~arcade.Window.on_draw()` function is called at. This can be used
+    with the pre-existing ``update_rate`` parameter which controls
     :py:meth:`~arcade.Window.on_update()` to achieve separate draw and update rates.
 
 * :py:class:`~arcade.View`
@@ -139,12 +141,18 @@ Changes
 
 * Controller Input
 
-  * Previously controllers were usable via the ``arcade.joysticks`` module. This module is still available in 2.7 and onwards.
-    It should largely be seen as deprecated for most people who want basic controller support. This module existed basically just as an alias to
-    the Pyglet joysticks module. We now have a new ``arcade.controller`` module, which is similarly just an alias to Pyglt's newer
-    Controller API. This change should make a much wider selection of controllers able to work with Arcade, and provide newer functionality and be
-    easier to use for most cases than the joystick module. The joystick module may still be useful if you need specialty controllers such as racing
-    wheels or flight sticks. All existing example code has been updated to use the new controller API.
+  * Previously controllers were usable via the ``arcade.joysticks`` module. This
+    module is still available in 3.0.
+    However, it should largely be seen as deprecated for most people who want
+    basic controller support. This module existed basically just as an alias to
+    the Pyglet joysticks module. We now have a new ``arcade.controller`` module,
+    which is similarly just an alias to Pyglet's newer
+    Controller API. This change should make a much wider selection of controllers
+    able to work with Arcade, and provide newer functionality and be
+    easier to use for most cases than the joystick module. The joystick module
+    may still be useful if you need specialty controllers such as racing
+    wheels or flight sticks. All existing example code has been updated to use
+    the new controller API.
 
 * Text
 
@@ -200,8 +208,8 @@ Changes
 
 * Documentation
 
-  * Example code page has been reorganized
-  * Contributing page has been updated
+  * :ref:`example-code` code page has been reorganized
+  * `CONTRIBUTING.md <https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_ page has been updated
   * Improve :ref:`background_parallax` example
 
 Special thanks to
