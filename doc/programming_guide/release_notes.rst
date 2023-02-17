@@ -201,6 +201,7 @@ Changes
 * Collision Detection
 
   * Collision detection is now even faster.
+  * Remove Shapely for collision detection as 3.11 is faster without it.
 
 * Shape list
 
