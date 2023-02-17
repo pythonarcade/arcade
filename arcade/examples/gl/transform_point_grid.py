@@ -20,6 +20,7 @@ import random
 import time
 from array import array
 
+from pyglet.math import Mat4
 import arcade
 from arcade import gl
 
@@ -75,7 +76,7 @@ class MyGame(arcade.Window):
         self.transform2 = self.ctx.geometry([gl.BufferDescription(self.buffer2, '2f 2f', ['in_pos', 'in_dest'])])
 
         # Let's make the coordinate system match the viewport
-        projection = arcade.create_orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+        projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
 
         # Draw the points with the the supplied color
         self.points_program = self.ctx.program(

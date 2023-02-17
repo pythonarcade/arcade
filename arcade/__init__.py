@@ -86,13 +86,9 @@ from .geometry import is_point_in_polygon
 
 # Complex imports with potential circularity
 from .window_commands import close_window
-from .window_commands import create_orthogonal_projection
 from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
-from .window_commands import get_projection
-from .window_commands import get_scaling_factor
-from .window_commands import get_viewport
 from .window_commands import get_window
 from .window_commands import pause
 from .window_commands import schedule
@@ -100,7 +96,6 @@ from .window_commands import run
 from .window_commands import set_background_color
 from .window_commands import set_viewport
 from .window_commands import set_window
-from .window_commands import clear_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
@@ -333,17 +328,13 @@ __all__ = [
     'get_joysticks',
     'get_pixel',
     'get_points_for_thick_line',
-    'get_projection',
-    'get_scaling_factor',
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
     'get_timings',
     'get_three_float_color',
-    'create_orthogonal_projection',
     'create_text_sprite',
     'clear_timings',
-    'get_viewport',
     'get_window',
     'get_fps',
     'has_line_of_sight',
@@ -371,7 +362,6 @@ __all__ = [
     'set_background_color',
     'set_viewport',
     'set_window',
-    'clear_window',
     'start_render',
     'stop_sound',
     'timings_enabled',

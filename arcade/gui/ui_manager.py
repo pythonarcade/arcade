@@ -373,7 +373,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def on_resize(self, width, height):
-        scale = arcade.get_scaling_factor(self.window)
+        scale = self.window.get_pixel_ratio()
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)

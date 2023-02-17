@@ -9,7 +9,6 @@ import os
 
 import pyglet
 
-from numbers import Number
 from typing import (
     Callable,
     Optional,
@@ -18,7 +17,6 @@ from typing import (
     TYPE_CHECKING
 )
 from arcade.types import Color
-from pyglet.math import Mat4
 
 if TYPE_CHECKING:
     from arcade import Window
@@ -28,7 +26,8 @@ _window: Optional["Window"] = None
 
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
-    """Return the width and height of a monitor.
+    """
+    Return the width and height of a monitor.
 
     The size of the primary monitor is returned by default.
 
@@ -41,48 +40,7 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     return screen.width, screen.height
 
 
-def get_projection() -> Mat4:
-    """
-    Returns the current projection matrix used by sprites and shapes in arcade.
-
-    This is a shortcut for ```window.ctx.projection_2d_matrix``.
-
-    :return: Projection matrix
-    :rtype: Mat4
-    """
-    return get_window().ctx.projection_2d_matrix
-
-
-def create_orthogonal_projection(
-    left: float,
-    right: float,
-    bottom: float,
-    top: float,
-    near: float = 1,
-    far: float = -1,
-) -> Mat4:
-    """
-    Creates an orthogonal projection matrix. Used internally with the
-    OpenGL shaders. It creates the same matrix as the deprecated/removed
-    ``glOrtho`` OpenGL function.
-
-    :param float left: The left of the near plane relative to the plane's center.
-    :param float right: The right of the near plane relative to the plane's center.
-    :param float top: The top of the near plane relative to the plane's center.
-    :param float bottom: The bottom of the near plane relative to the plane's center.
-    :param float near: The distance of the near plane from the camera's origin.
-                       It is recommended that the near plane is set to 1.0 or above to avoid
-                       rendering issues at close range.
-    :param float far: The distance of the far plane from the camera's origin.
-    :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: pyglet.math.Mat4
-
-    .. seealso:: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
-    """
-    return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
-
-
-def pause(seconds: Number) -> None:
+def pause(seconds: float) -> None:
     """
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
 
@@ -113,7 +71,7 @@ def get_window() -> "Window":
     return _window
 
 
-def set_window(window: "Window") -> None:
+def set_window(window: Optional["Window"]) -> None:
     """
     Set a handle to the current window.
 
@@ -121,34 +79,6 @@ def set_window(window: "Window") -> None:
     """
     global _window
     _window = window
-
-
-def clear_window():
-    """
-    Clear the window handle.
-    """
-    global _window
-    _window = None
-
-
-def get_scaling_factor(window: Optional["Window"] = None) -> float:
-    """
-    Gets the scaling factor of the given Window.
-    This is the ratio between the window and framebuffer size.
-    If no window is supplied the currently active window will be used.
-
-    :param Window window: Handle to window we want to get scaling factor of.
-
-    :return: Scaling factor. E.g., 2.0 would indicate the framebuffer
-             width and height being 2.0 times the window width and height.
-             This means one "window pixel" is actual a 2 x 2 square of pixels
-             in the framebuffer.
-    :rtype: float
-    """
-    if window:
-        return window.get_pixel_ratio()
-    else:
-        return get_window().get_pixel_ratio()
 
 
 def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
@@ -210,16 +140,6 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     window.ctx.projection_2d = left, right, bottom, top
 
 
-def get_viewport() -> Tuple[float, float, float, float]:
-    """
-    Get the current viewport settings.
-
-    :return: Tuple of floats, with ``(left, right, bottom, top)``
-
-    """
-    return get_window().ctx.projection_2d
-
-
 def close_window() -> None:
     """
     Closes the current window, and then runs garbage collection. The garbage collection
@@ -238,22 +158,6 @@ def close_window() -> None:
     # if we do a lot of window open and closes. Like for
     # unit tests.
     gc.collect()
-
-
-def finish_render():
-    """
-    Swap buffers and displays what has been drawn.
-
-    .. Warning::
-
-        If you are extending the :py:class:`~arcade.Window` class, this function
-        should not be called. The event loop will automatically swap the window
-        framebuffer for you after ``on_draw``.
-
-    """
-    get_window().static_display = True
-    get_window().flip_count = 0
-    get_window().flip()
 
 
 def run():
@@ -350,6 +254,22 @@ def start_render() -> None:
     or :py:meth:`arcade.View.clear`.
     """
     get_window().clear()
+
+
+def finish_render():
+    """
+    Swap buffers and displays what has been drawn.
+
+    .. Warning::
+
+        If you are extending the :py:class:`~arcade.Window` class, this function
+        should not be called. The event loop will automatically swap the window
+        framebuffer for you after ``on_draw``.
+
+    """
+    get_window().static_display = True
+    get_window().flip_count = 0
+    get_window().flip()
 
 
 def set_background_color(color: Color) -> None:

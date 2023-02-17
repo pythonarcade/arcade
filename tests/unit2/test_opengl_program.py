@@ -2,6 +2,7 @@ import struct
 import pytest
 import arcade
 from pyglet import gl
+from pyglet.math import Mat4
 from arcade.gl import ShaderException
 from arcade.gl.uniform import UniformBlock
 from arcade.gl.glsl import ShaderSource
@@ -343,7 +344,7 @@ def test_uniform_block(ctx):
     assert ubo.name == "Projection"
 
     # Project a point (800, 600) into (1, 1) using a projection matrix
-    projection_matrix = arcade.create_orthogonal_projection(0, 800, 0, 600, -10, 10)
+    projection_matrix = Mat4.orthogonal_projection(0, 800, 0, 600, -10, 10)
     ubo_buffer = ctx.buffer(data=projection_matrix)
     buffer = ctx.buffer(reserve=8)
     vao = ctx.geometry()

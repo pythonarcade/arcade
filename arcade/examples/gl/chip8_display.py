@@ -17,7 +17,6 @@ from array import array
 
 import arcade
 from arcade.gl import geometry
-from arcade import get_projection
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 64 * 10
@@ -67,7 +66,7 @@ class MyGame(arcade.Window):
             """
         )
         # 8 x 4 
-        self.program['projection'] = get_projection()
+        self.program['projection'] = self.projection
         self.program['screen'] = 0
         b = 0  # border to test scale
         self.quad = geometry.screen_rectangle(b, b, SCREEN_WIDTH - b * 2, SCREEN_HEIGHT - b * 2)
