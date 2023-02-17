@@ -35,7 +35,7 @@ titles = {
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
-    'texture/__init__': ['Texture Management', 'texture.rst'],
+    'texture/__init__.py': ['Texture Management', 'texture.rst'],
     'texture/texture.py': ['Texture Management', 'texture.rst'],
     'texture/loading.py': ['Texture Management', 'texture.rst'],
     'texture/generate.py': ['Texture Management', 'texture.rst'],
@@ -218,7 +218,7 @@ def process_directory(directory: Path, quick_index_file):
 
         full_api_file_name = "../doc/api_docs/api/" + api_file_name
 
-        print(package, title, api_file_name, full_api_file_name)
+        # print(package, title, api_file_name, full_api_file_name)
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
