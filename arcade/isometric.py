@@ -1,6 +1,4 @@
-
-from arcade import ShapeElementList
-from arcade.buffered_draw_commands import create_line
+from arcade.shape_list import ShapeElementList, create_line
 from typing import Tuple
 from arcade.types import Color
 

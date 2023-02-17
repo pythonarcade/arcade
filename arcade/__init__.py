@@ -65,15 +65,26 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # Use the old gdi fonts on windows until directwrite is fast/stable
 # pyglet.options['win32_gdi_font'] = True
 
-# Module imports
-from arcade import color
-from arcade import csscolor
-from arcade import key
-from arcade import resources
-from arcade import types
-from arcade import math
+# Imports from modules that don't do anything circular
+from .drawing_support import get_four_byte_color
+from .drawing_support import get_three_float_color
+from .drawing_support import get_four_float_color
+from .drawing_support import get_points_for_thick_line
+from .drawing_support import make_transparent_color
+from .drawing_support import uint24_to_three_byte_color
+from .drawing_support import uint32_to_four_byte_color
+from .drawing_support import color_from_hex_string
+from .drawing_support import float_to_byte_color
 
-# --- Generated imports ---
+from .geometry_generic import get_distance
+from .geometry_generic import rotate_point
+from .geometry_generic import get_angle_degrees
+from .geometry_generic import get_angle_radians
+
+from .geometry import are_polygons_intersecting
+from .geometry import is_point_in_polygon
+
+# Complex imports with potential circularity
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import exit
@@ -106,21 +117,6 @@ from .application import Window
 from .application import get_screens
 from .application import open_window
 
-from .geometry_generic import get_distance
-from .geometry_generic import rotate_point
-from .geometry_generic import get_angle_degrees
-from .geometry_generic import get_angle_radians
-
-from .drawing_support import get_four_byte_color
-from .drawing_support import get_three_float_color
-from .drawing_support import get_four_float_color
-from .drawing_support import get_points_for_thick_line
-from .drawing_support import make_transparent_color
-from .drawing_support import uint24_to_three_byte_color
-from .drawing_support import uint32_to_four_byte_color
-from .drawing_support import color_from_hex_string
-from .drawing_support import float_to_byte_color
-
 from .texture import Texture
 from .texture import load_spritesheet
 from .texture import load_texture
@@ -130,30 +126,6 @@ from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
 from .texture import cleanup_texture_cache
-
-from .buffered_draw_commands import TShape
-from .buffered_draw_commands import Shape
-from .buffered_draw_commands import ShapeElementList
-from .buffered_draw_commands import create_ellipse
-from .buffered_draw_commands import create_ellipse_filled
-from .buffered_draw_commands import create_ellipse_filled_with_colors
-from .buffered_draw_commands import create_ellipse_outline
-from .buffered_draw_commands import create_line
-from .buffered_draw_commands import create_line_generic
-from .buffered_draw_commands import create_line_generic_with_colors
-from .buffered_draw_commands import create_line_loop
-from .buffered_draw_commands import create_line_strip
-from .buffered_draw_commands import create_lines
-from .buffered_draw_commands import create_lines_with_colors
-from .buffered_draw_commands import create_polygon
-from .buffered_draw_commands import create_rectangle
-from .buffered_draw_commands import create_rectangle_filled
-from .buffered_draw_commands import create_rectangle_filled_with_colors
-from .buffered_draw_commands import create_rectangle_outline
-from .buffered_draw_commands import create_rectangles_filled_with_colors
-from .buffered_draw_commands import create_triangles_filled_with_colors
-from .buffered_draw_commands import create_triangles_strip_filled_with_colors
-from .buffered_draw_commands import get_rectangle_points
 
 from .draw_commands import draw_arc_filled
 from .draw_commands import draw_arc_outline
@@ -183,9 +155,6 @@ from .draw_commands import draw_xywh_rectangle_filled
 from .draw_commands import draw_xywh_rectangle_outline
 from .draw_commands import get_image
 from .draw_commands import get_pixel
-
-from .geometry import are_polygons_intersecting
-from .geometry import is_point_in_polygon
 
 # We don't have joysticks game controllers in headless mode
 if not pyglet.options["headless"]:
@@ -255,6 +224,14 @@ from .perf_info import disable_timings
 
 from .perf_graph import PerfGraph
 
+# Module imports
+from arcade import color
+from arcade import csscolor
+from arcade import key
+from arcade import resources
+from arcade import types
+from arcade import math
+from arcade import shape_list
 from arcade import experimental
 
 from .text import (
@@ -291,14 +268,11 @@ __all__ = [
     'Section',
     'SectionManager',
     'Scene',
-    'Shape',
-    'ShapeElementList',
     'Sound',
     'Sprite',
     'SpriteCircle',
     'SpriteList',
     'SpriteSolidColor',
-    'TShape',
     'Text',
     'Texture',
     'TextureAtlas',
@@ -313,27 +287,6 @@ __all__ = [
     'check_for_collision_with_lists',
     'close_window',
     'color_from_hex_string',
-    'create_ellipse',
-    'create_ellipse_filled',
-    'create_ellipse_filled_with_colors',
-    'create_ellipse_outline',
-    'create_line',
-    'create_line_generic',
-    'create_line_generic_with_colors',
-    'create_line_loop',
-    'create_line_strip',
-    'create_lines',
-    'create_lines_with_colors',
-    'create_orthogonal_projection',
-    'create_polygon',
-    'create_rectangle',
-    'create_rectangle_filled',
-    'create_rectangle_filled_with_colors',
-    'create_rectangle_outline',
-    'create_rectangles_filled_with_colors',
-    'create_text_sprite',
-    'create_triangles_filled_with_colors',
-    'create_triangles_strip_filled_with_colors',
     'disable_timings',
     'draw_arc_filled',
     'draw_arc_outline',
@@ -381,13 +334,14 @@ __all__ = [
     'get_pixel',
     'get_points_for_thick_line',
     'get_projection',
-    'get_rectangle_points',
     'get_scaling_factor',
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
     'get_timings',
     'get_three_float_color',
+    'create_orthogonal_projection',
+    'create_text_sprite',
     'clear_timings',
     'get_viewport',
     'get_window',
@@ -434,6 +388,7 @@ __all__ = [
     'resources',
     'types',
     'math',
+    'shape_list',
 ]
 
 __version__ = VERSION

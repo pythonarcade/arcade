@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 titles = {
     'application.py': ['Window and View', 'window.rst'],
-    'buffered_draw_commands.py': ['Drawing - Batch', 'drawing_batch.rst'],
+    'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
     'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
@@ -201,6 +201,7 @@ def process_directory(directory: Path, quick_index_file):
             "easing.py": "arcade.easing",
             "math.py": "arcade.math",
             "earclip.py": "arcade.earclip",
+            "shape_list.py": "arcade.shape_list",
         }
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 

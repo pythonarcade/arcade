@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         If the cell contains 0 we crate a white shape.
         If the cell contains 1 we crate a green shape.
         """
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = arcade.shape_list.ShapeElementList()
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 if self.grid[row][column] == 0:
@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
-                current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                current_rect = arcade.shape_list.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
                 self.shape_list.append(current_rect)
 
     def on_draw(self):

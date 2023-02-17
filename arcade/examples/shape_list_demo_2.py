@@ -38,12 +38,16 @@ class MyGame(arcade.Window):
     def setup(self):
         # --- Create the vertex buffers objects for each square before we do
         # any drawing.
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = arcade.shape_list.ShapeElementList()
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-                shape = arcade.create_rectangle_filled(x, y,
-                                                       SQUARE_WIDTH, SQUARE_HEIGHT,
-                                                       arcade.color.DARK_BLUE)
+                shape = arcade.shape_list.create_rectangle_filled(
+                    center_x=x,
+                    center_y=y,
+                    width=SQUARE_WIDTH,
+                    height=SQUARE_HEIGHT,
+                    color= arcade.color.DARK_BLUE,
+                )
                 self.shape_list.append(shape)
 
     def on_draw(self):

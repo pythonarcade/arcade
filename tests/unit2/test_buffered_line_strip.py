@@ -1,4 +1,5 @@
 import arcade
+from arcade import shape_list
 
 
 def test_buffered_lines(window):
@@ -8,7 +9,7 @@ def test_buffered_lines(window):
                     [100, 100],
                     [100, 300],
                     [300, 300])
-    line_strip = arcade.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
+    line_strip = shape_list.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
 
     arcade.start_render()
     line_strip.draw()

@@ -4,9 +4,12 @@ Using a Vertex Buffer Object With Lines
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.lines_buffered
 """
-import arcade
 import random
-
+import arcade
+from arcade.shape_list import (
+    ShapeElementList,
+    create_line_strip,
+)
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -24,7 +27,7 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = ShapeElementList()
         point_list = ((0, 50),
                       (10, 10),
                       (50, 0),
@@ -45,7 +48,7 @@ class MyGame(arcade.Window):
             color = random.choice(colors)
             points = [(px + x, py + y) for px, py in point_list]
 
-            my_line_strip = arcade.create_line_strip(points, color, 5)
+            my_line_strip = create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
         self.shape_list.center_x = SCREEN_WIDTH // 2

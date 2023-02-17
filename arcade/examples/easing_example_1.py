@@ -84,7 +84,7 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.ball_list = arcade.SpriteList()
-        self.lines = arcade.ShapeElementList()
+        self.lines = arcade.shape_list.ShapeElementList()
 
         def create_ball(ball_y, ease_function):
             ball = EasingCircle(BALL_RADIUS, arcade.color_from_hex_string(BALL_COLOR))
@@ -98,9 +98,11 @@ class MyGame(arcade.Window):
             return ball
 
         def create_line(line_y):
-            line = arcade.create_line(X_START, line_y - BALL_RADIUS - LINE_WIDTH,
-                                      X_END, line_y - BALL_RADIUS,
-                                      line_color, line_width=LINE_WIDTH)
+            line = arcade.shape_list.create_line(
+                X_START, line_y - BALL_RADIUS - LINE_WIDTH,
+                X_END, line_y - BALL_RADIUS,
+                line_color, line_width=LINE_WIDTH,
+            )
             return line
 
         def create_text(text_string):
