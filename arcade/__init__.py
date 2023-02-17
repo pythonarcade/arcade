@@ -86,7 +86,6 @@ from .geometry import is_point_in_polygon
 
 # Complex imports with potential circularity
 from .window_commands import close_window
-from .window_commands import create_orthogonal_projection
 from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
@@ -337,7 +336,6 @@ __all__ = [
     'get_sprites_at_point',
     'get_timings',
     'get_three_float_color',
-    'create_orthogonal_projection',
     'create_text_sprite',
     'clear_timings',
     'get_viewport',

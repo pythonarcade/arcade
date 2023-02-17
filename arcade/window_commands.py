@@ -28,7 +28,8 @@ _window: Optional["Window"] = None
 
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
-    """Return the width and height of a monitor.
+    """
+    Return the width and height of a monitor.
 
     The size of the primary monitor is returned by default.
 
@@ -51,35 +52,6 @@ def get_projection() -> Mat4:
     :rtype: Mat4
     """
     return get_window().ctx.projection_2d_matrix
-
-
-def create_orthogonal_projection(
-    left: float,
-    right: float,
-    bottom: float,
-    top: float,
-    near: float = 1,
-    far: float = -1,
-) -> Mat4:
-    """
-    Creates an orthogonal projection matrix. Used internally with the
-    OpenGL shaders. It creates the same matrix as the deprecated/removed
-    ``glOrtho`` OpenGL function.
-
-    :param float left: The left of the near plane relative to the plane's center.
-    :param float right: The right of the near plane relative to the plane's center.
-    :param float top: The top of the near plane relative to the plane's center.
-    :param float bottom: The bottom of the near plane relative to the plane's center.
-    :param float near: The distance of the near plane from the camera's origin.
-                       It is recommended that the near plane is set to 1.0 or above to avoid
-                       rendering issues at close range.
-    :param float far: The distance of the far plane from the camera's origin.
-    :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: pyglet.math.Mat4
-
-    .. seealso:: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
-    """
-    return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
 
 
 def pause(seconds: Number) -> None:

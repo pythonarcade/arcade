@@ -29,6 +29,7 @@ from weakref import WeakSet
 
 import PIL
 from PIL import Image, ImageDraw
+
 from arcade.gl.framebuffer import Framebuffer
 from arcade.texture_transforms import Transform
 import arcade
@@ -36,6 +37,7 @@ from pyglet.image.atlas import (
     Allocator,
     AllocatorException,
 )
+from pyglet.math import Mat4
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
@@ -716,7 +718,7 @@ class TextureAtlas:
         self._texture.use(1)
         image_uv_texture_old.use(2)
         self._image_uv_texture.use(3)
-        self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(
+        self._ctx.atlas_resize_program["projection"] = Mat4.orthogonal_projection(
             0, self.width, self.height, 0,
         )
 
