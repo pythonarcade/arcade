@@ -26,6 +26,27 @@ Improve Test Cases
 
 Improving code coverage, and making better test case examples is appreciated.
 
+How to test changes locally
+---------------------------
+
+This guide assumes you already have `python` and `pip` installed, and you have
+already cloned this repository using `git`.  This guide
+does not explain how to create a venv, but a venv is recommended if you already
+know how to create one.
+
+To install all necessary project dependencies, run this command in your
+terminal:
+
+```shell
+pip install -e .[dev]
+```
+
+To run automated tests:
+
+```shell
+pytest --ignore=tests/test_examples
+```
+
 How to Build
 ------------
 
