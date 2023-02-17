@@ -209,7 +209,10 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     sprite2_position = sprite2._position
     sprite2_width = sprite2._width
     sprite2_height = sprite2._height
-    radius_sum = (sprite1_width if sprite1_width > sprite1_height else sprite1_height) + (sprite2_width if sprite2_width > sprite2_height else sprite2_height)
+    radius_sum = (
+        (sprite1_width if sprite1_width > sprite1_height else sprite1_height)
+        + (sprite2_width if sprite2_width > sprite2_height else sprite2_height)
+    )
     # Multiply by half of the theoretical max diagonal length for an estimation of distance
     radius_sum *= 0.71  # 1.42 / 2
     radius_sum_x2 = radius_sum * radius_sum

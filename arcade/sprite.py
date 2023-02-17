@@ -23,7 +23,6 @@ import arcade
 from arcade.geometry_generic import get_angle_degrees
 from arcade import load_texture
 from arcade import Texture
-from arcade import rotate_point
 from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
@@ -403,6 +402,7 @@ class Sprite:
         position_x, position_y = self._position
         rad_cos = cos(rad)
         rad_sin = sin(rad)
+
         def _adjust_point(point) -> Point:
             x, y = point
 
