@@ -2,7 +2,7 @@
 
 How-To Example Code
 ===================
-We can get a list of connected controllers by using :code:`arcade.get_joysticks()`. This will give you a list of current connected controllers.
+We can get a list of connected controllers by using :code:`arcade.get_joysticks()`.
 
 How to use buttons
 ===================
