@@ -435,7 +435,7 @@ class Geometry:
         index_element_size: int = 4,
     ):
         self._ctx = ctx
-        self._content = content or []
+        self._content = list(content or [])
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
@@ -500,8 +500,12 @@ class Geometry:
     def num_vertices(self, value: int):
         self._num_vertices = value
 
-    def append_buffer_description(self, description: BufferDescription):
-        self._content.append(description)
+    def append_buffer_description(self, buffer_description: BufferDescription):
+        for description in self._content:
+            if description == buffer_description:
+                raise ValueError(f"Two BufferDescriptions cannot have the same attribute name in one Geometry object,"
+                                 f"Found a conflict in {buffer_description} and {description}")
+        self._content.append(buffer_description)
 
     def instance(self, program: Program) -> VertexArray:
         """

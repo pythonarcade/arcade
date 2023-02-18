@@ -303,7 +303,13 @@ class BufferDescription:
         self.num_vertices = self.buffer.size // self.stride
 
     def __repr__(self) -> str:
-        return f"<BufferDescription {self.formats}>"
+        return f"<BufferDescription {self.attributes} {self.formats}>"
+
+    def __eq__(self, other: "BufferDescription"):
+        for self_attrib in self.attributes:
+            for other_attrib in other.attributes:
+                return True
+        return False
 
 
 class TypeInfo:
