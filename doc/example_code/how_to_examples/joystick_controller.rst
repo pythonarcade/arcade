@@ -16,6 +16,8 @@ We can get a list of connected controllers by using :code:`arcade.get_joysticks(
 
 Joystick Values
 ================
+The hoystick values can be obtained by using :code:`self.joystick.x` and :code:`self.joystick.y`
+
 How to use buttons
 ===================
 How to use hatHow to use ranged triggers (like for acceleration)
