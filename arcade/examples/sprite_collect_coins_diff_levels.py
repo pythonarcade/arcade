@@ -72,7 +72,7 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def level_1(self):
         for i in range(20):

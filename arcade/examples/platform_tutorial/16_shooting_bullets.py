@@ -349,7 +349,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(

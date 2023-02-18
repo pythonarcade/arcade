@@ -6,7 +6,7 @@ class DemoWindow(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "UI Mockup", resizable=True)
         self.manager = UIManager()
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         v_box = UIBoxLayout(size_hint=(1, 1))
 

@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # List of cards we are dragging with the mouse
         self.held_cards = None

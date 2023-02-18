@@ -277,7 +277,7 @@ class MyGame(arcade.Window):
         self.processing_time = 0
         self.draw_time = 0
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game """

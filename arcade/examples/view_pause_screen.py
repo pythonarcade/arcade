@@ -20,7 +20,7 @@ SPRITE_SCALING = 0.5
 
 class MenuView(arcade.View):
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
 
     def on_draw(self):
         self.clear()
@@ -44,7 +44,7 @@ class GameView(arcade.View):
         self.player_sprite.velocity = [3, 3]
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.window.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         self.clear()
@@ -82,7 +82,7 @@ class PauseView(arcade.View):
         self.game_view = game_view
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.ORANGE)
+        self.window.background_color = arcade.color.ORANGE
 
     def on_draw(self):
         self.clear()

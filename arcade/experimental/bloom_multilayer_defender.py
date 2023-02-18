@@ -176,7 +176,7 @@ class MyGame(arcade.Window):
         self.view_left = 0
 
         # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         # --- Bloom related ---
 

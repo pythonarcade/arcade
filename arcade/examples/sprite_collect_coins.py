@@ -45,7 +45,7 @@ class MyGame(arcade.Window):
         # Hide the mouse cursor while it's over the window
         self.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """

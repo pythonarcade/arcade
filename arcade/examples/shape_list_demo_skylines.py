@@ -146,7 +146,7 @@ class MyGame(arcade.Window):
         self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))
         self.skyline2 = make_skyline(SCREEN_WIDTH * 5, 150, (50, 50, 50))
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game and initialize the variables. """

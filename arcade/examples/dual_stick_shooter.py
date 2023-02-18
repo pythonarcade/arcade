@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
         self.controller_manager = arcade.ControllerManager()
         self.controller = None
 
-        arcade.set_background_color(arcade.color.DARK_MIDNIGHT_BLUE)
+        self.background_color = arcade.color.DARK_MIDNIGHT_BLUE
         controllers = self.controller_manager.get_controllers()
         for controller in controllers:
             dump_controller(controller)

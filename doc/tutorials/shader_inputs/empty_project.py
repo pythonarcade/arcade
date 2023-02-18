@@ -9,7 +9,7 @@ class MyWindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.center_window()
-        arcade.set_background_color(arcade.color.ALMOND)
+        self.background_color = arcade.color.ALMOND
 
     def on_draw(self):
         # Draw a simple circle to the screen

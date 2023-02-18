@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """

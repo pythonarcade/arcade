@@ -30,7 +30,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         self.generate_sprites()
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def generate_sprites(self):
         # -- Set up several columns of walls

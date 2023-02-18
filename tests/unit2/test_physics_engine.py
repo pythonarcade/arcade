@@ -8,7 +8,7 @@ CHARACTER_SCALING = 0.5
 
 
 def test_physics_engine(window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     window.clear()
 
     character_list = arcade.SpriteList()

@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game and initialize the variables. """

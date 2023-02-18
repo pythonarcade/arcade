@@ -5,7 +5,7 @@ import arcade
 
 
 def test_textured_rects(window: arcade.Window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
 
     def on_draw():
@@ -33,7 +33,7 @@ def test_textured_rects(window: arcade.Window):
 
 def test_textured_rects_2(window: arcade.Window):
     """Draw scaled rects"""
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     texture = arcade.load_texture(":resources:images/items/coinGold.png")
 
     def on_draw():

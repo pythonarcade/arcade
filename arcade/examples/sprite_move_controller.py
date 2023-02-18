@@ -114,7 +114,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         self.error_text = arcade.Text(
             "There are no controllers, plug in a controller and run again.",

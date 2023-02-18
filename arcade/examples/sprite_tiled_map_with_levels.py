@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.

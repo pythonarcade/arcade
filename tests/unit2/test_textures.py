@@ -13,7 +13,7 @@ CHARACTER_SCALING = 0.5
 
 
 def test_main(window: arcade.Window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
     assert texture.width == 99

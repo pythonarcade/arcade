@@ -10,7 +10,7 @@ def test_sprite_animated_old(window: arcade.Window):
     frame_count = 0
     SCREEN_WIDTH = window.width
     SCREEN_HEIGHT = window.height
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     character_list = arcade.SpriteList()
 

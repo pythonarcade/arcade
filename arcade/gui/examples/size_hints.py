@@ -14,7 +14,7 @@ class UIMockup(arcade.Window):
         super().__init__(800, 600, "UI Mockup", resizable=True)
         self.manager = UIManager()
         self.manager.enable()
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         anchor = self.manager.add(UIAnchorLayout())
 

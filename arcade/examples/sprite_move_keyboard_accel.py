@@ -84,7 +84,7 @@ class MyGame(arcade.Window):
         self.down_pressed = False
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """

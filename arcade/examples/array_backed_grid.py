@@ -55,7 +55,7 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """

@@ -118,7 +118,7 @@ class MyGame(arcade.Window):
                                                              gravity_constant=GRAVITY)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
