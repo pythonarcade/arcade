@@ -100,7 +100,7 @@ GL_NAMES = {
     gl.GL_BYTE: "GL_BYTE",
     gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
 }    
-    
+
 
 def gl_name(gl_type: gl.GLenum) -> str:
     """Return the name of a gl type"""
