@@ -3,7 +3,7 @@ import pytest
 from pyglet.image.atlas import AllocatorException
 import arcade
 from arcade import TextureAtlas, load_texture
-from arcade.gl import Texture as GLTexture, Framebuffer
+from arcade.gl import Texture2D, Framebuffer
 
 
 def check_internals(atlas: arcade.TextureAtlas, *, num_textures = 0, num_images = 0):
@@ -35,9 +35,9 @@ def test_create(ctx):
     assert atlas.auto_resize is True
     assert isinstance(atlas.max_size, tuple)
     assert atlas.max_size > (0, 0)
-    assert isinstance(atlas.texture, GLTexture)
-    assert isinstance(atlas.image_uv_texture, GLTexture)
-    assert isinstance(atlas.texture_uv_texture, GLTexture)
+    assert isinstance(atlas.texture, Texture2D)
+    assert isinstance(atlas.image_uv_texture, Texture2D)
+    assert isinstance(atlas.texture_uv_texture, Texture2D)
     assert isinstance(atlas.fbo, Framebuffer)
     assert atlas._image_uv_data_changed is True
     assert atlas._texture_uv_data_changed is True

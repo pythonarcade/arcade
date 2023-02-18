@@ -16,7 +16,7 @@ from .framebuffer import DefaultFrameBuffer, Framebuffer
 from .glsl import ShaderSource
 from .program import Program
 from .query import Query
-from .texture import Texture
+from .texture import Texture2D
 from .types import BufferDescription
 from .vertex_array import Geometry
 from ..types import BufferProtocol
@@ -121,7 +121,7 @@ class Context:
     BLEND_DEFAULT = 0x0302, 0x0303
     #: Blend mode shortcut for additive blending: ``ONE, ONE``
     BLEND_ADDITIVE = 0x0001, 0x0001
-    #: Blend mode shortcut for premultipled alpha: ``SRC_ALPHA, ONE``
+    #: Blend mode shortcut for pre-multiplied alpha: ``SRC_ALPHA, ONE``
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
 
     # VertexArray: Primitives
@@ -799,8 +799,8 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Optional[Union[Texture, List[Texture]]] = None,
-        depth_attachment: Optional[Texture] = None
+        color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
+        depth_attachment: Optional[Texture2D] = None
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -824,7 +824,7 @@ class Context:
         filter: Optional[Tuple[gl.GLenum, gl.GLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
-    ) -> Texture:
+    ) -> Texture2D:
         """Create a 2D Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -846,7 +846,7 @@ class Context:
         :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
         """
-        return Texture(
+        return Texture2D(
             self,
             size,
             components=components,
@@ -859,7 +859,7 @@ class Context:
             immutable=immutable,
         )
 
-    def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture:
+    def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:
         """
         Create a 2D depth texture. Can be used as a depth attachment
         in a :py:class:`~arcade.gl.Framebuffer`.
@@ -869,7 +869,7 @@ class Context:
                                     ``bytes`` or any object supporting
                                     the buffer protocol.
         """
-        return Texture(self, size, data=data, depth=True)
+        return Texture2D(self, size, data=data, depth=True)
 
     def geometry(
         self,
@@ -879,8 +879,8 @@ class Context:
         index_element_size: int = 4,
     ):
         """
-        Create a Geomtry instance. This is Arcade's version of a vertex array adding
-        a lot of convenice for the user. Geometry objects are fairly light. They are
+        Create a Geometry instance. This is Arcade's version of a vertex array adding
+        a lot of convenience for the user. Geometry objects are fairly light. They are
         mainly responsible for automatically map buffer inputs to your shader(s)
         and provide various methods for rendering or processing this geometry,
 

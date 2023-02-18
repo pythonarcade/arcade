@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
 
-class Texture:
+class Texture2D:
     """
     An OpenGL 2D texture.
     We can create an empty black texture or a texture from byte data.
@@ -149,7 +149,7 @@ class Texture:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
         if data and self._samples > 0:
-            raise ValueError("Multisamples textures are not writable (cannot be initialized with data)")
+            raise ValueError("Multisampled textures are not writable (cannot be initialized with data)")
 
         self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
 
@@ -172,7 +172,7 @@ class Texture:
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
+            weakref.finalize(self, Texture2D.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("texture")
 
@@ -759,7 +759,7 @@ class Texture:
         Destroy the underlying OpenGL resource.
         Don't use this unless you know exactly what you are doing.
         """
-        Texture.delete_glo(self._ctx, self._glo)
+        Texture2D.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod

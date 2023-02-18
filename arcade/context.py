@@ -15,7 +15,7 @@ import arcade
 from arcade.gl import BufferDescription, Context
 from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.program import Program
-from arcade.gl.texture import Texture
+from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
@@ -441,7 +441,7 @@ class ArcadeContext(Context):
         *,
         flip: bool = True,
         build_mipmaps: bool = False,
-    ) -> Texture:
+    ) -> Texture2D:
         """
         Loads and creates an OpenGL 2D texture.
         Currently, all textures are converted to RGBA for simplicity.
