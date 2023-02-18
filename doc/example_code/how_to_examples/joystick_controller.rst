@@ -49,6 +49,29 @@ __________________________________________
     | (down,  centered, up) |
     |     (-1,  0,  1)       |
 
+Move an object by adding the following code to the update function: This example uses ball as the moving object
+updates the object position
+
+def update(self, delta_time):
+    if self.joystick:
+        print(self.joystick.x, self.joystick.y)
+
+        self.ball.change_x = self.joystick.x
+        self.ball.change_y = -self.joystick.y
+----------------------------------------------------
+Move the object faster by multiplying self.ball.change_x and self.ball.change_y by any number. This illustration
+multiplies by 5 for faster movement
+
+def update(self, delta_time):
+    if self.joystick:
+        print(self.joystick.x, self.joystick.y)
+
+        self.ball.change_x = self.joystick.x * 5
+        self.ball.change_y = -self.joystick.y * 5
+
+Controller Movement Image:
+---------------------------------------------------------------
+.. image:: joystickController.png
 
 
 ==================================
