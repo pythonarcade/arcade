@@ -4,7 +4,7 @@
 Texture
 =======
 
-.. autoclass:: arcade.gl.Texture
+.. autoclass:: arcade.gl.Texture2D
    :members:
    :undoc-members:
    :show-inheritance:
