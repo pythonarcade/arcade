@@ -89,6 +89,23 @@ SHADER_TYPE_NAMES = {
     gl.GL_TESS_EVALUATION_SHADER: "tessellation evaluation shader",
 }
 
+GL_NAMES = {
+    gl.GL_HALF_FLOAT: "GL_HALF_FLOAT",
+    gl.GL_FLOAT: "GL_FLOAT",
+    gl.GL_DOUBLE: "GL_DOUBLE",
+    gl.GL_INT: "GL_INT",
+    gl.GL_UNSIGNED_INT: "GL_UNSIGNED_INT",
+    gl.GL_SHORT: "GL_SHORT",
+    gl.GL_UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
+    gl.GL_BYTE: "GL_BYTE",
+    gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
+}    
+    
+
+def gl_name(gl_type: gl.GLenum) -> str:
+    """Return the name of a gl type"""
+    return GL_NAMES.get(gl_type, gl_type)
+
 
 class AttribFormat:
     """"

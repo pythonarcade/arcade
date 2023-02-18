@@ -5,7 +5,7 @@ import weakref
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription
+from .types import BufferDescription, gl_name
 from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -143,12 +143,13 @@ class VertexArray:
         }
 
         # Build the vao according to the shader's attribute specifications
-        for i, prog_attr in enumerate(program.attributes):
+        for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
             if prog_attr.name.startswith("gl_"):
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
+                print(buff_descr, attr_descr, prog_attr)
             except KeyError:
                 raise ValueError(
                     (
@@ -191,8 +192,8 @@ class VertexArray:
             if attrib_type != prog_attr.gl_type:
                 raise ValueError(
                     (
-                        f"Program attribute '{prog_attr.name}' has type {prog_attr.gl_type} "
-                        f"while the buffer description has type {attr_descr.gl_type}. "
+                        f"Program attribute '{prog_attr.name}' has type {gl_name(prog_attr.gl_type)} "
+                        f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
                     )
                 )
 
