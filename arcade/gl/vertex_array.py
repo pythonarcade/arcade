@@ -500,6 +500,9 @@ class Geometry:
     def num_vertices(self, value: int):
         self._num_vertices = value
 
+    def append_buffer_description(self, description: BufferDescription):
+        self._content.append(description)
+
     def instance(self, program: Program) -> VertexArray:
         """
         Get the :py:class:`arcade.gl.VertexArray` compatible with this program
