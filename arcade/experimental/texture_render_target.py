@@ -1,7 +1,7 @@
 from arcade import get_window
 from arcade.types import Color
 from arcade.gl import geometry
-from arcade.gl.texture import Texture
+from arcade.gl.texture import Texture2D
 
 
 class RenderTargetTexture:
@@ -31,7 +31,7 @@ class RenderTargetTexture:
         self._quad_fs = geometry.quad_2d_fs()
 
     @property
-    def texture(self) -> Texture:
+    def texture(self) -> Texture2D:
         """The internal OpenGL texture"""
         return self._fbo.color_attachments[0]
 
@@ -45,6 +45,6 @@ class RenderTargetTexture:
 
     def resize(self, width: int, height: int):
         """Resize the the internal texture"""
-        pixel_scale = self.window.get_pixel_scale()
+        pixel_scale = self.window.get_pixel_ratio()
         self._size = width * pixel_scale, height * pixel_scale
         self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))

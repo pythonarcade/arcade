@@ -19,7 +19,7 @@ class BackgroundTexture:
 
     def __init__(
         self,
-        texture: gl.Texture,
+        texture: gl.Texture2D,
         offset: Tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
@@ -123,8 +123,8 @@ class BackgroundTexture:
     def render_target(
         self,
         context: ArcadeContext,
-        color_attachments: Optional[List[gl.Texture]] = None,
-        depth_attachment: Optional[gl.Texture] = None,
+        color_attachments: Optional[List[gl.Texture2D]] = None,
+        depth_attachment: Optional[gl.Texture2D] = None,
     ) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []

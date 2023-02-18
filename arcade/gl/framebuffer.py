@@ -6,7 +6,7 @@ import weakref
 
 from pyglet import gl
 
-from .texture import Texture
+from .texture import Texture2D
 from .types import pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -59,7 +59,7 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture] = None
+        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture2D] = None
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,7 +71,7 @@ class Framebuffer:
             if isinstance(color_attachments, list)
             else [color_attachments]
         )
-        self._depth_attachment: Optional[Texture] = depth_attachment
+        self._depth_attachment: Optional[Texture2D] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -253,7 +253,7 @@ class Framebuffer:
         return self._samples
 
     @property
-    def color_attachments(self) -> List[Texture]:
+    def color_attachments(self) -> List[Texture2D]:
         """
         A list of color attachments
 
@@ -262,7 +262,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Optional[Texture]:
+    def depth_attachment(self) -> Optional[Texture2D]:
         """
         Depth attachment
 

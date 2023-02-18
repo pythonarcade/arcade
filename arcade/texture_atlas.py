@@ -42,7 +42,7 @@ from pyglet.math import Mat4
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.texture import ImageData
-    from arcade.gl import Texture as GLTexture
+    from arcade.gl import Texture2D
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx
@@ -364,7 +364,7 @@ class TextureAtlas:
         return self._border
 
     @property
-    def texture(self) -> "GLTexture":
+    def texture(self) -> "Texture2D":
         """
         The atlas texture.
 
@@ -373,7 +373,7 @@ class TextureAtlas:
         return self._texture
 
     @property
-    def image_uv_texture(self) -> "GLTexture":
+    def image_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for images.
 
@@ -382,7 +382,7 @@ class TextureAtlas:
         return self._image_uv_texture
 
     @property
-    def texture_uv_texture(self) -> "GLTexture":
+    def texture_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for textures.
 
