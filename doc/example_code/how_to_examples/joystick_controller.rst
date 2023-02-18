@@ -3,7 +3,7 @@
 How-To Example Code
 ===================
 We can get a list of connected controllers by using 'arcade.get_joysticks()'. This will give you a list of current connected controllers.
-:code:`joysticks = arcade.get_joysticks()
+:code:`joysticks = arcade.get_joysticks()\nif joysticks:\nif joysticks:`
 if joysticks:
     self.joystick = joysticks[0]
     self.joystick.open()
