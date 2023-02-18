@@ -55,7 +55,7 @@ class MyGame(arcade.Window):
         self.shape_list.center_y = SCREEN_HEIGHT // 2
         self.shape_list.angle = 0
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """

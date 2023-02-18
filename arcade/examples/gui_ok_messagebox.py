@@ -15,7 +15,7 @@ from arcade.gui.events import UIOnActionEvent
 class MyWindow(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "OKMessageBox Example", resizable=True)
-        arcade.set_background_color(arcade.color.COOL_GREY)
+        self.background_color = arcade.color.COOL_GREY
 
         # Create and enable the UIManager
         self.manager = arcade.gui.UIManager()

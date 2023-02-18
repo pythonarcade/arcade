@@ -31,7 +31,7 @@ class UIMockup(arcade.Window):
         self.manager.enable()
 
         # Set background
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Create value labels
         self.timer = UINumberLabel(value=20, align="right", size_hint_min=(30, 20))

@@ -5,7 +5,7 @@ import arcade
 
 
 def test_text(window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     SCREEN_WIDTH = window.width
     SCREEN_HEIGHT = window.height
@@ -77,7 +77,7 @@ def test_text_instances(window):
     Output should be identical to that of test_text
     """
 
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     SCREEN_WIDTH = window.width
     SCREEN_HEIGHT = window.height

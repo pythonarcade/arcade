@@ -214,7 +214,7 @@ class MainMenu(arcade.View):
 
     def on_show_view(self):
         """Called when switching to this view."""
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
 
     def on_draw(self):
         """Draw the menu"""
@@ -373,7 +373,7 @@ class GameView(arcade.View):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.window.background_color = self.tile_map.background_color
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -654,7 +654,7 @@ class GameOverView(arcade.View):
 
     def on_show_view(self):
         """Called when switching to this view"""
-        arcade.set_background_color(arcade.color.BLACK)
+        self.window.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """Draw the game overview"""

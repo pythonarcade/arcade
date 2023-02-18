@@ -78,7 +78,7 @@ class MyGame(arcade.Window):
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # arcade.configure_logging()
 
@@ -160,7 +160,7 @@ class MyGame(arcade.Window):
             self.make_shield(x)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         self.setup_level_one()
 

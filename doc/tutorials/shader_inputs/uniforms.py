@@ -9,9 +9,9 @@ class MyWindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.center_window()
-        arcade.set_background_color(arcade.color.ALMOND)
+        self.background_color = arcade.color.ALMOND
         
-        # GL geometry that will be used to pass pixel coordiantes to the shader
+        # GL geometry that will be used to pass pixel coordinates to the shader
         # It has the same dimensions as the screen
         self.quad_fs = arcade.gl.geometry.quad_2d_fs()
 

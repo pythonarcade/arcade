@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""

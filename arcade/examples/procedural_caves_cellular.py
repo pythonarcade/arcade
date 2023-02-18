@@ -108,7 +108,7 @@ class InstructionView(arcade.View):
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        self.window.background_color = arcade.csscolor.DARK_SLATE_BLUE
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -158,7 +158,7 @@ class GameView(arcade.View):
         self.camera_sprites = arcade.SimpleCamera()
         self.camera_gui = arcade.SimpleCamera()
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.window.background_color = arcade.color.BLACK
 
         self.sprite_count_text = None
         self.draw_time_text = None

@@ -16,7 +16,7 @@ class InstructionView(arcade.View):
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        self.window.background_color = arcade.csscolor.DARK_SLATE_BLUE
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -81,7 +81,7 @@ class GameView(arcade.View):
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """

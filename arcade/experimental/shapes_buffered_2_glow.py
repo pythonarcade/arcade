@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
         ellipse = arcade.create_ellipse(20, 30, 50, 20, (230, 230, 0))
         self.shape_list.append(ellipse)
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         self.offscreen = self.ctx.framebuffer(
             color_attachments=self.ctx.texture(

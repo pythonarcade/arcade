@@ -89,7 +89,7 @@ class MyGame(arcade.Window):
 
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Keep track of the score
         self.score = 0

@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
         self.fps_text: Optional[arcade.Text] = None
         self.frame_count: int = 0  # for tracking the reset interval
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def add_coins(self, amount):
 

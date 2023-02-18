@@ -25,7 +25,7 @@ class MyGame(arcade.Window):
 
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         self.shapes = shape_list.ShapeElementList()
 

@@ -32,7 +32,7 @@ class MyWindow(arcade.Window):
         """ Init """
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         self.player_list = None
         self.wall_list = None

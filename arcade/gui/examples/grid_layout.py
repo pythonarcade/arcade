@@ -9,7 +9,7 @@ class UIMockup(arcade.Window):
         super().__init__(800, 600, "UI Mockup", resizable=True)
         self.manager = UIManager()
         self.manager.enable()
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         dummy1 = UIDummy(width=100, height=100)
         dummy2 = UIDummy(width=50, height=50)

@@ -8,7 +8,7 @@ COIN_SCALE = 0.25
 
 
 def test_load_textures(window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     frame_count = 0
 
     character_list = arcade.SpriteList()

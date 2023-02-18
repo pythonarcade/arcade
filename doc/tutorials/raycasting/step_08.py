@@ -48,7 +48,7 @@ class MyGame(arcade.Window):
         # Our sample GUI text
         self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 24)
 
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
         # Where is the shader file? Must be specified as a path.

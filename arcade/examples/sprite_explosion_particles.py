@@ -169,7 +169,7 @@ class MyGame(arcade.Window):
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
 

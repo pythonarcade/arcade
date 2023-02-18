@@ -30,7 +30,7 @@ class GameView(arcade.View):
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.window.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """

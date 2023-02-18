@@ -30,7 +30,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
+        self.background_color = arcade.color.DARK_SLATE_GRAY
 
         self.draw_time = 0
         self.shape_list = None

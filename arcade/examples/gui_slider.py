@@ -23,7 +23,7 @@ from arcade.gui.events import UIOnChangeEvent
 class UIMockup(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "UI Mockup", resizable=True)
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Required, create a UI manager to handle all UI widgets
         self.manager = UIManager()

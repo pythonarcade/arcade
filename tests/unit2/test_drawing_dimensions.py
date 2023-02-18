@@ -5,7 +5,7 @@ SCREEN_HEIGHT = 600
 
 
 def test_drawing_dims(window):
-    arcade.set_background_color(arcade.color.WHITE)
+    window.background_color = arcade.color.WHITE
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()

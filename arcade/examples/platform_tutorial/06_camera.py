@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
         # A Camera that can be used for scrolling the screen
         self.camera = None
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""

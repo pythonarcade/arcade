@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
 
@@ -86,7 +86,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """ Render the screen. """

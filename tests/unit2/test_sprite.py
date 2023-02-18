@@ -18,7 +18,7 @@ def test_velocity():
 
 def test_sprite(window: arcade.Window):
     CHARACTER_SCALING = 0.5
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     window.clear()
     global frame_counter
     frame_counter = 0
@@ -114,7 +114,7 @@ def test_sprite(window: arcade.Window):
 
 def test_sprite_2(window):
     CHARACTER_SCALING = 1.0
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
     sprite.center_x = 50
@@ -146,7 +146,7 @@ def test_sprite_sizes(window: arcade.Window):
     SIZE = 50
     SPACING = SIZE * 2
     ROW_SPACING = 100
-    arcade.set_background_color(arcade.color.BLACK)
+    window.background_color = arcade.color.BLACK
 
     character_list = arcade.SpriteList()
 
@@ -216,7 +216,7 @@ def test_sprite_sizes(window: arcade.Window):
 
 def test_sprite_scale(window):
     CHARACTER_SCALING = 0.5
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     # ensure normal scaling works correctly
     gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
@@ -265,7 +265,7 @@ def test_sprite_removal(window):
     CHARACTER_SCALING = 0.5
     global frame
     frame = 0
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     character_list = arcade.SpriteList()
 

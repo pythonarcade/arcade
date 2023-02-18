@@ -138,7 +138,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
-        arcade.set_background_color(arcade.color.SAND)
+        self.background_color = arcade.color.SAND
 
         self.player_sprite = None
 

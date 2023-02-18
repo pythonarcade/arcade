@@ -127,7 +127,7 @@ class MyGame(arcade.Window):
 
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background_color = arcade.color.WHITE
 
         self.board = None
         self.frame_count = 0

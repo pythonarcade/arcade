@@ -145,7 +145,7 @@ class DemoWindow(arcade.Window):
         self.manager.enable()
 
         # Set background
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
         anchor = self.manager.add(UIAnchorLayout())

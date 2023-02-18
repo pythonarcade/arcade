@@ -186,7 +186,7 @@ class MyView(arcade.View):
                              start_x=10, start_y=50, color=arcade.color.BLACK, font_size=24)
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.ALMOND)
+        self.window.background_color = arcade.color.ALMOND
 
         # Registers handlers for GUI button clicks, etc.
         # We don't really use them in this example.

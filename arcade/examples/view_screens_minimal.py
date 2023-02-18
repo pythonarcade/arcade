@@ -29,7 +29,7 @@ class MenuView(arcade.View):
 
     def on_show_view(self):
         """ Called when switching to this view"""
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
 
     def on_draw(self):
         """ Draw the menu """
@@ -58,7 +58,7 @@ class GameView(arcade.View):
 
     def on_show_view(self):
         """ Called when switching to this view"""
-        arcade.set_background_color(arcade.color.ORANGE_PEEL)
+        self.background_color = arcade.color.ORANGE_PEEL
 
     def on_draw(self):
         """ Draw everything for the game. """
@@ -78,7 +78,7 @@ class GameOverView(arcade.View):
     """ Class to manage the game over view """
     def on_show_view(self):
         """ Called when switching to this view"""
-        arcade.set_background_color(arcade.color.BLACK)
+        self.window.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """ Draw the game over view """

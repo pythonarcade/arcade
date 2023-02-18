@@ -3,7 +3,7 @@ from arcade import shape_list
 
 
 def test_buffered_lines(window):
-    arcade.set_background_color(arcade.color.WHITE)
+    window.background_color = arcade.color.WHITE
 
     point_list = ([0, 100],
                     [100, 100],

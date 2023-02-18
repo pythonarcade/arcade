@@ -21,7 +21,7 @@ class MyWindow(arcade.Window):
         self.manager.enable()
 
         # Set background color
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Render button
         red_style = {
