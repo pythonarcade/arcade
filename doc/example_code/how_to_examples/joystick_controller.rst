@@ -41,15 +41,14 @@ Different types of controllers
  (-1.0 to 1.0) Values on The Joystick Controller
 This represents the direction or intensity of joystick movement on a game.
 -----------------------------------------
-            Left   Centered   Right
-* The value -1 LEFT
-* The value 0, CENTERED
-* The value 1, RIGHT
+           Controller
+   | (left, centered, right) |
+   |      (-1, 0, 1)         |
 __________________________________________
-            Up      Centered    Down
-* The value -1, DOWN
-* The value 0, CENTERED
-* The value 1, UP
+           Controller
+    | (down,  centered, up) |
+    |     (-1,  0,  1)       |
+
 
 
 ==================================
