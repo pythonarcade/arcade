@@ -30,11 +30,28 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
 
 How to use buttons
 ===================
+
+
+
 How to use hatHow to use ranged triggers (like for acceleration)
 =================================================================
+
 Different types of controllers
 ==============================
-How the (-1.0 to 1.0) range works
+ (-1.0 to 1.0) Values on The Joystick Controller
+This represents the direction or intensity of joystick movement on a game.
+-----------------------------------------
+            Left   Centered   Right
+* The value -1 LEFT
+* The value 0, CENTERED
+* The value 1, RIGHT
+__________________________________________
+            Up      Centered    Down
+* The value -1, DOWN
+* The value 0, CENTERED
+* The value 1, UP
+
+
 ==================================
 Deadzone
 ========
