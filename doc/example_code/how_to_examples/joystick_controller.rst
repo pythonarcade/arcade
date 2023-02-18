@@ -6,9 +6,8 @@ We can get a list of connected controllers by using :code:`arcade.get_joysticks(
 
 .. code-block:: python
 
-    def my_function():
-        print("Hello, world!")
-        print("This is a multi-line code block.")
+      print("Hello, world!")
+      print("This is a multi-line code block.")
 
 Joystick Values
 ================
