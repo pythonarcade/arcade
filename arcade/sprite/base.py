@@ -67,6 +67,7 @@ class Sprite:
         # Position, size and orientation properties
         self._width: float = 0.0
         self._height: float = 0.0
+        self._depth: float = 0.0
         self._scale: Tuple[float, float] = scale, scale
         self._position: Point = center_x, center_y
         self._angle = angle
@@ -434,6 +435,19 @@ class Sprite:
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_height(self)
+
+    @property
+    def depth(self) -> float:
+        """Get the depth of the sprite."""
+        return self._depth
+
+    @depth.setter
+    def depth(self, new_value: float):
+        """Set the depth of the sprite."""
+        if new_value != self._depth:
+            self._depth = new_value
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_depth(self)
 
     @property
     def scale(self) -> float:

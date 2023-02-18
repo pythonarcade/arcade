@@ -9,6 +9,7 @@ python -m arcade.examples.gl.spritelist_interaction_hijack_positions
 """
 import math
 import arcade
+from arcade import hitbox
 
 NUM_COINS = 500
 
@@ -22,13 +23,12 @@ class HijackSpritePositions(arcade.Window):
         # Generate lots of coins. We don't care about the initial positions
         # since our shader is setting those
         self.coins = arcade.SpriteList()
+        texture = arcade.load_texture(
+            ":resources:images/items/coinGold.png",
+            hit_box_algorithm=hitbox.algo_bounding_box,
+        )
         for _ in range(NUM_COINS):
-            self.coins.append(
-                arcade.Sprite(
-                    ":resources:images/items/coinGold.png",
-                    scale=0.5,
-                )
-            )
+            self.coins.append(arcade.Sprite(texture, scale=0.5))
         # Ensure the internal buffers are up to date (size etc)
         self.coins.write_sprite_buffers_to_gpu()
 
@@ -39,23 +39,24 @@ class HijackSpritePositions(arcade.Window):
 
             // The current time to add some movement
             uniform float time;
-            // The bendyness value accelerating rotations
+            // The "bendyness" value accelerating rotations
             uniform float bend;
 
             // The current size of the screen
             uniform vec2 size;
 
             // The new positions we are writing into a new buffer
-            out vec2 out_pos;
+            out vec3 out_pos;
 
             void main() {
                 // gl_VertexID is the sprite position in the spritelist.
                 // We can use that to value to create unique positions with
                 // some simple math.
                 float vertId = float(gl_VertexID);
-                out_pos = size / 2.0 + vec2(
+                out_pos = vec3(size, 0.0) / 2.0 + vec3(
                     sin(vertId + time + vertId * bend),
-                    cos(vertId + time + vertId * bend)
+                    cos(vertId + time + vertId * bend),
+                    0.0
                 ) * vertId;
             }
             """
@@ -78,7 +79,7 @@ class HijackSpritePositions(arcade.Window):
         self.time += delta_time
         # Keep updating the current time to animation the movement
         self.position_program["time"] = self.time / 4
-        # Update the bendyness value
+        # Update the "bendyness" value
         self.position_program["bend"] = math.cos(self.time) / 400
 
     def on_resize(self, width: int, height: int):

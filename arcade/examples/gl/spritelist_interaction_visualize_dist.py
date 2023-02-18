@@ -48,10 +48,10 @@ class SpriteListInteraction(arcade.Window):
             #version 330
 
             // Sprite positions from SpriteList
-            in vec2 in_pos;
+            in vec3 in_pos;
 
             // Output to geometry shader
-            out vec2 v_position;
+            out vec3 v_position;
 
             void main() {
                 // This shader just forwards info to geo shader
@@ -80,16 +80,16 @@ class SpriteListInteraction(arcade.Window):
 
             // The position input from vertex shader.
             // It's an array because geo shader can take more than one input
-            in vec2 v_position[];
+            in vec3 v_position[];
 
             void main() {
                 // ONLY emit a line between the sprite and origin when within the distance
-                if (distance(v_position[0], origin) < maxDistance) {
+                if (distance(v_position[0].xy, origin) < maxDistance) {
                     // First line segment position (origin)
                     gl_Position = window.projection * window.view * vec4(origin, 0.0, 1.0);
                     EmitVertex();
                     // Second line segment position (sprite position)
-                    gl_Position = window.projection * window.view * vec4(v_position[0], 0.0, 1.0);
+                    gl_Position = window.projection * window.view * vec4(v_position[0].xy, 0.0, 1.0);
                     EmitVertex();
                 }
             }
