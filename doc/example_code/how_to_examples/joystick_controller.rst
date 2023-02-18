@@ -17,7 +17,6 @@ We can get a list of connected controllers by using :code:`arcade.get_joysticks(
 Joystick Values
 ================
 The joystick values can be obtained by using :code:`self.joystick.x` and :code:`self.joystick.y`. This can be used to update the current positon of an object.
-def update(self, delta_time):
 
 .. code-block:: python
 
