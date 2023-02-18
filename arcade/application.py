@@ -4,6 +4,7 @@ derive from.
 """
 import logging
 import os
+import sys
 import time
 from typing import Tuple, Optional
 
@@ -31,6 +32,7 @@ MOUSE_BUTTON_RIGHT = 4
 
 _window: 'Window'
 
+_in_debugger = sys.gettrace() is not None
 
 def get_screens():
     """
@@ -323,6 +325,10 @@ class Window(pyglet.window.Window):
         Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
         dispatches the on_update events.
         """
+        # Clamp delta_time in debugger, since long debugger pauses should not
+        # cause sky-high `delta_time` on the next frame.
+        if _in_debugger:
+            delta_time = min(delta_time, self._update_rate * 2.)
         self.dispatch_event('on_update', delta_time)
 
     def set_update_rate(self, rate: float):
