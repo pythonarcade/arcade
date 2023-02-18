@@ -435,7 +435,7 @@ class Geometry:
         index_element_size: int = 4,
     ):
         self._ctx = ctx
-        self._content = content or []
+        self._content = list(content or [])
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
@@ -499,6 +499,17 @@ class Geometry:
     @num_vertices.setter
     def num_vertices(self, value: int):
         self._num_vertices = value
+
+    def append_buffer_description(self, descr: BufferDescription):
+        """
+        Append a new BufferDescription to the existing Geometry.
+        .. Warning:: a Geometry cannot contain two BufferDescriptions which share an attribute name.
+        """
+        for other_descr in self._content:
+            if other_descr == descr:
+                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                                 f"Found a conflict in {descr} and {other_descr}")
+        self._content.append(descr)
 
     def instance(self, program: Program) -> VertexArray:
         """

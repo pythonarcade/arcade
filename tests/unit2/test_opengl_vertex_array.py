@@ -208,3 +208,14 @@ def test_index_buffer_incorrect_type_size(ctx):
 
 def test_incomplete_geometry(ctx):
     ctx.geometry()
+
+
+def test_appending_extra_buffer_description(ctx):
+    """Attempt to append a BufferDescription with the same attribute name"""
+    with pytest.raises(ValueError):
+        geometry = ctx.geometry(
+            [
+                BufferDescription(ctx.buffer(reserve=16), "2f", ['in_position'])
+            ]
+        )
+        geometry.append_buffer_description(BufferDescription(ctx.buffer(reserve=16), '4f', ['in_position']))
