@@ -500,12 +500,16 @@ class Geometry:
     def num_vertices(self, value: int):
         self._num_vertices = value
 
-    def append_buffer_description(self, buffer_description: BufferDescription):
-        for description in self._content:
-            if description == buffer_description:
-                raise ValueError(f"Two BufferDescriptions cannot have the same attribute name in one Geometry object,"
-                                 f"Found a conflict in {buffer_description} and {description}")
-        self._content.append(buffer_description)
+    def append_buffer_description(self, descr: BufferDescription):
+        """
+        Append a new BufferDescription to the existing Geometry.
+        .. Warning:: a Geometry cannot contain two BufferDescriptions which share an attribute name.
+        """
+        for other_descr in self._content:
+            if other_descr == descr:
+                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                                 f"Found a conflict in {descr} and {other_descr}")
+        self._content.append(descr)
 
     def instance(self, program: Program) -> VertexArray:
         """
