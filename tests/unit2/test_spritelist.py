@@ -178,9 +178,9 @@ def test_clear(ctx):
     assert sp._sprite_buffer_slots == 0
     assert sp.atlas is not None
     assert len(sp._sprite_index_data) == 100
-    assert len(sp._sprite_pos_data) == 100 * 2
+    assert len(sp._sprite_pos_data) == 100 * 3
     assert sp._sprite_index_buf.size == 100 * 4
-    assert sp._sprite_pos_buf.size == 100 * 4 * 2
+    assert sp._sprite_pos_buf.size == 100 * 4 * 3
 
 
 def test_color():

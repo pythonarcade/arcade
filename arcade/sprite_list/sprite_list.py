@@ -966,8 +966,8 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 2] = sprite._position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
     def update_depth(self, sprite: _SpriteType) -> None:
