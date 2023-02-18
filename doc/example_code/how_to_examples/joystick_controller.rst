@@ -3,7 +3,8 @@
 How-To Example Code
 ===================
 We can get a list of connected controllers by using :code:`arcade.get_joysticks()`.
-
+Joystick Values
+================
 How to use buttons
 ===================
 How to use hatHow to use ranged triggers (like for acceleration)
