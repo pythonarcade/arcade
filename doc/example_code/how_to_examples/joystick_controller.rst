@@ -38,5 +38,37 @@ How the (-1.0 to 1.0) range works
 ==================================
 Deadzone
 ========
+A centered joystick might have a value not at 0, but at 0.0001 or some small number. This will make for a small “drift” on a person’s character. We often counteract this by having a “dead zone” where if the number is below a certain value, we just assume it is zero to eliminate the drift.
+
+how we take care of the dead zone:
+After 
+.. code-block:: console
+    import arcade
+add the following line:
+.. code-block:: console
+    DEAD_ZONE = 0.02
+
+adding the following code to the  **update **:
+.. code-block:: python
+    def update(self, delta_time):
+
+        # Update the position according to the game controller
+        if self.joystick:
+
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.joystick.x) < DEAD_ZONE:
+                self.ball.change_x = 0
+            else:
+                self.ball.change_x = self.joystick.x * MOVEMENT_SPEED
+
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.joystick.y) < DEAD_ZONE:
+                self.ball.change_y = 0
+            else:
+                self.ball.change_y = -self.joystick.y * MOVEMENT_SPEED
+
+
+we add the following lines:
+
 How-To Example Code
 ===================
