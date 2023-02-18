@@ -17,6 +17,7 @@ from random import randint, uniform
 
 import arcade
 from arcade.gl.types import BufferDescription
+from arcade import hitbox
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -31,10 +32,11 @@ class GPUBouncingCoins(arcade.Window):
 
         # Generate lots of coins in random positions
         self.coins = arcade.SpriteList(use_spatial_hash=None)
+        texture = arcade.load_texture(":resources:images/items/coinGold.png", hit_box_algorithm=hitbox.algo_bounding_box)
         for _ in range(NUM_COINS):
             self.coins.append(
                 arcade.Sprite(
-                    ":resources:images/items/coinGold.png",
+                    texture,
                     scale=0.25,
                     center_x=randint(0, WINDOW_WIDTH),
                     center_y=randint(0, WINDOW_HEIGHT),
@@ -53,14 +55,14 @@ class GPUBouncingCoins(arcade.Window):
             uniform float delta_time;
             uniform vec2 size;
 
-            in vec2 in_pos;
+            in vec3 in_pos;
             in vec2 in_vel;
 
-            out vec2 out_pos;
+            out vec3 out_pos;
             out vec2 out_vel;
 
             void main() {
-                vec2 pos = in_pos + in_vel * 100.0 * delta_time;
+                vec2 pos = in_pos.xy + in_vel * 100.0 * delta_time;
                 vec2 vel = in_vel;
                 if (pos.x > size.x) {
                     pos.x = size.x;
@@ -78,7 +80,7 @@ class GPUBouncingCoins(arcade.Window):
                     pos.y = 0.0;
                     vel.y *= -1.0;
                 }
-                out_pos = pos;
+                out_pos = vec3(pos, in_pos.z);
                 out_vel = vel;
             }
             """,
@@ -102,14 +104,14 @@ class GPUBouncingCoins(arcade.Window):
         # Geometry input: Copied positions and first velocity buffer
         self.geometry_1 = self.ctx.geometry(
             [
-                BufferDescription(self.buffer_pos_copy, "2f", ["in_pos"]),
+                BufferDescription(self.buffer_pos_copy, "3f", ["in_pos"]),
                 BufferDescription(self.buffer_velocity_1, "2f", ["in_vel"]),
             ]
         )
         # Geometry input: Copied positions and second velocity buffer
         self.geometry_2 = self.ctx.geometry(
             [
-                BufferDescription(self.buffer_pos_copy, "2f", ["in_pos"]),
+                BufferDescription(self.buffer_pos_copy, "3f", ["in_pos"]),
                 BufferDescription(self.buffer_velocity_2, "2f", ["in_vel"]),
             ]
         )
