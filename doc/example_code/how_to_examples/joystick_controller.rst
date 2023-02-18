@@ -1,6 +1,6 @@
 .. _example-code:
 
-How-To Example Code
+How to get connected controllers
 ===================
 We can get a list of connected controllers by using :code:`arcade.get_joysticks()`. There might be multiple controllers in the list
 
@@ -26,3 +26,5 @@ How the (-1.0 to 1.0) range works
 ==================================
 Deadzone
 ========
+How-To Example Code
+===================
