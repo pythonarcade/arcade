@@ -32,7 +32,10 @@ class GPUBouncingCoins(arcade.Window):
 
         # Generate lots of coins in random positions
         self.coins = arcade.SpriteList(use_spatial_hash=None)
-        texture = arcade.load_texture(":resources:images/items/coinGold.png", hit_box_algorithm=hitbox.algo_bounding_box)
+        texture = arcade.load_texture(
+            ":resources:images/items/coinGold.png",
+            hit_box_algorithm=hitbox.algo_bounding_box,
+        )
         for _ in range(NUM_COINS):
             self.coins.append(
                 arcade.Sprite(

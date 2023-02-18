@@ -23,7 +23,10 @@ class HijackSpritePositions(arcade.Window):
         # Generate lots of coins. We don't care about the initial positions
         # since our shader is setting those
         self.coins = arcade.SpriteList()
-        texture = arcade.load_texture(":resources:images/items/coinGold.png", hit_box_algorithm=hitbox.algo_bounding_box)
+        texture = arcade.load_texture(
+            ":resources:images/items/coinGold.png",
+            hit_box_algorithm=hitbox.algo_bounding_box,
+        )
         for _ in range(NUM_COINS):
             self.coins.append(arcade.Sprite(texture, scale=0.5))
         # Ensure the internal buffers are up to date (size etc)
