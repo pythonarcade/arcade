@@ -41,6 +41,7 @@ Deadzone
 A centered joystick might have a value not at 0, but at 0.0001 or some small number. This will make for a small “drift” on a person’s character. We often counteract this by having a “dead zone” where if the number is below a certain value, we just assume it is zero to eliminate the drift.
 
 How we take care of the dead zone:
+
 After 
 
 .. code-block:: console
