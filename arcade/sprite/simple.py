@@ -23,7 +23,10 @@ class SpriteSolidColor(Sprite):
 
     :param int width: Width of the sprite in pixels
     :param int height: Height of the sprite in pixels
+    :param float center_x: Initial x position of the sprite
+    :param float center_y: Initial y position of the sprite
     :param Color color: The color of the sprite as an RGB or RGBA tuple
+    :param float angle: Initial angle of the sprite in degrees
     """
     _default_image = PIL.Image.new("RGBA", (32, 32), (255, 255, 255, 255))
 
@@ -34,6 +37,7 @@ class SpriteSolidColor(Sprite):
         center_x: float = 0,
         center_y: float = 0,
         color: Color = (255, 255, 255, 255),
+        angle: float = 0,
     ):
         """
         Create a solid-color rectangular sprite.
@@ -42,6 +46,7 @@ class SpriteSolidColor(Sprite):
             SolidColorTexture("sprite_solid_color", width, height, self._default_image),
             center_x=center_x,
             center_y=center_y,
+            angle=angle,
         )
         self.color = arcade.get_four_byte_color(color)
 
