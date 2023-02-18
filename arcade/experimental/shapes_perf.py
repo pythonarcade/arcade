@@ -6,6 +6,7 @@ import math
 import random
 
 import arcade
+from arcade.types import NamedPoint
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -89,12 +90,12 @@ class GameWindow(arcade.Window):
 
         # line strip
         self.line_strip = [
-            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
             for _ in range(10)
         ]
         # Random list of points
         self.points = [
-            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
             for _ in range(10_000)
         ]
 
