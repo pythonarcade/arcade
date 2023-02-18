@@ -45,6 +45,6 @@ class RenderTargetTexture:
 
     def resize(self, width: int, height: int):
         """Resize the the internal texture"""
-        pixel_scale = self.window.get_pixel_scale()
+        pixel_scale = self.window.get_pixel_ratio()
         self._size = width * pixel_scale, height * pixel_scale
         self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
