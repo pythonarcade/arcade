@@ -149,7 +149,6 @@ class VertexArray:
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
-                print(buff_descr, attr_descr, prog_attr)
             except KeyError:
                 raise ValueError(
                     (
