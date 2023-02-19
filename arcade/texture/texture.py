@@ -17,7 +17,7 @@ from arcade.texture_transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
-    get_shortest_transform,
+    # get_shortest_transform,
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
