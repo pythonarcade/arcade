@@ -58,6 +58,7 @@ def test_write_read(ctx):
     buffer = ctx.buffer(data=in_data)
     texture.write(buffer)
     assert texture.read() == in_data
+    assert isinstance(texture.read(), bytes)
 
     # Write with viewport
     in_data = array.array('f', list(range(20))).tobytes()
