@@ -57,7 +57,8 @@ def load_texture(
     texture = cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
     if not texture:
         texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
-        texture.origin = file_path_str
+        texture._file_path = file_path
+        texture._crop_values = x, y, width, height
         cache.texture_cache.put(texture, file_path=file_path_str)
 
     # If the crop values give us a different texture, return that instead
@@ -151,7 +152,8 @@ def load_textures(
         if flipped:
             sub_texture = sub_texture.flip_top_to_bottom()
 
-        sub_texture.origin = image_cache_name
+        sub_texture.file_path = file_name
+        sub_texture.crop_values = x, y, width, height
         texture_sections.append(sub_texture)
 
     return texture_sections
@@ -195,7 +197,8 @@ def load_spritesheet(
             image,
             hit_box_algorithm=hit_box_algorithm,
         )
-        texture.origin = f"{file_name}|{sprite_no}"
+        texture.file_path = file_name
+        texture.crop_values = start_x, start_y, sprite_width, sprite_height
         texture_list.append(texture)
 
     return texture_list

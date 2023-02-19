@@ -158,7 +158,8 @@ def test_crate_empty():
     """Create empty texture"""
     size = (256, 256)
     tex = Texture.create_empty("empty", size)
-    assert tex.origin is None
+    assert tex.file_path is None
+    assert tex.crop_values is None
     assert tex.size == size
     assert tex._hit_box_algorithm == hitbox.algo_bounding_box
     assert tex.hit_box_points == (

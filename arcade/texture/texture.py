@@ -175,7 +175,8 @@ class Texture:
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
-        self._origin: Optional[str] = None
+        self._file_path: Optional[Path] = None
+        self._crop_values: Optional[Tuple[int, int, int, int]] = None
 
     @property
     def cache_name(self) -> str:
@@ -248,19 +249,30 @@ class Texture:
         return self._atlas_name
 
     @property
-    def origin(self) -> Optional[str]:
+    def file_path(self) -> Optional[Path]:
         """
-        User defined metadata for the origin of this texture.
+        A Path object to the file this texture was loaded from
 
-        This is simply metadata useful for debugging.
-
-        :return: str
+        :return: Path
         """
-        return self._origin
+        return self._file_path
 
-    @origin.setter
-    def origin(self, value: str):
-        self._origin = value
+    @file_path.setter
+    def file_path(self, path: Path):
+        self._file_path = path
+
+    @property
+    def crop_values(self) -> Optional[Tuple[int, int, int, int]]:
+        """
+        The crop values used to create this texture in the referenced file
+
+        :return: Tuple[int, int, int, int]
+        """
+        return self._crop_values
+
+    @crop_values.setter
+    def crop_values(self, crop: Tuple[int, int, int, int]):
+        self._crop_values = crop
 
     @property
     def image(self) -> PIL.Image.Image:
@@ -653,7 +665,8 @@ class Texture:
         )
         if swap_dims:
             texture.width, texture.height = self.height, self.width
-        texture.origin = self.origin
+        texture.file_path = self.file_path
+        texture.crop_values = self.crop_values
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
         # texture._transforms = get_shortest_transform(texture._vertex_order)
         texture._update_cache_names()
