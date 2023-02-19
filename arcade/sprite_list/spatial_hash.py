@@ -10,11 +10,11 @@ from typing import (
 
 from arcade import (
     Sprite,
-    are_polygons_intersecting,
     get_distance_between_sprites,
     is_point_in_polygon,
     get_window,
 )
+from arcade.geometry_python import _are_polygons_intersecting
 from arcade.types import Point
 from .sprite_list import SpriteList
 
@@ -230,8 +230,8 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if distance > radius_sum_x2:
         return False
 
-    return are_polygons_intersecting(
-        sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box()
+    return _are_polygons_intersecting(
+        sprite1._get_adjusted_hit_box(), sprite2._get_adjusted_hit_box()
     )
 
 

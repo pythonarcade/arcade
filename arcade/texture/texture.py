@@ -6,6 +6,7 @@ from pathlib import Path
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
+from arcade.hit_box_utils import ndarray_to_point_list, point_list_to_ndarray
 
 from arcade.types import Color
 from arcade.texture_transforms import (
@@ -167,7 +168,7 @@ class Texture:
             raise ValueError(
                 f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
             )
-        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
+        self._hit_box_points = point_list_to_ndarray(hit_box_points or self._calculate_hit_box_points())
 
         # Optional filename for debugging
         self._origin: Optional[str] = None
@@ -305,6 +306,7 @@ class Texture:
 
         :return: PointList
         """
+        raise Exception("Disabled during prototyping")
         return self._hit_box_points
 
     @property
@@ -584,7 +586,7 @@ class Texture:
         :param Transform transform: Transform to apply
         :return: New texture
         """
-        points = transform.transform_hit_box_points(self._hit_box_points)
+        points = transform.transform_hit_box_points(ndarray_to_point_list(self._hit_box_points))
         texture = Texture(
             self.image_data,
             # Not relevant, but copy over the value

@@ -2,7 +2,12 @@
 Functions for calculating geometry.
 """
 from typing import cast
+from arcade.hit_box_utils import NumPyPointList
 from arcade.types import PointList
+import numpy as np
+from numpy import (
+    dot as np_dot, array as nparray, min as np_min, max as np_max, subtract as np_subtract, swapaxes as np_swapaxes, multiply as np_multiply, flip as np_flip
+)
 
 
 _PRECISION = 2
@@ -52,6 +57,34 @@ def are_polygons_intersecting(poly_a: PointList,
                 return False
 
     return True
+
+perp = nparray([1, -1])
+def _are_polygons_intersecting(poly_a: NumPyPointList,
+                              poly_b: NumPyPointList) -> bool:
+    projected_a = np.empty(len(poly_a), dtype=np.float64)
+    projected_b = np.empty(len(poly_b), dtype=np.float64)
+    normal = np.empty(2, dtype=np.float64)
+    for polygon in (poly_a, poly_b):
+
+        for i1 in range(len(polygon)):
+            i2 = (i1 + 1) % len(polygon)
+            projection_1 = polygon[i1]
+            projection_2 = polygon[i2]
+
+            np_subtract(projection_1, projection_2, normal)
+            np_multiply(perp, normal, normal)
+            np_flip(normal)
+
+            np_dot(poly_a, normal, projected_a)
+            # min_a = np_min(projected_a)
+            # max_a = np_max(projected_a)
+            np_dot(poly_b, normal, projected_b)
+            # min_b = np_min(projected_b)
+            # max_b = np_max(projected_b)
+            if cast(float, np_max(projected_a)) <= cast(float, np_min(projected_b)) or cast(float, np_max(projected_b)) <= cast(float, np_min(projected_a)):
+                return False
+    return True
+
 
 
 # Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
@@ -121,6 +154,62 @@ def _do_intersect(p1, q1, p2, q2):
 # Returns true if the point p lies
 # inside the polygon[] with n vertices
 def is_point_in_polygon(x: float, y: float, polygon_point_list) -> bool:
+    p = x, y
+    n = len(polygon_point_list)
+
+    # There must be at least 3 vertices
+    # in polygon
+    if n < 3:
+        return False
+
+    # Create a point for line segment
+    # from p to infinite
+    extreme = (10000, p[1])
+
+    # To count number of points in polygon
+    # whose y-coordinate is equal to
+    # y-coordinate of the point
+    decrease = 0
+    count = i = 0
+
+    while True:
+        next_item = (i + 1) % n
+
+        if polygon_point_list[i][1] == p[1]:
+            decrease += 1
+
+        # Check if the line segment from 'p' to
+        # 'extreme' intersects with the line
+        # segment from 'polygon[i]' to 'polygon[next]'
+        if (_do_intersect(polygon_point_list[i],
+                          polygon_point_list[next_item],
+                          p, extreme)):
+
+            # If the point 'p' is collinear with line
+            # segment 'i-next', then check if it lies
+            # on segment. If it lies, return true, otherwise false
+            if _orientation(polygon_point_list[i], p,
+                            polygon_point_list[next_item]) == 0:
+                return not _on_segment(polygon_point_list[i], p,
+                                       polygon_point_list[next_item])
+
+            count += 1
+
+        i = next_item
+
+        if i == 0:
+            break
+
+    # Reduce the count by decrease amount
+    # as these points would have been added twice
+    count -= decrease
+
+    # Return true if count is odd, false otherwise
+    return count % 2 == 1
+
+# Returns true if the point p lies
+# inside the polygon[] with n vertices
+def _is_point_in_polygon(x: float, y: float, polygon_point_list: NumPyPointList) -> bool:
     p = x, y
     n = len(polygon_point_list)
 

@@ -101,4 +101,4 @@ class SpriteCircle(Sprite):
         # apply results to the new sprite
         super().__init__(texture)
         self.color = color_rgba
-        self._points = self.texture.hit_box_points
+        self._points = self.texture._hit_box_points

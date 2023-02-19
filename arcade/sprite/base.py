@@ -18,7 +18,10 @@ from arcade import (
     Texture,
 )
 from arcade.color import BLACK
+from arcade.geometry_python import _is_point_in_polygon
+from arcade.hit_box_utils import NumPyPointList, ndarray_to_point_list, point_list_to_ndarray
 from arcade.types import Color, RGBA, Point, PointList, PathOrTexture
+import numpy as np
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -74,8 +77,8 @@ class Sprite:
         self.change_angle: float = 0.0
 
         # Hit box and collision property
-        self._points: Optional[PointList] = None
-        self._point_list_cache: Optional[PointList] = None
+        self._points: Optional[NumPyPointList] = None
+        self._point_list_cache: Optional[NumPyPointList] = None
 
         # Color
         self._color: RGBA = 255, 255, 255, 255
@@ -115,7 +118,7 @@ class Sprite:
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
             if not self._points:
-                self._points = self._texture.hit_box_points
+                self._points = self._texture._hit_box_points
 
     @property
     def properties(self) -> Dict[str, Any]:
@@ -200,7 +203,7 @@ class Sprite:
         Points will be scaled with get_adjusted_hit_box.
         """
         self._point_list_cache = None
-        self._points = points
+        self._points = point_list_to_ndarray(points)
 
     def get_hit_box(self) -> PointList:
         """
@@ -217,7 +220,7 @@ class Sprite:
         """
         # Use existing points if we have them
         if self._points is not None:
-            return self._points
+            return ndarray_to_point_list(self._points)
 
         # If we don't already have points, try to get them from the texture
         if self._texture:
@@ -225,7 +228,7 @@ class Sprite:
         else:
             raise ValueError("Sprite has no hit box points due to missing texture")
 
-        return self._points
+        return ndarray_to_point_list(self._points)
 
     @property
     def hit_box(self) -> PointList:
@@ -236,6 +239,10 @@ class Sprite:
         self.set_hit_box(points)
 
     def get_adjusted_hit_box(self) -> PointList:
+        raise Exception("disabled for now")
+        return ndarray_to_point_list(self._get_adjusted_hit_box())
+
+    def _get_adjusted_hit_box(self) -> NumPyPointList:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
@@ -246,32 +253,16 @@ class Sprite:
 
         rad = radians(self._angle)
         scale_x, scale_y = self._scale
-        position_x, position_y = self._position
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
-        def _adjust_point(point) -> Point:
-            x, y = point
-
-            # Apply scaling
-            x *= scale_x
-            y *= scale_y
-
-            # Rotate the point if needed
-            if rad:
-                rot_x = x * rad_cos - y * rad_sin
-                rot_y = x * rad_sin + y * rad_cos
-                x = rot_x
-                y = rot_y
-
-            # Apply position
-            return (
-                x + position_x,
-                y + position_y,
-            )
+        translation_matrix = np.array(self._position)
+        scaling_matrix = np.array([[scale_x, 0], [0, scale_y]])
+        rotation_matrix = np.array([[rad_cos, -rad_sin], [rad_sin, rad_cos]])
+        transformation_matrix = np.dot(scaling_matrix, rotation_matrix)
 
         # Cache the results
-        self._point_list_cache = tuple([_adjust_point(point) for point in self.hit_box])
+        self._point_list_cache = translation_matrix + np.dot(self._points, transformation_matrix)
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
@@ -358,15 +349,14 @@ class Sprite:
         """
         Return the y coordinate of the bottom of the sprite.
         """
-        points = self.get_adjusted_hit_box()
+        points = self._get_adjusted_hit_box()
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
             return self.center_y
 
-        y_points = [point[1] for point in points]
-        return min(y_points)
+        return np.amin(points, 1)
 
     @bottom.setter
     def bottom(self, amount: float):
@@ -382,15 +372,14 @@ class Sprite:
         """
         Return the y coordinate of the top of the sprite.
         """
-        points = self.get_adjusted_hit_box()
+        points = self._get_adjusted_hit_box()
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
             return self.center_y
 
-        y_points = [point[1] for point in points]
-        return max(y_points)
+        return np.amax(points, 1)
 
     @top.setter
     def top(self, amount: float):
@@ -713,15 +702,14 @@ class Sprite:
         """
         Return the x coordinate of the left-side of the sprite's hit box.
         """
-        points = self.get_adjusted_hit_box()
+        points = self._get_adjusted_hit_box()
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
             return self.center_x
 
-        x_points = [point[0] for point in points]
-        return min(x_points)
+        return np.amin(points, 0)
 
     @left.setter
     def left(self, amount: float):
@@ -735,15 +723,14 @@ class Sprite:
         """
         Return the x coordinate of the right-side of the sprite's hit box.
         """
-        points = self.get_adjusted_hit_box()
+        points = self._get_adjusted_hit_box()
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
             return self.center_x
 
-        x_points = [point[0] for point in points]
-        return max(x_points)
+        return np.amax(points, 0)
 
     @right.setter
     def right(self, amount: float):
