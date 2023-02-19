@@ -526,7 +526,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransposeTransform)
+        return self._new_texture_transformed(TransposeTransform, swap_dims=True)
 
     def transverse(self) -> "Texture":
         """
@@ -539,7 +539,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransverseTransform)
+        return self._new_texture_transformed(TransverseTransform, swap_dims=True)
 
     def rotate_90(self, count: int = 1) -> "Texture":
         """
@@ -581,7 +581,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate270Transform)
+        return self._new_texture_transformed(Rotate270Transform, swap_dims=True)
 
     @staticmethod
     def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
@@ -655,8 +655,7 @@ class Texture:
             texture.width, texture.height = self.height, self.width
         texture.origin = self.origin
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        texture._hit_box_points = transform.transform_hit_box_points(self._hit_box_points)
-        texture._transforms = get_shortest_transform(texture._vertex_order)
+        # texture._transforms = get_shortest_transform(texture._vertex_order)
         texture._update_cache_names()
         return texture
 
