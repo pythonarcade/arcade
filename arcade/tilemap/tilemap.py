@@ -442,7 +442,7 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height)  # type: ignore
+            texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height, hit_box_algorithm=hit_box_algorithm)  # type: ignore
             if tile.flipped_diagonally:
                 texture = texture.flip_diagonally()
             if tile.flipped_horizontally:
@@ -569,7 +569,7 @@ class TileMap:
                     image_file = _get_image_source(frame_tile, map_directory)
 
                     if not frame_tile.tileset.image and image_file:
-                        texture = load_texture(image_file)
+                        texture = load_texture(image_file, hit_box_algorithm=hit_box_algorithm)
                     elif image_file:
                         # No image for tile, pull from tilesheet
                         (
@@ -580,7 +580,7 @@ class TileMap:
                         ) = _get_image_info_from_tileset(frame_tile)
 
                         texture = load_texture(
-                            image_file, x=image_x, y=image_y, width=width, height=height
+                            image_file, x=image_x, y=image_y, width=width, height=height, hit_box_algorithm=hit_box_algorithm
                         )
                     else:
                         raise RuntimeError(
