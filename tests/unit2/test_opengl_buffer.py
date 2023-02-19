@@ -13,7 +13,7 @@ def test_create_empty(ctx):
         ctx.buffer()
 
 
-def test_read_write(ctx):
+def test_read(ctx):
     buffer = ctx.buffer(data=b'Hello world')
     assert buffer.read() == b'Hello world'
     assert buffer.read(size=5) == b'Hello'
@@ -34,7 +34,39 @@ def test_read_write(ctx):
     # Offset without size
     assert len(buffer.read(offset=6)) == 5
 
-def test_write_bufferprotocol(ctx):
+
+def test_write(ctx):
+    # Attempt to write too much data
+    buffer = ctx.buffer(reserve=4)
+    buffer.write(b'Hello World')
+    assert buffer.read() == b'Hell'
+
+    # Write too little data
+    buffer = ctx.buffer(reserve=8)
+    buffer.write(b'Hello')
+    assert buffer.read() == b'Hello\x00\x00\x00'
+
+    # Write with offset
+    buffer = ctx.buffer(reserve=8)
+    buffer.write(b'test', offset=4)
+    assert buffer.read() == b'\x00\x00\x00\x00test'
+
+    # Clipped data with offset
+    buffer = ctx.buffer(reserve=8)
+    buffer.write(b'test', offset=6)
+    assert buffer.read() == b'\x00\x00\x00\x00\x00\x00te'
+
+    # Write 0 bytes
+    buffer = ctx.buffer(reserve=8)
+    buffer.write(b'test', offset=8)
+
+    # Go past the buffer
+    buffer = ctx.buffer(reserve=8)
+    with pytest.raises(ValueError):
+        buffer.write(b'test', offset=9)
+
+
+def test_write_buffer_protocol(ctx):
     """Write data to buffer with buffer protocol"""
     data = array('f', [1, 2, 3, 4])
     buff = ctx.buffer(data=data)

@@ -179,11 +179,19 @@ class Buffer:
         types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
+        If the supplied data is larger than the buffer, it will be
+        truncated to fit. If the supplied data is smaller than the
+        buffer, the remaining bytes will be left unchanged.
+
         :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
         :param int offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         size, data = data_to_ctypes(data)
+        # Ensure we don't write outside the buffer
+        size = min(size, self._size - offset)
+        if size < 0:
+            raise ValueError("Attempting to write negative number bytes to buffer")
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
     def copy_from_buffer(self, source: "Buffer", size=-1, offset=0, source_offset=0):
