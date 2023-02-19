@@ -99,7 +99,6 @@ titles = {
 EXCLUDED_MEMBERS = [
     "ImageData",
     "AtlasRegion",
-    "SolidColorTexture",
     "ImageDataRefCounter",
 ]
 
