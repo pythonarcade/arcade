@@ -12,8 +12,9 @@ but should work with any recent version of Pygame.
     pip install -I pygame-ce==2.1.3
 
 """
+from typing import Tuple
 import math
-import pygame
+import pygame  # type: ignore
 import arcade
 from arcade.gl import geometry
 
@@ -23,7 +24,7 @@ class SurfaceTexture:
     Simple wrapper for a texture and a pygame surface
     making it simple to synchronize the data.
     """
-    def __init__(self, ctx: arcade.ArcadeContext, size: tuple[int, int]):
+    def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]):
         self._ctx = ctx
         self._size = size
         self._surface = pygame.Surface(size, flags=pygame.SRCALPHA)
@@ -58,14 +59,14 @@ class SurfaceTexture:
         )
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         return self._size
 
     @property
     def surface(self) -> pygame.Surface:
         return self._surface
 
-    def draw(self):
+    def draw(self) -> None:
         """Draw the OpenGL texture to the screen"""
         self._texture.use(0)
         self._geometry.render(self._program)
