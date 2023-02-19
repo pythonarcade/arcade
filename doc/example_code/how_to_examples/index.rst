@@ -139,6 +139,12 @@ Player Movement
 
    :ref:`sprite_move_keyboard_accel`
 
+.. figure:: thumbs/sprite_move_angle.png
+   :figwidth: 170px
+   :target: sprite_move_angle.html
+
+   :ref:`sprite_move_angle`
+
 .. figure:: thumbs/sprite_face_left_or_right.png
    :figwidth: 170px
    :target: sprite_face_left_or_right.html
@@ -151,12 +157,6 @@ Player Movement
 
    :ref:`sprite_move_controller`
 
-.. figure:: thumbs/sprite_move_angle.png
-   :figwidth: 170px
-   :target: sprite_move_angle.html
-
-   :ref:`sprite_move_angle`
-
 .. figure:: thumbs/dual_stick_shooter.png
    :figwidth: 170px
    :target: dual_stick_shooter.html
@@ -168,18 +168,6 @@ Player Movement
    :target: turn_and_move.html
 
    :ref:`turn_and_move`
-
-.. figure:: thumbs/easing_example_1.png
-   :figwidth: 170px
-   :target: easing_example_1.html
-
-   :ref:`easing_example_1`
-
-.. figure:: thumbs/easing_example_2.png
-   :figwidth: 170px
-   :target: easing_example_2.html
-
-   :ref:`easing_example_2`
 
 .. figure:: thumbs/sprite_rotate_around_tank.png
    :figwidth: 170px
@@ -225,6 +213,21 @@ Non-Player Movement
    :target: sprite_rotate_around_point.html
 
    :ref:`sprite_rotate_around_point`
+
+Easing
+^^^^^^
+
+.. figure:: thumbs/easing_example_1.png
+   :figwidth: 170px
+   :target: easing_example_1.html
+
+   :ref:`easing_example_1`
+
+.. figure:: thumbs/easing_example_2.png
+   :figwidth: 170px
+   :target: easing_example_2.html
+
+   :ref:`easing_example_2`
 
 Calculating a Path
 ^^^^^^^^^^^^^^^^^^

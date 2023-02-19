@@ -2,8 +2,11 @@
 
 .. _sprite_move_angle:
 
-Move Sprites By Angle
-=====================
+Move By Turning
+===============
+
+* Use the left/right keys to turn.
+* Up and down keys to move forward and backwards.
 
 .. image:: sprite_move_angle.png
     :width: 600px

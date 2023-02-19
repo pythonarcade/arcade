@@ -2,8 +2,8 @@
 
 .. _sprite_move_keyboard:
 
-Sprite Move By Keyboard
-=======================
+Move By Keyboard
+================
 
 .. image:: sprite_move_keyboard.png
     :width: 600px
