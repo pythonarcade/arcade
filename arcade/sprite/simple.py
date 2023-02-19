@@ -48,7 +48,7 @@ class SpriteSolidColor(Sprite):
         """
         texture = Texture(
             self._default_image,
-            hit_box_points = (
+            hit_box_points=(
                 (-width / 2, -height / 2),
                 (width / 2, -height / 2),
                 (width / 2, height / 2),
