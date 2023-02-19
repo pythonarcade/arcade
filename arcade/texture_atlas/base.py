@@ -15,11 +15,13 @@ import copy
 import math
 import time
 import logging
+from pathlib import Path
 from typing import (
     Dict,
     Optional,
     Tuple,
     Sequence,
+    Union,
     TYPE_CHECKING,
 )
 from array import array
@@ -960,7 +962,7 @@ class TextureAtlas:
 
     def save(
         self,
-        path: str,
+        path: Union[str, Path],
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,

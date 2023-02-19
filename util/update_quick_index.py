@@ -55,7 +55,7 @@ titles = {
     'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -186,6 +186,7 @@ def process_directory(directory: Path, quick_index_file):
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
+            "texture_atlas": "arcade",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
@@ -346,6 +347,7 @@ def main():
     process_directory(Path("../arcade/sprite_list"), text_file)
     process_directory(Path("../arcade/sprite"), text_file)
     process_directory(Path("../arcade/texture"), text_file)
+    process_directory(Path("../arcade/texture_atlas"), text_file)
     process_directory(Path("../arcade/text"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
