@@ -12,7 +12,7 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -30,10 +30,11 @@ from arcade.hitbox import HitBoxAlgorithm
 if TYPE_CHECKING:
     from arcade import TextureAtlas
 
-from arcade.types import Point, TiledObject
+from pyglet.math import Vec2
+
 from arcade.geometry_generic import rotate_point
 from arcade.resources import resolve_resource_path
-from pyglet.math import Vec2
+from arcade.types import Point, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -442,7 +443,14 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = load_texture(image_file, x=image_x, y=image_y, width=width, height=height, hit_box_algorithm=hit_box_algorithm)  # type: ignore
+            texture = load_texture(
+                image_file,  # type: ignore
+                x=image_x,
+                y=image_y,
+                width=width,
+                height=height,
+                hit_box_algorithm=hit_box_algorithm
+            )
             if tile.flipped_diagonally:
                 texture = texture.flip_diagonally()
             if tile.flipped_horizontally:
@@ -569,7 +577,10 @@ class TileMap:
                     image_file = _get_image_source(frame_tile, map_directory)
 
                     if not frame_tile.tileset.image and image_file:
-                        texture = load_texture(image_file, hit_box_algorithm=hit_box_algorithm)
+                        texture = load_texture(
+                            image_file,
+                            hit_box_algorithm=hit_box_algorithm
+                        )
                     elif image_file:
                         # No image for tile, pull from tilesheet
                         (
@@ -580,7 +591,12 @@ class TileMap:
                         ) = _get_image_info_from_tileset(frame_tile)
 
                         texture = load_texture(
-                            image_file, x=image_x, y=image_y, width=width, height=height, hit_box_algorithm=hit_box_algorithm
+                            image_file,
+                            x=image_x,
+                            y=image_y,
+                            width=width,
+                            height=height,
+                            hit_box_algorithm=hit_box_algorithm
                         )
                     else:
                         raise RuntimeError(
