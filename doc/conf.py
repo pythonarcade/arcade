@@ -236,26 +236,8 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
-def add_ga_javascript(app, pagename, templatename, context, doctree):
-
-    body = context.get('metatags', '')
-    body += """
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-C7W6VSD1H5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-C7W6VSD1H5');
-</script>
-    """
-    context['metatags'] = body
-
 def setup(app):
     app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
-    # Should be added automatically by RTD.
-    # app.connect('html-page-context', add_ga_javascript)

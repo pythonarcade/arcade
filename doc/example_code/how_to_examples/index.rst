@@ -37,12 +37,6 @@ Drawing Primitives
 
    :ref:`drawing_primitives`
 
-.. figure:: thumbs/drawing_with_functions.png
-   :figwidth: 170px
-   :target: drawing_with_functions.html
-
-   :ref:`drawing_with_functions`
-
 .. figure:: thumbs/drawing_text.png
    :figwidth: 170px
    :target: drawing_text.html
@@ -54,27 +48,6 @@ Drawing Primitives
    :target: drawing_text_objects.html
 
    :ref:`drawing_text_objects`
-
-Drawing with Loops
-^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/drawing_with_loops.png
-   :figwidth: 170px
-   :target: drawing_with_loops.html
-
-   :ref:`drawing_with_loops`
-
-.. figure:: thumbs/nested_loops_box.png
-   :figwidth: 170px
-   :target: nested_loops_box.html
-
-   :ref:`nested_loops_box`
-
-.. figure:: thumbs/nested_loops_bottom_left_triangle.png
-   :figwidth: 170px
-   :target: nested_loops_bottom_left_triangle.html
-
-   :ref:`nested_loops_bottom_left_triangle`
 
 Animating Drawing Primitives
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
