@@ -27,6 +27,12 @@ body {
 .toctree-wrapper a {
     text-decoration: none;
 }
+.toc-outside-links a:hover {
+    text-decoration: underline;
+}
+.toctree-wrapper a:hover {
+    text-decoration: underline;
+}
 
 #the-python-arcade-library h2 {
     font-size: var(--font-size--small);
