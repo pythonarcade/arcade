@@ -116,26 +116,7 @@ html_theme = 'furo'
 html_theme_options = {
     "light_logo": "../_images/arcade-logo.svg",
     "dark_logo": "../_images/arcade-logo.svg",
-    "light_css_variables": {
-       "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "16px",
-        "sidebar-item-font-size": "15px",
-        "sidebar-item-line-height": "20px",
-        "sidebar-caption-space-above": "0",
-        "sidebar-caption-font-size": "18px",
-        "sidebar-tree-space-above": "9px",
-        "sidebar-item-spacing-vertical": "4px"
-    },
-    "dark_css_variables": {
-       "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "16px",
-        "sidebar-item-font-size": "15px",
-        "sidebar-item-line-height": "20px",
-        "sidebar-caption-space-above": "0",
-        "sidebar-caption-font-size": "18px",
-        "sidebar-tree-space-above": "9px",
-        "sidebar-item-spacing-vertical": "4px"
-    },
+
 }
 
 html_title = f"Python Arcade {version}"
