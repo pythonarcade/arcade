@@ -10,7 +10,6 @@ from .generate import (
     make_soft_circle_texture,
     make_soft_square_texture,
 )
-from .solid_color import SolidColorTexture
 from arcade import cache
 
 
@@ -25,7 +24,6 @@ def cleanup_texture_cache():
 
 __all__ = [
     "Texture",
-    "SolidColorTexture",
     "ImageData",
     "load_texture",
     "load_textures",

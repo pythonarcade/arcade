@@ -3,12 +3,13 @@ import PIL
 from .base import Sprite
 import arcade
 from arcade.types import Color
-from arcade.texture import SolidColorTexture
 from arcade import cache
 from arcade import hitbox
 from arcade.texture import (
     make_circle_texture,
     make_soft_circle_texture,
+    Texture,
+    ImageData,
 )
 
 
@@ -28,7 +29,10 @@ class SpriteSolidColor(Sprite):
     :param Color color: The color of the sprite as an RGB or RGBA tuple
     :param float angle: Initial angle of the sprite in degrees
     """
-    _default_image = PIL.Image.new("RGBA", (32, 32), (255, 255, 255, 255))
+    _default_image = ImageData(
+        PIL.Image.new("RGBA", size=(32, 32), color=(255, 255, 255, 255)),
+        hash="sprite_solid_color"
+    )
 
     def __init__(
         self,
@@ -42,8 +46,18 @@ class SpriteSolidColor(Sprite):
         """
         Create a solid-color rectangular sprite.
         """
+        texture = Texture(
+            self._default_image,
+            hit_box_points = (
+                (-width / 2, -height / 2),
+                (width / 2, -height / 2),
+                (width / 2, height / 2),
+                (-width / 2, height / 2)
+            )
+        )
+        texture.size = width, height
         super().__init__(
-            SolidColorTexture("sprite_solid_color", width, height, self._default_image),
+            texture,
             center_x=center_x,
             center_y=center_y,
             angle=angle,
