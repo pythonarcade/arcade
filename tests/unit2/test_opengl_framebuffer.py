@@ -125,6 +125,7 @@ def test_read(ctx):
     fb.clear(color=(255, 255, 0, 255))
     data = fb.read(components=4)
     assert len(data) == 16
+    assert isinstance(fb.read(), bytes)
 
     # Read 3 components
     data = fb.read(components=3)
