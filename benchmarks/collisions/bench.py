@@ -30,7 +30,7 @@ window = arcade.Window()
 # like something I might create in a game.
 rng.seed(2)
 for i in range(0, WALLS_COUNT):
-    wall = arcade.SpriteSolidColor(rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), arcade.color.BLACK)
+    wall = arcade.SpriteSolidColor(rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), color=arcade.color.BLACK)
     wall.position = rng.randint(0, SCREEN_WIDTH), rng.randint(0, SCREEN_HEIGHT)
     walls.append(wall)
 
