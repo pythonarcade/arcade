@@ -279,3 +279,23 @@ def test_max_size(ctx):
     # Create an unreasonable sized atlas
     with pytest.raises(ValueError):
         TextureAtlas((100_000, 100_000))
+
+
+def test_uv_buffers_after_change(ctx):
+    capacity = 2
+    atlas = TextureAtlas((100, 100), capacity=capacity)
+
+    def buf_check(atlas):
+        # Check that the byte data of the uv data and texture is the same
+        assert len(atlas._image_uv_data) == 4096 * capacity * 8
+        assert len(atlas._image_uv_data.tobytes()) == len(atlas._image_uv_texture.read())
+        assert len(atlas._texture_uv_data) == 4096 * capacity * 8
+        assert len(atlas._texture_uv_data.tobytes()) == len(atlas._texture_uv_texture.read())
+
+    buf_check(atlas)
+    atlas.resize((200, 200))
+    buf_check(atlas)
+    atlas.rebuild()
+    buf_check(atlas)
+    atlas.clear()
+    buf_check(atlas)
