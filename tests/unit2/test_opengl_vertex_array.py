@@ -219,3 +219,22 @@ def test_appending_extra_buffer_description(ctx):
             ]
         )
         geometry.append_buffer_description(BufferDescription(ctx.buffer(reserve=16), '4f', ['in_position']))
+
+
+def test_vertex_array_wrong_attrib_mapping(ctx):
+    """Attempt to map an float buffer into an int attribute"""
+    geometry =ctx.geometry(
+        [BufferDescription(ctx.buffer(reserve=16), '2f', ['in_pos'])]
+    )
+    program = ctx.program(
+        vertex_shader="""
+            #version 330
+            in ivec2 in_pos;
+            out ivec2 out_pos;
+            void main() {
+                out_pos = in_pos;
+            }
+        """,
+    )
+    with pytest.raises(ValueError, match="GL_INT"):
+        geometry.transform(program, ctx.buffer(reserve=16))
