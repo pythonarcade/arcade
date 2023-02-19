@@ -6,7 +6,9 @@ from arcade.hit_box_utils import NumPyPointList
 from arcade.types import PointList
 import numpy as np
 from numpy import (
-    dot as np_dot, array as nparray, min as np_min, max as np_max, subtract as np_subtract, swapaxes as np_swapaxes, multiply as np_multiply, flip as np_flip
+    dot as np_dot, array as nparray, min as np_min, max as np_max, subtract as np_subtract, swapaxes as np_swapaxes, multiply as np_multiply, flip as np_flip,
+    maximum as np_maximum,
+    minimum as np_minimum,
 )
 
 
@@ -64,6 +66,7 @@ def _are_polygons_intersecting(poly_a: NumPyPointList,
     projected_a = np.empty(len(poly_a), dtype=np.float64)
     projected_b = np.empty(len(poly_b), dtype=np.float64)
     normal = np.empty(2, dtype=np.float64)
+    # normal = np_flip(normal_buf)
     for polygon in (poly_a, poly_b):
 
         for i1 in range(len(polygon)):
@@ -73,7 +76,7 @@ def _are_polygons_intersecting(poly_a: NumPyPointList,
 
             np_subtract(projection_1, projection_2, normal)
             np_multiply(perp, normal, normal)
-            np_flip(normal)
+            normal[0], normal[1] = normal[1], normal[0]
 
             np_dot(poly_a, normal, projected_a)
             # min_a = np_min(projected_a)
@@ -81,7 +84,7 @@ def _are_polygons_intersecting(poly_a: NumPyPointList,
             np_dot(poly_b, normal, projected_b)
             # min_b = np_min(projected_b)
             # max_b = np_max(projected_b)
-            if cast(float, np_max(projected_a)) <= cast(float, np_min(projected_b)) or cast(float, np_max(projected_b)) <= cast(float, np_min(projected_a)):
+            if cast(float, np_maximum.reduce(projected_a)) <= cast(float, np_minimum.reduce(projected_b)) or cast(float, np_maximum.reduce(projected_b)) <= cast(float, np_minimum.reduce(projected_a)):
                 return False
     return True
 

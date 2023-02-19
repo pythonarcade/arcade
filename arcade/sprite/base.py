@@ -22,6 +22,7 @@ from arcade.geometry_python import _is_point_in_polygon
 from arcade.hit_box_utils import NumPyPointList, ndarray_to_point_list, point_list_to_ndarray
 from arcade.types import Color, RGBA, Point, PointList, PathOrTexture
 import numpy as np
+from numpy import array as np_array
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -79,6 +80,7 @@ class Sprite:
         # Hit box and collision property
         self._points: Optional[NumPyPointList] = None
         self._point_list_cache: Optional[NumPyPointList] = None
+        self._point_list_cache_2: Optional[NumPyPointList] = None
 
         # Color
         self._color: RGBA = 255, 255, 255, 255
@@ -251,18 +253,35 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
+        points = self._points
+        target = self._point_list_cache_2
+        if target is None or len(target) != len(points):
+            self._point_list_cache_2 = target = np.empty((len(points), 2), dtype=np.float64)
+
+        # position_x, position_y = self._position
         rad = radians(self._angle)
         scale_x, scale_y = self._scale
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
-        translation_matrix = np.array(self._position)
-        scaling_matrix = np.array([[scale_x, 0], [0, scale_y]])
-        rotation_matrix = np.array([[rad_cos, -rad_sin], [rad_sin, rad_cos]])
-        transformation_matrix = np.dot(scaling_matrix, rotation_matrix)
+        # translation_matrix = np.array(self._position)
+        # transformation_matrix = np.array([
+        #     [scale_x * rad_cos, -scale_x * rad_sin, position_x],
+        #     [scale_y * rad_sin, scale_y * rad_cos, position_y],
+        #     [0., 0., 1.]
+        # ])
+        transformation_matrix = np.array([
+            [scale_x * rad_cos, -scale_x * rad_sin],
+            [scale_y * rad_sin, scale_y * rad_cos],
+        ], dtype=np.float64)
+        # rotation_matrix = np.array([[rad_cos, -rad_sin], [rad_sin, rad_cos]])
+        # transformation_matrix = np.dot(scaling_matrix, rotation_matrix)
 
+        translation_matrix = np.array(self._position, dtype=np.float64)
         # Cache the results
-        self._point_list_cache = translation_matrix + np.dot(self._points, transformation_matrix)
+        self._point_list_cache = target
+        np.dot(self._points, transformation_matrix, target)
+        np.add(translation_matrix, target, target)
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
