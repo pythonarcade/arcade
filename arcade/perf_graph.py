@@ -224,7 +224,7 @@ class PerfGraph(arcade.Sprite):
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
             with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
-                fbo.clear()
+                fbo.clear(color=(0, 0, 0, 255))
             return
 
         # Get FPS and add to our historical data
