@@ -84,6 +84,7 @@ class AtlasRegion:
     :param int y: The y position of the texture
     :param int width: The width of the texture in pixels
     :param int height: The height of the texture in pixels
+    :param tuple texture_coordinates: The texture coordinates (optional)
     """
 
     __slots__ = (
@@ -101,30 +102,35 @@ class AtlasRegion:
         y: int,
         width: int,
         height: int,
+        texture_coordinates: Optional[Tuple[float, float, float, float, float, float, float, float]] = None,
     ):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        # start_x, start_y, width, height
-        # Width and height
-        _width = self.width / atlas.width
-        _height = self.height / atlas.height
-        # upper_left, upper_right, lower_left, lower_right
-        self.texture_coordinates = (
-            # upper_left
-            self.x / atlas.width,
-            self.y / atlas.height,
-            # upper_right
-            (self.x / atlas.width) + _width,
-            (self.y / atlas.height),
-            # lower_left
-            (self.x / atlas.width),
-            (self.y / atlas.height) + _height,
-            # lower_right
-            (self.x / atlas.width) + _width,
-            (self.y / atlas.height) + _height,
-        )
+        # Calculate texture coordinates if not provided
+        if texture_coordinates:
+            self.texture_coordinates = texture_coordinates
+        else:
+            # start_x, start_y, width, height
+            # Width and height
+            _width = self.width / atlas.width
+            _height = self.height / atlas.height
+            # upper_left, upper_right, lower_left, lower_right
+            self.texture_coordinates = (
+                # upper_left
+                self.x / atlas.width,
+                self.y / atlas.height,
+                # upper_right
+                (self.x / atlas.width) + _width,
+                (self.y / atlas.height),
+                # lower_left
+                (self.x / atlas.width),
+                (self.y / atlas.height) + _height,
+                # lower_right
+                (self.x / atlas.width) + _width,
+                (self.y / atlas.height) + _height,
+            )
 
     def verify_image_size(self, image_data: "ImageData"):
         """
