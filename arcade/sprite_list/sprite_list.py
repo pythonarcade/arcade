@@ -159,13 +159,13 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_changed = False
 
         # Used in collision detection optimization
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
-        self.spatial_hash: Optional[_SpatialHash] = None
+        self.spatial_hash: Optional[SpatialHash] = None
         self._use_spatial_hash = use_spatial_hash
         self._spatial_hash_cell_size = spatial_hash_cell_size
         if use_spatial_hash is True:
-            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+            self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.properties: Optional[Dict[str, Any]] = None
 
@@ -537,7 +537,7 @@ class SpriteList(Generic[_SpriteType]):
         this spritelist. Sprite and SpriteList have a circular
         reference for performance reasons.
         """
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
         # Manually remove the spritelist from all sprites
         if deep:
@@ -549,7 +549,7 @@ class SpriteList(Generic[_SpriteType]):
 
         # Reset SpatialHash
         if self.spatial_hash:
-            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+            self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         # Clear the slot_idx and slot info and other states
         self._buf_capacity = _DEFAULT_CAPACITY
@@ -807,9 +807,9 @@ class SpriteList(Generic[_SpriteType]):
     def enable_spatial_hashing(self, spatial_hash_cell_size=128):
         """Turn on spatial hashing."""
         LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
-        self.spatial_hash = _SpatialHash(spatial_hash_cell_size)
+        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
         self._use_spatial_hash = True
         self._recalculate_spatial_hashes()
 
@@ -822,8 +822,8 @@ class SpriteList(Generic[_SpriteType]):
     def _recalculate_spatial_hashes(self):
         if self._use_spatial_hash:
             if not self.spatial_hash:
-                from .spatial_hash import _SpatialHash
-                self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+                from .spatial_hash import SpatialHash
+                self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
