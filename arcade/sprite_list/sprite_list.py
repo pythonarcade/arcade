@@ -181,7 +181,7 @@ class SpriteList(Generic[_SpriteType]):
             get_window()
             if not self._lazy:
                 self._init_deferred()
-        except Exception:
+        except RuntimeError:
             pass
 
     def _init_deferred(self):

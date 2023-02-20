@@ -207,7 +207,7 @@ class TileMap:
         if not texture_atlas:
             try:
                 texture_atlas = get_window().ctx.default_atlas
-            except Exception:
+            except RuntimeError:
                 pass
 
         self._lazy = lazy
