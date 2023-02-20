@@ -42,6 +42,7 @@ class SpriteSolidColor(Sprite):
         center_y: float = 0,
         color: Color = (255, 255, 255, 255),
         angle: float = 0,
+        **kwargs,
     ):
         """
         Create a solid-color rectangular sprite.
@@ -86,7 +87,7 @@ class SpriteCircle(Sprite):
     :param bool soft: If ``True``, the circle will fade from an opaque
                       center to transparent edges.
     """
-    def __init__(self, radius: int, color: Color, soft: bool = False):
+    def __init__(self, radius: int, color: Color, soft: bool = False, **kwargs):
         radius = int(radius)
         diameter = radius * 2
         color_rgba = arcade.get_four_byte_color(color)

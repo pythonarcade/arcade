@@ -62,6 +62,7 @@ class Sprite:
         center_x: float = 0.0,
         center_y: float = 0.0,
         angle: float = 0.0,
+        **kwargs,
     ):
         """ Constructor """
         # Position, size and orientation properties
