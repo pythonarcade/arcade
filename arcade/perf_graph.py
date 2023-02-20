@@ -274,7 +274,7 @@ class PerfGraph(arcade.Sprite):
         # Update the view scale & labels if needed
         if view_max_value != self._view_max_value:
             self._view_max_value = view_max_value
-            view_y_legend_increment = self._view_max_value // 4
+            view_y_legend_increment = self._view_max_value // self._y_axis_num_lines
             for index in range(1, len(vertical_axis_text_objects)):
                 text_object = vertical_axis_text_objects[index]
                 text_object.text = f"{int(index * view_y_legend_increment)}"
