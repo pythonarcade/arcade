@@ -12,7 +12,7 @@ def test_create():
             arcade.Sprite(":resources:images/items/coinGold.png", center_x=x * 64)
         )
     assert len(spritelist) == 100
-    assert spritelist.spatial_hash
+    assert spritelist.spatial_hash is not None
     assert spritelist._initialized is False
 
     arcade.set_window(None)

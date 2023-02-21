@@ -2,7 +2,6 @@ from typing import (
     List,
     Set,
     Dict,
-    Any,
     TYPE_CHECKING
 )
 from arcade.types import IPoint
@@ -21,10 +20,11 @@ class SpatialHash:
     """
     def __init__(self, cell_size: int):
         self.cell_size = cell_size
-        # Cells and their sprite contents
+        # Buckets of sprites per cell
         self.contents: Dict[IPoint, List["Sprite"]] = {}
-        # Sprites and their buckets
-        self.buckets_for_sprite: Dict["Sprite", List[IPoint]] = {}
+        # All the buckets a sprite is in.
+        # This is used to remove a sprite from the spatial hash.
+        self.buckets_for_sprite: Dict["Sprite", List[List["Sprite"]]] = {}
 
     def _hash(self, point: IPoint) -> IPoint:
         """Convert world coordinates to cell coordinates"""
@@ -33,7 +33,7 @@ class SpatialHash:
             point[1] // self.cell_size,
         )
 
-    def clear(self):
+    def reset(self):
         """Clear the spatial hash"""
         self.contents.clear()
         self.buckets_for_sprite.clear()
@@ -51,8 +51,8 @@ class SpatialHash:
         # print(f"New - Center: ({new_object.center_x}, {new_object.center_y}), Angle: {new_object.angle}, "
         #       f"Left: {new_object.left}, Right {new_object.right}")
 
-        min_point = (min_x, min_y)
-        max_point = (max_x, max_y)
+        min_point = min_x, min_y
+        max_point = max_x, max_y
 
         # print(f"Add 1: {min_point} {max_point}")
 
@@ -62,16 +62,18 @@ class SpatialHash:
         # print(f"Add 2: {min_point} {max_point}")
         # print("Add: ", min_point, max_point)
 
-        buckets: List[IPoint] = []
+        buckets: List[List["Sprite"]] = []
 
-        # Iterate each intersection cell adding the sprites to the cells
+        # Iterate over the rectangular region adding the sprite to each cell
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
-                bucket = (i, j)
-                sprites_in_bucket = self.contents.setdefault(bucket, [])
-                sprites_in_bucket.append(sprite)
+                # Add sprite to the bucket
+                bucket = self.contents.setdefault((i, j), [])
+                bucket.append(sprite)
+                # Collect all the buckets we added to
                 buckets.append(bucket)
 
+        # Keep track of which buckets the sprite is in
         self.buckets_for_sprite[sprite] = buckets
 
     def remove_object(self, sprite: "Sprite"):
@@ -80,10 +82,14 @@ class SpatialHash:
 
         :param Sprite sprite: The sprite to remove
         """
+        # Remove the sprite from all the buckets it is in
         for bucket in self.buckets_for_sprite[sprite]:
             bucket.remove(sprite)
 
-    def get_objects_for_box(self, check_object: "Sprite") -> Set["Sprite"]:
+        # Delete the sprite from the bucket tracker
+        del self.buckets_for_sprite[sprite]
+
+    def get_objects_for_box(self, sprite: "Sprite") -> Set["Sprite"]:
         """
         Returns colliding Sprites.
 
@@ -94,27 +100,23 @@ class SpatialHash:
         :rtype: List
         """
         # Get the corners
-        min_x = int(check_object.left)
-        max_x = int(check_object.right)
-        min_y = int(check_object.bottom)
-        max_y = int(check_object.top)
+        min_x = int(sprite.left)
+        max_x = int(sprite.right)
+        min_y = int(sprite.bottom)
+        max_y = int(sprite.top)
 
         min_point = min_x, min_y
         max_point = max_x, max_y
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
-
         close_by_sprites: List["Sprite"] = []
-        # iterate over the rectangular region
+
+        # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
-                # print(f"Checking {i}, {j}")
-                # append to each intersecting cell
-                new_items = self.contents.setdefault((i, j), [])
-                # for item in new_items:
-                #     print(f"Found {item.guid} in {i}, {j}")
-                close_by_sprites.extend(new_items)
+                bucket = self.contents.setdefault((i, j), [])
+                close_by_sprites.extend(bucket)
 
         return set(close_by_sprites)
 
@@ -129,12 +131,18 @@ class SpatialHash:
         :rtype: List
         """
         hash_point = self._hash(point)
-
         close_by_sprites: List["Sprite"] = []
+
         new_items = self.contents.setdefault(hash_point, [])
         close_by_sprites.extend(new_items)
 
         return close_by_sprites
 
-    def __len__(self) -> int:
+    @property
+    def count(self) -> int:
+        """Return the number of sprites in the spatial hash"""
+        # NOTE: We should really implement __len__ but this means
+        # changing the truthiness of the class instance.
+        # if spatial_hash will be False if it is empty.
+        # For backwards compatibility, we'll keep it as a property.
         return len(self.buckets_for_sprite)

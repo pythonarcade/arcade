@@ -161,7 +161,7 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList) -> List[Sprite]
 def check_for_collision_with_list(
     sprite: Sprite,
     sprite_list: SpriteList,
-    method=0
+    method: int = 0,
 ) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
@@ -188,7 +188,7 @@ def check_for_collision_with_list(
 
     sprites_to_check: Iterable[Sprite]
     # Spatial
-    if sprite_list.spatial_hash and (method == 1 or method == 0):
+    if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
         sprites_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
     elif method == 3 or (method == 0 and len(sprite_list) <= 1500):
         sprites_to_check = sprite_list
@@ -233,7 +233,7 @@ def check_for_collision_with_lists(
     sprites_to_check: Iterable[Sprite]    
 
     for sprite_list in sprite_lists:
-        if sprite_list.spatial_hash and method == 1:
+        if sprite_list.spatial_hash is not None and method == 1:
             sprites_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         elif method == 3:
             sprites_to_check = sprite_list
@@ -269,7 +269,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
 
     sprites_to_check: Iterable[Sprite]
 
-    if sprite_list.spatial_hash:
+    if sprite_list.spatial_hash is not None:
         sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(i_point)
     else:
         sprites_to_check = sprite_list
@@ -301,7 +301,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     i_point = int(point[0]), int(point[1])
     sprites_to_check: Iterable[Sprite]
 
-    if sprite_list.spatial_hash:
+    if sprite_list.spatial_hash is not None:
         sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(i_point)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
         # print("Checks saved: ", checks_saved)

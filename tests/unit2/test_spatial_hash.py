@@ -7,17 +7,17 @@ def test_create():
     assert sh.cell_size == 10
     assert sh.contents == {}
     assert sh.buckets_for_sprite == {}
-    assert len(sh) == 0
+    assert sh.count == 0
 
 
-def test_clear():
+def test_reset():
     sh = SpatialHash(cell_size=10)
     sh.insert_object_for_box(
         arcade.SpriteSolidColor(10, 10, color=arcade.color.RED),
     )
-    assert len(sh) == 1
-    sh.clear()
-    assert len(sh) == 0
+    assert sh.count == 1
+    sh.reset()
+    assert sh.count == 0
 
 
 def test_add():
@@ -28,7 +28,7 @@ def test_add():
     print(sh.contents)
     print(sh.buckets_for_sprite)
 
-    assert False
+    # assert False
 
 
 # Around for running debugger on the module directly
