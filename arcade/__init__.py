@@ -185,6 +185,7 @@ from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
+from .sprite_list import SpatialHash
 
 from .scene import Scene
 
@@ -331,6 +332,7 @@ __all__ = [
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
+    'SpatialHash',
     'get_timings',
     'get_three_float_color',
     'create_text_sprite',
