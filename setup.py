@@ -53,15 +53,13 @@ REQUIREMENTS_DEV = [
 # PYGMENTS 2.12.0 does not work as of 24-May-2022
 
 REQUIREMENTS_DOCS = [
-    "Sphinx==6.0.0",
     "Pygments==2.14.0",
-    "sphinx-copybutton==0.5.1",
-    "sphinx-sitemap==2.5.0",
-    "dirsync==2.2.5",
-    "pyyaml==6.0",
     "docutils==0.19",
     "furo",
-    "dirsync",
+    "pyyaml==6.0",
+    "sphinx==6.1.3",
+    "sphinx-copybutton==0.5.1",
+    "sphinx-sitemap==2.5.0",
     "wheel",
 ]
 

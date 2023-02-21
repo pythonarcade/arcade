@@ -2,8 +2,8 @@
 
 .. _sprite_collect_coins:
 
-Collect Coins - Mouse
-=====================
+Move By Mouse
+=============
 
 This is an example showing basic sprite usage. Collect coins with your mouse, and keep score!
 

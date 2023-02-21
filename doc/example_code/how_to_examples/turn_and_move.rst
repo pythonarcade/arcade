@@ -2,8 +2,8 @@
 
 .. _turn_and_move:
 
-Turn and Move
-=============
+Move to Mouse Click
+===================
 
 .. raw:: html
 
