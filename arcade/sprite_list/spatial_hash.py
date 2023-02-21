@@ -21,10 +21,10 @@ class SpatialHash:
     def __init__(self, cell_size: int):
         self.cell_size = cell_size
         # Buckets of sprites per cell
-        self.contents: Dict[IPoint, List["Sprite"]] = {}
+        self.contents: Dict[IPoint, Set["Sprite"]] = {}
         # All the buckets a sprite is in.
         # This is used to remove a sprite from the spatial hash.
-        self.buckets_for_sprite: Dict["Sprite", List[List["Sprite"]]] = {}
+        self.buckets_for_sprite: Dict["Sprite", List[Set["Sprite"]]] = {}
 
     def _hash(self, point: IPoint) -> IPoint:
         """Convert world coordinates to cell coordinates"""
@@ -62,19 +62,26 @@ class SpatialHash:
         # print(f"Add 2: {min_point} {max_point}")
         # print("Add: ", min_point, max_point)
 
-        buckets: List[List["Sprite"]] = []
+        buckets: List[Set["Sprite"]] = []
 
         # Iterate over the rectangular region adding the sprite to each cell
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 # Add sprite to the bucket
-                bucket = self.contents.setdefault((i, j), [])
-                bucket.append(sprite)
+                bucket = self.contents.setdefault((i, j), set())
+                bucket.add(sprite)
                 # Collect all the buckets we added to
                 buckets.append(bucket)
 
         # Keep track of which buckets the sprite is in
         self.buckets_for_sprite[sprite] = buckets
+
+    def move(self, sprite: "Sprite"):
+        """Update the sprite's position in the spatial hash."""
+        # Calculate the new buckets
+        # Compare to the old buckets
+        # Update state
+        pass
 
     def remove_object(self, sprite: "Sprite"):
         """
@@ -110,17 +117,17 @@ class SpatialHash:
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
-        close_by_sprites: List["Sprite"] = []
+        close_by_sprites: Set["Sprite"] = set()
 
         # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
-                bucket = self.contents.setdefault((i, j), [])
-                close_by_sprites.extend(bucket)
+                bucket = self.contents.setdefault((i, j), set())
+                close_by_sprites.update(bucket)
 
-        return set(close_by_sprites)
+        return close_by_sprites
 
-    def get_objects_for_point(self, point: IPoint) -> List["Sprite"]:
+    def get_objects_for_point(self, point: IPoint) -> Set["Sprite"]:
         """
         Returns Sprites at or close to a point.
 
@@ -131,10 +138,10 @@ class SpatialHash:
         :rtype: List
         """
         hash_point = self._hash(point)
-        close_by_sprites: List["Sprite"] = []
+        close_by_sprites: Set["Sprite"] = set()
 
-        new_items = self.contents.setdefault(hash_point, [])
-        close_by_sprites.extend(new_items)
+        new_items = self.contents.setdefault(hash_point, set())
+        close_by_sprites.update(new_items)
 
         return close_by_sprites
 
