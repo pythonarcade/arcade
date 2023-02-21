@@ -273,7 +273,7 @@ class Sprite:
             )
 
         # Cache the results
-        self._point_list_cache = tuple([_adjust_point(point) for point in self.hit_box])
+        self._point_list_cache = tuple([_adjust_point(point) for point in self.get_hit_box()])
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
@@ -363,8 +363,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_y
+        # if len(points) == 0:
+        #     return self.center_y
 
         y_points = [point[1] for point in points]
         return min(y_points)
@@ -387,8 +387,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_y
+        # if len(points) == 0:
+        #     return self.center_y
 
         y_points = [point[1] for point in points]
         return max(y_points)
@@ -731,8 +731,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_x
+        # if len(points) == 0:
+        #     return self.center_x
 
         x_points = [point[0] for point in points]
         return min(x_points)
@@ -753,8 +753,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_x
+        # if len(points) == 0:
+        #     return self.center_x
 
         x_points = [point[0] for point in points]
         return max(x_points)
