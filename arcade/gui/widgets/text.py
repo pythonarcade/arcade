@@ -132,8 +132,8 @@ class UILabel(UIWidget):
 
         if layout_size != self.content_size:
             layout.position = 0, 0, 0  # layout always drawn in scissor box
-            layout.width = self.content_width
-            layout.height = self.content_height
+            layout.width = int(self.content_width)
+            layout.height = int(self.content_height)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
