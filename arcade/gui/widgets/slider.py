@@ -161,8 +161,8 @@ class UISlider(UIStyledWidget):
         slider_center_y = self.content_height // 2
 
         # slider
-        bg_slider_color = style.get("unfilled_bar", (116, 125, 123))
-        fg_slider_color = style.get("filled_bar", (50, 50, 50))
+        bg_slider_color = style.get("unfilled_bar", UISlider.UIStyle.unfilled_bar)
+        fg_slider_color = style.get("filled_bar", UISlider.UIStyle.filled_bar)
 
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.content_rect.x,
@@ -180,9 +180,9 @@ class UISlider(UIStyledWidget):
         )
 
         # cursor
-        border_width = style.get("border_width", 1)
-        cursor_color = style.get("bg", (94, 104, 117))
-        cursor_outline_color = style.get("border", (77, 81, 87))
+        border_width = style.get("border_width", UISlider.UIStyle.border_width)
+        cursor_color = style.get("bg", UISlider.UIStyle.bg)
+        cursor_outline_color = style.get("border", UISlider.UIStyle.border)
 
         rel_cursor_x = cursor_center_x - self.content_rect.x
         arcade.draw_circle_filled(

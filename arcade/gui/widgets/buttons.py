@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Union
+from typing import Optional, Dict, Union, cast
 
 import arcade
 from arcade import Texture
@@ -180,13 +180,11 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         Callback which is called right before rendering to apply
         changes to underlying text representation for rendering.
         """
-        font_name = style.get("font_name")
-        font_size = style.get("font_size")
-        font_color = style.get("font_color")
+        self._label.label.font_name = style.get("font_name", UIFlatButton.UIStyle.font_name)
+        self._label.label.font_size = style.get("font_size", UIFlatButton.UIStyle.font_size)
+        self._label.label.color = style.get("font_color", UIFlatButton.UIStyle.font_color)
 
-        self._label.label.font_name = font_name
-        self._label.label.font_size = font_size
-        self._label.label.color = font_color
+        self._label.fit_content()
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -279,15 +277,15 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        style = self.get_current_style()
+        style: UIFlatButton.UIStyle = self.get_current_style()
 
         # update label
         self.apply_style(style)
 
         # Render button
-        border_width = style.get("border_width")
-        border_color = style.get("border")
-        bg_color = style.get("bg")
+        border_width = style.get("border_width", UIFlatButton.UIStyle.border_width)
+        border_color = style.get("border", UIFlatButton.UIStyle.border)
+        bg_color = style.get("bg", UIFlatButton.UIStyle.bg)
         if bg_color:
             surface.clear(bg_color)
 
@@ -302,15 +300,17 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
                 border_width=border_width,
             )
 
-    def apply_style(self, style: UIStyleBase):
+    def apply_style(self, style: UIStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """
-        font_name = style.get("font_name")
-        font_size = style.get("font_size")
-        font_color = style.get("font_color")
+        font_name = style.get("font_name", UIFlatButton.UIStyle.font_name)
+        font_size = style.get("font_size", UIFlatButton.UIStyle.font_size)
+        font_color = style.get("font_color", UIFlatButton.UIStyle.font_color)
 
         with self._label.label:
             self._label.label.font_name = font_name
             self._label.label.font_size = font_size
             self._label.label.color = font_color
+
+        # self._label.fit_content()
