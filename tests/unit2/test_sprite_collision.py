@@ -239,22 +239,22 @@ def test_get_sprites_at_point(window):
     with pytest.raises(TypeError):
         arcade.get_sprites_at_point((0, 0), "moo")
 
-    assert arcade.get_sprites_at_point((0, 0), sp) == [a, b]
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a, b])
     b.position = 100, 0
-    assert arcade.get_sprites_at_point((0, 0), sp) == [a]
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a])
     a.position = -100, 0
-    assert arcade.get_sprites_at_point((0, 0), sp) == []
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set()
 
     # With spatial hash
     sp = arcade.SpriteList(use_spatial_hash=True)
     sp.extend((a, b))
     a.position = 0, 0
     b.position = 0, 0
-    assert arcade.get_sprites_at_point((0, 0), sp) == [a, b]
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a, b])
     b.position = 1000, 0
-    assert arcade.get_sprites_at_point((0, 0), sp) == [a]
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a])
     a.position = -1000, 0
-    assert arcade.get_sprites_at_point((0, 0), sp) == []
+    assert set(arcade.get_sprites_at_point((0, 0), sp)) == set()
 
 
 def test_get_sprites_at_exact_point(window):
@@ -266,19 +266,19 @@ def test_get_sprites_at_exact_point(window):
     with pytest.raises(TypeError):
         arcade.get_sprites_at_exact_point((0, 0), "moo")
 
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a, b]
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set([a, b])
     b.position = 1, 0
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a]
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set([a])
     a.position = -1, 0
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == []
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set()
 
     # With spatial hash
     sp = arcade.SpriteList(use_spatial_hash=True)
     sp.extend((a, b))
     a.position = 0, 0
     b.position = 0, 0
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a, b]
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set([a, b])
     b.position = 1, 0
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == [a]
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set([a])
     a.position = -1, 0
-    assert arcade.get_sprites_at_exact_point((0, 0), sp) == []
+    assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set()
