@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Mapping
+from typing import Mapping, TypeVar
 
 from arcade.gui.property import DictProperty
 from arcade.gui.widgets import UIWidget
@@ -29,6 +29,9 @@ class UIStyleBase:
         setattr(self, key, value)
 
 
+StyleRef = TypeVar("StyleRef", bound=UIStyleBase)
+
+
 class UIStyledWidget(UIWidget):
     # TODO detect StyleBase changes, so that style changes can trigger rendering.
     style: Mapping = DictProperty()  # type: ignore
@@ -50,6 +53,6 @@ class UIStyledWidget(UIWidget):
         """
         pass
 
-    def get_current_style(self) -> UIStyleBase:
+    def get_current_style(self) -> StyleRef:
         """Return style based on any state of the widget"""
         return self.style.get(self.get_current_state(), None)
