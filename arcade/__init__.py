@@ -220,14 +220,14 @@ from .perf_info import disable_timings
 from .perf_graph import PerfGraph
 
 # Module imports
-from arcade import color
-from arcade import csscolor
-from arcade import key
-from arcade import resources
-from arcade import types
-from arcade import math
-from arcade import shape_list
-from arcade import experimental
+from arcade import color as color
+from arcade import csscolor as csscolor
+from arcade import key as key
+from arcade import resources as resources
+from arcade import types as types
+from arcade import math as math
+from arcade import shape_list as shape_list
+from arcade import experimental as experimental
 
 from .text import (
     draw_text,
