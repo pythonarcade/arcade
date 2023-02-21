@@ -138,12 +138,8 @@ class SpatialHash:
         :rtype: List
         """
         hash_point = self._hash(point)
-        close_by_sprites: Set["Sprite"] = set()
-
-        new_items = self.contents.setdefault(hash_point, set())
-        close_by_sprites.update(new_items)
-
-        return close_by_sprites
+        # Return a copy of the set.
+        return set(self.contents.setdefault(hash_point, set()))
 
     @property
     def count(self) -> int:
