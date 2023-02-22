@@ -1,7 +1,6 @@
 """
 Functions for calculating geometry.
 """
-from typing import cast
 from arcade.types import PointList
 
 
@@ -48,7 +47,8 @@ def are_polygons_intersecting(poly_a: PointList,
                 if max_b is None or projected > max_b:
                     max_b = projected
 
-            if cast(float, max_a) <= cast(float, min_b) or cast(float, max_b) <= cast(float, min_a):
+            # Avoid typing.cast() because this is a very hot path
+            if max_a <= min_b or max_b <= min_a:  # type: ignore
                 return False
 
     return True
