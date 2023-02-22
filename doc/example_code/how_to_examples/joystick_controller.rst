@@ -39,19 +39,8 @@ Different types of controllers
 
 ==============================
 
-How the (-1.0 to 1.0) range works
-=================
-This is the direction or intensity of joystick movement on a game.  
-
-The joystick movements
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. image:: joystickController.png
-    :width: 400px
-    :align: center
-    :alt: Screenshot of controller movements
-
-Values (-1 to 1)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The (-1.0 to 1.0) values on Controller
+================= 
 * The values will be between -1 and +1, with 0 being a centered joystick.
 * The x-axis numbers will be negative if the stick goes left, positive for right.
 * The y-axis numbers will be opposite of what you might expect. Negative for up, positive for down.
@@ -66,6 +55,14 @@ Values (-1 to 1)
    * -   (-1, 1)
      -    0
      -   (-1, 1)
+
+
+The joystick movements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. image:: joystickController.png
+    :width: 400px
+    :align: center
+    :alt: Screenshot of controller movements
 
      
 Deadzone
