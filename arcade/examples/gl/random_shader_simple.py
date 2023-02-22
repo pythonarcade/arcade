@@ -10,7 +10,7 @@ It is very important when using the x and y coordinates to try use both in all i
 get very obvious artifacts all along the axis that not used.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.gl.using_random_glsl
+python -m arcade.examples.gl.random_shader_simple
 """
 
 from time import time
