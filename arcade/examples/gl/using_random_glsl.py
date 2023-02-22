@@ -29,55 +29,53 @@ class App(Window):
 
     def __init__(self):
         super().__init__()
-        self._point_count = 128 # the number of points we want showing up
+        self._point_count = 128  # the number of points we want showing up
         self._time_seed = time()  # so that the colours change every run we store the time at run to use as a seed
         self._program = self.ctx.program(
-            vertex_shader=
-            """
+            vertex_shader="""
             #version 330
-            
+
             in vec2 in_pos;
-            
+
             // This in the index of this specific vertex. 
             // Flat just specifies that the value shouldn't be interpolated between vertices.
             flat out int vert_id;
             out vec2 vert_pos;
-            
+
             void main(){
                 gl_Position = vec4(in_pos, 0.0, 1.0);
-                
+
                 vert_id = gl_VertexID;
                 vert_pos = in_pos;
             }       
-                        
+
             """,
-            fragment_shader=
-            """
+            fragment_shader="""
             #version 330
-            
+
             // predefining the function which will be over written with the code injection.
             // the random function takes in 1, 2, 3, or 4 floats and returns a new float between 0 and 1
             float random(vec2 v);
             float random(vec3 v); 
             float random(vec4 v);
-            
+
             // Both of these are used as seed values to make sure each call is unique
             uniform float time_seed;
             flat in int vert_id;
-            
+
             // so each pixel in each vertex has the same colour we pass in the position
             in vec2 vert_pos;
-            
+
             out vec4 frag_colour;
-            
+
             void main(){
-                
+
                 float red = random(vec4(vert_pos.x, vert_pos.y, time_seed, vert_id));
                 float green = random(vec4(vert_id, time_seed, vert_pos.y, vert_pos.x)); 
                 float blue = random(vec4(vert_pos.y, vert_pos.x, time_seed, vert_id));
                 frag_colour = vec4(red, green, blue, 1.0);
             }
-            
+
             """,
             # this is the file which will be injected. It expects the source as a string,
             # so we have to resolve and read the file before passing it on.
