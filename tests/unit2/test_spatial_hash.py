@@ -13,9 +13,7 @@ def test_create():
 
 def test_reset():
     sh = SpatialHash(cell_size=10)
-    sh.insert_object_for_box(
-        arcade.SpriteSolidColor(10, 10, color=arcade.color.RED),
-    )
+    sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
     assert sh.count == 1
     sh.reset()
     assert sh.count == 0
@@ -24,10 +22,10 @@ def test_reset():
 def test_add():
     """Test adding a sprite"""
     sh = SpatialHash(cell_size=10)
-    sh.insert_object_for_box(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
-    sh.insert_object_for_box(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
-    sh.insert_object_for_box(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
-    sh.insert_object_for_box(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
+    sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
+    sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
+    sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
+    sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
     assert sh.count == 4
     assert len(sh.contents) == 4
     assert len(sh.buckets_for_sprite) == 4
@@ -38,7 +36,7 @@ def test_add_twice():
     sh = SpatialHash(cell_size=10)
     sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.RED)
     for i in range(2):
-        sh.insert_object_for_box(sprite)
+        sh.add(sprite)
         assert sh.count == 1
         assert len(sh.contents) == 4
         assert len(sh.buckets_for_sprite) == 1
@@ -48,13 +46,13 @@ def test_add_remove():
     """Test adding and removing a sprite"""
     sh = SpatialHash(cell_size=10)
     sprite = arcade.SpriteSolidColor(10, 10)
-    sh.insert_object_for_box(sprite)
+    sh.add(sprite)
     assert sh.count == 1
     assert len(sh.contents) == 4  # 4 buckets
     for cn in sh.contents.values():
         assert len(cn) == 1
     assert len(sh.buckets_for_sprite) == 1
-    sh.remove_object(sprite)
+    sh.remove(sprite)
     assert sh.count == 0
     assert len(sh.contents) == 4
     for cn in sh.contents.values():
@@ -66,10 +64,10 @@ def test_remove_twice():
     """Test removing a sprite twice"""
     sh = SpatialHash(cell_size=10)
     sprite = arcade.SpriteSolidColor(10, 10)
-    sh.insert_object_for_box(sprite)
-    sh.remove_object(sprite)
+    sh.add(sprite)
+    sh.remove(sprite)
     with pytest.raises(KeyError):
-        sh.remove_object(sprite)
+        sh.remove(sprite)
 
 
 def get_nearby_sprites():
@@ -77,17 +75,17 @@ def get_nearby_sprites():
     sh = SpatialHash(cell_size=10)
     sprite_1 = arcade.SpriteSolidColor(10, 10, center_x=0)
     sprite_2 = arcade.SpriteSolidColor(10, 10, center_x=5)
-    sh.insert_object_for_box(sprite_1)
-    sh.insert_object_for_box(sprite_2)
+    sh.add(sprite_1)
+    sh.add(sprite_2)
 
-    nearby_sprites = sh.get_nearby_objects_for_box(
+    nearby_sprites = sh.get_sprites_near_sprite(
         arcade.SpriteSolidColor(10, 10, center_x=-5)
     )
     assert isinstance(nearby_sprites, set)
     assert len(nearby_sprites) == 1
     assert nearby_sprites[0] == sprite_1
 
-    nearby_sprites = sh.get_nearby_objects_for_box(
+    nearby_sprites = sh.get_sprites_near_sprite(
         arcade.SpriteSolidColor(10, 10, center_x=0)
     )
     assert isinstance(nearby_sprites, set)
@@ -100,15 +98,15 @@ def test_get_near_point():
     sh = SpatialHash(cell_size=10)
     sprite_1 = arcade.SpriteSolidColor(10, 10, center_x=0)
     sprite_2 = arcade.SpriteSolidColor(10, 10, center_x=5)
-    sh.insert_object_for_box(sprite_1)
-    sh.insert_object_for_box(sprite_2)
+    sh.add(sprite_1)
+    sh.add(sprite_2)
 
-    nearby_sprites = sh.get_objects_for_point((0, 0))
+    nearby_sprites = sh.get_sprites_near_point((0, 0))
     assert isinstance(nearby_sprites, set)
     assert len(nearby_sprites) == 2
     assert nearby_sprites == set([sprite_1, sprite_2])
 
-    nearby_sprites = sh.get_objects_for_point((20, 0))
+    nearby_sprites = sh.get_sprites_near_point((20, 0))
     assert isinstance(nearby_sprites, set)
     assert len(nearby_sprites) == 0
 

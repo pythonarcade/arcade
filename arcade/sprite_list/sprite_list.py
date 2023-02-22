@@ -268,8 +268,8 @@ class SpriteList(Generic[_SpriteType]):
         sprite.register_sprite_list(self)
 
         if self.spatial_hash is not None:
-            self.spatial_hash.remove_object(sprite_to_be_removed)
-            self.spatial_hash.insert_object_for_box(sprite)
+            self.spatial_hash.remove(sprite_to_be_removed)
+            self.spatial_hash.add(sprite)
 
         # Steal the slot from the old sprite
         slot = self.sprite_slot[sprite_to_be_removed]
@@ -604,7 +604,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_changed = True
 
         if self.spatial_hash is not None:
-            self.spatial_hash.insert_object_for_box(sprite)
+            self.spatial_hash.add(sprite)
 
         # Load additional textures attached to the sprite
         # if hasattr(sprite, "textures") and self._initialized:
@@ -665,7 +665,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_changed = True
 
         if self.spatial_hash is not None:
-            self.spatial_hash.remove_object(sprite)
+            self.spatial_hash.remove(sprite)
 
     def extend(self, sprites: Union[Iterable[_SpriteType], "SpriteList"]):
         """
@@ -705,7 +705,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_data.pop()
 
         if self.spatial_hash is not None:
-            self.spatial_hash.insert_object_for_box(sprite)
+            self.spatial_hash.add(sprite)
 
     def reverse(self):
         """
@@ -805,7 +805,7 @@ class SpriteList(Generic[_SpriteType]):
 
         self.spatial_hash.reset()
         for sprite in self.sprite_list:
-            self.spatial_hash.insert_object_for_box(sprite)
+            self.spatial_hash.add(sprite)
 
     def update(self) -> None:
         """

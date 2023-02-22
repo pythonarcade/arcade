@@ -47,7 +47,7 @@ class SpatialHash:
         self.contents.clear()
         self.buckets_for_sprite.clear()
 
-    def insert_object_for_box(self, sprite: "Sprite") -> None:
+    def add(self, sprite: "Sprite") -> None:
         """
         Add a sprite to the spatial hash.
 
@@ -78,10 +78,10 @@ class SpatialHash:
 
         :param Sprite sprite: The sprite to move
         """
-        self.remove_object(sprite)
-        self.insert_object_for_box(sprite)
+        self.remove(sprite)
+        self.add(sprite)
 
-    def remove_object(self, sprite: "Sprite") -> None:
+    def remove(self, sprite: "Sprite") -> None:
         """
         Remove a Sprite.
 
@@ -94,7 +94,7 @@ class SpatialHash:
         # Delete the sprite from the bucket tracker
         del self.buckets_for_sprite[sprite]
 
-    def get_objects_for_box(self, sprite: "Sprite") -> Set["Sprite"]:
+    def get_sprites_near_sprite(self, sprite: "Sprite") -> Set["Sprite"]:
         """
         Get all the sprites that are in the same buckets as the given sprite.
 
@@ -117,7 +117,7 @@ class SpatialHash:
 
         return close_by_sprites
 
-    def get_objects_for_point(self, point: Point) -> Set["Sprite"]:
+    def get_sprites_near_point(self, point: Point) -> Set["Sprite"]:
         """
         Return sprites in the same bucket as the given point.
 

@@ -340,7 +340,7 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
                 try:
-                    sprite_list.spatial_hash.remove_object(self)
+                    sprite_list.spatial_hash.remove(self)
                 except ValueError:
                     print(
                         "Warning, attempt to remove item from spatial hash that doesn't exist in the hash."
@@ -352,7 +352,7 @@ class Sprite:
         """
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
-                sprite_list.spatial_hash.insert_object_for_box(self)
+                sprite_list.spatial_hash.add(self)
 
     @property
     def bottom(self) -> float:
