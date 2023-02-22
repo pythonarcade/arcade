@@ -5,7 +5,7 @@ from typing import (
     Dict,
     TYPE_CHECKING
 )
-from arcade.types import Point, IPoint
+from arcade.types import Point, IPoint, Rect
 
 if TYPE_CHECKING:
     from arcade import Sprite
@@ -99,8 +99,8 @@ class SpatialHash:
         Get all the sprites that are in the same buckets as the given sprite.
 
         :param Sprite sprite: The sprite to check
-        :return: List of close-by sprites
-        :rtype: List
+        :return: A set of close-by sprites
+        :rtype: Set
         """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
@@ -123,12 +123,36 @@ class SpatialHash:
 
         :param Point point: The point to check
 
-        :return: List of close-by sprites
-        :rtype: List
+        :return: A set of close-by sprites
+        :rtype: Set
         """
         hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
+
+    def get_sprites_near_rect(self, rect: Rect) -> Set["Sprite"]:
+        """
+        Return sprites in the same buckets as the given rectangle.
+
+        :param Rect rect: The rectangle to check (left, right, bottom, top)
+        :return: A set of sprites in the rectangle
+        :rtype: Set
+        """
+        left, right, bottom, top = rect
+        min_point = trunc(left), trunc(bottom)
+        max_point = trunc(right), trunc(top)
+
+        # hash the minimum and maximum points
+        min_point, max_point = self.hash(min_point), self.hash(max_point)
+        close_by_sprites: Set["Sprite"] = set()
+
+        # Iterate over the all the covered cells and collect the sprites
+        for i in range(min_point[0], max_point[0] + 1):
+            for j in range(min_point[1], max_point[1] + 1):
+                bucket = self.contents.setdefault((i, j), set())
+                close_by_sprites.update(bucket)
+
+        return close_by_sprites
 
     @property
     def count(self) -> int:
