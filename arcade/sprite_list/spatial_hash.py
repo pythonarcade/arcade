@@ -1,10 +1,11 @@
+from math import trunc
 from typing import (
     List,
     Set,
     Dict,
     TYPE_CHECKING
 )
-from arcade.types import IPoint
+from arcade.types import Point, IPoint
 
 if TYPE_CHECKING:
     from arcade import Sprite
@@ -19,6 +20,12 @@ class SpatialHash:
     :param int cell_size: Size (width and height) of the cells in the spatial hash
     """
     def __init__(self, cell_size: int):
+        # Sanity check the cell size
+        if cell_size <= 0:
+            raise ValueError("cell_size must be greater than 0")
+        if not isinstance(cell_size, int):
+            raise ValueError("cell_size must be an integer")
+
         self.cell_size = cell_size
         # Buckets of sprites per cell
         self.contents: Dict[IPoint, Set["Sprite"]] = {}
@@ -26,7 +33,7 @@ class SpatialHash:
         # This is used to remove a sprite from the spatial hash.
         self.buckets_for_sprite: Dict["Sprite", List[Set["Sprite"]]] = {}
 
-    def _hash(self, point: IPoint) -> IPoint:
+    def hash(self, point: IPoint) -> IPoint:
         """Convert world coordinates to cell coordinates"""
         return (
             point[0] // self.cell_size,
@@ -34,34 +41,23 @@ class SpatialHash:
         )
 
     def reset(self):
-        """Clear the spatial hash"""
+        """
+        Clear all the sprites from the spatial hash.
+        """
         self.contents.clear()
         self.buckets_for_sprite.clear()
 
-    def insert_object_for_box(self, sprite: "Sprite"):
+    def insert_object_for_box(self, sprite: "Sprite") -> None:
         """
-        Insert a sprite.
+        Add a sprite to the spatial hash.
+
+        :param Sprite sprite: The sprite to add
         """
-        # Get the corners
-        min_x = int(sprite.left)
-        max_x = int(sprite.right)
-        min_y = int(sprite.bottom)
-        max_y = int(sprite.top)
-
-        # print(f"New - Center: ({new_object.center_x}, {new_object.center_y}), Angle: {new_object.angle}, "
-        #       f"Left: {new_object.left}, Right {new_object.right}")
-
-        min_point = min_x, min_y
-        max_point = max_x, max_y
-
-        # print(f"Add 1: {min_point} {max_point}")
+        min_point = trunc(sprite.left), trunc(sprite.bottom)
+        max_point = trunc(sprite.right), trunc(sprite.top)
 
         # hash the minimum and maximum points
-        min_point, max_point = self._hash(min_point), self._hash(max_point)
-
-        # print(f"Add 2: {min_point} {max_point}")
-        # print("Add: ", min_point, max_point)
-
+        min_point, max_point = self.hash(min_point), self.hash(max_point)
         buckets: List[Set["Sprite"]] = []
 
         # Iterate over the rectangular region adding the sprite to each cell
@@ -76,14 +72,16 @@ class SpatialHash:
         # Keep track of which buckets the sprite is in
         self.buckets_for_sprite[sprite] = buckets
 
-    def move(self, sprite: "Sprite"):
-        """Update the sprite's position in the spatial hash."""
-        # Calculate the new buckets
-        # Compare to the old buckets
-        # Update state
-        pass
+    def move(self, sprite: "Sprite") -> None:
+        """
+        Shortcut to remove and re-add a sprite.
 
-    def remove_object(self, sprite: "Sprite"):
+        :param Sprite sprite: The sprite to move
+        """
+        self.remove_object(sprite)
+        self.insert_object_for_box(sprite)
+
+    def remove_object(self, sprite: "Sprite") -> None:
         """
         Remove a Sprite.
 
@@ -98,25 +96,17 @@ class SpatialHash:
 
     def get_objects_for_box(self, sprite: "Sprite") -> Set["Sprite"]:
         """
-        Returns colliding Sprites.
+        Get all the sprites that are in the same buckets as the given sprite.
 
-        :param Sprite check_object: Sprite we are checking to see if there are
-            other sprites in the same box(es)
-
+        :param Sprite sprite: The sprite to check
         :return: List of close-by sprites
         :rtype: List
         """
-        # Get the corners
-        min_x = int(sprite.left)
-        max_x = int(sprite.right)
-        min_y = int(sprite.bottom)
-        max_y = int(sprite.top)
-
-        min_point = min_x, min_y
-        max_point = max_x, max_y
+        min_point = trunc(sprite.left), trunc(sprite.bottom)
+        max_point = trunc(sprite.right), trunc(sprite.top)
 
         # hash the minimum and maximum points
-        min_point, max_point = self._hash(min_point), self._hash(max_point)
+        min_point, max_point = self.hash(min_point), self.hash(max_point)
         close_by_sprites: Set["Sprite"] = set()
 
         # Iterate over the all the covered cells and collect the sprites
@@ -127,17 +117,16 @@ class SpatialHash:
 
         return close_by_sprites
 
-    def get_objects_for_point(self, point: IPoint) -> Set["Sprite"]:
+    def get_objects_for_point(self, point: Point) -> Set["Sprite"]:
         """
-        Returns Sprites at or close to a point.
+        Return sprites in the same bucket as the given point.
 
-        :param IPoint point: Point we are checking to see if there are
-            other sprites in the same box(es)
+        :param Point point: The point to check
 
         :return: List of close-by sprites
         :rtype: List
         """
-        hash_point = self._hash(point)
+        hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
 

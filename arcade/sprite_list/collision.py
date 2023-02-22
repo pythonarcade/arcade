@@ -260,7 +260,6 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
-    i_point = int(point[0]), int(point[1])
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
             raise TypeError(
@@ -270,7 +269,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     sprites_to_check: Iterable[Sprite]
 
     if sprite_list.spatial_hash is not None:
-        sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(i_point)
+        sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
     else:
         sprites_to_check = sprite_list
 
@@ -298,11 +297,10 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    i_point = int(point[0]), int(point[1])
     sprites_to_check: Iterable[Sprite]
 
     if sprite_list.spatial_hash is not None:
-        sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(i_point)
+        sprites_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
         # print("Checks saved: ", checks_saved)
     else:
