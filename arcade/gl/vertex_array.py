@@ -5,7 +5,7 @@ import weakref
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription
+from .types import BufferDescription, gl_name
 from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -143,7 +143,7 @@ class VertexArray:
         }
 
         # Build the vao according to the shader's attribute specifications
-        for i, prog_attr in enumerate(program.attributes):
+        for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
             if prog_attr.name.startswith("gl_"):
                 continue
@@ -191,8 +191,8 @@ class VertexArray:
             if attrib_type != prog_attr.gl_type:
                 raise ValueError(
                     (
-                        f"Program attribute '{prog_attr.name}' has type {prog_attr.gl_type} "
-                        f"while the buffer description has type {attr_descr.gl_type}. "
+                        f"Program attribute '{prog_attr.name}' has type {gl_name(prog_attr.gl_type)} "
+                        f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
                     )
                 )
 
@@ -435,7 +435,7 @@ class Geometry:
         index_element_size: int = 4,
     ):
         self._ctx = ctx
-        self._content = content or []
+        self._content = list(content or [])
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
@@ -499,6 +499,17 @@ class Geometry:
     @num_vertices.setter
     def num_vertices(self, value: int):
         self._num_vertices = value
+
+    def append_buffer_description(self, descr: BufferDescription):
+        """
+        Append a new BufferDescription to the existing Geometry.
+        .. Warning:: a Geometry cannot contain two BufferDescriptions which share an attribute name.
+        """
+        for other_descr in self._content:
+            if other_descr == descr:
+                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                                 f"Found a conflict in {descr} and {other_descr}")
+        self._content.append(descr)
 
     def instance(self, program: Program) -> VertexArray:
         """

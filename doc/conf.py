@@ -116,26 +116,7 @@ html_theme = 'furo'
 html_theme_options = {
     "light_logo": "../_images/arcade-logo.svg",
     "dark_logo": "../_images/arcade-logo.svg",
-    "light_css_variables": {
-       "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "16px",
-        "sidebar-item-font-size": "15px",
-        "sidebar-item-line-height": "20px",
-        "sidebar-caption-space-above": "0",
-        "sidebar-caption-font-size": "18px",
-        "sidebar-tree-space-above": "9px",
-        "sidebar-item-spacing-vertical": "4px"
-    },
-    "dark_css_variables": {
-       "font-stack--monospace": "Roboto Mono, Courier, monospace",
-        "toc-font-size": "16px",
-        "sidebar-item-font-size": "15px",
-        "sidebar-item-line-height": "20px",
-        "sidebar-caption-space-above": "0",
-        "sidebar-caption-font-size": "18px",
-        "sidebar-tree-space-above": "9px",
-        "sidebar-item-spacing-vertical": "4px"
-    },
+
 }
 
 html_title = f"Python Arcade {version}"
@@ -255,26 +236,8 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
-def add_ga_javascript(app, pagename, templatename, context, doctree):
-
-    body = context.get('metatags', '')
-    body += """
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-C7W6VSD1H5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-C7W6VSD1H5');
-</script>
-    """
-    context['metatags'] = body
-
 def setup(app):
     app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
-    # Should be added automatically by RTD.
-    # app.connect('html-page-context', add_ga_javascript)

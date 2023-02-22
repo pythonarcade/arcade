@@ -1,4 +1,4 @@
-from ctypes import c_int
+from ctypes import c_int, string_at
 from contextlib import contextmanager
 from typing import Optional, Tuple, List, TYPE_CHECKING
 import weakref
@@ -399,7 +399,7 @@ class Framebuffer:
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
-    ) -> bytearray:
+    ) -> bytes:
         """
         Read framebuffer pixels
 
@@ -428,7 +428,7 @@ class Framebuffer:
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
 
-        return bytearray(data)
+        return string_at(data, len(data))
 
     def resize(self):
         """

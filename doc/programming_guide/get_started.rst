@@ -10,8 +10,7 @@ Get Started Here
 Installation
 ------------
 Arcade can be installed like any other Python
-Package. Arcade needs support for OpenGL 3.3+. It does not run on Raspberry
-Pi or Wayland.
+Package. Arcade needs support for OpenGL 3.3+.
 If you are familiar with Python package management you can just
 "pip install" Arcade.
 For more detailed instructions see :ref:`installation-instructions`.
@@ -26,8 +25,7 @@ Starting Tutorials
 ------------------
 
 If you are already familiar with basic Python programming, follow the
-:ref:`platformer_tutorial` or
-`Real Python article <https://realpython.com/arcade-python-game-framework/>`_.
+:ref:`platformer_tutorial` as a quick way to get up and running.
 If you are just learning how to program, see
 the `Learn Arcade book <https://learn.arcade.academy>`_.
 

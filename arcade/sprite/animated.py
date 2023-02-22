@@ -34,6 +34,7 @@ class AnimatedTimeBasedSprite(Sprite):
             center_x: float = 0.0,
             center_y: float = 0.0,
             scale: float = 1.0,
+            **kwargs,
     ):
         super().__init__(
             path_or_texture,
@@ -78,6 +79,7 @@ class AnimatedWalkingSprite(Sprite):
         scale: float = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,
+        **kwargs,
     ):
         super().__init__(
             None,

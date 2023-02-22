@@ -2,8 +2,8 @@
 
 .. _sprite_rotate_around_tank:
 
-Sprite Rotation Around a Tank
-===========================================
+Move By Keyboard, Fire Towards Mouse
+====================================
 
 .. image:: sprite_rotate_around_tank.png
     :width: 600px

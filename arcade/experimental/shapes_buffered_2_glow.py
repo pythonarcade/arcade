@@ -28,7 +28,7 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = arcade.shape_list.ShapeElementList()
         self.shape_list.center_x = SCREEN_WIDTH // 2
         self.shape_list.center_y = SCREEN_HEIGHT // 2
         self.shape_list.angle = 0
@@ -52,7 +52,7 @@ class MyGame(arcade.Window):
             color = random.choice(colors)
             points = [(px + x, py + y) for px, py in point_list]
 
-            my_line_strip = arcade.create_line_strip(points, color, 5)
+            my_line_strip = arcade.shape_list.create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
         point_list = ((-50, -50),
@@ -62,7 +62,7 @@ class MyGame(arcade.Window):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
-            triangle_filled = arcade.create_triangles_filled_with_colors(
+            triangle_filled = arcade.shape_list.create_triangles_filled_with_colors(
                 points,
                 random.sample(colors, 3)
             )
@@ -76,7 +76,7 @@ class MyGame(arcade.Window):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
-            rect_filled = arcade.create_rectangle_filled_with_colors(
+            rect_filled = arcade.shape_list.create_rectangle_filled_with_colors(
                 points,
                 random.sample(colors, 4)
             )
@@ -88,10 +88,10 @@ class MyGame(arcade.Window):
                       (200, 200),
                       (250, 150),
                       (200, 100))
-        poly = arcade.create_polygon(point_list, (255, 10, 10))
+        poly = arcade.shape_list.create_polygon(point_list, (255, 10, 10))
         self.shape_list.append(poly)
 
-        ellipse = arcade.create_ellipse(20, 30, 50, 20, (230, 230, 0))
+        ellipse = arcade.shape_list.create_ellipse(20, 30, 50, 20, (230, 230, 0))
         self.shape_list.append(ellipse)
 
         self.background_color = arcade.color.BLACK

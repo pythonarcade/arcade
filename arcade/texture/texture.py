@@ -17,7 +17,7 @@ from arcade.texture_transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
-    get_shortest_transform,
+    # get_shortest_transform,
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
@@ -124,7 +124,7 @@ class Texture:
     :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
     :param PointList hit_box_points: List of points for the hit box (Optional).
                                      Completely overrides the hit box algorithm.
-    :param str name: Optional unique name for the texture. Can be used to make this texture
+    :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
     def __init__(
@@ -167,6 +167,11 @@ class Texture:
             raise ValueError(
                 f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
             )
+
+        # Internal names
+        self._cache_name: str = ""
+        self._atlas_name: str = ""
+        self._update_cache_names()
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
@@ -179,11 +184,7 @@ class Texture:
 
         :return: str 
         """
-        return Texture.create_cache_name(
-            hash=self._hash or self._image_data.hash,
-            hit_box_algorithm=self._hit_box_algorithm,
-            vertex_order=self._vertex_order,
-        )
+        return self._cache_name
 
     @classmethod
     def create_cache_name(
@@ -212,6 +213,24 @@ class Texture:
         )
 
     @classmethod
+    def create_atlas_name(cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)):
+        return f"{hash}|{vertex_order}"
+
+    def _update_cache_names(self):
+        """
+        Update the internal cache names.
+        """
+        self._cache_name = self.create_cache_name(
+            hash=self._hash or self._image_data.hash,
+            hit_box_algorithm=self._hit_box_algorithm,
+            vertex_order=self._vertex_order,
+        )
+        self._atlas_name = self.create_atlas_name(
+            hash=self._hash or self._image_data.hash,
+            vertex_order=self._vertex_order,
+        )
+
+    @classmethod
     def create_image_cache_name(
         cls,
         path: Union[str, Path],
@@ -226,7 +245,7 @@ class Texture:
 
         :return: str 
         """
-        return f"{self._hash or self._image_data.hash}|{self._vertex_order}"
+        return self._atlas_name
 
     @property
     def origin(self) -> Optional[str]:
@@ -282,18 +301,53 @@ class Texture:
 
     @property
     def width(self) -> int:
-        """Width of the texture in pixels."""
+        """
+        The virtual width of the texture in pixels.
+        This can be different from the actual width
+        if the texture has been transformed or the
+        size have been set manually.
+
+        :rtype: int
+        """
         return self._size[0]
+
+    @width.setter
+    def width(self, value: int):
+        self._size = (value, self._size[1])
 
     @property
     def height(self) -> int:
-        """Height of the texture in pixels."""
+        """
+        The virtual width of the texture in pixels.
+
+        This can be different from the actual width
+        if the texture has been transformed or the
+        size have been set manually.
+
+        :rtype: int
+        """
         return self._size[1]
+
+    @height.setter
+    def height(self, value: int):
+        self._size = (self._size[0], value)
 
     @property
     def size(self) -> Tuple[int, int]:
-        """Width and height as a tuple"""
+        """
+        The virtual size of the texture in pixels.
+
+        This can be different from the actual width
+        if the texture has been transformed or the
+        size have been set manually.
+
+        :rtype: Tuple[int, int]
+        """
         return self._size
+
+    @size.setter
+    def size(self, value: Tuple[int, int]):
+        self._size = value
 
     @property
     def hit_box_points(self) -> PointList:
@@ -472,7 +526,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransposeTransform)
+        return self._new_texture_transformed(TransposeTransform, swap_dims=True)
 
     def transverse(self) -> "Texture":
         """
@@ -485,7 +539,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransverseTransform)
+        return self._new_texture_transformed(TransverseTransform, swap_dims=True)
 
     def rotate_90(self, count: int = 1) -> "Texture":
         """
@@ -503,7 +557,7 @@ class Texture:
         transform = angles[count]
         if transform is None:
             return self
-        return self._new_texture_transformed(transform)
+        return self._new_texture_transformed(transform, swap_dims=True)
 
     def rotate_180(self) -> "Texture":
         """
@@ -527,7 +581,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate270Transform)
+        return self._new_texture_transformed(Rotate270Transform, swap_dims=True)
 
     @staticmethod
     def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
@@ -577,11 +631,16 @@ class Texture:
             hit_box_algorithm=self._hit_box_algorithm,
         )        
 
-    def _new_texture_transformed(self, transform: Type[Transform]) -> "Texture":
+    def _new_texture_transformed(
+        self,
+        transform: Type[Transform],
+        swap_dims: bool = False,
+    ) -> "Texture":
         """
         Create a new texture with the given transform applied.
 
         :param Transform transform: Transform to apply
+        :param bool swap_dims: If True, swap the width and height of the texture
         :return: New texture
         """
         points = transform.transform_hit_box_points(self._hit_box_points)
@@ -590,10 +649,14 @@ class Texture:
             # Not relevant, but copy over the value
             hit_box_algorithm=self._hit_box_algorithm,
             hit_box_points=points,
+            hash=self._hash,
         )
+        if swap_dims:
+            texture.width, texture.height = self.height, self.width
         texture.origin = self.origin
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        texture._transforms = get_shortest_transform(texture._vertex_order)
+        # texture._transforms = get_shortest_transform(texture._vertex_order)
+        texture._update_cache_names()
         return texture
 
     # ------------------------------------------------------------

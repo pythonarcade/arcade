@@ -1,4 +1,4 @@
-from ctypes import byref
+from ctypes import byref, string_at
 import weakref
 from typing import Optional, Tuple, Union, TYPE_CHECKING
 
@@ -618,7 +618,7 @@ class Texture2D:
             )
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
 
-    def read(self, level: int = 0, alignment: int = 1) -> bytearray:
+    def read(self, level: int = 0, alignment: int = 1) -> bytes:
         """
         Read the contents of the texture.
 
@@ -639,7 +639,7 @@ class Texture2D:
                 * (self.width * self.height * self._component_size * self._components)
             )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
-            return bytearray(buffer)
+            return string_at(buffer, len(buffer))
         elif self._ctx.gl_api == "gles":
             fbo = self._ctx.framebuffer(color_attachments=[self])
             return fbo.read(components=self._components, dtype=self._dtype)

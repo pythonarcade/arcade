@@ -133,7 +133,7 @@ class SpriteList(Generic[_SpriteType]):
         self.is_static = is_static
 
         # Python representation of buffer data
-        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
         self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
         self._sprite_angle_data = array("f", [0] * self._buf_capacity)
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
@@ -181,7 +181,7 @@ class SpriteList(Generic[_SpriteType]):
             get_window()
             if not self._lazy:
                 self._init_deferred()
-        except Exception:
+        except RuntimeError:
             pass
 
     def _init_deferred(self):
@@ -199,16 +199,16 @@ class SpriteList(Generic[_SpriteType]):
         )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
         self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
         self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit float
-        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 16)  # 4 x 32 bit floats
-        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit floats
+        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
+        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
         # Index buffer
         self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)  # 32 bit unsigned integers
 
         contents = [
-            gl.BufferDescription(self._sprite_pos_buf, "2f", ["in_pos"]),
+            gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),
             gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
             gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
@@ -394,7 +394,7 @@ class SpriteList(Generic[_SpriteType]):
         Get the internal OpenGL position buffer for this spritelist.
 
         The buffer contains 32 bit float values with
-        x and y positions. These are the center postions
+        x, y and z positions. These are the center positions
         for each sprite.
 
         This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
@@ -560,7 +560,7 @@ class SpriteList(Generic[_SpriteType]):
 
         # Reset buffers
         # Python representation of buffer data
-        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
         self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
         self._sprite_angle_data = array("f", [0] * self._buf_capacity)
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
@@ -900,8 +900,9 @@ class SpriteList(Generic[_SpriteType]):
         """
         slot = self.sprite_slot[sprite]
         # position
-        self._sprite_pos_data[slot * 2] = sprite._position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
         self._sprite_pos_changed = True
         # size
         self._sprite_size_data[slot * 2] = sprite._width
@@ -965,8 +966,19 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 2] = sprite._position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
+        self._sprite_pos_changed = True
+
+    def update_depth(self, sprite: _SpriteType) -> None:
+        """
+        Called by the Sprite class to update the depth of the specified sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
         self._sprite_pos_changed = True
 
     def update_color(self, sprite: _SpriteType) -> None:
@@ -1027,8 +1039,8 @@ class SpriteList(Generic[_SpriteType]):
         """
         # print(f"{id(self)} : {id(sprite)} update_location")
         slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 2] = sprite._position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
     def update_angle(self, sprite: _SpriteType):
@@ -1188,10 +1200,10 @@ class SpriteList(Generic[_SpriteType]):
     def _grow_sprite_buffers(self):
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
-        if self._sprite_buffer_slots < self._buf_capacity:
+        if self._sprite_buffer_slots <= self._buf_capacity:
             return
 
-        # double the capacity
+        # Double the capacity
         extend_by = self._buf_capacity
         self._buf_capacity = self._buf_capacity * 2
 
@@ -1203,19 +1215,18 @@ class SpriteList(Generic[_SpriteType]):
         )
 
         # Extend the buffers so we don't lose the old data
-        self._sprite_pos_data.extend([0] * extend_by * 2)
+        self._sprite_pos_data.extend([0] * extend_by * 3)
         self._sprite_size_data.extend([0] * extend_by * 2)
         self._sprite_angle_data.extend([0] * extend_by)
         self._sprite_color_data.extend([0] * extend_by * 4)
         self._sprite_texture_data.extend([0] * extend_by)
 
-        if self._initialized and self._sprite_pos_buf and self._sprite_size_buf \
-                and self._sprite_angle_buf and self._sprite_color_buf and self._sprite_texture_buf:
-            self._sprite_pos_buf.orphan(size=self._buf_capacity * 4 * 2)
-            self._sprite_size_buf.orphan(size=self._buf_capacity * 4 * 2)
-            self._sprite_angle_buf.orphan(size=self._buf_capacity * 4)
-            self._sprite_color_buf.orphan(size=self._buf_capacity * 4 * 4)
-            self._sprite_texture_buf.orphan(size=self._buf_capacity * 4)
+        if self._initialized:
+            self._sprite_pos_buf.orphan(double=True)
+            self._sprite_size_buf.orphan(double=True)
+            self._sprite_angle_buf.orphan(double=True)
+            self._sprite_color_buf.orphan(double=True)
+            self._sprite_texture_buf.orphan(double=True)
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
@@ -1225,7 +1236,7 @@ class SpriteList(Generic[_SpriteType]):
 
     def _grow_index_buffer(self):
         # Extend the index buffer capacity if needed
-        if self._sprite_index_slots < self._idx_capacity:
+        if self._sprite_index_slots <= self._idx_capacity:
             return
 
         extend_by = self._idx_capacity

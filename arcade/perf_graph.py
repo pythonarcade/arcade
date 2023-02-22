@@ -224,7 +224,7 @@ class PerfGraph(arcade.Sprite):
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
             with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
-                fbo.clear()
+                fbo.clear(color=(0, 0, 0, 255))
             return
 
         # Get FPS and add to our historical data
@@ -274,7 +274,7 @@ class PerfGraph(arcade.Sprite):
         # Update the view scale & labels if needed
         if view_max_value != self._view_max_value:
             self._view_max_value = view_max_value
-            view_y_legend_increment = self._view_max_value // 4
+            view_y_legend_increment = self._view_max_value // self._y_axis_num_lines
             for index in range(1, len(vertical_axis_text_objects)):
                 text_object = vertical_axis_text_objects[index]
                 text_object.text = f"{int(index * view_y_legend_increment)}"
