@@ -1,15 +1,10 @@
-from time import time
-from array import array
-from random import random
-
-from arcade import Window
-from arcade.gl import BufferDescription
-from arcade.resources import resolve_resource_path
-
 """
-Uses code injection to use the built in random.glsl file allowing easy access
-to a high quality hash function and methods of turning 1, 2, 3, or 4 floats
-into another float in the range [0 - 1]
+Simple shader based noise example
+
+The code creates squares of random colours all around the Window.
+Uses code injection to use the built-in random.glsl file. This allows for easy access
+to a high quality hash function and methods of using 1, 2, 3, or 4 floats as seeds.
+The function generates a value between 0 and 1.
 
 It is very important when using the x and y coordinates to try use both in all instances. If you only use one you will
 get very obvious artifacts all along the axis that not used.
@@ -17,6 +12,14 @@ get very obvious artifacts all along the axis that not used.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.using_random_glsl
 """
+
+from time import time
+from array import array
+from random import random
+
+from arcade import Window
+from arcade.gl import BufferDescription
+from arcade.resources import resolve_resource_path
 
 
 def generate_points(count: int):
