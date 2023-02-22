@@ -52,13 +52,17 @@ The joystick movements
 
 Values (-1 to 1)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* The values will be between -1 and +1, with 0 being a centered joystick.
+* The x-axis numbers will be negative if the stick goes left, positive for right.
+* The y-axis numbers will be opposite of what you might expect. Negative for up, positive for down.
+
 .. list-table:: joystick controller
    :widths: 25 25 50
    :header-rows: 1
    
    * - Left & Right
      - Centered
-     - Down & Up
+     - Up & Down
    * -   (-1, 1)
      -    0
      -   (-1, 1)
