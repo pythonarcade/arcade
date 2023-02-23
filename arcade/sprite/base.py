@@ -119,44 +119,7 @@ class Sprite:
             if not self._points:
                 self._points = self._texture.hit_box_points
 
-    @property
-    def properties(self) -> Dict[str, Any]:
-        """
-        Get or set custom sprite properties.
-
-        :rtype: Dict[str, Any]
-        """
-        if self._properties is None:
-            self._properties = {}
-        return self._properties
-
-    @properties.setter
-    def properties(self, value):
-        self._properties = value
-
-    @property
-    def pymunk(self) -> PyMunk:
-        """
-        Get or set the Pymunk property objects.
-        This is used by the pymunk physics engine.
-        """
-        if self._pymunk is None:
-            self._pymunk = PyMunk()
-        return self._pymunk
-
-    @pymunk.setter
-    def pymunk(self, value):
-        self._pymunk = value
-
-    def append_texture(self, texture: Texture):
-        """
-        Appends a new texture to the list of textures that can be
-        applied to this sprite.
-
-        :param arcade.Texture texture: Texture to add to the list of available textures
-
-        """
-        self.textures.append(texture)
+    # --- Properties ---
 
     @property
     def position(self) -> Point:
@@ -178,263 +141,48 @@ class Sprite:
         if new_value == self._position:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._position = new_value
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
-
-    def set_position(self, center_x: float, center_y: float) -> None:
-        """
-        Set a sprite's position
-
-        :param float center_x: New x position of sprite
-        :param float center_y: New y position of sprite
-        """
-        self.position = (center_x, center_y)
-
-    def set_hit_box(self, points: PointList) -> None:
-        """
-        Set a sprite's hit box. Hit box should be relative to a sprite's center,
-        and with a scale of 1.0.
-        Points will be scaled with get_adjusted_hit_box.
-        """
-        self._point_list_cache = None
-        self._points = points
-
-    def get_hit_box(self) -> PointList:
-        """
-        Use the hit_box property to get or set a sprite's hit box.
-        Hit boxes are specified assuming the sprite's center is at (0, 0).
-        Specify hit boxes like:
-
-        .. code-block::
-
-            mySprite.hit_box = [[-10, -10], [10, -10], [10, 10]]
-
-        Specify a hit box unadjusted for translation, rotation, or scale.
-        You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
-        """
-        # Use existing points if we have them
-        if self._points is not None:
-            return self._points
-
-        # If we don't already have points, try to get them from the texture
-        if self._texture:
-            self._points = self._texture.hit_box_points
-        else:
-            raise ValueError("Sprite has no hit box points due to missing texture")
-
-        return self._points
+            sprite_list._update_position(self)
 
     @property
-    def hit_box(self) -> PointList:
-        return self.get_hit_box()
+    def center_x(self) -> float:
+        """Get the center x coordinate of the sprite."""
+        return self._position[0]
 
-    @hit_box.setter
-    def hit_box(self, points: PointList):
-        self.set_hit_box(points)
-
-    def get_adjusted_hit_box(self) -> PointList:
-        """
-        Get the points that make up the hit box for the rect that makes up the
-        sprite, including rotation and scaling.
-        """
-        # If we've already calculated the adjusted hit box, use the cached version
-        if self._point_list_cache is not None:
-            return self._point_list_cache
-
-        rad = radians(self._angle)
-        scale_x, scale_y = self._scale
-        position_x, position_y = self._position
-        rad_cos = cos(rad)
-        rad_sin = sin(rad)
-
-        def _adjust_point(point) -> Point:
-            x, y = point
-
-            # Apply scaling
-            x *= scale_x
-            y *= scale_y
-
-            # Rotate the point if needed
-            if rad:
-                rot_x = x * rad_cos - y * rad_sin
-                rot_y = x * rad_sin + y * rad_cos
-                x = rot_x
-                y = rot_y
-
-            # Apply position
-            return (
-                x + position_x,
-                y + position_y,
-            )
-
-        # Cache the results
-        self._point_list_cache = tuple([_adjust_point(point) for point in self.get_hit_box()])
-        return self._point_list_cache
-
-    def forward(self, speed: float = 1.0) -> None:
-        """
-        Adjusts a Sprite's movement vector forward.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
-
-        :param speed: speed factor
-        """
-        self.change_x += math.cos(self.radians) * speed
-        self.change_y += math.sin(self.radians) * speed
-
-    def reverse(self, speed: float = 1.0) -> None:
-        """
-        Adjusts a Sprite's movement vector backwards.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
-
-        :param speed: speed factor
-        """
-        self.forward(-speed)
-
-    def strafe(self, speed: float = 1.0) -> None:
-        """
-        Adjusts a Sprite's movement vector sideways.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
-
-        :param speed: speed factor
-        """
-        self.change_x += -math.sin(self.radians) * speed
-        self.change_y += math.cos(self.radians) * speed
-
-    def turn_right(self, theta: float = 90.0) -> None:
-        """
-        Rotate the sprite right by the passed number of degrees.
-
-        :param theta: change in angle, in degrees
-        """
-        self.angle -= theta
-
-    def turn_left(self, theta: float = 90.0) -> None:
-        """
-        Rotate the sprite left by the passed number of degrees.
-
-        :param theta: change in angle, in degrees
-        """
-        self.angle += theta
-
-    def stop(self) -> None:
-        """
-        Stop the Sprite's motion.
-        """
-        self.change_x = 0
-        self.change_y = 0
-        self.change_angle = 0
-
-    def clear_spatial_hashes(self) -> None:
-        """
-        Search the sprite lists this sprite is a part of, and remove it
-        from any spatial hashes it is a part of.
-        """
-        for sprite_list in self.sprite_lists:
-            if sprite_list.spatial_hash is not None:
-                try:
-                    sprite_list.spatial_hash.remove(self)
-                except ValueError:
-                    print(
-                        "Warning, attempt to remove item from spatial hash that doesn't exist in the hash."
-                    )
-
-    def add_spatial_hashes(self) -> None:
-        """
-        Add spatial hashes for this sprite in all the sprite lists it is part of.
-        """
-        for sprite_list in self.sprite_lists:
-            if sprite_list.spatial_hash is not None:
-                sprite_list.spatial_hash.add(self)
-
-    @property
-    def bottom(self) -> float:
-        """
-        Return the y coordinate of the bottom of the sprite.
-        """
-        points = self.get_adjusted_hit_box()
-
-        # This happens if our point list is empty, such as a completely
-        # transparent sprite.
-        # if len(points) == 0:
-        #     return self.center_y
-
-        y_points = [point[1] for point in points]
-        return min(y_points)
-
-    @bottom.setter
-    def bottom(self, amount: float):
-        """
-        Set the location of the sprite based on the bottom y coordinate.
-        """
-        lowest = self.bottom
-        diff = lowest - amount
-        self.center_y -= diff
-
-    @property
-    def top(self) -> float:
-        """
-        Return the y coordinate of the top of the sprite.
-        """
-        points = self.get_adjusted_hit_box()
-
-        # This happens if our point list is empty, such as a completely
-        # transparent sprite.
-        # if len(points) == 0:
-        #     return self.center_y
-
-        y_points = [point[1] for point in points]
-        return max(y_points)
-
-    @top.setter
-    def top(self, amount: float):
-        """The highest y coordinate."""
-        highest = self.top
-        diff = highest - amount
-        self.center_y -= diff
-
-    @property
-    def width(self) -> float:
-        """Get the width of the sprite."""
-        return self._width
-
-    @width.setter
-    def width(self, new_value: float):
-        """Set the width in pixels of the sprite."""
-        if new_value != self._width:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._scale = new_value / self.texture.width, self._scale[1]
-            self._width = new_value
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_size(self)
-
-    @property
-    def height(self) -> float:
-        """Get the height in pixels of the sprite."""
-        return self._height
-
-    @height.setter
-    def height(self, new_value: float):
+    @center_x.setter
+    def center_x(self, new_value: float):
         """Set the center x coordinate of the sprite."""
-        if new_value != self._height:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._scale = self._scale[0], new_value / self.texture.height
-            self._height = new_value
-            self.add_spatial_hashes()
+        if new_value == self._position[0]:
+            return
 
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_height(self)
+        self._point_list_cache = None
+        self._position = (new_value, self._position[1])
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_position_x(self)
+
+    @property
+    def center_y(self) -> float:
+        """Get the center y coordinate of the sprite."""
+        return self._position[1]
+
+    @center_y.setter
+    def center_y(self, new_value: float):
+        """Set the center y coordinate of the sprite."""
+        if new_value == self._position[1]:
+            return
+
+        self._point_list_cache = None
+        self._position = (self._position[0], new_value)
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_position_y(self)
 
     @property
     def depth(self) -> float:
@@ -448,359 +196,6 @@ class Sprite:
             self._depth = new_value
             for sprite_list in self.sprite_lists:
                 sprite_list._update_depth(self)
-
-    @property
-    def scale(self) -> float:
-        """
-        Get the sprite's x scale value or set both x & y scale to the same value.
-
-        .. note:: Negative values are supported. They will flip &
-                  mirror the sprite.
-        """
-        return self._scale[0]
-
-    @scale.setter
-    def scale(self, new_value: float):
-        if new_value == self._scale[0] and new_value == self._scale[1]:
-            return
-
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._scale = new_value, new_value
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
-
-        self.add_spatial_hashes()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-
-    @property
-    def scale_xy(self) -> Point:
-        """Get or set the x & y scale of the sprite as a pair of values."""
-        return self._scale
-
-    @scale_xy.setter
-    def scale_xy(self, new_value: Point):
-        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
-            return
-
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._scale = new_value
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
-
-        self.add_spatial_hashes()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-
-    def rescale_relative_to_point(self, point: Point, factor: float) -> None:
-        """
-        Rescale the sprite and its distance from the passed point.
-
-        This function does two things:
-
-        1. Multiply both values in the sprite's :py:attr:`~scale_xy`
-           value by ``factor``.
-        2. Scale the distance between the sprite and ``point`` by
-           ``factor``.
-
-        If ``point`` equals the sprite's :py:attr:`~position`,
-        the distance will be zero and the sprite will not move.
-
-        :param point: The reference point for rescaling.
-        :param factor: Multiplier for sprite scale & distance to point.
-        :return:
-        """
-        # abort if the multiplier wouldn't do anything
-        if factor == 1.0:
-            return
-
-        # clear spatial metadata both locally and in sprite lists
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-
-        # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor, self._scale[1] * factor
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
-
-        # detect the edge case where distance to multiply is zero
-        position_changed = point != self._position
-
-        # be lazy about math; only do it if we have to
-        if position_changed:
-            self._position = (
-                (self._position[0] - point[0]) * factor + point[0],
-                (self._position[1] - point[1]) * factor + point[1]
-            )
-
-        # rebuild all spatial metadata
-        self.add_spatial_hashes()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-            if position_changed:
-                sprite_list._update_location(self)
-
-    def rescale_xy_relative_to_point(
-            self,
-            point: Point,
-            factors_xy: Iterable[float]
-    ) -> None:
-        """
-        Rescale the sprite and its distance from the passed point.
-
-        This method can scale by different amounts on each axis. To
-        scale along only one axis, set the other axis to ``1.0`` in
-        ``factors_xy``.
-
-        Internally, this function does the following:
-
-        1. Multiply the x & y of the sprite's :py:attr:`~scale_xy`
-           attribute by the corresponding part from ``factors_xy``.
-        2. Scale the x & y of the difference between the sprite's
-           position and ``point`` by the corresponding component from
-           ``factors_xy``.
-
-        If ``point`` equals the sprite's :py:attr:`~position`,
-        the distance will be zero and the sprite will not move.
-
-        :param point: The reference point for rescaling.
-        :param factors_xy: A 2-length iterable containing x and y
-                           multipliers for ``scale`` & distance to
-                           ``point``.
-        :return:
-        """
-        # exit early if nothing would change
-        factor_x, factor_y = factors_xy
-        if factor_x == 1.0 and factor_y == 1.0:
-            return
-
-        # clear spatial metadata both locally and in sprite lists
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-
-        # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
-
-        # detect the edge case where the distance to multiply is 0
-        position_changed = point != self._position
-
-        # be lazy about math; only do it if we have to
-        if position_changed:
-            self._position = (
-                (self._position[0] - point[0]) * factor_x + point[0],
-                (self._position[1] - point[1]) * factor_y + point[1]
-            )
-
-        # rebuild all spatial metadata
-        self.add_spatial_hashes()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-            if position_changed:
-                sprite_list._update_location(self)
-
-    @property
-    def center_x(self) -> float:
-        """Get the center x coordinate of the sprite."""
-        return self._position[0]
-
-    @center_x.setter
-    def center_x(self, new_value: float):
-        """Set the center x coordinate of the sprite."""
-        if new_value == self._position[0]:
-            return
-
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._position = (new_value, self._position[1])
-        self.add_spatial_hashes()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
-
-    @property
-    def center_y(self) -> float:
-        """Get the center y coordinate of the sprite."""
-        return self._position[1]
-
-    @center_y.setter
-    def center_y(self, new_value: float):
-        """Set the center y coordinate of the sprite."""
-        if new_value == self._position[1]:
-            return
-
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._position = (self._position[0], new_value)
-        self.add_spatial_hashes()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
-
-    @property
-    def velocity(self) -> Point:
-        """
-        Get or set the velocity of the sprite.
-
-        The x and y velocity can also be set separately using the
-        ``sprite.change_x`` and ``sprite.change_y`` properties.
-
-        Example::
-
-            sprite.velocity = 1.0, 0.0
-
-        Returns:
-            Tuple[float, float]
-        """
-        return self._velocity
-
-    @velocity.setter
-    def velocity(self, new_value: Point):
-        self._velocity = new_value
-
-    @property
-    def change_x(self) -> float:
-        """Get the velocity in the x plane of the sprite."""
-        return self.velocity[0]
-
-    @change_x.setter
-    def change_x(self, new_value: float):
-        """Set the velocity in the x plane of the sprite."""
-        self._velocity = new_value, self._velocity[1]
-
-    @property
-    def change_y(self) -> float:
-        """Get the velocity in the y plane of the sprite."""
-        return self.velocity[1]
-
-    @change_y.setter
-    def change_y(self, new_value: float):
-        """Set the velocity in the y plane of the sprite."""
-        self._velocity = self._velocity[0], new_value
-
-    @property
-    def angle(self) -> float:
-        """Get the angle of the sprite's rotation."""
-        return self._angle
-
-    @angle.setter
-    def angle(self, new_value: float):
-        """Set the angle of the sprite's rotation."""
-        if new_value == self._angle:
-            return
-
-        self.clear_spatial_hashes()
-        self._angle = new_value
-        self._point_list_cache = None
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_angle(self)
-
-        self.add_spatial_hashes()
-
-    @property
-    def radians(self) -> float:
-        """
-        Converts the degrees representation of self.angle into radians.
-        :return: float
-        """
-        return self._angle / 180.0 * math.pi
-
-    @radians.setter
-    def radians(self, new_value: float):
-        """
-        Converts a radian value into degrees and stores it into angle.
-        """
-        self.angle = new_value * 180.0 / math.pi
-
-    @property
-    def left(self) -> float:
-        """
-        Return the x coordinate of the left-side of the sprite's hit box.
-        """
-        points = self.get_adjusted_hit_box()
-
-        # This happens if our point list is empty, such as a completely
-        # transparent sprite.
-        # if len(points) == 0:
-        #     return self.center_x
-
-        x_points = [point[0] for point in points]
-        return min(x_points)
-
-    @left.setter
-    def left(self, amount: float):
-        """The left most x coordinate."""
-        leftmost = self.left
-        diff = amount - leftmost
-        self.center_x += diff
-
-    @property
-    def right(self) -> float:
-        """
-        Return the x coordinate of the right-side of the sprite's hit box.
-        """
-        points = self.get_adjusted_hit_box()
-
-        # This happens if our point list is empty, such as a completely
-        # transparent sprite.
-        # if len(points) == 0:
-        #     return self.center_x
-
-        x_points = [point[0] for point in points]
-        return max(x_points)
-
-    @right.setter
-    def right(self, amount: float):
-        """The right most x coordinate."""
-        rightmost = self.right
-        diff = rightmost - amount
-        self.center_x -= diff
-
-    @property
-    def texture(self) -> Texture:
-        # TODO: Remove this when we require a texture
-        if not self._texture:
-            raise ValueError("Sprite has not texture")
-        return self._texture
-
-    @texture.setter
-    def texture(self, texture: Texture):
-        """Sets texture by texture id. Should be renamed but keeping
-        this for backwards compatibility."""
-        if texture == self._texture:
-            return
-
-        if __debug__ and not isinstance(texture, Texture):
-            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
-                            f" but is an instance of '{type(texture)}'.")
-
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._texture = texture
-        self._width = texture.width * self._scale[0]
-        self._height = texture.height * self._scale[1]
-        self.add_spatial_hashes()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_texture(self)
-
-    def set_texture(self, texture_no: int) -> None:
-        """
-        Sets texture by texture id. Should be renamed because it takes
-        a number rather than a texture, but keeping
-        this for backwards compatibility.
-        """
-        texture = self.textures[texture_no]
-        self.texture = texture
 
     @property
     def color(self) -> RGBA:
@@ -859,6 +254,96 @@ class Sprite:
             sprite_list._update_color(self)
 
     @property
+    def left(self) -> float:
+        """
+        Return the x coordinate of the left-side of the sprite's hit box.
+        """
+        points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        # if len(points) == 0:
+        #     return self.center_x
+
+        x_points = [point[0] for point in points]
+        return min(x_points)
+
+    @left.setter
+    def left(self, amount: float):
+        """The left most x coordinate."""
+        leftmost = self.left
+        diff = amount - leftmost
+        self.center_x += diff
+
+    @property
+    def right(self) -> float:
+        """
+        Return the x coordinate of the right-side of the sprite's hit box.
+        """
+        points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        # if len(points) == 0:
+        #     return self.center_x
+
+        x_points = [point[0] for point in points]
+        return max(x_points)
+
+    @right.setter
+    def right(self, amount: float):
+        """The right most x coordinate."""
+        rightmost = self.right
+        diff = rightmost - amount
+        self.center_x -= diff
+
+    @property
+    def bottom(self) -> float:
+        """
+        Return the y coordinate of the bottom of the sprite.
+        """
+        points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        # if len(points) == 0:
+        #     return self.center_y
+
+        y_points = [point[1] for point in points]
+        return min(y_points)
+
+    @bottom.setter
+    def bottom(self, amount: float):
+        """
+        Set the location of the sprite based on the bottom y coordinate.
+        """
+        lowest = self.bottom
+        diff = lowest - amount
+        self.center_y -= diff
+
+    @property
+    def top(self) -> float:
+        """
+        Return the y coordinate of the top of the sprite.
+        """
+        points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        # if len(points) == 0:
+        #     return self.center_y
+
+        y_points = [point[1] for point in points]
+        return max(y_points)
+
+    @top.setter
+    def top(self, amount: float):
+        """The highest y coordinate."""
+        highest = self.top
+        diff = highest - amount
+        self.center_y -= diff
+
+    @property
     def visible(self) -> bool:
         """
         Get or set the visibility of this sprite.
@@ -882,31 +367,358 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
-    def register_sprite_list(self, new_list: "SpriteList") -> None:
-        """
-        Register this sprite as belonging to a list. We will automatically
-        remove ourselves from the list when kill() is called.
-        """
-        self.sprite_lists.append(new_list)
+    @property
+    def width(self) -> float:
+        """Get the width of the sprite."""
+        return self._width
 
-    def register_physics_engine(self, physics_engine) -> None:
+    @width.setter
+    def width(self, new_value: float):
+        """Set the width in pixels of the sprite."""
+        if new_value != self._width:
+            self._point_list_cache = None
+            self._scale = new_value / self.texture.width, self._scale[1]
+            self._width = new_value
+            self.update_spatial_hash()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list._update_width(self)
+
+    @property
+    def height(self) -> float:
+        """Get the height in pixels of the sprite."""
+        return self._height
+
+    @height.setter
+    def height(self, new_value: float):
+        """Set the center x coordinate of the sprite."""
+        if new_value != self._height:
+            self._point_list_cache = None
+            self._scale = self._scale[0], new_value / self.texture.height
+            self._height = new_value
+            self.update_spatial_hash()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list._update_height(self)
+
+    @property
+    def angle(self) -> float:
+        """Get the angle of the sprite's rotation."""
+        return self._angle
+
+    @angle.setter
+    def angle(self, new_value: float):
+        """Set the angle of the sprite's rotation."""
+        if new_value == self._angle:
+            return
+
+        self._angle = new_value
+        self._point_list_cache = None
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_angle(self)
+
+        self.update_spatial_hash()
+
+    @property
+    def radians(self) -> float:
         """
-        Register a physics engine on the sprite.
-        This is only needed if you actually need a reference
-        to your physics engine in the sprite itself.
-        It has no other purposes.
-
-        The registered physics engines can be accessed
-        through the ``physics_engines`` attribute.
-
-        It can for example be the pymunk physics engine
-        or a custom one you made.
+        Converts the degrees representation of self.angle into radians.
+        :return: float
         """
-        self.physics_engines.append(physics_engine)
+        return self._angle / 180.0 * math.pi
 
-    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
-        """Called by the pymunk physics engine if this sprite moves."""
-        pass
+    @radians.setter
+    def radians(self, new_value: float):
+        """
+        Converts a radian value into degrees and stores it into angle.
+        """
+        self.angle = new_value * 180.0 / math.pi
+
+    @property
+    def scale(self) -> float:
+        """
+        Get the sprite's x scale value or set both x & y scale to the same value.
+
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite.
+        """
+        return self._scale[0]
+
+    @scale.setter
+    def scale(self, new_value: float):
+        if new_value == self._scale[0] and new_value == self._scale[1]:
+            return
+
+        self._point_list_cache = None
+        self._scale = new_value, new_value
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
+    @property
+    def scale_xy(self) -> Point:
+        """Get or set the x & y scale of the sprite as a pair of values."""
+        return self._scale
+
+    @scale_xy.setter
+    def scale_xy(self, new_value: Point):
+        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
+            return
+
+        self._point_list_cache = None
+        self._scale = new_value
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
+    @property
+    def velocity(self) -> Point:
+        """
+        Get or set the velocity of the sprite.
+
+        The x and y velocity can also be set separately using the
+        ``sprite.change_x`` and ``sprite.change_y`` properties.
+
+        Example::
+
+            sprite.velocity = 1.0, 0.0
+
+        Returns:
+            Tuple[float, float]
+        """
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, new_value: Point):
+        self._velocity = new_value
+
+    @property
+    def change_x(self) -> float:
+        """Get the velocity in the x plane of the sprite."""
+        return self.velocity[0]
+
+    @change_x.setter
+    def change_x(self, new_value: float):
+        """Set the velocity in the x plane of the sprite."""
+        self._velocity = new_value, self._velocity[1]
+
+    @property
+    def change_y(self) -> float:
+        """Get the velocity in the y plane of the sprite."""
+        return self.velocity[1]
+
+    @change_y.setter
+    def change_y(self, new_value: float):
+        """Set the velocity in the y plane of the sprite."""
+        self._velocity = self._velocity[0], new_value
+
+    @property
+    def texture(self) -> Texture:
+        # TODO: Remove this when we require a texture
+        if not self._texture:
+            raise ValueError("Sprite has not texture")
+        return self._texture
+
+    @texture.setter
+    def texture(self, texture: Texture):
+        """Sets texture by texture id. Should be renamed but keeping
+        this for backwards compatibility."""
+        if texture == self._texture:
+            return
+
+        if __debug__ and not isinstance(texture, Texture):
+            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
+                            f" but is an instance of '{type(texture)}'.")
+
+        self._point_list_cache = None
+        self._texture = texture
+        self._width = texture.width * self._scale[0]
+        self._height = texture.height * self._scale[1]
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_texture(self)
+
+    @property
+    def hit_box(self) -> PointList:
+        return self.get_hit_box()
+
+    @hit_box.setter
+    def hit_box(self, points: PointList):
+        self.set_hit_box(points)
+
+    @property
+    def properties(self) -> Dict[str, Any]:
+        """
+        Get or set custom sprite properties.
+
+        :rtype: Dict[str, Any]
+        """
+        if self._properties is None:
+            self._properties = {}
+        return self._properties
+
+    @properties.setter
+    def properties(self, value):
+        self._properties = value
+
+    @property
+    def pymunk(self) -> PyMunk:
+        """
+        Get or set the Pymunk property objects.
+        This is used by the pymunk physics engine.
+        """
+        if self._pymunk is None:
+            self._pymunk = PyMunk()
+        return self._pymunk
+
+    @pymunk.setter
+    def pymunk(self, value):
+        self._pymunk = value
+
+    # --- Hitbox methods -----
+
+    def set_hit_box(self, points: PointList) -> None:
+        """
+        Set a sprite's hit box. Hit box should be relative to a sprite's center,
+        and with a scale of 1.0.
+        Points will be scaled with get_adjusted_hit_box.
+        """
+        self._point_list_cache = None
+        self._points = points
+
+    def get_hit_box(self) -> PointList:
+        """
+        Use the hit_box property to get or set a sprite's hit box.
+        Hit boxes are specified assuming the sprite's center is at (0, 0).
+        Specify hit boxes like:
+
+        .. code-block::
+
+            mySprite.hit_box = [[-10, -10], [10, -10], [10, 10]]
+
+        Specify a hit box unadjusted for translation, rotation, or scale.
+        You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
+        """
+        # Use existing points if we have them
+        if self._points is not None:
+            return self._points
+
+        # If we don't already have points, try to get them from the texture
+        if self._texture:
+            self._points = self._texture.hit_box_points
+        else:
+            raise ValueError("Sprite has no hit box points due to missing texture")
+
+        return self._points
+
+    def get_adjusted_hit_box(self) -> PointList:
+        """
+        Get the points that make up the hit box for the rect that makes up the
+        sprite, including rotation and scaling.
+        """
+        # If we've already calculated the adjusted hit box, use the cached version
+        if self._point_list_cache is not None:
+            return self._point_list_cache
+
+        rad = radians(self._angle)
+        scale_x, scale_y = self._scale
+        position_x, position_y = self._position
+        rad_cos = cos(rad)
+        rad_sin = sin(rad)
+
+        def _adjust_point(point) -> Point:
+            x, y = point
+
+            # Apply scaling
+            x *= scale_x
+            y *= scale_y
+
+            # Rotate the point if needed
+            if rad:
+                rot_x = x * rad_cos - y * rad_sin
+                rot_y = x * rad_sin + y * rad_cos
+                x = rot_x
+                y = rot_y
+
+            # Apply position
+            return (
+                x + position_x,
+                y + position_y,
+            )
+
+        # Cache the results
+        self._point_list_cache = tuple([_adjust_point(point) for point in self.get_hit_box()])
+        return self._point_list_cache
+
+    # --- Movement methods -----
+
+    def forward(self, speed: float = 1.0) -> None:
+        """
+        Adjusts a Sprite's movement vector forward.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
+        :param speed: speed factor
+        """
+        self.velocity = (
+            self._velocity[0] + math.cos(self.radians) * speed,
+            self._velocity[1] + math.sin(self.radians) * speed,
+        )
+
+    def reverse(self, speed: float = 1.0) -> None:
+        """
+        Adjusts a Sprite's movement vector backwards.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
+        :param speed: speed factor
+        """
+        self.forward(-speed)
+
+    def strafe(self, speed: float = 1.0) -> None:
+        """
+        Adjusts a Sprite's movement vector sideways.
+        This method does not actually move the sprite, just takes the current
+        change_x/change_y and adjusts it by the speed given.
+
+        :param speed: speed factor
+        """
+        self.change_x += -math.sin(self.radians) * speed
+        self.change_y += math.cos(self.radians) * speed
+
+    def turn_right(self, theta: float = 90.0) -> None:
+        """
+        Rotate the sprite right by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
+        """
+        self.angle = self._angle - theta
+
+    def turn_left(self, theta: float = 90.0) -> None:
+        """
+        Rotate the sprite left by the passed number of degrees.
+
+        :param theta: change in angle, in degrees
+        """
+        self.angle = self._angle + theta
+
+    def stop(self) -> None:
+        """
+        Stop the Sprite's motion.
+        """
+        self.velocity = 0, 0
+        self.change_angle = 0
 
     def face_point(self, point: Point) -> None:
         """
@@ -918,6 +730,117 @@ class Sprite:
 
         # Reverse angle because sprite angles are backwards
         self.angle = -angle
+
+    # --- Scale methods -----
+
+    def rescale_relative_to_point(self, point: Point, factor: float) -> None:
+        """
+        Rescale the sprite and its distance from the passed point.
+
+        This function does two things:
+
+        1. Multiply both values in the sprite's :py:attr:`~scale_xy`
+           value by ``factor``.
+        2. Scale the distance between the sprite and ``point`` by
+           ``factor``.
+
+        If ``point`` equals the sprite's :py:attr:`~position`,
+        the distance will be zero and the sprite will not move.
+
+        :param point: The reference point for rescaling.
+        :param factor: Multiplier for sprite scale & distance to point.
+        :return:
+        """
+        # abort if the multiplier wouldn't do anything
+        if factor == 1.0:
+            return
+
+        # clear spatial metadata both locally and in sprite lists
+        self._point_list_cache = None
+
+        # set the scale and, if this sprite has a texture, the size data
+        self._scale = self._scale[0] * factor, self._scale[1] * factor
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        # detect the edge case where distance to multiply is zero
+        position_changed = point != self._position
+
+        # be lazy about math; only do it if we have to
+        if position_changed:
+            self._position = (
+                (self._position[0] - point[0]) * factor + point[0],
+                (self._position[1] - point[1]) * factor + point[1]
+            )
+
+        # rebuild all spatial metadata
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+            if position_changed:
+                sprite_list._update_position(self)
+
+    def rescale_xy_relative_to_point(
+        self,
+        point: Point,
+        factors_xy: Iterable[float]
+    ) -> None:
+        """
+        Rescale the sprite and its distance from the passed point.
+
+        This method can scale by different amounts on each axis. To
+        scale along only one axis, set the other axis to ``1.0`` in
+        ``factors_xy``.
+
+        Internally, this function does the following:
+
+        1. Multiply the x & y of the sprite's :py:attr:`~scale_xy`
+           attribute by the corresponding part from ``factors_xy``.
+        2. Scale the x & y of the difference between the sprite's
+           position and ``point`` by the corresponding component from
+           ``factors_xy``.
+
+        If ``point`` equals the sprite's :py:attr:`~position`,
+        the distance will be zero and the sprite will not move.
+
+        :param point: The reference point for rescaling.
+        :param factors_xy: A 2-length iterable containing x and y
+                           multipliers for ``scale`` & distance to
+                           ``point``.
+        :return:
+        """
+        # exit early if nothing would change
+        factor_x, factor_y = factors_xy
+        if factor_x == 1.0 and factor_y == 1.0:
+            return
+
+        self._point_list_cache = None
+
+        # set the scale and, if this sprite has a texture, the size data
+        self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
+        if self._texture:
+            self._width = self._texture.width * self._scale[0]
+            self._height = self._texture.height * self._scale[1]
+
+        # detect the edge case where the distance to multiply is 0
+        position_changed = point != self._position
+
+        # be lazy about math; only do it if we have to
+        if position_changed:
+            self._position = (
+                (self._position[0] - point[0]) * factor_x + point[0],
+                (self._position[1] - point[1]) * factor_y + point[1]
+            )
+
+        # rebuild all spatial metadata
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+            if position_changed:
+                sprite_list._update_position(self)
+
+    # ---- Draw Methods ----
 
     def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
         """
@@ -954,6 +877,8 @@ class Sprite:
         points = tuple(points) + tuple(points[:-1])
         arcade.draw_line_strip(points, color=color, line_width=line_thickness)
 
+    # ----Update Methods ----
+
     def update(self) -> None:
         """
         Update the sprite.
@@ -980,6 +905,34 @@ class Sprite:
         """
         pass
 
+    # ----Utility Methods----
+
+    def append_texture(self, texture: Texture):
+        """
+        Appends a new texture to the list of textures that can be
+        applied to this sprite.
+
+        :param arcade.Texture texture: Texture to add to the list of available textures
+
+        """
+        self.textures.append(texture)
+
+    def set_texture(self, texture_no: int) -> None:
+        """
+        Sets texture by texture id. Should be renamed because it takes
+        a number rather than a texture, but keeping
+        this for backwards compatibility.
+        """
+        texture = self.textures[texture_no]
+        self.texture = texture
+
+    def register_sprite_list(self, new_list: "SpriteList") -> None:
+        """
+        Register this sprite as belonging to a list. We will automatically
+        remove ourselves from the list when kill() is called.
+        """
+        self.sprite_lists.append(new_list)
+
     def remove_from_sprite_lists(self) -> None:
         """
         Remove the sprite from all sprite lists.
@@ -1000,6 +953,35 @@ class Sprite:
 
         self.physics_engines.clear()
         self.sprite_lists.clear()
+
+    def update_spatial_hash(self) -> None:
+        """
+        Update the sprites location in the spatial hash.
+        """
+        for sprite_list in self.sprite_lists:
+            if sprite_list.spatial_hash is not None:
+                sprite_list.spatial_hash.move(self)
+
+    def register_physics_engine(self, physics_engine) -> None:
+        """
+        Register a physics engine on the sprite.
+        This is only needed if you actually need a reference
+        to your physics engine in the sprite itself.
+        It has no other purposes.
+
+        The registered physics engines can be accessed
+        through the ``physics_engines`` attribute.
+
+        It can for example be the pymunk physics engine
+        or a custom one you made.
+        """
+        self.physics_engines.append(physics_engine)
+
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        """Called by the pymunk physics engine if this sprite moves."""
+        pass
+
+    # ---- Shortcut Methods ----
 
     def kill(self) -> None:
         """

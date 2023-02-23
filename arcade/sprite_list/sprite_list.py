@@ -872,166 +872,6 @@ class SpriteList(Generic[_SpriteType]):
         for texture in texture_list:
             self._atlas.add(texture)
 
-    def _update_all(self, sprite: _SpriteType):
-        """
-        Update all sprite data. This is faster when adding and moving sprites.
-        This duplicate code, but reduces call overhead, dict lookups etc.
-        """
-        slot = self.sprite_slot[sprite]
-        # position
-        self._sprite_pos_data[slot * 3] = sprite._position[0]
-        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
-        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
-        self._sprite_pos_changed = True
-        # size
-        self._sprite_size_data[slot * 2] = sprite._width
-        self._sprite_size_data[slot * 2 + 1] = sprite._height
-        self._sprite_size_changed = True
-        # angle
-        self._sprite_angle_data[slot] = sprite._angle
-        self._sprite_angle_changed = True
-        # color
-        self._sprite_color_data[slot * 4] = sprite._color[0]
-        self._sprite_color_data[slot * 4 + 1] = sprite._color[1]
-        self._sprite_color_data[slot * 4 + 2] = sprite._color[2]
-        self._sprite_color_data[slot * 4 + 3] = sprite._color[3]
-        self._sprite_color_changed = True
-
-        # Don't deal with textures if spritelist is not initialized.
-        # This can often mean we don't have a context/window yet.
-        if not self._initialized:
-            return
-
-        if not sprite._texture:
-            return
-
-        tex_slot, _ = self._atlas.add(sprite._texture)
-        slot = self.sprite_slot[sprite]
-
-        self._sprite_texture_data[slot] = tex_slot
-        self._sprite_texture_changed = True
-
-    def _update_texture(self, sprite) -> None:
-        """Make sure we update the texture for this sprite for the next batch
-        drawing"""
-        # We cannot interact with texture atlases unless the context
-        # is created. We defer all texture initialization for later
-        if not self._initialized:
-            return
-
-        if not sprite._texture:
-            return
-
-        tex_slot, _ = self._atlas.add(sprite._texture)
-        slot = self.sprite_slot[sprite]
-
-        self._sprite_texture_data[slot] = tex_slot
-        self._sprite_texture_changed = True
-
-        # Update size in cas the sprite was initialized without size
-        # NOTE: There should be a better way to do this
-        self._sprite_size_data[slot * 2] = sprite._width
-        self._sprite_size_data[slot * 2 + 1] = sprite._height
-        self._sprite_size_changed = True
-
-    def _update_position(self, sprite: _SpriteType) -> None:
-        """
-        Called when setting initial position of a sprite when
-        added or inserted into the SpriteList.
-
-        ``update_location`` should be called to move them
-        once the sprites are in the list.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 3] = sprite._position[0]
-        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
-        self._sprite_pos_changed = True
-
-    def _update_depth(self, sprite: _SpriteType) -> None:
-        """
-        Called by the Sprite class to update the depth of the specified sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
-        self._sprite_pos_changed = True
-
-    def _update_color(self, sprite: _SpriteType) -> None:
-        """
-        Called by the Sprite class to update position, angle, size and color
-        of the specified sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_color_data[slot * 4] = int(sprite._color[0])
-        self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
-        self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
-        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
-        self._sprite_color_changed = True
-
-    def _update_size(self, sprite: _SpriteType) -> None:
-        """
-        Called by the Sprite class to update the size/scale in this sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2] = sprite._width
-        self._sprite_size_data[slot * 2 + 1] = sprite._height
-        self._sprite_size_changed = True
-
-    def _update_height(self, sprite: _SpriteType):
-        """
-        Called by the Sprite class to update the size/scale in this sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2 + 1] = sprite._height
-        self._sprite_size_changed = True
-
-    def _update_width(self, sprite: _SpriteType):
-        """
-        Called by the Sprite class to update the size/scale in this sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2] = sprite._width
-        self._sprite_size_changed = True
-
-    def _update_location(self, sprite: _SpriteType):
-        """
-        Called by the Sprite class to update the location in this sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        # print(f"{id(self)} : {id(sprite)} update_location")
-        slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 3] = sprite._position[0]
-        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
-        self._sprite_pos_changed = True
-
-    def _update_angle(self, sprite: _SpriteType):
-        """
-        Called by the Sprite class to update the angle in this sprite.
-        Necessary for batch drawing of items.
-
-        :param Sprite sprite: Sprite to update.
-        """
-        slot = self.sprite_slot[sprite]
-        self._sprite_angle_data[slot] = sprite._angle
-        self._sprite_angle_changed = True
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
@@ -1240,3 +1080,179 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_index_buf.orphan(size=self._idx_capacity * 4)
 
         self._sprite_index_changed = True
+
+    def _update_all(self, sprite: _SpriteType):
+        """
+        Update all sprite data. This is faster when adding and moving sprites.
+        This duplicate code, but reduces call overhead, dict lookups etc.
+        """
+        slot = self.sprite_slot[sprite]
+        # position
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
+        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
+        self._sprite_pos_changed = True
+        # size
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
+        self._sprite_size_changed = True
+        # angle
+        self._sprite_angle_data[slot] = sprite._angle
+        self._sprite_angle_changed = True
+        # color
+        self._sprite_color_data[slot * 4] = sprite._color[0]
+        self._sprite_color_data[slot * 4 + 1] = sprite._color[1]
+        self._sprite_color_data[slot * 4 + 2] = sprite._color[2]
+        self._sprite_color_data[slot * 4 + 3] = sprite._color[3]
+        self._sprite_color_changed = True
+
+        # Don't deal with textures if spritelist is not initialized.
+        # This can often mean we don't have a context/window yet.
+        if not self._initialized:
+            return
+
+        if not sprite._texture:
+            return
+
+        tex_slot, _ = self._atlas.add(sprite._texture)
+        slot = self.sprite_slot[sprite]
+
+        self._sprite_texture_data[slot] = tex_slot
+        self._sprite_texture_changed = True
+
+    def _update_texture(self, sprite) -> None:
+        """Make sure we update the texture for this sprite for the next batch
+        drawing"""
+        # We cannot interact with texture atlases unless the context
+        # is created. We defer all texture initialization for later
+        if not self._initialized:
+            return
+
+        if not sprite._texture:
+            return
+
+        tex_slot, _ = self._atlas.add(sprite._texture)
+        slot = self.sprite_slot[sprite]
+
+        self._sprite_texture_data[slot] = tex_slot
+        self._sprite_texture_changed = True
+
+        # Update size in cas the sprite was initialized without size
+        # NOTE: There should be a better way to do this
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
+        self._sprite_size_changed = True
+
+    def _update_position(self, sprite: _SpriteType) -> None:
+        """
+        Called when setting initial position of a sprite when
+        added or inserted into the SpriteList.
+
+        ``update_location`` should be called to move them
+        once the sprites are in the list.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
+        self._sprite_pos_changed = True
+
+    def _update_position_x(self, sprite: _SpriteType) -> None:
+        """
+        Called when setting initial position of a sprite when
+        added or inserted into the SpriteList.
+
+        ``update_location`` should be called to move them
+        once the sprites are in the list.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 3] = sprite._position[0]
+        self._sprite_pos_changed = True
+
+    def _update_position_y(self, sprite: _SpriteType) -> None:
+        """
+        Called when setting initial position of a sprite when
+        added or inserted into the SpriteList.
+
+        ``update_location`` should be called to move them
+        once the sprites are in the list.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
+        self._sprite_pos_changed = True
+
+    def _update_depth(self, sprite: _SpriteType) -> None:
+        """
+        Called by the Sprite class to update the depth of the specified sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 3 + 2] = sprite._depth
+        self._sprite_pos_changed = True
+
+    def _update_color(self, sprite: _SpriteType) -> None:
+        """
+        Called by the Sprite class to update position, angle, size and color
+        of the specified sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_color_data[slot * 4] = int(sprite._color[0])
+        self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
+        self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
+        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
+        self._sprite_color_changed = True
+
+    def _update_size(self, sprite: _SpriteType) -> None:
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
+        self._sprite_size_changed = True
+
+    def _update_width(self, sprite: _SpriteType):
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_changed = True
+
+    def _update_height(self, sprite: _SpriteType):
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
+        self._sprite_size_changed = True
+
+    def _update_angle(self, sprite: _SpriteType):
+        """
+        Called by the Sprite class to update the angle in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        slot = self.sprite_slot[sprite]
+        self._sprite_angle_data[slot] = sprite._angle
+        self._sprite_angle_changed = True

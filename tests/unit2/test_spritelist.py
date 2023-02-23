@@ -142,13 +142,13 @@ def test_can_shuffle(ctx):
 
 def test_sort(ctx):
     s1 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
-    s1.set_position(100, 100)
+    s1.position = 100, 100
 
     s2 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
-    s2.set_position(110, 100)
+    s2.position = 110, 100
 
     s3 = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
-    s3.set_position(120, 100)
+    s3.position = 120, 100
 
     sprites_v1 = [s1, s2, s3]
     sprites_v2 = [s3, s2, s1]
