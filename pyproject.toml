@@ -108,3 +108,26 @@ exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
 [tool.coverage.run]
 source = ["arcade"]
 omit = ["./arcade/examples/*", "./arcade/gui/examples/*", "./arcade/experimental/*", "./env/*", "./tests/*", "./doc/*", "./Win*/*"]
+
+[[tool.mypy.overrides]]
+module = "pyglet.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "PIL.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pymunk"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytiled_parser.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "shapely.*"
+ignore_missing_imports = true
+
+
+
