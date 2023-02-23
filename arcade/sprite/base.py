@@ -183,7 +183,7 @@ class Sprite:
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
+            sprite_list._update_position(self)
 
     def set_hit_box(self, points: PointList) -> None:
         """
@@ -391,7 +391,7 @@ class Sprite:
             self.update_spatial_hash()
 
             for sprite_list in self.sprite_lists:
-                sprite_list._update_size(self)
+                sprite_list._update_width(self)
 
     @property
     def height(self) -> float:
@@ -516,7 +516,7 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
             if position_changed:
-                sprite_list._update_location(self)
+                sprite_list._update_position(self)
 
     def rescale_xy_relative_to_point(
             self,
@@ -575,7 +575,7 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
             if position_changed:
-                sprite_list._update_location(self)
+                sprite_list._update_position(self)
 
     @property
     def center_x(self) -> float:
@@ -593,7 +593,7 @@ class Sprite:
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
+            sprite_list._update_position_x(self)
 
     @property
     def center_y(self) -> float:
@@ -611,7 +611,7 @@ class Sprite:
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
-            sprite_list._update_location(self)
+            sprite_list._update_position_y(self)
 
     @property
     def velocity(self) -> Point:
