@@ -3,7 +3,7 @@ name = "arcade"
 description = "Arcade Game Development Library"
 readme = "README.rst"
 authors = [
-    {name="Paul Vincent Craven", email="paul.craven@simpson.edu"}
+    {name="Paul Vincent Craven", email="paul@cravenfamily.com"}
 ]
 license = {file = "license.rst"}
 requires-python = ">=3.8"
