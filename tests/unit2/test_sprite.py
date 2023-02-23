@@ -70,7 +70,6 @@ def test_sprite(window: arcade.Window):
     coin_list = arcade.SpriteList()
     sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
     sprite.position = (130, 130)
-    sprite.set_position(130, 130)
     sprite.angle = 90
     coin_list.append(sprite)
 

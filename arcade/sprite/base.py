@@ -178,22 +178,12 @@ class Sprite:
         if new_value == self._position:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._position = new_value
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_location(self)
-
-    def set_position(self, center_x: float, center_y: float) -> None:
-        """
-        Set a sprite's position
-
-        :param float center_x: New x position of sprite
-        :param float center_y: New y position of sprite
-        """
-        self.position = (center_x, center_y)
 
     def set_hit_box(self, points: PointList) -> None:
         """
@@ -332,27 +322,13 @@ class Sprite:
         self.change_y = 0
         self.change_angle = 0
 
-    def clear_spatial_hashes(self) -> None:
+    def update_spatial_hash(self) -> None:
         """
-        Search the sprite lists this sprite is a part of, and remove it
-        from any spatial hashes it is a part of.
-        """
-        for sprite_list in self.sprite_lists:
-            if sprite_list.spatial_hash is not None:
-                try:
-                    sprite_list.spatial_hash.remove(self)
-                except ValueError:
-                    print(
-                        "Warning, attempt to remove item from spatial hash that doesn't exist in the hash."
-                    )
-
-    def add_spatial_hashes(self) -> None:
-        """
-        Add spatial hashes for this sprite in all the sprite lists it is part of.
+        Update the sprites location in the spatial hash.
         """
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
-                sprite_list.spatial_hash.add(self)
+                sprite_list.spatial_hash.move(self)
 
     @property
     def bottom(self) -> float:
@@ -409,11 +385,10 @@ class Sprite:
     def width(self, new_value: float):
         """Set the width in pixels of the sprite."""
         if new_value != self._width:
-            self.clear_spatial_hashes()
             self._point_list_cache = None
             self._scale = new_value / self.texture.width, self._scale[1]
             self._width = new_value
-            self.add_spatial_hashes()
+            self.update_spatial_hash()
 
             for sprite_list in self.sprite_lists:
                 sprite_list._update_size(self)
@@ -427,11 +402,10 @@ class Sprite:
     def height(self, new_value: float):
         """Set the center x coordinate of the sprite."""
         if new_value != self._height:
-            self.clear_spatial_hashes()
             self._point_list_cache = None
             self._scale = self._scale[0], new_value / self.texture.height
             self._height = new_value
-            self.add_spatial_hashes()
+            self.update_spatial_hash()
 
             for sprite_list in self.sprite_lists:
                 sprite_list._update_height(self)
@@ -464,14 +438,13 @@ class Sprite:
         if new_value == self._scale[0] and new_value == self._scale[1]:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._scale = new_value, new_value
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
 
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
@@ -486,14 +459,13 @@ class Sprite:
         if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._scale = new_value
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
 
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
@@ -521,7 +493,6 @@ class Sprite:
             return
 
         # clear spatial metadata both locally and in sprite lists
-        self.clear_spatial_hashes()
         self._point_list_cache = None
 
         # set the scale and, if this sprite has a texture, the size data
@@ -541,7 +512,7 @@ class Sprite:
             )
 
         # rebuild all spatial metadata
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
             if position_changed:
@@ -581,8 +552,6 @@ class Sprite:
         if factor_x == 1.0 and factor_y == 1.0:
             return
 
-        # clear spatial metadata both locally and in sprite lists
-        self.clear_spatial_hashes()
         self._point_list_cache = None
 
         # set the scale and, if this sprite has a texture, the size data
@@ -602,7 +571,7 @@ class Sprite:
             )
 
         # rebuild all spatial metadata
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
             if position_changed:
@@ -619,10 +588,9 @@ class Sprite:
         if new_value == self._position[0]:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._position = (new_value, self._position[1])
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_location(self)
@@ -638,10 +606,9 @@ class Sprite:
         if new_value == self._position[1]:
             return
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._position = (self._position[0], new_value)
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_location(self)
@@ -698,14 +665,13 @@ class Sprite:
         if new_value == self._angle:
             return
 
-        self.clear_spatial_hashes()
         self._angle = new_value
         self._point_list_cache = None
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_angle(self)
 
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
 
     @property
     def radians(self) -> float:
@@ -784,12 +750,11 @@ class Sprite:
             raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
                             f" but is an instance of '{type(texture)}'.")
 
-        self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
         self._width = texture.width * self._scale[0]
         self._height = texture.height * self._scale[1]
-        self.add_spatial_hashes()
+        self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)
 

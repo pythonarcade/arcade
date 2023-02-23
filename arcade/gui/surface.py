@@ -142,7 +142,7 @@ class Surface:
 
     def draw_sprite(self, x, y, width, height, sprite):
         """Draw a sprite to the surface"""
-        sprite.set_position(x + width // 2, y + height // 2)
+        sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
         sprite.draw()
