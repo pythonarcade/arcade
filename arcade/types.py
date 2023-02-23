@@ -27,7 +27,7 @@ PointList = Sequence[Point]
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 
-PathOrTexture = Optional[Union[str, Path, "Texture"]]
+PathOrTexture = Union[str, Path, "Texture"]
 
 
 class TiledObject(NamedTuple):

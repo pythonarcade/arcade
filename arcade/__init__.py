@@ -166,6 +166,7 @@ from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
 from .sprite import Sprite
+from .sprite import BasicSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
@@ -259,6 +260,7 @@ __all__ = [
     'SectionManager',
     'Scene',
     'Sound',
+    'BasicSprite',
     'Sprite',
     'SpriteCircle',
     'SpriteList',
