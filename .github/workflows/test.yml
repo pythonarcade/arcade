@@ -36,7 +36,7 @@ jobs:
       - name: code-inspection
         run: | 
           mypy arcade
-          flake8 arcade
+          ruff arcade
       - name: build-docs
         run: |
           sphinx-build doc build -W
