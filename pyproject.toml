@@ -40,6 +40,7 @@ Book = "https://learn.arcade.academy"
 dev = [
     "pytest",
     "mypy",
+    "ruff",
     "coverage",
     "coveralls",
     "pytest-mock",
