@@ -31,12 +31,23 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
 How to use buttons
 ===================
 
-How to use hatHow to use ranged triggers (like for acceleration)
+How to use hat
+==============================
+Add the following code to the end of :code:`update`:
+in this example, the :code:`on_stick_motion`
+.. code-block:: python
+
+    def on_stick_motion(self, controller, stick_name, x, y):
+        """ Handle hat events """
+        print(f"Movement on stick {stick_name}: ({x}, {y})")
+Define an event handler function to 
+==============================
+How to use ranged triggers (like for acceleration)
 =================================================================
 
 Different types of controllers
 ==============================
-
+Joystick hats are the directional pads on game controller. It allows you to move in eight directions (up, down, left, right and the diagonals)
 ==============================
 
 The (-1.0 to 1.0) values on Controller
