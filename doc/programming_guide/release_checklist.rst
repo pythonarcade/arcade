@@ -4,7 +4,7 @@ Release Checklist
 =================
 
 #. Check for updated libraries, and if we need to pin a more recent version.
-#. Run ``flake8 arcade``
+#. Run ``ruff arcade``
 #. Run ``mypy arcade``
 #. In docs folder, type  ``make clean`` then  ``make html`` and confirm no warnings/errors.
 #. Run unit tests in ``tests`` folder.

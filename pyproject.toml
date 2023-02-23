@@ -1,7 +1,140 @@
+[project]
+name = "arcade"
+description = "Arcade Game Development Library"
+readme = "README.rst"
+authors = [
+    {name="Paul Vincent Craven", email="paul@cravenfamily.com"}
+]
+license = {file = "license.rst"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "pyglet>=2.0.3,<2.1",
+    "pillow~=9.4.0",
+    "pymunk~=6.4.0",
+    "pytiled-parser~=2.2.0"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://api.arcade.academy"
+Documentation = "https://api.arcade.academy/"
+Examples = "https://api.arcade.academy/en/latest/examples/index.html"
+Issues = "https://github.com/pythonarcade/arcade/issues"
+Source = "https://github.com/pythonarcade/arcade"
+Book = "https://learn.arcade.academy"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "mypy",
+    "ruff",
+    "coverage",
+    "coveralls",
+    "pytest-mock",
+    "pytest-cov",
+    "pygments==2.14.0",
+    "docutils==0.19",
+    "furo",
+    "pyyaml==6.0",
+    "sphinx==6.1.3",
+    "sphinx-copybutton==0.5.1",
+    "sphinx-sitemap==2.5.0",
+    "wheel",
+]
+
+docs = [
+    "pygments==2.14.0",
+    "docutils==0.19",
+    "furo",
+    "pyyaml==6.0",
+    "sphinx==6.1.3",
+    "sphinx-copybutton==0.5.1",
+    "sphinx-sitemap==2.5.0",
+    "wheel",
+]
+
+[project.scripts]
+arcade = "arcade.management:execute_from_command_line"
+
+[project.entry-points.pyinstaller40]
+hook-dirs = "arcade.__pyinstaller:get_hook_dirs"
+
+[tool.setuptools.packages.find]
+include = ["arcade", "arcade.*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "arcade.version.VERSION"}
+
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.ruff]
+# --- Description of what we ignore ---
+#
+# E731 do not assign a lambda expression, use a def
+# E741 Ambiguous variable name
+# F811: redefinition
+ignore = ["F811", "E731", "E741"]
+show-source = true
+line-length = 120
+exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs"]
+
+[tool.mypy]
+disable_error_code = "annotation_unchecked"
+
+[tool.pytest.ini_options]
+norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "dist", "tempt"]
+
 [tool.pyright]
 include = ["arcade"]
 exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
+
+[tool.coverage.run]
+source = ["arcade"]
+omit = ["./arcade/examples/*", "./arcade/gui/examples/*", "./arcade/experimental/*", "./env/*", "./tests/*", "./doc/*", "./Win*/*"]
+
+[[tool.mypy.overrides]]
+module = "pyglet.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "PIL.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pymunk"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytiled_parser.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "shapely.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "PyInstaller.*"
+ignore_missing_imports = true
+
+
+
+
+

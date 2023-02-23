@@ -26,7 +26,7 @@ Discussion can happen in a GitHub issue's comments or on [Arcade's Discord serve
 ## After Making Changes
 
 After you finish your changes, you should do the following:
-1. Test your changes with Arcade's test suite as well as with `mypy arcade` & `flake8 arcade`
+1. Test your changes with Arcade's test suite as well as with `mypy arcade` & `ruff arcade`
 2. Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests)
 from your fork to Arcade's development branch.
 
@@ -63,7 +63,7 @@ in this repo for current tests.
 
 ### Testing Code Changes
 
-First, run `mypy arcade` and then `flake8 arcade` from inside the arcade folder. You should fix
+First, run `mypy arcade` and then `ruff arcade` from inside the arcade folder. You should fix
 any issues they report.
 
 Then run the framework's automated tests with the following command:

@@ -34,7 +34,7 @@ jobs:
         run: | 
           source .venv/bin/activate
           mypy arcade
-          flake8 arcade
+          ruff arcade
       - name: build-docs
         run: |
           source .venv/bin/activate
