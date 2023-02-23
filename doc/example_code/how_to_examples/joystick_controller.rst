@@ -47,7 +47,9 @@ How to use ranged triggers (like for acceleration)
 
 Different types of controllers
 ==============================
-Joystick hats are the directional pads on game controller. It allows you to move in eight directions (up, down, left, right and the diagonals)
+Joystick hats are the directional pads on game controller. It allows you to move in eight directions (up, down, left, right and the diagonals).
+
+
 ==============================
 
 The (-1.0 to 1.0) values on Controller
