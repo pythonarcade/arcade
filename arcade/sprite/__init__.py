@@ -8,7 +8,7 @@ from .animated import (
     AnimationKeyframe,
     AnimatedWalkingSprite,
 )
-from .simple import SpriteSolidColor, SpriteCircle
+from .colored import SpriteSolidColor, SpriteCircle
 from .enums import (
     FACE_LEFT,
     FACE_RIGHT,
