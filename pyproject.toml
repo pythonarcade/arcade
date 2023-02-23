@@ -129,5 +129,11 @@ ignore_missing_imports = true
 module = "shapely.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "PyInstaller.*"
+ignore_missing_imports = true
+
+
+
 
 
