@@ -205,7 +205,7 @@ class RLDungeonGenerator:
             for room in group:
                 key = (room.row, room.col)
                 for other in room_dict[key]:
-                    if not other[0] in group and other[3] < shortest_distance:
+                    if other[0] not in group and other[3] < shortest_distance:
                         shortest_distance = other[3]
                         start = room
                         nearest = other
