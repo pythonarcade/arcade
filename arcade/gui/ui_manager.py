@@ -9,10 +9,10 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
-from pyglet.math import Mat4
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.math import Mat4
 
 import arcade
 from arcade.gui.events import (
@@ -123,7 +123,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls=UIWidget) -> Iterable[W]:
+    def get_widgets_at(self, pos, cls: Type[W] = UIWidget) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -131,11 +131,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
         :param cls: class which the widget should be instance of
         :return: iterator of widgets of given type at position
         """
+        def check_type(widget) -> W:  # should be TypeGuard[W]
+            return isinstance(widget, cls)  # type: ignore
+
         for widget in self.walk_widgets():
-            if isinstance(widget, cls) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.collide_with_point(*pos):
                 yield widget
 
-    def _get_surface(self, layer: int):
+    def _get_surface(self, layer: int) -> Surface:
         if layer not in self._surfaces:
             if len(self._surfaces) > 2:
                 raise Exception("Don't use too much layers!")
@@ -145,7 +148,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 pixel_ratio=self.window.get_pixel_ratio(),
             )
 
-        return self._surfaces.get(layer)
+        return self._surfaces[layer]
 
     def trigger_render(self):
         """
