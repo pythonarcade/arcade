@@ -76,7 +76,7 @@ After
 .. code-block:: console
       import arcade
 
-add the following line:
+add the following line at the top of the code to define a constant :code:`DEAD_ZONE` :
 
 .. code-block:: console
 
