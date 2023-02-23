@@ -177,6 +177,7 @@ from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
 from .sprite_list import get_distance_between_sprites
+from .sprite_list import get_sprites_in_rect
 
 from .sprite_list import SpatialHash
 
@@ -310,6 +311,7 @@ __all__ = [
     'get_closest_sprite',
     'get_display_size',
     'get_distance_between_sprites',
+    'get_sprites_in_rect',
     'get_four_byte_color',
     'get_four_float_color',
     'get_controllers',

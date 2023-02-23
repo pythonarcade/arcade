@@ -8,6 +8,7 @@ from .collision import (
     check_for_collision_with_lists,
     get_sprites_at_point,
     get_sprites_at_exact_point,
+    get_sprites_in_rect,
 )
 
 
@@ -21,4 +22,5 @@ __all__ = [
     "check_for_collision_with_lists",
     "get_sprites_at_point",
     "get_sprites_at_exact_point",
+    "get_sprites_in_rect",
 ]
