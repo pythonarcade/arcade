@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Mat4
@@ -123,7 +123,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls: type[W] = UIWidget) -> Iterable[W]:
+    def get_widgets_at(self, pos, cls: Type[W] = UIWidget) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
