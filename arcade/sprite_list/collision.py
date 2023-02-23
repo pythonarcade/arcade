@@ -7,14 +7,28 @@ from typing import (
 )
 
 from arcade import (
-    are_polygons_intersecting,
-    get_distance_between_sprites,
-    is_point_in_polygon,
     get_window,
 )
-from arcade.types import Point
+from arcade.math import get_distance
+from arcade.geometry import (
+    are_polygons_intersecting,
+    is_point_in_polygon,
+)
+from arcade.types import Point, Rect
 from .sprite_list import SpriteList
 from arcade import Sprite
+
+
+def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
+    """
+    Returns the distance between the center of two given sprites
+
+    :param Sprite sprite1: Sprite one
+    :param Sprite sprite2: Sprite two
+    :return: Distance
+    :rtype: float
+    """
+    return get_distance(*sprite1._position, *sprite2._position)
 
 
 def get_closest_sprite(
@@ -307,3 +321,38 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
         sprites_to_check = sprite_list
 
     return [s for s in sprites_to_check if s.position == point]
+
+
+def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
+    """
+    Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
+    the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,
+    this will return that sprite.
+
+    :param Rect rect: Rectangle to check
+    :param SpriteList sprite_list: SpriteList to check against
+
+    :returns: List of sprites colliding, or an empty list.
+    :rtype: list
+    """
+    if __debug__:
+        if not isinstance(sprite_list, SpriteList):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+            )
+
+    sprites: List["Sprite"] = []
+    sprites_to_check: Iterable[Sprite]
+
+    if sprite_list.spatial_hash is not None:
+        sprites_to_check = sprite_list.spatial_hash.get_sprites_near_rect(rect)
+    else:
+        sprites_to_check = sprite_list
+
+    # return [
+    #     s
+    #     for s in sprites_to_check
+    #     if is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())
+    # ]
+    sprites.extend(sprites_to_check)
+    return sprites

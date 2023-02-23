@@ -12,7 +12,7 @@ from typing import (
 from pathlib import Path
 
 import arcade
-from arcade.geometry_generic import get_angle_degrees
+from arcade.math import get_angle_degrees
 from arcade import (
     load_texture,
     Texture,

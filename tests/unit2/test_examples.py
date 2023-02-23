@@ -44,6 +44,6 @@ def check_code_docstring(path: Path, name: str):
         code = ast.parse(f.read())
         docstring = ast.get_docstring(code)
         run_line = f"python -m {name}"
-        print(f"Checking if example {name} has a run instruction..")
+        # print(f"Checking if example {name} has a run instruction..")
         assert docstring is not None, f"{run_line} not in {name} docstring."
         assert run_line in docstring, f"{run_line} not in {name} docstring."

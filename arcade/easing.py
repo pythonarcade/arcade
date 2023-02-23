@@ -4,7 +4,7 @@ Functions used to support easing
 from math import pi, sin, cos
 from dataclasses import dataclass
 from typing import Callable, Tuple
-from .geometry_generic import get_distance
+from .math import get_distance
 
 
 @dataclass

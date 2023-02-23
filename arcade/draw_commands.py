@@ -18,7 +18,7 @@ import pyglet.gl as gl
 
 from arcade.types import Color, PointList
 from arcade.earclip import earclip
-from .geometry_generic import rotate_point
+from .math import rotate_point
 from arcade import (
     get_four_byte_color,
     get_points_for_thick_line,
