@@ -1,6 +1,6 @@
 import PIL
 
-from .base import Sprite
+from .sprite import Sprite
 import arcade
 from arcade.types import Color
 from arcade import cache

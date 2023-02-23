@@ -2,7 +2,7 @@ import dataclasses
 import math
 from typing import List
 
-from .base import Sprite
+from .sprite import Sprite
 from arcade import Texture
 from arcade.types import PathOrTexture
 from .enums import (

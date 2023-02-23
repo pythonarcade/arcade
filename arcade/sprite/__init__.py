@@ -2,7 +2,7 @@ import PIL.Image
 
 from arcade.texture import Texture
 from arcade.resources import resolve_resource_path
-from .base import Sprite, PyMunk
+from .sprite import Sprite, PyMunk
 from .animated import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
