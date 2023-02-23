@@ -329,6 +329,8 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
     the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,
     this will return that sprite.
 
+    The rectangle is specified as a tuple of (left, right, bottom, top).
+
     :param Rect rect: Rectangle to check
     :param SpriteList sprite_list: SpriteList to check against
 
@@ -341,7 +343,12 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    sprites: List["Sprite"] = []
+    rect_points = (
+        (rect[0], rect[3]),
+        (rect[1], rect[3]),
+        (rect[1], rect[2]),
+        (rect[0], rect[2]),
+    )
     sprites_to_check: Iterable[Sprite]
 
     if sprite_list.spatial_hash is not None:
@@ -349,10 +356,8 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
     else:
         sprites_to_check = sprite_list
 
-    # return [
-    #     s
-    #     for s in sprites_to_check
-    #     if is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())
-    # ]
-    sprites.extend(sprites_to_check)
-    return sprites
+    return [
+        s
+        for s in sprites_to_check
+        if are_polygons_intersecting(rect_points, s.get_adjusted_hit_box())
+    ]

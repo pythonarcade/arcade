@@ -282,3 +282,21 @@ def test_get_sprites_at_exact_point(window):
     assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set([a])
     a.position = -1, 0
     assert set(arcade.get_sprites_at_exact_point((0, 0), sp)) == set()
+
+
+@pytest.mark.parametrize("use_spatial_hash", [True, False])
+def test_get_sprites_in_rect(use_spatial_hash):
+    a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED, center_x=50)
+    b = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED, center_x=-50)
+    c = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED, center_y=50)
+    d = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED, center_y=-50)
+    sp = arcade.SpriteList(use_spatial_hash=use_spatial_hash)
+    sp.extend((a, b, c, d))
+
+    with pytest.raises(TypeError):
+        arcade.get_sprites_in_rect((0, 0, 10, 10), "moo")
+
+    assert set(arcade.get_sprites_in_rect((-50, 50, -50, 50), sp)) == set([a, b, c, d])
+    assert set(arcade.get_sprites_in_rect((100, 200, 100, 200), sp)) == set()
+    assert set(arcade.get_sprites_in_rect((-100, 0, -100, 0), sp)) == set([b, d])
+    assert set(arcade.get_sprites_in_rect((100, 0, 100, 0), sp)) == set([a, c])
