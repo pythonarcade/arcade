@@ -18,7 +18,7 @@ from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 
-class UISlider(UIStyledWidget):
+class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
@@ -70,7 +70,7 @@ class UISlider(UIStyledWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, UIStyleBase], None] = None,  # typing: ignore
+        style: Union[Mapping[str, "UISlider.UIStyle"], None] = None,  # typing: ignore
         **kwargs,
     ):
         super().__init__(

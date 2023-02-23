@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Union, cast
+from typing import Optional, Dict, Union
 
 import arcade
 from arcade import Texture
@@ -12,7 +12,7 @@ from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
+class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UIStyle"], UITextWidget):
     """
     A button with an image for the face of the button.
 
@@ -262,8 +262,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             text=text,
             **kwargs
         )
-
-        self.add(self._label)
 
     def get_current_state(self) -> str:
         if self.disabled:
