@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 from pyglet.math import Vec2
 
-from arcade.geometry_generic import rotate_point
+from arcade.math import rotate_point
 from arcade.resources import resolve_resource_path
 from arcade.types import Point, TiledObject
 

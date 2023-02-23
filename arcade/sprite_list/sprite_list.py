@@ -79,7 +79,6 @@ class SpriteList(Generic[_SpriteType]):
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
     :param int spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
-    :param bool is_static: DEPRECATED. This parameter has no effect.
     :param TextureAtlas atlas: (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
     :param int capacity: (Advanced) The initial capacity of the internal buffer.
@@ -97,8 +96,7 @@ class SpriteList(Generic[_SpriteType]):
     def __init__(
         self,
         use_spatial_hash: Optional[bool] = None,
-        spatial_hash_cell_size=128,
-        is_static=False,
+        spatial_hash_cell_size: int = 128,
         atlas: Optional["TextureAtlas"] = None,
         capacity: int = 100,
         lazy: bool = False,
@@ -108,7 +106,6 @@ class SpriteList(Generic[_SpriteType]):
         if atlas:
             self._atlas: TextureAtlas = atlas
         self._initialized = False
-        self.extra = None
         self._lazy = lazy
         self._visible = visible
         self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
@@ -129,8 +126,6 @@ class SpriteList(Generic[_SpriteType]):
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: Dict[_SpriteType, int] = dict()
-        # TODO: Figure out what to do with this. Might be obsolete.
-        self.is_static = is_static
 
         # Python representation of buffer data
         self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
@@ -159,21 +154,20 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_changed = False
 
         # Used in collision detection optimization
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
-        self.spatial_hash: Optional[_SpatialHash] = None
-        self._use_spatial_hash = use_spatial_hash
         self._spatial_hash_cell_size = spatial_hash_cell_size
+        self.spatial_hash: Optional[SpatialHash] = None
         if use_spatial_hash is True:
-            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+            self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.properties: Optional[Dict[str, Any]] = None
 
         LOG.debug(
-            "[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
+            "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
             id(self),
             use_spatial_hash,
-            is_static,
+            self._buf_capacity,
         )
 
         # Check if the window/context is available
@@ -229,7 +223,7 @@ class SpriteList(Generic[_SpriteType]):
             # noinspection PyProtectedMember
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
-            self.update_texture(sprite)
+            self._update_texture(sprite)
             if hasattr(sprite, "textures"):
                 for texture in sprite.textures or []:
                     self._atlas.add(texture)
@@ -273,9 +267,9 @@ class SpriteList(Generic[_SpriteType]):
         self.sprite_list[index] = sprite  # Replace sprite
         sprite.register_sprite_list(self)
 
-        if self.spatial_hash:
-            self.spatial_hash.remove_object(sprite_to_be_removed)
-            self.spatial_hash.insert_object_for_box(sprite)
+        if self.spatial_hash is not None:
+            self.spatial_hash.remove(sprite_to_be_removed)
+            self.spatial_hash.add(sprite)
 
         # Steal the slot from the old sprite
         slot = self.sprite_slot[sprite_to_be_removed]
@@ -537,7 +531,7 @@ class SpriteList(Generic[_SpriteType]):
         this spritelist. Sprite and SpriteList have a circular
         reference for performance reasons.
         """
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
         # Manually remove the spritelist from all sprites
         if deep:
@@ -548,8 +542,8 @@ class SpriteList(Generic[_SpriteType]):
         self.sprite_slot = dict()
 
         # Reset SpatialHash
-        if self.spatial_hash:
-            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+        if self.spatial_hash is not None:
+            self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         # Clear the slot_idx and slot info and other states
         self._buf_capacity = _DEFAULT_CAPACITY
@@ -609,8 +603,8 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_data[idx_slot] = slot
         self._sprite_index_changed = True
 
-        if self.spatial_hash:
-            self.spatial_hash.insert_object_for_box(sprite)
+        if self.spatial_hash is not None:
+            self.spatial_hash.add(sprite)
 
         # Load additional textures attached to the sprite
         # if hasattr(sprite, "textures") and self._initialized:
@@ -670,8 +664,8 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_slots -= 1
         self._sprite_index_changed = True
 
-        if self.spatial_hash:
-            self.spatial_hash.remove_object(sprite)
+        if self.spatial_hash is not None:
+            self.spatial_hash.remove(sprite)
 
     def extend(self, sprites: Union[Iterable[_SpriteType], "SpriteList"]):
         """
@@ -710,8 +704,8 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_data.insert(index, slot)
         self._sprite_index_data.pop()
 
-        if self.spatial_hash:
-            self.spatial_hash.insert_object_for_box(sprite)
+        if self.spatial_hash is not None:
+            self.spatial_hash.add(sprite)
 
     def reverse(self):
         """
@@ -790,43 +784,28 @@ class SpriteList(Generic[_SpriteType]):
 
         self._sprite_index_changed = True
 
-    @property
-    def use_spatial_hash(self) -> bool:
-        """
-        Boolean variable that controls if this sprite list is using a spatial hash.
-        If spatial hashing is turned on, it takes longer to move a sprite, and less time
-        to see if that sprite is colliding with another sprite.
-        """
-        return self.spatial_hash is not None and self._use_spatial_hash is True
-
     def disable_spatial_hashing(self) -> None:
-        """Turn off spatial hashing."""
-        self._use_spatial_hash = False
+        """
+        Deletes the internal spatial hash object
+        """
         self.spatial_hash = None
 
     def enable_spatial_hashing(self, spatial_hash_cell_size=128):
         """Turn on spatial hashing."""
         LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
-        from .spatial_hash import _SpatialHash
+        from .spatial_hash import SpatialHash
 
-        self.spatial_hash = _SpatialHash(spatial_hash_cell_size)
-        self._use_spatial_hash = True
+        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
         self._recalculate_spatial_hashes()
 
-    def _recalculate_spatial_hash(self, item: _SpriteType):
-        """Recalculate the spatial hash for a particular item."""
-        if self.spatial_hash:
-            self.spatial_hash.remove_object(item)
-            self.spatial_hash.insert_object_for_box(item)
-
     def _recalculate_spatial_hashes(self):
-        if self._use_spatial_hash:
-            if not self.spatial_hash:
-                from .spatial_hash import _SpatialHash
-                self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
-            self.spatial_hash.reset()
-            for sprite in self.sprite_list:
-                self.spatial_hash.insert_object_for_box(sprite)
+        if self.spatial_hash is None:
+            from .spatial_hash import SpatialHash
+            self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
+
+        self.spatial_hash.reset()
+        for sprite in self.sprite_list:
+            self.spatial_hash.add(sprite)
 
     def update(self) -> None:
         """
@@ -932,7 +911,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_texture_data[slot] = tex_slot
         self._sprite_texture_changed = True
 
-    def update_texture(self, sprite) -> None:
+    def _update_texture(self, sprite) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
         # We cannot interact with texture atlases unless the context
@@ -955,7 +934,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_position(self, sprite: _SpriteType) -> None:
+    def _update_position(self, sprite: _SpriteType) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -970,7 +949,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def update_depth(self, sprite: _SpriteType) -> None:
+    def _update_depth(self, sprite: _SpriteType) -> None:
         """
         Called by the Sprite class to update the depth of the specified sprite.
         Necessary for batch drawing of items.
@@ -981,7 +960,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 2] = sprite._depth
         self._sprite_pos_changed = True
 
-    def update_color(self, sprite: _SpriteType) -> None:
+    def _update_color(self, sprite: _SpriteType) -> None:
         """
         Called by the Sprite class to update position, angle, size and color
         of the specified sprite.
@@ -996,7 +975,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
         self._sprite_color_changed = True
 
-    def update_size(self, sprite: _SpriteType) -> None:
+    def _update_size(self, sprite: _SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1008,7 +987,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_height(self, sprite: _SpriteType):
+    def _update_height(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1019,7 +998,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def update_width(self, sprite: _SpriteType):
+    def _update_width(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1030,7 +1009,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
-    def update_location(self, sprite: _SpriteType):
+    def _update_location(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the location in this sprite.
         Necessary for batch drawing of items.
@@ -1043,7 +1022,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def update_angle(self, sprite: _SpriteType):
+    def _update_angle(self, sprite: _SpriteType):
         """
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
@@ -1261,13 +1240,3 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_index_buf.orphan(size=self._idx_capacity * 4)
 
         self._sprite_index_changed = True
-
-    def _dump(self, buffer):
-        """
-        Debugging method used to dump raw byte data in the OpenGL buffer.
-        """
-        record_size = len(buffer) / len(self.sprite_list)
-        for i, char in enumerate(buffer):
-            if i % record_size == 0:
-                print()
-            print(f"{char:02x} ", end="")

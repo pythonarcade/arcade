@@ -142,7 +142,7 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
         self.player_bullet_list = arcade.SpriteList()
         self.enemy_bullet_list = arcade.SpriteList()
-        self.shield_list = arcade.SpriteList(is_static=True)
+        self.shield_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0

@@ -6,8 +6,13 @@ Physics engines for top-down or platformers.
 import math
 from typing import Iterable, List, Optional, Union
 
-from arcade import (Sprite, SpriteList, check_for_collision,
-                    check_for_collision_with_lists, get_distance)
+from arcade import (
+    Sprite,
+    SpriteList,
+    check_for_collision,
+    check_for_collision_with_lists
+)
+from arcade.math import get_distance
 
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):

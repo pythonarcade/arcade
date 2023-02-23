@@ -8,6 +8,7 @@ from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
 from arcade.types import Point
+from arcade.math import get_distance
 
 if TYPE_CHECKING:
     from arcade import Sprite, SpriteList
@@ -477,8 +478,8 @@ class Camera(SimpleCamera):
 
             # Calculate the angle our offset is at, and how far out
             angle = math.atan2(ox, oy)
-            distance = arcade.get_distance(0, 0, ox, oy)
-            velocity_mag = arcade.get_distance(0, 0, vx, vy)
+            distance = get_distance(0, 0, ox, oy)
+            velocity_mag = get_distance(0, 0, vx, vy)
 
             # Ok, what's the reverse? Pull it back in.
             reverse_speed = min(self.shake_speed, distance)

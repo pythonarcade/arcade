@@ -18,6 +18,7 @@ Color = Union[RGB, RGBA]
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
 Point = Tuple[float, float]
+IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 

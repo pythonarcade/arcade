@@ -33,7 +33,7 @@ from arcade.gl import Geometry
 from arcade.gl import Program
 from arcade.gl import Buffer
 
-from .geometry_generic import rotate_point
+from .math import rotate_point
 
 
 class Shape:

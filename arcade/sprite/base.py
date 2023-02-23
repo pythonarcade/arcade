@@ -12,7 +12,7 @@ from typing import (
 from pathlib import Path
 
 import arcade
-from arcade.geometry_generic import get_angle_degrees
+from arcade.math import get_angle_degrees
 from arcade import (
     load_texture,
     Texture,
@@ -184,7 +184,7 @@ class Sprite:
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_location(self)
+            sprite_list._update_location(self)
 
     def set_position(self, center_x: float, center_y: float) -> None:
         """
@@ -273,7 +273,7 @@ class Sprite:
             )
 
         # Cache the results
-        self._point_list_cache = tuple([_adjust_point(point) for point in self.hit_box])
+        self._point_list_cache = tuple([_adjust_point(point) for point in self.get_hit_box()])
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0) -> None:
@@ -336,12 +336,11 @@ class Sprite:
         """
         Search the sprite lists this sprite is a part of, and remove it
         from any spatial hashes it is a part of.
-
         """
         for sprite_list in self.sprite_lists:
-            if sprite_list._use_spatial_hash and sprite_list.spatial_hash is not None:
+            if sprite_list.spatial_hash is not None:
                 try:
-                    sprite_list.spatial_hash.remove_object(self)
+                    sprite_list.spatial_hash.remove(self)
                 except ValueError:
                     print(
                         "Warning, attempt to remove item from spatial hash that doesn't exist in the hash."
@@ -352,8 +351,8 @@ class Sprite:
         Add spatial hashes for this sprite in all the sprite lists it is part of.
         """
         for sprite_list in self.sprite_lists:
-            if sprite_list.spatial_hash:
-                sprite_list.spatial_hash.insert_object_for_box(self)
+            if sprite_list.spatial_hash is not None:
+                sprite_list.spatial_hash.add(self)
 
     @property
     def bottom(self) -> float:
@@ -364,8 +363,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_y
+        # if len(points) == 0:
+        #     return self.center_y
 
         y_points = [point[1] for point in points]
         return min(y_points)
@@ -388,8 +387,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_y
+        # if len(points) == 0:
+        #     return self.center_y
 
         y_points = [point[1] for point in points]
         return max(y_points)
@@ -417,7 +416,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_size(self)
+                sprite_list._update_size(self)
 
     @property
     def height(self) -> float:
@@ -435,7 +434,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_height(self)
+                sprite_list._update_height(self)
 
     @property
     def depth(self) -> float:
@@ -448,7 +447,7 @@ class Sprite:
         if new_value != self._depth:
             self._depth = new_value
             for sprite_list in self.sprite_lists:
-                sprite_list.update_depth(self)
+                sprite_list._update_depth(self)
 
     @property
     def scale(self) -> float:
@@ -475,7 +474,7 @@ class Sprite:
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_size(self)
+            sprite_list._update_size(self)
 
     @property
     def scale_xy(self) -> Point:
@@ -497,7 +496,7 @@ class Sprite:
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_size(self)
+            sprite_list._update_size(self)
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
         """
@@ -544,9 +543,9 @@ class Sprite:
         # rebuild all spatial metadata
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
-            sprite_list.update_size(self)
+            sprite_list._update_size(self)
             if position_changed:
-                sprite_list.update_location(self)
+                sprite_list._update_location(self)
 
     def rescale_xy_relative_to_point(
             self,
@@ -605,9 +604,9 @@ class Sprite:
         # rebuild all spatial metadata
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
-            sprite_list.update_size(self)
+            sprite_list._update_size(self)
             if position_changed:
-                sprite_list.update_location(self)
+                sprite_list._update_location(self)
 
     @property
     def center_x(self) -> float:
@@ -626,7 +625,7 @@ class Sprite:
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_location(self)
+            sprite_list._update_location(self)
 
     @property
     def center_y(self) -> float:
@@ -645,7 +644,7 @@ class Sprite:
         self.add_spatial_hashes()
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_location(self)
+            sprite_list._update_location(self)
 
     @property
     def velocity(self) -> Point:
@@ -704,7 +703,7 @@ class Sprite:
         self._point_list_cache = None
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_angle(self)
+            sprite_list._update_angle(self)
 
         self.add_spatial_hashes()
 
@@ -732,8 +731,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_x
+        # if len(points) == 0:
+        #     return self.center_x
 
         x_points = [point[0] for point in points]
         return min(x_points)
@@ -754,8 +753,8 @@ class Sprite:
 
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
-        if len(points) == 0:
-            return self.center_x
+        # if len(points) == 0:
+        #     return self.center_x
 
         x_points = [point[0] for point in points]
         return max(x_points)
@@ -792,7 +791,7 @@ class Sprite:
         self._height = texture.height * self._scale[1]
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
-            sprite_list.update_texture(self)
+            sprite_list._update_texture(self)
 
     def set_texture(self, texture_no: int) -> None:
         """
@@ -840,7 +839,7 @@ class Sprite:
             raise ValueError("Color must be three or four ints from 0-255")
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_color(self)
+            sprite_list._update_color(self)
 
     @property
     def alpha(self) -> int:
@@ -857,7 +856,7 @@ class Sprite:
         self._color = self._color[0], self._color[1], self._color[2], int(alpha)
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update_color(self)
+            sprite_list._update_color(self)
 
     @property
     def visible(self) -> bool:
@@ -881,7 +880,7 @@ class Sprite:
     def visible(self, value: bool):
         self._color = self._color[0], self._color[1], self._color[2], 255 if value else 0
         for sprite_list in self.sprite_lists:
-            sprite_list.update_color(self)
+            sprite_list._update_color(self)
 
     def register_sprite_list(self, new_list: "SpriteList") -> None:
         """

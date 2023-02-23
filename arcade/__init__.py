@@ -76,14 +76,6 @@ from .drawing_support import uint32_to_four_byte_color
 from .drawing_support import color_from_hex_string
 from .drawing_support import float_to_byte_color
 
-from .geometry_generic import get_distance
-from .geometry_generic import rotate_point
-from .geometry_generic import get_angle_degrees
-from .geometry_generic import get_angle_radians
-
-from .geometry import are_polygons_intersecting
-from .geometry import is_point_in_polygon
-
 # Complex imports with potential circularity
 from .window_commands import close_window
 from .window_commands import exit
@@ -176,7 +168,6 @@ from .sprite import PyMunk
 from .sprite import Sprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
-from .sprite import get_distance_between_sprites
 
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
@@ -185,6 +176,10 @@ from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
+from .sprite_list import get_distance_between_sprites
+from .sprite_list import get_sprites_in_rect
+
+from .sprite_list import SpatialHash
 
 from .scene import Scene
 
@@ -275,7 +270,6 @@ __all__ = [
     'VERSION',
     'View',
     'Window',
-    'are_polygons_intersecting',
     'astar_calculate_path',
     'check_for_collision',
     'check_for_collision_with_list',
@@ -315,11 +309,9 @@ __all__ = [
     'finish_render',
     'float_to_byte_color',
     'get_closest_sprite',
-    'get_angle_degrees',
-    'get_angle_radians',
     'get_display_size',
-    'get_distance',
     'get_distance_between_sprites',
+    'get_sprites_in_rect',
     'get_four_byte_color',
     'get_four_float_color',
     'get_controllers',
@@ -331,6 +323,7 @@ __all__ = [
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
+    'SpatialHash',
     'get_timings',
     'get_three_float_color',
     'create_text_sprite',
@@ -338,7 +331,6 @@ __all__ = [
     'get_window',
     'get_fps',
     'has_line_of_sight',
-    'is_point_in_polygon',
     'load_animated_gif',
     'load_font',
     'load_sound',
@@ -356,7 +348,6 @@ __all__ = [
     'play_sound',
     'read_tmx',
     'load_tilemap',
-    'rotate_point',
     'run',
     'schedule',
     'set_background_color',

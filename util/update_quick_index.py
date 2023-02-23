@@ -11,9 +11,9 @@ titles = {
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-    'geometry.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/__init__.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/geometry_generic.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
     'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'controller.py': ['Game Controller Support', 'game_controller.rst'],
@@ -34,6 +34,7 @@ titles = {
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
     'texture/__init__.py': ['Texture Management', 'texture.rst'],
     'texture/texture.py': ['Texture Management', 'texture.rst'],
@@ -187,6 +188,7 @@ def process_directory(directory: Path, quick_index_file):
             "sprite": "arcade",
             "texture": "arcade",
             "sprite_list": "arcade",
+            "geometry": "geometry",
             "text": "arcade",
             "gui": "arcade.gui",
             "property": "arcade.gui.property",
@@ -337,13 +339,14 @@ def main():
     text_file = open("../doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
-    text_file.write(f"The arcade module\n")
-    text_file.write(f"-----------------\n\n")
+    text_file.write("The arcade module\n")
+    text_file.write("-----------------\n\n")
 
     text_file.write(table_header_arcade)
 
     process_directory(Path("../arcade"), text_file)
     process_directory(Path("../arcade/sprite_list"), text_file)
+    process_directory(Path("../arcade/geometry"), text_file)
     process_directory(Path("../arcade/sprite"), text_file)
     process_directory(Path("../arcade/texture"), text_file)
     process_directory(Path("../arcade/text"), text_file)
@@ -352,9 +355,9 @@ def main():
     # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.gui module\n")
-    text_file.write(f"---------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.gui module\n")
+    text_file.write("---------------------\n\n")
 
     text_file.write(table_header_gui)
 
@@ -362,9 +365,9 @@ def main():
     process_directory(Path("../arcade/gui/widgets"), text_file)
     process_directory(Path("../arcade/gui/property"), text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.tilemap module\n")
-    text_file.write(f"-------------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.tilemap module\n")
+    text_file.write("-------------------------\n\n")
 
     text_file.write(table_header_tiled)
 

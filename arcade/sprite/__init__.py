@@ -1,6 +1,5 @@
 import PIL.Image
 
-import arcade
 from arcade.texture import Texture
 from arcade.resources import resolve_resource_path
 from .base import Sprite, PyMunk
@@ -48,18 +47,6 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     return sprite
 
 
-def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
-    """
-    Returns the distance between the center of two given sprites
-
-    :param Sprite sprite1: Sprite one
-    :param Sprite sprite2: Sprite two
-    :return: Distance
-    :rtype: float
-    """
-    return arcade.get_distance(*sprite1._position, *sprite2._position)
-
-
 __all__ = [
     "Sprite",
     "PyMunk",
@@ -67,7 +54,6 @@ __all__ = [
     "AnimationKeyframe",
     "AnimatedWalkingSprite",
     "load_animated_gif",
-    "get_distance_between_sprites",
     "SpriteSolidColor",
     "SpriteCircle",
     "FACE_LEFT",

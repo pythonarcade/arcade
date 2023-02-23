@@ -21,7 +21,7 @@ This will cause the Arcade library to output some basic debugging information:
 
 .. code-block:: text
 
-    2409.0003967285156 arcade.sprite_list DEBUG - [386411600] Creating SpriteList use_spatial_hash=True is_static=False
+    2409.0003967285156 arcade.sprite_list DEBUG - [386411600] Creating SpriteList use_spatial_hash=True capacity=100
     2413.9978885650635 arcade.gl.context INFO - Arcade version : 2.4a5
     2413.9978885650635 arcade.gl.context INFO - OpenGL version : 3.3
     2413.9978885650635 arcade.gl.context INFO - Vendor         : NVIDIA Corporation

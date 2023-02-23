@@ -10,7 +10,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_rotate_around_point
 """
 import arcade
-
+from arcade.math import rotate_point
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -38,12 +38,12 @@ class RotatingSprite(arcade.Sprite):
         :param change_angle: Whether the sprite's angle should also be adjusted.
         """
 
-        # If changle_angle is true, change the sprite's angle
+        # If change_angle is true, change the sprite's angle
         if change_angle:
             self.angle += degrees
 
         # Move the sprite along a circle centered on the point by degrees 
-        self.position = arcade.rotate_point(
+        self.position = rotate_point(
             self.center_x, self.center_y,
             point[0], point[1], degrees)
 

@@ -4,6 +4,7 @@ from typing import Optional, Tuple, Union, Mapping
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
+from arcade.math import get_distance
 from arcade.types import Color
 from arcade.gui import (
     Surface,
@@ -205,7 +206,7 @@ class UISlider(UIStyledWidget):
     def _is_on_cursor(self, x: float, y: float) -> bool:
         cursor_center_x, cursor_center_y = self._cursor_pos()
         cursor_radius = self.cursor_radius
-        distance_to_cursor = arcade.get_distance(x, y, cursor_center_x, cursor_center_y)
+        distance_to_cursor = get_distance(x, y, cursor_center_x, cursor_center_y)
         return distance_to_cursor <= cursor_radius
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
