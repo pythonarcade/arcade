@@ -223,6 +223,7 @@ from arcade import resources as resources
 from arcade import types as types
 from arcade import math as math
 from arcade import shape_list as shape_list
+from arcade import hitbox as hitbox
 from arcade import experimental as experimental
 
 from .text import (
@@ -363,6 +364,7 @@ __all__ = [
     'unschedule',
     'schedule_once',
     'cleanup_texture_cache',
+    'hitbox',
     'experimental',
     'isometric',
     'color',
