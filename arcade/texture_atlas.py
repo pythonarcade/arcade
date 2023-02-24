@@ -31,7 +31,7 @@ import PIL
 from PIL import Image, ImageDraw
 
 from arcade.gl.framebuffer import Framebuffer
-from arcade.texture_transforms import Transform
+from arcade.texture.transforms import Transform
 import arcade
 from pyglet.image.atlas import (
     Allocator,

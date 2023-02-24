@@ -8,7 +8,7 @@ import PIL.ImageOps
 import PIL.ImageDraw
 
 from arcade.types import Color
-from arcade.texture_transforms import (
+from arcade.texture.transforms import (
     Transform,
     FlipLeftToRightTransform,
     FlipTopToBottomTransform,

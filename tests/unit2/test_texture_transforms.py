@@ -1,4 +1,4 @@
-from arcade.texture_transforms import (
+from arcade.texture.transforms import (
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,

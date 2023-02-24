@@ -11,7 +11,7 @@ from .generate import (
     make_soft_square_texture,
 )
 from arcade import cache
-
+from arcade.texture import transforms as transform
 
 def cleanup_texture_cache():
     """
@@ -33,4 +33,5 @@ __all__ = [
     "make_circle_texture",
     "make_soft_circle_texture",
     "make_soft_square_texture",
+    "transform",
 ]
