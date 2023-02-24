@@ -498,7 +498,14 @@ class BasicSprite:
         Return the hit box points adjusted for the sprite's position.
         """
         x, y = self._position
-        return []
+        w, h = self._width, self._height
+        # TODO: Might might want to cache this?
+        return (
+            (-w / 2 + x, -h / 2 + y),
+            (w / 2 + x, -h / 2 + y),
+            (w / 2 + x, h / 2 + y),
+            (-w / 2 + x, h / 2 + y)
+        )
 
     def update_spatial_hash(self) -> None:
         """
