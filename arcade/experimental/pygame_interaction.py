@@ -56,8 +56,8 @@ class SurfaceTexture:
             out vec4 fragColor;
 
             void main() {
-                // Flip texture coordinates to get the right orientation
-                fragColor = texture(surface, vec2(0.0, 1.0) - uv);
+                // Flip texture y coordinate to get the right orientation
+                fragColor = texture(surface, vec2(uv.x, 1 - uv.y));
             }
             """,
         )
