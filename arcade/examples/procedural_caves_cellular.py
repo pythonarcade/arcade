@@ -174,12 +174,13 @@ class GameView(arcade.View):
         for step in range(NUMBER_OF_STEPS):
             self.grid = do_simulation_step(self.grid)
 
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         # Create sprites based on 2D grid
         # Each grid location is a sprite.
         for row in range(GRID_HEIGHT):
             for column in range(GRID_WIDTH):
                 if self.grid[row][column] == 1:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.BasicSprite(texture, scale=SPRITE_SCALING)
                     wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     self.wall_list.append(wall)
@@ -245,7 +246,7 @@ class GameView(arcade.View):
         self.camera_sprites.use()
 
         # Draw the sprites
-        self.wall_list.draw()
+        self.wall_list.draw(pixelated=True)
         self.player_list.draw()
 
         # Select the (unscrolled) camera for our GUI
