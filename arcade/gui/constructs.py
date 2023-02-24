@@ -1,11 +1,12 @@
 """
 Constructs, are prepared widget combinations, you can use for common use-cases
 """
-from arcade.gui.nine_patch import NinePatchTexture
+from typing import Any, Optional
 
 import arcade
-from arcade.gui.events import UIOnActionEvent
+from arcade.gui.events import UIOnActionEvent, UIOnClickEvent
 from arcade.gui.mixins import UIMouseFilterMixin
+from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout
 from arcade.gui.widgets.text import UITextArea
@@ -93,3 +94,60 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
     def on_action(self, event: UIOnActionEvent):
         """Called when button was pressed"""
         pass
+
+
+class UIButtonRow(UIBoxLayout):
+    """
+    Places buttons in a row.
+    :param bool vertical: Whether the button row is vertical or not.
+    :param str align: Where to align the button row.
+    :param Any size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent should be requested.
+    :param size_hint_min: Min width and height in pixel.
+    :param size_hint_max: Max width and height in pixel.
+    :param int space_between: The space between the children.
+    :param Any style: Not used.
+    :param Tuple[str, ...] button_labels: The labels for the buttons.
+    :param Callable callback: The callback function which will receive the text of the clicked button.
+    """
+
+    def __init__(
+        self,
+        vertical: bool = False,
+        align: str = "center",
+        size_hint: Any = (0, 0),
+        size_hint_min: Optional[Any] = None,
+        size_hint_max: Optional[Any] = None,
+        space_between: int = 10,
+        style: Optional[Any] = None,
+        button_factory: type = UIFlatButton,
+    ):
+        super().__init__(
+            vertical=vertical,
+            align=align,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+            space_between=space_between,
+            style=style,
+        )
+        self.register_event_type("on_action")
+
+        self.button_factory = button_factory
+
+    def add_button(
+        self,
+        label: str,
+        *,
+        style=None,
+        multiline=False,
+    ):
+        button = self.button_factory(text=label, style=style, multiline=multiline)
+        button.on_click = self._on_click  # type: ignore
+        self.add(button)
+        return button
+
+    def on_action(self, event: UIOnActionEvent):
+        pass
+
+    def _on_click(self, event: UIOnClickEvent):
+        self.dispatch_event("on_action", UIOnActionEvent(self, event.source.text))

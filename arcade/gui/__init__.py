@@ -1,4 +1,4 @@
-from arcade.gui.constructs import UIMessageBox
+from arcade.gui.constructs import UIMessageBox, UIButtonRow
 from arcade.gui.events import UIEvent
 from arcade.gui.events import UIKeyEvent
 from arcade.gui.events import UIKeyPressEvent
@@ -46,6 +46,7 @@ from arcade.gui.mixins import UIWindowLikeMixin
 __all__ = [
     "UIAnchorLayout",
     "UIBoxLayout",
+    "UIButtonRow",
     "UIGridLayout",
     "UIManager",
     "UIMessageBox",
