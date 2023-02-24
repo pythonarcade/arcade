@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type
+from typing import List, Dict, TypeVar, Iterable, Optional, Type, Tuple
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Mat4
@@ -73,6 +73,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
+        self._blend_func = (
+            *self.window.ctx.BLEND_DEFAULT,
+            *self.window.ctx.BLEND_DEFAULT,
+        )
+        self._blend_func_surface = (
+            *self.window.ctx.BLEND_DEFAULT,
+            *self.window.ctx.BLEND_ADDITIVE,
+        )
 
         self.register_event_type("on_event")
 
@@ -259,14 +267,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         ctx = self.window.ctx
 
-        # When drawing into the framebuffer we need to set a separate
-        # blend function for the alpha component.
-        ctx.blend_func = (
-            ctx.SRC_ALPHA,
-            ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
-            ctx.ONE,
-            ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
-        )
+        # Set blend mode for drawing into surfaces
+        ctx.blend_func = self._blend_func_surface
 
         # Reset view matrix so content is not rendered into
         # the surface with offset
@@ -282,8 +284,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.window.view = prev_view
         self.window.projection = prev_proj
 
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
+        # Set the blend mode for drawing surfaces
+        ctx.blend_func = self._blend_func
 
         # Draw layers
         with ctx.enabled(ctx.BLEND):
@@ -386,6 +388,28 @@ class UIManager(EventDispatcher, UIWidgetParent):
     @property
     def rect(self) -> Rect:  # type: ignore
         return Rect(0, 0, *self.window.get_size())
+
+    @property
+    def blend_func_surface(self) -> Tuple[int, int, int, int]:
+        """
+        The blend function used when rendering into surfaces (read-write)
+        """
+        return self._blend_func_surface
+
+    @blend_func_surface.setter
+    def blend_func_surface(self, value: Tuple[int, int, int, int]):
+        self._blend_func_surface = value
+
+    @property
+    def blend_func(self):
+        """
+        The blend function used when rendering the surfaces (read-write)
+        """
+        return self._blend_func
+
+    @blend_func.setter
+    def blend_func(self, value: Tuple[int, int, int, int]):
+        self._blend_func = value
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
