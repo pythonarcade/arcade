@@ -12,9 +12,11 @@ but should work with any recent version of Pygame.
     pip install -I pygame-ce==2.1.3
 
 """
-from typing import Tuple
 import math
+from typing import Tuple
+
 import pygame  # type: ignore
+
 import arcade
 from arcade.gl import geometry
 
@@ -24,6 +26,7 @@ class SurfaceTexture:
     Simple wrapper for a texture and a pygame surface
     making it simple to synchronize the data.
     """
+
     def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]):
         self._ctx = ctx
         self._size = size
@@ -79,7 +82,7 @@ class SurfaceTexture:
         # and memory allocation.
         # The downside is that the raw surface data is RGBA, so we
         # set a swizzle on the OpenGL texture
-        self._texture.write(self._surface.get_view('1'))
+        self._texture.write(self._surface.get_view("1"))
 
 
 class PygameInteraction(arcade.Window):
@@ -102,7 +105,8 @@ class PygameInteraction(arcade.Window):
                 ((i * 50) % 255, (i * 100) % 255, (i * 20) % 255),
                 (
                     math.sin(self.time + time_offset) * 55 + w // 2,
-                    math.cos(self.time + time_offset) * 55 + h // 2),
+                    math.cos(self.time + time_offset) * 55 + h // 2,
+                ),
                 math.sin(self.time) * 4 + 15,
             )
 
@@ -119,4 +123,5 @@ class PygameInteraction(arcade.Window):
             arcade.close_window()
 
 
-PygameInteraction().run()
+if __name__ == "__main__":
+    PygameInteraction().run()
