@@ -60,7 +60,6 @@ class NinePatchTexture:
             vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
             geometry_shader=":resources:shaders/gui/nine_patch_gs.glsl",
             fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
-            common=(":resources:shaders/lib/sprite.glsl",),
         )
         # Configure texture channels
         self.program.set_uniform_safe("uv_texture", 0)

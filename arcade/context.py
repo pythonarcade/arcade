@@ -75,10 +75,6 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/shape_element_list_vs.glsl",
             fragment_shader=":resources:shaders/shape_element_list_fs.glsl",
         )
-        # self.sprite_list_program = self.load_program(
-        #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
-        #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
-        # )
         self.sprite_list_program_no_cull: Program = self.load_program(
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
@@ -91,7 +87,6 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
-            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
@@ -121,7 +116,6 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
             geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
             fragment_shader=":resources:shaders/atlas/resize_fs.glsl",
-            common=(":resources:shaders/lib/sprite.glsl",),
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
@@ -396,15 +390,19 @@ class ArcadeContext(Context):
 
         if fragment_shader:
             fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
+            fragment_shader_src = self.shader_inc(fragment_shader_src)
 
         if geometry_shader:
             geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
+            geometry_shader_src = self.shader_inc(geometry_shader_src)
 
         if tess_control_shader and tess_evaluation_shader:
             tess_control_src = resolve_resource_path(tess_control_shader).read_text()
             tess_evaluation_src = resolve_resource_path(
                 tess_evaluation_shader
             ).read_text()
+            tess_control_src = self.shader_inc(tess_control_src)
+            tess_evaluation_src = self.shader_inc(tess_evaluation_src)
 
         return self.program(
             vertex_shader=vertex_shader_src,
@@ -433,7 +431,10 @@ class ArcadeContext(Context):
         from arcade.resources import resolve_resource_path
         path = resolve_resource_path(path)
         common_src = [resolve_resource_path(c).read_text() for c in common]
-        return self.compute_shader(source=path.read_text(), common=common_src)
+        return self.compute_shader(
+            source=self.shader_inc(path.read_text()),
+            common=common_src,
+        )
 
     def load_texture(
         self,
@@ -475,6 +476,29 @@ class ArcadeContext(Context):
             texture.build_mipmaps()
 
         return texture
+
+    def shader_inc(self, source: str) -> str:
+        """
+        Parse a shader source looking for ``#include`` directives and
+        replace them with the contents of the included file.
+
+        The ``#include`` directive must be on its own line and the file
+        and the path should use a resource handle.
+
+        Example::
+
+            #include :my_shader:lib/common.glsl
+
+        :param str source: Shader
+        """
+        from arcade.resources import resolve_resource_path
+        lines = source.splitlines()
+        for i, line in enumerate(lines):
+            line = line.strip()
+            if line.startswith("#include"):
+                path = resolve_resource_path(line.split()[1].replace('"', ""))
+                lines[i] = path.read_text()
+        return "\n".join(lines)
 
     def get_framebuffer_image(
         self,

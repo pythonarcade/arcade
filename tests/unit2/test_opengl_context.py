@@ -123,3 +123,29 @@ def test_load_texture(ctx):
     # Don't flip the texture
     texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", flip=False, build_mipmaps=True)
     assert texture.read()[:4] == b'\xff\x00\x00\xff'  # Red
+
+
+def test_shader_include(ctx):
+    """Test shader include directive"""
+    # Without quotes
+    src = """
+        #version 330
+        #include :resources:shaders/lib/sprite.glsl
+    """
+    assert len(ctx.shader_inc(src)) > len(src)
+    # With quotes
+    src = """
+        #version 330
+        #include ":resources:shaders/lib/sprite.glsl"
+    """
+    assert len(ctx.shader_inc(src)) > len(src)
+
+
+def test_shader_include_fail(ctx):
+    """Test shader include directive"""
+    src = """
+        #version 330
+        #include "test_shader_include.vert"
+    """
+    with pytest.raises(FileNotFoundError):
+        ctx.shader_inc(src)

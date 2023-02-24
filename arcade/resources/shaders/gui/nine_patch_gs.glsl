@@ -2,6 +2,8 @@
 // Geometry shader emitting 9 patch from point
 // This can be simplified somewhat, but the verbose version are easier to maintain
 
+#include :resources:shaders/lib/sprite.glsl
+
 uniform WindowBlock {
     mat4 projection;
     mat4 view;

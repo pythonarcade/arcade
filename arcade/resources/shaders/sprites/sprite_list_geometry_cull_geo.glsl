@@ -1,5 +1,7 @@
 #version 330
 
+#include :resources:shaders/lib/sprite.glsl
+
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
