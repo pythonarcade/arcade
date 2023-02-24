@@ -255,7 +255,6 @@ def test_sprite_scale(window):
     window.on_draw = on_draw
     window.update = update
     window.test()
-    arcade.cleanup_texture_cache()
 
 
 frame = 0
@@ -307,7 +306,6 @@ def test_sprite_removal(window):
     window.on_draw = on_draw
     window.update = update
     window.test()
-    arcade.cleanup_texture_cache()
 
 
 def test_sprite_circle(window):
