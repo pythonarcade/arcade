@@ -127,6 +127,7 @@ class UIMockup(arcade.Window):
         # UITextureButton with multiline text
         texture_button_with_icon_left = UITextureButton(
             text="UITextureButton\nwith a second line",
+            multiline=True,
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
             texture_hovered=load_texture(

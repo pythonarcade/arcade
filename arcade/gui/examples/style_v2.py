@@ -124,7 +124,7 @@ class UIButtonRow(UIBoxLayout):
         *,
         style=None,
     ):
-        button = self.button_factory(text=label, style=style)
+        button = self.button_factory(text=label, style=style, multiline=True)
         button.on_click = self._on_click  # type: ignore
         self.add(button)
         return button
