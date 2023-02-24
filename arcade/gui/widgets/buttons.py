@@ -24,6 +24,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     :param Texture texture_hovered: different texture to display if mouse is hovering over button.
     :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
     :param str text: text to add to the button.
+    :param bool multiline: allows to wrap text, if not enough width available
     :param style: style information for the button.
     :param float scale: scale the button, based on the base texture size.
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -73,6 +74,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         texture_pressed: Union[None, Texture, NinePatchTexture] = None,
         texture_disabled: Union[None, Texture, NinePatchTexture] = None,
         text: str = "",
+        multiline: bool = False,
         scale: Optional[float] = None,
         style: Optional[Dict[str, UIStyleBase]] = None,
         size_hint=None,
@@ -106,6 +108,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             text=text,
+            multiline=multiline,
             **kwargs,
         )
 
@@ -196,6 +199,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     :param float width: width of widget. Defaults to texture width if not specified.
     :param float height: height of widget. Defaults to texture height if not specified.
     :param str text: text to add to the button.
+    :param bool multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button
 
     """
@@ -244,6 +248,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         width: float = 100,
         height: float = 50,
         text="",
+        multiline=False,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -260,6 +265,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             size_hint_max=size_hint_max,
             style=style or self.DEFAULT_STYLE,
             text=text,
+            multiline=multiline,
             **kwargs
         )
 
@@ -311,4 +317,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             self._label.label.font_size = font_size
             self._label.label.color = font_color
 
-        # self._label.fit_content()
+        # make label fit its content, but limit size to button size
+        self._label.fit_content()
+        self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)

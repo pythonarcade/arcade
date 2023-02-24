@@ -79,7 +79,7 @@ class UILabel(UIWidget):
             font_name=font_name,
             font_size=font_size,
             color=text_color,
-            width=int(width) if width else 0,
+            width=int(width) if width else None,
             bold=bold,
             italic=italic,
             align=align,
@@ -98,8 +98,13 @@ class UILabel(UIWidget):
             **kwargs,
         )
 
-        self.label.width = int(width) if width else 0
-        self.label.height = int(height) if height else 0
+        # set label size, if the width or height was given
+        # because border and padding can only be applied later, we can avoid `fit_content()`
+        # and set with and height separately
+        if width:
+            self.label.width = int(width)
+        if height:
+            self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
 
@@ -147,13 +152,13 @@ class UITextWidget(UIAnchorLayout):
     The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
     """
 
-    def __init__(self, text: str = "", **kwargs):
+    def __init__(self, text: str = "", multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
         self._label = UILabel(
             text=text,
-            multiline=True,
-            width=1000
-        )  # width 1000 try to prevent line wrap
+            multiline=multiline,
+            width=1000 if multiline else None
+        )  # width 1000 try to prevent line wrap if multiline is enabled
         self.add(self._label)
         self.ui_label.fit_content()
 
@@ -185,6 +190,16 @@ class UITextWidget(UIAnchorLayout):
     @text.setter
     def text(self, value):
         self.ui_label.text = value
+        self.ui_label.fit_content()
+        self.trigger_render()
+
+    @property
+    def multiline(self):
+        return self.label.multiline
+
+    @multiline.setter
+    def multiline(self, value):
+        self.label.multiline = value
         self.ui_label.fit_content()
         self.trigger_render()
 
