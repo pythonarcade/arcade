@@ -48,6 +48,12 @@ arcade.enable_timings()
 
 class Coin(arcade.BasicSprite):
     """ Our coin sprite class """
+    def __init__(self, texture: arcade.Texture, scale: float):
+        super().__init__(texture, scale=scale)
+        # Add a velocity to the coin
+        self.change_x = 0
+        self.change_y = 0
+
     def update(self):
         """ Update the sprite. """
         # Setting the position is faster than setting x & y individually
