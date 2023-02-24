@@ -175,6 +175,7 @@ class MyGame(arcade.Window):
 
         maze = make_maze_recursion(MAZE_WIDTH, MAZE_HEIGHT)
 
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         # Create sprites based on 2D grid
         if not MERGE_SPRITES:
             # This is the simple-to-understand method. Each grid location
@@ -182,7 +183,7 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                        wall = arcade.BasicSprite(texture, scale=SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -250,7 +251,7 @@ class MyGame(arcade.Window):
         draw_start_time = timeit.default_timer()
 
         # Draw all the sprites.
-        self.wall_list.draw()
+        self.wall_list.draw(pixelated=True)
         self.player_list.draw()
 
         # Draw info on the screen
