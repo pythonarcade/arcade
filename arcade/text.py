@@ -173,7 +173,7 @@ class Text:
         start_y: float,
         color: Color = arcade.color.WHITE,
         font_size: float = 12,
-        width: int = 0,
+        width: Optional[int] = 0,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool = False,
