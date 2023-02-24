@@ -97,7 +97,7 @@ line-length = 120
 exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs"]
 
 [tool.mypy]
-disable_error_code = "annotation_unchecked"
+disable_error_code = "annotation-unchecked"
 
 [tool.pytest.ini_options]
 norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "dist", "tempt"]
