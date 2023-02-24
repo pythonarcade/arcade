@@ -12,18 +12,16 @@ get very obvious artifacts all along the axis that not used.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.random_shader_simple
 """
-
 from time import time
 from array import array
 from random import random
 
 from arcade import Window
 from arcade.gl import BufferDescription
-from arcade.resources import resolve_resource_path
 
 
 def generate_points(count: int):
-    for p in range(count):
+    for _ in range(count):
         yield random() * 2 - 1
         yield random() * 2 - 1
 
@@ -35,7 +33,9 @@ class App(Window):
         self._point_count = 128  # the number of points we want showing up
         self._time_seed = time()  # so that the colours change every run we store the time at run to use as a seed
         self._program = self.ctx.program(
-            vertex_shader="""
+            # We're passing the shader source to ctx.shader_inc() so that we can use the #include directive.
+            # This is not needed when using load_program() as it will automatically look for the file.
+            vertex_shader=self.ctx.shader_inc("""
             #version 330
 
             in vec2 in_pos;
@@ -55,6 +55,8 @@ class App(Window):
             """,
             fragment_shader="""
             #version 330
+
+            #include :resources:/shaders/lib/random.glsl
 
             // predefining the function which will be over written with the code injection.
             // the random function takes in 1, 2, 3, or 4 floats and returns a new float between 0 and 1
@@ -79,17 +81,19 @@ class App(Window):
                 frag_colour = vec4(red, green, blue, 1.0);
             }
 
-            """,
-            # this is the file which will be injected. It expects the source as a string,
-            # so we have to resolve and read the file before passing it on.
-            common=[resolve_resource_path(':resources:/shaders/lib/random.glsl').read_text()]
+            """),
         )
         self._program['time_seed'] = self._time_seed
 
         self._geometry = self.ctx.geometry(
             [
-                BufferDescription(self.ctx.buffer(data=array('f', generate_points(self._point_count))),
-                                  '2f', ['in_pos'])
+                BufferDescription(
+                    self.ctx.buffer(
+                        data=array('f', generate_points(self._point_count))
+                    ),
+                    '2f',
+                    ['in_pos'],
+                )
             ],
             mode=self.ctx.POINTS
         )

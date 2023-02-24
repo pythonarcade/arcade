@@ -1,7 +1,8 @@
 #version 330
-
 // The render target for this program is the new
 // texture atlas texture
+
+#include :resources:shaders/lib/sprite.glsl
 
 // Old and new texture coordiantes
 uniform sampler2D atlas_old;
