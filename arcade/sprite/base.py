@@ -1,9 +1,14 @@
-from typing import TYPE_CHECKING, List, Iterable
-from arcade.types import RGBA, Point, PointList
+from typing import TYPE_CHECKING, List, Iterable, TypeVar
 
+import arcade
+from arcade.types import RGBA, Point, PointList, Color
+from arcade.color import BLACK
 from arcade.texture import Texture
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
+
+# Type from sprite that can be any BasicSprite or any subclass of BasicSprite
+SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
 
 class BasicSprite:
@@ -20,6 +25,7 @@ class BasicSprite:
         "_texture",
         "sprite_lists",
         "_angle",
+        "__weakref__",
     )
 
     def __init__(
@@ -28,15 +34,15 @@ class BasicSprite:
         scale: float = 1.0,
         center_x: float = 0,
         center_y: float = 0,
-        **kwargs
+        **kwargs,
     ) -> None:
         self._position = (center_x, center_y)
         self._depth = 0.0
+        self._texture = texture
         self._width = texture.width * scale
-        self._height = texture.height * scale
+        self._height =texture.height * scale
         self._scale = scale, scale
         self._color: RGBA = 255, 255, 255, 255
-        self._texture = texture
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -371,6 +377,16 @@ class BasicSprite:
         """
         pass
 
+    def update_animation(self, delta_time: float = 1 / 60) -> None:
+        """
+        Override this to add code that will change
+        what image is shown, so the sprite can be
+        animated.
+
+        :param float delta_time: Time since last update.
+        """
+        pass
+
     # --- Scale methods -----
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
@@ -516,6 +532,23 @@ class BasicSprite:
 
         self.sprite_lists.clear()
 
+    # ----- Drawing Methods -----
+
+    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
+        """
+        Draw a sprite's hit-box.
+
+        The 'hit box' drawing is cached, so if you change the color/line thickness
+        later, it won't take.
+
+        :param color: Color of box
+        :param line_thickness: How thick the box should be
+        """
+        points = self.get_adjusted_hit_box()
+        # NOTE: This is a COPY operation. We don't want to modify the points.
+        points = tuple(points) + tuple(points[:-1])
+        arcade.draw_line_strip(points, color=color, line_width=line_thickness)
+
     # ---- Shortcut Methods ----
 
     def kill(self) -> None:
@@ -536,7 +569,7 @@ class BasicSprite:
         x, y = point
         return is_point_in_polygon(x, y, self.get_adjusted_hit_box())
 
-    def collides_with_sprite(self, other: "Sprite") -> bool:
+    def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
         :param Sprite other: the other sprite to check against.
@@ -547,7 +580,7 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self, sprite_list: "SpriteList") -> List["Sprite"]:
+    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> List[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against

@@ -29,6 +29,7 @@ class SpriteSolidColor(Sprite):
     :param Color color: The color of the sprite as an RGB or RGBA tuple
     :param float angle: Initial angle of the sprite in degrees
     """
+    __slots__ = ()
     _default_image = ImageData(
         PIL.Image.new("RGBA", size=(32, 32), color=(255, 255, 255, 255)),
         hash="sprite_solid_color"

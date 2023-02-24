@@ -9,14 +9,13 @@ from typing import (
 )
 from pathlib import Path
 
-import arcade
 from arcade.math import get_angle_degrees
 from arcade import (
     load_texture,
     Texture,
 )
-from arcade.color import BLACK
-from arcade.types import Color, Point, PointList, PathOrTexture
+from arcade.texture import get_default_texture
+from arcade.types import Point, PointList, PathOrTexture
 from .mixins import PymunkMixin
 from .base import BasicSprite
 
@@ -56,7 +55,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def __init__(
         self,
-        path_or_texture: PathOrTexture,
+        path_or_texture: PathOrTexture = None,
         scale: float = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,
@@ -64,14 +63,19 @@ class Sprite(BasicSprite, PymunkMixin):
         **kwargs,
     ):
         if isinstance(path_or_texture, Texture):
-            texture = path_or_texture
+            _texture = path_or_texture
+            _textures = [_texture]
         elif isinstance(path_or_texture, (str, Path)):
-            texture = load_texture(path_or_texture)
+            _texture = load_texture(path_or_texture)
+            _textures = [_texture]
         else:
-            raise ValueError("path_or_texture must be a string or Texture")
-
+            _texture = get_default_texture()
+            # Backwards compatibility:
+            # When applying default texture we don't want
+            # it part of the animating ones
+            _textures = []
         super().__init__(
-            texture,
+            _texture,
             scale=scale,
             center_x=center_x,
             center_y=center_y,
@@ -93,29 +97,21 @@ class Sprite(BasicSprite, PymunkMixin):
         self.boundary_top: Optional[float] = None
         self.boundary_bottom: Optional[float] = None
 
-        # Texture properties
-        self.textures: List[Texture] = []
         self.cur_texture_index: int = 0
+        self.textures: List[Texture] = _textures
 
         self._hit_box_points: Optional[PointList] = None
         self._hit_box_points_cache: Optional[PointList] = None
         self.physics_engines: List[Any] = []
 
         self._sprite_list: Optional[SpriteList] = None
-
-        # # Pymunk specific properties
-        # self._pymunk: Optional[PyMunk] = None
-        # self.force = [0.0, 0.0]
-
         # Debug properties
         self.guid: Optional[str] = None
 
-        if self._texture:
-            self.textures = [self._texture]
-            self._width = self._texture.width * scale
-            self._height = self._texture.height * scale
-            if not self._hit_box_points:
-                self._hit_box_points = self._texture.hit_box_points
+        self._width = self._texture.width * scale
+        self._height = self._texture.height * scale
+        if not self._hit_box_points:
+            self._hit_box_points = self._texture.hit_box_points
 
     # --- Properties ---
 
@@ -474,21 +470,6 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
 
-    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
-        """
-        Draw a sprite's hit-box.
-
-        The 'hit box' drawing is cached, so if you change the color/line thickness
-        later, it won't take.
-
-        :param color: Color of box
-        :param line_thickness: How thick the box should be
-        """
-        points = self.get_adjusted_hit_box()
-        # NOTE: This is a COPY operation. We don't want to modify the points.
-        points = tuple(points) + tuple(points[:-1])
-        arcade.draw_line_strip(points, color=color, line_width=line_thickness)
-
     # ----Update Methods ----
 
     def update(self) -> None:
@@ -500,16 +481,6 @@ class Sprite(BasicSprite, PymunkMixin):
             self._position[1] + self.change_y,
         )
         self.angle += self.change_angle
-
-    def update_animation(self, delta_time: float = 1 / 60) -> None:
-        """
-        Override this to add code that will change
-        what image is shown, so the sprite can be
-        animated.
-
-        :param float delta_time: Time since last update.
-        """
-        pass
 
     # ----Utility Methods----
 

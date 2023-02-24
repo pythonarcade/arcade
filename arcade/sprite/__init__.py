@@ -2,7 +2,8 @@ import PIL.Image
 
 from arcade.texture import Texture
 from arcade.resources import resolve_resource_path
-from .base import BasicSprite
+from .base import BasicSprite, SpriteType
+from .simple import SimpleSprite
 from .sprite import Sprite
 from .mixins import PymunkMixin, PyMunk
 from .animated import (
@@ -50,7 +51,9 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
 
 
 __all__ = [
+    "SpriteType",
     "BasicSprite",
+    "SimpleSprite",
     "Sprite",
     "PyMunk",
     "AnimatedTimeBasedSprite",

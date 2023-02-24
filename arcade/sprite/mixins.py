@@ -20,10 +20,6 @@ class PyMunk:
 
 
 class PymunkMixin:
-    # __slots__ = (
-    #     "pymunk",
-    #     "force",
-    # )
 
     def __init__(self):
         self.pymunk = PyMunk()
@@ -32,8 +28,3 @@ class PymunkMixin:
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         """Called by the pymunk physics engine if this sprite moves."""
         pass
-
-
-
-
-# Drawable sprite mixin

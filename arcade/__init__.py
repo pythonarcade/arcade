@@ -113,6 +113,8 @@ from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
 from .texture import cleanup_texture_cache
+from .texture import get_default_image
+from .texture import get_default_texture
 
 from .draw_commands import draw_arc_filled
 from .draw_commands import draw_arc_outline
@@ -165,8 +167,11 @@ from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
+from .sprite import PymunkMixin
+from .sprite import SpriteType
 from .sprite import Sprite
 from .sprite import BasicSprite
+from .sprite import SimpleSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
@@ -262,7 +267,10 @@ __all__ = [
     'Scene',
     'Sound',
     'BasicSprite',
+    'SimpleSprite',
     'Sprite',
+    'SpriteType',
+    'PymunkMixin',
     'SpriteCircle',
     'SpriteList',
     'SpriteSolidColor',
@@ -364,6 +372,8 @@ __all__ = [
     'unschedule',
     'schedule_once',
     'cleanup_texture_cache',
+    'get_default_texture',
+    'get_default_image',
     'hitbox',
     'experimental',
     'isometric',
