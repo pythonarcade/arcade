@@ -31,7 +31,7 @@ def _dump_region_info(region: AtlasRegion):
     }
 
 
-def dump_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: Path):
+def save_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: Path):
     """
     Dump the atlas to a file. This includes the atlas image
     and metadata.

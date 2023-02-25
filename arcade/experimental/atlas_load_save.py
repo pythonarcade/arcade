@@ -15,7 +15,7 @@ from typing import Dict, Tuple, List
 from time import perf_counter
 from pathlib import Path
 import arcade
-from arcade.texture_atlas.helpers import dump_atlas, load_atlas
+from arcade.texture_atlas.helpers import save_atlas, load_atlas
 
 MODE = 'load'
 RESOURCE_ROOT = arcade.resources.RESOURCE_PATH
@@ -56,7 +56,7 @@ class AtlasLoadSave(arcade.Window):
         if MODE == "save":
             t = perf_counter()
             self.atlas = arcade.TextureAtlas((1024, 1024))
-            count, perf_data = populate_atlas(self.atlas)
+            count, perf_data = save_atlas(self.atlas)
             print(f'Populated atlas with {count} texture in {perf_counter() - t:.2f} seconds')
             pprint.pprint(perf_data, indent=2)
             dump_atlas(self.atlas, Path.cwd(), 'test', RESOURCE_ROOT)

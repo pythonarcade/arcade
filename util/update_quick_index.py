@@ -56,6 +56,8 @@ titles = {
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -100,6 +102,7 @@ EXCLUDED_MEMBERS = [
     "ImageData",
     "AtlasRegion",
     "ImageDataRefCounter",
+    "FakeImage",
 ]
 
 def get_member_list(filepath):
