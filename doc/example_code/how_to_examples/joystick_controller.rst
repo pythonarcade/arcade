@@ -83,6 +83,24 @@ An event is dispatched when any of the values of the buttons are changed. These 
               # start firing
           elif button_name == 'b':
               # do something else
+ 
+Different types of controllers
+==============================             
+Some types of controllers:
+
+1. Joystick hats: the directional pads on game controller. It allows you to move in eight directions (up, down, left, right and the diagonals).
+
+2. Xbox controller: This is a popular gamepad used with Xbox consoles and Windows PCs. It has two thumbsticks, a directional pad, and various buttons.
+
+3. PlayStation controller: This is the gamepad used with PlayStation consoles. It has two thumbsticks, a directional pad, and various buttons.
+
+4. Nintendo Switch controller: This is the gamepad used with Nintendo Switch consoles. It has two detachable Joy-Con controllers, each with a joystick, buttons, and motion sensors.
+
+5. Logitech G29 racing wheel: This is a steering wheel controller designed for racing games. It has a wheel, pedals, and various buttons.
+
+6. Thrustmaster T.Flight Hotas X flight stick: This is a flight stick controller designed for flight simulation games. It has a joystick, throttle, and various buttons.
+
+==============================
 
 The (-1.0 to 1.0) values on Controller
 ================= 
