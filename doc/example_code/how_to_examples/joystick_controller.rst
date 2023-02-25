@@ -44,9 +44,9 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 +---------------+-------------------------------------------------------+
 | Y             | The “north” face button                               |
 +---------------+-------------------------------------------------------+
-| LeftShoulder |                                                        |
+| LeftShoulder  |                                                       |
 +---------------+-------------------------------------------------------+
-| RightShoulder|                                                        |
+| RightShoulder |                                                       |
 +---------------+-------------------------------------------------------+
 | Start         | Called “options” on some controllers                  |
 +---------------+-------------------------------------------------------+
@@ -54,13 +54,13 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 +---------------+-------------------------------------------------------+
 | Guide         | Usually in the center, with a company logo            |
 +---------------+-------------------------------------------------------+
-| LeftStick    | Pressing in on the left analog stick                   |
+| LeftStick     | Pressing in on the left analog stick                  |
 +---------------+-------------------------------------------------------+
-| RightStick   | Pressing in on the right analog stick                  |
+| RightStick    | Pressing in on the right analog stick                 |
 +---------------+-------------------------------------------------------+
-| DPLeft       |                                                        |
+| DPLeft        |                                                       |
 +---------------+-------------------------------------------------------+
-| DPRight      |                                                        |
+| DPRight       |                                                       |
 +---------------+-------------------------------------------------------+
 | DPUp         |                                                        |
 +---------------+-------------------------------------------------------+
