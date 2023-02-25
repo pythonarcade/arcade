@@ -69,6 +69,7 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 
 An event is dispatched when any of the values of the controllers are changed. These events can be handle like this:
 .. code-block:: python
+
       @controller.event
       def on_button_press(controller, button_name):
           if button_name == 'a':
