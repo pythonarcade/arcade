@@ -3,7 +3,7 @@ name: Status Embed
 on:
   workflow_run:
     workflows:
-      - Lint & Test
+      - GitHub Ubuntu test
     types:
       - completed
 
