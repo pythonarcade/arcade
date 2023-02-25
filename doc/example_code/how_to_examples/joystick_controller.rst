@@ -31,6 +31,7 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
 How to use buttons
 ===================
 Controllers have a strictly defined set of inputs. These inputs are:
+
 How to use hat
 ==============================
 Add the following code to the end of :code:`update`:
