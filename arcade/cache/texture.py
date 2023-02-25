@@ -91,10 +91,14 @@ class TextureCache:
         name = texture.cache_name
         if strong:
             self._strong_entries.put(name, texture)
+            if self._strong_file_entries.get(file_path):
+                raise ValueError(f"File path {file_path} already in cache")
             if file_path:
                 self._strong_file_entries.put(str(file_path), texture)
         else:
             self._weak_entires.put(name, texture)
+            if self._weak_file_entries.get(file_path):
+                raise ValueError(f"File path {file_path} already in cache")
             if file_path:
                 self._weak_file_entries.put(str(file_path), texture)
 

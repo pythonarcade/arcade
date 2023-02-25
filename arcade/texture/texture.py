@@ -17,12 +17,11 @@ from arcade.texture_transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
-    # get_shortest_transform,
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache
+from arcade import cache as _cache
 from arcade import hitbox
 
 if TYPE_CHECKING:
@@ -493,7 +492,7 @@ class Texture:
         :param bool ignore_error: If True, ignore errors if the texture is not in the cache
         :return: None
         """
-        cache.texture_cache.delete(self)
+        _cache.texture_cache.delete(self)
 
     def flip_left_to_right(self) -> "Texture":
         """
@@ -640,7 +639,13 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
+    def crop(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+    ) -> "Texture":
         """
         Create a new texture from a sub-section of this texture.
 
@@ -652,6 +657,7 @@ class Texture:
         :param int y: Y position to start crop
         :param int width: Width of crop
         :param int height: Height of crop
+        :param bool cache: If True, the cropped texture will be cached
         :return: Texture 
         """
         # Return self if the crop is the same size as the original image
@@ -667,10 +673,12 @@ class Texture:
         area = (x, y, x + width, y + height)
         image = self.image.crop(area)
         image_data = ImageData(image)
-        return Texture(
+        texture = Texture(
             image_data,
             hit_box_algorithm=self._hit_box_algorithm,
-        )        
+        )
+        texture.crop_values = (x, y, width, height)
+        return texture
 
     def _new_texture_transformed(
         self,
@@ -739,14 +747,14 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         # Check if we have cached points
-        points = cache.hit_box_cache.get(self.cache_name)
+        points = _cache.hit_box_cache.get(self.cache_name)
         if points:
             return points
 
         # Calculate points with the selected algorithm
         points = self._hit_box_algorithm.calculate(self.image)
         if self._hit_box_algorithm.cache:
-            cache.hit_box_cache.put(self.cache_name, points)
+            _cache.hit_box_cache.put(self.cache_name, points)
 
         return points
 

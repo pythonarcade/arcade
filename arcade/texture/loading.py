@@ -9,7 +9,7 @@ import PIL.ImageDraw
 from arcade.types import RectList
 from arcade.resources import resolve_resource_path
 from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache
+from arcade import cache as _cache
 from arcade import hitbox
 from .texture import Texture, ImageData
 
@@ -43,30 +43,89 @@ def load_texture(
     """
     LOG.info("load_texture: %s ", file_path)
     file_path = resolve_resource_path(file_path)
-    file_path_str = str(file_path)
+    crop = (x, y, width, height)
+    return _load_or_get_texture(
+        file_path,
+        hit_box_algorithm=hit_box_algorithm,
+        crop=crop,
+    )
+
+
+def _load_or_get_texture(
+    file_path: Union[str, Path],
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+    crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
+    hash: Optional[str] = None,
+) -> Texture:
+    """Load a texture, or return a cached version if it's already loaded."""
+    file_path = resolve_resource_path(file_path)
     hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
-    image_cache_name = Texture.create_image_cache_name(file_path_str, (x, y, width, height))
+    image_data: Optional[ImageData] = None
+    texture = None
 
-    # Check if ths file was already loaded and in cache
-    image_data = cache.image_data_cache.get(image_cache_name)
-    if not image_data:
-        image_data = ImageData(PIL.Image.open(file_path).convert("RGBA"))
-        cache.image_data_cache.put(image_cache_name, image_data)
-
-    # Attempt to find a texture with the same configuration
-    texture = cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
-    if not texture:
+    # Load the image data from disk or get from cache
+    image_data, cached = _load_or_get_image(file_path, hash=hash)
+    # If the image was fetched from cache we might have cached texture
+    if cached:
+        texture = _cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
+    # If we still don't have a texture, create it
+    if texture is None:
         texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
-        texture._file_path = file_path
-        texture._crop_values = x, y, width, height
-        cache.texture_cache.put(texture, file_path=file_path_str)
+        texture.file_path = file_path
+        texture.crop_values = crop
+        _cache.texture_cache.put(texture, file_path=file_path)
 
-    # If the crop values give us a different texture, return that instead
-    texture_cropped = texture.crop(x, y, width, height)
-    if texture_cropped != texture:
-        texture = texture_cropped
+    # If we have crop values we need to dig deeper looking for cached versions
+    if crop != (0, 0, 0, 0):
+        image_data = _cache.image_data_cache.get(Texture.create_image_cache_name(file_path, crop))
+        # If we don't have and cached image data we can crop from the base texture
+        if image_data is None:
+            texture = texture.crop(*crop)
+            _cache.texture_cache.put(texture)
+            _cache.image_data_cache.put(Texture.create_image_cache_name(file_path, crop), texture.image_data)
+        else:
+            # We might have a texture for this image data
+            texture = _cache.texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
+            if texture is None:
+                texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
+                texture.file_path = file_path
+                texture.crop_values = crop
+                _cache.texture_cache.put(texture, file_path=file_path)
 
     return texture
+
+
+def _load_or_get_image(
+    file_path: Union[str, Path],
+    hash: Optional[str] = None,
+) -> Tuple[ImageData, bool]:
+    """
+    Load an image, or return a cached version
+    
+    :param str file_path: Path to image
+    :param str hit_box_algorithm: The hit box algorithm
+    :param hash: Hash of the image
+    :return: Tuple of image data and a boolean indicating if the image
+             was fetched from cache
+    """
+    file_path = resolve_resource_path(file_path)
+    file_path_str = str(file_path)
+    cached = True
+
+    # Do we have cached image data for this file?
+    image_data = _cache.image_data_cache.get(
+        Texture.create_image_cache_name(file_path_str)
+    )
+    if not image_data:
+        cached = False
+        im = PIL.Image.open(file_path).convert("RGBA")
+        image_data = ImageData(im, hash)
+        _cache.image_data_cache.put(
+            Texture.create_image_cache_name(file_path_str),
+            image_data,
+        )
+
+    return image_data, cached
 
 
 def load_texture_pair(
@@ -122,10 +181,10 @@ def load_textures(
     image_cache_name = Texture.create_image_cache_name(file_name_str)
 
     # Do we have the image in the cache?
-    image_data = cache.image_data_cache.get(image_cache_name)
+    image_data = _cache.image_data_cache.get(image_cache_name)
     if not image_data:
         image_data = ImageData(PIL.Image.open(resolve_resource_path(file_name)))
-        cache.image_data_cache.put(image_cache_name, image_data)
+        _cache.image_data_cache.put(image_cache_name, image_data)
     image = image_data.image
 
     texture_sections = []
@@ -134,18 +193,18 @@ def load_textures(
 
         # Check if we have already created this sub-image
         image_cache_name = Texture.create_image_cache_name(file_name_str, (x, y, width, height))
-        sub_image = cache.image_data_cache.get(image_cache_name)
+        sub_image = _cache.image_data_cache.get(image_cache_name)
         if not sub_image:
             Texture.validate_crop(image, x, y, width, height)
             sub_image = ImageData(image.crop((x, y, x + width, y + height)))
-            cache.image_data_cache.put(image_cache_name, sub_image)            
+            _cache.image_data_cache.put(image_cache_name, sub_image)            
 
         # Do we have a texture for this sub-image?
         texture_cache_name = Texture.create_cache_name(hash=sub_image.hash, hit_box_algorithm=hit_box_algorithm)
-        sub_texture = cache.texture_cache.get(texture_cache_name)
+        sub_texture = _cache.texture_cache.get(texture_cache_name)
         if not sub_texture:
             sub_texture = Texture(sub_image, hit_box_algorithm=hit_box_algorithm)
-            cache.texture_cache.put(sub_texture)
+            _cache.texture_cache.put(sub_texture)
 
         if mirrored:
             sub_texture = sub_texture.flip_left_to_right()

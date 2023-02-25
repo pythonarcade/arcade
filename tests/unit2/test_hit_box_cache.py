@@ -75,6 +75,7 @@ def test_load_texture():
     # We don't cache hit boxes with no algo
     texture = load_texture(file, hit_box_algorithm=hitbox.algo_bounding_box)
     assert arcade.cache.hit_box_cache.get(texture.cache_name) is None
+    assert len(arcade.cache.hit_box_cache) == 0
 
     # We cache hit boxes with an algo
     texture_1 = load_texture(file, hit_box_algorithm=hitbox.algo_simple)
