@@ -38,6 +38,13 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 +==========+==========+
 | | Item 1 |          |  
 | | Item 2 |          | 
+| | Item 2 |          | 
+| | Item 1 |          |  
+| | Item 2 |          | 
+| | Item 2 |          | 
+| | Item 1 |          |  
+| | Item 2 |          | 
+| | Item 2 |          | 
 +----------+----------+
 
 
