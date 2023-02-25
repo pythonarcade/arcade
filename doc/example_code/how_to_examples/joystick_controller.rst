@@ -67,7 +67,7 @@ Controllers have a strictly defined set of inputs. These inputs are the followin
 | DPDown        |                                                       |
 +---------------+-------------------------------------------------------+
 
-An event is dispatched when any of the values of the controllers are changed. These events can be handle like this:
+An event is dispatched when any of the values of the buttons are changed. These events can be handle like this:
 
 .. code-block:: python
 
