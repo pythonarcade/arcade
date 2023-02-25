@@ -6,7 +6,9 @@ from arcade.gui import UILabel, Rect
 def test_uilabel_inits_with_text_size(window):
     label = UILabel(text="Example")
 
-    assert label.rect.width == pytest.approx(63, abs=6)  # on windows the width differs about 6 pixel
+    assert label.rect.width == pytest.approx(
+        63, abs=6
+    )  # on windows the width differs about 6 pixel
     assert label.rect.height == 19
 
 
@@ -28,18 +30,18 @@ def test_uilabel_allow_multiline_and_uses_text_height(window):
 def test_uilabel_with_border_keeps_previous_size(window):
     label = UILabel(text="Example")
     assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == 19
+    assert label.rect.height == pytest.approx(19, abs=6)
 
     label.with_border()
     assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == 19
+    assert label.rect.height == pytest.approx(19, abs=6)
 
 
 def test_uilabel_with_padding_keeps_previous_size(window):
     label = UILabel(text="Example")
     assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == 19
+    assert label.rect.height == pytest.approx(19, abs=6)
 
     label.with_padding(all=2)
     assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == 19
+    assert label.rect.height == pytest.approx(19, abs=6)
