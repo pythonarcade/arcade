@@ -32,6 +32,7 @@ How to use buttons
 ===================
 
 Controllers have a strictly defined set of inputs. These inputs called buttons and are the following:
+
 .. list-table:: Title
    :widths: 25 25 50
    :header-rows: 1
