@@ -53,6 +53,17 @@ terminal from inside the top level of the arcade directory:
 pip install -e .[dev]
 ```
 
+If you get an error like the one below, you probably need to update your pip version:
+```
+ERROR: File "setup.py" not found. Directory cannot be installed in editable mode: /home/user/Projects/arcade
+(A "pyproject.toml" file was found, but editable mode currently requires a setup.py based build.)
+```
+
+Upgrade by running the following command:
+```shell
+pip install --upgrade pip
+```
+
 ## Testing
 
 You should test your changes locally before submitting a pull request
