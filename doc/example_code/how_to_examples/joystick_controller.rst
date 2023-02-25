@@ -77,6 +77,12 @@ An event is dispatched when any of the values of the controllers are changed. Th
               # start firing
           elif button_name == 'b':
               # do something else
+      @controller.event
+      def on_button_press(controller, button_name):
+          if button_name == 'a':
+              # start firing
+          elif button_name == 'b':
+              # do something else
               
 How to use hat
 ==============================
