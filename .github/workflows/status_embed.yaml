@@ -48,6 +48,9 @@ jobs:
           run_id: ${{ github.event.workflow_run.id }}
           run_number: ${{ github.event.workflow_run.run_number }}
           status: ${{ github.event.workflow_run.conclusion }}
+          actor: ${{ github.actor }}
+          repository:  ${{ github.repository }}
+          ref: ${{ github.ref }}
           sha: ${{ github.event.workflow_run.head_sha }}
 
           # Now we can use the information extracted in the previous step:
