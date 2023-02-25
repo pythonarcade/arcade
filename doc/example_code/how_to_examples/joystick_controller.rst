@@ -33,12 +33,12 @@ How to use buttons
 
 Controllers have a strictly defined set of inputs. These inputs called buttons and are the following:
 
-+---------------+-------------------------------------------------------+
-| Button/Action | Notes                                                 |
-+===============+=======================================================+
-| | A           | The “south” face button                             |
-| | B           | The “east” face button                              |
-+---------------+-------------------------------------------------------+
++----------+----------+
+| Header 1 | Header 2 | 
++==========+==========+
+| | Item 1 |          |  
+| | Item 2 |          | 
++----------+----------+
 
 
 How to use hat
