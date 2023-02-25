@@ -19,6 +19,8 @@ from arcade.texture_atlas.helpers import save_atlas, load_atlas
 
 MODE = 'load'
 RESOURCE_ROOT = arcade.resources.RESOURCE_PATH
+DESTINATION = Path.cwd()
+
 texture_paths: List[Path] = []
 texture_paths += RESOURCE_ROOT.glob("images/enemies/*.png")
 texture_paths += RESOURCE_ROOT.glob("images/items/*.png")
@@ -56,11 +58,15 @@ class AtlasLoadSave(arcade.Window):
         if MODE == "save":
             t = perf_counter()
             self.atlas = arcade.TextureAtlas((1024, 1024))
-            count, perf_data = save_atlas(self.atlas)
+            count, perf_data = populate_atlas(self.atlas)
             print(f'Populated atlas with {count} texture in {perf_counter() - t:.2f} seconds')
-            pprint.pprint(perf_data, indent=2)
-            dump_atlas(self.atlas, Path.cwd(), 'test', RESOURCE_ROOT)
-            # self.done = True
+            save_atlas(
+                self.atlas,
+                directory=Path.cwd(),
+                name="test",
+                resource_root=RESOURCE_ROOT,
+            )
+            self.done = True
         if MODE == "load":
             t = perf_counter()
             self.atlas, perf_data = load_atlas(Path.cwd() / 'test.json', RESOURCE_ROOT)

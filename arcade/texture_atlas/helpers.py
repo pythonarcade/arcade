@@ -99,7 +99,11 @@ def load_atlas(
     perf_data['load_meta'] = perf_counter() - t
 
     t = perf_counter()
-    atlas = TextureAtlas(meta['size'], auto_resize=False)
+    atlas = TextureAtlas(
+        meta['size'],
+        border=meta["border"],
+        auto_resize=False,
+    )
     perf_data['create_atlas'] = perf_counter() - t
 
     # Inject the atlas image
