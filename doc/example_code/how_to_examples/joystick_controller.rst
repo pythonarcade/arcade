@@ -68,6 +68,7 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 +---------------+-------------------------------------------------------+
 
 An event is dispatched when any of the values of the controllers are changed. These events can be handle like this:
+
 .. code-block:: python
 
       @controller.event
@@ -77,13 +78,6 @@ An event is dispatched when any of the values of the controllers are changed. Th
           elif button_name == 'b':
               # do something else
               
-      @controller.event
-      def on_button_release(controller, button_name):
-          if button_name == 'a':
-              # stop firing
-          elif button_name == 'b':
-              # do something else
-
 How to use hat
 ==============================
 Add the following code to the end of :code:`update`:
