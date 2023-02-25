@@ -34,7 +34,7 @@ How to use buttons
 Controllers have a strictly defined set of inputs. These inputs called buttons and are the following:
 
 +----------+----------+
-| Header 1 | Header 2 | 
+| Button/Action | Notes | 
 +==========+==========+
 | | Item 1 |          |  
 | | Item 2 |          | 
