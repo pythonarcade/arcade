@@ -37,6 +37,7 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 | Button/Action | Notes                                                 |
 +===============+=======================================================+
 | A             | The “south” face button                               |
+| B             |The “east” face button                                 |
 +---------------+-------------------------------------------------------+
 
 
