@@ -5,7 +5,15 @@ from array import array
 from pathlib import Path
 from collections import namedtuple
 from collections.abc import ByteString
-from typing import List, NamedTuple, Optional, Sequence, Tuple, Union, TYPE_CHECKING
+from typing import (
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+    TYPE_CHECKING,
+)
 from pytiled_parser import Properties
 
 if TYPE_CHECKING:

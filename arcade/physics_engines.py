@@ -102,7 +102,8 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
                     # self.player_sprite.bottom = item.top <- Doesn't work for ramps
                     moving_sprite.center_y += 0.25
 
-                if item.change_x != 0:
+                # NOTE: Not all sprites have velocity
+                if getattr(item, "change_x", 0.0) != 0:
                     moving_sprite.center_x += item.change_x
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
@@ -116,7 +117,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
             #     self.player_sprite.bottom = item.top
             # else:
             #     self.player_sprite.top = item.bottom
-        moving_sprite.change_y = min(0.0, hit_list_x[0].change_y)
+        moving_sprite.change_y = min(0.0, getattr(hit_list_x[0], 'change_y', 0.0))
 
     # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
     moving_sprite.center_y = round(moving_sprite.center_y, 2)

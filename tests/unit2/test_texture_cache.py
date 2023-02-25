@@ -111,5 +111,4 @@ def test_get_set(cache, texture):
 
 
 def test_get_with_config(texture):
-    arcade.cleanup_texture_cache()
     assert len(texture_cache) == 0

@@ -14,27 +14,27 @@ def test_1():
 
     print()
     hitbox = my_sprite.get_adjusted_hit_box()
-    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
+    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._hit_box_points} -> {hitbox}')
     assert hitbox == ((90.0, 90.0), (90.0, 110.0), (110.0, 110.0), (110.0, 90.0))
 
     my_sprite.scale = 0.5
     hitbox = my_sprite.get_adjusted_hit_box()
-    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
+    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._hit_box_points} -> {hitbox}')
     assert hitbox == ((95.0, 95.0), (95.0, 105.0), (105.0, 105.0), (105.0, 95.0))
 
     my_sprite.scale = 1
     hitbox = my_sprite.get_adjusted_hit_box()
-    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
+    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._hit_box_points} -> {hitbox}')
     assert hitbox == ((90.0, 90.0), (90.0, 110.0), (110.0, 110.0), (110.0, 90.0))
 
     my_sprite.scale = 2.0
     hitbox = my_sprite.get_adjusted_hit_box()
-    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
+    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._hit_box_points} -> {hitbox}')
     assert hitbox == ((80.0, 80.0), (80.0, 120.0), (120.0, 120.0), (120.0, 80.0))
 
     my_sprite.scale = 2.0
     hitbox = my_sprite.get_adjusted_hit_box()
-    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._points} -> {hitbox}')
+    print(f'Hitbox: {my_sprite.scale} -> {my_sprite._hit_box_points} -> {hitbox}')
     assert hitbox == ((80.0, 80.0), (80.0, 120.0), (120.0, 120.0), (120.0, 80.0))
 
 

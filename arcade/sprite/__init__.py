@@ -2,13 +2,16 @@ import PIL.Image
 
 from arcade.texture import Texture
 from arcade.resources import resolve_resource_path
-from .base import Sprite, PyMunk
+from .base import BasicSprite, SpriteType
+from .simple import SimpleSprite
+from .sprite import Sprite
+from .mixins import PymunkMixin, PyMunk
 from .animated import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
     AnimatedWalkingSprite,
 )
-from .simple import SpriteSolidColor, SpriteCircle
+from .colored import SpriteSolidColor, SpriteCircle
 from .enums import (
     FACE_LEFT,
     FACE_RIGHT,
@@ -48,6 +51,9 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
 
 
 __all__ = [
+    "SpriteType",
+    "BasicSprite",
+    "SimpleSprite",
     "Sprite",
     "PyMunk",
     "AnimatedTimeBasedSprite",
@@ -60,4 +66,6 @@ __all__ = [
     "FACE_RIGHT",
     "FACE_UP",
     "FACE_DOWN",
+    "PymunkMixin",
+    "Pymunk",
 ]

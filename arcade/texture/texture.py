@@ -47,6 +47,7 @@ class ImageData:
     :param PIL.Image.Image image: The image for this texture
     :param str hash: The hash of the image
     """
+    __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
     def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
@@ -127,6 +128,21 @@ class Texture:
     :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
+    __slots__ = (
+        "_image_data",
+        "_size",
+        "_vertex_order",
+        "_transforms",
+        "_sprite",
+        "_sprite_list",
+        "_hit_box_algorithm",
+        "_hit_box_points",
+        "_hash",
+        "_cache_name",
+        "_atlas_name",
+        "_origin",
+        "__weakref__",
+    )
     def __init__(
         self,
         image: Union[PIL.Image.Image, ImageData],

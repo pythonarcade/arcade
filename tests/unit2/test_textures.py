@@ -39,7 +39,6 @@ def test_main(window: arcade.Window):
 
     window.on_draw = on_draw
     window.test()
-    arcade.cleanup_texture_cache()
 
 
 def test_texture_constructor_hit_box_algo():
@@ -78,7 +77,6 @@ def test_load_texture():
 
 def test_load_textures(window):
     """Test load_textures with various parameters"""
-    arcade.cleanup_texture_cache()
     path = ":resources:images/test_textures/test_texture.png"
     def _load(mirrored=False, flipped=False):
         return arcade.load_textures(

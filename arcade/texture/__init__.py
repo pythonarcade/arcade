@@ -10,17 +10,11 @@ from .generate import (
     make_soft_circle_texture,
     make_soft_square_texture,
 )
-from arcade import cache
-
-
-def cleanup_texture_cache():
-    """
-    This cleans up the cache of textures. Useful when running unit tests so that
-    the next test starts clean.
-    """
-    cache.texture_cache.clear()
-    cache.image_data_cache.clear()
-
+from .tools import (
+    cleanup_texture_cache,
+    get_default_texture,
+    get_default_image,
+)
 
 __all__ = [
     "Texture",
@@ -29,8 +23,10 @@ __all__ = [
     "load_textures",
     "load_texture_pair",
     "load_spritesheet",
-    "cleanup_texture_cache",
     "make_circle_texture",
     "make_soft_circle_texture",
     "make_soft_square_texture",
-]
+    "cleanup_texture_cache",
+    "get_default_texture",
+    "get_default_image",
+ ]
