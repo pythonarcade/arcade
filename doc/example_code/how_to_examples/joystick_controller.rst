@@ -39,9 +39,8 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 
    * -Button/Action
      - Notes
-   * -  A, The “south” face button         
-     -
-     - Row 1, column 3
+   * -A         
+   *-The “south” face button
 
 How to use hat
 ==============================
