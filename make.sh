@@ -2,14 +2,7 @@
 
 rm -rf doc/build
 rm -f dist/*
-python3 setup.py clean
-python3 setup.py build
-python3 setup.py bdist_wheel
-pip3 uninstall -y arcade
-for file in dist/*
-do
-  pip3 install $file
-done
+python3 -m pip install -I -e arcade
 sphinx-build -b html doc doc/build/html
 coverage run --source arcade setup.py test
 coverage report -m
