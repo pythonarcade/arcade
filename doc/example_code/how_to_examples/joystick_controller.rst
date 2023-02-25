@@ -31,7 +31,7 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
 How to use buttons
 ===================
 
-Controllers have a strictly defined set of inputs. These inputs called buttons and are the following:
+Controllers have a strictly defined set of inputs. These inputs are the following:
 
 +---------------+-------------------------------------------------------+
 | Button/Action | Notes                                                 |
