@@ -47,6 +47,7 @@ def dump_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: P
         'name': name,
         'atlas_file': f"{name}.png",
         'size': atlas.size,
+        'border': atlas.border,
         'textures': [],
         'images': [],
     }
@@ -81,7 +82,10 @@ def dump_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: P
         json.dump(meta, fd, indent=2)
 
 
-def load_atlas(meta_file: Path, resource_root: Path) -> Tuple[TextureAtlas, Dict[str, float]]:
+def load_atlas(
+    meta_file: Path,
+    resource_root: Path
+) -> Tuple[TextureAtlas, Dict[str, float]]:
     """
     Load a texture atlas from disk.
     """
