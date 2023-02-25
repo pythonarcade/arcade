@@ -1,6 +1,6 @@
 import logging
 import hashlib
-from typing import Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 
 import PIL.Image
@@ -140,7 +140,9 @@ class Texture:
         "_hash",
         "_cache_name",
         "_atlas_name",
-        "_origin",
+        "_file_path",
+        "_crop_values",
+        "_properties",
         "__weakref__",
     )
     def __init__(
@@ -193,6 +195,17 @@ class Texture:
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
         self._crop_values: Optional[Tuple[int, int, int, int]] = None
+        self._properties: Dict[str, Any] = {}
+
+    @property
+    def properties(self) -> Dict[str, Any]:
+        """
+        A dictionary of properties for this texture.
+        This can be used to store any data you want.
+
+        :return: Dict[str, Any]
+        """
+        return self._properties
 
     @property
     def cache_name(self) -> str:
@@ -710,9 +723,8 @@ class Texture:
         return self.cache_name != other.cache_name
 
     def __repr__(self) -> str:
-        origin = getattr(self, "origin", None)
         cache_name = getattr(self, "cache_name", None)
-        return f"<Texture origin={origin} cache_name={cache_name}>"
+        return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
         pass
