@@ -7,8 +7,6 @@ from arcade.texture.transforms import (
     TransposeTransform,
     TransverseTransform,
     VertexOrder,
-    get_shortest_transform,
-    VertexOrder,
 )
 # Hit box points for a 128 x 128 texture
 HIT_BOX_POINTS = (
@@ -118,7 +116,3 @@ def test_transverse_transform():
     assert result == (0, 2, 1, 3)
     result = TransverseTransform.transform_vertex_order(result)
     assert result == ORDER
-
-
-def test_get_shortest_transform():
-    assert get_shortest_transform((0, 1, 2, 3)) == []
