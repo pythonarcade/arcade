@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pip install -e .[dev]
       - name: code-inspection
-        run: |
+        run: | 
           mypy arcade
           flake8 arcade
       - name: build-docs
