@@ -62,11 +62,25 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
 +---------------+-------------------------------------------------------+
 | DPRight       |                                                       |
 +---------------+-------------------------------------------------------+
-| DPUp          |                                                        |
+| DPUp          |                                                       |
 +---------------+-------------------------------------------------------+
-| DPDown        |                                                        |
+| DPDown        |                                                       |
 +---------------+-------------------------------------------------------+
 
+.. code-block:: python
+      @controller.event
+      def on_button_press(controller, button_name):
+          if button_name == 'a':
+              # start firing
+          elif button_name == 'b':
+              # do something else
+              
+      @controller.event
+      def on_button_release(controller, button_name):
+          if button_name == 'a':
+              # stop firing
+          elif button_name == 'b':
+              # do something else
 
 How to use hat
 ==============================
