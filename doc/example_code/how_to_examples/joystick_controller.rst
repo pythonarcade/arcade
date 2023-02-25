@@ -36,36 +36,39 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
    :widths: 25 25 50
    :header-rows: 1
    
-   *-a
-    -b
-    -x
-    -y
-    -leftshoulder
-    -rightshoulder
-    -start
-    -back
-    -guide
-    -leftstick
-    -rightstick
-    -dpleft
-    -dpright
-    -dpup
-    -dpdown
-    *-the “south” face button
-     -the “east” face button
-     -the “west” face button
-     -the “north” face button
-     -
-     -
-     -called “options” on some controllers
-     -called “select” or “share” on some controllers
-     -usually in the center, with a company logo
-     -pressing in on the left analog stick
-     -pressing in on the right analog stick
-     -
-     -
-     -
-     -
+   +---------------+-------------------------------------------------------+
+| Button/Action | Notes                                                 |
++===============+=======================================================+
+| A             | The “south” face button                                |
++---------------+-------------------------------------------------------+
+| B             | The “east” face button                                 |
++---------------+-------------------------------------------------------+
+| X             | The “west” face button                                 |
++---------------+-------------------------------------------------------+
+| Y             | The “north” face button                                |
++---------------+-------------------------------------------------------+
+| Left Shoulder |                                                       |
++---------------+-------------------------------------------------------+
+| Right Shoulder|                                                       |
++---------------+-------------------------------------------------------+
+| Start         | Called “options” on some controllers                   |
++---------------+-------------------------------------------------------+
+| Back          | Called “select” or “share” on some controllers         |
++---------------+-------------------------------------------------------+
+| Guide         | Usually in the center, with a company logo             |
++---------------+-------------------------------------------------------+
+| Left Stick    | Pressing in on the left analog stick                   |
++---------------+-------------------------------------------------------+
+| Right Stick   | Pressing in on the right analog stick                  |
++---------------+-------------------------------------------------------+
+| DP Left       |                                                       |
++---------------+-------------------------------------------------------+
+| DP Right      |                                                       |
++---------------+-------------------------------------------------------+
+| DP Up         |                                                       |
++---------------+-------------------------------------------------------+
+| DP Down       |                                                       |
++---------------+-------------------------------------------------------+
 
 How to use hat
 ==============================
