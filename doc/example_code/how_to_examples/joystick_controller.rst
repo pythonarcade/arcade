@@ -30,7 +30,27 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
 
 How to use buttons
 ===================
-Controllers have a strictly defined set of inputs. These inputs are:
+Controllers have a strictly defined set of inputs. These inputs called buttons and are the following:
+
+.. list-table:: joystick buttos
+   :widths: 25 25 50
+   :header-rows: 1
+   
+   *-a
+    -b
+    -x
+    -y
+    -leftshoulder
+    -rightshoulder
+    -start
+    -back
+    -guide
+    -leftstick
+    -rightstick
+    -dpleft
+    -dpright
+    -dpup
+    -dpdown
 
 How to use hat
 ==============================
