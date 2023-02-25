@@ -51,6 +51,21 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
     -dpright
     -dpup
     -dpdown
+    *-the “south” face button
+     -the “east” face button
+     -the “west” face button
+     -the “north” face button
+     -
+     -
+     -called “options” on some controllers
+     -called “select” or “share” on some controllers
+     -usually in the center, with a company logo
+     -pressing in on the left analog stick
+     -pressing in on the right analog stick
+     -
+     -
+     -
+     -
 
 How to use hat
 ==============================
