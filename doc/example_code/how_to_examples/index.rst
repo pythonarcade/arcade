@@ -727,6 +727,12 @@ OpenGL
 
    :ref:`normal_mapping`
 
+.. figure:: thumbs/spritelist_interaction_visualize_dist_los.png
+   :figwidth: 170px
+   :target: spritelist_interaction_visualize_dist_los.html
+
+   :ref:`spritelist_interaction_visualize_dist_los`
+
 .. _concept_games:
 
 Concept Games
