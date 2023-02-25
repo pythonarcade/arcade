@@ -37,10 +37,10 @@ Controllers have a strictly defined set of inputs. These inputs called buttons a
    :widths: 25 50
    :header-rows: 1
 
-   *-Button/Action
-    - Notes
-   *-A         
-   *-The “south” face button
+   * - Button/Action
+     - Notes
+   * - A         
+   * - The “south” face button
 
 How to use hat
 ==============================
