@@ -155,8 +155,6 @@ class Texture:
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
-        # List of transforms applied to this texture
-        self._transforms: List[Type[Transform]] = []
 
         # Internal sprite stuff for drawing
         self._sprite: Optional[Sprite] = None
