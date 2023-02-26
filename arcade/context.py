@@ -112,6 +112,7 @@ class ArcadeContext(Context):
             fragment_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
             geometry_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
+        # Atlas shaders
         self.atlas_resize_program: Program = self.load_program(
             vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
             geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
@@ -121,6 +122,7 @@ class ArcadeContext(Context):
         self.atlas_resize_program["atlas_new"] = 1
         self.atlas_resize_program["texcoords_old"] = 2
         self.atlas_resize_program["texcoords_new"] = 3
+
         # SpriteList collision resources
         self.collision_detection_program = self.load_program(
             vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",

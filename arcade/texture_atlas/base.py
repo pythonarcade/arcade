@@ -32,15 +32,15 @@ from weakref import WeakSet
 
 import PIL
 from PIL import Image, ImageDraw
-
-from arcade.gl.framebuffer import Framebuffer
-from arcade.texture_transforms import Transform
-import arcade
 from pyglet.image.atlas import (
     Allocator,
     AllocatorException,
 )
 from pyglet.math import Mat4
+
+import arcade
+from arcade.gl.framebuffer import Framebuffer
+from arcade.texture_transforms import Transform
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
@@ -203,7 +203,7 @@ class TextureAtlas:
 
     :param Tuple[int, int] size: The width and height of the atlas in pixels
     :param int border: Currently no effect; Should always be 1 to avoid textures bleeding
-    :param Sequence[arcade.Texture] textures: The texture for this atlas
+    :param Sequence[Texture] textures: The texture for this atlas
     :param bool auto_resize: Automatically resize the atlas when full
     :param Context ctx: The context for this atlas (will use window context if left empty)
     :param int capacity: The number of textures the atlas keeps track of.
@@ -612,28 +612,24 @@ class TextureAtlas:
             strip_left = image.crop((0, 0, 1, image.height))
             strip_right = image.crop((image.width - 1, 0, image.width, image.height))
 
-            # Paste the strips in the top border region
-            # Repeat this based on the border size
-            for i in range(self._border):
-                tmp.paste(strip_top, (self._border, i))
+            # Resize the strips to the border size if larger than 1
+            if self._border > 1:
+                strip_top = strip_top.resize((image.width, self._border))
+                strip_bottom = strip_bottom.resize((image.width, self._border))
+                strip_left = strip_left.resize((self._border, image.height))
+                strip_right = strip_right.resize((self._border, image.height))
 
-            for i in range(self._border):
-                tmp.paste(strip_bottom, (self._border, tmp.height -1 - i))
-
-            for i in range(self._border):
-                tmp.paste(strip_left, (i, self._border))
-
-            for i in range(self._border):
-                tmp.paste(strip_right, (tmp.width - i - 1, self._border))
+            tmp.paste(strip_top, (self._border, 0))
+            tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
+            tmp.paste(strip_left, (0, self._border))
+            tmp.paste(strip_right, (tmp.width - self._border, self._border))
 
             self.profiler_extrude.disable()
         else:
             tmp = image
 
-        self.profiler_write.enable()
         # Write the image directly to graphics memory in the allocated space
         self._texture.write(tmp.tobytes(), 0, viewport=viewport)
-        self.profiler_write.disable()
 
     def remove(self, texture: "Texture") -> None:
         """
@@ -798,12 +794,13 @@ class TextureAtlas:
         )
 
         with self._fbo.activate():
-            self._ctx.disable(self._ctx.BLEND)
-            self._ctx.atlas_geometry.render(
-                self._ctx.atlas_resize_program,
-                mode=self._ctx.POINTS,
-                vertices=self.max_width,
-            )
+            # Ensure no context flags are enabled
+            with self._ctx.enabled_only():
+                self._ctx.atlas_geometry.render(
+                    self._ctx.atlas_resize_program,
+                    mode=self._ctx.POINTS,
+                    vertices=self.max_width,
+                )
 
         duration = time.perf_counter() - resize_start
         LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
