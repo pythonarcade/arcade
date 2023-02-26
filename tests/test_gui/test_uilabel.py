@@ -43,3 +43,13 @@ def test_uilabel_with_padding_keeps_previous_size(window):
     label.with_padding(all=2)
     assert label.rect.width == pytest.approx(63, abs=6)
     assert label.rect.height == 19
+
+
+def test_uilabel_fixes_internal_text_to_pos_0_0(window):
+    label = UILabel(text="Example")
+    assert label.label.position == (0, 0)
+    assert label.position == (0, 0)
+
+    label = UILabel(text="Example", x=10, y=10)
+    assert label.label.position == (0, 0)
+    assert label.position == (10, 10)
