@@ -1,6 +1,6 @@
 .. _example-code:
 
-How to get connected controllers
+How To Get Connected Controllers
 ===================
 We can get a list of connected controllers by using :code:`arcade.get_joysticks()`.
 
@@ -28,7 +28,7 @@ The joystick values can be obtained by using :code:`self.joystick.x` and :code:`
               self.object.change_x = self.joystick.x
               self.object.change_y = -self.joystick.y
 
-How to use buttons
+How To Use Buttons
 ===================
 
 Controllers have a strictly defined set of inputs. These inputs are the following:
@@ -86,7 +86,7 @@ An event is dispatched when any of the values of the buttons are changed. These 
  
 
 
-The (-1.0 to 1.0) values on Controller
+The (-1.0 to 1.0) Values On Controller
 ================= 
 * The values will be between -1 and +1, with 0 being a centered joystick.
 * The x-axis numbers will be negative if the stick goes left, positive for right.
@@ -104,7 +104,7 @@ The (-1.0 to 1.0) values on Controller
      -   (-1, 1)
 
 
-The joystick movements
+The Joystick Movements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. image:: joystickController.png
     :width: 400px
@@ -152,7 +152,7 @@ and adding the following code to the :code:`update`:
                     self.object.change_y = -self.joystick.y * MOVEMENT_SPEED
 
 
-Different types of controllers
+Different Types Of Controllers
 ==============================             
 Some types of controllers:
 
