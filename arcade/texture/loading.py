@@ -51,14 +51,46 @@ def load_texture(
     )
 
 
+def _load_tilemap_texture(
+    file_path: Path,
+    *,
+    x: int = 0,
+    y: int = 0,
+    width: int = 0,
+    height: int = 0,
+    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+) -> Texture:
+    """
+    Load an image from disk and create a texture.
+
+    The ``x``, ``y``, ``width``, and ``height`` parameters are used to
+    specify a sub-rectangle of the image to load. If not specified, the
+    entire image is loaded.
+
+    :param str file_name: Name of the file to that holds the texture.
+    :param int x: X coordinate of the texture in the image.
+    :param int y: Y coordinate of the texture in the image.
+    :param int width: Width of the texture in the image.
+    :param int height: Height of the texture in the image.
+    :param str hit_box_algorithm: 
+    :returns: New :class:`Texture` object.
+    :raises: ValueError
+    """
+    crop = (x, y, width, height)
+    return _load_or_get_texture(
+        file_path,
+        hit_box_algorithm=hit_box_algorithm,
+        crop=crop,
+    )
+
+
 def _load_or_get_texture(
-    file_path: Union[str, Path],
+    file_path: Path,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
     hash: Optional[str] = None,
 ) -> Texture:
     """Load a texture, or return a cached version if it's already loaded."""
-    file_path = resolve_resource_path(file_path)
     hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
     image_data: Optional[ImageData] = None
     texture = None
@@ -96,7 +128,7 @@ def _load_or_get_texture(
 
 
 def _load_or_get_image(
-    file_path: Union[str, Path],
+    file_path: Path,
     hash: Optional[str] = None,
 ) -> Tuple[ImageData, bool]:
     """
@@ -108,7 +140,6 @@ def _load_or_get_image(
     :return: Tuple of image data and a boolean indicating if the image
              was fetched from cache
     """
-    file_path = resolve_resource_path(file_path)
     file_path_str = str(file_path)
     cached = True
 
