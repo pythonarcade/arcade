@@ -492,7 +492,10 @@ class GameView(arcade.View):
         self.process_keychange()
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        self.camera.zoom(-0.01 * scroll_y)
+        try:
+            self.camera.zoom += -0.01 * scroll_y
+        except Exception:
+            pass
 
     def center_camera_to_player(self, speed=0.2):
         screen_center_x = (self.player_sprite.center_x - (self.camera.viewport_width / 2))

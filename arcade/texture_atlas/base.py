@@ -23,6 +23,7 @@ from typing import (
     Sequence,
     Union,
     TYPE_CHECKING,
+    List,
 )
 from array import array
 from collections import deque
@@ -31,15 +32,15 @@ from weakref import WeakSet
 
 import PIL
 from PIL import Image, ImageDraw
-
-from arcade.gl.framebuffer import Framebuffer
-from arcade.texture_transforms import Transform
-import arcade
 from pyglet.image.atlas import (
     Allocator,
     AllocatorException,
 )
 from pyglet.math import Mat4
+
+import arcade
+from arcade.gl.framebuffer import Framebuffer
+from arcade.texture_transforms import Transform
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
@@ -202,7 +203,7 @@ class TextureAtlas:
 
     :param Tuple[int, int] size: The width and height of the atlas in pixels
     :param int border: Currently no effect; Should always be 1 to avoid textures bleeding
-    :param Sequence[arcade.Texture] textures: The texture for this atlas
+    :param Sequence[Texture] textures: The texture for this atlas
     :param bool auto_resize: Automatically resize the atlas when full
     :param Context ctx: The context for this atlas (will use window context if left empty)
     :param int capacity: The number of textures the atlas keeps track of.
@@ -219,12 +220,19 @@ class TextureAtlas:
         ctx: Optional["ArcadeContext"] = None,
         capacity: int = 2,
     ):
+        from arcade.experimental.profiling import Profiler
+        self.profiler_extrude = Profiler()
+        self.profiler_write = Profiler()
+        
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
-        self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
+        self._border: int = border
+        if self._border < 0:
+            raise ValueError("Border must be 0 or a positive integer")
+
         # Decides the number of texture and images the atlas can hold.
         # Must be a multiple of UV_TEXTURE_WIDTH due texture coordinates being
         # stored in a float32 texture.
@@ -403,6 +411,28 @@ class TextureAtlas:
         """The framebuffer object for this atlas"""
         return self._fbo
 
+    @property
+    def textures(self) -> List["Texture"]:
+        """
+        Return a list of all the textures in the atlas.
+
+        A new list is constructed from the internal weak set of textures.
+                
+        :rtype: Set[Texture]
+        """
+        return list(self._textures)
+
+    @property
+    def images(self) -> List["ImageData"]:
+        """
+        Return a list of all the images in the atlas.
+
+        A new list is constructed from the internal weak set of images.
+
+        :rtype: List[ImageData]
+        """
+        return list(self._images)
+
     def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
         """
         Add a texture to the atlas.
@@ -499,8 +529,8 @@ class TextureAtlas:
         # Allocate space for texture
         try:
             x, y = self._allocator.alloc(
-                image.width + self.border * 2,
-                image.height + self.border * 2,
+                image.width + self._border * 2,
+                image.height + self._border * 2,
             )
         except AllocatorException:
             raise AllocatorException(
@@ -510,6 +540,8 @@ class TextureAtlas:
         LOG.debug("Allocated new space for image %s : %s %s", image_data.hash, x, y)
 
         # Store a texture region for this allocation
+        # The xy position must be offset by the border size
+        # while the image size must stay as its true size
         region = AtlasRegion(
             self,
             x + self._border,
@@ -549,22 +581,52 @@ class TextureAtlas:
         :param int x: The x position to write the texture
         :param int y: The y position to write the texture
         """
-        # NOTE: We assume border is at least 1 here
-        # Write into atlas at the allocated location + a 1 pixel border
+        # Write into atlas at the allocated location + border
         viewport = (
-            x + self._border - 1,
-            y + self._border - 1,
-            image.width + 2,
-            image.height + 2,
+            x,
+            y,
+            image.width + self._border * 2,
+            image.height + self._border * 2,
         )
 
-        # Pad the 1-pixel border with repeating data
-        tmp = Image.new('RGBA', (image.width + 2, image.height + 2))
-        tmp.paste(image, (1, 1))
-        tmp.paste(tmp.crop((1          , 1           , image.width + 1, 2               )), (1              , 0               ))  # noqa
-        tmp.paste(tmp.crop((1          , image.height, image.width + 1, image.height + 1)), (1              , image.height + 1))  # noqa
-        tmp.paste(tmp.crop((1          , 0           ,               2, image.height + 2)), (0              , 0               ))  # noqa
-        tmp.paste(tmp.crop((image.width, 0           , image.width + 1, image.height + 2)), (image.width + 1, 0               ))  # noqa
+        # Only do extrusion if we have a border
+        if self._border > 0:
+            self.profiler_extrude.enable()
+            # Make new image with room for borders
+            tmp = Image.new(
+                'RGBA',
+                size=(
+                    image.width + self._border * 2,
+                    image.height + self._border * 2
+                ),
+                color=(0, 0, 0, 0),
+            )
+            # Paste the image into the center of the new image
+            tmp.paste(image, (self._border, self._border))
+
+            # Copy 1 pixel strips from each side of the image to the border
+            # so we can repeat this pixel data in the border region
+            # left, top, right, bottom
+            strip_top = image.crop((0, 0, image.width, 1))
+            strip_bottom = image.crop((0, image.height - 1, image.width, image.height))
+            strip_left = image.crop((0, 0, 1, image.height))
+            strip_right = image.crop((image.width - 1, 0, image.width, image.height))
+
+            # Resize the strips to the border size if larger than 1
+            if self._border > 1:
+                strip_top = strip_top.resize((image.width, self._border), Image.NEAREST)
+                strip_bottom = strip_bottom.resize((image.width, self._border), Image.NEAREST)
+                strip_left = strip_left.resize((self._border, image.height), Image.NEAREST)
+                strip_right = strip_right.resize((self._border, image.height), Image.NEAREST)
+
+            tmp.paste(strip_top, (self._border, 0))
+            tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
+            tmp.paste(strip_left, (0, self._border))
+            tmp.paste(strip_right, (tmp.width - self._border, self._border))
+
+            self.profiler_extrude.disable()
+        else:
+            tmp = image
 
         # Write the image directly to graphics memory in the allocated space
         self._texture.write(tmp.tobytes(), 0, viewport=viewport)
@@ -726,17 +788,19 @@ class TextureAtlas:
         self._texture.use(1)
         image_uv_texture_old.use(2)
         self._image_uv_texture.use(3)
+        self._ctx.atlas_resize_program["border"] = float(self._border)
         self._ctx.atlas_resize_program["projection"] = Mat4.orthogonal_projection(
             0, self.width, self.height, 0, -100, 100,
         )
 
         with self._fbo.activate():
-            self._ctx.disable(self._ctx.BLEND)
-            self._ctx.atlas_geometry.render(
-                self._ctx.atlas_resize_program,
-                mode=self._ctx.POINTS,
-                vertices=self.max_width,
-            )
+            # Ensure no context flags are enabled
+            with self._ctx.enabled_only():
+                self._ctx.atlas_geometry.render(
+                    self._ctx.atlas_resize_program,
+                    mode=self._ctx.POINTS,
+                    vertices=self.max_width,
+                )
 
         duration = time.perf_counter() - resize_start
         LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
@@ -871,7 +935,7 @@ class TextureAtlas:
         the provided sequence of textures
 
         :param Sequence[Texture] textures: Sequence of textures
-        :param border:
+        :param border: The border around each texture in pixels
         :return: An estimated minimum size as a (width, height) tuple
         """
         # Try to guess some sane minimum size to reduce the brute force iterations
@@ -929,11 +993,11 @@ class TextureAtlas:
             bytes(self._fbo.read(components=components)),
         )
 
-        if self.border == 1 and draw_borders:
+        if draw_borders:
             draw = ImageDraw.Draw(image)
             for rg in self._image_regions.values():
-                p1 = rg.x - 1, rg.y - 1
-                p2 = rg.x + rg.width, rg.y + rg.height
+                p1 = rg.x, rg.y
+                p2 = rg.x + rg.width - 1, rg.y + rg.height - 1
                 draw.rectangle([p1, p2], outline=border_color, width=1)
 
         if flip:
