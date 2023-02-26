@@ -614,10 +614,10 @@ class TextureAtlas:
 
             # Resize the strips to the border size if larger than 1
             if self._border > 1:
-                strip_top = strip_top.resize((image.width, self._border))
-                strip_bottom = strip_bottom.resize((image.width, self._border))
-                strip_left = strip_left.resize((self._border, image.height))
-                strip_right = strip_right.resize((self._border, image.height))
+                strip_top = strip_top.resize((image.width, self._border), Image.NEAREST)
+                strip_bottom = strip_bottom.resize((image.width, self._border), Image.NEAREST)
+                strip_left = strip_left.resize((self._border, image.height), Image.NEAREST)
+                strip_right = strip_right.resize((self._border, image.height), Image.NEAREST)
 
             tmp.paste(strip_top, (self._border, 0))
             tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
