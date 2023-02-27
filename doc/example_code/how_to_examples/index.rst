@@ -433,7 +433,7 @@ Cameras
 View Management
 ---------------
 
-.. _view-examples:
+.. _view_examples:
 
 Instruction and Game Over Screens
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
