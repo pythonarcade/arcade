@@ -220,10 +220,6 @@ class TextureAtlas:
         ctx: Optional["ArcadeContext"] = None,
         capacity: int = 2,
     ):
-        from arcade.experimental.profiling import Profiler
-        self.profiler_extrude = Profiler()
-        self.profiler_write = Profiler()
-        
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
@@ -591,7 +587,6 @@ class TextureAtlas:
 
         # Only do extrusion if we have a border
         if self._border > 0:
-            self.profiler_extrude.enable()
             # Make new image with room for borders
             tmp = Image.new(
                 'RGBA',
@@ -623,8 +618,6 @@ class TextureAtlas:
             tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
             tmp.paste(strip_left, (0, self._border))
             tmp.paste(strip_right, (tmp.width - self._border, self._border))
-
-            self.profiler_extrude.disable()
         else:
             tmp = image
 
