@@ -45,7 +45,7 @@ class UIScrollArea(UIWidget):
 
         with self.surface.activate():
             if should_render:
-                surface.clear()
+                self.surface.clear()
 
             if self.visible:
                 for child in self.children:
@@ -93,11 +93,7 @@ class UIScrollArea(UIWidget):
             child_event.x = event.x - self.x + self.scroll_x
             child_event.y = event.y - self.y + self.scroll_y
 
-        on_event = super().on_event(child_event)
-
-        # if isinstance(event, UIMouseEvent):
-            # print(f"{on_event=}")
-        return on_event
+        return super().on_event(child_event)
 
 
 class MyWindow(Window):
