@@ -71,8 +71,7 @@ class UIScrollArea(UIWidget):
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
 
-        if isinstance(event, UIMouseEvent) and not self.rect.collide_with_point(event.x, event.y):
-            print("skip")
+        if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(event.x, event.y):
             return EVENT_UNHANDLED
 
         # drag scroll area around with middle mouse button
@@ -96,8 +95,8 @@ class UIScrollArea(UIWidget):
 
         on_event = super().on_event(child_event)
 
-        if isinstance(event, UIMouseEvent):
-            print(f"{on_event=}")
+        # if isinstance(event, UIMouseEvent):
+            # print(f"{on_event=}")
         return on_event
 
 
