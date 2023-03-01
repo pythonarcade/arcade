@@ -1,7 +1,7 @@
 .. _example-code:
 
 How To Get Connected Controllers
-===================
+================================
 We can get a list of connected controllers by using :code:`arcade.get_joysticks()`.
 
 .. code-block:: python
@@ -87,7 +87,7 @@ An event is dispatched when any of the values of the buttons are changed. These 
 
 
 The (-1.0 to 1.0) Values On Controller
-================= 
+======================================
 * The values will be between -1 and +1, with 0 being a centered joystick.
 * The x-axis numbers will be negative if the stick goes left, positive for right.
 * The y-axis numbers will be opposite of what you might expect. Negative for up, positive for down.
