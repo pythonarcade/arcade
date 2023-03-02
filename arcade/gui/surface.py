@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 import arcade
 from arcade import Texture
@@ -7,7 +7,7 @@ from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gl import geometry
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Color
+from arcade.types import Color, Point, Rect
 
 
 class Surface:
@@ -44,10 +44,20 @@ class Surface:
         )
 
         # Create 1 pixel rectangle we scale and move using pos and size
-        self._quad = geometry.screen_rectangle(0, 0, 1, 1)
+        self._geometry = self.ctx.geometry()
         self._program = self.ctx.program(
             vertex_shader="""
                 #version 330
+
+                void main() {
+                    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+                }
+                """,
+            geometry_shader="""
+                #version 330
+
+                layout (points) in;
+                layout (triangle_strip, max_vertices = 4) out;
 
                 uniform WindowBlock {
                     mat4 projection;
@@ -56,17 +66,34 @@ class Surface:
 
                 uniform vec2 pos;
                 uniform vec2 size;
-
-                in vec2 in_vert;
-                in vec2 in_uv;
+                uniform vec4 area;
 
                 out vec2 uv;
 
                 void main() {
-                    gl_Position = window.projection * window.view * vec4((in_vert * size) + pos, 0.0, 1.0);
-                    uv = in_uv;
+                    mat4 mvp = window.projection * window.view;    
+                
+                    // Create the 4 corners of the rectangle
+                    vec2 p_ll = pos;
+                    vec2 p_lr = pos + vec2(size.x, 0);
+                    vec2 p_ul = pos + vec2(0, size.y);
+                    vec2 p_ur = pos + size;
+
+                    gl_Position = mvp * vec4(p_ll, 0, 1);
+                    uv = vec2(area.x, area.y);
+                    EmitVertex();
+                    gl_Position = mvp * vec4(p_lr, 0, 1);
+                    uv = vec2(area.z, area.y);
+                    EmitVertex();
+                    gl_Position = mvp * vec4(p_ul, 0, 1);
+                    uv = vec2(area.x, area.w);
+                    EmitVertex();
+                    gl_Position = mvp * vec4(p_ur, 0, 1);
+                    uv = vec2(area.z, area.w);
+                    EmitVertex();
+                    EndPrimitive();
                 }
-                """,
+            """,
             fragment_shader="""
                 #version 330
 
@@ -82,7 +109,7 @@ class Surface:
         )
 
     @property
-    def position(self) -> Tuple[int, int]:
+    def position(self) -> Point:
         """Get or set the surface position"""
         return self._pos
 
@@ -191,8 +218,19 @@ class Surface:
         height = max(height, 1)
         self.ctx.projection_2d = 0, width, 0, height
 
-    def draw(self) -> None:
-        """Draws the current buffer on screen"""
+    def draw(
+        self,
+        area: Optional[Rect] = None,
+    ) -> None:
+        """
+        Draws the contents of the surface.
+
+        The surface will be rendered at the configured ``position``
+        and limited by the given ``area``.
+
+        :param Optional[Point] position: The position to draw the surface at.
+        :param Optional[Rect] area: The pixel area in the surface to draw.
+        """
         # Set blend function
         blend_func = self.ctx.blend_func
         self.ctx.blend_func = self.blend_func_render
@@ -200,7 +238,8 @@ class Surface:
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._quad.render(self._program)
+        self._program["area"] = area or (0, 0, *self._size)
+        self._geometry.render(self._program, vertices=1)
 
         # Restore blend function
         self.ctx.blend_func = blend_func
