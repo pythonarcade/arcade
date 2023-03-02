@@ -970,11 +970,10 @@ class SpriteList(Generic[SpriteType]):
             self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # Handle the pixelated shortcut
-        if pixelated is not None:
-            if pixelated is True:
-                self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-            else:
-                self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+        if pixelated:
+            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+        else:
+            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
