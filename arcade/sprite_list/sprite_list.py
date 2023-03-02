@@ -790,13 +790,15 @@ class SpriteList(Generic[SpriteType]):
         """
         self.spatial_hash = None
 
-    def enable_spatial_hashing(self, spatial_hash_cell_size=128):
+    def enable_spatial_hashing(self, spatial_hash_cell_size: int = 128):
         """Turn on spatial hashing."""
-        LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
-        from .spatial_hash import SpatialHash
-
-        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
-        self._recalculate_spatial_hashes()
+        if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
+            LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
+            from .spatial_hash import SpatialHash
+            self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+            self._recalculate_spatial_hashes()
+        else:
+            LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
 
     def _recalculate_spatial_hashes(self):
         if self.spatial_hash is None:
