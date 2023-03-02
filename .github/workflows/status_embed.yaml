@@ -39,7 +39,7 @@ jobs:
       - name: GitHub Actions Status Embed for Discord
         uses: SebastiaanZ/github-status-embed-for-discord@v0.2.1
         with:
-          # Webhook token
+          # Get webhook token and id from secrets.
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
 
