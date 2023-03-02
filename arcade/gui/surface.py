@@ -32,6 +32,17 @@ class Surface:
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
+        #: Blend modes for when we're drawing into the surface
+        self.blend_func_render_into = (
+            *self.ctx.BLEND_DEFAULT,
+            *self.ctx.BLEND_ADDITIVE,
+        )
+        #: Blend mode for when we're drawing the surface
+        self.blend_func_render = (
+            *self.ctx.BLEND_DEFAULT,
+            *self.ctx.BLEND_DEFAULT,
+        )
+
         # Create 1 pixel rectangle we scale and move using pos and size
         self._quad = geometry.screen_rectangle(0, 0, 1, 1)
         self._program = self.ctx.program(
@@ -153,13 +164,19 @@ class Surface:
         Save and restore projection and activate Surface buffer to draw on.
         Also resets the limit of the surface (viewport).
         """
+        # Set viewport and projection
         proj = self.ctx.projection_2d
         self.limit(0, 0, *self.size)
+        # Set blend function
+        blend_func = self.ctx.blend_func
+        self.ctx.blend_func = self.blend_func_render_into
 
         with self.fbo.activate():
             yield self
 
+        # Restore projection and blend function
         self.ctx.projection_2d = proj
+        self.ctx.blend_func = blend_func
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
@@ -176,10 +193,17 @@ class Surface:
 
     def draw(self) -> None:
         """Draws the current buffer on screen"""
+        # Set blend function
+        blend_func = self.ctx.blend_func
+        self.ctx.blend_func = self.blend_func_render
+
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
         self._quad.render(self._program)
+
+        # Restore blend function
+        self.ctx.blend_func = blend_func
 
     def resize(self, *, size: Tuple[int, int], pixel_ratio: float) -> None:
         """

@@ -73,14 +73,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
-        self._blend_func = (
-            *self.window.ctx.BLEND_DEFAULT,
-            *self.window.ctx.BLEND_DEFAULT,
-        )
-        self._blend_func_surface = (
-            *self.window.ctx.BLEND_DEFAULT,
-            *self.window.ctx.BLEND_ADDITIVE,
-        )
 
         self.register_event_type("on_event")
 
@@ -267,9 +259,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         ctx = self.window.ctx
 
-        # Set blend mode for drawing into surfaces
-        ctx.blend_func = self._blend_func_surface
-
         # Reset view matrix so content is not rendered into
         # the surface with offset
         prev_view = self.window.view
@@ -284,17 +273,11 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.window.view = prev_view
         self.window.projection = prev_proj
 
-        # Set the blend mode for drawing surfaces
-        ctx.blend_func = self._blend_func
-
         # Draw layers
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
-
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -389,27 +372,27 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def rect(self) -> Rect:  # type: ignore
         return Rect(0, 0, *self.window.get_size())
 
-    @property
-    def blend_func_surface(self) -> Tuple[int, int, int, int]:
-        """
-        The blend function used when rendering into surfaces (read-write)
-        """
-        return self._blend_func_surface
+    # @property
+    # def blend_func_surface(self) -> Tuple[int, int, int, int]:
+    #     """
+    #     The blend function used when rendering into surfaces (read-write)
+    #     """
+    #     return self._blend_func_surface
 
-    @blend_func_surface.setter
-    def blend_func_surface(self, value: Tuple[int, int, int, int]):
-        self._blend_func_surface = value
+    # @blend_func_surface.setter
+    # def blend_func_surface(self, value: Tuple[int, int, int, int]):
+    #     self._blend_func_surface = value
 
-    @property
-    def blend_func(self):
-        """
-        The blend function used when rendering the surfaces (read-write)
-        """
-        return self._blend_func
+    # @property
+    # def blend_func(self):
+    #     """
+    #     The blend function used when rendering the surfaces (read-write)
+    #     """
+    #     return self._blend_func
 
-    @blend_func.setter
-    def blend_func(self, value: Tuple[int, int, int, int]):
-        self._blend_func = value
+    # @blend_func.setter
+    # def blend_func(self, value: Tuple[int, int, int, int]):
+    #     self._blend_func = value
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
