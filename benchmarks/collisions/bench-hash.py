@@ -21,7 +21,7 @@ SIMULATE_FPS = 60
 # Predictable randomization so that each benchmark is identical
 rng = random.Random(0)
 
-bullets = arcade.SpriteList()
+bullets = arcade.SpriteList(use_spatial_hash=True)
 walls = arcade.SpriteList()
 
 window = arcade.Window()
@@ -57,6 +57,11 @@ for i in range(0, int(SIMULATE_MINUTES * 60 * SIMULATE_FPS)):
         bullet.position = (bullet.position[0] + bullet.velocity[0], bullet.position[1] + bullet.velocity[1])
 
     # Check for collisions
+    # bullets_w_collision = []
+    # for bullet in bullets:
+    #     walls_hit = arcade.check_for_collision_with_list(bullet, walls)
+    #     if walls_hit:
+    #         bullets_w_collision.append(bullet)
     bullets_w_collision = []
     for wall in walls:
         bullets_hit = arcade.check_for_collision_with_list(wall, bullets)
