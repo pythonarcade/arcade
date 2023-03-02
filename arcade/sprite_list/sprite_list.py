@@ -191,6 +191,19 @@ class SpriteList(Generic[SpriteType]):
         self._atlas: TextureAtlas = (
             getattr(self, "_atlas", None) or self.ctx.default_atlas
         )
+        self.collision_program = self.ctx.load_program(
+            vertex_shader=":resources:shaders/collision/spritelist_collision_vs.glsl",
+            geometry_shader=":resources:shaders/collision/spritelist_collision_gs.glsl",
+            fragment_shader=":resources:shaders/collision/spritelist_collision_fs.glsl",
+        )
+        # 512 x 512 have room for 65536 8 point hit boxes (128 per row)
+        # 1024 x 1024 have room for 262144 8 point hit boxes (256 per row)
+        # 2048 x 2048 have room for 1048576 8 point hit boxes (512 per row)
+        # 4096 x 4096 have room for 4194304 8 point hit boxes (1024 per row)
+        # NOTE: Max capacity is 1024 sprites with 8 point hit boxes
+        self._hit_points_texture = self.ctx.texture((4096, 1), components=4, dtype="f4")
+        self._hit_points_texture.filter = (gl.NEAREST, gl.NEAREST)
+        self._hit_points_data = array("f", [0] * 4096 * 4)
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -234,6 +247,44 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_changed = True
         self._sprite_texture_changed = True
         self._sprite_index_changed = True
+
+    def draw_gpu_collision(self):
+        self.write_sprite_buffers_to_gpu()
+        self._hit_points_texture.write(self._hit_points_data)
+        self._hit_points_texture.use(0)
+        self.geometry.render(
+            self.collision_program,
+            mode=self.ctx.POINTS,
+            vertices=self._sprite_index_slots,
+        )
+
+    def _update_points(self, sprite: SpriteType):
+        """
+        Update the hit box points for a sprite.
+
+        This should only happen when something changes
+        the hit box points on a sprite to a completely
+        different set of points
+        """
+        slot = self.sprite_slot[sprite]
+        slot *= 16
+        points = sprite.get_hit_box()
+        self._hit_points_data[slot] = points[0][0]
+        self._hit_points_data[slot + 1] = points[0][1]
+        self._hit_points_data[slot + 2] = points[1][0]
+        self._hit_points_data[slot + 3] = points[1][1]
+        self._hit_points_data[slot + 4] = points[2][0]
+        self._hit_points_data[slot + 5] = points[2][1]
+        self._hit_points_data[slot + 6] = points[3][0]
+        self._hit_points_data[slot + 7] = points[3][1]
+        self._hit_points_data[slot + 8] = points[4][0]
+        self._hit_points_data[slot + 9] = points[4][1]
+        self._hit_points_data[slot + 10] = points[5][0]
+        self._hit_points_data[slot + 11] = points[5][1]
+        self._hit_points_data[slot + 12] = points[6][0]
+        self._hit_points_data[slot + 13] = points[6][1]
+        self._hit_points_data[slot + 14] = points[7][0]
+        self._hit_points_data[slot + 15] = points[7][1]
 
     def __len__(self) -> int:
         """Return the length of the sprite list."""
