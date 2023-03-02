@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - GitHub Ubuntu test
+      - Windows self-hosted test
     types:
       - completed
 
@@ -39,8 +40,8 @@ jobs:
         uses: SebastiaanZ/github-status-embed-for-discord@v0.2.1
         with:
           # Webhook token
-          webhook_id: '1079021798538088509'
-          webhook_token: ${{ secrets.webhook_token }}
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
 
           # We need to provide the information of the workflow that
           # triggered this workflow instead of this workflow.
