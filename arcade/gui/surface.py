@@ -5,7 +5,6 @@ import arcade
 from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
-from arcade.gl import geometry
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import Color, Point, Rect
 

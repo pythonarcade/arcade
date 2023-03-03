@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type, Tuple
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Mat4
@@ -30,6 +30,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
+from arcade.camera import SimpleCamera
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -73,7 +74,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
-
+        #: Camera used when drawing the UI
+        self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None) -> W:
@@ -269,15 +271,15 @@ class UIManager(EventDispatcher, UIWidgetParent):
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
-        # Restore view/proj matrix allowing the surface to be scrolled
-        self.window.view = prev_view
-        self.window.projection = prev_proj
-
         # Draw layers
+        self.camera.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
+
+        self.window.view = prev_view
+        self.window.projection = prev_proj
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -362,6 +364,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
+        self.camera.resize(width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
