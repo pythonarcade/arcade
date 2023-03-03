@@ -72,25 +72,43 @@ class Surface:
 
                 void main() {
                     mat4 mvp = window.projection * window.view;    
-                
-                    // Create the 4 corners of the rectangle
-                    vec2 p_ll = pos;
-                    vec2 p_lr = pos + vec2(size.x, 0);
-                    vec2 p_ul = pos + vec2(0, size.y);
-                    vec2 p_ur = pos + size;
 
-                    gl_Position = mvp * vec4(p_ll, 0, 1);
-                    uv = vec2(area.x, area.y);
+                    // Clamp the area
+                    vec4 l_area = vec4(
+                        clamp(area.x, 0.0, size.x - area.z),
+                        clamp(area.y, 0.0, size.y - area.w),
+                        clamp(area.z, 0.0, size.x),
+                        clamp(area.w, 0.0, size.y)
+                    );
+
+                    // The local coordinates of the surface
+                    vec2 ll_local = l_area.xy;
+                    vec2 lr_local = l_area.xy + vec2(l_area.z, 0.0);
+                    vec2 ul_local = l_area.xy + vec2(0, l_area.w);
+                    vec2 ur_local = l_area.xy + l_area.zw;
+
+                    // Create the 4 corners of the rectangle
+                    vec2 p_ll = pos + ll_local;
+                    vec2 p_lr = pos + lr_local;
+                    vec2 p_ul = pos + ul_local;
+                    vec2 p_ur = pos + ur_local;
+
+                    gl_Position = mvp * vec4(p_ll, 0.0, 1.0);
+                    uv = vec2(0.0, 0.0);
                     EmitVertex();
-                    gl_Position = mvp * vec4(p_lr, 0, 1);
-                    uv = vec2(area.z, area.y);
+
+                    gl_Position = mvp * vec4(p_lr, 0.0, 1.0);
+                    uv = vec2(1.0, 0.0);
                     EmitVertex();
-                    gl_Position = mvp * vec4(p_ul, 0, 1);
-                    uv = vec2(area.x, area.w);
+
+                    gl_Position = mvp * vec4(p_ul, 0.0, 1.0);
+                    uv = vec2(0.0, 1.0);
                     EmitVertex();
-                    gl_Position = mvp * vec4(p_ur, 0, 1);
-                    uv = vec2(area.z, area.w);
+
+                    gl_Position = mvp * vec4(p_ur, 0.0, 1.0);
+                    uv = vec2(1.0, 1.0);
                     EmitVertex();
+
                     EndPrimitive();
                 }
             """,
@@ -229,7 +247,7 @@ class Surface:
         and limited by the given ``area``.
 
         :param Optional[Point] position: The position to draw the surface at.
-        :param Optional[Rect] area: The pixel area in the surface to draw.
+        :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func

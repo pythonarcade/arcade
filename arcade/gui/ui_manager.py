@@ -372,28 +372,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def rect(self) -> Rect:  # type: ignore
         return Rect(0, 0, *self.window.get_size())
 
-    # @property
-    # def blend_func_surface(self) -> Tuple[int, int, int, int]:
-    #     """
-    #     The blend function used when rendering into surfaces (read-write)
-    #     """
-    #     return self._blend_func_surface
-
-    # @blend_func_surface.setter
-    # def blend_func_surface(self, value: Tuple[int, int, int, int]):
-    #     self._blend_func_surface = value
-
-    # @property
-    # def blend_func(self):
-    #     """
-    #     The blend function used when rendering the surfaces (read-write)
-    #     """
-    #     return self._blend_func
-
-    # @blend_func.setter
-    # def blend_func(self, value: Tuple[int, int, int, int]):
-    #     self._blend_func = value
-
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
         for index, layer in self.children.items():
