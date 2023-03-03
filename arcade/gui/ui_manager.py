@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type, Tuple
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Mat4
@@ -30,6 +30,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
+from arcade.camera import SimpleCamera
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -73,15 +74,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
-        self._blend_func = (
-            *self.window.ctx.BLEND_DEFAULT,
-            *self.window.ctx.BLEND_DEFAULT,
-        )
-        self._blend_func_surface = (
-            *self.window.ctx.BLEND_DEFAULT,
-            *self.window.ctx.BLEND_ADDITIVE,
-        )
-
+        #: Camera used when drawing the UI
+        self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None) -> W:
@@ -267,9 +261,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         ctx = self.window.ctx
 
-        # Set blend mode for drawing into surfaces
-        ctx.blend_func = self._blend_func_surface
-
         # Reset view matrix so content is not rendered into
         # the surface with offset
         prev_view = self.window.view
@@ -280,21 +271,15 @@ class UIManager(EventDispatcher, UIWidgetParent):
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
-        # Restore view/proj matrix allowing the surface to be scrolled
-        self.window.view = prev_view
-        self.window.projection = prev_proj
-
-        # Set the blend mode for drawing surfaces
-        ctx.blend_func = self._blend_func
-
         # Draw layers
+        self.camera.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
 
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
+        self.window.view = prev_view
+        self.window.projection = prev_proj
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -379,6 +364,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
+        self.camera.resize(width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
@@ -388,28 +374,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
     @property
     def rect(self) -> Rect:  # type: ignore
         return Rect(0, 0, *self.window.get_size())
-
-    @property
-    def blend_func_surface(self) -> Tuple[int, int, int, int]:
-        """
-        The blend function used when rendering into surfaces (read-write)
-        """
-        return self._blend_func_surface
-
-    @blend_func_surface.setter
-    def blend_func_surface(self, value: Tuple[int, int, int, int]):
-        self._blend_func_surface = value
-
-    @property
-    def blend_func(self):
-        """
-        The blend function used when rendering the surfaces (read-write)
-        """
-        return self._blend_func
-
-    @blend_func.setter
-    def blend_func(self, value: Tuple[int, int, int, int]):
-        self._blend_func = value
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
