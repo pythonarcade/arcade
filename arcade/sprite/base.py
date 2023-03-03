@@ -1,3 +1,4 @@
+import math
 from typing import TYPE_CHECKING, List, Iterable, TypeVar
 
 import arcade
@@ -175,6 +176,7 @@ class BasicSprite:
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
+            self._hit_box_max_dimension = max(self._width, self._height) / 2
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
@@ -359,6 +361,7 @@ class BasicSprite:
         self._texture = texture
         self._width = texture.width * self._scale[0]
         self._height = texture.height * self._scale[1]
+        self._hit_box_max_dimension = math.sqrt(self._width ** 2 + self._height ** 2)
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)

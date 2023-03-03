@@ -7,7 +7,7 @@ def test_create():
     sh = SpatialHash(cell_size=10)
     assert sh.cell_size == 10
     assert sh.contents == {}
-    assert sh.buckets_for_sprite == {}
+    assert sh.entries == {}
     assert sh.count == 0
 
 
@@ -28,7 +28,7 @@ def test_add():
     sh.add(arcade.SpriteSolidColor(10, 10, color=arcade.color.RED))
     assert sh.count == 4
     assert len(sh.contents) == 4
-    assert len(sh.buckets_for_sprite) == 4
+    assert len(sh.entries) == 4
 
 
 def test_add_twice():
@@ -39,7 +39,7 @@ def test_add_twice():
         sh.add(sprite)
         assert sh.count == 1
         assert len(sh.contents) == 4
-        assert len(sh.buckets_for_sprite) == 1
+        assert len(sh.entries) == 1
 
 
 def test_add_remove():
@@ -51,13 +51,13 @@ def test_add_remove():
     assert len(sh.contents) == 4  # 4 buckets
     for cn in sh.contents.values():
         assert len(cn) == 1
-    assert len(sh.buckets_for_sprite) == 1
+    assert len(sh.entries) == 1
     sh.remove(sprite)
     assert sh.count == 0
     assert len(sh.contents) == 4
     for cn in sh.contents.values():
         assert len(cn) == 0
-    assert len(sh.buckets_for_sprite) == 0
+    assert len(sh.entries) == 0
 
 
 def test_remove_twice():

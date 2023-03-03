@@ -111,7 +111,7 @@ class Sprite(BasicSprite, PymunkMixin):
         self._width = self._texture.width * scale
         self._height = self._texture.height * scale
         if not self._hit_box_points:
-            self._hit_box_points = self._texture.hit_box_points
+            self.hit_box = self._texture.hit_box_points
 
     # --- Properties ---
 
@@ -313,6 +313,7 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         self._hit_box_points_cache = None
         self._hit_box_points = points
+        self._hit_box_max_dimension = math.sqrt(max([x *x + y * y for x,y in points]))
         # self.update_spatial_hash()  This needed?
 
     def get_hit_box(self) -> PointList:
