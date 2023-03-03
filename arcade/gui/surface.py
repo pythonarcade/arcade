@@ -43,87 +43,11 @@ class Surface:
             *self.ctx.BLEND_DEFAULT,
         )
 
-        # Create 1 pixel rectangle we scale and move using pos and size
         self._geometry = self.ctx.geometry()
-        self._program = self.ctx.program(
-            vertex_shader="""
-                #version 330
-
-                void main() {
-                    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-                }
-                """,
-            geometry_shader="""
-                #version 330
-
-                layout (points) in;
-                layout (triangle_strip, max_vertices = 4) out;
-
-                uniform WindowBlock {
-                    mat4 projection;
-                    mat4 view;
-                } window;
-
-                uniform vec2 pos;
-                uniform vec2 size;
-                uniform vec4 area;
-
-                out vec2 uv;
-
-                void main() {
-                    mat4 mvp = window.projection * window.view;    
-
-                    // Clamp the area
-                    vec4 l_area = vec4(
-                        clamp(area.x, 0.0, size.x - area.z),
-                        clamp(area.y, 0.0, size.y - area.w),
-                        clamp(area.z, 0.0, size.x),
-                        clamp(area.w, 0.0, size.y)
-                    );
-
-                    // The local coordinates of the surface
-                    vec2 ll_local = l_area.xy;
-                    vec2 lr_local = l_area.xy + vec2(l_area.z, 0.0);
-                    vec2 ul_local = l_area.xy + vec2(0, l_area.w);
-                    vec2 ur_local = l_area.xy + l_area.zw;
-
-                    // Create the 4 corners of the rectangle
-                    vec2 p_ll = pos + ll_local;
-                    vec2 p_lr = pos + lr_local;
-                    vec2 p_ul = pos + ul_local;
-                    vec2 p_ur = pos + ur_local;
-
-                    gl_Position = mvp * vec4(p_ll, 0.0, 1.0);
-                    uv = vec2(0.0, 0.0);
-                    EmitVertex();
-
-                    gl_Position = mvp * vec4(p_lr, 0.0, 1.0);
-                    uv = vec2(1.0, 0.0);
-                    EmitVertex();
-
-                    gl_Position = mvp * vec4(p_ul, 0.0, 1.0);
-                    uv = vec2(0.0, 1.0);
-                    EmitVertex();
-
-                    gl_Position = mvp * vec4(p_ur, 0.0, 1.0);
-                    uv = vec2(1.0, 1.0);
-                    EmitVertex();
-
-                    EndPrimitive();
-                }
-            """,
-            fragment_shader="""
-                #version 330
-
-                uniform sampler2D ui_texture;
-
-                in vec2 uv;
-                out vec4 fragColor;
-
-                void main() {
-                    fragColor = texture(ui_texture, uv);
-                }
-                """,
+        self._program = self.ctx.load_program(
+            vertex_shader=":resources:shaders/gui/surface_vs.glsl",
+            geometry_shader=":resources:shaders/gui/surface_gs.glsl",
+            fragment_shader=":resources:shaders/gui/surface_fs.glsl",
         )
 
     @property
@@ -244,7 +168,7 @@ class Surface:
         Draws the contents of the surface.
 
         The surface will be rendered at the configured ``position``
-        and limited by the given ``area``.
+        and limited by the given ``area``. The area can be out of bounds.
 
         :param Optional[Point] position: The position to draw the surface at.
         :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
