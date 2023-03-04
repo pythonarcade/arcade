@@ -44,7 +44,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     @dataclass
     class UIStyle(UIStyleBase):
         """
-        Used to style the slider for different states. Below is its the usecase.
+        Used to style the slider for different states. Below is its use case.
         
         .. code:: py
 

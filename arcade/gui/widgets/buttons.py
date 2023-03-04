@@ -39,7 +39,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     @dataclass
     class UIStyle(UIStyleBase):
         """
-        Used to style the texture button. Below is the usecase.
+        Used to style the texture button. Below is its use case.
         
         .. code:: py
 
@@ -222,7 +222,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     @dataclass
     class UIStyle(UIStyleBase):
         """
-        Used to style the button. Below is the usecase.
+        Used to style the button. Below is its use case.
         
         .. code:: py
 
