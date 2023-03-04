@@ -129,6 +129,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         bind(self, "_textures", self.trigger_render)
 
     def get_current_state(self) -> str:
+        """Returns the current state of the button i.e disabled, press, hover or normal."""
         if self.disabled:
             return "disabled"
         elif self.pressed:
@@ -140,6 +141,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @property
     def texture(self):
+        """Returns the normal texture for the face of the button."""
         return self._textures["normal"]
 
     @texture.setter
@@ -149,6 +151,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @property
     def texture_hovered(self):
+        """Returns the hover texture for the face of the button."""
         return self._textures["hover"]
 
     @texture_hovered.setter
@@ -158,6 +161,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @property
     def texture_pressed(self):
+        """Returns the pressed texture for the face of the button."""
         return self._textures["press"]
 
     @texture_pressed.setter
@@ -270,6 +274,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         )
 
     def get_current_state(self) -> str:
+        """Returns the current state of the button i.e disabled, press, hover or normal."""
         if self.disabled:
             return "disabled"
         elif self.pressed:

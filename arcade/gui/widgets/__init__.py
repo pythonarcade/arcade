@@ -629,6 +629,7 @@ class UIWidget(EventDispatcher, ABC):
 
 
 class UIWidgetParent(ABC):
+    """Placeholder for parent widget."""
     rect: Rect
 
     def trigger_render(self):

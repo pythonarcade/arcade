@@ -20,6 +20,19 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 
 class UISlider(UIStyledWidget["UISlider.UIStyle"]):
+    """
+    A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
+
+    :param float value: Current value of the curosr of the slider.
+    :param float min_value: Minimum value of the slider.
+    :param float max_value: Maximum value of the slider.
+    :param float x: x coordinate of bottom left.
+    :param float y: y coordinate of bottom left.
+    :param width: Width of the slider.
+    :param height: Height of the slider.
+
+    """
+
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
@@ -61,13 +74,13 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     def __init__(
         self,
         *,
-        value=0,
-        min_value=0,
-        max_value=100,
-        x=0,
-        y=0,
-        width=300,
-        height=20,
+        value: float = 0,
+        min_value: float = 0,
+        max_value: float = 100,
+        x: float = 0,
+        y: float = 0,
+        width: float = 300,
+        height: float = 20,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -101,6 +114,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         self.register_event_type("on_change")
 
     def get_current_state(self) -> str:
+        """Returns the current state of the slider i.e disabled, press, hover or normal."""
         if self.disabled:
             return "disabled"
         elif self.pressed:
@@ -131,6 +145,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
 
     @property
     def value_x(self):
+        """Returns the current value of the cursor of the slider."""
         return self._x_for_value(self.value)
 
     @value_x.setter
@@ -229,4 +244,5 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         return EVENT_UNHANDLED
 
     def on_change(self, event: UIOnChangeEvent):
+        """To be implemented by the user, triggered when the cursor's value is changed."""
         pass
