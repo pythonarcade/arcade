@@ -1,5 +1,5 @@
 import arcade
-from arcade import texture_transforms as tt
+from arcade.texture import transforms as tt
 
 
 def _transform(*transforms):
