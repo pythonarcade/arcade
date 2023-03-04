@@ -16,6 +16,8 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     """
     A button with an image for the face of the button.
 
+    There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
+
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
     :param float width: width of widget. Defaults to texture width if not specified.
@@ -25,7 +27,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
     :param str text: text to add to the button.
     :param bool multiline: allows to wrap text, if not enough width available
-    :param style: style information for the button.
+    :param style: Used to style the button for different states.
     :param float scale: scale the button, based on the base texture size.
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
@@ -36,6 +38,13 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @dataclass
     class UIStyle(UIStyleBase):
+        """
+        Used to style the texture button. Below is the usecase.
+        
+        .. code:: py
+
+            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+        """
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
         font_color: Color = arcade.color.WHITE
@@ -197,6 +206,8 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
+    
+    There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
@@ -210,6 +221,13 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
     @dataclass
     class UIStyle(UIStyleBase):
+        """
+        Used to style the button. Below is the usecase.
+        
+        .. code:: py
+
+            button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})
+        """
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
         font_color: Color = arcade.color.WHITE
