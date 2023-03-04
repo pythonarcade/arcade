@@ -1,6 +1,6 @@
 import logging
 import hashlib
-from typing import Any, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
 
 import PIL.Image

@@ -1,6 +1,7 @@
 """
 Ensure we are emulating PIL's transforms correctly.
 """
+import arcade
 import pytest
 from PIL import Image, ImageDraw
 from arcade.texture.transforms import (
@@ -38,12 +39,12 @@ def image():
     return im
 
 
-def test_rotate90_transform(ctx, image):
+def test_rotate90_transform(ctx: arcade.ArcadeContext, image):
     texture = arcade.Texture(image)
     image = image.transpose(Image.Transpose.ROTATE_90)
-    fbo = ctx.framebuffer(color_attachments=[ctx.texture(image.size, 4)])
-    sprite = arcade.Sprite(arcade.)
-    with fbo.activate():
+    fbo = ctx.framebuffer(color_attachments=[ctx.texture(image.size, components=4)])
+    # sprite = arcade.Sprite(arcade.)
+    # with fbo.activate():
 
 # def test_rotate90_transform():
 #     """Test rotate transform."""

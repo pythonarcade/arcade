@@ -27,7 +27,7 @@ def test_rotate90_transform():
     """Test rotate transform."""
     # One rotation
     result = Rotate90Transform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
+    assert result == ((64.0, -64.0), (64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0))
     # Three more should be the original points
     result = Rotate90Transform.transform_hit_box_points(result)
     result = Rotate90Transform.transform_hit_box_points(result)
@@ -36,7 +36,7 @@ def test_rotate90_transform():
 
     # Test vertex order
     result = Rotate90Transform.transform_vertex_order(ORDER)
-    assert result == (2, 0, 3, 1)
+    assert result == (1, 3, 0, 2)
     result = Rotate90Transform.transform_vertex_order(result)
     result = Rotate90Transform.transform_vertex_order(result)
     result = Rotate90Transform.transform_vertex_order(result)
