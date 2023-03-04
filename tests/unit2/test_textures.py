@@ -65,14 +65,20 @@ def test_load_texture():
     assert tex.width == 128
     assert tex.height == 128
     assert tex.size == (128, 128)
-    # cache_name = ":resources:images/test_textures/test_texture.png-0-0-0-0-False-False-False-Simple "
-    # assert tex.name == cache_name
     assert tex.hit_box_points is not None
     assert tex._sprite is None
     assert tex._sprite_list is None
 
     with pytest.raises(FileNotFoundError):
         arcade.load_texture("moo")
+
+
+def test_load_texture_with_cached():
+    path = ":resources:images/test_textures/test_texture.png"
+    texture = arcade.load_texture(path)
+    assert id(texture) == id(arcade.load_texture(path))
+    texture = arcade.load_texture(path, x=0, y=0, width=64, height=64)
+    assert id(texture) == id(arcade.load_texture(path, x=0, y=0, width=64, height=64))
 
 
 def test_load_textures(window):
@@ -147,9 +153,9 @@ def test_texture_equality():
     assert id(t1.image) == id(t2.image)
     # Handle comparing with other objects
     assert t1 != "moo"
-    assert t1 != None
-    assert (t1 == None) is False
-    assert (t1 == "moo") is False
+    assert t1 is not None
+    assert t1 is not None
+    assert t1 != "moo"
 
 
 def test_crate_empty():

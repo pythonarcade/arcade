@@ -10,6 +10,7 @@ uniform sampler2D atlas_new;
 uniform sampler2D texcoords_old;
 uniform sampler2D texcoords_new;
 uniform mat4 projection;
+uniform float border;
 
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
@@ -26,14 +27,14 @@ void main() {
     getSpriteUVs(texcoords_old, int(gl_PrimitiveIDIn), old_uv0, old_uv1, old_uv2, old_uv3);
     vec2 new_uv0, new_uv1, new_uv2, new_uv3;
     getSpriteUVs(texcoords_new, int(gl_PrimitiveIDIn), new_uv0, new_uv1, new_uv2, new_uv3);
-   
-    // Lower left corner flipped * size - one pixel
-    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new) - vec2(1.0);
-    // absolute value of the diagonal * size + two pixels
-    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(2.0);
 
-    // We need to offset the old coordiantes by one pixel to include the borders
-    vec2 pix_offset = vec2(1.0) / vec2(size_old);
+    // Lower left corner flipped * size - border
+    vec2 pos = vec2(new_uv2.x, 1.0 - new_uv2.y) * vec2(size_new) - vec2(border);
+    // absolute value of the diagonal * size + border * 2
+    vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(border * 2.0);
+
+    // We need to offset the old coordiantes by border size
+    vec2 pix_offset = vec2(border) / vec2(size_old);
     // (
     //     0.015625, 0.015625,  # minus, minus
     //     0.265625, 0.015625,  # plus, minus

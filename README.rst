@@ -39,6 +39,21 @@ Games Using Arcade
 
 See: https://api.arcade.academy/en/latest/sample_games.html
 
+Citation
+--------
+
+.. code-block:: txt
+
+    @Online{PythonArcade,
+       author = {Paul Vincent Craven},
+       title = {Easy to use Python library for creating 2D arcade games.},
+       date = {2023-01-01},
+       publisher = {GitHub},
+       journal = {GitHub repository},
+       howpublished = {\url{https://github.com/pythonarcade/arcade}},
+       commit = {<insert hash if needed>}
+    }
+
 Contact the Maintainer
 ----------------------
 
