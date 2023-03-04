@@ -2,31 +2,31 @@
 
 How To Get Connected Controllers
 ================================
-We can get a list of connected controllers by using :code:`arcade.get_joysticks()`.
+We can get a list of connected controllers by using :code:`arcade.get_controllers()`.
 
 .. code-block:: python
 
-      joysticks = arcade.get_joysticks()
-      if joysticks:
-          self.joystick = joysticks[0]
-          self.joystick.open()
+      controllers = arcade.get_controllers()
+      if controllers:
+          self.controller = controllers[0]
+          self.controller.open()
       else:
-          print("There are no joysticks.")
-          self.joystick = None
+          print("There are no controllers.")
+          self.controller = None
 
-Joystick Values
-================
-The joystick values can be obtained by using :code:`self.joystick.x` and :code:`self.joystick.y`. This can be used to update the current positon of an object.
+Controllers Values
+==================
+The controllers values can be obtained by using :code:`self.controller.x` and :code:`self.controller.y`. This can be used to update the current positon of an object.
 
 .. code-block:: python
 
     def update(self, delta_time):
           # Update the position according to the game controller
-          if self.joystick:
-              print(self.joystick.x, self.joystick.y)
+          if self.controller:
+              print(self.controller.x, self.controller.y)
 
-              self.object.change_x = self.joystick.x
-              self.object.change_y = -self.joystick.y
+              self.object.change_x = self.controller.x
+              self.object.change_y = -self.controller.y
 
 How To Use Buttons
 ===================
@@ -92,7 +92,7 @@ The (-1.0 to 1.0) Values On Controller
 * The x-axis numbers will be negative if the stick goes left, positive for right.
 * The y-axis numbers will be opposite of what you might expect. Negative for up, positive for down.
 
-.. list-table:: joystick controller
+.. list-table:: controller
    :widths: 25 25 50
    :header-rows: 1
    
@@ -104,7 +104,7 @@ The (-1.0 to 1.0) Values On Controller
      -   (-1, 1)
 
 
-The Joystick Movements
+The controller Movements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. image:: controller.png
     :width: 400px
@@ -114,7 +114,7 @@ The Joystick Movements
      
 Deadzone
 ========
-A centered joystick might have a value not at 0, but at 0.0001 or some small number. This will make for a small “drift” on a person’s character. We often counteract this by having a “dead zone” where if the number is below a certain value, we just assume it is zero to eliminate the drift.
+A centered controller might have a value not at 0, but at 0.0001 or some small number. This will make for a small “drift” on a person’s character. We often counteract this by having a “dead zone” where if the number is below a certain value, we just assume it is zero to eliminate the drift.
 
 How we take care of the dead zone:
 
@@ -137,19 +137,19 @@ and adding the following code to the :code:`update`:
     def update(self, delta_time):
 
             # Update the position according to the game controller
-            if self.joystick:
+            if self.controller:
 
-                # Set a "dead zone" to prevent drive from a centered joystick
-                if abs(self.joystick.x) < DEAD_ZONE:
+                # Set a "dead zone" to prevent drive from a centered controller
+                if abs(self.controller.x) < DEAD_ZONE:
                     self.object.change_x = 0
                 else:
-                    self.object.change_x = self.joystick.x * MOVEMENT_SPEED
+                    self.object.change_x = self.controller.x * MOVEMENT_SPEED
 
-                # Set a "dead zone" to prevent drive from a centered joystick
-                if abs(self.joystick.y) < DEAD_ZONE:
+                # Set a "dead zone" to prevent drive from a centered controller
+                if abs(self.controller.y) < DEAD_ZONE:
                     self.object.change_y = 0
                 else:
-                    self.object.change_y = -self.joystick.y * MOVEMENT_SPEED
+                    self.object.change_y = -self.controller.y * MOVEMENT_SPEED
 
 
 Different Types Of Controllers
@@ -164,6 +164,3 @@ Some types of controllers:
 
 4. Nintendo Switch controller: This is the gamepad used with Nintendo Switch consoles. It has two detachable Joy-Con controllers, each with a joystick, buttons, and motion sensors.
 
-5. Logitech G29 racing wheel: This is a steering wheel controller designed for racing games. It has a wheel, pedals, and various buttons.
-
-6. Thrustmaster T.Flight Hotas X flight stick: This is a flight stick controller designed for flight simulation games. It has a joystick, throttle, and various buttons.
