@@ -146,12 +146,12 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @texture.setter
     def texture(self, value: Texture):
-        """Set the normal texture for the face of the button."""
         self._textures["normal"] = value
         self.trigger_render()
 
     @property
     def texture_hovered(self):
+        """Returns the hover texture for the face of the button."""
         return self._textures["hover"]
 
     @texture_hovered.setter
@@ -161,6 +161,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     @property
     def texture_pressed(self):
+        """Returns the pressed texture for the face of the button."""
         return self._textures["press"]
 
     @texture_pressed.setter
