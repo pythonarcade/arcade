@@ -117,7 +117,7 @@ class Rotate180Transform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -180) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 180) for point in points)
 
 
 class Rotate270Transform(Transform):
@@ -125,17 +125,17 @@ class Rotate270Transform(Transform):
     Rotate 270 degrees clockwise.
     """
     order = (
-        VertexOrder.UPPER_RIGHT.value,
-        VertexOrder.LOWER_RIGHT.value,
-        VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_RIGHT.value,
     )
 
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -270) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 270) for point in points)
 
 
 class FlipLeftToRightTransform(Transform):

@@ -53,10 +53,10 @@ def test_rotate180_transform():
 
 def test_rotate270_transform():
     result = Rotate270Transform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((64.0, -64.0), (64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0))
+    assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
 
     result = Rotate270Transform.transform_vertex_order(ORDER)
-    assert result == (1, 3, 0, 2)
+    assert result == (2, 0, 3, 1)
 
 
 def test_flip_left_to_right_transform():

@@ -86,12 +86,12 @@ class App(arcade.Window):
             # sprite.texture = sprite.texture.flip_top_to_bottom()
             # sprite.texture = sprite.texture.transverse()
             # sprite.texture = sprite.texture.rotate_90().transverse()
-            sprite.texture = sprite.texture.rotate_90()
+            # sprite.texture = sprite.texture.rotate_90()
             # sprite.angle += 90
             # sprite.texture = sprite.texture.rotate_180()
             # sprite.texture = sprite.texture.rotate_180()
-            # sprite.texture = sprite.texture.rotate_270()
-            sprite._points = None
+            sprite.texture = sprite.texture.rotate_270()
+            sprite._hit_box_points = None
             print("size", (sprite.width, sprite.height), "order", sprite.texture._vertex_order)
 
 
