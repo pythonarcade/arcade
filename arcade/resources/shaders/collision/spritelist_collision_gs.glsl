@@ -23,9 +23,9 @@ in float v_angle[1];
 out vec4 color;
 
 // Read the hit box points from the texture
-vec2[8] read_hit_box_points(sampler2D smp, int slot) {
+vec2[NUM_POINTS] read_hit_box_points(sampler2D smp, int slot) {
     slot *= 4;
-    return vec2[8](
+    return vec2[NUM_POINTS](
         texelFetch(smp, ivec2(slot, 0.0), 0).xy,
         texelFetch(smp, ivec2(slot, 0.0), 0).zw,
         texelFetch(smp, ivec2(slot + 1, 0.0), 0).xy,
@@ -64,6 +64,7 @@ void main() {
     for (int i = 0; i < NUM_POINTS; i++) {
         p[i] = rot * p[i] + pos;
     }
+    // Create box collider from the point
     vec2 collider[4] = vec2[4](
         point + vec2(50, 50.0),
         point + vec2(50.0, -50.0),
@@ -71,13 +72,13 @@ void main() {
         point + vec2(-50, 50)
     );
 
-    // color = vec4(1.0, 0.0, 0.0, 1.0);
+    // Default color
     color = vec4(0.0, 0.0, 0.0, .0);
 
     // Check if the point is inside the hit box
     bool found = false;
     for (int c = 0; c < 4; c++) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < NUM_POINTS; i++) {
             if (line_intersects(p[i], p[(i + 1) % 8], collider[c], collider[(c + 1) % 4])) {
                 color = vec4(1.0, 1.0, 1.0, 1.0);
                 found = true;
@@ -89,44 +90,11 @@ void main() {
         }
     }
 
-    gl_Position = mvp * vec4(p[0], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[1], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[2], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[3], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[4], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[5], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[6], 0.0, 1.0);
-    EmitVertex();
-    gl_Position = mvp * vec4(p[7], 0.0, 1.0);
-    EmitVertex();
+    for (int i = 0; i < NUM_POINTS; i++) {
+        gl_Position = mvp * vec4(p[i], 0.0, 1.0);
+        EmitVertex();
+    }
     gl_Position = mvp * vec4(p[0], 0.0, 1.0);
     EmitVertex();
     EndPrimitive();
-
-    // AABB lies
-    // vec2 min_point = vec2(0.0);
-    // vec2 max_point = vec2(0.0);
-    // get_bbox_for_points(p, min_point, max_point);
-
-    // // Upper right
-    // gl_Position = mvp * vec4(pos + max_point, 0.0, 1.0);
-    // EmitVertex();
-    // // Lower right
-    // gl_Position = mvp * vec4(pos + vec2(max_point.x, min_point.y), 0.0, 1.0);
-    // EmitVertex();
-    // // Lower left
-    // gl_Position = mvp * vec4(pos + min_point, 0.0, 1.0);
-    // EmitVertex();
-    // // Upper left
-    // gl_Position = mvp * vec4(pos + vec2(min_point.x, max_point.y), 0.0, 1.0);
-    // EmitVertex();
-    // // Upper right (repeat, complete strip)
-    // gl_Position = mvp * vec4(pos + max_point, 0.0, 1.0);
-    // EmitVertex();
 }
