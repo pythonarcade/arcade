@@ -46,8 +46,14 @@ COIN_COUNT = 1500
 arcade.enable_timings()
 
 
-class Coin(arcade.Sprite):
+class Coin(arcade.BasicSprite):
     """ Our coin sprite class """
+    def __init__(self, texture: arcade.Texture, scale: float):
+        super().__init__(texture, scale=scale)
+        # Add a velocity to the coin
+        self.change_x = 0
+        self.change_y = 0
+
     def update(self):
         """ Update the sprite. """
         # Setting the position is faster than setting x & y individually
@@ -81,6 +87,7 @@ class MyGame(arcade.Window):
         self.fps_text: Optional[arcade.Text] = None
         self.frame_count: int = 0  # for tracking the reset interval
 
+        self.coin_texture = arcade.load_texture(":resources:images/items/coinGold.png")
         self.background_color = arcade.color.AMAZON
 
     def add_coins(self, amount):
@@ -89,7 +96,7 @@ class MyGame(arcade.Window):
         for i in range(amount):
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
+            coin = Coin(self.coin_texture, scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.position = (

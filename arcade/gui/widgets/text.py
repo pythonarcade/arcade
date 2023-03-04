@@ -73,8 +73,8 @@ class UILabel(UIWidget):
     ):
         # Use Arcade wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
-            start_x=x,
-            start_y=y,
+            start_x=0,
+            start_y=0,
             text=text,
             font_name=font_name,
             font_size=font_size,

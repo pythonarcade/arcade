@@ -28,7 +28,10 @@ titles = {
     'sound.py': ['Sound', 'sound.rst'],
     'sprite/__init__.py': ['Sprites', 'sprites.rst'],
     'sprite/base.py': ['Sprites', 'sprites.rst'],
+    'sprite/sprite.py': ['Sprites', 'sprites.rst'],
     'sprite/simple.py': ['Sprites', 'sprites.rst'],
+    'sprite/colored.py': ['Sprites', 'sprites.rst'],
+    'sprite/mixins.py': ['Sprites', 'sprites.rst'],
     'sprite/animated.py': ['Sprites', 'sprites.rst'],
     'sprite/enums.py': ['Sprites', 'sprites.rst'],
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
@@ -41,10 +44,9 @@ titles = {
     'texture/loading.py': ['Texture Management', 'texture.rst'],
     'texture/generate.py': ['Texture Management', 'texture.rst'],
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
+    'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
-    'utils.py': ['Utils', 'utils.rst'],
     'math.py': ['Math', 'math.rst'],
-    'isometric.py': ['Isometric', 'isometric.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
     'earclip.py': ['Earclip', 'earclip.rst'],
@@ -56,7 +58,9 @@ titles = {
     'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -101,6 +105,7 @@ EXCLUDED_MEMBERS = [
     "ImageData",
     "AtlasRegion",
     "ImageDataRefCounter",
+    "FakeImage",
 ]
 
 def get_member_list(filepath):
@@ -155,7 +160,7 @@ def process_directory(directory: Path, quick_index_file):
 
     file_list = directory.glob('*.py')
 
-    quick_index_file.write(f"\n")
+    quick_index_file.write("\n")
 
     if directory.name == "arcade":
         prepend = ""
@@ -187,6 +192,7 @@ def process_directory(directory: Path, quick_index_file):
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
+            "texture_atlas": "arcade",
             "sprite_list": "arcade",
             "geometry": "geometry",
             "text": "arcade",
@@ -249,13 +255,13 @@ def process_directory(directory: Path, quick_index_file):
                 api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
-                api_file.write(f"    :members:\n")
+                api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
 
                 # Include inherited members
                 if full_class_name in ("arcade.ArcadeContext",):
-                    api_file.write(f"    :show-inheritance:\n")
-                    api_file.write(f"    :inherited-members:\n")
+                    api_file.write("    :show-inheritance:\n")
+                    api_file.write("    :inherited-members:\n")
 
                 api_file.write("\n")
 
@@ -349,6 +355,7 @@ def main():
     process_directory(Path("../arcade/geometry"), text_file)
     process_directory(Path("../arcade/sprite"), text_file)
     process_directory(Path("../arcade/texture"), text_file)
+    process_directory(Path("../arcade/texture_atlas"), text_file)
     process_directory(Path("../arcade/text"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")

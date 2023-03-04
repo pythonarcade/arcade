@@ -2,7 +2,7 @@ import dataclasses
 import math
 from typing import List
 
-from .base import Sprite
+from .sprite import Sprite
 from arcade import Texture
 from arcade.types import PathOrTexture
 from .enums import (
@@ -29,12 +29,12 @@ class AnimatedTimeBasedSprite(Sprite):
     be automatically created by the Tiled Map Editor.
     """
     def __init__(
-            self,
-            path_or_texture: PathOrTexture = None,
-            center_x: float = 0.0,
-            center_y: float = 0.0,
-            scale: float = 1.0,
-            **kwargs,
+        self,
+        path_or_texture: PathOrTexture = None,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
+        scale: float = 1.0,
+        **kwargs,
     ):
         super().__init__(
             path_or_texture,

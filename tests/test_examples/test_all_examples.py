@@ -12,7 +12,10 @@ import subprocess
 import pytest
 
 EXAMPLE_SUBDIR = "../../arcade/examples"
-
+# These examples are allowed to print to stdout
+ALLOW_STDOUT = set([
+    "arcade.examples.dual_stick_shooter",
+])
 
 def _get_short_name(fullpath):
     return os.path.splitext(os.path.basename(fullpath))[0]
@@ -44,7 +47,8 @@ def find_examples(indices_in_range, index_skip_list):
         if index_skip_list is not None and idx in index_skip_list:
             continue
 
-        yield f'python -m {example}'
+        allow_stdout = example in ALLOW_STDOUT
+        yield f'python -m {example}', allow_stdout
 
 
 def list_examples(indices_in_range, index_skip_list):
@@ -55,13 +59,13 @@ def list_examples(indices_in_range, index_skip_list):
 
 
 @pytest.mark.parametrize(
-    "cmd",
+    "cmd, allow_stdout",
     argvalues=list_examples(
         indices_in_range=None,
         index_skip_list=None
     )
 )
-def test_all(cmd):
+def test_all(cmd, allow_stdout):
     # Set an environment variable that will just run on_update() and on_draw()
     # once, then quit.
     import pyglet
@@ -69,6 +73,6 @@ def test_all(cmd):
     test_env["ARCADE_TEST"] = "TRUE"
 
     result = subprocess.check_output(cmd, shell=True, env=test_env)
-    if result:
+    if result and not allow_stdout:
         print(f"ERROR: Got a result of: {result}.")
         assert not result

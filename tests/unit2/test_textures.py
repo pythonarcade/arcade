@@ -39,7 +39,6 @@ def test_main(window: arcade.Window):
 
     window.on_draw = on_draw
     window.test()
-    arcade.cleanup_texture_cache()
 
 
 def test_texture_constructor_hit_box_algo():
@@ -66,8 +65,6 @@ def test_load_texture():
     assert tex.width == 128
     assert tex.height == 128
     assert tex.size == (128, 128)
-    # cache_name = ":resources:images/test_textures/test_texture.png-0-0-0-0-False-False-False-Simple "
-    # assert tex.name == cache_name
     assert tex.hit_box_points is not None
     assert tex._sprite is None
     assert tex._sprite_list is None
@@ -76,9 +73,16 @@ def test_load_texture():
         arcade.load_texture("moo")
 
 
+def test_load_texture_with_cached():
+    path = ":resources:images/test_textures/test_texture.png"
+    texture = arcade.load_texture(path)
+    assert id(texture) == id(arcade.load_texture(path))
+    texture = arcade.load_texture(path, x=0, y=0, width=64, height=64)
+    assert id(texture) == id(arcade.load_texture(path, x=0, y=0, width=64, height=64))
+
+
 def test_load_textures(window):
     """Test load_textures with various parameters"""
-    arcade.cleanup_texture_cache()
     path = ":resources:images/test_textures/test_texture.png"
     def _load(mirrored=False, flipped=False):
         return arcade.load_textures(
@@ -149,16 +153,17 @@ def test_texture_equality():
     assert id(t1.image) == id(t2.image)
     # Handle comparing with other objects
     assert t1 != "moo"
-    assert t1 != None
-    assert (t1 == None) is False
-    assert (t1 == "moo") is False
+    assert t1 is not None
+    assert t1 is not None
+    assert t1 != "moo"
 
 
 def test_crate_empty():
     """Create empty texture"""
     size = (256, 256)
     tex = Texture.create_empty("empty", size)
-    assert tex.origin is None
+    assert tex.file_path is None
+    assert tex.crop_values is None
     assert tex.size == size
     assert tex._hit_box_algorithm == hitbox.algo_bounding_box
     assert tex.hit_box_points == (

@@ -233,7 +233,7 @@ def test_update_texture_image(ctx):
 
 def test_resize(ctx):
     """Attempt to resize the atlas"""
-    atlas = TextureAtlas((50, 100), border=0, auto_resize=False)
+    atlas = TextureAtlas((50, 100), border=1, auto_resize=False)
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
     atlas.add(t1)

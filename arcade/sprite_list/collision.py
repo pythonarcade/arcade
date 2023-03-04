@@ -16,10 +16,10 @@ from arcade.geometry import (
 )
 from arcade.types import Point, Rect
 from .sprite_list import SpriteList
-from arcade import Sprite
+from arcade.sprite import SpriteType, BasicSprite
 
 
-def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
+def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> float:
     """
     Returns the distance between the center of two given sprites
 
@@ -32,9 +32,9 @@ def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
 
 
 def get_closest_sprite(
-    sprite: Sprite,
+    sprite: SpriteType,
     sprite_list: SpriteList
-) -> Optional[Tuple["Sprite", float]]:
+) -> Optional[Tuple[SpriteType, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 
@@ -58,7 +58,7 @@ def get_closest_sprite(
     return sprite_list[min_pos], min_distance
 
 
-def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
+def check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     """
     Check for a collision between two sprites.
 
@@ -69,20 +69,20 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :rtype: bool
     """
     if __debug__:
-        if not isinstance(sprite1, Sprite):
-            raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+        if not isinstance(sprite1, BasicSprite):
+            raise TypeError("Parameter 1 is not an instance of a Sprite class.")
         if isinstance(sprite2, SpriteList):
             raise TypeError(
                 "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
                 "call check_for_collision_with_list instead of check_for_collision."
             )
-        elif not isinstance(sprite2, Sprite):
-            raise TypeError("Parameter 2 is not an instance of the Sprite class.")
+        elif not isinstance(sprite2, BasicSprite):
+            raise TypeError("Parameter 2 is not an instance of a Sprite class.")
 
     return _check_for_collision(sprite1, sprite2)
 
 
-def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
+def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     """
     Check for collision between two sprites.
 
@@ -125,7 +125,7 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     )
 
 
-def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList) -> List[Sprite]:
+def _get_nearby_sprites(sprite: SpriteType, sprite_list: SpriteList) -> List[SpriteType]:
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []
@@ -173,10 +173,10 @@ def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList) -> List[Sprite]
 
 
 def check_for_collision_with_list(
-    sprite: Sprite,
+    sprite: SpriteType,
     sprite_list: SpriteList,
     method: int = 0,
-) -> List[Sprite]:
+) -> List[SpriteType]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
@@ -191,7 +191,7 @@ def check_for_collision_with_list(
     :rtype: list
     """
     if __debug__:
-        if not isinstance(sprite, Sprite):
+        if not isinstance(sprite, BasicSprite):
             raise TypeError(
                 f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
             )
@@ -200,7 +200,7 @@ def check_for_collision_with_list(
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    sprites_to_check: Iterable[Sprite]
+    sprites_to_check: Iterable[SpriteType]
     # Spatial
     if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
@@ -224,10 +224,10 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(
-    sprite: Sprite,
+    sprite: SpriteType,
     sprite_lists: Iterable[SpriteList],
     method=1,
-) -> List[Sprite]:
+) -> List[SpriteType]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
 
@@ -240,11 +240,11 @@ def check_for_collision_with_lists(
     :rtype: list
     """
     if __debug__:
-        if not isinstance(sprite, Sprite):
+        if not isinstance(sprite, BasicSprite):
             raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
-    sprites: List["Sprite"] = []
-    sprites_to_check: Iterable[Sprite]    
+    sprites: List[SpriteType] = []
+    sprites_to_check: Iterable[SpriteType]    
 
     for sprite_list in sprite_lists:
         if sprite_list.spatial_hash is not None and method == 1:
@@ -262,7 +262,7 @@ def check_for_collision_with_lists(
     return sprites
 
 
-def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites at a particular point. This function sees if any sprite overlaps
     the specified point. If a sprite has a different center_x/center_y but touches the point,
@@ -280,7 +280,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    sprites_to_check: Iterable[Sprite]
+    sprites_to_check: Iterable[SpriteType]
 
     if sprite_list.spatial_hash is not None:
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_point(point)
@@ -294,7 +294,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     ]
 
 
-def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[SpriteType]:
     """
     Get a list of sprites whose center_x, center_y match the given point.
     This does NOT return sprites that overlap the point, the center has to be an exact match.
@@ -311,7 +311,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    sprites_to_check: Iterable[Sprite]
+    sprites_to_check: Iterable[SpriteType]
 
     if sprite_list.spatial_hash is not None:
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_point(point)
@@ -323,7 +323,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     return [s for s in sprites_to_check if s.position == point]
 
 
-def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[SpriteType]:
     """
     Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
     the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,
@@ -349,7 +349,7 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[Sprite]:
         (rect[1], rect[2]),
         (rect[0], rect[2]),
     )
-    sprites_to_check: Iterable[Sprite]
+    sprites_to_check: Iterable[SpriteType]
 
     if sprite_list.spatial_hash is not None:
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_rect(rect)

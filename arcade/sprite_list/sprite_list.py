@@ -19,12 +19,14 @@ from typing import (
     List,
     Optional,
     Tuple,
-    TypeVar,
-    Union, Generic, Callable
+    Union,
+    Generic,
+    Callable,
 )
 
 from arcade import (
     Sprite,
+    SpriteType,
     get_window,
     gl,
     float_to_byte_color,
@@ -37,12 +39,10 @@ from arcade.gl.vertex_array import Geometry
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas
 
-_SpriteType = TypeVar("_SpriteType", bound=Sprite)
-
 LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
-# 2^32-1 is usually reserved for primitive restart
+# 2^31-1 is usually reserved for primitive restart
 # NOTE: Possibly we want to use slot 0 for this?
 _SPRITE_SLOT_INVISIBLE = 2000000000
 
@@ -50,7 +50,7 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 _DEFAULT_CAPACITY = 100
 
 
-class SpriteList(Generic[_SpriteType]):
+class SpriteList(Generic[SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.
     Drawing single sprites will not get you anywhere performance wise
@@ -122,10 +122,10 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_buffer_free_slots: Deque[int] = deque()
 
         # List of sprites in the sprite list
-        self.sprite_list: List[_SpriteType] = []
+        self.sprite_list: List[SpriteType] = []
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
-        self.sprite_slot: Dict[_SpriteType, int] = dict()
+        self.sprite_slot: Dict[SpriteType, int] = dict()
 
         # Python representation of buffer data
         self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
@@ -243,14 +243,14 @@ class SpriteList(Generic[_SpriteType]):
         """Return if the sprite list contains the given sprite"""
         return sprite in self.sprite_slot
 
-    def __iter__(self) -> Iterator[_SpriteType]:
+    def __iter__(self) -> Iterator[SpriteType]:
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, index: int, sprite: _SpriteType):
+    def __setitem__(self, index: int, sprite: SpriteType):
         """Replace a sprite at a specific index"""
         # print(f"{id(self)} : {id(sprite)} __setitem__({index})")
 
@@ -506,7 +506,7 @@ class SpriteList(Generic[_SpriteType]):
         self._grow_sprite_buffers()  # We might need to increase our buffers
         return buff_slot
 
-    def index(self, sprite: _SpriteType) -> int:
+    def index(self, sprite: SpriteType) -> int:
         """
         Return the index of a sprite in the spritelist
 
@@ -566,7 +566,7 @@ class SpriteList(Generic[_SpriteType]):
             self._initialized = False
             self._init_deferred()
 
-    def pop(self, index: int = -1) -> _SpriteType:
+    def pop(self, index: int = -1) -> SpriteType:
         """
         Pop off the last sprite, or the given index, from the list
 
@@ -579,7 +579,7 @@ class SpriteList(Generic[_SpriteType]):
         self.remove(sprite)
         return sprite
 
-    def append(self, sprite: _SpriteType):
+    def append(self, sprite: SpriteType):
         """
         Add a new sprite to the list.
 
@@ -635,7 +635,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_index_data[i1] = slot_2
         self._sprite_index_data[i2] = slot_1
 
-    def remove(self, sprite: _SpriteType):
+    def remove(self, sprite: SpriteType):
         """
         Remove a specific sprite from the list.
         :param Sprite sprite: Item to remove from the list
@@ -667,7 +667,7 @@ class SpriteList(Generic[_SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Union[Iterable[_SpriteType], "SpriteList"]):
+    def extend(self, sprites: Union[Iterable[SpriteType], "SpriteList"]):
         """
         Extends the current list with the given iterable
 
@@ -676,7 +676,7 @@ class SpriteList(Generic[_SpriteType]):
         for sprite in sprites:
             self.append(sprite)
 
-    def insert(self, index: int, sprite: _SpriteType):
+    def insert(self, index: int, sprite: SpriteType):
         """
         Inserts a sprite at a given index.
 
@@ -790,13 +790,15 @@ class SpriteList(Generic[_SpriteType]):
         """
         self.spatial_hash = None
 
-    def enable_spatial_hashing(self, spatial_hash_cell_size=128):
+    def enable_spatial_hashing(self, spatial_hash_cell_size: int = 128):
         """Turn on spatial hashing."""
-        LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
-        from .spatial_hash import SpatialHash
-
-        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
-        self._recalculate_spatial_hashes()
+        if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
+            LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
+            from .spatial_hash import SpatialHash
+            self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+            self._recalculate_spatial_hashes()
+        else:
+            LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
 
     def _recalculate_spatial_hashes(self):
         if self.spatial_hash is None:
@@ -970,11 +972,10 @@ class SpriteList(Generic[_SpriteType]):
             self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # Handle the pixelated shortcut
-        if pixelated is not None:
-            if pixelated is True:
-                self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-            else:
-                self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+        if pixelated:
+            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+        else:
+            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
@@ -1081,7 +1082,7 @@ class SpriteList(Generic[_SpriteType]):
 
         self._sprite_index_changed = True
 
-    def _update_all(self, sprite: _SpriteType):
+    def _update_all(self, sprite: SpriteType):
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -1143,7 +1144,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def _update_position(self, sprite: _SpriteType) -> None:
+    def _update_position(self, sprite: SpriteType) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -1158,7 +1159,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def _update_position_x(self, sprite: _SpriteType) -> None:
+    def _update_position_x(self, sprite: SpriteType) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -1172,7 +1173,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3] = sprite._position[0]
         self._sprite_pos_changed = True
 
-    def _update_position_y(self, sprite: _SpriteType) -> None:
+    def _update_position_y(self, sprite: SpriteType) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -1186,7 +1187,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
-    def _update_depth(self, sprite: _SpriteType) -> None:
+    def _update_depth(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the depth of the specified sprite.
         Necessary for batch drawing of items.
@@ -1197,7 +1198,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[slot * 3 + 2] = sprite._depth
         self._sprite_pos_changed = True
 
-    def _update_color(self, sprite: _SpriteType) -> None:
+    def _update_color(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update position, angle, size and color
         of the specified sprite.
@@ -1212,7 +1213,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
         self._sprite_color_changed = True
 
-    def _update_size(self, sprite: _SpriteType) -> None:
+    def _update_size(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1224,7 +1225,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def _update_width(self, sprite: _SpriteType):
+    def _update_width(self, sprite: SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1235,7 +1236,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
-    def _update_height(self, sprite: _SpriteType):
+    def _update_height(self, sprite: SpriteType):
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1246,7 +1247,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def _update_angle(self, sprite: _SpriteType):
+    def _update_angle(self, sprite: SpriteType):
         """
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.

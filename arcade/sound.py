@@ -161,6 +161,11 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     :returns: Sound object which can be used by the  :func:`play_sound` function.
     :rtype: Sound
     """
+    # Initialize the audio driver if it hasn't been already.
+    # This call is to avoid audio driver initialization
+    # the first time a sound is played.
+    # This call is inexpensive if the driver is already initialized.
+    media.get_audio_driver()
 
     file_name = str(path)
     try:

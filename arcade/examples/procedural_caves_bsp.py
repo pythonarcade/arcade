@@ -289,6 +289,7 @@ class MyGame(arcade.Window):
         dg.generate_map()
 
         # Create sprites based on 2D grid
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         if not MERGE_SPRITES:
             # This is the simple-to-understand method. Each grid location
             # is a sprite.
@@ -296,7 +297,7 @@ class MyGame(arcade.Window):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
                     if value == '#':
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=WALL_SPRITE_SCALING)
+                        wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -318,7 +319,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=WALL_SPRITE_SCALING)
+                    wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count

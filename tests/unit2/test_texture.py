@@ -8,7 +8,8 @@ def test_create():
     texture = arcade.Texture(Image.new("RGBA", (10, 10)))
     assert texture.width == 10
     assert texture.height == 10
-    assert texture.origin is None
+    assert texture.file_path is None
+    assert texture.crop_values is None
     assert texture.image_data.hash == "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5"
     assert texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm.name}|"
 

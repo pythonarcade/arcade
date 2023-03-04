@@ -1,6 +1,6 @@
 import logging
 import hashlib
-from typing import Optional, Tuple, Type, Union, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
 from pathlib import Path
 
 import PIL.Image
@@ -17,12 +17,11 @@ from arcade.texture.transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
-    # get_shortest_transform,
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache
+from arcade import cache as _cache
 from arcade import hitbox
 
 if TYPE_CHECKING:
@@ -47,6 +46,7 @@ class ImageData:
     :param PIL.Image.Image image: The image for this texture
     :param str hash: The hash of the image
     """
+    __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
     def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
@@ -127,6 +127,23 @@ class Texture:
     :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
+    __slots__ = (
+        "_image_data",
+        "_size",
+        "_vertex_order",
+        "_transforms",
+        "_sprite",
+        "_sprite_list",
+        "_hit_box_algorithm",
+        "_hit_box_points",
+        "_hash",
+        "_cache_name",
+        "_atlas_name",
+        "_file_path",
+        "_crop_values",
+        "_properties",
+        "__weakref__",
+    )
     def __init__(
         self,
         image: Union[PIL.Image.Image, ImageData],
@@ -173,7 +190,19 @@ class Texture:
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
-        self._origin: Optional[str] = None
+        self._file_path: Optional[Path] = None
+        self._crop_values: Optional[Tuple[int, int, int, int]] = None
+        self._properties: Dict[str, Any] = {}
+
+    @property
+    def properties(self) -> Dict[str, Any]:
+        """
+        A dictionary of properties for this texture.
+        This can be used to store any data you want.
+
+        :return: Dict[str, Any]
+        """
+        return self._properties
 
     @property
     def cache_name(self) -> str:
@@ -246,19 +275,30 @@ class Texture:
         return self._atlas_name
 
     @property
-    def origin(self) -> Optional[str]:
+    def file_path(self) -> Optional[Path]:
         """
-        User defined metadata for the origin of this texture.
+        A Path object to the file this texture was loaded from
 
-        This is simply metadata useful for debugging.
-
-        :return: str
+        :return: Path
         """
-        return self._origin
+        return self._file_path
 
-    @origin.setter
-    def origin(self, value: str):
-        self._origin = value
+    @file_path.setter
+    def file_path(self, path: Path):
+        self._file_path = path
+
+    @property
+    def crop_values(self) -> Optional[Tuple[int, int, int, int]]:
+        """
+        The crop values used to create this texture in the referenced file
+
+        :return: Tuple[int, int, int, int]
+        """
+        return self._crop_values
+
+    @crop_values.setter
+    def crop_values(self, crop: Tuple[int, int, int, int]):
+        self._crop_values = crop
 
     @property
     def image(self) -> PIL.Image.Image:
@@ -450,7 +490,7 @@ class Texture:
         :param bool ignore_error: If True, ignore errors if the texture is not in the cache
         :return: None
         """
-        cache.texture_cache.delete(self)
+        _cache.texture_cache.delete(self)
 
     def flip_left_to_right(self) -> "Texture":
         """
@@ -597,7 +637,13 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def crop(self, x: int, y: int, width: int, height: int) -> "Texture":
+    def crop(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+    ) -> "Texture":
         """
         Create a new texture from a sub-section of this texture.
 
@@ -609,6 +655,7 @@ class Texture:
         :param int y: Y position to start crop
         :param int width: Width of crop
         :param int height: Height of crop
+        :param bool cache: If True, the cropped texture will be cached
         :return: Texture 
         """
         # Return self if the crop is the same size as the original image
@@ -624,10 +671,12 @@ class Texture:
         area = (x, y, x + width, y + height)
         image = self.image.crop(area)
         image_data = ImageData(image)
-        return Texture(
+        texture = Texture(
             image_data,
             hit_box_algorithm=self._hit_box_algorithm,
-        )        
+        )
+        texture.crop_values = (x, y, width, height)
+        return texture
 
     def _new_texture_transformed(
         self,
@@ -651,7 +700,8 @@ class Texture:
         )
         if swap_dims:
             texture.width, texture.height = self.height, self.width
-        texture.origin = self.origin
+        texture.file_path = self.file_path
+        texture.crop_values = self.crop_values
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
         # texture._transforms = get_shortest_transform(texture._vertex_order)
         texture._update_cache_names()
@@ -679,9 +729,8 @@ class Texture:
         return self.cache_name != other.cache_name
 
     def __repr__(self) -> str:
-        origin = getattr(self, "origin", None)
         cache_name = getattr(self, "cache_name", None)
-        return f"<Texture origin={origin} cache_name={cache_name}>"
+        return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
         pass
@@ -696,14 +745,14 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         # Check if we have cached points
-        points = cache.hit_box_cache.get(self.cache_name)
+        points = _cache.hit_box_cache.get(self.cache_name)
         if points:
             return points
 
         # Calculate points with the selected algorithm
         points = self._hit_box_algorithm.calculate(self.image)
         if self._hit_box_algorithm.cache:
-            cache.hit_box_cache.put(self.cache_name, points)
+            _cache.hit_box_cache.put(self.cache_name, points)
 
         return points
 
