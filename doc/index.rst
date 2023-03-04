@@ -62,6 +62,7 @@ The Python Arcade Library
    tutorials/compiling_with_nuitka/index
    tutorials/framebuffer/index
    tutorials/shader_tutorials
+   tutorials/menu/index
 
 .. image:: images/example_games.svg
    :alt: Programming guide icon
