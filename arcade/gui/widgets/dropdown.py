@@ -9,6 +9,23 @@ from arcade.gui.widgets.layout import UIBoxLayout
 
 
 class UIDropdown(UILayout):
+    """
+    A dropdown layout. When clicked displays a list of options provided.
+
+    Triggers an event when an option is clicked, the event can be read by
+
+    .. code:: py
+
+        dropdown = Dropdown()
+
+        @dropdown.event()
+        def on_change(event: UIOnChangeEvent):
+            print(event.old_value, event.new_value)
+
+    :param str default: The default value shown.
+    :param list[str] options: The options displayed when the layout is clicked. 
+    :param style: Used to style the dropdown.
+    """
     DIVIDER = None
 
     def __init__(
@@ -46,10 +63,12 @@ class UIDropdown(UILayout):
 
     @property
     def value(self):
+        """Current selected option."""
         return self._value
 
     @value.setter
     def value(self, value):
+        """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value
         self._default_button.text = self._value
@@ -105,4 +124,5 @@ class UIDropdown(UILayout):
             .align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
+        """To be implemented by the user, triggered when the current selected value is changed to a different option."""
         pass
