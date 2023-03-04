@@ -5,8 +5,7 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
-from copy import copy
-from typing import Dict, List, Tuple, Type
+from typing import Tuple
 from enum import Enum
 from arcade.math import rotate_point
 from arcade.types import PointList
@@ -90,17 +89,17 @@ class Rotate90Transform(Transform):
     Rotate 90 degrees clockwise.
     """
     order = (
-        VertexOrder.LOWER_LEFT.value,
-        VertexOrder.UPPER_LEFT.value,
-        VertexOrder.LOWER_RIGHT.value,
         VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_LEFT.value,
     )
 
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -90) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 90) for point in points)
 
 
 class Rotate180Transform(Transform):
