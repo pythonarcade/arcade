@@ -13,6 +13,25 @@ We can get a list of connected controllers by using :code:`arcade.get_controller
       else:
           print("There are no controllers.")
           self.controller = None
+          
+To simplify hot-plugging of Controllers, `the ControllerManager` class is available.
+To use a ControllerManager, first create an instance:
+
+.. code-block:: python
+
+      manager = arcade.input.ControllerManager()
+      
+To handle controller connections, attach handlers to the following methods:
+
+.. code-block:: python
+
+      @manager.event
+      def on_connect(controller):
+          print(f"Connected:  {controller}")
+
+      @manager.event
+      def on_disconnect(controller):
+          print(f"Disconnected:  {controller}")
 
 Controllers Values
 ==================
