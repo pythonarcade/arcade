@@ -85,19 +85,19 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
 @dataclass
 class UITextEvent(UIEvent):
-    """Covers all the text event."""
+    """Covers all the text cursor event."""
     text: str
 
 
 @dataclass
 class UITextMotionEvent(UIEvent):
-    """Triggered when cursor moves."""
+    """Triggered when text cursor moves."""
     motion: Any
 
 
 @dataclass
 class UITextMotionSelectEvent(UIEvent):
-    """Triggered when the cursor moves selecting the text with it."""
+    """Triggered when the text cursor moves selecting the text with it."""
     selection: Any
 
 
