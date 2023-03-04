@@ -23,10 +23,10 @@ The controllers values can be obtained by using :code:`self.controller.x` and :c
     def update(self, delta_time):
           # Update the position according to the game controller
           if self.controller:
-              print(self.controller.x, self.controller.y)
+              print(self.controller.leftx, self.controller.lefty)
 
-              self.object.change_x = self.controller.x
-              self.object.change_y = -self.controller.y
+              self.object.change_leftx = self.controller.leftx
+              self.object.change_lefty = -self.controller.lefty
 
 How To Use Buttons
 ===================
