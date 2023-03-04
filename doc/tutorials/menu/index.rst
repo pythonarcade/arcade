@@ -28,8 +28,8 @@ First we will import the arcade gui:
 
 .. literalinclude:: menu_02.py
     :caption: Importing arcade.gui
-    :lines: 4-6
-    :emphasize-lines: 5
+    :lines: 4-5
+    :emphasize-lines: 2
 
 Modify the MainView
 -------------------
@@ -38,32 +38,32 @@ We are going to add a button to change the view. For drawing a button we would n
 
 .. literalinclude:: menu_02.py
     :caption: Intialising the Manager
-    :lines: 15-19
-    :emphasize-lines: 18
+    :lines: 15-18
+    :emphasize-lines: 4
 
 After initialising the manager we need to enable it when the view is shown and disable it when the view is hiddien.
 
 .. literalinclude:: menu_02.py
     :caption: Enabling the Manager
-    :lines: 42-48
-    :emphasize-lines: 46-47
+    :pyobject: MainView.on_show_view
+    :emphasize-lines: 3-4
 
 .. literalinclude:: menu_02.py
     :caption: Disabling the Manager
-    :lines: 37-39
+    :pyobject: MainView.on_hide_view
 
 We also need to draw the childrens of the menu in `on_draw`.
 
  .. literalinclude:: menu_02.py
     :caption: Drawing Children's of the Manager
-    :lines: 49-56
-    :emphasize-lines: 54-55
+    :pyobject: MainView.on_draw
+    :emphasize-lines: 6-7
 
 Now we have successfully setup the manager, only thing left it to add the button. We are using `UIAnchorLayout` to position the button.
 
   .. literalinclude:: menu_02.py
     :caption: Initialising the Button
-    :lines: 20-36
+    :lines: 20-35
 
 
 Initialise the Menu View
@@ -73,4 +73,33 @@ We make a boiler plate view just like we did in Step-1.
 
 .. literalinclude:: menu_02.py
     :caption: Initialise the Menu View
-    :lines: 57-70
+    :pyobject: MenuView
+
+Step 3: Setting Up the Menu View
+--------------------------------
+
+In this step we will setup the display buttons of the actual menu.
+
+Initialising the Buttons
+------------------------
+
+First we setup buttons for resume, starting a new game, volume, options and exit.
+
+.. literalinclude:: menu_03.py
+    :caption: Initialising the Buttons
+    :lines: 63-68
+
+Displaying the Buttons in a Grid
+---------------------------------
+
+After setting up the buttons we add them to `UIGridLayout`, so that they can displayed in a grid like manner.
+
+.. literalinclude:: menu_03.py
+    :caption: Setting up the Grid
+    :lines: 70-86
+
+Final code for the `__init__` method after these.
+
+.. literalinclude:: menu_03.py
+    :caption: __init__
+    :pyobject: MenuView.__init__

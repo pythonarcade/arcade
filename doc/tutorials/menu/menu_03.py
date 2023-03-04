@@ -17,7 +17,7 @@ class MainView(arcade.View):
 
         self.manager = arcade.gui.UIManager()
 
-        switch_menu_button = arcade.gui.UIFlatButton(text="Switch to Menu", width=250)
+        switch_menu_button = arcade.gui.UIFlatButton(text="Pause", width=150)
 
         # Initialise the button with an on_click event.
         @switch_menu_button.event("on_click")
@@ -58,6 +58,33 @@ class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        self.manager = arcade.gui.UIManager()
+
+        resume = arcade.gui.UIFlatButton(text="Resume", width=150)
+        start_new_game = arcade.gui.UIFlatButton(text="Start New Game", width=150)
+        volume = arcade.gui.UIFlatButton(text="Volume", width=150)
+        options = arcade.gui.UIFlatButton(text="Options", width=150)
+
+        exit = arcade.gui.UIFlatButton(text="Exit", width=300)
+
+        # Initialise a grid in which widgets can be arranged.
+        self.grid = arcade.gui.UIGridLayout(column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20)
+
+        # Adding the buttons to the layout.
+        self.grid.add(resume, col_num=0, row_num=0)
+        self.grid.add(start_new_game, col_num=1, row_num=0)
+        self.grid.add(volume, col_num=0, row_num=1)
+        self.grid.add(options, col_num=1, row_num=1)
+        self.grid.add(exit, col_num=0, row_num=2, col_span=2)
+
+        self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())
+
+        self.anchor.add(
+            anchor_x="center_x",
+            anchor_y="center_y",
+            child=self.grid,
+        )
+
     def on_hide_view(self):
         # Disable the UIManager when the view is hidden.
         self.manager.disable()
@@ -68,11 +95,11 @@ class MenuView(arcade.View):
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
 
+        # Enable the UIManager when the view is showm. 
         self.manager.enable()
 
     def on_draw(self):
         """ Render the screen. """
-
         # Clear the screen
         self.clear()
         self.manager.draw()
