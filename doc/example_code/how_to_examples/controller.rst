@@ -106,7 +106,7 @@ The (-1.0 to 1.0) Values On Controller
 
 The Joystick Movements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. image:: joystickController.png
+.. image:: controller.png
     :width: 400px
     :align: center
     :alt: Screenshot of controller movements
