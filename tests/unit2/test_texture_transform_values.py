@@ -98,7 +98,7 @@ def test_transpose_transform():
 
     # Test vertex order
     result = TransposeTransform.transform_vertex_order(ORDER)
-    assert result == (3, 1, 2, 0)
+    assert result == (0, 2, 1, 3)
     result = TransposeTransform.transform_vertex_order(result)
     assert result == ORDER
 
@@ -113,6 +113,6 @@ def test_transverse_transform():
 
     # Test vertex order
     result = TransverseTransform.transform_vertex_order(ORDER)
-    assert result == (0, 2, 1, 3)
+    assert result == (3, 1, 2, 0)
     result = TransverseTransform.transform_vertex_order(result)
     assert result == ORDER

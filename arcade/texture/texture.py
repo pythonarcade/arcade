@@ -703,7 +703,6 @@ class Texture:
         texture.file_path = self.file_path
         texture.crop_values = self.crop_values
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        # texture._transforms = get_shortest_transform(texture._vertex_order)
         texture._update_cache_names()
         return texture
 

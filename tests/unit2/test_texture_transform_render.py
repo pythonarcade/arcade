@@ -5,6 +5,7 @@ import arcade
 import pytest
 from PIL import Image, ImageDraw
 from arcade.texture.transforms import (
+    Transform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
@@ -12,21 +13,17 @@ from arcade.texture.transforms import (
     FlipTopToBottomTransform,
     TransposeTransform,
     TransverseTransform,
-    VertexOrder,
 )
-# Hit box points for a 128 x 128 texture
-HIT_BOX_POINTS = (
-    (-64.0, -64.0),
-    (64.0, -64.0),
-    (64.0, 64.0),
-    (-64.0, 64.0),
-)
-ORDER = (
-    VertexOrder.UPPER_LEFT.value,
-    VertexOrder.UPPER_RIGHT.value,
-    VertexOrder.LOWER_LEFT.value,
-    VertexOrder.LOWER_RIGHT.value,
-)
+# Arcade transform, PIL transform
+TRANSFORMS = [
+    (Rotate90Transform, Image.Transpose.ROTATE_90, 1),
+    (Rotate180Transform, Image.Transpose.ROTATE_180, 2),
+    (Rotate270Transform, Image.Transpose.ROTATE_270, 3),
+    (FlipLeftToRightTransform, Image.FLIP_LEFT_RIGHT, 4),
+    (FlipTopToBottomTransform, Image.FLIP_TOP_BOTTOM, 5),
+    (TransposeTransform, Image.TRANSPOSE, 6),
+    (TransverseTransform, Image.TRANSVERSE, 7)
+]
 
 @pytest.fixture(scope="module")
 def image():
@@ -39,103 +36,26 @@ def image():
     return im
 
 
-def test_rotate90_transform(ctx: arcade.ArcadeContext, image):
-    texture = arcade.Texture(image)
-    image = image.transpose(Image.Transpose.ROTATE_90)
+@pytest.mark.parametrize("transform, pil_transform, number", TRANSFORMS)
+def test_rotate90_transform(ctx: arcade.ArcadeContext, image, transform, pil_transform, number):
+    """
+    Compare pixel data between PIL and Arcade transforms.
+    """
+    texture = arcade.Texture(image)._new_texture_transformed(transform)
     fbo = ctx.framebuffer(color_attachments=[ctx.texture(image.size, components=4)])
-    # sprite = arcade.Sprite(arcade.)
-    # with fbo.activate():
+    assert image.size == fbo.size
+    sprite = arcade.Sprite(texture, center_x=image.width // 2, center_y=image.height // 2)
+    with fbo.activate():
+        fbo.clear()
+        ctx.projection_2d = (0, image.width, 0, image.height)
+        sprite.draw(pixelated=True)
 
-# def test_rotate90_transform():
-#     """Test rotate transform."""
-#     # One rotation
-#     result = Rotate90Transform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
-#     # Three more should be the original points
-#     result = Rotate90Transform.transform_hit_box_points(result)
-#     result = Rotate90Transform.transform_hit_box_points(result)
-#     result = Rotate90Transform.transform_hit_box_points(result)
-#     assert result == HIT_BOX_POINTS
+    expected_image = image.transpose(pil_transform)
+    fbo_data = fbo.read(components=4)
+    fbo_image = Image.frombytes("RGBA", image.size, fbo_data).transpose(Image.FLIP_TOP_BOTTOM)
 
-#     # Test vertex order
-#     result = Rotate90Transform.transform_vertex_order(ORDER)
-#     assert result == (2, 0, 3, 1)
-#     result = Rotate90Transform.transform_vertex_order(result)
-#     result = Rotate90Transform.transform_vertex_order(result)
-#     result = Rotate90Transform.transform_vertex_order(result)
-#     assert result == ORDER
+    # expected_image.save(f"im_expected_{number}.png")
+    # fbo_image.save(f"im_fbo_{number}.png")
+    assert fbo_image.size == expected_image.size
 
-
-# def test_rotate180_transform():
-#     result = Rotate180Transform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0))
-
-#     result = Rotate180Transform.transform_vertex_order(ORDER)
-#     assert result == (3, 2, 1, 0)
-
-
-# def test_rotate270_transform():
-#     result = Rotate270Transform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((64.0, -64.0), (64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0))
-
-#     result = Rotate270Transform.transform_vertex_order(ORDER)
-#     assert result == (1, 3, 0, 2)
-
-
-# def test_flip_left_to_right_transform():
-#     # Flip left to right
-#     result = FlipLeftToRightTransform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0))
-#     # Flip back
-#     result = FlipLeftToRightTransform.transform_hit_box_points(result)
-#     assert result == HIT_BOX_POINTS
-
-#     # Test vertex order
-#     result = FlipLeftToRightTransform.transform_vertex_order(ORDER)
-#     assert result == (1, 0, 3, 2)
-#     result = FlipLeftToRightTransform.transform_vertex_order(result)
-#     assert result == ORDER
-
-
-# def test_flip_top_to_bottom_transform():
-#     # Flip top to bottom
-#     result = FlipTopToBottomTransform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((-64.0, 64.0), (64.0, 64.0), (64.0, -64.0), (-64.0, -64.0))
-#     # Flip back
-#     result = FlipTopToBottomTransform.transform_hit_box_points(result)
-#     assert result == HIT_BOX_POINTS
-
-#     result = FlipTopToBottomTransform.transform_vertex_order(ORDER)
-#     assert result == (2, 3, 0, 1)
-#     result = FlipTopToBottomTransform.transform_vertex_order(result)
-#     assert result == ORDER
-
-
-# def test_transpose_transform():
-#     # Transpose
-#     result = TransposeTransform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
-#     # Flip back
-#     result = TransposeTransform.transform_hit_box_points(result)
-#     assert result == HIT_BOX_POINTS
-
-#     # Test vertex order
-#     result = TransposeTransform.transform_vertex_order(ORDER)
-#     assert result == (3, 1, 2, 0)
-#     result = TransposeTransform.transform_vertex_order(result)
-#     assert result == ORDER
-
-
-# def test_transverse_transform():
-#     # Transverse
-#     result = TransverseTransform.transform_hit_box_points(HIT_BOX_POINTS)
-#     assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
-#     # Flip back
-#     result = TransverseTransform.transform_hit_box_points(result)
-#     assert result == HIT_BOX_POINTS
-
-#     # Test vertex order
-#     result = TransverseTransform.transform_vertex_order(ORDER)
-#     assert result == (0, 2, 1, 3)
-#     result = TransverseTransform.transform_vertex_order(result)
-#     assert result == ORDER
+    assert fbo_image.tobytes() == expected_image.tobytes()

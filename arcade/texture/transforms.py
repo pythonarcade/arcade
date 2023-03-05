@@ -179,10 +179,10 @@ class TransposeTransform(Transform):
     Transpose texture.
     """
     order = (
-        VertexOrder.LOWER_RIGHT.value,
-        VertexOrder.UPPER_RIGHT.value,
-        VertexOrder.LOWER_LEFT.value,
         VertexOrder.UPPER_LEFT.value,
+        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_RIGHT.value,
     )
 
     @staticmethod
@@ -197,10 +197,10 @@ class TransverseTransform(Transform):
     Transverse texture.
     """
     order = (
-        VertexOrder.UPPER_LEFT.value,
-        VertexOrder.LOWER_LEFT.value, 
-        VertexOrder.UPPER_RIGHT.value,
         VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_LEFT.value,
     )
 
     @staticmethod
