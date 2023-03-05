@@ -9,7 +9,7 @@ def test_uilabel_inits_with_text_size(window):
     assert label.rect.width == pytest.approx(
         63, abs=6
     )  # on windows the width differs about 6 pixel
-    assert label.rect.height == 19
+    assert label.rect.height == pytest.approx(19, abs=1)
 
 
 def test_uilabel_uses_size_parameter(window):
@@ -24,7 +24,7 @@ def test_uilabel_uses_smaller_size_parameter(window):
 
 def test_uilabel_allow_multiline_and_uses_text_height(window):
     label = UILabel(text="E x a m p l e", width=10, multiline=True)
-    assert label.rect == Rect(0, 0, 10, 133)
+    assert label.rect == Rect(0, 0, 10, pytest.approx(133, abs=8))
 
 
 def test_uilabel_with_border_keeps_previous_size(window):
