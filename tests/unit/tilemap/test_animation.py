@@ -1,16 +1,9 @@
-import os
-
 import arcade
 
 
-def test_rotation_mirror():
-
-    # Change to current directory
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
-
+def test_rotation_mirror(fixtures):
     # Read in the tiled map
-    tile_map = arcade.load_tilemap("../tiled_maps/animation.json")
+    tile_map = arcade.load_tilemap(fixtures.path("animation.json"))
 
     # --- Platforms ---
     assert "Blocking Sprites" in tile_map.sprite_lists

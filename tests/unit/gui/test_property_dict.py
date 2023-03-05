@@ -2,7 +2,7 @@ import gc
 from typing import Dict
 
 from arcade.gui.property import bind, DictProperty, _ObservableDict
-from tests.test_gui.test_property import Observer
+from .test_property import Observer
 
 
 def test_dict_property_gc():

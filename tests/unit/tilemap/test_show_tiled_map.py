@@ -1,13 +1,11 @@
-from pathlib import Path
-
 import arcade
 
 TILE_SCALING = 0.5
 
 
-def test_show_tilemap(window: arcade.Window):
+def test_show_tilemap(window: arcade.Window, fixtures):
     my_map = arcade.load_tilemap(
-        Path(__file__).parent.resolve() / "../tiled_maps/animation.json",
+        fixtures.path("animation.json"),
         scaling=TILE_SCALING,
     )
 
