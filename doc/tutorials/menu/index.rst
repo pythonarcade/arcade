@@ -230,7 +230,7 @@ Adding it to the widget layout.
     :emphasize-lines: 3-6
 
 Adding a Dropdowm
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 We add a dropdowm by using `UIDropdown`
 
