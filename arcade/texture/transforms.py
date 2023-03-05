@@ -212,10 +212,16 @@ class TransverseTransform(Transform):
 # Pre-calculated orientations. This can be calculated at runtime,
 # but it's faster to just pre-calculate it.
 # Key is the vertex order
-# Value is the orientation (flip_x, flip_y, rotation)
+# Value is the orientation (flip_left_right, flip_top_down, rotation)
 ORIENTATIONS = {
-    (0, 1, 2, 3): (False, False, 0),
-    
+    (0, 1, 2, 3): (0, False, False),  # Default
+    (2, 0, 3, 1): (90, False, False),  # Rotate 90
+    (3, 2, 1, 0): (180, False, False),  # Rotate 180
+    (1, 3, 0, 2): (270, False, False),  # Rotate 270
+    (1, 0, 3, 2): (0, True, False),  # Flip left to right
+    (2, 3, 0, 1): (0, False, True),  # Flip top to bottom
+    (0, 2, 1, 3): (-90, True, False),  # Transpose
+    (3, 1, 2, 0): (90, True, False),  # Transverse
 }
 
 
