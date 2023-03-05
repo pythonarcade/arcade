@@ -17,7 +17,7 @@ class MainView(arcade.View):
 
         self.manager = arcade.gui.UIManager()
 
-        switch_menu_button = arcade.gui.UIFlatButton(text="Switch to Menu", width=250)
+        switch_menu_button = arcade.gui.UIFlatButton(text="Pause", width=250)
 
         # Initialise the button with an on_click event.
         @switch_menu_button.event("on_click")

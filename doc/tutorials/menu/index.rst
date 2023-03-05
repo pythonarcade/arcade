@@ -6,8 +6,16 @@
 Making a Menu with Arcade's GUI
 ===============================
 
+.. image:: menu.gif
+    :width: 80%
+
+This tutorial shows how to use most of arcade's gui's widgets.
+
 Step 1: Open a Window
 ---------------------
+
+.. image:: menu_01.png
+    :width: 50%
 
 First, let's start a blank window with a view.
 
@@ -17,6 +25,9 @@ First, let's start a blank window with a view.
 
 Step 2: Switching to Menu View
 -------------------------------
+
+.. image:: menu_02.png
+    :width: 50%
 
 For this section we will switch the current view of the window to the menu view.
 
@@ -84,6 +95,9 @@ Program Listings
 Step 3: Setting Up the Menu View
 --------------------------------
 
+.. image:: menu_03.png
+    :width: 50%
+
 In this step we will setup the display buttons of the actual menu.
 
 Initialising the Buttons
@@ -120,6 +134,9 @@ Program Listings
 Step 4: Configuring the Menu Buttons
 ------------------------------------
 
+.. image:: menu_04.png
+    :width: 50%
+
 We basically add event listener for `on_click` for buttons.
 
 Adding `on_click` Callback for Resume, Start New Game and Exit
@@ -147,7 +164,110 @@ We have got ourselves a fake window currently. We now, pair it up with the volum
     :lines: 106-114
 
 Program Listings
-----------------
+~~~~~~~~~~~~~~~~
 
 * :ref:`menu_04` |larr| Where we are right now
 * :ref:`menu_04_diff` |larr| What we changed to get here
+
+Step 5: Finalising the Fake Window aka the Sub Menu
+---------------------------------------------------
+
+.. image:: menu_05.png
+    :width: 50%
+
+We finalise the menu or you can call it the last step!
+
+Editing the Parameters for the Sub Menu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We will edit the parameters for the sub menu to suit our needs. Will explain later why are those parameters needed.
+
+.. literalinclude:: menu_05.py
+    :caption: Editing parameters
+    :lines: 136-138
+
+We also need to change accordingly the places where we have used this class i.e options and volume `on_click` event listener.
+
+.. literalinclude:: menu_05.py
+    :caption: Editing arguments
+    :lines: 106-114
+
+Now you might be getting a little idea why we have edited the parameters but follow on to actually know the reason.
+
+
+Adding a Input Field
+~~~~~~~~~~~~~~~~~~~~~
+
+We will use `UIInputText` to add an input field. The `with_border()` function creates a border around the widget with color(default argument is black) black and thickness(default argument is 2px) 2px.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding input field
+    :lines: 159-164
+    :emphasize-lines: 3-6
+
+Adding it to the widget layout.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding input field to the layout
+    :lines: 191-193
+
+If you paid attention when we defined the `input_text` variable we passed the `text` parameter with our `input_text_default` argument. We basically added those parameters in our sub menu so that it can be used by both volume and options button, with texts respecting their names. We will repeat this again in the last also for those of you who are skipping through this section :P.
+
+Adding a Toggle Button
+~~~~~~~~~~~~~~~~~~~~~~
+
+Don't go on the section title much, in arcade the `UITextureToggle` is not really a button it switches between two textures when clicked. Yes, it functions like a button but by "is not really a button" we meant that it doesn't inherits the button class.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding toggle button
+    :lines: 166-177
+
+Adding it to the widget layout.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding toggle button to the layout
+    :lines: 191-196
+    :emphasize-lines: 3-6
+
+Adding a Dropdowm
+~~~~~~~~~~~~~~~
+
+We add a dropdowm by using `UIDropdown`
+
+.. literalinclude:: menu_05.py
+    :caption: Adding dropdown
+    :lines: 179-181
+
+Adding it to the widget layout.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding dropdown to the layout
+    :lines: 197-198
+
+Adding a Slider
+~~~~~~~~~~~~~~~
+
+The final widget. In arcade you can use `UISlider` to implement a slider. Theres a functionality to style the slider, this is also present for `UIFlatButton` and `UITextureButton`
+
+.. literalinclude:: menu_05.py
+    :caption: Adding slider
+    :lines: 183-189
+
+Adding it to the widget layout
+
+.. literalinclude:: menu_05.py
+    :caption: Adding slider to the layout
+    :lines: 199-201
+
+Finishing touches
+~~~~~~~~~~~~~~~~~
+
+As we mentioned earlier, to explain the use of those parameters to the class. We basically used them so it can be used by both options and volume as we wanted to have different text for both.
+For those who have read the full tutorial line-by-line; 'They will never know'. :D.
+
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`menu_05` |larr| Where we are right now
+* :ref:`menu_05_diff` |larr| What we changed to get here

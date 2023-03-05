@@ -159,7 +159,10 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         back_button.on_click = self.on_click_back_button
 
         input_text = arcade.gui.UIInputText(text=input_text_default, width=250).with_border()
+        # Adds a widget of the color DARK_BLUE_GRAY with height to separate the widgets
+        # Its another method for adding space between widgets in a layout.
         space_20 = arcade.gui.UISpace(height=20, color=arcade.color.DARK_BLUE_GRAY)
+
         toggle_label = arcade.gui.UILabel(text=toggle_label)
         # Load the on-off textures. 
         on_texture = arcade.load_texture(":resources:gui_basic_assets/toggle/circle_switch_on.png")
@@ -178,7 +181,12 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         space_80 = arcade.gui.UISpace(height=80, color=arcade.color.DARK_BLUE_GRAY)
 
         slider_label = arcade.gui.UILabel(text=slider_label)
-        slider = arcade.gui.UISlider(value=50, width=250)
+        pressed_style = arcade.gui.UISlider.UIStyle(filled_bar=arcade.color.GREEN, unfilled_bar=arcade.color.RED)
+        default_style = arcade.gui.UISlider.UIStyle()
+        style_dict = {"press": pressed_style, "normal": default_style, "hovered": default_style, "disabled": default_style}
+        # Configuring the styles is optional.
+        slider = arcade.gui.UISlider(value=50, width=250, style=style_dict)
+        space_70 = arcade.gui.UISpace(height=70, color=arcade.color.DARK_BLUE_GRAY)
 
         widget_layout = arcade.gui.UIBoxLayout(align="left")
         widget_layout.add(input_text)
@@ -190,6 +198,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         widget_layout.add(space_80)
         widget_layout.add(slider_label)
         widget_layout.add(slider)
+        widget_layout.add(space_70)
         widget_layout.add(back_button)
 
         frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")

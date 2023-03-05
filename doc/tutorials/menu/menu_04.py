@@ -149,7 +149,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             bottom=7,
             top=7,
             texture=arcade.load_texture(
-                ":resources:gui_basic_assets/window/grey_panel.png"
+                ":resources:gui_basic_assets/window/dark_blue_gray_panel.png"
             )
         ))
 
@@ -157,10 +157,10 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         # The event listener we used earlier for the button will not work here.
         back_button.on_click = self.on_click_back_button
 
-        widget_layout = arcade.gui.UIBoxLayout(spacing=20)
+        widget_layout = arcade.gui.UIBoxLayout(align="left")
         widget_layout.add(back_button)
 
-        frame.add(child=widget_layout, anchor_x="center_x", anchor_y="bottom")
+        frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
 
     def on_click_back_button(self, event):
         # Removes the widget from the manager.

@@ -171,7 +171,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
             )
 
     def do_render(self, surface: Surface):
-        style = self.get_current_style()
+        style = self.get_current_style() or {}
 
         self.prepare_render(surface)
 

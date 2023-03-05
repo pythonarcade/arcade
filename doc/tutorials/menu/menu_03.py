@@ -66,7 +66,7 @@ class MenuView(arcade.View):
         volume = arcade.gui.UIFlatButton(text="Volume", width=150)
         options = arcade.gui.UIFlatButton(text="Options", width=150)
 
-        exit = arcade.gui.UIFlatButton(text="Exit", width=300)
+        exit = arcade.gui.UIFlatButton(text="Exit", width=320)
 
         # Initialise a grid in which widgets can be arranged.
         self.grid = arcade.gui.UIGridLayout(column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20)
