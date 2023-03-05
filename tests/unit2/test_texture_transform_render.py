@@ -41,7 +41,7 @@ def test_rotate90_transform(ctx: arcade.ArcadeContext, image, transform, pil_tra
     """
     Compare pixel data between PIL and Arcade transforms.
     """
-    texture = arcade.Texture(image)._new_texture_transformed(transform)
+    texture = arcade.Texture(image).transform(transform)
     fbo = ctx.framebuffer(color_attachments=[ctx.texture(image.size, components=4)])
     assert image.size == fbo.size
     sprite = arcade.Sprite(texture, center_x=image.width // 2, center_y=image.height // 2)
