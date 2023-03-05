@@ -1,6 +1,6 @@
 import logging
 import hashlib
-from typing import Any, Dict, Optional, Tuple, List, Type, Union, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
 
 import PIL.Image
@@ -8,7 +8,7 @@ import PIL.ImageOps
 import PIL.ImageDraw
 
 from arcade.types import Color
-from arcade.texture_transforms import (
+from arcade.texture.transforms import (
     Transform,
     FlipLeftToRightTransform,
     FlipTopToBottomTransform,
@@ -17,6 +17,7 @@ from arcade.texture_transforms import (
     Rotate270Transform,
     TransposeTransform,
     TransverseTransform,
+    ORIENTATIONS
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
@@ -172,8 +173,6 @@ class Texture:
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
-        # List of transforms applied to this texture
-        self._transforms: List[Type[Transform]] = []
 
         # Internal sprite stuff for drawing
         self._sprite: Optional[Sprite] = None
@@ -504,7 +503,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(FlipLeftToRightTransform)
+        return self.transform(FlipLeftToRightTransform)
 
     def flip_top_to_bottom(self) -> "Texture":
         """
@@ -516,7 +515,7 @@ class Texture:
 
         :return: Texture
         """
-        return self._new_texture_transformed(FlipTopToBottomTransform)
+        return self.transform(FlipTopToBottomTransform)
 
     def flip_horizontally(self) -> "Texture":
         """
@@ -566,7 +565,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransposeTransform, swap_dims=True)
+        return self.transform(TransposeTransform)
 
     def transverse(self) -> "Texture":
         """
@@ -579,7 +578,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransverseTransform, swap_dims=True)
+        return self.transform(TransverseTransform)
 
     def rotate_90(self, count: int = 1) -> "Texture":
         """
@@ -597,7 +596,7 @@ class Texture:
         transform = angles[count]
         if transform is None:
             return self
-        return self._new_texture_transformed(transform, swap_dims=True)
+        return self.transform(transform)
 
     def rotate_180(self) -> "Texture":
         """
@@ -609,7 +608,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate180Transform)
+        return self.transform(Rotate180Transform)
 
     def rotate_270(self) -> "Texture":
         """
@@ -621,7 +620,41 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate270Transform, swap_dims=True)
+        return self.transform(Rotate270Transform)
+
+    def transform(
+        self,
+        transform: Type[Transform],
+    ) -> "Texture":
+        """
+        Create a new texture with the given transform applied.
+
+        :param Transform transform: Transform to apply
+        :return: New texture
+        """
+        new_points = transform.transform_hit_box_points(self._hit_box_points)
+        texture = Texture(
+            self.image_data,
+            hit_box_algorithm=self._hit_box_algorithm,
+            hit_box_points=new_points,
+            hash=self._hash,
+        )
+        texture.width = self.width
+        texture.height = self.height
+        texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
+        texture.file_path = self.file_path
+        texture.crop_values = self.crop_values
+
+        # Swap width and height of the texture if needed
+        old_rotation = ORIENTATIONS[self._vertex_order][0]
+        new_rotation = ORIENTATIONS[texture._vertex_order][0]
+        old_swapped = abs(old_rotation) % 180 != 0
+        new_swapped = abs(new_rotation) % 180 != 0
+        if old_swapped != new_swapped:
+            texture.width, texture.height = self.height, self.width
+
+        texture._update_cache_names()
+        return texture
 
     @staticmethod
     def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
@@ -678,35 +711,6 @@ class Texture:
             hit_box_algorithm=self._hit_box_algorithm,
         )
         texture.crop_values = (x, y, width, height)
-        return texture
-
-    def _new_texture_transformed(
-        self,
-        transform: Type[Transform],
-        swap_dims: bool = False,
-    ) -> "Texture":
-        """
-        Create a new texture with the given transform applied.
-
-        :param Transform transform: Transform to apply
-        :param bool swap_dims: If True, swap the width and height of the texture
-        :return: New texture
-        """
-        points = transform.transform_hit_box_points(self._hit_box_points)
-        texture = Texture(
-            self.image_data,
-            # Not relevant, but copy over the value
-            hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_points=points,
-            hash=self._hash,
-        )
-        if swap_dims:
-            texture.width, texture.height = self.height, self.width
-        texture.file_path = self.file_path
-        texture.crop_values = self.crop_values
-        texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
-        # texture._transforms = get_shortest_transform(texture._vertex_order)
-        texture._update_cache_names()
         return texture
 
     # ------------------------------------------------------------

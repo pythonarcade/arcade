@@ -5,8 +5,7 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
-from copy import copy
-from typing import Dict, List, Tuple, Type
+from typing import Tuple
 from enum import Enum
 from arcade.math import rotate_point
 from arcade.types import PointList
@@ -131,7 +130,6 @@ class Rotate270Transform(Transform):
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_LEFT.value,
     )
-
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
@@ -149,7 +147,7 @@ class FlipLeftToRightTransform(Transform):
         VertexOrder.LOWER_RIGHT.value,
         VertexOrder.LOWER_LEFT.value, 
     )
-
+ 
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
@@ -180,24 +178,6 @@ class TransposeTransform(Transform):
     Transpose texture.
     """
     order = (
-        VertexOrder.LOWER_RIGHT.value,
-        VertexOrder.UPPER_RIGHT.value,
-        VertexOrder.LOWER_LEFT.value,
-        VertexOrder.UPPER_LEFT.value,
-    )
-
-    @staticmethod
-    def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
-        return tuple((point[1], point[0]) for point in points)
-
-
-class TransverseTransform(Transform):
-    """
-    Transverse texture.
-    """
-    order = (
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_LEFT.value, 
         VertexOrder.UPPER_RIGHT.value,
@@ -208,44 +188,49 @@ class TransverseTransform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple((-point[1], -point[0]) for point in points)
+        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = Rotate270Transform.transform_hit_box_points(points)
+        return points
 
 
-# Shortest representation for each vertex order
-# >>> list(permutations(range(4), 4)) 
-TRANSFORM_SHORTCUTS: Dict[Tuple[int, int, int, int], List[Type[Transform]]] = {
-    (0, 1, 2, 3): [],  # default
-    # (0, 1, 3, 2): [],  # Impossible
-    (0, 2, 1, 3): [TransverseTransform],
-    # (0, 2, 3, 1): [],
-    # (0, 3, 1, 2): [],
-    # (0, 3, 2, 1): [],
-    # (1, 0, 2, 3): [],
-    (1, 0, 3, 2): [FlipLeftToRightTransform],
-    # (1, 2, 0, 3): [],
-    (1, 2, 3, 0): [Rotate270Transform],
-    (1, 3, 0, 2): [Rotate270Transform],
-    # (1, 3, 2, 0): [],
-    # (2, 0, 1, 3): [],
-    (2, 0, 3, 1): [Rotate90Transform],
-    # (2, 1, 0, 3): [],
-    # (2, 1, 3, 0): [],
-    (2, 3, 0, 1): [Rotate180Transform],
-    # (2, 3, 1, 0): [],
-    (3, 0, 1, 2): [Rotate90Transform],
-    # (3, 0, 2, 1): [],
-    # (3, 1, 0, 2): [],
-    (3, 1, 2, 0): [TransposeTransform],
-    # (3, 2, 0, 1): [],
-    (3, 2, 1, 0): [TransposeTransform, TransverseTransform],
+class TransverseTransform(Transform):
+    """
+    Transverse texture.
+    """
+    order = (
+        VertexOrder.LOWER_RIGHT.value,
+        VertexOrder.UPPER_RIGHT.value,
+        VertexOrder.LOWER_LEFT.value,
+        VertexOrder.UPPER_LEFT.value,
+    )
+
+    @staticmethod
+    def transform_hit_box_points(
+        points: PointList,
+    ) -> PointList:
+        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = Rotate90Transform.transform_hit_box_points(points)
+        return points
+
+
+# Pre-calculated orientations. This can be calculated at runtime,
+# but it's faster to just pre-calculate it.
+# Key is the vertex order
+# Value is the orientation (flip_left_right, flip_top_down, rotation)
+ORIENTATIONS = {
+    (0, 1, 2, 3): (0, False, False),  # Default
+    (2, 0, 3, 1): (90, False, False),  # Rotate 90
+    (3, 2, 1, 0): (180, False, False),  # Rotate 180
+    (1, 3, 0, 2): (270, False, False),  # Rotate 270
+    (1, 0, 3, 2): (0, True, False),  # Flip left to right
+    (2, 3, 0, 1): (0, False, True),  # Flip top to bottom
+    (0, 2, 1, 3): (-90, True, False),  # Transpose
+    (3, 1, 2, 0): (90, True, False),  # Transverse
 }
 
 
-def get_shortest_transform(vertex_order: Tuple[int, int, int, int]) -> List[Type[Transform]]:
+def get_orientation(order: Tuple[int, int, int, int]) -> int:
     """
-    Returns the shortest list of transforms representing the given vertex order.
+    Get orientation info from the vertex order
     """
-    transforms = TRANSFORM_SHORTCUTS.get(vertex_order, None)
-    if transforms is None:
-        raise ValueError(f"Cannot normalize vertex order: {vertex_order}")
-    return copy(transforms)
+    return 0

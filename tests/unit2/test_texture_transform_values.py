@@ -1,4 +1,4 @@
-from arcade.texture_transforms import (
+from arcade.texture.transforms import (
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
@@ -6,8 +6,6 @@ from arcade.texture_transforms import (
     FlipTopToBottomTransform,
     TransposeTransform,
     TransverseTransform,
-    VertexOrder,
-    get_shortest_transform,
     VertexOrder,
 )
 # Hit box points for a 128 x 128 texture
@@ -93,14 +91,14 @@ def test_flip_top_to_bottom_transform():
 def test_transpose_transform():
     # Transpose
     result = TransposeTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
+    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
     # Flip back
     result = TransposeTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
 
     # Test vertex order
     result = TransposeTransform.transform_vertex_order(ORDER)
-    assert result == (3, 1, 2, 0)
+    assert result == (0, 2, 1, 3)
     result = TransposeTransform.transform_vertex_order(result)
     assert result == ORDER
 
@@ -108,17 +106,13 @@ def test_transpose_transform():
 def test_transverse_transform():
     # Transverse
     result = TransverseTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
+    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
     # Flip back
     result = TransverseTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
 
     # Test vertex order
     result = TransverseTransform.transform_vertex_order(ORDER)
-    assert result == (0, 2, 1, 3)
+    assert result == (3, 1, 2, 0)
     result = TransverseTransform.transform_vertex_order(result)
     assert result == ORDER
-
-
-def test_get_shortest_transform():
-    assert get_shortest_transform((0, 1, 2, 3)) == []

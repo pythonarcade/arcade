@@ -4,6 +4,10 @@ Script used to create the quick index
 import re
 import os
 from pathlib import Path
+
+# The project root
+ROOT = Path(__file__).parent.parent.resolve()
+
 titles = {
     'application.py': ['Window and View', 'window.rst'],
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
@@ -45,7 +49,7 @@ titles = {
     'texture/generate.py': ['Texture Management', 'texture.rst'],
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
-    'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
     'math.py': ['Math', 'math.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
@@ -200,7 +204,7 @@ def process_directory(directory: Path, quick_index_file):
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
-            "texture_transforms.py": "arcade.texture_transforms",
+            "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
             "types.py": "arcade.types",
@@ -224,9 +228,11 @@ def process_directory(directory: Path, quick_index_file):
         else:
             continue
 
-        full_api_file_name = "../doc/api_docs/api/" + api_file_name
+        full_api_file_name = ROOT / "doc/api_docs/api/" / api_file_name
 
-        # print(package, title, api_file_name, full_api_file_name)
+        print(package, title, api_file_name, full_api_file_name)
+        if "Trans" in title:
+            print("moo")
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
@@ -292,7 +298,7 @@ def process_directory(directory: Path, quick_index_file):
 
 
 def include_template(text_file):
-    with open('template_quick_index.rst', 'r') as content_file:
+    with open(ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
         quick_index_content = content_file.read()
 
     text_file.write(quick_index_content)
@@ -333,7 +339,7 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    directory = Path("../doc/api_docs/api")
+    directory = ROOT / "doc/api_docs/api"
     file_list = directory.glob('*.rst')
     for file in file_list:
         os.remove(file)
@@ -342,7 +348,7 @@ def clear_api_directory():
 def main():
     clear_api_directory()
 
-    text_file = open("../doc/api_docs/api/quick_index.rst", "w")
+    text_file = open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
     text_file.write("The arcade module\n")
@@ -350,13 +356,13 @@ def main():
 
     text_file.write(table_header_arcade)
 
-    process_directory(Path("../arcade"), text_file)
-    process_directory(Path("../arcade/sprite_list"), text_file)
-    process_directory(Path("../arcade/geometry"), text_file)
-    process_directory(Path("../arcade/sprite"), text_file)
-    process_directory(Path("../arcade/texture"), text_file)
-    process_directory(Path("../arcade/texture_atlas"), text_file)
-    process_directory(Path("../arcade/text"), text_file)
+    process_directory(ROOT / "arcade", text_file)
+    process_directory(ROOT / "arcade/sprite_list", text_file)
+    process_directory(ROOT / "arcade/geometry", text_file)
+    process_directory(ROOT / "arcade/sprite", text_file)
+    process_directory(ROOT / "arcade/texture", text_file)
+    process_directory(ROOT / "arcade/texture_atlas", text_file)
+    process_directory(ROOT / "arcade/text", text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
     # text_file.write(f"-------------------------\n\n")
@@ -368,9 +374,9 @@ def main():
 
     text_file.write(table_header_gui)
 
-    process_directory(Path("../arcade/gui"), text_file)
-    process_directory(Path("../arcade/gui/widgets"), text_file)
-    process_directory(Path("../arcade/gui/property"), text_file)
+    process_directory(ROOT / "arcade/gui", text_file)
+    process_directory(ROOT / "arcade/gui/widgets", text_file)
+    process_directory(ROOT / "arcade/gui/property", text_file)
 
     text_file.write("\n\n")
     text_file.write("The arcade.tilemap module\n")
@@ -378,7 +384,7 @@ def main():
 
     text_file.write(table_header_tiled)
 
-    process_directory(Path("../arcade/tilemap"), text_file)
+    process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
     print("Done creating quick_index.rst")
