@@ -4,11 +4,26 @@ Various utility functions.
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
 """
+import functools
 import platform
 import sys
+import warnings
 from typing import Tuple
 from pathlib import Path
 
+
+class PerformanceWarning(Warning):
+    """Use this for issuing performance warnings."""
+    pass
+
+def warning(message: str, warning_type: Warning):
+    def actual_warning_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(message, warning_type)
+            return func(*args, **kwargs)
+        return wrapper
+    return actual_warning_decorator
 
 def generate_uuid_from_kwargs(**kwargs) -> str:
     """
