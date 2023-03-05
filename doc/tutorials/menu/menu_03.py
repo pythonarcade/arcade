@@ -22,7 +22,8 @@ class MainView(arcade.View):
         # Initialise the button with an on_click event.
         @switch_menu_button.event("on_click")
         def on_click_switch_button(event):
-            menu_view = MenuView()
+            # Passing the main view into menu view as an argument.
+            menu_view = MenuView(self)
             self.window.show_view(menu_view)
 
         # Use the anchor to position the button on the screen.
@@ -55,7 +56,7 @@ class MainView(arcade.View):
 
 
 class MenuView(arcade.View):
-    def __init__(self):
+    def __init__(self, main_view):
         super().__init__()
 
         self.manager = arcade.gui.UIManager()
@@ -84,6 +85,8 @@ class MenuView(arcade.View):
             anchor_y="center_y",
             child=self.grid,
         )
+
+        self.main_view = main_view
 
     def on_hide_view(self):
         # Disable the UIManager when the view is hidden.

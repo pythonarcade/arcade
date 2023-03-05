@@ -65,7 +65,6 @@ Now we have successfully setup the manager, only thing left it to add the button
     :caption: Initialising the Button
     :lines: 20-35
 
-
 Initialise the Menu View
 ------------------------
 
@@ -74,6 +73,13 @@ We make a boiler plate view just like we did in Step-1.
 .. literalinclude:: menu_02.py
     :caption: Initialise the Menu View
     :pyobject: MenuView
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`menu_02` |larr| Where we are right now
+* :ref:`menu_02_diff` |larr| What we changed to get here
+
 
 Step 3: Setting Up the Menu View
 --------------------------------
@@ -103,3 +109,39 @@ Final code for the `__init__` method after these.
 .. literalinclude:: menu_03.py
     :caption: __init__
     :pyobject: MenuView.__init__
+
+Program Listings
+----------------
+
+* :ref:`menu_03` |larr| Where we are right now
+* :ref:`menu_03_diff` |larr| What we changed to get here
+
+
+Step 4: Configuring the Menu Buttons
+------------------------------------
+
+We basically add event listener for `on_click` for buttons.
+
+First we will add the event listener to resume, start_new_game and exit button as they don't have much to explain.
+
+.. literalinclude:: menu_04.py
+    :caption: Adding callback for button events 1
+    :lines: 91-104
+
+Now we need to implement an actual menu for volume and options, for that we have to make a class that acts like a window. Using `UIMouseFilterMixin` we catch all the events happening for the parent and respond nothing to them. Thus making it act like a window/view.
+
+.. literalinclude:: menu_04.py
+    :caption: Making a Fake Window.
+    :pyobject: SubMenu
+
+We have got ourselves a fake window currently. We could pair it up with the volume and options button to trigger it when they are clicked.
+
+.. literalinclude:: menu_04.py
+    :caption: Adding callback for button events 2
+    :lines: 106-114
+
+Program Listings
+----------------
+
+* :ref:`menu_04` |larr| Where we are right now
+* :ref:`menu_04_diff` |larr| What we changed to get here
