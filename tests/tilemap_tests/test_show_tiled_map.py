@@ -12,7 +12,7 @@ def test_show_tilemap(window: arcade.Window):
     )
 
     if my_map.background_color:
-        arcade.set_background_color(my_map.background_color)
+        window.background_color = my_map.background_color
 
     def on_update(delta_time):
         my_map.sprite_lists["Blocking Sprites"].update_animation(delta_time)

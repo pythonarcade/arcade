@@ -1,5 +1,3 @@
-import os
-import pytest
 import arcade
 
 SCREEN_WIDTH = 800
@@ -10,14 +8,15 @@ COIN_SCALE = 0.25
 
 
 def test_load_textures(window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
     frame_count = 0
 
     character_list = arcade.SpriteList()
     player = arcade.AnimatedWalkingSprite()
 
-    player.stand_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")]
-    player.stand_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png", flipped_horizontally=True)]
+    texture = arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")
+    player.stand_right_textures = [texture]
+    player.stand_left_textures = [texture.flip_left_right()]
 
     player.walk_right_textures = [
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png"),
@@ -29,17 +28,7 @@ def test_load_textures(window):
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png"),
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png")
     ]
-
-    player.walk_left_textures = [
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png", flipped_horizontally=True),
-        arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png", flipped_horizontally=True)
-    ]
+    player.walk_left_textures = [tex.flip_left_right() for tex in player.walk_right_textures]
 
     player.texture_change_distance = 20
 

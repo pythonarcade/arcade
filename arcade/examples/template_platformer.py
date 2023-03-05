@@ -1,5 +1,8 @@
 """
 Platformer Template
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.template_platformer
 """
 import arcade
 
@@ -62,8 +65,8 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Setup the Cameras
-        self.camera_sprites = arcade.Camera(self.width, self.height)
-        self.camera_gui = arcade.Camera(self.width, self.height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
@@ -86,14 +89,14 @@ class MyGame(arcade.Window):
 
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Keep track of the score
         self.score = 0
 
         # Set up the player, specifically placing it at these coordinates.
         src = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        self.player_sprite = arcade.Sprite(src, CHARACTER_SCALING)
+        self.player_sprite = arcade.Sprite(src, scale=CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
@@ -201,10 +204,10 @@ class MyGame(arcade.Window):
         # Position the camera
         self.center_camera_to_player()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """ Resize window """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

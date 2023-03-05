@@ -5,7 +5,7 @@ Artwork from: https://kenney.nl
 Tiled available from: https://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.camera_example
+python -m arcade.examples.camera_platform
 """
 
 import time
@@ -121,7 +121,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            PLAYER_SCALING,
+            scale=PLAYER_SCALING,
         )
 
         # Starting position of the player
@@ -129,8 +129,9 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.gui_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera = arcade.Camera(viewport=viewport)
+        self.gui_camera = arcade.Camera(viewport=viewport)
 
         # Center camera on user
         self.pan_camera_to_user()

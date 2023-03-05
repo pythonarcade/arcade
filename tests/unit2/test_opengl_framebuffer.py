@@ -63,6 +63,31 @@ def test_clear(ctx):
     assert ctx.active_framebuffer == ctx.screen
 
 
+def test_clear_viewport(ctx):
+    fb = create(ctx, 4, 4, components=1)
+    fb.clear(color=(64, 64, 64, 64))
+    assert fb.read(components=1) == b'\x40' * 16
+
+    # Clear only the center pixels and verify that the rest is unchanged
+    fb.clear()
+    fb.clear(color=(255, 255, 255, 255), viewport=(1, 1, 2, 2))
+    expected = (
+        b'\x00\x00\x00\x00'
+        b'\x00\xff\xff\x00'
+        b'\x00\xff\xff\x00'
+        b'\x00\x00\x00\x00'
+    )
+    assert bytes(fb.read(components=1)) == expected
+
+
+def test_clear_with_scissor(ctx):
+    fb = create(ctx, 4, 4, components=1)
+    fb.clear()
+    fb.scissor = 1, 1, 2, 2
+    fb.clear(color=(255, 255, 255, 255))
+    assert bytes(fb.read(components=1)) == b'\xff' * 16
+
+
 def test_multi_attachment(ctx):
     """Create framebuffers with multiple layers"""
     for i in range(ctx.info.MAX_COLOR_ATTACHMENTS):
@@ -100,6 +125,7 @@ def test_read(ctx):
     fb.clear(color=(255, 255, 0, 255))
     data = fb.read(components=4)
     assert len(data) == 16
+    assert isinstance(fb.read(), bytes)
 
     # Read 3 components
     data = fb.read(components=3)

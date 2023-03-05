@@ -10,6 +10,9 @@ changes in its value.
 
 There are two other ways of handling update events. For more
 information on this subject, see the gui_flat_button example.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_slider
 """
 import arcade
 from arcade.gui.widgets.slider import UISlider
@@ -20,7 +23,7 @@ from arcade.gui.events import UIOnChangeEvent
 class UIMockup(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "UI Mockup", resizable=True)
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Required, create a UI manager to handle all UI widgets
         self.manager = UIManager()

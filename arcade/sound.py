@@ -107,10 +107,7 @@ class Sound:
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
-        if player.time >= self.source.duration:
-            return True
-        else:
-            return False
+        return player.time >= self.source.duration
 
     def is_playing(self, player: media.Player) -> bool:
         """
@@ -164,11 +161,15 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     :returns: Sound object which can be used by the  :func:`play_sound` function.
     :rtype: Sound
     """
+    # Initialize the audio driver if it hasn't been already.
+    # This call is to avoid audio driver initialization
+    # the first time a sound is played.
+    # This call is inexpensive if the driver is already initialized.
+    media.get_audio_driver()
 
     file_name = str(path)
     try:
-        sound = Sound(file_name, streaming)
-        return sound
+        return Sound(file_name, streaming)
     except Exception as ex:
         raise FileNotFoundError(
             f'Unable to load sound file: "{file_name}". Exception: {ex}'

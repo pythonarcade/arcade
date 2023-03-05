@@ -45,7 +45,7 @@ class MyGame(arcade.Window):
         # Hide the mouse cursor while it's over the window
         self.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         # Set up the player
         # Character image from kenney.nl
         img = ":resources:images/animated_characters/female_person/femalePerson_idle.png"
-        self.player_sprite = arcade.Sprite(img, SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(img, scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.position = 50, 50
         self.player_list.append(self.player_sprite)
 
@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 SPRITE_SCALING_COIN)
+                                 scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

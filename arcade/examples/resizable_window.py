@@ -22,7 +22,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background_color = arcade.color.WHITE
 
     def on_resize(self, width, height):
         """ This method is automatically called when the window is resized. """

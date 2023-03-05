@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         self.generate_sprites()
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
         # Where is the shader file? Must be specified as a path.
@@ -151,7 +151,7 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize((width, height))
 

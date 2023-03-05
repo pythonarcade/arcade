@@ -1,3 +1,9 @@
+"""
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_scrollable_text
+"""
+from arcade.gui.nine_patch import NinePatchTexture
+
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIInputText, UITextArea
@@ -25,9 +31,14 @@ class MyWindow(arcade.Window):
         super().__init__(800, 600, "Scrollable Text", resizable=True)
         self.manager = UIManager()
         self.manager.enable()
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
-        bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+        bg_tex = NinePatchTexture(
+            left=5,
+            right=5,
+            top=5,
+            bottom=5,
+            texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"))
         text_area = UITextArea(
             x=100,
             y=200,
@@ -46,7 +57,7 @@ class MyWindow(arcade.Window):
         )
 
         self.manager.add(
-            UIInputText(x=340, y=110, width=200, height=50, text="Hello").with_border(),
+            UIInputText(x=340, y=110, width=200, height=50, text="").with_border(),
         )
 
     def on_draw(self):

@@ -108,7 +108,7 @@ class InstructionView(arcade.View):
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        self.window.background_color = arcade.csscolor.DARK_SLATE_BLUE
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -155,10 +155,10 @@ class GameView(arcade.View):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera(self.window.width, self.window.height)
-        self.camera_gui = arcade.Camera(self.window.width, self.window.height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.window.background_color = arcade.color.BLACK
 
         self.sprite_count_text = None
         self.draw_time_text = None
@@ -174,20 +174,21 @@ class GameView(arcade.View):
         for step in range(NUMBER_OF_STEPS):
             self.grid = do_simulation_step(self.grid)
 
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         # Create sprites based on 2D grid
         # Each grid location is a sprite.
         for row in range(GRID_HEIGHT):
             for column in range(GRID_WIDTH):
                 if self.grid[row][column] == 1:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.BasicSprite(texture, scale=SPRITE_SCALING)
                     wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -245,7 +246,7 @@ class GameView(arcade.View):
         self.camera_sprites.use()
 
         # Draw the sprites
-        self.wall_list.draw()
+        self.wall_list.draw(pixelated=True)
         self.player_list.draw()
 
         # Select the (unscrolled) camera for our GUI
@@ -315,13 +316,13 @@ class GameView(arcade.View):
         self.camera_sprites.move_to(position, speed)
         self.camera_sprites.update()
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
     def on_update(self, delta_time):
         """ Movement and game logic """

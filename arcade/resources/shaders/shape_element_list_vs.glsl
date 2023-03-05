@@ -1,8 +1,10 @@
 #version 330
 
-uniform Projection {
-    uniform mat4 matrix;
-} proj;
+uniform WindowBlock {
+    mat4 projection;
+    mat4 view;
+} window;
+
 uniform vec2 Position;
 uniform float Angle;
 
@@ -17,6 +19,6 @@ void main() {
         cos(angle), sin(angle),
         -sin(angle), cos(angle)
     );
-    gl_Position = proj.matrix * vec4(Position + (rotate * in_vert), 0.0, 1.0);
+    gl_Position = window.projection * window.view * vec4(Position + (rotate * in_vert), 0.0, 1.0);
     v_color = in_color;
 }

@@ -3,7 +3,7 @@ import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import (Any, Deque, Dict, List, Optional, Sequence, Set, Tuple,
+from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
                     Union)
 
 import pyglet
@@ -16,9 +16,10 @@ from .framebuffer import DefaultFrameBuffer, Framebuffer
 from .glsl import ShaderSource
 from .program import Program
 from .query import Query
-from .texture import Texture
+from .texture import Texture2D
 from .types import BufferDescription
 from .vertex_array import Geometry
+from ..types import BufferProtocol
 
 LOG = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class Context:
     BLEND_DEFAULT = 0x0302, 0x0303
     #: Blend mode shortcut for additive blending: ``ONE, ONE``
     BLEND_ADDITIVE = 0x0001, 0x0001
-    #: Blend mode shortcut for premultipled alpha: ``SRC_ALPHA, ONE``
+    #: Blend mode shortcut for pre-multiplied alpha: ``SRC_ALPHA, ONE``
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
 
     # VertexArray: Primitives
@@ -209,6 +210,7 @@ class Context:
         self._blend_func: Union[Tuple[int, int], Tuple[int, int, int, int]] = self.BLEND_DEFAULT
         self._point_size = 1.0
         self._flags: Set[int] = set()
+        self._wireframe = False
 
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
@@ -620,6 +622,24 @@ class Context:
     # def cull_face(self)
 
     @property
+    def wireframe(self) -> bool:
+        """
+        Get or set the wireframe mode.
+        When enabled all primitives will be rendered as lines.
+
+        :type: bool
+        """
+        return self._wireframe
+
+    @wireframe.setter
+    def wireframe(self, value: bool):
+        self._wireframe = value
+        if value:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        else:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+
+    @property
     def patch_vertices(self) -> int:
         """
         Get or set number of vertices that will be used to make up a single patch primitive.
@@ -730,7 +750,7 @@ class Context:
     # --- Resource methods ---
 
     def buffer(
-        self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self, *, data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
         """
         Create an OpenGL Buffer object. The buffer will contain all zero-bytes if no data is supplied.
@@ -745,12 +765,21 @@ class Context:
             # Create a buffer with 1000 random 32 bit floats using numpy
             self.ctx.buffer(data=np.random.random(1000).astype("f4"))
 
+
+        The ``data`` parameter can be anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        This includes ``bytes``, ``bytearray``, ``array.array``, and
+        more. You may need to use typing workarounds for non-builtin
+        types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
         The ``usage`` parameter enables the GL implementation to make more intelligent
         decisions that may impact buffer object performance. It does not add any restrictions.
         If in doubt, skip this parameter and revisit when optimizing. The result
         are likely to be different between vendors/drivers or may not have any effect.
 
-        The available values means the following::
+        The available values mean the following::
 
             stream
                 The data contents will be modified once and used at most a few times.
@@ -759,8 +788,9 @@ class Context:
             dynamic
                 The data contents will be modified repeatedly and used many times.
 
-        :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
-        :param int reserve: The number of bytes reserve
+        :param BufferProtocol data: The buffer data. This can be a ``bytes`` instance or any
+                                    any other object supporting the buffer protocol.
+        :param int reserve: The number of bytes to reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         :rtype: :py:class:`~arcade.gl.Buffer`
         """
@@ -769,8 +799,8 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Union[Texture, List[Texture]] = None,
-        depth_attachment: Texture = None
+        color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
+        depth_attachment: Optional[Texture2D] = None
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -788,13 +818,13 @@ class Context:
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Any = None,
-        wrap_x: gl.GLenum = None,
-        wrap_y: gl.GLenum = None,
-        filter: Tuple[gl.GLenum, gl.GLenum] = None,
+        data: Optional[BufferProtocol] = None,
+        wrap_x: Optional[gl.GLenum] = None,
+        wrap_y: Optional[gl.GLenum] = None,
+        filter: Optional[Tuple[gl.GLenum, gl.GLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
-    ) -> Texture:
+    ) -> Texture2D:
         """Create a 2D Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -807,7 +837,8 @@ class Context:
         :param Tuple[int, int] size: The size of the texture
         :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
+        :param BufferProtocol data: The texture data (optional). Can be ``bytes``
+                                    or any object supporting the buffer protocol.
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
@@ -815,7 +846,7 @@ class Context:
         :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
         """
-        return Texture(
+        return Texture2D(
             self,
             size,
             components=components,
@@ -828,26 +859,28 @@ class Context:
             immutable=immutable,
         )
 
-    def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
+    def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:
         """
         Create a 2D depth texture. Can be used as a depth attachment
         in a :py:class:`~arcade.gl.Framebuffer`.
 
         :param Tuple[int, int] size: The size of the texture
-        :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
+        :param BufferProtocol data: The texture data (optional). Can be
+                                    ``bytes`` or any object supporting
+                                    the buffer protocol.
         """
-        return Texture(self, size, data=data, depth=True)
+        return Texture2D(self, size, data=data, depth=True)
 
     def geometry(
         self,
         content: Optional[Sequence[BufferDescription]] = None,
-        index_buffer: Buffer = None,
-        mode: int = None,
+        index_buffer: Optional[Buffer] = None,
+        mode: Optional[int] = None,
         index_element_size: int = 4,
     ):
         """
-        Create a Geomtry instance. This is Arcade's version of a vertex array adding
-        a lot of convenice for the user. Geometry objects are fairly light. They are
+        Create a Geometry instance. This is Arcade's version of a vertex array adding
+        a lot of convenience for the user. Geometry objects are fairly light. They are
         mainly responsible for automatically map buffer inputs to your shader(s)
         and provide various methods for rendering or processing this geometry,
 
@@ -927,11 +960,12 @@ class Context:
         self,
         *,
         vertex_shader: str,
-        fragment_shader: str = None,
-        geometry_shader: str = None,
-        tess_control_shader: str = None,
-        tess_evaluation_shader: str = None,
-        defines: Dict[str, str] = None,
+        fragment_shader: Optional[str] = None,
+        geometry_shader: Optional[str] = None,
+        tess_control_shader: Optional[str] = None,
+        tess_evaluation_shader: Optional[str] = None,
+        common: Optional[List[str]] = None,
+        defines: Optional[Dict[str, str]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
@@ -942,6 +976,7 @@ class Context:
         :param str geometry_shader: geometry shader source (optional)
         :param str tess_control_shader: tessellation control shader source (optional)
         :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
+        :param list common: Common shader sources injected into all shaders
         :param dict defines: Substitute #defines values in the source (optional)
         :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
@@ -953,24 +988,24 @@ class Context:
                                           buffer or a list of buffer.
         :rtype: :py:class:`~arcade.gl.Program`
         """
-        source_vs = ShaderSource(self, vertex_shader, gl.GL_VERTEX_SHADER)
+        source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
-            ShaderSource(self, fragment_shader, gl.GL_FRAGMENT_SHADER)
+            ShaderSource(self, fragment_shader, common, gl.GL_FRAGMENT_SHADER)
             if fragment_shader
             else None
         )
         source_geo = (
-            ShaderSource(self, geometry_shader, gl.GL_GEOMETRY_SHADER)
+            ShaderSource(self, geometry_shader, common, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
             else None
         )
         source_tc = (
-            ShaderSource(self, tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
+            ShaderSource(self, tess_control_shader, common, gl.GL_TESS_CONTROL_SHADER)
             if tess_control_shader
             else None
         )
         source_te = (
-            ShaderSource(self, tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
+            ShaderSource(self, tess_evaluation_shader, common, gl.GL_TESS_EVALUATION_SHADER)
             if tess_evaluation_shader
             else None
         )
@@ -1003,7 +1038,7 @@ class Context:
             varyings_capture_mode=varyings_capture_mode,
         )
 
-    def query(self, *, samples=True, time=True, primitives=True):
+    def query(self, *, samples=True, time=True, primitives=True) -> Query:
         """
         Create a query object for measuring rendering calls in opengl.
 
@@ -1015,13 +1050,14 @@ class Context:
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
-    def compute_shader(self, *, source: str) -> ComputeShader:
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> ComputeShader:
         """
         Create a compute shader.
 
         :param str source: The glsl source
+        :param Iterable[str] common: Common / library source injected into compute shader
         """
-        src = ShaderSource(self, source, gl.GL_COMPUTE_SHADER)
+        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return ComputeShader(self, src.get_source())
 
 

@@ -84,7 +84,7 @@ class MyGame(arcade.Window):
         self.down_pressed = False
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    SPRITE_SCALING)
+                                    scale=SPRITE_SCALING)
         self.player_sprite.position = self.width / 2, self.height / 2
         self.player_list.append(self.player_sprite)
 

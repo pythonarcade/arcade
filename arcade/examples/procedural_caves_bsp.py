@@ -205,7 +205,7 @@ class RLDungeonGenerator:
             for room in group:
                 key = (room.row, room.col)
                 for other in room_dict[key]:
-                    if not other[0] in group and other[3] < shortest_distance:
+                    if other[0] not in group and other[3] < shortest_distance:
                         shortest_distance = other[3]
                         start = room
                         nearest = other
@@ -277,7 +277,7 @@ class MyGame(arcade.Window):
         self.processing_time = 0
         self.draw_time = 0
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game """
@@ -289,6 +289,7 @@ class MyGame(arcade.Window):
         dg.generate_map()
 
         # Create sprites based on 2D grid
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         if not MERGE_SPRITES:
             # This is the simple-to-understand method. Each grid location
             # is a sprite.
@@ -296,7 +297,7 @@ class MyGame(arcade.Window):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
                     if value == '#':
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING)
+                        wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -318,17 +319,16 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING,
-                                         repeat_count_x=column_count)
+                    wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           PLAYER_SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=PLAYER_SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.

@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.11_animate_character
+python -m arcade.examples.platform_tutorial.15_collision_with_enemies
 """
 import math
 
@@ -248,8 +248,9 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
-        self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        viewport = (0, 0, self.width, self.height)
+        self.camera = arcade.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.SimpleCamera(viewport=viewport)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"
@@ -322,7 +323,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(

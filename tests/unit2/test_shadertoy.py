@@ -1,6 +1,6 @@
 import pytest
 from arcade.experimental import Shadertoy, ShadertoyBuffer
-from arcade.gl import Program, Texture
+from arcade.gl import Program, Texture2D
 
 def glsl(inner: str):
     return (
@@ -103,7 +103,7 @@ def check_internals(st: Shadertoy):
     assert st.mouse_buttons == (0, 0)
 
     # Types assigned to channels
-    assert st.channel_0 is None or isinstance(st.channel_0, Texture)
-    assert st.channel_1 is None or isinstance(st.channel_1, Texture)
-    assert st.channel_2 is None or isinstance(st.channel_2, Texture)
-    assert st.channel_3 is None or isinstance(st.channel_3, Texture)
+    assert st.channel_0 is None or isinstance(st.channel_0, Texture2D)
+    assert st.channel_1 is None or isinstance(st.channel_1, Texture2D)
+    assert st.channel_2 is None or isinstance(st.channel_2, Texture2D)
+    assert st.channel_3 is None or isinstance(st.channel_3, Texture2D)

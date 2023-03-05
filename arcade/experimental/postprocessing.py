@@ -3,7 +3,7 @@ Post-processing shaders.
 """
 from typing import Tuple
 from arcade.context import ArcadeContext
-from arcade.gl.texture import Texture
+from arcade.gl.texture import Texture2D
 from arcade import get_window
 from arcade.gl import geometry
 from arcade.experimental.gaussian_kernel import gaussian_kernel
@@ -92,7 +92,7 @@ class GaussianBlurHorizontal(GaussianBlurPass):
         )
         self._quad_fs = geometry.quad_2d_fs()
 
-    def render(self, source: Texture) -> Texture:
+    def render(self, source: Texture2D) -> Texture2D:
         """ Render """
         self._fbo.use()
         source.use(0)
@@ -118,7 +118,7 @@ class GaussianBlurVertical(GaussianBlurPass):
         )
         self._quad_fs = geometry.quad_2d_fs()
 
-    def render(self, source: Texture) -> Texture:
+    def render(self, source: Texture2D) -> Texture2D:
         """ Render """
         self._fbo.use()
         source.use(0)
@@ -136,7 +136,7 @@ class GaussianBlur(PostProcessing):
         self._blur_y = GaussianBlurVertical(
             size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
 
-    def render(self, source: Texture) -> Texture:
+    def render(self, source: Texture2D) -> Texture2D:
         """ Render """
         blurred_x = self._blur_x.render(source)
         return self._blur_y.render(blurred_x)

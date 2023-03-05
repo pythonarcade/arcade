@@ -55,8 +55,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
             for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -85,7 +85,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """ Render the screen. """
@@ -173,13 +173,13 @@ class MyGame(arcade.Window):
                         self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

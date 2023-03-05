@@ -32,7 +32,7 @@ class MyGame(arcade.Window):
         """
         Set up the application.
         """
-        arcade.set_background_color(arcade.color.ALABAMA_CRIMSON)
+        self.background_color = arcade.color.ALABAMA_CRIMSON
         self.total_time = 0.0
 
     def on_draw(self):

@@ -6,8 +6,13 @@ Physics engines for top-down or platformers.
 import math
 from typing import Iterable, List, Optional, Union
 
-from arcade import (Sprite, SpriteList, check_for_collision,
-                    check_for_collision_with_lists, get_distance)
+from arcade import (
+    Sprite,
+    SpriteList,
+    check_for_collision,
+    check_for_collision_with_lists
+)
+from arcade.math import get_distance
 
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
@@ -97,7 +102,8 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
                     # self.player_sprite.bottom = item.top <- Doesn't work for ramps
                     moving_sprite.center_y += 0.25
 
-                if item.change_x != 0:
+                # NOTE: Not all sprites have velocity
+                if getattr(item, "change_x", 0.0) != 0:
                     moving_sprite.center_x += item.change_x
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
@@ -111,7 +117,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
             #     self.player_sprite.bottom = item.top
             # else:
             #     self.player_sprite.top = item.bottom
-        moving_sprite.change_y = min(0.0, hit_list_x[0].change_y)
+        moving_sprite.change_y = min(0.0, getattr(hit_list_x[0], 'change_y', 0.0))
 
     # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
     moving_sprite.center_y = round(moving_sprite.center_y, 2)
@@ -161,7 +167,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
                     if len(collision_check) > 0:
                         cur_y_change -= cur_x_change
                     else:
-                        while(len(collision_check) == 0) and cur_y_change > 0:
+                        while (len(collision_check) == 0) and cur_y_change > 0:
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
@@ -223,7 +229,7 @@ class PhysicsEngineSimple:
         """
         Create a simple physics engine.
         """
-        assert(isinstance(player_sprite, Sprite))
+        assert isinstance(player_sprite, Sprite)
 
         if walls:
             if isinstance(walls, SpriteList):
@@ -282,10 +288,7 @@ class PhysicsEnginePlatformer:
         self.walls: List[SpriteList]
 
         if ladders:
-            if isinstance(ladders, SpriteList):
-                self.ladders = [ladders]
-            else:
-                self.ladders = list(ladders)
+            self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self.ladders = None
 
@@ -298,10 +301,7 @@ class PhysicsEnginePlatformer:
             self.platforms = []
 
         if walls:
-            if isinstance(walls, SpriteList):
-                self.walls = [walls]
-            else:
-                self.walls = list(walls)
+            self.walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
             self.walls = []
 

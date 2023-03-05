@@ -28,21 +28,9 @@ TEXTURE_RIGHT = 1
 class Player(arcade.Sprite):
 
     def __init__(self):
-        super().__init__()
-
-        self.scale = SPRITE_SCALING
-        self.textures = []
-
-        # Load a left facing texture and a right facing texture.
-        # flipped_horizontally=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png",
-                                      flipped_horizontally=True)
-        self.textures.append(texture)
-
-        # By default, face right.
-        self.texture = texture
+        left, right = arcade.load_texture_pair(":resources:images/enemies/bee.png")
+        super().__init__(left, scale=SPRITE_SCALING)
+        self.textures.append(right)
 
     def update(self):
         self.center_x += self.change_x
@@ -75,7 +63,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """

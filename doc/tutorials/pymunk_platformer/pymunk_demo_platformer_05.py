@@ -73,7 +73,7 @@ class GameWindow(arcade.Window):
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
         # Set background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up everything with the game """

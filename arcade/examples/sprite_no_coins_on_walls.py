@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player
@@ -46,21 +46,22 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+                                           scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
+        self.player_list.append(self.player_sprite)
 
         # -- Set up the walls
         # Create a series of horizontal walls
         for y in range(0, 800, 200):
             for x in range(100, 700, 64):
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
                 wall.center_x = x
                 wall.center_y = y
                 self.wall_list.append(wall)
@@ -71,7 +72,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # --- IMPORTANT PART ---
 
@@ -102,12 +103,10 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         self.clear()
@@ -115,10 +114,10 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.wall_list.draw()
         self.coin_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """ Called whenever a key is pressed. """
 
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
@@ -130,7 +129,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """ Called when the user releases a key. """
 
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0

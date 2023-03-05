@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.11_animate_character
+python -m arcade.examples.platform_tutorial.17_views
 """
 import math
 
@@ -58,9 +58,9 @@ def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
+    texture = arcade.load_texture(filename)
     return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True),
+        texture, texture.flip_left_right()
     ]
 
 
@@ -214,7 +214,7 @@ class MainMenu(arcade.View):
 
     def on_show_view(self):
         """Called when switching to this view."""
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
 
     def on_draw(self):
         """Draw the menu"""
@@ -291,8 +291,9 @@ class GameView(arcade.View):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
-        self.camera = arcade.Camera(self.window.width, self.window.height)
-        self.gui_camera = arcade.Camera(self.window.width, self.window.height)
+        viewport = (0, 0, self.window.width, self.window.height)
+        self.camera = arcade.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.SimpleCamera(viewport=viewport)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"
@@ -372,7 +373,7 @@ class GameView(arcade.View):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.window.background_color = self.tile_map.background_color
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -398,6 +399,11 @@ class GameView(arcade.View):
         # Draw our Scene
         self.scene.draw()
 
+        # Draw hit boxes.
+        # self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
+        # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
+
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
@@ -410,12 +416,6 @@ class GameView(arcade.View):
             arcade.csscolor.BLACK,
             18,
         )
-
-        # Draw hit boxes.
-        # for wall in self.wall_list:
-        #     wall.draw_hit_box(arcade.color.BLACK, 3)
-        #
-        # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
 
     def process_keychange(self):
         """
@@ -492,16 +492,19 @@ class GameView(arcade.View):
         self.process_keychange()
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        self.camera.zoom(-0.01 * scroll_y)
+        try:
+            self.camera.zoom += -0.01 * scroll_y
+        except Exception:
+            pass
 
     def center_camera_to_player(self, speed=0.2):
-        screen_center_x = self.camera.scale * (self.player_sprite.center_x - (self.camera.viewport_width / 2))
-        screen_center_y = self.camera.scale * (self.player_sprite.center_y - (self.camera.viewport_height / 2))
+        screen_center_x = (self.player_sprite.center_x - (self.camera.viewport_width / 2))
+        screen_center_y = (self.player_sprite.center_y - (self.camera.viewport_height / 2))
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
             screen_center_y = 0
-        player_centered = (screen_center_x, screen_center_y)    
+        player_centered = (screen_center_x, screen_center_y)
 
         self.camera.move_to(player_centered, speed)
 
@@ -654,7 +657,7 @@ class GameOverView(arcade.View):
 
     def on_show_view(self):
         """Called when switching to this view"""
-        arcade.set_background_color(arcade.color.BLACK)
+        self.window.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """Draw the game overview"""

@@ -28,7 +28,8 @@ def _get_examples(start_path):
 def run_examples(indices_in_range, index_skip_list):
     """Run all examples in the arcade/examples directory"""
     examples = _get_examples(EXAMPLE_SUBDIR)
-    print("Found {} examples in {}".format(len(examples), EXAMPLE_SUBDIR))
+    examples.sort()
+    print(f"Found {len(examples)} examples in {EXAMPLE_SUBDIR}")
 
     file_path = os.path.dirname(os.path.abspath(__file__))
     print(file_path)
@@ -41,9 +42,14 @@ def run_examples(indices_in_range, index_skip_list):
             continue
         print(f"=================== Example {idx + 1:3} of {len(examples)}: {example}")
         # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
+
+        # Directly call venv, necessary for github action runner
         cmd = 'python -m ' + example
-        print(cmd)
-        subprocess.call(cmd, shell=True)
+
+        # print(cmd)
+        result = subprocess.check_output(cmd, shell=True)
+        if result:
+            print(f"ERROR: Got a result of: {result}.")
 
 
 def all_examples():

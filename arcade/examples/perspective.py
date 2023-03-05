@@ -10,6 +10,9 @@ done very efficiently with shaders.
 In this example we render content into a framebuffer /
 virtual screen and map that on a texture we can rotate
 in 3D.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.perspective
 """
 
 from array import array
@@ -115,7 +118,7 @@ class Perspective(arcade.Window):
         # Move the plane into camera view and rotate it
         translate = Mat4.from_translation((0, 0, -2))
         rotate = Mat4.from_rotation(self.time / 2, (1, 0, 0))
-        self.program["model"] = rotate @ translate
+        self.program["model"] = translate @ rotate
 
         # Scroll the texture coordinates
         self.program["scroll"] = 0, -self.time / 5
@@ -134,7 +137,7 @@ class Perspective(arcade.Window):
             arcade.set_viewport(0, self.fbo.width, 0, self.fbo.height)
             self.spritelist.draw()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
 

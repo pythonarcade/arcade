@@ -48,7 +48,7 @@ class SoundButton(arcade.SpriteSolidColor):
     """
 
     def __init__(self, sound_file, speed, volume, center_x, center_y):
-        super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
+        super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
         self.speed = speed
         self.volume = volume
@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
         self.button_sprites = None
 
     def setup(self):

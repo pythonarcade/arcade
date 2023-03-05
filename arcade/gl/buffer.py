@@ -1,10 +1,11 @@
 from ctypes import byref, string_at
 import weakref
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from pyglet import gl
 
 from .utils import data_to_ctypes
+from arcade.types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -16,11 +17,20 @@ class Buffer:
     They are used for storage of vertex data,
     element data (vertex indexing), uniform block data etc.
 
-    Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+    The ``data`` parameter can be anything that implements the
+    `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+    This includes ``bytes``, ``bytearray``, ``array.array``, and
+    more. You may need to use typing workarounds for non-builtin
+    types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+    information.
+
+    .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
 
     :param Context ctx: The context this buffer belongs to
-    :param Any data: The data this buffer should contain.
-                     It can be bytes or any object supporting the buffer protocol.
+    :param BufferProtocol data: The data this buffer should contain.
+                                It can be a ``bytes`` instance or any
+                                object supporting the buffer protocol.
     :param int reserve: Create a buffer of a specific byte size
     :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
     """
@@ -33,7 +43,7 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self, ctx: "Context", data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
     ):
 
         self._ctx = ctx
@@ -158,14 +168,30 @@ class Buffer:
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
         return data
 
-    def write(self, data: Any, offset: int = 0):
-        """Write byte data to the buffer.
+    def write(self, data: BufferProtocol, offset: int = 0):
+        """Write byte data to the buffer from a buffer protocol object.
+
+        The ``data`` value can be anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        This includes ``bytes``, ``bytearray``, ``array.array``, and
+        more. You may need to use typing workarounds for non-builtin
+        types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
+        If the supplied data is larger than the buffer, it will be
+        truncated to fit. If the supplied data is smaller than the
+        buffer, the remaining bytes will be left unchanged.
 
         :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
         :param int offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         size, data = data_to_ctypes(data)
+        # Ensure we don't write outside the buffer
+        size = min(size, self._size - offset)
+        if size < 0:
+            raise ValueError("Attempting to write negative number bytes to buffer")
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
     def copy_from_buffer(self, source: "Buffer", size=-1, offset=0, source_offset=0):

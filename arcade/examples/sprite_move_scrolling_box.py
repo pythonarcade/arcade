@@ -4,7 +4,7 @@ Scroll around a large screen.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.sprite_move_scrolling_box
 """
 
 import random
@@ -55,8 +55,8 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
-        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
             for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -85,7 +85,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
@@ -209,13 +209,13 @@ class MyGame(arcade.Window):
         position = self.view_left, self.view_bottom
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

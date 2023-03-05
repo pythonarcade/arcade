@@ -1,9 +1,13 @@
 import re
-from typing import Iterable, List
+from typing import Optional, Iterable, List, Union
 
 from pyglet import gl
 
 from .buffer import Buffer
+from arcade.types import BufferProtocol
+
+
+BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
@@ -85,6 +89,23 @@ SHADER_TYPE_NAMES = {
     gl.GL_TESS_EVALUATION_SHADER: "tessellation evaluation shader",
 }
 
+GL_NAMES = {
+    gl.GL_HALF_FLOAT: "GL_HALF_FLOAT",
+    gl.GL_FLOAT: "GL_FLOAT",
+    gl.GL_DOUBLE: "GL_DOUBLE",
+    gl.GL_INT: "GL_INT",
+    gl.GL_UNSIGNED_INT: "GL_UNSIGNED_INT",
+    gl.GL_SHORT: "GL_SHORT",
+    gl.GL_UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
+    gl.GL_BYTE: "GL_BYTE",
+    gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
+}    
+
+
+def gl_name(gl_type: gl.GLenum) -> str:
+    """Return the name of a gl type"""
+    return GL_NAMES.get(gl_type, gl_type)
+
 
 class AttribFormat:
     """"
@@ -107,14 +128,14 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name, gl_type, components, bytes_per_component, offset=0, location=0
+        self, name: str, gl_type: gl.GLenum, components: int, bytes_per_component: int, offset=0, location=0
     ):
-        self.name = name  # type: str
-        self.gl_type = gl_type  # type: gl.GLenum
-        self.components = components  # type: int
-        self.bytes_per_component = bytes_per_component  # type: int
-        self.offset = offset  # type: int
-        self.location = location  # type: int
+        self.name: str = name
+        self.gl_type = gl_type
+        self.components = components
+        self.bytes_per_component = bytes_per_component
+        self.offset = offset
+        self.location = location
 
     @property
     def bytes_total(self) -> int:
@@ -207,10 +228,9 @@ class BufferDescription:
         buffer: Buffer,
         formats: str,
         attributes: Iterable[str],
-        normalized: Iterable[str] = None,
+        normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
-
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
@@ -218,13 +238,13 @@ class BufferDescription:
         #: List of normalized attributes
         self.normalized = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
-        self.instanced = instanced  # type: bool
+        self.instanced: bool = instanced
         #: Formats of each attribute
-        self.formats = []  # type: List[AttribFormat]
+        self.formats: List[AttribFormat] = []
         #: The byte stride of the buffer
-        self.stride = -1  # type: int
+        self.stride: int = -1
         #: Number of vertices in the buffer
-        self.num_vertices = -1  # type: int
+        self.num_vertices: int = -1
 
         if not isinstance(buffer, Buffer):
             raise ValueError("buffer parameter must be an arcade.gl.Buffer")
@@ -300,7 +320,16 @@ class BufferDescription:
         self.num_vertices = self.buffer.size // self.stride
 
     def __repr__(self) -> str:
-        return f"<BufferDescription {self.formats}>"
+        return f"<BufferDescription {self.attributes} {self.formats}>"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, BufferDescription):
+            raise ValueError(f"The only logical comparison to a BufferDescription"
+                             f"is a BufferDescription not {type(other)}")
+        for self_attrib in self.attributes:
+            for other_attrib in other.attributes:
+                return True
+        return False
 
 
 class TypeInfo:
@@ -315,13 +344,12 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name, enum, gl_type, gl_size, components):
-
-        self.name = name  # type: str
-        self.enum = enum  # type: gl.GLenum
-        self.gl_type = gl_type  # type: gl.GLenum
-        self.gl_size = gl_size  # type: int
-        self.components = components  # type: int
+    def __init__(self, name: str, enum: gl.GLenum, gl_type: gl.GLenum, gl_size: int, components: int):
+        self.name = name
+        self.enum = enum
+        self.gl_type = gl_type
+        self.gl_size = gl_size
+        self.components = components
 
     @property
     def size(self) -> int:

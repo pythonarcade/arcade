@@ -2,10 +2,17 @@
 City Scape Generator
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.shape_list_skylines
+python -m arcade.examples.shape_list_demo_skylines
 """
 import random
 import arcade
+from arcade.shape_list import (
+    ShapeElementList,
+    create_rectangle_filled,
+    create_polygon,
+    create_rectangle_filled,
+    create_rectangles_filled_with_colors,
+)
 import time
 
 SCREEN_WIDTH = 1200
@@ -16,7 +23,7 @@ SCREEN_TITLE = "Skyline Using Buffered Shapes"
 def make_star_field(star_count):
     """ Make a bunch of circles for stars. """
 
-    shape_list = arcade.ShapeElementList()
+    shape_list = ShapeElementList()
 
     for star_no in range(star_count):
         x = random.randrange(SCREEN_WIDTH)
@@ -24,7 +31,7 @@ def make_star_field(star_count):
         radius = random.randrange(1, 4)
         brightness = random.randrange(127, 256)
         color = (brightness, brightness, brightness)
-        shape = arcade.create_rectangle_filled(x, y, radius, radius, color)
+        shape = create_rectangle_filled(x, y, radius, radius, color)
         shape_list.append(shape)
 
     return shape_list
@@ -36,10 +43,10 @@ def make_skyline(width, skyline_height, skyline_color,
                  cap_chance=0.20):
     """ Make a skyline """
 
-    shape_list = arcade.ShapeElementList()
+    shape_list = ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = arcade.create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
+    shape = create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
     shape_list.append(shape)
 
     building_center_x = 0
@@ -85,7 +92,7 @@ def make_skyline(width, skyline_height, skyline_color,
             y1 = y2 = building_center_y + building_height / 2
             y3 = y1 + building_width / 2
 
-            shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
+            shape = create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
             shape_list.append(shape)
 
         # See if we should have some windows
@@ -121,7 +128,7 @@ def make_skyline(width, skyline_height, skyline_color,
 
         building_center_x += (building_width / 2)
 
-    shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)
+    shape = create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
 
     return shape_list
@@ -139,7 +146,7 @@ class MyGame(arcade.Window):
         self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))
         self.skyline2 = make_skyline(SCREEN_WIDTH * 5, 150, (50, 50, 50))
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game and initialize the variables. """

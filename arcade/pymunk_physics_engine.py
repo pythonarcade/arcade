@@ -3,12 +3,12 @@ Pymunk Physics Engine
 """
 import logging
 import math
-from typing import Callable, Dict, List, Optional, Union, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import pymunk
+from pyglet.math import Vec2
 
 from arcade import Sprite
-from pyglet.math import Vec2
 
 LOG = logging.getLogger(__name__)
 
@@ -16,8 +16,8 @@ LOG = logging.getLogger(__name__)
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
-                 body: pymunk.Body = None,
-                 shape: pymunk.Shape = None):
+                 body: Optional[pymunk.Body] = None,
+                 shape: Optional[pymunk.Shape] = None):
         """ Init """
         self.body: Optional[pymunk.Body] = body
         self.shape: Optional[pymunk.Shape] = shape
@@ -32,7 +32,7 @@ class PymunkPhysicsEngine:
     Pymunk Physics Engine
 
     :param gravity: The direction where gravity is pointing
-    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss,
+    :param damping: The amount of speed which is kept to the next tick. A value of 1.0 means no speed loss,
                     while 0.9 has 10% loss of speed etc.
     :param maximum_incline_on_ground: The maximum incline the ground can have, before is_on_ground() becomes False
         default = 0.708 or a little bit over 45° angle
@@ -61,10 +61,10 @@ class PymunkPhysicsEngine:
                    moment_of_inertia: Optional[float] = None,  # correct spelling
                    body_type: int = DYNAMIC,
                    damping: Optional[float] = None,
-                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] = None,
-                   max_velocity: int = None,
-                   max_horizontal_velocity: int = None,
-                   max_vertical_velocity: int = None,
+                   gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None,
+                   max_velocity: Optional[int] = None,
+                   max_horizontal_velocity: Optional[int] = None,
+                   max_vertical_velocity: Optional[int] = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
                    ):
@@ -88,19 +88,19 @@ class PymunkPhysicsEngine:
         """
 
         if damping is not None:
-            sprite.pymunk.damping = damping
+            sprite.pymunk.damping = damping  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if gravity is not None:
-            sprite.pymunk.gravity = gravity
+            sprite.pymunk.gravity = gravity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_velocity is not None:
-            sprite.pymunk.max_velocity = max_velocity
+            sprite.pymunk.max_velocity = max_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_vertical_velocity is not None:
-            sprite.pymunk.max_vertical_velocity = max_vertical_velocity
+            sprite.pymunk.max_vertical_velocity = max_vertical_velocity  # pyright: ignore
 
         if max_horizontal_velocity is not None:
-            sprite.pymunk.max_horizontal_velocity = max_horizontal_velocity
+            sprite.pymunk.max_horizontal_velocity = max_horizontal_velocity  # pyright: ignore
 
         # See if the sprite already has been added
         if sprite in self.sprites:
@@ -127,7 +127,7 @@ class PymunkPhysicsEngine:
         body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
-        def velocity_callback(my_body, my_gravity, my_damping, dt):
+        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float):
             """ Used for custom damping, gravity, and max_velocity. """
 
             # Custom damping
@@ -163,7 +163,7 @@ class PymunkPhysicsEngine:
             if max_vertical_velocity:
                 velocity = my_body.velocity[1]
                 if abs(velocity) > max_vertical_velocity:
-                    velocity = max_horizontal_velocity * math.copysign(1, velocity)
+                    velocity = max_vertical_velocity * math.copysign(1, velocity)
                     my_body.velocity = pymunk.Vec2d(my_body.velocity.x, velocity)
 
         # Add callback if we need to do anything custom on this body
@@ -264,6 +264,12 @@ class PymunkPhysicsEngine:
             raise PymunkException("Tried to set a position, but this physics object has no 'body' set.")
         physics_object.body.position = position
 
+    def set_rotation(self, sprite: Sprite, rotation: float):
+        physics_object = self.get_physics_object(sprite)
+        if physics_object.body is None:
+            raise PymunkException("Tried to set a rotation, but this physics object has no 'body' set.")
+        physics_object.body.angle = math.radians(rotation)
+
     def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
@@ -274,10 +280,10 @@ class PymunkPhysicsEngine:
     def add_collision_handler(self,
                               first_type: str,
                               second_type: str,
-                              begin_handler: Callable = None,
-                              pre_handler: Callable = None,
-                              post_handler: Callable = None,
-                              separate_handler: Callable = None):
+                              begin_handler: Optional[Callable] = None,
+                              pre_handler: Optional[Callable] = None,
+                              post_handler: Optional[Callable] = None,
+                              separate_handler: Optional[Callable] = None):
         """ Add code to handle collisions between objects. """
 
         if first_type not in self.collision_types:
@@ -292,21 +298,25 @@ class PymunkPhysicsEngine:
 
         def _f1(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            should_process_collision = False
+            if sprite_a is not None and sprite_b is not None and begin_handler is not None:
+                should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
             return should_process_collision
 
         def _f2(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            if sprite_a is not None and sprite_b is not None:
+            if sprite_a is not None and sprite_b is not None and post_handler is not None:
                 post_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f3(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            pre_handler(sprite_a, sprite_b, arbiter, space, data)
+            if pre_handler is not None:
+                return pre_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f4(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            separate_handler(sprite_a, sprite_b, arbiter, space, data)
+            if separate_handler:
+                separate_handler(sprite_a, sprite_b, arbiter, space, data)
 
         h = self.space.add_collision_handler(first_type_id, second_type_id)
         if begin_handler:
@@ -331,25 +341,27 @@ class PymunkPhysicsEngine:
             # Get physics object for this sprite
             physics_object = self.sprites[sprite]
 
-            # Item is sleeping, skip
-            if physics_object.body.is_sleeping:
-                continue
-
             original_position = sprite.position
-            new_position = physics_object.body.position
-            new_angle = math.degrees(physics_object.body.angle)
 
-            # Calculate change in location, used in call-back
-            dx = new_position[0] - original_position[0]
-            dy = new_position[1] - original_position[1]
-            d_angle = new_angle - sprite.angle
+            if physics_object.body:
+                # Item is sleeping, skip
+                if physics_object.body.is_sleeping:
+                    continue
 
-            # Update sprite to new location
-            sprite.position = new_position
-            sprite.angle = new_angle
+                new_position = physics_object.body.position
+                new_angle = math.degrees(physics_object.body.angle)
 
-            # Notify sprite we moved, in case animation needs to be updated
-            sprite.pymunk_moved(self, dx, dy, d_angle)
+                # Calculate change in location, used in call-back
+                dx = new_position[0] - original_position[0]
+                dy = new_position[1] - original_position[1]
+                d_angle = new_angle - sprite.angle
+
+                # Update sprite to new location
+                sprite.position = new_position
+                sprite.angle = new_angle
+
+                # Notify sprite we moved, in case animation needs to be updated
+                sprite.pymunk_moved(self, dx, dy, d_angle)
 
     def step(self,
              delta_time: float = 1 / 60.0,

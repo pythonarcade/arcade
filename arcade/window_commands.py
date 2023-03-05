@@ -9,7 +9,6 @@ import os
 
 import pyglet
 
-from numbers import Number
 from typing import (
     Callable,
     Optional,
@@ -17,8 +16,7 @@ from typing import (
     Tuple,
     TYPE_CHECKING
 )
-from arcade.arcade_types import Color
-from pyglet.math import Mat4
+from arcade.types import Color
 
 if TYPE_CHECKING:
     from arcade import Window
@@ -28,7 +26,8 @@ _window: Optional["Window"] = None
 
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
-    """Return the width and height of a monitor.
+    """
+    Return the width and height of a monitor.
 
     The size of the primary monitor is returned by default.
 
@@ -41,48 +40,7 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     return screen.width, screen.height
 
 
-def get_projection() -> Mat4:
-    """
-    Returns the current projection matrix used by sprites and shapes in arcade.
-
-    This is a shortcut for ```window.ctx.projection_2d_matrix``.
-
-    :return: Projection matrix
-    :rtype: Mat4
-    """
-    return get_window().ctx.projection_2d_matrix
-
-
-def create_orthogonal_projection(
-    left: float,
-    right: float,
-    bottom: float,
-    top: float,
-    near: float = 1,
-    far: float = -1,
-) -> Mat4:
-    """
-    Creates an orthogonal projection matrix. Used internally with the
-    OpenGL shaders. It creates the same matrix as the deprecated/removed
-    ``glOrtho`` OpenGL function.
-
-    :param float left: The left of the near plane relative to the plane's center.
-    :param float right: The right of the near plane relative to the plane's center.
-    :param float top: The top of the near plane relative to the plane's center.
-    :param float bottom: The bottom of the near plane relative to the plane's center.
-    :param float near: The distance of the near plane from the camera's origin.
-                       It is recommended that the near plane is set to 1.0 or above to avoid
-                       rendering issues at close range.
-    :param float far: The distance of the far plane from the camera's origin.
-    :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: pyglet.math.Mat4
-
-    .. seealso:: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
-    """
-    return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
-
-
-def pause(seconds: Number) -> None:
+def pause(seconds: float) -> None:
     """
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
 
@@ -113,7 +71,7 @@ def get_window() -> "Window":
     return _window
 
 
-def set_window(window: "Window") -> None:
+def set_window(window: Optional["Window"]) -> None:
     """
     Set a handle to the current window.
 
@@ -121,26 +79,6 @@ def set_window(window: "Window") -> None:
     """
     global _window
     _window = window
-
-
-def get_scaling_factor(window: "Window" = None) -> float:
-    """
-    Gets the scaling factor of the given Window.
-    This is the ratio between the window and framebuffer size.
-    If no window is supplied the currently active window will be used.
-
-    :param Window window: Handle to window we want to get scaling factor of.
-
-    :return: Scaling factor. E.g., 2.0 would indicate the framebuffer
-             width and height being 2.0 times the window width and height.
-             This means one "window pixel" is actual a 2 x 2 square of pixels
-             in the framebuffer.
-    :rtype: float
-    """
-    if window:
-        return window.get_pixel_ratio()
-    else:
-        return get_window().get_pixel_ratio()
 
 
 def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
@@ -164,9 +102,12 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
         line up with the pixels on the screen. Otherwise, tiled pixel art
         may not line up well during render, creating rectangle artifacts.
 
-    .. note:: ``Window.on_resize`` calls ``set_viewport`` by default.
-              If you want to set your own custom viewport during the
-              game, you may need to over-ride the ``on_resize`` method.
+    .. note:: :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              calls ``set_viewport`` by default. If you want to set your
+              own custom viewport during the game, you may need to
+              override the
+              :py:meth:`Window.on_resize <arcade.Window.on_resize>`
+              method.
 
     .. note:: For more advanced users
 
@@ -199,16 +140,6 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     window.ctx.projection_2d = left, right, bottom, top
 
 
-def get_viewport() -> Tuple[float, float, float, float]:
-    """
-    Get the current viewport settings.
-
-    :return: Tuple of floats, with ``(left, right, bottom, top)``
-
-    """
-    return get_window().ctx.projection_2d
-
-
 def close_window() -> None:
     """
     Closes the current window, and then runs garbage collection. The garbage collection
@@ -229,22 +160,6 @@ def close_window() -> None:
     gc.collect()
 
 
-def finish_render():
-    """
-    Swap buffers and displays what has been drawn.
-
-    .. Warning::
-
-        If you are extending the :py:class:`~arcade.Window` class, this function
-        should not be called. The event loop will automatically swap the window
-        framebuffer for you after ``on_draw``.
-
-    """
-    get_window().static_display = True
-    get_window().flip_count = 0
-    get_window().flip()
-
-
 def run():
     """
     Run the main loop.
@@ -252,19 +167,19 @@ def run():
     commands on the main program. This is a blocking function starting pyglet's event loop
     meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
     """
+
     window = get_window()
 
     # Used in some unit test
     if os.environ.get('ARCADE_TEST'):       
-        if window:
-            window.on_update(1 / 60)
-            window.on_draw()
+        window.on_update(window._update_rate)
+        window.on_draw()
     elif window.headless:
         # We are entering headless more an will emulate an event loop
         import time
         # Ensure the initial delta time is not 0 to be
         # more in line with how a normal window works.
-        delta_time = 1 / 60
+        delta_time = window._draw_rate
         last_time = time.perf_counter()
 
         # As long as we have a context --
@@ -286,7 +201,7 @@ def run():
         import sys
         if sys.platform != 'win32':
             # For non windows platforms, just do pyglet run
-            pyglet.app.run()
+            pyglet.app.run(window._draw_rate)
         else:
             # Ok, some Windows platforms have a timer resolution > 15 ms. That can
             # drop our FPS to 32 FPS or so. This reduces resolution so we can keep
@@ -320,10 +235,10 @@ def run():
                 winmm.timeEndPeriod(msecs)
 
             with timer_resolution(msecs=10):
-                pyglet.app.run()
+                pyglet.app.run(window._draw_rate)
 
 
-def exit():
+def exit() -> None:
     """
     Exits the application.
     """
@@ -339,6 +254,22 @@ def start_render() -> None:
     or :py:meth:`arcade.View.clear`.
     """
     get_window().clear()
+
+
+def finish_render():
+    """
+    Swap buffers and displays what has been drawn.
+
+    .. Warning::
+
+        If you are extending the :py:class:`~arcade.Window` class, this function
+        should not be called. The event loop will automatically swap the window
+        framebuffer for you after ``on_draw``.
+
+    """
+    get_window().static_display = True
+    get_window().flip_count = 0
+    get_window().flip()
 
 
 def set_background_color(color: Color) -> None:
@@ -365,7 +296,7 @@ def set_background_color(color: Color) -> None:
     get_window().background_color = color
 
 
-def schedule(function_pointer: Callable, interval: Number):
+def schedule(function_pointer: Callable, interval: float):
     """
     Schedule a function to be automatically called every ``interval``
     seconds. The function/callable needs to take a delta time argument
@@ -388,7 +319,7 @@ def schedule(function_pointer: Callable, interval: Number):
         # Unschedule
 
     :param Callable function_pointer: Pointer to the function to be called.
-    :param Number interval: Interval to call the function (float or integer)
+    :param float interval: Interval to call the function (float or integer)
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
@@ -408,3 +339,24 @@ def unschedule(function_pointer: Callable):
     :param Callable function_pointer: Pointer to the function to be unscheduled.
     """
     pyglet.clock.unschedule(function_pointer)
+
+
+def schedule_once(function_pointer: Callable, delay: float):
+    """
+    Schedule a function to be automatically called once after ``delay``
+    seconds. The function/callable needs to take a delta time argument
+    similar to ``on_update``. This is a float representing the number
+    of seconds since it was scheduled or called.
+
+    Example::
+
+        def some_action(delta_time):
+            print(delta_time)
+
+        # Call the function once after 1 second
+        arcade.schedule_one(some_action, 1)
+
+    :param Callable function_pointer: Pointer to the function to be called.
+    :param float delay: Delay in seconds
+    """
+    pyglet.clock.schedule_once(function_pointer, delay)

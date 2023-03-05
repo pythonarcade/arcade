@@ -5,7 +5,7 @@ Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
 
 This version makes a grid of sprites instead of numbers. Instead of
-interating all the cells when the grid changes we simply just
+iterating all the cells when the grid changes we simply just
 swap the color of the selected sprite. This means this version
 can handle very large grids and still have the same performance.
 
@@ -60,7 +60,7 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 x = column * (WIDTH + MARGIN) + (WIDTH / 2 + MARGIN)
                 y = row * (HEIGHT + MARGIN) + (HEIGHT / 2 + MARGIN)
-                sprite = arcade.SpriteSolidColor(WIDTH, HEIGHT, arcade.color.WHITE)
+                sprite = arcade.SpriteSolidColor(WIDTH, HEIGHT, color=arcade.color.WHITE)
                 sprite.center_x = x
                 sprite.center_y = y
                 self.grid_sprite_list.append(sprite)

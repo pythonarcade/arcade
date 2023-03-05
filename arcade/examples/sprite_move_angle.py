@@ -28,7 +28,7 @@ class Player(arcade.Sprite):
         """ Set up the player """
 
         # Call the parent init
-        super().__init__(image, scale)
+        super().__init__(image, scale=scale)
 
         # Create a variable to hold our speed. 'angle' is created by the parent
         self.speed = 0
@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def setup(self):
         """ Set up the game and initialize the variables. """

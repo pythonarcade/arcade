@@ -1,3 +1,7 @@
+"""
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.music_control_demo
+"""
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
@@ -182,7 +186,7 @@ class MyView(arcade.View):
                              start_x=10, start_y=50, color=arcade.color.BLACK, font_size=24)
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.ALMOND)
+        self.window.background_color = arcade.color.ALMOND
 
         # Registers handlers for GUI button clicks, etc.
         # We don't really use them in this example.

@@ -55,7 +55,7 @@ class MyGame(arcade.Window):
         self.view_left = 0
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -67,13 +67,13 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    SPRITE_SCALING)
+                                    scale=SPRITE_SCALING)
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING)
         enemy.center_x = 350
         enemy.center_y = 350
         self.enemy_list.append(enemy)
@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
         spacing = 200
         for column in range(10):
             for row in range(10):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", 0.5)
+                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=0.5)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height

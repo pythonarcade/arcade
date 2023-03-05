@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         # you want something different, then use those coordinates instead.
         width, height = self.get_size()
         self.set_viewport(0, width, 0, height)
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
         self.example_image = arcade.load_texture(":resources:images/tiles/boxCrate_double.png")
 
     def on_draw(self):

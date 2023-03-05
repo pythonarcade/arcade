@@ -1,4 +1,4 @@
-from ctypes import c_int
+from ctypes import c_int, string_at
 from contextlib import contextmanager
 from typing import Optional, Tuple, List, TYPE_CHECKING
 import weakref
@@ -6,7 +6,7 @@ import weakref
 
 from pyglet import gl
 
-from .texture import Texture
+from .texture import Texture2D
 from .types import pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -59,7 +59,7 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment=None
+        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture2D] = None
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,7 +71,7 @@ class Framebuffer:
             if isinstance(color_attachments, list)
             else [color_attachments]
         )
-        self._depth_attachment = depth_attachment
+        self._depth_attachment: Optional[Texture2D] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -198,9 +198,10 @@ class Framebuffer:
     def _set_scissor(self, value):
         self._scissor = value
 
-        if self._scissor is not None:
-            # If the framebuffer is bound we need to set the scissor box.
-            # Otherwise it will be set on use()
+        if self._scissor is None:
+            if self._ctx.active_framebuffer == self:
+                gl.glScissor(*self._viewport)
+        else:
             if self._ctx.active_framebuffer == self:
                 gl.glScissor(*self._scissor)
 
@@ -252,7 +253,7 @@ class Framebuffer:
         return self._samples
 
     @property
-    def color_attachments(self) -> List[Texture]:
+    def color_attachments(self) -> List[Texture2D]:
         """
         A list of color attachments
 
@@ -261,7 +262,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Texture:
+    def depth_attachment(self) -> Optional[Texture2D]:
         """
         Depth attachment
 
@@ -296,7 +297,8 @@ class Framebuffer:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._prev_fbo.use()
+        if self._prev_fbo:
+            self._prev_fbo.use()
 
     @contextmanager
     def activate(self):
@@ -346,15 +348,16 @@ class Framebuffer:
         *,
         depth: float = 1.0,
         normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """
         Clears the framebuffer::
 
-            # Clear framebuffer using the color red in normalized form
-            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
             # Clear the framebuffer using arcade's colors (not normalized)
             fb.clear(color=arcade.color.WHITE)
+
+            # Clear framebuffer using the color red in normalized form
+            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
 
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
@@ -365,8 +368,12 @@ class Framebuffer:
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
+            scissor_values = self._scissor
+
             if viewport:
-                gl.glScissor(*viewport)
+                self.scissor = viewport
+            else:
+                self.scissor = None
 
             if normalized:
                 # If the colors are already normalized we can pass them right in
@@ -388,15 +395,11 @@ class Framebuffer:
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-            if viewport:
-                if self._scissor is None:
-                    gl.glScissor(*self._viewport)
-                else:
-                    gl.glScissor(*self._scissor)
+            self.scissor = scissor_values
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
-    ) -> bytearray:
+    ) -> bytes:
         """
         Read framebuffer pixels
 
@@ -425,7 +428,7 @@ class Framebuffer:
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
 
-        return bytearray(data)
+        return string_at(data, len(data))
 
     def resize(self):
         """
@@ -557,7 +560,7 @@ class DefaultFrameBuffer(Framebuffer):
         self._height = height
 
         # HACK: Signal the default framebuffer having depth buffer
-        self._depth_attachment = True
+        self._depth_attachment = True  # type: ignore
 
     def _get_viewport(self) -> Tuple[int, int, int, int]:
         """

@@ -4,7 +4,7 @@ Scroll around a large screen.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.sprite_move_scrolling_shake
 """
 
 import random
@@ -54,8 +54,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.Camera()
+        self.camera_gui = arcade.Camera()
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
@@ -79,13 +79,13 @@ class MyGame(arcade.Window):
             for y in range(0, PLAYING_FIELD_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
 
         for i in range(BOMB_COUNT):
-            bomb = arcade.Sprite(":resources:images/tiles/bomb.png", 0.25)
+            bomb = arcade.Sprite(":resources:images/tiles/bomb.png", scale=0.25)
             placed = False
             while not placed:
                 bomb.center_x = random.randrange(PLAYING_FIELD_WIDTH)
@@ -97,7 +97,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -185,13 +185,13 @@ class MyGame(arcade.Window):
         )
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

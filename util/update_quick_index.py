@@ -4,25 +4,24 @@ Script used to create the quick index
 import re
 import os
 from pathlib import Path
+
+# The project root
+ROOT = Path(__file__).parent.parent.resolve()
+
 titles = {
-    'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
     'application.py': ['Window and View', 'window.rst'],
-    'buffered_draw_commands.py': ['Drawing - Batch', 'drawing_batch.rst'],
+    'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
     'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-    'earclip_module.py': ['Geometry Support', 'geometry.rst'],
-    'emitter.py': ['Particles', 'particle_emitter.rst'],
-    'emitter_simple.py': ['Particles', 'particle_emitter.rst'],
-    'geometry.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
-    'easing.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/__init__.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/geometry_generic.py': ['Geometry Support', 'geometry.rst'],
+    'geometry/geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
     'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
-    'joysticks.py': ['Game Controller Support', 'game_controller.rst'],
-    'particle.py': ['Particles', 'particle_emitter.rst'],
+    'controller.py': ['Game Controller Support', 'game_controller.rst'],
+    'joysticks.py': ['Joystick Support', 'joysticks.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
     'paths_python.py': ['Pathfinding', 'path_finding.rst'],
     'paths_shapely.py': ['Pathfinding', 'path_finding.rst'],
@@ -31,14 +30,30 @@ titles = {
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
     'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
     'sound.py': ['Sound', 'sound.rst'],
-    'sprite.py': ['Sprites', 'sprites.rst'],
+    'sprite/__init__.py': ['Sprites', 'sprites.rst'],
+    'sprite/base.py': ['Sprites', 'sprites.rst'],
+    'sprite/sprite.py': ['Sprites', 'sprites.rst'],
+    'sprite/simple.py': ['Sprites', 'sprites.rst'],
+    'sprite/colored.py': ['Sprites', 'sprites.rst'],
+    'sprite/mixins.py': ['Sprites', 'sprites.rst'],
+    'sprite/animated.py': ['Sprites', 'sprites.rst'],
+    'sprite/enums.py': ['Sprites', 'sprites.rst'],
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
-    'text_pillow.py': ['Text - Image/Pillow based', 'text_image.rst'],
-    'text_pyglet.py': ['Text - Pyglet/Glyph based', 'text_pyglet.rst'],
-    'texture.py': ['Texture Management', 'texture.rst'],
+    'texture/__init__.py': ['Texture Management', 'texture.rst'],
+    'texture/texture.py': ['Texture Management', 'texture.rst'],
+    'texture/loading.py': ['Texture Management', 'texture.rst'],
+    'texture/generate.py': ['Texture Management', 'texture.rst'],
+    'texture/solid_color.py': ['Texture Management', 'texture.rst'],
+    'texture/tools.py': ['Texture Management', 'texture.rst'],
+    'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'math.py': ['Math', 'math.rst'],
+    'types.py': ['Types', 'types.rst'],
+    'easing.py': ['Easing', 'easing.rst'],
+    'earclip.py': ['Earclip', 'earclip.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
@@ -47,7 +62,9 @@ titles = {
     'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -58,13 +75,17 @@ titles = {
     'gui/mixins.py': ['GUI', 'gui.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/nine_patch.py': ['GUI', 'gui.rst'],
     'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/layout.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
+    'gui/style.py': ['GUI Style', 'gui_style.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
@@ -83,16 +104,23 @@ titles = {
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 
-
+# Module and class members to exclude
+EXCLUDED_MEMBERS = [
+    "ImageData",
+    "AtlasRegion",
+    "ImageDataRefCounter",
+    "FakeImage",
+]
 
 def get_member_list(filepath):
     """
     Take a file, and return all the classes, functions, and data declarations in it
     """
     file_pointer = open(filepath, encoding="utf8")
+    print("Processing: ", filepath)
     filename = filepath.name
 
-    class_re = re.compile("^class ([A-Za-z0-9]+[^\(:]*)")
+    class_re = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
     function_re = re.compile("^def ([a-z][a-z0-9_]*)")
     type_re = re.compile("^([A-Za-z][A-Za-z0-9_]*) = ")
 
@@ -127,7 +155,7 @@ def get_member_list(filepath):
     return type_list, class_list, function_list
 
 
-def process_directory(directory, quick_index_file):
+def process_directory(directory: Path, quick_index_file):
     """
     Take a directory and process all the files in it.
     """
@@ -136,7 +164,7 @@ def process_directory(directory, quick_index_file):
 
     file_list = directory.glob('*.py')
 
-    quick_index_file.write(f"\n")
+    quick_index_file.write("\n")
 
     if directory.name == "arcade":
         prepend = ""
@@ -145,9 +173,6 @@ def process_directory(directory, quick_index_file):
 
     for path in file_list:
         if "test" in path.name:
-            continue
-
-        if "math.py" in path.name:
             continue
 
         if "geometry_python.py" in path.name:
@@ -167,21 +192,33 @@ def process_directory(directory, quick_index_file):
 
         type_list, class_list, function_list = get_member_list(path)
 
-        mapping = {"arcade": "arcade",
-                   "sprite_list": "arcade",
-                   "text": "arcade",
-                   "gui": "arcade.gui",
-                   "property": "arcade.gui.property",
-                   "widgets": "arcade.gui",
-                   "tilemap": "arcade.tilemap",
-                   }
-        package = mapping[directory.name]
+        mapping = {
+            "arcade": "arcade",
+            "sprite": "arcade",
+            "texture": "arcade",
+            "texture_atlas": "arcade",
+            "sprite_list": "arcade",
+            "geometry": "geometry",
+            "text": "arcade",
+            "gui": "arcade.gui",
+            "property": "arcade.gui.property",
+            "widgets": "arcade.gui",
+            "tilemap": "arcade.tilemap",
+            "transforms.py": "arcade.texture.transforms",
+            "isometric.py": "arcade.isometric",
+            "particles": "arcade.particles",
+            "types.py": "arcade.types",
+            "utils.py": "arcade.utils",
+            "easing.py": "arcade.easing",
+            "math.py": "arcade.math",
+            "earclip.py": "arcade.earclip",
+            "shape_list.py": "arcade.shape_list",
+        }
+        package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
         path_name = prepend + path.name
 
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
-
-            # Print title
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
         elif path_name not in titles:
@@ -191,7 +228,11 @@ def process_directory(directory, quick_index_file):
         else:
             continue
 
-        full_api_file_name = "../doc/api/" + api_file_name
+        full_api_file_name = ROOT / "doc/api_docs/api/" / api_file_name
+
+        print(package, title, api_file_name, full_api_file_name)
+        if "Trans" in title:
+            print("moo")
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
@@ -209,6 +250,8 @@ def process_directory(directory, quick_index_file):
         # Classes
         if len(class_list) > 0:
             for item in class_list:
+                if item in EXCLUDED_MEMBERS:
+                    continue
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
@@ -218,18 +261,15 @@ def process_directory(directory, quick_index_file):
                 api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
-                api_file.write(f"    :members:\n")
+                api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
 
                 # Include inherited members
                 if full_class_name in ("arcade.ArcadeContext",):
-                    api_file.write(f"    :show-inheritance:\n")
-                    api_file.write(f"    :inherited-members:\n")
+                    api_file.write("    :show-inheritance:\n")
+                    api_file.write("    :inherited-members:\n")
 
                 api_file.write("\n")
-
-                if "UIMockup" in full_class_name:
-                    print(f"AAAAA {full_api_file_name}")
 
                 # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")
@@ -238,6 +278,8 @@ def process_directory(directory, quick_index_file):
         # Functions
         if len(function_list) > 0:
             for item in function_list:
+                if item in EXCLUDED_MEMBERS:
+                    continue
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
@@ -256,7 +298,7 @@ def process_directory(directory, quick_index_file):
 
 
 def include_template(text_file):
-    with open('template_quick_index.rst', 'r') as content_file:
+    with open(ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
         quick_index_content = content_file.read()
 
     text_file.write(quick_index_content)
@@ -297,7 +339,7 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    directory = Path("../doc/api/")
+    directory = ROOT / "doc/api_docs/api"
     file_list = directory.glob('*.rst')
     for file in file_list:
         os.remove(file)
@@ -306,39 +348,43 @@ def clear_api_directory():
 def main():
     clear_api_directory()
 
-    text_file = open("../doc/quick_index.rst", "w")
+    text_file = open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
-    text_file.write(f"The arcade module\n")
-    text_file.write(f"-----------------\n\n")
+    text_file.write("The arcade module\n")
+    text_file.write("-----------------\n\n")
 
     text_file.write(table_header_arcade)
 
-    process_directory(Path("../arcade"), text_file)
-    process_directory(Path("../arcade/sprite_list"), text_file)
-    process_directory(Path("../arcade/text"), text_file)
+    process_directory(ROOT / "arcade", text_file)
+    process_directory(ROOT / "arcade/sprite_list", text_file)
+    process_directory(ROOT / "arcade/geometry", text_file)
+    process_directory(ROOT / "arcade/sprite", text_file)
+    process_directory(ROOT / "arcade/texture", text_file)
+    process_directory(ROOT / "arcade/texture_atlas", text_file)
+    process_directory(ROOT / "arcade/text", text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
     # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.gui module\n")
-    text_file.write(f"---------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.gui module\n")
+    text_file.write("---------------------\n\n")
 
     text_file.write(table_header_gui)
 
-    process_directory(Path("../arcade/gui"), text_file)
-    process_directory(Path("../arcade/gui/widgets"), text_file)
-    process_directory(Path("../arcade/gui/property"), text_file)
+    process_directory(ROOT / "arcade/gui", text_file)
+    process_directory(ROOT / "arcade/gui/widgets", text_file)
+    process_directory(ROOT / "arcade/gui/property", text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.tilemap module\n")
-    text_file.write(f"-------------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.tilemap module\n")
+    text_file.write("-------------------------\n\n")
 
     text_file.write(table_header_tiled)
 
-    process_directory(Path("../arcade/tilemap"), text_file)
+    process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
     print("Done creating quick_index.rst")

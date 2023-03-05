@@ -3,7 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 from pathlib import Path
-from typing import Dict, Optional, Tuple, Union, Sequence
+from typing import Any, Iterable, Dict, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager
 
 import pyglet
@@ -15,8 +15,9 @@ import arcade
 from arcade.gl import BufferDescription, Context
 from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.program import Program
-from arcade.gl.texture import Texture
+from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
+from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
@@ -74,10 +75,6 @@ class ArcadeContext(Context):
             vertex_shader=":resources:shaders/shape_element_list_vs.glsl",
             fragment_shader=":resources:shaders/shape_element_list_fs.glsl",
         )
-        # self.sprite_list_program = self.load_program(
-        #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
-        #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
-        # )
         self.sprite_list_program_no_cull: Program = self.load_program(
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
@@ -96,34 +93,36 @@ class ArcadeContext(Context):
 
         # Shapes
         self.shape_line_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/line/unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/line/unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/line/unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/line/unbuffered_geo.glsl",
         )
         self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
         )
         self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+            vertex_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
+        # Atlas shaders
         self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":resources:/shaders/atlas/resize_vs.glsl",
-            geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
-            fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
+            vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
+            geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
+            fragment_shader=":resources:shaders/atlas/resize_fs.glsl",
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
         self.atlas_resize_program["texcoords_old"] = 2
         self.atlas_resize_program["texcoords_new"] = 3
+
         # SpriteList collision resources
         self.collision_detection_program = self.load_program(
             vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",
@@ -188,7 +187,7 @@ class ArcadeContext(Context):
         self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
+        self.label_cache: Dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -235,7 +234,7 @@ class ArcadeContext(Context):
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
             self._atlas = TextureAtlas(
-                self.atlas_size, border=1, auto_resize=True, ctx=self,
+                self.atlas_size, border=2, auto_resize=True, ctx=self,
             )
 
         return self._atlas
@@ -247,9 +246,26 @@ class ArcadeContext(Context):
         This projection is used by sprites and shapes and is represented
         by four floats: ``(left, right, bottom, top)``
 
+        When reading this property we reconstruct the projection parameters
+        from pyglet's projection matrix. When setting this property
+        we construct an orthogonal projection matrix and set it in pyglet.
+
         :type: Tuple[float, float, float, float]
         """
-        return self._projection_2d
+        mat = self.window.projection
+
+        # Reconstruct the projection values from the matrix
+        # TODO: Take scale into account
+        width = 2.0 / mat[0]
+        height = 2.0 / mat[5]
+        a = width * mat[12]
+        b = height * mat[13]
+        left = -(width + a) / 2
+        right = left + width
+        bottom = -(height + b) / 2
+        top = bottom + height
+
+        return left, right, bottom, top
 
     @projection_2d.setter
     def projection_2d(self, value: Tuple[float, float, float, float]):
@@ -258,11 +274,14 @@ class ArcadeContext(Context):
                 f"projection must be a 4-component tuple, not {type(value)}: {value}"
             )
 
-        self._projection_2d = value
-        self._projection_2d_matrix = Mat4.orthogonal_projection(
+        # Don't try to set zero projection leading to division by zero
+        width, height = self.window.get_size()
+        if width == 0 or height == 0:
+            return
+
+        self.window.projection = Mat4.orthogonal_projection(
             value[0], value[1], value[2], value[3], -100, 100,
         )
-        self.window.projection = self._projection_2d_matrix
 
     @property
     def projection_2d_matrix(self) -> Mat4:
@@ -270,22 +289,43 @@ class ArcadeContext(Context):
         Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
 
+        This property simply gets and sets pyglet's projection matrix.
+
         :type: pyglet.math.Mat4
         """
-        return self._projection_2d_matrix
+        return self.window.projection
 
     @projection_2d_matrix.setter
     def projection_2d_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("projection_matrix must be a Mat4 object")
 
-        self._projection_2d_matrix = value
-        self.window.projection = self._projection_2d_matrix
+        self.window.projection = value
+
+    @property
+    def view_matrix_2d(self) -> Mat4:
+        """
+        Get the current view matrix.
+        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
+
+        This property simply gets and sets pyglet's view matrix.
+
+        :type: pyglet.math.Mat4
+        """
+        self.window.view
+
+    @view_matrix_2d.setter
+    def view_matrix_2d(self, value: Mat4):
+        if not isinstance(value, Mat4):
+            raise ValueError("view_matrix must be a Mat4 object")
+
+        self._view_matrix_2d = value
+        self.window.view = self._view_matrix_2d
 
     @contextmanager
     def pyglet_rendering(self):
         """
-        Context manager for doing redering with pyglet
+        Context manager for doing rendering with pyglet
         ensuring context states are reverted. This
         affects things like blending.
         """
@@ -300,11 +340,12 @@ class ArcadeContext(Context):
         self,
         *,
         vertex_shader: Union[str, Path],
-        fragment_shader: Union[str, Path] = None,
-        geometry_shader: Union[str, Path] = None,
-        tess_control_shader: Union[str, Path] = None,
-        tess_evaluation_shader: Union[str, Path] = None,
-        defines: dict = None,
+        fragment_shader: Optional[Union[str, Path]] = None,
+        geometry_shader: Optional[Union[str, Path]] = None,
+        tess_control_shader: Optional[Union[str, Path]] = None,
+        tess_evaluation_shader: Optional[Union[str, Path]] = None,
+        common: Iterable[Union[str, Path]] = (),
+        defines: Optional[Dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
@@ -326,9 +367,10 @@ class ArcadeContext(Context):
         :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
         :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
         :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
-        :param dict defines: Substitute ``#define`` values in the source
         :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
         :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
+        :param List[Union[str,pathlib.Path]] common: Common files to be included in all shaders
+        :param dict defines: Substitute ``#define`` values in the source
         :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
                                                  but some more complex out structures we can't detect.
@@ -346,17 +388,23 @@ class ArcadeContext(Context):
         tess_control_src = None
         tess_evaluation_src = None
 
+        common_src = [resolve_resource_path(c).read_text() for c in common]
+
         if fragment_shader:
             fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
+            fragment_shader_src = self.shader_inc(fragment_shader_src)
 
         if geometry_shader:
             geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
+            geometry_shader_src = self.shader_inc(geometry_shader_src)
 
         if tess_control_shader and tess_evaluation_shader:
             tess_control_src = resolve_resource_path(tess_control_shader).read_text()
             tess_evaluation_src = resolve_resource_path(
                 tess_evaluation_shader
             ).read_text()
+            tess_control_src = self.shader_inc(tess_control_src)
+            tess_evaluation_src = self.shader_inc(tess_evaluation_src)
 
         return self.program(
             vertex_shader=vertex_shader_src,
@@ -364,12 +412,13 @@ class ArcadeContext(Context):
             geometry_shader=geometry_shader_src,
             tess_control_shader=tess_control_src,
             tess_evaluation_shader=tess_evaluation_src,
+            common=common_src,
             defines=defines,
             varyings=varyings,
             varyings_capture_mode=varyings_capture_mode
         )
 
-    def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
+    def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
         resource handles.
@@ -379,10 +428,15 @@ class ArcadeContext(Context):
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         :param Union[str,pathlib.Path] path: Path to texture
+        :param Iterable[Union[str,pathlib.Path]] common: Common source injected into compute shader
         """
         from arcade.resources import resolve_resource_path
         path = resolve_resource_path(path)
-        return self.compute_shader(source=path.read_text())
+        common_src = [resolve_resource_path(c).read_text() for c in common]
+        return self.compute_shader(
+            source=self.shader_inc(path.read_text()),
+            common=common_src,
+        )
 
     def load_texture(
         self,
@@ -390,10 +444,10 @@ class ArcadeContext(Context):
         *,
         flip: bool = True,
         build_mipmaps: bool = False,
-    ) -> Texture:
+    ) -> Texture2D:
         """
         Loads and creates an OpenGL 2D texture.
-        Currently all textures are converted to RGBA for simplicity.
+        Currently, all textures are converted to RGBA for simplicity.
 
         Example::
 
@@ -424,3 +478,50 @@ class ArcadeContext(Context):
             texture.build_mipmaps()
 
         return texture
+
+    def shader_inc(self, source: str) -> str:
+        """
+        Parse a shader source looking for ``#include`` directives and
+        replace them with the contents of the included file.
+
+        The ``#include`` directive must be on its own line and the file
+        and the path should use a resource handle.
+
+        Example::
+
+            #include :my_shader:lib/common.glsl
+
+        :param str source: Shader
+        """
+        from arcade.resources import resolve_resource_path
+        lines = source.splitlines()
+        for i, line in enumerate(lines):
+            line = line.strip()
+            if line.startswith("#include"):
+                path = resolve_resource_path(line.split()[1].replace('"', ""))
+                lines[i] = path.read_text()
+        return "\n".join(lines)
+
+    def get_framebuffer_image(
+        self,
+        fbo: Framebuffer,
+        components: int = 4,
+        flip=True,
+    ) -> Image.Image:
+        """
+        Shortcut method for reading data from a framebuffer and converting it to a PIL image.
+
+        :param Framebuffer fbo: Framebuffer to get image from
+        :param int components: Number of components to read
+        :param bool flip: Flip the image upside down
+        """
+        mode = "RGBA"[:components]
+        image = Image.frombuffer(
+            mode,
+            (fbo.width, fbo.height),
+            fbo.read(components=components),
+        )
+        if flip:
+            image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+
+        return image

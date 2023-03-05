@@ -9,17 +9,21 @@
 
 # virualenvs
 env
+.env
+.venv
+ENV/
+env/
 venv*/
 .venv*/
 
 # docs
-/doc/resources.rst
+/doc/api_docs/resources.rst
 doc/build/
-doc/quick_index.rst
+doc/api_docs/quick_index.rst
 doc/internal/blacklist.rst
 doc/internal/build.rst
 doc/source/quick_index.rst
-doc/examples/thumbs/
+doc/example_code/how_to_examples/thumbs/
 
 # testing
 .pytest_cache/
@@ -56,4 +60,4 @@ temp/
 # Tiled Session for project
 *.tiled-session
 
-doc/api/*.rst
+doc/api_docs/api/*.rst

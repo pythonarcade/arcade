@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            PLAYER_SCALING,
+            scale=PLAYER_SCALING,
         )
 
         # Starting position of the player
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.background_color = self.tile_map.background_color
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.

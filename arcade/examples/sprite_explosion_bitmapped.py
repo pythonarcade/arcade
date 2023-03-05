@@ -30,7 +30,7 @@ class Explosion(arcade.Sprite):
     """ This class creates an explosion animation """
 
     def __init__(self, texture_list):
-        super().__init__()
+        super().__init__(texture_list[0])
 
         # Start at the first frame
         self.current_texture = 0
@@ -86,7 +86,7 @@ class MyGame(arcade.Window):
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.background_color = arcade.color.AMAZON
 
     def setup(self):
 
@@ -103,7 +103,7 @@ class MyGame(arcade.Window):
 
         # Image from kenney.nl
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+                                           scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -113,7 +113,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -123,7 +123,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -157,7 +157,7 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.

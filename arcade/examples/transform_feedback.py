@@ -14,6 +14,9 @@ two buffers so we always work on the previous state.
 Using transforms in this way makes us able to process
 a system that is reacting to external forces in this way.
 There are no predetermined paths and they system just lives on its own.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.transform_feedback
 """
 from array import array
 import math
@@ -35,7 +38,7 @@ class MyGame(arcade.Window):
         self.time = 0
 
         # Program to visualize the points
-        self.points_progran = self.ctx.program(
+        self.points_program = self.ctx.program(
             vertex_shader="""
             #version 330
             in vec2 in_pos;
@@ -136,7 +139,7 @@ class MyGame(arcade.Window):
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
         # Render the result (Draw buffer_2)
-        self.vao_2.render(self.points_progran, mode=self.ctx.POINTS)
+        self.vao_2.render(self.points_program, mode=self.ctx.POINTS)
 
         # Swap around stuff around so we transform back and fourth between the two buffers
         self.gravity_1, self.gravity_2 = self.gravity_2, self.gravity_1

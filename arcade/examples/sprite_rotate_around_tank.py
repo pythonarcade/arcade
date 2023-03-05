@@ -21,9 +21,14 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rotate_around_tank
 """
-import arcade
 import math
-
+import arcade
+from arcade.types import Point
+from arcade.math import (
+    get_angle_radians,
+    rotate_point,
+    get_angle_degrees,
+)
 
 TANK_SPEED_PIXELS = 64  # How many pixels per second the tank travels
 TANK_TURN_SPEED_DEGREES = 70  # How fast the tank's body can turn
@@ -55,7 +60,7 @@ class RotatingSprite(arcade.Sprite):
     Other games might not rotate the sprite. For example, moving
     platforms in a platformer wouldn't rotate.
     """
-    def rotate_around_point(self, point: arcade.Point, degrees: float):
+    def rotate_around_point(self, point: Point, degrees: float):
         """
         Rotate the sprite around a point by the set amount of degrees
 
@@ -67,7 +72,7 @@ class RotatingSprite(arcade.Sprite):
         self.angle += degrees
 
         # Move the sprite along a circle centered around the passed point
-        self.position = arcade.rotate_point(
+        self.position = rotate_point(
             self.center_x, self.center_y,
             point[0], point[1], degrees)
 
@@ -143,7 +148,7 @@ class ExampleWindow(arcade.Window):
             self.barrel.center_y + y_dir
 
         # Begin rotating the barrel by finding the angle to the mouse 
-        mouse_angle = arcade.get_angle_degrees(
+        mouse_angle = get_angle_degrees(
             self.tank.center_y, self.tank.center_x,
             self.mouse_pos[1], self.mouse_pos[0])
 
@@ -203,13 +208,14 @@ class ExampleWindow(arcade.Window):
         """
         self._correct = correct
         if correct:
-            angle = arcade.get_angle_radians(
+            angle = get_angle_radians(
                 self.tank.center_y, self.tank.center_x,
                 self.mouse_pos[1], self.mouse_pos[0])
 
-            self.barrel.position =\
-                self.barrel.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF,\
-                self.barrel.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF
+            self.barrel.position = (
+                self.barrel.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+            )
 
         else:
             self.barrel.position = self.tank.position

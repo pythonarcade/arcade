@@ -20,7 +20,7 @@ SPRITE_SCALING = 0.5
 
 class MenuView(arcade.View):
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.WHITE)
+        self.window.background_color = arcade.color.WHITE
 
     def on_draw(self):
         self.clear()
@@ -38,13 +38,13 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+                                           scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_sprite.velocity = [3, 3]
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.window.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         self.clear()
@@ -82,7 +82,7 @@ class PauseView(arcade.View):
         self.game_view = game_view
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.ORANGE)
+        self.window.background_color = arcade.color.ORANGE
 
     def on_draw(self):
         self.clear()
@@ -98,7 +98,7 @@ class PauseView(arcade.View):
                                           right=player_sprite.right,
                                           top=player_sprite.top,
                                           bottom=player_sprite.bottom,
-                                          color=arcade.color.ORANGE + (200,))
+                                          color=arcade.color.ORANGE[:3] + (200,))
 
         arcade.draw_text("PAUSED", WIDTH / 2, HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")

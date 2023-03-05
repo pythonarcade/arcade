@@ -1,10 +1,12 @@
 from contextlib import contextmanager
-from typing import Tuple
+from typing import Tuple, Union, Optional
 
 import arcade
 from arcade import Texture
+from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
-from arcade.gl import geometry
+from arcade.gui.nine_patch import NinePatchTexture
+from arcade.types import Color, Point, Rect
 
 
 class Surface:
@@ -29,44 +31,26 @@ class Surface:
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
-        # Create 1 pixel rectangle we scale and move using pos and size
-        self._quad = geometry.screen_rectangle(0, 0, 1, 1)
-        self._program = self.ctx.program(
-            vertex_shader="""
-                #version 330
+        #: Blend modes for when we're drawing into the surface
+        self.blend_func_render_into = (
+            *self.ctx.BLEND_DEFAULT,
+            *self.ctx.BLEND_ADDITIVE,
+        )
+        #: Blend mode for when we're drawing the surface
+        self.blend_func_render = (
+            *self.ctx.BLEND_DEFAULT,
+            *self.ctx.BLEND_DEFAULT,
+        )
 
-                uniform Projection {
-                    uniform mat4 matrix;
-                } proj;
-                uniform vec2 pos;
-                uniform vec2 size;
-
-                in vec2 in_vert;
-                in vec2 in_uv;
-
-                out vec2 uv;
-
-                void main() {
-                    gl_Position = proj.matrix * vec4((in_vert * size) + pos, 0.0, 1.0);
-                    uv = in_uv;
-                }
-                """,
-            fragment_shader="""
-                #version 330
-
-                uniform sampler2D ui_texture;
-
-                in vec2 uv;
-                out vec4 fragColor;
-
-                void main() {
-                    fragColor = texture(ui_texture, uv);
-                }
-                """,
+        self._geometry = self.ctx.geometry()
+        self._program = self.ctx.load_program(
+            vertex_shader=":resources:shaders/gui/surface_vs.glsl",
+            geometry_shader=":resources:shaders/gui/surface_gs.glsl",
+            fragment_shader=":resources:shaders/gui/surface_fs.glsl",
         )
 
     @property
-    def position(self) -> Tuple[int, int]:
+    def position(self) -> Point:
         """Get or set the surface position"""
         return self._pos
 
@@ -99,7 +83,7 @@ class Surface:
     def height(self) -> int:
         return self._size[1]
 
-    def clear(self, color: arcade.Color = (0, 0, 0, 0)):
+    def clear(self, color: Color = TRANSPARENT_BLACK):
         """Clear the surface"""
         self.fbo.clear(color=color)
 
@@ -109,23 +93,35 @@ class Surface:
         y: float,
         width: float,
         height: float,
-        tex: Texture,
+        tex: Union[Texture, NinePatchTexture],
         angle=0,
         alpha: int = 255,
     ):
-        arcade.draw_lrwh_rectangle_textured(
-            bottom_left_x=x,
-            bottom_left_y=y,
-            width=width,
-            height=height,
-            texture=tex,
-            angle=angle,
-            alpha=alpha,
-        )
+        if isinstance(tex, NinePatchTexture):
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a position != (0,0) yet")
+
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a angle != 0 yet")
+
+            if x != 0 or y != 0:
+                raise ValueError("Ninepatch does not support a alpha != 255 yet")
+
+            tex.draw_sized(size=(width, height))
+        else:
+            arcade.draw_lrwh_rectangle_textured(
+                bottom_left_x=x,
+                bottom_left_y=y,
+                width=width,
+                height=height,
+                texture=tex,
+                angle=angle,
+                alpha=alpha,
+            )
 
     def draw_sprite(self, x, y, width, height, sprite):
         """Draw a sprite to the surface"""
-        sprite.set_position(x + width // 2, y + height // 2)
+        sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
         sprite.draw()
@@ -136,13 +132,19 @@ class Surface:
         Save and restore projection and activate Surface buffer to draw on.
         Also resets the limit of the surface (viewport).
         """
+        # Set viewport and projection
         proj = self.ctx.projection_2d
         self.limit(0, 0, *self.size)
+        # Set blend function
+        blend_func = self.ctx.blend_func
+        self.ctx.blend_func = self.blend_func_render_into
 
         with self.fbo.activate():
             yield self
 
+        # Restore projection and blend function
         self.ctx.projection_2d = proj
+        self.ctx.blend_func = blend_func
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
@@ -157,12 +159,31 @@ class Surface:
         height = max(height, 1)
         self.ctx.projection_2d = 0, width, 0, height
 
-    def draw(self) -> None:
-        """Draws the current buffer on screen"""
+    def draw(
+        self,
+        area: Optional[Rect] = None,
+    ) -> None:
+        """
+        Draws the contents of the surface.
+
+        The surface will be rendered at the configured ``position``
+        and limited by the given ``area``. The area can be out of bounds.
+
+        :param Optional[Point] position: The position to draw the surface at.
+        :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
+        """
+        # Set blend function
+        blend_func = self.ctx.blend_func
+        self.ctx.blend_func = self.blend_func_render
+
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._quad.render(self._program)
+        self._program["area"] = area or (0, 0, *self._size)
+        self._geometry.render(self._program, vertices=1)
+
+        # Restore blend function
+        self.ctx.blend_func = blend_func
 
     def resize(self, *, size: Tuple[int, int], pixel_ratio: float) -> None:
         """

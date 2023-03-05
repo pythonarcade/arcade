@@ -40,15 +40,15 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.Camera(width, height)
-        self.camera_gui = arcade.Camera(width, height)
+        self.camera_sprites = arcade.SimpleCamera()
+        self.camera_gui = arcade.SimpleCamera()
 
         self.generate_sprites()
 
         # Our sample GUI text
         self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 24)
 
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
         # Where is the shader file? Must be specified as a path.
@@ -195,7 +195,7 @@ class MyGame(arcade.Window):
                         self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, speed)
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.camera_sprites.resize(width, height)
         self.camera_gui.resize(width, height)

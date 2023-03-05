@@ -5,7 +5,7 @@ import arcade
 
 
 def test_text(window):
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     SCREEN_WIDTH = window.width
     SCREEN_HEIGHT = window.height
@@ -62,7 +62,7 @@ def test_text(window):
                         arcade.color.BLACK, 12, font_name="arial", width=field_width, align="center")
 
     current_y -= LINE_HEIGHT
-    font_name = "comic"
+    font_name = ("comic", "arial")
     arcade.draw_text("Different font", current_x, current_y, arcade.color.BLACK, 12, font_name=font_name)
 
     current_y -= LINE_HEIGHT
@@ -77,7 +77,7 @@ def test_text_instances(window):
     Output should be identical to that of test_text
     """
 
-    arcade.set_background_color(arcade.color.AMAZON)
+    window.background_color = arcade.color.AMAZON
 
     SCREEN_WIDTH = window.width
     SCREEN_HEIGHT = window.height
@@ -143,7 +143,7 @@ def test_text_instances(window):
                         arcade.color.BLACK, 12, font_name="arial", width=field_width, align="center")
 
     current_y -= LINE_HEIGHT
-    font_name = "comic"
+    font_name = ("comic", "arial")
     new_text("Different font", current_x, current_y, arcade.color.BLACK, 12, font_name=font_name)
 
     current_y -= LINE_HEIGHT
@@ -152,14 +152,6 @@ def test_text_instances(window):
         text.draw()
 
     window.flip()
-
-
-# def test_create_text_image(window):
-#     pass
-
-
-# def test_create_text(window):
-#     pass
 
 
 # def test_create_text_sprite(window):

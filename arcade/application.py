@@ -4,7 +4,6 @@ derive from.
 """
 import logging
 import os
-import sys
 import time
 from typing import Tuple, Optional
 
@@ -17,9 +16,11 @@ import arcade
 from arcade import get_display_size
 from arcade import set_viewport
 from arcade import set_window
+from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.arcade_types import Color
+from arcade.types import Color
 from arcade import SectionManager
+from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
 
@@ -60,7 +61,8 @@ class Window(pyglet.window.Window):
     :param str title: Title (appears in title bar)
     :param bool fullscreen: Should this be full screen?
     :param bool resizable: Can the user resize the window?
-    :param float update_rate: How frequently to update the window.
+    :param float update_rate: How frequently to run the on_update event.
+    :param float draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
     :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
     :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
@@ -82,10 +84,10 @@ class Window(pyglet.window.Window):
         title: Optional[str] = 'Arcade Window',
         fullscreen: bool = False,
         resizable: bool = False,
-        update_rate: Optional[float] = 1 / 60,
+        update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: Tuple[int, int] = (3, 3),
-        screen: pyglet.canvas.Screen = None,
+        screen: Optional[pyglet.canvas.Screen] = None,
         style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,
@@ -93,7 +95,8 @@ class Window(pyglet.window.Window):
         center_window: bool = False,
         samples: int = 4,
         enable_polling: bool = True,
-        gl_api: str = "gl"
+        gl_api: str = "gl",
+        draw_rate: float = 1 / 60,
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -101,7 +104,7 @@ class Window(pyglet.window.Window):
             antialiasing = False
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
-        if sys.platform != "win32" and "raspi" in os.uname().nodename:
+        if is_raspberry_pi():
             gl_version = 3, 1
             gl_api = "gles"
 
@@ -122,7 +125,8 @@ class Window(pyglet.window.Window):
                 )
                 display = pyglet.canvas.get_display()
                 screen = display.get_default_screen()
-                config = screen.get_best_config(config)
+                if screen:
+                    config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
@@ -138,7 +142,6 @@ class Window(pyglet.window.Window):
         try:
             super().__init__(width=width, height=height, caption=title,
                              resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
-            self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
@@ -149,8 +152,12 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
-        if update_rate:
-            self.set_update_rate(update_rate)
+        # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
+        # is initially set in the call to pyglet.app.run() that is done by the run() function.
+        # run() will pull this draw rate from the Window and use it. Calls to set_draw_rate only need
+        # to be done if changing it after the application has been started.
+        self._draw_rate = draw_rate
+        self.set_update_rate(update_rate)
 
         self.set_vsync(vsync)
 
@@ -163,7 +170,7 @@ class Window(pyglet.window.Window):
         set_window(self)
 
         self._current_view: Optional[View] = None
-        self.current_camera: Optional[arcade.Camera] = None
+        self.current_camera: Optional[arcade.SimpleCamera] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
@@ -171,7 +178,7 @@ class Window(pyglet.window.Window):
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         set_viewport(0, self.width, 0, self.height)
-        self._background_color: Color = (0, 0, 0, 0)
+        self._background_color: Color = TRANSPARENT_BLACK
 
         # See if we should center the window
         if center_window:
@@ -215,7 +222,7 @@ class Window(pyglet.window.Window):
             self,
             color: Optional[Color] = None,
             normalized: bool = False,
-            viewport: Tuple[int, int, int, int] = None,
+            viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -253,13 +260,12 @@ class Window(pyglet.window.Window):
     def background_color(self, value: Color):
         self._background_color = value
 
-    def run(self):
+    def run(self) -> None:
         """
-        Shortcut for :py:func:`arcade.run()`.
-
-        For example::
-
-            MyWindow().run()
+        Run the main loop.
+        After the window has been set up, and the event hooks are in place, this is usually one of the last
+        commands on the main program. This is a blocking function starting pyglet's event loop
+        meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
         """
         arcade.run()
 
@@ -273,7 +279,7 @@ class Window(pyglet.window.Window):
     def set_fullscreen(self,
                        fullscreen: bool = True,
                        screen: Optional['Window'] = None,
-                       mode: ScreenMode = None,
+                       mode: Optional[ScreenMode] = None,
                        width: Optional[float] = None,
                        height: Optional[float] = None):
         """
@@ -291,7 +297,7 @@ class Window(pyglet.window.Window):
         """
         super().set_fullscreen(fullscreen, screen, mode, width, height)
 
-    def center_window(self):
+    def center_window(self) -> None:
         """
         Center the window on the screen.
         """
@@ -301,15 +307,6 @@ class Window(pyglet.window.Window):
         window_width, window_height = self.get_size()
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
-
-    def update(self, delta_time: float):
-        """
-        Move everything. For better consistency in naming, use ``on_update`` instead.
-
-        :param float delta_time: Time interval since the last time the function was called in seconds.
-
-        """
-        pass
 
     def on_update(self, delta_time: float):
         """
@@ -321,18 +318,31 @@ class Window(pyglet.window.Window):
         pass
 
     def _dispatch_updates(self, delta_time: float):
-        self.dispatch_event('update', delta_time)
+        """
+        Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
+        dispatches the on_update events.
+        """
         self.dispatch_event('on_update', delta_time)
 
     def set_update_rate(self, rate: float):
         """
-        Set how often the screen should be updated.
-        For example, self.set_update_rate(1 / 60) will set the update rate to 60 fps
+        Set how often the on_update function should be dispatched.
+        For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
 
         :param float rate: Update frequency in seconds
         """
+        self._update_rate = rate
         pyglet.clock.unschedule(self._dispatch_updates)
         pyglet.clock.schedule_interval(self._dispatch_updates, rate)
+
+    def set_draw_rate(self, rate: float):
+        """
+        Set how often the on_draw function should be run.
+        For example, set.set_draw_rate(1 / 60) will set the draw rate to 60 frames per second.
+        """
+        self._draw_rate = rate
+        pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
+        pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
@@ -367,7 +377,7 @@ class Window(pyglet.window.Window):
                            * ``arcade.MOUSE_BUTTON_MIDDLE``
 
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -383,7 +393,7 @@ class Window(pyglet.window.Window):
         :param int dy: Change in y since the last time this method was called
         :param int buttons: Which button is pressed
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -401,7 +411,7 @@ class Window(pyglet.window.Window):
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -470,11 +480,18 @@ class Window(pyglet.window.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         """
+        Called once when a key gets pushed down.
+
         Override this function to add key press functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+        .. tip:: If you want the length of key presses to affect
+                 gameplay, you also need to override
+                 :meth:`~.Window.on_key_release`.
+
+        :param int symbol: Key that was just pushed down
+        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+                              ctrl, num lock) active during this event.
+                              See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -483,11 +500,22 @@ class Window(pyglet.window.Window):
 
     def on_key_release(self, symbol: int, modifiers: int):
         """
+        Called once when a key gets released.
+
         Override this function to add key release functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+        Situations that require handling key releases include:
+
+        * Rythm games where a note must be held for a certain
+          amount of time
+        * 'Charging up' actions that change strength depending on
+          how long a key was pressed
+        * Showing which keys are currently pressed down
+
+        :param int symbol: Key that was just released
+        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+                              ctrl, num lock) active during this event.
+                              See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None
@@ -500,7 +528,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         """
         Override this function to add custom code to be called any time the window
         is resized. The main responsibility of this method is updating
@@ -622,7 +650,7 @@ class Window(pyglet.window.Window):
         :param int frames:
         """
         start_time = time.time()
-        for i in range(frames):
+        for _ in range(frames):
             self.switch_to()
             self.dispatch_events()
             self.dispatch_event('on_draw')
@@ -671,25 +699,27 @@ class Window(pyglet.window.Window):
         self._current_view = new_view
         if new_view.has_sections:
             section_manager_managed_events = new_view.section_manager.managed_events
-            self.push_handlers(
-                **{
-                    event_type: getattr(new_view.section_manager, event_type, None)
-                    for event_type in section_manager_managed_events
-                }
-            )
+            section_handlers = {event_type: getattr(new_view.section_manager, event_type, None) for event_type in
+                                section_manager_managed_events}
+            if section_handlers:
+                self.push_handlers(
+                    **section_handlers
+                )
         else:
             section_manager_managed_events = set()
 
         # Note: Excluding on_show because this even can trigger multiple times.
         #       It should only be called once when the view is shown.
-        self.push_handlers(
-            **{
-                event_type: getattr(new_view, event_type, None)
-                for event_type in self.event_types
-                if event_type != 'on_show' and event_type not in section_manager_managed_events
-                and hasattr(new_view, event_type)
-            }
-        )
+        view_handlers = {
+            event_type: getattr(new_view, event_type, None)
+            for event_type in self.event_types
+            if event_type != 'on_show' and event_type not in section_manager_managed_events and hasattr(new_view,
+                                                                                                        event_type)
+        }
+        if view_handlers:
+            self.push_handlers(
+                **view_handlers
+            )
         self._current_view.on_show()
         self._current_view.on_show_view()
         if self._current_view.has_sections:
@@ -738,10 +768,11 @@ class Window(pyglet.window.Window):
         LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
 
         # Attempt to handle static draw setups
-        if self.static_display and self.flip_count > 0:
-            return
-        elif self.static_display:
-            self.flip_count += 1
+        if self.static_display:
+            if self.flip_count > 0:
+                return
+            else:
+                self.flip_count += 1
 
         super().flip()
 
@@ -791,9 +822,8 @@ class Window(pyglet.window.Window):
         platform-specific visibility as the defaults from pyglet will
         usually handle their needs automatically.
 
-        For more information on what this means, see the `relevant
-        pyglet documentation
-        <https://pyglet.readthedocs.io/en/master/modules/window.html#pyglet.window.Window.set_mouse_platform_visible>`_
+        For more information on what this means, see the documentation
+        for :py:meth:`pyglet.window.Window.set_mouse_platform_visible`.
         """
         super().set_mouse_platform_visible(platform_visible)
 
@@ -855,7 +885,7 @@ def open_window(
     :param Number width: Width of the window.
     :param Number height: Height of the window.
     :param str window_title: Title of the window.
-    :param bool resizable: Whether the window can be user-resizable.
+    :param bool resizable: Whether the user can resize the window.
     :param bool antialiasing: Smooth the graphics?
 
     :returns: Handle to window
@@ -863,8 +893,7 @@ def open_window(
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, update_rate=None,
-                     antialiasing=antialiasing)
+    _window = Window(width, height, window_title, resizable=resizable, antialiasing=antialiasing)
     _window.invalid = False
     return _window
 
@@ -875,34 +904,42 @@ class View:
     """
 
     def __init__(self,
-                 window: Window = None):
+                 window: Optional[Window] = None):
 
-        if window is None:
-            self.window = arcade.get_window()
-        else:
-            self.window = window
-
+        self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
-        self.section_manager: SectionManager = SectionManager(self)
+        self._section_manager: Optional[SectionManager] = None
+
+    @property
+    def section_manager(self) -> SectionManager:
+        """ lazy instantiation of the section manager """
+        if self._section_manager is None:
+            self._section_manager = SectionManager(self)
+        return self._section_manager
 
     @property
     def has_sections(self) -> bool:
         """ Return if the View has sections """
-        return self.section_manager.has_sections
+        if self._section_manager is None:
+            return False
+        else:
+            return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None) -> None:
+    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
+
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index. If None at the end
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
         """
-        return self.section_manager.add_section(section, at_index)
+        self.section_manager.add_section(section, at_index, at_draw_order)
 
     def clear(
         self,
         color: Optional[Color] = None,
         normalized: bool = False,
-        viewport: Tuple[int, int, int, int] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -912,10 +949,6 @@ class View:
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         self.window.clear(color, normalized, viewport)
-
-    def update(self, delta_time: float):
-        """To be overridden"""
-        pass
 
     def on_update(self, delta_time: float):
         """To be overridden"""
@@ -962,7 +995,7 @@ class View:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -976,7 +1009,7 @@ class View:
         :param int dy: Change in y since the last time this method was called
         :param int _buttons: Which button is pressed
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -990,7 +1023,7 @@ class View:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -1011,7 +1044,7 @@ class View:
 
         :param int symbol: Key that was hit
         :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              pressed during this event. See :ref:`keyboard_modifiers`.
+                              active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -1024,7 +1057,7 @@ class View:
 
         :param int _symbol: Key that was hit
         :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                               pressed during this event. See :ref:`keyboard_modifiers`.
+                               active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None

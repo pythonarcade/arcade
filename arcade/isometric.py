@@ -1,8 +1,6 @@
-
-from arcade import ShapeElementList
-from arcade.buffered_draw_commands import create_line
+from arcade.shape_list import ShapeElementList, create_line
 from typing import Tuple
-from arcade import Color
+from arcade.types import Color
 
 
 def isometric_grid_to_screen(tile_x: int, tile_y: int, width: int, height: int, tile_width: int, tile_height: int)\

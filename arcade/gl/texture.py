@@ -1,27 +1,24 @@
-from array import array
-from ctypes import byref
+from ctypes import byref, string_at
 import weakref
-from typing import Any, Optional, Tuple, Union, TYPE_CHECKING
+from typing import Optional, Tuple, Union, TYPE_CHECKING
 
 from pyglet import gl
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
-from .types import pixel_formats
+from .types import pixel_formats, BufferOrBufferProtocol
+from ..types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
 
-class Texture:
+class Texture2D:
     """
     An OpenGL 2D texture.
     We can create an empty black texture or a texture from byte data.
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
-
-    NOTE: Currently does not support multisample textures even
-    though ``_samples`` is set.
 
     The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
 
@@ -44,8 +41,7 @@ class Texture:
     :param Tuple[int, int] size: The size of the texture
     :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
     :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
-    :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
+    :param BufferProtocol data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
@@ -117,10 +113,10 @@ class Texture:
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Any = None,
-        filter: Tuple[gl.GLuint, gl.GLuint] = None,
-        wrap_x: gl.GLuint = None,
-        wrap_y: gl.GLuint = None,
+        data: Optional[BufferProtocol] = None,
+        filter: Optional[Tuple[gl.GLuint, gl.GLuint]] = None,
+        wrap_x: Optional[gl.GLuint] = None,
+        wrap_y: Optional[gl.GLuint] = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,
@@ -131,6 +127,7 @@ class Texture:
         self._width, self._height = size
         self._dtype = dtype
         self._components = components
+        self._component_size = 0
         self._alignment = 1
         self._target = target
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
@@ -152,7 +149,7 @@ class Texture:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
         if data and self._samples > 0:
-            raise ValueError("Multisamples textures are not writable (cannot be initialized with data)")
+            raise ValueError("Multisampled textures are not writable (cannot be initialized with data)")
 
         self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
 
@@ -166,9 +163,6 @@ class Texture:
 
         gl.glBindTexture(self._target, self._glo)
 
-        if data is not None:
-            byte_length, data = data_to_ctypes(data)
-
         self._texture_2d(data)
 
         # Only set texture parameters on non-multisamples textures
@@ -178,7 +172,7 @@ class Texture:
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
+            weakref.finalize(self, Texture2D.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("texture")
 
@@ -212,6 +206,9 @@ class Texture:
                 f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
             )
         _format, _internal_format, self._type, self._component_size = format_info
+        if data is not None:
+            byte_length, data = data_to_ctypes(data)
+            self._validate_data_size(data, byte_length, self._width, self._height)
 
         # If we are dealing with a multisampled texture we have less options
         if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE:
@@ -365,6 +362,15 @@ class Texture:
         :type: int
         """
         return self._components
+
+    @property
+    def component_size(self) -> int:
+        """
+        Size in bytes of each component
+
+        :type: int
+        """
+        return self._component_size
 
     @property
     def depth(self) -> bool:
@@ -612,7 +618,7 @@ class Texture:
             )
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
 
-    def read(self, level: int = 0, alignment: int = 1) -> bytearray:
+    def read(self, level: int = 0, alignment: int = 1) -> bytes:
         """
         Read the contents of the texture.
 
@@ -633,19 +639,32 @@ class Texture:
                 * (self.width * self.height * self._component_size * self._components)
             )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
-            return bytearray(buffer)
+            return string_at(buffer, len(buffer))
         elif self._ctx.gl_api == "gles":
             fbo = self._ctx.framebuffer(color_attachments=[self])
             return fbo.read(components=self._components, dtype=self._dtype)
         else:
             raise ValueError("Unknown gl_api: '{self._ctx.gl_api}'")
 
-    def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
-        """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
+    def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
+        """Write byte data from the passed source to the texture.
 
-        :param Union[bytes,Buffer] data: bytes or a Buffer with data to write
+        The ``data`` value can be either an
+        :py:class:`arcade.gl.Buffer` or anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        The latter category includes ``bytes``, ``bytearray``,
+        ``array.array``, and more. You may need to use typing
+        workarounds for non-builtin types. See
+        :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
+        :param BufferOrBufferProtocol data: :class:`~arcade.gl.Buffer` or
+                                            buffer protocol object with
+                                            data to write.
         :param int level: The texture level to write
-        :param tuple viewport: The are of the texture to write. 2 or 4 component tuple
+        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
+          The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
@@ -672,6 +691,7 @@ class Texture:
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)
+            self._validate_data_size(data, byte_size, w, h)
             gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
@@ -686,6 +706,18 @@ class Texture:
                 self._format,  # format
                 self._type,  # type
                 data,  # pixel data
+            )
+
+    def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
+        """Validate the size of the data to be written to the texture"""
+        expected_size = width * height * self._component_size * self._components
+        if byte_size != expected_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match expected size {expected_size}"
+            )
+        if len(byte_data) != byte_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match reported size {expected_size}"
             )
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
@@ -727,7 +759,7 @@ class Texture:
         Destroy the underlying OpenGL resource.
         Don't use this unless you know exactly what you are doing.
         """
-        Texture.delete_glo(self._ctx, self._glo)
+        Texture2D.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod

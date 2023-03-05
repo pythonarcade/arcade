@@ -14,6 +14,9 @@ Note:
       one.
     - How keyboard events can be redirected to each section depending on the
       pressed key automatically.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sections_demo_2
 """
 import random
 
@@ -34,15 +37,14 @@ class Player(Section):
 
     def __init__(self, left: int, bottom: int, width: int, height: int,
                  key_up: int, key_down: int, **kwargs):
-        super().__init__(left, bottom, width, height,
-                         accept_keyboard_events={key_up, key_down}, **kwargs)
+        super().__init__(left, bottom, width, height, accept_keyboard_keys={key_up, key_down}, **kwargs)
 
         # keys assigned to move the paddle
         self.key_up: int = key_up
         self.key_down: int = key_down
 
         # the player paddle
-        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, BLACK)
+        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, color=BLACK)
 
         # player score
         self.score: int = 0

@@ -15,7 +15,9 @@ from typing import (
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
-from arcade import Sprite, get_window
+from arcade import Sprite, get_window, Texture
+from arcade.types import Color
+from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
     UIMouseMovementEvent,
@@ -26,6 +28,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
+from arcade.gui.nine_patch import NinePatchTexture
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -66,8 +69,8 @@ class Rect(NamedTuple):
         Returns a rect with changed width and height.
         Fix x and y coordinate.
         """
-        width = width or self.width
-        height = height or self.height
+        width = width if width is not None else self.width
+        height = height if height is not None else self.height
         return Rect(self.x, self.y, width, height)
 
     @property
@@ -100,7 +103,7 @@ class Rect(NamedTuple):
 
     @property
     def center(self):
-        return self.left, self.bottom
+        return self.center_x, self.center_y
 
     @property
     def position(self):
@@ -143,13 +146,18 @@ class Rect(NamedTuple):
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=0.0, height=0.0):
+    def min_size(self, width=None, height=None):
         """
         Sets the size to at least the given min values.
         """
-        return Rect(self.x, self.y, max(width, self.width), max(height, self.height))
+        return Rect(
+            self.x,
+            self.y,
+            max(width or 0.0, self.width),
+            max(height or 0.0, self.height),
+        )
 
-    def max_size(self, width: float = None, height: float = None):
+    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
         """
         Limits the size to the given max values.
         """
@@ -160,6 +168,22 @@ class Rect(NamedTuple):
             h = min(height, self.height)
 
         return Rect(self.x, self.y, w, h)
+
+    def union(self, rect: "Rect"):
+        """
+        Returns a new Rect that is the union of this rect and another.
+        The union is the smallest rectangle that contains theses two rectangles.
+        """
+        x = min(self.x, rect.x)
+        y = min(self.y, rect.y)
+        right = max(self.right, rect.right)
+        top = max(self.top, rect.top)
+        return Rect(
+            x=x,
+            y=y,
+            width=right - x,
+            height=top - y
+        )
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -190,22 +214,23 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    _children: List[_ChildEntry] = ListProperty()  # type: ignore
-
     rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
-    border_width: int = Property(0)  # type: ignore
-    border_color: Optional[arcade.Color] = Property(arcade.color.BLACK)  # type: ignore
-    bg_color: Optional[arcade.Color] = Property(None)  # type: ignore
-    bg_texture: Optional[arcade.Texture] = Property(None)  # type: ignore
-    padding_top: int = Property(0)  # type: ignore
-    padding_right: int = Property(0)  # type: ignore
-    padding_bottom: int = Property(0)  # type: ignore
-    padding_left: int = Property(0)  # type: ignore
+
+    _children: List[_ChildEntry] = ListProperty()  # type: ignore
+    _border_width: int = Property(0)  # type: ignore
+    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
+    _bg_color: Optional[Color] = Property(None)  # type: ignore
+    _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
+    _padding_top: int = Property(0)  # type: ignore
+    _padding_right: int = Property(0)  # type: ignore
+    _padding_bottom: int = Property(0)  # type: ignore
+    _padding_left: int = Property(0)  # type: ignore
 
     # TODO add padding, bg, border to constructor
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
@@ -215,11 +240,8 @@ class UIWidget(EventDispatcher, ABC):
         size_hint=None,  # in percentage
         size_hint_min=None,  # in pixel
         size_hint_max=None,  # in pixel
-        style=None,
         **kwargs,
     ):
-        self.style = style or {}
-
         self._rendered = False
         self.rect = Rect(x, y, width, height)
         self.parent: Optional[UIWidgetParent] = None
@@ -240,14 +262,14 @@ class UIWidget(EventDispatcher, ABC):
             self, "visible", self.trigger_full_render
         )  # TODO maybe trigger_parent_render would be enough
         bind(self, "_children", self.trigger_render)
-        bind(self, "border_width", self.trigger_render)
-        bind(self, "border_color", self.trigger_render)
-        bind(self, "bg_color", self.trigger_render)
-        bind(self, "bg_texture", self.trigger_render)
-        bind(self, "padding_top", self.trigger_render)
-        bind(self, "padding_right", self.trigger_render)
-        bind(self, "padding_bottom", self.trigger_render)
-        bind(self, "padding_left", self.trigger_render)
+        bind(self, "_border_width", self.trigger_render)
+        bind(self, "_border_color", self.trigger_render)
+        bind(self, "_bg_color", self.trigger_render)
+        bind(self, "_bg_tex", self.trigger_render)
+        bind(self, "_padding_top", self.trigger_render)
+        bind(self, "_padding_right", self.trigger_render)
+        bind(self, "_padding_bottom", self.trigger_render)
+        bind(self, "_padding_left", self.trigger_render)
 
     def trigger_render(self):
         """
@@ -279,6 +301,10 @@ class UIWidget(EventDispatcher, ABC):
         return child
 
     def remove(self, child: "UIWidget"):
+        """
+        Removes a child from the UIManager which was directly added to it.
+        This will not remove widgets which are added to a child of UIManager.
+        """
         child.parent = None
         for c in self._children:
             if c.child == child:
@@ -320,7 +346,7 @@ class UIWidget(EventDispatcher, ABC):
         if parent:
             yield parent  # type: ignore
 
-    def trigger_full_render(self):
+    def trigger_full_render(self) -> None:
         """In case a widget uses transparent areas or was moved,
         it might be important to request a full rendering of parents"""
         self.trigger_render()
@@ -357,21 +383,27 @@ class UIWidget(EventDispatcher, ABC):
         surface.limit(*self.rect)
 
         # draw background
-        if self.bg_color:
-            surface.clear(self.bg_color)
-
-        if self.bg_texture:
-            surface.draw_texture(0, 0, self.width, self.height, tex=self.bg_texture)
+        if self._bg_color:
+            surface.clear(self._bg_color)
+        # draw background texture
+        if self._bg_tex:
+            surface.draw_texture(
+                x=0,
+                y=0,
+                width=self.width,
+                height=self.height,
+                tex=self._bg_tex
+            )
 
         # draw border
-        if self.border_width and self.border_color:
+        if self._border_width and self._border_color:
             arcade.draw_xywh_rectangle_outline(
                 0,
                 0,
                 self.width,
                 self.height,
-                color=self.border_color,
-                border_width=self.border_width * 2,
+                color=self._border_color,
+                border_width=self._border_width * 2,
             )
 
     def prepare_render(self, surface):
@@ -460,10 +492,10 @@ class UIWidget(EventDispatcher, ABC):
     @property
     def padding(self):
         return (
-            self.padding_top,
-            self.padding_right,
-            self.padding_bottom,
-            self.padding_left,
+            self._padding_top,
+            self._padding_right,
+            self._padding_bottom,
+            self._padding_left,
         )
 
     @padding.setter
@@ -475,14 +507,17 @@ class UIWidget(EventDispatcher, ABC):
             args = args + args  # type: ignore
 
         pt, pr, pb, pl = args  # type: ignore # self.padding = 10, 20, 30, 40
-        self.padding_top = pt
-        self.padding_right = pr
-        self.padding_bottom = pb
-        self.padding_left = pl
+        self._padding_top = pt
+        self._padding_right = pr
+        self._padding_bottom = pb
+        self._padding_left = pl
 
     @property
     def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
+
+    def resize(self, *, width=None, height=None):
+        self.rect = self.rect.resize(width=width, height=height)
 
     def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
         """
@@ -491,8 +526,8 @@ class UIWidget(EventDispatcher, ABC):
         :param color: border color
         :return: self
         """
-        self.border_width = width
-        self.border_color = color
+        self._border_width = width
+        self._border_color = color
         return self
 
     def with_padding(
@@ -505,24 +540,38 @@ class UIWidget(EventDispatcher, ABC):
         if all is not ...:
             self.padding = all
         if top is not ...:
-            self.padding_top = top
+            self._padding_top = top
         if right is not ...:
-            self.padding_right = right
+            self._padding_right = right
         if bottom is not ...:
-            self.padding_bottom = bottom
+            self._padding_bottom = bottom
         if left is not ...:
-            self.padding_left = left
+            self._padding_left = left
         return self
 
-    def with_background(self, color=..., texture=...) -> "UIWidget":
+    def with_background(
+        self,
+        *,
+        color=...,
+        texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
+    ) -> "UIWidget":
+
         """
-        Convenience function to set background color or texture.
+        Set widgets background.
+
+        A color or texture can be used for background,
+        if a texture is given, start and end point can be added to use the texture as ninepatch.
+
+        :param Color color: A color used as background
+        :param arcade.Texture texture: A texture or ninepatch texture used as background
         :return: self
         """
         if color is not ...:
-            self.bg_color = color
+            self._bg_color = color
+
         if texture is not ...:
-            self.bg_texture = texture
+            self._bg_tex = texture
+
         return self
 
     @property
@@ -533,25 +582,25 @@ class UIWidget(EventDispatcher, ABC):
     def content_width(self):
         return (
             self.rect.width
-            - 2 * self.border_width
-            - self.padding_left
-            - self.padding_right
+            - 2 * self._border_width
+            - self._padding_left
+            - self._padding_right
         )
 
     @property
     def content_height(self):
         return (
             self.rect.height
-            - 2 * self.border_width
-            - self.padding_top
-            - self.padding_bottom
+            - 2 * self._border_width
+            - self._padding_top
+            - self._padding_bottom
         )
 
     @property
     def content_rect(self):
         return Rect(
-            self.left + self.border_width + self.padding_left,
-            self.bottom + self.border_width + self.padding_bottom,
+            self.left + self._border_width + self._padding_left,
+            self.bottom + self._border_width + self._padding_bottom,
             self.content_width,
             self.content_height,
         )
@@ -580,6 +629,7 @@ class UIWidget(EventDispatcher, ABC):
 
 
 class UIWidgetParent(ABC):
+    """Placeholder for parent widget."""
     rect: Rect
 
     def trigger_render(self):
@@ -606,54 +656,42 @@ class UIInteractiveWidget(UIWidget):
     """
 
     # States
-    _hovered = False
-    _pressed = False
+    hovered = Property(False)
+    pressed = Property(False)
+    disabled = Property(False)
 
     def __init__(
         self,
-        x=0,
-        y=0,
-        width=100,
-        height=100,
+        *,
+        x: float = 0,
+        y: float = 0,
+        width: float,
+        height: float,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style,
+            **kwargs,
         )
         self.register_event_type("on_click")
 
-    @property
-    def pressed(self):
-        return self._pressed
-
-    @pressed.setter
-    def pressed(self, value):
-        if self._pressed != value:
-            self._pressed = value
-            self.trigger_render()
-
-    @property
-    def hovered(self):
-        return self._hovered
-
-    @hovered.setter
-    def hovered(self, value):
-        if value != self._hovered:
-            self._hovered = value
-            self.trigger_render()
+        bind(self, "pressed", self.trigger_render)
+        bind(self, "hovered", self.trigger_render)
+        bind(self, "disabled", self.trigger_render)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        if super().on_event(event):
+            return EVENT_HANDLED
+
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
@@ -666,17 +704,13 @@ class UIInteractiveWidget(UIWidget):
         if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
-                # Dispatch new on_click event, source is this widget itself
-                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))  # type: ignore
-                return EVENT_HANDLED
-
-        if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(
-            event.x, event.y
-        ):
-            return self.dispatch_event("on_click", event)
-
-        if super().on_event(event):
-            return EVENT_HANDLED
+                if not self.disabled:
+                    # Dispatch new on_click event, source is this widget itself
+                    self.dispatch_event(
+                        "on_click", UIOnClickEvent(self, event.x, event.y)
+                    )
+                    # TODO unsure if it makes more sense to mark the event handled if the click event is handled.
+                    return EVENT_HANDLED
 
         return EVENT_UNHANDLED
 
@@ -706,18 +740,16 @@ class UIDummy(UIInteractiveWidget):
         y=0,
         width=100,
         height=100,
-        color=arcade.color.BLACK,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
@@ -775,32 +807,33 @@ class UISpriteWidget(UIWidget):
         y=0,
         width=100,
         height=100,
-        sprite: Sprite = None,
+        sprite: Optional[Sprite] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs
         )
         self._sprite = sprite
 
     def on_update(self, dt):
-        self._sprite.update()
-        self._sprite.update_animation(dt)
-        self.trigger_render()
+        if self._sprite:
+            self._sprite.update()
+            self._sprite.update_animation(dt)
+            self.trigger_render()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        surface.clear(color=(0, 0, 0, 0))
+        surface.clear(color=TRANSPARENT_BLACK)
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
@@ -837,44 +870,6 @@ class UILayout(UIWidget, UIWidgetParent):
         super()._do_layout()
 
 
-class UIWrapper(UILayout, UIWidgetParent):
-    """
-    # TODO Should this stay?
-    DEPRECATED - UIWrapper will be removed in an upcoming release, please use UILayout instead.
-
-    Wraps a :class:`arcade.gui.UIWidget`.
-
-    :param child: Single child of this wrapper
-    :param padding: space around (top, right, bottom, left)
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: not used
-    """
-
-    def __init__(
-        self,
-        *,
-        child: UIWidget,
-    ):
-        """
-        :param child: Child Widget which will be wrapped
-        :param padding: Space between top, right, bottom, left
-        """
-        super().__init__(
-            *child.rect,
-            children=[child],
-        )
-
-    @property
-    def child(self) -> UIWidget:
-        return self.children[0]
-
-    @child.setter
-    def child(self, value: UIWidget):
-        self.children[0] = value
-
-
 class UISpace(UIWidget):
     """
     Widget reserving space, can also have a background color.
@@ -896,7 +891,7 @@ class UISpace(UIWidget):
         y=0,
         width=100,
         height=100,
-        color=(0, 0, 0, 0),
+        color=TRANSPARENT_BLACK,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -904,10 +899,10 @@ class UISpace(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,

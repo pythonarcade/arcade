@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         self.last_fps_reading = 0
         self.fps = FPSCounter()
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # Open file to save timings
         self.results_file = open(RESULTS_FILE, "w")
@@ -141,7 +141,7 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         # Start update timer
 
         start_time = timeit.default_timer()

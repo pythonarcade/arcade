@@ -24,11 +24,11 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background_color = arcade.color.WHITE
         self.text_angle = 0
         self.time_elapsed = 0.0
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         self.text_angle += 1
         self.time_elapsed += delta_time
 

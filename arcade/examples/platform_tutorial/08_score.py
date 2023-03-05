@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.08_score
 """
 import arcade
 
@@ -51,16 +53,16 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Game Camera
-        self.camera = arcade.Camera(self.width, self.height)
+        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
         # Set up the GUI Camera
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        self.gui_camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
         # Keep track of the score
         self.score = 0

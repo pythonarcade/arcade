@@ -1,7 +1,9 @@
 """
 Example of Pymunk Physics Engine
-
 Top-down
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pymunk_demo_top_down
 """
 import math
 import random
@@ -30,7 +32,7 @@ class MyWindow(arcade.Window):
         """ Init """
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         self.player_list = None
         self.wall_list = None
@@ -56,9 +58,9 @@ class MyWindow(arcade.Window):
         self.gem_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
@@ -66,13 +68,13 @@ class MyWindow(arcade.Window):
         # Set up the walls
         for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
             wall.center_y = 0
             self.wall_list.append(wall)
 
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
             wall.center_y = SCREEN_HEIGHT
             self.wall_list.append(wall)
@@ -80,13 +82,13 @@ class MyWindow(arcade.Window):
         # Set up the walls
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = 0
             wall.center_y = y
             self.wall_list.append(wall)
 
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = SCREEN_WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
@@ -95,7 +97,7 @@ class MyWindow(arcade.Window):
         for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
             rock = random.randrange(4) + 1
             item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 400
             self.rock_list.append(item)
@@ -108,7 +110,7 @@ class MyWindow(arcade.Window):
                      ":resources:images/items/keyBlue.png"]
             item_name = random.choice(items)
             item = arcade.Sprite(item_name,
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 300
             self.gem_list.append(item)

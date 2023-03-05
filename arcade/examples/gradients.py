@@ -5,6 +5,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.gradients
 """
 import arcade
+from arcade import shape_list
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
@@ -24,9 +25,9 @@ class MyGame(arcade.Window):
 
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
-        self.shapes = arcade.ShapeElementList()
+        self.shapes = shape_list.ShapeElementList()
 
         # This is a large rectangle that fills the whole
         # background. The gradient goes between the two colors
@@ -35,7 +36,7 @@ class MyGame(arcade.Window):
         color2 = (219, 166, 123)
         points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
         colors = (color1, color1, color2, color2)
-        rect = arcade.create_rectangle_filled_with_colors(points, colors)
+        rect = shape_list.create_rectangle_filled_with_colors(points, colors)
         self.shapes.append(rect)
 
         # Another rectangle, but in this case the color doesn't change. Just the
@@ -44,7 +45,7 @@ class MyGame(arcade.Window):
         color2 = (165, 92, 85, 0)
         points = (100, 100), (SCREEN_WIDTH - 100, 100), (SCREEN_WIDTH - 100, 300), (100, 300)
         colors = (color2, color1, color1, color2)
-        rect = arcade.create_rectangle_filled_with_colors(points, colors)
+        rect = shape_list.create_rectangle_filled_with_colors(points, colors)
         self.shapes.append(rect)
 
         # Two lines
@@ -52,7 +53,7 @@ class MyGame(arcade.Window):
         color2 = (69, 137, 133)
         points = (100, 400), (SCREEN_WIDTH - 100, 400), (SCREEN_WIDTH - 100, 500), (100, 500)
         colors = [color2, color1, color2, color1]
-        shape = arcade.create_lines_with_colors(points, colors, line_width=5)
+        shape = shape_list.create_lines_with_colors(points, colors, line_width=5)
         self.shapes.append(shape)
 
         # Triangle
@@ -61,14 +62,14 @@ class MyGame(arcade.Window):
         color3 = (165, 92, 85)
         points = (SCREEN_WIDTH // 2, 500), (SCREEN_WIDTH // 2 - 100, 400), (SCREEN_WIDTH // 2 + 100, 400)
         colors = (color1, color2, color3)
-        shape = arcade.create_triangles_filled_with_colors(points, colors)
+        shape = shape_list.create_triangles_filled_with_colors(points, colors)
         self.shapes.append(shape)
 
         # Ellipse, gradient between center and outside
         color1 = (69, 137, 133, 127)
         color2 = (7, 67, 88, 127)
-        shape = arcade.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
-                                                         inside_color=color1, outside_color=color2)
+        shape = shape_list.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
+                                                             inside_color=color1, outside_color=color2)
         self.shapes.append(shape)
 
     def on_draw(self):

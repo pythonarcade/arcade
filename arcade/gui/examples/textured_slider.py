@@ -1,7 +1,8 @@
+from typing import Union
+
 import arcade
 from arcade import Window, View, Texture
-from arcade.experimental.uistyle import UISliderStyle
-from arcade.gui import UIManager, Surface, UIAnchorLayout
+from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
 from arcade.gui.widgets.slider import UISlider
 
 
@@ -10,19 +11,21 @@ class UITextureSlider(UISlider):
     Slider using
     """
 
-    def __init__(self, bar: Texture, thumb: Texture, **kwargs):
+    def __init__(
+        self,
+        bar: Union[Texture, NinePatchTexture],
+        thumb: Union[Texture, NinePatchTexture],
+        style=None,
+        **kwargs
+    ):
         self.bar = bar
         self.thumb = thumb
-        style = UISliderStyle(
-            normal_filled_bar=(180, 180, 140),
-            hovered_filled_bar=(200, 200, 165),
-            pressed_filled_bar=(225, 225, 180),
-        )
+        style = style or UISlider.DEFAULT_STYLE
 
         super().__init__(style=style, **kwargs)
 
     def do_render(self, surface: Surface):
-        state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
+        style: UISlider.UIStyle = self.get_current_style()  # type: ignore
 
         self.prepare_render(surface)
 
@@ -36,13 +39,12 @@ class UITextureSlider(UISlider):
         slider_bottom = (self.height - slider_height) // 2
 
         # slider
-        fg_slider_color = self.style[f"{state}_filled_bar"]
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.x,
             slider_bottom,
             cursor_center_x - slider_left_x,
             slider_height,
-            fg_slider_color,
+            style.filled_bar,
         )
 
         # cursor
@@ -63,7 +65,7 @@ class MyView(View):
         self.manager = UIManager()
 
         bar_tex = arcade.load_texture(":resources:gui_basic_assets/slider_bar.png")
-        thumb_tex = arcade.load_texture(":resources:gui_basic_assets/slider_bar.png")
+        thumb_tex = arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png")
         self.slider = UITextureSlider(bar_tex, thumb_tex)
 
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
@@ -74,6 +76,10 @@ class MyView(View):
 
     def on_hide_view(self):
         self.manager.disable()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.SPACE:
+            self.slider.disabled = not self.slider.disabled
 
     def on_draw(self):
         self.clear()

@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+                                           scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
         # Create a row of boxes
         for x in range(173, 650, 64):
             wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
-                                 SPRITE_SCALING)
+                                 scale=SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 200
             self.wall_list.append(wall)
@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         # Create a column of boxes
         for y in range(273, 500, 64):
             wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
-                                 SPRITE_SCALING)
+                                 scale=SPRITE_SCALING)
             wall.center_x = 465
             wall.center_y = y
             self.wall_list.append(wall)
@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
                                                          self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """

@@ -22,11 +22,11 @@ def test_rotation_mirror():
     assert isinstance(sprite, arcade.AnimatedTimeBasedSprite)
     assert len(sprite.frames) == 2
     assert sprite.frames[0].duration == 500
-    assert "torch1" in sprite.frames[0].texture.name
+    assert sprite.frames[0].texture.file_path.name == "torch1.png"
     assert sprite.frames[1].duration == 500
-    assert "torch2" in sprite.frames[1].texture.name
+    assert sprite.frames[1].texture.file_path.name == "torch2.png"
 
     sprite.update_animation(0.501)
-    assert "torch2" in sprite.texture.name
+    assert sprite.texture.file_path.name == "torch2.png"
     sprite.update_animation(0.501)
-    assert "torch1" in sprite.texture.name
+    assert sprite.texture.file_path.name == "torch1.png"

@@ -1,0 +1,70 @@
+name: Windows self-hosted test
+
+on:
+  push:
+    branches: [development, maintenance]
+  pull_request:
+    branches: [development, maintenance]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Self Hosted Testing
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies part 1
+        run: |
+          rm -rf .venv
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install -U pip wheel setuptools
+          python -m pip install pyogg pymunk
+      - name: Install dependencies part 2
+        run: |
+          source .venv/bin/activate
+          python -m pip install -I -e .[dev]
+      - name: code-inspection
+        run: | 
+          source .venv/bin/activate
+          mypy arcade
+          ruff arcade
+      - name: build-docs
+        run: |
+          source .venv/bin/activate
+          sphinx-build doc build -W
+      - name: Test with pytest
+        run: |
+          source .venv/bin/activate
+          which python
+          python -c "import pyglet; print('pyglet version', pyglet.__version__)"
+          python -c "import PIL; print('Pillow version', PIL.__version__)"
+          pytest
+
+      # Prepare the Pull Request Payload artifact. If this fails, we
+      # we fail silently using the `continue-on-error` option. It's
+      # nice if this succeeds, but if it fails for any reason, it
+      # does not mean that our main workflow has failed.
+      - name: Prepare Pull Request Payload artifact
+        id: prepare-artifact
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+      # This only makes sense if the previous step succeeded. To
+      # get the original outcome of the previous step before the
+      # `continue-on-error` conclusion is applied, we use the
+      # `.outcome` value. This step also fails silently.
+      - name: Upload a Build Artifact
+        if: always() && steps.prepare-artifact.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: pull-request-payload
+          path: pull_request_payload.json

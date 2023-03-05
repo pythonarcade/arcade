@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.06_camera
 """
 import arcade
 
@@ -40,13 +42,13 @@ class MyGame(arcade.Window):
         # A Camera that can be used for scrolling the screen
         self.camera = None
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Camera
-        self.camera = arcade.Camera(self.width, self.height)
+        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
         # Initialize Scene
         self.scene = arcade.Scene()

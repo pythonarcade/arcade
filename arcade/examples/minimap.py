@@ -63,8 +63,9 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.SimpleCamera(viewport=viewport)
+        self.camera_gui = arcade.SimpleCamera(viewport=viewport)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -86,7 +87,7 @@ class MyGame(arcade.Window):
             for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -94,14 +95,16 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # Construct the minimap
         size = (MINIMAP_WIDTH, MINIMAP_HEIGHT)
         self.minimap_texture = arcade.Texture.create_empty(str(uuid4()), size)
-        self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
-                                            center_y=self.height - MINIMAP_HEIGHT / 2,
-                                            texture=self.minimap_texture)
+        self.minimap_sprite = arcade.Sprite(
+            self.minimap_texture,
+            center_x=MINIMAP_WIDTH / 2,
+            center_y=self.height - MINIMAP_HEIGHT / 2,
+        )
 
         self.minimap_sprite_list = arcade.SpriteList()
         self.minimap_sprite_list.append(self.minimap_sprite)
@@ -182,13 +185,13 @@ class MyGame(arcade.Window):
                         self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
 
 
 def main():

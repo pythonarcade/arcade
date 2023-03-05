@@ -1,16 +1,21 @@
 """
 Example code showing how to use the OKMessageBox
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_ok_messagebox
 """
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
+from arcade.gui import UIOnClickEvent
+from arcade.gui.events import UIOnActionEvent
 
 
 class MyWindow(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "OKMessageBox Example", resizable=True)
-        arcade.set_background_color(arcade.color.COOL_GREY)
+        self.background_color = arcade.color.COOL_GREY
 
         # Create and enable the UIManager
         self.manager = arcade.gui.UIManager()
@@ -35,7 +40,7 @@ class MyWindow(arcade.Window):
         ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
         self.manager.add(ui_anchor_layout)
 
-    def on_click_open(self, event):
+    def on_click_open(self, _: UIOnClickEvent):
         # The code in this function is run when we click the ok button.
         # The code below opens the message box and auto-dismisses it when done.
         message_box = arcade.gui.UIMessageBox(
@@ -45,9 +50,15 @@ class MyWindow(arcade.Window):
                 "You should have a look on the new GUI features "
                 "coming up with arcade 2.6!"
             ),
-            callback=self.on_message_box_close,
             buttons=["Ok", "Cancel"],
         )
+
+        @message_box.event("on_action")
+        def on_message_box_close(e: UIOnActionEvent):
+            print(f"User pressed {e.action}.")
+
+            # show open button and allow interaction again
+            self.open_message_box_button.visible = True
 
         # hide open button and prevent interaction
         self.open_message_box_button.visible = False
@@ -61,12 +72,6 @@ class MyWindow(arcade.Window):
     def on_key_release(self, symbol: int, modifiers: int):
         print(self.open_message_box_button.rect)
 
-    def on_message_box_close(self, button_text):
-        print(f"User pressed {button_text}.")
 
-        # show open button and allow interaction again
-        self.open_message_box_button.visible = True
-
-
-window = MyWindow()
-arcade.run()
+if __name__ == '__main__':
+    MyWindow().run()

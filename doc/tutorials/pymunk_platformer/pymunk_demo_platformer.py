@@ -192,7 +192,7 @@ class GameWindow(arcade.Window):
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Set background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # # Turn on logging
         # format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'

@@ -33,12 +33,21 @@ def test_projection(window):
     ctx.projection_2d = (1, 10, 2, 11)
     assert ctx.projection_2d == (1, 10, 2, 11)
 
+    # Attempt to assign illegal values
     with pytest.raises(ValueError):
         ctx.projection_2d = "moo"
 
     with pytest.raises(ValueError):
         ctx.projection_2d = 1, 2, 3, 4, 5
 
+    # Set matrices directly checking projection
+    # parameter reconstruction
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(0, 100, 0, 200, -100, 100)
+    assert ctx.projection_2d == (0, 100, 0, 200)
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(100, 200, 200, 400, -100, 100)
+    assert ctx.projection_2d == (100, 200, 200, 400)
+    ctx.projection_2d_matrix = Mat4.orthogonal_projection(200, 800, 300, 900, -100, 100)
+    assert ctx.projection_2d == (200, 800, 300, 900)
 
 def test_projection_matrix(window):
     """Test setting projection matrix directly"""
@@ -114,3 +123,29 @@ def test_load_texture(ctx):
     # Don't flip the texture
     texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", flip=False, build_mipmaps=True)
     assert texture.read()[:4] == b'\xff\x00\x00\xff'  # Red
+
+
+def test_shader_include(ctx):
+    """Test shader include directive"""
+    # Without quotes
+    src = """
+        #version 330
+        #include :resources:shaders/lib/sprite.glsl
+    """
+    assert len(ctx.shader_inc(src)) > len(src)
+    # With quotes
+    src = """
+        #version 330
+        #include ":resources:shaders/lib/sprite.glsl"
+    """
+    assert len(ctx.shader_inc(src)) > len(src)
+
+
+def test_shader_include_fail(ctx):
+    """Test shader include directive"""
+    src = """
+        #version 330
+        #include "test_shader_include.vert"
+    """
+    with pytest.raises(FileNotFoundError):
+        ctx.shader_inc(src)

@@ -58,6 +58,7 @@ def test_write_read(ctx):
     buffer = ctx.buffer(data=in_data)
     texture.write(buffer)
     assert texture.read() == in_data
+    assert isinstance(texture.read(), bytes)
 
     # Write with viewport
     in_data = array.array('f', list(range(20))).tobytes()
@@ -72,10 +73,20 @@ def test_write_read(ctx):
     with pytest.raises(TypeError):
         texture.write('moo')
 
+    # Supply too little data
+    texture = ctx.texture((2, 2), components=4, dtype='f1')
+    with pytest.raises(ValueError):
+        texture.write(b'\x00\x00', viewport=(0, 0, 1, 1))
+
+    # Supply too much data
+    texture = ctx.texture((2, 2), components=4, dtype='f1')
+    with pytest.raises(ValueError):
+        texture.write(b'\x00' * 5, viewport=(0, 0, 1, 1))
+
     # TODO: Test LODs
 
 
-def test_write_bufferprotocol(ctx):
+def test_write_buffer_protocol(ctx):
     """Test creating texture from data using buffer protocol"""
     # In constructor
     data = array.array('B', [0, 0, 255, 255])

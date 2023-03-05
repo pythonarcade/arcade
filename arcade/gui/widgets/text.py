@@ -18,6 +18,8 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
+from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.types import Color
 
 
 class UILabel(UIWidget):
@@ -34,14 +36,10 @@ class UILabel(UIWidget):
     :param font_name: a list of fonts to use. Program will start at the beginning of the list
                       and keep trying to load fonts until success.
     :param float font_size: size of font.
-    :param arcade.Color text_color: Color of font.
+    :param Color text_color: Color of font.
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
-    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``,
-                         ``"center"`` or ``"right"``.
-    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``,
-                         ``"baseline"``, ``"center"`` or ``"top"``.
     :param str align: Horizontal alignment of text on a line, only applies if a width is supplied.
                       One of ``"left"``, ``"center"`` or ``"right"``.
     :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
@@ -63,52 +61,50 @@ class UILabel(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: arcade.Color = (255, 255, 255, 255),
+        text_color: Color = (255, 255, 255, 255),
         bold=False,
         italic=False,
-        stretch=False,
-        anchor_x="left",
-        anchor_y="bottom",
         align="left",
-        dpi=None,
         multiline: bool = False,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
-
-        # Use Pyglet's Label for text rendering
-        self.layout = pyglet.text.Label(
+        # Use Arcade wrapper of pyglet.Label for text rendering
+        self.label = arcade.Text(
+            start_x=0,
+            start_y=0,
             text=text,
             font_name=font_name,
             font_size=font_size,
-            color=arcade.get_four_byte_color(text_color),
-            width=None,
-            height=None,
+            color=text_color,
+            width=int(width) if width else None,
             bold=bold,
             italic=italic,
-            stretch=stretch,
-            anchor_x=anchor_x,
-            anchor_y=anchor_y,
             align=align,
-            dpi=dpi,
+            anchor_y="bottom",  # position text bottom left, to fit into scissor box
             multiline=multiline,
+            **kwargs,
         )
-
         super().__init__(
-            x,
-            y,
-            width or self.layout.content_width,
-            height or self.layout.content_height,
+            x=x,
+            y=y,
+            width=width or self.label.content_width,
+            height=height or self.label.content_height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
 
-        self.layout.width = width
-        self.layout.height = height
+        # set label size, if the width or height was given
+        # because border and padding can only be applied later, we can avoid `fit_content()`
+        # and set with and height separately
+        if width:
+            self.label.width = int(width)
+        if height:
+            self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
 
@@ -116,70 +112,104 @@ class UILabel(UIWidget):
         """
         Sets the width and height of this UIWidget to contain the whole text.
         """
-        base_width = self.padding_left + self.padding_right + 2 * self.border_width
-        base_height = self.padding_top + self.padding_bottom + 2 * self.border_width
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
-            self.layout.content_width + base_width,
-            self.layout.content_height + base_height,
+            self.label.content_width + base_width + 1,
+            self.label.content_height + base_height + 1,
         )
 
     @property
     def text(self):
-        return self.layout.text
+        return self.label.text
 
     @text.setter
     def text(self, value):
-        self.layout.text = value
+        self.label.text = value
         self._update_layout()
         self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
-        layout = self.layout
+        layout = self.label
         layout_size = layout.width, layout.height
 
         if layout_size != self.content_size:
-            layout.begin_update()
-            layout.position = 0, 0  # layout always drawn in scissor box
-            layout.width = self.content_width
-            layout.height = self.content_height
-            layout.end_update()
+            layout.position = 0, 0, 0  # layout always drawn in scissor box
+            layout.width = int(self.content_width)
+            layout.height = int(self.content_height)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+            self.label.draw()
 
 
-# class _Arcade_Caret(Caret):
-#     def _update(self, line=None, update_ideal_x=True):
-#         if line is None:
-#             line = self._layout.get_line_from_position(self._position)
-#             self._ideal_line = None
-#         else:
-#             self._ideal_line = line
-#         x, y = self._layout.get_point_from_position(self._position, line)
-#         if update_ideal_x:
-#             self._ideal_x = x
-#
-#         # x -= self._layout.view_x
-#         # y -= self._layout.view_y
-#         # add 1px offset to make caret visible on line start
-#         x += self._layout.x + 1
-#
-#         y += self._layout.y + self._layout.height
-#
-#         font = self._layout.document.get_font(max(0, self._position - 1))
-#         self._list.position[:] = [x, y + font.descent, x, y + font.ascent]
-#
-#         if self._mark is not None:
-#             self._layout.set_selection(
-#                 min(self._position, self._mark), max(self._position, self._mark)
-#             )
-#
-#         self._layout.ensure_line_visible(line)
-#         self._layout.ensure_x_visible(x)
+class UITextWidget(UIAnchorLayout):
+    """
+    Adds the ability to add text to a widget.
+    The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
+    """
+
+    def __init__(self, text: str = "", multiline: bool = False, **kwargs):
+        super().__init__(text=text, **kwargs)
+        self._label = UILabel(
+            text=text,
+            multiline=multiline,
+            width=1000 if multiline else None
+        )  # width 1000 try to prevent line wrap if multiline is enabled
+        self.add(self._label)
+        self.ui_label.fit_content()
+
+        bind(self, "rect", self.ui_label.fit_content)
+
+    def place_text(self,
+                   anchor_x: Optional[str] = None,
+                   align_x: float = 0,
+                   anchor_y: Optional[str] = None,
+                   align_y: float = 0,
+                   **kwargs):
+        """
+        This allows to place widgets text within the widget using UIAnchorLayout parameters.
+        """
+        self.remove(self._label)
+        self.add(
+            child=self._label,
+            anchor_x=anchor_x,
+            align_x=align_x,
+            anchor_y=anchor_y,
+            align_y=align_y,
+            **kwargs
+        )
+
+    @property
+    def text(self):
+        return self._label.text
+
+    @text.setter
+    def text(self, value):
+        self.ui_label.text = value
+        self.ui_label.fit_content()
+        self.trigger_render()
+
+    @property
+    def multiline(self):
+        return self.label.multiline
+
+    @multiline.setter
+    def multiline(self, value):
+        self.label.multiline = value
+        self.ui_label.fit_content()
+        self.trigger_render()
+
+    @property
+    def ui_label(self) -> UILabel:
+        return self._label
+
+    @property
+    def label(self) -> arcade.Text:
+        return self._label.label
 
 
 class UIInputText(UIWidget):
@@ -201,37 +231,35 @@ class UIInputText(UIWidget):
     :param style: not used
     """
 
+    # move layout one pixel into the scissor box, so the caret is also shown at position 0
+    LAYOUT_OFFSET = 1
+
     def __init__(
         self,
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 50,
+        height: float = 24,
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: arcade.Color = (0, 0, 0, 255),
+        text_color: Color = (0, 0, 0, 255),
         multiline=False,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
-        # fixme workaround for https://github.com/pyglet/pyglet/issues/529
-        init_text = False
-        if text == "":
-            init_text = True
-            text = " "
 
         self._active = False
         self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
@@ -244,24 +272,23 @@ class UIInputText(UIWidget):
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
-            self.doc, width, height, multiline=multiline
+            self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
         )
+        self.layout.x += self.LAYOUT_OFFSET
         self.caret = Caret(self.layout, color=(0, 0, 0))
+        self.caret.visible = False
 
         self._blink_state = self._get_caret_blink_state()
 
-        if init_text:
-            self.text = ""
-
     def _get_caret_blink_state(self):
-        return self.caret._visible and self._active and self.caret._blink_visible
+        return self.caret.visible and self._active and self.caret._blink_visible
 
     def on_update(self, dt):
         # Only trigger render if blinking state changed
         current_state = self._get_caret_blink_state()
         if self._blink_state != current_state:
             self._blink_state = current_state
-            self.trigger_render()
+            self.trigger_full_render()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         # if not active, check to activate, return
@@ -276,7 +303,7 @@ class UIInputText(UIWidget):
         # if active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                x, y = event.x - self.x, event.y - self.y
+                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
@@ -300,7 +327,7 @@ class UIInputText(UIWidget):
             if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
                 event.x, event.y
             ):
-                x, y = event.x - self.x, event.y - self.y
+                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers
@@ -318,11 +345,11 @@ class UIInputText(UIWidget):
     def _update_layout(self):
         # Update Pyglet layout size
         layout = self.layout
-        layout_size = layout.width, layout.height
+        layout_size = layout.width - self.LAYOUT_OFFSET, layout.height
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.width = self.content_width
+            layout.width = self.content_width - self.LAYOUT_OFFSET
             layout.height = self.content_height
             layout.end_update()
 
@@ -372,23 +399,23 @@ class UITextArea(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: arcade.Color = (255, 255, 255, 255),
+        text_color: Color = (255, 255, 255, 255),
         multiline: bool = True,
-        scroll_speed: float = None,
+        scroll_speed: Optional[float] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(
-            x,
-            y,
-            width,
-            height,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.

@@ -175,6 +175,7 @@ class MyGame(arcade.Window):
 
         maze = make_maze_recursion(MAZE_WIDTH, MAZE_HEIGHT)
 
+        texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
         # Create sprites based on 2D grid
         if not MERGE_SPRITES:
             # This is the simple-to-understand method. Each grid location
@@ -182,7 +183,7 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                        wall = arcade.BasicSprite(texture, scale=SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -204,17 +205,16 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING,
-                                         repeat_count_x=column_count)
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.width = SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -234,18 +234,15 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
-        print(f"Total wall blocks: {len(self.wall_list)}")
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         self.clear()
@@ -254,7 +251,7 @@ class MyGame(arcade.Window):
         draw_start_time = timeit.default_timer()
 
         # Draw all the sprites.
-        self.wall_list.draw()
+        self.wall_list.draw(pixelated=True)
         self.player_list.draw()
 
         # Draw info on the screen

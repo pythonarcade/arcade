@@ -49,7 +49,7 @@ class Player(arcade.SpriteSolidColor):
     """ Player ship """
     def __init__(self):
         """ Set up player """
-        super().__init__(40, 10, arcade.color.SLATE_GRAY)
+        super().__init__(40, 10, color=arcade.color.SLATE_GRAY)
         self.face_right = True
 
     def accelerate_up(self):
@@ -176,7 +176,7 @@ class MyGame(arcade.Window):
         self.view_left = 0
 
         # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         # --- Bloom related ---
 
@@ -229,14 +229,14 @@ class MyGame(arcade.Window):
 
         # Add stars
         for i in range(80):
-            sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
+            sprite = arcade.SpriteSolidColor(4, 4, color=arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
             self.star_sprite_list.append(sprite)
 
         # Add enemies
         for i in range(20):
-            sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
+            sprite = arcade.SpriteSolidColor(20, 20, color=arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
             self.enemy_sprite_list.append(sprite)
@@ -250,7 +250,7 @@ class MyGame(arcade.Window):
 
         # Draw to the 'slight bloom' layer
         self.slight_bloom_screen.use()
-        self.slight_bloom_screen.clear((0, 0, 0, 0))
+        self.slight_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,
@@ -262,7 +262,7 @@ class MyGame(arcade.Window):
 
         # # Draw to the 'intense bloom' layer
         self.intense_bloom_screen.use()
-        self.intense_bloom_screen.clear((0, 0, 0, 0))
+        self.intense_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,
@@ -318,7 +318,7 @@ class MyGame(arcade.Window):
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
                 for i in range(10):
-                    particle = Particle(4, 4, arcade.color.RED)
+                    particle = Particle(4, 4, color=arcade.color.RED)
                     while particle.change_y == 0 and particle.change_x == 0:
                         particle.change_y = random.randrange(-2, 3)
                         particle.change_x = random.randrange(-2, 3)
@@ -358,7 +358,7 @@ class MyGame(arcade.Window):
             self.right_pressed = True
         elif key == arcade.key.SPACE:
             # Shoot out a bullet/laser
-            bullet = arcade.SpriteSolidColor(35, 3, arcade.color.WHITE)
+            bullet = arcade.SpriteSolidColor(35, 3, color=arcade.color.WHITE)
             bullet.center_x = self.player_sprite.center_x
             bullet.center_y = self.player_sprite.center_y
             bullet.change_x = max(12, abs(self.player_sprite.change_x) + 10)

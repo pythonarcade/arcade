@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           PLAYER_SCALING)
+                                           scale=PLAYER_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -71,7 +71,7 @@ class MyGame(arcade.Window):
         for i in range(50):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=COIN_SCALING)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

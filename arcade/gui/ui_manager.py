@@ -9,9 +9,10 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.math import Mat4
 
 import arcade
 from arcade.gui.events import (
@@ -29,6 +30,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
+from arcade.camera import SimpleCamera
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -66,13 +68,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     _enabled = False
 
-    def __init__(self, window: arcade.Window = None):
+    def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
-
+        #: Camera used when drawing the UI
+        self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None) -> W:
@@ -106,7 +109,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: UIWidget = None) -> Iterable[UIWidget]:
+    def walk_widgets(self, *, root: Optional[UIWidget] = None) -> Iterable[UIWidget]:
         """walks through widget tree, in reverse draw order (most top drawn widget first)"""
         layer = 0
         children = root.children if root else self.children[layer]
@@ -119,10 +122,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         Remove all widgets from UIManager
         """
         for layer in self.children.values():
-            for widget in layer:
+            for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls=UIWidget) -> Iterable[W]:
+    def get_widgets_at(self, pos, cls: Type[W] = UIWidget) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -130,11 +133,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
         :param cls: class which the widget should be instance of
         :return: iterator of widgets of given type at position
         """
+        def check_type(widget) -> W:  # should be TypeGuard[W]
+            return isinstance(widget, cls)  # type: ignore
+
         for widget in self.walk_widgets():
-            if isinstance(widget, cls) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.collide_with_point(*pos):
                 yield widget
 
-    def _get_surface(self, layer: int):
+    def _get_surface(self, layer: int) -> Surface:
         if layer not in self._surfaces:
             if len(self._surfaces) > 2:
                 raise Exception("Don't use too much layers!")
@@ -144,7 +150,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 pixel_ratio=self.window.get_pixel_ratio(),
             )
 
-        return self._surfaces.get(layer)
+        return self._surfaces[layer]
 
     def trigger_render(self):
         """
@@ -156,6 +162,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         layers = sorted(self.children.keys())
         for layer in layers:
             surface = self._get_surface(layer)
+            if not surface:
+                raise ValueError("No surface exists for this layer.")
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
@@ -183,6 +191,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
         force = force or not self._rendered
         for layer in layers:
             surface = self._get_surface(layer)
+
+            if surface is None:
+                raise ValueError("Surface is None for layer, can't render.")
+
             with surface.activate():
                 if force:
                     surface.clear()
@@ -192,7 +204,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         self._rendered = True
 
-    def enable(self):
+    def enable(self) -> None:
         """
         Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
 
@@ -216,7 +228,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 self.on_text_motion_select,
             )
 
-    def disable(self):
+    def disable(self) -> None:
         """
         Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
@@ -243,32 +255,31 @@ class UIManager(EventDispatcher, UIWidgetParent):
     def on_update(self, time_delta):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
-    def draw(self):
+    def draw(self) -> None:
         # Request Widgets to prepare for next frame
         self._do_layout()
 
         ctx = self.window.ctx
 
-        # When drawing into the framebuffer we need to set a separate
-        # blend function for the alpha component.
-        ctx.blend_func = (
-            ctx.SRC_ALPHA,
-            ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
-            ctx.ONE,
-            ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
-        )
-        self._do_render()
+        # Reset view matrix so content is not rendered into
+        # the surface with offset
+        prev_view = self.window.view
+        prev_proj = self.window.projection
+        self.window.view = Mat4()
+        self.window.projection = Mat4()
 
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
+        with ctx.enabled(ctx.BLEND):
+            self._do_render()
 
         # Draw layers
-        layers = sorted(self.children.keys())
-        for layer in layers:
-            self._get_surface(layer).draw()
+        self.camera.use()
+        with ctx.enabled(ctx.BLEND):
+            layers = sorted(self.children.keys())
+            for layer in layers:
+                self._get_surface(layer).draw()
 
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
+        self.window.view = prev_view
+        self.window.projection = prev_proj
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -287,6 +298,17 @@ class UIManager(EventDispatcher, UIWidgetParent):
         # proj_width, proj_height = pr - pl, pt - pb
         # dx, dy = proj_width / vw, proj_height / vh
         # return (x - vx) * dx, (y - vy) * dy
+
+        # NOTE: For now we just take view and projection scrolling into account
+        #       This doesn't support rotation and scaling
+        # Get x and y translation in the view matrix
+        x -= self.window.view[12]
+        y -= self.window.view[13]
+        # Get x and y translation in the projection matrix
+        proj_2d = self.window.ctx.projection_2d
+        x += proj_2d[0]
+        y += proj_2d[2]
+        # Return adjusted coordinates
         return x, y
 
     def on_event(self, event) -> bool:
@@ -341,7 +363,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def on_resize(self, width, height):
-        scale = arcade.get_scaling_factor(self.window)
+        scale = self.window.get_pixel_ratio()
+        self.camera.resize(width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)

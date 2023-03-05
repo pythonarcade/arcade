@@ -23,7 +23,7 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.camera = arcade.Camera()
+        self.camera = arcade.SimpleCamera()
 
         # Load the background from file. Sized to match the screen
         self.background = background.Background.from_file(
@@ -32,7 +32,7 @@ class MyGame(arcade.Window):
         )
 
         # Create the player sprite.
-        self.player_sprite = arcade.SpriteSolidColor(20, 30, arcade.color.PURPLE)
+        self.player_sprite = arcade.SpriteSolidColor(20, 30, color=arcade.color.PURPLE)
         self.player_sprite.center_y = self.camera.viewport_height // 2
         self.player_sprite.center_x = self.camera.viewport_width // 2
 
@@ -90,7 +90,7 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.UP:
             self.y_direction -= PLAYER_SPEED
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.camera.resize(width, height)
 

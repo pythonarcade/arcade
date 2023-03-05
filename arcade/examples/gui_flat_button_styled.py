@@ -1,11 +1,14 @@
 """
 Example code showing how to style UIFlatButtons.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gui_flat_button_styled
 """
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
-from arcade.experimental.uistyle import UIFlatButtonStyle
+from arcade.gui import UIFlatButton
 
 
 class MyWindow(arcade.Window):
@@ -18,46 +21,50 @@ class MyWindow(arcade.Window):
         self.manager.enable()
 
         # Set background color
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Render button
-        default_style = {
-            "font_name": ("calibri", "arial"),
-            "font_size": 15,
-            "font_color": arcade.color.WHITE,
-            "border_width": 2,
-            "border_color": None,
-            "bg_color": (21, 19, 21),
-            # used if button is pressed
-            "bg_color_pressed": arcade.color.WHITE,
-            "border_color_pressed": arcade.color.WHITE,  # also used when hovered
-            "font_color_pressed": arcade.color.BLACK,
+        red_style = {
+            "normal": UIFlatButton.UIStyle(
+                font_size=12,
+                font_name=("calibri", "arial"),
+                font_color=arcade.color.WHITE,
+                bg=arcade.color.RED,
+                border=None,
+                border_width=0,
+            ),
+            "hover": UIFlatButton.UIStyle(
+                font_size=12,
+                font_name=("calibri", "arial"),
+                font_color=arcade.color.WHITE,
+                bg=arcade.color.REDWOOD,
+                border=arcade.color.RED,
+                border_width=2,
+            ),
+            "press": UIFlatButton.UIStyle(
+                font_size=12,
+                font_name=("calibri", "arial"),
+                font_color=arcade.color.WHITE,
+                bg=arcade.color.RED_BROWN,
+                border=arcade.color.REDWOOD,
+                border_width=2,
+            ),
+            "disabled": UIFlatButton.UIStyle(
+                font_size=12,
+                font_name=("calibri", "arial"),
+                font_color=arcade.color.WHITE,
+                bg=arcade.color.COOL_GREY,
+                border=arcade.color.ASH_GREY,
+                border_width=2,
+            )
         }
-
-        red_style = UIFlatButtonStyle(
-            normal_font_name=("calibri", "arial"),
-            normal_font_size=15,
-            normal_font_color=arcade.color.WHITE,
-            normal_border_width=2,
-            normal_border=None,
-            normal_bg=arcade.color.REDWOOD,
-            hovered_font_name=("calibri", "arial"),
-            hovered_font_size=17,
-            hovered_font_color=arcade.color.WHITE,
-            hovered_border_width=2,
-            hovered_border=arcade.color.WHITE,
-            hovered_bg=arcade.color.REDWOOD,
-            pressed_bg=arcade.color.WHITE,
-            pressed_border=arcade.color.RED,
-            pressed_font_color=arcade.color.RED,
-        )
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
 
         # Create the buttons
         demo_button_1 = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Demo 1", width=200, style=default_style
+            text="Demo 1", width=200, style=UIFlatButton.DEFAULT_STYLE
         )
         demo_button_2 = arcade.gui.widgets.buttons.UIFlatButton(
             text="Demo 2", width=200, style=red_style

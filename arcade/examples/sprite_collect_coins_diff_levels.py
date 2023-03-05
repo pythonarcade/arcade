@@ -72,13 +72,13 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def level_1(self):
         for i in range(20):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = FallingCoin(":resources:images/items/coinBronze.png", SPRITE_SCALING / 2)
+            coin = FallingCoin(":resources:images/items/coinBronze.png", scale=SPRITE_SCALING / 2)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -104,7 +104,7 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = RisingCoin(":resources:images/items/coinSilver.png", SPRITE_SCALING / 2)
+            coin = RisingCoin(":resources:images/items/coinSilver.png", scale=SPRITE_SCALING / 2)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+                                           scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)

@@ -1,4 +1,16 @@
+"""
+Example showing how to use the easing functions for position.
+Example showing how to use easing for angles.
+
+See:
+https://easings.net/
+...for a great guide on the theory behind how easings can work.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.easing_example_2
+"""
 import arcade
+from arcade import easing
 
 SPRITE_SCALING = 0.5
 
@@ -14,7 +26,7 @@ class Player(arcade.Sprite):
         """ Set up the player """
 
         # Call the parent init
-        super().__init__(image, scale)
+        super().__init__(image, scale=scale)
 
         self.easing_angle_data = None
         self.easing_x_data = None
@@ -22,17 +34,17 @@ class Player(arcade.Sprite):
 
     def on_update(self, delta_time: float = 1 / 60):
         if self.easing_angle_data is not None:
-            done, self.angle = arcade.ease_angle_update(self.easing_angle_data, delta_time)
+            done, self.angle = easing.ease_angle_update(self.easing_angle_data, delta_time)
             if done:
                 self.easing_angle_data = None
 
         if self.easing_x_data is not None:
-            done, self.center_x = arcade.ease_update(self.easing_x_data, delta_time)
+            done, self.center_x = easing.ease_update(self.easing_x_data, delta_time)
             if done:
                 self.easing_x_data = None
 
         if self.easing_y_data is not None:
-            done, self.center_y = arcade.ease_update(self.easing_y_data, delta_time)
+            done, self.center_y = easing.ease_update(self.easing_y_data, delta_time)
             if done:
                 self.easing_y_data = None
 
@@ -54,7 +66,7 @@ class MyGame(arcade.Window):
 
         # Set the background color
         self.background_color = arcade.color.BLACK
-        self.text = "Test"
+        self.text = "Press 1-9 to apply an easing function."
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -102,21 +114,21 @@ class MyGame(arcade.Window):
             end_angle = -arcade.get_angle_degrees(p1[0], p1[1], p2[0], p2[1])
             start_angle = self.player_sprite.angle
             if key == arcade.key.KEY_2:
-                ease_function = arcade.linear
+                ease_function = easing.linear
                 self.text = "Linear easing - angle"
             elif key == arcade.key.KEY_3:
-                ease_function = arcade.ease_in
+                ease_function = easing.ease_in
                 self.text = "Ease in - angle"
             elif key == arcade.key.KEY_4:
-                ease_function = arcade.ease_out
+                ease_function = easing.ease_out
                 self.text = "Ease out - angle"
             elif key == arcade.key.KEY_5:
-                ease_function = arcade.smoothstep
+                ease_function = easing.smoothstep
                 self.text = "Smoothstep - angle"
             else:
                 raise ValueError("?")
 
-            self.player_sprite.easing_angle_data = arcade.ease_angle(start_angle,
+            self.player_sprite.easing_angle_data = easing.ease_angle(start_angle,
                                                                      end_angle,
                                                                      rate=180,
                                                                      ease_function=ease_function)
@@ -125,21 +137,21 @@ class MyGame(arcade.Window):
             p1 = self.player_sprite.position
             p2 = (x, y)
             if key == arcade.key.KEY_6:
-                ease_function = arcade.linear
+                ease_function = easing.linear
                 self.text = "Linear easing - position"
             elif key == arcade.key.KEY_7:
-                ease_function = arcade.ease_in
+                ease_function = easing.ease_in
                 self.text = "Ease in - position"
             elif key == arcade.key.KEY_8:
-                ease_function = arcade.ease_out
+                ease_function = easing.ease_out
                 self.text = "Ease out - position"
             elif key == arcade.key.KEY_9:
-                ease_function = arcade.smoothstep
+                ease_function = easing.smoothstep
                 self.text = "Smoothstep - position"
             else:
                 raise ValueError("?")
 
-            ex, ey = arcade.ease_position(p1, p2, rate=180, ease_function=ease_function)
+            ex, ey = easing.ease_position(p1, p2, rate=180, ease_function=ease_function)
             self.player_sprite.easing_x_data = ex
             self.player_sprite.easing_y_data = ey
 

@@ -1,23 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Mono:ital,wght@0,400;0,700;1,400&family=Roboto+Slab&display=swap');
-
 body {
-    font-family: Lato, sans-serif;
+    counter-reset: listing;
 }
-p, ol > li::marker {
-    line-height: 30px;
-    font-size: 18px;
+/* TOC - Main landing page */
+/* Show two columns if screen is wide enough */
+@media screen and (min-width: 700px) {
+    .toctree-wrapper > ul {
+        columns: 2;
+    }
 }
-p {
-   margin: 0 0 24px;
+.toctree-l1 {
+    margin-left: 5px;
 }
-h1, h2 {
-    font-family: Roboto Slab, Georgia, serif;
+.toc-outside-links {
+    margin-left: 35px;
 }
-.toctree-wrapper.compound .caption {
-    font-family: Roboto Slab, Georgia, serif;
-    font-size: 2em;
-    text-transform: None;
+.toc-outside-links ul {
+    columns: 2;
 }
+.toc-outside-links li p, .toc-outside-links ul li {
+    margin-left: 5px;
+}
+.toc-outside-links a {
+    text-decoration: none;
+}
+.toctree-wrapper a {
+    text-decoration: none;
+}
+.toc-outside-links a:hover {
+    text-decoration: underline;
+}
+.toctree-wrapper a:hover {
+    text-decoration: underline;
+}
+#the-python-arcade-library h2 {
+    font-size: var(--font-size--small);
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: .5rem;
+    text-align: initial;
+    text-transform: uppercase;
+}
+#the-python-arcade-library ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#github-stars {
+    width: 170px;
+    height: 30px;
+    margin-bottom: -18px;
+}
+.heading-icon {
+    columns: 2;
+    position: relative;
+    left: -20px;
+    top: -4px;
+    float: left;
+    width: 55px;
+}
+
+/* Put logo next to text */
 .sidebar-brand {
   flex-direction: row;
 }
@@ -27,7 +68,7 @@ h1, h2 {
 .sidebar-brand-text {
   flex: 3;
 }
-
+/* Example code section */
 #how-to-example-code section {
 	display: flex;
 	flex-direction: row;
@@ -39,42 +80,12 @@ h1, h2 {
 #how-to-example-code section h3 {
   width: 100%;
 }
-#github-stars {
-    width: 170px;
-    height: 30px;
-    margin-bottom: -18px;
-}
+/* Right side image, for longer text */
 img.right-image {
    float: right;
    margin-left: 8px;
    margin-bottom: 4px;
    margin-top: 10px;
-}
-a {
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-    color: var(--color-link);
-}
-
-li {
-    line-height: 30px;
-    margin-left: 24px;
-}
-li p {
-    margin-bottom: 0;
-}
-.toc-tree li {
-    list-style: None;
-    margin-left: 0;
-}
-ul {
-    margin-left: 0;
-}
-/* use child selector in case someone nests an ol inside a ul */
-ul > li {
-    list-style: disc;
 }
 .section-header {
     display: flex;
@@ -104,15 +115,7 @@ ul > li {
     width:100%;
     height:100%;
 }
-.sidebar-tree ul {
-    margin-left: 7px;
-}
-.sidebar-tree ul li {
-    list-style-type: None;
-}
-
 /* Make Function API look nice */
-
 .sig-param .n:first-of-type {
     margin-left: 10px;
 }
@@ -124,12 +127,13 @@ ul > li {
 /* Make code look nice */
 .code-block-caption::before {
     counter-increment: listing;
-    content: "Listing " counter(listing) ": ";
+    content: "Listing " counter(listing) ":\00a0 ";
 }
 .code-block-caption {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
+/* Datatable - mostly for quick api index */
 table.dataTable.display tbody tr.odd {
     background-color: var(--color-background-primary);
 }
@@ -142,12 +146,26 @@ table.dataTable.display tbody tr.odd > .sorting_1 {
 table.dataTable.display tbody tr.even > .sorting_1 {
     background-color: var(--color-background-secondary);
 }
-p code.literal {
-    border: None;
-}
-code.literal {
-    background: None;
-}
 .dataTables_wrapper .dataTables_filter {
     color: var(--color-foreground-primary);
+}
+
+/* Named color chart */
+table.colorTable {
+    border-spacing: 5px;
+}
+table.colorTable tr > td:nth-child(3) {
+    border: 1px solid black;
+}
+table.colorTable tr > td:nth-child(3) > div {
+    display: block;
+    width: 80px;
+    min-width: 80px;
+}
+/* Custom code syntax highlighting */
+body:not([data-theme="light"]) .highlight .c1 {
+    color: #48A148;
+}
+.highlight .c1 {
+    color: #007507;
 }

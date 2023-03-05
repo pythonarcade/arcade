@@ -1,35 +1,25 @@
 """
-Path-related functions.
-
+Classic A-star algorithm for path finding.
 """
-from arcade import Point, check_for_collision_with_list, SpriteList, Sprite
-from typing import Union, List, Tuple, Set
-
 import sys
-
+from arcade.types import Point
+from arcade import check_for_collision_with_list, SpriteList, Sprite
+from typing import Union, List, Tuple, Set, Optional
 
 if 'shapely' in sys.modules:
     from .paths_shapely import has_line_of_sight  # noqa: F401
 else:
     from .paths_python import has_line_of_sight  # noqa: F401
 
-"""
-Classic A-star algorithm for path finding.
-"""
 
-
-def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
+def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,
-                     blocking_sprites: SpriteList)\
-        -> bool:
+                     blocking_sprites: SpriteList) -> bool:
     original_pos = moving_sprite.position
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
     moving_sprite.position = original_pos
-    if len(hit_list) > 0:
-        return True
-    else:
-        return False
+    return len(hit_list) > 0
 
 
 def _heuristic(start: Point, goal: Point):
@@ -60,11 +50,7 @@ class _AStarGraph(object):
                  bottom: int,
                  top: int,
                  diagonal_movement: bool):
-        if barriers is set:
-            self.barriers = barriers
-        else:
-            self.barriers = set(barriers)
-
+        self.barriers = barriers if barriers is set else set(barriers)
         self.left = left
         self.right = right
         self.top = top
@@ -102,7 +88,7 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
+def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[Point]]:
     G = {}  # Actual movement cost to each position from the start position
     F = {}  # Estimated movement cost of start to end going via this position
 
@@ -128,7 +114,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
                 current = pos
 
         # Check if we have reached the goal
-        if current == end:
+        if current == end and current is not None:
             # Retrace our route backward
             path = [current]
             while current in came_from:
@@ -271,3 +257,35 @@ def astar_calculate_path(start_point: Point,
     # locations.
     revised_result = [_expand(p, grid_size) for p in result]
     return revised_result
+
+
+# NOTE: Rewrite this
+# def dda_step(start: Point, end: Point):
+#     """
+#     Bresenham's line algorithm
+
+#     :param Point start:
+#     :param Point end:
+#     :return: List of points
+#     """
+#     x1, y1 = start
+#     x2, y2 = end
+
+#     dx = x2 - x1
+#     dy = y2 - y1
+
+#     steps = max(abs(dx), abs(dy))
+
+#     x_inc = dx / steps
+#     y_inc = dy / steps
+
+#     x = x1
+#     y = y1
+
+#     points = []
+#     for _ in range(steps):
+#         points.append((int(x), int(y)))
+#         x += x_inc
+#         y += y_inc
+
+#     return points

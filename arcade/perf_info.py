@@ -16,7 +16,7 @@ _max_history: int = 100
 
 def _dispatch_event(self, *args):
     """
-    Dispatch event function that will be monkey-patched over Pyglet's dispatch event function.
+    This function will be monkey-patched over Pyglet's dispatch event function.
     """
     # Name of the dispatched event, like 'on_draw'
     name = args[0]
@@ -27,7 +27,8 @@ def _dispatch_event(self, *args):
         _frame_times.append(start_time)
 
     # Call Pyglet's dispatch event function
-    _pyglets_dispatch_event(self, *args)
+    if _pyglets_dispatch_event is not None:
+        _pyglets_dispatch_event(self, *args)
 
     # Stop the clock
     end_time = time.perf_counter()
@@ -50,8 +51,18 @@ def _dispatch_event(self, *args):
 
 def print_timings():
     """
-    This prints to stdout a table of the most recent dispatched events and
-    their average time.
+    Print event handler statistics to stdout as a table.
+
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
+
+    The statistics consist of:
+
+    * how many times each registered event was called
+    * the average time for handling each type of event in seconds
 
     The table looks something like:
 
@@ -59,7 +70,6 @@ def print_timings():
 
         Event          Count Average Time
         -------------- ----- ------------
-        update            60       0.0553
         on_update         60       0.0000
         on_mouse_enter     1       0.0000
         on_mouse_motion   39       0.0000
@@ -78,9 +88,15 @@ def print_timings():
         print(f"{index:15}{call_count:5}  {average_time:11.4f}")
 
 
-def clear_timings():
+def clear_timings() -> None:
     """
-    Clear the dispatch event timing table created after :func:`arcade.enable_timings` is called.
+    Reset the count & average time for each event type to zero.
+
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
     """
     global _timings
     _timings = {}
@@ -88,48 +104,73 @@ def clear_timings():
 
 def get_timings() -> Dict:
     """
-    Get a table with the dispatch event timings.
+    Get a dict of the current dispatch event timings.
+
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    :return: A dict of event timing data, consisting of counts and
+             average handler duration.
     """
     return _timings
 
 
-def enable_timings(max_history: int = 100):
+def enable_timings(max_history: int = 100) -> None:
     """
-    Enable the saving of performance information.
+    Enable recording of performance information.
+
+    This function must be called before using any other performance
+    features, except for :func:`arcade.timings_enabled`, which can
+    be called at any time.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
+
+    :param max_history: How many frames to keep performance info for.
     """
     global _pyglets_dispatch_event, _max_history
 
-    if _pyglets_dispatch_event is not None:
+    if pyglet.window.BaseWindow.dispatch_event == _dispatch_event:
         raise ValueError("Timings already enabled.")
 
+    # Save the original pyglet dispatch event function
     _pyglets_dispatch_event = pyglet.window.BaseWindow.dispatch_event
+
+    # Override the pyglet dispatch event function
     pyglet.window.BaseWindow.dispatch_event = _dispatch_event
     _max_history = max_history
 
 
-def disable_timings():
+def disable_timings() -> None:
     """
-    Turn off the collection of timing information started by :func:`arcade.enable_timings`.
-    """
-    global _pyglets_dispatch_event
+    Disable collection of timing information.
 
-    if _pyglets_dispatch_event is None:
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+    """
+    if pyglet.window.BaseWindow.dispatch_event != _dispatch_event:
         raise ValueError("Timings are not enabled.")
 
     # Restore the original pyglet dispatch event function
-    pyglet.window.BaseWindow.dispatch_event = _dispatch_event
-    _pyglets_dispatch_event = None
+    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event
 
     clear_timings()
 
 
 def get_fps(frame_count: int = 60) -> float:
     """
-    Get the current FPS.
-    :func:`arcade.enable_timings` must be called before getting the FPS.
+    Get the FPS over the last ``frame_count`` frames.
 
-    :param int frame_count: How many frames to look at to get FPS. So 30, would give you
-                            average FPS over the last 30 frames.
+    Performance tracking must be enabled with
+    :func:`arcade.enable_timings` before calling this function.
+
+    To get the FPS over the last 30 frames, you would pass 30 instead
+    of the default 60.
+
+    See :ref:`performance_statistics_example` for an example of how to
+    use function.
+
+    :param int frame_count: How many frames to calculate the FPS over.
     """
     cur_time = time.perf_counter()
     if len(_frame_times) == 0:
@@ -143,8 +184,13 @@ def get_fps(frame_count: int = 60) -> float:
     return fps
 
 
-def timings_enabled():
+def timings_enabled() -> bool:
     """
-    Return true if timings are enabled, false otherwise. See :func:`arcade.enable_timings`.
+    Return true if timings are enabled, false otherwise.
+
+    This function can be used at any time to check if timings are
+    enabled. See :func:`arcade.enable_timings` for more information.
+
+    :return: Whether timings are currently enabled.
     """
-    return _pyglets_dispatch_event is not None
+    return pyglet.window.BaseWindow.dispatch_event == _dispatch_event

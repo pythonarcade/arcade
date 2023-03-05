@@ -1,5 +1,7 @@
 """
 Platformer Game
+
+python -m arcade.examples.platform_tutorial.01_open_window
 """
 import arcade
 
@@ -19,7 +21,7 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""

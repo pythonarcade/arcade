@@ -22,7 +22,7 @@ from typing import List, Tuple, Optional, Union
 from arcade import get_window
 import arcade
 from arcade.context import ArcadeContext
-from arcade.gl import geometry, Texture
+from arcade.gl import geometry, Texture2D
 from arcade.gl.program import Program
 from arcade.gl.framebuffer import Framebuffer
 
@@ -65,10 +65,10 @@ class ShadertoyBase:
         self._channel_time = [0.0, 0.0, 0.0, 0.0]
         self._channel_resolution = [0] * 3 * 4
         # Shader inputs
-        self._channel_0: Optional[Texture] = None
-        self._channel_1: Optional[Texture] = None
-        self._channel_2: Optional[Texture] = None
-        self._channel_3: Optional[Texture] = None
+        self._channel_0: Optional[Texture2D] = None
+        self._channel_1: Optional[Texture2D] = None
+        self._channel_2: Optional[Texture2D] = None
+        self._channel_3: Optional[Texture2D] = None
 
         self._set_source(source)
         self._quad = geometry.quad_2d_fs()
@@ -186,49 +186,49 @@ class ShadertoyBase:
         return self._channel_time
 
     @property
-    def channel_0(self) -> Optional[Texture]:
+    def channel_0(self) -> Optional[Texture2D]:
         """Get or set channel 0"""
         return self._channel_0        
 
     @channel_0.setter
-    def channel_0(self, value: Texture):
-        if not isinstance(value, Texture):
+    def channel_0(self, value: Texture2D):
+        if not isinstance(value, Texture2D):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_resolution[0:3] = value.width, value.height, 1
         self._channel_0 = value
 
     @property
-    def channel_1(self) -> Optional[Texture]:
+    def channel_1(self) -> Optional[Texture2D]:
         """Get or set channel 1"""
         return self._channel_1
 
     @channel_1.setter
-    def channel_1(self, value: Texture):
-        if not isinstance(value, Texture):
+    def channel_1(self, value: Texture2D):
+        if not isinstance(value, Texture2D):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_resolution[3:6] = value.width, value.height, 1
         self._channel_1 = value
 
     @property
-    def channel_2(self) -> Optional[Texture]:
+    def channel_2(self) -> Optional[Texture2D]:
         """Get or set channel 2"""
         return self._channel_2        
 
     @channel_2.setter
-    def channel_2(self, value: Texture):
-        if not isinstance(value, Texture):
+    def channel_2(self, value: Texture2D):
+        if not isinstance(value, Texture2D):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_resolution[6:9] = value.width, value.height, 1
         self._channel_2 = value
 
     @property
-    def channel_3(self) -> Optional[Texture]:
+    def channel_3(self) -> Optional[Texture2D]:
         """Get or set channel 3"""
         return self._channel_3
 
     @channel_3.setter
-    def channel_3(self, value: Texture):
-        if not isinstance(value, Texture):
+    def channel_3(self, value: Texture2D):
+        if not isinstance(value, Texture2D):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_resolution[9:12] = value.width, value.height, 1
         self._channel_3 = value
@@ -358,7 +358,7 @@ class ShadertoyBuffer(ShadertoyBase):
         self._set_repeat()
 
     @property
-    def texture(self) -> Texture:
+    def texture(self) -> Texture2D:
         """
         The OpenGL texture for this buffer.
         This can be assigned to channels.

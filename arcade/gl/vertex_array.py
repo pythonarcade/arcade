@@ -5,7 +5,7 @@ import weakref
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription
+from .types import BufferDescription, gl_name
 from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -15,13 +15,14 @@ index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSI
 
 
 class VertexArray:
-    """Wrapper for Vertex Array Objects (VAOs).
+    """
+    Wrapper for Vertex Array Objects (VAOs).
+
     This objects should not be instantiated from user code.
     Use :py:class:`arcade.gl.Geometry` instead. It will create VAO instances for you
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
     """
-
     __slots__ = (
         "_ctx",
         "glo",
@@ -30,18 +31,16 @@ class VertexArray:
         "_ibo",
         "_index_element_size",
         "_index_element_type",
-        "_content",
         "_num_vertices",
         "__weakref__",
     )
 
-    # TODO: Resolve what VertexArray should actually store
     def __init__(
         self,
         ctx: "Context",
         program: Program,
         content: Sequence[BufferDescription],
-        index_buffer: Buffer = None,
+        index_buffer: Optional[Buffer] = None,
         index_element_size: int = 4,
     ):
         self._ctx = ctx
@@ -139,15 +138,12 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
         # Lookup dict for BufferDescription attrib names
-        # print(content)
         descr_attribs = {
             attr.name: (descr, attr) for descr in content for attr in descr.formats
         }
-        # print('->', descr_attribs)
 
         # Build the vao according to the shader's attribute specifications
-        for i, prog_attr in enumerate(program.attributes):
-            # print('prog_attr', prog_attr)
+        for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
             if prog_attr.name.startswith("gl_"):
                 continue
@@ -161,10 +157,6 @@ class VertexArray:
                     )
                 )
 
-            # TODO: Sanity check this
-            # if buff_descr.instanced and i == 0:
-            #     raise ValueError("The first vertex attribute cannot be a per instance attribute.")
-
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
                 raise ValueError(
@@ -174,8 +166,6 @@ class VertexArray:
                     )
                 )
 
-            # TODO: Compare gltype between buffer descr and program attr
-
             gl.glEnableVertexAttribArray(prog_attr.location)
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
@@ -183,16 +173,59 @@ class VertexArray:
             normalized = (
                 gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
             )
-            gl.glVertexAttribPointer(
-                prog_attr.location,  # attrib location
-                attr_descr.components,  # 1, 2, 3 or 4
-                attr_descr.gl_type,  # GL_FLOAT etc
-                normalized,  # normalize
-                buff_descr.stride,
-                c_void_p(attr_descr.offset),
+
+            # Map attributes groups
+            float_types = (gl.GL_FLOAT, gl.GL_HALF_FLOAT)
+            double_types = (gl.GL_DOUBLE,)
+            int_types = (
+                gl.GL_INT, gl.GL_UNSIGNED_INT,
+                gl.GL_SHORT, gl.GL_UNSIGNED_SHORT,
+                gl.GL_BYTE, gl.GL_UNSIGNED_BYTE,
             )
+            attrib_type = attr_descr.gl_type
+            # Normalized integers must be mapped as floats
+            if attrib_type in int_types and buff_descr.normalized:
+                attrib_type = prog_attr.gl_type
+
+            # Sanity check attribute types between shader and buffer description
+            if attrib_type != prog_attr.gl_type:
+                raise ValueError(
+                    (
+                        f"Program attribute '{prog_attr.name}' has type {gl_name(prog_attr.gl_type)} "
+                        f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
+                    )
+                )
+
+            if attrib_type in float_types:
+                gl.glVertexAttribPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    normalized,  # normalize
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            elif attrib_type in double_types:
+                gl.glVertexAttribLPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_DOUBLE etc
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            elif attrib_type in int_types:
+                gl.glVertexAttribIPointer(
+                    prog_attr.location,  # attrib location
+                    attr_descr.components,  # 1, 2, 3 or 4
+                    attr_descr.gl_type,  # GL_FLOAT etc
+                    buff_descr.stride,
+                    c_void_p(attr_descr.offset),
+                )
+            else:
+                raise ValueError(f"Unsupported attribute type: {attr_descr.gl_type}")
+
             # print((
-            #     f"gl.glVertexAttribPointer(\n"
+            #     f"gl.glVertexAttribXPointer(\n"
             #     f"    {prog_attr.location},  # attrib location\n"
             #     f"    {attr_descr.components},  # 1, 2, 3 or 4\n"
             #     f"    {attr_descr.gl_type},  # GL_FLOAT etc\n"
@@ -216,7 +249,7 @@ class VertexArray:
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
-            # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
+            # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
                 mode, vertices, self._index_element_type,
@@ -376,7 +409,7 @@ class Geometry:
 
     Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
 
-    :param Contex ctx: The context this object belongs to
+    :param Context ctx: The context this object belongs to
     :param list content: List of BufferDescriptions
     :param Buffer index_buffer: Index/element buffer
     :param int mode: The default draw mode
@@ -397,22 +430,22 @@ class Geometry:
         self,
         ctx: "Context",
         content: Optional[Sequence[BufferDescription]],
-        index_buffer: Buffer = None,
-        mode=None,
+        index_buffer: Optional[Buffer] = None,
+        mode: Optional[int] = None,
         index_element_size: int = 4,
     ):
         self._ctx = ctx
-        self._content = content or []
+        self._content = list(content or [])
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
-        self._vao_cache = {}  # type: Dict[str, VertexArray]
-        self._num_vertices = -1
+        self._vao_cache: Dict[str, VertexArray] = {}
+        self._num_vertices: int = -1
         """
-        :param Contex ctx: The context this object belongs to
-        :param list content: List of BufferDescriptions
-        :param Buffer index_buffer: Index/element buffer
-        :param int mode: The default draw mode (optional)
+        :param Context ctx: The context this object belongs to
+        :param list content: (optional) List of BufferDescriptions
+        :param Buffer index_buffer: (optional) Index/element buffer
+        :param int mode: (optional) The default draw mode
         :param int index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
         """
         if self._index_buffer and self._index_element_size not in (1, 2, 4):
@@ -467,6 +500,17 @@ class Geometry:
     def num_vertices(self, value: int):
         self._num_vertices = value
 
+    def append_buffer_description(self, descr: BufferDescription):
+        """
+        Append a new BufferDescription to the existing Geometry.
+        .. Warning:: a Geometry cannot contain two BufferDescriptions which share an attribute name.
+        """
+        for other_descr in self._content:
+            if other_descr == descr:
+                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                                 f"Found a conflict in {descr} and {other_descr}")
+        self._content.append(descr)
+
     def instance(self, program: Program) -> VertexArray:
         """
         Get the :py:class:`arcade.gl.VertexArray` compatible with this program
@@ -481,9 +525,9 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: gl.GLenum = None,
+        mode: Optional[gl.GLenum] = None,
         first: int = 0,
-        vertices: int = None,
+        vertices: Optional[int] = None,
         instances: int = 1,
     ) -> None:
         """Render the geometry with a specific program.
@@ -537,7 +581,7 @@ class Geometry:
         program: Program,
         buffer: Buffer,
         *,
-        mode: gl.GLuint = None,
+        mode: Optional[gl.GLuint] = None,
         count: int = -1,
         first: int = 0,
         stride: int = 0,
@@ -591,7 +635,7 @@ class Geometry:
         buffer: Union[Buffer, List[Buffer]],
         *,
         first: int = 0,
-        vertices: int = None,
+        vertices: Optional[int] = None,
         instances: int = 1,
         buffer_offset: int = 0,
     ) -> None:

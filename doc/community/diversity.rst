@@ -1,3 +1,7 @@
+:orphan:
+
+.. _diversity_statement:
+
 Diverse Coders
 ==============
 

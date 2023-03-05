@@ -1,15 +1,17 @@
-from arcade import Point
-from arcade import SpriteList
-from arcade import get_distance
-from arcade import lerp_vec
-from arcade import get_sprites_at_point
+from arcade import (
+    SpriteList,
+    get_sprites_at_point,
+)
+from arcade.math import get_distance
+from arcade.types import Point
+from arcade.math import lerp_vec
 
 
 def has_line_of_sight(point_1: Point,
                       point_2: Point,
                       walls: SpriteList,
                       max_distance: int = -1,
-                      check_resolution: int = 2):
+                      check_resolution: int = 2) -> bool:
     """
     Determine if we have line of sight between two points. Try to make sure
     that spatial hashing is enabled on the wall SpriteList or this will be

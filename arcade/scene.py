@@ -8,7 +8,8 @@ helper function to create a Scene directly from a TileMap object.
 
 from typing import Dict, List, Optional
 
-from arcade import Color, Sprite, SpriteList
+from arcade import Sprite, SpriteList
+from arcade.types import Color
 from arcade.tilemap import TileMap
 
 
@@ -91,7 +92,7 @@ class Scene:
         if name in self.name_mapping:
             self.name_mapping[name].append(sprite)
         else:
-            new_list = SpriteList()
+            new_list: SpriteList = SpriteList()
             new_list.append(sprite)
             self.add_sprite_list(name=name, sprite_list=new_list)
 
@@ -113,7 +114,7 @@ class Scene:
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
         """
-        if not sprite_list:
+        if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         self.sprite_lists.append(sprite_list)
@@ -138,7 +139,7 @@ class Scene:
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
         """
-        if not sprite_list:
+        if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         before_list = self.name_mapping[before]
@@ -190,7 +191,7 @@ class Scene:
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
         """
-        if not sprite_list:
+        if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         after_list = self.name_mapping[after]

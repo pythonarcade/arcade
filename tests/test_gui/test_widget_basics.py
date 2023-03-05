@@ -49,10 +49,10 @@ def test_widget_set_padding_with_1_parameters():
     widget.padding = 20
 
     # THEN
-    assert widget.padding_top == 20
-    assert widget.padding_right == 20
-    assert widget.padding_bottom == 20
-    assert widget.padding_left == 20
+    assert widget._padding_top == 20
+    assert widget._padding_right == 20
+    assert widget._padding_bottom == 20
+    assert widget._padding_left == 20
     assert widget.padding == (20, 20, 20, 20)
 
 
@@ -64,10 +64,10 @@ def test_widget_set_padding_with_2_parameters():
     widget.padding = 20, 40
 
     # THEN
-    assert widget.padding_top == 20
-    assert widget.padding_right == 40
-    assert widget.padding_bottom == 20
-    assert widget.padding_left == 40
+    assert widget._padding_top == 20
+    assert widget._padding_right == 40
+    assert widget._padding_bottom == 20
+    assert widget._padding_left == 40
     assert widget.padding == (20, 40, 20, 40)
 
 
@@ -79,10 +79,10 @@ def test_widget_set_padding_with_4_parameters():
     widget.padding = (10, 20, 30, 40)
 
     # THEN
-    assert widget.padding_top == 10
-    assert widget.padding_right == 20
-    assert widget.padding_bottom == 30
-    assert widget.padding_left == 40
+    assert widget._padding_top == 10
+    assert widget._padding_right == 20
+    assert widget._padding_bottom == 30
+    assert widget._padding_left == 40
     assert widget.padding == (10, 20, 30, 40)
 
 
@@ -103,8 +103,21 @@ def test_widget_content_rect_affected_by_border_width():
     widget = UIWidget(x=0, y=0, width=100, height=100)
 
     # WHEN
-    widget.border_width = 10
+    widget._border_width = 10
 
     # THEN
     assert widget.rect == (0, 0, 100, 100)
     assert widget.content_rect == (10, 10, 80, 80)
+
+
+def test_widget_resize():
+    # GIVEN
+    widget = UIWidget(x=0, y=0, width=100, height=100)
+    widget.with_border(10)
+
+    # WHEN
+    widget.resize(width=50, height=50)
+
+    # THEN
+    assert widget.rect == (0, 0, 50, 50)
+    assert widget.content_rect == (10, 10, 30, 30)

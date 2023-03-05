@@ -1,0 +1,49 @@
+name: Distribute build to PyPi Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # --- Bump version
+  bump-version:
+
+    runs-on: ubuntu-latest
+    environment: deploy-pypi-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+            token: ${{ secrets.MY_TOKEN }}
+      - name: Bump versions
+        uses: remorses/bump-version@js
+        with:
+            version_file: ./arcade/VERSION
+            prerelease_tag: dev
+        env:
+            GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+
+  # --- Deploy to pypi
+  deploy-to-pypi-prod:
+
+    runs-on: ubuntu-latest
+    environment: deploy-pypi-prod
+    needs: bump-version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: >-
+          python -m pip install build twine
+      - name: Build and Upload to Prod PyPI
+        run: |
+          python -m build --sdist --wheel --outdir dist/
+          python3 -m twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TWINE_PROD_TOKEN }}
+          TWINE_REPOSITORY: pypi
