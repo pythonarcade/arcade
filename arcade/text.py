@@ -663,7 +663,7 @@ def create_text_sprite(
 
 
 @warning(
-    message="Hello from Arcade! This function has performace issues use arcade.Text as it is 10-100 times faster.",
+    message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
     warning_type=PerformanceWarning,
     )
 def draw_text(
