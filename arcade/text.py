@@ -838,8 +838,8 @@ def draw_text(
     color = get_four_byte_color(color)
     # Cache the states that are expensive to change
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
-    cache = arcade.get_window().ctx.label_cache
-    label = cache.get(key)
+    ctx = arcade.get_window().ctx
+    label = ctx.label_cache.get(key)
     if align != "center" and align != "left" and align != "right":
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
@@ -866,7 +866,7 @@ def draw_text(
             multiline=multiline,
             rotation=rotation
         )
-        cache[key] = label
+        ctx.label_cache[key] = label
 
     # These updates are quite expensive
     if label.text != text:
@@ -879,3 +879,7 @@ def draw_text(
         label.rotation = rotation
 
     label.draw()
+    # This is absolutely necessary to prevent the vertex buffers
+    # to be altered while another one is drawing. If the same cached
+    # label is used multiple times in a single frame it's a disaster.
+    ctx.flush()
