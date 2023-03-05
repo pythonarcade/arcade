@@ -25,6 +25,8 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 #     'special-members': '__init__',
 # }
 
+autodoc_default_options = {"members": "add"}
+
 autodoc_inherit_docstrings = False
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -236,8 +238,18 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
+def skip(app, what, name, obj, skip, options):
+    if skip:
+        return skip
+    print(options.inherited_members, name, what, obj.__name__, obj.__module__, skip, obj)
+    if "arcade.gui.widgets.layout.UIBoxLayout" in str(obj) and 'add' in name:
+        return False
+    return True
+
 def setup(app):
     app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
+    print("SKIPPING MEMBERS")
+    app.connect("autodoc-skip-member", skip)
