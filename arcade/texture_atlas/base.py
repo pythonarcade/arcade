@@ -40,7 +40,7 @@ from pyglet.math import Mat4
 
 import arcade
 from arcade.gl.framebuffer import Framebuffer
-from arcade.texture_transforms import Transform
+from arcade.texture.transforms import Transform
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture

@@ -1,5 +1,5 @@
 import arcade
-from arcade import texture_transforms as tt
+from arcade.texture import transforms as tt
 
 
 def _transform(*transforms):
@@ -34,32 +34,32 @@ def test_rotation_mirror(window):
     # Horizontal flip
     wall = wall_list[1]
     assert wall.position == (192, 64)
-    assert wall.texture._vertex_order == tt.FlipLeftToRightTransform.order
+    assert wall.texture._vertex_order == tt.FlipLeftRightTransform.order
 
     # Transpose and flipped horizontally
     wall = wall_list[2]
     assert wall.position == (448, 64)
-    assert wall.texture._vertex_order == tt.FlipLeftToRightTransform.transform_vertex_order(tt.TransposeTransform.order)
+    assert wall.texture._vertex_order == tt.FlipLeftRightTransform.transform_vertex_order(tt.TransposeTransform.order)
 
     # Transposed, flipped vertically and horizontally
     wall = wall_list[3]
     assert wall.position == (576, 64)
-    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipLeftToRightTransform, tt.FlipTopToBottomTransform)
+    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipLeftRightTransform, tt.FlipTopBottomTransform)
 
     # Horizontal flip and flipped vertically
     wall = wall_list[4]
     assert wall.position == (832, 64)
-    assert wall.texture._vertex_order == _transform(tt.FlipLeftToRightTransform, tt.FlipTopToBottomTransform)
+    assert wall.texture._vertex_order == _transform(tt.FlipLeftRightTransform, tt.FlipTopBottomTransform)
 
     # Vertical flip
     wall = wall_list[5]
     assert wall.position == (960, 64)
-    assert wall.texture._vertex_order == tt.FlipTopToBottomTransform.order
+    assert wall.texture._vertex_order == tt.FlipTopBottomTransform.order
 
     # Transposed and flipped vertically
     wall = wall_list[6]
     assert wall.position == (1216, 64)
-    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipTopToBottomTransform)
+    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipTopBottomTransform)
 
     # Transposed
     wall = wall_list[7]

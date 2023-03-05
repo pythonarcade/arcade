@@ -640,19 +640,20 @@ class UIGridLayout(UILayout):
         principal_height_ratio_list = []
         principal_width_ratio_list = []
 
-        # making max_height_per_row and max_width_per_column uniform
+        # Making cell height same for each row.
         for row in max_height_per_row:
-            principal_height_ratio = max(height / (span or 1) for height, span in row)
+            principal_height_ratio = max((height + self._vertical_spacing) / (span or 1) for height, span in row)
             principal_height_ratio_list.append(principal_height_ratio)
             for i, (height, span) in enumerate(row):
-                if height / (span or 1) < principal_height_ratio:
+                if (height + self._vertical_spacing) / (span or 1) < principal_height_ratio:
                     row[i] = (principal_height_ratio * span, span)
 
+        # Making cell width same for each column.
         for col in max_width_per_column:
-            principal_width_ratio = max(width / (span or 1) for width, span in col)
+            principal_width_ratio = max((width + self._horizontal_spacing) / (span or 1) for width, span in col)
             principal_width_ratio_list.append(principal_width_ratio)
             for i, (width, span) in enumerate(col):
-                if width / (span or 1) < principal_width_ratio:
+                if (width + self._horizontal_spacing) / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
 
         content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing

@@ -52,7 +52,7 @@ class Player(arcade.Sprite):
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
-            self, bar_list, (self.center_x, self.center_y)
+            self, bar_list, (self.center_x, self.center_y), scale=1.5,
         )
         self.health: int = PLAYER_HEALTH
 
@@ -78,13 +78,14 @@ class IndicatorBar:
 
     :param Player owner: The owner of this indicator bar.
     :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
-    bar components.
+        bar components.
     :param Tuple[float, float] position: The initial position of the bar.
     :param Color full_color: The color of the bar.
     :param Color background_color: The background color of the bar.
     :param int width: The width of the bar.
     :param int height: The height of the bar.
     :param int border_size: The size of the bar's border.
+    :param float scale: The scale of the indicator bar.
     """
 
     def __init__(
@@ -97,36 +98,38 @@ class IndicatorBar:
         width: int = 100,
         height: int = 4,
         border_size: int = 4,
+        scale: float = 1.0,
     ) -> None:
         # Store the reference to the owner and the sprite list
         self.owner: Player = owner
         self.sprite_list: arcade.SpriteList = sprite_list
 
         # Set the needed size variables
-        self._box_width: int = width
-        self._box_height: int = height
-        self._half_box_width: int = self._box_width // 2
+        self._bar_width: int = width
+        self._bar_height: int = height
         self._center_x: float = 0.0
         self._center_y: float = 0.0
         self._fullness: float = 0.0
+        self._scale: float = 1.0
 
         # Create the boxes needed to represent the indicator bar
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
-            self._box_width + border_size,
-            self._box_height + border_size,
+            self._bar_width + border_size,
+            self._bar_height + border_size,
             color=background_color,
         )
         self._full_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
-            self._box_width,
-            self._box_height,
+            self._bar_width,
+            self._bar_height,
             color=full_color,
         )
         self.sprite_list.append(self._background_box)
         self.sprite_list.append(self._full_box)
 
-        # Set the fullness and position of the bar
-        self.fullness: float = 1.0
-        self.position: Tuple[float, float] = position
+        # Set the fullness, position and scale of the bar
+        self.fullness = 1.0
+        self.position = position
+        self.scale = scale
 
     def __repr__(self) -> str:
         return f"<IndicatorBar (Owner={self.owner})>"
@@ -140,6 +143,46 @@ class IndicatorBar:
     def full_box(self) -> arcade.SpriteSolidColor:
         """Returns the full box of the indicator bar."""
         return self._full_box
+
+    @property
+    def bar_width(self) -> int:
+        """Gets the width of the bar."""
+        return self._bar_width
+
+    @property
+    def bar_height(self) -> int:
+        """Gets the height of the bar."""
+        return self._bar_height
+
+    @property
+    def center_x(self) -> float:
+        """Gets the x position of the bar."""
+        return self._center_x
+
+    @property
+    def center_y(self) -> float:
+        """Gets the y position of the bar."""
+        return self._center_y
+
+    @property
+    def top(self) -> float:
+        """Gets the y coordinate of the top of the bar."""
+        return self.background_box.top
+
+    @property
+    def bottom(self) -> float:
+        """Gets the y coordinate of the bottom of the bar."""
+        return self.background_box.bottom
+
+    @property
+    def left(self) -> float:
+        """Gets the x coordinate of the left of the bar."""
+        return self.background_box.left
+
+    @property
+    def right(self) -> float:
+        """Gets the x coordinate of the right of the bar."""
+        return self.background_box.right
 
     @property
     def fullness(self) -> float:
@@ -163,8 +206,8 @@ class IndicatorBar:
         else:
             # Set the full_box to be visible incase it wasn't then update the bar
             self.full_box.visible = True
-            self.full_box.width = self._box_width * new_fullness
-            self.full_box.left = self._center_x - (self._box_width // 2)
+            self.full_box.width = self._bar_width * new_fullness * self.scale
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -181,7 +224,21 @@ class IndicatorBar:
             self.full_box.position = new_position
 
             # Make sure full_box is to the left of the bar instead of the middle
-            self.full_box.left = self._center_x - (self._box_width // 2)
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale
+
+    @property
+    def scale(self) -> float:
+        """Returns the scale of the bar."""
+        return self._scale
+
+    @scale.setter
+    def scale(self, value: float) -> None:
+        """Sets the new scale of the bar."""
+        # Check if the scale has changed. If so, change the bar's scale
+        if value != self.scale:
+            self._scale = value
+            self.background_box.scale = value
+            self.full_box.scale = value
 
 
 class MyGame(arcade.Window):

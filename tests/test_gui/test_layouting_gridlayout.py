@@ -126,6 +126,35 @@ def test_place_widgets_with_col_row_span(window):
     assert dummy6.position == (200, 50)
 
 
+def test_place_widgets_with_col_row_span_and_spacing(window):
+    dummy1 = UIDummy(width=100, height=100)
+    dummy2 = UIDummy(width=100, height=100)
+    dummy3 = UIDummy(width=100, height=100)
+    dummy4 = UIDummy(width=100, height=100)
+    dummy5 = UIDummy(width=220, height=100)
+
+    subject = UIGridLayout(
+        column_count=2,
+        row_count=3,
+        horizontal_spacing=20,
+    )
+
+    subject.add(dummy1, 0, 0)
+    subject.add(dummy2, 0, 1)
+    subject.add(dummy3, 1, 0)
+    subject.add(dummy4, 1, 1)
+    subject.add(dummy5, 0, 2, col_span=2)
+
+    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.do_layout()
+
+    assert dummy1.position == (10, 200)
+    assert dummy2.position == (10, 100)
+    assert dummy3.position == (130, 200)
+    assert dummy4.position == (130, 100)
+    assert dummy5.position == (10, 0)
+
+
 def test_fit_content_by_default(window):
     subject = UIGridLayout(
         column_count=1,

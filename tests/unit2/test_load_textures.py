@@ -16,7 +16,7 @@ def test_load_textures(window):
 
     texture = arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")
     player.stand_right_textures = [texture]
-    player.stand_left_textures = [texture.flip_left_to_right()]
+    player.stand_left_textures = [texture.flip_left_right()]
 
     player.walk_right_textures = [
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png"),
@@ -28,7 +28,7 @@ def test_load_textures(window):
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png"),
         arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png")
     ]
-    player.walk_left_textures = [tex.flip_left_to_right() for tex in player.walk_right_textures]
+    player.walk_left_textures = [tex.flip_left_right() for tex in player.walk_right_textures]
 
     player.texture_change_distance = 20
 

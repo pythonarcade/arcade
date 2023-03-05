@@ -60,7 +60,7 @@ def load_texture_pair(filename):
     """
     texture = arcade.load_texture(filename)
     return [
-        texture, texture.flip_left_to_right()
+        texture, texture.flip_left_right()
     ]
 
 

@@ -905,26 +905,32 @@ class SpriteList(Generic[SpriteType]):
         )
 
         if self._sprite_pos_changed and self._sprite_pos_buf:
+            self._sprite_pos_buf.orphan()
             self._sprite_pos_buf.write(self._sprite_pos_data)
             self._sprite_pos_changed = False
 
         if self._sprite_size_changed and self._sprite_size_buf:
+            self._sprite_size_buf.orphan()
             self._sprite_size_buf.write(self._sprite_size_data)
             self._sprite_size_changed = False
 
         if self._sprite_angle_changed and self._sprite_angle_buf:
+            self._sprite_angle_buf.orphan()
             self._sprite_angle_buf.write(self._sprite_angle_data)
             self._sprite_angle_changed = False
 
         if self._sprite_color_changed and self._sprite_color_buf:
+            self._sprite_color_buf.orphan()
             self._sprite_color_buf.write(self._sprite_color_data)
             self._sprite_color_changed = False
 
         if self._sprite_texture_changed and self._sprite_texture_buf:
+            self._sprite_texture_buf.orphan()
             self._sprite_texture_buf.write(self._sprite_texture_data)
             self._sprite_texture_changed = False
 
         if self._sprite_index_changed and self._sprite_index_buf:
+            self._sprite_index_buf.orphan()
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
