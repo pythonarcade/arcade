@@ -270,6 +270,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
+    buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
@@ -315,6 +316,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
+    buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
@@ -354,6 +356,9 @@ def _generic_draw_line_strip(point_list: PointList,
     while len(vertices) * 4 > ctx.generic_draw_line_strip_vbo.size:
         ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo.size * 2)
         ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color.size * 2)
+    else:
+        ctx.generic_draw_line_strip_vbo.orphan()
+        ctx.generic_draw_line_strip_color.orphan()
 
     ctx.generic_draw_line_strip_vbo.write(vertices)
     ctx.generic_draw_line_strip_color.write(a)
@@ -413,6 +418,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
     program['line_width'] = line_width
     program['color'] = color_normalized
+    ctx.shape_line_buffer_pos.orphan()  # Allocate new buffer internally
     ctx.shape_line_buffer_pos.write(
         data=array.array('f', (start_x, start_y, end_x, end_y)))
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
@@ -447,6 +453,8 @@ def draw_lines(point_list: PointList,
 
     while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
+    else:
+        ctx.shape_line_buffer_pos.orphan()
 
     program['line_width'] = line_width
     program['color'] = color_normalized
@@ -769,6 +777,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
     program['color'] = color_normalized
     program['shape'] = width, height, tilt_angle
+    buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
