@@ -83,6 +83,9 @@ class Transform:
             uvs[order[3] * 2 + 1],
         )
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}>"
+
 
 class Rotate90Transform(Transform):
     """
@@ -147,7 +150,7 @@ class FlipLeftToRightTransform(Transform):
         VertexOrder.LOWER_RIGHT.value,
         VertexOrder.LOWER_LEFT.value, 
     )
-
+ 
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
