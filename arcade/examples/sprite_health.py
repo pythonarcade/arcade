@@ -116,7 +116,7 @@ class IndicatorBar:
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._bar_width + border_size,
             self._bar_height + border_size,
-            color=colrbackground_color,
+            color=background_color,
         )
         self._full_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
             self._bar_width,
