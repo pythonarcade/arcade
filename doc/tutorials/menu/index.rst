@@ -22,7 +22,7 @@ For this section we will switch the current view of the window to the menu view.
 
 
 Imports
--------
+~~~~~~~
 
 First we will import the arcade gui:
 
@@ -32,7 +32,7 @@ First we will import the arcade gui:
     :emphasize-lines: 2
 
 Modify the MainView
--------------------
+~~~~~~~~~~~~~~~~~~~~
 
 We are going to add a button to change the view. For drawing a button we would need a UIManager.
 
@@ -46,7 +46,7 @@ After initialising the manager we need to enable it when the view is shown and d
 .. literalinclude:: menu_02.py
     :caption: Enabling the Manager
     :pyobject: MainView.on_show_view
-    :emphasize-lines: 3-4
+    :emphasize-lines: 5-6
 
 .. literalinclude:: menu_02.py
     :caption: Disabling the Manager
@@ -63,10 +63,10 @@ Now we have successfully setup the manager, only thing left it to add the button
 
   .. literalinclude:: menu_02.py
     :caption: Initialising the Button
-    :lines: 20-35
+    :lines: 20-36
 
 Initialise the Menu View
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 We make a boiler plate view just like we did in Step-1.
 
@@ -87,22 +87,22 @@ Step 3: Setting Up the Menu View
 In this step we will setup the display buttons of the actual menu.
 
 Initialising the Buttons
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 First we setup buttons for resume, starting a new game, volume, options and exit.
 
 .. literalinclude:: menu_03.py
     :caption: Initialising the Buttons
-    :lines: 63-68
+    :lines: 64-69
 
 Displaying the Buttons in a Grid
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After setting up the buttons we add them to `UIGridLayout`, so that they can displayed in a grid like manner.
 
 .. literalinclude:: menu_03.py
     :caption: Setting up the Grid
-    :lines: 70-86
+    :lines: 71-87
 
 Final code for the `__init__` method after these.
 
@@ -111,7 +111,7 @@ Final code for the `__init__` method after these.
     :pyobject: MenuView.__init__
 
 Program Listings
-----------------
+~~~~~~~~~~~~~~~~
 
 * :ref:`menu_03` |larr| Where we are right now
 * :ref:`menu_03_diff` |larr| What we changed to get here
@@ -122,11 +122,17 @@ Step 4: Configuring the Menu Buttons
 
 We basically add event listener for `on_click` for buttons.
 
+Adding `on_click` Callback for Resume, Start New Game and Exit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 First we will add the event listener to resume, start_new_game and exit button as they don't have much to explain.
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 1
     :lines: 91-104
+
+Adding `on_click` Callback for Volume and Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now we need to implement an actual menu for volume and options, for that we have to make a class that acts like a window. Using `UIMouseFilterMixin` we catch all the events happening for the parent and respond nothing to them. Thus making it act like a window/view.
 
@@ -134,7 +140,7 @@ Now we need to implement an actual menu for volume and options, for that we have
     :caption: Making a Fake Window.
     :pyobject: SubMenu
 
-We have got ourselves a fake window currently. We could pair it up with the volume and options button to trigger it when they are clicked.
+We have got ourselves a fake window currently. We now, pair it up with the volume and options button to trigger it when they are clicked.
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 2
