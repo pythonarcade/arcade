@@ -680,12 +680,10 @@ class UIGridLayout(UILayout):
             for col_num, child in enumerate(row):
 
                 constant_height = max_height_per_row[row_num][col_num][0]
-                row_span = max_height_per_row[row_num][col_num][1] or 1
                 height_expand_ratio = expandable_height_ratio[col_num]
                 available_height = constant_height + total_available_height * height_expand_ratio
 
                 constant_width = max_width_per_column[col_num][row_num][0]
-                col_span = max_width_per_column[col_num][row_num][1] or 1
                 width_expand_ratio = expandable_width_ratio[row_num]
                 available_width = constant_width + total_available_width * width_expand_ratio
 
@@ -708,8 +706,8 @@ class UIGridLayout(UILayout):
 
                     new_rect = new_rect.resize(width=new_width, height=new_height)
 
-                    cell_height = constant_height + self._vertical_spacing * row_span
-                    cell_width = constant_width + self._horizontal_spacing * col_span
+                    cell_height = constant_height + self._vertical_spacing
+                    cell_width = constant_width + self._horizontal_spacing
 
                     center_y = start_y - (cell_height / 2)
                     center_x = start_x + (cell_width / 2)
@@ -733,6 +731,7 @@ class UIGridLayout(UILayout):
                     child.rect = new_rect
 
                     # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
+                    row_span = max_height_per_row[row_num][col_num][1] or 1
                     actual_row_height = cell_height / row_span
                     if actual_row_height > max_height_row:
                         max_height_row = actual_row_height

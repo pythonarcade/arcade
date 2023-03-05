@@ -152,7 +152,7 @@ def test_place_widgets_with_col_row_span_and_spacing(window):
     assert dummy2.position == (10, 100)
     assert dummy3.position == (130, 200)
     assert dummy4.position == (130, 100)
-    assert dummy5.position == (20, 0)
+    assert dummy5.position == (10, 0)
 
 
 def test_fit_content_by_default(window):
