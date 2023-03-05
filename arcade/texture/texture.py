@@ -502,7 +502,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(FlipLeftToRightTransform)
+        return self.transform(FlipLeftToRightTransform)
 
     def flip_top_to_bottom(self) -> "Texture":
         """
@@ -514,7 +514,7 @@ class Texture:
 
         :return: Texture
         """
-        return self._new_texture_transformed(FlipTopToBottomTransform)
+        return self.transform(FlipTopToBottomTransform)
 
     def flip_horizontally(self) -> "Texture":
         """
@@ -564,7 +564,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransposeTransform, swap_dims=True)
+        return self.transform(TransposeTransform, swap_dims=True)
 
     def transverse(self) -> "Texture":
         """
@@ -577,7 +577,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(TransverseTransform, swap_dims=True)
+        return self.transform(TransverseTransform, swap_dims=True)
 
     def rotate_90(self, count: int = 1) -> "Texture":
         """
@@ -595,7 +595,7 @@ class Texture:
         transform = angles[count]
         if transform is None:
             return self
-        return self._new_texture_transformed(transform, swap_dims=True)
+        return self.transform(transform, swap_dims=True)
 
     def rotate_180(self) -> "Texture":
         """
@@ -607,7 +607,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate180Transform)
+        return self.transform(Rotate180Transform)
 
     def rotate_270(self) -> "Texture":
         """
@@ -619,7 +619,7 @@ class Texture:
 
         :return: Texture 
         """
-        return self._new_texture_transformed(Rotate270Transform, swap_dims=True)
+        return self.transform(Rotate270Transform, swap_dims=True)
 
     @staticmethod
     def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
@@ -678,7 +678,7 @@ class Texture:
         texture.crop_values = (x, y, width, height)
         return texture
 
-    def _new_texture_transformed(
+    def transform(
         self,
         transform: Type[Transform],
         swap_dims: bool = False,
