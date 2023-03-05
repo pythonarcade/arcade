@@ -17,7 +17,7 @@ class PerformanceWarning(Warning):
     pass
 
 
-def warning(message: str, warning_type: Warning):
+def warning(message: str, warning_type: Warning | PerformanceWarning):
     def actual_warning_decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
