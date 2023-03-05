@@ -1,7 +1,20 @@
+import random
 from PIL import Image
 import arcade
+from arcade.texture import transforms
 
 TEST_TEXTURE_PATH = ":resources:images/test_textures/xy_square.png"
+UNIQUE_TRANSFORMS = set()
+TRANSFORMS = [
+    transforms.Rotate90Transform,
+    transforms.Rotate180Transform,
+    transforms.Rotate270Transform,
+    transforms.FlipLeftToRightTransform,
+    transforms.FlipTopToBottomTransform,
+    transforms.TransposeTransform,
+    transforms.TransverseTransform,
+]
+
 
 class App(arcade.Window):
 
@@ -84,15 +97,18 @@ class App(arcade.Window):
         for sprite in self.spritelist:
             # sprite.texture = sprite.texture.flip_left_to_right()
             # sprite.texture = sprite.texture.flip_top_to_bottom()
-            # sprite.texture = sprite.texture.transverse()
-            # sprite.texture = sprite.texture.rotate_90().transverse()
+            sprite.texture = sprite.texture.transform(random.choice(TRANSFORMS))
             # sprite.texture = sprite.texture.rotate_90()
+            # sprite.texture = sprite.texture.rotate_90().transverse()
             # sprite.angle += 90
             # sprite.texture = sprite.texture.rotate_180()
             # sprite.texture = sprite.texture.rotate_180()
-            sprite.texture = sprite.texture.rotate_270()
+            # sprite.texture = sprite.texture.rotate_270()
             sprite._hit_box_points = None
             print("size", (sprite.width, sprite.height), "order", sprite.texture._vertex_order)
+            print("orientation", transforms.ORIENTATIONS.get(sprite.texture._vertex_order, None))
+            UNIQUE_TRANSFORMS.add(sprite.texture._vertex_order)
 
 
 App().run()
+print(UNIQUE_TRANSFORMS)
