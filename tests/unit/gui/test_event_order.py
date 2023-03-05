@@ -79,7 +79,7 @@ def test_event_consumed_by_widget(window):
 
             @button.event("on_click")
             def record_widget(event):
-                events.append(f"UIFlatButton.on_click")
+                events.append("UIFlatButton.on_click")
 
             @self.mng.event("on_event")
             def record_mng(event):
@@ -99,11 +99,11 @@ def test_event_consumed_by_widget(window):
 
     @window.event("on_mouse_press")
     def record_window(*_):
-        events.append(f"Window.on_mouse_press")
+        events.append("Window.on_mouse_press")
 
     @window.event("on_mouse_release")
     def record_window(*_):
-        events.append(f"Window.on_mouse_release")
+        events.append("Window.on_mouse_release")
 
     view = MyView()
     window.show_view(view)
