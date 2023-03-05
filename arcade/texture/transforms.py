@@ -188,7 +188,9 @@ class TransposeTransform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple((point[1], point[0]) for point in points)
+        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = Rotate270Transform.transform_hit_box_points(points)
+        return points
 
 
 class TransverseTransform(Transform):
@@ -206,7 +208,9 @@ class TransverseTransform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple((-point[1], -point[0]) for point in points)
+        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = Rotate90Transform.transform_hit_box_points(points)
+        return points
 
 
 # Pre-calculated orientations. This can be calculated at runtime,
