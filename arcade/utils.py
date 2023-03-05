@@ -16,6 +16,7 @@ class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
     pass
 
+
 def warning(message: str, warning_type: Warning):
     def actual_warning_decorator(func):
         @functools.wraps(func)
@@ -24,6 +25,7 @@ def warning(message: str, warning_type: Warning):
             return func(*args, **kwargs)
         return wrapper
     return actual_warning_decorator
+
 
 def generate_uuid_from_kwargs(**kwargs) -> str:
     """
