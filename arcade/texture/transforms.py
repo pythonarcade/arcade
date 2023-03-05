@@ -137,7 +137,7 @@ class Rotate270Transform(Transform):
         return tuple(rotate_point(point[0], point[1], 0, 0, -270) for point in points)
 
 
-class FlipLeftToRightTransform(Transform):
+class FlipLeftRightTransform(Transform):
     """
     Flip texture horizontally / left to right.
     """
@@ -155,7 +155,7 @@ class FlipLeftToRightTransform(Transform):
         return tuple((-point[0], point[1]) for point in points)
 
 
-class FlipTopToBottomTransform(Transform):
+class FlipTopBottomTransform(Transform):
     """
     Flip texture vertically / top to bottom.
     """
@@ -188,7 +188,7 @@ class TransposeTransform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate270Transform.transform_hit_box_points(points)
         return points
 
@@ -208,7 +208,7 @@ class TransverseTransform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        points = FlipLeftToRightTransform.transform_hit_box_points(points)
+        points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate90Transform.transform_hit_box_points(points)
         return points
 

@@ -7,8 +7,8 @@ TRANSFORMS = [
     transforms.Rotate90Transform,
     transforms.Rotate180Transform,
     transforms.Rotate270Transform,
-    transforms.FlipLeftToRightTransform,
-    transforms.FlipTopToBottomTransform,
+    transforms.FlipLeftRightTransform,
+    transforms.FlipTopBottomTransform,
     transforms.TransposeTransform,
     transforms.TransverseTransform,
 ]

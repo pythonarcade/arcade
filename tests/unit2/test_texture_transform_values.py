@@ -2,8 +2,8 @@ from arcade.texture.transforms import (
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
-    FlipLeftToRightTransform,
-    FlipTopToBottomTransform,
+    FlipLeftRightTransform,
+    FlipTopBottomTransform,
     TransposeTransform,
     TransverseTransform,
     VertexOrder,
@@ -59,32 +59,32 @@ def test_rotate270_transform():
     assert result == (1, 3, 0, 2)
 
 
-def test_flip_left_to_right_transform():
+def test_flip_left_right_transform():
     # Flip left to right
-    result = FlipLeftToRightTransform.transform_hit_box_points(HIT_BOX_POINTS)
+    result = FlipLeftRightTransform.transform_hit_box_points(HIT_BOX_POINTS)
     assert result == ((64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0))
     # Flip back
-    result = FlipLeftToRightTransform.transform_hit_box_points(result)
+    result = FlipLeftRightTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
 
     # Test vertex order
-    result = FlipLeftToRightTransform.transform_vertex_order(ORDER)
+    result = FlipLeftRightTransform.transform_vertex_order(ORDER)
     assert result == (1, 0, 3, 2)
-    result = FlipLeftToRightTransform.transform_vertex_order(result)
+    result = FlipLeftRightTransform.transform_vertex_order(result)
     assert result == ORDER
 
 
-def test_flip_top_to_bottom_transform():
+def test_flip_top_bottom_transform():
     # Flip top to bottom
-    result = FlipTopToBottomTransform.transform_hit_box_points(HIT_BOX_POINTS)
+    result = FlipTopBottomTransform.transform_hit_box_points(HIT_BOX_POINTS)
     assert result == ((-64.0, 64.0), (64.0, 64.0), (64.0, -64.0), (-64.0, -64.0))
     # Flip back
-    result = FlipTopToBottomTransform.transform_hit_box_points(result)
+    result = FlipTopBottomTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
 
-    result = FlipTopToBottomTransform.transform_vertex_order(ORDER)
+    result = FlipTopBottomTransform.transform_vertex_order(ORDER)
     assert result == (2, 3, 0, 1)
-    result = FlipTopToBottomTransform.transform_vertex_order(result)
+    result = FlipTopBottomTransform.transform_vertex_order(result)
     assert result == ORDER
 
 
