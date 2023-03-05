@@ -4,7 +4,7 @@ from arcade.gui.events import UIMouseScrollEvent, UIMouseMovementEvent, UIKeyPre
     UITextMotionSelectEvent
 from arcade.gui.widgets import UIDummy
 from arcade.key import MOTION_UP
-from tests.test_gui import record_ui_events
+from . import record_ui_events
 
 
 def test_on_mouse_press_passes_an_event(uimanager):

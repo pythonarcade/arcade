@@ -2,7 +2,7 @@ import gc
 from typing import List
 
 from arcade.gui.property import bind, ListProperty, _ObservableList
-from tests.test_gui.test_property import Observer
+from .test_property import Observer
 
 
 class MyListHolder:

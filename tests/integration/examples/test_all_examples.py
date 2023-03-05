@@ -11,7 +11,7 @@ import subprocess
 
 import pytest
 
-EXAMPLE_SUBDIR = "../../arcade/examples"
+EXAMPLE_SUBDIR = "../../../arcade/examples"
 # These examples are allowed to print to stdout
 ALLOW_STDOUT = set([
     "arcade.examples.dual_stick_shooter",

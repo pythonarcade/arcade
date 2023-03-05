@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from arcade.gui.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
 from arcade.gui.widgets import UIDummy
-from tests.test_gui import record_ui_events
+from . import record_ui_events
 
 
 def test_hover_on_widget(uimanager):
