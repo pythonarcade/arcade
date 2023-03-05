@@ -172,7 +172,7 @@ def load_texture_pair(
     """
     LOG.info("load_texture_pair: %s ", file_name)
     texture = load_texture(file_name, hit_box_algorithm=hit_box_algorithm)
-    return texture, texture.flip_left_to_right()
+    return texture, texture.flip_left_right()
 
 
 def load_textures(
@@ -238,9 +238,9 @@ def load_textures(
             _cache.texture_cache.put(sub_texture)
 
         if mirrored:
-            sub_texture = sub_texture.flip_left_to_right()
+            sub_texture = sub_texture.flip_left_right()
         if flipped:
-            sub_texture = sub_texture.flip_top_to_bottom()
+            sub_texture = sub_texture.flip_top_bottom()
 
         sub_texture.file_path = file_name
         sub_texture.crop_values = x, y, width, height

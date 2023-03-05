@@ -10,8 +10,8 @@ import PIL.ImageDraw
 from arcade.types import Color
 from arcade.texture.transforms import (
     Transform,
-    FlipLeftToRightTransform,
-    FlipTopToBottomTransform,
+    FlipLeftRightTransform,
+    FlipTopBottomTransform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
@@ -493,7 +493,7 @@ class Texture:
         """
         _cache.texture_cache.delete(self)
 
-    def flip_left_to_right(self) -> "Texture":
+    def flip_left_right(self) -> "Texture":
         """
         Flip the texture left to right / horizontally.
 
@@ -503,9 +503,9 @@ class Texture:
 
         :return: Texture 
         """
-        return self.transform(FlipLeftToRightTransform)
+        return self.transform(FlipLeftRightTransform)
 
-    def flip_top_to_bottom(self) -> "Texture":
+    def flip_top_bottom(self) -> "Texture":
         """
         Flip the texture top to bottom / vertically.
 
@@ -515,7 +515,7 @@ class Texture:
 
         :return: Texture
         """
-        return self.transform(FlipTopToBottomTransform)
+        return self.transform(FlipTopBottomTransform)
 
     def flip_horizontally(self) -> "Texture":
         """
@@ -527,7 +527,7 @@ class Texture:
 
         :return: Texture
         """
-        return self.flip_left_to_right()
+        return self.flip_left_right()
 
     def flip_vertically(self) -> "Texture":
         """
@@ -539,7 +539,7 @@ class Texture:
 
         :return: Texture
         """
-        return self.flip_top_to_bottom()
+        return self.flip_top_bottom()
 
     def flip_diagonally(self) -> "Texture":
         """

@@ -9,8 +9,8 @@ from arcade.texture.transforms import (
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
-    FlipLeftToRightTransform,
-    FlipTopToBottomTransform,
+    FlipLeftRightTransform,
+    FlipTopBottomTransform,
     TransposeTransform,
     TransverseTransform,
 )
@@ -19,8 +19,8 @@ TRANSFORMS = [
     (Rotate90Transform, Image.Transpose.ROTATE_270, 1),
     (Rotate180Transform, Image.Transpose.ROTATE_180, 2),
     (Rotate270Transform, Image.Transpose.ROTATE_90, 3),
-    (FlipLeftToRightTransform, Image.FLIP_LEFT_RIGHT, 4),
-    (FlipTopToBottomTransform, Image.FLIP_TOP_BOTTOM, 5),
+    (FlipLeftRightTransform, Image.FLIP_LEFT_RIGHT, 4),
+    (FlipTopBottomTransform, Image.FLIP_TOP_BOTTOM, 5),
     (TransposeTransform, Image.TRANSPOSE, 6),
     (TransverseTransform, Image.TRANSVERSE, 7)
 ]
