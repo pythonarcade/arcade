@@ -131,7 +131,7 @@ def test_place_widgets_with_col_row_span_and_spacing(window):
     dummy2 = UIDummy(width=100, height=100)
     dummy3 = UIDummy(width=100, height=100)
     dummy4 = UIDummy(width=100, height=100)
-    dummy5 = UIDummy(width=200, height=100)
+    dummy5 = UIDummy(width=220, height=100)
 
     subject = UIGridLayout(
         column_count=2,
