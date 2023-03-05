@@ -16,9 +16,9 @@ from arcade.texture.transforms import (
 )
 # Arcade transform, PIL transform
 TRANSFORMS = [
-    (Rotate90Transform, Image.Transpose.ROTATE_90, 1),
+    (Rotate90Transform, Image.Transpose.ROTATE_270, 1),
     (Rotate180Transform, Image.Transpose.ROTATE_180, 2),
-    (Rotate270Transform, Image.Transpose.ROTATE_270, 3),
+    (Rotate270Transform, Image.Transpose.ROTATE_90, 3),
     (FlipLeftToRightTransform, Image.FLIP_LEFT_RIGHT, 4),
     (FlipTopToBottomTransform, Image.FLIP_TOP_BOTTOM, 5),
     (TransposeTransform, Image.TRANSPOSE, 6),

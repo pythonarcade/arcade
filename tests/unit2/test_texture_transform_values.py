@@ -36,7 +36,7 @@ def test_rotate90_transform():
 
     # Test vertex order
     result = Rotate90Transform.transform_vertex_order(ORDER)
-    assert result == (1, 3, 0, 2)
+    assert result == (2, 0, 3, 1)
     result = Rotate90Transform.transform_vertex_order(result)
     result = Rotate90Transform.transform_vertex_order(result)
     result = Rotate90Transform.transform_vertex_order(result)
@@ -56,7 +56,7 @@ def test_rotate270_transform():
     assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
 
     result = Rotate270Transform.transform_vertex_order(ORDER)
-    assert result == (2, 0, 3, 1)
+    assert result == (1, 3, 0, 2)
 
 
 def test_flip_left_to_right_transform():
