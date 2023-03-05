@@ -83,9 +83,6 @@ class Transform:
             uvs[order[3] * 2 + 1],
         )
 
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}>"
-
 
 class Rotate90Transform(Transform):
     """

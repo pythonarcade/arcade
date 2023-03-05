@@ -632,25 +632,24 @@ class Texture:
         :param Transform transform: Transform to apply
         :return: New texture
         """
-        points = transform.transform_hit_box_points(self._hit_box_points)
+        new_points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
             self.image_data,
-            # Not relevant, but copy over the value
             hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_points=points,
+            hit_box_points=new_points,
             hash=self._hash,
         )
+        texture.width = self.width
+        texture.height = self.height
         texture._vertex_order = transform.transform_vertex_order(self._vertex_order)
         texture.file_path = self.file_path
         texture.crop_values = self.crop_values
 
-        # Swap width and height if the orientation changes by 90 degrees
+        # Swap width and height of the texture if needed
         old_rotation = ORIENTATIONS[self._vertex_order][0]
         new_rotation = ORIENTATIONS[texture._vertex_order][0]
-        print("rotation", old_rotation, new_rotation)
-        old_swapped = old_rotation % 180 != 0
-        new_swapped = new_rotation % 180 != 0
-        print("swapped", old_swapped, new_swapped)
+        old_swapped = abs(old_rotation) % 180 != 0
+        new_swapped = abs(new_rotation) % 180 != 0
         if old_swapped != new_swapped:
             texture.width, texture.height = self.height, self.width
 
