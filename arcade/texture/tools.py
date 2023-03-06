@@ -4,6 +4,7 @@ from .texture import ImageData, Texture
 from arcade.types import Point
 from arcade import cache
 
+_DEFAULT_TEXTURE = None
 _DEFAULT_IMAGE_SIZE = (128, 128)
 
 
@@ -23,15 +24,15 @@ def get_default_texture(size: Point = _DEFAULT_IMAGE_SIZE) -> Texture:
     :param size: Size of the texture to create
     :return: The default texture.
     """
-    name = f"arcade-default-texture|{size}"
-    algo = arcade.hitbox.algo_bounding_box
-    texture = cache.texture_cache.get_with_config(name, algo)
-    if texture:
-        return texture
+    global _DEFAULT_TEXTURE
+    if _DEFAULT_TEXTURE:
+        return _DEFAULT_TEXTURE
 
-    texture = Texture(get_default_image(size), hit_box_algorithm=algo)
-    cache.texture_cache.put(texture)
-    return texture
+    _DEFAULT_TEXTURE = Texture(
+        get_default_image(size),
+        hit_box_algorithm=arcade.hitbox.algo_bounding_box,
+    )
+    return _DEFAULT_TEXTURE
 
 
 def get_default_image(size: Point = _DEFAULT_IMAGE_SIZE) -> ImageData:
