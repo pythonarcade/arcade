@@ -148,8 +148,8 @@ First we will add the event listener to resume, start_new_game and exit button a
     :caption: Adding callback for button events 1
     :lines: 91-104
 
-Adding ``on_click` Callback for Volume and Options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Adding ``on_click`` Callback for Volume and Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now we need to implement an actual menu for volume and options, for that we have to make a class that acts like a window. Using ``UIMouseFilterMixin`` we catch all the events happening for the parent and respond nothing to them. Thus making it act like a window/view.
 
