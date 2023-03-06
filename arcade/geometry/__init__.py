@@ -18,7 +18,6 @@ use_shapely = False
 #     use_shapely = True
 # except ImportError:
 #     use_shapely = False
-
 if use_shapely:
     from .geometry_shapely import (
         are_polygons_intersecting,

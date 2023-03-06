@@ -1,12 +1,10 @@
 """
 Classic A-star algorithm for path finding.
 """
-import sys
 from arcade.types import Point
 from arcade import check_for_collision_with_list, SpriteList, Sprite
 from typing import Union, List, Tuple, Set, Optional
 
-use_shapely = False
 try:
     import shapely  # noqa: F401
     use_shapely = True
