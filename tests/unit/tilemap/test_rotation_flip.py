@@ -14,7 +14,7 @@ def _transform(*transforms):
 def test_rotation_mirror(window, fixtures):
     # Read in the tiled map
     print(fixtures)
-    my_map = arcade.load_tilemap(fixtures.path("rotation.json"))
+    my_map = arcade.load_tilemap(fixtures.path("tilemaps/rotation.json"))
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
