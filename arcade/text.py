@@ -10,6 +10,7 @@ import arcade
 from arcade.types import Color, Point
 from arcade.draw_commands import get_four_byte_color
 from arcade.resources import resolve_resource_path
+from arcade.utils import PerformanceWarning, warning
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -661,6 +662,10 @@ def create_text_sprite(
     )
 
 
+@warning(
+    message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
+    warning_type=PerformanceWarning,
+    )
 def draw_text(
     text: Any,
     start_x: float,
