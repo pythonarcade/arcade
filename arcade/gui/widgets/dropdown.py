@@ -125,6 +125,12 @@ class UIDropdown(UILayout):
 
     def _on_button_click(self, event: UIOnClickEvent):
         self._layout.visible = not self._layout.visible
+        if self.parent:
+            print(self.parent)
+            self.parent._update_size_hints()
+            self.parent.do_layout()
+            self.parent.trigger_render()
+
 
     def _on_option_click(self, event: UIOnClickEvent):
         source: UIFlatButton = event.source

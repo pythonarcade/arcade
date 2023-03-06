@@ -157,6 +157,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         # The event listener we used earlier for the button will not work here.
         back_button.on_click = self.on_click_back_button
 
+        # Internal widget layout to handle widgets in this class.
         widget_layout = arcade.gui.UIBoxLayout(align="left")
         widget_layout.add(back_button)
 

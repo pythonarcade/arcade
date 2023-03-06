@@ -176,8 +176,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         )
         space_30 = arcade.gui.UISpace(height=30, color=arcade.color.DARK_BLUE_GRAY)
 
-        # The default option is already added in the options list, thats why here we slice.
-        dropdown = arcade.gui.UIDropdown(default=dropdown_options[0], options=dropdown_options[1:], height=20, width=250)
+        dropdown = arcade.gui.UIDropdown(default=dropdown_options[0], options=dropdown_options, height=20, width=250)
         space_80 = arcade.gui.UISpace(height=80, color=arcade.color.DARK_BLUE_GRAY)
 
         slider_label = arcade.gui.UILabel(text=slider_label)
@@ -188,6 +187,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         slider = arcade.gui.UISlider(value=50, width=250, style=style_dict)
         space_70 = arcade.gui.UISpace(height=70, color=arcade.color.DARK_BLUE_GRAY)
 
+        # Internal widget layout to handle widgets in this class.
         widget_layout = arcade.gui.UIBoxLayout(align="left")
         widget_layout.add(input_text)
         widget_layout.add(space_20)

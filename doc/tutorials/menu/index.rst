@@ -70,7 +70,7 @@ We also need to draw the childrens of the menu in `on_draw`.
     :pyobject: MainView.on_draw
     :emphasize-lines: 6-7
 
-Now we have successfully setup the manager, only thing left it to add the button. We are using `UIAnchorLayout` to position the button.
+Now we have successfully setup the manager, only thing left it to add the button. We are using `UIAnchorLayout` to position the button. We also setup a function which is called when the button is clicked.
 
   .. literalinclude:: menu_02.py
     :caption: Initialising the Button
@@ -79,7 +79,7 @@ Now we have successfully setup the manager, only thing left it to add the button
 Initialise the Menu View
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-We make a boiler plate view just like we did in Step-1.
+We make a boiler plate view just like we did in Step-1 for switiching the view when the pause button is clicked.
 
 .. literalinclude:: menu_02.py
     :caption: Initialise the Menu View
@@ -98,7 +98,7 @@ Step 3: Setting Up the Menu View
 .. image:: menu_03.png
     :width: 50%
 
-In this step we will setup the display buttons of the actual menu.
+In this step we will setup the display buttons of the actual menu. The code written in this section is written for `MenuView`
 
 Initialising the Buttons
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -232,11 +232,11 @@ Adding it to the widget layout.
 Adding a Dropdowm
 ~~~~~~~~~~~~~~~~~
 
-We add a dropdowm by using `UIDropdown`
+We add a dropdowm by using `UIDropdown`.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
-    :lines: 179-181
+    :lines: 180-182
 
 Adding it to the widget layout.
 
@@ -247,13 +247,13 @@ Adding it to the widget layout.
 Adding a Slider
 ~~~~~~~~~~~~~~~
 
-The final widget. In arcade you can use `UISlider` to implement a slider. Theres a functionality to style the slider, this is also present for `UIFlatButton` and `UITextureButton`
+The final widget. In arcade you can use `UISlider` to implement a slider. Theres a functionality to style the slider, this is also present for `UIFlatButton` and `UITextureButton`.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
     :lines: 183-189
 
-Adding it to the widget layout
+Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider to the layout
