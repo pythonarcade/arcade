@@ -1,3 +1,4 @@
+import gc
 from arcade.gl import geometry
 
 COMPUTE_SHADER_SOURCE = """
@@ -54,9 +55,11 @@ void main() {
 """
 
 
-def test_contex_gc(ctx):
+def test_context_gc(ctx):
     ctx.gc_mode = "context_gc"
+    gc.collect()
     create_resources(ctx)
+    gc.collect()
 
 
 def test_auto_gc(ctx):
