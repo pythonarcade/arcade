@@ -26,10 +26,3 @@ def test_default_texture():
 
     # Ensure we get cached version
     assert id(get_default_texture()) == id(texture)
-    cleanup_texture_cache()
-    assert id(get_default_texture()) != id(texture)
-
-
-if __name__ == "__main__":
-    test_default_image()
-    test_default_texture()

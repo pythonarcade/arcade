@@ -279,7 +279,6 @@ class Sprite(BasicSprite, PymunkMixin):
         """Set the velocity in the y plane of the sprite."""
         self._velocity = self._velocity[0], new_value
 
-
     @property
     def hit_box(self) -> PointList:
         return self.get_hit_box()
@@ -287,6 +286,31 @@ class Sprite(BasicSprite, PymunkMixin):
     @hit_box.setter
     def hit_box(self, points: PointList):
         self.set_hit_box(points)
+
+    @property
+    def texture(self) -> Texture:
+        """Get or set the texture for this sprite"""
+        return self._texture
+
+    @texture.setter
+    def texture(self, texture: Texture):
+        if texture == self._texture:
+            return
+
+        if __debug__ and not isinstance(texture, Texture):
+            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
+                            f" but is an instance of '{type(texture)}'.")
+
+        # If sprite is using default texture, update the hit box
+        if self._texture is get_default_texture():
+            self.hit_box = texture.hit_box_points
+
+        self._texture = texture
+        self._width = texture.width * self._scale[0]
+        self._height = texture.height * self._scale[1]
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_texture(self)
 
     @property
     def properties(self) -> Dict[str, Any]:

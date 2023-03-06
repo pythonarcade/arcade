@@ -340,15 +340,11 @@ class BasicSprite:
 
     @property
     def texture(self) -> Texture:
-        # TODO: Remove this when we require a texture
-        if not self._texture:
-            raise ValueError("Sprite has not texture")
         return self._texture
 
     @texture.setter
     def texture(self, texture: Texture):
-        """Sets texture by texture id. Should be renamed but keeping
-        this for backwards compatibility."""
+        """Set the texture for this sprite"""
         if texture == self._texture:
             return
 
