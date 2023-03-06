@@ -183,7 +183,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         slider_label = arcade.gui.UILabel(text=slider_label)
         pressed_style = arcade.gui.UISlider.UIStyle(filled_bar=arcade.color.GREEN, unfilled_bar=arcade.color.RED)
         default_style = arcade.gui.UISlider.UIStyle()
-        style_dict = {"press": pressed_style, "normal": default_style, "hovered": default_style, "disabled": default_style}
+        style_dict = {"press": pressed_style, "normal": default_style, "hover": default_style, "disabled": default_style}
         # Configuring the styles is optional.
         slider = arcade.gui.UISlider(value=50, width=250, style=style_dict)
         space_70 = arcade.gui.UISpace(height=70, color=arcade.color.DARK_BLUE_GRAY)
