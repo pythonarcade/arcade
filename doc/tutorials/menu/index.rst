@@ -140,7 +140,7 @@ Step 4: Configuring the Menu Buttons
 We basically add event listener for ``on_click`` for buttons.
 
 Adding ``on_click`` Callback for Resume, Start New Game and Exit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First we will add the event listener to resume, start_new_game and exit button as they don't have much to explain.
 
