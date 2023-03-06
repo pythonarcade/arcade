@@ -118,7 +118,10 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def left(self) -> float:
         """
-        Return the x coordinate of the left-side of the sprite's hit box.
+        The leftmost x coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the leftmost x coordinate in the hit box.
         """
         points = self.get_adjusted_hit_box()
 
@@ -132,7 +135,6 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @left.setter
     def left(self, amount: float):
-        """The left most x coordinate."""
         leftmost = self.left
         diff = amount - leftmost
         self.center_x += diff
@@ -140,7 +142,10 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def right(self) -> float:
         """
-        Return the x coordinate of the right-side of the sprite's hit box.
+        The rightmost x coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the rightmost x coordinate in the hit box.
         """
         points = self.get_adjusted_hit_box()
 
@@ -154,7 +159,6 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @right.setter
     def right(self, amount: float):
-        """The right most x coordinate."""
         rightmost = self.right
         diff = rightmost - amount
         self.center_x -= diff
@@ -162,7 +166,10 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def bottom(self) -> float:
         """
-        Return the y coordinate of the bottom of the sprite.
+        The lowest y coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the lowest y coordinate in the hit box.
         """
         points = self.get_adjusted_hit_box()
 
@@ -176,9 +183,6 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @bottom.setter
     def bottom(self, amount: float):
-        """
-        Set the location of the sprite based on the bottom y coordinate.
-        """
         lowest = self.bottom
         diff = lowest - amount
         self.center_y -= diff
@@ -186,33 +190,32 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def top(self) -> float:
         """
-        Return the y coordinate of the top of the sprite.
+        The highest y coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the highest y coordinate in the hit box.
         """
         points = self.get_adjusted_hit_box()
-
-        # This happens if our point list is empty, such as a completely
-        # transparent sprite.
-        # if len(points) == 0:
-        #     return self.center_y
-
         y_points = [point[1] for point in points]
         return max(y_points)
 
     @top.setter
     def top(self, amount: float):
-        """The highest y coordinate."""
         highest = self.top
         diff = highest - amount
         self.center_y -= diff
 
     @property
     def angle(self) -> float:
-        """Get the angle of the sprite's rotation."""
+        """
+        Get or set the rotation or the sprite.
+
+        The value is in degrees and is clockwise.
+        """
         return self._angle
 
     @angle.setter
     def angle(self, new_value: float):
-        """Set the angle of the sprite's rotation."""
         if new_value == self._angle:
             return
 
@@ -226,16 +229,14 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def radians(self) -> float:
         """
-        Converts the degrees representation of self.angle into radians.
-        :return: float
+        Get or set the rotation of the sprite in radians.
+
+        The value is in radians and is clockwise.
         """
         return self._angle / 180.0 * math.pi
 
     @radians.setter
     def radians(self, new_value: float):
-        """
-        Converts a radian value into degrees and stores it into angle.
-        """
         self.angle = new_value * 180.0 / math.pi
 
     @property
@@ -261,26 +262,27 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def change_x(self) -> float:
-        """Get the velocity in the x plane of the sprite."""
+        """Get or set the velocity in the x plane of the sprite."""
         return self.velocity[0]
 
     @change_x.setter
     def change_x(self, new_value: float):
-        """Set the velocity in the x plane of the sprite."""
         self._velocity = new_value, self._velocity[1]
 
     @property
     def change_y(self) -> float:
-        """Get the velocity in the y plane of the sprite."""
+        """Get or set the velocity in the y plane of the sprite."""
         return self.velocity[1]
 
     @change_y.setter
     def change_y(self, new_value: float):
-        """Set the velocity in the y plane of the sprite."""
         self._velocity = self._velocity[0], new_value
 
     @property
     def hit_box(self) -> PointList:
+        """
+        Get or set the hit box for this sprite.
+        """
         return self.get_hit_box()
 
     @hit_box.setter
@@ -289,7 +291,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def texture(self) -> Texture:
-        """Get or set the texture for this sprite"""
+        """Get or set the active texture for this sprite"""
         return self._texture
 
     @texture.setter
@@ -333,11 +335,11 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Set a sprite's hit box. Hit box should be relative to a sprite's center,
         and with a scale of 1.0.
-        Points will be scaled with get_adjusted_hit_box.
+
+        Points will be scaled and rotated with ``get_adjusted_hit_box``.
         """
         self._hit_box_points_cache = None
         self._hit_box_points = points
-        # self.update_spatial_hash()  This needed?
 
     def get_hit_box(self) -> PointList:
         """
@@ -366,8 +368,9 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def get_adjusted_hit_box(self) -> PointList:
         """
-        Get the points that make up the hit box for the rect that makes up the
-        sprite, including rotation and scaling.
+        Get the hit box adjusted for translation, rotation, and scale.
+
+        The result is cached internally for performance reasons.
         """
         # If we've already calculated the adjusted hit box, use the cached version
         if self._hit_box_points_cache is not None:
@@ -457,7 +460,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def stop(self) -> None:
         """
-        Stop the Sprite's motion.
+        Stop the Sprite's motion by setting the velocity and angle change to 0.
         """
         self.velocity = 0, 0
         self.change_angle = 0
@@ -498,7 +501,9 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def update(self) -> None:
         """
-        Update the sprite.
+        The default update method for a Sprite. Can be overridden by a subclass.
+
+        This method moves the sprite based on its velocity and angle change.
         """
         self.position = (
             self._position[0] + self.change_x,
@@ -530,9 +535,10 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def set_texture(self, texture_no: int) -> None:
         """
-        Sets texture by texture id. Should be renamed because it takes
-        a number rather than a texture, but keeping
-        this for backwards compatibility.
+        Set the current texture by texture number.
+        The number is the index into ``self.textures``.
+
+        :param int texture_no: Index into ``self.textures``
         """
         texture = self.textures[texture_no]
         self.texture = texture

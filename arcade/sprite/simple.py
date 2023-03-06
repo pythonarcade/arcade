@@ -1,5 +1,5 @@
-from .base import BasicSprite
+# from .base import BasicSprite
 
 
-class SimpleSprite(BasicSprite):
-    pass
+# class SimpleSprite(BasicSprite):
+#     pass

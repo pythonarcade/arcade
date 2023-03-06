@@ -16,7 +16,7 @@ from .enums import (
 @dataclasses.dataclass
 class AnimationKeyframe:
     """
-    Used in animated sprites.
+    Keyframe for texture animations.
     """
     tile_id: int
     duration: int
@@ -27,6 +27,11 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     Sprite for platformer games that supports animations. These can
     be automatically created by the Tiled Map Editor.
+
+    :param path_or_texture: Path to the image file, or a Texture object.
+    :param center_x: Initial x position of the sprite.
+    :param center_y: Initial y position of the sprite.
+    :param scale: Initial scale of the sprite.
     """
     def __init__(
         self,
@@ -48,7 +53,9 @@ class AnimatedTimeBasedSprite(Sprite):
 
     def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
-        Logic for selecting the proper texture to use.
+        Logic for updating the animation.
+
+        :param float delta_time: Time since last update.
         """
         self.time_counter += delta_time
         while self.time_counter > self.frames[self.cur_frame_idx].duration / 1000.0:
@@ -73,6 +80,10 @@ class AnimatedWalkingSprite(Sprite):
 
     For an example, see this section of the platformer tutorial:
     :ref:`platformer_part_twelve`.
+
+    :param scale: Initial scale of the sprite.
+    :param center_x: Initial x position of the sprite.
+    :param center_y: Initial y position of the sprite.
     """
     def __init__(
         self,
@@ -101,7 +112,9 @@ class AnimatedWalkingSprite(Sprite):
 
     def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
-        Logic for selecting the proper texture to use.
+        Logic for texture animation.
+
+        :param float delta_time: Time since last update.
         """
         x1 = self.center_x
         x2 = self.last_texture_change_center_x

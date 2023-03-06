@@ -53,7 +53,7 @@ class BasicSprite:
     @property
     def position(self) -> Point:
         """
-        Get the center x and y coordinates of the sprite.
+        Get or set the center x and y position of the sprite.
 
         Returns:
             (center_x, center_y)
@@ -62,11 +62,6 @@ class BasicSprite:
 
     @position.setter
     def position(self, new_value: Point):
-        """
-        Set the center x and y coordinates of the sprite.
-
-        :param Point new_value: New position.
-        """
         if new_value == self._position:
             return
 
@@ -78,12 +73,11 @@ class BasicSprite:
 
     @property
     def center_x(self) -> float:
-        """Get the center x coordinate of the sprite."""
+        """Get or set the center x position of the sprite."""
         return self._position[0]
 
     @center_x.setter
     def center_x(self, new_value: float):
-        """Set the center x coordinate of the sprite."""
         if new_value == self._position[0]:
             return
 
@@ -95,12 +89,11 @@ class BasicSprite:
 
     @property
     def center_y(self) -> float:
-        """Get the center y coordinate of the sprite."""
+        """Get or set the center y position of the sprite."""
         return self._position[1]
 
     @center_y.setter
     def center_y(self, new_value: float):
-        """Set the center y coordinate of the sprite."""
         if new_value == self._position[1]:
             return
 
@@ -112,12 +105,17 @@ class BasicSprite:
 
     @property
     def depth(self) -> float:
-        """Get the depth of the sprite."""
+        """
+        Get or set the depth of the sprite.
+        
+        This is really the z coordinate of the sprite
+        and can be used with OpenGL depth testing with opaque
+        sprites.
+        """
         return self._depth
 
     @depth.setter
     def depth(self, new_value: float):
-        """Set the depth of the sprite."""
         if new_value != self._depth:
             self._depth = new_value
             for sprite_list in self.sprite_lists:
@@ -125,12 +123,11 @@ class BasicSprite:
 
     @property
     def width(self) -> float:
-        """Get the width of the sprite."""
+        """Get or set width or the sprite in pixels"""
         return self._width
 
     @width.setter
     def width(self, new_value: float):
-        """Set the width in pixels of the sprite."""
         if new_value != self._width:
             self._scale = new_value / self._texture.width, self._scale[1]
             self._width = new_value
@@ -141,12 +138,11 @@ class BasicSprite:
 
     @property
     def height(self) -> float:
-        """Get the height in pixels of the sprite."""
+        """Get or set the height of the sprite in pixels."""
         return self._height
 
     @height.setter
     def height(self, new_value: float):
-        """Set the center x coordinate of the sprite."""
         if new_value != self._height:
             self._scale = self._scale[0], new_value / self._texture.height
             self._height = new_value
@@ -159,7 +155,7 @@ class BasicSprite:
     @property
     def scale(self) -> float:
         """
-        Get the sprite's x scale value or set both x & y scale to the same value.
+        Get or set the sprite's x scale value or set both x & y scale to the same value.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite.
@@ -203,13 +199,15 @@ class BasicSprite:
     @property
     def left(self) -> float:
         """
-        Return the x coordinate of the left-side of the sprite's hit box.
+        The leftmost x coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the leftmost x coordinate in the hit box.
         """
         return self.center_x - self.width / 2
 
     @left.setter
     def left(self, amount: float):
-        """The left most x coordinate."""
         leftmost = self.left
         diff = amount - leftmost
         self.center_x += diff
@@ -217,13 +215,15 @@ class BasicSprite:
     @property
     def right(self) -> float:
         """
-        Return the x coordinate of the right-side of the sprite's hit box.
+        The rightmost x coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the rightmost x coordinate in the hit box.
         """
         return self.center_x + self.width / 2
 
     @right.setter
     def right(self, amount: float):
-        """The right most x coordinate."""
         rightmost = self.right
         diff = rightmost - amount
         self.center_x -= diff
@@ -231,15 +231,15 @@ class BasicSprite:
     @property
     def bottom(self) -> float:
         """
-        Return the y coordinate of the bottom of the sprite.
+        The lowest y coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the lowest y coordinate in the hit box.
         """
         return self._position[1] - self.height / 2
 
     @bottom.setter
     def bottom(self, amount: float):
-        """
-        Set the location of the sprite based on the bottom y coordinate.
-        """
         lowest = self.bottom
         diff = lowest - amount
         self.center_y -= diff
@@ -247,13 +247,15 @@ class BasicSprite:
     @property
     def top(self) -> float:
         """
-        Return the y coordinate of the top of the sprite.
+        The highest y coordinate in the hit box.
+
+        When setting this property the sprite is positioned
+        relative to the highest y coordinate in the hit box.
         """
         return self._position[1] + self.height / 2
 
     @top.setter
     def top(self, amount: float):
-        """The highest y coordinate."""
         highest = self.top
         diff = highest - amount
         self.center_y -= diff
@@ -323,16 +325,11 @@ class BasicSprite:
 
     @property
     def alpha(self) -> int:
-        """
-        Return the alpha associated with the sprite.
-        """
+        """Get or set the alpha value of the sprite"""
         return self._color[3]
 
     @alpha.setter
     def alpha(self, alpha: int):
-        """
-        Set the current sprite color as a value
-        """
         self._color = self._color[0], self._color[1], self._color[2], int(alpha)
 
         for sprite_list in self.sprite_lists:
@@ -340,11 +337,16 @@ class BasicSprite:
 
     @property
     def texture(self) -> Texture:
+        """
+        Get or set the visible texture for this sprite
+        This property can be changed over time to animate a sprite.
+
+        Note that this doesn't change the hit box of the sprite.
+        """
         return self._texture
 
     @texture.setter
     def texture(self, texture: Texture):
-        """Set the texture for this sprite"""
         if texture == self._texture:
             return
 
@@ -363,22 +365,27 @@ class BasicSprite:
 
     def update(self) -> None:
         """
-        Update the sprite.
+        Generic update method. It can be called manually
+        or by the SpriteList's update method.
         """
         pass
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
         """
         Update the sprite. Similar to update, but also takes a delta-time.
+        It can be called manually or by the SpriteList's on_update method.
+        
+        :param float delta_time: Time since last update.
         """
         pass
 
     def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
-        Override this to add code that will change
-        what image is shown, so the sprite can be
-        animated.
+        Generic update animation method. Usually involves changing
+        the active texture on the sprite.
 
+        This can be called manually or by the SpriteList's update_animation method.
+        
         :param float delta_time: Time since last update.
         """
         pass
@@ -505,7 +512,7 @@ class BasicSprite:
 
     def update_spatial_hash(self) -> None:
         """
-        Update the sprites location in the spatial hash.
+        Update the sprites location in the spatial hash if present.
         """
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
@@ -522,16 +529,8 @@ class BasicSprite:
         """
         Remove the sprite from all sprite lists.
         """
-        if len(self.sprite_lists) > 0:
-            # We can't modify a list as we iterate through it, so create a copy.
-            sprite_lists = self.sprite_lists.copy()
-        else:
-            # If the list is a size 1, we don't need to copy
-            sprite_lists = self.sprite_lists
-
-        for sprite_list in sprite_lists:
-            if self in sprite_list:
-                sprite_list.remove(self)
+        while len(self.sprite_lists) > 0:
+            self.sprite_lists[0].remove(self)
 
         self.sprite_lists.clear()
 
@@ -539,10 +538,7 @@ class BasicSprite:
 
     def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
         """
-        Draw a sprite's hit-box.
-
-        The 'hit box' drawing is cached, so if you change the color/line thickness
-        later, it won't take.
+        Draw a sprite's hit-box. This is useful for debugging.
 
         :param color: Color of box
         :param line_thickness: How thick the box should be
@@ -556,12 +552,13 @@ class BasicSprite:
 
     def kill(self) -> None:
         """
-        Alias of `remove_from_sprite_lists`
+        Alias of ``remove_from_sprite_lists()``.
         """
         self.remove_from_sprite_lists()
 
     def collides_with_point(self, point: Point) -> bool:
-        """Check if point is within the current sprite.
+        """
+        Check if point is within the current sprite.
 
         :param Point point: Point to check.
         :return: True if the point is contained within the sprite's boundary.
