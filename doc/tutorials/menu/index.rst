@@ -45,7 +45,7 @@ First we will import the arcade gui:
 Modify the MainView
 ~~~~~~~~~~~~~~~~~~~~
 
-We are going to add a button to change the view. For drawing a button we would need a UIManager.
+We are going to add a button to change the view. For drawing a button we would need a ``UIManager``.
 
 .. literalinclude:: menu_02.py
     :caption: Intialising the Manager
@@ -63,14 +63,14 @@ After initialising the manager we need to enable it when the view is shown and d
     :caption: Disabling the Manager
     :pyobject: MainView.on_hide_view
 
-We also need to draw the childrens of the menu in `on_draw`.
+We also need to draw the childrens of the menu in ``on_draw``.
 
  .. literalinclude:: menu_02.py
     :caption: Drawing Children's of the Manager
     :pyobject: MainView.on_draw
     :emphasize-lines: 6-7
 
-Now we have successfully setup the manager, only thing left it to add the button. We are using `UIAnchorLayout` to position the button. We also setup a function which is called when the button is clicked.
+Now we have successfully setup the manager, only thing left it to add the button. We are using ``UIAnchorLayout`` to position the button. We also setup a function which is called when the button is clicked.
 
   .. literalinclude:: menu_02.py
     :caption: Initialising the Button
@@ -98,7 +98,7 @@ Step 3: Setting Up the Menu View
 .. image:: menu_03.png
     :width: 50%
 
-In this step we will setup the display buttons of the actual menu. The code written in this section is written for `MenuView`
+In this step we will setup the display buttons of the actual menu. The code written in this section is written for ``MenuView``
 
 Initialising the Buttons
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,13 +112,13 @@ First we setup buttons for resume, starting a new game, volume, options and exit
 Displaying the Buttons in a Grid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After setting up the buttons we add them to `UIGridLayout`, so that they can displayed in a grid like manner.
+After setting up the buttons we add them to ``UIGridLayout``, so that they can displayed in a grid like manner.
 
 .. literalinclude:: menu_03.py
     :caption: Setting up the Grid
     :lines: 71-87
 
-Final code for the `__init__` method after these.
+Final code for the ``__init__`` method after these.
 
 .. literalinclude:: menu_03.py
     :caption: __init__
@@ -137,9 +137,9 @@ Step 4: Configuring the Menu Buttons
 .. image:: menu_04.png
     :width: 50%
 
-We basically add event listener for `on_click` for buttons.
+We basically add event listener for ``on_click`` for buttons.
 
-Adding `on_click` Callback for Resume, Start New Game and Exit
+Adding ``on_click`` Callback for Resume, Start New Game and Exit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First we will add the event listener to resume, start_new_game and exit button as they don't have much to explain.
@@ -148,10 +148,10 @@ First we will add the event listener to resume, start_new_game and exit button a
     :caption: Adding callback for button events 1
     :lines: 91-104
 
-Adding `on_click` Callback for Volume and Options
+Adding ``on_click` Callback for Volume and Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now we need to implement an actual menu for volume and options, for that we have to make a class that acts like a window. Using `UIMouseFilterMixin` we catch all the events happening for the parent and respond nothing to them. Thus making it act like a window/view.
+Now we need to implement an actual menu for volume and options, for that we have to make a class that acts like a window. Using ``UIMouseFilterMixin`` we catch all the events happening for the parent and respond nothing to them. Thus making it act like a window/view.
 
 .. literalinclude:: menu_04.py
     :caption: Making a Fake Window.
@@ -186,7 +186,7 @@ We will edit the parameters for the sub menu to suit our needs. Will explain lat
     :caption: Editing parameters
     :lines: 136-138
 
-We also need to change accordingly the places where we have used this class i.e options and volume `on_click` event listener.
+We also need to change accordingly the places where we have used this class i.e options and volume ``on_click`` event listener.
 
 .. literalinclude:: menu_05.py
     :caption: Editing arguments
@@ -198,7 +198,7 @@ Now you might be getting a little idea why we have edited the parameters but fol
 Adding a Input Field
 ~~~~~~~~~~~~~~~~~~~~~
 
-We will use `UIInputText` to add an input field. The `with_border()` function creates a border around the widget with color(default argument is black) black and thickness(default argument is 2px) 2px.
+We will use ``UIInputText`` to add an input field. The ``with_border()`` function creates a border around the widget with color(default argument is black) black and thickness(default argument is 2px) 2px.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field
@@ -211,12 +211,12 @@ Adding it to the widget layout.
     :caption: Adding input field to the layout
     :lines: 191-193
 
-If you paid attention when we defined the `input_text` variable we passed the `text` parameter with our `input_text_default` argument. We basically added those parameters in our sub menu so that it can be used by both volume and options button, with texts respecting their names. We will repeat this again in the last also for those of you who are skipping through this section :P.
+If you paid attention when we defined the ``input_text`` variable we passed the ``text`` parameter with our ``input_text_default`` argument. We basically added those parameters in our sub menu so that it can be used by both volume and options button, with texts respecting their names. We will repeat this again in the last also for those of you who are skipping through this section :P.
 
 Adding a Toggle Button
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Don't go on the section title much, in arcade the `UITextureToggle` is not really a button it switches between two textures when clicked. Yes, it functions like a button but by "is not really a button" we meant that it doesn't inherits the button class.
+Don't go on the section title much, in arcade the ``UITextureToggle`` is not really a button it switches between two textures when clicked. Yes, it functions like a button but by "is not really a button" we meant that it doesn't inherits the button class.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button
@@ -232,7 +232,7 @@ Adding it to the widget layout.
 Adding a Dropdowm
 ~~~~~~~~~~~~~~~~~
 
-We add a dropdowm by using `UIDropdown`.
+We add a dropdowm by using ``UIDropdown``.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
@@ -247,7 +247,7 @@ Adding it to the widget layout.
 Adding a Slider
 ~~~~~~~~~~~~~~~
 
-The final widget. In arcade you can use `UISlider` to implement a slider. Theres a functionality to style the slider, this is also present for `UIFlatButton` and `UITextureButton`.
+The final widget. In arcade you can use ``UISlider`` to implement a slider. Theres a functionality to style the slider, this is also present for ``UIFlatButton`` and ``UITextureButton``.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
