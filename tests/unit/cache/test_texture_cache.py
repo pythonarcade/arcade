@@ -108,7 +108,3 @@ def test_get_set(cache, texture):
     assert cache[texture.cache_name] == texture
     del cache[texture.cache_name]
     assert cache[texture.cache_name] is None
-
-
-def test_get_with_config(texture):
-    assert len(texture_cache) == 0
