@@ -12,12 +12,12 @@ from typing import Tuple, Type
 from pathlib import Path
 
 
-class PerformanceWarning(Type[Warning]):
+class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
     pass
 
 
-def warning(message: str, warning_type: Warning):
+def warning(message: str, warning_type: Type[Warning]):
     def actual_warning_decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
