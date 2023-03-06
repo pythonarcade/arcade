@@ -13,7 +13,9 @@ class SpatialHash(Generic[SpriteType]):
     """
     Structure for fast collision checking with sprites.
 
-    See: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
+    See the Programming Guide's
+    :ref:`overview of spatial hashing <pg_spritelists_spatial_hashing>`
+    for more information.
 
     :param int cell_size: Size (width and height) of the cells in the spatial hash
     """
