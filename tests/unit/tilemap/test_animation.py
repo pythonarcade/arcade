@@ -3,7 +3,7 @@ import arcade
 
 def test_rotation_mirror(fixtures):
     # Read in the tiled map
-    tile_map = arcade.load_tilemap(fixtures.path("animation.json"))
+    tile_map = arcade.load_tilemap(fixtures.path("tilemaps/animation.json"))
 
     # --- Platforms ---
     assert "Blocking Sprites" in tile_map.sprite_lists

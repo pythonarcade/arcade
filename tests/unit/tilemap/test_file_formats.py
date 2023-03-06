@@ -5,7 +5,7 @@ TILE_SCALING = 1.0
 
 def test_csv_left_up(fixtures):
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("csv_left_up_embedded.json"))
+    my_map = arcade.load_tilemap(fixtures.path("tilemaps/csv_left_up_embedded.json"))
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -28,7 +28,7 @@ def test_csv_left_up(fixtures):
 
 def test_csv_right_down(fixtures):
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("csv_right_down_external.json"))
+    my_map = arcade.load_tilemap(fixtures.path("tilemaps/csv_right_down_external.json"))
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -51,7 +51,7 @@ def test_csv_right_down(fixtures):
 
 def test_base_64_zlib(fixtures):
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("base_64_zlib.json"))
+    my_map = arcade.load_tilemap(fixtures.path("tilemaps/base_64_zlib.json"))
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -74,7 +74,7 @@ def test_base_64_zlib(fixtures):
 
 def test_base_64_gzip(fixtures):
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("base_64_gzip.json"))
+    my_map = arcade.load_tilemap(fixtures.path("tilemaps/base_64_gzip.json"))
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
