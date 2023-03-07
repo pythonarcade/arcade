@@ -27,7 +27,7 @@ def test_rotate90_transform():
     """Test rotate transform."""
     # One rotation
     result = Rotate90Transform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
+    assert result == ((64.0, -64.0), (64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0))
     # Three more should be the original points
     result = Rotate90Transform.transform_hit_box_points(result)
     result = Rotate90Transform.transform_hit_box_points(result)
@@ -53,7 +53,7 @@ def test_rotate180_transform():
 
 def test_rotate270_transform():
     result = Rotate270Transform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((64.0, -64.0), (64.0, 64.0), (-64.0, 64.0), (-64.0, -64.0))
+    assert result == ((-64.0, 64.0), (-64.0, -64.0), (64.0, -64.0), (64.0, 64.0))
 
     result = Rotate270Transform.transform_vertex_order(ORDER)
     assert result == (1, 3, 0, 2)
@@ -91,7 +91,7 @@ def test_flip_top_bottom_transform():
 def test_transpose_transform():
     # Transpose
     result = TransposeTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
+    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
     # Flip back
     result = TransposeTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
@@ -106,7 +106,7 @@ def test_transpose_transform():
 def test_transverse_transform():
     # Transverse
     result = TransverseTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
+    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
     # Flip back
     result = TransverseTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
