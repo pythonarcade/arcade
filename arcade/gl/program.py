@@ -254,6 +254,13 @@ class Program:
 
     @staticmethod
     def delete_glo(ctx, prog_id):
+        """
+        Deletes a program. This is normally called automatically when the
+        program is garbage collected.
+
+        :param ctx: The context
+        :param prog_id: The OpenGL resource id
+        """
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
