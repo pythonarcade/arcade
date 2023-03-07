@@ -25,7 +25,8 @@ class Property:
     An observable property which triggers observers when changed.
 
     :param default: Default value which is returned, if no value set before
-    :param default_factory: A callable which returns the default value. Will be called with the property and the instance
+    :param default_factory: A callable which returns the default value.
+                            Will be called with the property and the instance
     """
     __slots__ = "name", "default_factory", "obs"
     name: str
