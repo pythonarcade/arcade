@@ -28,9 +28,6 @@ class Scene:
     """
 
     def __init__(self) -> None:
-        """
-        Create a new Scene.
-        """
         self.sprite_lists: List[SpriteList] = []
         self.name_mapping: Dict[str, SpriteList] = {}
 

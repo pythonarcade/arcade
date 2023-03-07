@@ -11,7 +11,6 @@ class PyMunk:
     )
 
     def __init__(self):
-        """Set up pymunk object"""
         self.damping = None
         self.gravity = None
         self.max_velocity = None

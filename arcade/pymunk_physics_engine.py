@@ -18,7 +18,6 @@ class PymunkPhysicsObject:
     def __init__(self,
                  body: Optional[pymunk.Body] = None,
                  shape: Optional[pymunk.Shape] = None):
-        """ Init """
         self.body: Optional[pymunk.Body] = body
         self.shape: Optional[pymunk.Shape] = shape
 

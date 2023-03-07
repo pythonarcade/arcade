@@ -23,17 +23,14 @@ P = TypeVar("P")
 class Property:
     """
     An observable property which triggers observers when changed.
+
+    :param default: Default value which is returned, if no value set before
+    :param default_factory: A callable which returns the default value. Will be called with the property and the instance
     """
-
     __slots__ = "name", "default_factory", "obs"
-
     name: str
 
     def __init__(self, default=None, default_factory=None):
-        """
-
-        :type default: Default value which is returned, if no value set before
-        """
         if default_factory is None:
             default_factory = lambda prop, instance: default
 
