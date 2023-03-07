@@ -230,9 +230,7 @@ def process_directory(directory: Path, quick_index_file):
 
         full_api_file_name = ROOT / "doc/api_docs/api/" / api_file_name
 
-        print(package, title, api_file_name, full_api_file_name)
-        if "Trans" in title:
-            print("moo")
+        # print(package, title, api_file_name, full_api_file_name)
 
         new_api_file = True
         if os.path.isfile(full_api_file_name):
