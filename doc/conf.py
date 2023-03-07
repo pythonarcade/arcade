@@ -171,6 +171,16 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
         print(f"{what} {name} is undocumented")
         # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
 
+    # Check for docstring on __init__ in classes and raise an error.
+    # The class docstring should cover docs for the initializer only!
+    if what == "class":
+        doc = _obj.__init__.__doc__
+        if doc and isinstance(doc, str) and not doc.startswith("Initialize self"):
+            raise ValueError((
+                f"Class {name} has a docstring on __init__. "
+                "The class docstring should cover docs for the initializer:\n {_obj.__init__.__doc__}"
+            ))
+
 
 def source_read(_app, docname, source):
 

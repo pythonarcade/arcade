@@ -77,8 +77,6 @@ class Program:
         varyings: Optional[List[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ):
-        """Create a Program."""
-
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
         self._varyings = varyings or []

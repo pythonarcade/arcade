@@ -187,8 +187,6 @@ class Text:
         group: Optional[pyglet.graphics.Group] = None,
         start_z: float = 0
     ):
-        """Build a text object"""
-
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 

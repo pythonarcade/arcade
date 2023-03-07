@@ -180,10 +180,6 @@ class TileMap:
         texture_atlas: Optional["TextureAtlas"] = None,
         lazy: bool = False,
     ) -> None:
-        """
-        Given a .json file, this will read in a Tiled map file, and
-        initialize a new TileMap object.
-        """
         if not map_file and not tiled_map:
             raise AttributeError(
                 "Initialized TileMap with an empty map_file or no map_object argument"

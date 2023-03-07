@@ -226,9 +226,6 @@ class PhysicsEngineSimple:
     """
 
     def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, Iterable[SpriteList]]):
-        """
-        Create a simple physics engine.
-        """
         assert isinstance(player_sprite, Sprite)
 
         if walls:
@@ -280,9 +277,6 @@ class PhysicsEnginePlatformer:
                  ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
-        """
-        Create a physics engine for a platformer.
-        """
         self.ladders: Optional[List[SpriteList]]
         self.platforms: List[SpriteList]
         self.walls: List[SpriteList]

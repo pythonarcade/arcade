@@ -649,9 +649,6 @@ class ShapeElementList(Generic[TShape]):
     in one operation.
     """
     def __init__(self):
-        """
-        Initialize the sprite list
-        """
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
