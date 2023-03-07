@@ -715,7 +715,7 @@ class ShapeElementList(Generic[TShape]):
         ]
         vao = self.ctx.geometry(vao_content, ibo)
         self.program['Position'] = self.center_x, self.center_y
-        self.program['Angle'] = self.angle
+        self.program['Angle'] = -self.angle
 
         batch.shape.vao = vao
         batch.shape.vbo = vbo
@@ -750,7 +750,7 @@ class ShapeElementList(Generic[TShape]):
         Draw everything in the list.
         """
         self.program['Position'] = self._center_x, self._center_y
-        self.program['Angle'] = self._angle
+        self.program['Angle'] = -self._angle
 
         for group in self.dirties:
             self._refresh_shape(group)
@@ -786,7 +786,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_angle(self, value: float):
         """Set the angle of the ShapeElementList in degrees."""
         self._angle = value
-        self.program['Angle'] = self._angle
+        self.program['Angle'] = -self._angle
 
     angle = property(_get_angle, _set_angle)
 
