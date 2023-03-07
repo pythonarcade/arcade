@@ -376,7 +376,7 @@ class Sprite(BasicSprite, PymunkMixin):
         if self._hit_box_points_cache is not None:
             return self._hit_box_points_cache
 
-        rad = radians(self._angle)
+        rad = radians(-self._angle)
         scale_x, scale_y = self._scale
         position_x, position_y = self._position
         rad_cos = cos(rad)
