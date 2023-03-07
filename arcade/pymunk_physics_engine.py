@@ -23,6 +23,7 @@ class PymunkPhysicsObject:
 
 
 class PymunkException(Exception):
+    """Exception raised for errors in the PymunkPhysicsEngine."""
     pass
 
 
