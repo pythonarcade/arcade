@@ -3,6 +3,8 @@ from arcade.gui import UIManager, UIFlatButton
 
 
 def test_event_order_from_window(window: arcade.Window):
+    # Ensure there are no pending events
+    window.dispatch_pending_events()
     events = []
 
     mng = UIManager()
@@ -20,12 +22,15 @@ def test_event_order_from_window(window: arcade.Window):
     window.dispatch_pending_events()
     mng.disable()
     window.remove_handler("on_mouse_press", record_window)
-    assert len(events) == 2, events
+
+    assert len(events) == 2
     assert events[0] == "UIManager.on_event(UIMousePressEvent)"
     assert events[1] == "Window.on_mouse_press"
 
 
 def test_event_order_from_view(window):
+    # Ensure there are no pending events
+    window.dispatch_pending_events()
     events = []
 
     class MyView(arcade.View):
