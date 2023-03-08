@@ -13,19 +13,16 @@ def test_event_order_from_window(window: arcade.Window):
 
     @mng.event("on_event")
     def record_mng(event):
-        events.append("UIManager.on_event({type(event).__name__})")
-
-    window.dispatch_events()  # ensure no events are pending
+        events.append(f"UIManager.on_event({type(event).__name__})")
 
     mng.enable()
     window.dispatch_event("on_mouse_press", 100, 75, 1, 0)
     window.dispatch_pending_events()
     mng.disable()
     window.remove_handler("on_mouse_press", record_window)
-
-    # assert len(events) == 2, events
-    # assert events[0] == "UIManager.on_event(UIMousePressEvent)"
-    # assert events[1] == "Window.on_mouse_press"
+    assert len(events) == 2, events
+    assert events[0] == "UIManager.on_event(UIMousePressEvent)"
+    assert events[1] == "Window.on_mouse_press"
 
 
 def test_event_order_from_view(window):
@@ -53,7 +50,6 @@ def test_event_order_from_view(window):
     def record_window(*_):
         events.append("Window.on_mouse_press")
 
-    window.dispatch_events()  # ensure no events are pending
     view = MyView()
     window.show_view(view)
     window.dispatch_event("on_mouse_press", 100, 75, 1, 0)
@@ -108,11 +104,9 @@ def test_event_consumed_by_widget(window):
 
     view = MyView()
     window.show_view(view)
-
     window.dispatch_event("on_mouse_press", 100, 75, 1, 0)
     window.dispatch_event("on_mouse_release", 100, 75, 1, 0)
     window.dispatch_pending_events()
-
     window.hide_view()
     window.remove_handler("on_mouse_press", record_window)
 
