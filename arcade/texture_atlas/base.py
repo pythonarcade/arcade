@@ -173,6 +173,10 @@ class ImageDataRefCounter:
     def get_refs(self, image_data: "ImageData") -> int:
         return self._data.get(image_data.hash, 0)
 
+    def count_refs(self) -> int:
+        """Helper function to count the total number of references."""
+        return sum(self._data.values())
+
     def __len__(self) -> int:
         return len(self._data)
 
