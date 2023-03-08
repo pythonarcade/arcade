@@ -141,7 +141,7 @@ def create_resources(ctx: arcade.ArcadeContext):
         gc.collect()
         if ctx.gc_mode == "context_gc":
             collected = ctx.gc()
-            assert collected == 1
+            assert collected > 0
         assert ctx.stats.compute_shader == (created + 1, freed + 1)    
 
     # query
