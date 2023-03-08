@@ -26,6 +26,7 @@ def prepare_window(window: arcade.Window):
     ctx._default_atlas = None  # Clear the global atlas
     arcade.cleanup_texture_cache()  # Clear the global texture cache
     window.hide_view()  # Disable views if any is active
+    window.dispatch_pending_events()
 
     # Reset context (various states)
     ctx.reset()
@@ -33,6 +34,7 @@ def prepare_window(window: arcade.Window):
     window.flip()
     window.clear()
     ctx.gc_mode = "context_gc"
+    ctx.gc()
 
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
@@ -49,11 +51,8 @@ def ctx():
     """
     window = create_window()
     arcade.set_window(window)
-    try:
-        prepare_window(window)
-        yield window.ctx
-    finally:
-        window.flip()
+    prepare_window(window)
+    return window.ctx
 
 
 @pytest.fixture(scope="session")
@@ -66,7 +65,7 @@ def ctx_static():
     window = create_window()
     arcade.set_window(window)
     prepare_window(window)
-    yield window.ctx
+    return window.ctx
 
 
 @pytest.fixture(scope="function")
@@ -80,11 +79,8 @@ def window():
     """
     window = create_window()
     arcade.set_window(window)
-    try:
-        prepare_window(window)
-        yield window
-    finally:
-        window.flip()
+    prepare_window(window)
+    return window
 
 
 class Fixtures:
