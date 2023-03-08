@@ -41,7 +41,7 @@ def test_load_textures(window):
     character_list.append(player)
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         character_list.draw()
 
     def update(delta_time):
@@ -58,7 +58,7 @@ def test_load_textures(window):
         frame_count += 1
 
 
-def  test_load_spritesheet():
+def test_load_spritesheet():
     textures = arcade.load_spritesheet(
         ":resources:images/spritesheets/codepage_437.png",
         sprite_width=9,
