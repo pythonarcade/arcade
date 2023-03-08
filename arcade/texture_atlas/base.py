@@ -535,7 +535,9 @@ class TextureAtlas:
             )
         except AllocatorException:
             raise AllocatorException(
-                f"No more space for image {image_data.hash} size={image.size}"
+                f"No more space for image {image_data.hash} size={image.size}. "
+                f"Curr size: {self._size}. "
+                f"Max size: {self._max_size}"
             )
 
         LOG.debug("Allocated new space for image %s : %s %s", image_data.hash, x, y)
