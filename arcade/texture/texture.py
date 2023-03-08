@@ -2,6 +2,7 @@ import logging
 import hashlib
 from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
+from weakref import WeakSet
 
 import PIL.Image
 import PIL.ImageOps
@@ -28,6 +29,7 @@ from arcade import hitbox
 if TYPE_CHECKING:
     from arcade.sprite import Sprite
     from arcade.sprite_list import SpriteList
+    from arcade import TextureAtlas
 
 LOG = logging.getLogger(__name__)
 
@@ -143,6 +145,7 @@ class Texture:
         "_file_path",
         "_crop_values",
         "_properties",
+        "_atlas_refs",
         "__weakref__",
     )
     def __init__(
@@ -189,6 +192,9 @@ class Texture:
         self._atlas_name: str = ""
         self._update_cache_names()
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
+
+        # Track what atlases the image is in
+        self._atlas_refs: WeakSet["TextureAtlas"] = WeakSet()
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
@@ -484,14 +490,7 @@ class Texture:
             hit_box_algorithm=hitbox.algo_bounding_box,
         )
 
-    def remove_from_cache(self, ignore_error: bool = True) -> None:
-        """
-        Remove this texture from the cache.
-
-        :param bool ignore_error: If True, ignore errors if the texture is not in the cache
-        :return: None
-        """
-        _cache.texture_cache.delete(self)
+    # ----- Transformations -----
 
     def flip_left_right(self) -> "Texture":
         """
@@ -656,22 +655,6 @@ class Texture:
         texture._update_cache_names()
         return texture
 
-    @staticmethod
-    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
-        """
-        Validate the crop values for a given image.
-        """
-        if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
-        if x >= image.width:
-            raise ValueError(f"x position is outside of texture: {x}")
-        if y >= image.height:
-            raise ValueError(f"y position is outside of texture: {y}")
-        if x + width - 1 >= image.width:
-            raise ValueError(f"width is outside of texture: {width + x}")
-        if y + height - 1 >= image.height:
-            raise ValueError(f"height is outside of texture: {height + y}")
-
     def crop(
         self,
         x: int,
@@ -713,36 +696,53 @@ class Texture:
         texture.crop_values = (x, y, width, height)
         return texture
 
-    # ------------------------------------------------------------
-    # Comparison and hash functions so textures can work with sets
-    # A texture's uniqueness is simply based on the name
-    # ------------------------------------------------------------
-    def __hash__(self) -> int:
-        return hash(self.cache_name)
+    # ------ Atlas functions ------
 
-    def __eq__(self, other) -> bool:
-        if other is None:
-            return False
-        if not isinstance(other, self.__class__):
-            return False
-        return self.cache_name == other.cache_name
+    def remove_from_atlases(self) -> None:
+        """
+        Remove this texture from all atlases.
+        """
+        for atlas in self._atlas_refs:
+            atlas.remove(self)
 
-    def __ne__(self, other) -> bool:
-        if other is None:
-            return True
-        if not isinstance(other, self.__class__):
-            return True
-        return self.cache_name != other.cache_name
+    def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
+        """
+        Add a reference to an atlas that this texture is in.
+        """
+        self._atlas_refs.add(atlas)
 
-    def __repr__(self) -> str:
-        cache_name = getattr(self, "cache_name", None)
-        return f"<Texture cache_name={cache_name}>"
+    def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
+        """
+        Remove a reference to an atlas that this texture is in.
+        """
+        self._atlas_refs.remove(atlas)
 
-    def __del__(self):
-        pass
-        # print("DELETE", self)
+    # ----- Utility functions -----
 
-    # ------------------------------------------------------------
+    def remove_from_cache(self, ignore_error: bool = True) -> None:
+        """
+        Remove this texture from the cache.
+
+        :param bool ignore_error: If True, ignore errors if the texture is not in the cache
+        :return: None
+        """
+        _cache.texture_cache.delete(self)
+
+    @staticmethod
+    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
+        """
+        Validate the crop values for a given image.
+        """
+        if x < 0 or y < 0 or width < 0 or height < 0:
+            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
+        if x >= image.width:
+            raise ValueError(f"x position is outside of texture: {x}")
+        if y >= image.height:
+            raise ValueError(f"y position is outside of texture: {y}")
+        if x + width - 1 >= image.width:
+            raise ValueError(f"width is outside of texture: {width + x}")
+        if y + height - 1 >= image.height:
+            raise ValueError(f"height is outside of texture: {height + y}")
 
     def _calculate_hit_box_points(self) -> PointList:
         """
@@ -761,6 +761,8 @@ class Texture:
             _cache.hit_box_cache.put(self.cache_name, points)
 
         return points
+
+    # ----- Drawing functions -----
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -835,3 +837,32 @@ class Texture:
             self._sprite.angle = angle
             self._sprite.alpha = alpha
             self._sprite_list.draw()
+
+    # ------------------------------------------------------------
+    # Comparison and hash functions so textures can work with sets
+    # A texture's uniqueness is simply based on the name
+    # ------------------------------------------------------------
+    def __hash__(self) -> int:
+        return hash(self.cache_name)
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return False
+        if not isinstance(other, self.__class__):
+            return False
+        return self.cache_name == other.cache_name
+
+    def __ne__(self, other) -> bool:
+        if other is None:
+            return True
+        if not isinstance(other, self.__class__):
+            return True
+        return self.cache_name != other.cache_name
+
+    def __repr__(self) -> str:
+        cache_name = getattr(self, "cache_name", None)
+        return f"<Texture cache_name={cache_name}>"
+
+    def __del__(self):
+        for atlas in self._atlas_refs:
+            atlas.remove(self)
