@@ -62,7 +62,7 @@ class MyGame(arcade.Window):
         self.bullet_list = None
 
     def setup(self):
-        """ Setup the variables for the game. """
+        """ Set up the variables for the game. """
 
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
