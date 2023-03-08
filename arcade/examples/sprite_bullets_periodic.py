@@ -42,7 +42,7 @@ class EnemySprite(arcade.Sprite):
             # Fire the bullet
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
             bullet.center_x = self.center_x
-            bullet.angle = -90
+            bullet.angle = 90
             bullet.top = self.bottom
             bullet.change_y = -2
             self.bullet_list.append(bullet)
