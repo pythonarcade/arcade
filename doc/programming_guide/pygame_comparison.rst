@@ -140,6 +140,7 @@ Here are some comparisons between Arcade 3.0 and Pygame 2.2.0 ce:
 .. [#f3] A programmer can achieve a similar result by drawing to a surface, then draw the surface to the screen.
 
 
+.. _pygame_comparison_performance:
 Performance Comparison
 ----------------------
 
