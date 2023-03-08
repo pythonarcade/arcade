@@ -22,12 +22,11 @@ class UIAnchorLayout(UILayout):
     - anchor_y: str = None - uses `self.default_anchor_y` as default
     - align_y: float = 0
 
-    Usage:
+    Usage::
 
-    .. code::py
-        manager: UIManager
+        manager = UIManager()
+        manager.enable()
         anchor = manager.add(UIAnchorLayout())
-
         anchor.add(child=child, ...)
 
     """
