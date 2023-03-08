@@ -1,10 +1,9 @@
 from typing import Iterable, Optional
 
-from PIL import Image, ImageOps
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
-from arcade import Window, Texture
+from arcade import Window
 from arcade.gui import UIManager, UIWidget, Property, Surface, UIDummy, UIEvent, bind, \
     UIMouseDragEvent, UIMouseScrollEvent, UIMouseEvent, UIBoxLayout, UIFlatButton, UIInputText
 
@@ -61,13 +60,9 @@ class UIScrollArea(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-
         width, height = self.content_size
-
-        tex_2d = self.surface.texture
-        image = Image.frombytes("RGBA", tex_2d.size, tex_2d.read())
-        view = image.crop((self.scroll_x, self.scroll_y, self.scroll_x + width, self.scroll_y + height))
-        surface.draw_texture(0, 0, width, height, tex=Texture(ImageOps.flip(view)))
+        self.surface.position = (-self.scroll_x, -self.scroll_y)
+        self.surface.draw((0, 0, width, height))
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
 
