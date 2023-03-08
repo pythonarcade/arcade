@@ -16,6 +16,7 @@ def test_rebuild(ctx, common):
     slot_b, region_b = atlas.add(tex_small)
     region_a = atlas.get_texture_region_info(tex_big.atlas_name)
     region_b = atlas.get_texture_region_info(tex_small.atlas_name)
+    common.check_internals(atlas, num_images=2, num_textures=2)
 
     # Re-build and check states
     atlas.rebuild()
@@ -23,6 +24,7 @@ def test_rebuild(ctx, common):
     assert slot_b == atlas.get_texture_id(tex_small.atlas_name)
     region_aa = atlas.get_texture_region_info(tex_big.atlas_name)
     region_bb = atlas.get_texture_region_info(tex_small.atlas_name)
+    common.check_internals(atlas, num_images=2, num_textures=2)
 
     # The textures have switched places in the atlas and should
     # have the same left position
@@ -34,14 +36,16 @@ def test_rebuild(ctx, common):
     common.check_internals(atlas, num_images=2, num_textures=2)
 
 
-def test_resize(ctx):
+def test_resize(ctx, common):
     """Attempt to resize the atlas"""
     atlas = TextureAtlas((50, 100), border=1, auto_resize=False)
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
     atlas.add(t1)
     atlas.add(t2)
+    common.check_internals(atlas, num_images=2, num_textures=2)
     atlas.resize((50, 100))
+    common.check_internals(atlas, num_images=2, num_textures=2)
 
     # Make atlas so small the current textures won't fit
     with pytest.raises(AllocatorException):
@@ -53,5 +57,6 @@ def test_resize(ctx):
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
     atlas.add(t1)
+    common.check_internals(atlas, num_images=1, num_textures=1)
     with pytest.raises(AllocatorException):
         atlas.add(t2)
