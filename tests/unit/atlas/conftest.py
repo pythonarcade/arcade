@@ -13,15 +13,15 @@ class Common:
     def check_internals(atlas: arcade.TextureAtlas, *, num_textures = 0, num_images = 0):
         # Images
         assert len(atlas._images) == num_images
-        assert len(atlas._image_uv_slots) == num_textures
+        assert len(atlas._image_uv_slots) == num_images
         assert len(atlas._image_uv_slots_free) == atlas._num_image_slots - num_images
         assert len(atlas._image_regions) == num_images
 
         # Textures
         assert len(atlas._textures) == num_textures
         assert len(atlas._texture_uv_slots) == num_textures
-        assert len(atlas._texture_uv_slots_free) == atlas._num_texture_slots - num_images    
-        assert len(atlas._texture_regions) == num_images
+        assert len(atlas._texture_uv_slots_free) == atlas._num_texture_slots - num_textures    
+        assert len(atlas._texture_regions) == num_textures
 
         # Misc
         assert len(atlas._image_ref_count) == num_images
