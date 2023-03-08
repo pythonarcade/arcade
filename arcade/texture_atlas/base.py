@@ -638,7 +638,6 @@ class TextureAtlas:
 
         :param Texture texture: The texture to remove
         """
-        print("Removing texture", texture)
         self._textures.remove(texture)
         # Reclaim the texture uv slot
         del self._texture_regions[texture.atlas_name]
