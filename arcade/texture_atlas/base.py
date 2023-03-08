@@ -469,6 +469,7 @@ class TextureAtlas:
             self.write_image(texture.image_data.image, x, y)
 
         self._image_ref_count.inc_ref(texture.image_data)
+        texture.add_atlas_ref(self)
         return self._allocate_texture(texture)
 
     def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
@@ -637,6 +638,7 @@ class TextureAtlas:
 
         :param Texture texture: The texture to remove
         """
+        print("Removing texture", texture)
         self._textures.remove(texture)
         # Reclaim the texture uv slot
         del self._texture_regions[texture.atlas_name]
