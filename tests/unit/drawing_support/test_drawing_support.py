@@ -10,8 +10,8 @@ def test_rotate_point():
     cy = 0
     angle = 0
     rx, ry = rotate_point(x, y, cx, cy, angle)
-    assert rx == 0
-    assert ry == 0
+    assert round(rx, 2) == 0
+    assert round(ry, 2) == 0
 
     x = 0
     y = 0
@@ -19,8 +19,8 @@ def test_rotate_point():
     cy = 0
     angle = 90
     rx, ry = rotate_point(x, y, cx, cy, angle)
-    assert rx == 0
-    assert ry == 0
+    assert round(rx, 2) == 0
+    assert round(ry, 2) == 0
 
     x = 50
     y = 50
@@ -28,8 +28,8 @@ def test_rotate_point():
     cy = 0
     angle = 0
     rx, ry = rotate_point(x, y, cx, cy, angle)
-    assert rx == 50
-    assert ry == 50
+    assert round(rx, 2) == 50
+    assert round(ry, 2) == 50
 
     x = 50
     y = 0
@@ -37,8 +37,8 @@ def test_rotate_point():
     cy = 0
     angle = 90
     rx, ry = rotate_point(x, y, cx, cy, angle)
-    assert rx == 0
-    assert ry == 50
+    assert round(rx, 2) == 0
+    assert round(ry, 2) == -50
 
     x = 20
     y = 10
@@ -46,8 +46,8 @@ def test_rotate_point():
     cy = 10
     angle = 180
     rx, ry = rotate_point(x, y, cx, cy, angle)
-    assert rx == 0
-    assert ry == 10
+    assert round(rx, 2) == 0
+    assert round(ry, 2) == 10
 
 
 def test_parse_color():

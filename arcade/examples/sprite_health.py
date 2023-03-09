@@ -331,18 +331,24 @@ class MyGame(arcade.Window):
             # Set the bullet's position
             bullet.position = self.enemy_sprite.position
 
-            # Set the bullet's angle to face the player
+            # Calculate the trajectory.
+            # Zero degrees is up, 90 to the right.
+            # atan returns 0 degrees to the right instead of up, so shift by 90 degrees.
             diff_x = self.player_sprite.center_x - self.enemy_sprite.center_x
             diff_y = self.player_sprite.center_y - self.enemy_sprite.center_y
-            angle = math.atan2(diff_y, diff_x)
+            angle = -math.atan2(diff_y, diff_x) + 3.14 / 2
             angle_deg = math.degrees(angle)
+
             if angle_deg < 0:
                 angle_deg += 360
-            bullet.angle = angle_deg
+
+            # Set the bullet's angle to face the player.
+            # Bullet graphic isn't pointed up, so rotate 90
+            bullet.angle = angle_deg - 90
 
             # Give the bullet a velocity towards the player
-            bullet.change_x = math.cos(angle) * BULLET_SPEED
-            bullet.change_y = math.sin(angle) * BULLET_SPEED
+            bullet.change_x = math.sin(angle) * BULLET_SPEED
+            bullet.change_y = math.cos(angle) * BULLET_SPEED
 
             # Add the bullet to the bullet list
             self.bullet_list.append(bullet)

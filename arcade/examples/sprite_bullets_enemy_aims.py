@@ -87,10 +87,10 @@ class MyGame(arcade.Window):
             # and end points. This is the angle the bullet will travel.
             x_diff = dest_x - start_x
             y_diff = dest_y - start_y
-            angle = math.atan2(y_diff, x_diff)
+            angle = -math.atan2(y_diff, x_diff) + 3.14 / 2
 
             # Set the enemy to face the player.
-            enemy.angle = math.degrees(angle) - 90
+            enemy.angle = math.degrees(angle)
 
             # Shoot every 60 frames change of shooting each frame
             if self.frame_count % 60 == 0:
@@ -99,12 +99,12 @@ class MyGame(arcade.Window):
                 bullet.center_y = start_y
 
                 # Angle the bullet sprite
-                bullet.angle = math.degrees(angle)
+                bullet.angle = math.degrees(angle) - 90
 
                 # Taking into account the angle, calculate our change_x
                 # and change_y. Velocity is how fast the bullet travels.
-                bullet.change_x = math.cos(angle) * BULLET_SPEED
-                bullet.change_y = math.sin(angle) * BULLET_SPEED
+                bullet.change_x = math.sin(angle) * BULLET_SPEED
+                bullet.change_y = math.cos(angle) * BULLET_SPEED
 
                 self.bullet_list.append(bullet)
 
