@@ -326,7 +326,7 @@ following general approach before allowing gameplay to begin:
    instances in your loading code
 2. Sync the SpriteList data back to the main thread once loading
    is finished
-3. Inside the main thread, call :py:meth:`~arcade.SpriteList.initialize`
+3. Inside the main thread, call :py:meth:`Spritelist.initialize() <arcade.SpriteList.initialize>`
    on each SpriteList once it's ready to allocate GPU resources
 
 

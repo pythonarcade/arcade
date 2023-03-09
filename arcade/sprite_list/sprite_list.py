@@ -995,10 +995,11 @@ class SpriteList(Generic[SpriteType]):
         this method will synchronize the data from RAM to the GPU's memory.
         This includes buffer resizing and writing the new data to VRAM.
 
-        It is automatically called in :py:meth:`SpriteList.draw`, but
+        This method is automatically called by
+        :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>`, but
         there are cases when using custom shaders will mean you must force
-        synchronization because :py:meth:`SpriteList.draw` may not have been
-        called since the SpriteList was modified.
+        synchronization, such as when the SpriteList was modified after
+        calling the draw method.
         """
         self._write_sprite_buffers_to_gpu()
 
