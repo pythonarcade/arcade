@@ -88,7 +88,7 @@ class UIAnchorLayout(UILayout):
 
         :return: given child
         """
-        return super(UIAnchorLayout, self).add(
+        return super().add(
             child=child,
             anchor_x=anchor_x,
             align_x=align_x,
