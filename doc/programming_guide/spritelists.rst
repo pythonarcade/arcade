@@ -22,7 +22,7 @@ run much slower.
 
          This method uses a batch size of 1 for each sprite. It's meant
          for debugging rather than drawing. Use
-         :py:meth:`arcade.SpriteList for drawing instead!
+         :py:meth:`~arcade.SpriteList` for drawing instead!
 
 
 Development Will Be Faster
@@ -157,6 +157,7 @@ Advanced: Draw Order & Sorting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases, you can combine two features of SpriteList:
+
 * :py:class:`~arcade.SpriteList` has a :py:meth:`~arcade.SpriteList.sort`
   method.
 * By default, SpriteLists draw starting from their lowest index.
