@@ -3,6 +3,7 @@
 Drawing with SpriteLists
 ========================
 
+
 .. _pg_spritelists_why:
 
 Why SpriteLists?
@@ -36,6 +37,7 @@ SpriteLists increase your efficiency as a developer:
 
 
 .. _pg_spritelists_drawing_sprites:
+
 
 Creating & Drawing Sprites with SpriteLists
 -------------------------------------------
@@ -139,6 +141,7 @@ For more information on spatial hashing, see the following resources:
 * `An interactive example from Red Blob Games <https://www.redblobgames.com/x/1730-spatial-hash/>`_
 * `A chapter from Game Programming Patterns <http://gameprogrammingpatterns.com/spatial-partition.html>`_
 
+
 .. _pg_spritelists_advanced:
 
 Advanced SpriteList Features
@@ -178,6 +181,7 @@ alternatives:
 
 These are almost always a better choice for a polished game than
 sorting all or most of your sprites every frame.
+
 
 Sorting SpriteLists
 """""""""""""""""""
@@ -283,6 +287,7 @@ by one of the following:
 
  1. The first :py:meth:`~arcade.SpriteList.draw` call on the SpriteList
  2. Its :py:meth:`~arcade.SpriteList.initialize` method is called
+ 3. GPU-backed collisions, if enabled
 
 This behavior is most useful in the following cases:
 
@@ -292,21 +297,22 @@ This behavior is most useful in the following cases:
     * - Case
       - Primary Purpose
 
-    * - Multi-threaded SpriteList creation
-      - Faster loading & world generation times
+    * - Parallelized SpriteList creation
+      - Faster loading & world generation via :py:mod:`threading`
+        or :py:mod:`subprocess` & :py:mod:`pickle`
 
     * - Creating SpriteLists before a Window
       - CPU-only `unit tests <https://docs.python.org/3/library/unittest.html>`_ which
         never draw
 
 
-
-Multi-threaded Loading
-""""""""""""""""""""""
+Parallelized Loading
+""""""""""""""""""""
 
 To increase loading speed & reduce stutters during gameplay, you can
-use multiple threads to handle tasks such as pre-generating maps or
-pre-loading assets from disk into RAM.
+run pre-gameplay tasks in parallel, such as pre-generating maps
+or pre-loading assets from disk into RAM.
+
 
 .. warning:: Only the main thread is allowed to access OpenGL!
 
@@ -317,11 +323,20 @@ To safely implement multi-threaded loading, you will want to use the
 following general approach before allowing gameplay to begin:
 
 1. Pass ``lazy=True`` when creating :py:class:`~arcade.SpriteList`
-   instances in your loader threads
-2. Inside the main thread, call :py:meth:`~arcade.SpriteList.initialize`
-   once each SpriteList is ready to allocate corresponding GPU resources
+   instances in your loading code
+2. Sync the SpriteList data back to the main thread once loading
+   is finished
+3. Inside the main thread, call :py:meth:`~arcade.SpriteList.initialize`
+   on each SpriteList once it's ready to allocate GPU resources
+
+
+Very advanced users can use :py:mod:`subprocess` to create SpriteLists
+inside another process and the :py:mod:`pickle` module to help pass data
+back to the main process.
 
 Please see the following for additional information:
 
-* :ref:`Arcade's OpenGL notes <open_gl_notes>` for arcade-specific threading considerations
-* `Python's general documentation on threading <https://docs.python.org/3/library/threading.html>`_
+* :ref:`Arcade's OpenGL notes <open_gl_notes>` for arcade-specific
+  threading considerations
+* Python's :py:mod:`threading` documentation
+* Python's :py:mod:`subprocess` and :py:mod:`pickle` documentation
