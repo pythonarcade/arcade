@@ -54,25 +54,27 @@ class SpriteList(Generic[SpriteType]):
     SpriteList supports batch operations on sprites, especially drawing
 
     :py:meth:`.SpriteList.draw` is the best way to draw sprites. See
-    :ref:`pg_spritelists_why` for more information on why.
+    :ref:`pg_spritelists_why` for an explanation of why.
 
     Experienced developers may also want to see :ref:`pg_spritelists_advanced`.
 
     :param bool use_spatial_hash: Set this to ``True`` for
            :ref:`faster collision checking & slower changes <pg_spritelists_spatial_hashing>`
-    :param int spatial_hash_cell_size: The cell size of the spatial hash
-           in pixels, if enabled (default: 128).
-    :param TextureAtlas atlas: :ref:`Override the default/global atlas <pg_spritelist_lazy_spritelists>`
+    :param int spatial_hash_cell_size: The cell size of the internal
+           :ref:`spatial hash <pg_spritelists_spatial_hashing>` in
+           pixels, if enabled (default: 128).
+    :param TextureAtlas atlas: :ref:`Override the default/global atlas <pg_spritelist_texture_atlases>`
            for this SpriteList.
     :param int capacity: The initial capacity of the internal
            buffer. The default of 100 is usually ok, but you can change
            it when you know a list will be much larger or smaller.
-    :param bool lazy: Set this to True to delay creating OpenGL
-           resources until the 1st draw or :py:meth:`~.SpriteList.initialize`
-           is called. See the :ref:`Programming Guide <pg_spritelist_lazy_spritelists>`
-           for more information on when & how to use this.
-    :param bool visible: When this is False, calling draw on this list
-           will do nothing.
+    :param bool lazy: Set this to ``True`` to delay creating OpenGL
+           resources until forced to. Use :py:meth:`~.SpriteList.initialize`
+           to manually create them. See the :ref:`pg_spritelist_lazy_spritelists`
+           for more information.
+    :param bool visible: When ``False``, calling :py:meth:`.SpriteList.draw`
+           on this list will do nothing until :py:attr:`SpriteList.visible`
+           is set to ``True``.
     """
 
     def __init__(
@@ -1064,12 +1066,12 @@ class SpriteList(Generic[SpriteType]):
         """
         Draw this SpriteList into the current OpenGL context.
 
-        By default, SpriteLists draw starting from their lowest index
-        toward their highest.
+        If :py:attr:`.SpriteList.visible` is ``False``, this method
+        has no effect. Otherwise, contained :py:class:`~arcade.Sprite` instances
+        will be drawn from the lowest index to the highest.
 
-        For the best results when using pixel art, use
-        ``pixelated=True`` and follow the advice of the
-        :ref:`Programming Guide's article on edge artifacts <edge_artifacts>`.
+        When using pixel art, use ``pixelated=True`` and follow the advice of the
+        :ref:`guide on eliminating edge artifacts <edge_artifacts>`.
 
         :param filter: Set a custom OpenGL filter, such as ``gl.GL_NEAREST``
             to avoid smoothing.

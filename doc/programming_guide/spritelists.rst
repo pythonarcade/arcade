@@ -279,8 +279,8 @@ You can delay creating the OpenGL resources for a
 The SpriteList won't create the OpenGL resources until forced to
 by one of the following:
 
- 1. The first :py:meth:`~arcade.SpriteList.draw` call on the SpriteList
- 2. Its :py:meth:`~arcade.SpriteList.initialize` method is called
+ 1. The first :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>` call on it
+ 2. :py:meth:`SpriteList.draw() <arcade.SpriteList.initialize>`
  3. GPU-backed collisions, if enabled
 
 This behavior is most useful in the following cases:
