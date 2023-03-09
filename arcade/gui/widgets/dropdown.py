@@ -135,7 +135,7 @@ class UIDropdown(UILayout):
     def _show_overlay(self):
         manager = self._find_ui_manager()
         if manager is None:
-            raise Exception("UIDropdown could not find ")
+            raise Exception("UIDropdown could not find UIManager in its parents.")
 
         manager.add(self._layout, layer=10)
         self._overlay_visible = True
