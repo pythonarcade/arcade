@@ -1062,7 +1062,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter: Optional = None, pixelated: bool = None, blend_function: Optional = None):
+    def draw(self, *, filter: Optional[int] = None, pixelated: bool = False, blend_function: Optional[int] = None):
         """
         Draw this SpriteList into the current OpenGL context.
 
