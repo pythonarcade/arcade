@@ -312,7 +312,15 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
         """
-        Draw the sprite.
+        Draw the sprite into the current OpenGL context.
+
+        .. warning:: You are probably looking for :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>`!
+
+                     Drawing individual sprites is slow compared to using :py:class:`~arcade.SpriteList`.
+                     See :ref:`pg_spritelists_why` for more information.
+
+        This method is mostly a debugging method and may be removed one day.
+
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.

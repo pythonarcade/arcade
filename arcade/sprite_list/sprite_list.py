@@ -53,13 +53,10 @@ class SpriteList(Generic[SpriteType]):
     """
     SpriteList supports batch operations on sprites, especially drawing
 
-    You should use :py:meth:`.SpriteList.draw` to draw sprites in
-    batches because it is much faster than trying to draw them
-    individually.
+    :py:meth:`.SpriteList.draw` is the best way to draw sprites. See
+    :ref:`pg_spritelists_why` for more information on why.
 
-    See the :ref:`Programming Guide's page on SpriteLists <pg_spritelists>`
-    for more information on why, as well as an overview of SpriteList's
-    advanced features.
+    Experienced developers may also want to see :ref:`pg_spritelists_advanced`.
 
     :param bool use_spatial_hash: Set this to ``True`` for
            :ref:`faster collision checking & slower changes <pg_spritelists_spatial_hashing>`

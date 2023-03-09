@@ -9,25 +9,19 @@ Drawing with SpriteLists
 Why SpriteLists?
 ----------------
 
-Your Game Will Be Faster
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Graphics hardware is designed to draw objects in groups called batches.
-:py:class:`~arcade.SpriteList` automatically translates your
-:py:class:`~arcade.Sprite` instances into optimized batches.
-
-Trying to force Sprites to draw one at a time will make your game
-run much slower.
-
-.. tip:: Don't use :py:class:`~arcade.Sprite`'s :py:meth:`~arcade.Sprite.draw` method!
-
-         This method uses a batch size of 1 for each sprite. It's meant
-         for debugging rather than drawing. Use
-         :py:meth:`~arcade.SpriteList` for drawing instead!
-
-
-Development Will Be Faster
+They're How Hardware Works
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Graphics hardware is designed to draw groups of objects at the same time.
+These groups are called batches. :py:class:`~arcade.SpriteList` automatically
+translates :py:class:`~arcade.Sprite` instances into optimized batches.
+
+Using fewer batches can help your game render faster. Drawing sprites one
+at a time will require more batches, so you should avoid it whenever
+possible! It will make your game run slower!
+
+SpriteLists Help Develop Games Faster
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 SpriteLists increase your efficiency as a developer:
 
