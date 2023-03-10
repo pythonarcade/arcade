@@ -112,10 +112,6 @@ class ImageData:
     def __repr__(self):
         return f"<ImageData width={self.width}, height={self.height}, hash={self.hash}>"
 
-    def __del__(self):
-        pass
-        # print("ImageData.__del__", self)
-
 
 class Texture:
     """
@@ -135,7 +131,6 @@ class Texture:
         "_size",
         "_vertex_order",
         "_transforms",
-        "_sprite",
         "_sprite_list",
         "_hit_box_algorithm",
         "_hit_box_points",
@@ -177,8 +172,7 @@ class Texture:
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
 
-        # Internal sprite stuff for drawing
-        self._sprite: Optional[Sprite] = None
+        # Internal spritelist for drawing
         self._sprite_list: Optional[SpriteList] = None
 
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
@@ -194,7 +188,7 @@ class Texture:
         self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Track what atlases the image is in
-        self._atlas_refs: WeakSet["TextureAtlas"] = WeakSet()
+        self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
@@ -702,20 +696,23 @@ class Texture:
         """
         Remove this texture from all atlases.
         """
-        for atlas in self._atlas_refs:
+        for atlas in self._atlas_refs or ():
             atlas.remove(self)
 
     def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
         """
         Add a reference to an atlas that this texture is in.
         """
+        if self._atlas_refs is None:
+            self._atlas_refs = WeakSet()
         self._atlas_refs.add(atlas)
 
     def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
         """
         Remove a reference to an atlas that this texture is in.
         """
-        self._atlas_refs.remove(atlas)
+        if self._atlas_refs is not None:
+            self._atlas_refs.remove(atlas)
 
     # ----- Utility functions -----
 
@@ -764,15 +761,12 @@ class Texture:
 
     # ----- Drawing functions -----
 
-    def _create_cached_sprite(self):
-        from arcade.sprite import Sprite
+    def _create_cached_spritelist(self) -> "SpriteList":
+        """Create or return the cached sprite list."""
         from arcade.sprite_list import SpriteList
-
-        if self._sprite is None:
-            self._sprite = Sprite(self)
-            self._sprite.textures = [self]
+        if self._sprite_list is None:
             self._sprite_list = SpriteList(capacity=1)
-            self._sprite_list.append(self._sprite)
+        return self._sprite_list
 
     def draw_sized(
         self,
@@ -797,15 +791,21 @@ class Texture:
         :param float angle: Angle to draw texture
         :param int alpha: Alpha value to draw texture
         """
-        self._create_cached_sprite()
-        if self._sprite and self._sprite_list:
-            self._sprite.center_x = center_x
-            self._sprite.center_y = center_y
-            self._sprite.height = height
-            self._sprite.width = width
-            self._sprite.angle = angle
-            self._sprite.alpha = alpha
-            self._sprite_list.draw()
+        from arcade import Sprite
+        spritelist = self._create_cached_spritelist()
+        sprite = Sprite(
+            self,
+            center_x=center_x,
+            center_y=center_y,
+            angle=angle,
+        )
+        sprite.width = width
+        sprite.size = (width, height)
+        sprite.alpha = alpha
+        # Due to circular references we can't keep the sprite around
+        spritelist.append(sprite)
+        spritelist.draw()
+        spritelist.remove(sprite)
 
     def draw_scaled(
         self,
@@ -828,15 +828,20 @@ class Texture:
         :param float angle: Angle to rotate the texture by.
         :param int alpha: The transparency of the texture `(0-255)`.
         """
-
-        self._create_cached_sprite()
-        if self._sprite and self._sprite_list:
-            self._sprite.center_x = center_x
-            self._sprite.center_y = center_y
-            self._sprite.scale = scale
-            self._sprite.angle = angle
-            self._sprite.alpha = alpha
-            self._sprite_list.draw()
+        from arcade import Sprite
+        spritelist = self._create_cached_spritelist()
+        sprite = Sprite(
+            self,
+            center_x=center_x,
+            center_y=center_y,
+            angle=angle,
+            scale=scale,
+        )
+        sprite.alpha = alpha
+        # Due to circular references we can't keep the sprite around
+        spritelist.append(sprite)
+        spritelist.draw()
+        spritelist.remove(sprite)
 
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets
@@ -864,6 +869,9 @@ class Texture:
         return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
+        import os
+        pid = os.getpid()
+        print("Texture.__del__", pid)
         if getattr(self, "_atlas_refs", None) is not None:
             for atlas in self._atlas_refs:
                 atlas.remove(self)
