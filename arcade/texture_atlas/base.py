@@ -166,6 +166,9 @@ class ImageDataRefCounter:
         self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
 
     def dec_ref(self, image_data: "ImageData") -> None:
+        # TODO: Should we raise an error if the ref count is 0?
+        if image_data.hash not in self._data:
+            return
         self._data[image_data.hash] -= 1
         if self._data[image_data.hash] == 0:
             del self._data[image_data.hash]
