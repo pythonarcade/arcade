@@ -27,7 +27,6 @@ from arcade import cache as _cache
 from arcade import hitbox
 
 if TYPE_CHECKING:
-    from arcade.sprite import Sprite
     from arcade.sprite_list import SpriteList
     from arcade import TextureAtlas
 
@@ -799,8 +798,10 @@ class Texture:
             center_y=center_y,
             angle=angle,
         )
+        # sprite.size = (width, height)
         sprite.width = width
-        sprite.size = (width, height)
+        sprite.height = height
+
         sprite.alpha = alpha
         # Due to circular references we can't keep the sprite around
         spritelist.append(sprite)

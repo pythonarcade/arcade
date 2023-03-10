@@ -151,21 +151,21 @@ class BasicSprite:
             for sprite_list in self.sprite_lists:
                 sprite_list._update_height(self)
 
-    @property
-    def size(self) -> Point:
-        """Get or set the size of the sprite as a pair of values."""
-        return self._width, self._height
+    # @property
+    # def size(self) -> Point:
+    #     """Get or set the size of the sprite as a pair of values."""
+    #     return self._width, self._height
 
-    @size.setter
-    def size(self, new_value: Point):
-        if new_value[0] != self._width or new_value[1] != self._height:
-            self._scale = new_value[0] / self._texture.width, new_value[1] / self._texture.height
-            self._width = new_value[0]
-            self._height = new_value[1]
+    # @size.setter
+    # def size(self, new_value: Point):
+    #     if new_value[0] != self._width or new_value[1] != self._height:
+    #         self._scale = new_value[0] / self._texture.width, new_value[1] / self._texture.height
+    #         self._width = new_value[0]
+    #         self._height = new_value[1]
 
-            self.update_spatial_hash()
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_size(self)
+    #         self.update_spatial_hash()
+    #         for sprite_list in self.sprite_lists:
+    #             sprite_list._update_size(self)
 
     @property
     def scale(self) -> float:
