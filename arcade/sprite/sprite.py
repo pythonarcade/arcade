@@ -493,9 +493,10 @@ class Sprite(BasicSprite, PymunkMixin):
         if self._sprite_list is None:
             from arcade import SpriteList
             self._sprite_list = SpriteList(capacity=1)
-            self._sprite_list.append(self)
-
+        
+        self._sprite_list.append(self)
         self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
+        self._sprite_list.remove(self)
 
     # ----Update Methods ----
 
