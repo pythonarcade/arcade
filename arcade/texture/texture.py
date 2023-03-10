@@ -869,9 +869,6 @@ class Texture:
         return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
-        import os
-        pid = os.getpid()
-        print("Texture.__del__", pid)
         if getattr(self, "_atlas_refs", None) is not None:
             for atlas in self._atlas_refs:
                 atlas.remove(self)
