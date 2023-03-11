@@ -24,6 +24,9 @@ Controls:
     SPACE: Request a new fact OR wait for the next fact to be displayed
     F: Toggle fullscreen
     ESC: Close the window
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.net_process_animal_facts
 """
 import PIL.Image
 import random
