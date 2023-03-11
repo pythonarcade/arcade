@@ -166,12 +166,19 @@ class ImageDataRefCounter:
         self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
 
     def dec_ref(self, image_data: "ImageData") -> None:
+        # TODO: Should we raise an error if the ref count is 0?
+        if image_data.hash not in self._data:
+            return
         self._data[image_data.hash] -= 1
         if self._data[image_data.hash] == 0:
             del self._data[image_data.hash]
 
     def get_refs(self, image_data: "ImageData") -> int:
         return self._data.get(image_data.hash, 0)
+
+    def count_refs(self) -> int:
+        """Helper function to count the total number of references."""
+        return sum(self._data.values())
 
     def __len__(self) -> int:
         return len(self._data)
@@ -465,6 +472,7 @@ class TextureAtlas:
             self.write_image(texture.image_data.image, x, y)
 
         self._image_ref_count.inc_ref(texture.image_data)
+        texture.add_atlas_ref(self)
         return self._allocate_texture(texture)
 
     def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
@@ -530,7 +538,9 @@ class TextureAtlas:
             )
         except AllocatorException:
             raise AllocatorException(
-                f"No more space for image {image_data.hash} size={image.size}"
+                f"No more space for image {image_data.hash} size={image.size}. "
+                f"Curr size: {self._size}. "
+                f"Max size: {self._max_size}"
             )
 
         LOG.debug("Allocated new space for image %s : %s %s", image_data.hash, x, y)

@@ -10,6 +10,7 @@ import arcade
 from arcade.types import Color, Point
 from arcade.draw_commands import get_four_byte_color
 from arcade.resources import resolve_resource_path
+from arcade.utils import PerformanceWarning, warning
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -186,13 +187,8 @@ class Text:
         group: Optional[pyglet.graphics.Group] = None,
         start_z: float = 0
     ):
-        """Build a text object"""
-
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
-
-        if align not in ("left", "right"):
-            multiline = True
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
@@ -661,6 +657,10 @@ def create_text_sprite(
     )
 
 
+@warning(
+    message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
+    warning_type=PerformanceWarning,
+    )
 def draw_text(
     text: Any,
     start_x: float,

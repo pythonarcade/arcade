@@ -528,7 +528,6 @@ class DefaultFrameBuffer(Framebuffer):
     __slots__ = ()
 
     def __init__(self, ctx: "Context"):
-        """Detect the default framebuffer"""
         self._ctx = ctx
         # TODO: Can we query this?
         self._samples = 0

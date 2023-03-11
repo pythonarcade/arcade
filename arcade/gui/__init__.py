@@ -37,7 +37,6 @@ from arcade.gui.widgets import UISpriteWidget
 from arcade.gui.widgets.buttons import UITextureButton, UIFlatButton
 from arcade.gui.widgets.slider import UISlider
 from arcade.gui.widgets import UIWidget
-from arcade.gui.widgets import UIWidgetParent
 from arcade.gui.property import ListProperty, DictProperty, Property, bind
 from arcade.gui.mixins import UIDraggableMixin
 from arcade.gui.mixins import UIMouseFilterMixin
@@ -88,7 +87,6 @@ __all__ = [
     "UITextureToggle",
     "UITextWidget",
     "UIWidget",
-    "UIWidgetParent",
     "Surface",
     "Rect",
     "NinePatchTexture",

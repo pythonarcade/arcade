@@ -22,6 +22,13 @@ class UIAnchorLayout(UILayout):
     - anchor_y: str = None - uses `self.default_anchor_y` as default
     - align_y: float = 0
 
+    Usage::
+
+        manager = UIManager()
+        manager.enable()
+        anchor = manager.add(UIAnchorLayout())
+        anchor.add(child=child, ...)
+
     """
 
     default_anchor_x = "center"
@@ -81,7 +88,7 @@ class UIAnchorLayout(UILayout):
 
         :return: given child
         """
-        return super(UIAnchorLayout, self).add(
+        return super().add(
             child=child,
             anchor_x=anchor_x,
             align_x=align_x,

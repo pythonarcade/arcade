@@ -171,7 +171,7 @@ from .sprite import PymunkMixin
 from .sprite import SpriteType
 from .sprite import Sprite
 from .sprite import BasicSprite
-from .sprite import SimpleSprite
+# from .sprite import SimpleSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
@@ -269,7 +269,7 @@ __all__ = [
     'Scene',
     'Sound',
     'BasicSprite',
-    'SimpleSprite',
+    # 'SimpleSprite',
     'Sprite',
     'SpriteType',
     'PymunkMixin',

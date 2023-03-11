@@ -1,16 +1,19 @@
 """
 Classic A-star algorithm for path finding.
 """
-import sys
 from arcade.types import Point
 from arcade import check_for_collision_with_list, SpriteList, Sprite
 from typing import Union, List, Tuple, Set, Optional
 
-if 'shapely' in sys.modules:
+try:
+    import shapely  # noqa: F401
+    use_shapely = True
+except ImportError:
+    use_shapely = False
+if use_shapely:
     from .paths_shapely import has_line_of_sight  # noqa: F401
 else:
     from .paths_python import has_line_of_sight  # noqa: F401
-
 
 def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,

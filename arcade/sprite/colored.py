@@ -45,9 +45,6 @@ class SpriteSolidColor(Sprite):
         angle: float = 0,
         **kwargs,
     ):
-        """
-        Create a solid-color rectangular sprite.
-        """
         texture = Texture(
             self._default_image,
             hit_box_points=(

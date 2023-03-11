@@ -184,7 +184,7 @@ Properties of a :class:`Section`:
     If True the section mouse events will receive x, y coordinates section
     related to the section dimensions and position (not related to the screen).
     **Note that although this seems very usefull, section local coordinates doesn't work with
-    arcade collision methods. You can use :class:`Section` ``get_xy_screen_relative`` to transform local
+    arcade collision methods. You can use Section ``get_xy_screen_relative`` to transform local
     mouse coordinates to screen coordinates that work with arcade collision methods**
 
 **enabled:**
@@ -368,9 +368,9 @@ By default, ``on_draw``, ``on_update`` and ``on_resize`` are events that will al
 be triggered in the :class:`View` before any section has triggered them.
 This is the default but you can configure this with the following attributes:
 
--``view_draw_first``
--``view_update_first``
--``view_resize_first``
+- ``view_draw_first``
+- ``view_update_first``
+- ``view_resize_first``
 
 Both three work the same way:
 
