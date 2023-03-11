@@ -213,8 +213,8 @@ class ExampleWindow(arcade.Window):
                 self.mouse_pos[1], self.mouse_pos[0])
 
             self.barrel.position = (
-                self.barrel.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
-                self.barrel.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_y + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
             )
 
         else:
