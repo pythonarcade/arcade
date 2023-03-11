@@ -780,11 +780,10 @@ class ShapeElementList(Generic[TShape]):
     center_y = property(_get_center_y, _set_center_y)
 
     def _get_angle(self) -> float:
-        """Get the angle of the ShapeElementList in degrees."""
+        """Get or set the rotation in degrees (clockwise)"""
         return self._angle
 
     def _set_angle(self, value: float):
-        """Set the angle of the ShapeElementList in degrees."""
         self._angle = value
         self.program['Angle'] = -self._angle
 
