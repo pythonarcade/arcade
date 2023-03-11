@@ -34,14 +34,14 @@ class Player(arcade.Sprite):
         self.speed = 0
 
     def update(self):
-        # Convert angle in degrees to radians.
-        angle_rad = math.radians(self.angle)
-
         # Rotate the ship
         self.angle += self.change_angle
 
+        # Convert angle in degrees to radians.
+        angle_rad = math.radians(self.angle)
+
         # Use math to find our change based on our speed and angle
-        self.center_x += -self.speed * math.sin(angle_rad)
+        self.center_x += self.speed * math.sin(angle_rad)
         self.center_y += self.speed * math.cos(angle_rad)
 
 
@@ -109,9 +109,9 @@ class MyGame(arcade.Window):
 
         # Rotate left/right
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_angle = ANGLE_SPEED
-        elif key == arcade.key.RIGHT:
             self.player_sprite.change_angle = -ANGLE_SPEED
+        elif key == arcade.key.RIGHT:
+            self.player_sprite.change_angle = ANGLE_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
