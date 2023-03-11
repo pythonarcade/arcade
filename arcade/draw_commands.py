@@ -866,7 +866,7 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     :param int x: x location
     :param int y: y location
     :param int components: Number of components to fetch. By default we fetch 3
-        3 components (RGB). 4 componets would be RGBA.
+        3 components (RGB). 4 components would be RGBA.
     :rtype: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
