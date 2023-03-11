@@ -208,7 +208,7 @@ Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding title label to the layout
-    :lines: 209-211
+    :lines: 213-215
 
 
 Adding a Input Field
@@ -224,7 +224,7 @@ Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field to the layout
-    :lines: 209-212
+    :lines: 213-216
     :emphasize-lines: 4
 
 If you paid attention when we defined the ``input_text`` variable we passed the ``text`` parameter with our ``input_text_default`` argument. We basically added those parameters in our sub menu so that it can be used by both volume and options button, with texts respecting their names. We will repeat this again in the last also for those of you who are skipping through this section :P.
@@ -242,7 +242,7 @@ Adding it to the widget layout. Add this line after you have added the input fie
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button to the layout
-    :lines: 213
+    :lines: 217
 
 Adding a Dropdowm
 ~~~~~~~~~~~~~~~~~
@@ -257,7 +257,7 @@ Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown to the layout
-    :lines: 214
+    :lines: 218
 
 Adding a Slider
 ~~~~~~~~~~~~~~~
@@ -272,7 +272,7 @@ Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider to the layout
-    :lines: 215-216
+    :lines: 219-220
 
 Finishing touches
 ~~~~~~~~~~~~~~~~~
