@@ -12,6 +12,7 @@ SCREEN_TITLE = "Making a Menu"
 
 class MainView(arcade.View):
     """ Main application class. """
+
     def __init__(self):
         super().__init__()
 
@@ -43,7 +44,7 @@ class MainView(arcade.View):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -56,6 +57,8 @@ class MainView(arcade.View):
 
 
 class MenuView(arcade.View):
+    """Main menu view class."""
+
     def __init__(self, main_view):
         super().__init__()
 
@@ -106,12 +109,18 @@ class MenuView(arcade.View):
         @volume_button.event("on_click")
         def on_click_volume_button(event):
             volume_menu = SubMenu()
-            self.manager.add(volume_menu)
+            self.manager.add(
+                volume_menu,
+                layer=1
+            )
 
         @options_button.event("on_click")
         def on_click_options_button(event):
             options_menu = SubMenu()
-            self.manager.add(options_menu)
+            self.manager.add(
+                options_menu,
+                layer=1
+            )
 
     def on_hide_view(self):
         # Disable the UIManager when the view is hidden.
@@ -123,7 +132,7 @@ class MenuView(arcade.View):
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -135,6 +144,7 @@ class MenuView(arcade.View):
 
 class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     """Acts like a fake view/window."""
+
     def __init__(self, ):
         super().__init__(size_hint=(1, 1))
 
@@ -154,11 +164,12 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         ))
 
         back_button = arcade.gui.UIFlatButton(text="Back", width=250)
-        # The event listener we used earlier for the button will not work here.
+        # The type of event listener we used earlier for the button will not work here.
         back_button.on_click = self.on_click_back_button
 
         # Internal widget layout to handle widgets in this class.
-        widget_layout = arcade.gui.UIBoxLayout(align="left")
+        widget_layout = arcade.gui.UIBoxLayout(align="left", space_between=10)
+
         widget_layout.add(back_button)
 
         frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
@@ -172,7 +183,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)
     arcade.run()

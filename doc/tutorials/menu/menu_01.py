@@ -10,7 +10,8 @@ SCREEN_TITLE = "Making a Menu"
 
 
 class MainView(arcade.View):
-    """ Main application class. """
+    """ Main application class."""
+
     def __init__(self):
         super().__init__()
 
@@ -27,7 +28,7 @@ class MainView(arcade.View):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)
     arcade.run()

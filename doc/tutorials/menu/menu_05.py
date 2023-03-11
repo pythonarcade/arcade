@@ -12,6 +12,7 @@ SCREEN_TITLE = "Making a Menu"
 
 class MainView(arcade.View):
     """ Main application class. """
+
     def __init__(self):
         super().__init__()
 
@@ -43,7 +44,7 @@ class MainView(arcade.View):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -56,6 +57,8 @@ class MainView(arcade.View):
 
 
 class MenuView(arcade.View):
+    """Main menu view class."""
+
     def __init__(self, main_view):
         super().__init__()
 
@@ -105,13 +108,27 @@ class MenuView(arcade.View):
 
         @volume_button.event("on_click")
         def on_click_volume_button(event):
-            volume_menu = SubMenu("Volume Menu", "Enable Sound", ["Play: Rock", "Play: Punk", "Play: Pop"], "Adjust Volume")
-            self.manager.add(volume_menu)
+            volume_menu = SubMenu(
+                "Volume Menu", "How do you like your volume?", "Enable Sound",
+                ["Play: Rock", "Play: Punk", "Play: Pop"],
+                "Adjust Volume",
+            )
+            self.manager.add(
+                volume_menu,
+                layer=1
+            )
 
         @options_button.event("on_click")
         def on_click_options_button(event):
-            options_menu = SubMenu("Funny Menu", "Fun?", ["Make Fun", "Enjoy Fun", "Like Fun"], "Adjust Fun")
-            self.manager.add(options_menu)
+            options_menu = SubMenu(
+                "Funny Menu", "Too much fun here", "Fun?",
+                ["Make Fun", "Enjoy Fun", "Like Fun"],
+                "Adjust Fun",
+            )
+            self.manager.add(
+                options_menu,
+                layer=1
+            )
 
     def on_hide_view(self):
         # Disable the UIManager when the view is hidden.
@@ -123,7 +140,7 @@ class MenuView(arcade.View):
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -135,7 +152,8 @@ class MenuView(arcade.View):
 
 class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     """Acts like a fake view/window."""
-    def __init__(self, input_text_default: str, toggle_label: str, dropdown_options: list[str], slider_label: str):
+
+    def __init__(self, title: str, input_text: str, toggle_label: str, dropdown_options: list[str], slider_label: str):
         super().__init__(size_hint=(1, 1))
 
         # Setup frame which will act like the window.
@@ -155,50 +173,48 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         ))
 
         back_button = arcade.gui.UIFlatButton(text="Back", width=250)
-        # The event listener we used earlier for the button will not work here.
+        # The type of event listener we used earlier for the button will not work here.
         back_button.on_click = self.on_click_back_button
 
-        input_text = arcade.gui.UIInputText(text=input_text_default, width=250).with_border()
-        # Adds a widget of the color DARK_BLUE_GRAY with height to separate the widgets
-        # Its another method for adding space between widgets in a layout.
-        space_20 = arcade.gui.UISpace(height=20, color=arcade.color.DARK_BLUE_GRAY)
+        title_label = arcade.gui.UILabel(text=title, align="center", font_size=20, multiline=False)
+        # Adding some extra space around the title.
+        title_label_space = arcade.gui.UISpace(height=30, color=arcade.color.DARK_BLUE_GRAY)
 
-        toggle_label = arcade.gui.UILabel(text=toggle_label)
-        # Load the on-off textures. 
+        input_text = arcade.gui.UIInputText(text=input_text, width=250).with_border()
+
+        # Load the on-off textures.
         on_texture = arcade.load_texture(":resources:gui_basic_assets/toggle/circle_switch_on.png")
         off_texture = arcade.load_texture(":resources:gui_basic_assets/toggle/circle_switch_off.png")
 
+        # Create the on-off toggle and a label
+        toggle_label = arcade.gui.UILabel(text=toggle_label)
         toggle = arcade.gui.UITextureToggle(
             on_texture=on_texture,
             off_texture=off_texture,
             width=20,
             height=20
         )
-        space_30 = arcade.gui.UISpace(height=30, color=arcade.color.DARK_BLUE_GRAY)
 
+        # Align toggle and label horizontally next to each other
+        toggle_group = arcade.gui.UIBoxLayout(vertical=False, space_between=5)
+        toggle_group.add(toggle)
+        toggle_group.add(toggle_label)
+
+        # Create dropdown with a specified default.
         dropdown = arcade.gui.UIDropdown(default=dropdown_options[0], options=dropdown_options, height=20, width=250)
-        space_80 = arcade.gui.UISpace(height=80, color=arcade.color.DARK_BLUE_GRAY)
 
         slider_label = arcade.gui.UILabel(text=slider_label)
-        pressed_style = arcade.gui.UISlider.UIStyle(filled_bar=arcade.color.GREEN, unfilled_bar=arcade.color.RED)
-        default_style = arcade.gui.UISlider.UIStyle()
-        style_dict = {"press": pressed_style, "normal": default_style, "hover": default_style, "disabled": default_style}
-        # Configuring the styles is optional.
-        slider = arcade.gui.UISlider(value=50, width=250, style=style_dict)
-        space_70 = arcade.gui.UISpace(height=70, color=arcade.color.DARK_BLUE_GRAY)
+        slider = arcade.gui.UISlider(value=50, width=250)
 
-        # Internal widget layout to handle widgets in this class.
-        widget_layout = arcade.gui.UIBoxLayout(align="left")
+        widget_layout = arcade.gui.UIBoxLayout(align="left", space_between=10)
+        widget_layout.add(title_label)
+        widget_layout.add(title_label_space)
         widget_layout.add(input_text)
-        widget_layout.add(space_20)
-        widget_layout.add(toggle_label)
-        widget_layout.add(toggle)
-        widget_layout.add(space_30)
+        widget_layout.add(toggle_group)
         widget_layout.add(dropdown)
-        widget_layout.add(space_80)
         widget_layout.add(slider_label)
         widget_layout.add(slider)
-        widget_layout.add(space_70)
+
         widget_layout.add(back_button)
 
         frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
@@ -212,7 +228,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)
     arcade.run()

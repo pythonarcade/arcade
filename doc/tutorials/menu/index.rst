@@ -49,7 +49,7 @@ We are going to add a button to change the view. For drawing a button we would n
 
 .. literalinclude:: menu_02.py
     :caption: Intialising the Manager
-    :lines: 15-18
+    :lines: 16-19
     :emphasize-lines: 4
 
 After initialising the manager we need to enable it when the view is shown and disable it when the view is hiddien.
@@ -74,7 +74,7 @@ Now we have successfully setup the manager, only thing left it to add the button
 
   .. literalinclude:: menu_02.py
     :caption: Initialising the Button
-    :lines: 20-36
+    :lines: 21-37
 
 Initialise the Menu View
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@ First we setup buttons for resume, starting a new game, volume, options and exit
 
 .. literalinclude:: menu_03.py
     :caption: Initialising the Buttons
-    :lines: 64-69
+    :lines: 67-72
 
 Displaying the Buttons in a Grid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +116,7 @@ After setting up the buttons we add them to ``UIGridLayout``, so that they can d
 
 .. literalinclude:: menu_03.py
     :caption: Setting up the Grid
-    :lines: 71-87
+    :lines: 74-90
 
 Final code for the ``__init__`` method after these.
 
@@ -146,7 +146,7 @@ First we will add the event listener to resume, start_new_game and exit button a
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 1
-    :lines: 91-104
+    :lines: 94-107
 
 Adding ``on_click`` Callback for Volume and Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +161,7 @@ We have got ourselves a fake window currently. We now, pair it up with the volum
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 2
-    :lines: 106-114
+    :lines: 109-123
 
 Program Listings
 ~~~~~~~~~~~~~~~~
@@ -184,50 +184,65 @@ We will edit the parameters for the sub menu to suit our needs. Will explain lat
 
 .. literalinclude:: menu_05.py
     :caption: Editing parameters
-    :lines: 136-138
+    :lines: 153-156
 
-We also need to change accordingly the places where we have used this class i.e options and volume ``on_click`` event listener.
+We also need to change accordingly the places where we have used this class i.e options and volume ``on_click`` event listener. The layer parameter being set 1, means that this layer is always drawn on top i.e its the first layer.
 
 .. literalinclude:: menu_05.py
     :caption: Editing arguments
-    :lines: 106-114
+    :lines: 109-131
 
 Now you might be getting a little idea why we have edited the parameters but follow on to actually know the reason.
+
+
+Adding a Title label
+--------------------
+
+We will be adding a ``UILabel`` that explains the menu. ``UISpace`` is a widget that can be used to add space around some widget, you can set its color to the background color so it appears invisible.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding title label
+    :lines: 179-181
+
+Adding it to the widget layout.
+
+.. literalinclude:: menu_05.py
+    :caption: Adding title label to the layout
+    :lines: 209-211
 
 
 Adding a Input Field
 ~~~~~~~~~~~~~~~~~~~~~
 
-We will use ``UIInputText`` to add an input field. The ``with_border()`` function creates a border around the widget with color(default argument is black) black and thickness(default argument is 2px) 2px.
+We will use ``UIInputText`` to add an input field. The ``with_border()`` function creates a border around the widget with color(default argument is black) black and thickness(default argument is 2px) 2px. Add this just below the title label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field
-    :lines: 159-164
-    :emphasize-lines: 3-6
+    :lines: 183
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field to the layout
-    :lines: 191-193
+    :lines: 209-212
+    :emphasize-lines: 4
 
 If you paid attention when we defined the ``input_text`` variable we passed the ``text`` parameter with our ``input_text_default`` argument. We basically added those parameters in our sub menu so that it can be used by both volume and options button, with texts respecting their names. We will repeat this again in the last also for those of you who are skipping through this section :P.
 
 Adding a Toggle Button
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Don't go on the section title much, in arcade the ``UITextureToggle`` is not really a button it switches between two textures when clicked. Yes, it functions like a button but by "is not really a button" we meant that it doesn't inherits the button class.
+Don't go on the section title much, in arcade the ``UITextureToggle`` is not really a button it switches between two textures when clicked. Yes, it functions like a button but by "is not really a button" we meant that it doesn't inherits the button class. We also pair it up horizontally with the toggle label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button
-    :lines: 166-177
+    :lines: 189-201
 
-Adding it to the widget layout.
+Adding it to the widget layout. Add this line after you have added the input field.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button to the layout
-    :lines: 191-196
-    :emphasize-lines: 3-6
+    :lines: 213
 
 Adding a Dropdowm
 ~~~~~~~~~~~~~~~~~
@@ -236,13 +251,13 @@ We add a dropdowm by using ``UIDropdown``.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
-    :lines: 180-182
+    :lines: 203-204
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown to the layout
-    :lines: 197-198
+    :lines: 214
 
 Adding a Slider
 ~~~~~~~~~~~~~~~
@@ -251,19 +266,20 @@ The final widget. In arcade you can use ``UISlider`` to implement a slider. Ther
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
-    :lines: 183-189
+    :lines: 206-207
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider to the layout
-    :lines: 199-201
+    :lines: 215-216
 
 Finishing touches
 ~~~~~~~~~~~~~~~~~
 
 As we mentioned earlier, to explain the use of those parameters to the class. We basically used them so it can be used by both options and volume as we wanted to have different text for both.
 For those who have read the full tutorial line-by-line; 'They will never know'. :D.
+We also recommend to see the full code for this section.
 
 
 Program Listings

@@ -12,6 +12,7 @@ SCREEN_TITLE = "Making a Menu"
 
 class MainView(arcade.View):
     """ Main application class. """
+
     def __init__(self):
         super().__init__()
 
@@ -43,7 +44,7 @@ class MainView(arcade.View):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -56,6 +57,8 @@ class MainView(arcade.View):
 
 
 class MenuView(arcade.View):
+    """Main menu view class."""
+
     def __init__(self, main_view):
         super().__init__()
 
@@ -98,7 +101,7 @@ class MenuView(arcade.View):
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
 
-        # Enable the UIManager when the view is showm. 
+        # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
@@ -111,7 +114,7 @@ class MenuView(arcade.View):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)
     arcade.run()
