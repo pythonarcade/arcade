@@ -46,7 +46,7 @@ def draw_arc_filled(center_x: float, center_y: float,
          RGBA format.
     :param float start_angle: start angle of the arc in degrees.
     :param float end_angle: end angle of the arc in degrees.
-    :param float tilt_angle: angle the arc is tilted.
+    :param float tilt_angle: angle the arc is tilted (clockwise).
     :param float num_segments: Number of line segments used to draw arc.
     """
     unrotated_point_list = [(0.0, 0.0)]
@@ -89,7 +89,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     :param float start_angle: start angle of the arc in degrees.
     :param float end_angle: end angle of the arc in degrees.
     :param float border_width: width of line in pixels.
-    :param float tilt_angle: angle the arc is tilted.
+    :param float tilt_angle: angle the arc is tilted (clockwise).
     :param int num_segments: float of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     """
@@ -141,7 +141,7 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     :param float end_x: The ending x position of the parabola
     :param float height: The height of the parabola
     :param Color color: The color of the parabola
-    :param float tilt_angle: The angle of the tilt of the parabola
+    :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
 
     """
     center_x = (start_x + end_x) / 2
@@ -165,7 +165,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     :param float height: The height of the parabola
     :param Color color: The color of the parabola
     :param float border_width: The width of the parabola
-    :param float tilt_angle: The angle of the tilt of the parabola
+    :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -217,7 +217,8 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
-    :param float tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
+    :param float tilt_angle: Angle in degrees to tilt the circle (clockwise).
+                             Useful for low segment count circles
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
@@ -247,7 +248,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     :param float height: height of the ellipse.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-    :param float tilt_angle: Angle in degrees to tilt the ellipse.
+    :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
@@ -292,7 +293,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
-    :param float tilt_angle: Angle in degrees to tilt the ellipse.
+    :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
@@ -681,7 +682,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: width of the lines, in pixels.
-    :param float tilt_angle: rotation of the rectangle. Defaults to zero.
+    :param float tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
     """
     i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
     i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
@@ -759,7 +760,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     :param float height: height of the rectangle.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-    :param float tilt_angle: rotation of the rectangle. Defaults to zero.
+    :param float tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
     window = get_window()
     ctx = window.ctx
@@ -809,7 +810,7 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
     :param int texture: identifier of texture returned from
                         load_texture() call
     :param float scale: scale of texture
-    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float angle: rotation of the rectangle (clockwise). Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent,
                         255 (default) is fully visible
     """
@@ -830,7 +831,7 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     :param float width: width of texture
     :param float height: height of texture
     :param int texture: identifier of texture returned from load_texture() call
-    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float angle: rotation of the rectangle. Defaults to zero (clockwise).
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
@@ -849,7 +850,7 @@ def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param float width: The width of the rectangle.
     :param float height: The height of the rectangle.
     :param int texture: identifier of texture returned from load_texture() call
-    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float angle: rotation of the rectangle. Defaults to zero (clockwise).
     :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
