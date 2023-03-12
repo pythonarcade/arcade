@@ -5,7 +5,7 @@ derive from.
 import logging
 import os
 import time
-from typing import Tuple, Optional, TYPE_CHECKING
+from typing import Tuple, Optional
 
 import pyglet
 
@@ -17,6 +17,7 @@ from arcade import get_display_size
 from arcade import set_viewport
 from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
+from arcade.context import ArcadeContext
 from arcade.types import Color
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
@@ -28,9 +29,6 @@ MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
 _window: 'Window'
-
-if TYPE_CHECKING:
-    from arcade.context import ArcadeContext
 
 
 def get_screens():
@@ -178,8 +176,6 @@ class Window(pyglet.window.Window):
         self.flip_count: int = 0
         self.static_display: bool = False
 
-        # Don't import this at module level triggering GL initialization
-        from arcade.context import ArcadeContext
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = TRANSPARENT_BLACK
@@ -214,7 +210,7 @@ class Window(pyglet.window.Window):
         return self._current_view
 
     @property
-    def ctx(self) -> "ArcadeContext":
+    def ctx(self) -> ArcadeContext:
         """
         The OpenGL context for this window.
 
