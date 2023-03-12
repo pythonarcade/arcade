@@ -1,6 +1,6 @@
 from PIL import Image
 from pathlib import Path
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import arcade
 from arcade.types import Rect
@@ -16,11 +16,43 @@ class SpriteSheet:
 
     :param path: Path to the file to load.
     """
-    def __init__(self, path: Union[str, Path]):
-        self._path = path
-        path = arcade.resources.resolve_resource_path(path)
-        self._image = Image.open(path).convert("RGBA")
+    def __init__(
+            self,
+            path: Optional[Union[str, Path]] = None,
+            image: Optional[Image.Image] = None,
+        ):
+        self._path = None
+        if path:
+            self._path = arcade.resources.resolve_resource_path(path)
+            self._image = Image.open(self._path).convert("RGBA")
+        elif image:
+            self._image = image
+        else:
+            raise ValueError("Must provide either path or image")
+
         self._flip_flags = (False, False)
+
+    @classmethod
+    def from_image(cls, image: Image.Image):
+        return cls(image=image)
+
+    @property
+    def image(self) -> Image.Image:
+        """
+        The image of the sprite sheet.
+
+        :return: The image.
+        """
+        return self._image
+
+    @property
+    def path(self) -> Optional[Path]:
+        """
+        The path to the sprite sheet.
+
+        :return: The path.
+        """
+        return self._path
 
     @property
     def flip_flags(self) -> Tuple[bool, bool]:
