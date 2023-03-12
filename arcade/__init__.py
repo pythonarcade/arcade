@@ -149,9 +149,8 @@ from .draw_commands import get_pixel
 if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
-
-from .controller import ControllerManager
-from .controller import get_controllers
+    from .controller import ControllerManager
+    from .controller import get_controllers
 
 from .sound import Sound
 from .sound import load_sound
