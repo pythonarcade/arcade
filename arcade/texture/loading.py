@@ -133,7 +133,7 @@ def _load_or_get_image(
 ) -> Tuple[ImageData, bool]:
     """
     Load an image, or return a cached version
-    
+
     :param str file_path: Path to image
     :param str hit_box_algorithm: The hit box algorithm
     :param hash: Hash of the image
