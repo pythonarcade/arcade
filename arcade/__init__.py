@@ -105,6 +105,7 @@ from .application import get_screens
 from .application import open_window
 
 from .texture import Texture
+from .texture import TextureManager
 from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
@@ -279,6 +280,7 @@ __all__ = [
     'SpriteSolidColor',
     'Text',
     'Texture',
+    'TextureManager',
     'SpriteSheet',
     'TextureAtlas',
     'load_atlas',
