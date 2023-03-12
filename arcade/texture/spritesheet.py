@@ -2,7 +2,6 @@ from PIL import Image
 from pathlib import Path
 from typing import Union, Tuple, Optional
 
-import arcade
 from arcade.types import Rect
 
 
@@ -21,9 +20,10 @@ class SpriteSheet:
             path: Optional[Union[str, Path]] = None,
             image: Optional[Image.Image] = None,
         ):
+        from arcade.resources import resolve_resource_path
         self._path = None
         if path:
-            self._path = arcade.resources.resolve_resource_path(path)
+            self._path = resolve_resource_path(path)
             self._image = Image.open(self._path).convert("RGBA")
         elif image:
             self._image = image
