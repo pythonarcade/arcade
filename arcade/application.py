@@ -8,8 +8,6 @@ import time
 from typing import Tuple, Optional
 
 import pyglet
-
-import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
 
 import arcade
@@ -148,6 +146,7 @@ class Window(pyglet.window.Window):
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
         if antialiasing:
             try:
+                import pyglet.gl as gl
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
