@@ -14,6 +14,7 @@ class SpriteSheet:
     This is only a utility class. It does not have any special functionality
 
     :param path: Path to the file to load.
+    :param image: PIL image to use.
     """
     def __init__(
             self,
