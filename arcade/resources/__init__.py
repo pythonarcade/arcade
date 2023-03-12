@@ -35,12 +35,14 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
             path = Path(path)
 
     # Check for the existence of the file and provide useful feedback to
-    # avoid deep stack trace into pathlib
-    if not path.exists():
+    # avoid deep stack trace into pathlib.
+    try:
+        path.resolve(strict=True)
+    except FileNotFoundError:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
     # Always return absolute paths
-    return path.resolve()
+    return path
 
 
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
