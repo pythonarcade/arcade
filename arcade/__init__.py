@@ -407,8 +407,9 @@ if not getattr(sys, 'is_pyglet_doc_run', False):
     load_font(":resources:fonts/ttf/Kenney_Rocket_Square.ttf")
 
     # Load additional game controller mappings to Pyglet
-    try:
-        mappings_file = resources.resolve_resource_path(":resources:gamecontrollerdb.txt")
-        pyglet.input.controller.add_mappings_from_file(mappings_file)
-    except AssertionError:
-        pass
+    if not pyglet.options['headless']:
+        try:
+            mappings_file = resources.resolve_resource_path(":resources:gamecontrollerdb.txt")
+            pyglet.input.controller.add_mappings_from_file(mappings_file)
+        except AssertionError:
+            pass
