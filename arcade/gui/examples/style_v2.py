@@ -1,4 +1,4 @@
-from random import choice
+from itertools import cycle
 
 import arcade
 from arcade.gui import UIManager, UIOnClickEvent
@@ -96,10 +96,13 @@ class DemoWindow(arcade.Window):
 
         button1 = row.add_button("Click me to switch style", multiline=True)
 
+        style_options = cycle(STYLES)
+        next(style_options)  # skip default style in first round
+
         @button1.event("on_click")
         def change_style(event: UIOnClickEvent):
             btn: UIFlatButton = event.source
-            btn.style = choice([s for s in STYLES if s is not btn.style])
+            btn.style = next(style_options)
             btn.trigger_render()
 
         button2 = row.add_button("Toggle disable", multiline=True)
