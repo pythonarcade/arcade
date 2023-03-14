@@ -127,20 +127,6 @@ def make_transparent_color(color: Color, transparency: float):
     return color[0], color[1], color[2], transparency
 
 
-def uint24_to_three_byte_color(color: int) -> RGB:
-    """
-    Given an int between 0 and 16777215, return a RGB color tuple.
-
-    Example::
-
-        >>> arcade.uint24_to_three_byte_color(16777215)
-        (255, 255, 255)
-
-    :param int color: 3 byte int
-    """
-    return (color & (255 << 16)) >> 16, (color & (255 << 8)) >> 8, color & 255
-
-
 def uint32_to_four_byte_color(color: int) -> RGBA:
     """
     Given an int between 0 and 4294967295, return a RGBA color tuple.

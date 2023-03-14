@@ -63,7 +63,7 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
     pyglet.options['shadow_window'] = False
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
-# pyglet.options['win32_gdi_font'] = True
+pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
 from .drawing_support import get_four_byte_color
@@ -71,7 +71,6 @@ from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
-from .drawing_support import uint24_to_three_byte_color
 from .drawing_support import uint32_to_four_byte_color
 from .drawing_support import color_from_hex_string
 from .drawing_support import float_to_byte_color
