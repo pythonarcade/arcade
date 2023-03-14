@@ -77,10 +77,10 @@ in this repo for current tests.
 First, run `mypy arcade` and then `ruff arcade` from inside the arcade folder. You should fix
 any issues they report.
 
-Then run the framework's automated tests with the following command:
+Then run the framework's unit tests with the following command:
 
 ```shell
-pytest --ignore=tests/integration/examples
+pytest tests/unit
 ```
 
 ### Building & Testing Documentation
