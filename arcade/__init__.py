@@ -369,7 +369,6 @@ __all__ = [
     'start_render',
     'stop_sound',
     'timings_enabled',
-    'uint24_to_three_byte_color',
     'uint32_to_four_byte_color',
     'unschedule',
     'schedule_once',
