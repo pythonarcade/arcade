@@ -66,7 +66,7 @@ class Color(tuple):
     @property
     def normalized(self) -> Tuple[float, float, float, float]:
         """
-        Return this color as a tuple of normalized floats.
+        Return this color as a tuple of 4 normalized floats.
 
         Examples::
 
