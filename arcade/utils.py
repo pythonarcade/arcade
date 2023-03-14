@@ -12,6 +12,23 @@ from typing import Tuple, Type
 from pathlib import Path
 
 
+def outside_range_msg(var: str, value: int, lower: int = 0, upper: int = 255) -> str:
+    """
+    Helper function to generate text for ValueError messages.
+
+    Checking for error conditions is assumed to be external, so no
+    additional overhead will be incurred when this function is used
+    properly.
+
+    :param var: The name of the variable / value
+    :param value: The actual value received
+    :param lower: The accepted lower boundary, inclusive
+    :param upper: The accepted upper boundary, inclusive
+    :return:
+    """
+    return f"{var} must be between {lower} and {upper}, inclusive, not {value}"
+
+
 class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
     pass
