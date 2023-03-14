@@ -80,7 +80,7 @@ any issues they report.
 Then run the framework's automated tests with the following command:
 
 ```shell
-pytest --ignore=tests/test_examples
+pytest --ignore=tests/integration/examples
 ```
 
 ### Building & Testing Documentation
