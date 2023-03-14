@@ -99,16 +99,6 @@ def test_get_four_byte_color():
         arcade.get_four_byte_color(1000)
 
 
-def test_get_four_float_color():
-    assert arcade.get_four_float_color((1, 2, 3)) == (1/255, 2/255, 3/255, 1.0)
-    assert arcade.get_four_float_color((1, 2, 3, 4)) == (1/255, 2/255, 3/255, 4/255)
-
-    with pytest.raises(ValueError):
-        arcade.get_four_float_color((0, 0))
-    with pytest.raises(TypeError):
-        arcade.get_four_float_color(1000)
-
-
 def test_get_three_float_color():
     assert arcade.get_three_float_color((1, 2, 3)) == (1/255, 2/255, 3/255)
     assert arcade.get_three_float_color((1, 2, 3, 4)) == (1/255, 2/255, 3/255)

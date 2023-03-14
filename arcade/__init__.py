@@ -68,7 +68,6 @@ pyglet.options['win32_gdi_font'] = True
 # Imports from modules that don't do anything circular
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
-from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
 from .drawing_support import uint32_to_four_byte_color
@@ -326,7 +325,6 @@ __all__ = [
     'get_distance_between_sprites',
     'get_sprites_in_rect',
     'get_four_byte_color',
-    'get_four_float_color',
     'get_controllers',
     'get_game_controllers',
     'get_image',
