@@ -51,6 +51,8 @@ class EmitMaintainCount(EmitController):
 class EmitInterval(EmitController):
     """Base class used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
     def __init__(self, emit_interval: float):
+        if emit_interval <= 0:
+            raise ValueError("Invalid value for emit_interval. Must be larger than 0.")
         self._emit_interval = emit_interval
         self._carryover_time = 0.0
 
