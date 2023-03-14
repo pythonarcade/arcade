@@ -22,7 +22,56 @@ if TYPE_CHECKING:
 
 RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
-Color = Union[RGB, RGBA]
+
+
+# Color = Union[RGB, RGBA]
+class Color(tuple):
+
+    def __new__(cls, r: int = 0, g: int = 0, b: int = 0, a: int = 255):
+
+        if not 0 <= r <= 255:
+            raise ValueError("r must be between 0 and 255, inclusive")
+
+        if not 0 <= g <= 255:
+            raise ValueError("g must be between 0 and 255, inclusive")
+
+        if not 0 <= g <= 255:
+            raise ValueError("b must be between 0 and 255, inclusive")
+
+        if not 0 <= a <= 255:
+            raise ValueError("a must be between 0 and 255, inclusive")
+
+        super().__new__(cls, (r, g, b, a))
+
+    @property
+    def r(self) -> int:
+        return self[0]
+
+    @property
+    def g(self) -> int:
+        return self[1]
+
+    @property
+    def b(self) -> int:
+        return self[2]
+
+    @property
+    def a(self) -> int:
+        return self[3]
+
+    @classmethod
+    def from_intensity(cls, intensity: int, a: int = 255) -> "Color":
+        if not 0 <= intensity <= 255:
+            raise ValueError("intensity must be between 0 and 255, inclusive")
+
+        if not 0 <= a <= 255:
+            raise ValueError("a must be between 0 and 255, inclusive")
+
+        return Color(intensity, intensity, intensity, a)
+
+
+ColorLike = Union[Color, RGB, RGBA]
+
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
 Point = Tuple[float, float]
