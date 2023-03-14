@@ -5,7 +5,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 import math
 from typing import Tuple, Union, cast
 
-from arcade.types import Color, RGBA, RGB
+from arcade.types import Color, RGBA
 
 
 def get_points_for_thick_line(start_x: float, start_y: float,
