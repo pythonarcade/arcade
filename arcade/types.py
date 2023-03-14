@@ -42,7 +42,7 @@ class Color(tuple):
         if not 0 <= a <= 255:
             raise ValueError(outside_range_msg("a", a))
 
-        super().__new__(cls, (r, g, b, a))
+        return super().__new__(cls, (r, g, b, a))
 
     @property
     def r(self) -> int:
