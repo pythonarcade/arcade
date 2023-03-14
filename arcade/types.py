@@ -44,6 +44,9 @@ class Color(tuple):
 
         return super().__new__(cls, (r, g, b, a))
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
+
     @property
     def r(self) -> int:
         return self[0]
