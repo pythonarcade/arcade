@@ -30,9 +30,8 @@ from arcade import (
     get_window,
     gl,
     float_to_byte_color,
-    get_four_float_color,
 )
-from arcade.types import Color
+from arcade.types import Color, ColorLike
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -310,8 +309,8 @@ class SpriteList(Generic[SpriteType]):
         return float_to_byte_color(self._color)
 
     @color.setter
-    def color(self, color: Color):
-        self._color = get_four_float_color(color)
+    def color(self, color: ColorLike):
+        self._color = Color(*color).normalized
 
     @property
     def color_normalized(self) -> Tuple[float, float, float, float]:
