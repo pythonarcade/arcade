@@ -87,22 +87,6 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float]:
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
-def make_transparent_color(color: Color, transparency: float):
-    """
-    Given a RGB color, along with an alpha, returns an RGBA color tuple:
-    ``(R, G, B, transparency)``.
-
-    Example::
-
-        >>> arcade.make_transparent_color((255, 255, 255), 127)
-        (255, 255, 255, 127)
-
-    :param Color color: Three or four byte RGBA color
-    :param float transparency: Transparency
-    """
-    return color[0], color[1], color[2], transparency
-
-
 def uint32_to_four_byte_color(color: int) -> RGBA:
     """
     Given an int between 0 and 4294967295, return a RGBA color tuple.

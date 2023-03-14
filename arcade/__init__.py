@@ -69,7 +69,6 @@ pyglet.options['win32_gdi_font'] = True
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import make_transparent_color
 from .drawing_support import uint32_to_four_byte_color
 from .drawing_support import color_from_hex_string
 from .drawing_support import float_to_byte_color
@@ -352,7 +351,6 @@ __all__ = [
     'make_circle_texture',
     'make_soft_circle_texture',
     'make_soft_square_texture',
-    'make_transparent_color',
     'open_window',
     'pause',
     'print_timings',

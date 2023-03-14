@@ -110,10 +110,6 @@ def test_get_three_float_color():
         arcade.get_three_float_color(1000)
 
 
-def test_make_transparent_color():
-    assert arcade.make_transparent_color((1, 2, 3), 4) == (1, 2, 3, 4)
-
-
 def test_uint32_to_four_byte_color():
     assert arcade.uint32_to_four_byte_color(4294967295) == (255, 255, 255, 255)
     assert arcade.uint32_to_four_byte_color((1 << 24) + (2 << 16) + (3 << 8) + 4) == (1, 2, 3, 4)
