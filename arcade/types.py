@@ -25,6 +25,10 @@ if TYPE_CHECKING:
     from arcade.texture import Texture
 
 
+MAX_UINT24 = 0xFFFFFF
+MAX_UINT32 = 0xFFFFFFFF
+
+
 RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
 
@@ -131,8 +135,8 @@ class Color(tuple):
         :param a: an alpha value to use between 0 and 255, inclusive.
         """
 
-        if not 0 <= color <= 0xFFFFFF:
-            raise IntOutsideRangeError("color", color, 0, 0xFFFFFF)
+        if not 0 <= color <= MAX_UINT24:
+            raise IntOutsideRangeError("color", color, 0, MAX_UINT24)
 
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
@@ -161,8 +165,8 @@ class Color(tuple):
 
         :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
-        if not 0 <= color <= 0xFFFFFFFF:
-            raise IntOutsideRangeError("color", color, 0, 0xFFFFFFFF)
+        if not 0 <= color <= MAX_UINT32:
+            raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
 
         return cls(
             r=(color & 0xFF000000) >> 24,
