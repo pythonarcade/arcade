@@ -100,7 +100,7 @@ class Entity(arcade.Sprite):
         # Hit box will be set based on the first image used. If you want to specify
         # a different hit box, you can do it like the code below.
         # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-        self.set_hit_box(self.texture.hit_box_points)
+        self.set_hit_box(self.texture.hit_box.create_adjustable(self.position, self.angle, self.scale_xy))
 
 
 class Enemy(Entity):
@@ -400,9 +400,9 @@ class GameView(arcade.View):
         self.scene.draw()
 
         # Draw hit boxes.
-        # self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
-        # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
-        # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
+        self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
+        self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
+        self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
 
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()

@@ -5,19 +5,22 @@ These are the pure python versions of the functions.
 
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
-from arcade.types import Point, PointList
+from arcade.types import Point
+from arcade.hitbox import HitBox
 
 
-def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
+def are_polygons_intersecting(poly_a: HitBox, poly_b: HitBox) -> bool:
     """
     Return True if two polygons intersect.
 
-    :param PointList poly_a: List of points that define the first polygon.
-    :param PointList poly_b: List of points that define the second polygon.
+    :param HitBox poly_a: List of points that define the first polygon.
+    :param HitBox poly_b: List of points that define the second polygon.
     :Returns: True or false depending if polygons intersect
     :rtype bool:
     """
-    for polygon in (poly_a, poly_b):
+    points_a = poly_a.get_adjusted_points()
+    points_b = poly_b.get_adjusted_points()
+    for polygon in (points_a, points_b):
 
         for i1 in range(len(polygon)):
             i2 = (i1 + 1) % len(polygon)
@@ -29,7 +32,7 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
 
             min_a, max_a, min_b, max_b = (None,) * 4
 
-            for poly in poly_a:
+            for poly in points_a:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_a is None or projected < min_a:
@@ -37,7 +40,7 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
                 if max_a is None or projected > max_a:
                     max_a = projected
 
-            for poly in poly_b:
+            for poly in points_b:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_b is None or projected < min_b:
@@ -134,7 +137,7 @@ def are_lines_intersecting(p1: Point, q1: Point, p2: Point, q2: Point) -> bool:
     return False
 
 
-def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
+def is_point_in_polygon(x: float, y: float, polygon: HitBox) -> bool:
     """
     Checks if a point is inside a polygon of three or more points.
 
@@ -143,8 +146,9 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
     :param PointList polygon_point_list: List of points that define the polygon.
     :Returns: True or false depending if point is inside polygon
     """
+    points = polygon.get_adjusted_points()
     p = x, y
-    n = len(polygon)
+    n = len(points)
 
     # There must be at least 3 vertices
     # in polygon
@@ -164,23 +168,23 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
     while True:
         next_item = (i + 1) % n
 
-        if polygon[i][1] == p[1]:
+        if points[i][1] == p[1]:
             decrease += 1
 
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
         # segment from 'polygon[i]' to 'polygon[next]'
-        if (are_lines_intersecting(polygon[i],
-                                   polygon[next_item],
+        if (are_lines_intersecting(points[i],
+                                   points[next_item],
                                    p, extreme)):
             # If the point 'p' is collinear with line
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
-            if get_triangle_orientation(polygon[i], p,
-                                        polygon[next_item]) == 0:
+            if get_triangle_orientation(points[i], p,
+                                        points[next_item]) == 0:
                 return not is_point_in_box(
-                    polygon[i], p,
-                    polygon[next_item],
+                    points[i], p,
+                    points[next_item],
                 )
 
             count += 1

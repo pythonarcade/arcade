@@ -22,7 +22,7 @@ from arcade.texture.transforms import (
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
-from arcade.hitbox import HitBoxAlgorithm
+from arcade.hitbox import HitBoxAlgorithm, HitBox
 from arcade import cache as _cache
 from arcade import hitbox
 
@@ -120,7 +120,7 @@ class Texture:
 
     :param PIL.Image.Image image: The image or ImageData for this texture
     :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
-    :param PointList hit_box_points: List of points for the hit box (Optional).
+    :param HitBox hit_box: A HitBox for the texture to use (Optional).
                                      Completely overrides the hit box algorithm.
     :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
@@ -132,7 +132,7 @@ class Texture:
         "_transforms",
         "_sprite_list",
         "_hit_box_algorithm",
-        "_hit_box_points",
+        "_hit_box",
         "_hash",
         "_cache_name",
         "_atlas_name",
@@ -147,7 +147,7 @@ class Texture:
         image: Union[PIL.Image.Image, ImageData],
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box_points: Optional[PointList] = None,
+        hit_box: Optional[HitBox] = None,
         hash: Optional[str] = None,
         **kwargs,
     ):
@@ -184,7 +184,7 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
+        self._hit_box: HitBox = hit_box or self._calculate_hit_box()
 
         # Track what atlases the image is in
         self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
@@ -388,7 +388,7 @@ class Texture:
         self._size = value
 
     @property
-    def hit_box_points(self) -> PointList:
+    def hit_box(self) -> HitBox:
         """
         Get the hit box points for this texture.
 
@@ -397,7 +397,7 @@ class Texture:
 
         :return: PointList
         """
-        return self._hit_box_points
+        return self._hit_box
 
     @property
     def hit_box_algorithm(self) -> HitBoxAlgorithm:
@@ -624,11 +624,11 @@ class Texture:
         :param Transform transform: Transform to apply
         :return: New texture
         """
-        new_points = transform.transform_hit_box_points(self._hit_box_points)
+        new_hit_box = HitBox(transform.transform_hit_box_points(self._hit_box.points))
         texture = Texture(
             self.image_data,
             hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_points=new_points,
+            hit_box=new_hit_box,
             hash=self._hash,
         )
         texture.width = self.width
@@ -740,7 +740,7 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def _calculate_hit_box_points(self) -> PointList:
+    def _calculate_hit_box(self) -> HitBox:
         """
         Calculate the hit box points for this texture based on the configured
         hit box algorithm. This is usually done on texture creation
@@ -749,14 +749,14 @@ class Texture:
         # Check if we have cached points
         points = _cache.hit_box_cache.get(self.cache_name)
         if points:
-            return points
+            return HitBox(points)
 
         # Calculate points with the selected algorithm
         points = self._hit_box_algorithm.calculate(self.image)
         if self._hit_box_algorithm.cache:
             _cache.hit_box_cache.put(self.cache_name, points)
 
-        return points
+        return HitBox(points)
 
     # ----- Drawing functions -----
 

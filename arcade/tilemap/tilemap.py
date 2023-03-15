@@ -24,7 +24,7 @@ from arcade import (
     SpriteList,
     get_window,
 )
-from arcade.hitbox import HitBoxAlgorithm
+from arcade.hitbox import HitBoxAlgorithm, AdjustableHitBox
 from arcade.texture.loading import _load_tilemap_texture
 
 if TYPE_CHECKING:
@@ -560,7 +560,7 @@ class TileMap:
                     for point in points:
                         point[0], point[1] = point[1], point[0]
 
-                my_sprite.hit_box = points
+                my_sprite.hit_box = AdjustableHitBox(points, position=my_sprite.position, rotation=my_sprite.angle, scale=my_sprite.scale_xy)
 
         if tile.animation:
             key_frame_list = []
