@@ -67,7 +67,6 @@ pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
 from .drawing_support import get_four_byte_color
-from .drawing_support import get_three_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import color_from_hex_string
 
@@ -332,7 +331,6 @@ __all__ = [
     'get_sprites_at_point',
     'SpatialHash',
     'get_timings',
-    'get_three_float_color',
     'create_text_sprite',
     'clear_timings',
     'get_window',

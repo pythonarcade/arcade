@@ -65,28 +65,6 @@ def get_four_byte_color(color: Color) -> RGBA:
         raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
 
 
-def get_three_float_color(color: Color) -> Tuple[float, float, float]:
-    """
-    Converts an RGB or RGBA byte color to a floating point RGB color.
-    Basically we divide each component by 255.
-    Float based colors are often used with OpenGL.
-
-    Examples:
-
-        >>> arcade.get_three_float_color(arcade.color.RED)
-        (1.0, 0.0, 0.0)
-        >>> arcade.get_three_float_color((255, 255, 255, 255)) 
-        (1.0, 1.0, 1.0)
-
-    :param Color color: Three or four byte tuple
-    :return: Three floats as a RGB tuple
-    """
-    if len(color) in (3, 4):
-        return color[0] / 255, color[1] / 255, color[2] / 255  # type: ignore
-    else:
-        raise ValueError("This isn't a 3 or 4 byte color")
-
-
 def color_from_hex_string(code: str) -> RGBA:
     """
     Make a color from a hex code (3, 4, 6 or 8 characters of hex, normally with a hashtag).
