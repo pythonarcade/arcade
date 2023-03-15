@@ -171,6 +171,46 @@ class Color(tuple):
             a=(color & 0xFF)
         )
 
+    @classmethod
+    def from_normalized(cls, r: float = 1.0, g: float = 1.0, b: float = 1.0, a: float = 1.0) -> "Color":
+        """
+        Convert normalized float channels into an RGBA Color
+
+        Input channels must be normalized, ie between 0.0 and 1.0. If
+        they are not, a :py:class:`arcade.utils.NormalizedRangeError`
+        will be raised. This is a subclass of :py:class`ValueError` and
+        can be handled as such.
+
+        Examples::
+
+            >>> Color.from_normalized(1.0, 0.0, 0.0)
+            Color(255, 0, 0, 255)
+
+            >>> normalized_half_opacity_green = (0.0, 1.0, 0.0, 0.5)
+            >>> Color.from_normalized(*normalized_half_opacity_green)
+            Color(0, 255, 0, 127)
+
+        :param r: Red channel value between 0.0 and 1.0
+        :param g: Green channel value between 0.0 and 1.0
+        :param b: Blue channel value between 0.0 and 1.0
+        :param a: Alpha channel value between 0.0 and 1.0
+        :return:
+        """
+
+        if not 0 <= r <= 1.0:
+            raise NormalizedRangeError("r", r)
+
+        if not 0 <= g <= 1.0:
+            raise NormalizedRangeError("g", g)
+
+        if not 0 <= b <= 1.0:
+            raise NormalizedRangeError("b", b)
+
+        if not 0 <= a <= 1.0:
+            raise NormalizedRangeError("a", a)
+
+        return cls(r=int(255 * r), g=int(255 * g), b=int(255 * b), a=int(255 * a))
+
 
 ColorLike = Union[Color, RGB, RGBA]
 
