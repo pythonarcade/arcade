@@ -29,7 +29,6 @@ from arcade import (
     SpriteType,
     get_window,
     gl,
-    float_to_byte_color,
 )
 from arcade.types import Color, ColorLike
 from arcade.gl.buffer import Buffer
@@ -306,7 +305,7 @@ class SpriteList(Generic[SpriteType]):
 
         :rtype: Color
         """
-        return float_to_byte_color(self._color)
+        return Color.from_normalized(*self._color)
 
     @color.setter
     def color(self, color: ColorLike):
