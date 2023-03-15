@@ -8,25 +8,41 @@ import functools
 import platform
 import sys
 import warnings
-from typing import Tuple, Type
+from typing import Tuple, Type, TypeVar
 from pathlib import Path
 
 
-def outside_range_msg(var: str, value: int, lower: int = 0, upper: int = 255) -> str:
-    """
-    Helper function to generate text for ValueError messages.
+_CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 
-    Checking for error conditions is assumed to be external, so no
-    additional overhead will be incurred when this function is used
-    properly.
 
-    :param var: The name of the variable / value
-    :param value: The actual value received
-    :param lower: The accepted lower boundary, inclusive
-    :param upper: The accepted upper boundary, inclusive
-    :return:
-    """
-    return f"{var} must be between {lower} and {upper}, inclusive, not {value}"
+class OutsideRangeError(ValueError):
+
+    def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT):
+        super().__init__(f"{var_name} must be between {lower} and {upper}, inclusive, not {value}")
+        self.var_name = var_name
+        self.value = value
+        self.lower = lower
+        self.upper = upper
+
+
+class IntOutsideRangeError(OutsideRangeError):
+    def __init__(self, var_name: str, value: int, lower: int, upper: int):
+        super().__init__(var_name, value, lower, upper)
+
+
+class FloatOutsideRangeError(OutsideRangeError):
+    def __init__(self, var_name: float, value: float, lower: float, upper: float):
+        super().__init__(var_name, value, lower, upper)
+
+
+class ByteRangeError(IntOutsideRangeError):
+    def __init__(self, var_name: str, value: int):
+        super().__init__(var_name, value, 0, 255)
+
+
+class NormalizedRangeError(FloatOutsideRangeError):
+    def __init__(self, var_name: str, value: float):
+        super().__init__(var_name, value, 0.0, 1.0)
 
 
 class PerformanceWarning(Warning):

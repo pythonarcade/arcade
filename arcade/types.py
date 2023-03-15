@@ -14,8 +14,12 @@ from typing import (
     Union,
     TYPE_CHECKING,
 )
+from arcade.utils import (
+    IntOutsideRangeError,
+    ByteRangeError,
+    NormalizedRangeError
+)
 from pytiled_parser import Properties
-from arcade.utils import outside_range_msg
 
 if TYPE_CHECKING:
     from arcade.texture import Texture
@@ -31,16 +35,16 @@ class Color(tuple):
     def __new__(cls, r: int = 0, g: int = 0, b: int = 0, a: int = 255):
 
         if not 0 <= r <= 255:
-            raise ValueError(outside_range_msg("r", r))
+            raise ByteRangeError("r", r)
 
         if not 0 <= g <= 255:
-            raise ValueError(outside_range_msg("g", g))
+            raise ByteRangeError("g", g)
 
         if not 0 <= g <= 255:
-            raise ValueError(outside_range_msg("b", b))
+            raise ByteRangeError("b", b)
 
         if not 0 <= a <= 255:
-            raise ValueError(outside_range_msg("a", a))
+            raise ByteRangeError("a", a)
 
         return super().__new__(cls, (r, g, b, a))
 
@@ -101,10 +105,10 @@ class Color(tuple):
         """
 
         if not 0 <= intensity <= 255:
-            raise ValueError(outside_range_msg("intensity", intensity))
+            raise ByteRangeError("intensity", intensity)
 
         if not 0 <= a <= 255:
-            raise ValueError(outside_range_msg("a", a))
+            raise ByteRangeError("a", a)
 
         return Color(intensity, intensity, intensity, a)
 
@@ -128,10 +132,10 @@ class Color(tuple):
         """
 
         if not 0 <= color <= 0xFFFFFF:
-            raise ValueError(outside_range_msg("color", color, upper=0xFFFFFF))
+            raise IntOutsideRangeError("color", color, 0, 0xFFFFFF)
 
         if not 0 <= a <= 255:
-            raise ValueError(outside_range_msg("a", a))
+            raise ByteRangeError("a", a)
 
         return cls(
             r=(color & 0xFF0000) >> 16,
@@ -158,7 +162,7 @@ class Color(tuple):
         :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
         if not 0 <= color <= 0xFFFFFFFF:
-            raise ValueError(outside_range_msg("color", color, upper=0xFFFFFFFF))
+            raise IntOutsideRangeError("color", color, 0, 0xFFFFFFFF)
 
         return cls(
             r=(color & 0xFF000000) >> 24,
