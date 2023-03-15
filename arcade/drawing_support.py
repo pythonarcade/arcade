@@ -113,26 +113,3 @@ def color_from_hex_string(code: str) -> RGBA:
         return int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
 
     raise ValueError(f"Improperly formatted color: '{code}'")
-
-
-def float_to_byte_color(
-    color: Union[Tuple[float, float, float, float], Tuple[float, float, float]],
-) -> Color:
-    """
-    Converts a float colors to a byte color.
-    This works for 3 of 4-component colors.
-
-    Example::
-
-        >>> arcade.float_to_byte_color((1.0, 0.5, 0.25, 1.0))
-        (255, 127, 63, 255)
-        >>> arcade.float_to_byte_color((1.0, 0.5, 0.25))      
-        (255, 127, 63)
-    """
-    if len(color) == 3:
-        return int(color[0] * 255), int(color[1] * 255), int(color[2] * 255)
-    elif len(color) == 4:
-        color = cast(Tuple[float, float, float, float], color)
-        return int(color[0] * 255), int(color[1] * 255), int(color[2] * 255), int(color[3] * 255)
-    else:
-        raise ValueError(f"color needs to have 3 or 4 components, not {color}")

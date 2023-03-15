@@ -70,7 +70,6 @@ from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import color_from_hex_string
-from .drawing_support import float_to_byte_color
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -317,7 +316,6 @@ __all__ = [
     'enable_timings',
     'exit',
     'finish_render',
-    'float_to_byte_color',
     'get_closest_sprite',
     'get_display_size',
     'get_distance_between_sprites',

@@ -108,14 +108,3 @@ def test_get_three_float_color():
 
     with pytest.raises(TypeError):
         arcade.get_three_float_color(1000)
-
-
-def test_float_to_byte_color():
-    assert arcade.float_to_byte_color((1/255, 2/255, 3/255)) == (1, 2, 3)
-    assert arcade.float_to_byte_color((1/255, 2/255, 3/255, 4/255)) == (1, 2, 3, 4)
-
-    with pytest.raises(ValueError):
-        arcade.float_to_byte_color((0, 0))
-
-    with pytest.raises(ValueError):
-        arcade.float_to_byte_color("moo")
