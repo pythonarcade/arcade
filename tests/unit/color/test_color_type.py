@@ -15,6 +15,16 @@ def test_color_from_uint24():
         Color.from_uint24("moo")
 
 
+def test_color_from_uint32():
+    assert Color.from_uint32(4294967295) == (255, 255, 255, 255)
+    assert Color.from_uint32((1 << 24) + (2 << 16) + (3 << 8) + 4) == (1, 2, 3, 4)
+    assert Color.from_uint32(0xFF) == (0, 0, 0, 255)
+    assert Color.from_uint32(128) == (0, 0, 0, 128)
+
+    with pytest.raises(TypeError):
+        Color.from_uint32("bad")
+
+
 def test_color_normalized_property():
     assert colors.BLACK.normalized == (0.0, 0.0, 0.0, 1.0)
     assert colors.WHITE.normalized == (1.0, 1.0, 1.0, 1.0)
