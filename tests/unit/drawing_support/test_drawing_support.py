@@ -110,14 +110,6 @@ def test_get_three_float_color():
         arcade.get_three_float_color(1000)
 
 
-def test_uint32_to_four_byte_color():
-    assert arcade.uint32_to_four_byte_color(4294967295) == (255, 255, 255, 255)
-    assert arcade.uint32_to_four_byte_color((1 << 24) + (2 << 16) + (3 << 8) + 4) == (1, 2, 3, 4)
-
-    with pytest.raises(TypeError):
-        arcade.uint32_to_four_byte_color("moo")
-
-
 def test_float_to_byte_color():
     assert arcade.float_to_byte_color((1/255, 2/255, 3/255)) == (1, 2, 3)
     assert arcade.float_to_byte_color((1/255, 2/255, 3/255, 4/255)) == (1, 2, 3, 4)

@@ -69,7 +69,6 @@ pyglet.options['win32_gdi_font'] = True
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_three_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import uint32_to_four_byte_color
 from .drawing_support import color_from_hex_string
 from .drawing_support import float_to_byte_color
 
@@ -365,7 +364,6 @@ __all__ = [
     'start_render',
     'stop_sound',
     'timings_enabled',
-    'uint32_to_four_byte_color',
     'unschedule',
     'schedule_once',
     'cleanup_texture_cache',

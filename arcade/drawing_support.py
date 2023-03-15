@@ -87,20 +87,6 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float]:
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
-def uint32_to_four_byte_color(color: int) -> RGBA:
-    """
-    Given an int between 0 and 4294967295, return a RGBA color tuple.
-
-    Example::
-
-        >>> arcade.uint32_to_four_byte_color(4294967295)
-        (255, 255, 255, 255)
-
-    :param int color: 4 byte int
-    """
-    return (color & (255 << 24)) >> 24, (color & (255 << 16)) >> 16, (color & (255 << 8)) >> 8, color & 255
-
-
 def color_from_hex_string(code: str) -> RGBA:
     """
     Make a color from a hex code (3, 4, 6 or 8 characters of hex, normally with a hashtag).
