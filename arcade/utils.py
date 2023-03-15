@@ -31,7 +31,7 @@ class IntOutsideRangeError(OutsideRangeError):
 
 
 class FloatOutsideRangeError(OutsideRangeError):
-    def __init__(self, var_name: float, value: float, lower: float, upper: float):
+    def __init__(self, var_name: str, value: float, lower: float, upper: float):
         super().__init__(var_name, value, lower, upper)
 
 
