@@ -63,7 +63,7 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
     pyglet.options['shadow_window'] = False
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
-pyglet.options['win32_gdi_font'] = True
+# pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
 from .drawing_support import get_four_byte_color
