@@ -3,7 +3,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 """
 
 import math
-from typing import Tuple, Union, cast
+from typing import cast
 
 from arcade.types import Color, RGBA
 
