@@ -5,11 +5,11 @@ These are the pure python versions of the functions.
 
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
-from arcade.types import Point
 from arcade.hitbox import HitBox
+from arcade.types import Point, PointList
 
 
-def are_polygons_intersecting(poly_a: HitBox, poly_b: HitBox) -> bool:
+def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 
@@ -18,21 +18,20 @@ def are_polygons_intersecting(poly_a: HitBox, poly_b: HitBox) -> bool:
     :Returns: True or false depending if polygons intersect
     :rtype bool:
     """
-    points_a = poly_a.get_adjusted_points()
-    points_b = poly_b.get_adjusted_points()
-    for polygon in (points_a, points_b):
-
+    for polygon in (poly_a, poly_b):
         for i1 in range(len(polygon)):
             i2 = (i1 + 1) % len(polygon)
             projection_1 = polygon[i1]
             projection_2 = polygon[i2]
 
-            normal = (projection_2[1] - projection_1[1],
-                      projection_1[0] - projection_2[0])
+            normal = (
+                projection_2[1] - projection_1[1],
+                projection_1[0] - projection_2[0],
+            )
 
             min_a, max_a, min_b, max_b = (None,) * 4
 
-            for poly in points_a:
+            for poly in poly_a:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_a is None or projected < min_a:
@@ -40,7 +39,7 @@ def are_polygons_intersecting(poly_a: HitBox, poly_b: HitBox) -> bool:
                 if max_a is None or projected > max_a:
                     max_a = projected
 
-            for poly in points_b:
+            for poly in poly_b:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_b is None or projected < min_b:
@@ -87,7 +86,7 @@ def get_triangle_orientation(p: Point, q: Point, r: Point) -> int:
     :param Point r: Point 3
     :Returns: 0, 1, or 2 depending on orientation
     """
-    val = (((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1])))
+    val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
 
     if val == 0:
         return 0  # collinear
@@ -174,16 +173,14 @@ def is_point_in_polygon(x: float, y: float, polygon: HitBox) -> bool:
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
         # segment from 'polygon[i]' to 'polygon[next]'
-        if (are_lines_intersecting(points[i],
-                                   points[next_item],
-                                   p, extreme)):
+        if are_lines_intersecting(points[i], points[next_item], p, extreme):
             # If the point 'p' is collinear with line
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
-            if get_triangle_orientation(points[i], p,
-                                        points[next_item]) == 0:
+            if get_triangle_orientation(points[i], p, points[next_item]) == 0:
                 return not is_point_in_box(
-                    points[i], p,
+                    points[i],
+                    p,
                     points[next_item],
                 )
 

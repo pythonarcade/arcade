@@ -151,7 +151,6 @@ class Sprite(BasicSprite, PymunkMixin):
         relative to the rightmost x coordinate in the hit box.
         """
         value = self._hit_box.right
-        print(value)
         return value
 
     @right.setter
