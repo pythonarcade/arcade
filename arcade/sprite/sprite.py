@@ -94,9 +94,13 @@ class Sprite(BasicSprite, PymunkMixin):
         self.cur_texture_index: int = 0
         self.textures: List[Texture] = _textures
 
-        self._hit_box: AdjustableHitBox = self._texture.hit_box.create_adjustable(
-            position=self._position, rotation=self.angle, scale=self._scale
+        self._hit_box: AdjustableHitBox = AdjustableHitBox(
+            points=self._texture.hit_box.points,
+            position=self._position,
+            angle=self.angle,
+            scale=self._scale,
         )
+        print(dir(self._hit_box))
         self.physics_engines: List[Any] = []
 
         self._sprite_list: Optional[SpriteList] = None
@@ -111,17 +115,17 @@ class Sprite(BasicSprite, PymunkMixin):
     @BasicSprite.center_x.setter
     def center_x(self, new_value: float):
         BasicSprite.center_x.fset(self, new_value)
-        self._hit_box._position = (new_value, self._position[1])
+        self._hit_box.position = (new_value, self._position[1])
 
     @BasicSprite.center_y.setter
     def center_y(self, new_value: float):
         BasicSprite.center_y.fset(self, new_value)
-        self._hit_box._position = (self._position[0], new_value)
+        self._hit_box.position = (self._position[0], new_value)
 
     @BasicSprite.position.setter
     def position(self, new_value: Point):
         BasicSprite.position.fset(self, new_value)
-        self._hit_box._position = new_value
+        self._hit_box.position = new_value
 
     @property
     def left(self) -> float:
@@ -202,7 +206,7 @@ class Sprite(BasicSprite, PymunkMixin):
             return
 
         self._angle = new_value
-        self._hit_box.rotation = new_value
+        self._hit_box.angle = new_value
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_angle(self)
@@ -291,7 +295,7 @@ class Sprite(BasicSprite, PymunkMixin):
         # If sprite is using default texture, update the hit box
         if self._texture is get_default_texture():
             self.hit_box = texture.hit_box.create_adjustable(
-                position=self._position, rotation=self.angle, scale=self._scale
+                position=self._position, angle=self.angle, scale=self._scale
             )
 
         self._texture = texture
@@ -459,7 +463,7 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Update the sprites location in the spatial hash.
         """
-        self._hit_box._adjusted_cache_dirty = True
+        # self._hit_box._adjusted_cache_dirty = True
         # super().update_spatial_hash()
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:

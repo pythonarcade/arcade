@@ -22,7 +22,7 @@ from arcade.texture.transforms import (
 )
 from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
-from arcade.hitbox import HitBoxAlgorithm, HitBox
+from arcade.hitbox.base import HitBoxAlgorithm, HitBox
 from arcade import cache as _cache
 from arcade import hitbox
 

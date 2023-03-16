@@ -46,11 +46,11 @@ class HitBox:
     def create_adjustable(
         self,
         position: Tuple[float, float] = (0.0, 0.0),
-        rotation: float = 0.0,
+        angle: float = 0.0,
         scale: Tuple[float, float] = (1.0, 1.0),
     ) -> AdjustableHitBox:
         return AdjustableHitBox(
-            self._points, position=position, rotation=rotation, scale=scale
+            self._points, position=position, angle=angle, scale=scale
         )
 
     def get_adjusted_points(self):
@@ -63,12 +63,12 @@ class AdjustableHitBox(HitBox):
         points: PointList,
         *,
         position: Tuple[float, float] = (0.0, 0.0),
-        rotation: float = 0.0,
+        angle: float = 0.0,
         scale: Tuple[float, float] = (1.0, 1.0),
     ):
         super().__init__(points)
         self._position = position
-        self._rotation = rotation
+        self._angle = angle
         self._scale = scale
 
         self._left = None
@@ -126,12 +126,12 @@ class AdjustableHitBox(HitBox):
         self._adjusted_cache_dirty = True
 
     @property
-    def rotation(self):
-        return self._rotation
+    def angle(self):
+        return self._angle
 
-    @rotation.setter
-    def rotation(self, rotation: float):
-        self._rotation = rotation
+    @angle.setter
+    def angle(self, angle: float):
+        self._angle = angle
         self._adjusted_cache_dirty = True
 
     @property
@@ -147,7 +147,7 @@ class AdjustableHitBox(HitBox):
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
-        rad = radians(self._rotation)
+        rad = radians(self._angle)
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
@@ -168,4 +168,5 @@ class AdjustableHitBox(HitBox):
 
         self._adjusted_points = tuple([_adjust_point(point) for point in self.points])
         self._adjusted_cache_dirty = False
+        return self._adjusted_points
         return self._adjusted_points
