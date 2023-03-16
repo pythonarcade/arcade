@@ -83,6 +83,11 @@ class AdjustableHitBox(HitBox):
     def position(self):
         return self._position
 
+    @position.setter
+    def position(self, position: Point):
+        self._position = position
+        self._adjusted_cache_dirty = True
+
     @property
     def left(self):
         points = self.get_adjusted_points()

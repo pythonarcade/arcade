@@ -100,7 +100,6 @@ class Sprite(BasicSprite, PymunkMixin):
             angle=self.angle,
             scale=self._scale,
         )
-        print(dir(self._hit_box))
         self.physics_engines: List[Any] = []
 
         self._sprite_list: Optional[SpriteList] = None
@@ -151,7 +150,9 @@ class Sprite(BasicSprite, PymunkMixin):
         When setting this property the sprite is positioned
         relative to the rightmost x coordinate in the hit box.
         """
-        return self._hit_box.right
+        value = self._hit_box.right
+        print(value)
+        return value
 
     @right.setter
     def right(self, amount: float):
