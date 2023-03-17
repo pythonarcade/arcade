@@ -1,6 +1,6 @@
 import math
-from itertools import combinations_with_replacement
-from typing import Iterable, Optional, Callable, Generator, TypeVar, Tuple
+from itertools import product
+from typing import Iterable, Callable, Tuple
 
 import pytest
 
@@ -10,35 +10,9 @@ from arcade.types import Color
 
 # This seems better as fixtures, but it's added here for consistency
 # with  the rest of the framework's beginner-accessible test styling.
-OK_NORMALIZED = frozenset((0.0, 1.0))
-BAD_NORMALIZED = frozenset((-0.01, 1.01))
-MIXED_NORMALIZED = OK_NORMALIZED | BAD_NORMALIZED
-
-
-_EltType = TypeVar('_EltType')
-
-
-def gen_combos(
-        i: Iterable[_EltType],
-        r: Optional[int] = None,
-        requirement: Callable = lambda e: True,
-        post_process: Callable = lambda e: e
-) -> Generator[Tuple[_EltType], None, None]:
-    """
-    A helper for boundary testing combinations in arcade's test style
-
-    Combinations-with-replacement will be generated and filtered
-    according to the passed requirement. If no requirement is given,
-    a dummy always-true one will be used.
-
-    :param i: An iterable to source possible values from
-    :param r: How long each combo should be
-    :param requirement: A requirement to meet (always true by default)
-    :param post_process: A post-processing function; pass-through by default
-    :return:
-    """
-    for p in filter(requirement, combinations_with_replacement(i, r)):
-        yield post_process(p)
+OK_NORMALIZED = (0.0, 1.0)
+BAD_NORMALIZED = (-0.01, 1.01)
+MIXED_NORMALIZED = OK_NORMALIZED + BAD_NORMALIZED
 
 
 def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
@@ -79,30 +53,24 @@ def test_color_from_normalized():
     # some helper callables
     at_least_one_bad = at_least_one_in(BAD_NORMALIZED)
     def local_convert(i: Iterable[float]) -> Tuple[int]:
-        """
-        Local conversion helper for normalized float -> byte ints
-        :param i:
-        :return:
-        """
+        """Local helper converter, normalized float to byte ints"""
         return tuple(math.floor(c * 255) for c in i)
 
-    # make sure good boundary values work as expected
-    for rgb_channels in gen_combos(OK_NORMALIZED, r=3):
-        expected = local_convert(rgb_channels) + (255,)
-        assert Color.from_normalized(*rgb_channels) == expected
+    for good_rgb_channels in product(OK_NORMALIZED, repeat=3):
+        expected = local_convert(good_rgb_channels) + (255,)
+        assert Color.from_normalized(*good_rgb_channels) == expected
 
-    for rgba_channels in gen_combos(OK_NORMALIZED, r=4):
-        expected = local_convert(rgba_channels)
-        assert Color.from_normalized(*rgba_channels) == expected
+    for good_rgba_channels in product(OK_NORMALIZED, repeat=4):
+        expected = local_convert(good_rgba_channels)
+        assert Color.from_normalized(*good_rgba_channels) == expected
 
-    # make sure bad values raise appropriate exceptions
-    for rgb_channels in gen_combos(MIXED_NORMALIZED, r=3, requirement=at_least_one_bad):
+    for bad_rgb_channels in filter(at_least_one_bad, product(MIXED_NORMALIZED, repeat=3)):
         with pytest.raises(ValueError):
-            Color.from_normalized(*rgb_channels)
+            Color.from_normalized(*bad_rgb_channels)
 
-    for rgba_channels in gen_combos(MIXED_NORMALIZED, r=4, requirement=at_least_one_bad):
+    for bad_rgba_channels in filter(at_least_one_bad, product(MIXED_NORMALIZED, repeat=4)):
         with pytest.raises(ValueError):
-            Color.from_normalized(*rgba_channels)
+            Color.from_normalized(*bad_rgba_channels)
 
 
 def test_color_normalized_property():
