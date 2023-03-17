@@ -259,6 +259,7 @@ class Color(tuple):
         raise ValueError(f"Improperly formatted color: '{code}'")
 
 
+RGBALike = Union[Color, RGBA]
 ColorLike = Union[Color, RGB, RGBA]
 
 
