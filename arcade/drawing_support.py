@@ -63,31 +63,3 @@ def get_four_byte_color(color: Color) -> RGBA:
         return color[0], color[1], color[2], 255
     else:
         raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
-
-
-def color_from_hex_string(code: str) -> RGBA:
-    """
-    Make a color from a hex code (3, 4, 6 or 8 characters of hex, normally with a hashtag).
-    Supports most formats used in CSS. Returns an RGBA color.
-
-    Examples::
-
-        >>> arcade.color_from_hex_string("#ff00ff")
-        (255, 0, 255, 255)
-        >>> arcade.color_from_hex_string("#ff00ff00")
-        (255, 0, 255, 0)
-        >>> arcade.color_from_hex_string("#fff")
-        (255, 255, 255, 255)
-
-    """
-    code = code.lstrip("#")
-    if len(code) <= 4:
-        code = "".join(i * 2 for i in code)
-
-    if len(code) == 6:
-        # full opacity if no alpha specified
-        return int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255
-    elif len(code) == 8:
-        return int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
-
-    raise ValueError(f"Improperly formatted color: '{code}'")

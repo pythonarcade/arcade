@@ -68,7 +68,6 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # Imports from modules that don't do anything circular
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import color_from_hex_string
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -283,7 +282,6 @@ __all__ = [
     'check_for_collision_with_list',
     'check_for_collision_with_lists',
     'close_window',
-    'color_from_hex_string',
     'disable_timings',
     'draw_arc_filled',
     'draw_arc_outline',

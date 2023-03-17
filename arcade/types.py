@@ -215,6 +215,49 @@ class Color(tuple):
 
         return cls(r=int(255 * r), g=int(255 * g), b=int(255 * b), a=int(255 * a))
 
+    @classmethod
+    def from_hex_string(cls, code: str) -> "Color":
+        """
+        Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
+
+        Prefixing it with a pound sign (``#`` / hash symbol) is
+        optional. It will be ignored if present.
+
+        The capitalization of the hex digits (``'f'`` vs ``'F'``)
+        does not matter.
+
+        3 and 6 digit hex codes will be treated as if they have an opacity of
+        255.
+
+        3 and 4 digit hex codes will be expanded.
+
+        Examples::
+
+            >>> Color.from_hex_string("#ff00ff")
+            (255, 0, 255, 255)
+            >>> Color.from_hex_string("#ff00ff00")
+            (255, 0, 255, 0)
+            >>> Color.from_hex_string("#FFF")
+            (255, 255, 255, 255)
+            >>> Color.from_hex_string("FF0A")
+            (255, 255, 0, 170)
+
+        """
+        code = code.lstrip("#")
+
+        # This looks unusual, but it matches CSS color code expansion
+        # behavior for 3 and 4 digit hex codes.
+        if len(code) <= 4:
+            code = "".join(char * 2 for char in code)
+
+        if len(code) == 6:
+            # full opacity if no alpha specified
+            return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255)
+        elif len(code) == 8:
+            return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
+
+        raise ValueError(f"Improperly formatted color: '{code}'")
+
 
 ColorLike = Union[Color, RGB, RGBA]
 

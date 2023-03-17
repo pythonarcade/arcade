@@ -73,6 +73,36 @@ def test_color_from_normalized():
             Color.from_normalized(*bad_rgba_channels)
 
 
+def test_color_from_hex_string():
+    with pytest.raises(ValueError):
+        Color.from_hex_string("#ff0000ff0")
+
+    # Hash symbol RGBA variants
+    assert Color.from_hex_string("#ffffffff") == (255, 255, 255, 255)
+    assert Color.from_hex_string("#ffffff00") == (255, 255, 255, 0)
+    assert Color.from_hex_string("#ffff00ff") == (255, 255, 0, 255)
+    assert Color.from_hex_string("#ff00ffff") == (255, 0, 255, 255)
+    assert Color.from_hex_string("#00ffffff") == (0, 255, 255, 255)
+
+    # RGB with hash
+    assert Color.from_hex_string("#ffffff") == (255, 255, 255, 255)
+    assert Color.from_hex_string("#ffff00") == (255, 255, 0, 255)
+    assert Color.from_hex_string("#ff0000") == (255, 0, 0, 255)
+
+    # RGB without hash
+    assert Color.from_hex_string("FFFFFF") == (255, 255, 255, 255)
+    assert Color.from_hex_string("ffff00") == (255, 255, 0, 255)
+    assert Color.from_hex_string("ff0000") == (255, 0, 0, 255)
+
+    # Short form
+    assert Color.from_hex_string("#fff") == (255, 255, 255, 255)
+    assert Color.from_hex_string("FFF") == (255, 255, 255, 255)
+
+    for bad_value in ("ppp", 'ff', "e"):
+        with pytest.raises(ValueError):
+            Color.from_hex_string(bad_value)
+
+
 def test_color_normalized_property():
     assert colors.BLACK.normalized == (0.0, 0.0, 0.0, 1.0)
     assert colors.WHITE.normalized == (1.0, 1.0, 1.0, 1.0)
