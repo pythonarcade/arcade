@@ -1,16 +1,13 @@
 import PIL
 
-from .sprite import Sprite
 import arcade
+from arcade import cache, hitbox
+from arcade.hitbox import HitBox
+from arcade.texture import (ImageData, Texture, make_circle_texture,
+                            make_soft_circle_texture)
 from arcade.types import Color
-from arcade import cache
-from arcade import hitbox
-from arcade.texture import (
-    make_circle_texture,
-    make_soft_circle_texture,
-    Texture,
-    ImageData,
-)
+
+from .sprite import Sprite
 
 
 class SpriteSolidColor(Sprite):
@@ -47,11 +44,13 @@ class SpriteSolidColor(Sprite):
     ):
         texture = Texture(
             self._default_image,
-            hit_box_points=(
-                (-width / 2, -height / 2),
-                (width / 2, -height / 2),
-                (width / 2, height / 2),
-                (-width / 2, height / 2)
+            hit_box=HitBox(
+                (
+                    (-width / 2, -height / 2),
+                    (width / 2, -height / 2),
+                    (width / 2, height / 2),
+                    (-width / 2, height / 2)
+                )
             )
         )
         texture.size = width, height
@@ -119,4 +118,4 @@ class SpriteCircle(Sprite):
         # apply results to the new sprite
         super().__init__(texture)
         self.color = color_rgba
-        self._points = self.texture.hit_box_points
+        self._points = self.texture.hit_box.points

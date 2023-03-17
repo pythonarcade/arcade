@@ -291,7 +291,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     return [
         s
         for s in sprites_to_check
-        if is_point_in_polygon(point[0], point[1], s.hit_box)
+        if is_point_in_polygon(point[0], point[1], s.hit_box.get_adjusted_points)
     ]
 
 
@@ -360,5 +360,5 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[SpriteType]
     return [
         s
         for s in sprites_to_check
-        if are_polygons_intersecting(rect_points, s.hit_box.get_adjusted_points)
+        if are_polygons_intersecting(rect_points, s.hit_box.get_adjusted_points())
     ]

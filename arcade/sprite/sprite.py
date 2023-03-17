@@ -1,13 +1,12 @@
 import math
-from math import cos, radians, sin
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from arcade import Texture, load_texture
 from arcade.hitbox import AdjustableHitBox, HitBox
 from arcade.math import get_angle_degrees
 from arcade.texture import get_default_texture
-from arcade.types import PathOrTexture, Point, PointList
+from arcade.types import PathOrTexture, Point
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
@@ -39,8 +38,7 @@ class Sprite(BasicSprite, PymunkMixin):
         "boundary_bottom",
         "textures",
         "cur_texture_index",
-        "_hit_box_points",
-        "_hit_box_points_cache",
+        "_hit_box",
         "physics_engines",
         "_sprite_list",
         "guid",
@@ -77,6 +75,12 @@ class Sprite(BasicSprite, PymunkMixin):
         )
         PymunkMixin.__init__(self)
 
+        self._hit_box: AdjustableHitBox = self._texture.hit_box.create_adjustable(
+            position=self._position,
+            angle=self.angle,
+            scale=self._scale,
+        )
+
         self.angle = angle
         # Movement
         self._velocity = 0.0, 0.0
@@ -94,12 +98,6 @@ class Sprite(BasicSprite, PymunkMixin):
         self.cur_texture_index: int = 0
         self.textures: List[Texture] = _textures
 
-        self._hit_box: AdjustableHitBox = AdjustableHitBox(
-            points=self._texture.hit_box.points,
-            position=self._position,
-            angle=self.angle,
-            scale=self._scale,
-        )
         self.physics_engines: List[Any] = []
 
         self._sprite_list: Optional[SpriteList] = None
@@ -126,6 +124,11 @@ class Sprite(BasicSprite, PymunkMixin):
         BasicSprite.position.fset(self, new_value)
         self._hit_box.position = new_value
 
+    @BasicSprite.scale.setter
+    def scale(self, new_value: float):
+        BasicSprite.scale.fset(self, new_value)
+        self._hit_box.scale = (new_value, new_value)
+
     @property
     def left(self) -> float:
         """
@@ -150,8 +153,7 @@ class Sprite(BasicSprite, PymunkMixin):
         When setting this property the sprite is positioned
         relative to the rightmost x coordinate in the hit box.
         """
-        value = self._hit_box.right
-        return value
+        return self._hit_box.right
 
     @right.setter
     def right(self, amount: float):
@@ -270,11 +272,18 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Get or set the hit box for this sprite.
         """
-        return self.get_hit_box()
+        return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: HitBox):
-        self.set_hit_box(hit_box)
+    def hit_box(self, hit_box: Union[HitBox, AdjustableHitBox]):
+        if type(hit_box) == HitBox:
+            self._hit_box = hit_box.create_adjustable(
+                self.position, self.angle, self.scale_xy
+            )
+        else:
+            # Mypy doesn't seem to understand the type check above
+            # It still thinks hit_box can be a union here
+            self._hit_box = hit_box  # type: ignore
 
     @property
     def texture(self) -> Texture:
@@ -319,35 +328,6 @@ class Sprite(BasicSprite, PymunkMixin):
     @properties.setter
     def properties(self, value):
         self._properties = value
-
-    # --- Hitbox methods -----
-
-    def set_hit_box(self, hit_box: AdjustableHitBox) -> None:
-        """
-        Set a sprite's hit box. Hit box should be relative to a sprite's center,
-        and with a scale of 1.0.
-
-        Points will be scaled and rotated with ``get_adjusted_hit_box``.
-        """
-        self._hit_box = hit_box
-
-    def get_hit_box(self) -> HitBox:
-        """
-        Use the hit_box property to get or set a sprite's hit box.
-        Hit boxes are specified assuming the sprite's center is at (0, 0).
-        Specify hit boxes like:
-
-        .. code-block::
-
-            mySprite.hit_box = [[-10, -10], [10, -10], [10, 10]]
-
-        Specify a hit box unadjusted for translation, rotation, or scale.
-        You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
-        """
-        return self._hit_box
-
-    def get_adjusted_hit_box(self) -> PointList:
-        return self._hit_box.get_adjusted_points()
 
     # --- Movement methods -----
 
