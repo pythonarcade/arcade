@@ -958,7 +958,7 @@ class SpriteList(Generic[SpriteType]):
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
-        if len(self.sprite_list) == 0 or not self._visible:
+        if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
 
         self._init_deferred()
