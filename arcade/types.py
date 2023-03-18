@@ -37,9 +37,9 @@ class Color(tuple[int, int, int, int]):
     """
     A :py:class:`tuple` subclass representing an RGBA Color.
 
-    Although arcade will accept RGBA tuples instead of instances
-    of this class, you may find the utility methods and properties
-    it provides to be helpful.
+    This class provides helpful utility methods and properties. When
+    performance or brevity matters, arcade will usually allow you to
+    use an ordinary :py:class:`tuple` of RGBA values instead.
 
     All channels are byte values from 0 to 255, inclusive. If any are
     outside this range, a :py:class:`~arcade.utils.ByteRangeError` will
