@@ -8,7 +8,7 @@ import pyglet
 
 import arcade
 from arcade.types import Color, Point
-from arcade.draw_commands import get_four_byte_color
+from arcade.drawing_support import get_four_byte_color
 from arcade.resources import resolve_resource_path
 from arcade.utils import PerformanceWarning, warning
 
