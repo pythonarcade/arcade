@@ -7,8 +7,7 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point
-from arcade.drawing_support import get_four_byte_color
+from arcade.types import Color, Point, RGBALike
 from arcade.resources import resolve_resource_path
 from arcade.utils import PerformanceWarning, warning
 
@@ -123,7 +122,8 @@ class Text:
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBALike color: Color of the text as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
@@ -172,7 +172,7 @@ class Text:
         text: str,
         start_x: float,
         start_y: float,
-        color: Color = arcade.color.WHITE,
+        color: RGBALike = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
         align: str = "left",
@@ -200,7 +200,7 @@ class Text:
             font_size=font_size,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
-            color=get_four_byte_color(color),
+            color=Color(*color),
             width=width,
             align=align,
             bold=bold,
@@ -374,8 +374,8 @@ class Text:
         return self._label.color
 
     @color.setter
-    def color(self, color: Color):
-        self._label.color = get_four_byte_color(color)
+    def color(self, color: RGBALike):
+        self._label.color = Color(*color)
 
     @property
     def width(self) -> int:
@@ -522,17 +522,17 @@ class Text:
 
     def draw_debug(
         self,
-        anchor_color: Color = arcade.color.RED,
-        background_color: Color = arcade.color.DARK_BLUE,
-        outline_color: Color = arcade.color.WHITE,
+        anchor_color: RGBALike = arcade.color.RED,
+        background_color: RGBALike = arcade.color.DARK_BLUE,
+        outline_color: RGBALike = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
         area, outline and the anchor point.
 
-        :param Color anchor_color: Color of the anchor point
-        :param Color background_color: Color the content background
-        :param Color outline_color: Color of the content outline
+        :param RGBALike anchor_color: Color of the anchor point
+        :param RGBALike background_color: Color the content background
+        :param RGBALike outline_color: Color of the content outline
         """
         left = self.left
         right = self.right
@@ -571,7 +571,7 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    color: Color = arcade.color.WHITE,
+    color: RGBALike = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -656,7 +656,7 @@ def draw_text(
     text: Any,
     start_x: float,
     start_y: float,
-    color: Color = arcade.color.WHITE,
+    color: RGBALike = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -695,7 +695,8 @@ def draw_text(
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBALike color: Color of the text as an RGBA tuple or
+        :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
@@ -826,7 +827,7 @@ def draw_text(
     """
     # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
-    color = get_four_byte_color(color)
+    color = Color(*color)
     # Cache the states that are expensive to change
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     ctx = arcade.get_window().ctx
