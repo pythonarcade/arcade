@@ -2,7 +2,6 @@ import PIL
 
 import arcade
 from arcade import cache, hitbox
-from arcade.hitbox import HitBox
 from arcade.texture import (
     ImageData,
     Texture,

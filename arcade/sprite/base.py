@@ -4,7 +4,7 @@ import arcade
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import RGBA, Color, Point, PointList
+from arcade.types import RGBA, Color, Point
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList

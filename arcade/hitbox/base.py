@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import TYPE_CHECKING, Any, Tuple
+from typing import Any, Tuple
 
 from PIL.Image import Image
 
 from arcade.types import Point, PointList
-
-if TYPE_CHECKING:
-    from arcade.sprite import Sprite
 
 
 class HitBoxAlgorithm:

@@ -71,7 +71,7 @@ def save_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: P
             "hash": texture.image_data.hash,
             "path": texture.file_path.relative_to(resource_root).as_posix(),
             "crop": texture.crop_values,
-            "points": texture.hit_box.points,
+            "points": texture.hit_box_points,
             "region": _dump_region_info(atlas.get_texture_region_info(texture.atlas_name)),
             "vertex_order": texture._vertex_order,
         })
