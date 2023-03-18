@@ -1,7 +1,8 @@
 from arcade import get_window
-from arcade.types import Color
+from arcade.types import Color, RGBALike
 from arcade.gl import geometry
 from arcade.gl.texture import Texture2D
+from arcade.color import TRANSPARENT_BLACK
 
 
 class RenderTargetTexture:
@@ -21,7 +22,7 @@ class RenderTargetTexture:
 
         self.width = width
         self.height = height
-        self._background_color: Color = (0, 0, 0)
+        self._background_color: RGBALike = TRANSPARENT_BLACK
 
         self.ctx = self.window.ctx
 
