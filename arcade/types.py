@@ -12,7 +12,7 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING,
+    TYPE_CHECKING
 )
 from arcade.utils import (
     IntOutsideRangeError,
@@ -34,7 +34,7 @@ RGBA = Tuple[int, int, int, int]
 
 
 # Color = Union[RGB, RGBA]
-class Color(tuple):
+class Color(tuple[int, int, int, int]):
 
     def __new__(cls, r: int = 0, g: int = 0, b: int = 0, a: int = 255):
 
