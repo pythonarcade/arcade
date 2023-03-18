@@ -9,7 +9,7 @@ helper function to create a Scene directly from a TileMap object.
 from typing import Dict, List, Optional
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color
+from arcade.types import Color, RGBALike
 from arcade.tilemap import TileMap
 
 
@@ -328,7 +328,7 @@ class Scene:
 
     def draw_hit_boxes(
         self,
-        color: Color = (0, 0, 0, 255),
+        color: RGBALike = Color(0, 0, 0, 255),
         line_thickness: float = 1,
         names: Optional[List[str]] = None,
     ) -> None:
