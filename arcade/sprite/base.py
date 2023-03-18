@@ -26,6 +26,7 @@ class BasicSprite:
         "_scale",
         "_color",
         "_texture",
+        "_hit_box",
         "sprite_lists",
         "_angle",
         "__weakref__",
@@ -51,9 +52,14 @@ class BasicSprite:
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
+        self._hit_box = HitBox(
+            self._texture.hit_box_points, self._position, self._scale
+        )
+
     # --- Core Properties ---
 
-    def _get_position(self) -> Point:
+    @property
+    def position(self) -> Point:
         """
         Get or set the center x and y position of the sprite.
 
@@ -62,49 +68,41 @@ class BasicSprite:
         """
         return self._position
 
-    def _set_position(self, new_value: Point):
+    @position.setter
+    def position(self, new_value: Point):
         if new_value == self._position:
             return
 
         self._position = new_value
+        self._hit_box.position = new_value
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_position(self)
 
-    position = property(_get_position, _set_position)
-
-    def _get_center_x(self) -> float:
+    @property
+    def center_x(self) -> float:
         """Get or set the center x position of the sprite."""
         return self._position[0]
 
-    def _set_center_x(self, new_value: float):
+    @center_x.setter
+    def center_x(self, new_value: float):
         if new_value == self._position[0]:
             return
 
-        self._position = (new_value, self._position[1])
-        self.update_spatial_hash()
+        self.position = (new_value, self._position[1])
 
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_position_x(self)
-
-    center_x = property(_get_center_x, _set_center_x)
-
-    def _get_center_y(self) -> float:
+    @property
+    def center_y(self) -> float:
         """Get or set the center y position of the sprite."""
         return self._position[1]
 
-    def _set_center_y(self, new_value: float):
+    @center_y.setter
+    def center_y(self, new_value: float):
         if new_value == self._position[1]:
             return
 
-        self._position = (self._position[0], new_value)
-        self.update_spatial_hash()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_position_y(self)
-
-    center_y = property(_get_center_y, _set_center_y)
+        self.position = (self._position[0], new_value)
 
     @property
     def depth(self) -> float:
@@ -124,35 +122,37 @@ class BasicSprite:
             for sprite_list in self.sprite_lists:
                 sprite_list._update_depth(self)
 
-    def _get_width(self) -> float:
+    @property
+    def width(self) -> float:
         """Get or set width or the sprite in pixels"""
         return self._width
 
-    def _set_width(self, new_value: float):
+    @width.setter
+    def width(self, new_value: float):
         if new_value != self._width:
             self._scale = new_value / self._texture.width, self._scale[1]
+            self._hit_box.scale = self._scale
             self._width = new_value
 
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
                 sprite_list._update_width(self)
 
-    width = property(_get_width, _set_width)
-
-    def _get_height(self) -> float:
+    @property
+    def height(self) -> float:
         """Get or set the height of the sprite in pixels."""
         return self._height
 
-    def _set_height(self, new_value: float):
+    @height.setter
+    def height(self, new_value: float):
         if new_value != self._height:
             self._scale = self._scale[0], new_value / self._texture.height
+            self._hit_box.scale = self._scale
             self._height = new_value
 
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
                 sprite_list._update_height(self)
-
-    height = property(_get_height, _set_height)
 
     # @property
     # def size(self) -> Point:
@@ -170,7 +170,8 @@ class BasicSprite:
     #         for sprite_list in self.sprite_lists:
     #             sprite_list._update_size(self)
 
-    def _get_scale(self) -> float:
+    @property
+    def scale(self) -> float:
         """
         Get or set the sprite's x scale value or set both x & y scale to the same value.
 
@@ -179,11 +180,13 @@ class BasicSprite:
         """
         return self._scale[0]
 
-    def _set_scale(self, new_value: float):
+    @scale.setter
+    def scale(self, new_value: float):
         if new_value == self._scale[0] and new_value == self._scale[1]:
             return
 
         self._scale = new_value, new_value
+        self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -191,8 +194,6 @@ class BasicSprite:
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
-
-    scale = property(_get_scale, _set_scale)
 
     @property
     def scale_xy(self) -> Point:
@@ -205,6 +206,7 @@ class BasicSprite:
             return
 
         self._scale = new_value
+        self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -222,7 +224,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the leftmost x coordinate in the hit box.
         """
-        return self.center_x - self.width / 2
+        return self._hit_box.left
 
     @left.setter
     def left(self, amount: float):
@@ -238,7 +240,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the rightmost x coordinate in the hit box.
         """
-        return self.center_x + self.width / 2
+        return self._hit_box.right
 
     @right.setter
     def right(self, amount: float):
@@ -254,7 +256,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the lowest y coordinate in the hit box.
         """
-        return self._position[1] - self.height / 2
+        return self._hit_box.bottom
 
     @bottom.setter
     def bottom(self, amount: float):
@@ -270,7 +272,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the highest y coordinate in the hit box.
         """
-        return self._position[1] + self.height / 2
+        return self._hit_box.top
 
     @top.setter
     def top(self, amount: float):
@@ -440,7 +442,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor, self._scale[1] * factor
+        self.scale_xy = self._scale[0] * factor, self._scale[1] * factor
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -450,7 +452,7 @@ class BasicSprite:
 
         # be lazy about math; only do it if we have to
         if position_changed:
-            self._position = (
+            self.position = (
                 (self._position[0] - point[0]) * factor + point[0],
                 (self._position[1] - point[1]) * factor + point[1],
             )
@@ -495,7 +497,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
+        self.scale_xy = self._scale[0] * factor_x, self._scale[1] * factor_y
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -505,7 +507,7 @@ class BasicSprite:
 
         # be lazy about math; only do it if we have to
         if position_changed:
-            self._position = (
+            self.position = (
                 (self._position[0] - point[0]) * factor_x + point[0],
                 (self._position[1] - point[1]) * factor_y + point[1],
             )
@@ -521,7 +523,7 @@ class BasicSprite:
 
     @property
     def hit_box(self) -> HitBox:
-        return self._texture.hit_box
+        return self._hit_box
 
     def update_spatial_hash(self) -> None:
         """

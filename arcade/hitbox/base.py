@@ -39,47 +39,14 @@ class HitBoxAlgorithm:
 
 
 class HitBox:
-    def __init__(self, points: PointList):
-        self._points = points
-
-    @property
-    def points(self):
-        return self._points
-
-    def create_adjustable(
-        self,
-        position: Tuple[float, float] = (0.0, 0.0),
-        angle: float = 0.0,
-        scale: Tuple[float, float] = (1.0, 1.0),
-    ) -> AdjustableHitBox:
-        return AdjustableHitBox(
-            self._points, position=position, angle=angle, scale=scale
-        )
-
-    def adjustable(self, sprite: Sprite) -> AdjustableHitBox:
-        return AdjustableHitBox(
-            self._points,
-            position=sprite.position,
-            angle=sprite.angle,
-            scale=sprite.scale_xy,
-        )
-
-    def get_adjusted_points(self):
-        return self.points
-
-
-class AdjustableHitBox(HitBox):
     def __init__(
         self,
         points: PointList,
-        *,
-        position: Tuple[float, float] = (0.0, 0.0),
-        angle: float = 0.0,
+        position: Point = (0.0, 0.0),
         scale: Tuple[float, float] = (1.0, 1.0),
     ):
-        super().__init__(points)
+        self._points = points
         self._position = position
-        self._angle = angle
         self._scale = scale
 
         self._left = None
@@ -89,6 +56,10 @@ class AdjustableHitBox(HitBox):
 
         self._adjusted_points = None
         self._adjusted_cache_dirty = True
+
+    @property
+    def points(self):
+        return self._points
 
     @property
     def position(self):
@@ -124,21 +95,58 @@ class AdjustableHitBox(HitBox):
         return min(y_points)
 
     @property
-    def angle(self):
-        return self._angle
-
-    @angle.setter
-    def angle(self, angle: float):
-        self._angle = angle
-        self._adjusted_cache_dirty = True
-
-    @property
     def scale(self):
         return self._scale
 
     @scale.setter
     def scale(self, scale: Tuple[float, float]):
         self._scale = scale
+        self._adjusted_cache_dirty = True
+
+    def create_rotatable(
+        self,
+        angle: float = 0.0,
+    ) -> RotatableHitBox:
+        return RotatableHitBox(
+            self._points, position=self._position, scale=self._scale, angle=angle
+        )
+
+    def get_adjusted_points(self):
+        if not self._adjusted_cache_dirty:
+            return self._adjusted_points
+
+        def _adjust_point(point) -> Point:
+            x, y = point
+
+            x *= self.scale[0]
+            y *= self.scale[1]
+
+            return (x + self.position[0], y + self.position[1])
+
+        self._adjusted_points = tuple([_adjust_point(point) for point in self.points])
+        self._adjusted_cache_dirty = False
+        return self._adjusted_points
+
+
+class RotatableHitBox(HitBox):
+    def __init__(
+        self,
+        points: PointList,
+        *,
+        position: Tuple[float, float] = (0.0, 0.0),
+        angle: float = 0.0,
+        scale: Tuple[float, float] = (1.0, 1.0),
+    ):
+        super().__init__(points, position=position, scale=scale)
+        self._angle = angle
+
+    @property
+    def angle(self):
+        return self._angle
+
+    @angle.setter
+    def angle(self, angle: float):
+        self._angle = angle
         self._adjusted_cache_dirty = True
 
     def get_adjusted_points(self):

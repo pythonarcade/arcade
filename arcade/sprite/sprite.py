@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from arcade import Texture, load_texture
-from arcade.hitbox import AdjustableHitBox, HitBox
+from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.math import get_angle_degrees
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point
@@ -75,13 +75,7 @@ class Sprite(BasicSprite, PymunkMixin):
         )
         PymunkMixin.__init__(self)
 
-        self._hit_box: AdjustableHitBox = self._texture.hit_box.create_adjustable(
-            position=self._position,
-            angle=self.angle,
-            scale=self._scale,
-        )
-
-        self.angle = angle
+        self._angle = angle
         # Movement
         self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
@@ -104,106 +98,14 @@ class Sprite(BasicSprite, PymunkMixin):
         # Debug properties
         self.guid: Optional[str] = None
 
+        self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(
+            angle=self._angle
+        )
+
         self._width = self._texture.width * scale
         self._height = self._texture.height * scale
 
     # --- Properties ---
-
-    @BasicSprite.center_x.setter
-    def center_x(self, new_value: float):
-        self._hit_box.position = (new_value, self._position[1])
-        BasicSprite.center_x.fset(self, new_value)
-
-    @BasicSprite.center_y.setter
-    def center_y(self, new_value: float):
-        self._hit_box.position = (self._position[0], new_value)
-        BasicSprite.center_y.fset(self, new_value)
-
-    @BasicSprite.position.setter
-    def position(self, new_value: Point):
-        self._hit_box.position = new_value
-        BasicSprite.position.fset(self, new_value)
-
-    @BasicSprite.scale.setter
-    def scale(self, new_value: float):
-        BasicSprite.scale.fset(self, new_value)
-        self._hit_box.scale = (new_value, new_value)
-
-    @BasicSprite.width.setter
-    def width(self, new_value: float):
-        new_scale = new_value / self._texture.width, self._scale[0]
-        self._hit_box.scale = new_scale
-        BasicSprite.width.fset(self, new_value)
-
-    @BasicSprite.height.setter
-    def height(self, new_value: float):
-        new_scale = new_value / self._texture.height, self._scale[1]
-        self._hit_box.scale = new_scale
-        BasicSprite.height.fset(self, new_value)
-
-    @property
-    def left(self) -> float:
-        """
-        The leftmost x coordinate in the hit box.
-
-        When setting this property the sprite is positioned
-        relative to the leftmost x coordinate in the hit box.
-        """
-        return self._hit_box.left
-
-    @left.setter
-    def left(self, amount: float):
-        leftmost = self.left
-        diff = amount - leftmost
-        self.center_x += diff
-
-    @property
-    def right(self) -> float:
-        """
-        The rightmost x coordinate in the hit box.
-
-        When setting this property the sprite is positioned
-        relative to the rightmost x coordinate in the hit box.
-        """
-        return self._hit_box.right
-
-    @right.setter
-    def right(self, amount: float):
-        rightmost = self.right
-        diff = rightmost - amount
-        self.center_x -= diff
-
-    @property
-    def bottom(self) -> float:
-        """
-        The lowest y coordinate in the hit box.
-
-        When setting this property the sprite is positioned
-        relative to the lowest y coordinate in the hit box.
-        """
-        return self._hit_box.bottom
-
-    @bottom.setter
-    def bottom(self, amount: float):
-        lowest = self.bottom
-        diff = lowest - amount
-        self.center_y -= diff
-
-    @property
-    def top(self) -> float:
-        """
-        The highest y coordinate in the hit box.
-
-        When setting this property the sprite is positioned
-        relative to the highest y coordinate in the hit box.
-        """
-        return self._hit_box.top
-
-    @top.setter
-    def top(self, amount: float):
-        highest = self.top
-        diff = highest - amount
-        self.center_y -= diff
 
     @property
     def angle(self) -> float:
@@ -287,11 +189,9 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: Union[HitBox, AdjustableHitBox]):
+    def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]):
         if type(hit_box) == HitBox:
-            self._hit_box = hit_box.create_adjustable(
-                self.position, self.angle, self.scale_xy
-            )
+            self._hit_box = hit_box.create_rotatable(self.angle)
         else:
             # Mypy doesn't seem to understand the type check above
             # It still thinks hit_box can be a union here
@@ -315,8 +215,11 @@ class Sprite(BasicSprite, PymunkMixin):
 
         # If sprite is using default texture, update the hit box
         if self._texture is get_default_texture():
-            self.hit_box = texture.hit_box.create_adjustable(
-                position=self._position, angle=self.angle, scale=self._scale
+            self.hit_box = RotatableHitBox(
+                texture.hit_box_points,
+                position=self._position,
+                angle=self.angle,
+                scale=self._scale,
             )
 
         self._texture = texture

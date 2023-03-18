@@ -91,8 +91,17 @@ class Entity(arcade.Sprite):
         self.texture = self.idle_texture_pair[0]
 
         # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        self.hit_box = self.texture.hit_box.adjustable(self)
+        # a different hit box, you can do it like the code below. Doing this when
+        # changing the texture for example would make the hitbox update whenever the
+        # texture is changed. This can be expensive so if the textures are very similar
+        # it may not be worth doing.
+        #
+        # self.hit_box = arcade.hitbox.RotatableHitBox(
+        #     self.texture.hit_box_points,
+        #     position=self.position,
+        #     scale=self.scale_xy,
+        #     angle=self.angle,
+        # )
 
 
 class Enemy(Entity):

@@ -1,33 +1,33 @@
-import logging
 import hashlib
-from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
+import logging
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 from weakref import WeakSet
 
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageDraw
+import PIL.ImageOps
 
-from arcade.types import Color
+from arcade import cache as _cache
+from arcade import hitbox
+from arcade.color import TRANSPARENT_BLACK
+from arcade.hitbox.base import HitBoxAlgorithm
 from arcade.texture.transforms import (
-    Transform,
+    ORIENTATIONS,
     FlipLeftRightTransform,
     FlipTopBottomTransform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
+    Transform,
     TransposeTransform,
     TransverseTransform,
-    ORIENTATIONS
 )
-from arcade.color import TRANSPARENT_BLACK
-from arcade.hitbox.base import HitBoxAlgorithm, HitBox
-from arcade import cache as _cache
-from arcade import hitbox
+from arcade.types import Color, PointList
 
 if TYPE_CHECKING:
-    from arcade.sprite_list import SpriteList
     from arcade import TextureAtlas
+    from arcade.sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class ImageData:
     :param PIL.Image.Image image: The image for this texture
     :param str hash: The hash of the image
     """
+
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
@@ -119,11 +120,12 @@ class Texture:
 
     :param PIL.Image.Image image: The image or ImageData for this texture
     :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
-    :param HitBox hit_box: A HitBox for the texture to use (Optional).
+    :param HitBox hit_box_points: A list of hitbox points for the texture to use (Optional).
                                      Completely overrides the hit box algorithm.
     :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
+
     __slots__ = (
         "_image_data",
         "_size",
@@ -131,7 +133,7 @@ class Texture:
         "_transforms",
         "_sprite_list",
         "_hit_box_algorithm",
-        "_hit_box",
+        "_hit_box_points",
         "_hash",
         "_cache_name",
         "_atlas_name",
@@ -141,12 +143,13 @@ class Texture:
         "_atlas_refs",
         "__weakref__",
     )
+
     def __init__(
         self,
         image: Union[PIL.Image.Image, ImageData],
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box: Optional[HitBox] = None,
+        hit_box_points: Optional[PointList] = None,
         hash: Optional[str] = None,
         **kwargs,
     ):
@@ -183,7 +186,9 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box: HitBox = hit_box or self._calculate_hit_box()
+        self._hit_box_points: PointList = (
+            hit_box_points or self._calculate_hit_box_points()
+        )
 
         # Track what atlases the image is in
         self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
@@ -208,7 +213,7 @@ class Texture:
         """
         The name of the texture used for caching (read only).
 
-        :return: str 
+        :return: str
         """
         return self._cache_name
 
@@ -234,12 +239,12 @@ class Texture:
         if not isinstance(hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
-        return (
-            f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
-        )
+        return f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
 
     @classmethod
-    def create_atlas_name(cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)):
+    def create_atlas_name(
+        cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)
+    ):
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -258,9 +263,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls,
-        path: Union[str, Path],
-        crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 
@@ -269,7 +272,7 @@ class Texture:
         """
         The name of the texture used for the texture atlas (read only).
 
-        :return: str 
+        :return: str
         """
         return self._atlas_name
 
@@ -332,7 +335,7 @@ class Texture:
         to determine the uniqueness of the image
         in texture atlases.
 
-        :return: ImageData 
+        :return: ImageData
         """
         return self._image_data
 
@@ -387,7 +390,7 @@ class Texture:
         self._size = value
 
     @property
-    def hit_box(self) -> HitBox:
+    def hit_box_points(self) -> PointList:
         """
         Get the hit box points for this texture.
 
@@ -396,7 +399,7 @@ class Texture:
 
         :return: PointList
         """
-        return self._hit_box
+        return self._hit_box_points
 
     @property
     def hit_box_algorithm(self) -> HitBoxAlgorithm:
@@ -413,7 +416,7 @@ class Texture:
         :param str name: Name of the texture
         :param Tuple[int, int] size: Size of the texture
         :param Color color: Color of the texture
-        :return: Texture 
+        :return: Texture
         """
         return cls.create_empty(name, size, color)
 
@@ -492,7 +495,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(FlipLeftRightTransform)
 
@@ -541,7 +544,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transpose()
 
@@ -554,7 +557,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(TransposeTransform)
 
@@ -567,7 +570,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(TransverseTransform)
 
@@ -580,7 +583,7 @@ class Texture:
         applied to the image when it's drawn (GPU side).
 
         :param int count: Number of 90 degree steps to rotate.
-        :return: Texture 
+        :return: Texture
         """
         angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
         count = count % 4
@@ -597,7 +600,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(Rotate180Transform)
 
@@ -609,7 +612,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(Rotate270Transform)
 
@@ -623,11 +626,11 @@ class Texture:
         :param Transform transform: Transform to apply
         :return: New texture
         """
-        new_hit_box = HitBox(transform.transform_hit_box_points(self._hit_box.points))
+        new_hit_box_points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
             self.image_data,
             hit_box_algorithm=self._hit_box_algorithm,
-            hit_box=new_hit_box,
+            hit_box_points=new_hit_box_points,
             hash=self._hash,
         )
         texture.width = self.width
@@ -666,10 +669,15 @@ class Texture:
         :param int width: Width of crop
         :param int height: Height of crop
         :param bool cache: If True, the cropped texture will be cached
-        :return: Texture 
+        :return: Texture
         """
         # Return self if the crop is the same size as the original image
-        if (width == self.image.width and height == self.image.height and x == 0 and y == 0):
+        if (
+            width == self.image.width
+            and height == self.image.height
+            and x == 0
+            and y == 0
+        ):
             return self
 
         # Return self width and height is 0
@@ -724,12 +732,16 @@ class Texture:
         _cache.texture_cache.delete(self)
 
     @staticmethod
-    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
+    def validate_crop(
+        image: PIL.Image.Image, x: int, y: int, width: int, height: int
+    ) -> None:
         """
         Validate the crop values for a given image.
         """
         if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
+            raise ValueError(
+                f"crop values must be positive: {x}, {y}, {width}, {height}"
+            )
         if x >= image.width:
             raise ValueError(f"x position is outside of texture: {x}")
         if y >= image.height:
@@ -739,7 +751,7 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def _calculate_hit_box(self) -> HitBox:
+    def _calculate_hit_box_points(self) -> PointList:
         """
         Calculate the hit box points for this texture based on the configured
         hit box algorithm. This is usually done on texture creation
@@ -748,20 +760,21 @@ class Texture:
         # Check if we have cached points
         points = _cache.hit_box_cache.get(self.cache_name)
         if points:
-            return HitBox(points)
+            return points
 
         # Calculate points with the selected algorithm
         points = self._hit_box_algorithm.calculate(self.image)
         if self._hit_box_algorithm.cache:
             _cache.hit_box_cache.put(self.cache_name, points)
 
-        return HitBox(points)
+        return points
 
     # ----- Drawing functions -----
 
     def _create_cached_spritelist(self) -> "SpriteList":
         """Create or return the cached sprite list."""
         from arcade.sprite_list import SpriteList
+
         if self._sprite_list is None:
             self._sprite_list = SpriteList(capacity=1)
         return self._sprite_list
@@ -790,6 +803,7 @@ class Texture:
         :param int alpha: Alpha value to draw texture
         """
         from arcade import Sprite
+
         spritelist = self._create_cached_spritelist()
         sprite = Sprite(
             self,
@@ -829,6 +843,7 @@ class Texture:
         :param int alpha: The transparency of the texture `(0-255)`.
         """
         from arcade import Sprite
+
         spritelist = self._create_cached_spritelist()
         sprite = Sprite(
             self,
