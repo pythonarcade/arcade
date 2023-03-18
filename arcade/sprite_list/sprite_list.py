@@ -30,7 +30,7 @@ from arcade import (
     get_window,
     gl,
 )
-from arcade.types import Color, ColorLike
+from arcade.types import Color, ColorLike, RGBALike
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -996,7 +996,7 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
-    def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
+    def draw_hit_boxes(self, color: RGBALike = (0, 0, 0, 255), line_thickness: float = 1):
         """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
