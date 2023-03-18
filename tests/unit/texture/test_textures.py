@@ -1,10 +1,9 @@
-import pytest
 import PIL.Image
 import PIL.ImageDraw
+import pytest
 
 import arcade
-from arcade import Texture
-from arcade import hitbox
+from arcade import Texture, hitbox
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

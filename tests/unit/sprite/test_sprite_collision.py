@@ -247,9 +247,9 @@ def test_get_sprites_at_point(window):
 
     # With spatial hash
     sp = arcade.SpriteList(use_spatial_hash=True)
-    sp.extend((a, b))
     a.position = 0, 0
     b.position = 0, 0
+    sp.extend((a, b))
     assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a, b])
     b.position = 1000, 0
     assert set(arcade.get_sprites_at_point((0, 0), sp)) == set([a])

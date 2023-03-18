@@ -12,7 +12,6 @@ from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-from pyglet.math import Mat4
 
 import arcade
 from arcade.gui.events import (
@@ -267,14 +266,6 @@ class UIManager(EventDispatcher):
         self._do_layout()
 
         ctx = self.window.ctx
-
-        # Reset view matrix so content is not rendered into
-        # the surface with offset
-        prev_view = self.window.view
-        prev_proj = self.window.projection
-        self.window.view = Mat4()
-        self.window.projection = Mat4()
-
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
@@ -284,9 +275,6 @@ class UIManager(EventDispatcher):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
-
-        self.window.view = prev_view
-        self.window.projection = prev_proj
 
     def adjust_mouse_coordinates(self, x, y):
         """

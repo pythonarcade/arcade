@@ -1,9 +1,11 @@
-from typing import TYPE_CHECKING, List, Iterable, TypeVar
+from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import RGBA, Point, PointList, Color
 from arcade.color import BLACK
+from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.types import RGBA, Color, Point
+
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
 
@@ -15,6 +17,7 @@ class BasicSprite:
     """
     The absolute minimum needed for a sprite.
     """
+
     __slots__ = (
         "_position",
         "_depth",
@@ -23,6 +26,7 @@ class BasicSprite:
         "_scale",
         "_color",
         "_texture",
+        "_hit_box",
         "sprite_lists",
         "_angle",
         "__weakref__",
@@ -40,13 +44,17 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         self._width = texture.width * scale
-        self._height =texture.height * scale
+        self._height = texture.height * scale
         self._scale = scale, scale
         self._color: RGBA = 255, 255, 255, 255
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
+
+        self._hit_box = HitBox(
+            self._texture.hit_box_points, self._position, self._scale
+        )
 
     # --- Core Properties ---
 
@@ -66,6 +74,7 @@ class BasicSprite:
             return
 
         self._position = new_value
+        self._hit_box.position = new_value
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
@@ -81,11 +90,7 @@ class BasicSprite:
         if new_value == self._position[0]:
             return
 
-        self._position = (new_value, self._position[1])
-        self.update_spatial_hash()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_position_x(self)
+        self.position = (new_value, self._position[1])
 
     @property
     def center_y(self) -> float:
@@ -97,17 +102,13 @@ class BasicSprite:
         if new_value == self._position[1]:
             return
 
-        self._position = (self._position[0], new_value)
-        self.update_spatial_hash()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_position_y(self)
+        self.position = (self._position[0], new_value)
 
     @property
     def depth(self) -> float:
         """
         Get or set the depth of the sprite.
-        
+
         This is really the z coordinate of the sprite
         and can be used with OpenGL depth testing with opaque
         sprites.
@@ -130,6 +131,7 @@ class BasicSprite:
     def width(self, new_value: float):
         if new_value != self._width:
             self._scale = new_value / self._texture.width, self._scale[1]
+            self._hit_box.scale = self._scale
             self._width = new_value
 
             self.update_spatial_hash()
@@ -145,6 +147,7 @@ class BasicSprite:
     def height(self, new_value: float):
         if new_value != self._height:
             self._scale = self._scale[0], new_value / self._texture.height
+            self._hit_box.scale = self._scale
             self._height = new_value
 
             self.update_spatial_hash()
@@ -183,6 +186,7 @@ class BasicSprite:
             return
 
         self._scale = new_value, new_value
+        self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -202,6 +206,7 @@ class BasicSprite:
             return
 
         self._scale = new_value
+        self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -219,7 +224,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the leftmost x coordinate in the hit box.
         """
-        return self.center_x - self.width / 2
+        return self._hit_box.left
 
     @left.setter
     def left(self, amount: float):
@@ -235,7 +240,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the rightmost x coordinate in the hit box.
         """
-        return self.center_x + self.width / 2
+        return self._hit_box.right
 
     @right.setter
     def right(self, amount: float):
@@ -251,7 +256,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the lowest y coordinate in the hit box.
         """
-        return self._position[1] - self.height / 2
+        return self._hit_box.bottom
 
     @bottom.setter
     def bottom(self, amount: float):
@@ -267,7 +272,7 @@ class BasicSprite:
         When setting this property the sprite is positioned
         relative to the highest y coordinate in the hit box.
         """
-        return self._position[1] + self.height / 2
+        return self._hit_box.top
 
     @top.setter
     def top(self, amount: float):
@@ -295,7 +300,12 @@ class BasicSprite:
 
     @visible.setter
     def visible(self, value: bool):
-        self._color = self._color[0], self._color[1], self._color[2], 255 if value else 0
+        self._color = (
+            self._color[0],
+            self._color[1],
+            self._color[2],
+            255 if value else 0,
+        )
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
@@ -331,7 +341,7 @@ class BasicSprite:
                 and self._color[2] == color[2]
             ):
                 return
-            self._color = color[0], color[1], color[2], self._color[3] 
+            self._color = color[0], color[1], color[2], self._color[3]
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
@@ -366,8 +376,10 @@ class BasicSprite:
             return
 
         if __debug__ and not isinstance(texture, Texture):
-            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
-                            f" but is an instance of '{type(texture)}'.")
+            raise TypeError(
+                f"The 'texture' parameter must be an instance of arcade.Texture,"
+                f" but is an instance of '{type(texture)}'."
+            )
 
         self._texture = texture
         self._width = texture.width * self._scale[0]
@@ -389,7 +401,7 @@ class BasicSprite:
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         It can be called manually or by the SpriteList's on_update method.
-        
+
         :param float delta_time: Time since last update.
         """
         pass
@@ -400,7 +412,7 @@ class BasicSprite:
         the active texture on the sprite.
 
         This can be called manually or by the SpriteList's update_animation method.
-        
+
         :param float delta_time: Time since last update.
         """
         pass
@@ -430,7 +442,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor, self._scale[1] * factor
+        self.scale_xy = self._scale[0] * factor, self._scale[1] * factor
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -440,9 +452,9 @@ class BasicSprite:
 
         # be lazy about math; only do it if we have to
         if position_changed:
-            self._position = (
+            self.position = (
                 (self._position[0] - point[0]) * factor + point[0],
-                (self._position[1] - point[1]) * factor + point[1]
+                (self._position[1] - point[1]) * factor + point[1],
             )
 
         # rebuild all spatial metadata
@@ -453,9 +465,7 @@ class BasicSprite:
                 sprite_list._update_position(self)
 
     def rescale_xy_relative_to_point(
-        self,
-        point: Point,
-        factors_xy: Iterable[float]
+        self, point: Point, factors_xy: Iterable[float]
     ) -> None:
         """
         Rescale the sprite and its distance from the passed point.
@@ -487,7 +497,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self._scale = self._scale[0] * factor_x, self._scale[1] * factor_y
+        self.scale_xy = self._scale[0] * factor_x, self._scale[1] * factor_y
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -497,9 +507,9 @@ class BasicSprite:
 
         # be lazy about math; only do it if we have to
         if position_changed:
-            self._position = (
+            self.position = (
                 (self._position[0] - point[0]) * factor_x + point[0],
-                (self._position[1] - point[1]) * factor_y + point[1]
+                (self._position[1] - point[1]) * factor_y + point[1],
             )
 
         # rebuild all spatial metadata
@@ -511,19 +521,9 @@ class BasicSprite:
 
     # ---- Utility Methods ----
 
-    def get_adjusted_hit_box(self) -> PointList:
-        """
-        Return the hit box points adjusted for the sprite's position.
-        """
-        x, y = self._position
-        w, h = self._width, self._height
-        # TODO: Might might want to cache this?
-        return (
-            (-w / 2 + x, -h / 2 + y),
-            (w / 2 + x, -h / 2 + y),
-            (w / 2 + x, h / 2 + y),
-            (-w / 2 + x, h / 2 + y)
-        )
+    @property
+    def hit_box(self) -> HitBox:
+        return self._hit_box
 
     def update_spatial_hash(self) -> None:
         """
@@ -558,7 +558,7 @@ class BasicSprite:
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-        points = self.get_adjusted_hit_box()
+        points = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
         arcade.draw_line_strip(points, color=color, line_width=line_thickness)
@@ -582,7 +582,7 @@ class BasicSprite:
         from arcade.geometry import is_point_in_polygon
 
         x, y = point
-        return is_point_in_polygon(x, y, self.get_adjusted_hit_box())
+        return is_point_in_polygon(x, y, self.hit_box.get_adjusted_points())
 
     def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
@@ -595,7 +595,9 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> List[SpriteType]:
+    def collides_with_list(
+        self: SpriteType, sprite_list: "SpriteList"
+    ) -> List[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against
@@ -605,4 +607,5 @@ class BasicSprite:
         from arcade import check_for_collision_with_list
 
         # noinspection PyTypeChecker
+        return check_for_collision_with_list(self, sprite_list)
         return check_for_collision_with_list(self, sprite_list)

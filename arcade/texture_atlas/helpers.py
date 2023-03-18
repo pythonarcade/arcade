@@ -1,12 +1,13 @@
 import json
-from typing import Dict, Tuple
 from pathlib import Path
 from time import perf_counter
+from typing import Dict, Tuple
 
 import arcade
-from .base import TextureAtlas, AtlasRegion
-from arcade.texture import Texture, ImageData
 from arcade import cache
+from arcade.texture import ImageData, Texture
+
+from .base import AtlasRegion, TextureAtlas
 
 
 class FakeImage:
@@ -174,4 +175,5 @@ def load_atlas(
     # Write the uv data to vram
     atlas.use_uv_texture()
 
+    return atlas, perf_data
     return atlas, perf_data
