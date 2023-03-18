@@ -12,8 +12,8 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 
-    :param PointList poly_a: List of points that define the first polygon.
-    :param PointList poly_b: List of points that define the second polygon.
+    :param HitBox poly_a: List of points that define the first polygon.
+    :param HitBox poly_b: List of points that define the second polygon.
     :Returns: True or false depending if polygons intersect
     :rtype bool:
     """
@@ -51,7 +51,6 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
 
     return True
 
-
 def is_point_in_box(p: Point, q: Point, r: Point) -> bool:
     """
     Return True if point q is inside the box defined by p and r.
@@ -84,7 +83,7 @@ def get_triangle_orientation(p: Point, q: Point, r: Point) -> int:
     :param Point r: Point 3
     :Returns: 0, 1, or 2 depending on orientation
     """
-    val = (((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1])))
+    val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
 
     if val == 0:
         return 0  # collinear
@@ -170,16 +169,14 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
         # segment from 'polygon[i]' to 'polygon[next]'
-        if (are_lines_intersecting(polygon[i],
-                                   polygon[next_item],
-                                   p, extreme)):
+        if are_lines_intersecting(polygon[i], polygon[next_item], p, extreme):
             # If the point 'p' is collinear with line
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
-            if get_triangle_orientation(polygon[i], p,
-                                        polygon[next_item]) == 0:
+            if get_triangle_orientation(polygon[i], p, polygon[next_item]) == 0:
                 return not is_point_in_box(
-                    polygon[i], p,
+                    polygon[i],
+                    p,
                     polygon[next_item],
                 )
 
