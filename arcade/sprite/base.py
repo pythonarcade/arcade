@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
+from arcade.types import Point, Color, ColorLike, RGBALike
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import RGBA, Color, Point
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -46,7 +46,7 @@ class BasicSprite:
         self._width = texture.width * scale
         self._height = texture.height * scale
         self._scale = scale, scale
-        self._color: RGBA = 255, 255, 255, 255
+        self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -300,7 +300,7 @@ class BasicSprite:
 
     @visible.setter
     def visible(self, value: bool):
-        self._color = (
+        self._color = Color(
             self._color[0],
             self._color[1],
             self._color[2],
@@ -310,7 +310,7 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
-    def color(self) -> RGBA:
+    def color(self) -> Color:
         """
         Get or set the RGB/RGBA color associated with the sprite.
 
@@ -324,7 +324,7 @@ class BasicSprite:
         return self._color
 
     @color.setter
-    def color(self, color: RGBA):
+    def color(self, color: RGBALike):
         if len(color) == 4:
             if (
                 self._color[0] == color[0]
@@ -333,7 +333,8 @@ class BasicSprite:
                 and self._color[3] == color[3]
             ):
                 return
-            self._color = color[0], color[1], color[2], color[3]
+            self._color = Color(color[0], color[1], color[2], color[3])
+
         elif len(color) == 3:
             if (
                 self._color[0] == color[0]
@@ -341,7 +342,7 @@ class BasicSprite:
                 and self._color[2] == color[2]
             ):
                 return
-            self._color = color[0], color[1], color[2], self._color[3]
+            self._color = Color(color[0], color[1], color[2], self._color[3])
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
@@ -355,7 +356,7 @@ class BasicSprite:
 
     @alpha.setter
     def alpha(self, alpha: int):
-        self._color = self._color[0], self._color[1], self._color[2], int(alpha)
+        self._color = Color(self._color[0], self._color[1], self._color[2], int(alpha))
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
