@@ -47,8 +47,8 @@ SPARK_PAIRS = [
     [SPARK_TEXTURES[7], SPARK_TEXTURES[2]],
 ]
 ROCKET_SMOKE_TEXTURE = arcade.make_soft_circle_texture(15, arcade.color.GRAY)
-PUFF_TEXTURE = arcade.make_soft_circle_texture(80, (40, 40, 40))
-FLASH_TEXTURE = arcade.make_soft_circle_texture(70, (128, 128, 90))
+PUFF_TEXTURE = arcade.make_soft_circle_texture(80, (40, 40, 40, 255))
+FLASH_TEXTURE = arcade.make_soft_circle_texture(70, (128, 128, 90, 255))
 CLOUD_TEXTURES = [
     arcade.make_soft_circle_texture(50, arcade.color.WHITE),
     arcade.make_soft_circle_texture(50, arcade.color.LIGHT_GRAY),
