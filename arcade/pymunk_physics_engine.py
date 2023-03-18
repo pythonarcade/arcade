@@ -81,9 +81,9 @@ class PymunkPhysicsEngine:
             :param damping: See class docs.
             :param gravity: See class docs.
             :param max_velocity: The maximum velocity of the object.
-            :param max_horizontal_velocity: Maximum velocity on the x axis.
-            :param max_vertical_velocity: Maximum velocity on the y axis.
-            :param radius: Radius for the shape created for the sprite.
+            :param max_horizontal_velocity: Maximum velocity on the x axis in pixels.
+            :param max_vertical_velocity: Maximum velocity on the y axis in pixels.
+            :param radius: Radius for the shape created for the sprite in pixels.
             :param collision_type: Assign a name to the sprite, use this name when adding collision handler.
         """
 
