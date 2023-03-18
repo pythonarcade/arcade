@@ -5,7 +5,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 import math
 from typing import cast
 
-from arcade.types import Color, RGBA
+from arcade.types import Color, RGBA, ColorLike
 
 
 def get_points_for_thick_line(start_x: float, start_y: float,
@@ -38,7 +38,7 @@ def get_points_for_thick_line(start_x: float, start_y: float,
     return (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
 
 
-def get_four_byte_color(color: Color) -> RGBA:
+def get_four_byte_color(color: ColorLike) -> Color:
     """
     Converts a color to RGBA. If the color is already
     RGBA the original color value will be returned.
@@ -57,9 +57,7 @@ def get_four_byte_color(color: Color) -> RGBA:
     :returns:  return: Four byte RGBA tuple
     """
 
-    if len(color) == 4:
-        return cast(RGBA, color)
-    elif len(color) == 3:
-        return color[0], color[1], color[2], 255
-    else:
-        raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
+    if len(color) in (3, 4):
+        return Color(*color)
+
+    raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
