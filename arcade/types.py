@@ -50,7 +50,10 @@ class Color(tuple[int, int, int, int]):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return super().__new__(cls, (r, g, b, a))
+        # Typechecking is ignored because of a mypy bug involving
+        # tuples & super:
+        # https://github.com/python/mypy/issues/8541
+        return super().__new__(cls, (r, g, b, a))  # type: ignore
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
