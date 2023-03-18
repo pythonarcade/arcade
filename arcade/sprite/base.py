@@ -312,14 +312,25 @@ class BasicSprite:
     @property
     def color(self) -> Color:
         """
-        Get or set the RGB/RGBA color associated with the sprite.
+        Get or set the RGBA multiply color for the sprite.
+
+        When setting the color, it may be specified as any of the following:
+
+        * an RGBA :py:class:`tuple` with each channel value between 0 and 255
+        * an instance of :py:class:`~arcade.types.Color`
+        * an RGB :py:class:`tuple`, in which case the color will be treated as opaque
 
         Example usage::
 
-            print(sprite.color)
-            sprite.color = arcade.color.RED
-            sprite.color = 255, 0, 0
-            sprite.color = 255, 0, 0, 128
+            >>> print(sprite.color)
+            Color(255, 255, 255, 255)
+
+            >>> sprite.color = arcade.color.RED
+
+            >>> sprite.color = 255, 0, 0
+
+            >>> sprite.color = 255, 0, 0, 128
+
         """
         return self._color
 

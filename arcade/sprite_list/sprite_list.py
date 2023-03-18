@@ -294,14 +294,26 @@ class SpriteList(Generic[SpriteType]):
     @property
     def color(self) -> Color:
         """
-        Get or set the spritelist color. This will affect all sprites in the list.
-        Individual sprites can also be assigned a color.
-        These colors are converted into floating point colors (0.0 -> 1.0)
-        and multiplied together.
+        Get or set the multiply color for all sprites in the list RGBA integers
 
-        The final color of the sprite is::
+        This will affect all sprites in the list, and each value must be
+        between 0 and 255.
 
-            texture_color * sprite_color * spritelist_color
+        The color may be specified as any of the following:
+
+        * an RGBA :py:class:`tuple` with each channel value between 0 and 255
+        * an instance of :py:class:`~arcade.types.Color`
+        * an RGB :py:class:`tuple`, in which case the color will be treated as opaque
+
+        Each individual sprite can also be assigned a color via its
+        :py:attr:`~arcade.BasicSprite.color` property.
+
+        When :py:meth:`.SpriteList.draw` is called, each pixel will default
+        to a value equivalent to the following:
+
+        1. Convert the sampled texture, sprite, and list colors into normalized floats (0.0 to 1.0)
+        2. Multiply the color channels together: ``texture_color * sprite_color * spritelist_color``
+        3. Multiply the floating point values by 255 and round the result
 
         :rtype: Color
         """
