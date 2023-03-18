@@ -552,7 +552,7 @@ class BasicSprite:
 
     # ----- Drawing Methods -----
 
-    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
+    def draw_hit_box(self, color: RGBALike = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
