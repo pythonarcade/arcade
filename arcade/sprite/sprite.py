@@ -129,6 +129,16 @@ class Sprite(BasicSprite, PymunkMixin):
         BasicSprite.scale.fset(self, new_value)
         self._hit_box.scale = (new_value, new_value)
 
+    @BasicSprite.width.setter
+    def width(self, new_value: float):
+        BasicSprite.width.fset(self, new_value)
+        self._hit_box.scale = self._scale
+
+    @BasicSprite.height.setter
+    def height(self, new_value: float):
+        BasicSprite.height.fset(self, new_value)
+        self._hit_box.scale = self._scale
+
     @property
     def left(self) -> float:
         """

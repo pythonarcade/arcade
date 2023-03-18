@@ -113,24 +113,6 @@ class AdjustableHitBox(HitBox):
         return min(y_points)
 
     @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, x: float):
-        self._x = x
-        self._adjusted_cache_dirty = True
-
-    @property
-    def y(self):
-        return self._y
-
-    @y.setter
-    def y(self, y: float):
-        self._y = y
-        self._adjusted_cache_dirty = True
-
-    @property
     def angle(self):
         return self._angle
 
@@ -163,8 +145,10 @@ class AdjustableHitBox(HitBox):
             y *= self.scale[1]
 
             if rad:
-                x = x * rad_cos - y * rad_sin
-                y = x * rad_sin + y * rad_cos
+                rot_x = x * rad_cos - y * rad_sin
+                rot_y = x * rad_sin + y * rad_cos
+                x = rot_x
+                y = rot_y
 
             return (
                 x + self.position[0],
@@ -173,5 +157,4 @@ class AdjustableHitBox(HitBox):
 
         self._adjusted_points = tuple([_adjust_point(point) for point in self.points])
         self._adjusted_cache_dirty = False
-        return self._adjusted_points
         return self._adjusted_points

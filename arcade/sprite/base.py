@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List, Iterable, TypeVar
 import arcade
 from arcade.types import RGBA, Point, PointList, Color
 from arcade.color import BLACK
+from arcade.hitbox import HitBox
 from arcade.texture import Texture
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -510,6 +511,10 @@ class BasicSprite:
                 sprite_list._update_position(self)
 
     # ---- Utility Methods ----
+
+    @property
+    def hit_box(self) -> HitBox:
+        return self._texture.hit_box
 
     def get_adjusted_hit_box(self) -> PointList:
         """

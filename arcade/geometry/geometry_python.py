@@ -5,7 +5,6 @@ These are the pure python versions of the functions.
 
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
-from arcade.hitbox import HitBox
 from arcade.types import Point, PointList
 
 
@@ -19,15 +18,14 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     :rtype bool:
     """
     for polygon in (poly_a, poly_b):
+
         for i1 in range(len(polygon)):
             i2 = (i1 + 1) % len(polygon)
             projection_1 = polygon[i1]
             projection_2 = polygon[i2]
 
-            normal = (
-                projection_2[1] - projection_1[1],
-                projection_1[0] - projection_2[0],
-            )
+            normal = (projection_2[1] - projection_1[1],
+                      projection_1[0] - projection_2[0])
 
             min_a, max_a, min_b, max_b = (None,) * 4
 
@@ -52,7 +50,6 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
                 return False
 
     return True
-
 
 def is_point_in_box(p: Point, q: Point, r: Point) -> bool:
     """
@@ -136,7 +133,7 @@ def are_lines_intersecting(p1: Point, q1: Point, p2: Point, q2: Point) -> bool:
     return False
 
 
-def is_point_in_polygon(x: float, y: float, polygon: HitBox) -> bool:
+def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
     """
     Checks if a point is inside a polygon of three or more points.
 
@@ -145,9 +142,8 @@ def is_point_in_polygon(x: float, y: float, polygon: HitBox) -> bool:
     :param PointList polygon_point_list: List of points that define the polygon.
     :Returns: True or false depending if point is inside polygon
     """
-    points = polygon.get_adjusted_points()
     p = x, y
-    n = len(points)
+    n = len(polygon)
 
     # There must be at least 3 vertices
     # in polygon
@@ -167,21 +163,21 @@ def is_point_in_polygon(x: float, y: float, polygon: HitBox) -> bool:
     while True:
         next_item = (i + 1) % n
 
-        if points[i][1] == p[1]:
+        if polygon[i][1] == p[1]:
             decrease += 1
 
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
         # segment from 'polygon[i]' to 'polygon[next]'
-        if are_lines_intersecting(points[i], points[next_item], p, extreme):
+        if are_lines_intersecting(polygon[i], polygon[next_item], p, extreme):
             # If the point 'p' is collinear with line
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
-            if get_triangle_orientation(points[i], p, points[next_item]) == 0:
+            if get_triangle_orientation(polygon[i], p, polygon[next_item]) == 0:
                 return not is_point_in_box(
-                    points[i],
+                    polygon[i],
                     p,
-                    points[next_item],
+                    polygon[next_item],
                 )
 
             count += 1
