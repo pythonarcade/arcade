@@ -205,7 +205,7 @@ class PymunkPhysicsEngine:
                         mass: float = 1,
                         friction: float = 0.2,
                         elasticity: Optional[float] = None,
-                        moment_of_intertia: Optional[float] = None,
+                        moment_of_inertia: Optional[float] = None,
                         body_type: int = DYNAMIC,
                         damping: Optional[float] = None,
                         collision_type: Optional[str] = None
@@ -217,7 +217,7 @@ class PymunkPhysicsEngine:
                             mass=mass,
                             friction=friction,
                             elasticity=elasticity,
-                            moment_of_inertia=moment_of_intertia,
+                            moment_of_inertia=moment_of_inertia,
                             body_type=body_type,
                             damping=damping,
                             collision_type=collision_type)
