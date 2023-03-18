@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import Any, Tuple
+from typing import TYPE_CHECKING, Any, Tuple
 
 from PIL.Image import Image
 
 from arcade.types import Point, PointList
+
+if TYPE_CHECKING:
+    from arcade.sprite import Sprite
 
 
 class HitBoxAlgorithm:
@@ -51,6 +54,14 @@ class HitBox:
     ) -> AdjustableHitBox:
         return AdjustableHitBox(
             self._points, position=position, angle=angle, scale=scale
+        )
+
+    def adjustable(self, sprite: Sprite) -> AdjustableHitBox:
+        return AdjustableHitBox(
+            self._points,
+            position=sprite.position,
+            angle=sprite.angle,
+            scale=sprite.scale_xy,
         )
 
     def get_adjusted_points(self):
@@ -132,7 +143,7 @@ class AdjustableHitBox(HitBox):
 
     def get_adjusted_points(self):
         if not self._adjusted_cache_dirty:
-                return self._adjusted_points
+            return self._adjusted_points
 
         rad = radians(self._angle)
         rad_cos = cos(rad)

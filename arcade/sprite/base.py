@@ -523,20 +523,6 @@ class BasicSprite:
     def hit_box(self) -> HitBox:
         return self._texture.hit_box
 
-    def get_adjusted_hit_box(self) -> PointList:
-        """
-        Return the hit box points adjusted for the sprite's position.
-        """
-        x, y = self._position
-        w, h = self._width, self._height
-        # TODO: Might might want to cache this?
-        return (
-            (-w / 2 + x, -h / 2 + y),
-            (w / 2 + x, -h / 2 + y),
-            (w / 2 + x, h / 2 + y),
-            (-w / 2 + x, h / 2 + y),
-        )
-
     def update_spatial_hash(self) -> None:
         """
         Update the sprites location in the spatial hash if present.
@@ -570,7 +556,7 @@ class BasicSprite:
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-        points = self.get_adjusted_hit_box()
+        points = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
         arcade.draw_line_strip(points, color=color, line_width=line_thickness)
@@ -594,7 +580,7 @@ class BasicSprite:
         from arcade.geometry import is_point_in_polygon
 
         x, y = point
-        return is_point_in_polygon(x, y, self.get_adjusted_hit_box())
+        return is_point_in_polygon(x, y, self.hit_box.get_adjusted_points())
 
     def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.

@@ -87,26 +87,23 @@ class Entity(arcade.Sprite):
         # Hit box will be set based on the first image used. If you want to specify
         # a different hit box, you can do it like the code below.
         # set_hit_box = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
-        self.hit_box = self.texture.hit_box_points
+        self.hit_box = self.texture.hit_box.adjustable(self)
 
 
 class Enemy(Entity):
     def __init__(self, name_folder, name_file):
-
         # Setup parent class
         super().__init__(name_folder, name_file)
 
 
 class RobotEnemy(Enemy):
     def __init__(self):
-
         # Set up parent class
         super().__init__("robot", "robot")
 
 
 class ZombieEnemy(Enemy):
     def __init__(self):
-
         # Set up parent class
         super().__init__("zombie", "zombie")
 
@@ -115,7 +112,6 @@ class PlayerCharacter(Entity):
     """Player Sprite"""
 
     def __init__(self):
-
         # Set up parent class
         super().__init__("male_person", "malePerson")
 
@@ -125,7 +121,6 @@ class PlayerCharacter(Entity):
         self.is_on_ladder = False
 
     def update_animation(self, delta_time: float = 1 / 60):
-
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.facing_direction = LEFT_FACING
@@ -295,7 +290,7 @@ class MyGame(arcade.Window):
             platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
             gravity_constant=GRAVITY,
             ladders=self.scene[LAYER_NAME_LADDERS],
-            walls=self.scene[LAYER_NAME_PLATFORMS]
+            walls=self.scene[LAYER_NAME_PLATFORMS],
         )
 
     def on_draw(self):
@@ -439,7 +434,6 @@ class MyGame(arcade.Window):
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
-
             # Figure out how many points this coin is worth
             if "Points" not in coin.properties:
                 print("Warning, collected a coin without a Points property.")
