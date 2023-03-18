@@ -12,7 +12,6 @@ from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-from pyglet.math import Mat4
 
 import arcade
 from arcade.gui.events import (
