@@ -349,7 +349,7 @@ class PymunkPhysicsEngine:
                     continue
 
                 new_position = physics_object.body.position
-                new_angle = math.degrees(physics_object.body.angle)
+                new_angle = -math.degrees(physics_object.body.angle)
 
                 # Calculate change in location, used in call-back
                 dx = new_position[0] - original_position[0]
