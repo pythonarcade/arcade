@@ -1,12 +1,13 @@
 import json
-from typing import Dict, Tuple
 from pathlib import Path
 from time import perf_counter
+from typing import Dict, Tuple
 
 import arcade
-from .base import TextureAtlas, AtlasRegion
-from arcade.texture import Texture, ImageData
 from arcade import cache
+from arcade.texture import ImageData, Texture
+
+from .base import AtlasRegion, TextureAtlas
 
 
 class FakeImage:
@@ -70,7 +71,7 @@ def save_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: P
             "hash": texture.image_data.hash,
             "path": texture.file_path.relative_to(resource_root).as_posix(),
             "crop": texture.crop_values,
-            "points": texture.hit_box_points,
+            "points": texture.hit_box.points,
             "region": _dump_region_info(atlas.get_texture_region_info(texture.atlas_name)),
             "vertex_order": texture._vertex_order,
         })
@@ -174,4 +175,5 @@ def load_atlas(
     # Write the uv data to vram
     atlas.use_uv_texture()
 
+    return atlas, perf_data
     return atlas, perf_data

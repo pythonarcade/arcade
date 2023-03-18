@@ -20,7 +20,6 @@ from arcade.texture.transforms import (
     TransverseTransform,
     ORIENTATIONS
 )
-from arcade.types import PointList
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox.base import HitBoxAlgorithm, HitBox
 from arcade import cache as _cache

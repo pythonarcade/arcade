@@ -132,7 +132,7 @@ class AdjustableHitBox(HitBox):
 
     def get_adjusted_points(self):
         if not self._adjusted_cache_dirty:
-            return self._adjusted_points
+                return self._adjusted_points
 
         rad = radians(self._angle)
         rad_cos = cos(rad)

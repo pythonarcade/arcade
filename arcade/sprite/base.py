@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING, List, Iterable, TypeVar
+from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import RGBA, Point, PointList, Color
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.types import RGBA, Color, Point, PointList
+
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
 
@@ -16,6 +17,7 @@ class BasicSprite:
     """
     The absolute minimum needed for a sprite.
     """
+
     __slots__ = (
         "_position",
         "_depth",
@@ -41,7 +43,7 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         self._width = texture.width * scale
-        self._height =texture.height * scale
+        self._height = texture.height * scale
         self._scale = scale, scale
         self._color: RGBA = 255, 255, 255, 255
         self.sprite_lists: List["SpriteList"] = []
@@ -51,8 +53,7 @@ class BasicSprite:
 
     # --- Core Properties ---
 
-    @property
-    def position(self) -> Point:
+    def _get_position(self) -> Point:
         """
         Get or set the center x and y position of the sprite.
 
@@ -61,8 +62,7 @@ class BasicSprite:
         """
         return self._position
 
-    @position.setter
-    def position(self, new_value: Point):
+    def _set_position(self, new_value: Point):
         if new_value == self._position:
             return
 
@@ -72,13 +72,13 @@ class BasicSprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_position(self)
 
-    @property
-    def center_x(self) -> float:
+    position = property(_get_position, _set_position)
+
+    def _get_center_x(self) -> float:
         """Get or set the center x position of the sprite."""
         return self._position[0]
 
-    @center_x.setter
-    def center_x(self, new_value: float):
+    def _set_center_x(self, new_value: float):
         if new_value == self._position[0]:
             return
 
@@ -88,13 +88,13 @@ class BasicSprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_position_x(self)
 
-    @property
-    def center_y(self) -> float:
+    center_x = property(_get_center_x, _set_center_x)
+
+    def _get_center_y(self) -> float:
         """Get or set the center y position of the sprite."""
         return self._position[1]
 
-    @center_y.setter
-    def center_y(self, new_value: float):
+    def _set_center_y(self, new_value: float):
         if new_value == self._position[1]:
             return
 
@@ -104,11 +104,13 @@ class BasicSprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_position_y(self)
 
+    center_y = property(_get_center_y, _set_center_y)
+
     @property
     def depth(self) -> float:
         """
         Get or set the depth of the sprite.
-        
+
         This is really the z coordinate of the sprite
         and can be used with OpenGL depth testing with opaque
         sprites.
@@ -122,13 +124,11 @@ class BasicSprite:
             for sprite_list in self.sprite_lists:
                 sprite_list._update_depth(self)
 
-    @property
-    def width(self) -> float:
+    def _get_width(self) -> float:
         """Get or set width or the sprite in pixels"""
         return self._width
 
-    @width.setter
-    def width(self, new_value: float):
+    def _set_width(self, new_value: float):
         if new_value != self._width:
             self._scale = new_value / self._texture.width, self._scale[1]
             self._width = new_value
@@ -137,13 +137,13 @@ class BasicSprite:
             for sprite_list in self.sprite_lists:
                 sprite_list._update_width(self)
 
-    @property
-    def height(self) -> float:
+    width = property(_get_width, _set_width)
+
+    def _get_height(self) -> float:
         """Get or set the height of the sprite in pixels."""
         return self._height
 
-    @height.setter
-    def height(self, new_value: float):
+    def _set_height(self, new_value: float):
         if new_value != self._height:
             self._scale = self._scale[0], new_value / self._texture.height
             self._height = new_value
@@ -151,6 +151,8 @@ class BasicSprite:
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
                 sprite_list._update_height(self)
+
+    height = property(_get_height, _set_height)
 
     # @property
     # def size(self) -> Point:
@@ -168,8 +170,7 @@ class BasicSprite:
     #         for sprite_list in self.sprite_lists:
     #             sprite_list._update_size(self)
 
-    @property
-    def scale(self) -> float:
+    def _get_scale(self) -> float:
         """
         Get or set the sprite's x scale value or set both x & y scale to the same value.
 
@@ -178,8 +179,7 @@ class BasicSprite:
         """
         return self._scale[0]
 
-    @scale.setter
-    def scale(self, new_value: float):
+    def _set_scale(self, new_value: float):
         if new_value == self._scale[0] and new_value == self._scale[1]:
             return
 
@@ -191,6 +191,8 @@ class BasicSprite:
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
+
+    scale = property(_get_scale, _set_scale)
 
     @property
     def scale_xy(self) -> Point:
@@ -296,7 +298,12 @@ class BasicSprite:
 
     @visible.setter
     def visible(self, value: bool):
-        self._color = self._color[0], self._color[1], self._color[2], 255 if value else 0
+        self._color = (
+            self._color[0],
+            self._color[1],
+            self._color[2],
+            255 if value else 0,
+        )
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
@@ -332,7 +339,7 @@ class BasicSprite:
                 and self._color[2] == color[2]
             ):
                 return
-            self._color = color[0], color[1], color[2], self._color[3] 
+            self._color = color[0], color[1], color[2], self._color[3]
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
@@ -367,8 +374,10 @@ class BasicSprite:
             return
 
         if __debug__ and not isinstance(texture, Texture):
-            raise TypeError(f"The 'texture' parameter must be an instance of arcade.Texture,"
-                            f" but is an instance of '{type(texture)}'.")
+            raise TypeError(
+                f"The 'texture' parameter must be an instance of arcade.Texture,"
+                f" but is an instance of '{type(texture)}'."
+            )
 
         self._texture = texture
         self._width = texture.width * self._scale[0]
@@ -390,7 +399,7 @@ class BasicSprite:
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         It can be called manually or by the SpriteList's on_update method.
-        
+
         :param float delta_time: Time since last update.
         """
         pass
@@ -401,7 +410,7 @@ class BasicSprite:
         the active texture on the sprite.
 
         This can be called manually or by the SpriteList's update_animation method.
-        
+
         :param float delta_time: Time since last update.
         """
         pass
@@ -443,7 +452,7 @@ class BasicSprite:
         if position_changed:
             self._position = (
                 (self._position[0] - point[0]) * factor + point[0],
-                (self._position[1] - point[1]) * factor + point[1]
+                (self._position[1] - point[1]) * factor + point[1],
             )
 
         # rebuild all spatial metadata
@@ -454,9 +463,7 @@ class BasicSprite:
                 sprite_list._update_position(self)
 
     def rescale_xy_relative_to_point(
-        self,
-        point: Point,
-        factors_xy: Iterable[float]
+        self, point: Point, factors_xy: Iterable[float]
     ) -> None:
         """
         Rescale the sprite and its distance from the passed point.
@@ -500,7 +507,7 @@ class BasicSprite:
         if position_changed:
             self._position = (
                 (self._position[0] - point[0]) * factor_x + point[0],
-                (self._position[1] - point[1]) * factor_y + point[1]
+                (self._position[1] - point[1]) * factor_y + point[1],
             )
 
         # rebuild all spatial metadata
@@ -527,7 +534,7 @@ class BasicSprite:
             (-w / 2 + x, -h / 2 + y),
             (w / 2 + x, -h / 2 + y),
             (w / 2 + x, h / 2 + y),
-            (-w / 2 + x, h / 2 + y)
+            (-w / 2 + x, h / 2 + y),
         )
 
     def update_spatial_hash(self) -> None:
@@ -600,7 +607,9 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> List[SpriteType]:
+    def collides_with_list(
+        self: SpriteType, sprite_list: "SpriteList"
+    ) -> List[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param SpriteList sprite_list: SpriteList to check against
@@ -610,4 +619,5 @@ class BasicSprite:
         from arcade import check_for_collision_with_list
 
         # noinspection PyTypeChecker
+        return check_for_collision_with_list(self, sprite_list)
         return check_for_collision_with_list(self, sprite_list)

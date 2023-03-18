@@ -111,18 +111,18 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @BasicSprite.center_x.setter
     def center_x(self, new_value: float):
-        BasicSprite.center_x.fset(self, new_value)
         self._hit_box.position = (new_value, self._position[1])
+        BasicSprite.center_x.fset(self, new_value)
 
     @BasicSprite.center_y.setter
     def center_y(self, new_value: float):
-        BasicSprite.center_y.fset(self, new_value)
         self._hit_box.position = (self._position[0], new_value)
+        BasicSprite.center_y.fset(self, new_value)
 
     @BasicSprite.position.setter
     def position(self, new_value: Point):
-        BasicSprite.position.fset(self, new_value)
         self._hit_box.position = new_value
+        BasicSprite.position.fset(self, new_value)
 
     @BasicSprite.scale.setter
     def scale(self, new_value: float):
@@ -131,13 +131,15 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @BasicSprite.width.setter
     def width(self, new_value: float):
+        new_scale = new_value / self._texture.width, self._scale[0]
+        self._hit_box.scale = new_scale
         BasicSprite.width.fset(self, new_value)
-        self._hit_box.scale = self._scale
 
     @BasicSprite.height.setter
     def height(self, new_value: float):
+        new_scale = new_value / self._texture.height, self._scale[1]
+        self._hit_box.scale = new_scale
         BasicSprite.height.fset(self, new_value)
-        self._hit_box.scale = self._scale
 
     @property
     def left(self) -> float:
