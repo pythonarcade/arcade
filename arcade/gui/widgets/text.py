@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import Color
+from arcade.types import Color, RGBALike
 
 
 class UILabel(UIWidget):
@@ -61,7 +61,7 @@ class UILabel(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (255, 255, 255, 255),
+        text_color: RGBALike = (255, 255, 255, 255),
         bold=False,
         italic=False,
         align="left",
@@ -243,7 +243,7 @@ class UIInputText(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (0, 0, 0, 255),
+        text_color: RGBALike = (0, 0, 0, 255),
         multiline=False,
         size_hint=None,
         size_hint_min=None,
@@ -399,7 +399,7 @@ class UITextArea(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (255, 255, 255, 255),
+        text_color: RGBALike = (255, 255, 255, 255),
         multiline: bool = True,
         scroll_speed: Optional[float] = None,
         size_hint=None,
