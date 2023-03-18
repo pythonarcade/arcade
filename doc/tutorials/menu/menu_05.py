@@ -180,7 +180,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         # Adding some extra space around the title.
         title_label_space = arcade.gui.UISpace(height=30, color=arcade.color.DARK_BLUE_GRAY)
 
-        input_text = arcade.gui.UIInputText(text=input_text, width=250).with_border()
+        input_text_widget = arcade.gui.UIInputText(text=input_text, width=250).with_border()
 
         # Load the on-off textures.
         on_texture = arcade.load_texture(":resources:gui_basic_assets/toggle/circle_switch_on.png")
@@ -213,7 +213,7 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         widget_layout = arcade.gui.UIBoxLayout(align="left", space_between=10)
         widget_layout.add(title_label)
         widget_layout.add(title_label_space)
-        widget_layout.add(input_text)
+        widget_layout.add(input_text_widget)
         widget_layout.add(toggle_group)
         widget_layout.add(dropdown)
         widget_layout.add(slider_label)
