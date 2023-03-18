@@ -33,9 +33,33 @@ RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
 
 
-# Color = Union[RGB, RGBA]
 class Color(tuple[int, int, int, int]):
+    """
+    A :py:class:`tuple` subclass representing an RGBA Color.
 
+    Although arcade will accept RGBA tuples instead of instances
+    of this class, you may find the utility methods and properties
+    it provides to be helpful.
+
+    All channels are byte values from 0 to 255, inclusive. If any are
+    outside this range, a :py:class:`~arcade.utils.ByteRangeError` will
+    be raised, which can be handled as a :py:class:`ValueError`.
+
+    Examples::
+
+        >>> from arcade.types import Color
+        >>> Color(255, 0, 0)
+        Color(255, 0, 0, 0)
+
+        >>> Color(*rgb_green_tuple, 127)
+        Color(0, 255, 0, 127)
+
+    :param r: the red channel of the color, between 0 and 255
+    :param g: the green channel of the color, between 0 and 255
+    :param b: the blue channel of the color, between 0 and 255
+    :param a: the alpha or transparency channel of the color, between
+        0 and 255
+    """
     def __new__(cls, r: int = 0, g: int = 0, b: int = 0, a: int = 255):
 
         if not 0 <= r <= 255:
