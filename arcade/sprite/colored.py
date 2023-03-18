@@ -1,6 +1,5 @@
 import PIL
 
-import arcade
 from arcade import cache, hitbox
 from arcade.texture import (
     ImageData,
@@ -8,7 +7,7 @@ from arcade.texture import (
     make_circle_texture,
     make_soft_circle_texture,
 )
-from arcade.types import Color
+from arcade.types import Color, RGBALike
 
 from .sprite import Sprite
 
@@ -26,7 +25,9 @@ class SpriteSolidColor(Sprite):
     :param int height: Height of the sprite in pixels
     :param float center_x: Initial x position of the sprite
     :param float center_y: Initial y position of the sprite
-    :param Color color: The color of the sprite as an RGB or RGBA tuple
+    :param ColorLike color: The color of the sprite as a
+        :py:class:`~arcade.types.Color`, an RGBA tuple, or an RGB
+        tuple.
     :param float angle: Initial angle of the sprite in degrees
     """
 
@@ -42,7 +43,7 @@ class SpriteSolidColor(Sprite):
         height: int,
         center_x: float = 0,
         center_y: float = 0,
-        color: Color = (255, 255, 255, 255),
+        color: RGBALike = Color(255, 255, 255, 255),
         angle: float = 0,
         **kwargs,
     ):
@@ -62,7 +63,7 @@ class SpriteSolidColor(Sprite):
             center_y=center_y,
             angle=angle,
         )
-        self.color = arcade.get_four_byte_color(color)
+        self.color = Color(*color)
 
 
 class SpriteCircle(Sprite):
@@ -87,10 +88,9 @@ class SpriteCircle(Sprite):
                       center to transparent edges.
     """
 
-    def __init__(self, radius: int, color: Color, soft: bool = False, **kwargs):
+    def __init__(self, radius: int, color: RGBALike, soft: bool = False, **kwargs):
         radius = int(radius)
         diameter = radius * 2
-        color_rgba = arcade.get_four_byte_color(color)
 
         # We are only creating white textures. The actual color is
         # is applied in the shader through the sprite's color attribute.
@@ -124,5 +124,5 @@ class SpriteCircle(Sprite):
 
         # apply results to the new sprite
         super().__init__(texture)
-        self.color = color_rgba
+        self.color = Color(*color)
         self._points = self.texture.hit_box_points
