@@ -5,6 +5,10 @@ python -m arcade.examples.platform_tutorial.17_views
 """
 import math
 
+import arcade_accelerate
+
+arcade_accelerate.bootstrap()
+
 import arcade
 
 # Constants
@@ -687,5 +691,6 @@ def main():
 if __name__ == "__main__":
     main()
 if __name__ == "__main__":
+    main()
     main()
     main()
