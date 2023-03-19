@@ -540,10 +540,10 @@ class Text:
         bottom = self.bottom
 
         # Draw background
-        arcade.draw_lrtb_rectangle_filled(left, right, top, bottom, color=background_color)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, color=background_color)
 
         # Draw outline
-        arcade.draw_lrtb_rectangle_outline(left, right, top, bottom, color=outline_color)
+        arcade.draw_lrbt_rectangle_outline(left, right, bottom, top, color=outline_color)
 
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)

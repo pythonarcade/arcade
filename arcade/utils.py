@@ -17,6 +17,11 @@ class PerformanceWarning(Warning):
     pass
 
 
+class NameChangeWarning(Warning):
+    """Use this for issuing warnings about naming changes."""
+    pass
+
+
 def warning(message: str, warning_type: Type[Warning]):
     def actual_warning_decorator(func):
         @functools.wraps(func)
