@@ -3,7 +3,7 @@ from typing import Iterable, Tuple, Sequence, List, Optional
 
 from arcade import gl
 from arcade.experimental.texture_render_target import RenderTargetTexture
-from arcade.types import Color, RGBALike, ColorLike
+from arcade.types import RGBALike, ColorLike
 from arcade.color import WHITE
 
 
