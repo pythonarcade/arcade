@@ -626,7 +626,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: Color,
                                 border_width: float = 1):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, top and bottom edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -656,7 +656,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: Color,
                                 border_width: float = 1):
     """
-    Draw a rectangle by specifying left, right, bottom, and top edges.
+    Draw a rectangle by specifying left, right, bottom and top edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -747,7 +747,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
                                bottom: float, color: Color):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, top and bottom edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -771,7 +771,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
 def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: Color):
     """
-    Draw a rectangle by specifying left, right, bottom, and top edges.
+    Draw a rectangle by specifying left, right, bottom and top edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
