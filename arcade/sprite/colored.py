@@ -63,7 +63,7 @@ class SpriteSolidColor(Sprite):
             center_y=center_y,
             angle=angle,
         )
-        self.color = Color(*color)
+        self.color = Color.from_iterable(color)
 
 
 class SpriteCircle(Sprite):
@@ -124,5 +124,5 @@ class SpriteCircle(Sprite):
 
         # apply results to the new sprite
         super().__init__(texture)
-        self.color = Color(*color)
+        self.color = Color.from_iterable(color)
         self._points = self.texture.hit_box_points
