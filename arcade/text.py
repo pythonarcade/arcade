@@ -200,7 +200,7 @@ class Text:
             font_size=font_size,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
-            color=Color(*color),
+            color=Color.from_iterable(color),
             width=width,
             align=align,
             bold=bold,
@@ -375,7 +375,7 @@ class Text:
 
     @color.setter
     def color(self, color: RGBALike):
-        self._label.color = Color(*color)
+        self._label.color = Color.from_iterable(color)
 
     @property
     def width(self) -> int:
@@ -827,7 +827,7 @@ def draw_text(
     """
     # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
-    color = Color(*color)
+    color = Color.from_iterable(color)
     # Cache the states that are expensive to change
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     ctx = arcade.get_window().ctx
