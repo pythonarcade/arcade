@@ -6,7 +6,7 @@ from pyglet.shapes import Line
 from pyglet.graphics import Batch
 
 import arcade
-from arcade.types import Color
+from arcade.types import Color, RGBALike
 
 
 class PerfGraph(arcade.Sprite):
@@ -50,11 +50,11 @@ class PerfGraph(arcade.Sprite):
             width: int, height: int,
             graph_data: str = "FPS",
             update_rate: float = 0.1,
-            background_color: Color = arcade.color.BLACK,
-            data_line_color: Color = arcade.color.WHITE,
-            axis_color: Color = arcade.color.DARK_YELLOW,
-            grid_color: Color = arcade.color.DARK_YELLOW,
-            font_color: Color = arcade.color.WHITE,
+            background_color: RGBALike = arcade.color.BLACK,
+            data_line_color: RGBALike = arcade.color.WHITE,
+            axis_color: RGBALike = arcade.color.DARK_YELLOW,
+            grid_color: RGBALike = arcade.color.DARK_YELLOW,
+            font_color: RGBALike = arcade.color.WHITE,
             font_size: int = 10,
             y_axis_num_lines: int = 4,
             view_y_scale_step: float = 20.0,
@@ -68,13 +68,13 @@ class PerfGraph(arcade.Sprite):
         # The data line is redrawn each update by a function that does
         # not cache vertices, so there is no need to make this attribute
         # a property that updates geometry when set.
-        self.line_color = arcade.get_four_byte_color(data_line_color)
+        self.line_color = Color.from_iterable(data_line_color)
 
         # Store visual style info for cached pyglet shape geometry
-        self._background_color = arcade.get_four_byte_color(background_color)
-        self._grid_color = arcade.get_four_byte_color(grid_color)
-        self._axis_color = arcade.get_four_byte_color(axis_color)
-        self._font_color = arcade.get_four_byte_color(font_color)
+        self._background_color = Color.from_iterable(background_color)
+        self._grid_color = Color.from_iterable(grid_color)
+        self._axis_color = Color.from_iterable(axis_color)
+        self._font_color = Color.from_iterable(font_color)
         self._font_size = font_size
         self._y_axis_num_lines = y_axis_num_lines
         self._left_x = 25
@@ -147,16 +147,16 @@ class PerfGraph(arcade.Sprite):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, new_color):
-        self._background_color = arcade.get_four_byte_color(new_color)
+    def background_color(self, new_color: RGBALike):
+        self._background_color = Color.from_iterable(new_color)
 
     @property
     def grid_color(self) -> Color:
         return self._grid_color
 
     @grid_color.setter
-    def grid_color(self, raw_color: Color):
-        new_color = arcade.get_four_byte_color(raw_color)
+    def grid_color(self, raw_color: RGBALike):
+        new_color = Color.from_iterable(raw_color)
         for grid_line in self._grid_lines:
             grid_line.color = new_color
 
@@ -165,8 +165,8 @@ class PerfGraph(arcade.Sprite):
         return self._axis_color
 
     @axis_color.setter
-    def axis_color(self, raw_color: Color):
-        new_color = arcade.get_four_byte_color(raw_color)
+    def axis_color(self, raw_color: RGBALike):
+        new_color = Color.from_iterable(raw_color)
         self._x_axis.color = new_color
         self._y_axis.color = new_color
 
@@ -186,7 +186,7 @@ class PerfGraph(arcade.Sprite):
 
     @font_color.setter
     def font_color(self, raw_color: Color):
-        new_color = arcade.get_four_byte_color(raw_color)
+        new_color = Color.from_iterable(raw_color)
         self._font_color = new_color
         for text in self._all_text_objects:
             text.color = new_color
