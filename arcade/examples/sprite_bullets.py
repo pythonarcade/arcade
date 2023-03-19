@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
-        bullet.angle = 90
+        bullet.angle = -90
 
         # Give the bullet a speed
         bullet.change_y = BULLET_SPEED

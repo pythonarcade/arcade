@@ -42,7 +42,7 @@ class EnemySprite(arcade.Sprite):
             # Fire the bullet
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
             bullet.center_x = self.center_x
-            bullet.angle = -90
+            bullet.angle = 90
             bullet.top = self.bottom
             bullet.change_y = -2
             self.bullet_list.append(bullet)
@@ -62,7 +62,7 @@ class MyGame(arcade.Window):
         self.bullet_list = None
 
     def setup(self):
-        """ Setup the variables for the game. """
+        """ Set up the variables for the game. """
 
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()

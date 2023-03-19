@@ -28,8 +28,8 @@ void main() {
     vec2 hsize = v_size[0] / 2.0;
     float angle = radians(v_angle[0]);
     mat2 rot = mat2(
-        cos(angle), sin(angle),
-        -sin(angle), cos(angle)
+        cos(angle), -sin(angle),
+        sin(angle),  cos(angle)
     );
     mat4 mvp = window.projection * window.view;
     // Emit a quad with the right position, rotation and texture coordinates

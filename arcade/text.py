@@ -571,8 +571,6 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    start_x: float,
-    start_y: float,
     color: Color = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -581,11 +579,8 @@ def create_text_sprite(
     bold: bool = False,
     italic: bool = False,
     anchor_x: str = "left",
-    anchor_y: str = "baseline",
     multiline: bool = False,
-    rotation: float = 0,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
-    start_z: float = 0
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -603,44 +598,40 @@ def create_text_sprite(
     a black box drawn in its place.
 
     :param str text: Initial text to display. Can be an empty string
-    :param float start_x: x position to align the text's anchor point with
-    :param float start_y: y position to align the text's anchor point with
-    :param float start_z: z position to align the text's anchor point with
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param FontNameOrNames font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate.
                          Options: "left", "center", or "right"
-    :param str anchor_y: How to calculate the anchor point's y coordinate.
-                         Options: "top", "bottom", "center", or "baseline".
     :param bool multiline: Requires width to be set; enables word wrap rather than clipping
-    :param float rotation: rotation in degrees, counter-clockwise from horizontal
     :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
         newly created texture. The default global atlas will be used if this is None.
     """
     text_object = Text(
         text,
-        start_x,
-        start_y,
-        color,
-        font_size,
-        width,
-        align,
-        font_name,
-        bold,
-        italic,
-        anchor_x,
-        anchor_y,
-        multiline,
-        rotation,
-        start_z=start_z
+        start_x=0,
+        start_y=0,
+        color=color,
+        font_size=font_size,
+        width=width,
+        align=align,
+        font_name=font_name,
+        bold=bold,
+        italic=italic,
+        anchor_x=anchor_x,
+        anchor_y="baseline",
+        multiline=multiline,
     )
 
-    size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
+    size = (
+        int(text_object.right - text_object.left),
+        int(text_object.top - text_object.bottom),
+    )
+    text_object.y = -text_object.bottom
     texture = arcade.Texture.create_empty(text, size)
 
     if not texture_atlas:

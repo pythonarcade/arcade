@@ -296,8 +296,8 @@ def rotate_point(
     angle_radians = math.radians(angle_degrees)
     cos_angle = math.cos(angle_radians)
     sin_angle = math.sin(angle_radians)
-    rotated_x = temp_x * cos_angle - temp_y * sin_angle
-    rotated_y = temp_x * sin_angle + temp_y * cos_angle
+    rotated_x = temp_x * cos_angle + temp_y * sin_angle
+    rotated_y = -temp_x * sin_angle + temp_y * cos_angle
 
     # translate back
     x = round(rotated_x + cx, _PRECISION)

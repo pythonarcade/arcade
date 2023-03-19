@@ -665,3 +665,27 @@ def test_rescale_xy_relative_to_point(window):
     assert sprite_7.center_y == window_center_y + 81
     assert sprite_7.width == 64
     assert sprite_7.height == 64
+
+
+def test_strafe(window):
+    sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
+    assert sprite.position == (0, 0)
+
+    sprite.forward(2)
+    assert sprite.position == (0, 2)
+
+    sprite.reverse(2)
+    assert sprite.position == (0, 0)
+
+    sprite.strafe(2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (2, 0)
+
+    sprite.strafe(-2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (0, 0)
+
+    sprite.angle = 90
+    sprite.strafe(2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (0.0, -2.0)

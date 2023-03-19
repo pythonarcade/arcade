@@ -191,7 +191,7 @@ class MyGame(arcade.Window):
         for sprite in self.sprite_list:
             sprite.center_x = sprite.pymunk_shape.body.position.x
             sprite.center_y = sprite.pymunk_shape.body.position.y
-            sprite.angle = math.degrees(sprite.pymunk_shape.body.angle)
+            sprite.angle = -math.degrees(sprite.pymunk_shape.body.angle)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

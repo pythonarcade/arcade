@@ -248,37 +248,31 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def forward(self, speed: float = 1.0) -> None:
         """
-        Adjusts a Sprite's movement vector forward.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
+        Adjusts a Sprites forward.
 
-        :param speed: speed factor
+        :param speed: speed
         """
-        self.velocity = (
-            self._velocity[0] + math.cos(self.radians) * speed,
-            self._velocity[1] + math.sin(self.radians) * speed,
-        )
+        angle_rad = math.radians(self.angle)
+        self.center_x += math.sin(angle_rad) * speed
+        self.center_y += math.cos(angle_rad) * speed
 
     def reverse(self, speed: float = 1.0) -> None:
         """
-        Adjusts a Sprite's movement vector backwards.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
+        Adjusts a Sprite backwards.
 
-        :param speed: speed factor
+        :param speed: speed
         """
         self.forward(-speed)
 
     def strafe(self, speed: float = 1.0) -> None:
         """
-        Adjusts a Sprite's movement vector sideways.
-        This method does not actually move the sprite, just takes the current
-        change_x/change_y and adjusts it by the speed given.
+        Adjusts a Sprite sideways.
 
-        :param speed: speed factor
+        :param speed: speed
         """
-        self.change_x += -math.sin(self.radians) * speed
-        self.change_y += math.cos(self.radians) * speed
+        angle_rad = math.radians(self.angle + 90)
+        self.center_x += math.sin(angle_rad) * speed
+        self.center_y += math.cos(angle_rad) * speed
 
     def turn_right(self, theta: float = 90.0) -> None:
         """
@@ -286,7 +280,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
         :param theta: change in angle, in degrees
         """
-        self.angle = self._angle - theta
+        self.angle = self._angle + theta
 
     def turn_left(self, theta: float = 90.0) -> None:
         """
@@ -294,7 +288,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
         :param theta: change in angle, in degrees
         """
-        self.angle = self._angle + theta
+        self.angle = self._angle - theta
 
     def stop(self) -> None:
         """
