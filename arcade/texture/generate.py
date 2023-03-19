@@ -5,7 +5,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade.types import Color, RGBALike
+from arcade.types import RGBALike
 from arcade.math import lerp
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox import HitBoxAlgorithm
