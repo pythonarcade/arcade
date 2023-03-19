@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import Color, RGBALike
+from arcade.types import RGBALike
 
 
 class UILabel(UIWidget):
@@ -36,7 +36,7 @@ class UILabel(UIWidget):
     :param font_name: a list of fonts to use. Program will start at the beginning of the list
                       and keep trying to load fonts until success.
     :param float font_size: size of font.
-    :param Color text_color: Color of font.
+    :param RGBALike text_color: Color of font.
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
