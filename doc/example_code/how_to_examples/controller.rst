@@ -1,4 +1,6 @@
-.. _example-code:
+:orphan:
+
+.. _controller:
 
 How To Get Connected Controllers
 ================================
