@@ -346,7 +346,7 @@ def _generic_draw_line_strip(point_list: PointList,
     window = get_window()
     ctx = window.ctx
 
-    c4 = Color(*color)
+    c4 = Color.from_iterable(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
     vertices = array.array('f', tuple(item for sublist in point_list for item in sublist))
