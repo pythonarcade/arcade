@@ -127,14 +127,5 @@ module = "pytiled_parser.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "shapely.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
 module = "PyInstaller.*"
 ignore_missing_imports = true
-
-
-
-
-

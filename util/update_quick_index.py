@@ -1,8 +1,8 @@
 """
 Script used to create the quick index
 """
-import re
 import os
+import re
 from pathlib import Path
 
 # The project root
@@ -15,16 +15,11 @@ titles = {
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-    'geometry/__init__.py': ['Geometry Support', 'geometry.rst'],
-    'geometry/geometry_generic.py': ['Geometry Support', 'geometry.rst'],
-    'geometry/geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
-    'hitbox.py': ['Geometry Support', 'geometry.rst'],
+    'geometry.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'controller.py': ['Game Controller Support', 'game_controller.rst'],
     'joysticks.py': ['Joystick Support', 'joysticks.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
-    'paths_python.py': ['Pathfinding', 'path_finding.rst'],
-    'paths_shapely.py': ['Pathfinding', 'path_finding.rst'],
     'perf_info.py': ['Performance Information', 'perf_info.rst'],
     'perf_graph.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
@@ -175,15 +170,6 @@ def process_directory(directory: Path, quick_index_file):
         if "test" in path.name:
             continue
 
-        if "geometry_python.py" in path.name:
-            continue
-
-        if "geometry.py" in path.name:
-            continue
-
-        if "paths_python.py" in path.name:
-            continue
-
         if not path.exists():
             print(f"Error, can't find file: '{path.name}'")
             continue
@@ -198,12 +184,12 @@ def process_directory(directory: Path, quick_index_file):
             "texture": "arcade",
             "texture_atlas": "arcade",
             "sprite_list": "arcade",
-            "geometry": "geometry",
             "text": "arcade",
             "gui": "arcade.gui",
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
+            "geometry.py": "arcade.geometry",
             "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
