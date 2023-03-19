@@ -33,7 +33,7 @@ RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
 
 
-class Color(tuple[int, int, int, int]):
+class Color(Tuple[int, int, int, int]):
     """
     A :py:class:`tuple` subclass representing an RGBA Color.
 
