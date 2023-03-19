@@ -82,8 +82,6 @@ version = {attr = "arcade.version.VERSION"}
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.distutils.bdist_wheel]
-universal = true
 
 [tool.ruff]
 # --- Description of what we ignore ---
