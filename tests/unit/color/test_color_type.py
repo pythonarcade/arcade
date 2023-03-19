@@ -1,6 +1,6 @@
 import math
 from itertools import product
-from typing import Iterable, Callable, Tuple
+from typing import Iterable, Callable, Tuple, TypeVar
 
 import pytest
 
@@ -21,6 +21,27 @@ def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
         return bool(set(checked) & frozenset(i))
 
     return _at_least_one_in
+
+
+def test_color_from_iterable_noncolor_iterables():
+
+    for length, type_converter in product((3, 4), (list, tuple, lambda a: a)):
+        iterable = type_converter(range(length))
+        color = Color.from_iterable(iterable)
+
+        assert isinstance(color, Color)
+        assert color[:3] == (0, 1, 2)
+        if length == 4:
+            assert color.a == 3
+            assert color[3] == 3
+        else:
+            assert color.a == 255
+            assert color[3] == 255
+
+
+def test_color_from_iterable_returns_same_color():
+    for color in (Color(1, 2, 3), Color(0, 0, 0, 255)):
+        assert Color.from_iterable(color) is color
 
 
 def test_color_from_uint24():

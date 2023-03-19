@@ -6,6 +6,7 @@ from pathlib import Path
 from collections import namedtuple
 from collections.abc import ByteString
 from typing import (
+    Iterable,
     List,
     NamedTuple,
     Optional,
@@ -97,6 +98,39 @@ class Color(Tuple[int, int, int, int]):
     @property
     def a(self) -> int:
         return self[3]
+
+    @classmethod
+    def from_iterable(cls, iterable: Iterable[int]) -> "Color":
+        """
+        Create a color from an :py:class`Iterable` with 3-4 elements
+
+        If the passed iterable is already a Color instance, it will be
+        returned unchanged. If the iterable has less than 3 or more than
+        4 elements, a ValueError will be raised.
+
+        Otherwise, the function will attempt to create a new Color
+        instance. The usual rules apply, ie all values must be between
+        0 and 255, inclusive.
+
+        :param iterable: An iterable which unpacks to 3 or 4 elements,
+            each between 0 and 255, inclusive.
+        """
+        if isinstance(iterable, cls):
+            return iterable
+
+        # We use unpacking because there isn't a good way of specifying
+        # lengths for sequences as of 3.8, our minimum Python version as
+        # of March 2023: https://github.com/python/typing/issues/786
+        r, g, b, *_a = iterable
+
+        if _a:
+            if len(_a) > 1:
+                raise ValueError("iterable must unpack to 3 or 3 values")
+            a = _a[0]
+        else:
+            a = 255
+
+        return Color(r, g, b, a)
 
     @property
     def normalized(self) -> Tuple[float, float, float, float]:
