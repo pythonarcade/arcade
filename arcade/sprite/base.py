@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import Point, Color, ColorLike, RGBALike
+from arcade.types import Point, Color, RGBALike
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
