@@ -1,32 +1,32 @@
-import logging
 import hashlib
-from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
+import logging
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
+from weakref import WeakSet
 
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageDraw
+import PIL.ImageOps
 
-from arcade.types import Color
+from arcade import cache as _cache
+from arcade import hitbox
+from arcade.color import TRANSPARENT_BLACK
+from arcade.hitbox.base import HitBoxAlgorithm
 from arcade.texture.transforms import (
-    Transform,
+    ORIENTATIONS,
     FlipLeftRightTransform,
     FlipTopBottomTransform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
+    Transform,
     TransposeTransform,
     TransverseTransform,
-    ORIENTATIONS
 )
-from arcade.types import PointList
-from arcade.color import TRANSPARENT_BLACK
-from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache as _cache
-from arcade import hitbox
+from arcade.types import Color, PointList
 
 if TYPE_CHECKING:
-    from arcade.sprite import Sprite
+    from arcade import TextureAtlas
     from arcade.sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
@@ -47,6 +47,7 @@ class ImageData:
     :param PIL.Image.Image image: The image for this texture
     :param str hash: The hash of the image
     """
+
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
@@ -110,10 +111,6 @@ class ImageData:
     def __repr__(self):
         return f"<ImageData width={self.width}, height={self.height}, hash={self.hash}>"
 
-    def __del__(self):
-        pass
-        # print("ImageData.__del__", self)
-
 
 class Texture:
     """
@@ -123,17 +120,17 @@ class Texture:
 
     :param PIL.Image.Image image: The image or ImageData for this texture
     :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
-    :param PointList hit_box_points: List of points for the hit box (Optional).
+    :param HitBox hit_box_points: A list of hitbox points for the texture to use (Optional).
                                      Completely overrides the hit box algorithm.
     :param str hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
+
     __slots__ = (
         "_image_data",
         "_size",
         "_vertex_order",
         "_transforms",
-        "_sprite",
         "_sprite_list",
         "_hit_box_algorithm",
         "_hit_box_points",
@@ -143,8 +140,10 @@ class Texture:
         "_file_path",
         "_crop_values",
         "_properties",
+        "_atlas_refs",
         "__weakref__",
     )
+
     def __init__(
         self,
         image: Union[PIL.Image.Image, ImageData],
@@ -174,8 +173,7 @@ class Texture:
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
 
-        # Internal sprite stuff for drawing
-        self._sprite: Optional[Sprite] = None
+        # Internal spritelist for drawing
         self._sprite_list: Optional[SpriteList] = None
 
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
@@ -188,7 +186,12 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
+        self._hit_box_points: PointList = (
+            hit_box_points or self._calculate_hit_box_points()
+        )
+
+        # Track what atlases the image is in
+        self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
@@ -210,7 +213,7 @@ class Texture:
         """
         The name of the texture used for caching (read only).
 
-        :return: str 
+        :return: str
         """
         return self._cache_name
 
@@ -236,12 +239,12 @@ class Texture:
         if not isinstance(hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
-        return (
-            f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
-        )
+        return f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
 
     @classmethod
-    def create_atlas_name(cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)):
+    def create_atlas_name(
+        cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)
+    ):
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -260,9 +263,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls,
-        path: Union[str, Path],
-        crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 
@@ -271,7 +272,7 @@ class Texture:
         """
         The name of the texture used for the texture atlas (read only).
 
-        :return: str 
+        :return: str
         """
         return self._atlas_name
 
@@ -334,7 +335,7 @@ class Texture:
         to determine the uniqueness of the image
         in texture atlases.
 
-        :return: ImageData 
+        :return: ImageData
         """
         return self._image_data
 
@@ -415,7 +416,7 @@ class Texture:
         :param str name: Name of the texture
         :param Tuple[int, int] size: Size of the texture
         :param Color color: Color of the texture
-        :return: Texture 
+        :return: Texture
         """
         return cls.create_empty(name, size, color)
 
@@ -484,14 +485,7 @@ class Texture:
             hit_box_algorithm=hitbox.algo_bounding_box,
         )
 
-    def remove_from_cache(self, ignore_error: bool = True) -> None:
-        """
-        Remove this texture from the cache.
-
-        :param bool ignore_error: If True, ignore errors if the texture is not in the cache
-        :return: None
-        """
-        _cache.texture_cache.delete(self)
+    # ----- Transformations -----
 
     def flip_left_right(self) -> "Texture":
         """
@@ -501,7 +495,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(FlipLeftRightTransform)
 
@@ -550,7 +544,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transpose()
 
@@ -563,7 +557,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(TransposeTransform)
 
@@ -576,7 +570,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(TransverseTransform)
 
@@ -589,7 +583,7 @@ class Texture:
         applied to the image when it's drawn (GPU side).
 
         :param int count: Number of 90 degree steps to rotate.
-        :return: Texture 
+        :return: Texture
         """
         angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
         count = count % 4
@@ -606,7 +600,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(Rotate180Transform)
 
@@ -618,7 +612,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :return: Texture 
+        :return: Texture
         """
         return self.transform(Rotate270Transform)
 
@@ -632,11 +626,11 @@ class Texture:
         :param Transform transform: Transform to apply
         :return: New texture
         """
-        new_points = transform.transform_hit_box_points(self._hit_box_points)
+        new_hit_box_points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
             self.image_data,
             hit_box_algorithm=self._hit_box_algorithm,
-            hit_box_points=new_points,
+            hit_box_points=new_hit_box_points,
             hash=self._hash,
         )
         texture.width = self.width
@@ -655,22 +649,6 @@ class Texture:
 
         texture._update_cache_names()
         return texture
-
-    @staticmethod
-    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
-        """
-        Validate the crop values for a given image.
-        """
-        if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
-        if x >= image.width:
-            raise ValueError(f"x position is outside of texture: {x}")
-        if y >= image.height:
-            raise ValueError(f"y position is outside of texture: {y}")
-        if x + width - 1 >= image.width:
-            raise ValueError(f"width is outside of texture: {width + x}")
-        if y + height - 1 >= image.height:
-            raise ValueError(f"height is outside of texture: {height + y}")
 
     def crop(
         self,
@@ -691,10 +669,15 @@ class Texture:
         :param int width: Width of crop
         :param int height: Height of crop
         :param bool cache: If True, the cropped texture will be cached
-        :return: Texture 
+        :return: Texture
         """
         # Return self if the crop is the same size as the original image
-        if (width == self.image.width and height == self.image.height and x == 0 and y == 0):
+        if (
+            width == self.image.width
+            and height == self.image.height
+            and x == 0
+            and y == 0
+        ):
             return self
 
         # Return self width and height is 0
@@ -712,6 +695,168 @@ class Texture:
         )
         texture.crop_values = (x, y, width, height)
         return texture
+
+    # ------ Atlas functions ------
+
+    def remove_from_atlases(self) -> None:
+        """
+        Remove this texture from all atlases.
+        """
+        for atlas in self._atlas_refs or ():
+            atlas.remove(self)
+
+    def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
+        """
+        Add a reference to an atlas that this texture is in.
+        """
+        if self._atlas_refs is None:
+            self._atlas_refs = WeakSet()
+        self._atlas_refs.add(atlas)
+
+    def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
+        """
+        Remove a reference to an atlas that this texture is in.
+        """
+        if self._atlas_refs is not None:
+            self._atlas_refs.remove(atlas)
+
+    # ----- Utility functions -----
+
+    def remove_from_cache(self, ignore_error: bool = True) -> None:
+        """
+        Remove this texture from the cache.
+
+        :param bool ignore_error: If True, ignore errors if the texture is not in the cache
+        :return: None
+        """
+        _cache.texture_cache.delete(self)
+
+    @staticmethod
+    def validate_crop(
+        image: PIL.Image.Image, x: int, y: int, width: int, height: int
+    ) -> None:
+        """
+        Validate the crop values for a given image.
+        """
+        if x < 0 or y < 0 or width < 0 or height < 0:
+            raise ValueError(
+                f"crop values must be positive: {x}, {y}, {width}, {height}"
+            )
+        if x >= image.width:
+            raise ValueError(f"x position is outside of texture: {x}")
+        if y >= image.height:
+            raise ValueError(f"y position is outside of texture: {y}")
+        if x + width - 1 >= image.width:
+            raise ValueError(f"width is outside of texture: {width + x}")
+        if y + height - 1 >= image.height:
+            raise ValueError(f"height is outside of texture: {height + y}")
+
+    def _calculate_hit_box_points(self) -> PointList:
+        """
+        Calculate the hit box points for this texture based on the configured
+        hit box algorithm. This is usually done on texture creation
+        or when the hit box points are requested the first time.
+        """
+        # Check if we have cached points
+        points = _cache.hit_box_cache.get(self.cache_name)
+        if points:
+            return points
+
+        # Calculate points with the selected algorithm
+        points = self._hit_box_algorithm.calculate(self.image)
+        if self._hit_box_algorithm.cache:
+            _cache.hit_box_cache.put(self.cache_name, points)
+
+        return points
+
+    # ----- Drawing functions -----
+
+    def _create_cached_spritelist(self) -> "SpriteList":
+        """Create or return the cached sprite list."""
+        from arcade.sprite_list import SpriteList
+
+        if self._sprite_list is None:
+            self._sprite_list = SpriteList(capacity=1)
+        return self._sprite_list
+
+    def draw_sized(
+        self,
+        center_x: float,
+        center_y: float,
+        width: float,
+        height: float,
+        angle: float = 0.0,
+        alpha: int = 255,
+    ):
+        """
+        Draw a texture with a specific width and height.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
+
+        :param float center_x: X position to draw texture
+        :param float center_y: Y position to draw texture
+        :param float width: Width to draw texture
+        :param float height: Height to draw texture
+        :param float angle: Angle to draw texture
+        :param int alpha: Alpha value to draw texture
+        """
+        from arcade import Sprite
+
+        spritelist = self._create_cached_spritelist()
+        sprite = Sprite(
+            self,
+            center_x=center_x,
+            center_y=center_y,
+            angle=angle,
+        )
+        # sprite.size = (width, height)
+        sprite.width = width
+        sprite.height = height
+
+        sprite.alpha = alpha
+        # Due to circular references we can't keep the sprite around
+        spritelist.append(sprite)
+        spritelist.draw()
+        spritelist.remove(sprite)
+
+    def draw_scaled(
+        self,
+        center_x: float,
+        center_y: float,
+        scale: float = 1.0,
+        angle: float = 0.0,
+        alpha: int = 255,
+    ):
+        """
+        Draw the texture.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
+
+        :param float center_x: X location of where to draw the texture.
+        :param float center_y: Y location of where to draw the texture.
+        :param float scale: Scale to draw rectangle. Defaults to 1.
+        :param float angle: Angle to rotate the texture by.
+        :param int alpha: The transparency of the texture `(0-255)`.
+        """
+        from arcade import Sprite
+
+        spritelist = self._create_cached_spritelist()
+        sprite = Sprite(
+            self,
+            center_x=center_x,
+            center_y=center_y,
+            angle=angle,
+            scale=scale,
+        )
+        sprite.alpha = alpha
+        # Due to circular references we can't keep the sprite around
+        spritelist.append(sprite)
+        spritelist.draw()
+        spritelist.remove(sprite)
 
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets
@@ -739,99 +884,6 @@ class Texture:
         return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
-        pass
-        # print("DELETE", self)
-
-    # ------------------------------------------------------------
-
-    def _calculate_hit_box_points(self) -> PointList:
-        """
-        Calculate the hit box points for this texture based on the configured
-        hit box algorithm. This is usually done on texture creation
-        or when the hit box points are requested the first time.
-        """
-        # Check if we have cached points
-        points = _cache.hit_box_cache.get(self.cache_name)
-        if points:
-            return points
-
-        # Calculate points with the selected algorithm
-        points = self._hit_box_algorithm.calculate(self.image)
-        if self._hit_box_algorithm.cache:
-            _cache.hit_box_cache.put(self.cache_name, points)
-
-        return points
-
-    def _create_cached_sprite(self):
-        from arcade.sprite import Sprite
-        from arcade.sprite_list import SpriteList
-
-        if self._sprite is None:
-            self._sprite = Sprite(self)
-            self._sprite.textures = [self]
-            self._sprite_list = SpriteList(capacity=1)
-            self._sprite_list.append(self._sprite)
-
-    def draw_sized(
-        self,
-        center_x: float,
-        center_y: float,
-        width: float,
-        height: float,
-        angle: float = 0.0,
-        alpha: int = 255,
-    ):
-        """
-        Draw a texture with a specific width and height.
-
-        .. warning:: This is a very slow method of drawing a texture,
-                     and should be used sparingly. The method simply
-                     creates a sprite internally and draws it.
-
-        :param float center_x: X position to draw texture
-        :param float center_y: Y position to draw texture
-        :param float width: Width to draw texture
-        :param float height: Height to draw texture
-        :param float angle: Angle to draw texture
-        :param int alpha: Alpha value to draw texture
-        """
-        self._create_cached_sprite()
-        if self._sprite and self._sprite_list:
-            self._sprite.center_x = center_x
-            self._sprite.center_y = center_y
-            self._sprite.height = height
-            self._sprite.width = width
-            self._sprite.angle = angle
-            self._sprite.alpha = alpha
-            self._sprite_list.draw()
-
-    def draw_scaled(
-        self,
-        center_x: float,
-        center_y: float,
-        scale: float = 1.0,
-        angle: float = 0.0,
-        alpha: int = 255,
-    ):
-        """
-        Draw the texture.
-
-        .. warning:: This is a very slow method of drawing a texture,
-                     and should be used sparingly. The method simply
-                     creates a sprite internally and draws it.
-
-        :param float center_x: X location of where to draw the texture.
-        :param float center_y: Y location of where to draw the texture.
-        :param float scale: Scale to draw rectangle. Defaults to 1.
-        :param float angle: Angle to rotate the texture by.
-        :param int alpha: The transparency of the texture `(0-255)`.
-        """
-
-        self._create_cached_sprite()
-        if self._sprite and self._sprite_list:
-            self._sprite.center_x = center_x
-            self._sprite.center_y = center_y
-            self._sprite.scale = scale
-            self._sprite.angle = angle
-            self._sprite.alpha = alpha
-            self._sprite_list.draw()
+        if getattr(self, "_atlas_refs", None) is not None:
+            for atlas in self._atlas_refs:
+                atlas.remove(self)

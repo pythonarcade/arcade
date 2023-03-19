@@ -12,7 +12,6 @@ from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-from pyglet.math import Mat4
 
 import arcade
 from arcade.gui.events import (
@@ -29,13 +28,13 @@ from arcade.gui.events import (
     UIOnUpdateEvent,
 )
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
+from arcade.gui.widgets import UIWidget, Rect
 from arcade.camera import SimpleCamera
 
 W = TypeVar("W", bound=UIWidget)
 
 
-class UIManager(EventDispatcher, UIWidgetParent):
+class UIManager(EventDispatcher):
     """
     UIManager is the central component within Arcade's GUI system.
     Handles window events, layout process and rendering.
@@ -68,6 +67,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     _enabled = False
 
+    OVERLAY_LAYER = 10
+
     def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
         self.window = window or arcade.get_window()
@@ -78,21 +79,26 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
-    def add(self, widget: W, *, index=None) -> W:
+    def add(self, widget: W, *, index=None, layer=0) -> W:
         """
         Add a widget to the :class:`UIManager`.
         Added widgets will receive ui events and be rendered.
 
         By default the latest added widget will receive ui events first and will be rendered on top of others.
 
+        The UIManager supports layered setups, widgets added to a higher layer are drawn above lower layers
+        and receive events first.
+        The layer 10 is reserved for overlaying components like dropdowns or tooltips.
+
         :param widget: widget to add
         :param index: position a widget is added, None has the highest priority
+        :param layer: layer which the widget should be added to, higher layer are above
         :return: the widget
         """
         if index is None:
-            self.children[0].append(widget)
+            self.children[layer].append(widget)
         else:
-            self.children[0].insert(max(len(self.children), index), widget)
+            self.children[layer].insert(max(len(self.children), index), widget)
         widget.parent = self
         self.trigger_render()
         return widget
@@ -260,14 +266,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._do_layout()
 
         ctx = self.window.ctx
-
-        # Reset view matrix so content is not rendered into
-        # the surface with offset
-        prev_view = self.window.view
-        prev_proj = self.window.projection
-        self.window.view = Mat4()
-        self.window.projection = Mat4()
-
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
@@ -277,9 +275,6 @@ class UIManager(EventDispatcher, UIWidgetParent):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
-
-        self.window.view = prev_view
-        self.window.projection = prev_proj
 
     def adjust_mouse_coordinates(self, x, y):
         """

@@ -59,9 +59,7 @@ def load_texture_pair(filename):
     Load a texture pair, with the second being a mirror image.
     """
     texture = arcade.load_texture(filename)
-    return [
-        texture, texture.flip_left_right()
-    ]
+    return [texture, texture.flip_left_right()]
 
 
 class Entity(arcade.Sprite):
@@ -98,14 +96,21 @@ class Entity(arcade.Sprite):
         self.texture = self.idle_texture_pair[0]
 
         # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-        self.set_hit_box(self.texture.hit_box_points)
+        # a different hit box, you can do it like the code below. Doing this when
+        # changing the texture for example would make the hitbox update whenever the
+        # texture is changed. This can be expensive so if the textures are very similar
+        # it may not be worth doing.
+        #
+        # self.hit_box = arcade.hitbox.RotatableHitBox(
+        #     self.texture.hit_box_points,
+        #     position=self.position,
+        #     scale=self.scale_xy,
+        #     angle=self.angle,
+        # )
 
 
 class Enemy(Entity):
     def __init__(self, name_folder, name_file):
-
         # Setup parent class
         super().__init__(name_folder, name_file)
 
@@ -113,7 +118,6 @@ class Enemy(Entity):
         self.health = 0
 
     def update_animation(self, delta_time: float = 1 / 60):
-
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.facing_direction = LEFT_FACING
@@ -139,7 +143,6 @@ class Enemy(Entity):
 
 class RobotEnemy(Enemy):
     def __init__(self):
-
         # Set up parent class
         super().__init__("robot", "robot")
 
@@ -148,7 +151,6 @@ class RobotEnemy(Enemy):
 
 class ZombieEnemy(Enemy):
     def __init__(self):
-
         # Set up parent class
         super().__init__("zombie", "zombie")
 
@@ -159,7 +161,6 @@ class PlayerCharacter(Entity):
     """Player Sprite"""
 
     def __init__(self):
-
         # Set up parent class
         super().__init__("male_person", "malePerson")
 
@@ -169,7 +170,6 @@ class PlayerCharacter(Entity):
         self.is_on_ladder = False
 
     def update_animation(self, delta_time: float = 1 / 60):
-
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.facing_direction = LEFT_FACING
@@ -381,7 +381,7 @@ class GameView(arcade.View):
             platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
             gravity_constant=GRAVITY,
             ladders=self.scene[LAYER_NAME_LADDERS],
-            walls=self.scene[LAYER_NAME_PLATFORMS]
+            walls=self.scene[LAYER_NAME_PLATFORMS],
         )
 
     def on_show_view(self):
@@ -403,6 +403,7 @@ class GameView(arcade.View):
         # self.scene[LAYER_NAME_COINS].draw_hit_boxes(color=arcade.color.WHITE)
         # self.scene[LAYER_NAME_ENEMIES].draw_hit_boxes(color=arcade.color.WHITE)
         # self.scene[LAYER_NAME_PLAYER].draw_hit_boxes(color=arcade.color.WHITE)
+        self.scene.draw_hit_boxes(color=arcade.color.WHITE)
 
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
@@ -498,8 +499,10 @@ class GameView(arcade.View):
             pass
 
     def center_camera_to_player(self, speed=0.2):
-        screen_center_x = (self.player_sprite.center_x - (self.camera.viewport_width / 2))
-        screen_center_y = (self.player_sprite.center_y - (self.camera.viewport_height / 2))
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (
+            self.camera.viewport_height / 2
+        )
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
@@ -598,10 +601,7 @@ class GameView(arcade.View):
                 bullet.remove_from_sprite_lists()
 
                 for collision in hit_list:
-                    if (
-                        self.scene[LAYER_NAME_ENEMIES]
-                        in collision.sprite_lists
-                    ):
+                    if self.scene[LAYER_NAME_ENEMIES] in collision.sprite_lists:
                         # The collision was with an enemy
                         collision.health -= BULLET_DAMAGE
 
@@ -630,7 +630,6 @@ class GameView(arcade.View):
 
         # Loop through each coin we hit (if any) and remove it
         for collision in player_collision_list:
-
             if self.scene[LAYER_NAME_ENEMIES] in collision.sprite_lists:
                 arcade.play_sound(self.game_over)
                 game_over = GameOverView()
@@ -686,4 +685,8 @@ def main():
 
 
 if __name__ == "__main__":
+    main()
+if __name__ == "__main__":
+    main()
+    main()
     main()

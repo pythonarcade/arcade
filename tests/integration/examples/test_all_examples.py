@@ -15,6 +15,7 @@ EXAMPLE_SUBDIR = "../../../arcade/examples"
 # These examples are allowed to print to stdout
 ALLOW_STDOUT = set([
     "arcade.examples.dual_stick_shooter",
+    "arcade.examples.net_process_animal_facts",
 ])
 
 def _get_short_name(fullpath):

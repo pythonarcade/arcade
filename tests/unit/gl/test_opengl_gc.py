@@ -1,4 +1,5 @@
 import gc
+import arcade
 from arcade.gl import geometry
 
 COMPUTE_SHADER_SOURCE = """
@@ -58,24 +59,29 @@ void main() {
 def test_context_gc(ctx):
     ctx.gc_mode = "context_gc"
     gc.collect()
+    ctx.gc()
     create_resources(ctx)
     gc.collect()
+    ctx.gc()
 
 
 def test_auto_gc(ctx):
+    gc.collect()
+    ctx.gc()
     ctx.gc_mode = "auto"
     create_resources(ctx)
 
 
-def create_resources(ctx):
+def create_resources(ctx: arcade.ArcadeContext):
     # Texture
     created, freed = ctx.stats.texture
     texture = ctx.texture((10, 10))
     assert ctx.stats.texture == (created + 1, freed)
     texture = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
-        assert collected > 0
+        assert collected == 1
     assert ctx.stats.texture == (created + 1, freed + 1)
 
     # Buffer
@@ -83,9 +89,10 @@ def create_resources(ctx):
     buf = ctx.buffer(reserve=1024)
     assert ctx.stats.buffer == (created + 1, freed)
     buf = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
-        assert collected > 0
+        assert collected == 1
     assert ctx.stats.buffer == (created + 1, freed + 1)
 
     # Framebuffer
@@ -96,6 +103,7 @@ def create_resources(ctx):
     )
     assert ctx.stats.framebuffer == (created + 1, freed)
     fb = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
         assert collected > 0
@@ -106,9 +114,10 @@ def create_resources(ctx):
     prog = ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC)
     assert ctx.stats.program == (created + 1, freed)
     prog = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
-        assert collected > 0
+        assert collected > 1
     assert ctx.stats.program == (created + 1, freed + 1)
 
     # Vertex arrays
@@ -117,9 +126,10 @@ def create_resources(ctx):
     geo.instance(ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC))
     assert ctx.stats.vertex_array == (created + 1, freed)
     geo = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
-        assert collected > 0
+        assert collected == 1
     assert ctx.stats.vertex_array == (created + 1, freed + 1)
 
     # Compute shader
@@ -128,6 +138,7 @@ def create_resources(ctx):
         compute_shader =  ctx.compute_shader(source=COMPUTE_SHADER_SOURCE)
         assert ctx.stats.compute_shader == (created + 1, freed)
         compute_shader = None
+        gc.collect()
         if ctx.gc_mode == "context_gc":
             collected = ctx.gc()
             assert collected > 0
@@ -138,6 +149,7 @@ def create_resources(ctx):
     query = ctx.query()
     assert ctx.stats.query == (created + 1, freed)
     query = None
+    gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
         assert collected > 0

@@ -82,8 +82,6 @@ version = {attr = "arcade.version.VERSION"}
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.distutils.bdist_wheel]
-universal = true
 
 [tool.ruff]
 # --- Description of what we ignore ---
@@ -127,14 +125,5 @@ module = "pytiled_parser.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "shapely.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
 module = "PyInstaller.*"
 ignore_missing_imports = true
-
-
-
-
-

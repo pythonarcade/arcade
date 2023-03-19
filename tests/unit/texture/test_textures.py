@@ -1,10 +1,9 @@
-import pytest
 import PIL.Image
 import PIL.ImageDraw
+import pytest
 
 import arcade
-from arcade import Texture
-from arcade import hitbox
+from arcade import Texture, hitbox
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -66,7 +65,6 @@ def test_load_texture():
     assert tex.height == 128
     assert tex.size == (128, 128)
     assert tex.hit_box_points is not None
-    assert tex._sprite is None
     assert tex._sprite_list is None
 
     with pytest.raises(FileNotFoundError):

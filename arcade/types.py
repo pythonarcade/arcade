@@ -30,7 +30,6 @@ IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
-Sequence[int]
 PointList = Sequence[Point]
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]

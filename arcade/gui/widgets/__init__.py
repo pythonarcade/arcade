@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 from random import randint
 from typing import (
     NamedTuple,
@@ -16,7 +16,6 @@ from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade import Sprite, get_window, Texture
-from arcade.types import Color
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -26,9 +25,10 @@ from arcade.gui.events import (
     UIOnClickEvent,
     UIOnUpdateEvent,
 )
+from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.gui.nine_patch import NinePatchTexture
+from arcade.types import Color
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -244,7 +244,7 @@ class UIWidget(EventDispatcher, ABC):
     ):
         self._rendered = False
         self.rect = Rect(x, y, width, height)
-        self.parent: Optional[UIWidgetParent] = None
+        self.parent: Optional[Union[UIManager, UIWidget]] = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
@@ -628,19 +628,6 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
 
-class UIWidgetParent(ABC):
-    """Placeholder for parent widget."""
-    rect: Rect
-
-    def trigger_render(self):
-        """Widget might request parent to rerender due to transparent part of the widget"""
-        pass
-
-    @abstractmethod
-    def remove(self, child: UIWidget):
-        pass
-
-
 class UIInteractiveWidget(UIWidget):
     """
     Base class for widgets which use mouse interaction (hover, pressed, clicked)
@@ -837,7 +824,7 @@ class UISpriteWidget(UIWidget):
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
-class UILayout(UIWidget, UIWidgetParent):
+class UILayout(UIWidget):
     """
     Base class for widgets, which position themselves or their children.
 
