@@ -61,7 +61,7 @@ class Color(Tuple[int, int, int, int]):
     :param a: the alpha or transparency channel of the color, between
         0 and 255
     """
-    def __new__(cls, r: int = 0, g: int = 0, b: int = 0, a: int = 255):
+    def __new__(cls, r: int, g: int, b: int, a: int = 255):
 
         if not 0 <= r <= 255:
             raise ByteRangeError("r", r)
