@@ -327,7 +327,7 @@ class BasicSprite:
     def color(self, color: RGBA):
         if len(color) == 4:
             if (
-                self._color == color[0]
+                self._color[0] == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
                 and self._color[3] == color[3]
@@ -336,7 +336,7 @@ class BasicSprite:
             self._color = color[0], color[1], color[2], color[3]
         elif len(color) == 3:
             if (
-                self._color == color[0]
+                self._color[0] == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
             ):
