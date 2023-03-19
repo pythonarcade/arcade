@@ -656,12 +656,12 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: Color,
                                 border_width: float = 1):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, bottom, and top edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
-    :param float top: The y coordinate of the top of the rectangle.
     :param float bottom: The y coordinate of the rectangle bottom.
+    :param float top: The y coordinate of the top of the rectangle.
     :param Color color: The color of the rectangle.
     :param float border_width: The width of the border in pixels. Defaults to one.
     :Raises AttributeError: Raised if left > right or top < bottom.
@@ -771,12 +771,12 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
 def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: Color):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, bottom, and top edges.
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
-    :param float top: The y coordinate of the top of the rectangle.
     :param float bottom: The y coordinate of the rectangle bottom.
+    :param float top: The y coordinate of the top of the rectangle.
     :param Color color: The color of the rectangle.
     :Raises AttributeError: Raised if left > right or top < bottom.
     """
