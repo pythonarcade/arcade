@@ -48,20 +48,3 @@ def test_rotate_point():
     rx, ry = rotate_point(x, y, cx, cy, angle)
     assert round(rx, 2) == 0
     assert round(ry, 2) == 10
-
-
-def test_get_four_byte_color():
-    assert arcade.get_four_byte_color((1, 2, 3)) == (1, 2, 3, 255)
-    assert arcade.get_four_byte_color((255, 255, 255)) == (255, 255, 255, 255)
-
-    assert arcade.get_four_byte_color((1, 2, 3, 4)) == (1, 2, 3, 4)
-    assert arcade.get_four_byte_color((255, 255, 255)) == (255, 255, 255, 255)
-
-    with pytest.raises(ValueError):
-        arcade.get_four_byte_color((255, 255))
-
-    with pytest.raises(ValueError):
-        arcade.get_four_byte_color((255, 255, 255, 255, 255))
-
-    with pytest.raises(TypeError):
-        arcade.get_four_byte_color(1000)
