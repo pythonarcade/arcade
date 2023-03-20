@@ -1,6 +1,6 @@
 from arcade.shape_list import ShapeElementList, create_line
 from typing import Tuple
-from arcade.types import Color
+from arcade.types import RGBALike
 
 
 def isometric_grid_to_screen(tile_x: int, tile_y: int, width: int, height: int, tile_width: int, tile_height: int)\
@@ -23,7 +23,7 @@ def create_isometric_grid_lines(width: int,
                                 height: int,
                                 tile_width: int,
                                 tile_height: int,
-                                color: Color,
+                                color: RGBALike,
                                 line_width: int)\
         -> ShapeElementList:
 
