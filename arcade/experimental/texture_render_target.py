@@ -1,5 +1,5 @@
 from arcade import get_window
-from arcade.types import Color, RGBALike
+from arcade.types import RGBALike
 from arcade.gl import geometry
 from arcade.gl.texture import Texture2D
 from arcade.color import TRANSPARENT_BLACK
@@ -40,7 +40,7 @@ class RenderTargetTexture:
         """Clear the texture with the configured background color"""
         self._fbo.clear(self._background_color)
 
-    def set_background_color(self, color: Color):
+    def set_background_color(self, color: RGBALike):
         """Set the background color for the light layer"""
         self._background_color = color
 
