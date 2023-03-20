@@ -7,12 +7,10 @@ from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.toggle import UITextureToggle
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager()
-        self.manager.enable()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
         grid = UIGridLayout(
             column_count=3,
@@ -22,7 +20,7 @@ class UIMockup(arcade.Window):
             horizontal_spacing=10,
         )
 
-        self.manager.add(UIAnchorLayout(children=[grid]))
+        self.ui.add(UIAnchorLayout(children=[grid]))
 
         # simple UIFlatButton with text
         grid.add(UIFlatButton(text="UIFlatButton", width=200), row_num=0, col_num=0)
@@ -185,11 +183,21 @@ class UIMockup(arcade.Window):
 
         grid.add(texture_button_with_toggle, row_num=3, col_num=0, col_span=3)
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    window = UIMockup()
-    arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

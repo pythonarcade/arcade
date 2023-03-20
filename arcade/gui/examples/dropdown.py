@@ -6,8 +6,7 @@ from arcade.gui.widgets.dropdown import UIDropdown
 class MyView(arcade.View):
     def __init__(self):
         super().__init__()
-
-        self.mng = UIManager()
+        self.ui = UIManager()
 
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
         self.dropdown = UIDropdown(
@@ -17,9 +16,9 @@ class MyView(arcade.View):
             width=200,
         )
         self.dropdown.center_on_screen()
-        self.mng.add(self.dropdown)
+        self.ui.add(self.dropdown)
 
-        self.label = self.mng.add(UILabel(text=" ", text_color=(0, 0, 0)))
+        self.label = self.ui.add(UILabel(text=" ", text_color=(0, 0, 0)))
 
         @self.dropdown.event()
         def on_change(event: UIOnChangeEvent):
@@ -34,18 +33,19 @@ class MyView(arcade.View):
             self.label.move(dy=50)
 
     def on_show_view(self):
-        self.window.background_color = arcade.color.WHITE
-        self.mng.enable()
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
 
     def on_hide_view(self):
-        self.mng.disable()
+        self.ui.disable()
 
     def on_draw(self):
         self.clear()
-        self.mng.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    window = arcade.Window()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
-    arcade.run()
+    window.run()

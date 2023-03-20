@@ -51,17 +51,30 @@ class UIManager(EventDispatcher):
 
     .. code:: py
 
-        manager = UIManager()
-        manager.enable() # hook up window events
+        class MyView(arcade.View):
+            def __init__():
+                super().__init__()
+                manager = UIManager()
 
-        manager.add(Dummy())
+                manager.add(Dummy())
 
-        def on_draw():
-            self.clear()
+            def on_show_view(self):
+                # Set background color
+                self.window.background_color = arcade.color.DARK_BLUE_GRAY
 
-            ...
+                # Enable UIManager when view is shown to catch window events
+                self.ui.enable()
 
-            manager.draw() # draws the UI on screen
+            def on_hide_view(self):
+                # Disable UIManager when view gets inactive
+                self.ui.disable()
+
+            def on_draw():
+                self.clear()
+
+                ...
+
+                manager.draw() # draws the UI on screen
 
     """
 
@@ -216,6 +229,8 @@ class UIManager(EventDispatcher):
 
         on_draw is not registered, to provide full control about draw order,
         so it has to be called by the devs themselves.
+
+        Within a view, this method should be called from :py:meth:`arcade.View.on_show_view()`.
         """
         if not self._enabled:
             self._enabled = True

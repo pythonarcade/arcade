@@ -15,19 +15,16 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.gui_slider
 """
 import arcade
-from arcade.gui.widgets.slider import UISlider
 from arcade.gui import UIManager, UILabel
 from arcade.gui.events import UIOnChangeEvent
+from arcade.gui.widgets.slider import UISlider
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.background_color = arcade.color.DARK_BLUE_GRAY
-
+        super().__init__()
         # Required, create a UI manager to handle all UI widgets
-        self.manager = UIManager()
-        self.manager.enable()
+        self.ui = UIManager()
 
         # Create our pair of widgets
         ui_slider = UISlider(value=50, width=300, height=50)
@@ -49,13 +46,23 @@ class UIMockup(arcade.Window):
         )
         ui_anchor_layout.add(child=label, align_y=50)
 
-        self.manager.add(ui_anchor_layout)
+        self.ui.add(ui_anchor_layout)
+
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
 
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    window = UIMockup()
-    arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()
