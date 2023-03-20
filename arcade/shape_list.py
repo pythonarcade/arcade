@@ -483,8 +483,7 @@ def create_triangles_filled_with_colors(
         as a :py:class:`list`; each color must be either a
         :py:class:`~arcade.types.Color` instance or a 4-length RGBA
         :py:class:`tuple`.
-   :Returns Shape:
-
+    :Returns Shape:
     """
     shape_mode = gl.GL_TRIANGLES
     return create_line_generic_with_colors(point_list, color_sequence, shape_mode)
