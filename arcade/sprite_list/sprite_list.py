@@ -30,7 +30,7 @@ from arcade import (
     get_window,
     gl,
 )
-from arcade.types import Color, ColorLike, RGBALike
+from arcade.types import Color, RGBALike
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 

@@ -4,8 +4,6 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
-from arcade.types import Color, ColorLike
-
 
 def get_points_for_thick_line(start_x: float, start_y: float,
                               end_x: float, end_y: float,
