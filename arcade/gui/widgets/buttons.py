@@ -3,7 +3,7 @@ from typing import Optional, Dict, Union
 
 import arcade
 from arcade import Texture
-from arcade.types import Color, RGBALike
+from arcade.types import RGBALike
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -47,7 +47,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         """
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: Color = arcade.color.WHITE
+        font_color: RGBALike = arcade.color.WHITE
         border_width: int = 2
 
     DEFAULT_STYLE = {
