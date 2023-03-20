@@ -32,6 +32,7 @@ MAX_UINT32 = 0xFFFFFFFF
 
 RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
+RGBANormalized = Tuple[float, float, float, float]
 
 
 class Color(Tuple[int, int, int, int]):
@@ -133,7 +134,7 @@ class Color(Tuple[int, int, int, int]):
         return Color(r, g, b, a)
 
     @property
-    def normalized(self) -> Tuple[float, float, float, float]:
+    def normalized(self) -> RGBANormalized:
         """
         Return this color as a tuple of 4 normalized floats.
 
