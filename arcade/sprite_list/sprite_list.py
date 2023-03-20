@@ -320,8 +320,8 @@ class SpriteList(Generic[SpriteType]):
         return Color.from_normalized(*self._color)
 
     @color.setter
-    def color(self, color: ColorLike):
-        self._color = Color(*color).normalized
+    def color(self, color: RGBALike):
+        self._color = Color.from_iterable(color).normalized
 
     @property
     def color_normalized(self) -> Tuple[float, float, float, float]:
