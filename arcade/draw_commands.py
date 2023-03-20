@@ -620,7 +620,7 @@ def draw_triangle_outline(x1: float, y1: float,
 
 @warning(
     message=\
-        "Drawing with lrtb(left, right, top, bottom) is deprecated use lrbt instead i.e draw_lrbt_rectangle_outline.",
+        "`draw_lrtb_rectangle_outline` is deprecated. Use `draw_lrbt_rectangle_outline` instead.",
     warning_type=NameChangeWarning,
 )
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
@@ -743,7 +743,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
 @warning(
     message=\
-        "Drawing with lrtb(left, right, top, bottom) is deprecated use lrbt instead i.e draw_lrbt_rectangle_filled.",
+        "`draw_lrtb_rectangle_filled` is deprecated. Use `draw_lrbt_rectangle_filled` instead.",
     warning_type =NameChangeWarning,
 )
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
