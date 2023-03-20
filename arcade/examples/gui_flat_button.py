@@ -25,7 +25,7 @@ class MyView(arcade.View):
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.manager = arcade.gui.UIManager()
+        self.ui = arcade.gui.UIManager()
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
@@ -59,7 +59,7 @@ class MyView(arcade.View):
         ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
         ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
 
-        self.manager.add(ui_anchor_layout)
+        self.ui.add(ui_anchor_layout)
 
     def on_show_view(self):
         self.window.background_color = arcade.color.DARK_BLUE_GRAY
@@ -68,14 +68,14 @@ class MyView(arcade.View):
 
     def on_hide_view(self):
         # Disable UIManager when view gets inactive
-        self.manager.disable()
+        self.ui.disable()
 
     def on_click_start(self, event):
         print("Start:", event)
 
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
 if __name__ == '__main__':
