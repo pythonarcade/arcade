@@ -629,7 +629,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     Draw a rectangle by specifying left, right, top and bottom edges.
 
     .. deprecated:: 3.0
-        Use :py:func:`draw_lrbt_rectangle_outline` instead!
+       Use :py:func:`draw_lrbt_rectangle_outline` instead!
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
