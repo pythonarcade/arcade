@@ -28,7 +28,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import Color
+from arcade.types import RGBALike
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -219,8 +219,8 @@ class UIWidget(EventDispatcher, ABC):
 
     _children: List[_ChildEntry] = ListProperty()  # type: ignore
     _border_width: int = Property(0)  # type: ignore
-    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
-    _bg_color: Optional[Color] = Property(None)  # type: ignore
+    _border_color: Optional[RGBALike] = Property(arcade.color.BLACK)  # type: ignore
+    _bg_color: Optional[RGBALike] = Property(None)  # type: ignore
     _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
     _padding_top: int = Property(0)  # type: ignore
     _padding_right: int = Property(0)  # type: ignore
@@ -562,7 +562,7 @@ class UIWidget(EventDispatcher, ABC):
         A color or texture can be used for background,
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
-        :param Color color: A color used as background
+        :param RGBALike color: A color used as background
         :param arcade.Texture texture: A texture or ninepatch texture used as background
         :return: self
         """
