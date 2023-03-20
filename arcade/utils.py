@@ -16,7 +16,19 @@ _CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 
 
 class OutsideRangeError(ValueError):
+    """
+    Raised when a value is outside and expected range
 
+    This class and its subclasses are intended to be arcade-internal
+    helpers to clearly signal exactly what went wrong. Each helps
+    type annotate and template a string describing exactly what went
+    wrong.
+
+    :param var_name: the name of the variable or argument
+    :param value: the value to fall outside the expected range
+    :param lower: the lower bound, inclusive, of the range
+    :param upper: the upper bound, inclusive, of the range
+    """
     def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT):
         super().__init__(f"{var_name} must be between {lower} and {upper}, inclusive, not {value}")
         self.var_name = var_name
@@ -26,21 +38,59 @@ class OutsideRangeError(ValueError):
 
 
 class IntOutsideRangeError(OutsideRangeError):
+    """
+    An integer was outside an expected range
+
+    This class was originally intended to assist deserialization from
+    data packed into ints, such as :py:class:`~arcade.types.Color`.
+
+    :param var_name: the name of the variable or argument
+    :param value: the value to fall outside the expected range
+    :param lower: the lower bound, inclusive, of the range
+    :param upper: the upper bound, inclusive, of the range
+    """
     def __init__(self, var_name: str, value: int, lower: int, upper: int):
         super().__init__(var_name, value, lower, upper)
 
 
 class FloatOutsideRangeError(OutsideRangeError):
+    """
+    A float value was outside an expected range
+
+    :param var_name: the name of the variable or argument
+    :param value: the value to fall outside the expected range
+    :param lower: the lower bound, inclusive, of the range
+    :param upper: the upper bound, inclusive, of the range
+    """
     def __init__(self, var_name: str, value: float, lower: float, upper: float):
         super().__init__(var_name, value, lower, upper)
 
 
 class ByteRangeError(IntOutsideRangeError):
+    """
+    An int was outside the range of 0 to 255 inclusive
+
+    :param var_name: the name of the variable or argument
+    :param value: the value to fall outside the expected range
+    """
     def __init__(self, var_name: str, value: int):
         super().__init__(var_name, value, 0, 255)
 
 
 class NormalizedRangeError(FloatOutsideRangeError):
+    """
+    A float was not between 0.0 and 1.0, inclusive
+
+    Note that normalized floats should not normally be bound-checked as
+    before drawing as this is taken care of on the GPU side.
+
+    The exceptions to this are when processing data on the Python side,
+    especially when it is cheaper to bound check two floats than call
+    clamping functions.
+
+    :param var_name: the name of the variable or argument
+    :param value: the value to fall outside the expected range
+    """
     def __init__(self, var_name: str, value: float):
         super().__init__(var_name, value, 0.0, 1.0)
 
