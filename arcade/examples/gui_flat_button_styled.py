@@ -11,17 +11,12 @@ import arcade.gui.widgets.layout
 from arcade.gui import UIFlatButton
 
 
-class MyWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UIFlatButton Example", resizable=True)
-
+        super().__init__()
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-
-        # Set background color
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        self.ui = arcade.gui.UIManager()
 
         # Render button
         red_style = {
@@ -77,12 +72,23 @@ class MyWindow(arcade.Window):
         ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
         ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
 
-        self.manager.add(ui_anchor_layout)
+        self.ui.add(ui_anchor_layout)
+
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
 
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-window = MyWindow()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

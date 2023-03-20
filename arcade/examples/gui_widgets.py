@@ -11,17 +11,12 @@ import arcade.gui.widgets.layout
 import arcade.gui.widgets.text
 
 
-class MyWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "GUI Widgets Example", resizable=True)
-
+        super().__init__()
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-
-        # Set background color
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        self.ui = arcade.gui.UIManager()
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
@@ -69,17 +64,28 @@ class MyWindow(arcade.Window):
         self.v_box.add(ui_texture_button)
 
         # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
+        self.ui.add(
             arcade.gui.widgets.layout.UIAnchorLayout(children=[self.v_box])
         )
 
     def on_click_start(self, event):
         print("Start:", event)
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-window = MyWindow()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

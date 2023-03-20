@@ -8,7 +8,6 @@ python -m arcade.examples.gui_flat_button
 import arcade
 import arcade.gui
 
-
 # --- Method 1 for handling click events,
 # Create a child class.
 import arcade.gui.widgets.buttons
@@ -20,17 +19,13 @@ class QuitButton(arcade.gui.widgets.buttons.UIFlatButton):
         arcade.exit()
 
 
-class MyWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UIFlatButton Example", resizable=True)
+        super().__init__()
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
         self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-
-        # Set background color
-        self.background_color = arcade.color.DARK_BLUE_GRAY
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
@@ -66,6 +61,15 @@ class MyWindow(arcade.Window):
 
         self.manager.add(ui_anchor_layout)
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.manager.disable()
+
     def on_click_start(self, event):
         print("Start:", event)
 
@@ -74,5 +78,7 @@ class MyWindow(arcade.Window):
         self.manager.draw()
 
 
-window = MyWindow()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()
