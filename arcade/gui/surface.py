@@ -6,7 +6,7 @@ from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Color, Point, Rect
+from arcade.types import Point, Rect, RGBALike
 
 
 class Surface:
@@ -83,7 +83,7 @@ class Surface:
     def height(self) -> int:
         return self._size[1]
 
-    def clear(self, color: Color = TRANSPARENT_BLACK):
+    def clear(self, color: RGBALike = TRANSPARENT_BLACK):
         """Clear the surface"""
         self.fbo.clear(color=color)
 
