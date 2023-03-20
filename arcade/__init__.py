@@ -66,7 +66,6 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
-from .drawing_support import get_four_byte_color
 from .drawing_support import get_points_for_thick_line
 
 # Complex imports with potential circularity
@@ -317,7 +316,6 @@ __all__ = [
     'get_display_size',
     'get_distance_between_sprites',
     'get_sprites_in_rect',
-    'get_four_byte_color',
     'get_controllers',
     'get_game_controllers',
     'get_image',

@@ -35,28 +35,3 @@ def get_points_for_thick_line(start_x: float, start_y: float,
     r4_x = end_x - normal_x * line_width / 2
     r4_y = end_y - normal_y * line_width / 2
     return (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
-
-
-def get_four_byte_color(color: ColorLike) -> Color:
-    """
-    Converts a color to RGBA. If the color is already
-    RGBA the original color value will be returned.
-    If the alpha channel is not present a 255 value will be added.
-
-    This function is useful when a mix of RGB and RGBA
-    values are used and you need to enforce RGBA.
-
-    Examples::
-
-        >>> arcade.get_four_byte_color((255, 255, 255))
-        (255, 255, 255, 255)
-
-    :param Color color: Three or four byte tuple
-
-    :returns:  return: Four byte RGBA tuple
-    """
-
-    if len(color) in (3, 4):
-        return Color(*color)
-
-    raise ValueError(f"This isn't a 3 or 4 byte color: {color}")
