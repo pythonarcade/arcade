@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBALike
+from arcade.types import RGBALike, Color
 
 
 class UILabel(UIWidget):
@@ -429,7 +429,7 @@ class UITextArea(UIWidget):
             dict(
                 font_name=font_name,
                 font_size=font_size,
-                color=arcade.get_four_byte_color(text_color),
+                color=Color.from_iterable(text_color),
             ),
         )
 
