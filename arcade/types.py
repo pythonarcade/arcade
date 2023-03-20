@@ -33,6 +33,7 @@ MAX_UINT32 = 0xFFFFFFFF
 RGB = Tuple[int, int, int]
 RGBA = Tuple[int, int, int, int]
 RGBANormalized = Tuple[float, float, float, float]
+RGBA255OrNormalized = Union[RGBA, RGBANormalized]
 
 
 class Color(Tuple[int, int, int, int]):
