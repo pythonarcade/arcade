@@ -25,7 +25,7 @@ from arcade import (
     Texture,
     get_window,
 )
-from arcade.utils import warning, NameChangeWarning
+from arcade.utils import warning, ReplacementWarning
 
 # --- BEGIN ARC FUNCTIONS # # #
 
@@ -619,7 +619,7 @@ def draw_triangle_outline(x1: float, y1: float,
 
 
 @warning(
-    warning_type=NameChangeWarning,
+    warning_type=ReplacementWarning,
     new_name="draw_lrbt_rectangle_outline"
 )
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
@@ -637,15 +637,15 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     :param float bottom: The y coordinate of the rectangle bottom.
     :param Color color: The color of the rectangle.
     :param float border_width: The width of the border in pixels. Defaults to one.
-    :Raises AttributeError: Raised if left > right or top < bottom.
+    :Raises ValueError: Raised if left > right or top < bottom.
 
     """
     if left > right:
-        raise AttributeError("Left coordinate must be less than or equal to "
+        raise ValueError("Left coordinate must be less than or equal to "
                              "the right coordinate")
 
     if bottom > top:
-        raise AttributeError("Bottom coordinate must be less than or equal to "
+        raise ValueError("Bottom coordinate must be less than or equal to "
                              "the top coordinate")
 
     center_x = (left + right) / 2
@@ -744,7 +744,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
 
 @warning(
-    warning_type=NameChangeWarning,
+    warning_type=ReplacementWarning,
     new_name="draw_lrbt_rectangle_filled"
 )
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
@@ -784,13 +784,13 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
     :param float bottom: The y coordinate of the rectangle bottom.
     :param float top: The y coordinate of the top of the rectangle.
     :param Color color: The color of the rectangle.
-    :Raises AttributeError: Raised if left > right or top < bottom.
+    :Raises ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
-        raise AttributeError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
+        raise ValueError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
 
     if bottom > top:
-        raise AttributeError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
+        raise ValueError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
