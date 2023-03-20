@@ -248,8 +248,8 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     :param float height: height of the ellipse.
     :param RGBALike color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBALike color: Either a :py:class:`~arcade.types.Color` instance
+        or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
     :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
