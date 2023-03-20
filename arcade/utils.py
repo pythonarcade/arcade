@@ -22,8 +22,11 @@ class NameChangeWarning(Warning):
     pass
 
 
-def warning(message: str, warning_type: Type[Warning]):
+def warning(warning_type: Type[Warning], message: str = "", **kwargs):
     def actual_warning_decorator(func):
+        nonlocal message
+        if warning_type == NameChangeWarning and not message:
+            message = f"{func.__name__} is deprecated. Use {kwargs.get('new_name', '')} instead."
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             warnings.warn(message, warning_type)

@@ -619,15 +619,17 @@ def draw_triangle_outline(x1: float, y1: float,
 
 
 @warning(
-    message=\
-        "`draw_lrtb_rectangle_outline` is deprecated. Use `draw_lrbt_rectangle_outline` instead.",
     warning_type=NameChangeWarning,
+    new_name="draw_lrbt_rectangle_outline"
 )
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: Color,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
+
+    .. deprecated:: 3.0
+        Use :py:func:`draw_lrbt_rectangle_outline` instead!
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -742,14 +744,16 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
 
 @warning(
-    message=\
-        "`draw_lrtb_rectangle_filled` is deprecated. Use `draw_lrbt_rectangle_filled` instead.",
-    warning_type =NameChangeWarning,
+    warning_type=NameChangeWarning,
+    new_name="draw_lrbt_rectangle_filled"
 )
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
                                bottom: float, color: Color):
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
+
+    .. deprecated:: 3.0
+        Use :py:func:`draw_lrbt_rectangle_filled` instead!
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
