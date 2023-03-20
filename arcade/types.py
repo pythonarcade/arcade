@@ -276,7 +276,7 @@ class Color(Tuple[int, int, int, int]):
         if not 0 <= a <= 1.0:
             raise NormalizedRangeError("a", a)
 
-        return cls(r=int(255 * r), g=int(255 * g), b=int(255 * b), a=int(255 * a))
+        return cls(int(255 * r), int(255 * g), int(255 * b), a=int(255 * a))
 
     @classmethod
     def from_hex_string(cls, code: str) -> "Color":
