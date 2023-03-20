@@ -344,7 +344,7 @@ class BasicSprite:
                 and self._color[3] == color[3]
             ):
                 return
-            self._color = Color(color[0], color[1], color[2], color[3])
+            self._color = Color.from_iterable(color)
 
         elif len(color) == 3:
             if (
