@@ -172,9 +172,7 @@ class MyGame(arcade.Window):
                 self.card_list.append(card)
 
         # Shuffle the cards
-        for pos1 in range(len(self.card_list)):
-            pos2 = random.randrange(len(self.card_list))
-            self.card_list[pos1], self.card_list[pos2] = self.card_list[pos2], self.card_list[pos1]
+        self.card_list.shuffle()
 
         # Create a list of lists, each holds a pile of cards.
         self.piles = [[] for _ in range(PILE_COUNT)]
@@ -218,9 +216,9 @@ class MyGame(arcade.Window):
         index = self.card_list.index(card)
         # Loop and pull all the other cards down towards the zero end
         for i in range(index, len(self.card_list) - 1):
-            self.card_list[i] = self.card_list[i + 1]
+            self.card_list.swap(i, i+1)
         # Put this card at the right-side/top/size of list
-        self.card_list[len(self.card_list) - 1] = card
+        # self.card_list[len(self.card_list) - 1] = card
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
