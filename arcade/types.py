@@ -132,7 +132,7 @@ class Color(Tuple[int, int, int, int]):
         else:
             a = 255
 
-        return Color(r, g, b, a)
+        return Color(r, g, b, a=a)
 
     @property
     def normalized(self) -> RGBANormalized:
@@ -179,7 +179,7 @@ class Color(Tuple[int, int, int, int]):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(brightness, brightness, brightness, a)
+        return Color(brightness, brightness, brightness, a=a)
 
     @classmethod
     def from_uint24(cls, color: int, a: int = 255) -> "Color":
@@ -207,9 +207,9 @@ class Color(Tuple[int, int, int, int]):
             raise ByteRangeError("a", a)
 
         return cls(
-            r=(color & 0xFF0000) >> 16,
-            g=(color & 0xFF00) >> 8,
-            b=color & 0xFF,
+            (color & 0xFF0000) >> 16,
+            (color & 0xFF00) >> 8,
+            color & 0xFF,
             a=a
         )
 
@@ -234,9 +234,9 @@ class Color(Tuple[int, int, int, int]):
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
 
         return cls(
-            r=(color & 0xFF000000) >> 24,
-            g=(color & 0xFF0000) >> 16,
-            b=(color & 0xFF00) >> 8,
+            (color & 0xFF000000) >> 24,
+            (color & 0xFF0000) >> 16,
+            (color & 0xFF00) >> 8,
             a=(color & 0xFF)
         )
 
