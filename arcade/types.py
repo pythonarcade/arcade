@@ -154,30 +154,32 @@ class Color(Tuple[int, int, int, int]):
         return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
 
     @classmethod
-    def from_intensity(cls, intensity: int, a: int = 255) -> "Color":
+    def from_gray(cls, brightness: int, a: int = 255) -> "Color":
         """
-        Return a shade of gray of the given intensity.
+        Return a shade of gray of the given brightness.
 
         Example::
 
-            >>> Color.from_intensity(255)
-            Color(255, 255, 255, 255)
+            >>> custom_white = Color.from_gray(255)
+            >>> print(custom_white)
+            Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_intensity(128)
-            Color(128, 128, 128, 255)
+            >>> half_opacity_gray = Color.from_gray(128, 128)
+            >>> print(half_opacity_gray)
+            Color(r=128, g=128, b=128, a=128)
 
-        :param intensity: How bright the shade should be
+        :param brightness: How bright the shade should be
         :param a: a transparency value, fully opaque by default
         :return:
         """
 
-        if not 0 <= intensity <= 255:
-            raise ByteRangeError("intensity", intensity)
+        if not 0 <= brightness <= 255:
+            raise ByteRangeError("brightness", brightness)
 
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(intensity, intensity, intensity, a)
+        return Color(brightness, brightness, brightness, a)
 
     @classmethod
     def from_uint24(cls, color: int, a: int = 255) -> "Color":

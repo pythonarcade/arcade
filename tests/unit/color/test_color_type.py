@@ -95,6 +95,29 @@ def test_color_from_normalized():
             Color.from_normalized(bad_rgba_channels)
 
 
+def test_color_from_gray():
+    OK_255 = (0, 255)
+    BAD_255 = (-1, 256)
+    MIXED_255 = OK_255 + BAD_255
+
+    for brightness in OK_255:
+        color = Color.from_gray(brightness)
+        assert color == (brightness, brightness, brightness, 255)
+
+    for brightness, alpha in product(OK_255, repeat=2):
+        color = Color.from_gray(brightness, alpha)
+        assert color == (brightness, brightness, brightness, alpha)
+
+    at_least_one_bad = at_least_one_in(BAD_255)
+    for bad_args in filter(at_least_one_bad, product(MIXED_255, repeat=2)):
+        with pytest.raises(ValueError):
+            Color.from_gray(*bad_args)
+
+    for bad_arg in BAD_255:
+        with pytest.raises(ValueError):
+            Color.from_gray(bad_arg)
+
+
 def test_color_from_hex_string():
     with pytest.raises(ValueError):
         Color.from_hex_string("#ff0000ff0")
