@@ -52,10 +52,10 @@ class Color(Tuple[int, int, int, int]):
 
         >>> from arcade.types import Color
         >>> Color(255, 0, 0)
-        Color(255, 0, 0, 0)
+        Color(r=255, g=0, b=0, a=0)
 
         >>> Color(*rgb_green_tuple, 127)
-        Color(0, 255, 0, 127)
+        Color(r=0, g=255, b=0, a=127)
 
     :param r: the red channel of the color, between 0 and 255
     :param g: the green channel of the color, between 0 and 255
@@ -191,10 +191,10 @@ class Color(Tuple[int, int, int, int]):
         Example::
 
             >>> Color.from_uint24(16777215)
-            (255, 255, 255, 255)
+            Color(r=255, g=255, b=255, a=255)
 
             >>> Color.from_uint24(0xFF0000)
-            (255, 0, 0, 255)
+            Color(r=255, g=0, b=0, a=255)
 
         :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
@@ -223,10 +223,10 @@ class Color(Tuple[int, int, int, int]):
         Examples::
 
             >>> Color.from_uint32(4294967295)
-            (255, 255, 255, 255)
+            Color(r=255, g=255, b=255, a=255)
 
             >>> Color.from_uint32(0xFF0000FF)
-            (255, 0, 0, 255)
+            Color(r=255, g=0, b=0, a=255)
 
         :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
@@ -253,11 +253,11 @@ class Color(Tuple[int, int, int, int]):
         Examples::
 
             >>> Color.from_normalized((1.0, 0.0, 0.0, 1.0))
-            Color(255, 0, 0, 255)
+            Color(r=255, g=0, b=0, a=255)
 
             >>> normalized_half_opacity_green = (0.0, 1.0, 0.0, 0.5)
             >>> Color.from_normalized(normalized_half_opacity_green)
-            Color(0, 255, 0, 127)
+            Color(r=0, g=255, b=0, a=127)
 
         :param RGBANormalized color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
         :return:
@@ -305,13 +305,16 @@ class Color(Tuple[int, int, int, int]):
         Examples::
 
             >>> Color.from_hex_string("#ff00ff")
-            (255, 0, 255, 255)
+            Color(r=255, g=0, b=255, a=255)
+
             >>> Color.from_hex_string("#ff00ff00")
-            (255, 0, 255, 0)
+            Color(r=255, g=0, b=255, a=0)
+
             >>> Color.from_hex_string("#FFF")
-            (255, 255, 255, 255)
+            Color(r=255, g=255, b=255, a=255)
+
             >>> Color.from_hex_string("FF0A")
-            (255, 255, 0, 170)
+            Color(r=255, g=255, b=0, a=170)
 
         """
         code = code.lstrip("#")
