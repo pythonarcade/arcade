@@ -317,7 +317,7 @@ class SpriteList(Generic[SpriteType]):
 
         :rtype: Color
         """
-        return Color.from_normalized(*self._color)
+        return Color.from_normalized(self._color)
 
     @color.setter
     def color(self, color: RGBALike):
