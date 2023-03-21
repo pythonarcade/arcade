@@ -68,8 +68,9 @@ def test_color_from_uint32():
 def test_color_from_normalized():
 
     # spot check conversion of acceptable human-ish values
-    assert Color.from_normalized(r=1/255, g=2/255, b=3/255) == (1, 2, 3, 255)
-    assert Color.from_normalized(r=1/255, g=2/255, b=3/255, a=4/255) == (1, 2, 3, 4)
+    float_steps = (1/255, 2/255, 3/255, 4/255)
+    assert Color.from_normalized(float_steps[:3]) == (1, 2, 3, 255)
+    assert Color.from_normalized(float_steps) == (1, 2, 3, 4)
 
     # some helper callables
     at_least_one_bad = at_least_one_in(BAD_NORMALIZED)
@@ -79,19 +80,19 @@ def test_color_from_normalized():
 
     for good_rgb_channels in product(OK_NORMALIZED, repeat=3):
         expected = local_convert(good_rgb_channels) + (255,)
-        assert Color.from_normalized(*good_rgb_channels) == expected
+        assert Color.from_normalized(good_rgb_channels) == expected
 
     for good_rgba_channels in product(OK_NORMALIZED, repeat=4):
         expected = local_convert(good_rgba_channels)
-        assert Color.from_normalized(*good_rgba_channels) == expected
+        assert Color.from_normalized(good_rgba_channels) == expected
 
     for bad_rgb_channels in filter(at_least_one_bad, product(MIXED_NORMALIZED, repeat=3)):
         with pytest.raises(ValueError):
-            Color.from_normalized(*bad_rgb_channels)
+            Color.from_normalized(bad_rgb_channels)
 
     for bad_rgba_channels in filter(at_least_one_bad, product(MIXED_NORMALIZED, repeat=4)):
         with pytest.raises(ValueError):
-            Color.from_normalized(*bad_rgba_channels)
+            Color.from_normalized(bad_rgba_channels)
 
 
 def test_color_from_hex_string():
