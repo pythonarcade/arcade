@@ -637,15 +637,15 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     :param float bottom: The y coordinate of the rectangle bottom.
     :param Color color: The color of the rectangle.
     :param float border_width: The width of the border in pixels. Defaults to one.
-    :Raises ValueError: Raised if left > right or top < bottom.
+    :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
     if left > right:
-        raise ValueError("Left coordinate must be less than or equal to "
+        raise AttributeError("Left coordinate must be less than or equal to "
                              "the right coordinate")
 
     if bottom > top:
-        raise ValueError("Bottom coordinate must be less than or equal to "
+        raise AttributeError("Bottom coordinate must be less than or equal to "
                              "the top coordinate")
 
     center_x = (left + right) / 2
@@ -667,15 +667,15 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
     :param float top: The y coordinate of the top of the rectangle.
     :param Color color: The color of the rectangle.
     :param float border_width: The width of the border in pixels. Defaults to one.
-    :Raises AttributeError: Raised if left > right or top < bottom.
+    :Raises ValueError: Raised if left > right or top < bottom.
 
     """
     if left > right:
-        raise AttributeError("Left coordinate must be less than or equal to "
+        raise ValueError("Left coordinate must be less than or equal to "
                              "the right coordinate")
 
     if bottom > top:
-        raise AttributeError("Bottom coordinate must be less than or equal to "
+        raise ValueError("Bottom coordinate must be less than or equal to "
                              "the top coordinate")
 
     center_x = (left + right) / 2
