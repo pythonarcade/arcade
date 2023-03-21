@@ -16,7 +16,7 @@ from typing import (
     Tuple,
     TYPE_CHECKING
 )
-from arcade.types import Color
+from arcade.types import RGBALike, Color
 
 if TYPE_CHECKING:
     from arcade import Window
@@ -272,7 +272,7 @@ def finish_render():
     get_window().flip()
 
 
-def set_background_color(color: Color) -> None:
+def set_background_color(color: RGBALike) -> None:
     """
     Set the color :py:meth:`arcade.Window.clear()` will use
     when clearing the window. This only needs to be called
@@ -291,9 +291,9 @@ def set_background_color(color: Color) -> None:
         # Specify RGB value directly (red)
         arcade.set_background_color((255, 0, 0))
 
-    :param Color color: List of 3 or 4 values in RGB/RGBA format.
+    :param RGBALike: List of 3 or 4 values in RGB/RGBA format.
     """
-    get_window().background_color = color
+    get_window().background_color = Color.from_iterable(color)
 
 
 def schedule(function_pointer: Callable, interval: float):
