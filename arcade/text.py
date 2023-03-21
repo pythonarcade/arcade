@@ -7,7 +7,7 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point, RGBALike
+from arcade.types import Color, Point, RGBA255
 from arcade.resources import resolve_resource_path
 from arcade.utils import PerformanceWarning, warning
 
@@ -122,7 +122,7 @@ class Text:
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param RGBALike color: Color of the text as an RGBA tuple or a
+    :param RGBA255 color: Color of the text as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
@@ -172,7 +172,7 @@ class Text:
         text: str,
         start_x: float,
         start_y: float,
-        color: RGBALike = arcade.color.WHITE,
+        color: RGBA255 = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
         align: str = "left",
@@ -374,7 +374,7 @@ class Text:
         return self._label.color
 
     @color.setter
-    def color(self, color: RGBALike):
+    def color(self, color: RGBA255):
         self._label.color = Color.from_iterable(color)
 
     @property
@@ -522,17 +522,17 @@ class Text:
 
     def draw_debug(
         self,
-        anchor_color: RGBALike = arcade.color.RED,
-        background_color: RGBALike = arcade.color.DARK_BLUE,
-        outline_color: RGBALike = arcade.color.WHITE,
+        anchor_color: RGBA255 = arcade.color.RED,
+        background_color: RGBA255 = arcade.color.DARK_BLUE,
+        outline_color: RGBA255 = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
         area, outline and the anchor point.
 
-        :param RGBALike anchor_color: Color of the anchor point
-        :param RGBALike background_color: Color the content background
-        :param RGBALike outline_color: Color of the content outline
+        :param RGBA255 anchor_color: Color of the anchor point
+        :param RGBA255 background_color: Color the content background
+        :param RGBA255 outline_color: Color of the content outline
         """
         left = self.left
         right = self.right
@@ -571,7 +571,7 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    color: RGBALike = arcade.color.WHITE,
+    color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -598,7 +598,7 @@ def create_text_sprite(
     a black box drawn in its place.
 
     :param str text: Initial text to display. Can be an empty string
-    :param RGBALike color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBA255 color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
@@ -656,7 +656,7 @@ def draw_text(
     text: Any,
     start_x: float,
     start_y: float,
-    color: RGBALike = arcade.color.WHITE,
+    color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -695,7 +695,7 @@ def draw_text(
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param RGBALike color: Color of the text as an RGBA tuple or
+    :param RGBA255 color: Color of the text as an RGBA tuple or
         :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels

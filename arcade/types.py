@@ -13,7 +13,7 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING
+    TYPE_CHECKING, TypeVar
 )
 from arcade.utils import (
     IntOutsideRangeError,
@@ -30,13 +30,22 @@ MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
 
 
-RGB = Tuple[int, int, int]
-RGBA = Tuple[int, int, int, int]
-RGBANormalized = Tuple[float, float, float, float]
-RGBA255OrNormalized = Union[RGBA, RGBANormalized]
+ChannelType = TypeVar('ChannelType')
+
+RGB = Tuple[ChannelType, ChannelType, ChannelType]
+RGBA = Tuple[ChannelType, ChannelType, ChannelType, ChannelType]
+RGBOrA = Union[RGB[ChannelType], RGBA[ChannelType]]
+
+RGBOrA255 = RGBOrA[int]
+RGBOrANormalized = RGBOrA[float]
+
+RGBA255 = RGBA[int]
+RGBANormalized = RGBA[float]
+
+RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
 
 
-class Color(Tuple[int, int, int, int]):
+class Color(RGBA255):
     """
     A :py:class:`tuple` subclass representing an RGBA Color.
 
@@ -333,8 +342,7 @@ class Color(Tuple[int, int, int, int]):
         raise ValueError(f"Improperly formatted color: '{code}'")
 
 
-RGBALike = Union[Color, RGBA]
-ColorLike = Union[Color, RGB, RGBA]
+ColorLike = Union[RGB, RGBA255]
 
 
 # Point = Union[Tuple[float, float], List[float]]

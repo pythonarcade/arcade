@@ -5,7 +5,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade.types import RGBALike
+from arcade.types import RGBA255
 from arcade.math import lerp
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox import HitBoxAlgorithm
@@ -17,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 def make_circle_texture(
     diameter: int,
-    color: RGBALike,
+    color: RGBA255,
     name: Optional[str] = None,
     hitbox_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> Texture:
@@ -25,7 +25,7 @@ def make_circle_texture(
     Return a Texture of a circle with the given diameter and color.
 
     :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param RGBALike color: Color of the circle as a
+    :param RGBA255 color: Color of the circle as a
         :py:class:`~arcade.types.Color` instance a 3 or 4 tuple.
     :param str name: Custom or pre-chosen name for this texture
 
@@ -43,7 +43,7 @@ def make_circle_texture(
 
 def make_soft_circle_texture(
     diameter: int,
-    color: RGBALike,
+    color: RGBA255,
     center_alpha: int = 255,
     outer_alpha: int = 0,
     name: Optional[str] = None,
@@ -53,7 +53,7 @@ def make_soft_circle_texture(
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
 
     :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param RGBALike color: Color of the circle as a 4-length tuple or
+    :param RGBA255 color: Color of the circle as a 4-length tuple or
         :py:class:`~arcade.types.Color` instance.
     :param int center_alpha: Alpha value of the circle at its center.
     :param int outer_alpha: Alpha value of the circle at its edges.
@@ -98,7 +98,7 @@ def make_soft_circle_texture(
 
 def make_soft_square_texture(
     size: int,
-    color: RGBALike,
+    color: RGBA255,
     center_alpha: int = 255,
     outer_alpha: int = 0,
     name: Optional[str] = None,
@@ -107,7 +107,7 @@ def make_soft_square_texture(
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
 
     :param int size: Diameter of the square and dimensions of the square Texture returned.
-    :param RGBALike color: Color of the square.
+    :param RGBA255 color: Color of the square.
     :param int center_alpha: Alpha value of the square at its center.
     :param int outer_alpha: Alpha value of the square at its edges.
     :param str name: Custom or pre-chosen name for this texture

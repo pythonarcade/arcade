@@ -7,7 +7,7 @@ from arcade.texture import (
     make_circle_texture,
     make_soft_circle_texture,
 )
-from arcade.types import Color, RGBALike
+from arcade.types import Color, RGBA255
 
 from .sprite import Sprite
 
@@ -43,7 +43,7 @@ class SpriteSolidColor(Sprite):
         height: int,
         center_x: float = 0,
         center_y: float = 0,
-        color: RGBALike = Color(255, 255, 255, 255),
+        color: RGBA255 = Color(255, 255, 255, 255),
         angle: float = 0,
         **kwargs,
     ):
@@ -88,7 +88,7 @@ class SpriteCircle(Sprite):
                       center to transparent edges.
     """
 
-    def __init__(self, radius: int, color: RGBALike, soft: bool = False, **kwargs):
+    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
         radius = int(radius)
         diameter = radius * 2
 

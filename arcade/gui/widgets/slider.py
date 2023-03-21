@@ -5,7 +5,7 @@ from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade.math import get_distance
-from arcade.types import Color, RGBALike
+from arcade.types import Color, RGBA255
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -50,11 +50,11 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
 
             button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
         """
-        bg: RGBALike = Color(94, 104, 117)
-        border: RGBALike = Color(77, 81, 87)
+        bg: RGBA255 = Color(94, 104, 117)
+        border: RGBA255 = Color(77, 81, 87)
         border_width: int = 1
-        filled_bar: RGBALike = Color(50, 50, 50)
-        unfilled_bar: RGBALike = Color(116, 125, 123)
+        filled_bar: RGBA255 = Color(50, 50, 50)
+        unfilled_bar: RGBA255 = Color(116, 125, 123)
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),

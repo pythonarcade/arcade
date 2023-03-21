@@ -6,7 +6,7 @@ from pyglet.shapes import Line
 from pyglet.graphics import Batch
 
 import arcade
-from arcade.types import Color, RGBALike
+from arcade.types import Color, RGBA255
 
 
 class PerfGraph(arcade.Sprite):
@@ -50,11 +50,11 @@ class PerfGraph(arcade.Sprite):
             width: int, height: int,
             graph_data: str = "FPS",
             update_rate: float = 0.1,
-            background_color: RGBALike = arcade.color.BLACK,
-            data_line_color: RGBALike = arcade.color.WHITE,
-            axis_color: RGBALike = arcade.color.DARK_YELLOW,
-            grid_color: RGBALike = arcade.color.DARK_YELLOW,
-            font_color: RGBALike = arcade.color.WHITE,
+            background_color: RGBA255 = arcade.color.BLACK,
+            data_line_color: RGBA255 = arcade.color.WHITE,
+            axis_color: RGBA255 = arcade.color.DARK_YELLOW,
+            grid_color: RGBA255 = arcade.color.DARK_YELLOW,
+            font_color: RGBA255 = arcade.color.WHITE,
             font_size: int = 10,
             y_axis_num_lines: int = 4,
             view_y_scale_step: float = 20.0,
@@ -147,7 +147,7 @@ class PerfGraph(arcade.Sprite):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, new_color: RGBALike):
+    def background_color(self, new_color: RGBA255):
         self._background_color = Color.from_iterable(new_color)
 
     @property
@@ -155,7 +155,7 @@ class PerfGraph(arcade.Sprite):
         return self._grid_color
 
     @grid_color.setter
-    def grid_color(self, raw_color: RGBALike):
+    def grid_color(self, raw_color: RGBA255):
         new_color = Color.from_iterable(raw_color)
         for grid_line in self._grid_lines:
             grid_line.color = new_color
@@ -165,7 +165,7 @@ class PerfGraph(arcade.Sprite):
         return self._axis_color
 
     @axis_color.setter
-    def axis_color(self, raw_color: RGBALike):
+    def axis_color(self, raw_color: RGBA255):
         new_color = Color.from_iterable(raw_color)
         self._x_axis.color = new_color
         self._y_axis.color = new_color

@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBALike, Color
+from arcade.types import RGBA255, Color
 
 
 class UILabel(UIWidget):
@@ -36,7 +36,7 @@ class UILabel(UIWidget):
     :param font_name: a list of fonts to use. Program will start at the beginning of the list
                       and keep trying to load fonts until success.
     :param float font_size: size of font.
-    :param RGBALike text_color: Color of font.
+    :param RGBA255 text_color: Color of font.
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
@@ -61,7 +61,7 @@ class UILabel(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: RGBALike = (255, 255, 255, 255),
+        text_color: RGBA255 = (255, 255, 255, 255),
         bold=False,
         italic=False,
         align="left",
@@ -243,7 +243,7 @@ class UIInputText(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: RGBALike = (0, 0, 0, 255),
+        text_color: RGBA255 = (0, 0, 0, 255),
         multiline=False,
         size_hint=None,
         size_hint_min=None,
@@ -399,7 +399,7 @@ class UITextArea(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: RGBALike = (255, 255, 255, 255),
+        text_color: RGBA255 = (255, 255, 255, 255),
         multiline: bool = True,
         scroll_speed: Optional[float] = None,
         size_hint=None,

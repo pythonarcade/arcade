@@ -18,7 +18,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBALike, RGBA255OrNormalized
+from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 
@@ -269,7 +269,7 @@ class Window(pyglet.window.Window):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, value: RGBALike):
+    def background_color(self, value: RGBA255):
         self._background_color = Color.from_iterable(value)
 
     def run(self) -> None:

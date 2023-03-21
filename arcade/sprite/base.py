@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import Point, Color, RGBALike
+from arcade.types import Point, Color, RGBA255
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -335,7 +335,7 @@ class BasicSprite:
         return self._color
 
     @color.setter
-    def color(self, color: RGBALike):
+    def color(self, color: RGBA255):
         if len(color) == 4:
             if (
                 self._color[0] == color[0]
@@ -563,7 +563,7 @@ class BasicSprite:
 
     # ----- Drawing Methods -----
 
-    def draw_hit_box(self, color: RGBALike = BLACK, line_thickness: float = 2.0) -> None:
+    def draw_hit_box(self, color: RGBA255 = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
