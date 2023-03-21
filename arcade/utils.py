@@ -17,8 +17,16 @@ class PerformanceWarning(Warning):
     pass
 
 
-def warning(message: str, warning_type: Type[Warning]):
+class ReplacementWarning(Warning):
+    """Use this for issuing warnings about naming and functionality changes."""
+    pass
+
+
+def warning(warning_type: Type[Warning], message: str = "", **kwargs):
     def actual_warning_decorator(func):
+        nonlocal message
+        if warning_type == ReplacementWarning and not message:
+            message = f"{func.__name__} is deprecated. Use {kwargs.get('new_name', '')} instead."
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             warnings.warn(message, warning_type)

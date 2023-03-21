@@ -69,8 +69,8 @@ class ScreenPart(arcade.Section):
         """ Draw this section """
         if self.selected:
             # Section is selected when mouse is within its boundaries
-            arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
-                                              self.bottom, arcade.color.GRAY)
+            arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
+                                              self.top, arcade.color.GRAY)
             arcade.draw_text(f'You\'re are on the {self.name}', self.left + 30,
                              self.top - 50, arcade.color.BLACK, 16)
 

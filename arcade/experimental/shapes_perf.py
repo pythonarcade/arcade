@@ -31,7 +31,7 @@ TITLE = "Shape Test"
 # [x] draw_triangle_outline
 # [x] draw_rectangle_outline
 # [x] draw_xywh_rectangle_outline
-# [x] draw_lrtb_rectangle_filled
+# [x] draw_lrbt_rectangle_filled
 # [x] draw_xywh_rectangle_filled
 # [x] draw_rectangle_filled
 # [x] draw_scaled_texture_rectangle
