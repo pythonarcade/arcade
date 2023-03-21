@@ -598,7 +598,7 @@ def create_text_sprite(
     a black box drawn in its place.
 
     :param str text: Initial text to display. Can be an empty string
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBALike color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
