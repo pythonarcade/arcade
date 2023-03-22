@@ -22,17 +22,24 @@ class MyView(arcade.View):
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout()
 
         # Create a button. We'll click on this to open our window.
-        # Add it v_box for positioning.
-        open_message_box_button = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Open", width=200
+        show_message_box_button = arcade.gui.widgets.buttons.UIFlatButton(
+            text="Show Message Box", width=300
         )
-        self.v_box.add(open_message_box_button)
+        # Create a label to show the user's choices
+        self.last_choice = arcade.gui.UILabel(
+            text="",  # temp workaround for an apparent UI bug
+            align="left", width=300
+        )
+
+        # Add both widgets to the v_box to center them
+        self.v_box.add(show_message_box_button)
+        self.v_box.add(self.last_choice)
 
         # Add a hook to run when we click on the button.
-        open_message_box_button.on_click = self.on_click_open
-        self.open_message_box_button = open_message_box_button
-        # Create a widget to hold the v_box widget, that will center the buttons
+        show_message_box_button.on_click = self.on_click_open
+        self.open_message_box_button = show_message_box_button
 
+        # Create a widget to hold the v_box widget, that will center the buttons
         ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
         ui_anchor_layout.add(child=self.v_box, anchor_x="center_x", anchor_y="center_y")
         self.ui.add(ui_anchor_layout)
@@ -44,15 +51,16 @@ class MyView(arcade.View):
             width=300,
             height=200,
             message_text=(
-                "You should have a look on the new GUI features "
-                "coming up with arcade 2.6!"
+                "Which option do you choose?"
             ),
             buttons=["Ok", "Cancel"],
         )
 
         @message_box.event("on_action")
         def on_message_box_close(e: UIOnActionEvent):
-            print(f"User pressed {e.action}.")
+            # Update the last_choice display
+            self.last_choice.text = f"User pressed {e.action}."
+            self.last_choice.fit_content()  # Important! Update the layout!
 
             # show open button and allow interaction again
             self.open_message_box_button.visible = True
@@ -74,9 +82,6 @@ class MyView(arcade.View):
     def on_draw(self):
         self.clear()
         self.ui.draw()
-
-    def on_key_release(self, symbol: int, modifiers: int):
-        print(self.open_message_box_button.rect)
 
 
 if __name__ == '__main__':
