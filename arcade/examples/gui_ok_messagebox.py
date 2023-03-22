@@ -27,7 +27,7 @@ class MyView(arcade.View):
         )
         # Create a label to show the user's choices
         self.last_choice = arcade.gui.UILabel(
-            text="",  # temp workaround for an apparent UI bug
+            text="",
             align="left", width=300
         )
 
