@@ -593,7 +593,7 @@ Then load the ladder layer in ``setup``:
 
 .. literalinclude:: pymunk_demo_platformer_12.py
     :caption: Add Ladders - Game Window Setup
-    :lines: 256-250
+    :lines: 256-260
     :emphasize-lines: 4
 
 Also, pass the ladder list to the player class:
