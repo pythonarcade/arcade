@@ -564,7 +564,7 @@ to track some more items:
     :caption: Add Ladders - PlayerSprite class
     :linenos:
     :pyobject: PlayerSprite.__init__
-    :emphasize-lines: 2, 33-36, 54-55
+    :emphasize-lines: 2, 33-36, 51-52
 
 Next, in our ``pymunk_moved`` method we need to change physics when we are
 on a ladder, and to update our player texture.
