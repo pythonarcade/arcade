@@ -383,7 +383,6 @@ __all__ = [
     'get_default_image',
     'hitbox',
     'experimental',
-    'isometric',
     'color',
     'csscolor',
     'key',
