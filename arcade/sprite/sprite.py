@@ -403,4 +403,3 @@ class Sprite(BasicSprite, PymunkMixin):
         or a custom one you made.
         """
         self.physics_engines.append(physics_engine)
-        self.physics_engines.append(physics_engine)
