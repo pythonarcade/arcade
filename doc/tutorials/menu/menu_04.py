@@ -1,5 +1,7 @@
 """
 Menu.
+
+Shows the usage of almost every gui widget, switching views and making a modal.
 """
 import arcade
 import arcade.gui
@@ -11,7 +13,7 @@ SCREEN_TITLE = "Making a Menu"
 
 
 class MainView(arcade.View):
-    """ Main application class. """
+    """This is the class where your normal game would go."""
 
     def __init__(self):
         super().__init__()
@@ -181,8 +183,6 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
 
 def main():
-    """ Main function """
-
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)

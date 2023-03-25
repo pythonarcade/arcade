@@ -1,5 +1,7 @@
 """
 Menu.
+
+Shows the usage of almost every gui widget, switching views and making a modal.
 """
 import arcade
 
@@ -26,8 +28,6 @@ class MainView(arcade.View):
 
 
 def main():
-    """ Main function """
-
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     main_view = MainView()
     window.show_view(main_view)
