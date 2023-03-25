@@ -65,10 +65,10 @@ class ModalSection(Section):
 
     def on_draw(self):
         # draw modal frame and button
-        arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
-                                          self.bottom, arcade.color.GRAY)
-        arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
-                                           self.bottom, arcade.color.WHITE)
+        arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
+                                          self.top, arcade.color.GRAY)
+        arcade.draw_lrbt_rectangle_outline(self.left, self.right, self.bottom,
+                                           self.top, arcade.color.WHITE)
         self.draw_button()
 
     def draw_button(self):
@@ -100,10 +100,10 @@ class InfoBar(Section):
 
     def on_draw(self):
         # draw game info
-        arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
-                                          self.bottom, COLOR_DARK)
-        arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
-                                           self.bottom, COLOR_LIGHT)
+        arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
+                                          self.top, COLOR_DARK)
+        arcade.draw_lrbt_rectangle_outline(self.left, self.right, self.bottom,
+                                           self.top, COLOR_LIGHT)
         arcade.draw_text(f'Ball bounce count: {self.ball.bounce_count}',
                          self.left + 20, self.top - self.height / 1.6,
                          COLOR_LIGHT)
@@ -158,10 +158,10 @@ class Panel(Section):
                          self.bottom + 95, COLOR_DARK, 10)
 
     def on_draw(self):
-        arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
-                                          self.bottom, COLOR_DARK)
-        arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
-                                           self.bottom, COLOR_LIGHT)
+        arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
+                                          self.top, COLOR_DARK)
+        arcade.draw_lrbt_rectangle_outline(self.left, self.right, self.bottom,
+                                           self.top, COLOR_LIGHT)
         self.draw_button_stop()
         self.draw_button_toggle_info_bar()
 
@@ -234,10 +234,10 @@ class Map(Section):
             self.ball.bounce_count += 1
 
     def on_draw(self):
-        arcade.draw_lrtb_rectangle_filled(self.left, self.right, self.top,
-                                          self.bottom, COLOR_DARK)
-        arcade.draw_lrtb_rectangle_outline(self.left, self.right, self.top,
-                                           self.bottom, COLOR_LIGHT)
+        arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
+                                          self.top, COLOR_DARK)
+        arcade.draw_lrbt_rectangle_outline(self.left, self.right, self.bottom,
+                                           self.top, COLOR_LIGHT)
         self.sprite_list.draw()
 
     def on_key_press(self, symbol: int, modifiers: int):

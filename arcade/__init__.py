@@ -126,7 +126,9 @@ from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
+from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -301,7 +303,9 @@ __all__ = [
     'draw_line_strip',
     'draw_lines',
     'draw_lrtb_rectangle_filled',
+    'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_outline',
     'draw_lrwh_rectangle_textured',
     'draw_parabola_filled',
     'draw_parabola_outline',

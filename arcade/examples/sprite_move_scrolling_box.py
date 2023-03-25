@@ -122,7 +122,7 @@ class MyGame(arcade.Window):
         right_boundary = self.width - VIEWPORT_MARGIN
         top_boundary = self.height - VIEWPORT_MARGIN
         bottom_boundary = VIEWPORT_MARGIN
-        arcade.draw_lrtb_rectangle_outline(left_boundary, right_boundary, top_boundary, bottom_boundary,
+        arcade.draw_lrbt_rectangle_outline(left_boundary, right_boundary, bottom_boundary, top_boundary,
                                            arcade.color.RED, 2)
 
     def on_key_press(self, key, modifiers):
