@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import arcade
 from arcade.experimental import Shadertoy
+
+CURRENT_DIR = Path(__file__).parent.resolve()
 
 # Derive an application window from Arcade's parent Window class
 class MyGame(arcade.Window):
@@ -9,7 +13,7 @@ class MyGame(arcade.Window):
         super().__init__(width=1920, height=1080)
 
         # Load a file and create a shader from it
-        shader_file_path = "circle_1.glsl"
+        shader_file_path = CURRENT_DIR / "circle_1.glsl"
         window_size = self.get_size()
         self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
 

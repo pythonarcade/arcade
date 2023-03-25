@@ -1,6 +1,9 @@
+from pathlib import Path
+
 import arcade
 from arcade.experimental import Shadertoy
 
+CURRENT_DIR = Path(__file__).parent.resolve()
 
 # Derive an application window from Arcade's parent Window class
 class MyGame(arcade.Window):
@@ -13,7 +16,7 @@ class MyGame(arcade.Window):
         self.time = 0.0
 
         # Load a file and create a shader from it
-        file_name = "explosion.glsl"
+        file_name = CURRENT_DIR / "explosion.glsl"
         self.shadertoy = Shadertoy(size=self.get_size(),
                                    main_source=open(file_name).read())
 

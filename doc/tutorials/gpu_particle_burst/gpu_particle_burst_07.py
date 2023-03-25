@@ -6,6 +6,8 @@ import time
 import math
 from array import array
 from dataclasses import dataclass
+from pathlib import Path
+
 import arcade
 import arcade.gl
 
@@ -14,6 +16,8 @@ SCREEN_HEIGHT = 768
 SCREEN_TITLE = "GPU Particle Explosion"
 
 PARTICLE_COUNT = 300
+
+CURRENT_DIR = Path(__file__).parent.resolve()
 
 MIN_FADE_TIME = 0.25
 MAX_FADE_TIME = 1.5
@@ -35,8 +39,8 @@ class MyWindow(arcade.Window):
 
         # Program to visualize the points
         self.program = self.ctx.load_program(
-            vertex_shader="vertex_shader_v4.glsl",
-            fragment_shader="fragment_shader.glsl",
+            vertex_shader=CURRENT_DIR / "vertex_shader_v4.glsl",
+            fragment_shader=CURRENT_DIR / "fragment_shader.glsl",
         )
 
         self.ctx.enable_only(self.ctx.BLEND)

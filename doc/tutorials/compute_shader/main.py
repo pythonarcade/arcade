@@ -3,6 +3,7 @@ Compute shader with buffers
 """
 import random
 from array import array
+from pathlib import Path
 
 import arcade
 from arcade.gl import BufferDescription
@@ -15,6 +16,8 @@ WINDOW_HEIGHT = 1300
 GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
+
+CURRENT_DIR = Path(__file__).parent.resolve()
 
 
 class MyWindow(arcade.Window):
@@ -68,13 +71,13 @@ class MyWindow(arcade.Window):
         # --- Create shaders
 
         # Load in the shader source code
-        file = open("shaders/compute_shader.glsl")
+        file = open(CURRENT_DIR / "shaders/compute_shader.glsl")
         compute_shader_source = file.read()
-        file = open("shaders/vertex_shader.glsl")
+        file = open(CURRENT_DIR / "shaders/vertex_shader.glsl")
         vertex_shader_source = file.read()
-        file = open("shaders/fragment_shader.glsl")
+        file = open(CURRENT_DIR / "shaders/fragment_shader.glsl")
         fragment_shader_source = file.read()
-        file = open("shaders/geometry_shader.glsl")
+        file = open(CURRENT_DIR / "shaders/geometry_shader.glsl")
         geometry_shader_source = file.read()
 
         # Create our compute shader.

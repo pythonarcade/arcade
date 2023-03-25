@@ -2,7 +2,7 @@ from pathlib import Path
 import arcade
 from arcade.experimental import BloomFilter
 import random
-from arcade.color import *
+from arcade.color import RED, YELLOW, ORANGE, GREEN, BLUEBERRY, AMETHYST
 
 
 # Do the math to figure out our screen dimensions

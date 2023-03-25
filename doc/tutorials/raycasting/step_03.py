@@ -19,6 +19,8 @@ BOMB_COUNT = 70
 PLAYING_FIELD_WIDTH = 1600
 PLAYING_FIELD_HEIGHT = 1600
 
+CURRENT_DIR = Path(__file__).parent.resolve()
+
 
 class MyGame(arcade.Window):
 
@@ -43,7 +45,7 @@ class MyGame(arcade.Window):
 
     def load_shader(self):
         # Where is the shader file? Must be specified as a path.
-        shader_file_path = Path("step_03.glsl")
+        shader_file_path = CURRENT_DIR / "step_03.glsl"
 
         # Size of the window
         window_size = self.get_size()
