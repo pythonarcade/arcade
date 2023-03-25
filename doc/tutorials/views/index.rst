@@ -2,7 +2,7 @@
 
 .. _view-tutorial:
 
-Basic Non-Game Screens with Views
+Using Views for Start/End Screens
 =================================
 
 .. image:: screen-switch.svg
