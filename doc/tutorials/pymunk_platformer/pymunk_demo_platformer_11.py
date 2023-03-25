@@ -8,7 +8,7 @@ import arcade
 SCREEN_TITLE = "PyMunk Platformer"
 
 # How big are our image tiles?
-SPRITE_IMAGE_SIZE = 96
+SPRITE_IMAGE_SIZE = 128
 
 # Scale sprites up or down
 SPRITE_SCALING_PLAYER = 0.5
@@ -224,9 +224,7 @@ class GameWindow(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Moving Sprite
-        self.moving_sprites_list = arcade.tilemap.process_layer(tile_map,
-                                                                'Moving Platforms',
-                                                                SPRITE_SCALING_TILES)
+        self.moving_sprites_list = tile_map.sprite_lists['Moving Platforms']
 
         # --- Pymunk Physics Engine Setup ---
 

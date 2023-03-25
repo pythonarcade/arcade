@@ -503,7 +503,7 @@ In the ``setup`` method, load in the sprite list from the tmx layer.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Adding the sprite list
-    :lines: 227-229
+    :lines: 227
 
 Also in the ``setup`` method, we need to add these sprites to the physics engine.
 In this case we'll add the sprites as ``KINEMATIC``. Static sprites don't move.
@@ -512,7 +512,7 @@ Kinematic sprites do move, but aren't affected by other objects.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Loading the sprites
-    :lines: 297-299
+    :lines: 294-296
 
 We need to draw the moving platform sprites. After adding this line, you should
 be able to run the program and see the sprites from this layer, even if they don't
@@ -544,7 +544,7 @@ so we'll convert.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Moving the sprites
-    :lines: 406-430
+    :lines: 404-428
 
 * :ref:`pymunk_demo_platformer_11`
 * :ref:`pymunk_demo_platformer_11_diff`
