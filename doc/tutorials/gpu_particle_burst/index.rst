@@ -176,7 +176,7 @@ Constants
 Then we need to create a constant that contains the number of particles to create:
 
 .. literalinclude:: gpu_particle_burst_03.py
-    :lines: 15
+    :lines: 19
 
 Burst Dataclass
 ~~~~~~~~~~~~~~~
@@ -357,7 +357,7 @@ First, let's add a couple constants to control the minimum and maximum tile to
 fade a particle:
 
 .. literalinclude:: gpu_particle_burst_07.py
-    :lines: 18-19
+    :lines: 22-23
 
 Update Init
 ~~~~~~~~~~~
