@@ -48,7 +48,7 @@ This program will load a GLSL program and display it. We'll write our shader in 
 .. literalinclude:: shadertoy_demo_2.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 2, 11-14, 18
+    :emphasize-lines: 4, 15-19, 22
 
 .. note::
 
@@ -155,7 +155,7 @@ We can also change our color to orange.
     :caption: Adjusts fade speed
     :language: glsl
     :linenos:
-    :emphasize-lines: 15-16, 18-19
+    :emphasize-lines: 19-20, 22-23
 
 .. image:: circle_4.png
    :width: 60%
@@ -171,7 +171,7 @@ look better.
     :caption: Tone mapping
     :language: glsl
     :linenos:
-    :emphasize-lines: 21-22
+    :emphasize-lines: 25-26
 
 .. image:: circle_5.png
    :width: 60%
@@ -191,7 +191,7 @@ Python program:
 .. literalinclude:: shadertoy_demo_3.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 17-19
+    :emphasize-lines: 21-23
 
 Then we can use those uniforms in our shader:
 
@@ -199,7 +199,7 @@ Then we can use those uniforms in our shader:
     :caption: Glow follows mouse, and color can be changed.
     :language: glsl
     :linenos:
-    :emphasize-lines: 1-2, 8, 11, 23
+    :emphasize-lines: 3-4, 12, 15, 27
 
 .. image:: circle_6.png
    :width: 60%
