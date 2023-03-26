@@ -1,0 +1,1 @@
+magick montage *.png -geometry +0+0 -background none spritesheet.png
