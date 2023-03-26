@@ -122,6 +122,12 @@ class Window(pyglet.window.Window):
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
+                    depth_size=24,
+                    stencil_size=8,
+                    red_size=8,
+                    green_size=8,
+                    blue_size=8,
+                    alpha_size=8,
                 )
                 display = pyglet.canvas.get_display()
                 screen = display.get_default_screen()
@@ -138,10 +144,24 @@ class Window(pyglet.window.Window):
                 minor_version=gl_version[1],
                 opengl_api=gl_api,
                 double_buffer=True,
+                depth_size=24,
+                stencil_size=8,
+                red_size=8,
+                green_size=8,
+                blue_size=8,
+                alpha_size=8,
             )
         try:
-            super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
+            super().__init__(
+                width=width,
+                height=height,
+                caption=title,
+                resizable=resizable,
+                config=config,
+                vsync=vsync,
+                visible=visible,
+                style=style,
+            )
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
