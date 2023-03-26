@@ -1,46 +1,64 @@
 from pathlib import Path
-from typing import Dict, Union
-from arcade.resources import shaders  # noqa
+from typing import Dict, List,Union
+# from arcade.resources import shaders  # noqa
 
 #: The absolute path to this directory
-RESOURCE_PATH = Path(__file__).parent.resolve()
+SYSTEM_PATH = Path(__file__).parent.resolve() / "system"
+ASSET_PATH = Path(__file__).parent.resolve() / "assets"
 
-resource_handles: Dict[str, Path] = {
-    "resources": RESOURCE_PATH
+resource_handles: Dict[str, List[Path]] = {
+    "resources": [SYSTEM_PATH, ASSET_PATH],
+    "system": [SYSTEM_PATH],
 }
 
 
-def resolve_resource_path(path: Union[str, Path]) -> Path:
-    """Resolves a resource path and returns a Path object.
+def resolve(path: Union[str, Path]) -> Path:
+    """
+    Resolves a resource path and returns a Path object.
 
     :param Union[str, Path] path: A Path or string
     """
-    # Convert to a Path object and resolve :resources:
+    # Convert to a Path object and resolve resource handle
     if isinstance(path, str):
         path = path.strip()  # Allow for silly mistakes with extra spaces
+
+        # If the path starts with a colon, it's a resource handle
         if path.startswith(':'):
             path = path[1:]
             handle, resource = path.split(":")
             while resource.startswith('/') or resource.startswith('\\'):
                 resource = resource[1:]
 
-            try:
-                handle_path = resource_handles[handle]
-            except KeyError:
-                raise KeyError(f"Unknown resource handle \"{handle}\"")
+            # Iterate through the paths in reverse order to find the first
+            # match. This allows for overriding of resources.
+            paths = get_resource_handle(handle)
+            for handle_path in reversed(paths):
+                path = handle_path / resource
+                if path.exists():
+                    break
+            else:
+                searched_paths = '\n'.join(f"-> {p}" for p in reversed(paths))
+                raise FileNotFoundError((
+                    f"Cannot locate resource '{resource}' using handle "
+                    f"'{handle}' in any of the following paths:\n"
+                    f"{searched_paths}"
+                ))
 
             # Always convert into a Path object
             path = Path(handle_path / resource)
         else:
             path = Path(path)
 
+    # Always return absolute paths
     # Check for the existence of the file and provide useful feedback to
     # avoid deep stack trace into pathlib
-    if not path.exists():
+    try:
+        # If the path is absolute, just return it. We assume it's valid and resolved.
+        if path.is_absolute():
+            return path
+        return path.resolve(strict=True)
+    except FileNotFoundError:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
-
-    # Always return absolute paths
-    return path.resolve()
 
 
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
@@ -56,16 +74,30 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     else:
         raise TypeError("Path for resource handle must be a string or Path object")
 
-    if not path.is_absolute():
-        raise RuntimeError(
-            "Path for resource handle must be absolute. "
-            "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
-        )
+    # NOTE: This have no effect
+    # if not path.is_absolute():
+    #     raise RuntimeError(
+    #         "Path for resource handle must be absolute. "
+    #         "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
+    #     )
 
     if not path.exists():
         raise FileNotFoundError(f"Cannot locate location for handle: {path}")
 
-    resource_handles[handle] = path
+    resource_handles.setdefault(handle, []).append(path)
+
+
+def get_resource_handle(handle: str) -> List[Path]:
+    """
+    Returns the paths for a resource handle.
+    This list an be modified to add or remove paths.
+
+    :param List[Path] paths: The list of paths for this handle
+    """
+    try:
+        return resource_handles[handle]
+    except KeyError:
+        raise KeyError(f"Unknown resource handle \"{handle}\"")
 
 
 # RESOURCE LIST : (Truncate file from here if auto generating resource list)

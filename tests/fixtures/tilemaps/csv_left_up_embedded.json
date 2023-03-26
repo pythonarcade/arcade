@@ -38,19 +38,19 @@
          "tiles":[
                 {
                  "id":0,
-                 "image":"..\/..\/..\/arcade\/resources\/images\/tiles\/boxCrate.png",
+                 "image":"..\/..\/..\/arcade\/resources\/assets\/images\/tiles\/boxCrate.png",
                  "imageheight":128,
                  "imagewidth":128
                 }, 
                 {
                  "id":1,
-                 "image":"..\/..\/..\/arcade\/resources\/images\/tiles\/dirtCenter.png",
+                 "image":"..\/..\/..\/arcade\/resources\/assets\/images\/tiles\/dirtCenter.png",
                  "imageheight":128,
                  "imagewidth":128
                 }, 
                 {
                  "id":2,
-                 "image":"..\/..\/..\/arcade\/resources\/images\/tiles\/grassCenter.png",
+                 "image":"..\/..\/..\/arcade\/resources\/assets\/images\/tiles\/grassCenter.png",
                  "imageheight":128,
                  "imagewidth":128
                 }],

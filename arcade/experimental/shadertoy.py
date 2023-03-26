@@ -319,8 +319,8 @@ class ShadertoyBase:
         Load shader templates, injects main function,
         create program and configures the program.
         """
-        vs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_vs.glsl")
-        fs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_fs.glsl")
+        vs_path = arcade.resources.resolve(":resources:shaders/shadertoy/base_vs.glsl")
+        fs_path = arcade.resources.resolve(":resources:shaders/shadertoy/base_fs.glsl")
         with open(vs_path) as fd:
             vs_source = fd.read()
         with open(fs_path) as fd:
@@ -480,7 +480,7 @@ class Shadertoy(ShadertoyBase):
         :param Tuple[int,int] size: Size of shadertoy in pixels
         :param str path: Path to mainImage shader file
         """
-        path = arcade.resources.resolve_resource_path(path)
+        path = arcade.resources.resolve(path)
         with open(path) as fd:
             source = fd.read()
         return cls(size, source)
@@ -501,7 +501,7 @@ class Shadertoy(ShadertoyBase):
 
         :param str path: Path to shader source
         """
-        path = arcade.resources.resolve_resource_path(path)
+        path = arcade.resources.resolve(path)
         with open(path) as fd:
             source = fd.read()
         return ShadertoyBuffer(self._size, source)

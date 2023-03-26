@@ -380,27 +380,27 @@ class ArcadeContext(Context):
                                           Based on these settings the `transform()` method will accept a single
                                           buffer or a list of buffer.
         """
-        from arcade.resources import resolve_resource_path
+        from arcade.resources import resolve
 
-        vertex_shader_src = resolve_resource_path(vertex_shader).read_text()
+        vertex_shader_src = resolve(vertex_shader).read_text()
         fragment_shader_src = None
         geometry_shader_src = None
         tess_control_src = None
         tess_evaluation_src = None
 
-        common_src = [resolve_resource_path(c).read_text() for c in common]
+        common_src = [resolve(c).read_text() for c in common]
 
         if fragment_shader:
-            fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
+            fragment_shader_src = resolve(fragment_shader).read_text()
             fragment_shader_src = self.shader_inc(fragment_shader_src)
 
         if geometry_shader:
-            geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
+            geometry_shader_src = resolve(geometry_shader).read_text()
             geometry_shader_src = self.shader_inc(geometry_shader_src)
 
         if tess_control_shader and tess_evaluation_shader:
-            tess_control_src = resolve_resource_path(tess_control_shader).read_text()
-            tess_evaluation_src = resolve_resource_path(
+            tess_control_src = resolve(tess_control_shader).read_text()
+            tess_evaluation_src = resolve(
                 tess_evaluation_shader
             ).read_text()
             tess_control_src = self.shader_inc(tess_control_src)
@@ -430,9 +430,9 @@ class ArcadeContext(Context):
         :param Union[str,pathlib.Path] path: Path to texture
         :param Iterable[Union[str,pathlib.Path]] common: Common source injected into compute shader
         """
-        from arcade.resources import resolve_resource_path
-        path = resolve_resource_path(path)
-        common_src = [resolve_resource_path(c).read_text() for c in common]
+        from arcade.resources import resolve
+        path = resolve(path)
+        common_src = [resolve(c).read_text() for c in common]
         return self.compute_shader(
             source=self.shader_inc(path.read_text()),
             common=common_src,
@@ -460,9 +460,9 @@ class ArcadeContext(Context):
         :param bool flip: Flips the image upside down
         :param bool build_mipmaps: Build mipmaps for the texture
         """
-        from arcade.resources import resolve_resource_path
+        from arcade.resources import resolve
 
-        path = resolve_resource_path(path)
+        path = resolve(path)
 
         image = Image.open(str(path))
 
@@ -493,12 +493,12 @@ class ArcadeContext(Context):
 
         :param str source: Shader
         """
-        from arcade.resources import resolve_resource_path
+        from arcade.resources import resolve
         lines = source.splitlines()
         for i, line in enumerate(lines):
             line = line.strip()
             if line.startswith("#include"):
-                path = resolve_resource_path(line.split()[1].replace('"', ""))
+                path = resolve(line.split()[1].replace('"', ""))
                 lines[i] = path.read_text()
         return "\n".join(lines)
 

@@ -7,7 +7,7 @@ import PIL.ImageOps
 import PIL.ImageDraw
 
 from arcade.types import RectList
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
 from arcade import cache as _cache
 from arcade import hitbox
@@ -42,7 +42,7 @@ def load_texture(
     :raises: ValueError
     """
     LOG.info("load_texture: %s ", file_path)
-    file_path = resolve_resource_path(file_path)
+    file_path = resolve(file_path)
     crop = (x, y, width, height)
     return _load_or_get_texture(
         file_path,
@@ -206,7 +206,7 @@ def load_textures(
     :raises: ValueError
     """
     LOG.info("load_textures: %s ", file_name)
-    file_name = resolve_resource_path(file_name)
+    file_name = resolve(file_name)
     file_name_str = str(file_name)
     hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
     image_cache_name = Texture.create_image_cache_name(file_name_str)
@@ -214,7 +214,7 @@ def load_textures(
     # Do we have the image in the cache?
     image_data = _cache.image_data_cache.get(image_cache_name)
     if not image_data:
-        image_data = ImageData(PIL.Image.open(resolve_resource_path(file_name)))
+        image_data = ImageData(PIL.Image.open(resolve(file_name)))
         _cache.image_data_cache.put(image_cache_name, image_data)
     image = image_data.image
 
@@ -272,7 +272,7 @@ def load_spritesheet(
     texture_list = []
 
     # TODO: Support caching?
-    file_name = resolve_resource_path(file_name)
+    file_name = resolve(file_name)
     source_image = PIL.Image.open(file_name).convert("RGBA")
 
     for sprite_no in range(count):

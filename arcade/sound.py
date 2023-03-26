@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from typing import Optional, Union
 
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 import pyglet
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
@@ -25,7 +25,7 @@ class Sound:
 
     def __init__(self, file_name: Union[str, Path], streaming: bool = False):
         self.file_name: str = ""
-        file_name = resolve_resource_path(file_name)
+        file_name = resolve(file_name)
 
         if not Path(file_name).is_file():
             raise FileNotFoundError(
