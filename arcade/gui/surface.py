@@ -44,9 +44,9 @@ class Surface:
 
         self._geometry = self.ctx.geometry()
         self._program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/gui/surface_vs.glsl",
-            geometry_shader=":resources:shaders/gui/surface_gs.glsl",
-            fragment_shader=":resources:shaders/gui/surface_fs.glsl",
+            vertex_shader=":system:shaders/gui/surface_vs.glsl",
+            geometry_shader=":system:shaders/gui/surface_gs.glsl",
+            fragment_shader=":system:shaders/gui/surface_fs.glsl",
         )
 
     @property

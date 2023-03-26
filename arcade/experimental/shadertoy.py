@@ -319,8 +319,8 @@ class ShadertoyBase:
         Load shader templates, injects main function,
         create program and configures the program.
         """
-        vs_path = arcade.resources.resolve(":resources:shaders/shadertoy/base_vs.glsl")
-        fs_path = arcade.resources.resolve(":resources:shaders/shadertoy/base_fs.glsl")
+        vs_path = arcade.resources.resolve(":system:shaders/shadertoy/base_vs.glsl")
+        fs_path = arcade.resources.resolve(":system:shaders/shadertoy/base_fs.glsl")
         with open(vs_path) as fd:
             vs_source = fd.read()
         with open(fs_path) as fd:

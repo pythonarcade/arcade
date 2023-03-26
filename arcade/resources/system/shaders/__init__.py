@@ -1,7 +1,7 @@
 
 class vertex:
-    default_projection = ":resources:shaders/texture_default_projection_vs.glsl"
+    default_projection = ":system:shaders/texture_default_projection_vs.glsl"
 
 
 class fragment:
-    texture = ":resources:shaders/texture_fs.glsl"
+    texture = ":system:shaders/texture_fs.glsl"
