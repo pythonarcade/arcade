@@ -6,7 +6,7 @@ from typing import Dict, List,Union
 SYSTEM_PATH = Path(__file__).parent.resolve() / "system"
 ASSET_PATH = Path(__file__).parent.resolve() / "assets"
 
-resource_handles: Dict[str, List[Path]] = {
+handles: Dict[str, List[Path]] = {
     "resources": [SYSTEM_PATH, ASSET_PATH],
     "system": [SYSTEM_PATH],
 }
@@ -14,8 +14,13 @@ resource_handles: Dict[str, List[Path]] = {
 
 def resolve(path: Union[str, Path]) -> Path:
     """
-    Resolves a resource path and returns a Path object.
+    Attempts to resolve a path to a resource including resource handles.
 
+    Example::
+
+        resolve(":resources:images/cards/cardBack_blue1.png")
+        resolve(":my_handle:music/combat.wav")
+        
     :param Union[str, Path] path: A Path or string
     """
     # Convert to a Path object and resolve resource handle
@@ -31,7 +36,7 @@ def resolve(path: Union[str, Path]) -> Path:
 
             # Iterate through the paths in reverse order to find the first
             # match. This allows for overriding of resources.
-            paths = get_resource_handle(handle)
+            paths = get_resource_handle_paths(handle)
             for handle_path in reversed(paths):
                 path = handle_path / resource
                 if path.exists():
@@ -62,40 +67,42 @@ def resolve(path: Union[str, Path]) -> Path:
 
 
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
-    """Adds a new handle to built-in resources
+    """
+    Adds a new handle to built-in resources
 
     :param str handle: The name of the handle
     :param Union[str, Path] path: The location the handle points to
     """
     if isinstance(path, str):
-        path = Path(path).resolve()
+        path = Path(path)
     elif isinstance(path, Path):
-        path = path.resolve()
+        path = path
     else:
         raise TypeError("Path for resource handle must be a string or Path object")
 
-    # NOTE: This have no effect
-    # if not path.is_absolute():
-    #     raise RuntimeError(
-    #         "Path for resource handle must be absolute. "
-    #         "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
-    #     )
+    if not path.is_absolute():
+        raise RuntimeError(
+            f"Path for resource handle must be absolute, not relative ('{path}'). "
+            "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
+        )
 
     if not path.exists():
-        raise FileNotFoundError(f"Cannot locate location for handle: {path}")
+        raise FileNotFoundError(f"Directory '{path}' for handle '{handle}' does not exist")
 
-    resource_handles.setdefault(handle, []).append(path)
+    paths = handles.setdefault(handle, [])
+    # Don't allow duplicate paths
+    if path not in paths:
+        paths.append(path)
 
 
-def get_resource_handle(handle: str) -> List[Path]:
+def get_resource_handle_paths(handle: str) -> List[Path]:
     """
     Returns the paths for a resource handle.
-    This list an be modified to add or remove paths.
 
-    :param List[Path] paths: The list of paths for this handle
+    :param str handle: The name of the handle
     """
     try:
-        return resource_handles[handle]
+        return handles[handle]
     except KeyError:
         raise KeyError(f"Unknown resource handle \"{handle}\"")
 
