@@ -64,59 +64,59 @@ class ArcadeContext(Context):
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea
         self.line_vertex_shader: Program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/line/line_vertex_shader_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/line/line_vertex_shader_fs.glsl",
+            vertex_shader=":system:shaders/shapes/line/line_vertex_shader_vs.glsl",
+            fragment_shader=":system:shaders/shapes/line/line_vertex_shader_fs.glsl",
         )
         self.line_generic_with_colors_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/line/line_generic_with_colors_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/line/line_generic_with_colors_fs.glsl",
+            vertex_shader=":system:shaders/shapes/line/line_generic_with_colors_vs.glsl",
+            fragment_shader=":system:shaders/shapes/line/line_generic_with_colors_fs.glsl",
         )
         self.shape_element_list_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/shape_element_list_vs.glsl",
-            fragment_shader=":resources:shaders/shape_element_list_fs.glsl",
+            vertex_shader=":system:shaders/shape_element_list_vs.glsl",
+            fragment_shader=":system:shaders/shape_element_list_fs.glsl",
         )
         self.sprite_list_program_no_cull: Program = self.load_program(
-            vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
-            fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
+            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
         self.sprite_list_program_no_cull["sprite_texture"] = 0
         self.sprite_list_program_no_cull["uv_texture"] = 1
 
         self.sprite_list_program_cull: Program = self.load_program(
-            vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
-            fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
+            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+            geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
 
         # Shapes
         self.shape_line_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/line/unbuffered_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":resources:shaders/shapes/line/unbuffered_geo.glsl",
+            vertex_shader=":system:shaders/shapes/line/unbuffered_vs.glsl",
+            fragment_shader=":system:shaders/shapes/line/unbuffered_fs.glsl",
+            geometry_shader=":system:shaders/shapes/line/unbuffered_geo.glsl",
         )
         self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+            vertex_shader=":system:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+            fragment_shader=":system:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+            geometry_shader=":system:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
         )
         self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":resources:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
+            vertex_shader=":system:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
+            fragment_shader=":system:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
+            geometry_shader=":system:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
-            vertex_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
-            fragment_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":resources:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+            vertex_shader=":system:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+            fragment_shader=":system:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+            geometry_shader=":system:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
         # Atlas shaders
         self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":resources:shaders/atlas/resize_vs.glsl",
-            geometry_shader=":resources:shaders/atlas/resize_gs.glsl",
-            fragment_shader=":resources:shaders/atlas/resize_fs.glsl",
+            vertex_shader=":system:shaders/atlas/resize_vs.glsl",
+            geometry_shader=":system:shaders/atlas/resize_gs.glsl",
+            fragment_shader=":system:shaders/atlas/resize_fs.glsl",
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
@@ -125,8 +125,8 @@ class ArcadeContext(Context):
 
         # SpriteList collision resources
         self.collision_detection_program = self.load_program(
-            vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",
-            geometry_shader=":resources:shaders/collision/col_trans_gs.glsl",
+            vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
+            geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
         )
         self.collision_buffer = self.buffer(reserve=1024 * 4)
         self.collision_query = self.query(samples=False, time=False, primitives=True)
@@ -349,12 +349,12 @@ class ArcadeContext(Context):
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
-        """Create a new program given a file names that contain the vertex shader and
+        """
+        Create a new program given a file names that contain the vertex shader and
         fragment shader. Note that fragment and geometry shader are optional for
         when transform shaders are loaded.
 
-        This method also supports the ``:resources:`` prefix.
-        It's recommended to use absolute paths, but not required.
+        This method also supports the resource handles.
 
         Example::
 
