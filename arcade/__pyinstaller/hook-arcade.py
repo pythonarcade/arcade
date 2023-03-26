@@ -20,8 +20,8 @@ arcade_path = Path(arcade.__file__).parent
 
 datas = [
     (
-        arcade_path / "resources",
-        "./arcade/resources",
+        arcade_path / "resources" / "system",
+        "./arcade/resources/system",
     ),
 ]
 
