@@ -2,41 +2,40 @@
 Generates arcade/resources/__init__.py by looking for
 media types in arcade/resources.
 """
-
-import pathlib
+from pathlib import Path
 from typing import List
 
-MEDIA_TYPES = ['.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg', '.json']
+MEDIA_TYPES = {'.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg', '.json'}
+RESOURCE_ROOT = Path(__file__).parent.parent / "arcade/resources"
 
 
 def main() -> None:
     """Creates __init__.py in the arcade/resources directory."""
-    parent = pathlib.Path(__file__).parent.parent.resolve() / "arcade/resources"
-
     used_variable_names: List[str] = []
 
-    with open(parent.as_posix() + "/__init__.py", 'w') as f:
-        for item in parent.glob('**/*'):
-            if item.suffix in MEDIA_TYPES:
+    with open(RESOURCE_ROOT / "/__init__.py", 'w') as f:
+        for item in RESOURCE_ROOT.glob('**/*'):
+            if item.suffix not in MEDIA_TYPES:
+                continue
 
-                relative_path = item.relative_to(parent)
-                stem = item.stem
-                pythonic_stem = make_camel_case_pythonic(stem)
+            relative_path = item.relative_to(RESOURCE_ROOT)
+            stem = item.stem
+            pythonic_stem = make_camel_case_pythonic(stem)
 
-                prefix = get_prefix(relative_path)
+            prefix = get_prefix(relative_path)
 
-                variable_name = f"{prefix}_{pythonic_stem}"
+            variable_name = f"{prefix}_{pythonic_stem}"
 
-                if variable_name in used_variable_names:
-                    print(f"Warning: There is a duplicate resource variable name ({variable_name}).")
-                used_variable_names.append(variable_name)
+            if variable_name in used_variable_names:
+                print(f"Warning: There is a duplicate resource variable name ({variable_name}).")
+            used_variable_names.append(variable_name)
 
-                resource_path = ":resources:/" + relative_path.as_posix()
+            resource_path = ":resources:" + relative_path.as_posix()
 
-                f.write(f"{variable_name} = '{resource_path}'\n")
+            f.write(f"{variable_name} = '{resource_path}'\n")
 
 
-def get_prefix(path: pathlib.Path) -> str:
+def get_prefix(path: Path) -> str:
     path_str = path.as_posix()
     if "gui" in path_str:
         return "gui"
@@ -66,9 +65,9 @@ def test_functions():
     assert make_camel_case_pythonic("Stone_E_") == "stone_e_"
     assert make_camel_case_pythonic("Stone1") == "stone1"
 
-    path = pathlib.Path('/testing/gui/abc')
+    path = Path('/testing/gui/abc')
     assert get_prefix(path) == "gui"
-    path = pathlib.Path('sounds/123')
+    path = Path('sounds/123')
     assert get_prefix(path) == "sound"
 
 
