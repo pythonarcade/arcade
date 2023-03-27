@@ -41,10 +41,7 @@ class ShadertoyVideo(arcade.View):
                 }
             """,
         )
-        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
-        if not issubclass(type(path), str):
-            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
-        self.video = cv2.VideoCapture(path)
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),

@@ -14,16 +14,17 @@ from arcade.gl.geometry import quad_2d_fs
 import cv2  # type: ignore
 
 
-class CV2Player(arcade.View):
+class VideoPlayerCV2:
     """
-    Can be used to add effects like rain to the background of the game.
-    Make sure to inherit this view and call super for `__init__`, `on_draw` and `on_update`.
+    Primitive video player for arcade with cv2.
+    Can be used to add effects like rain in the background.
+
+    :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: str):
-        super().__init__()
+    def __init__(self, path: str, ctx: arcade.ArcadeContext):
         self.quad_fs = quad_2d_fs()
-        self.program = self.window.ctx.program(
+        self.program = ctx.program(
             vertex_shader="""
             #version 330
 
@@ -48,18 +49,18 @@ class CV2Player(arcade.View):
             }
             """,
         )
+
         # Configure videoFrame sampler to read from texture channel 0
         self.program["videoFrame"] = 0
 
-        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
-        if not issubclass(type(path), str):
-            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
-        self.video = cv2.VideoCapture(path)
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
+
         # Query video size
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         )
+
         # Get the framerate of the video
         self.video_frame_rate = self.video.get(cv2.CAP_PROP_FPS)
         # Keep track of the current frame and current time
@@ -68,22 +69,33 @@ class CV2Player(arcade.View):
         self.time: float = 0.0
 
         # Create and configure the OpenGL texture for the video
-        self.texture = self.window.ctx.texture((width, height), components=3)
+        self.texture = ctx.texture((width, height), components=3)
         # Swap the components in the texture because cv2 returns BGR data
         # Leave the alpha component as always 1
         self.texture.swizzle = "BGR1"
-        # Change the window size to the video size
-        self.window.set_size(width, height)
 
-    def on_draw(self):
-        self.clear()
+
+    @property
+    def width(self):
+        """Video width."""
+        return int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+
+    @property
+    def height(self):
+        """Video height."""
+        return int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+
+    def draw(self):
+        """Call this in `on_draw`."""
 
         # Bind video texture to texture channel 0 
         self.texture.use(unit=0)
         # Draw a fullscreen quad using our texture program
         self.quad_fs.render(self.program)
 
-    def on_update(self, delta_time: float):
+    def update(self, delta_time):
+        """Move the frame forward."""
         self.time += delta_time
 
         # Do we need to read a new frame?
@@ -94,3 +106,32 @@ class CV2Player(arcade.View):
             exists, frame = self.video.read()
             if exists:
                 self.texture.write(frame)
+
+
+class CV2PlayerView(arcade.View):
+    """
+    Can be used to add effects like rain to the background of the game.
+    Make sure to inherit this view and call super for `__init__`, `on_draw` and `on_update`.
+    """
+
+    def __init__(self, path: str):
+        super().__init__()
+
+        self.video_player = VideoPlayerCV2(path, self.window.ctx)
+        
+        # Change the window size to the video size
+        self.window.set_size(self.video_player.width, self.video_player.height)
+
+    def on_draw(self):
+        self.clear()
+
+        self.video_player.draw()
+
+    def on_update(self, delta_time: float):
+        self.video_player.update(delta_time)
+
+
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "Video Player")
+    window.show_view(CV2PlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
+    window.run()

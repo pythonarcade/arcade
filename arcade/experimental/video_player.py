@@ -4,41 +4,47 @@ Experimental video player using pyglet.
 This requires that you have ffmpeg installed
 and you might need to tell pyglet where it's located.
 """
+from pathlib import Path
+from typing import Union
+
 # import sys
 import pyglet
 import arcade
 
 
-class VideoPlayer(arcade.View):
+class VideoPlayer:
     """
-    Can be used to add effects like rain to the background of the game.
-    Make sure to inherit this view and call super for `__init__` and `on_draw`.
+    Primitive video player for arcade.
+    Can be used to add effects like rain in the background.
+
+    :param path: Path of the video that is to be played.
+    :param loop: Pass `True` to make the video loop.
     """
 
-    def __init__(self, path: str) -> None:
-        super().__init__()
-
+    def __init__(self, path: Union[str, Path], loop=False):
         self.player = pyglet.media.Player()
-        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
-        if not issubclass(type(path), str):
-            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
-        self.player.queue(pyglet.media.load(path))
+        self.player.loop = loop
+        self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))
         self.player.play()
 
-    def on_draw(self):
-        self.clear()
-        # video_width, video_height = self.get_video_size()
-        # print((video_width, video_height), self.player.source.duration, self.player.time)
 
-        with self.ctx.pyglet_rendering():
-            self.ctx.disable(self.ctx.BLEND)
+    def draw(self, ctx: arcade.ArcadeContext, width, height):
+        """
+        Call this in `on_draw`.
+        
+        :param ctx: Pass arcade.Window.ctx as argument.
+        :param width: Width of the window.
+        :param height: Height of the window.
+        """
+        with ctx.pyglet_rendering():
+            ctx.disable(ctx.BLEND)
             video_texture = self.player.texture
             if video_texture:
                 video_texture.blit(
                     0,
                     0,
-                    width=self.width,
-                    height=self.height,
+                    width=width,
+                    height=height,
                 )
 
     def get_video_size(self):
@@ -52,3 +58,22 @@ class VideoPlayer(arcade.View):
         elif video_format.sample_aspect < 1:
             height /= video_format.sample_aspect
         return width, height
+
+
+class VideoPlayerView(arcade.View):
+
+    def __init__(self, path) -> None:
+        super().__init__()
+
+        self.video_player = VideoPlayer(path)
+
+    def on_draw(self):
+        self.clear()
+
+        self.video_player.draw(self.window.ctx, self.window.width, self.window.height)
+
+
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "Video Player")
+    window.show_view(VideoPlayerView("/home/user/path/to/project/assets/rain.mp4"))
+    window.run()
