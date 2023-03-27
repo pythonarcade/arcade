@@ -22,7 +22,7 @@ class VideoPlayerCV2:
     :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: str, ctx: arcade.ArcadeContext):
+    def __init__(self, path: Union[str, Path], ctx: arcade.ArcadeContext):
         self.quad_fs = quad_2d_fs()
         self.program = ctx.program(
             vertex_shader="""
