@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import Dict, List,Union
-# from arcade.resources import shaders  # noqa
 
 #: The absolute path to this directory
 SYSTEM_PATH = Path(__file__).parent.resolve() / "system"
