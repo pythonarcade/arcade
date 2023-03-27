@@ -16,6 +16,12 @@ def resolve(path: Union[str, Path]) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
+    If the path is a string it tries to resolve it as a resource handle
+    or convert it to a Path object.
+
+    If the path is a Path object it will ``Path.resolve()`` it
+    unless it's not absolute and return it.
+
     Example::
 
         resolve(":resources:images/cards/cardBack_blue1.png")
@@ -68,10 +74,14 @@ def resolve(path: Union[str, Path]) -> Path:
 
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     """
-    Adds a new handle to built-in resources
+    Add a resource handle or path to an existing handle.
+
+    A handle can point to multiple paths. If a resource is not found in
+    the first path, it will look in the next path, and so on. The search
+    is done in reverse order, so the last path added is searched first.
 
     :param str handle: The name of the handle
-    :param Union[str, Path] path: The location the handle points to
+    :param Union[str, Path] path: The absolute path to a directory
     """
     if isinstance(path, str):
         path = Path(path)
