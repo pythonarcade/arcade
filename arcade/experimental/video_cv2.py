@@ -14,10 +14,14 @@ from arcade.gl.geometry import quad_2d_fs
 import cv2  # type: ignore
 
 
-class CV2Player(arcade.Window):
+class CV2Player(arcade.View):
+    """
+    Can be used to add effects like rain to the background of the game.
+    Make sure to inherit this view and call super for `__init__`, `on_draw` and `on_update`.
+    """
 
-    def __init__(self):
-        super().__init__(800, 600, "OpenCV Video Player", resizable=True)
+    def __init__(self, path: str):
+        super().__init__()
         self.quad_fs = quad_2d_fs()
         self.program = self.ctx.program(
             vertex_shader="""
@@ -47,8 +51,10 @@ class CV2Player(arcade.Window):
         # Configure videoFrame sampler to read from texture channel 0
         self.program["videoFrame"] = 0
 
-        # Open the video (can also read from webcam)
-        self.video = cv2.VideoCapture("C:/Users/efors/Desktop/BigBuckBunny.mp4")
+        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
+        if not issubclass(type(path), str):
+            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
+        self.video = cv2.VideoCapture(path)
         # Query video size
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -88,6 +94,3 @@ class CV2Player(arcade.Window):
             exists, frame = self.video.read()
             if exists:
                 self.texture.write(frame)
-
-
-CV2Player().run()

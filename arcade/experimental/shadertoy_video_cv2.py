@@ -14,10 +14,14 @@ SCREEN_HEIGHT = 300
 SCREEN_TITLE = "ShaderToy Video"
 
 
-class ShadertoyVideo(arcade.Window):
+class ShadertoyVideo(arcade.View):
+    """
+    Can be used to add effects like rain to the background of the game.
+    Make sure to inherit this view and call super for `__init__`, `on_draw`, `on_update` and `on_resize`.
+    """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self, path: str):
+        super().__init__()
         self.shadertoy = Shadertoy(
             self.get_framebuffer_size(),
             """
@@ -37,8 +41,10 @@ class ShadertoyVideo(arcade.Window):
                 }
             """,
         )
-        # INSERT YOUR OWN VIDEO HERE
-        self.video = cv2.VideoCapture("C:/Users/efors/Desktop/BigBuckBunny.mp4")
+        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
+        if not issubclass(type(path), str):
+            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
+        self.video = cv2.VideoCapture(path)
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
@@ -67,8 +73,3 @@ class ShadertoyVideo(arcade.Window):
         frame = cv2.flip(frame, 0)
         if exists:
             self.video_texture.write(frame)
-
-
-if __name__ == "__main__":
-    ShadertoyVideo(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.run()

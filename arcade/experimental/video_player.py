@@ -9,14 +9,20 @@ import pyglet
 import arcade
 
 
-class VideoPlayer(arcade.Window):
+class VideoPlayer(arcade.View):
+    """
+    Can be used to add effects like rain to the background of the game.
+    Make sure to inherit this view and call super for `__init__` and `on_draw`.
+    """
 
-    def __init__(self) -> None:
-        super().__init__(800, 600, "Video Player", resizable=True)
+    def __init__(self, path: str) -> None:
+        super().__init__()
 
         self.player = pyglet.media.Player()
-        # self.player.queue(pyglet.media.load("C:/Users/efors/Desktop/file_example_MP4_480_1_5MG.mp4"))
-        self.player.queue(pyglet.media.load("C:/Users/efors/Desktop/BigBuckBunny.mp4"))
+        # Used this because it will throw SIGSEGV when passed a Path like object, which is not very descriptive.
+        if not issubclass(type(path), str):
+            raise TypeError(f"The path is required to be a str object and not a {type(path)} object")
+        self.player.queue(pyglet.media.load(path))
         self.player.play()
 
     def on_draw(self):
@@ -35,9 +41,6 @@ class VideoPlayer(arcade.Window):
                     height=self.height,
                 )
 
-    def on_update(self, delta_time: float):
-        pass
-
     def get_video_size(self):
         if not self.player.source or not self.player.source.video_format:
             return 0, 0
@@ -49,7 +52,3 @@ class VideoPlayer(arcade.Window):
         elif video_format.sample_aspect < 1:
             height /= video_format.sample_aspect
         return width, height
-
-
-window = VideoPlayer()
-arcade.run()
