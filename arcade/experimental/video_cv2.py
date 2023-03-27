@@ -23,7 +23,7 @@ class CV2Player(arcade.View):
     def __init__(self, path: str):
         super().__init__()
         self.quad_fs = quad_2d_fs()
-        self.program = self.ctx.program(
+        self.program = self.window.ctx.program(
             vertex_shader="""
             #version 330
 
@@ -65,15 +65,15 @@ class CV2Player(arcade.View):
         # Keep track of the current frame and current time
         # to estimate a reasonable playback speed
         self.current_frame = 0
-        self.time = 0
+        self.time: float = 0.0
 
         # Create and configure the OpenGL texture for the video
-        self.texture = self.ctx.texture((width, height), components=3)
+        self.texture = self.window.ctx.texture((width, height), components=3)
         # Swap the components in the texture because cv2 returns BGR data
         # Leave the alpha component as always 1
         self.texture.swizzle = "BGR1"
         # Change the window size to the video size
-        self.set_size(width, height)
+        self.window.set_size(width, height)
 
     def on_draw(self):
         self.clear()

@@ -23,7 +23,7 @@ class ShadertoyVideo(arcade.View):
     def __init__(self, path: str):
         super().__init__()
         self.shadertoy = Shadertoy(
-            self.get_framebuffer_size(),
+            self.window.get_framebuffer_size(),
             """
                 void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 {
@@ -49,12 +49,12 @@ class ShadertoyVideo(arcade.View):
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         )
-        self.video_texture = self.ctx.texture((width, height), components=3)
-        self.video_texture.wrap_x = self.ctx.CLAMP_TO_EDGE
-        self.video_texture.wrap_y = self.ctx.CLAMP_TO_EDGE
+        self.video_texture = self.window.ctx.texture((width, height), components=3)
+        self.video_texture.wrap_x = self.window.ctx.CLAMP_TO_EDGE
+        self.video_texture.wrap_y = self.window.ctx.CLAMP_TO_EDGE
         self.video_texture.swizzle = "BGR1"
         self.shadertoy.channel_0 = self.video_texture
-        self.set_size(width, height)
+        self.window.set_size(width, height)
 
     def on_draw(self):
         self.clear()
@@ -66,7 +66,7 @@ class ShadertoyVideo(arcade.View):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.shadertoy.resize(self.get_framebuffer_size())
+        self.shadertoy.resize(self.window.get_framebuffer_size())
 
     def next_frame(self):
         exists, frame = self.video.read()
