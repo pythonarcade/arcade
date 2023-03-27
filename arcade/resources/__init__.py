@@ -7,6 +7,7 @@ ASSET_PATH = Path(__file__).parent.resolve() / "assets"
 
 handles: Dict[str, List[Path]] = {
     "resources": [SYSTEM_PATH, ASSET_PATH],
+    "assets": [ASSET_PATH],
     "system": [SYSTEM_PATH],
 }
 
