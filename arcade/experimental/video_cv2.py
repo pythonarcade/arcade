@@ -9,6 +9,9 @@ Dependencies:
     pip install opencv-python
 """
 from math import floor
+from pathlib import Path
+from typing import Union
+
 import arcade
 from arcade.gl.geometry import quad_2d_fs
 import cv2  # type: ignore
@@ -133,5 +136,5 @@ class CV2PlayerView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(CV2PlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
+    window.show_view(CV2PlayerView("/home/user/path/to/project/assets/rain.mp4"))
     window.run()
