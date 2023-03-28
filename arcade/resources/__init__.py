@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Dict, List,Union
+from typing import Dict, List, Union
+from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
 SYSTEM_PATH = Path(__file__).parent.resolve() / "system"
@@ -10,6 +11,30 @@ handles: Dict[str, List[Path]] = {
     "assets": [ASSET_PATH],
     "system": [SYSTEM_PATH],
 }
+
+
+@warning(
+    warning_type=ReplacementWarning,
+    new_name="resolve"
+)
+def resolve_resource_path(path: Union[str, Path]) -> Path:
+    """
+    Attempts to resolve a path to a resource including resource handles.
+
+    If the path is a string it tries to resolve it as a resource handle
+    or convert it to a Path object.
+
+    If the path is a Path object it will ``Path.resolve()`` it
+    unless it's not absolute and return it.
+
+    Example::
+
+        resolve(":resources:images/cards/cardBack_blue1.png")
+        resolve(":my_handle:music/combat.wav")
+
+    :param Union[str, Path] path: A Path or string
+    """
+    return resolve(path)
 
 
 def resolve(path: Union[str, Path]) -> Path:
