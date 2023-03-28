@@ -9,7 +9,7 @@ import pyglet
 import arcade
 from arcade.types import Color, Point
 from arcade.draw_commands import get_four_byte_color
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
 
@@ -33,7 +33,7 @@ def load_font(path: Union[str, Path]) -> None:
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
-    file_path = resolve_resource_path(path)
+    file_path = resolve(path)
     pyglet.font.add_file(str(file_path))
 
 
@@ -67,7 +67,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
 
         for font in font_list:
             try:
-                path = resolve_resource_path(font)
+                path = resolve(font)
                 # print(f"Font path: {path=}")
 
                 # found a font successfully!

@@ -95,13 +95,13 @@ class LightLayer(RenderTargetTexture):
             ),
         ])
         self._light_program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/lights/point_lights_vs.glsl",
-            geometry_shader=":resources:shaders/lights/point_lights_geo.glsl",
-            fragment_shader=":resources:shaders/lights/point_lights_fs.glsl",
+            vertex_shader=":system:shaders/lights/point_lights_vs.glsl",
+            geometry_shader=":system:shaders/lights/point_lights_geo.glsl",
+            fragment_shader=":system:shaders/lights/point_lights_fs.glsl",
         )
         self._combine_program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/lights/combine_vs.glsl",
-            fragment_shader=":resources:shaders/lights/combine_fs.glsl",
+            vertex_shader=":system:shaders/lights/combine_vs.glsl",
+            fragment_shader=":system:shaders/lights/combine_fs.glsl",
         )
         # NOTE: Diffuse buffer created in parent
         self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))

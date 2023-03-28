@@ -126,8 +126,8 @@ the three backticks on the first line:
       File "/home/user/src/arcade/arcade/sprite.py", line 243, in __init__
         self._texture = load_texture(
       File "/home/user/src/arcade/arcade/texture.py", line 543, in load_texture
-        file_name = resolve_resource_path(file_name)
-      File "/home/user/src/arcade/arcade/resources/__init__.py", line 40, in resolve_resource_path
+        file_name = resolve(file_name)
+      File "/home/user/src/arcade/arcade/resources/__init__.py", line 40, in resolve
         raise FileNotFoundError(f"Cannot locate resource : {path}")
     FileNotFoundError: Cannot locate resource : my_player_image.png
     ```

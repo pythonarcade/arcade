@@ -7,7 +7,7 @@ def test_gc_image_multi_ref(ctx, common):
     atlas = arcade.TextureAtlas((256, 256))
 
     # Load an image manually to bypass the cache (until this is changed)
-    path = arcade.resources.resolve_resource_path(":resources:images/topdown_tanks/tank_sand.png")
+    path = arcade.resources.resolve(":resources:images/topdown_tanks/tank_sand.png")
     image_data = arcade.texture.ImageData(PIL.Image.open(path).convert("RGBA"))
 
     texture_1 = arcade.Texture(image_data)

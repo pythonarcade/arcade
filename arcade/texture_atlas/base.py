@@ -652,6 +652,7 @@ class TextureAtlas:
 
         # Decrement the reference count for the image
         self._image_ref_count.dec_ref(texture.image_data)
+        # print("Dec ref", texture.image_data.hash, self._image_ref_count.get_refs(texture.image_data))
 
         # Reclaim the image in the atlas if it's not used by any other texture
         if self._image_ref_count.get_refs(texture.image_data) == 0:
@@ -660,6 +661,7 @@ class TextureAtlas:
             slot = self._image_uv_slots[texture.image_data.hash]
             del self._image_uv_slots[texture.image_data.hash]
             self._image_uv_slots_free.appendleft(slot)
+            # print("Reclaimed image", texture.image_data.hash)
 
     def update_texture_image(self, texture: "Texture"):
         """
