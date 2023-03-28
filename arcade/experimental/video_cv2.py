@@ -20,14 +20,17 @@ import cv2  # type: ignore
 class VideoPlayerCV2:
     """
     Primitive video player for arcade with cv2.
-    Can be used to add effects like rain in the background.
+    Renders to the entire screen. Use VideoPlayer to render to specific coordinate.
 
     :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: Union[str, Path], ctx: arcade.ArcadeContext):
+    def __init__(self, path: Union[str, Path]):
+
+        self.ctx = arcade.get_window().ctx
+
         self.quad_fs = quad_2d_fs()
-        self.program = ctx.program(
+        self.program = self.ctx.program(
             vertex_shader="""
             #version 330
 
@@ -59,7 +62,7 @@ class VideoPlayerCV2:
         self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
 
         # Query video size
-        width, height = (
+        self._width, self._height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         )
@@ -72,27 +75,25 @@ class VideoPlayerCV2:
         self.time: float = 0.0
 
         # Create and configure the OpenGL texture for the video
-        self.texture = ctx.texture((width, height), components=3)
+        self.texture = self.ctx.texture((self._width, self._height), components=3)
         # Swap the components in the texture because cv2 returns BGR data
         # Leave the alpha component as always 1
         self.texture.swizzle = "BGR1"
 
-
     @property
     def width(self):
         """Video width."""
-        return int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+        return self._width
 
     @property
     def height(self):
         """Video height."""
-        return int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+        return self._height
 
     def draw(self):
         """Call this in `on_draw`."""
 
-        # Bind video texture to texture channel 0 
+        # Bind video texture to texture channel 0
         self.texture.use(unit=0)
         # Draw a fullscreen quad using our texture program
         self.quad_fs.render(self.program)
@@ -112,16 +113,11 @@ class VideoPlayerCV2:
 
 
 class CV2PlayerView(arcade.View):
-    """
-    Can be used to add effects like rain to the background of the game.
-    Make sure to inherit this view and call super for `__init__`, `on_draw` and `on_update`.
-    """
-
     def __init__(self, path: str):
         super().__init__()
 
-        self.video_player = VideoPlayerCV2(path, self.window.ctx)
-        
+        self.video_player = VideoPlayerCV2(path)
+
         # Change the window size to the video size
         self.window.set_size(self.video_player.width, self.video_player.height)
 
@@ -136,5 +132,5 @@ class CV2PlayerView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(CV2PlayerView("/home/user/path/to/project/assets/rain.mp4"))
+    window.show_view(CV2PlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
     window.run()
