@@ -4,7 +4,7 @@ Quick Index Generator
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
@@ -21,37 +21,57 @@ def skipped_file(file_path: Path):
     return file_path.suffix in skip_extensions
 
 
+def create_resource_path(
+    path: Path,
+    prefix: str = "",
+    suffix: str = "",
+) -> str:
+    """
+    Create a resource path. We will use the resources handle
+    and will need to the "assets" and "system" directory
+    from the path.
+    """
+    path = path.relative_to(RESOURCE_DIR)
+    if path.parts[0] == "system":
+        path = path.relative_to("system")
+    elif path.parts[0] == "assets":
+        path = path.relative_to("assets")
+    else:
+        raise ValueError(f"Unexpected path: {path}")
+
+    return f"{prefix}:resources:{path.as_posix()}{suffix}"
+
+
 def process_resource_directory(out, dir: Path):
-
+    """
+    Go through resources in a directory.
+    """
     for path in dir.iterdir():
+        if not path.is_dir() or path.name.endswith("__"):
+            continue
+        # out.write(f"\n{cur_node.name}\n")
+        # out.write("-" * len(cur_node.name) + "\n\n")
 
-        if path.is_dir():
-            if path.name.endswith("__"):
-                continue
+        file_list = [item for item in path.iterdir() if not (item.is_dir() or skipped_file(item))]
+        if len(file_list) > 0:
+            # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
+            header_title = create_resource_path(path, suffix="/")
+            if header_title == ":resources:images/":
+                for f in file_list:
+                    print(f.name)
+            # out.write(f"\n{header_title}\n")
+            # out.write("-" * (len(header_title)) + "\n\n")
 
-            # os.makedirs(Path("build/html", *curr_node_rel.parts), exist_ok=True)
-            # out.write(f"\n{cur_node.name}\n")
-            # out.write("-" * len(cur_node.name) + "\n\n")
+            out.write(f"\n")
+            out.write(f".. list-table:: {header_title}\n")
+            out.write(f"    :widths: 33 33 33\n")
+            out.write(f"    :header-rows: 0\n")
+            out.write(f"    :class: resource-table\n\n")
 
-            file_list = [item for item in path.iterdir() if not (item.is_dir() or skipped_file(item))]
-            if len(file_list) > 0:
-                header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
-                if header_title == ":resources:images/":
-                    for f in file_list:
-                        print(f.name)
-                # out.write(f"\n{header_title}\n")
-                # out.write("-" * (len(header_title)) + "\n\n")
+            process_resource_files(out, file_list)
+            out.write("\n\n")
 
-                out.write(f"\n")
-                out.write(f".. list-table:: {header_title}\n")
-                out.write(f"    :widths: 33 33 33\n")
-                out.write(f"    :header-rows: 0\n")
-                out.write(f"    :class: resource-table\n\n")
-
-                process_resource_files(out, file_list)
-                out.write("\n\n")
-
-            process_resource_directory(out, path)
+        process_resource_directory(out, path)
 
 
 def process_resource_files(out, file_list: List[Path]):
