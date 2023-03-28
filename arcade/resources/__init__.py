@@ -3,8 +3,9 @@ from typing import Dict, List, Union
 from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
-SYSTEM_PATH = Path(__file__).parent.resolve() / "system"
-ASSET_PATH = Path(__file__).parent.resolve() / "assets"
+RESOURCE_DIR = Path(__file__).parent.resolve()
+SYSTEM_PATH = RESOURCE_DIR / "system"
+ASSET_PATH = RESOURCE_DIR / "assets"
 
 handles: Dict[str, List[Path]] = {
     "resources": [SYSTEM_PATH, ASSET_PATH],
@@ -142,6 +143,23 @@ def get_resource_handle_paths(handle: str) -> List[Path]:
         raise KeyError(f"Unknown resource handle \"{handle}\"")
 
 
+# Metadata for the resource list: utils\create_resource_list.py
+_resource_list_skip_extensions = [
+    '.glsl',
+    '.md',
+    '.py',
+    '.yml',
+    '.url',
+    '.txt',
+    '.tiled-project',
+    '.ttf',
+    '.pyc',
+]
+_resource_list_ignore_paths = {
+    RESOURCE_DIR / "assets" / "cache",
+    RESOURCE_DIR / "assets" / "onscreen_controls"
+}
+
 # RESOURCE LIST : (Truncate file from here if auto generating resource list)
 image_alien_blue_climb1 = ':assets:images/alien/alienBlue_climb1.png'
 image_alien_blue_climb2 = ':assets:images/alien/alienBlue_climb2.png'
@@ -227,6 +245,8 @@ image_zombie_walk4 = ':assets:images/animated_characters/zombie/zombie_walk4.png
 image_zombie_walk5 = ':assets:images/animated_characters/zombie/zombie_walk5.png'
 image_zombie_walk6 = ':assets:images/animated_characters/zombie/zombie_walk6.png'
 image_zombie_walk7 = ':assets:images/animated_characters/zombie/zombie_walk7.png'
+image_abstract_1 = ':assets:images/backgrounds/abstract_1.jpg'
+image_abstract_2 = ':assets:images/backgrounds/abstract_2.jpg'
 image_instructions_0 = ':assets:images/backgrounds/instructions_0.png'
 image_instructions_1 = ':assets:images/backgrounds/instructions_1.png'
 image_stars = ':assets:images/backgrounds/stars.png'
@@ -388,8 +408,11 @@ image_codepage_437 = ':assets:images/spritesheets/codepage_437.png'
 image_explosion = ':assets:images/spritesheets/explosion.png'
 image_number_sheet = ':assets:images/spritesheets/number_sheet.png'
 image_tiles = ':assets:images/spritesheets/tiles.png'
+image_anim = ':assets:images/test_textures/anim.gif'
 image_test_texture = ':assets:images/test_textures/test_texture.png'
 image_xy_square = ':assets:images/test_textures/xy_square.png'
+image_diffuse = ':assets:images/test_textures/normal_mapping/diffuse.jpg'
+image_normal = ':assets:images/test_textures/normal_mapping/normal.jpg'
 image_bomb = ':assets:images/tiles/bomb.png'
 image_box_crate = ':assets:images/tiles/boxCrate.png'
 image_box_crate_double = ':assets:images/tiles/boxCrate_double.png'

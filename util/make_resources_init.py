@@ -2,15 +2,13 @@
 Generates arcade/resources/__init__.py by looking for
 media types in arcade/resources.
 """
+import arcade
 from pathlib import Path
 from typing import List
 
-MEDIA_TYPES = {'.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg', '.json'}
+IGNORE_MEDIA_TYPES = arcade.resources._resource_list_skip_extensions
+IGNORE_PATHS = arcade.resources._resource_list_ignore_paths
 RESOURCE_ROOT = Path(__file__).parent.parent / "arcade/resources"
-IGNORE_PATHS = {
-    RESOURCE_ROOT / "assets" / "cache",
-    RESOURCE_ROOT / "assets" / "onscreen_controls"
-}
 
 
 def main() -> None:
@@ -24,7 +22,7 @@ def main() -> None:
     for item in RESOURCE_ROOT.glob('**/*'):
         if item.is_dir():
             continue
-        if item.suffix not in MEDIA_TYPES:
+        if item.suffix in IGNORE_MEDIA_TYPES:
             skip_count += 1
             # print("Skipping (extension)", item)
             continue
