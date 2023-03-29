@@ -28,7 +28,7 @@ CAMERA_SPEED = 0.1
 PLAYER_MOVEMENT_SPEED = 7
 
 # Background color must include an alpha component
-MINIMAP_BACKGROUND_COLOR = arcade.get_four_byte_color(arcade.color.ALMOND)
+MINIMAP_BACKGROUND_COLOR = arcade.color.ALMOND
 MINIMAP_WIDTH = 256
 MINIMAP_HEIGHT = 256
 MAP_WIDTH = 2048

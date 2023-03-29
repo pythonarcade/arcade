@@ -12,6 +12,7 @@ python -m arcade.examples.easing_example_1
 """
 import arcade
 from arcade import easing
+from arcade.types import Color
 
 SPRITE_SCALING = 0.5
 
@@ -73,7 +74,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Set the background color
-        self.background_color = arcade.color_from_hex_string(BACKGROUND_COLOR)
+        self.background_color = Color.from_hex_string(BACKGROUND_COLOR)
 
         self.ball_list = None
         self.text_list = []
@@ -87,7 +88,7 @@ class MyGame(arcade.Window):
         self.lines = arcade.shape_list.ShapeElementList()
 
         def create_ball(ball_y, ease_function):
-            ball = EasingCircle(BALL_RADIUS, arcade.color_from_hex_string(BALL_COLOR))
+            ball = EasingCircle(BALL_RADIUS, Color.from_hex_string(BALL_COLOR))
             ball.position = X_START, ball_y
             p1 = ball.position
             p2 = (X_END, ball_y)
@@ -117,8 +118,8 @@ class MyGame(arcade.Window):
             line = create_line(item_y)
             self.lines.append(line)
 
-        text_color = arcade.color_from_hex_string(TEXT_COLOR)
-        line_color = arcade.color_from_hex_string(LINE_COLOR)
+        text_color = Color.from_hex_string(TEXT_COLOR)
+        line_color = Color.from_hex_string(LINE_COLOR)
 
         y = Y_INTERVAL
         add_item(y, easing.linear, "Linear")

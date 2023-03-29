@@ -23,7 +23,7 @@ from arcade.texture.transforms import (
     TransposeTransform,
     TransverseTransform,
 )
-from arcade.types import Color, PointList
+from arcade.types import RGBA255, PointList
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -409,13 +409,13 @@ class Texture:
         return self._hit_box_algorithm
 
     @classmethod
-    def create_filled(cls, name: str, size: Tuple[int, int], color: Color) -> "Texture":
+    def create_filled(cls, name: str, size: Tuple[int, int], color: RGBA255) -> "Texture":
         """
         Create a filled texture. This is an alias for :py:meth:`create_empty`.
 
         :param str name: Name of the texture
         :param Tuple[int, int] size: Size of the texture
-        :param Color color: Color of the texture
+        :param RGBA255 color: Color of the texture
         :return: Texture
         """
         return cls.create_empty(name, size, color)
@@ -425,7 +425,7 @@ class Texture:
         cls,
         name: str,
         size: Tuple[int, int],
-        color: Color = (0, 0, 0, 0),
+        color: RGBA255 = TRANSPARENT_BLACK,
     ) -> "Texture":
         """
         Create a texture with all pixels set to transparent black.
@@ -480,7 +480,7 @@ class Texture:
 
         """
         return Texture(
-            image=PIL.Image.new("RGBA", size, TRANSPARENT_BLACK),
+            image=PIL.Image.new("RGBA", size, color),
             hash=name,
             hit_box_algorithm=hitbox.algo_bounding_box,
         )

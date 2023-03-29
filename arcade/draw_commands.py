@@ -16,11 +16,10 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from arcade.types import Color, PointList
+from arcade.types import Color, RGBA255, PointList
 from arcade.earclip import earclip
 from .math import rotate_point
 from arcade import (
-    get_four_byte_color,
     get_points_for_thick_line,
     Texture,
     get_window,
@@ -32,7 +31,7 @@ from arcade.utils import warning, ReplacementWarning
 
 def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
-                    color: Color,
+                    color: RGBA255,
                     start_angle: float, end_angle: float,
                     tilt_angle: float = 0,
                     num_segments: int = 128):
@@ -43,8 +42,8 @@ def draw_arc_filled(center_x: float, center_y: float,
     :param float center_y: y position that is the center of the arc.
     :param float width: width of the arc.
     :param float height: height of the arc.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float start_angle: start angle of the arc in degrees.
     :param float end_angle: end angle of the arc in degrees.
     :param float tilt_angle: angle the arc is tilted (clockwise).
@@ -74,7 +73,7 @@ def draw_arc_filled(center_x: float, center_y: float,
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
+                     height: float, color: RGBA255,
                      start_angle: float, end_angle: float,
                      border_width: float = 1, tilt_angle: float = 0,
                      num_segments: int = 128):
@@ -85,8 +84,8 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     :param float center_y: y position that is the center of the arc.
     :param float width: width of the arc.
     :param float height: height of the arc.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float start_angle: start angle of the arc in degrees.
     :param float end_angle: end angle of the arc in degrees.
     :param float border_width: width of line in pixels.
@@ -132,7 +131,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
-                         height: float, color: Color,
+                         height: float, color: RGBA255,
                          tilt_angle: float = 0):
     """
     Draws a filled in parabola.
@@ -141,9 +140,9 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     :param float start_y: The starting y position of the parabola
     :param float end_x: The ending x position of the parabola
     :param float height: The height of the parabola
-    :param Color color: The color of the parabola
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
-
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -155,7 +154,7 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
 
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
-                          height: float, color: Color,
+                          height: float, color: RGBA255,
                           border_width: float = 1, tilt_angle: float = 0):
     """
     Draws the outline of a parabola.
@@ -164,7 +163,8 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     :param float start_y: The starting y position of the parabola
     :param float end_x: The ending x position of the parabola
     :param float height: The height of the parabola
-    :param Color color: The color of the parabola
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float border_width: The width of the parabola
     :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
     """
@@ -183,7 +183,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: Color,
+                       color: RGBA255,
                        tilt_angle: float = 0,
                        num_segments: int = -1):
     """
@@ -192,8 +192,8 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     :param float center_x: x position that is the center of the circle.
     :param float center_y: y position that is the center of the circle.
     :param float radius: width of the circle.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
@@ -206,7 +206,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Color, border_width: float = 1,
+                        color: RGBA255, border_width: float = 1,
                         tilt_angle: float = 0,
                         num_segments: int = -1):
     """
@@ -215,8 +215,8 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     :param float center_x: x position that is the center of the circle.
     :param float center_y: y position that is the center of the circle.
     :param float radius: width of the circle.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the circle (clockwise).
                              Useful for low segment count circles
@@ -238,7 +238,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
 def draw_ellipse_filled(center_x: float, center_y: float,
-                        width: float, height: float, color: Color,
+                        width: float, height: float, color: RGBA255,
                         tilt_angle: float = 0, num_segments: int = -1):
     """
     Draw a filled in ellipse.
@@ -247,8 +247,10 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     :param float center_y: y position that is the center of the circle.
     :param float width: width of the ellipse.
     :param float height: height of the ellipse.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
+    :param RGBA255 color: Either a :py:class:`~arcade.types.Color` instance
+        or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
     :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
@@ -280,7 +282,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
 def draw_ellipse_outline(center_x: float, center_y: float,
                          width: float,
-                         height: float, color: Color,
+                         height: float, color: RGBA255,
                          border_width: float = 1,
                          tilt_angle: float = 0,
                          num_segments: int = -1):
@@ -291,8 +293,8 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     :param float center_y: y position that is the center of the circle.
     :param float width: width of the ellipse.
     :param float height: height of the ellipse.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+        or a :py:class:`~arcade.types.Color` instance.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
     :param int num_segments: Number of triangle segments that make up this
@@ -331,7 +333,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
 
 
 def _generic_draw_line_strip(point_list: PointList,
-                             color: Color,
+                             color: RGBA255,
                              mode: int = gl.GL_LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
@@ -339,13 +341,13 @@ def _generic_draw_line_strip(point_list: PointList,
 
     :param point_list: List of points making up the line. Each point is
          in a list. So it is a list of lists.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     """
     window = get_window()
     ctx = window.ctx
 
-    c4 = get_four_byte_color(color)
+    c4 = Color.from_iterable(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
     vertices = array.array('f', tuple(item for sublist in point_list for item in sublist))
@@ -369,12 +371,13 @@ def _generic_draw_line_strip(point_list: PointList,
 
 
 def draw_line_strip(point_list: PointList,
-                    color: Color, line_width: float = 1):
+                    color: RGBA255, line_width: float = 1):
     """
     Draw a multi-point line.
 
     :param PointList point_list: List of x, y points that make up this strip
-    :param Color color: Color of line strip
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float line_width: Width of the line
     """
     if line_width == 1:
@@ -393,7 +396,7 @@ def draw_line_strip(point_list: PointList,
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Color, line_width: float = 1):
+              color: RGBA255, line_width: float = 1):
     """
     Draw a line.
 
@@ -401,8 +404,8 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     :param float start_y: y position of line starting point.
     :param float end_x: x position of line ending point.
     :param float end_y: y position of line ending point.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float line_width: Width of the line in pixels.
     """
     window = get_window()
@@ -427,7 +430,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
 
 def draw_lines(point_list: PointList,
-               color: Color,
+               color: RGBA255,
                line_width: float = 1):
     """
     Draw a set of lines.
@@ -436,8 +439,8 @@ def draw_lines(point_list: PointList,
 
     :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float line_width: Width of the line in pixels.
     """
     window = get_window()
@@ -468,27 +471,27 @@ def draw_lines(point_list: PointList,
 # --- BEGIN POINT FUNCTIONS # # #
 
 
-def draw_point(x: float, y: float, color: Color, size: float):
+def draw_point(x: float, y: float, color: RGBA255, size: float):
     """
     Draw a point.
 
     :param float x: x position of point.
     :param float y: y position of point.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float size: Size of the point in pixels.
     """
     draw_rectangle_filled(x, y, size, size, color)
 
 
-def draw_points(point_list: PointList, color: Color, size: float = 1):
+def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
     """
     Draw a set of points.
 
     :param PointList point_list: List of points Each point is
          in a list. So it is a list of lists.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: A color, specified as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float size: Size of the point in pixels.
     """
     window = get_window()
@@ -522,13 +525,13 @@ def draw_points(point_list: PointList, color: Color, size: float = 1):
 
 
 def draw_polygon_filled(point_list: PointList,
-                        color: Color):
+                        color: RGBA255):
     """
     Draw a polygon that is filled in.
 
     :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param Color color: The color, specified in RGB or RGBA format.
+    :param RGBA255 color: The color, specified in RGB or RGBA format.
     """
     triangle_points = earclip(point_list)
     flattened_list = tuple(i for g in triangle_points for i in g)
@@ -536,14 +539,14 @@ def draw_polygon_filled(point_list: PointList,
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: Color, line_width: float = 1):
+                         color: RGBA255, line_width: float = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
     :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: The color of the outline as an RGBA :py:class:`tuple` or
+        :py:class:`~arcade.types.Color` instance.
     :param int line_width: Width of the line in pixels.
     """
     new_point_list = list(point_list)
@@ -567,7 +570,7 @@ def draw_polygon_outline(point_list: PointList,
 
 def draw_triangle_filled(x1: float, y1: float,
                          x2: float, y2: float,
-                         x3: float, y3: float, color: Color):
+                         x3: float, y3: float, color: RGBA255):
     """
     Draw a filled in triangle.
 
@@ -577,7 +580,8 @@ def draw_triangle_filled(x1: float, y1: float,
     :param float y2: y value of second coordinate.
     :param float x3: x value of third coordinate.
     :param float y3: y value of third coordinate.
-    :param Color color: Color of triangle.
+    :param RGBA255 color: Color of the triangle as an RGBA :py:class:`tuple` or
+        :py:class:`~arcade.types.Color` instance.
     """
     point_list = (
         (x1, y1),
@@ -590,7 +594,7 @@ def draw_triangle_filled(x1: float, y1: float,
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
                           x3: float, y3: float,
-                          color: Color,
+                          color: RGBA255,
                           border_width: float = 1):
     """
     Draw a the outline of a triangle.
@@ -601,7 +605,8 @@ def draw_triangle_outline(x1: float, y1: float,
     :param float y2: y value of second coordinate.
     :param float x3: x value of third coordinate.
     :param float y3: y value of third coordinate.
-    :param Color color: Color of triangle.
+    :param RGBA255 color: RGBA255 of triangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param float border_width: Width of the border in pixels. Defaults to 1.
     """
     point_list = (
@@ -623,7 +628,7 @@ def draw_triangle_outline(x1: float, y1: float,
     new_name="draw_lrbt_rectangle_outline"
 )
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
-                                bottom: float, color: Color,
+                                bottom: float, color: RGBA255,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
@@ -635,7 +640,8 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     :param float right: The x coordinate of the right edge of the rectangle.
     :param float top: The y coordinate of the top of the rectangle.
     :param float bottom: The y coordinate of the rectangle bottom.
-    :param Color color: The color of the rectangle.
+    :param RGBA255 color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param float border_width: The width of the border in pixels. Defaults to one.
     :Raises AttributeError: Raised if left > right or top < bottom.
 
@@ -656,7 +662,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                            border_width)
 
 
-def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: Color,
+def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: RGBA255,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
@@ -688,7 +694,7 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
 
 def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
                                 width: float, height: float,
-                                color: Color,
+                                color: RGBA255,
                                 border_width: float = 1):
     """
     Draw a rectangle extending from bottom left to top right
@@ -697,7 +703,8 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
     :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
     :param float width: The width of the rectangle.
     :param float height: The height of the rectangle.
-    :param Color color: The color of the rectangle.
+    :param RGBA255 color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param float border_width: The width of the border in pixels. Defaults to one.
     """
     center_x = bottom_left_x + (width / 2)
@@ -707,7 +714,7 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
 
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
-                           height: float, color: Color,
+                           height: float, color: RGBA255,
                            border_width: float = 1, tilt_angle: float = 0):
     """
     Draw a rectangle outline.
@@ -716,8 +723,8 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     :param float center_y: y coordinate of top left rectangle point.
     :param float width: width of the rectangle.
     :param float height: height of the rectangle.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param float border_width: width of the lines, in pixels.
     :param float tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
     """
@@ -748,7 +755,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     new_name="draw_lrbt_rectangle_filled"
 )
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: Color):
+                               bottom: float, color: RGBA255):
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
 
@@ -759,7 +766,8 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     :param float right: The x coordinate of the right edge of the rectangle.
     :param float top: The y coordinate of the top of the rectangle.
     :param float bottom: The y coordinate of the rectangle bottom.
-    :param Color color: The color of the rectangle.
+    :param RGBA255 color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :Raises AttributeError: Raised if left > right or top < bottom.
     """
     if left > right:
@@ -775,7 +783,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: Color):
+def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -801,7 +809,7 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
 
 def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
                                width: float, height: float,
-                               color: Color):
+                               color: RGBA255):
     """
     Draw a filled rectangle extending from bottom left to top right
 
@@ -809,7 +817,8 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
     :param float width: The width of the rectangle.
     :param float height: The height of the rectangle.
-    :param Color color: The color of the rectangle.
+    :param RGBA255 color: The color of the rectangleas an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
@@ -817,7 +826,7 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
 
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
-                          height: float, color: Color,
+                          height: float, color: RGBA255,
                           tilt_angle: float = 0):
     """
     Draw a filled-in rectangle.
@@ -826,8 +835,8 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     :param float center_y: y coordinate of rectangle center.
     :param float width: width of the rectangle.
     :param float height: height of the rectangle.
-    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+    :param RGBA255 color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param float tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
     window = get_window()
@@ -935,7 +944,8 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     :param int y: y location
     :param int components: Number of components to fetch. By default we fetch 3
         3 components (RGB). 4 components would be RGBA.
-    :rtype: Color
+
+    :rtype: Tuple[int, ...]
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
 

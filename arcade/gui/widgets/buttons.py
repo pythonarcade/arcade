@@ -3,7 +3,7 @@ from typing import Optional, Dict, Union
 
 import arcade
 from arcade import Texture
-from arcade.types import Color
+from arcade.types import RGBA255
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -47,7 +47,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         """
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: Color = arcade.color.WHITE
+        font_color: RGBA255 = arcade.color.WHITE
         border_width: int = 2
 
     DEFAULT_STYLE = {
@@ -243,9 +243,9 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         """
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: Color = arcade.color.WHITE
-        bg: Color = (21, 19, 21)
-        border: Optional[Color] = None
+        font_color: RGBA255 = arcade.color.WHITE
+        bg: RGBA255 = (21, 19, 21, 255)
+        border: Optional[RGBA255] = None
         border_width: int = 0
 
     DEFAULT_STYLE = {
@@ -254,8 +254,8 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
-            bg=(21, 19, 21),
-            border=(77, 81, 87),
+            bg=(21, 19, 21, 255),
+            border=(77, 81, 87, 255),
             border_width=2,
         ),
         "press": UIStyle(

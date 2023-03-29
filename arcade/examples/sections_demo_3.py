@@ -26,16 +26,17 @@ from math import sqrt
 
 import arcade
 from arcade import Section
+from arcade.types import Color
 
 INFO_BAR_HEIGHT = 40
 PANEL_WIDTH = 200
 SPRITE_SPEED = 1
 
-COLOR_LIGHT = arcade.color_from_hex_string('#D9BBA0')
-COLOR_DARK = arcade.color_from_hex_string('#0D0D0D')
-COLOR_1 = arcade.color_from_hex_string('#2A1459')
-COLOR_2 = arcade.color_from_hex_string('#4B89BF')
-COLOR_3 = arcade.color_from_hex_string('#03A688')
+COLOR_LIGHT = Color.from_hex_string('#D9BBA0')
+COLOR_DARK = Color.from_hex_string('#0D0D0D')
+COLOR_1 = Color.from_hex_string('#2A1459')
+COLOR_2 = Color.from_hex_string('#4B89BF')
+COLOR_3 = Color.from_hex_string('#03A688')
 
 
 class Ball(arcade.SpriteCircle):
