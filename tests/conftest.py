@@ -1,10 +1,17 @@
+import os
 from pathlib import Path
 
-import arcade
+if os.environ.get("ARCADE_PYTEST_USE_RUST"):
+    import arcade_accelerate
+    arcade_accelerate.bootstrap()
+
 import pytest
+
+import arcade
 
 PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
+arcade.resources.add_resource_handle("fixtures", FIXTURE_ROOT)
 WINDOW = None
 
 
@@ -81,18 +88,3 @@ def window():
     arcade.set_window(window)
     prepare_window(window)
     return window
-
-
-class Fixtures:
-    def __init__(self):
-        self.project_root = PROJECT_ROOT
-        self.fixtures_root = FIXTURE_ROOT
-
-    def path(self, path):
-        """Get absolute path to a fixture"""
-        return self.fixtures_root / Path(path)
-
-
-@pytest.fixture(scope="session")
-def fixtures():
-    return Fixtures()

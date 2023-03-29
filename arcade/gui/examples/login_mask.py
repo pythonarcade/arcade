@@ -27,12 +27,10 @@ class UIPasswordInput(UIInputText):
         self.layout.end_update()
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager()
-        self.manager.enable()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
         grid = UIGridLayout(
             size_hint=(0, 0),  # wrap children
@@ -60,18 +58,28 @@ class UIMockup(arcade.Window):
         anchor = UIAnchorLayout()  # to center grid on screen
         anchor.add(grid)
 
-        self.manager.add(anchor)
+        self.ui.add(anchor)
 
     def on_login(self, event: UIOnClickEvent):
         print(
             f"User logged in with: {self.username_input.text} {self.password_input.text}"
         )
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    window = UIMockup()
-    arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

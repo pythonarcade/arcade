@@ -75,7 +75,7 @@ class MyGame(arcade.Window):
             if random.randrange(adj_odds) == 0:
                 bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
                 bullet.center_x = enemy.center_x
-                bullet.angle = -90
+                bullet.angle = 90
                 bullet.top = enemy.bottom
                 bullet.change_y = -2
                 self.bullet_list.append(bullet)

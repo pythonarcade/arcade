@@ -6,7 +6,7 @@ from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Color, Point, Rect
+from arcade.types import Point, Rect, RGBA255
 
 
 class Surface:
@@ -44,9 +44,9 @@ class Surface:
 
         self._geometry = self.ctx.geometry()
         self._program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/gui/surface_vs.glsl",
-            geometry_shader=":resources:shaders/gui/surface_gs.glsl",
-            fragment_shader=":resources:shaders/gui/surface_fs.glsl",
+            vertex_shader=":system:shaders/gui/surface_vs.glsl",
+            geometry_shader=":system:shaders/gui/surface_gs.glsl",
+            fragment_shader=":system:shaders/gui/surface_fs.glsl",
         )
 
     @property
@@ -83,7 +83,7 @@ class Surface:
     def height(self) -> int:
         return self._size[1]
 
-    def clear(self, color: Color = TRANSPARENT_BLACK):
+    def clear(self, color: RGBA255 = TRANSPARENT_BLACK):
         """Clear the surface"""
         self.fbo.clear(color=color)
 

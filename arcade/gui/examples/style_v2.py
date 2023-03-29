@@ -79,19 +79,14 @@ STYLES = [
 ]
 
 
-class DemoWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-
+        super().__init__()
         # Init UIManager
-        self.manager = UIManager()
-        self.manager.enable()
-
-        # Set background
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        self.ui = UIManager()
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
-        anchor = self.manager.add(UIAnchorLayout())
+        anchor = self.ui.add(UIAnchorLayout())
         row = anchor.add(UIButtonRow(button_factory=UIFlatButton))
 
         button1 = row.add_button("Click me to switch style", multiline=True)
@@ -111,10 +106,21 @@ class DemoWindow(arcade.Window):
         def toggle(*_):
             button1.disabled = not button1.disabled
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    DemoWindow().run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

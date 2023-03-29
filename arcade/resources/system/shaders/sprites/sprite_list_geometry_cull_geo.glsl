@@ -1,6 +1,6 @@
 #version 330
 
-#include :resources:shaders/lib/sprite.glsl
+#include :system:shaders/lib/sprite.glsl
 
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
@@ -30,8 +30,8 @@ void main() {
     vec2 hsize_max = vec2(max(v_size[0].x, v_size[0].y)) / 1.5;
     float angle = radians(v_angle[0]);
     mat2 rot = mat2(
-        cos(angle), sin(angle),
-        -sin(angle), cos(angle)
+        cos(angle), -sin(angle),
+        sin(angle),  cos(angle)
     );
     mat4 mvp = window.projection * window.view;
     // Do viewport culling for sprites.

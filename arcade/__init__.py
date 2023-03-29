@@ -66,15 +66,7 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
-from .drawing_support import get_four_byte_color
-from .drawing_support import get_three_float_color
-from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import make_transparent_color
-from .drawing_support import uint24_to_three_byte_color
-from .drawing_support import uint32_to_four_byte_color
-from .drawing_support import color_from_hex_string
-from .drawing_support import float_to_byte_color
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -128,7 +120,9 @@ from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
+from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -293,7 +287,6 @@ __all__ = [
     'check_for_collision_with_list',
     'check_for_collision_with_lists',
     'close_window',
-    'color_from_hex_string',
     'disable_timings',
     'draw_arc_filled',
     'draw_arc_outline',
@@ -305,7 +298,9 @@ __all__ = [
     'draw_line_strip',
     'draw_lines',
     'draw_lrtb_rectangle_filled',
+    'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_outline',
     'draw_lrwh_rectangle_textured',
     'draw_parabola_filled',
     'draw_parabola_outline',
@@ -325,13 +320,10 @@ __all__ = [
     'enable_timings',
     'exit',
     'finish_render',
-    'float_to_byte_color',
     'get_closest_sprite',
     'get_display_size',
     'get_distance_between_sprites',
     'get_sprites_in_rect',
-    'get_four_byte_color',
-    'get_four_float_color',
     'get_controllers',
     'get_game_controllers',
     'get_image',
@@ -343,7 +335,6 @@ __all__ = [
     'get_sprites_at_point',
     'SpatialHash',
     'get_timings',
-    'get_three_float_color',
     'create_text_sprite',
     'clear_timings',
     'get_window',
@@ -359,7 +350,6 @@ __all__ = [
     'make_circle_texture',
     'make_soft_circle_texture',
     'make_soft_square_texture',
-    'make_transparent_color',
     'open_window',
     'pause',
     'print_timings',
@@ -374,8 +364,6 @@ __all__ = [
     'start_render',
     'stop_sound',
     'timings_enabled',
-    'uint24_to_three_byte_color',
-    'uint32_to_four_byte_color',
     'unschedule',
     'schedule_once',
     'cleanup_texture_cache',
@@ -383,7 +371,6 @@ __all__ = [
     'get_default_image',
     'hitbox',
     'experimental',
-    'isometric',
     'color',
     'csscolor',
     'key',
@@ -398,22 +385,22 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, 'is_pyglet_doc_run', False):
     # Auto load fonts
-    load_font(":resources:fonts/ttf/Kenney_Blocks.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future_Narrow.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Blocks.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future_Narrow.ttf")
+    load_font(":system:fonts/ttf/Kenney_High.ttf")
+    load_font(":system:fonts/ttf/Kenney_High_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket_Square.ttf")
 
     # Load additional game controller mappings to Pyglet
     if not pyglet.options['headless']:
         try:
-            mappings_file = resources.resolve_resource_path(":resources:gamecontrollerdb.txt")
+            mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
             pyglet.input.controller.add_mappings_from_file(mappings_file)
         except AssertionError:
             pass

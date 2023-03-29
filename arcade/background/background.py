@@ -30,8 +30,8 @@ class Background:
 
         if shader is None:
             shader = get_window().ctx.load_program(
-                vertex_shader=":resources:/shaders/background_vs.glsl",
-                fragment_shader=":resources:/shaders/background_fs.glsl",
+                vertex_shader=":system:/shaders/background_vs.glsl",
+                fragment_shader=":system:/shaders/background_fs.glsl",
             )
         self.shader = shader
 

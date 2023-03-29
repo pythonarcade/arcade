@@ -57,9 +57,9 @@ class NinePatchTexture:
 
         # TODO: Cache in context?
         self._program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/gui/nine_patch_vs.glsl",
-            geometry_shader=":resources:shaders/gui/nine_patch_gs.glsl",
-            fragment_shader=":resources:shaders/gui/nine_patch_fs.glsl",
+            vertex_shader=":system:shaders/gui/nine_patch_vs.glsl",
+            geometry_shader=":system:shaders/gui/nine_patch_gs.glsl",
+            fragment_shader=":system:shaders/gui/nine_patch_fs.glsl",
         )
         # Configure texture channels
         self.program.set_uniform_safe("uv_texture", 0)

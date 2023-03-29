@@ -1,7 +1,7 @@
 import PIL.Image
 
 from arcade.texture import Texture
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from .base import BasicSprite, SpriteType
 # from .simple import SimpleSprite
 from .sprite import Sprite
@@ -31,7 +31,7 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     as PNGs, either as sprite sheets or a frame per file.
     """
 
-    file_name = resolve_resource_path(resource_name)
+    file_name = resolve(resource_name)
     image_object = PIL.Image.open(file_name)
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")

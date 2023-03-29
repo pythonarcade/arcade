@@ -39,8 +39,8 @@ class PhysicsSprite(arcade.Sprite):
 class CircleSprite(PhysicsSprite):
     def __init__(self, pymunk_shape, filename):
         super().__init__(pymunk_shape, filename)
-        self.width = pymunk_shape.radius * 2
-        self.height = pymunk_shape.radius * 2
+        self.width = pymunk_shape.radius * 4
+        self.height = pymunk_shape.radius * 4
 
 
 class BoxSprite(PhysicsSprite):
@@ -85,7 +85,7 @@ class MyApplication(arcade.Window):
         # Create the floor
         self.floor_height = 80
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, [0, self.floor_height], [SCREEN_WIDTH, self.floor_height], 0.0)
+        shape = pymunk.Segment(body, (0, self.floor_height), (SCREEN_WIDTH, self.floor_height), 0.0)
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
@@ -307,7 +307,8 @@ class MyApplication(arcade.Window):
         for sprite in self.sprite_list:
             sprite.center_x = sprite.pymunk_shape.body.position.x
             sprite.center_y = sprite.pymunk_shape.body.position.y
-            sprite.angle = math.degrees(sprite.pymunk_shape.body.angle)
+            # Reverse angle because pymunk rotates ccw
+            sprite.angle = -math.degrees(sprite.pymunk_shape.body.angle)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

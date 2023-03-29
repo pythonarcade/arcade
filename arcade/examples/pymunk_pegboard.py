@@ -156,7 +156,8 @@ class MyGame(arcade.Window):
         for ball in self.ball_list:
             ball.center_x = ball.pymunk_shape.body.position.x
             ball.center_y = ball.pymunk_shape.body.position.y
-            ball.angle = math.degrees(ball.pymunk_shape.body.angle)
+            # Reverse angle because pymunk rotates ccw
+            ball.angle = math.degrees(-ball.pymunk_shape.body.angle)
 
         self.time = timeit.default_timer() - start_time
 

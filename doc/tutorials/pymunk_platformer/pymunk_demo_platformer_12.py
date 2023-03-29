@@ -79,7 +79,7 @@ class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
                  ladder_list: arcade.SpriteList,
-                 hit_box_algorithm):
+                 hit_box_algorithm: arcade.hitbox.HitBoxAlgorithm):
         """ Init """
         # Let parent initialize
         super().__init__()
@@ -263,7 +263,7 @@ class GameWindow(arcade.Window):
         self.moving_sprites_list = tile_map.sprite_lists['Moving Platforms']
 
         # Create player sprite
-        self.player_sprite = PlayerSprite(self.ladder_list, hit_box_algorithm="Detailed")
+        self.player_sprite = PlayerSprite(self.ladder_list, hit_box_algorithm=arcade.hitbox.algo_detailed)
 
         # Set player location
         grid_x = 1
@@ -316,7 +316,7 @@ class GameWindow(arcade.Window):
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
-                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=arcade.PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)

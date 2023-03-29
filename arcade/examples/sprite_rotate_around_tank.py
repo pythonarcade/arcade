@@ -134,8 +134,8 @@ class ExampleWindow(arcade.Window):
 
         # Calculate how much the tank should move forward or back
         move_magnitude = self.tank_direction * TANK_SPEED_PIXELS * delta_time
-        x_dir = math.cos(self.tank.radians - math.pi / 2) * move_magnitude
-        y_dir = math.sin(self.tank.radians - math.pi / 2) * move_magnitude
+        x_dir = math.sin(self.tank.radians) * move_magnitude
+        y_dir = math.cos(self.tank.radians) * move_magnitude
 
         # Move the tank's body
         self.tank.position =\
@@ -149,12 +149,12 @@ class ExampleWindow(arcade.Window):
 
         # Begin rotating the barrel by finding the angle to the mouse 
         mouse_angle = get_angle_degrees(
-            self.tank.center_y, self.tank.center_x,
-            self.mouse_pos[1], self.mouse_pos[0])
+            self.tank.center_x, self.tank.center_y,
+            self.mouse_pos[0], self.mouse_pos[1])
 
-        # Compensate for the vertical orientation of the barrel texture
-        # This could be skipped if the texture faced right instead
-        mouse_angle += 90
+        # Compensate for the flipped orientation of the barrel texture
+        # This could be skipped if the texture faced up instead
+        mouse_angle += 180
 
         if self.correct:
             # Rotate the barrel sprite with one end at the tank's center
@@ -173,9 +173,9 @@ class ExampleWindow(arcade.Window):
         elif symbol == arcade.key.S:
             self.tank_direction -= 1
         elif symbol == arcade.key.A:
-            self.tank_turning += 1
-        elif symbol == arcade.key.D:
             self.tank_turning -= 1
+        elif symbol == arcade.key.D:
+            self.tank_turning += 1
         elif symbol == arcade.key.P:
             self.correct = not self.correct
 
@@ -190,9 +190,9 @@ class ExampleWindow(arcade.Window):
         elif symbol == arcade.key.S:
             self.tank_direction += 1
         elif symbol == arcade.key.A:
-            self.tank_turning -= 1
-        elif symbol == arcade.key.D:
             self.tank_turning += 1
+        elif symbol == arcade.key.D:
+            self.tank_turning -= 1
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         self.mouse_pos = x, y
@@ -213,8 +213,8 @@ class ExampleWindow(arcade.Window):
                 self.mouse_pos[1], self.mouse_pos[0])
 
             self.barrel.position = (
-                self.barrel.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
-                self.barrel.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_y + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
             )
 
         else:

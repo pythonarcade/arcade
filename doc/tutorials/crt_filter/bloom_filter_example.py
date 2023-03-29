@@ -39,7 +39,7 @@ class MyGame(arcade.Window):
             self.bloom_filter.use()
             self.bloom_filter.clear()
             self.sprite_list.draw()
-            # arcade.draw_lrtb_rectangle_outline(0, self.width - 25, self.height - 5, 0, arcade.color.WHITE, 5)
+            # arcade.draw_lrbt_rectangle_outline(0, self.width - 25, 0, self.height - 5, arcade.color.WHITE, 5)
 
             # Switch back to our window and draw the CRT filter do
             # draw its stuff to the screen

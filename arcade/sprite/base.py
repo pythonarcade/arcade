@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
+from arcade.types import Point, Color, RGBA255
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import RGBA, Color, Point
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -46,7 +46,7 @@ class BasicSprite:
         self._width = texture.width * scale
         self._height = texture.height * scale
         self._scale = scale, scale
-        self._color: RGBA = 255, 255, 255, 255
+        self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -300,7 +300,7 @@ class BasicSprite:
 
     @visible.setter
     def visible(self, value: bool):
-        self._color = (
+        self._color = Color(
             self._color[0],
             self._color[1],
             self._color[2],
@@ -310,38 +310,50 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
-    def color(self) -> RGBA:
+    def color(self) -> Color:
         """
-        Get or set the RGB/RGBA color associated with the sprite.
+        Get or set the RGBA multiply color for the sprite.
+
+        When setting the color, it may be specified as any of the following:
+
+        * an RGBA :py:class:`tuple` with each channel value between 0 and 255
+        * an instance of :py:class:`~arcade.types.Color`
+        * an RGB :py:class:`tuple`, in which case the color will be treated as opaque
 
         Example usage::
 
-            print(sprite.color)
-            sprite.color = arcade.color.RED
-            sprite.color = 255, 0, 0
-            sprite.color = 255, 0, 0, 128
+            >>> print(sprite.color)
+            Color(255, 255, 255, 255)
+
+            >>> sprite.color = arcade.color.RED
+
+            >>> sprite.color = 255, 0, 0
+
+            >>> sprite.color = 255, 0, 0, 128
+
         """
         return self._color
 
     @color.setter
-    def color(self, color: RGBA):
+    def color(self, color: RGBA255):
         if len(color) == 4:
             if (
-                self._color == color[0]
+                self._color[0] == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
                 and self._color[3] == color[3]
             ):
                 return
-            self._color = color[0], color[1], color[2], color[3]
+            self._color = Color.from_iterable(color)
+
         elif len(color) == 3:
             if (
-                self._color == color[0]
+                self._color[0] == color[0]
                 and self._color[1] == color[1]
                 and self._color[2] == color[2]
             ):
                 return
-            self._color = color[0], color[1], color[2], self._color[3]
+            self._color = Color(color[0], color[1], color[2], self._color[3])
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
@@ -355,7 +367,7 @@ class BasicSprite:
 
     @alpha.setter
     def alpha(self, alpha: int):
-        self._color = self._color[0], self._color[1], self._color[2], int(alpha)
+        self._color = Color(self._color[0], self._color[1], self._color[2], int(alpha))
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
@@ -551,7 +563,7 @@ class BasicSprite:
 
     # ----- Drawing Methods -----
 
-    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 2.0) -> None:
+    def draw_hit_box(self, color: RGBA255 = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
