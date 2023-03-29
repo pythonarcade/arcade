@@ -34,6 +34,7 @@ def run_tutorials(indices_in_range = None, index_skip_list = None):
         file_path = os.path.dirname(os.path.abspath(__file__))
         print(file_path)
         os.chdir(file_path+"/../..")
+        continue
         # run tutorials
         for (idx, tutorial) in enumerate(tutorials):
             if indices_in_range is not None and idx not in indices_in_range:
@@ -64,4 +65,5 @@ def all_tutorials():
     run_tutorials(indices_in_range, index_skip_list)
 
 
-all_tutorials()
+# all_tutorials()
+run_tutorials()
