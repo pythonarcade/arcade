@@ -37,6 +37,7 @@ jobs:
         run: | 
           mypy arcade
           ruff arcade
+          python test/integration/tutorials/run_all_tutorials.py
       - name: build-docs
         run: |
           sphinx-build doc build -W
