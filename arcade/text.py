@@ -8,7 +8,7 @@ import pyglet
 
 import arcade
 from arcade.types import Color, Point, RGBA255
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
 
@@ -32,7 +32,7 @@ def load_font(path: Union[str, Path]) -> None:
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
-    file_path = resolve_resource_path(path)
+    file_path = resolve(path)
     pyglet.font.add_file(str(file_path))
 
 
@@ -66,7 +66,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
 
         for font in font_list:
             try:
-                path = resolve_resource_path(font)
+                path = resolve(font)
                 # print(f"Font path: {path=}")
 
                 # found a font successfully!
@@ -540,10 +540,10 @@ class Text:
         bottom = self.bottom
 
         # Draw background
-        arcade.draw_lrtb_rectangle_filled(left, right, top, bottom, color=background_color)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, color=background_color)
 
         # Draw outline
-        arcade.draw_lrtb_rectangle_outline(left, right, top, bottom, color=outline_color)
+        arcade.draw_lrbt_rectangle_outline(left, right, bottom, top, color=outline_color)
 
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)

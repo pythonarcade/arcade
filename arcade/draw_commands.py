@@ -24,6 +24,7 @@ from arcade import (
     Texture,
     get_window,
 )
+from arcade.utils import warning, ReplacementWarning
 
 # --- BEGIN ARC FUNCTIONS # # #
 
@@ -622,11 +623,18 @@ def draw_triangle_outline(x1: float, y1: float,
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
 
+@warning(
+    warning_type=ReplacementWarning,
+    new_name="draw_lrbt_rectangle_outline"
+)
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: RGBA255,
                                 border_width: float = 1):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, top and bottom edges.
+
+    .. deprecated:: 3.0
+       Use :py:func:`draw_lrbt_rectangle_outline` instead!
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -638,13 +646,42 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
-
     if left > right:
         raise AttributeError("Left coordinate must be less than or equal to "
                              "the right coordinate")
 
     if bottom > top:
         raise AttributeError("Bottom coordinate must be less than or equal to "
+                             "the top coordinate")
+
+    center_x = (left + right) / 2
+    center_y = (top + bottom) / 2
+    width = right - left
+    height = top - bottom
+    draw_rectangle_outline(center_x, center_y, width, height, color,
+                           border_width)
+
+
+def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: Color,
+                                border_width: float = 1):
+    """
+    Draw a rectangle by specifying left, right, bottom and top edges.
+
+    :param float left: The x coordinate of the left edge of the rectangle.
+    :param float right: The x coordinate of the right edge of the rectangle.
+    :param float bottom: The y coordinate of the rectangle bottom.
+    :param float top: The y coordinate of the top of the rectangle.
+    :param Color color: The color of the rectangle.
+    :param float border_width: The width of the border in pixels. Defaults to one.
+    :Raises ValueError: Raised if left > right or top < bottom.
+
+    """
+    if left > right:
+        raise ValueError("Left coordinate must be less than or equal to "
+                             "the right coordinate")
+
+    if bottom > top:
+        raise ValueError("Bottom coordinate must be less than or equal to "
                              "the top coordinate")
 
     center_x = (left + right) / 2
@@ -713,10 +750,17 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
+@warning(
+    warning_type=ReplacementWarning,
+    new_name="draw_lrbt_rectangle_filled"
+)
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
                                bottom: float, color: RGBA255):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle by specifying left, right, top and bottom edges.
+
+    .. deprecated:: 3.0
+       Use :py:func:`draw_lrbt_rectangle_filled` instead!
 
     :param float left: The x coordinate of the left edge of the rectangle.
     :param float right: The x coordinate of the right edge of the rectangle.
@@ -731,6 +775,30 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
     if bottom > top:
         raise AttributeError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
+
+    center_x = (left + right) / 2
+    center_y = (top + bottom) / 2
+    width = right - left + 1
+    height = top - bottom + 1
+    draw_rectangle_filled(center_x, center_y, width, height, color)
+
+
+def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: Color):
+    """
+    Draw a rectangle by specifying left, right, bottom and top edges.
+
+    :param float left: The x coordinate of the left edge of the rectangle.
+    :param float right: The x coordinate of the right edge of the rectangle.
+    :param float bottom: The y coordinate of the rectangle bottom.
+    :param float top: The y coordinate of the top of the rectangle.
+    :param Color color: The color of the rectangle.
+    :Raises ValueError: Raised if left > right or top < bottom.
+    """
+    if left > right:
+        raise ValueError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
+
+    if bottom > top:
+        raise ValueError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2

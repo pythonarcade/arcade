@@ -118,7 +118,9 @@ from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
+from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -292,7 +294,9 @@ __all__ = [
     'draw_line_strip',
     'draw_lines',
     'draw_lrtb_rectangle_filled',
+    'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_outline',
     'draw_lrwh_rectangle_textured',
     'draw_parabola_filled',
     'draw_parabola_outline',
@@ -363,7 +367,6 @@ __all__ = [
     'get_default_image',
     'hitbox',
     'experimental',
-    'isometric',
     'color',
     'csscolor',
     'key',
@@ -378,22 +381,22 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, 'is_pyglet_doc_run', False):
     # Auto load fonts
-    load_font(":resources:fonts/ttf/Kenney_Blocks.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future_Narrow.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Blocks.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future_Narrow.ttf")
+    load_font(":system:fonts/ttf/Kenney_High.ttf")
+    load_font(":system:fonts/ttf/Kenney_High_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket_Square.ttf")
 
     # Load additional game controller mappings to Pyglet
     if not pyglet.options['headless']:
         try:
-            mappings_file = resources.resolve_resource_path(":resources:gamecontrollerdb.txt")
+            mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
             pyglet.input.controller.add_mappings_from_file(mappings_file)
         except AssertionError:
             pass

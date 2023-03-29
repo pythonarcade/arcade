@@ -3,9 +3,9 @@ import arcade
 TILE_SCALING = 0.5
 
 
-def test_show_tilemap(window: arcade.Window, fixtures):
+def test_show_tilemap(window: arcade.Window):
     my_map = arcade.load_tilemap(
-        fixtures.path("tilemaps/animation.json"),
+        ":fixtures:tilemaps/animation.json",
         scaling=TILE_SCALING,
     )
 

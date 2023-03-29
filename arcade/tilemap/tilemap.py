@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 from pyglet.math import Vec2
 
 from arcade.math import rotate_point
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from arcade.types import Point, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
@@ -189,7 +189,7 @@ class TileMap:
             self.tiled_map = tiled_map
         else:
             # If we should pull from local resources, replace with proper path
-            map_file = resolve_resource_path(map_file)
+            map_file = resolve(map_file)
 
             # This attribute stores the pytiled-parser map object
             self.tiled_map = pytiled_parser.parse_map(map_file)

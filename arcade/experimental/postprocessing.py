@@ -87,8 +87,8 @@ class GaussianBlurHorizontal(GaussianBlurPass):
         self._fbo = self.ctx.framebuffer(color_attachments=color_attachment)
         self._program = self.ctx.load_program(
             # defines=self._create_kernel(),
-            vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=':resources:shaders/postprocessing/gaussian_blur_x_fs.glsl',
+            vertex_shader=':system:shaders/texture_default_projection_vs.glsl',
+            fragment_shader=':system:shaders/postprocessing/gaussian_blur_x_fs.glsl',
         )
         self._quad_fs = geometry.quad_2d_fs()
 
@@ -113,8 +113,8 @@ class GaussianBlurVertical(GaussianBlurPass):
                                                wrap_y=self.ctx.CLAMP_TO_EDGE))
         self._program = self.ctx.load_program(
             # defines=self._create_kernel(),
-            vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=':resources:shaders/postprocessing/gaussian_blur_y_fs.glsl',
+            vertex_shader=':system:shaders/texture_default_projection_vs.glsl',
+            fragment_shader=':system:shaders/postprocessing/gaussian_blur_y_fs.glsl',
         )
         self._quad_fs = geometry.quad_2d_fs()
 
@@ -182,14 +182,14 @@ class BloomEffect(PostProcessing):
         self._cb_luma_buffer = self.ctx.framebuffer(color_attachments=[luma_tex])
         # Buffer for the converted luma values
         self._cb_luma_program = self.ctx.load_program(
-            vertex_shader=':resources:shaders/postprocessing/glow_filter_vs.glsl',
-            fragment_shader=':resources:shaders/postprocessing/glow_filter_fs.glsl'
+            vertex_shader=':system:shaders/postprocessing/glow_filter_vs.glsl',
+            fragment_shader=':system:shaders/postprocessing/glow_filter_fs.glsl'
         )
 
         # Program for combining the original buffer and the blurred buffer
         self._combine_program = self.ctx.load_program(
-            vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=':resources:shaders/postprocessing/gaussian_combine_fs.glsl'
+            vertex_shader=':system:shaders/texture_default_projection_vs.glsl',
+            fragment_shader=':system:shaders/postprocessing/gaussian_combine_fs.glsl'
         )
         self._quad_fs = geometry.quad_2d_fs()
 
