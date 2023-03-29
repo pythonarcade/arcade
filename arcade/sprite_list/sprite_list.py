@@ -840,8 +840,7 @@ class SpriteList(Generic[SpriteType]):
                  See the :ref:`sorting section of the SpriteLists article <pg_spritelists_draw_order_and_sorting>`
                  for more information.
 
-        :param key: A `callable <https://docs.python.org/3/glossary.html#term-callable>`_
-                such as a
+        :param key: A callable such as a
                 `lambda <https://docs.python.org/3/howto/functional.html#small-functions-and-the-lambda-expression>`_
                 or function which returns a comparison key.
         :param reverse: If set to ``True``, the sprites will be sorted in reverse
