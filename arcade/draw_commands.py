@@ -662,7 +662,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                            border_width)
 
 
-def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: Color,
+def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: RGBA255,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
@@ -783,7 +783,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: Color):
+def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
