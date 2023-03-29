@@ -5,7 +5,7 @@ from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade.math import get_distance
-from arcade.types import Color
+from arcade.types import Color, RGBA255
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -50,34 +50,34 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
 
             button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
         """
-        bg: Color = (94, 104, 117)
-        border: Color = (77, 81, 87)
+        bg: RGBA255 = Color(94, 104, 117)
+        border: RGBA255 = Color(77, 81, 87)
         border_width: int = 1
-        filled_bar: Color = (50, 50, 50)
-        unfilled_bar: Color = (116, 125, 123)
+        filled_bar: RGBA255 = Color(50, 50, 50)
+        unfilled_bar: RGBA255 = Color(116, 125, 123)
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            bg=(96, 103, 112),
-            border=(77, 81, 87),
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
             border_width=2,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         ),
         "press": UIStyle(
-            bg=(96, 103, 112),
-            border=(77, 81, 87),
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
             border_width=3,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         ),
         "disabled": UIStyle(
-            bg=(94, 104, 117),
-            border=(77, 81, 87),
+            bg=Color(94, 104, 117),
+            border=Color(77, 81, 87),
             border_width=1,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         )
     }
 

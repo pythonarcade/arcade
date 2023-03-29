@@ -3,7 +3,7 @@ from typing import Optional, List, Tuple
 from PIL import Image
 
 import arcade.gl as gl
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 from arcade.window_commands import get_window
 from pyglet.math import Mat3
 from arcade import ArcadeContext
@@ -143,7 +143,7 @@ class BackgroundTexture:
     ):
         _context = get_window().ctx
 
-        with Image.open(resolve_resource_path(tex_src)).convert("RGBA") as img:
+        with Image.open(resolve(tex_src)).convert("RGBA") as img:
             texture = _context.texture(
                 img.size,
                 data=img.transpose(Image.Transpose.FLIP_TOP_BOTTOM).tobytes(),

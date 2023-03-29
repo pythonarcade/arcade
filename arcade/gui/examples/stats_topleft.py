@@ -22,16 +22,11 @@ class UINumberLabel(UILabel):
         self.fit_content()
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-
+        super().__init__()
         # Init UIManager
-        self.manager = UIManager()
-        self.manager.enable()
-
-        # Set background
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        self.ui = UIManager()
 
         # Create value labels
         self.timer = UINumberLabel(value=20, align="right", size_hint_min=(30, 20))
@@ -59,7 +54,7 @@ class UIMockup(arcade.Window):
         )
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
-        anchor = self.manager.add(UIAnchorLayout())
+        anchor = self.ui.add(UIAnchorLayout())
         anchor.add(
             align_x=10, anchor_x="left", align_y=-10, anchor_y="top", child=self.columns
         )
@@ -67,10 +62,21 @@ class UIMockup(arcade.Window):
     def on_update(self, delta_time: float):
         self.timer.value += delta_time
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-window = UIMockup()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

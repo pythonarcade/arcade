@@ -3,7 +3,8 @@ from typing import Iterable, Tuple, Sequence, List, Optional
 
 from arcade import gl
 from arcade.experimental.texture_render_target import RenderTargetTexture
-from arcade.types import Color
+from arcade.types import RGBOrA255
+from arcade.color import WHITE
 
 
 class Light:
@@ -15,7 +16,7 @@ class Light:
         center_x: float,
         center_y: float,
         radius: float = 50.0,
-        color: Color = (255, 255, 255),
+        color: RGBOrA255 = WHITE,
         mode: str = 'hard',
     ):
         """
@@ -27,7 +28,7 @@ class Light:
         :param float center_x: X position of the light
         :param float center_y: Y position of the light
         :param float radius: Radius of the light
-        :param Color color: Color of the light
+        :param RGBA255 color: Color of the light
         :param str mode: 'hard' or 'soft' light
         """
         if not (isinstance(color, tuple) or isinstance(color, list)):
@@ -95,13 +96,13 @@ class LightLayer(RenderTargetTexture):
             ),
         ])
         self._light_program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/lights/point_lights_vs.glsl",
-            geometry_shader=":resources:shaders/lights/point_lights_geo.glsl",
-            fragment_shader=":resources:shaders/lights/point_lights_fs.glsl",
+            vertex_shader=":system:shaders/lights/point_lights_vs.glsl",
+            geometry_shader=":system:shaders/lights/point_lights_geo.glsl",
+            fragment_shader=":system:shaders/lights/point_lights_fs.glsl",
         )
         self._combine_program = self.ctx.load_program(
-            vertex_shader=":resources:shaders/lights/combine_vs.glsl",
-            fragment_shader=":resources:shaders/lights/combine_fs.glsl",
+            vertex_shader=":system:shaders/lights/combine_vs.glsl",
+            fragment_shader=":system:shaders/lights/combine_fs.glsl",
         )
         # NOTE: Diffuse buffer created in parent
         self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
@@ -158,7 +159,7 @@ class LightLayer(RenderTargetTexture):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_target.use()
 
-    def draw(self, position: Tuple[float, float] = (0, 0), target=None, ambient_color: Color = (64, 64, 64)):
+    def draw(self, position: Tuple[float, float] = (0, 0), target=None, ambient_color: RGBOrA255 = (64, 64, 64)):
         """Draw the lights
         :param Tuple[float, float] position: Position offset (scrolling)
         :param target: The window or framebuffer we want to render to (default is window)

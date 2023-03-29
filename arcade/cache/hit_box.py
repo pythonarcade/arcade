@@ -15,7 +15,7 @@ from typing import Optional, Union, TYPE_CHECKING
 from collections import OrderedDict
 
 from arcade.types import PointList
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 
 if TYPE_CHECKING:
     from arcade import Texture
@@ -102,7 +102,7 @@ class HitBoxCache:
 
         if the file extension is ".gz" the file will be compressed.
         """
-        path = resolve_resource_path(path)
+        path = resolve(path)
         if path.suffix == ".gz":
             with gzip.open(path, mode="rb") as fd:
                 data = json.loads(fd.read())

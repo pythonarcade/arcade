@@ -120,7 +120,7 @@ class HitBox:
 
             return (x + self.position[0], y + self.position[1])
 
-        self._adjusted_points = tuple([_adjust_point(point) for point in self.points])
+        self._adjusted_points = [_adjust_point(point) for point in self.points]
         self._adjusted_cache_dirty = False
         return self._adjusted_points
 
@@ -171,6 +171,6 @@ class RotatableHitBox(HitBox):
                 y + self.position[1],
             )
 
-        self._adjusted_points = tuple([_adjust_point(point) for point in self.points])
+        self._adjusted_points = [_adjust_point(point) for point in self.points]
         self._adjusted_cache_dirty = False
         return self._adjusted_points

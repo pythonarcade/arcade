@@ -92,7 +92,7 @@ class AnimalFacts(arcade.View):
         # Draw a progress bar to show how long until we request a new fact
         progress = 1.0 - ((time.time() - self.last_updated) / self.update_interval)
         if progress > 0:
-            arcade.draw_lrtb_rectangle_filled(
+            arcade.draw_lrbt_rectangle_filled(
                 left=0, right=self.window.width * progress,
                 bottom=0, top=20,
                 color=arcade.color.LIGHT_KHAKI

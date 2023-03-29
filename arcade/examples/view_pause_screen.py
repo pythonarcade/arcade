@@ -94,10 +94,10 @@ class PauseView(arcade.View):
         player_sprite.draw()
 
         # draw an orange filter over him
-        arcade.draw_lrtb_rectangle_filled(left=player_sprite.left,
+        arcade.draw_lrbt_rectangle_filled(left=player_sprite.left,
                                           right=player_sprite.right,
-                                          top=player_sprite.top,
                                           bottom=player_sprite.bottom,
+                                          top=player_sprite.top,
                                           color=arcade.color.ORANGE[:3] + (200,))
 
         arcade.draw_text("PAUSED", WIDTH / 2, HEIGHT / 2 + 50,

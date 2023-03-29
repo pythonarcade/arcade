@@ -3,9 +3,9 @@ import arcade
 TILE_SCALING = 1.0
 
 
-def test_csv_left_up(fixtures):
+def test_csv_left_up():
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("tilemaps/csv_left_up_embedded.json"))
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/csv_left_up_embedded.json")
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -26,9 +26,9 @@ def test_csv_left_up(fixtures):
     assert wall_list[2].texture.file_path.name == "boxCrate.png"
 
 
-def test_csv_right_down(fixtures):
+def test_csv_right_down():
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("tilemaps/csv_right_down_external.json"))
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/csv_right_down_external.json")
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -49,9 +49,9 @@ def test_csv_right_down(fixtures):
     assert wall_list[2].texture.file_path.name == "boxCrate.png"
 
 
-def test_base_64_zlib(fixtures):
+def test_base_64_zlib():
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("tilemaps/base_64_zlib.json"))
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/base_64_zlib.json")
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128
@@ -72,9 +72,9 @@ def test_base_64_zlib(fixtures):
     assert wall_list[2].texture.file_path.name == "boxCrate.png"
 
 
-def test_base_64_gzip(fixtures):
+def test_base_64_gzip():
     # Read in the tiled map
-    my_map = arcade.load_tilemap(fixtures.path("tilemaps/base_64_gzip.json"))
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/base_64_gzip.json")
 
     assert my_map.tile_width == 128
     assert my_map.tile_height == 128

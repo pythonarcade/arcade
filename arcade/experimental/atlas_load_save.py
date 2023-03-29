@@ -18,7 +18,7 @@ import arcade
 from arcade.texture_atlas.helpers import save_atlas, load_atlas
 
 MODE = 'load'
-RESOURCE_ROOT = arcade.resources.RESOURCE_PATH
+RESOURCE_ROOT = arcade.resources.ASSET_PATH
 DESTINATION = Path.cwd()
 
 texture_paths: List[Path] = []

@@ -95,7 +95,7 @@ class MyGame(arcade.Window):
 
         self.channel1.use()
         # self.channel1.clear(clear_color)
-        self.channel1.clear(arcade.get_four_byte_color(arcade.color.ARMY_GREEN))
+        self.channel1.clear(arcade.color.ARMY_GREEN)
         self.bomb_list.draw()
 
         self.use()

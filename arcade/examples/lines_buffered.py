@@ -10,6 +10,9 @@ from arcade.shape_list import (
     ShapeElementList,
     create_line_strip,
 )
+from inspect import getmembers
+from arcade.types import Color
+
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -37,11 +40,13 @@ class MyGame(arcade.Window):
                       (-50, 0),
                       (-10, 10),
                       (0, 50))
+
+        # Filter out anything other than a Color, such as imports and
+        # helper functions.
         colors = [
-            getattr(arcade.color, color)
-            for color in dir(arcade.color)
-            if not color.startswith("__")
-        ]
+            color for name, color in
+            getmembers(arcade.color, lambda c: isinstance(c, Color))]
+
         for i in range(200):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)

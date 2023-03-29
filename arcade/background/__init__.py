@@ -4,7 +4,7 @@ from PIL import Image
 
 import arcade.gl as gl
 from arcade import get_window
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 
 from arcade.background.background_texture import BackgroundTexture
 from arcade.background.background import Background
@@ -29,7 +29,7 @@ def texture_from_file(
 ) -> BackgroundTexture:
     _context = get_window().ctx
 
-    with Image.open(resolve_resource_path(tex_src)).convert("RGBA") as img:
+    with Image.open(resolve(tex_src)).convert("RGBA") as img:
         texture = _context.texture(
             img.size,
             data=img.transpose(Image.Transpose.FLIP_TOP_BOTTOM).tobytes(),
