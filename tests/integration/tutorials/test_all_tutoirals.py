@@ -24,19 +24,20 @@ def _get_tutorials(start_path):
     tutorials = [_get_short_name(e) for e in tutorials]
     tutorials = [e for e in tutorials if e != "run_all_tutorials"]
     tutorials = [e for e in tutorials if not e.startswith('_')]
-    tutorials = [f"../doc/tutorials/{start_path.name}/" + e + ".py" for e in tutorials if not e.startswith('_')]
+    tutorials = [f"{e}.py" for e in tutorials if not e.startswith('_')]
     return tutorials
 
 def find_tutorials(indices_in_range, index_skip_list):
     """List all tutorials in the doc/tutorials directory"""
-    for tutorial_subdir in [path for path in list(Path.cwd().joinpath(TUTORIAL_SUBDIR).iterdir()) if path.is_dir()]:
+    file_dir = Path(__file__).parent
+    for tutorial_subdir in [path for path in list((file_dir / TUTORIAL_SUBDIR).iterdir()) if path.is_dir()]:
         tutorials = _get_tutorials(tutorial_subdir)
         tutorials.sort()
         print(f"Found {len(tutorials)} tutorials in {tutorial_subdir}")
-
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        print(file_path)
-        os.chdir(f"{file_path}/../..")
+        if len(tutorials) == 0:
+            continue
+        print(tutorial_subdir)
+        os.chdir(tutorial_subdir)
 
         for (idx, tutorial) in enumerate(tutorials):
             if indices_in_range is not None and idx not in indices_in_range:
