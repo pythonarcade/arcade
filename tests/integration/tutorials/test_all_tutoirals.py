@@ -38,7 +38,6 @@ def find_tutorials(indices_in_range, index_skip_list):
             continue
         print(tutorial_subdir)
         os.chdir(tutorial_subdir)
-
         for (idx, tutorial) in enumerate(tutorials):
             if indices_in_range is not None and idx not in indices_in_range:
                 continue
@@ -47,6 +46,7 @@ def find_tutorials(indices_in_range, index_skip_list):
 
             allow_stdout = tutorial in ALLOW_STDOUT
             yield f'python {tutorial}', allow_stdout
+        os.chdir("../")         
 
 
 def list_tutorials(indices_in_range, index_skip_list):
