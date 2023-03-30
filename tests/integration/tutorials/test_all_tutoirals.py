@@ -37,7 +37,7 @@ def find_tutorials(indices_in_range, index_skip_list):
         if len(tutorials) == 0:
             continue
         print(tutorial_subdir)
-        os.chdir(tutorial_subdir)
+        # os.chdir(tutorial_subdir)
         for (idx, tutorial) in enumerate(tutorials):
             if indices_in_range is not None and idx not in indices_in_range:
                 continue
@@ -45,8 +45,8 @@ def find_tutorials(indices_in_range, index_skip_list):
                 continue
 
             allow_stdout = tutorial in ALLOW_STDOUT
-            yield f'python {tutorial}', allow_stdout
-        os.chdir("../")         
+            yield f'python {tutorial}', allow_stdout, tutorial_subdir
+        # os.chdir("../")         
 
 
 def list_tutorials(indices_in_range, index_skip_list):
@@ -63,13 +63,13 @@ def list_tutorials(indices_in_range, index_skip_list):
         index_skip_list=None
     )
 )
-def test_all(cmd, allow_stdout):
+def test_all(cmd, allow_stdout, tutorial_subdir):
     # Set an environment variable that will just run on_update() and on_draw()
     # once, then quit.
     import pyglet
     test_env = os.environ.copy()
     test_env["ARCADE_TEST"] = "TRUE"
-
+    os.chdir(tutorial_subdir)
     result = subprocess.check_output(cmd, shell=True, env=test_env)
     if result and not allow_stdout:
         print(f"ERROR: Got a result of: {result}.")
