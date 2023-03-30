@@ -48,7 +48,7 @@ This program will load a GLSL program and display it. We'll write our shader in 
 .. literalinclude:: shadertoy_demo_2.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 4, 15-19, 22
+    :emphasize-lines: 2, 12-15, 19
 
 .. note::
 
@@ -191,7 +191,7 @@ Python program:
 .. literalinclude:: shadertoy_demo_3.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 21-23
+    :emphasize-lines: 17-20
 
 Then we can use those uniforms in our shader:
 
