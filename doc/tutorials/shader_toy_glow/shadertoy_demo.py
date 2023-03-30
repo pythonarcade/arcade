@@ -1,9 +1,5 @@
-from pathlib import Path
-
 import arcade
 from arcade.experimental import Shadertoy
-
-CURRENT_DIR = Path(__file__).parent.resolve()
 
 
 class MyGame(arcade.Window):
@@ -18,7 +14,7 @@ class MyGame(arcade.Window):
         # File name of GLSL code
         # file_name = "fractal_pyramid.glsl"
         # file_name = "cyber_fuji_2020.glsl"
-        file_name = CURRENT_DIR / "earth_planet_sky.glsl"
+        file_name = "earth_planet_sky.glsl"
         # file_name = "flame.glsl"
         # file_name = "star_nest.glsl"
 
