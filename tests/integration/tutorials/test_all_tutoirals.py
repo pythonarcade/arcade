@@ -57,7 +57,7 @@ def list_tutorials(indices_in_range, index_skip_list):
 
 
 @pytest.mark.parametrize(
-    "cmd, allow_stdout"," tutorial_subdir",
+    "cmd, allow_stdout, tutorial_subdir",
     argvalues=list_tutorials(
         indices_in_range=None,
         index_skip_list=None
