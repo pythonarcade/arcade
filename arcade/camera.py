@@ -27,12 +27,13 @@ class SimpleCamera:
     :param viewport: Size of the viewport: (left, bottom, width, height)
     :param projection: Space to allocate in the viewport of the camera (left, right, bottom, top)
     """
-
-    def __init__(self, *,
-                 viewport: Optional[FourIntTuple] = None,
-                 projection: Optional[FourFloatTuple] = None,
-                 window: Optional["arcade.Window"] = None) -> None:
-
+    def __init__(
+        self,
+        *,
+        viewport: Optional[FourIntTuple] = None,
+        projection: Optional[FourFloatTuple] = None,
+        window: Optional["arcade.Window"] = None,
+    ) -> None:
         # Reference to Context, used to update projection matrix
         self._window: "arcade.Window" = window or arcade.get_window()
 
@@ -48,7 +49,7 @@ class SimpleCamera:
             # will match the provided viewport
             self._projection = (viewport[0], viewport[2], viewport[1], viewport[3])
 
-        # Matrixes
+        # Matrices
 
         # Projection Matrix is used to apply the camera viewport size
         self._projection_matrix: Mat4 = Mat4()
@@ -67,7 +68,7 @@ class SimpleCamera:
         self.moving: bool = False
 
         # Init matrixes
-        # This will precompute the projection, view and combined matrixes
+        # This will pre-compute the projection, view and combined matrixes
         self._set_projection_matrix(update_combined_matrix=False)
         self._set_view_matrix()
 
@@ -141,7 +142,7 @@ class SimpleCamera:
 
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
-        self._projection_matrix = Mat4.orthogonal_projection(*self._projection, -1, 1)
+        self._projection_matrix = Mat4.orthogonal_projection(*self._projection, -100, 100)
         if update_combined_matrix:
             self._set_combined_matrix()
 
@@ -204,7 +205,7 @@ class SimpleCamera:
         vector2 = Vec2(vector2.x * self.viewport_to_projection_width_ratio,
                        vector2.y * self.viewport_to_projection_height_ratio)
 
-        # move to the vector substracting the center
+        # move to the vector subtracting the center
         target = (vector2 - center)
 
         self.move_to(target, speed)
@@ -225,7 +226,6 @@ class SimpleCamera:
         :param int viewport_width: Width of the viewport
         :param int viewport_height: Height of the viewport
         :param bool resize_projection: if True the projection will also be resized
-
         """
         new_viewport = (self._viewport[0], self._viewport[1], viewport_width, viewport_height)
         self.set_viewport(new_viewport)
@@ -255,7 +255,8 @@ class SimpleCamera:
 
         # set Viewport / projection
         self._window.ctx.viewport = self._viewport  # sets viewport of the camera
-        self._window.ctx.projection_2d_matrix = self._combined_matrix  # sets projection position and zoom
+        self._window.projection = self._combined_matrix  # sets projection position and zoom
+        self._window.view = Mat4()  # Set to identity matrix for now
 
 
 class Camera(SimpleCamera):
@@ -271,17 +272,15 @@ class Camera(SimpleCamera):
     :param tuple anchor: the x, y point where the camera rotation will anchor. Default is the center of the viewport.
     :param Window window: Window to associate with this camera, if working with a multi-window program.
     """
-
     def __init__(
-            self, *,
-            viewport: Optional[FourIntTuple] = None,
-            projection: Optional[FourFloatTuple] = None,
-            zoom: float = 1.0,
-            rotation: float = 0.0,
-            anchor: Optional[Tuple[float, float]] = None,
-            window: Optional["arcade.Window"] = None,
+        self, *,
+        viewport: Optional[FourIntTuple] = None,
+        projection: Optional[FourFloatTuple] = None,
+        zoom: float = 1.0,
+        rotation: float = 0.0,
+        anchor: Optional[Tuple[float, float]] = None,
+        window: Optional["arcade.Window"] = None,
     ):
-
         # scale and zoom
         # zoom it's just x scale value. Setting zoom will set scale x, y to the same value
         self._scale: Tuple[float, float] = (zoom, zoom)
@@ -340,7 +339,7 @@ class Camera(SimpleCamera):
 
     def _set_view_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
-        Helper method. This will just precompute the view and combined matrix
+        Helper method. This will just pre-compute the view and combined matrix
         :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
 
