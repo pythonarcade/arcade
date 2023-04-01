@@ -33,17 +33,17 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
             for poly in poly_a:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
-                if min_a is None or projected < min_a:
+                if projected < min_a:
                     min_a = projected
-                if max_a is None or projected > max_a:
+                if projected > max_a:
                     max_a = projected
 
             for poly in poly_b:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
-                if min_b is None or projected < min_b:
+                if projected < min_b:
                     min_b = projected
-                if max_b is None or projected > max_b:
+                if projected > max_b:
                     max_b = projected
 
             # Avoid typing.cast() because this is a very hot path
