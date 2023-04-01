@@ -27,7 +27,8 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
             normal = (projection_2[1] - projection_1[1],
                       projection_1[0] - projection_2[0])
 
-            min_a, max_a, min_b, max_b = (None,) * 4
+            min_a, min_b = (float("inf"),) * 2
+            max_a, max_b = (-float("inf"),) * 2
 
             for poly in poly_a:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
