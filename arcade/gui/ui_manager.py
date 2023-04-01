@@ -302,24 +302,10 @@ class UIManager(EventDispatcher):
 
             ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
         """
-        # TODO This code does not work anymore, for now no camera support by default
-        # vx, vy, vw, vh = self.window.ctx.viewport
-        # pl, pr, pb, pt = self.window.ctx.projection_2d
-        # proj_width, proj_height = pr - pl, pt - pb
-        # dx, dy = proj_width / vw, proj_height / vh
-        # return (x - vx) * dx, (y - vy) * dy
-
-        # NOTE: For now we just take view and projection scrolling into account
-        #       This doesn't support rotation and scaling
-        # Get x and y translation in the view matrix
-        x -= self.window.view[12]
-        y -= self.window.view[13]
-        # Get x and y translation in the projection matrix
-        proj_2d = self.window.ctx.projection_2d
-        x += proj_2d[0]
-        y += proj_2d[2]
-        # Return adjusted coordinates
-        return x, y
+        # NOTE: Only support scrolling until cameras support transforming
+        #       mouse coordinates
+        px, py = self.camera.position
+        return x + px, y + py
 
     def on_event(self, event) -> bool:
         layers = sorted(self.children.keys(), reverse=True)
