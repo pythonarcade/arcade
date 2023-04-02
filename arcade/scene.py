@@ -113,6 +113,8 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
+        if name in self.name_mapping.key():
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
         self.name_mapping[name] = sprite_list
         self.sprite_lists.append(sprite_list)
 
