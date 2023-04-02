@@ -568,7 +568,6 @@ class Text:
         else:
             self._label.position = *point, self._label.z
 
-
 def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
