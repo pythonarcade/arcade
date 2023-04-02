@@ -20,8 +20,6 @@ class Scene:
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/tutorials/views/index.html
 
-    Attributes:
-        :DON'T CHANGE _sprite_lists or _name_mapping
     """
 
     def __init__(self) -> None:
