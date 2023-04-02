@@ -9,7 +9,7 @@ anything.
 Arcade uses OpenGL. It is very fast at drawing sprites and off-loads functions such as rotation
 and transparency to the graphics card.
 
-Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
+Here are some comparisons between Arcade 2.6 and Pygame 2.2.0 ce:
 
 .. list-table:: Library Information
    :widths: 33 33 33
@@ -76,7 +76,7 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - Yes
    * - Batch drawing
      - Via GPU
-     - Via Surface [#f5]_
+     - Via Surface [#f3]_
    * - Default Hitbox
      - .. image:: images/hitbox_simple.png
           :width: 30%
@@ -109,66 +109,94 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
      - `Yes <resources.html>`__
      - No
 
-.. list-table:: Performance Comparison [#f6]_
-   :widths: 33 33 33
-   :header-rows: 1
-
-   * - Feature
-     - Arcade
-     - Pygame
-   * - Draw 50,000 stationary sprites
-     - 0.001 seconds
-     - 0.425 seconds
-   * - Move 5,000 sprites
-     - 0.010 seconds
-     - 0.003 seconds
-   * - # sprites program can move + draw
-       before FPS drops below 55
-     - 8500
-     - 2000
-   * - Collision detection 50,000 sprites
-     - | 0.044 seconds no spatial hashing [#f3]_
-       | 0.005 seconds with spatial hashing
-     - 0.004 seconds [#f4]_
-   * - Draw 5,000 plain rectangles [#f7]_
-     - 0.081 seconds
-     - 0.008 seconds
-   * - Draw 5,000 rotated rectangles [#f8]_
-     - 0.081 seconds
-     - 0.029 seconds
-
-.. figure:: images/fps_comparison2.svg
-
-    FPS comparison of programs drawing **stationary** sprites.
-
-.. figure:: images/fps_comparison1.svg
-
-    FPS comparison of programs drawing **moving** sprites.
-
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
          then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
          graphics card.
 .. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time. The user must
          cache the image with their own code for better performance. Arcade does this automatically.
-.. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing the surface to the screen.
-.. [#f6] Performance tests done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Source code for tests available at
-         https://github.com/pythonarcade/performance_tests and more detailed results at
-         https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
-.. [#f3] Polygon hit box, rotation allowed
-.. [#f4] Rectangular hit box, no rotation allowed
-.. [#f7] Why is Arcade so slow here? With PyGame, most of the drawing is done on the **CPU** side. Bitmaps
-         are created and manipulated by the CPU. It is pretty fast. With Arcade, most of the drawing happens
-         on the **GPU** side. Sprites and drawings are batched together, and we just tell the GPU what we want
-         to change. Or better yet, we write a "shader" program that runs completely on the GPU.
-         This is *incredibly* fast. But
-         if instead a CPU program runs commands to draw individual GPU items one-by-one, both sets
-         of processors wait for a synchronous communication.
-         That is horribly slow. Drawing individual rects and bits like
-         PyGame does, won't work well at all on Arcade. Use sprites, shaders, or batch-drawing to
-         get fast performance.
-.. [#f8] Scaling and rotation must be done by the programmer drawing to a surface, transforming the surface,
-         then blit'ing the surface to the screen. Arcade uses the GPU for these operations and needs no
-         additional code or performance hits.
+.. [#f3] A programmer can achieve a similar result by drawing to a surface, then drawing the surface to the screen.
+
+
+Performance Comparison
+----------------------
+
+These performance tests were done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Source code for tests available at:
+
+* https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
+* https://github.com/pythonarcade/performance_tests
+
+Sprite Drawing
+^^^^^^^^^^^^^^
+
+How fast can the graphics libraries draw sprites that don't move?
+This graph shows the Frames Per Second (FPS) the computer can maintain vs. the number of sprites being drawn
+each frame:
+
+.. image:: images/fps_comparison_stationary_sprites.svg
+
+Why is Arcade so fast?
+Arcade loads the sprites to the GPU and can redraw stationary sprites with almost no CPU effort. This allows
+it to scale drawing of stationary sprites to even 1 million plus, and still keep 60 FPS.
+
+While Pygame's speed may drop off fast, there's still a few thousand sprites that can be drawn on the screen
+before FPS drops off. For many games that's plenty.
+Also, for sprites that don't move, Pygame programs can draw the sprites to a 'surface' at the start of a game.
+A program can then use that surface to the screen in one operation.
+
+How fast can we draw moving sprites?
+Moving sprites are more challenging to draw, as we can't simply use what we did in the prior frame.
+
+.. image:: images/fps_comparison_moving_sprites.svg
+
+Arcade only updates the changed location of the sprite, keeping the dimensions and image on the GPU
+allowing it to still have fast updates.
+
+Arcade also has two sprite classes available. The full-featured :py:class:`arcade.Sprite` class
+and the smaller and faster :py:class:`arcade.BasicSprite` class. If you don't need collision detection
+or physics support, the ``BasicSprite`` class works great.
+
+Collision Processing
+^^^^^^^^^^^^^^^^^^^^
+
+Another time-critical component in games is the time it takes to figure out if sprites collide:
+
+.. image:: images/fps_comparison_stationary_collision.svg
+
+Normally collision detection is an O(N) operation. That is, if are checking to see if a sprite collides with
+any of 1,000 other sprites, we have 1,000 checks to do. If there are a lot of sprites, this takes time.
+
+Arcade has two ways to speed this up.
+
+1. Spatial Hashing. If we know those 1,000 sprites aren't going to move at all (or very much) we can set up a
+   grid. We figure out what grid locaiton the player is in. Then we only check the player against whichever
+   of the 1,000 sprites are in the same grid location. This works great for tiled maps where the platforms, ramps,
+   etc. don't move.
+2. Off-load to the GPU. As there are 1,000s of processors on your graphics card, we can calculate collisions there.
+   However it takes time to set up the GPU. This is only faster if we have more than 1500 or so sprites to check.
+
+Arcade has multiple modes that allow you to select these collision options.
+
+Shapes
+^^^^^^
+
+Aside from sprites, how fast can a library draw various graphical shapes? Rectangle, circles, arcs, and more?
+
+This next benchmark looks at drawing rectangles. Important things to keep in mind:
+
+* Pygame uses memory bliting which is crazy fast and why it comes out in first-place. This doesn't work as well
+  if you are drawing anything but unrotated rectangles.
+* Arcade's shapes are easy, but crazy-slow.
+  Thankfully you can use Pyglet shapes in the same program as Arcade.
+  For anything more than a dozen or so shapes, a program should do that.
+* Arcade has a Sprite class for solid-color rectangles. If you needed rectangles the `SpriteSolidColor`
+  would be a high performance option not shown here.
+
+.. image:: images/fps_comparison_unrotated_rects.svg
+
+What if a shape needs to be rotated? Pyglet can offload this to the GPU and this allows it to perform
+faster than Pygame that relies on the CPU.
+
+.. image:: images/fps_comparison_rotated_rects.svg
 
 .. _MIT License: https://github.com/pythonarcade/arcade/blob/development/license.rst
 .. _LGPL: https://github.com/pygame/pygame/blob/main/docs/LGPL.txt
