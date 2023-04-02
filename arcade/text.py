@@ -567,14 +567,6 @@ class Text:
             self._label.position = point
         else:
             self._label.position = *point, self._label.z
-       
-def create_text_texture(text: str, color: RGBA255 = arcade.color.WHITE, font_size: float = 12, width: int = 0,
-    align: str = "left", font_name: FontNameOrNames = ("calibri", "arial"), bold: bool = False,
-    italic: bool = False):
-    r, g, b, alpha = get_four_byte_color(color)
-    cache_color = f"{r}{g}{b}"
-    key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    return Texture(key)
 
 def create_text_sprite(
     text: str,
