@@ -30,12 +30,9 @@ class Scene:
 
     def __init__(self) -> None:
         self.sprite_lists: List[SpriteList] = []
+        self.expected_sprite_lists_len = 0
         self.name_mapping: Dict[str, SpriteList] = {}
-    
-    @classmethod
-    def __delitem__(cls, my_str):
-        
-        del cls._instances[my_str]
+        self.expected_name_mapping_len = 0
         
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
@@ -53,6 +50,9 @@ class Scene:
         for name, sprite_list in tilemap.sprite_lists.items():
             scene.add_sprite_list(name=name, sprite_list=sprite_list)
         return scene
+    
+    def resync(self):
+        pass
 
     def get_sprite_list(self, name: str) -> SpriteList:
         """
@@ -119,7 +119,8 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
-        if name in self.name_mapping.key():
+        if name in self.name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
             warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
         self.name_mapping[name] = sprite_list
         self.sprite_lists.append(sprite_list)
@@ -146,6 +147,9 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
+        if name in self.name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
         self.name_mapping[name] = sprite_list
         before_list = self.name_mapping[before]
         index = self.sprite_lists.index(before_list)
@@ -198,6 +202,9 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
+        if name in self.name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
         self.name_mapping[name] = sprite_list
         after_list = self.name_mapping[after]
         index = self.sprite_lists.index(after_list) + 1
