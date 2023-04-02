@@ -2,9 +2,9 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
-from pathlib import Path
 from collections import namedtuple
 from collections.abc import ByteString
+from pathlib import Path
 from typing import (
     Iterable,
     List,
@@ -15,20 +15,20 @@ from typing import (
     Union,
     TYPE_CHECKING, TypeVar
 )
+
+from pytiled_parser import Properties
+
 from arcade.utils import (
     IntOutsideRangeError,
     ByteRangeError,
     NormalizedRangeError
 )
-from pytiled_parser import Properties
 
 if TYPE_CHECKING:
     from arcade.texture import Texture
 
-
 MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
-
 
 ChannelType = TypeVar('ChannelType')
 
@@ -72,6 +72,7 @@ class Color(RGBA255):
     :param a: the alpha or transparency channel of the color, between
         0 and 255
     """
+
     def __new__(cls, r: int, g: int, b: int, a: int = 255):
 
         if not 0 <= r <= 255:
@@ -90,6 +91,10 @@ class Color(RGBA255):
         # tuples & super:
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
+
+    def __deepcopy__(self, _):
+        """Allow to deepcopy Colors"""
+        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
@@ -343,7 +348,6 @@ class Color(RGBA255):
 
 
 ColorLike = Union[RGB, RGBA255]
-
 
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
