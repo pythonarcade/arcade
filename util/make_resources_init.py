@@ -19,7 +19,7 @@ def main() -> None:
 
     lines = get_module_lines()
 
-    for item in RESOURCE_ROOT.glob('**/*'):
+    for item in sorted(RESOURCE_ROOT.glob('**/*')):
         if item.is_dir():
             continue
         if item.suffix in IGNORE_MEDIA_TYPES:
