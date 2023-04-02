@@ -1,3 +1,13 @@
+"""
+This example is a POC for a UIScrollArea.
+
+You can move the UIScrollArea using the mouse wheel or draging it with the middle mouse button
+
+Missing:
+- Thoughtful API
+- UIScrollBars
+"""
+
 from typing import Iterable, Optional
 
 from pyglet.event import EVENT_UNHANDLED
@@ -6,13 +16,6 @@ import arcade
 from arcade import Window
 from arcade.gui import UIManager, UIWidget, Property, Surface, UIDummy, UIEvent, bind, \
     UIMouseDragEvent, UIMouseScrollEvent, UIMouseEvent, UIBoxLayout, UIFlatButton, UIInputText
-
-
-class VerboseInputText(UIInputText):
-
-    def on_event(self, event: UIEvent) -> Optional[bool]:
-        on_event = super().on_event(event)
-        return on_event
 
 
 class UIScrollArea(UIWidget):
@@ -96,13 +99,13 @@ class MyWindow(Window):
     def __init__(self):
         super().__init__()
 
-        self.manager = UIManager()
-        self.manager.enable()
+        self.ui = UIManager()
+        self.ui.enable()
         self.background_color = arcade.color.WHITE
-        self.input = self.manager.add(VerboseInputText(x=450, y=300).with_border())
+        self.input = self.ui.add(UIInputText(x=450, y=300).with_border())
 
         self.scroll_area = UIScrollArea(x=100, y=100).with_border()
-        self.manager.add(self.scroll_area)
+        self.ui.add(self.scroll_area)
 
         anchor = self.scroll_area.add(UIBoxLayout(width=300, height=300, space_between=20))
         anchor.add(UIDummy(height=50))
@@ -111,11 +114,7 @@ class MyWindow(Window):
 
     def on_draw(self):
         arcade.start_render()
-        self.manager.draw()
-
-    def on_key_press(self, symbol: int, modifiers: int):
-        self.manager.trigger_render()
-        print(self.input.text)
+        self.ui.draw()
 
 
 if __name__ == "__main__":
