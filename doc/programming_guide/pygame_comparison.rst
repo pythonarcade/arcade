@@ -9,36 +9,58 @@ anything.
 Arcade uses OpenGL. It is very fast at drawing sprites and off-loads functions such as rotation
 and transparency to the graphics card.
 
-Here are some comparisons between Arcade 2.6 and Pygame 2.2.0 ce:
+In 2023 Pygame split between the `Original Pygame <https://github.com/pygame/>`_ and the
+`Pygame Community Edition <https://github.com/pygame-community/pygame-ce>`_ (Pygame-ce).
+At this point, the code bases are still pretty similar.
+
+Library Information
+-------------------
 
 .. list-table:: Library Information
-   :widths: 33 33 33
+   :widths: 25 25 25 25
    :header-rows: 1
 
    * - Feature
      - Arcade
-     - Pygame
+     - Pygame Original
+     - Pygame CE
    * - Website
      - https://arcade.academy
      - https://www.pygame.org
+     - https://pyga.me/
    * - API Docs
      - :ref:`API Docs<quick_index>`
      - `API Docs <https://www.pygame.org/docs/>`__
+     - `API Docs <https://pyga.me/docs/>`__
    * - Example code
      - :ref:`Arcade Examples<example-code>`
      - `Pygame Examples <https://github.com/pygame/pygame/tree/main/examples>`_
+     -
    * - License
      - `MIT License`_
+     - LGPL_
      - LGPL_
    * - Back-end graphics engine
      - OpenGL 3.3+ and `Pyglet <http://pyglet.org/>`_
      - `SDL 2 <https://www.libsdl.org/>`_
+     - `SDL 2 <https://www.libsdl.org/>`_
    * - Back-end audio engine
      - ffmpeg via Pyglet_
+     - `SDL 2 <https://www.libsdl.org/>`_
      - `SDL 2 <https://www.libsdl.org/>`_
    * - Example Projects
      - :ref:`sample_games`
      - `Games Made With Pygame <https://www.pygame.org/tags/all>`_
+     -
+   * - First Started
+     - 2016
+     - Before 2000
+     - Branched 2023
+
+Feature Comparison
+------------------
+
+Here are some comparisons between Arcade 3.0 and Pygame 2.2.0 ce:
 
 .. list-table:: Feature Comparison
    :widths: 33 33 33
@@ -56,7 +78,7 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.2.0 ce:
    * - Sprites support scaling
      - Yes
      - No [#f1]_
-   * - Sprite image caching [#f2]_
+   * - Texture atlas [#f2]_
      - Yes
      - No
    * - Type Hints
@@ -111,10 +133,11 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.2.0 ce:
 
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
          then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
-         graphics card.
-.. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time. The user must
-         cache the image with their own code for better performance. Arcade does this automatically.
-.. [#f3] A programmer can achieve a similar result by drawing to a surface, then drawing the surface to the screen.
+         graphics card. See for more information.
+.. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time unless the user
+         caches the image with their own code for better performance. Arcade will create an atlas of textures, so that
+         multiple sprites with the same image will just reference the same atlas location.
+.. [#f3] A programmer can achieve a similar result by drawing to a surface, then draw the surface to the screen.
 
 
 Performance Comparison
@@ -168,11 +191,13 @@ any of 1,000 other sprites, we have 1,000 checks to do. If there are a lot of sp
 Arcade has two ways to speed this up.
 
 1. Spatial Hashing. If we know those 1,000 sprites aren't going to move at all (or very much) we can set up a
-   grid. We figure out what grid locaiton the player is in. Then we only check the player against whichever
+   grid. We figure out what grid location the player is in. Then we only check the player against whichever
    of the 1,000 sprites are in the same grid location. This works great for tiled maps where the platforms, ramps,
-   etc. don't move.
+   etc. don't move. It gets us closer to O(1) time.
 2. Off-load to the GPU. As there are 1,000s of processors on your graphics card, we can calculate collisions there.
    However it takes time to set up the GPU. This is only faster if we have more than 1500 or so sprites to check.
+3. "Simple" checks everything. There are still a lot of tricks used to make this faster, and particularly with
+   Python 3.11 code, it runs fine for most cases.
 
 Arcade has multiple modes that allow you to select these collision options.
 
