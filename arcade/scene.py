@@ -12,6 +12,7 @@ from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
 from arcade.tilemap import TileMap
 
+from warnings import warn
 
 class Scene:
     """
