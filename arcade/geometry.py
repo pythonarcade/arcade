@@ -18,10 +18,10 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     :rtype bool:
     """
     #can't intersect if either is None
-    if poly_a is None or poly_b is None:
+    if not poly_a or not poly_b:
         return False
-    for polygon in (poly_a, poly_b):
 
+    for polygon in (poly_a, poly_b):
         for i1 in range(len(polygon)):
             i2 = (i1 + 1) % len(polygon)
             projection_1 = polygon[i1]
