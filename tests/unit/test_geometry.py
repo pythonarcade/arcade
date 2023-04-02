@@ -46,6 +46,16 @@ def test_are_polygons_not_intersecting():
     poly_b = [(100, 100), (100, 150), (150, 150), (150, 100)]
     assert are_polygons_intersecting(poly_a, poly_b) is False
 
+def test_are_empty_polygons_breaking():
+    poly_a = [] 
+    poly_b = []
+    assert are_polygons_intersecting(poly_a, poly_b) is False
+
+def test_are_mismatched_polygons_breaking():
+    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)] 
+    poly_b = []
+    assert are_polygons_intersecting(poly_a, poly_b) is False
+
 
 def test_get_triangle_orientation():
     triangle_colinear = [(0, 0), (0, 50), (0, 100)]
