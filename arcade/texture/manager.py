@@ -3,14 +3,13 @@ from typing import Union, Optional
 
 import arcade
 from arcade.hitbox import HitBoxAlgorithm
-from arcade.texture import Texture
+from .texture import Texture
 from arcade.cache import (
     TextureCache,
     ImageDataCache,
     HitBoxCache,
 )
 from . import SpriteSheet
-
 
 class TextureManager:
     """
@@ -22,7 +21,6 @@ class TextureManager:
     """
     def __init__(self):
         self._sprite_sheets = {}
-        self._textures = {}
         self._hit_box_cache = HitBoxCache()
         self._image_data_cache = ImageDataCache()
         self._texture_cache = TextureCache()
@@ -61,11 +59,26 @@ class TextureManager:
             self._sprite_sheets[path] = sprite_sheet
         return sprite_sheet
 
-    def flush(self, textures: bool = True, sprite_sheets: bool = True):
+    def flush(
+        self,
+        sprite_sheets: bool = True,
+        textures: bool = True,
+        image_data: bool = True,
+        hit_boxes: bool = False,
+    ):
         """
         Remove contents from the texture manager.
+
+        :param sprite_sheets: If ``True``, sprite sheets will be flushed.
+        :param textures: If ``True``, textures will be flushed.
+        :param image_data: If ``True``, image data will be flushed.
+        :param hit_boxes: If ``True``, hit boxes will be flushed.
         """
-        if textures:
-            self._textures.clear()
         if sprite_sheets:
             self._sprite_sheets.clear()
+        if textures:
+            self._texture_cache.flush()
+        if image_data:
+            self._image_data_cache.flush()
+        if hit_boxes:
+            self._hit_box_cache.flush()

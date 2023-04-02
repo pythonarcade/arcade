@@ -1,10 +1,9 @@
-from pathlib import Path
 import pytest
 from PIL import Image
 import arcade
 
 SPRITE_SHEET_RESOURCE = ":resources:images/spritesheets/codepage_437.png"
-SPRITE_SHEET_PATH = arcade.resources.resolve_resource_path(SPRITE_SHEET_RESOURCE)
+SPRITE_SHEET_PATH = arcade.resources.resolve(SPRITE_SHEET_RESOURCE)
 
 
 @pytest.fixture
@@ -55,4 +54,11 @@ def test_crop():
 
 
 def test_crop_grid():
-    pass
+    ss = arcade.SpriteSheet(SPRITE_SHEET_RESOURCE)
+    textures = ss.crop_grid(
+        size=(8, 16),
+        margins=(0, 1, 0, 0),
+        columns=32,
+        count=255,
+    )
+    assert len(textures) == 256

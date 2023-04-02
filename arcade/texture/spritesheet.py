@@ -1,8 +1,13 @@
 from PIL import Image
 from pathlib import Path
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, List, TYPE_CHECKING
 
+# from arcade import Texture
 from arcade.types import Rect
+from .texture import Texture
+
+if TYPE_CHECKING:
+    from arcade.hitbox import HitBoxAlgorithm
 
 
 class SpriteSheet:
@@ -17,14 +22,14 @@ class SpriteSheet:
     :param image: PIL image to use.
     """
     def __init__(
-            self,
-            path: Optional[Union[str, Path]] = None,
-            image: Optional[Image.Image] = None,
-        ):
-        from arcade.resources import resolve_resource_path
+        self,
+        path: Optional[Union[str, Path]] = None,
+        image: Optional[Image.Image] = None,
+    ):
+        from arcade.resources import resolve
         self._path = None
         if path:
-            self._path = resolve_resource_path(path)
+            self._path = resolve(path)
             self._image = Image.open(self._path).convert("RGBA")
         elif image:
             self._image = image
@@ -35,16 +40,23 @@ class SpriteSheet:
 
     @classmethod
     def from_image(cls, image: Image.Image):
+        """
+        Create a sprite sheet from a PIL image.
+
+        :param image: PIL image to use.
+        """
         return cls(image=image)
 
     @property
     def image(self) -> Image.Image:
         """
-        The image of the sprite sheet.
-
-        :return: The image.
+        Get or set the PIL image for this sprite sheet.
         """
         return self._image
+
+    @image.setter
+    def image(self, image: Image.Image):
+        self._image = image
 
     @property
     def path(self) -> Optional[Path]:
@@ -90,14 +102,47 @@ class SpriteSheet:
         """
         pass
 
-    def crop_grid(self, width: int, height: int, count: int, column_count: int, spacing: int = 0):
+    def crop_sections(self, sections: List[Rect]):
+        """
+        Crop multiple textures from the sprite sheet by specifying a list of
+        areas to crop.
+
+        :param sections: List of areas to crop ``[(x, y, width, height), ...]``
+        """
+        pass
+
+    def crop_grid(
+        self,
+        size: Tuple[int, int],
+        columns: int,
+        count: int,
+        margin: Rect = (0, 0, 0, 0),
+        hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
+    ) -> List[Texture]:
         """
         Crop a grid of textures from the sprite sheet.
 
-        :param width: Width of the crop.
-        :param height: Height of the crop.
-        :param count: Number of textures to crop.
-        :param column_count: Number of columns in the grid.
-        :param spacing: Spacing between the textures.
+        :param size: Size of each texture ``(width, height)``
+        :param columns: Number of columns in the grid
+        :param count: Number of textures to crop
+        :param margin: The margin around each texture ``(left, right, bottom, top)``
+        :param hit_box_algorithm: Hit box algorithm to use for the textures.
         """
-        pass
+        textures = []
+        width, height = size
+        left, right, bottom, top = margin
+
+        for sprite_no in range(count):
+            row = sprite_no // columns
+            column = sprite_no % columns
+
+            x = (width + left + right) * column
+            y = (height + top + bottom) * row
+            im = self.image.crop((x, y, x + width, y + height))
+
+            texture = Texture(im, hit_box_algorithm=hit_box_algorithm)
+            texture.file_path = self._path
+            texture.crop_values = x, y, width, height
+            textures.append(texture)
+
+        return textures
