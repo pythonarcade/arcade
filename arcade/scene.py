@@ -20,6 +20,7 @@ class Scene:
     https://api.arcade.academy/en/latest/tutorials/views/index.html
 
     Attributes:
+        :DON'T CHANGE sprite_lists or name_mapping
         :sprite_lists: A list of `SpriteList` objects. The order of this list is the
                        order in which they will be drawn.
         :name_mapping: A dictionary of `SpriteList` objects. This contains the same lists
@@ -30,7 +31,12 @@ class Scene:
     def __init__(self) -> None:
         self.sprite_lists: List[SpriteList] = []
         self.name_mapping: Dict[str, SpriteList] = {}
-
+    
+    @classmethod
+    def __delitem__(cls, my_str):
+        
+        del cls._instances[my_str]
+        
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
@@ -351,3 +357,4 @@ class Scene:
 
         for sprite_list in self.sprite_lists:
             sprite_list.draw_hit_boxes(color, line_thickness)
+    
