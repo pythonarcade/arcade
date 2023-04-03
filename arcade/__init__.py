@@ -332,6 +332,7 @@ __all__ = [
     'get_sprites_at_point',
     'SpatialHash',
     'get_timings',
+    'create_text_texture',
     'create_text_sprite',
     'clear_timings',
     'get_window',
