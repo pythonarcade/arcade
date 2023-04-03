@@ -41,6 +41,18 @@ def test_are_polygons_intersecting():
     assert are_polygons_intersecting(poly_a, poly_b) is True
 
 
+def test_are_polygons_intersecting():
+    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)]
+    poly_b = [(25, 25), (25, 75), (75, 75), (75, 25)]
+    assert are_polygons_intersecting(poly_a, poly_b) is True
+
+
+def test_are_polygons_not_intersecting():
+    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)]
+    poly_b = [(100, 100), (100, 150), (150, 150), (150, 100)]
+    assert are_polygons_intersecting(poly_a, poly_b) is False
+
+
 def test_are_polygons_not_intersecting():
     poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)]
     poly_b = [(100, 100), (100, 150), (150, 150), (150, 100)]
