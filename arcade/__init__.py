@@ -229,6 +229,7 @@ from arcade import experimental as experimental
 from .text import (
     draw_text,
     load_font,
+    create_text_texture,
     create_text_sprite,
     Text,
 )

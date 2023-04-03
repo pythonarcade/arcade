@@ -569,6 +569,51 @@ class Text:
             self._label.position = *point, self._label.z
 
 
+def create_text_texture(text: str,
+    color: RGBA255 = arcade.color.WHITE,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    multiline: bool = False,
+    texture_atlas: Optional[arcade.TextureAtlas] = None):
+
+    if align != "center" and align != "left" and align != "right":
+        raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
+
+    adjusted_font = _attempt_font_name_resolution(font_name)
+    _label = pyglet.text.Label(
+        text=text,
+        font_name=adjusted_font,
+        font_size=font_size,
+        anchor_x=anchor_x,
+        color=Color.from_iterable(color),
+        width=width,
+        align=align,
+        bold=bold,
+        italic=italic,
+        multiline=multiline,
+        )
+
+    size = (
+        int(_label.width),
+        int(_label.height),
+    )
+    
+    texture = arcade.Texture.create_empty(text, size)
+
+    if not texture_atlas:
+        texture_atlas = arcade.get_window().ctx.default_atlas
+    texture_atlas.add(texture)
+    with texture_atlas.render_into(texture) as fbo:
+        fbo.clear((0, 0, 0, 255))
+        _draw_pyglet_label(_label)
+    return texture
+
+
 def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
@@ -640,6 +685,18 @@ def create_text_sprite(
     with texture_atlas.render_into(texture) as fbo:
         fbo.clear((0, 0, 0, 255))
         text_object.draw()
+
+    texture = create_text_texture(text,
+        color = color,
+        font_size = font_size,
+        width = width,
+        align = align,
+        font_name = font_name,
+        bold = bold,
+        italic = italic,
+        anchor_x = anchor_x,
+        multiline = multiline,
+        texture_atlas = texture_atlas)
 
     return arcade.Sprite(
         texture,
