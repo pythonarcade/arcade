@@ -2,7 +2,7 @@ import pytest
 import arcade
 
 def test_text_texture(window):
-    texture = arcade.create_text_texture("BRRRRRRR")
+    texture = arcade.create_text_texture("Hello World")
     assert isinstance(texture, arcade.Texture)
     assert texture.width == pytest.approx(75, rel=10)
     assert texture.height == pytest.approx(20, rel=5)
