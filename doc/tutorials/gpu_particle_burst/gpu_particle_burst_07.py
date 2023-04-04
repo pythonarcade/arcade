@@ -67,8 +67,7 @@ class MyWindow(arcade.Window):
         temp_list = self.burst_list.copy()
         for burst in temp_list:
             if time.time() - burst.start_time > MAX_FADE_TIME:
-              self.burst_list.remove(burst)
-
+                self.burst_list.remove(burst)
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ User clicks mouse """
