@@ -600,7 +600,7 @@ def create_text_texture(text: str,
         )
     
     if not _label.content_width or not _label.content_height: 
-        warning("Width or height is 0")
+        warning(message="Width or height is 0")
         return arcade.Texture.create_empty(text, (0, 0))
     size = (
         int(_label.content_width),
