@@ -1,5 +1,4 @@
 import random
-from pathlib import Path
 
 import arcade
 from arcade.experimental import Shadertoy
@@ -18,8 +17,6 @@ PLAYER_MOVEMENT_SPEED = 7
 BOMB_COUNT = 70
 PLAYING_FIELD_WIDTH = 1600
 PLAYING_FIELD_HEIGHT = 1600
-
-CURRENT_DIR = Path(__file__).parent.resolve()
 
 
 class MyGame(arcade.Window):
@@ -75,8 +72,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def load_shader(self):
-        file_name = CURRENT_DIR / "example.glsl"
-        file = open(file_name)
+        file = open("example.glsl")
         shader_sourcecode = file.read()
         size = self.width, self.height
 

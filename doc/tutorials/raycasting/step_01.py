@@ -1,5 +1,4 @@
 import random
-from pathlib import Path
 
 import arcade
 from arcade.experimental import Shadertoy

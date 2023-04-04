@@ -1,6 +1,4 @@
 import random
-from pathlib import Path
-from pyglet.math import Vec2
 
 import arcade
 from arcade.experimental import Shadertoy
