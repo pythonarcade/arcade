@@ -69,10 +69,12 @@ class MyWindow(arcade.Window):
         # Create a buffer with that data
         buffer = self.ctx.buffer(data=array('f', initial_data))
 
-        # Create a buffer description that says how the buffer data is formatted.
-        buffer_description = arcade.gl.BufferDescription(buffer,
-                                                         '2f',
-                                                         ['in_pos'])
+        # Create a buffer description specifying the buffer's data format
+        buffer_description = arcade.gl.BufferDescription(
+            buffer,
+            '2f',
+            ['in_pos'])
+
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 
