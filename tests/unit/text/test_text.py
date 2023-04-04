@@ -153,6 +153,3 @@ def test_text_instances(window):
 
     window.flip()
 
-
-# def test_create_text_sprite(window):
-#     pass

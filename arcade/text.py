@@ -596,11 +596,16 @@ def create_text_texture(text: str,
         bold=bold,
         italic=italic,
         multiline=multiline,
+        group=None,
         )
-
+    
+    print(_label.content_width, _label.content_height)
+    if not _label.content_width or not _label.content_height: 
+        warning("Width or height is 0")
+        return arcade.Texture.create_empty(text, (0, 0))
     size = (
-        int(_label.width),
-        int(_label.height),
+        int(_label.content_width),
+        int(_label.content_height),
     )
     
     texture = arcade.Texture.create_empty(text, size)
@@ -656,35 +661,6 @@ def create_text_sprite(
     :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
         newly created texture. The default global atlas will be used if this is None.
     """
-    text_object = Text(
-        text,
-        start_x=0,
-        start_y=0,
-        color=color,
-        font_size=font_size,
-        width=width,
-        align=align,
-        font_name=font_name,
-        bold=bold,
-        italic=italic,
-        anchor_x=anchor_x,
-        anchor_y="baseline",
-        multiline=multiline,
-    )
-
-    size = (
-        int(text_object.right - text_object.left),
-        int(text_object.top - text_object.bottom),
-    )
-    text_object.y = -text_object.bottom
-    texture = arcade.Texture.create_empty(text, size)
-
-    if not texture_atlas:
-        texture_atlas = arcade.get_window().ctx.default_atlas
-    texture_atlas.add(texture)
-    with texture_atlas.render_into(texture) as fbo:
-        fbo.clear((0, 0, 0, 255))
-        text_object.draw()
 
     texture = create_text_texture(text,
         color = color,
