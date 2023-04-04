@@ -10,7 +10,7 @@ import arcade
 from arcade.types import Color, Point, RGBA255
 from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
-
+from warnings import warn
 
 def load_font(path: Union[str, Path]) -> None:
     """
@@ -600,7 +600,7 @@ def create_text_texture(text: str,
         )
     
     if not _label.content_width or not _label.content_height: 
-        warning(message="Width or height is 0")
+        warn("Either width or height is 0")
         return arcade.Texture.create_empty(text, (0, 0))
     size = (
         int(_label.content_width),
