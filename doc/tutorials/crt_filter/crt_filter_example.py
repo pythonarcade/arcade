@@ -19,7 +19,7 @@ class MyGame(arcade.Window):
                                     resolution_down_scale=6.0,
                                     hard_scan=-8.0,
                                     hard_pix=-3.0,
-                                    display_warp = Vec2(1.0 / 32.0, 1.0 / 24.0),
+                                    display_warp=Vec2(1.0 / 32.0, 1.0 / 24.0),
                                     mask_dark=0.5,
                                     mask_light=1.5)
 
@@ -34,27 +34,31 @@ class MyGame(arcade.Window):
         full.scale = width / full.width
         self.sprite_list.append(full)
 
-        my_sprite = arcade.Sprite("pac_man_sprite_sheet.png",
-                                  scale=5, image_x=4, image_y=65, image_width=13, image_height=15)
+        my_sprite = arcade.Sprite(
+            "pac_man_sprite_sheet.png",
+            scale=5, image_x=4, image_y=65, image_width=13, image_height=15)
         my_sprite.change_x = 1
         self.sprite_list.append(my_sprite)
         my_sprite.center_x = 100
         my_sprite.center_y = 300
 
-        my_sprite = arcade.Sprite("pac_man_sprite_sheet.png",
-                                  scale=5, image_x=4, image_y=81, image_width=13, image_height=15)
+        my_sprite = arcade.Sprite(
+            "pac_man_sprite_sheet.png",
+            scale=5, image_x=4, image_y=81, image_width=13, image_height=15)
         my_sprite.change_x = -1
         self.sprite_list.append(my_sprite)
         my_sprite.center_x = 800
         my_sprite.center_y = 200
 
         my_sprite = arcade.AnimatedTimeBasedSprite()
-        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=4, y=1, width=13, height=15)
+        texture = arcade.load_texture(
+            "pac_man_sprite_sheet.png", x=4, y=1, width=13, height=15)
         frame = arcade.AnimationKeyframe(tile_id=0,
                                          duration=150,
                                          texture=texture)
         my_sprite.frames.append(frame)
-        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=20, y=1, width=13, height=15)
+        texture = arcade.load_texture(
+            "pac_man_sprite_sheet.png", x=20, y=1, width=13, height=15)
         frame = arcade.AnimationKeyframe(tile_id=1,
                                          duration=150,
                                          texture=texture)
@@ -74,8 +78,8 @@ class MyGame(arcade.Window):
             self.crt_filter.clear()
             self.sprite_list.draw()
 
-            # Next, switch back to the screen and dump the contents of the CRT filter
-            # to it.
+            # Next, switch back to the screen and dump the contents of
+            # the CRT filter to it.
             self.use()
             self.clear()
             self.crt_filter.draw()
