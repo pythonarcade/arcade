@@ -599,7 +599,6 @@ def create_text_texture(text: str,
         group=None,
         )
     
-    print(_label.content_width, _label.content_height)
     if not _label.content_width or not _label.content_height: 
         warning("Width or height is 0")
         return arcade.Texture.create_empty(text, (0, 0))
@@ -673,11 +672,11 @@ def create_text_sprite(
         anchor_x = anchor_x,
         multiline = multiline,
         texture_atlas = texture_atlas)
-
+    size = texture._size
     return arcade.Sprite(
         texture,
-        center_x=text_object.right - (size[0] / 2),
-        center_y=text_object.top,
+        center_x=size[0]/2,
+        center_y=size[1],
     )
 
 
