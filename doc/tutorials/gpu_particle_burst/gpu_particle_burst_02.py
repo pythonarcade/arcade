@@ -3,7 +3,6 @@ Example showing how to create particle explosions via the GPU.
 """
 from array import array
 from dataclasses import dataclass
-from pathlib import Path
 
 import arcade
 import arcade.gl
@@ -11,8 +10,6 @@ import arcade.gl
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 SCREEN_TITLE = "GPU Particle Explosion"
-
-CURRENT_DIR = Path(__file__).parent.resolve()
 
 
 @dataclass
@@ -30,8 +27,8 @@ class MyWindow(arcade.Window):
 
         # Program to visualize the points
         self.program = self.ctx.load_program(
-            vertex_shader=CURRENT_DIR / "vertex_shader_v1.glsl",
-            fragment_shader=CURRENT_DIR / "fragment_shader.glsl",
+            vertex_shader="vertex_shader_v1.glsl",
+            fragment_shader="fragment_shader.glsl",
         )
 
         self.ctx.enable_only()
@@ -72,10 +69,12 @@ class MyWindow(arcade.Window):
         # Create a buffer with that data
         buffer = self.ctx.buffer(data=array('f', initial_data))
 
-        # Create a buffer description that says how the buffer data is formatted.
-        buffer_description = arcade.gl.BufferDescription(buffer,
-                                                         '2f',
-                                                         ['in_pos'])
+        # Create a buffer description specifying the buffer's data format
+        buffer_description = arcade.gl.BufferDescription(
+            buffer,
+            '2f',
+            ['in_pos'])
+
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 
