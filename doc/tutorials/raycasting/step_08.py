@@ -20,8 +20,6 @@ BOMB_COUNT = 70
 PLAYING_FIELD_WIDTH = 1600
 PLAYING_FIELD_HEIGHT = 1600
 
-CURRENT_DIR = Path(__file__).parent.resolve()
-
 
 class MyGame(arcade.Window):
 
@@ -53,14 +51,11 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
-        # Where is the shader file? Must be specified as a path.
-        shader_file_path = CURRENT_DIR / "step_06.glsl"
-
         # Size of the window
         window_size = self.get_size()
 
-        # Create the shader toy
-        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
+        # Create the shader toy, passing in a path for the shader source
+        self.shadertoy = Shadertoy.create_from_file(window_size, "step_06.glsl")
 
         # Create the channels 0 and 1 frame buffers.
         # Make the buffer the size of the window, with 4 channels (RGBA)
