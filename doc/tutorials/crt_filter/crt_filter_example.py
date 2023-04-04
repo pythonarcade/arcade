@@ -3,7 +3,7 @@ from arcade.experimental.crt_filter import CRTFilter
 from pyglet.math import Vec2
 
 
-# Do the math to figure out our screen dimensions
+# Store our screen dimensions & title in a convenient place
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 1100
 SCREEN_TITLE = "ShaderToy Demo"
