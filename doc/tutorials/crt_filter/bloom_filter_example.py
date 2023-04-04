@@ -1,4 +1,3 @@
-from pathlib import Path
 import arcade
 from arcade.experimental import BloomFilter
 import random
@@ -9,7 +8,6 @@ from arcade.color import RED, YELLOW, ORANGE, GREEN, BLUEBERRY, AMETHYST
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "ShaderToy Demo"
-RESOURCE_DIR = Path(__file__).parent
 
 
 class MyGame(arcade.Window):
