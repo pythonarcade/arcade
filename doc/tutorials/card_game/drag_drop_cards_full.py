@@ -214,11 +214,11 @@ class MyGame(arcade.Window):
         """ Pull card to top of rendering order (last to render, looks on-top) """
         # Find the index of the card
         index = self.card_list.index(card)
-        # Loop and pull all the other cards down towards the zero end
+
+        # Repeatedly swap cards until the chosen card draws on top (last)
         for i in range(index, len(self.card_list) - 1):
+            # Exchange the drawing order of the cards at i and i + 1
             self.card_list.swap(i, i+1)
-        # Put this card at the right-side/top/size of list
-        # self.card_list[len(self.card_list) - 1] = card
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
