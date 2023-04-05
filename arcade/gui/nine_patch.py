@@ -6,41 +6,58 @@ import arcade.gl as gl
 
 class NinePatchTexture:
     """
-    A 9-patch texture is a texture that can be stretched in specific ways to keep
-    the edges a specific width/height. This is useful for GUI elements that need
-    to be stretched but have a specific border that should not be stretched.
-    The center content of the texture will be stretched.
+    Stretches its sides & middle while keeping its corners constant.
 
-    Patch structure::
+    The size of the corners and border regions are specified in pixels.
+    The corners stay at preset sizes while the center stretches and the
+    borders only stretch along their corresponding axes. This is
+    useful for GUI elements which must grow or shrink while keeping a
+    specific border constant.
 
-              left              right 
-        +------+-----------------+------+
-        | (1)  | (2)             | (3)  |
-        |      |                 |      |
-        +------+-----------------+------+ top
-        | (4)  | (5)             | (6)  |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        +------+-----------------+------+ bottom
-        | (7)  | (8)             | (9)  |
-        |      |                 |      |
-        +------+-----------------+------+
+    In the diagram below:
 
-    To summarize, the texture will be stretched in the following ways:
-    * Areas (1), (3), (7) and (9) will not be stretched.
-    * Area (5) will be stretched horizontally and vertically.
-    * Areas (2) and (8) will be stretched horizontally.
-    * Areas (4) and (6) will be stretched vertically.
+    * Numbered regions with arrows (``<--->``) stretch along the
+      direction(s) of any arrows present
+    * bars (``|---|``) mark the distances specified by the border
+      parameters (``left``, etc)
 
-    :param int left: The left border of the 9-patch (in pixels)
-    :param int right: The right border of the 9-patch (in pixels)
-    :param int bottom: The bottom border of the 9-patch (in pixels)
-    :param int top: The top border of the 9-patch (in pixels)
-    :param Texture texture: The texture used for the 9-patch
-    :param TextureAtlas atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
+    .. code-block::
+        :caption: Stretch Axes & Border Parameters
+
+            left                        right
+            |------|                 |------|
+                                               top
+            +------+-----------------+------+  ---
+            | (1)  | (2)             | (3)  |   |
+            |      | <-------------> |      |   |
+            +------+-----------------+------+  ---
+            | (4)  | (5)    ^        | (6)  |
+            | ^    |        |        |   ^  |
+            | |    |        |        |   |  |
+            | |    | <------+------> |   |  |
+            | |    |        |        |   |  |
+            | |    |        |        |   |  |
+            | v    |        v        |   v  |
+            +------+-----------------+------+  ---
+            | (7)  | (8)             | (9)  |   |
+            |      | <-------------> |      |   |
+            +------+-----------------+------+  ---
+                                              bottom
+
+    As the texture is stretched, the numbered slices of the texture behave
+    as follows:
+
+    * Areas ``(1)``, ``(3)``, ``(7)`` and ``(9)`` never stretch.
+    * Area ``(5)`` stretches both horizontally and vertically.
+    * Areas ``(2)`` and ``(8)`` only stretch horizontally.
+    * Areas ``(4)`` and ``(6)`` only stretch vertically.
+
+    :param int left: The width of the left border of the 9-patch (in pixels)
+    :param int right: The width of the right border of the 9-patch (in pixels)
+    :param int bottom: The height of the bottom border of the 9-patch (in pixels)
+    :param int top: The height of the top border of the 9-patch (in pixels)
+    :param Texture texture: The raw texture to use for the 9-patch
+    :param TextureAtlas atlas: Specify an atlas other than arcade's default texture atlas
     """
 
     def __init__(
