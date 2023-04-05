@@ -580,6 +580,32 @@ def create_text_texture(text: str,
     anchor_x: str = "left",
     multiline: bool = False,
     texture_atlas: Optional[arcade.TextureAtlas] = None):
+    """
+    Creates a texture containing text based off of :py:class:`~pyglet.text.Label`.
+
+    Internally this creates a pyglet.text.Label object and an empty texture. It then uses either the
+    provided texture atlas, or gets the default one, and draws the pyglet.text.Label object into the
+    texture atlas. Then it returns the texture.
+
+    If you are providing a custom texture atlas, something important to keep in mind is
+    that the resulting Sprite can only be added to SpriteLists which use that atlas. If
+    it is added to a SpriteList which uses a different atlas, you will likely just see
+    a black box drawn in its place.
+
+    :param str text: Initial text to display. Can be an empty string
+    :param RGBA255 color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param float font_size: Size of the text in points
+    :param float width: A width limit in pixels
+    :param str align: Horizontal alignment; values other than "left" require width to be set
+    :param FontNameOrNames font_name: A font name, path to a font file, or list of names
+    :param bool bold: Whether to draw the text as bold
+    :param bool italic: Whether to draw the text as italic
+    :param str anchor_x: How to calculate the anchor point's x coordinate.
+                         Options: "left", "center", or "right"
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
+    :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
+        newly created texture. The default global atlas will be used if this is None.
+    """
 
     if align != "center" and align != "left" and align != "right":
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -632,13 +658,12 @@ def create_text_sprite(
     texture_atlas: Optional[arcade.TextureAtlas] = None,
 ) -> arcade.Sprite:
     """
-    Creates a sprite containing text based off of :py:class:`~arcade.Text`.
+    Creates a sprite containing text based off of :py:func:`create_text_texture`.
 
-    Internally this creates a Text object and an empty texture. It then uses either the
-    provided texture atlas, or gets the default one, and draws the Text object into the
-    texture atlas.
+    Internally this calls the create_text_texture function and gives it the relevant information. 
+    When it is done, the create_text_texture function returns a texture.
 
-    It then creates a sprite referencing the newly created texture, and positions it
+    The create_text_sprite then creates a sprite referencing the newly created texture, and positions it
     accordingly, and that is final result that is returned from the function.
 
     If you are providing a custom texture atlas, something important to keep in mind is
