@@ -324,7 +324,7 @@ User-interface events
 =====================
 
 Arcade's GUI events are fully typed dataclasses, which provide information
-about a event effecting the UI.
+about an event affecting the UI.
 
 All pyglet window events are converted by the
 :py:class:`~arcade.gui.UIManager` into :class:`UIEvents` and passed via
