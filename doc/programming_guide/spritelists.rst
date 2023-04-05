@@ -1,8 +1,16 @@
 .. _pg_spritelists:
 
-Drawing with SpriteLists
-========================
+Drawing: Sprites & SpriteLists
+===============================
 
+.. _pg_spritelists_whats_a_sprite:
+
+What's a Sprite?
+----------------
+
+In Arcade, a :class:`Sprite` is an object which says where to draw image
+data. They're usually the primary object type in games. You use the
+:class:`SpriteList` class to group sprites and draw them.
 
 .. _pg_spritelists_why:
 
