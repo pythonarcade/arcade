@@ -207,13 +207,11 @@ class NinePatchTexture:
                      Unexpected behavior may occur if you specify a size
                      smaller than the total size of the border areas.
 
-        .. warning:: Position support is not yet implemented!
 
-        :param position: (Ignored) Bottom left offset of the texture
+        :param position: Bottom left offset of the texture in pixels
         :param size: Size of the 9-patch as width, height in pixels
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
-        # TODO support to draw at a given position
         self.program.set_uniform_safe(
             "texture_id", self._atlas.get_texture_id(self._texture.atlas_name)
         )
