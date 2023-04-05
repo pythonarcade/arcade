@@ -6,12 +6,15 @@ import arcade.gl as gl
 
 class NinePatchTexture:
     """
-    Keeps borders & corners at constant widths while stretching in the middle.
+    Keeps borders & corners at constant widths while stretching the middle.
 
-    This is useful for GUI elements which must grow or shrink while keeping
-    their border decorations constant, such as windows or text boxes.
+    It can be used with new or existing :py:class:`~arcade.gui.UIWidget`
+    subclasses wherever an ordinary :py:class:`arcade.Texture` is
+    supported. This is useful for GUI elements which must grow or shrink
+    while keeping their border decorations constant, such as dialog boxes
+    or text boxes.
 
-    The diagram below explains this behavior:
+    The diagram below explains the stretching behavior of this class:
 
     * Numbered regions with arrows (``<--->``) stretch along the
       direction(s) of any arrows present
