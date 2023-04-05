@@ -199,6 +199,11 @@ class NinePatchTexture:
         """
         Draw the 9-patch texture with a specific size.
 
+        .. warning:: This method assumes the passed dimensions are proper!
+
+                     Unexpected behavior may occur if you specify a size smaller
+                     than the total size of the border areas.
+
         .. warning:: Position support is not yet implemented!
 
         :param position: (Ignored) Bottom left offset of the texture
