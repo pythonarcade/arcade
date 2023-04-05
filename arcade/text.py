@@ -13,7 +13,7 @@ from arcade.utils import PerformanceWarning, warning
 
 
 __all__ = ["load_font", 
-            "_attempt+font_name_resolution", 
+            "_attempt_font_name_resolution", 
             "_draw_pyglet_label", 
             "Text", 
             "create_text_sprite", 

@@ -14,7 +14,7 @@ __all__ = [
     "rand_in_rect",
     "rand_in_circle",
     "rand_on_line",
-    "rand_angle_360_degrees",
+    "rand_angle_360_deg",
     "rand_angle_spread_deg",
     "rand_vec_spread_deg",
     "rand_vec_magnitude",

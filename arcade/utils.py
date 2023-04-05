@@ -24,7 +24,7 @@ __all__ = [
     "ReplacementWarning",
     "warning",
     "generate_uuid_from_kwargs",
-    "is_raspberry_pi"
+    "is_raspberry_pi",
     "get_raspberry_pi_info"
 ]
 

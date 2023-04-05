@@ -11,7 +11,7 @@ from arcade.types import Point
 __all__ = [
     "_spot_is_blocked",
     "_heuristic",
-    "AStarGraph",
+    "_AStarGraph",
     "_AStarSearch",
     "_collapse",
     "_expand",
