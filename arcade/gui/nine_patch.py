@@ -204,8 +204,8 @@ class NinePatchTexture:
 
         .. warning:: This method assumes the passed dimensions are proper!
 
-                     Unexpected behavior may occur if you specify a size smaller
-                     than the total size of the border areas.
+                     Unexpected behavior may occur if you specify a size
+                     smaller than the total size of the border areas.
 
         .. warning:: Position support is not yet implemented!
 
