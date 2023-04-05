@@ -13,13 +13,16 @@ from arcade.types import Color, RGBA255
 from arcade.tilemap import TileMap
 
 from warnings import warn
+
 __all__ = ["Scene"]
+
 
 class Scene:
     """
     Class that represents a `scene` object. Most games will use Scenes to render their Sprites.
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/tutorials/views/index.html
+
     """
 
     def __init__(self) -> None:
@@ -319,4 +322,6 @@ class Scene:
             return
 
         for sprite_list in self._sprite_lists:
+
             sprite_list.draw_hit_boxes(color, line_thickness)
+

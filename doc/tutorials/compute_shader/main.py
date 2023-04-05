@@ -67,15 +67,15 @@ class MyWindow(arcade.Window):
 
         # --- Create shaders
 
-        # Load in the shader source code
-        file = open("shaders/compute_shader.glsl")
-        compute_shader_source = file.read()
-        file = open("shaders/vertex_shader.glsl")
-        vertex_shader_source = file.read()
-        file = open("shaders/fragment_shader.glsl")
-        fragment_shader_source = file.read()
-        file = open("shaders/geometry_shader.glsl")
-        geometry_shader_source = file.read()
+        # Load in the shader source code safely & auto-close files
+        with open("shaders/compute_shader.glsl") as file:
+            compute_shader_source = file.read()
+        with open("shaders/vertex_shader.glsl") as file:
+            vertex_shader_source = file.read()
+        with open("shaders/fragment_shader.glsl") as file:
+            fragment_shader_source = file.read()
+        with open("shaders/geometry_shader.glsl") as file:
+            geometry_shader_source = file.read()
 
         # Create our compute shader.
         # Search/replace to set up our compute groups

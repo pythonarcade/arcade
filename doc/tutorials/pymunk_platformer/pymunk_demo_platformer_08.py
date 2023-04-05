@@ -1,7 +1,6 @@
 """
 Example of Pymunk Physics Engine Platformer
 """
-import math
 from typing import Optional
 import arcade
 
@@ -97,9 +96,6 @@ class PlayerSprite(arcade.Sprite):
 
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
-
-        # Hit box will be set based on the first image used.
-        self.hit_box = self.texture.hit_box_points
 
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
@@ -228,7 +224,7 @@ class GameWindow(arcade.Window):
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
         # after the player lets off the movement keys.
-        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # Setting the moment of inertia to PymunkPhysicsEngine.MOMENT_INF prevents it from
         # rotating.
         # Friction normally goes between 0 (no friction) and 1.0 (high friction)
         # Friction is between two objects in contact. It is important to remember
@@ -237,7 +233,7 @@ class GameWindow(arcade.Window):
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
-                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=arcade.PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)

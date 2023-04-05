@@ -8,7 +8,7 @@ import subprocess
 import os
 import glob
 
-EXAMPLE_SUBDIR = "../../arcade/examples"
+EXAMPLE_SUBDIR = "../../../arcade/examples"
 
 
 def _get_short_name(fullpath):
