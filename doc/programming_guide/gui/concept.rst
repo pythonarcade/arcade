@@ -17,9 +17,9 @@ identify and search for in autocompletion.
 UIWidget
 ========
 
-A :py:class:`~arcade.class.UIWidget` is the core of arcade's GUI. A widget
-represents the behaviour and graphical representation of any element (like
-buttons or text).
+The :py:class:`~arcade.gui.UIWidget` class is the core of arcade's GUI system.
+Widgets specify the behavior and graphical representation of any UI element,
+such as buttons or labels.
 
 A :class:`UIWidget` has following properties.
 
@@ -33,21 +33,33 @@ A :class:`UIWidget` has following properties.
     instead.
 
 ``size_hint``
-    A tuple of two floats. Defines how much of the parent's space it would like
-    to occupy (range: ``0.0-1.0``). For maximal vertical and horizontal
-    expansion, define a ``size_hint`` of 1 for the axis.
+    A tuple of two normalized floats (``0.0``-``1.0``) describing the portion
+    of the parent's width and height this widget prefers to occupy.
+    
+    Examples::
+    
+        # Prefer to take up all space within the parent
+        widget.size_hint = (1.0, 1.0)
+    
+        # Prefer to take up the full width & half the height of the parent
+        widget.size_hint = (1.0, 0.5)
+        # Prefer using 1/10th of the available width & height
+        widget.size_hint = (0.1, 0.1)
 
 ``size_hint_min``
-    A tuple of two integers. Defines minimal size of the widget. Changing the
-    size of a widget to a lower values will use this size instead.
+    A tuple of two integers defining the minimum width and height of the
+    widget. Attempting to set a smaller width or height on the widget will fail
+    by defaulting to the minimum values specified here.
 
 ``size_hint_max``
-    A tuple of two integers. Defines maximum size of the widget. Changing the
-    size of a widget to a higher values will use this size instead.
+    A tuple of two integers defining the maximum width and height of the
+    widget. Attempting to set a larger width or height greater will fail by
+    defaulting to the to the maximum values specified here.
 
-``size_hint``, ``size_hint_min``, and ``size_hint_max`` are values that are
-additional information of a widget, but do not effect the widget on its own.
-:class:`UILayout` may use this data to place or resize a widget.
+.. warning:: Size hints do nothing on their own!
+
+    They are hints to :class:`UILayout` instances, which may choose to use or
+    ignore them.
 
 Rendering
 `````````
