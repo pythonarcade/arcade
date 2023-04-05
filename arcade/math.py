@@ -5,6 +5,26 @@ from arcade.types import Point, Vector
 _PRECISION = 2
 
 
+__all__ = [
+    "round_fast",
+    "clamp",
+    "lerp",
+    "lerp_vec",
+    "lerp_angle",
+    "rand_in_rect",
+    "rand_in_circle",
+    "rand_on_line",
+    "rand_angle_360_degrees",
+    "rand_angle_spread_deg",
+    "rand_vec_spread_deg",
+    "rand_vec_magnitude",
+    "_Vec2",
+    "get_distance",
+    "rotate_point",
+    "get_angle_degrees",
+    "get_angle_radians",
+]
+
 def round_fast(value: float, precision: int) -> float:
     """
     A high performance version of python's built-in round() function.

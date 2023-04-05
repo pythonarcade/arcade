@@ -32,6 +32,31 @@ from arcade.gl import Buffer
 from .math import rotate_point
 
 
+__all__ = ["Shape", 
+            "create_line", 
+            "create_line_generic_with_colors", 
+            "create_line_generic", 
+            "create_line_strip", 
+            "create_line_loop", 
+            "create_lines", 
+            "create_lines_with_colors", 
+            "create_polygon", 
+            "create_rectangle_filled", 
+            "create_rectangle_outline", 
+            "get_rectangle_points", 
+            "create_rectangle", 
+            "create_rectangle_filled_with_colors",
+            "create_rectangles_filled_with_colors",
+            "create_triangles_filled_with_colors",
+            "create_triangles_strip_filled_with_colors",
+            "create_ellipse_filled",
+            "create_ellipse_outline",
+            "create_ellipse",
+            "create_ellipse_filled_with_colors",
+            "ShapeElementList",
+            "_Batch"
+            ]
+
 class Shape:
     """
     Primitive drawing shape. This can be part of a ShapeElementList so

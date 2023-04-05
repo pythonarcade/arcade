@@ -12,6 +12,12 @@ from arcade import Sprite
 
 LOG = logging.getLogger(__name__)
 
+__all__ = [
+    "PymunkPhysicsObject",
+    "PymunkException",
+    "PymunkPhysicsEngine"
+]
+
 
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """

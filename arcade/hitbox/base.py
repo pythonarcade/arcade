@@ -8,6 +8,8 @@ from PIL.Image import Image
 from arcade.types import Point, PointList
 
 
+__all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
+
 class HitBoxAlgorithm:
     """
     Base class for hit box algorithms. Hit box algorithms are used to calculate the

@@ -8,6 +8,18 @@ from arcade import (Sprite, SpriteList, check_for_collision_with_list,
 from arcade.math import get_distance, lerp_vec
 from arcade.types import Point
 
+__all__ = [
+    "_spot_is_blocked",
+    "_heuristic",
+    "AStarGraph",
+    "_AStarSearch",
+    "_collapse",
+    "_expand",
+    "AStarBarrierList",
+    "astar_calculate_path",
+    "has_line_of_sight"
+]
+
 
 def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,

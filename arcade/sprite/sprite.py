@@ -14,7 +14,7 @@ from .mixins import PymunkMixin
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
 
-
+__all__ = ["Sprite"]
 class Sprite(BasicSprite, PymunkMixin):
     """
     Class that represents a 'sprite' on-screen. Most games center around sprites.

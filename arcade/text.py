@@ -12,6 +12,13 @@ from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
 
+__all__ = ["load_font", 
+            "_attempt+font_name_resolution", 
+            "_draw_pyglet_label", 
+            "Text", 
+            "create_text_sprite", 
+            "draw_text"
+            ]
 def load_font(path: Union[str, Path]) -> None:
     """
     Load fonts in a file (usually .ttf) adding them to a global font registry.

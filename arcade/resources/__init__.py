@@ -13,6 +13,13 @@ handles: Dict[str, List[Path]] = {
     "system": [SYSTEM_PATH],
 }
 
+__all__ = [
+    "resolve_resource_path",
+    "resolve",
+    "add_resource_handle",
+    "get_resource_handle_paths",
+]
+
 
 @warning(
     warning_type=ReplacementWarning,
