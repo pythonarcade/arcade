@@ -42,7 +42,7 @@ We'll modify our prior program to import the Shadertoy class:
 
 .. literalinclude:: step_01.py
     :caption: Import Shadertoy
-    :lines: 5
+    :lines: 4
 
 Next, we'll need some shader-related variables. In addition to a variable to hold the shader, we are also
 going to need to keep track of a couple **frame buffer objects** (FBOs). You can store image data in an
@@ -64,7 +64,7 @@ We will use the ``channel1`` variable to hold the
 ground, bombs, or anything we want to be hidden by shadows.
 
 .. literalinclude:: step_01.py
-    :caption: Create shader variables
+    :caption: Create & initialize shader variables
     :pyobject: MyGame.__init__
     :emphasize-lines: 4-8
 
@@ -390,10 +390,11 @@ What if you need to resize the window? First enable resizing:
 You'll need to enable resizing in the window's ``__init__``:
 
 .. literalinclude:: step_07.py
+    :pyobject: MyGame.__init__
     :caption: Enable resizing
     :language: python
-    :lines: 24-27
-    :emphasize-lines: 4
+    :lines: 1-2
+    :emphasize-lines: 2
 
 Then we need to override the ``Window.resize`` method to also resize the shadertoy:
 
@@ -420,8 +421,8 @@ screen as something for the GUI.
     :emphasize-lines: 17-19, 23-24
 
 Next up, we need to draw and use the cameras. This complicates our shader as it doesn't
-care about the scrolling, so we have to pass it a position not effected by the camera position.
-Thus we subtract it out.
+care about the scrolling, so we have to pass it a position not affected by the camera position.
+Therefore, we subtract it out.
 
 .. literalinclude:: step_08.py
     :caption: MyGame.on_draw
@@ -437,7 +438,17 @@ When we update, we need to scroll the camera to where the user is:
     :linenos:
     :emphasize-lines: 7-8
 
-We need that new function:
+We need to implement the ``scroll_to_player`` method ourselves.
+
+First, we import pyglet's :class:`~pyglet.math.Vec2` class to
+make the math faster to implement:
+
+.. literalinclude:: step_08.py
+    :caption: Import pyglet's 2D vector class to help with math
+    :lines: 1-5
+    :emphasize-lines: 2
+
+Then, we implement the ``MyGame.scroll_to_player`` method:
 
 .. literalinclude:: step_08.py
     :caption: MyGame.scroll_to_player
