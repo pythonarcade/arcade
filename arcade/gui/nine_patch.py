@@ -6,15 +6,12 @@ import arcade.gl as gl
 
 class NinePatchTexture:
     """
-    Stretches its sides & middle while keeping its corners constant.
+    Keeps borders & corners at constant widths while stretching in the middle.
 
-    The size of the corners and border regions are specified in pixels.
-    The corners stay at preset sizes while the center stretches and the
-    borders only stretch along their corresponding axes. This is
-    useful for GUI elements which must grow or shrink while keeping a
-    specific border constant.
+    This is useful for GUI elements which must grow or shrink while keeping
+    their border decorations constant, such as windows or text boxes.
 
-    In the diagram below:
+    The diagram below explains this behavior:
 
     * Numbered regions with arrows (``<--->``) stretch along the
       direction(s) of any arrows present
