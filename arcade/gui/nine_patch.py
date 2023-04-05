@@ -99,7 +99,8 @@ class NinePatchTexture:
     def program(self) -> gl.program.Program:
         """
         Get or set the shader program.
-        Returns the default shader if no shader is assigned.
+
+        Returns the default shader if no other shader is assigned.
         """
         return self._program
 
@@ -110,7 +111,8 @@ class NinePatchTexture:
     def _set_texture(self, texture: arcade.Texture):
         """
         Internal method for setting the texture.
-        It simply ensures the texture is added to the global atlas
+
+        It ensures the texture is added to the global atlas.
         """
         if not self._atlas.has_texture(texture):
             self._atlas.add(texture)
@@ -154,9 +156,7 @@ class NinePatchTexture:
 
     @property
     def size(self) -> Tuple[int, int]:
-        """
-        Get size of texture.
-        """
+        """The size of texture as a width, height tuple in pixels."""
         return self.texture.size
 
     @property
@@ -172,15 +172,19 @@ class NinePatchTexture:
     def draw_sized(
         self,
         *,
-        position: Tuple[float, float] = (0, 0),
+        position: Tuple[float, float] = (0.0, 0.0),
         size: Tuple[float, float],
         pixelated: bool = False,
         **kwargs
     ):
         """
-        Draw the 9-patch.
+        Draw the 9-patch texture with a specific size.
 
-        :param size: size of the 9-patch
+        .. warning:: Position support is not yet implemented!
+
+        :param position: (Ignored) Bottom left offset of the texture
+        :param size: Size of the 9-patch as width, height in pixels
+        :param pixelated: Whether to draw with nearest neighbor interpolation
         """
         # TODO support to draw at a given position
         self.program.set_uniform_safe(
@@ -202,9 +206,7 @@ class NinePatchTexture:
         self._geometry.render(self._program, vertices=1)
 
     def _check_sizes(self):
-        """
-        Check if borders are valid
-        """
+        """Raise a ValueError if any dimension is invalid."""
         # Sanity check values
         if self._left < 0:
             raise ValueError("Left border must be a positive integer")
