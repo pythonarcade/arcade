@@ -322,6 +322,5 @@ class Scene:
             return
 
         for sprite_list in self._sprite_lists:
-
             sprite_list.draw_hit_boxes(color, line_thickness)
 
