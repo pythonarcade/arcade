@@ -17,13 +17,26 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 class Sprite(BasicSprite, PymunkMixin):
     """
-    Class that represents a 'sprite' on-screen. Most games center around sprites.
-    For examples on how to use this class, see:
-    https://api.arcade.academy/en/latest/examples/index.html#sprites
+    Sprites are used to render image data to the screen & perform collisions.
 
-    :param str path_or_texture: Path to the image file, or a texture object.
-    :param float center_x: Location of the sprite
-    :param float center_y: Location of the sprite
+    Most games center around sprites. They are most frequently used as follows:
+
+    1. Create ``Sprite`` instances from image data
+    2. Add the sprites to a :py:class:`~arcade.SpriteList` instance
+    3. Call :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>` on the
+       instance inside your ``on_draw`` method.
+
+    For runnable examples of how to do this, please see arcade's
+    :ref:`built-in Sprite examples <sprites>`.
+
+    .. tip:: Advanced users should see :py:class:`~arcade.BasicSprite`
+
+             ``BasicSprite`` is useful for performance optimization. It
+             uses fewer resources at the cost of having fewer features.
+
+    :param str path_or_texture: Path to an image file, or a texture object.
+    :param float center_x: Location of the sprite in pixels.
+    :param float center_y: Location of the sprite in pixels.
     :param float scale: Scale the image up or down. Scale of 1.0 is none.
     :param float angle: The initial rotation of the sprite in degrees
     """
