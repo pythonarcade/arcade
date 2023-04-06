@@ -6,41 +6,63 @@ import arcade.gl as gl
 
 class NinePatchTexture:
     """
-    A 9-patch texture is a texture that can be stretched in specific ways to keep
-    the edges a specific width/height. This is useful for GUI elements that need
-    to be stretched but have a specific border that should not be stretched.
-    The center content of the texture will be stretched.
+    Keeps borders & corners at constant widths while stretching the middle.
 
-    Patch structure::
+    It can be used with new or existing :py:class:`~arcade.gui.UIWidget`
+    subclasses wherever an ordinary :py:class:`arcade.Texture` is
+    supported. This is useful for GUI elements which must grow or shrink
+    while keeping their border decorations constant, such as dialog boxes
+    or text boxes.
 
-              left              right 
-        +------+-----------------+------+
-        | (1)  | (2)             | (3)  |
-        |      |                 |      |
-        +------+-----------------+------+ top
-        | (4)  | (5)             | (6)  |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        |      |                 |      |
-        +------+-----------------+------+ bottom
-        | (7)  | (8)             | (9)  |
-        |      |                 |      |
-        +------+-----------------+------+
+    The diagram below explains the stretching behavior of this class:
 
-    To summarize, the texture will be stretched in the following ways:
-    * Areas (1), (3), (7) and (9) will not be stretched.
-    * Area (5) will be stretched horizontally and vertically.
-    * Areas (2) and (8) will be stretched horizontally.
-    * Areas (4) and (6) will be stretched vertically.
+    * Numbered regions with arrows (``<--->``) stretch along the
+      direction(s) of any arrows present
+    * bars (``|---|``) mark the distances specified by the border
+      parameters (``left``, etc)
 
-    :param int left: The left border of the 9-patch (in pixels)
-    :param int right: The right border of the 9-patch (in pixels)
-    :param int bottom: The bottom border of the 9-patch (in pixels)
-    :param int top: The top border of the 9-patch (in pixels)
-    :param Texture texture: The texture used for the 9-patch
-    :param TextureAtlas atlas: the atlas which the texture belongs to (defaults to arcades default atlas)
+    .. code-block::
+        :caption: Stretch Axes & Border Parameters
+
+            left                        right
+            |------|                 |------|
+                                               top
+            +------+-----------------+------+  ---
+            | (1)  | (2)             | (3)  |   |
+            |      | <-------------> |      |   |
+            +------+-----------------+------+  ---
+            | (4)  | (5)    ^        | (6)  |
+            | ^    |        |        |   ^  |
+            | |    |        |        |   |  |
+            | |    | <------+------> |   |  |
+            | |    |        |        |   |  |
+            | |    |        |        |   |  |
+            | v    |        v        |   v  |
+            +------+-----------------+------+  ---
+            | (7)  | (8)             | (9)  |   |
+            |      | <-------------> |      |   |
+            +------+-----------------+------+  ---
+                                              bottom
+
+    As the texture is stretched, the numbered slices of the texture behave
+    as follows:
+
+    * Areas ``(1)``, ``(3)``, ``(7)`` and ``(9)`` never stretch.
+    * Area ``(5)`` stretches both horizontally and vertically.
+    * Areas ``(2)`` and ``(8)`` only stretch horizontally.
+    * Areas ``(4)`` and ``(6)`` only stretch vertically.
+
+    :param int left: The width of the left border of the 9-patch
+        (in pixels)
+    :param int right: The width of the right border of the 9-patch
+        (in pixels)
+    :param int bottom: The height of the bottom border of the 9-patch
+        (in pixels)
+    :param int top: The height of the top border of the 9-patch
+        (in pixels)
+    :param Texture texture: The raw texture to use for the 9-patch
+    :param TextureAtlas atlas: Specify an atlas other than arcade's default
+        texture atlas
     """
 
     def __init__(
@@ -99,7 +121,8 @@ class NinePatchTexture:
     def program(self) -> gl.program.Program:
         """
         Get or set the shader program.
-        Returns the default shader if no shader is assigned.
+
+        Returns the default shader if no other shader is assigned.
         """
         return self._program
 
@@ -110,7 +133,8 @@ class NinePatchTexture:
     def _set_texture(self, texture: arcade.Texture):
         """
         Internal method for setting the texture.
-        It simply ensures the texture is added to the global atlas
+
+        It ensures the texture is added to the global atlas.
         """
         if not self._atlas.has_texture(texture):
             self._atlas.add(texture)
@@ -154,9 +178,7 @@ class NinePatchTexture:
 
     @property
     def size(self) -> Tuple[int, int]:
-        """
-        Get size of texture.
-        """
+        """The size of texture as a width, height tuple in pixels."""
         return self.texture.size
 
     @property
@@ -172,17 +194,24 @@ class NinePatchTexture:
     def draw_sized(
         self,
         *,
-        position: Tuple[float, float] = (0, 0),
+        position: Tuple[float, float] = (0.0, 0.0),
         size: Tuple[float, float],
         pixelated: bool = False,
         **kwargs
     ):
         """
-        Draw the 9-patch.
+        Draw the 9-patch texture with a specific size.
 
-        :param size: size of the 9-patch
+        .. warning:: This method assumes the passed dimensions are proper!
+
+                     Unexpected behavior may occur if you specify a size
+                     smaller than the total size of the border areas.
+
+
+        :param position: Bottom left offset of the texture in pixels
+        :param size: Size of the 9-patch as width, height in pixels
+        :param pixelated: Whether to draw with nearest neighbor interpolation
         """
-        # TODO support to draw at a given position
         self.program.set_uniform_safe(
             "texture_id", self._atlas.get_texture_id(self._texture.atlas_name)
         )
@@ -202,9 +231,7 @@ class NinePatchTexture:
         self._geometry.render(self._program, vertices=1)
 
     def _check_sizes(self):
-        """
-        Check if borders are valid
-        """
+        """Raise a ValueError if any dimension is invalid."""
         # Sanity check values
         if self._left < 0:
             raise ValueError("Left border must be a positive integer")
@@ -217,6 +244,8 @@ class NinePatchTexture:
 
         # Sanity check texture size
         if self._left + self._right > self._texture.width:
-            raise ValueError("Left and right border must be smaller than texture width")
+            raise ValueError(
+                "Left and right border must be smaller than texture width")
         if self._bottom + self._top > self._texture.height:
-            raise ValueError("Bottom and top border must be smaller than texture height")
+            raise ValueError(
+                "Bottom and top border must be smaller than texture height")
