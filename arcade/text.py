@@ -601,7 +601,7 @@ class CustomTextSprite(object):
     ) -> None:
         super().__init__()
         self.Sprite_List: arcade.SpriteList = arcade.SpriteList()
-        self.Background_Sprite: arcade.Sprite = arcade.Sprite(Background_Texture, center_x=center_x+width/2+Background_offset_x, center_y=center_y-height*2+Background_offset_y, scale=Background_scale)
+        self.Background_Sprite: arcade.BasicSprite = arcade.BasicSprite(Background_Texture, center_x=center_x+width/2+Background_offset_x, center_y=center_y-height*2+Background_offset_y, scale=Background_scale)
         
         self.text_scale: float = text_scale
         self.width: int = width
@@ -643,8 +643,8 @@ class CustomTextSprite(object):
 
 
             for char in word:
-                sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
-                sprite.texture = chracter_textures[char]
+                sprite: arcade.BasicSprite = arcade.BasicSprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
+                sprite.texture: arcade.Texture = chracter_textures[char]
                 self.Sprite_List.append(sprite)
                 x += text_margin*scale
             x += text_margin*scale
