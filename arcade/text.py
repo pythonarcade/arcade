@@ -569,6 +569,50 @@ class Text:
             self._label.position = *point, self._label.z
 
 
+class CustomTextSprite(object):
+    def __init__(self, string, Alphabet_Textures, scale=1, 
+                 center_x=0, center_y = 0, 
+                 text_scale=1, text_margin=16, width=100, height = 40,  Background_offset_x=0, Background_offset_y=0, Background_scale=1, Background_Texture=None) -> None:
+        super().__init__()
+        self.Sprite_List = arcade.SpriteList()
+        self.Background_Sprite = arcade.Sprite(Background_Texture, center_x=center_x+width/2+Background_offset_x, center_y=center_y-height*2+Background_offset_y, scale=Background_scale)
+        
+        self.text_scale = text_scale
+        self.width = width
+        self.height = height
+        self.update_text(string, Alphabet_Textures, scale=scale, text_scale=text_scale,
+                 center_x=center_x, center_y=center_y, 
+                 text_margin=text_margin, width=width, height = height)
+        
+    def update_text(self, text, Alphabet_Textures, scale=1, text_scale=1,
+                 center_x=0, center_y = 0, 
+                 text_margin=16, width=100, height = 40):
+        self.text = text
+        self.Sprite_List.clear()
+        if not text:
+            return
+        words = text.split(' ')
+        x = 0
+        y = 0
+
+        for word in words:
+            if x > width/2+center_x:
+                y -= text_margin
+                x = -width/2
+
+
+            for string in word:
+                sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
+                sprite.texture = Alphabet_Textures[string]
+                self.Sprite_List.append(sprite)
+                x += text_margin*scale
+            x += text_margin*scale
+    def draw(self):
+        self.Background_Sprite.draw()
+        self.Sprite_List.draw()
+
+
+
 def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
