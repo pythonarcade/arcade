@@ -625,8 +625,6 @@ class CustomTextSprite(object):
             if x > width/2+center_x:
                 y -= text_margin
                 x = -width/2
-
-
             for string in word:
                 sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
                 sprite.texture = chracter_textures[string]
