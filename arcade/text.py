@@ -573,7 +573,7 @@ class CustomTextSprite(object):
     def __init__(
         self, 
         text: str, 
-        chracter_sprites: dict, 
+        chracter_textures: dict, 
         scale: float = 1, 
         center_x: float = 0, 
         center_y: float = 0, 
@@ -594,7 +594,7 @@ class CustomTextSprite(object):
         self.width: int = width
         self.height: int = height
         self.update_text(text, 
-                chracter_sprites, 
+                chracter_textures, 
                 scale=scale, 
                 text_scale=text_scale,
                 center_x=center_x, 
@@ -606,7 +606,7 @@ class CustomTextSprite(object):
         
     def update_text(self, 
                 text: str, 
-                chracter_sprites: dict, 
+                chracter_textures: dict, 
                 scale: float = 1, 
                 text_scale: float = 1,
                 center_x: float = 0, 
@@ -629,7 +629,7 @@ class CustomTextSprite(object):
 
             for string in word:
                 sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
-                sprite.texture = chracter_sprites[string]
+                sprite.texture = chracter_textures[string]
                 self.Sprite_List.append(sprite)
                 x += text_margin*scale
             x += text_margin*scale
