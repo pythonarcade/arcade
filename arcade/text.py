@@ -569,6 +569,19 @@ class Text:
             self._label.position = *point, self._label.z
 
 
+def create_bitmap_font_from_spritesheet(spritesheet_file: str = "", order:str = ""):
+    """
+         create bitmap font from spritesheet
+
+        :param string spritesheet_file: Spritesheet file to get the textures off of
+        :param string order: The order of the spritesheet.
+    """
+    textures = arcade.load_spritesheet(spritesheet_file, 14, 24, 12, 70, margin=1)
+    Alphabet_Textures = {" ":None}
+    for i in range(len(order)):
+        Alphabet_Textures[order[i]] = textures[i]
+
+
 class CustomTextSprite(object):
     def __init__(
         self, 
@@ -622,14 +635,16 @@ class CustomTextSprite(object):
         x: float = 0
         y: float = 0
         for word in words:
-            if x > width/2+center_x:
+            if not word:
+                continue
+            if x > width/2+center_x or word == "\n":
                 y -= text_margin
                 x = -width/2
 
 
-            for string in word:
+            for char in word:
                 sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
-                sprite.texture = chracter_textures[string]
+                sprite.texture = chracter_textures[char]
                 self.Sprite_List.append(sprite)
                 x += text_margin*scale
             x += text_margin*scale
