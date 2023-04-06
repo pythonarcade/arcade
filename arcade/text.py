@@ -584,7 +584,7 @@ class CustomTextSprite(object):
         Background_offset_x: float = 0,
         Background_offset_y: float = 0, 
         Background_scale: float = 1, 
-        Background_Texture: str = None
+        Background_Texture: Optional[str] = None
     ) -> None:
         super().__init__()
         self.Sprite_List: arcade.SpriteList = arcade.SpriteList()
@@ -618,7 +618,7 @@ class CustomTextSprite(object):
         self.Sprite_List.clear()
         if not text:
             return
-        words: str = text.split(' ')
+        words: list[str] = text.split(' ')
         x: float = 0
         y: float = 0
         for word in words:
