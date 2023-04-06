@@ -638,11 +638,14 @@ class CustomTextSprite(object):
             if x > width/2+center_x or word == "\n":
                 y -= text_margin
                 x = -width/2
+            if not word: 
+                x += text_margin*scale
+                continue
 
 
             for string in word:
-                sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
-                sprite.texture = chracter_textures[string]
+                sprite: arcade.BasicSprite = arcade.BasicSprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
+                sprite.texture: arcade.Texture = chracter_textures[string]
                 self.Sprite_List.append(sprite)
                 x += text_margin*scale
             x += text_margin*scale
