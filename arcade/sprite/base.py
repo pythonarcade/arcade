@@ -16,6 +16,16 @@ SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 class BasicSprite:
     """
     The absolute minimum needed for a sprite.
+
+    .. warning:: Beginners should see :py:class:`~arcade.Sprite` instead!
+
+                 This class is best used for performance optimization or
+                 internal arcade components.
+
+    :param texture: The texture data to use for this sprite.
+    :param scale: The scaling factor for drawing the texture.
+    :param center_x: Location of the sprite along the X axis in pixels.
+    :param center_y: Location of the sprite along the Y axis in pixels.
     """
 
     __slots__ = (
