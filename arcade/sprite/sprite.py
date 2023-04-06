@@ -36,7 +36,7 @@ class Sprite(BasicSprite, PymunkMixin):
     :param str path_or_texture: Path to an image file, or a texture object.
     :param float center_x: Location of the sprite in pixels.
     :param float center_y: Location of the sprite in pixels.
-    :param float scale: Scale the image up or down. Scale of 1.0 is none.
+    :param float scale: Show the image at this many times its original size.
     :param float angle: The initial rotation of the sprite in degrees
     """
 
