@@ -31,8 +31,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     .. tip:: Advanced users should see :py:class:`~arcade.BasicSprite`
 
-             ``BasicSprite`` is useful for performance optimization. It
-             uses fewer resources at the cost of having fewer features.
+             It uses fewer resources at the cost of having fewer features.
 
     :param str path_or_texture: Path to an image file, or a texture object.
     :param float center_x: Location of the sprite in pixels.
