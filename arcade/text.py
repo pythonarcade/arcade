@@ -638,7 +638,6 @@ class CustomTextSprite(object):
         self.Sprite_List.draw()
 
 
-
 def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
