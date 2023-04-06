@@ -570,31 +570,57 @@ class Text:
 
 
 class CustomTextSprite(object):
-    def __init__(self, string, Alphabet_Textures, scale=1, 
-                 center_x=0, center_y = 0, 
-                 text_scale=1, text_margin=16, width=100, height = 40,  Background_offset_x=0, Background_offset_y=0, Background_scale=1, Background_Texture=None) -> None:
+    def __init__(
+        self, 
+        text: str, 
+        chracter_sprites: dict, 
+        scale: float = 1, 
+        center_x: float = 0, 
+        center_y: float = 0, 
+        text_scale:float = 1, 
+        text_margin:float= 16, 
+        width: int = 100, 
+        height: int = 40,  
+        Background_offset_x: float = 0,
+        Background_offset_y: float = 0, 
+        Background_scale: float = 1, 
+        Background_Texture: str = None
+    ) -> None:
         super().__init__()
-        self.Sprite_List = arcade.SpriteList()
-        self.Background_Sprite = arcade.Sprite(Background_Texture, center_x=center_x+width/2+Background_offset_x, center_y=center_y-height*2+Background_offset_y, scale=Background_scale)
+        self.Sprite_List: arcade.SpriteList = arcade.SpriteList()
+        self.Background_Sprite: arcade.Sprite = arcade.Sprite(Background_Texture, center_x=center_x+width/2+Background_offset_x, center_y=center_y-height*2+Background_offset_y, scale=Background_scale)
         
-        self.text_scale = text_scale
-        self.width = width
-        self.height = height
-        self.update_text(string, Alphabet_Textures, scale=scale, text_scale=text_scale,
-                 center_x=center_x, center_y=center_y, 
-                 text_margin=text_margin, width=width, height = height)
+        self.text_scale: float = text_scale
+        self.width: int = width
+        self.height: int = height
+        self.update_text(text, 
+                chracter_sprites, 
+                scale=scale, 
+                text_scale=text_scale,
+                center_x=center_x, 
+                center_y=center_y, 
+                text_margin=text_margin, 
+                width=width, 
+                height = height)
         
-    def update_text(self, text, Alphabet_Textures, scale=1, text_scale=1,
-                 center_x=0, center_y = 0, 
-                 text_margin=16, width=100, height = 40):
-        self.text = text
+        
+    def update_text(self, 
+                text: str, 
+                chracter_sprites: dict, 
+                scale: float = 1, 
+                text_scale: float = 1,
+                center_x: float = 0, 
+                center_y: float = 0, 
+                text_margin: float = 16, 
+                width: float = 100, 
+                ) -> None:
+        self.text: str = text
         self.Sprite_List.clear()
         if not text:
             return
-        words = text.split(' ')
-        x = 0
-        y = 0
-
+        words: str = text.split(' ')
+        x: float = 0
+        y: float = 0
         for word in words:
             if x > width/2+center_x:
                 y -= text_margin
@@ -603,11 +629,13 @@ class CustomTextSprite(object):
 
             for string in word:
                 sprite = arcade.Sprite(center_x=center_x+x, center_y=center_y+y, scale=scale*text_scale)
-                sprite.texture = Alphabet_Textures[string]
+                sprite.texture = chracter_sprites[string]
                 self.Sprite_List.append(sprite)
                 x += text_margin*scale
             x += text_margin*scale
-    def draw(self):
+            
+            
+    def draw(self) -> None:
         self.Background_Sprite.draw()
         self.Sprite_List.draw()
 
