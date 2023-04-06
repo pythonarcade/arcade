@@ -632,14 +632,15 @@ class CustomTextSprite(object):
         if not text:
             return
         words: list[str] = text.split(' ')
-        x: float = 0
-        y: float = 0
+        x: float = center_y
+        y: float = center_x
         for word in words:
-            if not word:
-                continue
             if x > width/2+center_x or word == "\n":
                 y -= text_margin
-                x = -width/2
+                x = -width/2+center_x
+            if not word:
+                x += text_margin*scale
+                continue
 
 
             for char in word:
