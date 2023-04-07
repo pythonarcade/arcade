@@ -9,7 +9,7 @@ import pyglet
 import arcade
 from arcade.types import Color, Point, RGBA255
 from arcade.resources import resolve
-from arcade.utils import PerformanceWarning, warning
+from arcade.utils import PerformanceWarning, TryNotToUseWarning, warning
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -581,7 +581,10 @@ def create_bitmap_font_from_spritesheet(spritesheet_file: str = "", order:str = 
     for i in range(len(order)):
         Alphabet_Textures[order[i]] = textures[i]
 
-
+@warning(
+    message="CustomTextSprite is case sensitive(Ex. It doesn't support emojis). Consider using making a custom text sprite instead.",
+    warning_type=TryNotToUseWarning,
+    )
 class CustomTextSprite(object):
     def __init__(
         self, 

@@ -105,6 +105,11 @@ class ReplacementWarning(Warning):
     pass
 
 
+class TryNotToUseWarning(Warning):
+    """Use this for issuing warnings about case sensitive things."""
+    pass
+
+
 def warning(warning_type: Type[Warning], message: str = "", **kwargs):
     def actual_warning_decorator(func):
         nonlocal message
