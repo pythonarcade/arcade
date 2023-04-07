@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color
+from arcade.types import RGB, RGBA255, Color
 
 
 class UILabel(UIWidget):
@@ -136,7 +136,7 @@ class UILabel(UIWidget):
         )
 
     @property
-    def text(self)
+    def text(self):
         return self.label.text
 
     @text.setter
@@ -163,7 +163,7 @@ class UILabel(UIWidget):
 
 class UITextWidget(UIAnchorLayout):
     """
-    Adds the ability to add text to a widget.        
+    Adds the ability to add text to a widget.
 
     The text can be placed within the widget using
     :py:class:`~arcade.gui.UIAnchorLayout` parameters with
