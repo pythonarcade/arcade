@@ -17,10 +17,9 @@ class BasicSprite:
     """
     The absolute minimum needed for a sprite.
 
-    .. warning:: Beginners should see :py:class:`~arcade.Sprite` instead!
-
-                 This class is best used for performance optimization or
-                 internal arcade components.
+    It does not support features like rotation or changing the hitbox
+    after creation. For more built-in features, please see
+    :py:class:`~arcade.Sprite`.
 
     :param texture: The texture data to use for this sprite.
     :param scale: The scaling factor for drawing the texture.
