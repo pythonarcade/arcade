@@ -620,4 +620,3 @@ class BasicSprite:
 
         # noinspection PyTypeChecker
         return check_for_collision_with_list(self, sprite_list)
-        return check_for_collision_with_list(self, sprite_list)
