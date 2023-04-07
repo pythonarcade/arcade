@@ -9,6 +9,7 @@ import arcade
 from arcade.types import Color, RGBA255
 
 __all__ = ["PerfGraph"]
+
 class PerfGraph(arcade.Sprite):
     """
     An auto-updating line chart of FPS or event handler execution times.

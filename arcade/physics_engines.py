@@ -15,8 +15,6 @@ from arcade import (
 from arcade.math import get_distance
 
 __all__ = [
-    "_circular_check",
-    "_move_sprite",
     "PhysicsEngineSimple",
     "PhysicsEnginePlatformer"
 ]

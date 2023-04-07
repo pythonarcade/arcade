@@ -35,7 +35,6 @@ __all__ = [
     "draw_circle_outline",
     "draw_ellipse_filled",
     "draw_ellipse_outline",
-    "_generic_draw_line_strip",
     "draw_line_strip",
     "draw_line",
     "draw_lines",

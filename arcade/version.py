@@ -19,11 +19,6 @@ So if we are at version 2.7.3.dev5 that's the version deploy. Bump will bump it 
 """
 import os
 
-__all__ = [
-    "_rreplace",
-    "_get_version"
-]
-
 
 def _rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)

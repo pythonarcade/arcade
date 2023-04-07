@@ -19,7 +19,6 @@ __all__ = [
     "rand_angle_spread_deg",
     "rand_vec_spread_deg",
     "rand_vec_magnitude",
-    "_Vec2",
     "get_distance",
     "rotate_point",
     "get_angle_degrees",
