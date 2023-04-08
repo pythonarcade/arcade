@@ -5,16 +5,18 @@ This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
-from collections import defaultdict
+from array import array
+from collections import OrderedDict
 import itertools
 import math
-import struct
 from array import array
 from typing import (
+    Dict,
     List,
+    Tuple,
     Iterable,
-    Sequence,
     Optional,
+    Sequence,
     TypeVar,
     Generic,
     cast,
@@ -25,9 +27,8 @@ import pyglet.gl as gl
 from arcade.types import Color, Point, PointList, RGBA255
 from arcade import get_window, get_points_for_thick_line
 from arcade.gl import BufferDescription
-from arcade.gl import Geometry
 from arcade.gl import Program
-from arcade.gl import Buffer
+from arcade import ArcadeContext
 
 from .math import rotate_point
 
@@ -36,25 +37,63 @@ class Shape:
     """
     Primitive drawing shape. This can be part of a ShapeElementList so
     shapes can be drawn faster in batch.
+
+    :param PointList points: A list of points that make up the shape.
+    :param Sequence[RGBA255] colors: A list of colors that correspond to the points.
+    :param int mode: The OpenGL drawing mode. Defaults to GL_TRIANGLES.
+    :param float line_width: The width of the line, if drawing lines.
+    :param Program program: The program to use when drawing this shape.
     """
-    def __init__(self):
-        self.vao: Optional[Geometry] = None
-        self.vbo: Optional[Buffer] = None
-        self.ibo: Optional[Buffer] = None
-        self.program: Optional[Program] = None
-        self.mode: Optional[int] = None
-        self.line_width: float = 1
+    def __init__(
+        self,
+        points: PointList,
+        colors: Sequence[RGBA255],
+        # vao: Geometry,
+        # vbo: Buffer,
+        mode: int = gl.GL_TRIANGLES,
+        line_width: float = 1,
+        program: Optional[Program] = None,
+    ):
+        self.ctx = get_window().ctx
+        self.program = program or self.ctx.line_generic_with_colors_program
+        self.mode = mode
+        self.line_width = line_width
+
+        if len(points) != len(colors):
+            raise ValueError("Number of points and colors must match.")
+
+        self.points = points
+        # Ensure colors have 4 components
+        self.colors = [Color.from_iterable(color) for color in colors]
+        # Pack the data into a single array
+        self.data = array("f", [c for a in zip(points, colors) for b in a for c in b])
+        self.vertices = len(points)
+
+        self.geometry = None
+        self.buffer = None
+
+    def _init_geometry(self):
+        # NOTE: When drawing a single shape we're not using an index buffer
+        self.buffer = self.program.ctx.buffer(data=self.data)
+        self.geometry = self.ctx.geometry(
+            [
+                BufferDescription(
+                    self.buffer,
+                    "2f 4f",
+                    ("in_vert", "in_color"),
+                ),
+            ]
+        )
 
     def draw(self):
         """
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
         """
-        if self.vao is None:
-            raise ValueError("VAO attribute not set before calling draw()")
-        if self.program is None:
-            raise ValueError("Program attribute not set before calling draw()")
-        self.vao.render(self.program, mode=self.mode)
+        if self.geometry is None:
+            self._init_geometry()
+
+        self.geometry.render(self.program, mode=self.mode)
 
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -96,40 +135,12 @@ def create_line_generic_with_colors(point_list: PointList,
 
     :Returns Shape:
     """
-    window = get_window()
-    ctx = window.ctx
-
-    program = ctx.line_generic_with_colors_program
-
-    # Ensure colors have 4 components
-    color_sequence = [Color.from_iterable(color) for color in color_sequence]
-
-    vertex_size = 12  # 2f 4f1 = 12 bytes
-    data = bytearray(vertex_size * len(point_list))
-    for i, entry in enumerate(zip(point_list, color_sequence)):
-        offset = i * vertex_size
-        struct.pack_into("ffBBBB", data, offset, *entry[0], *entry[1])
-
-    vbo = ctx.buffer(data=data)
-    vao_content = [
-        BufferDescription(
-            vbo,
-            '2f 4f1',
-            ('in_vert', 'in_color'),
-            normalized=['in_color']
-        )
-    ]
-
-    vao = ctx.geometry(vao_content)
-
-    shape = Shape()
-    shape.vao = vao
-    shape.vbo = vbo
-    shape.program = program
-    shape.mode = shape_mode
-    shape.line_width = line_width
-
-    return shape
+    return Shape(
+        points=point_list,
+        colors=color_sequence,
+        mode=shape_mode,
+        line_width=line_width,
+    )
 
 
 def create_line_generic(point_list: PointList,
@@ -665,80 +676,65 @@ class ShapeElementList(Generic[TShape]):
         self._center_y = 0
         self._angle = 0
         self.program = self.ctx.shape_element_list_program
-        # Could do much better using just one vbo and glDrawElementsBaseVertex
-        self.batches = defaultdict(_Batch)
+        self.batches: Dict[int, _Batch] = OrderedDict()
         self.dirties = set()
+        self._rebuild_count = 0
 
     def append(self, item: TShape):
         """
         Add a new shape to the list.
         """
         self.shape_list.append(item)
-        group = (item.mode, item.line_width)
-        self.batches[group].items.append(item)
-        self.dirties.add(group)
+        batch = self.batches.get(item.mode, None)
+        if batch is None:
+            batch = _Batch(
+                self.ctx,
+                self.program,
+                item.mode,
+            )
+            self.batches[item.mode] = batch
+
+        batch.append(item)
+
+        # Mark the group as dirty
+        self.dirties.add(batch)
 
     def remove(self, item: TShape):
         """
         Remove a specific shape from the list.
         """
         self.shape_list.remove(item)
-        group = (item.mode, item.line_width)
-        self.batches[group].items.remove(item)
-        self.dirties.add(group)
-
-    def _refresh_shape(self, group):
-        # Create a buffer large enough to hold all the shapes buffers
-        batch = self.batches[group]
-
-        total_vbo_bytes = sum(s.vbo.size for s in batch.items)
-        vbo = self.ctx.buffer(reserve=total_vbo_bytes)
-        offset = 0
-        # Copy all the shapes buffer in our own vbo
-        for shape in batch.items:
-            vbo.copy_from_buffer(shape.vbo, offset=offset)
-            offset += shape.vbo.size
-
-        # Create an index buffer object. It should count starting from 0. We need to
-        # use a reset_idx to indicate that a new shape will start.
-        reset_idx = 2 ** 32 - 1
-        indices = []
-        counter = itertools.count()
-        for shape in batch.items:
-            indices.extend(itertools.islice(counter, shape.vao.num_vertices))
-            indices.append(reset_idx)
-        del indices[-1]
-
-        ibo = self.ctx.buffer(data=array('I', indices))
-
-        vao_content = [
-            BufferDescription(
-                vbo,
-                '2f 4f1',
-                ('in_vert', 'in_color'),
-                normalized=['in_color']
-            )
-        ]
-        vao = self.ctx.geometry(vao_content, ibo)
-        self.program['Position'] = self.center_x, self.center_y
-        self.program['Angle'] = -self.angle
-
-        batch.shape.vao = vao
-        batch.shape.vbo = vbo
-        batch.shape.ibo = ibo
-        batch.shape.program = self.program
-        mode, line_width = group
-        batch.shape.mode = mode
-        batch.shape.line_width = line_width
+        batch = self.batches[item.mode]
+        batch.remove(item)
+        self.dirties.add(batch)
 
     def move(self, change_x: float, change_y: float):
         """
-        Move all the shapes ion the list
+        Move all the shapes on the list using hardware acceleration.
+
         :param change_x: Amount to move on the x axis
         :param change_y: Amount to move on the y axis
         """
         self.center_x += change_x
         self.center_y += change_y
+
+    def draw(self):
+        """
+        Draw everything in the list.
+        """
+        self.program['Position'] = self._center_x, self._center_y
+        self.program['Angle'] = -self._angle
+
+        # Update the altered batches
+        for group in self.dirties:
+            self._rebuild_count += 1
+            group.update()
+
+        self.dirties.clear()
+
+        # Draw the batches
+        for batch in self.batches.values():
+            batch.draw()
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
@@ -750,19 +746,6 @@ class ShapeElementList(Generic[TShape]):
 
     def __getitem__(self, i):
         return self.shape_list[i]
-
-    def draw(self):
-        """
-        Draw everything in the list.
-        """
-        self.program['Position'] = self._center_x, self._center_y
-        self.program['Angle'] = -self._angle
-
-        for group in self.dirties:
-            self._refresh_shape(group)
-        self.dirties.clear()
-        for batch in self.batches.values():
-            batch.shape.draw()
 
     def _get_center_x(self) -> float:
         """Get the center x coordinate of the ShapeElementList."""
@@ -797,6 +780,156 @@ class ShapeElementList(Generic[TShape]):
 
 
 class _Batch(Generic[TShape]):
-    def __init__(self):
-        self.shape = Shape()
-        self.items = []
+    """
+    A collection of shapes with the same configuration.
+
+    The group uniqueness is based on:
+    - The primitive mode
+    - The line width
+    """
+    # Flags for keeping track of changes
+    ADD = 1
+    REMOVE = 3
+    # The byte size of a vertex
+    VERTEX_SIZE = 4 * 6  # 24 bytes (2 floats for position, 4 floats for color)
+    RESET_IDX = 2 ** 32 - 1
+
+    def __init__(
+        self,
+        ctx: ArcadeContext,
+        program: Program,
+        mode: int,
+    ):
+        self.ctx = ctx
+        self.program = program
+        self.mode = mode
+
+        self.vbo = self.ctx.buffer(reserve=1024 * self.VERTEX_SIZE)
+        self.ibo = self.ctx.buffer(reserve=1024 * 4)
+
+        self.geometry = self.ctx.geometry(
+            content=[
+                BufferDescription(
+                    self.vbo,
+                    '2f 4f',
+                    ('in_vert', 'in_color'),
+                )
+            ],
+            index_buffer=self.ibo,
+        )
+
+        self.items: List[TShape] = []
+        self.new_items: List[TShape] = []
+        self.vertices = 0  # Total vertices in the batch
+        self.elements = 0  # Total elements in the batch
+        self.FLAGS = 0  # Flags to indicate changes
+
+    def draw(self):
+        """Draw the batch."""
+        self.geometry.render(self.program, vertices=self.elements, mode=self.mode)
+
+    def append(self, item: TShape):
+        self.new_items.append(item)
+        self.FLAGS |= self.ADD
+
+    def remove(self, item: TShape):
+        self.items.remove(item)
+        self.vertices -= item.vertices
+        self.elements -= item.vertices + 1
+        self.FLAGS |= self.REMOVE
+
+    def update(self):
+        """Update the internals of the batch."""
+        if self.FLAGS == 0:
+            return
+
+        # If only add flag is set we simply copy in the new data
+        if self.FLAGS == self.ADD and False:
+            print("ADD")
+            new_data = array('f')
+            new_ibo = array('I')
+            counter = itertools.count(self.vertices)
+            new_vertices = 0
+
+            # Prepare data for new newly added items
+            for item in self.new_items:
+                # Update the batch vertex count
+                new_vertices += item.vertices
+                # Build up an array of new vertex data
+                new_data.extend(item.data)
+
+                # Build new index buffer data
+                new_ibo.extend(itertools.islice(counter, item.vertices))
+                new_ibo.append(self.RESET_IDX)  # Restart the primitive
+
+            # Calculate the size of new and old data
+            vbo_old_size = self.vertices * self.VERTEX_SIZE
+            vbo_new_data_size = len(new_data) * self.VERTEX_SIZE
+            vbo_new_size = vbo_old_size + vbo_new_data_size
+
+            if vbo_new_size > self.vbo.size:
+                # Copy out the buffer, resize and copy back
+                buff = self.ctx.buffer(reserve=self.vbo.size)
+                buff.copy_from_buffer(self.vbo)
+                self.vbo.orphan(double=True)
+                self.vbo.copy_from_buffer(buff)
+
+            # Calculate the index buffer size
+            ibo_old_size = self.elements * 4
+            ibo_new_data_size = len(new_ibo) * 4
+            ibo_new_size = ibo_old_size + ibo_new_data_size
+
+            if ibo_new_size > self.ibo.size:
+                # Copy out the buffer, resize and copy back
+                buff = self.ctx.buffer(reserve=self.ibo.size)
+                buff.copy_from_buffer(self.ibo)
+                self.ibo.orphan(double=True)
+                self.ibo.copy_from_buffer(buff)
+
+            # Copy in the new data with offsets
+            self.vbo.write(new_data, offset=vbo_old_size)
+            self.ibo.write(new_ibo, offset=ibo_old_size)
+
+            self.new_items.clear()
+            # Element count is the vertex count + the number of restart indices
+            self.vertices += new_vertices
+            self.elements = self.vertices + len(self.items)
+        else:
+            print("REBUILD")
+            # Do the expensive rebuild
+            # NOTE: We don't need to worry about buffer size here
+            #       because we know the buffer hasn't grown.
+            #       Simply collect the data and write it to the buffer.
+            #       and update the vertex count.
+            # NOTE: This can be optimized in the future, but pyglet shapes are better.
+            self.items.extend(self.new_items)
+            self.new_items.clear()
+
+            data = array('f')
+            ibo = array('I')
+            counter = itertools.count()
+            self.vertices = 0
+            self.elements = 0
+
+            for item in self.items:
+                # Build up an array of new vertex data
+                data.extend(item.data)
+                # Build new index buffer data
+                ibo.extend(itertools.islice(counter, item.vertices))
+                ibo.append(self.RESET_IDX)  # Restart the primitive
+
+                self.vertices += item.vertices
+
+            # Element count is the vertex count + the number of restart indices
+            self.elements = self.vertices + len(self.items)
+            print("Elements", self.elements, self.vertices, len(self.items))
+
+            if self.vertices * self.VERTEX_SIZE > self.vbo.size:
+                self.vbo.orphan(double=True)
+            if self.elements * 4 > self.ibo.size:
+                self.ibo.orphan(double=True)
+
+            self.vbo.write(data)
+            self.ibo.write(ibo)
+
+        self.FLAGS = 0
