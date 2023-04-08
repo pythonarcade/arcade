@@ -57,7 +57,6 @@ class UILabel(UIWidget):
                            :py:class:`~arcade.gui.UITextWidget` with
                            ``multiline`` of True is the same thing as
                            a :py:class:`~arcade.gui.UITextArea`.
-
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
                       space of the parent should be requested.
     :param size_hint_min: Minimum size hint width and height in pixel.
@@ -206,7 +205,8 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def text(self):
-        """Text of the widget. Modifying this repeatedly will cause significant
+        """
+        Text of the widget. Modifying this repeatedly will cause significant
         lag; calculating glyph position is very expensive.
         """
         return self._label.text
@@ -219,9 +219,10 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def multiline(self):
-        """Multiline state of the widget. Newlines indicated with ``\n`` will
-        only be honored if this is set to true. If you want a scrollable text
-        widget, use :py:class:`~arcade.gui.TextArea`.
+        """
+        Multiline state of the widget. Newlines indicated with ``\n`` will only
+        be honored if this is set to true. If you want a scrollable text widget,
+        use :py:class:`~arcade.gui.TextArea`.
         """
         return self.label.multiline
 
@@ -233,8 +234,8 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def ui_label(self) -> UILabel:
-        """Internal :py:class:`~arcade.gui.UILabel` used for rendering the
-        text.
+        """
+        Internal py:class:`~arcade.gui.UILabel` used for rendering the text.
         """
         return self._label
 
