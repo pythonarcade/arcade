@@ -41,7 +41,6 @@ class Shape:
     :param PointList points: A list of points that make up the shape.
     :param Sequence[RGBA255] colors: A list of colors that correspond to the points.
     :param int mode: The OpenGL drawing mode. Defaults to GL_TRIANGLES.
-    :param float line_width: The width of the line, if drawing lines.
     :param Program program: The program to use when drawing this shape.
     """
     def __init__(
@@ -51,13 +50,11 @@ class Shape:
         # vao: Geometry,
         # vbo: Buffer,
         mode: int = gl.GL_TRIANGLES,
-        line_width: float = 1,
         program: Optional[Program] = None,
     ):
         self.ctx = get_window().ctx
         self.program = program or self.ctx.line_generic_with_colors_program
         self.mode = mode
-        self.line_width = line_width
 
         if len(points) != len(colors):
             raise ValueError("Number of points and colors must match.")
@@ -139,7 +136,6 @@ def create_line_generic_with_colors(point_list: PointList,
         points=point_list,
         colors=color_sequence,
         mode=shape_mode,
-        line_width=line_width,
     )
 
 
@@ -678,7 +674,6 @@ class ShapeElementList(Generic[TShape]):
         self.program = self.ctx.shape_element_list_program
         self.batches: Dict[int, _Batch] = OrderedDict()
         self.dirties = set()
-        self._rebuild_count = 0
 
     def append(self, item: TShape):
         """
@@ -720,14 +715,13 @@ class ShapeElementList(Generic[TShape]):
 
     def draw(self):
         """
-        Draw everything in the list.
+        Draw all the shapes.
         """
         self.program['Position'] = self._center_x, self._center_y
         self.program['Angle'] = -self._angle
 
         # Update the altered batches
         for group in self.dirties:
-            self._rebuild_count += 1
             group.update()
 
         self.dirties.clear()
@@ -845,7 +839,6 @@ class _Batch(Generic[TShape]):
 
         # If only add flag is set we simply copy in the new data
         if self.FLAGS == self.ADD and False:
-            print("ADD")
             new_data = array('f')
             new_ibo = array('I')
             counter = itertools.count(self.vertices)
@@ -871,7 +864,7 @@ class _Batch(Generic[TShape]):
                 # Copy out the buffer, resize and copy back
                 buff = self.ctx.buffer(reserve=self.vbo.size)
                 buff.copy_from_buffer(self.vbo)
-                self.vbo.orphan(double=True)
+                self.vbo.orphan(size=vbo_new_size * 2)
                 self.vbo.copy_from_buffer(buff)
 
             # Calculate the index buffer size
@@ -883,19 +876,19 @@ class _Batch(Generic[TShape]):
                 # Copy out the buffer, resize and copy back
                 buff = self.ctx.buffer(reserve=self.ibo.size)
                 buff.copy_from_buffer(self.ibo)
-                self.ibo.orphan(double=True)
+                self.ibo.orphan(size=ibo_new_size * 2)
                 self.ibo.copy_from_buffer(buff)
 
             # Copy in the new data with offsets
             self.vbo.write(new_data, offset=vbo_old_size)
             self.ibo.write(new_ibo, offset=ibo_old_size)
 
+            self.items.extend(self.new_items)
             self.new_items.clear()
             # Element count is the vertex count + the number of restart indices
             self.vertices += new_vertices
             self.elements = self.vertices + len(self.items)
         else:
-            print("REBUILD")
             # Do the expensive rebuild
             # NOTE: We don't need to worry about buffer size here
             #       because we know the buffer hasn't grown.
@@ -919,15 +912,16 @@ class _Batch(Generic[TShape]):
                 ibo.append(self.RESET_IDX)  # Restart the primitive
 
                 self.vertices += item.vertices
+                self.elements += item.vertices + 1
 
-            # Element count is the vertex count + the number of restart indices
-            self.elements = self.vertices + len(self.items)
-            print("Elements", self.elements, self.vertices, len(self.items))
+            # Resize the buffers if needed
+            data_size = self.vertices * self.VERTEX_SIZE
+            if data_size > self.vbo.size:
+                self.vbo.orphan(size=data_size * 2)
 
-            if self.vertices * self.VERTEX_SIZE > self.vbo.size:
-                self.vbo.orphan(double=True)
-            if self.elements * 4 > self.ibo.size:
-                self.ibo.orphan(double=True)
+            index_size = self.elements * 4
+            if index_size > self.ibo.size:
+                self.ibo.orphan(size=index_size * 2)
 
             self.vbo.write(data)
             self.ibo.write(ibo)
