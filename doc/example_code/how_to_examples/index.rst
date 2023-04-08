@@ -105,7 +105,8 @@ Faster Drawing with ShapeElementLists
 
    :ref:`gradients`
 
-.. _sprites:
+
+.. _sprite_examples:
 
 Sprites
 -------
