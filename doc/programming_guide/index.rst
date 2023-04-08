@@ -21,6 +21,7 @@ external documentation where applicable.
 
    install/index
    get_started
+   sprites/index
    how_to_get_help
    directory_structure
    edge_artifacts/index

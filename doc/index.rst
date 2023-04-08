@@ -75,6 +75,7 @@ The Python Arcade Library
 
    programming_guide/install/index
    programming_guide/get_started
+   programming_guide/sprites/index
    programming_guide/how_to_get_help
    programming_guide/directory_structure
    programming_guide/edge_artifacts/index
