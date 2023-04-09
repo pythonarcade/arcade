@@ -838,7 +838,7 @@ class _Batch(Generic[TShape]):
             return
 
         # If only add flag is set we simply copy in the new data
-        if self.FLAGS == self.ADD and False:
+        if self.FLAGS == self.ADD:
             new_data = array('f')
             new_ibo = array('I')
             counter = itertools.count(self.vertices)
