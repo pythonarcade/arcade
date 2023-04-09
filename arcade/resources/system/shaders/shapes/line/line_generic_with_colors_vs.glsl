@@ -11,5 +11,5 @@ out vec4 v_color;
 
 void main() {
     gl_Position = window.projection * window.view * vec4(in_vert, 0.0, 1.0);
-    v_color = in_color;
+    v_color = in_color / 255.0; // Normalize the color
 }
