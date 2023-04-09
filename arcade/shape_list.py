@@ -13,7 +13,6 @@ from array import array
 from typing import (
     Dict,
     List,
-    Tuple,
     Iterable,
     Optional,
     Sequence,
@@ -703,16 +702,6 @@ class ShapeElementList(Generic[TShape]):
         batch.remove(item)
         self.dirties.add(batch)
 
-    def move(self, change_x: float, change_y: float):
-        """
-        Move all the shapes on the list using hardware acceleration.
-
-        :param change_x: Amount to move on the x axis
-        :param change_y: Amount to move on the y axis
-        """
-        self.center_x += change_x
-        self.center_y += change_y
-
     def draw(self):
         """
         Draw all the shapes.
@@ -730,6 +719,51 @@ class ShapeElementList(Generic[TShape]):
         for batch in self.batches.values():
             batch.draw()
 
+    def clear(self):
+        """
+        Clear all the contents from the shape list.
+        """
+        self.shape_list.clear()
+        self.batches.clear()
+        self.dirties.clear()
+
+    def move(self, change_x: float, change_y: float):
+        """
+        Change the center_x/y of the shape list relative to the current position.
+
+        :param change_x: Amount to move on the x axis
+        :param change_y: Amount to move on the y axis
+        """
+        self.center_x += change_x
+        self.center_y += change_y
+
+    @property
+    def center_x(self) -> float:
+        """Get or set the center x coordinate of the ShapeElementList."""
+        return self._center_x
+
+    @center_x.setter
+    def center_x(self, value: float):
+        self._center_x = value
+
+    @property
+    def center_y(self) -> float:
+        """Get or set the center y coordinate of the ShapeElementList."""
+        return self._center_y
+
+    @center_y.setter
+    def center_y(self, value: float):
+        self._center_y = value
+
+    @property
+    def angle(self) -> float:
+        """Get or set the rotation in degrees (clockwise)"""
+        return self._angle
+
+    @angle.setter
+    def angle(self, value: float):
+        self._angle = value
+
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
         return len(self.shape_list)
@@ -740,37 +774,6 @@ class ShapeElementList(Generic[TShape]):
 
     def __getitem__(self, i):
         return self.shape_list[i]
-
-    def _get_center_x(self) -> float:
-        """Get the center x coordinate of the ShapeElementList."""
-        return self._center_x
-
-    def _set_center_x(self, value: float):
-        """Set the center x coordinate of the ShapeElementList."""
-        self._center_x = value
-
-    center_x = property(_get_center_x, _set_center_x)
-
-    def _get_center_y(self) -> float:
-        """Get the center y coordinate of the ShapeElementList."""
-        return self._center_y
-
-    def _set_center_y(self, value: float):
-        """Set the center y coordinate of the ShapeElementList."""
-        self._center_y = value
-        self.program['Position'] = self._center_x, self._center_y
-
-    center_y = property(_get_center_y, _set_center_y)
-
-    def _get_angle(self) -> float:
-        """Get or set the rotation in degrees (clockwise)"""
-        return self._angle
-
-    def _set_angle(self, value: float):
-        self._angle = value
-        self.program['Angle'] = -self._angle
-
-    angle = property(_get_angle, _set_angle)
 
 
 class _Batch(Generic[TShape]):
@@ -798,8 +801,8 @@ class _Batch(Generic[TShape]):
         self.program = program
         self.mode = mode
 
-        self.vbo = self.ctx.buffer(reserve=1024 * self.VERTEX_SIZE)
-        self.ibo = self.ctx.buffer(reserve=1024 * 4)
+        self.vbo = self.ctx.buffer(reserve=1024 * self.VERTEX_SIZE, usage="dynamic")
+        self.ibo = self.ctx.buffer(reserve=1024 * 4, usage="dynamic")
 
         self.geometry = self.ctx.geometry(
             content=[
