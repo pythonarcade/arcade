@@ -880,9 +880,7 @@ class _Batch(Generic[TShape]):
     """
     A collection of shapes with the same configuration.
 
-    The group uniqueness is based on:
-    - The primitive mode
-    - The line width
+    The group uniqueness is based on the primitive mode
     """
     # Flags for keeping track of changes
     ADD = 1
