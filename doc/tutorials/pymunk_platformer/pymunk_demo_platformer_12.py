@@ -117,9 +117,6 @@ class PlayerSprite(arcade.Sprite):
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
 
-        # Hit box will be set based on the first image used.
-        self.hit_box = self.texture.hit_box_points
-
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
 
@@ -307,7 +304,7 @@ class GameWindow(arcade.Window):
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
         # after the player lets off the movement keys.
-        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # Setting the moment of intertia to PymunkPhysicsEngine.MOMENT_INF prevents it from
         # rotating.
         # Friction normally goes between 0 (no friction) and 1.0 (high friction)
         # Friction is between two objects in contact. It is important to remember
@@ -375,7 +372,7 @@ class GameWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = BulletSprite(20, 5, arcade.color.DARK_YELLOW)
+        bullet = BulletSprite(width=20, height=5, color=arcade.color.DARK_YELLOW)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location

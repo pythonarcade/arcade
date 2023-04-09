@@ -1,12 +1,12 @@
 import math
+from copy import deepcopy
 from itertools import product
-from typing import Iterable, Callable, Tuple, TypeVar
+from typing import Iterable, Callable, Tuple
 
 import pytest
 
 import arcade.color as colors
 from arcade.types import Color
-
 
 # This seems better as fixtures, but it's added here for consistency
 # with  the rest of the framework's beginner-accessible test styling.
@@ -17,6 +17,7 @@ MIXED_NORMALIZED = OK_NORMALIZED + BAD_NORMALIZED
 
 def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
     """Return a callable which returns true when at least one elt is in iterable i"""
+
     def _at_least_one_in(checked: Iterable):
         return bool(set(checked) & frozenset(i))
 
@@ -24,7 +25,6 @@ def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
 
 
 def test_color_from_iterable_noncolor_iterables():
-
     for length, type_converter in product((3, 4), (list, tuple, lambda a: a)):
         iterable = type_converter(range(length))
         color = Color.from_iterable(iterable)
@@ -66,14 +66,14 @@ def test_color_from_uint32():
 
 
 def test_color_from_normalized():
-
     # spot check conversion of acceptable human-ish values
-    float_steps = (1/255, 2/255, 3/255, 4/255)
+    float_steps = (1 / 255, 2 / 255, 3 / 255, 4 / 255)
     assert Color.from_normalized(float_steps[:3]) == (1, 2, 3, 255)
     assert Color.from_normalized(float_steps) == (1, 2, 3, 4)
 
     # some helper callables
     at_least_one_bad = at_least_one_in(BAD_NORMALIZED)
+
     def local_convert(i: Iterable[float]) -> Tuple[int]:
         """Local helper converter, normalized float to byte ints"""
         return tuple(math.floor(c * 255) for c in i)
@@ -153,3 +153,8 @@ def test_color_normalized_property():
     assert colors.WHITE.normalized == (1.0, 1.0, 1.0, 1.0)
     assert colors.TRANSPARENT_BLACK.normalized == (0.0, 0.0, 0.0, 0.0)
     assert colors.GRAY.normalized == (128 / 255, 128 / 255, 128 / 255, 1.0)
+
+
+def test_deepcopy_color():
+    expected_color = Color(255, 255, 255, 255)
+    assert deepcopy(expected_color) == expected_color

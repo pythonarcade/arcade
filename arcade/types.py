@@ -2,9 +2,10 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
-from pathlib import Path
+import random
 from collections import namedtuple
 from collections.abc import ByteString
+from pathlib import Path
 from typing import (
     Iterable,
     List,
@@ -15,20 +16,20 @@ from typing import (
     Union,
     TYPE_CHECKING, TypeVar
 )
+
+from pytiled_parser import Properties
+
 from arcade.utils import (
     IntOutsideRangeError,
     ByteRangeError,
     NormalizedRangeError
 )
-from pytiled_parser import Properties
 
 if TYPE_CHECKING:
     from arcade.texture import Texture
 
-
 MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
-
 
 ChannelType = TypeVar('ChannelType')
 
@@ -72,6 +73,7 @@ class Color(RGBA255):
     :param a: the alpha or transparency channel of the color, between
         0 and 255
     """
+
     def __new__(cls, r: int, g: int, b: int, a: int = 255):
 
         if not 0 <= r <= 255:
@@ -90,6 +92,10 @@ class Color(RGBA255):
         # tuples & super:
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
+
+    def __deepcopy__(self, _):
+        """Allow to deepcopy Colors"""
+        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
@@ -341,9 +347,49 @@ class Color(RGBA255):
 
         raise ValueError(f"Improperly formatted color: '{code}'")
 
+    @classmethod
+    def random(
+        cls,
+        r: Optional[int] = None,
+        g: Optional[int] = None,
+        b: Optional[int] = None,
+        a: Optional[int] = None,
+    ) -> "Color":
+        """
+        Return a random color.
+
+        The parameters are optional and can be used to fix the value of
+        a particular channel. If a channel is not fixed, it will be
+        randomly generated.
+
+        Examples::
+
+            # Randomize all channels
+            >>> Color.random()
+            Color(r=35, g=145, b=4, a=200)
+
+            # Random color with fixed alpha
+            >>> Color.random(a=255)
+            Color(r=25, g=99, b=234, a=255)
+
+        :param int r: Fixed value for red channel
+        :param int g: Fixed value for green channel
+        :param int b: Fixed value for blue channel
+        :param int a: Fixed value for alpha channel
+        """
+        if r is None:
+            r = random.randint(0, 255)
+        if g is None:
+            g = random.randint(0, 255)
+        if b is None:
+            b = random.randint(0, 255)
+        if a is None:
+            a = random.randint(0, 255)
+
+        return cls(r, g, b, a)
+
 
 ColorLike = Union[RGB, RGBA255]
-
 
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point

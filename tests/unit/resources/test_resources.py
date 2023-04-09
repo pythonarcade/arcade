@@ -18,7 +18,6 @@ def get_referenced_resources():
     return resources
 
 
-
 def test_resource_listing_exists():
     """
     Find all the resources listed in the __init__.py file and check for their existence.
@@ -49,7 +48,7 @@ def test_resource_listing_is_complete():
         if any(path.is_relative_to(skip_path) for skip_path in skip_paths):
             continue
         paths_in_resources.add(path)
-    
+
     # Temporarily ignore the following files. This is a problem with duplicate variable names
     # created by the make_resources_init.py script and should be resolved in the future.
     # - sounds: These exist in several formats
@@ -61,4 +60,5 @@ def test_resource_listing_is_complete():
     paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderTop.png")
     paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderMid.png")
 
-    assert paths_in_resources == paths_in_module, "Resources listed in __init__.py does not match the resources directory"
+    assert paths_in_module - paths_in_resources == set(), "Some resources are not listed in __init__.py"
+    assert paths_in_resources - paths_in_module == set(), "Some resources are listed in __init__.py, but not in folder"

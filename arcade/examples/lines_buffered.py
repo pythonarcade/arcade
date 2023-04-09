@@ -29,6 +29,7 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, title)
+        self.set_vsync(True)
 
         self.shape_list = ShapeElementList()
         point_list = ((0, 50),
@@ -72,9 +73,9 @@ class MyGame(arcade.Window):
         self.shape_list.draw()
 
     def on_update(self, delta_time):
-        self.shape_list.angle += 1
-        self.shape_list.center_x += 0.1
-        self.shape_list.center_y += 0.1
+        self.shape_list.angle += 1 * 60 * delta_time
+        self.shape_list.center_x += 0.1 * 60 * delta_time
+        self.shape_list.center_y += 0.1 * 60 * delta_time
 
 
 def main():
