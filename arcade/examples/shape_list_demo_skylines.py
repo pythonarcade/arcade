@@ -13,7 +13,6 @@ from arcade.shape_list import (
     create_rectangle_filled,
     create_rectangles_filled_with_colors,
 )
-import time
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -21,11 +20,10 @@ SCREEN_TITLE = "Skyline Using Buffered Shapes"
 
 
 def make_star_field(star_count):
-    """ Make a bunch of circles for stars. """
-
+    """Make a bunch of circles for stars"""
     shape_list = ShapeElementList()
 
-    for star_no in range(star_count):
+    for _ in range(star_count):
         x = random.randrange(SCREEN_WIDTH)
         y = random.randrange(SCREEN_HEIGHT)
         radius = random.randrange(1, 4)
@@ -41,8 +39,7 @@ def make_skyline(width, skyline_height, skyline_color,
                  gap_chance=0.70, window_chance=0.30, light_on_chance=0.5,
                  window_color=(255, 255, 200), window_margin=3, window_gap=2,
                  cap_chance=0.20):
-    """ Make a skyline """
-
+    """Make a skyline of buildings"""
     shape_list = ShapeElementList()
 
     # Add the "base" that we build the buildings on
@@ -74,11 +71,8 @@ def make_skyline(width, skyline_height, skyline_color,
         y2 = skyline_height + building_height
 
         skyline_point_list.append([x1, y1])
-
         skyline_point_list.append([x1, y2])
-
         skyline_point_list.append([x2, y2])
-
         skyline_point_list.append([x2, y1])
 
         for i in range(4):
@@ -92,6 +86,7 @@ def make_skyline(width, skyline_height, skyline_color,
             y1 = y2 = building_center_y + building_height / 2
             y3 = y1 + building_width / 2
 
+            # Roof
             shape = create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
             shape_list.append(shape)
 
@@ -141,6 +136,8 @@ class MyGame(arcade.Window):
         """ Initializer """
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        # Enable vertical sync to make scrolling smoother
+        self.set_vsync(True)
 
         self.stars = make_star_field(150)
         self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))
@@ -148,37 +145,32 @@ class MyGame(arcade.Window):
 
         self.background_color = arcade.color.BLACK
 
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
     def on_draw(self):
-        """
-        Render the screen.
-        """
-
-        # This command has to happen before we start drawing
-
-        start_time = int(round(time.time() * 1000))
+        """Draw to screen"""
         self.clear()
 
         self.stars.draw()
         self.skyline1.draw()
         self.skyline2.draw()
-        end_time = int(round(time.time() * 1000))
-        total_time = end_time - start_time
-
-        arcade.draw_text(f"Time: {total_time}", 10, 10, arcade.color.WHITE)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
-        self.skyline1.center_x -= 0.5
-        self.skyline2.center_x -= 1
+        """Per frame update logic"""
+        # Scroll each shape list with a slight offset to give a parallax effect
+        self.skyline1.center_x -= 0.5 * 60 * delta_time
+        self.skyline2.center_x -= 1 * 60 * delta_time
+
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
+        """Make it possible scroll the scene around by dragging the mouse"""
+        self.skyline1.center_x += dx
+        self.skyline1.center_y += dy
+
+        self.skyline2.center_x += dx
+        self.skyline2.center_y += dy
 
 
 def main():
     window = MyGame()
-    window.setup()
-    arcade.run()
+    window.run()
 
 
 if __name__ == "__main__":
