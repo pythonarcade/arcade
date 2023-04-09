@@ -1,5 +1,4 @@
 from .image_data import ImageData
-from .manager import TextureManager
 from .spritesheet import SpriteSheet
 from .texture import Texture
 from .loading import (
@@ -18,6 +17,7 @@ from .tools import (
     get_default_texture,
     get_default_image,
 )
+from .manager import TextureManager
 
 __all__ = [
     "Texture",
