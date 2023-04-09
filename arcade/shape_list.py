@@ -63,7 +63,7 @@ class Shape:
         # Ensure colors have 4 components
         self.colors = [Color.from_iterable(color) for color in colors]
         # Pack the data into a single array
-        self.data = array("f", [c for a in zip(points, colors) for b in a for c in b])
+        self.data = array("f", [c for a in zip(self.points, self.colors) for b in a for c in b])
         self.vertices = len(points)
 
         self.geometry = None
@@ -820,6 +820,11 @@ class _Batch(Generic[TShape]):
 
     def draw(self):
         """Draw the batch."""
+        if self.elements == 0:
+            return
+
+        # if self.mode == gl.GL_TRIANGLE_STRIP:
+
         self.geometry.render(self.program, vertices=self.elements, mode=self.mode)
 
     def append(self, item: TShape):
