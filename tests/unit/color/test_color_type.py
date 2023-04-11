@@ -2,6 +2,7 @@ import math
 from copy import deepcopy
 from itertools import product
 from typing import Iterable, Callable, Tuple
+from unittest.mock import Mock
 
 import pytest
 
@@ -158,3 +159,24 @@ def test_color_normalized_property():
 def test_deepcopy_color():
     expected_color = Color(255, 255, 255, 255)
     assert deepcopy(expected_color) == expected_color
+
+
+RANDINT_RETURN_RESULT = 128
+
+
+@pytest.fixture
+def randint_is_constant(monkeypatch):
+    monkeypatch.setattr('random.randint', Mock(return_value=RANDINT_RETURN_RESULT))
+
+
+def test_color_random(randint_is_constant):
+
+    for combo in product((None, 0), repeat=4):
+        color = Color.random(*combo)
+        for channel_value, channel_arg in zip(color, combo):
+            if channel_arg is None:
+                expected = RANDINT_RETURN_RESULT
+            else:
+                expected = 0
+
+            assert channel_value == expected
