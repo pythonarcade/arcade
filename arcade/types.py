@@ -257,7 +257,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_normalized(cls, color_normalized: RGBANormalized) -> "Color":
+    def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
         """
         Convert normalized (0.0 to 1.0) channels into an RGBA Color
 
@@ -303,7 +303,7 @@ class Color(RGBA255):
         return cls(int(255 * r), int(255 * g), int(255 * b), a=int(255 * a))
 
     @classmethod
-    def from_hex_string(cls, code: str) -> "Color":
+    def from_hex_string(cls, code: str) -> Self:
         """
         Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
 

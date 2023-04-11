@@ -183,6 +183,11 @@ def test_color_from_hex_string():
             Color.from_hex_string(bad_value)
 
 
+def test_color_from_hex_string_inheritance():
+    color = ColorSubclass.from_hex_string("#fff")
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_normalized_property():
     assert colors.BLACK.normalized == (0.0, 0.0, 0.0, 1.0)
     assert colors.WHITE.normalized == (1.0, 1.0, 1.0, 1.0)
