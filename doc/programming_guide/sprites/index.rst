@@ -19,7 +19,6 @@ Beginners should start by reading & following :ref:`pg_spritelists` page
 Contents
 --------
 
-
 .. toctree::
    :maxdepth: 1
 
