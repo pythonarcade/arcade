@@ -105,8 +105,8 @@ into sprites:
 * The :py:class:`~arcade.Sprite` API documentation
 
 
-Viewports, Cameras, and Screens!
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Viewports, Cameras, and Screens
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Intermediate users can move past the limitations of :py:class:`arcade.Window`
 with the following classes:
