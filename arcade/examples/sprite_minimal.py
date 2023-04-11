@@ -29,6 +29,7 @@ class WhiteSpriteCircleExample(arcade.Window):
         # 3. Call draw() on the SpriteList inside an on_draw() method
         self.sprites.draw()
 
+
 if __name__ == "__main__":
     game = WhiteSpriteCircleExample()
     game.run()
