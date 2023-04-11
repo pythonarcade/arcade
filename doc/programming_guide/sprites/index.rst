@@ -30,8 +30,8 @@ Contents
 I'm Impatient!
 --------------
 
-Beginners should at least skim the , but you
-can skip to the tutorials and example code if you'd like:
+Beginners should at least skim :ref:`pg_spritelists` (~10 minute read time),
+but you can skip to the tutorials and full example code if you'd like:
 
 * :ref:`pg_spritelists_minimal_sprite_drawing`
 * :ref:`Arcade's Sprite Examples <sprites>`
