@@ -156,13 +156,13 @@ This behavior is most useful in the following cases:
     * - Case
       - Primary Purpose
 
-    * - Parallelized SpriteList creation
-      - Faster loading & world generation via :py:mod:`threading`
-        or :py:mod:`subprocess` & :py:mod:`pickle`
-
     * - Creating SpriteLists before a Window
       - CPU-only `unit tests <https://docs.python.org/3/library/unittest.html>`_ which
         never draw
+
+    * - Parallelized SpriteList creation
+      - Faster loading & world generation via :py:mod:`threading`
+        or :py:mod:`subprocess` & :py:mod:`pickle`
 
 
 .. _pg_spritelist_advanced_parallel_loading:
