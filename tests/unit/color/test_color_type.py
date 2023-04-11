@@ -120,6 +120,11 @@ def test_color_from_normalized():
             Color.from_normalized(bad_rgba_channels)
 
 
+def test_from_normalized_inheritance():
+    color = ColorSubclass.from_normalized((1.0, 1.0, 1.0, 1.0))
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_gray():
     OK_255 = (0, 255)
     BAD_255 = (-1, 256)
