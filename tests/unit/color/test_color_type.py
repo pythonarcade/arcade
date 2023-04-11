@@ -16,6 +16,15 @@ BAD_NORMALIZED = (-0.01, 1.01)
 MIXED_NORMALIZED = OK_NORMALIZED + BAD_NORMALIZED
 
 
+class ColorSubclass(Color):
+    pass
+
+
+@pytest.fixture
+def color_subclass_instance() -> Color:
+    return ColorSubclass(255, 255, 255, a=255)
+
+
 def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
     """Return a callable which returns true when at least one elt is in iterable i"""
 
@@ -161,12 +170,8 @@ def test_deepcopy_color_values():
     assert deepcopy(expected_color) == expected_color
 
 
-def test_deepcopy_color_inheritance():
-    class ColorSubclass(Color):
-        pass
-
-    original = ColorSubclass(255, 255, 255, 255)
-    deep = deepcopy(original)
+def test_deepcopy_color_inheritance(color_subclass_instance):
+    deep = deepcopy(color_subclass_instance)
     assert isinstance(deep, ColorSubclass)
 
 
