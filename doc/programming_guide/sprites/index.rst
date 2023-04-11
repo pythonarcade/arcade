@@ -14,7 +14,7 @@ covering:
 * Overviews of various advanced techniques
 
 Beginners should start by reading & following :ref:`pg_spritelists` page
-(~10 minute read time). If you get stuck, see :ref:`how-to-get-help`.
+(~10 minute read). If you get stuck, see :ref:`how-to-get-help`.
 
 Contents
 --------
@@ -29,7 +29,7 @@ Contents
 I'm Impatient!
 --------------
 
-Beginners should at least skim :ref:`pg_spritelists` (~10 minute read time),
+Beginners should at least skim :ref:`pg_spritelists` (~10 minute read),
 but you can skip to the tutorials and full example code if you'd like:
 
 * :ref:`pg_spritelists_minimal_sprite_drawing`
