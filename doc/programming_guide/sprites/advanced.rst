@@ -3,8 +3,8 @@
 Advanced SpriteList Techniques
 ------------------------------
 
-This page will provide overviews of advanced techniques. Runnable examples are
-not guaranteed, and the reader is expected to be able to put the work into
+This page provides overviews of advanced techniques. Runnable examples are
+not guaranteed, as the reader is expected to be able to put the work into
 implementing them.
 
 Beginners should be careful of the following sections. Some of these techniques
@@ -125,7 +125,7 @@ shaped textures.
 
 Please see the following for more information:
 
-* :ref:`Arcade's dedicated Texture Atlas article in the Programming Guide <pg_textureatlas_custom_atlas>`
+* :ref:`pg_textureatlas_custom_atlas`
 * The :py:class:`~arcade.TextureAtlas` API documentation
 
 
