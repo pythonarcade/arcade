@@ -230,7 +230,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_uint32(cls, color: int) -> "Color":
+    def from_uint32(cls, color: int) -> Self:
         """
         Return a Color tuple for a given unsigned 4-byte (32-bit) integer
 

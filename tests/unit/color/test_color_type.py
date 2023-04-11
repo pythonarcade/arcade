@@ -85,6 +85,11 @@ def test_color_from_uint32():
         Color.from_uint32("bad")
 
 
+def test_color_from_uint32_inheritance():
+    color = ColorSubclass.from_uint32(0xFFFFFFFF)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_normalized():
     # spot check conversion of acceptable human-ish values
     float_steps = (1 / 255, 2 / 255, 3 / 255, 4 / 255)
