@@ -54,6 +54,11 @@ def test_color_from_iterable_returns_same_color():
         assert Color.from_iterable(color) is color
 
 
+def test_color_from_iterable_inheritance():
+    color = ColorSubclass.from_iterable(colors.AO)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_uint24():
     assert Color.from_uint24(0xFFFFFF) == (255, 255, 255, 255)
     assert Color.from_uint24((1 << 16) + (2 << 8) + 3) == (1, 2, 3, 255)

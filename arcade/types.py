@@ -118,7 +118,7 @@ class Color(RGBA255):
         return self[3]
 
     @classmethod
-    def from_iterable(cls, iterable: Iterable[int]) -> "Color":
+    def from_iterable(cls, iterable: Iterable[int]) -> Self:
         """
         Create a color from an :py:class`Iterable` with 3-4 elements
 
@@ -148,7 +148,7 @@ class Color(RGBA255):
         else:
             a = 255
 
-        return Color(r, g, b, a=a)
+        return cls(r, g, b, a=a)
 
     @property
     def normalized(self) -> RGBANormalized:
