@@ -198,7 +198,7 @@ class Color(RGBA255):
         return cls(brightness, brightness, brightness, a=a)
 
     @classmethod
-    def from_uint24(cls, color: int, a: int = 255) -> "Color":
+    def from_uint24(cls, color: int, a: int = 255) -> Self:
         """
         Return a Color from an unsigned 3-byte (24 bit) integer.
 

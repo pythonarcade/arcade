@@ -70,6 +70,11 @@ def test_color_from_uint24():
         Color.from_uint24("moo")
 
 
+def test_color_from_uint24_inheritance():
+    color = ColorSubclass.from_uint24(0xFFFFFF)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_uint32():
     assert Color.from_uint32(4294967295) == (255, 255, 255, 255)
     assert Color.from_uint32((1 << 24) + (2 << 16) + (3 << 8) + 4) == (1, 2, 3, 4)
