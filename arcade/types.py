@@ -16,6 +16,7 @@ from typing import (
     Union,
     TYPE_CHECKING, TypeVar
 )
+from typing_extensions import Self
 
 from pytiled_parser import Properties
 
@@ -93,9 +94,9 @@ class Color(RGBA255):
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
-    def __deepcopy__(self, _):
+    def __deepcopy__(self, _) -> Self:
         """Allow to deepcopy Colors"""
-        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
+        return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"

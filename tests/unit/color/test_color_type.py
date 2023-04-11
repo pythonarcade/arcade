@@ -156,9 +156,18 @@ def test_color_normalized_property():
     assert colors.GRAY.normalized == (128 / 255, 128 / 255, 128 / 255, 1.0)
 
 
-def test_deepcopy_color():
+def test_deepcopy_color_values():
     expected_color = Color(255, 255, 255, 255)
     assert deepcopy(expected_color) == expected_color
+
+
+def test_deepcopy_color_inheritance():
+    class ColorSubclass(Color):
+        pass
+
+    original = ColorSubclass(255, 255, 255, 255)
+    deep = deepcopy(original)
+    assert isinstance(deep, ColorSubclass)
 
 
 RANDINT_RETURN_RESULT = 128
