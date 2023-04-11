@@ -170,7 +170,7 @@ class Color(RGBA255):
         return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
 
     @classmethod
-    def from_gray(cls, brightness: int, a: int = 255) -> "Color":
+    def from_gray(cls, brightness: int, a: int = 255) -> Self:
         """
         Return a shade of gray of the given brightness.
 
@@ -195,7 +195,7 @@ class Color(RGBA255):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(brightness, brightness, brightness, a=a)
+        return cls(brightness, brightness, brightness, a=a)
 
     @classmethod
     def from_uint24(cls, color: int, a: int = 255) -> "Color":

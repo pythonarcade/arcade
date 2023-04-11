@@ -133,6 +133,11 @@ def test_color_from_gray():
             Color.from_gray(bad_arg)
 
 
+def test_color_from_gray_inheritance():
+    color = ColorSubclass.from_gray(255, a=255)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_hex_string():
     with pytest.raises(ValueError):
         Color.from_hex_string("#ff0000ff0")
