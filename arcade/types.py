@@ -142,7 +142,7 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("iterable must unpack to 3 or 3 values")
+                raise ValueError("iterable must unpack to 3 or 4 values")
             a = _a[0]
         else:
             a = 255
