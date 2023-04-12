@@ -18,7 +18,7 @@ class NinePatchTexture:
 
     * Numbered regions with arrows (``<--->``) stretch along the
       direction(s) of any arrows present
-    * bars (``|---|``) mark the distances specified by the border
+    * Bars (``|---|``) mark the distances specified by the border
       parameters (``left``, etc)
 
     .. code-block::
@@ -32,12 +32,12 @@ class NinePatchTexture:
             |      | <-------------> |      |   |
             +------+-----------------+------+  ---
             | (4)  | (5)    ^        | (6)  |
-            | ^    |        |        |   ^  |
-            | |    |        |        |   |  |
-            | |    | <------+------> |   |  |
-            | |    |        |        |   |  |
-            | |    |        |        |   |  |
-            | v    |        v        |   v  |
+            |  ^   |        |        |   ^  |
+            |  |   |        |        |   |  |
+            |  |   | <------+------> |   |  |
+            |  |   |        |        |   |  |
+            |  |   |        |        |   |  |
+            |  v   |        v        |   v  |
             +------+-----------------+------+  ---
             | (7)  | (8)             | (9)  |   |
             |      | <-------------> |      |   |
