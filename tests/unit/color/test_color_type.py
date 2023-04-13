@@ -224,3 +224,8 @@ def test_color_random(randint_is_constant):
                 expected = 0
 
             assert channel_value == expected
+
+
+def test_color_random_inheritance(randint_is_constant):
+    color = ColorSubclass.random()
+    assert isinstance(color, ColorSubclass)

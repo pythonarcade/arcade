@@ -355,7 +355,7 @@ class Color(RGBA255):
         g: Optional[int] = None,
         b: Optional[int] = None,
         a: Optional[int] = None,
-    ) -> "Color":
+    ) -> Self:
         """
         Return a random color.
 
