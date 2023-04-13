@@ -95,7 +95,7 @@ class Color(RGBA255):
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
     def __deepcopy__(self, _) -> Self:
-        """Allow to deepcopy Colors"""
+        """Allow :py:func:`~copy.deepcopy` to be used with Color"""
         return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
