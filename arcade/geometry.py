@@ -17,6 +17,9 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     :Returns: True or false depending if polygons intersect
     :rtype bool:
     """
+    #if either are [], they don't intersect
+    if not poly_a or not poly_b:
+        return False
     for polygon in (poly_a, poly_b):
 
         for i1 in range(len(polygon)):

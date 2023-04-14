@@ -1,4 +1,5 @@
 import random
+
 import arcade
 from arcade.experimental import Shadertoy
 
@@ -71,8 +72,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def load_shader(self):
-        file_name = "example.glsl"
-        file = open(file_name)
+        file = open("example.glsl")
         shader_sourcecode = file.read()
         size = self.width, self.height
 
