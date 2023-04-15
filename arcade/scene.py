@@ -33,7 +33,6 @@ class Scene:
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
         Create a new Scene from a `TileMap` object.
-        
         This will look at all the SpriteLists in a TileMap object and create
         a Scene with them. This will automatically keep SpriteLists in the same
         order as they are defined in the TileMap class, which is the order that
