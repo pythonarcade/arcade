@@ -19,6 +19,7 @@ __all__ = [
     "PhysicsEnginePlatformer"
 ]
 
+
 def _circular_check(player: Sprite, walls: List[SpriteList]):
     """
     This is a horrible kludge to 'guess' our way out of a collision
