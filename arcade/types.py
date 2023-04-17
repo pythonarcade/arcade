@@ -2,6 +2,7 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
+import random
 from collections import namedtuple
 from collections.abc import ByteString
 from pathlib import Path
@@ -143,7 +144,7 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("iterable must unpack to 3 or 3 values")
+                raise ValueError("iterable must unpack to 3 or 4 values")
             a = _a[0]
         else:
             a = 255
@@ -347,6 +348,47 @@ class Color(RGBA255):
             return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
 
         raise ValueError(f"Improperly formatted color: '{code}'")
+
+    @classmethod
+    def random(
+        cls,
+        r: Optional[int] = None,
+        g: Optional[int] = None,
+        b: Optional[int] = None,
+        a: Optional[int] = None,
+    ) -> "Color":
+        """
+        Return a random color.
+
+        The parameters are optional and can be used to fix the value of
+        a particular channel. If a channel is not fixed, it will be
+        randomly generated.
+
+        Examples::
+
+            # Randomize all channels
+            >>> Color.random()
+            Color(r=35, g=145, b=4, a=200)
+
+            # Random color with fixed alpha
+            >>> Color.random(a=255)
+            Color(r=25, g=99, b=234, a=255)
+
+        :param int r: Fixed value for red channel
+        :param int g: Fixed value for green channel
+        :param int b: Fixed value for blue channel
+        :param int a: Fixed value for alpha channel
+        """
+        if r is None:
+            r = random.randint(0, 255)
+        if g is None:
+            g = random.randint(0, 255)
+        if b is None:
+            b = random.randint(0, 255)
+        if a is None:
+            a = random.randint(0, 255)
+
+        return cls(r, g, b, a)
 
 
 ColorLike = Union[RGB, RGBA255]
