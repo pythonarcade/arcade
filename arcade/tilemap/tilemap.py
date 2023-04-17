@@ -41,8 +41,6 @@ _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 __all__ = [
-    "_get_image_info_from_tileset",
-    "_get_image_source",
     "TileMap",
     "load_tilemap",
     "read_tmx"

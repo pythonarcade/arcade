@@ -14,7 +14,6 @@ _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
 
 __all__ = [
-    "_dispatch_event",
     "print_timings",
     "clear_timings",
     "get_timings",
