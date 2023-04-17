@@ -404,7 +404,7 @@ Backgrounds
 
    :ref:`background_parallax`
 
-.. _examples_cameras:
+.. _camera_examples:
 
 Cameras
 ^^^^^^^

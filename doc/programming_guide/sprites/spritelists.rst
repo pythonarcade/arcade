@@ -86,5 +86,5 @@ Viewports, Cameras, and Screens
 Intermediate users can move past the limitations of :py:class:`arcade.Window`
 with the following classes:
 
-* :py:class:`arcade.Camera` (:ref:`examples <examples_cameras>`) to control which part of game space is drawn
+* :py:class:`arcade.Camera` (:ref:`examples <camera_examples>`) to control which part of game space is drawn
 * :py:class:`arcade.View` (:ref:`examples <view_examples>`) for start, end, and menu screens
