@@ -177,7 +177,7 @@ class Framebuffer:
 
     def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
-        Get or set the scissor box for this framebuffer.      
+        Get or set the scissor box for this framebuffer.
 
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
@@ -518,7 +518,7 @@ class DefaultFrameBuffer(Framebuffer):
     somewhat sane initial values. Since this is a
     dynamic framebuffer we cannot trust the internal
     values. We can only trust what the pyglet window
-    itself reports related to window size and 
+    itself reports related to window size and
     framebuffer size. This should be updated in the
     ``on_resize`` callback.
     """
@@ -610,7 +610,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
-        Get or set the scissor box for this framebuffer.      
+        Get or set the scissor box for this framebuffer.
 
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor

@@ -27,7 +27,7 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
 
     :param tuple size: width and height
     :param float pos: Center position x and y
-    :rtype: A :py:class:`~arcade.gl.geometry.Geometry` instance.       
+    :rtype: A :py:class:`~arcade.gl.geometry.Geometry` instance.
     """
     ctx = _get_active_context()
     width, height = size
@@ -54,7 +54,7 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     :param float bottom_left_x: Bottom left x position
     :param float bottom_left_y: Bottom left y position
     :param float width: Width of the rectangle
-    :param float height: Height of the rectangle   
+    :param float height: Height of the rectangle
     """
     ctx = _get_active_context()
     data = array('f', [
