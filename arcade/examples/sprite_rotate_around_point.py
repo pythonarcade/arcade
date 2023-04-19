@@ -42,7 +42,7 @@ class RotatingSprite(arcade.Sprite):
         if change_angle:
             self.angle += degrees
 
-        # Move the sprite along a circle centered on the point by degrees 
+        # Move the sprite along a circle centered on the point by degrees
         self.position = rotate_point(
             self.center_x, self.center_y,
             point[0], point[1], degrees)

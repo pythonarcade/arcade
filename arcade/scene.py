@@ -28,7 +28,7 @@ class Scene:
     def __init__(self) -> None:
         self._sprite_lists: List[SpriteList] = []
         self._name_mapping: Dict[str, SpriteList] = {}
-        
+
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """

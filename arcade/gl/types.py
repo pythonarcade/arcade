@@ -99,7 +99,7 @@ GL_NAMES = {
     gl.GL_UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
     gl.GL_BYTE: "GL_BYTE",
     gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
-}    
+}
 
 
 def gl_name(gl_type: gl.GLenum) -> str:

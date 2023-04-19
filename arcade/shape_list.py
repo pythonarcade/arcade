@@ -560,7 +560,7 @@ def create_triangles_strip_filled_with_colors(
     color_sequence: Sequence[RGBA255],
 ) -> Shape:
     """
-    This function creates multiple triangles using a vertex buffer object. 
+    This function creates multiple triangles using a vertex buffer object.
     Triangles are built for every 3 sequential vertices with step of 1 vertex
     Total amount of triangles to be rendered: len(point_list) - 2
 

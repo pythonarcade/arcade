@@ -135,14 +135,14 @@ class TransformEmit(arcade.Window):
         self.draw_geometry_1 = self.ctx.geometry(
             [
                 BufferDescription(self.buffer_pos_1, "2f", ("in_pos",)),
-                BufferDescription(self.buffer_colors, "3f", ("in_col",)),				
+                BufferDescription(self.buffer_colors, "3f", ("in_col",)),
             ],
             mode=self.ctx.POINTS,
         )
         self.draw_geometry_2 = self.ctx.geometry(
             [
                 BufferDescription(self.buffer_pos_2, "2f", ("in_pos",)),
-                BufferDescription(self.buffer_colors, "3f", ("in_col",)),				
+                BufferDescription(self.buffer_colors, "3f", ("in_col",)),
             ],
             mode=self.ctx.POINTS,
         )

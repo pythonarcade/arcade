@@ -145,7 +145,7 @@ class Window(pyglet.window.Window):
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
-        # If we still don't have a config 
+        # If we still don't have a config
         if not config:
             config = pyglet.gl.Config(
                 major_version=gl_version[0],

@@ -245,7 +245,7 @@ def check_for_collision_with_lists(
             raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
     sprites: List[SpriteType] = []
-    sprites_to_check: Iterable[SpriteType]    
+    sprites_to_check: Iterable[SpriteType]
 
     for sprite_list in sprite_lists:
         if sprite_list.spatial_hash is not None and method == 1:

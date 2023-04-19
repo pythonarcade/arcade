@@ -414,7 +414,7 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of the label        
+        Get the size of the label
         """
         return self._label.width, self._label.height
 
