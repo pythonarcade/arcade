@@ -188,7 +188,7 @@ class ShadertoyBase:
     @property
     def channel_0(self) -> Optional[Texture2D]:
         """Get or set channel 0"""
-        return self._channel_0        
+        return self._channel_0
 
     @channel_0.setter
     def channel_0(self, value: Texture2D):
@@ -212,7 +212,7 @@ class ShadertoyBase:
     @property
     def channel_2(self) -> Optional[Texture2D]:
         """Get or set channel 2"""
-        return self._channel_2        
+        return self._channel_2
 
     @channel_2.setter
     def channel_2(self, value: Texture2D):
@@ -275,7 +275,7 @@ class ShadertoyBase:
         self._render()
 
     def _render(self):
-        raise NotImplementedError        
+        raise NotImplementedError
 
     def reload(self, source: str):
         """
@@ -337,7 +337,7 @@ class ShadertoyBase:
             try:
                 self._program[f"iChannel{channel}"] = channel
             except KeyError:
-                pass        
+                pass
         self._source = source
 
 
