@@ -55,7 +55,7 @@ class UITextureToggle(UIInteractiveWidget):
             enhancer.enhance(1.5), name=self.normal_off_tex.cache_name + "_brighter",
         )
         self.pressed_off_tex = Texture(
-            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker", 
+            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker",
         )
 
         self.value = value
