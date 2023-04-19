@@ -58,7 +58,7 @@ class Sphere3D(arcade.Window):
                 if (l < 0.0) {
                     l = abs(l);
                     fragColor = vec4(0.75, 0.0, 0.0, 1.0) * (0.25 + abs(l) * 0.75);
-                } else {        
+                } else {
                     fragColor = vec4(1.0) * (0.25 + abs(l) * 0.75);
                 }
             }

@@ -93,6 +93,14 @@ ignore = ["F811", "E731", "E741"]
 show-source = true
 line-length = 120
 exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs"]
+select = [
+    "E",
+    "F",
+    # Whitespace linting must be re-enabled manually for ruff
+    # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
+    "W"
+]
+
 
 [tool.mypy]
 disable_error_code = "annotation-unchecked"
