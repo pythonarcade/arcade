@@ -427,7 +427,6 @@ class UITextArea(UIWidget):
     A text area that allows users to view large documents of text by scrolling
     the mouse.
 
-
     :param float x: x position (default anchor is bottom-left).
     :param float y: y position (default anchor is bottom-left).
     :param width: Width of the text area.
