@@ -171,7 +171,7 @@ def run():
     window = get_window()
 
     # Used in some unit test
-    if os.environ.get('ARCADE_TEST'):       
+    if os.environ.get('ARCADE_TEST'):
         window.on_update(window._update_rate)
         window.on_draw()
     elif window.headless:
@@ -249,7 +249,7 @@ def start_render() -> None:
     """
     Clears the window.
 
-    More practical alternatives to this function is 
+    More practical alternatives to this function is
     :py:meth:`arcade.Window.clear`
     or :py:meth:`arcade.View.clear`.
     """
