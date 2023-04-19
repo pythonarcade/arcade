@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         # array is simply a list of lists.
         # This array can be altered later to contain 0 or 1
         # to show a white or green cell.
-        # 
+        #
         # A 4 x 4 grid would look like this
         #
         # grid = [
