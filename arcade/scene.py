@@ -37,7 +37,7 @@ class Scene:
         a Scene with them. This will automatically keep SpriteLists in the same
         order as they are defined in the TileMap class, which is the order that
         they are defined within Tiled.
-        
+
         :param TileMap tilemap: The `TileMap` object to create the scene from.
         """
         scene = cls()
@@ -48,9 +48,9 @@ class Scene:
     def get_sprite_list(self, name: str) -> SpriteList:
         """
         Helper function to retrieve a `SpriteList` by name.
-        
+
         The name mapping can be accessed directly, this is just here for ease of use.
-        
+
         :param str name: The name of the `SpriteList` to retrieve.
         """
         return self._name_mapping[name]
@@ -58,10 +58,10 @@ class Scene:
     def __getitem__(self, key: str) -> SpriteList:
         """
         Retrieve a `SpriteList` by name.
-        
+
         This is here for ease of use to make sub-scripting the scene object directly
         to retrieve a SpriteList possible.
-        
+
         :param str key: The name of the 'SpriteList' to retreive.
         """
         if key in self._name_mapping:
@@ -72,13 +72,13 @@ class Scene:
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         """
         Add a Sprite to a SpriteList in the Scene with the specified name.
-        
+
         If the desired SpriteList does not exist, it will automatically be created
         and added to the Scene. This will default the SpriteList to be added to the end
         of the draw order, and created with no extra options like using spatial hashing.
         If you need more control over where the SpriteList goes or need it to use Spatial Hash,
         then the SpriteList should be added separately and then have the Sprites added.
-        
+
         :param str name: The name of the `SpriteList` to add to or create.
         :param Sprite sprite: The `Sprite` to add.
         """
@@ -97,11 +97,11 @@ class Scene:
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name.
-        
+
         This will add a new SpriteList to the scene at the end of the draw order.
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
-        
+
         :param str name: The name to give the SpriteList.
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
@@ -123,11 +123,11 @@ class Scene:
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name before a specific SpriteList.
-        
+
         This will add a new SpriteList to the scene before the specified SpriteList in the draw order.
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
-        
+
         :param str name: The name to give the SpriteList.
         :param str before: The name of the SpriteList to place this one before.
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
@@ -150,10 +150,10 @@ class Scene:
     ) -> None:
         """
         Move a given SpriteList in the scene to before another given SpriteList.
-        
+
         This will adjust the render order so that the SpriteList specified by `name`
         is placed before the one specified by `before`.
-        
+
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
         """
@@ -177,11 +177,11 @@ class Scene:
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
-        
+
         This will add a new SpriteList to the scene after the specified SpriteList in the draw order.
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
-        
+
         :param str name: The name to give the SpriteList.
         :param str after: The name of the SpriteList to place this one after.
         :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
@@ -204,10 +204,10 @@ class Scene:
     ) -> None:
         """
         Move a given SpriteList in the scene to after another given SpriteList.
-        
+
         This will adjust the render order so that the SpriteList specified by `name`
         is placed after the one specified by `after`.
-        
+
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
         """
@@ -228,9 +228,9 @@ class Scene:
     ) -> None:
         """
         Remove a SpriteList by it's name.
-        
+
         This function serves to completely remove the SpriteList from the Scene.
-        
+
         :param str name: The name of the SpriteList to remove.
         """
         sprite_list = self._name_mapping[name]
@@ -246,11 +246,11 @@ class Scene:
     def update(self, names: Optional[List[str]] = None) -> None:
         """
         Used to update SpriteLists contained in the scene.
-        
+
         If `names` parameter is provided then only the specified spritelists
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will be updated.
-        
+
         :param Optional[List[str]] names: A list of names of SpriteLists to update.
         """
         if names:
@@ -264,12 +264,12 @@ class Scene:
     def on_update(self, delta_time: float = 1 / 60, names: Optional[List[str]] = None) -> None:
         """
         Used to call on_update of SpriteLists contained in the scene.
-        
+
         Similar to update() but allows passing a delta_time variable.
         If `names` parameter is provided then only the specified spritelists
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will have on_update called.
-        
+
         :param float delta_time: Time since last update.
         :param Optional[List[str]] names: A list of names of SpriteLists to update.
         """
@@ -286,11 +286,11 @@ class Scene:
     ) -> None:
         """
         Used to update the animation of SpriteLists contained in the scene.
-        
+
         If `names` parameter is provided then only the specified spritelists
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will be updated.
-        
+
         :param float delta_time: The delta time for the update.
         :param Optional[List[str]] names: A list of names of SpriteLists to update.
         """
@@ -305,13 +305,13 @@ class Scene:
     def draw(self, names: Optional[List[str]] = None, **kwargs) -> None:
         """
         Draw the Scene.
-        
+
         If `names` parameter is provided then only the specified SpriteLists
         will be drawn. They will be drawn in the order that the names in the
         list were arranged. If `names` is not provided, then every SpriteList
         in the scene will be drawn according the order of the main _sprite_lists
         attribute of the Scene.
-        
+
         :param Optional[List[str]] names: A list of names of SpriteLists to draw.
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
@@ -336,7 +336,7 @@ class Scene:
     ) -> None:
         """
         Draw hitboxes for all sprites in the scene.
-        
+
         If `names` parameter is provided then only the specified SpriteLists
         will be drawn. They will be drawn in the order that the names in the
         list were arranged. If `names` is not provided, then every SpriteList
