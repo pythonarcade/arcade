@@ -58,7 +58,7 @@ class MyGame(arcade.Window):
             start_x,
             start_y,
             arcade.color.BLACK,
-            DEFAULT_FONT_SIZE    
+            DEFAULT_FONT_SIZE
         )
 
         # Show some built-in fonts
@@ -108,7 +108,7 @@ class MyGame(arcade.Window):
             start_x, start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
-            font_name="Kenney Mini Square",   
+            font_name="Kenney Mini Square",
         )
 
         start_y -= DEFAULT_LINE_HEIGHT
@@ -135,7 +135,7 @@ class MyGame(arcade.Window):
             start_x, start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
-            font_name="Kenney Rocket",    
+            font_name="Kenney Rocket",
         )
 
         start_y -= DEFAULT_LINE_HEIGHT
@@ -237,7 +237,7 @@ class MyGame(arcade.Window):
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             anchor_x="left",
-            anchor_y="top",            
+            anchor_y="top",
         )
 
         start_y -= DEFAULT_LINE_HEIGHT * 2
@@ -330,7 +330,7 @@ class MyGame(arcade.Window):
             self.bottom_left.x,
             self.bottom_left.y,
             arcade.color.BARN_RED,
-            5,    
+            5,
         )
         self.bottom_left.draw()
 

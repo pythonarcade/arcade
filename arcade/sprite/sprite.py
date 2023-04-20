@@ -17,6 +17,7 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 __all__ = ["Sprite"]
 
+
 class Sprite(BasicSprite, PymunkMixin):
     """
     Sprites are used to render image data to the screen & perform collisions.

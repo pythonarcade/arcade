@@ -33,19 +33,20 @@ from arcade import ArcadeContext
 from .math import rotate_point
 
 
-__all__ = ["Shape", 
-    "create_line", 
-    "create_line_generic_with_colors", 
-    "create_line_generic", 
-    "create_line_strip", 
-    "create_line_loop", 
-    "create_lines", 
-    "create_lines_with_colors", 
-    "create_polygon", 
-    "create_rectangle_filled", 
-    "create_rectangle_outline", 
-    "get_rectangle_points", 
-    "create_rectangle", 
+__all__ = [
+    "Shape",
+    "create_line",
+    "create_line_generic_with_colors",
+    "create_line_generic",
+    "create_line_strip",
+    "create_line_loop",
+    "create_lines",
+    "create_lines_with_colors",
+    "create_polygon",
+    "create_rectangle_filled",
+    "create_rectangle_outline",
+    "get_rectangle_points",
+    "create_rectangle",
     "create_rectangle_filled_with_colors",
     "create_rectangles_filled_with_colors",
     "create_triangles_filled_with_colors",
@@ -56,6 +57,7 @@ __all__ = ["Shape",
     "create_ellipse_filled_with_colors",
     "ShapeElementList",
 ]
+
 
 class Shape:
     """
@@ -560,7 +562,7 @@ def create_triangles_strip_filled_with_colors(
     color_sequence: Sequence[RGBA255],
 ) -> Shape:
     """
-    This function creates multiple triangles using a vertex buffer object. 
+    This function creates multiple triangles using a vertex buffer object.
     Triangles are built for every 3 sequential vertices with step of 1 vertex
     Total amount of triangles to be rendered: len(point_list) - 2
 

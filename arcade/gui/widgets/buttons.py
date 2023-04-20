@@ -40,7 +40,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     class UIStyle(UIStyleBase):
         """
         Used to style the texture button. Below is its use case.
-        
+
         .. code:: py
 
             button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
@@ -219,7 +219,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
-    
+
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
     :param float x: x coordinate of bottom left
@@ -236,7 +236,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     class UIStyle(UIStyleBase):
         """
         Used to style the button. Below is its use case.
-        
+
         .. code:: py
 
             button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})

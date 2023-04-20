@@ -45,7 +45,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     class UIStyle(UIStyleBase):
         """
         Used to style the slider for different states. Below is its use case.
-        
+
         .. code:: py
 
             button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})

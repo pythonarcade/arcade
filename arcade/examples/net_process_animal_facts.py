@@ -1,5 +1,5 @@
 """
-Display random animal facts from 
+Display random animal facts from
 * https://github.com/wh-iterabb-it/meowfacts
 * https://kinduff.github.io/dog-api/
 

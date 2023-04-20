@@ -39,7 +39,7 @@ class SpriteListInteraction(arcade.Window):
         # Player
         self.player = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=0.25,            
+            scale=0.25,
         )
 
         # Wall sprites we are checking collision against
