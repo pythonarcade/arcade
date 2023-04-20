@@ -33,6 +33,7 @@ class Scene:
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
         Create a new Scene from a `TileMap` object.
+
         This will look at all the SpriteLists in a TileMap object and create
         a Scene with them. This will automatically keep SpriteLists in the same
         order as they are defined in the TileMap class, which is the order that
@@ -76,6 +77,7 @@ class Scene:
         If the desired SpriteList does not exist, it will automatically be created
         and added to the Scene. This will default the SpriteList to be added to the end
         of the draw order, and created with no extra options like using spatial hashing.
+
         If you need more control over where the SpriteList goes or need it to use Spatial Hash,
         then the SpriteList should be added separately and then have the Sprites added.
 
@@ -99,6 +101,7 @@ class Scene:
         Add a SpriteList to the scene with the specified name.
 
         This will add a new SpriteList to the scene at the end of the draw order.
+
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
 
@@ -125,6 +128,7 @@ class Scene:
         Add a SpriteList to the scene with the specified name before a specific SpriteList.
 
         This will add a new SpriteList to the scene before the specified SpriteList in the draw order.
+
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
 
