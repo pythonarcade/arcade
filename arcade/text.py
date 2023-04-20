@@ -18,6 +18,7 @@ __all__ = ["load_font",
             "draw_text"
             ]
 
+
 def load_font(path: Union[str, Path]) -> None:
     """
     Load fonts in a file (usually .ttf) adding them to a global font registry.
