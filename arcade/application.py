@@ -35,7 +35,10 @@ __all__ = [
     "NoOpenGLException",
     "Window",
     "open_window",
-    "View"
+    "View",
+    "MOUSE_BUTTON_LEFT",
+    "MOUSE_BUTTON_MIDDLE",
+    "MOUSE_BUTTON_RIGHT"
 ]
 
 
