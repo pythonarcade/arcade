@@ -33,7 +33,8 @@ from arcade import ArcadeContext
 from .math import rotate_point
 
 
-__all__ = ["Shape",
+__all__ = [
+    "Shape",
     "create_line",
     "create_line_generic_with_colors",
     "create_line_generic",
@@ -56,6 +57,7 @@ __all__ = ["Shape",
     "create_ellipse_filled_with_colors",
     "ShapeElementList",
 ]
+
 
 class Shape:
     """
