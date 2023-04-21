@@ -93,7 +93,7 @@ def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     :returns: True if sprites overlap.
     :rtype: bool
     """
-    
+
     #NOTE: for speed becuase attribute look ups are slow.
     sprite1_position = sprite1._position
     sprite1_width = sprite1._width
@@ -106,7 +106,7 @@ def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
         (sprite1_width if sprite1_width > sprite1_height else sprite1_height)
         + (sprite2_width if sprite2_width > sprite2_height else sprite2_height)
     )
-    
+
     # Multiply by half of the theoretical max diagonal length for an estimation of distance
     radius_sum *= 0.71  # 1.42 / 2
     radius_sum_sq = radius_sum * radius_sum
