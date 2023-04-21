@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Union
 
 
 class Vfs:
@@ -13,7 +14,7 @@ class Vfs:
         self.files: dict[str, VirtualFile] = dict()
         self.files_to_delete: set[Path] = set()
 
-    def delete_glob(self, directory: str | Path, glob: str):
+    def delete_glob(self, directory: Union[str, Path], glob: str):
         """
         Glob for all files on disk that were created by the previous build.
         These files should be deleted if this build does not emit them.
@@ -39,10 +40,10 @@ class Vfs:
                 print(f"Deleting {path}")
                 os.remove(path)
 
-    def exists(self, path: str | Path):
+    def exists(self, path: Union[str, Path]):
         return str(path) in self.files
 
-    def open(self, path: str | Path, mode: str):
+    def open(self, path: Union[str, Path], mode: str):
         path = str(path)
         modes = set(mode)
         if "b" in modes:
