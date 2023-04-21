@@ -262,7 +262,6 @@ __all__ = [
     'Scene',
     'Sound',
     'BasicSprite',
-    # 'SimpleSprite',
     'Sprite',
     'SpriteType',
     'PymunkMixin',

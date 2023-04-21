@@ -19,6 +19,13 @@ else:
 
 import pyglet.media as media
 
+__all__ = [
+    "Sound",
+    "load_sound",
+    "play_sound",
+    "stop_sound"
+]
+
 
 class Sound:
     """This class represents a sound you can play."""

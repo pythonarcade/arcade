@@ -40,6 +40,12 @@ _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
+__all__ = [
+    "TileMap",
+    "load_tilemap",
+    "read_tmx"
+]
+
 
 def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
     image_x = 0

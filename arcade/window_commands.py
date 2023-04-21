@@ -24,6 +24,23 @@ if TYPE_CHECKING:
 
 _window: Optional["Window"] = None
 
+__all__ = [
+    "get_display_size",
+    "pause",
+    "get_window",
+    "set_window",
+    "set_viewport",
+    "close_window",
+    "run",
+    "exit",
+    "start_render",
+    "finish_render",
+    "set_background_color",
+    "schedule",
+    "unschedule",
+    "schedule_once"
+]
+
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     """

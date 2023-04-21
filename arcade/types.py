@@ -47,6 +47,26 @@ RGBANormalized = RGBA[float]
 RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
 
 
+__all__ = [
+    "BufferProtocol",
+    "Color",
+    "ColorLike",
+    "IPoint",
+    "PathOrTexture",
+    "Point",
+    "PointList",
+    "NamedPoint",
+    "Rect",
+    "RectList",
+    "RGB",
+    "RGBA255",
+    "RGBANormalized",
+    "RGBA255OrNormalized",
+    "TiledObject",
+    "Vector"
+]
+
+
 class Color(RGBA255):
     """
     A :py:class:`tuple` subclass representing an RGBA Color.
