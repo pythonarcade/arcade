@@ -583,8 +583,8 @@ def create_text_texture(text: str,
     """
     Creates a texture containing text based off of :py:class:`~pyglet.text.Label`.
 
-    Internally this creates a pyglet.text.Label object and an empty texture. It then uses either the
-    provided texture atlas, or gets the default one, and draws the pyglet.text.Label object into the
+    Internally this creates a :py:class:`~pyglet.text.Label` object and an empty texture. It then uses either the
+    provided texture atlas, or gets the default one, and draws the `~pyglet.text.Label` object into the
     texture atlas. Then it returns the texture.
 
     If you are providing a custom texture atlas, something important to keep in mind is
