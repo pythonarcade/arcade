@@ -7,7 +7,8 @@ from arcade.types import RGBA255
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
