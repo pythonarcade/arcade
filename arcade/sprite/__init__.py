@@ -66,6 +66,5 @@ __all__ = [
     "FACE_RIGHT",
     "FACE_UP",
     "FACE_DOWN",
-    "PymunkMixin",
-    "Pymunk",
+    "PymunkMixin"
 ]
