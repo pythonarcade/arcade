@@ -189,7 +189,7 @@ class TransposeTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate270Transform.transform_hit_box_points(points)
+        points = Rotate90Transform.transform_hit_box_points(points)
         return points
 
 
@@ -209,7 +209,7 @@ class TransverseTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate90Transform.transform_hit_box_points(points)
+        points = Rotate270Transform.transform_hit_box_points(points)
         return points
 
 
