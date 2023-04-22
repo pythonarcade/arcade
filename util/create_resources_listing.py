@@ -4,11 +4,12 @@ Quick Index Generator
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
 import sys
-import arcade
 from pathlib import Path
 from typing import List
 
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
+import arcade
 from vfs import Vfs
 
 MODULE_DIR = Path(__file__).parent.resolve()
