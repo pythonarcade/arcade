@@ -91,7 +91,7 @@ def test_flip_top_bottom_transform():
 def test_transpose_transform():
     # Transpose
     result = TransposeTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
+    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
     # Flip back
     result = TransposeTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
@@ -106,7 +106,7 @@ def test_transpose_transform():
 def test_transverse_transform():
     # Transverse
     result = TransverseTransform.transform_hit_box_points(HIT_BOX_POINTS)
-    assert result == ((64.0, 64.0), (64.0, -64.0), (-64.0, -64.0), (-64.0, 64.0))
+    assert result == ((-64.0, -64.0), (-64.0, 64.0), (64.0, 64.0), (64.0, -64.0))
     # Flip back
     result = TransverseTransform.transform_hit_box_points(result)
     assert result == HIT_BOX_POINTS
