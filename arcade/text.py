@@ -624,15 +624,15 @@ def create_text_texture(text: str,
         multiline=multiline,
         group=None,
         )
-    
-    if not _label.content_width or not _label.content_height: 
+
+    if not _label.content_width or not _label.content_height:
         warn("Either width or height is 0")
         return arcade.Texture.create_empty(text, (0, 0))
     size = (
         int(_label.content_width),
         int(_label.content_height),
     )
-    
+
     texture = arcade.Texture.create_empty(text, size)
 
     if not texture_atlas:
@@ -660,7 +660,7 @@ def create_text_sprite(
     """
     Creates a sprite containing text based off of :py:func:`create_text_texture`.
 
-    Internally this calls the create_text_texture function and gives it the relevant information. 
+    Internally this calls the create_text_texture function and gives it the relevant information.
     When it is done, the create_text_texture function returns a texture.
 
     The create_text_sprite then creates a sprite referencing the newly created texture, and positions it
