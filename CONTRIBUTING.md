@@ -101,10 +101,8 @@ make serve
 
 You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the doc.
 
-- The `build/html` directory will contain the generated website files.  
-- `sphinx-autobuild` will host a webserver to preview the docs.  
-- When source files are changed, it will automatically trigger a rebuild, and
-browser tabs will automatically refresh to show the updates.
+The `build/html` directory will contain the generated website files.  When you change source files,
+it will automatically regenerate, and browser tabs will automatically refresh to show the updates.
 
 If you suspect the automatic rebuilds are failing to detect changes, you can
 run a simpler one-time build using the following instructions:
