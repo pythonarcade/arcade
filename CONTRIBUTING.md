@@ -94,18 +94,18 @@ Change into the doc directory:
 cd doc
 ```
 
-Run the doc build and host a webserver to preview:
+Run the doc build to build the web page files, and host a webserver to preview:
 ```commandline
 make serve
 ```
 
-You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the doc.
+You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the docs.
 
 The `build/html` directory will contain the generated website files.  When you change source files,
-it will automatically regenerate, and browser tabs will automatically refresh to show the updates.
+it will automatically regenerate, and browser tabs will automatically refresh to show your updates.
 
 If you suspect the automatic rebuilds are failing to detect changes, you can
-run a simpler one-time build using the following instructions:
+run a simpler one-time build using the following instructions.
 
 #### One-time build
 
