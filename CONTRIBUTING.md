@@ -85,7 +85,7 @@ pytest tests/unit
 
 ### Building & Testing Documentation
 
-#### Livereload w/automatic rebuild
+#### Automatic Rebuild with Live Reload
 
 You can build & preview documentation locally using the following steps.
 
