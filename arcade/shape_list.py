@@ -53,7 +53,7 @@ class Shape:
         # vbo: Buffer,
         mode: int = gl.GL_TRIANGLES,
         program: Optional[Program] = None,
-    ):
+    ) -> None:
         self.ctx = get_window().ctx
         self.program = program or self.ctx.line_generic_with_colors_program
         self.mode = mode
@@ -71,7 +71,7 @@ class Shape:
         self.geometry = None
         self.buffer = None
 
-    def _init_geometry(self):
+    def _init_geometry(self) -> None:
         # NOTE: When drawing a single shape we're not using an index buffer
         self.buffer = self.program.ctx.buffer(data=self.data)
         self.geometry = self.ctx.geometry(
@@ -84,7 +84,7 @@ class Shape:
             ]
         )
 
-    def draw(self):
+    def draw(self) -> None:
         """
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
@@ -730,7 +730,7 @@ class ShapeElementList(Generic[TShape]):
 
     Adding new shapes is fast, but removing them is slow.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
@@ -744,7 +744,7 @@ class ShapeElementList(Generic[TShape]):
         self.batches: Dict[int, _Batch] = OrderedDict()
         self.dirties = set()
 
-    def append(self, item: TShape):
+    def append(self, item: TShape) -> None:
         """
         Add a new shape to the list.
         """
@@ -763,7 +763,7 @@ class ShapeElementList(Generic[TShape]):
         # Mark the group as dirty
         self.dirties.add(batch)
 
-    def remove(self, item: TShape):
+    def remove(self, item: TShape) -> None:
         """
         Remove a specific shape from the list.
         """
@@ -814,7 +814,7 @@ class ShapeElementList(Generic[TShape]):
         if angle:
             self.angle = 0
 
-    def move(self, change_x: float, change_y: float):
+    def move(self, change_x: float, change_y: float) -> None:
         """
         Change the center_x/y of the shape list relative to the current position.
 
@@ -834,7 +834,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_x, self._center_y
 
     @position.setter
-    def position(self, value: Tuple[float, float]):
+    def position(self, value: Tuple[float, float]) -> None:
         self._center_x, self._center_y = value
 
     @property
@@ -843,7 +843,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_x
 
     @center_x.setter
-    def center_x(self, value: float):
+    def center_x(self, value: float) -> None:
         self._center_x = value
 
     @property
@@ -852,7 +852,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_y
 
     @center_y.setter
-    def center_y(self, value: float):
+    def center_y(self, value: float) -> None:
         self._center_y = value
 
     @property
@@ -861,7 +861,7 @@ class ShapeElementList(Generic[TShape]):
         return self._angle
 
     @angle.setter
-    def angle(self, value: float):
+    def angle(self, value: float) -> None:
         self._angle = value
 
     def __len__(self) -> int:
@@ -872,7 +872,7 @@ class ShapeElementList(Generic[TShape]):
         """ Return an iterable object of sprites. """
         return iter(self.shape_list)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i) -> TShape:
         return self.shape_list[i]
 
 
@@ -894,7 +894,7 @@ class _Batch(Generic[TShape]):
         ctx: ArcadeContext,
         program: Program,
         mode: int,
-    ):
+    ) -> None:
         self.ctx = ctx
         self.program = program
         self.mode = mode
@@ -919,22 +919,22 @@ class _Batch(Generic[TShape]):
         self.elements = 0  # Total elements in the batch
         self.FLAGS = 0  # Flags to indicate changes
 
-    def draw(self):
+    def draw(self) -> None:
         """Draw the batch."""
         if self.elements == 0:
             return
 
         self.geometry.render(self.program, vertices=self.elements, mode=self.mode)
 
-    def append(self, item: TShape):
+    def append(self, item: TShape) -> None:
         self.new_items.append(item)
         self.FLAGS |= self.ADD
 
-    def remove(self, item: TShape):
+    def remove(self, item: TShape) -> None:
         self.items.remove(item)
         self.FLAGS |= self.REMOVE
 
-    def update(self):
+    def update(self) -> None:
         """Update the internals of the batch."""
         if self.FLAGS == 0:
             return

@@ -34,7 +34,7 @@ def draw_arc_filled(center_x: float, center_y: float,
                     color: RGBA255,
                     start_angle: float, end_angle: float,
                     tilt_angle: float = 0,
-                    num_segments: int = 128):
+                    num_segments: int = 128) -> None:
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -76,7 +76,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: RGBA255,
                      start_angle: float, end_angle: float,
                      border_width: float = 1, tilt_angle: float = 0,
-                     num_segments: int = 128):
+                     num_segments: int = 128) -> None:
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -132,7 +132,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
                          height: float, color: RGBA255,
-                         tilt_angle: float = 0):
+                         tilt_angle: float = 0) -> None:
     """
     Draws a filled in parabola.
 
@@ -155,7 +155,7 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
                           height: float, color: RGBA255,
-                          border_width: float = 1, tilt_angle: float = 0):
+                          border_width: float = 1, tilt_angle: float = 0) -> None:
     """
     Draws the outline of a parabola.
 
@@ -185,7 +185,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
                        color: RGBA255,
                        tilt_angle: float = 0,
-                       num_segments: int = -1):
+                       num_segments: int = -1) -> None:
     """
     Draw a filled-in circle.
 
@@ -208,7 +208,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
                         color: RGBA255, border_width: float = 1,
                         tilt_angle: float = 0,
-                        num_segments: int = -1):
+                        num_segments: int = -1) -> None:
     """
     Draw the outline of a circle.
 
@@ -239,7 +239,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 
 def draw_ellipse_filled(center_x: float, center_y: float,
                         width: float, height: float, color: RGBA255,
-                        tilt_angle: float = 0, num_segments: int = -1):
+                        tilt_angle: float = 0, num_segments: int = -1) -> None:
     """
     Draw a filled in ellipse.
 
@@ -286,7 +286,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
                          height: float, color: RGBA255,
                          border_width: float = 1,
                          tilt_angle: float = 0,
-                         num_segments: int = -1):
+                         num_segments: int = -1) -> None:
     """
     Draw the outline of an ellipse.
 
@@ -335,7 +335,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
 
 def _generic_draw_line_strip(point_list: PointList,
                              color: RGBA255,
-                             mode: int = gl.GL_LINE_STRIP):
+                             mode: int = gl.GL_LINE_STRIP) -> None:
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -372,7 +372,8 @@ def _generic_draw_line_strip(point_list: PointList,
 
 
 def draw_line_strip(point_list: PointList,
-                    color: RGBA255, line_width: float = 1):
+                    color: RGBA255, 
+                    line_width: float = 1) -> None:
     """
     Draw a multi-point line.
 
@@ -397,7 +398,7 @@ def draw_line_strip(point_list: PointList,
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: RGBA255, line_width: float = 1):
+              color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a line.
 
@@ -432,7 +433,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
 def draw_lines(point_list: PointList,
                color: RGBA255,
-               line_width: float = 1):
+               line_width: float = 1) -> None:
     """
     Draw a set of lines.
 
@@ -472,7 +473,7 @@ def draw_lines(point_list: PointList,
 # --- BEGIN POINT FUNCTIONS # # #
 
 
-def draw_point(x: float, y: float, color: RGBA255, size: float):
+def draw_point(x: float, y: float, color: RGBA255, size: float) -> None:
     """
     Draw a point.
 
@@ -485,7 +486,7 @@ def draw_point(x: float, y: float, color: RGBA255, size: float):
     draw_rectangle_filled(x, y, size, size, color)
 
 
-def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
+def draw_points(point_list: PointList, color: RGBA255, size: float = 1) -> None:
     """
     Draw a set of points.
 
@@ -526,7 +527,7 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 
 
 def draw_polygon_filled(point_list: PointList,
-                        color: RGBA255):
+                        color: RGBA255) -> None:
     """
     Draw a polygon that is filled in.
 
@@ -540,7 +541,8 @@ def draw_polygon_filled(point_list: PointList,
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: RGBA255, line_width: float = 1):
+                         color: RGBA255, 
+                         line_width: float = 1) -> None:
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -571,7 +573,8 @@ def draw_polygon_outline(point_list: PointList,
 
 def draw_triangle_filled(x1: float, y1: float,
                          x2: float, y2: float,
-                         x3: float, y3: float, color: RGBA255):
+                         x3: float, y3: float, 
+                         color: RGBA255) -> None:
     """
     Draw a filled in triangle.
 
@@ -596,7 +599,7 @@ def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
                           x3: float, y3: float,
                           color: RGBA255,
-                          border_width: float = 1):
+                          border_width: float = 1) -> None:
     """
     Draw a the outline of a triangle.
 
@@ -630,7 +633,7 @@ def draw_triangle_outline(x1: float, y1: float,
 )
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: RGBA255,
-                                border_width: float = 1):
+                                border_width: float = 1) -> None:
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
 
@@ -664,7 +667,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 
 
 def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: RGBA255,
-                                border_width: float = 1):
+                                border_width: float = 1) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -696,7 +699,7 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
 def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
                                 width: float, height: float,
                                 color: RGBA255,
-                                border_width: float = 1):
+                                border_width: float = 1) -> None:
     """
     Draw a rectangle extending from bottom left to top right
 
@@ -716,7 +719,7 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
                            height: float, color: RGBA255,
-                           border_width: float = 1, tilt_angle: float = 0):
+                           border_width: float = 1, tilt_angle: float = 0) -> None:
     """
     Draw a rectangle outline.
 
@@ -756,7 +759,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     new_name="draw_lrbt_rectangle_filled"
 )
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: RGBA255):
+                               bottom: float, color: RGBA255) -> None:
     """
     Draw a rectangle by specifying left, right, top and bottom edges.
 
@@ -784,7 +787,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
+def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -810,7 +813,7 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
 
 def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
                                width: float, height: float,
-                               color: RGBA255):
+                               color: RGBA255) -> None:
     """
     Draw a filled rectangle extending from bottom left to top right
 
@@ -828,7 +831,7 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
                           height: float, color: RGBA255,
-                          tilt_angle: float = 0):
+                          tilt_angle: float = 0) -> None:
     """
     Draw a filled-in rectangle.
 
@@ -865,7 +868,7 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
                                   texture: Texture,
                                   scale: float = 1.0,
                                   angle: float = 0,
-                                  alpha: int = 255):
+                                  alpha: int = 255) -> None:
     """
     Draw a textured rectangle on-screen.
 
@@ -900,7 +903,7 @@ def draw_texture_rectangle(center_x: float, center_y: float,
                            height: float,
                            texture: Texture,
                            angle: float = 0,
-                           alpha: int = 255):
+                           alpha: int = 255) -> None:
     """
     Draw a textured rectangle on-screen.
 
@@ -915,11 +918,13 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+def draw_lrwh_rectangle_textured(bottom_left_x: float, 
+                                 bottom_left_y: float,
                                  width: float,
                                  height: float,
-                                 texture: Texture, angle: float = 0,
-                                 alpha: int = 255):
+                                 texture: Texture, 
+                                 angle: float = 0,
+                                 alpha: int = 255) -> None:
     """
     Draw a texture extending from bottom left to top right.
 
