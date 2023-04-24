@@ -902,7 +902,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._write_sprite_buffers_to_gpu()
 
-    def _write_sprite_buffers_to_gpu(self):
+    def _write_sprite_buffers_to_gpu(self) -> None:
         LOG.debug(
             "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
             id(self),
@@ -957,7 +957,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
+    def draw(self, *, filter: Optional["gl filter"]=None, pixelated: bool=False, blend_function: Optional["gl blend function"]=None) -> None:
         """
         Draw this list of sprites.
 
@@ -1014,7 +1014,7 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
 
-    def _normalize_index_buffer(self):
+    def _normalize_index_buffer(self) -> None:
         """
         Removes unused slots in the index buffer.
         The other buffers don't need this because they re-use slots.
@@ -1033,7 +1033,7 @@ class SpriteList(Generic[SpriteType]):
         # NOTE: Right now the index buffer is always normalized
         pass
 
-    def _grow_sprite_buffers(self):
+    def _grow_sprite_buffers(self) -> None:
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
         if self._sprite_buffer_slots <= self._buf_capacity:
@@ -1070,7 +1070,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_changed = True
         self._sprite_texture_changed = True
 
-    def _grow_index_buffer(self):
+    def _grow_index_buffer(self) -> None:
         # Extend the index buffer capacity if needed
         if self._sprite_index_slots <= self._idx_capacity:
             return
@@ -1098,7 +1098,7 @@ class SpriteList(Generic[SpriteType]):
 
         self._sprite_index_changed = True
 
-    def _update_all(self, sprite: SpriteType):
+    def _update_all(self, sprite: SpriteType) -> None:
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -1137,7 +1137,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_data[slot] = tex_slot
         self._sprite_texture_changed = True
 
-    def _update_texture(self, sprite) -> None:
+    def _update_texture(self, sprite: SpriteType) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
         # We cannot interact with texture atlases unless the context
