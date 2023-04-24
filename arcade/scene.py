@@ -35,14 +35,17 @@ class Scene:
         """
         return len(self._sprite_lists)
 
-    def __delitem__(self, sprite_list: Union[str, SpriteList]) -> None:
+    def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
         """
         Remove the SpriteList from `_sprite_lists` and `_name_mapping`.
 
-        :param Union[str, SpriteList] sprite_list: which SpriteList to delete - can
-        be either the name of the SpriteList or the SpriteList object.
+        :param Union[int, str, SpriteList] sprite_list: which SpriteList to delete - can
+        be the index of the SpriteList in `_sprite_lists`, the name of the SpriteList or
+        the SpriteList object.
         """
-        if isinstance(sprite_list, str):
+        if isinstance(sprite_list, int):
+            self.remove_sprite_list_by_index(sprite_list)
+        elif isinstance(sprite_list, str):
             self.remove_sprite_list_by_name(sprite_list)
         else:
             self.remove_sprite_list_by_object(sprite_list)
@@ -244,12 +247,25 @@ class Scene:
         old_index = self._sprite_lists.index(name_list)
         self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
+    def remove_sprite_list_by_index(
+        self,
+        index: int
+    ) -> None:
+        """
+        Remove a SpriteList by its index.
+
+        This function serves to completely remove the SpriteList from the Scene.
+
+        :param int index: The index of the SpriteList to remove.
+        """
+        self.remove_sprite_list_by_object(self._sprite_lists[index])
+
     def remove_sprite_list_by_name(
         self,
         name: str,
     ) -> None:
         """
-        Remove a SpriteList by it's name.
+        Remove a SpriteList by its name.
 
         This function serves to completely remove the SpriteList from the Scene.
 
@@ -260,6 +276,13 @@ class Scene:
         del self._name_mapping[name]
 
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
+        """
+        Remove a SpriteList by object.
+
+        This function serves to completely remove the SpriteList from the Scene.
+
+        :param SpriteList sprite_list: The SpriteList to remove.
+        """
         self._sprite_lists.remove(sprite_list)
         self._name_mapping = {
             key: val for key, val in self._name_mapping.items() if val != sprite_list
