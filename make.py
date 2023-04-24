@@ -14,7 +14,7 @@ SPHINXBUILD     = "sphinx-build"
 SPHINXAUTOBUILD = "sphinx-autobuild"
 PAPER_SIZE      = None
 DOCDIR          = "doc"
-BUILDDIR        = DOCDIR + "/build"
+BUILDDIR        = "build"
 
 
 # Linting
@@ -41,6 +41,7 @@ SPHINXAUTOBUILDOPTS = ['--watch', './arcade']
 # This allows for internationalization / localization of doc.
 I18NSPHINXOPTS      = [*PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
 
+os.chdir(Path(DOCDIR))
 
 # User-friendly check for dependencies and binaries
 binaries = ['sphinx-build', 'sphinx-autobuild']
@@ -347,6 +348,7 @@ def pseudoxml():
 
 @app.command()
 def lint():
+    os.chdir("../")
     run([RUFF, *RUFFOPTS])
     print("Ruff Finished.")
     run([MYPY, *MYPYOPTS])
@@ -356,23 +358,27 @@ def lint():
 
 @app.command()
 def ruff():
+    os.chdir("../")
     run([RUFF, *RUFFOPTS])
     print("Ruff Finished.")
 
 
 @app.command()
 def mypy():
+    os.chdir("../")
     run([MYPY, *MYPYOPTS])
     print("MyPy Finished.")
 
 
 @app.command()
 def test_full():
+    os.chdir("../")
     run([PYTEST, TESTDIR])
 
 
 @app.command()
 def test():
+    os.chdir("../")
     run([PYTEST, UNITTESTS])
 
 
