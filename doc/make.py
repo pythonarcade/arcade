@@ -12,21 +12,21 @@ from typing import Union, List
 SPHINXOPTS      = []
 SPHINXBUILD     = "sphinx-build"
 SPHINXAUTOBUILD = "sphinx-autobuild"
-PAPER           = None
+PAPER_SIZE      = None
 BUILDDIR        = "build"
 
 
 # Internal variables.
-PAPEROPTS = {}
-PAPEROPTS[None] = []
-PAPEROPTS['a4'] = ['-D', 'latex_paper_size=a4']
-PAPEROPTS['letter'] = ['-D', 'latex_paper_size=letter']
-ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPEROPTS[PAPER], *SPHINXOPTS, '.']
+PAPER_SIZE_OPTS = {}
+PAPER_SIZE_OPTS[None] = []
+PAPER_SIZE_OPTS['a4'] = ['-D', 'latex_paper_size=a4']
+PAPER_SIZE_OPTS['letter'] = ['-D', 'latex_paper_size=letter']
+ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
 SPHINXAUTOBUILDOPTS = ['--watch', '../arcade']
 
 # Important: the i18n builder cannot share the environment and doctrees with the others
 # This allows for internationalization / localization of doc.
-I18NSPHINXOPTS      = [*PAPEROPTS[PAPER], *SPHINXOPTS, '.']
+I18NSPHINXOPTS      = [*PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
 
 
 # Change dirs into root arcade project folder
@@ -197,7 +197,7 @@ def epub():
 @app.command()
 def latex():
     """
-    to make LaTeX files, you can set PAPER=a4 or PAPER=letter
+    to make LaTeX files, you can set PAPER_SIZE=a4 or PAPER_SIZE=letter
     """
     run([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print()
