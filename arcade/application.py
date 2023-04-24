@@ -18,7 +18,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBA255, RGBA255OrNormalized
+from arcade.types import Color, RGBA255, RGBA255OrNormalized, DefaultMouseCursor, XlibMouseCursor
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 
@@ -31,7 +31,7 @@ MOUSE_BUTTON_RIGHT = 4
 _window: 'Window'
 
 
-def get_screens() -> []:
+def get_screens() -> list:
     """
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with arcade.Window to select which
@@ -844,7 +844,7 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible: bool=None) -> None:
+    def set_mouse_platform_visible(self, platform_visible: Optional[bool]=None) -> None:
         """
         .. warning:: You are probably looking for
                      :meth:`~.Window.set_mouse_visible`!
@@ -867,7 +867,7 @@ class Window(pyglet.window.Window):
         """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
-    def get_system_mouse_cursor(self, name: str) -> Optional["DefualtMouseCursor", "XlibMouseCursor"]:
+    def get_system_mouse_cursor(self, name: str) -> Optional[DefualtMouseCursor, XlibMouseCursor]:
         """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 
