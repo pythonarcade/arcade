@@ -12,9 +12,11 @@ but should work with any recent version of Pygame.
     pip install -I pygame-ce==2.1.3
 
 """
-from typing import Tuple
 import math
+from typing import Tuple
+
 import pygame  # type: ignore
+
 import arcade
 from arcade.gl import geometry
 
@@ -24,6 +26,7 @@ class SurfaceTexture:
     Simple wrapper for a texture and a pygame surface
     making it simple to synchronize the data.
     """
+
     def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]):
         self._ctx = ctx
         self._size = size
@@ -53,7 +56,8 @@ class SurfaceTexture:
             out vec4 fragColor;
 
             void main() {
-                fragColor = texture(surface, uv);
+                // Flip texture y coordinate to get the right orientation
+                fragColor = texture(surface, vec2(uv.x, 1 - uv.y));
             }
             """,
         )
@@ -78,7 +82,7 @@ class SurfaceTexture:
         # and memory allocation.
         # The downside is that the raw surface data is RGBA, so we
         # set a swizzle on the OpenGL texture
-        self._texture.write(self._surface.get_view('1'))
+        self._texture.write(self._surface.get_view("1"))
 
 
 class PygameInteraction(arcade.Window):
@@ -101,7 +105,8 @@ class PygameInteraction(arcade.Window):
                 ((i * 50) % 255, (i * 100) % 255, (i * 20) % 255),
                 (
                     math.sin(self.time + time_offset) * 55 + w // 2,
-                    math.cos(self.time + time_offset) * 55 + h // 2),
+                    math.cos(self.time + time_offset) * 55 + h // 2,
+                ),
                 math.sin(self.time) * 4 + 15,
             )
 
@@ -110,11 +115,13 @@ class PygameInteraction(arcade.Window):
         self.surface_texture.draw()
 
     def on_update(self, delta_time):
-        self.time += delta_time
+        # self.time += delta_time
+        pass
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             arcade.close_window()
 
 
-PygameInteraction().run()
+if __name__ == "__main__":
+    PygameInteraction().run()

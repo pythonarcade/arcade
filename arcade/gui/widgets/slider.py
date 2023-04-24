@@ -4,7 +4,8 @@ from typing import Optional, Tuple, Union, Mapping
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
-from arcade.types import Color
+from arcade.math import get_distance
+from arcade.types import Color, RGBA255
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -18,7 +19,23 @@ from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 
-class UISlider(UIStyledWidget):
+class UISlider(UIStyledWidget["UISlider.UIStyle"]):
+    """
+    A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
+
+    There are four states of the UISlider i.e normal, hovered, pressed and disabled.
+
+    :param float value: Current value of the curosr of the slider.
+    :param float min_value: Minimum value of the slider.
+    :param float max_value: Maximum value of the slider.
+    :param float x: x coordinate of bottom left.
+    :param float y: y coordinate of bottom left.
+    :param float width: Width of the slider.
+    :param float height: Height of the slider.
+    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
+
+    """
+
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
@@ -26,51 +43,58 @@ class UISlider(UIStyledWidget):
 
     @dataclass
     class UIStyle(UIStyleBase):
-        bg: Color = (94, 104, 117)
-        border: Color = (77, 81, 87)
+        """
+        Used to style the slider for different states. Below is its use case.
+
+        .. code:: py
+
+            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+        """
+        bg: RGBA255 = Color(94, 104, 117)
+        border: RGBA255 = Color(77, 81, 87)
         border_width: int = 1
-        filled_bar: Color = (50, 50, 50)
-        unfilled_bar: Color = (116, 125, 123)
+        filled_bar: RGBA255 = Color(50, 50, 50)
+        unfilled_bar: RGBA255 = Color(116, 125, 123)
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            bg=(96, 103, 112),
-            border=(77, 81, 87),
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
             border_width=2,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         ),
         "press": UIStyle(
-            bg=(96, 103, 112),
-            border=(77, 81, 87),
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
             border_width=3,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         ),
         "disabled": UIStyle(
-            bg=(94, 104, 117),
-            border=(77, 81, 87),
+            bg=Color(94, 104, 117),
+            border=Color(77, 81, 87),
             border_width=1,
-            filled_bar=(50, 50, 50),
-            unfilled_bar=(116, 125, 123),
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
         )
     }
 
     def __init__(
         self,
         *,
-        value=0,
-        min_value=0,
-        max_value=100,
-        x=0,
-        y=0,
-        width=300,
-        height=20,
+        value: float = 0,
+        min_value: float = 0,
+        max_value: float = 100,
+        x: float = 0,
+        y: float = 0,
+        width: float = 300,
+        height: float = 20,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, UIStyleBase], None] = None,  # typing: ignore
+        style: Union[Mapping[str, "UISlider.UIStyle"], None] = None,  # typing: ignore
         **kwargs,
     ):
         super().__init__(
@@ -100,6 +124,7 @@ class UISlider(UIStyledWidget):
         self.register_event_type("on_change")
 
     def get_current_state(self) -> str:
+        """Returns the current state of the slider i.e disabled, press, hover or normal."""
         if self.disabled:
             return "disabled"
         elif self.pressed:
@@ -130,6 +155,7 @@ class UISlider(UIStyledWidget):
 
     @property
     def value_x(self):
+        """Returns the current value of the cursor of the slider."""
         return self._x_for_value(self.value)
 
     @value_x.setter
@@ -161,8 +187,8 @@ class UISlider(UIStyledWidget):
         slider_center_y = self.content_height // 2
 
         # slider
-        bg_slider_color = style.get("unfilled_bar", (116, 125, 123))
-        fg_slider_color = style.get("filled_bar", (50, 50, 50))
+        bg_slider_color = style.get("unfilled_bar", UISlider.UIStyle.unfilled_bar)
+        fg_slider_color = style.get("filled_bar", UISlider.UIStyle.filled_bar)
 
         arcade.draw_xywh_rectangle_filled(
             slider_left_x - self.content_rect.x,
@@ -180,9 +206,9 @@ class UISlider(UIStyledWidget):
         )
 
         # cursor
-        border_width = style.get("border_width", 1)
-        cursor_color = style.get("bg", (94, 104, 117))
-        cursor_outline_color = style.get("border", (77, 81, 87))
+        border_width = style.get("border_width", UISlider.UIStyle.border_width)
+        cursor_color = style.get("bg", UISlider.UIStyle.bg)
+        cursor_outline_color = style.get("border", UISlider.UIStyle.border)
 
         rel_cursor_x = cursor_center_x - self.content_rect.x
         arcade.draw_circle_filled(
@@ -205,7 +231,7 @@ class UISlider(UIStyledWidget):
     def _is_on_cursor(self, x: float, y: float) -> bool:
         cursor_center_x, cursor_center_y = self._cursor_pos()
         cursor_radius = self.cursor_radius
-        distance_to_cursor = arcade.get_distance(x, y, cursor_center_x, cursor_center_y)
+        distance_to_cursor = get_distance(x, y, cursor_center_x, cursor_center_y)
         return distance_to_cursor <= cursor_radius
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
@@ -228,4 +254,5 @@ class UISlider(UIStyledWidget):
         return EVENT_UNHANDLED
 
     def on_change(self, event: UIOnChangeEvent):
+        """To be implemented by the user, triggered when the cursor's value is changed."""
         pass

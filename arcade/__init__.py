@@ -66,23 +66,7 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
-from .drawing_support import get_four_byte_color
-from .drawing_support import get_three_float_color
-from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import make_transparent_color
-from .drawing_support import uint24_to_three_byte_color
-from .drawing_support import uint32_to_four_byte_color
-from .drawing_support import color_from_hex_string
-from .drawing_support import float_to_byte_color
-
-from .geometry_generic import get_distance
-from .geometry_generic import rotate_point
-from .geometry_generic import get_angle_degrees
-from .geometry_generic import get_angle_radians
-
-from .geometry import are_polygons_intersecting
-from .geometry import is_point_in_polygon
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -121,6 +105,8 @@ from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
 from .texture import cleanup_texture_cache
+from .texture import get_default_image
+from .texture import get_default_texture
 
 from .draw_commands import draw_arc_filled
 from .draw_commands import draw_arc_outline
@@ -132,7 +118,9 @@ from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
+from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -155,9 +143,8 @@ from .draw_commands import get_pixel
 if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
-
-from .controller import ControllerManager
-from .controller import get_controllers
+    from .controller import ControllerManager
+    from .controller import get_controllers
 
 from .sound import Sound
 from .sound import load_sound
@@ -173,10 +160,13 @@ from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
+from .sprite import PymunkMixin
+from .sprite import SpriteType
 from .sprite import Sprite
+from .sprite import BasicSprite
+# from .sprite import SimpleSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
-from .sprite import get_distance_between_sprites
 
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
@@ -185,6 +175,10 @@ from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
+from .sprite_list import get_distance_between_sprites
+from .sprite_list import get_sprites_in_rect
+
+from .sprite_list import SpatialHash
 
 from .scene import Scene
 
@@ -208,6 +202,8 @@ from .paths import astar_calculate_path
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
+from .texture_atlas import load_atlas
+from .texture_atlas import save_atlas
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
@@ -227,6 +223,7 @@ from arcade import resources as resources
 from arcade import types as types
 from arcade import math as math
 from arcade import shape_list as shape_list
+from arcade import hitbox as hitbox
 from arcade import experimental as experimental
 
 from .text import (
@@ -264,24 +261,27 @@ __all__ = [
     'SectionManager',
     'Scene',
     'Sound',
+    'BasicSprite',
     'Sprite',
+    'SpriteType',
+    'PymunkMixin',
     'SpriteCircle',
     'SpriteList',
     'SpriteSolidColor',
     'Text',
     'Texture',
     'TextureAtlas',
+    'load_atlas',
+    'save_atlas',
     'TileMap',
     'VERSION',
     'View',
     'Window',
-    'are_polygons_intersecting',
     'astar_calculate_path',
     'check_for_collision',
     'check_for_collision_with_list',
     'check_for_collision_with_lists',
     'close_window',
-    'color_from_hex_string',
     'disable_timings',
     'draw_arc_filled',
     'draw_arc_outline',
@@ -293,7 +293,9 @@ __all__ = [
     'draw_line_strip',
     'draw_lines',
     'draw_lrtb_rectangle_filled',
+    'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_outline',
     'draw_lrwh_rectangle_textured',
     'draw_parabola_filled',
     'draw_parabola_outline',
@@ -313,15 +315,10 @@ __all__ = [
     'enable_timings',
     'exit',
     'finish_render',
-    'float_to_byte_color',
     'get_closest_sprite',
-    'get_angle_degrees',
-    'get_angle_radians',
     'get_display_size',
-    'get_distance',
     'get_distance_between_sprites',
-    'get_four_byte_color',
-    'get_four_float_color',
+    'get_sprites_in_rect',
     'get_controllers',
     'get_game_controllers',
     'get_image',
@@ -331,14 +328,13 @@ __all__ = [
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
+    'SpatialHash',
     'get_timings',
-    'get_three_float_color',
     'create_text_sprite',
     'clear_timings',
     'get_window',
     'get_fps',
     'has_line_of_sight',
-    'is_point_in_polygon',
     'load_animated_gif',
     'load_font',
     'load_sound',
@@ -349,14 +345,12 @@ __all__ = [
     'make_circle_texture',
     'make_soft_circle_texture',
     'make_soft_square_texture',
-    'make_transparent_color',
     'open_window',
     'pause',
     'print_timings',
     'play_sound',
     'read_tmx',
     'load_tilemap',
-    'rotate_point',
     'run',
     'schedule',
     'set_background_color',
@@ -365,13 +359,13 @@ __all__ = [
     'start_render',
     'stop_sound',
     'timings_enabled',
-    'uint24_to_three_byte_color',
-    'uint32_to_four_byte_color',
     'unschedule',
     'schedule_once',
     'cleanup_texture_cache',
+    'get_default_texture',
+    'get_default_image',
+    'hitbox',
     'experimental',
-    'isometric',
     'color',
     'csscolor',
     'key',
@@ -386,21 +380,22 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, 'is_pyglet_doc_run', False):
     # Auto load fonts
-    load_font(":resources:fonts/ttf/Kenney_Blocks.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Future_Narrow.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High.ttf")
-    load_font(":resources:fonts/ttf/Kenney_High_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Mini_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Pixel_Square.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket.ttf")
-    load_font(":resources:fonts/ttf/Kenney_Rocket_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Blocks.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future.ttf")
+    load_font(":system:fonts/ttf/Kenney_Future_Narrow.ttf")
+    load_font(":system:fonts/ttf/Kenney_High.ttf")
+    load_font(":system:fonts/ttf/Kenney_High_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini.ttf")
+    load_font(":system:fonts/ttf/Kenney_Mini_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel.ttf")
+    load_font(":system:fonts/ttf/Kenney_Pixel_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket.ttf")
+    load_font(":system:fonts/ttf/Kenney_Rocket_Square.ttf")
 
     # Load additional game controller mappings to Pyglet
-    try:
-        mappings_file = resources.resolve_resource_path(":resources:gamecontrollerdb.txt")
-        pyglet.input.controller.add_mappings_from_file(mappings_file)
-    except AssertionError:
-        pass
+    if not pyglet.options['headless']:
+        try:
+            mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
+            pyglet.input.controller.add_mappings_from_file(mappings_file)
+        except AssertionError:
+            pass

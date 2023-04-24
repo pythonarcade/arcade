@@ -85,6 +85,56 @@ version = {attr = "arcade.version.VERSION"}
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+
+[tool.ruff]
+# --- Description of what we ignore ---
+#
+# E731 do not assign a lambda expression, use a def
+# E741 Ambiguous variable name
+# F811: redefinition
+ignore = ["F811", "E731", "E741"]
+show-source = true
+line-length = 120
+exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs"]
+select = [
+    "E",
+    "F",
+    # Whitespace linting must be re-enabled manually for ruff
+    # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
+    "W"
+]
+
+
+[tool.mypy]
+disable_error_code = "annotation-unchecked"
+
+[tool.pytest.ini_options]
+norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "dist", "tempt"]
+
 [tool.pyright]
 include = ["arcade"]
 exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
+
+[tool.coverage.run]
+source = ["arcade"]
+omit = ["./arcade/examples/*", "./arcade/gui/examples/*", "./arcade/experimental/*", "./env/*", "./tests/*", "./doc/*", "./Win*/*"]
+
+[[tool.mypy.overrides]]
+module = "pyglet.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "PIL.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pymunk"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytiled_parser.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "PyInstaller.*"
+ignore_missing_imports = true

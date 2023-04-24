@@ -1,9 +1,17 @@
 """
 Script used to create the quick index
 """
-import re
 import os
+import re
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+from vfs import Vfs
+
+# The project root
+ROOT = Path(__file__).parent.parent.resolve()
+
 titles = {
     'application.py': ['Window and View', 'window.rst'],
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
@@ -12,15 +20,10 @@ titles = {
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
     'geometry.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
-    'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
-    'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'controller.py': ['Game Controller Support', 'game_controller.rst'],
     'joysticks.py': ['Joystick Support', 'joysticks.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
-    'paths_python.py': ['Pathfinding', 'path_finding.rst'],
-    'paths_shapely.py': ['Pathfinding', 'path_finding.rst'],
     'perf_info.py': ['Performance Information', 'perf_info.rst'],
     'perf_graph.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
@@ -28,22 +31,25 @@ titles = {
     'sound.py': ['Sound', 'sound.rst'],
     'sprite/__init__.py': ['Sprites', 'sprites.rst'],
     'sprite/base.py': ['Sprites', 'sprites.rst'],
+    'sprite/sprite.py': ['Sprites', 'sprites.rst'],
     'sprite/simple.py': ['Sprites', 'sprites.rst'],
+    'sprite/colored.py': ['Sprites', 'sprites.rst'],
+    'sprite/mixins.py': ['Sprites', 'sprites.rst'],
     'sprite/animated.py': ['Sprites', 'sprites.rst'],
     'sprite/enums.py': ['Sprites', 'sprites.rst'],
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
     'texture/__init__.py': ['Texture Management', 'texture.rst'],
     'texture/texture.py': ['Texture Management', 'texture.rst'],
     'texture/loading.py': ['Texture Management', 'texture.rst'],
     'texture/generate.py': ['Texture Management', 'texture.rst'],
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
-    'texture_transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
-    'utils.py': ['Utils', 'utils.rst'],
+    'texture/tools.py': ['Texture Management', 'texture.rst'],
+    'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
     'math.py': ['Math', 'math.rst'],
-    'isometric.py': ['Isometric', 'isometric.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
     'earclip.py': ['Earclip', 'earclip.rst'],
@@ -55,7 +61,9 @@ titles = {
     'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -100,6 +108,7 @@ EXCLUDED_MEMBERS = [
     "ImageData",
     "AtlasRegion",
     "ImageDataRefCounter",
+    "FakeImage",
 ]
 
 def get_member_list(filepath):
@@ -154,7 +163,7 @@ def process_directory(directory: Path, quick_index_file):
 
     file_list = directory.glob('*.py')
 
-    quick_index_file.write(f"\n")
+    quick_index_file.write("\n")
 
     if directory.name == "arcade":
         prepend = ""
@@ -163,15 +172,6 @@ def process_directory(directory: Path, quick_index_file):
 
     for path in file_list:
         if "test" in path.name:
-            continue
-
-        if "geometry_python.py" in path.name:
-            continue
-
-        if "geometry.py" in path.name:
-            continue
-
-        if "paths_python.py" in path.name:
             continue
 
         if not path.exists():
@@ -186,13 +186,15 @@ def process_directory(directory: Path, quick_index_file):
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
+            "texture_atlas": "arcade",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
-            "texture_transforms.py": "arcade.texture_transforms",
+            "geometry.py": "arcade.geometry",
+            "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
             "types.py": "arcade.types",
@@ -216,15 +218,13 @@ def process_directory(directory: Path, quick_index_file):
         else:
             continue
 
-        full_api_file_name = "../doc/api_docs/api/" + api_file_name
+        full_api_file_name = ROOT / "doc/api_docs/api/" / api_file_name
 
         # print(package, title, api_file_name, full_api_file_name)
 
-        new_api_file = True
-        if os.path.isfile(full_api_file_name):
-            new_api_file = False
+        new_api_file = not vfs.exists(full_api_file_name)
 
-        api_file = open(full_api_file_name, "a")
+        api_file = vfs.open(full_api_file_name, "a")
 
         if new_api_file:
             api_file.write(f".. _{api_file_name[:-4]}_api:")
@@ -247,13 +247,13 @@ def process_directory(directory: Path, quick_index_file):
                 api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
-                api_file.write(f"    :members:\n")
+                api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
 
                 # Include inherited members
                 if full_class_name in ("arcade.ArcadeContext",):
-                    api_file.write(f"    :show-inheritance:\n")
-                    api_file.write(f"    :inherited-members:\n")
+                    api_file.write("    :show-inheritance:\n")
+                    api_file.write("    :inherited-members:\n")
 
                 api_file.write("\n")
 
@@ -284,7 +284,7 @@ def process_directory(directory: Path, quick_index_file):
 
 
 def include_template(text_file):
-    with open('template_quick_index.rst', 'r') as content_file:
+    with open(ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
         quick_index_content = content_file.read()
 
     text_file.write(quick_index_content)
@@ -325,52 +325,56 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    directory = Path("../doc/api_docs/api")
-    file_list = directory.glob('*.rst')
-    for file in file_list:
-        os.remove(file)
+    directory = ROOT / "doc/api_docs/api"
+    vfs.delete_glob(str(directory), '*.rst')
 
+vfs = Vfs()
 
 def main():
     clear_api_directory()
 
-    text_file = open("../doc/api_docs/api/quick_index.rst", "w")
+    text_file = vfs.open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
-    text_file.write(f"The arcade module\n")
-    text_file.write(f"-----------------\n\n")
+    text_file.write("The arcade module\n")
+    text_file.write("-----------------\n\n")
 
     text_file.write(table_header_arcade)
 
-    process_directory(Path("../arcade"), text_file)
-    process_directory(Path("../arcade/sprite_list"), text_file)
-    process_directory(Path("../arcade/sprite"), text_file)
-    process_directory(Path("../arcade/texture"), text_file)
-    process_directory(Path("../arcade/text"), text_file)
+    process_directory(ROOT / "arcade", text_file)
+    process_directory(ROOT / "arcade/sprite_list", text_file)
+    process_directory(ROOT / "arcade/geometry", text_file)
+    process_directory(ROOT / "arcade/sprite", text_file)
+    process_directory(ROOT / "arcade/texture", text_file)
+    process_directory(ROOT / "arcade/texture_atlas", text_file)
+    process_directory(ROOT / "arcade/text", text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
     # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.gui module\n")
-    text_file.write(f"---------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.gui module\n")
+    text_file.write("---------------------\n\n")
 
     text_file.write(table_header_gui)
 
-    process_directory(Path("../arcade/gui"), text_file)
-    process_directory(Path("../arcade/gui/widgets"), text_file)
-    process_directory(Path("../arcade/gui/property"), text_file)
+    process_directory(ROOT / "arcade/gui", text_file)
+    process_directory(ROOT / "arcade/gui/widgets", text_file)
+    process_directory(ROOT / "arcade/gui/property", text_file)
 
-    text_file.write(f"\n\n")
-    text_file.write(f"The arcade.tilemap module\n")
-    text_file.write(f"-------------------------\n\n")
+    text_file.write("\n\n")
+    text_file.write("The arcade.tilemap module\n")
+    text_file.write("-------------------------\n\n")
 
     text_file.write(table_header_tiled)
 
-    process_directory(Path("../arcade/tilemap"), text_file)
+    process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
+
+    vfs.write()
+
     print("Done creating quick_index.rst")
 
 

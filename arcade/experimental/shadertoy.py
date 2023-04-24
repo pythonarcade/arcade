@@ -188,7 +188,7 @@ class ShadertoyBase:
     @property
     def channel_0(self) -> Optional[Texture2D]:
         """Get or set channel 0"""
-        return self._channel_0        
+        return self._channel_0
 
     @channel_0.setter
     def channel_0(self, value: Texture2D):
@@ -212,7 +212,7 @@ class ShadertoyBase:
     @property
     def channel_2(self) -> Optional[Texture2D]:
         """Get or set channel 2"""
-        return self._channel_2        
+        return self._channel_2
 
     @channel_2.setter
     def channel_2(self, value: Texture2D):
@@ -275,7 +275,7 @@ class ShadertoyBase:
         self._render()
 
     def _render(self):
-        raise NotImplementedError        
+        raise NotImplementedError
 
     def reload(self, source: str):
         """
@@ -319,8 +319,8 @@ class ShadertoyBase:
         Load shader templates, injects main function,
         create program and configures the program.
         """
-        vs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_vs.glsl")
-        fs_path = arcade.resources.resolve_resource_path(":resources:shaders/shadertoy/base_fs.glsl")
+        vs_path = arcade.resources.resolve(":system:shaders/shadertoy/base_vs.glsl")
+        fs_path = arcade.resources.resolve(":system:shaders/shadertoy/base_fs.glsl")
         with open(vs_path) as fd:
             vs_source = fd.read()
         with open(fs_path) as fd:
@@ -337,7 +337,7 @@ class ShadertoyBase:
             try:
                 self._program[f"iChannel{channel}"] = channel
             except KeyError:
-                pass        
+                pass
         self._source = source
 
 
@@ -480,7 +480,7 @@ class Shadertoy(ShadertoyBase):
         :param Tuple[int,int] size: Size of shadertoy in pixels
         :param str path: Path to mainImage shader file
         """
-        path = arcade.resources.resolve_resource_path(path)
+        path = arcade.resources.resolve(path)
         with open(path) as fd:
             source = fd.read()
         return cls(size, source)
@@ -501,7 +501,7 @@ class Shadertoy(ShadertoyBase):
 
         :param str path: Path to shader source
         """
-        path = arcade.resources.resolve_resource_path(path)
+        path = arcade.resources.resolve(path)
         with open(path) as fd:
             source = fd.read()
         return ShadertoyBuffer(self._size, source)

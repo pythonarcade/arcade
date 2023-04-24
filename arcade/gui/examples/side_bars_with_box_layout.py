@@ -2,11 +2,10 @@ import arcade
 from arcade.gui import UIManager, UIDummy, UIBoxLayout
 
 
-class DemoWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
         v_box = UIBoxLayout(size_hint=(1, 1))
 
@@ -25,21 +24,25 @@ class DemoWindow(arcade.Window):
         bottom_bar = UIDummy(height=100, size_hint=(1, 0), size_hint_min=(None, 100))
         v_box.add(bottom_bar)
 
-        self.manager.add(v_box)
+        self.ui.add(v_box)
 
-    def on_show(self):
-        self.manager.enable()
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
 
-    def on_hide(self):
-        self.manager.disable()
+    def on_hide_view(self):
+        self.ui.disable()
 
     def on_key_press(self, symbol: int, modifiers: int):
         pass
 
     def on_draw(self):
         arcade.start_render()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    DemoWindow().run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

@@ -7,9 +7,16 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point
-from arcade.draw_commands import get_four_byte_color
-from arcade.resources import resolve_resource_path
+from arcade.types import Color, Point, RGBA255
+from arcade.resources import resolve
+from arcade.utils import PerformanceWarning, warning
+
+
+__all__ = ["load_font",
+            "Text",
+            "create_text_sprite",
+            "draw_text"
+            ]
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -32,7 +39,7 @@ def load_font(path: Union[str, Path]) -> None:
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
-    file_path = resolve_resource_path(path)
+    file_path = resolve(path)
     pyglet.font.add_file(str(file_path))
 
 
@@ -66,7 +73,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
 
         for font in font_list:
             try:
-                path = resolve_resource_path(font)
+                path = resolve(font)
                 # print(f"Font path: {path=}")
 
                 # found a font successfully!
@@ -122,7 +129,8 @@ class Text:
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBA255 color: Color of the text as an RGBA tuple or a
+        :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
@@ -171,9 +179,9 @@ class Text:
         text: str,
         start_x: float,
         start_y: float,
-        color: Color = arcade.color.WHITE,
+        color: RGBA255 = arcade.color.WHITE,
         font_size: float = 12,
-        width: int = 0,
+        width: Optional[int] = 0,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool = False,
@@ -186,13 +194,8 @@ class Text:
         group: Optional[pyglet.graphics.Group] = None,
         start_z: float = 0
     ):
-        """Build a text object"""
-
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
-
-        if align not in ("left", "right"):
-            multiline = True
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
@@ -204,7 +207,7 @@ class Text:
             font_size=font_size,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
-            color=get_four_byte_color(color),
+            color=Color.from_iterable(color),
             width=width,
             align=align,
             bold=bold,
@@ -378,8 +381,8 @@ class Text:
         return self._label.color
 
     @color.setter
-    def color(self, color: Color):
-        self._label.color = get_four_byte_color(color)
+    def color(self, color: RGBA255):
+        self._label.color = Color.from_iterable(color)
 
     @property
     def width(self) -> int:
@@ -412,7 +415,7 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of the label        
+        Get the size of the label
         """
         return self._label.width, self._label.height
 
@@ -526,17 +529,17 @@ class Text:
 
     def draw_debug(
         self,
-        anchor_color: Color = arcade.color.RED,
-        background_color: Color = arcade.color.DARK_BLUE,
-        outline_color: Color = arcade.color.WHITE,
+        anchor_color: RGBA255 = arcade.color.RED,
+        background_color: RGBA255 = arcade.color.DARK_BLUE,
+        outline_color: RGBA255 = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
         area, outline and the anchor point.
 
-        :param Color anchor_color: Color of the anchor point
-        :param Color background_color: Color the content background
-        :param Color outline_color: Color of the content outline
+        :param RGBA255 anchor_color: Color of the anchor point
+        :param RGBA255 background_color: Color the content background
+        :param RGBA255 outline_color: Color of the content outline
         """
         left = self.left
         right = self.right
@@ -544,10 +547,10 @@ class Text:
         bottom = self.bottom
 
         # Draw background
-        arcade.draw_lrtb_rectangle_filled(left, right, top, bottom, color=background_color)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, color=background_color)
 
         # Draw outline
-        arcade.draw_lrtb_rectangle_outline(left, right, top, bottom, color=outline_color)
+        arcade.draw_lrbt_rectangle_outline(left, right, bottom, top, color=outline_color)
 
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
@@ -575,9 +578,7 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    start_x: float,
-    start_y: float,
-    color: Color = arcade.color.WHITE,
+    color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -585,11 +586,8 @@ def create_text_sprite(
     bold: bool = False,
     italic: bool = False,
     anchor_x: str = "left",
-    anchor_y: str = "baseline",
     multiline: bool = False,
-    rotation: float = 0,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
-    start_z: float = 0
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -607,44 +605,40 @@ def create_text_sprite(
     a black box drawn in its place.
 
     :param str text: Initial text to display. Can be an empty string
-    :param float start_x: x position to align the text's anchor point with
-    :param float start_y: y position to align the text's anchor point with
-    :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBA255 color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param FontNameOrNames font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate.
                          Options: "left", "center", or "right"
-    :param str anchor_y: How to calculate the anchor point's y coordinate.
-                         Options: "top", "bottom", "center", or "baseline".
     :param bool multiline: Requires width to be set; enables word wrap rather than clipping
-    :param float rotation: rotation in degrees, counter-clockwise from horizontal
     :param Optional[arcade.TextureAtlas] texture_atlas: The texture atlas to use for the
         newly created texture. The default global atlas will be used if this is None.
     """
     text_object = Text(
         text,
-        start_x,
-        start_y,
-        color,
-        font_size,
-        width,
-        align,
-        font_name,
-        bold,
-        italic,
-        anchor_x,
-        anchor_y,
-        multiline,
-        rotation,
-        start_z=start_z
+        start_x=0,
+        start_y=0,
+        color=color,
+        font_size=font_size,
+        width=width,
+        align=align,
+        font_name=font_name,
+        bold=bold,
+        italic=italic,
+        anchor_x=anchor_x,
+        anchor_y="baseline",
+        multiline=multiline,
     )
 
-    size = (int(text_object.right - text_object.left), int(text_object.top - text_object.bottom))
+    size = (
+        int(text_object.right - text_object.left),
+        int(text_object.top - text_object.bottom),
+    )
+    text_object.y = -text_object.bottom
     texture = arcade.Texture.create_empty(text, size)
 
     if not texture_atlas:
@@ -661,11 +655,15 @@ def create_text_sprite(
     )
 
 
+@warning(
+    message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
+    warning_type=PerformanceWarning,
+    )
 def draw_text(
     text: Any,
     start_x: float,
     start_y: float,
-    color: Color = arcade.color.WHITE,
+    color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
@@ -704,7 +702,8 @@ def draw_text(
     :param float start_x: x position to align the text's anchor point with
     :param float start_y: y position to align the text's anchor point with
     :param float start_z: z position to align the text's anchor point with
-    :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
+    :param RGBA255 color: Color of the text as an RGBA tuple or
+        :py:class:`~arcade.types.Color` instance.
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
     :param str align: Horizontal alignment; values other than "left" require width to be set
@@ -835,11 +834,11 @@ def draw_text(
     """
     # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
-    color = get_four_byte_color(color)
+    color = Color.from_iterable(color)
     # Cache the states that are expensive to change
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
-    cache = arcade.get_window().ctx.label_cache
-    label = cache.get(key)
+    ctx = arcade.get_window().ctx
+    label = ctx.label_cache.get(key)
     if align != "center" and align != "left" and align != "right":
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
@@ -866,7 +865,7 @@ def draw_text(
             multiline=multiline,
             rotation=rotation
         )
-        cache[key] = label
+        ctx.label_cache[key] = label
 
     # These updates are quite expensive
     if label.text != text:
@@ -879,3 +878,7 @@ def draw_text(
         label.rotation = rotation
 
     label.draw()
+    # This is absolutely necessary to prevent the vertex buffers
+    # to be altered while another one is drawing. If the same cached
+    # label is used multiple times in a single frame it's a disaster.
+    ctx.flush()

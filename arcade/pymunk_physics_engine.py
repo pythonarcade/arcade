@@ -12,18 +12,24 @@ from arcade import Sprite
 
 LOG = logging.getLogger(__name__)
 
+__all__ = [
+    "PymunkPhysicsObject",
+    "PymunkException",
+    "PymunkPhysicsEngine"
+]
+
 
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
                  body: Optional[pymunk.Body] = None,
                  shape: Optional[pymunk.Shape] = None):
-        """ Init """
         self.body: Optional[pymunk.Body] = body
         self.shape: Optional[pymunk.Shape] = shape
 
 
 class PymunkException(Exception):
+    """Exception raised for errors in the PymunkPhysicsEngine."""
     pass
 
 
@@ -70,21 +76,21 @@ class PymunkPhysicsEngine:
                    ):
         """ Add a sprite to the physics engine.
 
-            :param sprite: The sprite to add
-            :param mass: The mass of the object. Defaults to 1
-            :param friction: The friction the object has. Defaults to 0.2
+            :param sprite: The sprite to add.
+            :param mass: The mass of the object. Defaults to 1.
+            :param friction: The friction the object has. Defaults to 0.2.
             :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
             :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum. \
             Providing infinite makes this object stuck in its rotation.
             :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. \
             Providing STATIC makes it fixed to the world.
-            :param damping: See class docs
-            :param gravity: See class docs
+            :param damping: See class docs.
+            :param gravity: See class docs.
             :param max_velocity: The maximum velocity of the object.
-            :param max_horizontal_velocity: maximum velocity on the x axis
-            :param max_vertical_velocity: maximum velocity on the y axis
-            :param radius:
-            :param collision_type:
+            :param max_horizontal_velocity: Maximum velocity on the x axis in pixels.
+            :param max_vertical_velocity: Maximum velocity on the y axis in pixels.
+            :param radius: Radius for the shape created for the sprite in pixels.
+            :param collision_type: Assign a name to the sprite, use this name when adding collision handler.
         """
 
         if damping is not None:
@@ -172,7 +178,7 @@ class PymunkPhysicsEngine:
             body.velocity_func = velocity_callback
 
         # Set the physics shape to the sprite's hitbox
-        poly = sprite.get_hit_box()
+        poly = sprite.hit_box.points
         scaled_poly = [[x * sprite.scale for x in z] for z in poly]
         shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
 
@@ -205,7 +211,7 @@ class PymunkPhysicsEngine:
                         mass: float = 1,
                         friction: float = 0.2,
                         elasticity: Optional[float] = None,
-                        moment_of_intertia: Optional[float] = None,
+                        moment_of_inertia: Optional[float] = None,
                         body_type: int = DYNAMIC,
                         damping: Optional[float] = None,
                         collision_type: Optional[str] = None
@@ -217,7 +223,7 @@ class PymunkPhysicsEngine:
                             mass=mass,
                             friction=friction,
                             elasticity=elasticity,
-                            moment_of_inertia=moment_of_intertia,
+                            moment_of_inertia=moment_of_inertia,
                             body_type=body_type,
                             damping=damping,
                             collision_type=collision_type)
@@ -349,7 +355,7 @@ class PymunkPhysicsEngine:
                     continue
 
                 new_position = physics_object.body.position
-                new_angle = math.degrees(physics_object.body.angle)
+                new_angle = -math.degrees(physics_object.body.angle)
 
                 # Calculate change in location, used in call-back
                 dx = new_position[0] - original_position[0]

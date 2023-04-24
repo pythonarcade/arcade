@@ -19,7 +19,7 @@ from arcade.gui.events import (
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, Surface, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import Color
+from arcade.types import RGBA255, Color
 
 
 class UILabel(UIWidget):
@@ -36,7 +36,7 @@ class UILabel(UIWidget):
     :param font_name: a list of fonts to use. Program will start at the beginning of the list
                       and keep trying to load fonts until success.
     :param float font_size: size of font.
-    :param Color text_color: Color of font.
+    :param RGBA255 text_color: Color of font.
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
@@ -61,7 +61,7 @@ class UILabel(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (255, 255, 255, 255),
+        text_color: RGBA255 = (255, 255, 255, 255),
         bold=False,
         italic=False,
         align="left",
@@ -73,13 +73,13 @@ class UILabel(UIWidget):
     ):
         # Use Arcade wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
-            start_x=x,
-            start_y=y,
+            start_x=0,
+            start_y=0,
             text=text,
             font_name=font_name,
             font_size=font_size,
             color=text_color,
-            width=int(width) if width else 0,
+            width=int(width) if width else None,
             bold=bold,
             italic=italic,
             align=align,
@@ -98,8 +98,13 @@ class UILabel(UIWidget):
             **kwargs,
         )
 
-        self.label.width = int(width) if width else 0
-        self.label.height = int(height) if height else 0
+        # set label size, if the width or height was given
+        # because border and padding can only be applied later, we can avoid `fit_content()`
+        # and set with and height separately
+        if width:
+            self.label.width = int(width)
+        if height:
+            self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
 
@@ -132,8 +137,8 @@ class UILabel(UIWidget):
 
         if layout_size != self.content_size:
             layout.position = 0, 0, 0  # layout always drawn in scissor box
-            layout.width = self.content_width
-            layout.height = self.content_height
+            layout.width = int(self.content_width)
+            layout.height = int(self.content_height)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
@@ -147,13 +152,13 @@ class UITextWidget(UIAnchorLayout):
     The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
     """
 
-    def __init__(self, text: str = "", **kwargs):
+    def __init__(self, text: str = "", multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
         self._label = UILabel(
             text=text,
-            multiline=True,
-            width=1000
-        )  # width 1000 try to prevent line wrap
+            multiline=multiline,
+            width=1000 if multiline else None
+        )  # width 1000 try to prevent line wrap if multiline is enabled
         self.add(self._label)
         self.ui_label.fit_content()
 
@@ -185,6 +190,16 @@ class UITextWidget(UIAnchorLayout):
     @text.setter
     def text(self, value):
         self.ui_label.text = value
+        self.ui_label.fit_content()
+        self.trigger_render()
+
+    @property
+    def multiline(self):
+        return self.label.multiline
+
+    @multiline.setter
+    def multiline(self, value):
+        self.label.multiline = value
         self.ui_label.fit_content()
         self.trigger_render()
 
@@ -228,7 +243,7 @@ class UIInputText(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (0, 0, 0, 255),
+        text_color: RGBA255 = (0, 0, 0, 255),
         multiline=False,
         size_hint=None,
         size_hint_min=None,
@@ -384,7 +399,7 @@ class UITextArea(UIWidget):
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
-        text_color: Color = (255, 255, 255, 255),
+        text_color: RGBA255 = (255, 255, 255, 255),
         multiline: bool = True,
         scroll_speed: Optional[float] = None,
         size_hint=None,
@@ -414,7 +429,7 @@ class UITextArea(UIWidget):
             dict(
                 font_name=font_name,
                 font_size=font_size,
-                color=arcade.get_four_byte_color(text_color),
+                color=Color.from_iterable(text_color),
             ),
         )
 

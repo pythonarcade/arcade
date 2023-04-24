@@ -14,17 +14,21 @@ To illustrate the difference, this example uses a player-controllable
 tank with a barrel that follows the mouse. You can press P to switch
 between two ways of rotating the barrel:
 1. Correctly, with the barrel's rear against the tank's center
-2. Incorrectly, around the barrel's center pinned to the tank's 
+2. Incorrectly, around the barrel's center pinned to the tank's
 
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rotate_around_tank
 """
+import math
 import arcade
 from arcade.types import Point
-import math
-
+from arcade.math import (
+    get_angle_radians,
+    rotate_point,
+    get_angle_degrees,
+)
 
 TANK_SPEED_PIXELS = 64  # How many pixels per second the tank travels
 TANK_TURN_SPEED_DEGREES = 70  # How fast the tank's body can turn
@@ -32,7 +36,7 @@ TANK_TURN_SPEED_DEGREES = 70  # How fast the tank's body can turn
 
 # This is half the length of the barrel sprite.
 # We use it to ensure the barrel's rear sits in the middle of the tank
-TANK_BARREL_LENGTH_HALF = 15  
+TANK_BARREL_LENGTH_HALF = 15
 
 
 SCREEN_WIDTH = 800
@@ -68,7 +72,7 @@ class RotatingSprite(arcade.Sprite):
         self.angle += degrees
 
         # Move the sprite along a circle centered around the passed point
-        self.position = arcade.rotate_point(
+        self.position = rotate_point(
             self.center_x, self.center_y,
             point[0], point[1], degrees)
 
@@ -89,7 +93,7 @@ class ExampleWindow(arcade.Window):
         self.barrel.position =\
             SCREEN_MIDDLE[0], SCREEN_MIDDLE[1] - TANK_BARREL_LENGTH_HALF
 
-        self.tank_direction = 0.0  # Forward & backward throttle 
+        self.tank_direction = 0.0  # Forward & backward throttle
         self.tank_turning = 0.0  # Turning strength to the left or right
 
         self.mouse_pos = 0, 0
@@ -120,7 +124,7 @@ class ExampleWindow(arcade.Window):
 
     def move_tank(self, delta_time):
         """
-        Perform all calculations for moving the tank's body and barrel 
+        Perform all calculations for moving the tank's body and barrel
         """
 
         # Rotate the tank's body in place without changing position
@@ -130,27 +134,27 @@ class ExampleWindow(arcade.Window):
 
         # Calculate how much the tank should move forward or back
         move_magnitude = self.tank_direction * TANK_SPEED_PIXELS * delta_time
-        x_dir = math.cos(self.tank.radians - math.pi / 2) * move_magnitude
-        y_dir = math.sin(self.tank.radians - math.pi / 2) * move_magnitude
+        x_dir = math.sin(self.tank.radians) * move_magnitude
+        y_dir = math.cos(self.tank.radians) * move_magnitude
 
         # Move the tank's body
         self.tank.position =\
             self.tank.center_x + x_dir,\
             self.tank.center_y + y_dir
 
-        # Move the barrel with the body 
+        # Move the barrel with the body
         self.barrel.position =\
             self.barrel.center_x + x_dir,\
             self.barrel.center_y + y_dir
 
-        # Begin rotating the barrel by finding the angle to the mouse 
-        mouse_angle = arcade.get_angle_degrees(
-            self.tank.center_y, self.tank.center_x,
-            self.mouse_pos[1], self.mouse_pos[0])
+        # Begin rotating the barrel by finding the angle to the mouse
+        mouse_angle = get_angle_degrees(
+            self.tank.center_x, self.tank.center_y,
+            self.mouse_pos[0], self.mouse_pos[1])
 
-        # Compensate for the vertical orientation of the barrel texture
-        # This could be skipped if the texture faced right instead
-        mouse_angle += 90
+        # Compensate for the flipped orientation of the barrel texture
+        # This could be skipped if the texture faced up instead
+        mouse_angle += 180
 
         if self.correct:
             # Rotate the barrel sprite with one end at the tank's center
@@ -160,7 +164,7 @@ class ExampleWindow(arcade.Window):
 
             self.barrel.rotate_around_point(self.tank.position, angle_change)
         else:
-            # Swivel the barrel with its center aligned with the body's 
+            # Swivel the barrel with its center aligned with the body's
             self.barrel.angle = mouse_angle
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -169,9 +173,9 @@ class ExampleWindow(arcade.Window):
         elif symbol == arcade.key.S:
             self.tank_direction -= 1
         elif symbol == arcade.key.A:
-            self.tank_turning += 1
-        elif symbol == arcade.key.D:
             self.tank_turning -= 1
+        elif symbol == arcade.key.D:
+            self.tank_turning += 1
         elif symbol == arcade.key.P:
             self.correct = not self.correct
 
@@ -186,9 +190,9 @@ class ExampleWindow(arcade.Window):
         elif symbol == arcade.key.S:
             self.tank_direction += 1
         elif symbol == arcade.key.A:
-            self.tank_turning -= 1
-        elif symbol == arcade.key.D:
             self.tank_turning += 1
+        elif symbol == arcade.key.D:
+            self.tank_turning -= 1
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         self.mouse_pos = x, y
@@ -204,13 +208,14 @@ class ExampleWindow(arcade.Window):
         """
         self._correct = correct
         if correct:
-            angle = arcade.get_angle_radians(
+            angle = get_angle_radians(
                 self.tank.center_y, self.tank.center_x,
                 self.mouse_pos[1], self.mouse_pos[0])
 
-            self.barrel.position =\
-                self.barrel.center_x + math.cos(angle) * TANK_BARREL_LENGTH_HALF,\
-                self.barrel.center_y + math.sin(angle) * TANK_BARREL_LENGTH_HALF
+            self.barrel.position = (
+                self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
+                self.barrel.center_y + math.cos(angle) * TANK_BARREL_LENGTH_HALF,
+            )
 
         else:
             self.barrel.position = self.tank.position

@@ -10,6 +10,9 @@ from arcade.shape_list import (
     ShapeElementList,
     create_line_strip,
 )
+from inspect import getmembers
+from arcade.types import Color
+
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -26,6 +29,7 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, title)
+        self.set_vsync(True)
 
         self.shape_list = ShapeElementList()
         point_list = ((0, 50),
@@ -37,11 +41,13 @@ class MyGame(arcade.Window):
                       (-50, 0),
                       (-10, 10),
                       (0, 50))
+
+        # Filter out anything other than a Color, such as imports and
+        # helper functions.
         colors = [
-            getattr(arcade.color, color)
-            for color in dir(arcade.color)
-            if not color.startswith("__")
-        ]
+            color for name, color in
+            getmembers(arcade.color, lambda c: isinstance(c, Color))]
+
         for i in range(200):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)
@@ -67,9 +73,9 @@ class MyGame(arcade.Window):
         self.shape_list.draw()
 
     def on_update(self, delta_time):
-        self.shape_list.angle += 1
-        self.shape_list.center_x += 0.1
-        self.shape_list.center_y += 0.1
+        self.shape_list.angle += 1 * 60 * delta_time
+        self.shape_list.center_x += 0.1 * 60 * delta_time
+        self.shape_list.center_y += 0.1 * 60 * delta_time
 
 
 def main():

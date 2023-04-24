@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 from random import randint
 from typing import (
     NamedTuple,
@@ -16,7 +16,6 @@ from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade import Sprite, get_window, Texture
-from arcade.types import Color
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -26,9 +25,10 @@ from arcade.gui.events import (
     UIOnClickEvent,
     UIOnUpdateEvent,
 )
+from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.gui.nine_patch import NinePatchTexture
+from arcade.types import RGBA255
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -219,8 +219,8 @@ class UIWidget(EventDispatcher, ABC):
 
     _children: List[_ChildEntry] = ListProperty()  # type: ignore
     _border_width: int = Property(0)  # type: ignore
-    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
-    _bg_color: Optional[Color] = Property(None)  # type: ignore
+    _border_color: Optional[RGBA255] = Property(arcade.color.BLACK)  # type: ignore
+    _bg_color: Optional[RGBA255] = Property(None)  # type: ignore
     _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
     _padding_top: int = Property(0)  # type: ignore
     _padding_right: int = Property(0)  # type: ignore
@@ -244,7 +244,7 @@ class UIWidget(EventDispatcher, ABC):
     ):
         self._rendered = False
         self.rect = Rect(x, y, width, height)
-        self.parent: Optional[UIWidgetParent] = None
+        self.parent: Optional[Union[UIManager, UIWidget]] = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
@@ -361,12 +361,17 @@ class UIWidget(EventDispatcher, ABC):
             # rect changes in children will trigger_full_render
             child._do_layout()
 
-    def _do_render(self, surface: Surface, force=False):
+    def _do_render(self, surface: Surface, force=False) -> bool:
         """Helper function to trigger :meth:`UIWidget.do_render` through the widget tree,
         should only be used by UIManager!
+
+        :return: if this widget or a child was rendered
         """
+        rendered = False
+
         should_render = force or not self._rendered
         if should_render and self.visible:
+            rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
             self._rendered = True
@@ -374,7 +379,9 @@ class UIWidget(EventDispatcher, ABC):
         # only render children if self is visible
         if self.visible:
             for child in self.children:
-                child._do_render(surface, should_render)
+                rendered |= child._do_render(surface, should_render)
+
+        return rendered
 
     def do_render_base(self, surface: Surface):
         """
@@ -562,7 +569,7 @@ class UIWidget(EventDispatcher, ABC):
         A color or texture can be used for background,
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
-        :param Color color: A color used as background
+        :param RGBA255 color: A color used as background
         :param arcade.Texture texture: A texture or ninepatch texture used as background
         :return: self
         """
@@ -626,18 +633,6 @@ class UIWidget(EventDispatcher, ABC):
 
         self.rect = self.rect.align_center(center_x, center_y)
         return self
-
-
-class UIWidgetParent(ABC):
-    rect: Rect
-
-    def trigger_render(self):
-        """Widget might request parent to rerender due to transparent part of the widget"""
-        pass
-
-    @abstractmethod
-    def remove(self, child: UIWidget):
-        pass
 
 
 class UIInteractiveWidget(UIWidget):
@@ -836,7 +831,7 @@ class UISpriteWidget(UIWidget):
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
-class UILayout(UIWidget, UIWidgetParent):
+class UILayout(UIWidget):
     """
     Base class for widgets, which position themselves or their children.
 

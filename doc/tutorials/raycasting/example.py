@@ -1,4 +1,5 @@
 import random
+
 import arcade
 from arcade.experimental import Shadertoy
 
@@ -71,8 +72,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def load_shader(self):
-        file_name = "example.glsl"
-        file = open(file_name)
+        file = open("example.glsl")
         shader_sourcecode = file.read()
         size = self.width, self.height
 
@@ -95,7 +95,7 @@ class MyGame(arcade.Window):
 
         self.channel1.use()
         # self.channel1.clear(clear_color)
-        self.channel1.clear(arcade.get_four_byte_color(arcade.color.ARMY_GREEN))
+        self.channel1.clear(arcade.color.ARMY_GREEN)
         self.bomb_list.draw()
 
         self.use()

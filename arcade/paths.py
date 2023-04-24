@@ -1,15 +1,18 @@
 """
 Classic A-star algorithm for path finding.
 """
-import sys
-from arcade.types import Point
-from arcade import check_for_collision_with_list, SpriteList, Sprite
-from typing import Union, List, Tuple, Set, Optional
+from typing import List, Optional, Set, Tuple, Union
 
-if 'shapely' in sys.modules:
-    from .paths_shapely import has_line_of_sight  # noqa: F401
-else:
-    from .paths_python import has_line_of_sight  # noqa: F401
+from arcade import (Sprite, SpriteList, check_for_collision_with_list,
+                    get_sprites_at_point)
+from arcade.math import get_distance, lerp_vec
+from arcade.types import Point
+
+__all__ = [
+    "AStarBarrierList",
+    "astar_calculate_path",
+    "has_line_of_sight"
+]
 
 
 def _spot_is_blocked(position: Point,
@@ -259,6 +262,39 @@ def astar_calculate_path(start_point: Point,
     return revised_result
 
 
+def has_line_of_sight(point_1: Point,
+                      point_2: Point,
+                      walls: SpriteList,
+                      max_distance: int = -1,
+                      check_resolution: int = 2) -> bool:
+    """
+    Determine if we have line of sight between two points. Try to make sure
+    that spatial hashing is enabled on the wall SpriteList or this will be
+    very slow.
+
+    :param Point point_1: Start position
+    :param Point point_2: End position position
+    :param SpriteList walls: List of all blocking sprites
+    :param int max_distance: Max distance point 1 can see
+    :param int check_resolution: Check every x pixels for a sprite. Trade-off
+                                 between accuracy and speed.
+    """
+    distance = get_distance(point_1[0], point_1[1],
+                            point_2[0], point_2[1])
+    steps = int(distance // check_resolution)
+    for step in range(steps + 1):
+        step_distance = step * check_resolution
+        u = step_distance / distance
+        midpoint = lerp_vec(point_1, point_2, u)
+        if max_distance != -1 and step_distance > max_distance:
+            return False
+        # print(point_1, point_2, step, u, step_distance, midpoint)
+        sprite_list = get_sprites_at_point(midpoint, walls)
+        if len(sprite_list) > 0:
+            return False
+    return True
+
+
 # NOTE: Rewrite this
 # def dda_step(start: Point, end: Point):
 #     """
@@ -288,4 +324,5 @@ def astar_calculate_path(start_point: Point,
 #         x += x_inc
 #         y += y_inc
 
+#     return points
 #     return points

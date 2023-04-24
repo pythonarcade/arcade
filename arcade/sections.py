@@ -8,13 +8,42 @@ from arcade import SimpleCamera, get_window
 if TYPE_CHECKING:
     from arcade import View
 
+__all__ = [
+    "Section",
+    "SectionManager"
+]
+
 
 class Section:
     """
     A Section represents a rectangular portion of the viewport
     Events are dispatched to the section based on it's position on the screen.
-    """
 
+    :param int left: the left position of this section
+    :param int bottom: the bottom position of this section
+    :param int width: the width of this section
+    :param int height: the height of this section
+    :param Optional[str] name: the name of this section
+    :param Union[bool, Iterable] accept_keyboard_keys: whether or not this section captures keyboard keys through.
+        keyboard events. If the param is an iterable means the keyboard keys that are captured in press/release
+        events: for example: [arcade.key.UP, arcade.key.DOWN] will only capture this two keys
+    :param Union[bool, Iterable] accept_mouse_events: whether or not this section captures mouse events.
+        If the param is an iterable means the mouse events that are captured.
+        for example: ['on_mouse_press', 'on_mouse_release'] will only capture this two events.
+    :param Optional[Iterable] prevent_dispatch: a list of event names that will not be dispatched to subsequent
+        sections. You can pass None (default) or {True} to prevent the dispatch of all events.
+    :param Optional[Iterable] prevent_dispatch_view: a list of event names that will not be dispatched to the view.
+        You can pass None (default) or {True} to prevent the dispatch of all events to the view.
+    :param bool local_mouse_coordinates: if True the section mouse events will receive x, y coordinates section
+        related to the section dimensions and position (not related to the screen)
+    :param bool enabled: if False the section will not capture any events
+    :param bool modal: if True the section will be a modal section: will prevent updates and event captures on
+        other sections. Will also draw last (on top) but capture events first.
+    :param int draw_order: The order this section will have when on_draw is called.
+        The lower the number the earlier this will get draw.
+        This can be different from the event capture order or the on_update order which is defined by the insertion
+        order.
+    """
     def __init__(self, left: int, bottom: int, width: int, height: int,
                  *, name: Optional[str] = None,
                  accept_keyboard_keys: Union[bool, Iterable] = True,
@@ -24,32 +53,6 @@ class Section:
                  local_mouse_coordinates: bool = False,
                  enabled: bool = True, modal: bool = False,
                  draw_order: int = 1):
-        """
-        :param int left: the left position of this section
-        :param int bottom: the bottom position of this section
-        :param int width: the width of this section
-        :param int height: the height of this section
-        :param Optional[str] name: the name of this section
-        :param Union[bool, Iterable] accept_keyboard_keys: whether or not this section captures keyboard keys through.
-            keyboard events. If the param is an iterable means the keyboard keys that are captured in press/release
-            events: for example: [arcade.key.UP, arcade.key.DOWN] will only capture this two keys
-        :param Union[bool, Iterable] accept_mouse_events: whether or not this section captures mouse events.
-            If the param is an iterable means the mouse events that are captured.
-            for example: ['on_mouse_press', 'on_mouse_release'] will only capture this two events.
-        :param Optional[Iterable] prevent_dispatch: a list of event names that will not be dispatched to subsequent
-            sections. You can pass None (default) or {True} to prevent the dispatch of all events.
-        :param Optional[Iterable] prevent_dispatch_view: a list of event names that will not be dispatched to the view.
-            You can pass None (default) or {True} to prevent the dispatch of all events to the view.
-        :param bool local_mouse_coordinates: if True the section mouse events will receive x, y coordinates section
-            related to the section dimensions and position (not related to the screen)
-        :param bool enabled: if False the section will not capture any events
-        :param bool modal: if True the section will be a modal section: will prevent updates and event captures on
-            other sections. Will also draw last (on top) but capture events first.
-        :param int draw_order: The order this section will have when on_draw is called.
-            The lower the number the earlier this will get draw.
-            This can be different from the event capture order or the on_update order which is defined by the insertion
-            order.
-        """
         # name of the section
         self.name: Optional[str] = name
 

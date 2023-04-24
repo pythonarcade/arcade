@@ -23,22 +23,28 @@ from arcade import (
     Sprite,
     SpriteList,
     get_window,
-    load_texture,
 )
-from arcade.hitbox import HitBoxAlgorithm
+from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
+from arcade.texture.loading import _load_tilemap_texture
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
 
 from pyglet.math import Vec2
 
-from arcade.geometry_generic import rotate_point
-from arcade.resources import resolve_resource_path
+from arcade.math import rotate_point
+from arcade.resources import resolve
 from arcade.types import Point, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
+
+__all__ = [
+    "TileMap",
+    "load_tilemap",
+    "read_tmx"
+]
 
 
 def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
@@ -180,10 +186,6 @@ class TileMap:
         texture_atlas: Optional["TextureAtlas"] = None,
         lazy: bool = False,
     ) -> None:
-        """
-        Given a .json file, this will read in a Tiled map file, and
-        initialize a new TileMap object.
-        """
         if not map_file and not tiled_map:
             raise AttributeError(
                 "Initialized TileMap with an empty map_file or no map_object argument"
@@ -193,7 +195,7 @@ class TileMap:
             self.tiled_map = tiled_map
         else:
             # If we should pull from local resources, replace with proper path
-            map_file = resolve_resource_path(map_file)
+            map_file = resolve(map_file)
 
             # This attribute stores the pytiled-parser map object
             self.tiled_map = pytiled_parser.parse_map(map_file)
@@ -254,7 +256,6 @@ class TileMap:
         global_options: Dict[str, Any],
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
-
         processed: Union[
             SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
         ]
@@ -367,9 +368,7 @@ class TileMap:
                 if existing_ref:
                     tile_ref = existing_ref
                 else:
-                    tile_ref = pytiled_parser.Tile(
-                        id=(tile_id), image=tileset.image
-                    )
+                    tile_ref = pytiled_parser.Tile(id=(tile_id), image=tileset.image)
             elif tileset.tiles is None and tileset.image is not None:
                 # Not in this tileset, move to the next
                 continue
@@ -443,13 +442,13 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = load_texture(
+            texture = _load_tilemap_texture(
                 image_file,  # type: ignore
                 x=image_x,
                 y=image_y,
                 width=width,
                 height=height,
-                hit_box_algorithm=hit_box_algorithm
+                hit_box_algorithm=hit_box_algorithm,
             )
             if tile.flipped_diagonally:
                 texture = texture.flip_diagonally()
@@ -567,19 +566,25 @@ class TileMap:
                     for point in points:
                         point[0], point[1] = point[1], point[0]
 
-                my_sprite.hit_box = points
+                my_sprite.hit_box = RotatableHitBox(
+                    points,
+                    position=my_sprite.position,
+                    angle=my_sprite.angle,
+                    scale=my_sprite.scale_xy,
+                )
 
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
-                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)
+                frame_tile = self._get_tile_by_gid(
+                    tile.tileset.firstgid + frame.tile_id
+                )
                 if frame_tile:
                     image_file = _get_image_source(frame_tile, map_directory)
 
                     if not frame_tile.tileset.image and image_file:
-                        texture = load_texture(
-                            image_file,
-                            hit_box_algorithm=hit_box_algorithm
+                        texture = _load_tilemap_texture(
+                            image_file, hit_box_algorithm=hit_box_algorithm
                         )
                     elif image_file:
                         # No image for tile, pull from tilesheet
@@ -590,13 +595,13 @@ class TileMap:
                             height,
                         ) = _get_image_info_from_tileset(frame_tile)
 
-                        texture = load_texture(
+                        texture = _load_tilemap_texture(
                             image_file,
                             x=image_x,
                             y=image_y,
                             width=width,
                             height=height,
-                            hit_box_algorithm=hit_box_algorithm
+                            hit_box_algorithm=hit_box_algorithm,
                         )
                     else:
                         raise RuntimeError(
@@ -627,7 +632,6 @@ class TileMap:
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
-
         sprite_list: SpriteList = SpriteList(
             use_spatial_hash=use_spatial_hash,
             atlas=texture_atlas,
@@ -646,7 +650,7 @@ class TileMap:
                 )
             image_file = try2
 
-        my_texture = load_texture(
+        my_texture = _load_tilemap_texture(
             image_file,
             hit_box_algorithm=hit_box_algorithm,
         )
@@ -719,7 +723,6 @@ class TileMap:
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
-
         sprite_list: SpriteList = SpriteList(
             use_spatial_hash=use_spatial_hash,
             atlas=texture_atlas,
@@ -795,7 +798,6 @@ class TileMap:
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
-
         if not scaling:
             scaling = self.scaling
 

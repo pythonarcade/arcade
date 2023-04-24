@@ -51,7 +51,6 @@ class PlayerCharacter(arcade.Sprite):
     """Player Sprite"""
 
     def __init__(self):
-
         # Set up parent class
         super().__init__()
 
@@ -94,12 +93,19 @@ class PlayerCharacter(arcade.Sprite):
         self.texture = self.idle_texture_pair[0]
 
         # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        # set_hit_box = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
-        self.hit_box = self.texture.hit_box_points
+        # a different hit box, you can do it like the code below. Doing this when
+        # changing the texture for example would make the hitbox update whenever the
+        # texture is changed. This can be expensive so if the textures are very similar
+        # it may not be worth doing.
+        #
+        # self.hit_box = arcade.hitbox.RotatableHitBox(
+        #     self.texture.hit_box_points,
+        #     position=self.position,
+        #     scale=self.scale_xy,
+        #     angle=self.angle,
+        # )
 
     def update_animation(self, delta_time: float = 1 / 60):
-
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
             self.character_face_direction = LEFT_FACING
@@ -245,7 +251,7 @@ class MyGame(arcade.Window):
             platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
             gravity_constant=GRAVITY,
             ladders=self.scene[LAYER_NAME_LADDERS],
-            walls=self.scene[LAYER_NAME_PLATFORMS]
+            walls=self.scene[LAYER_NAME_PLATFORMS],
         )
 
     def on_draw(self):
@@ -389,7 +395,6 @@ class MyGame(arcade.Window):
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
-
             # Figure out how many points this coin is worth
             if "Points" not in coin.properties:
                 print("Warning, collected a coin without a Points property.")

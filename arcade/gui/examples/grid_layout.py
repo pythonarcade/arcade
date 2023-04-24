@@ -4,12 +4,10 @@ from arcade.gui.widgets import UIDummy
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager()
-        self.manager.enable()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
         dummy1 = UIDummy(width=100, height=100)
         dummy2 = UIDummy(width=50, height=50)
@@ -38,13 +36,23 @@ class UIMockup(arcade.Window):
         anchor = UIAnchorLayout()
         anchor.add(subject)
 
-        self.manager.add(anchor)
+        self.ui.add(anchor)
+
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
 
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-if __name__ == "__main__":
-    window = UIMockup()
-    arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

@@ -9,8 +9,12 @@ helper function to create a Scene directly from a TileMap object.
 from typing import Dict, List, Optional
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color
+from arcade.types import Color, RGBA255
 from arcade.tilemap import TileMap
+
+from warnings import warn
+
+__all__ = ["Scene"]
 
 
 class Scene:
@@ -19,20 +23,11 @@ class Scene:
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/tutorials/views/index.html
 
-    Attributes:
-        :sprite_lists: A list of `SpriteList` objects. The order of this list is the
-                       order in which they will be drawn.
-        :name_mapping: A dictionary of `SpriteList` objects. This contains the same lists
-                       as the `sprite_lists` attribute, but is a mapping of them by name. This is
-                       not necessarily in the same order as the `sprite_lists` attribute.
     """
 
     def __init__(self) -> None:
-        """
-        Create a new Scene.
-        """
-        self.sprite_lists: List[SpriteList] = []
-        self.name_mapping: Dict[str, SpriteList] = {}
+        self._sprite_lists: List[SpriteList] = []
+        self._name_mapping: Dict[str, SpriteList] = {}
 
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
@@ -59,7 +54,7 @@ class Scene:
 
         :param str name: The name of the `SpriteList` to retrieve.
         """
-        return self.name_mapping[name]
+        return self._name_mapping[name]
 
     def __getitem__(self, key: str) -> SpriteList:
         """
@@ -70,8 +65,8 @@ class Scene:
 
         :param str key: The name of the 'SpriteList' to retreive.
         """
-        if key in self.name_mapping:
-            return self.name_mapping[key]
+        if key in self._name_mapping:
+            return self._name_mapping[key]
 
         raise KeyError(f"Scene does not contain a layer named: {key}")
 
@@ -89,8 +84,8 @@ class Scene:
         :param str name: The name of the `SpriteList` to add to or create.
         :param Sprite sprite: The `Sprite` to add.
         """
-        if name in self.name_mapping:
-            self.name_mapping[name].append(sprite)
+        if name in self._name_mapping:
+            self._name_mapping[name].append(sprite)
         else:
             new_list: SpriteList = SpriteList()
             new_list.append(sprite)
@@ -116,8 +111,11 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
-        self.name_mapping[name] = sprite_list
-        self.sprite_lists.append(sprite_list)
+        if name in self._name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
+        self._name_mapping[name] = sprite_list
+        self._sprite_lists.append(sprite_list)
 
     def add_sprite_list_before(
         self,
@@ -141,10 +139,13 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
-        self.name_mapping[name] = sprite_list
-        before_list = self.name_mapping[before]
-        index = self.sprite_lists.index(before_list)
-        self.sprite_lists.insert(index, sprite_list)
+        if name in self._name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
+        self._name_mapping[name] = sprite_list
+        before_list = self._name_mapping[before]
+        index = self._sprite_lists.index(before_list)
+        self._sprite_lists.insert(index, sprite_list)
 
     def move_sprite_list_before(
         self,
@@ -160,16 +161,16 @@ class Scene:
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
         """
-        if name not in self.name_mapping:
+        if name not in self._name_mapping:
             raise ValueError(
                 f"Tried to move unknown SpriteList with the name {name} in Scene"
             )
 
-        name_list = self.name_mapping[name]
-        before_list = self.name_mapping[before]
-        new_index = self.sprite_lists.index(before_list)
-        old_index = self.sprite_lists.index(name_list)
-        self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+        name_list = self._name_mapping[name]
+        before_list = self._name_mapping[before]
+        new_index = self._sprite_lists.index(before_list)
+        old_index = self._sprite_lists.index(name_list)
+        self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
     def add_sprite_list_after(
         self,
@@ -182,7 +183,6 @@ class Scene:
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
 
         This will add a new SpriteList to the scene after the specified SpriteList in the draw order.
-
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
 
@@ -193,10 +193,13 @@ class Scene:
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
-        self.name_mapping[name] = sprite_list
-        after_list = self.name_mapping[after]
-        index = self.sprite_lists.index(after_list) + 1
-        self.sprite_lists.insert(index, sprite_list)
+        if name in self._name_mapping.keys():
+            self.remove_sprite_list_by_name(name)
+            warn("A Spritelist with the name: "+name+", is already in the scene, will override Spritelist")
+        self._name_mapping[name] = sprite_list
+        after_list = self._name_mapping[after]
+        index = self._sprite_lists.index(after_list) + 1
+        self._sprite_lists.insert(index, sprite_list)
 
     def move_sprite_list_after(
         self,
@@ -212,16 +215,16 @@ class Scene:
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
         """
-        if name not in self.name_mapping:
+        if name not in self._name_mapping:
             raise ValueError(
                 f"Tried to move unknown SpriteList with the name {name} in Scene"
             )
 
-        name_list = self.name_mapping[name]
-        after_list = self.name_mapping[after]
-        new_index = self.sprite_lists.index(after_list) + 1
-        old_index = self.sprite_lists.index(name_list)
-        self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+        name_list = self._name_mapping[name]
+        after_list = self._name_mapping[after]
+        new_index = self._sprite_lists.index(after_list) + 1
+        old_index = self._sprite_lists.index(name_list)
+        self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
     def remove_sprite_list_by_name(
         self,
@@ -234,14 +237,14 @@ class Scene:
 
         :param str name: The name of the SpriteList to remove.
         """
-        sprite_list = self.name_mapping[name]
-        self.sprite_lists.remove(sprite_list)
-        del self.name_mapping[name]
+        sprite_list = self._name_mapping[name]
+        self._sprite_lists.remove(sprite_list)
+        del self._name_mapping[name]
 
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
-        self.sprite_lists.remove(sprite_list)
-        self.name_mapping = {
-            key: val for key, val in self.name_mapping.items() if val != sprite_list
+        self._sprite_lists.remove(sprite_list)
+        self._name_mapping = {
+            key: val for key, val in self._name_mapping.items() if val != sprite_list
         }
 
     def update(self, names: Optional[List[str]] = None) -> None:
@@ -256,17 +259,17 @@ class Scene:
         """
         if names:
             for name in names:
-                self.name_mapping[name].update()
+                self._name_mapping[name].update()
             return
 
-        for sprite_list in self.sprite_lists:
+        for sprite_list in self._sprite_lists:
             sprite_list.update()
 
     def on_update(self, delta_time: float = 1 / 60, names: Optional[List[str]] = None) -> None:
         """
         Used to call on_update of SpriteLists contained in the scene.
-        Similar to update() but allows passing a delta_time variable.
 
+        Similar to update() but allows passing a delta_time variable.
         If `names` parameter is provided then only the specified spritelists
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will have on_update called.
@@ -276,10 +279,10 @@ class Scene:
         """
         if names:
             for name in names:
-                self.name_mapping[name].on_update(delta_time)
+                self._name_mapping[name].on_update(delta_time)
             return
 
-        for sprite_list in self.sprite_lists:
+        for sprite_list in self._sprite_lists:
             sprite_list.on_update(delta_time)
 
     def update_animation(
@@ -297,10 +300,10 @@ class Scene:
         """
         if names:
             for name in names:
-                self.name_mapping[name].update_animation(delta_time)
+                self._name_mapping[name].update_animation(delta_time)
             return
 
-        for sprite_list in self.sprite_lists:
+        for sprite_list in self._sprite_lists:
             sprite_list.update_animation(delta_time)
 
     def draw(self, names: Optional[List[str]] = None, **kwargs) -> None:
@@ -310,7 +313,7 @@ class Scene:
         If `names` parameter is provided then only the specified SpriteLists
         will be drawn. They will be drawn in the order that the names in the
         list were arranged. If `names` is not provided, then every SpriteList
-        in the scene will be drawn according the order of the main sprite_lists
+        in the scene will be drawn according the order of the main _sprite_lists
         attribute of the Scene.
 
         :param Optional[List[str]] names: A list of names of SpriteLists to draw.
@@ -323,15 +326,15 @@ class Scene:
 
         if names:
             for name in names:
-                self.name_mapping[name].draw(**kwargs)
+                self._name_mapping[name].draw(**kwargs)
             return
 
-        for sprite_list in self.sprite_lists:
+        for sprite_list in self._sprite_lists:
             sprite_list.draw(**kwargs)
 
     def draw_hit_boxes(
         self,
-        color: Color = (0, 0, 0, 255),
+        color: RGBA255 = Color(0, 0, 0, 255),
         line_thickness: float = 1,
         names: Optional[List[str]] = None,
     ) -> None:
@@ -341,14 +344,15 @@ class Scene:
         If `names` parameter is provided then only the specified SpriteLists
         will be drawn. They will be drawn in the order that the names in the
         list were arranged. If `names` is not provided, then every SpriteList
-        in the scene will be drawn according to the order of the main sprite_lists
+        in the scene will be drawn according to the order of the main _sprite_lists
         attribute of the Scene.
         """
 
         if names:
             for name in names:
-                self.name_mapping[name].draw_hit_boxes(color, line_thickness)
+                self._name_mapping[name].draw_hit_boxes(color, line_thickness)
             return
 
-        for sprite_list in self.sprite_lists:
+        for sprite_list in self._sprite_lists:
             sprite_list.draw_hit_boxes(color, line_thickness)
+

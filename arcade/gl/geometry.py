@@ -1,6 +1,7 @@
 """
 A module providing commonly used geometry
 """
+import math
 from array import array
 from typing import Tuple
 
@@ -26,7 +27,7 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
 
     :param tuple size: width and height
     :param float pos: Center position x and y
-    :rtype: A :py:class:`~arcade.gl.geometry.Geometry` instance.       
+    :rtype: A :py:class:`~arcade.gl.geometry.Geometry` instance.
     """
     ctx = _get_active_context()
     width, height = size
@@ -53,7 +54,7 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     :param float bottom_left_x: Bottom left x position
     :param float bottom_left_y: Bottom left y position
     :param float width: Width of the rectangle
-    :param float height: Height of the rectangle   
+    :param float height: Height of the rectangle
     """
     ctx = _get_active_context()
     data = array('f', [
@@ -206,3 +207,79 @@ def cube(
         BufferDescription(ctx.buffer(data=normal), '3f', ['in_normal']),
         BufferDescription(ctx.buffer(data=uv), '2f', ['in_uv']),
     ])
+
+
+def sphere(
+    radius=0.5,
+    sectors=32,
+    rings=16,
+    normals=True,
+    uvs=True,
+) -> Geometry:
+    """
+    Creates a 3D sphere.
+
+    :param float radius: Radius or the sphere
+    :param int rings: number or horizontal rings
+    :param int sectors: number of vertical segments
+    :param bool normals: Include normals in the VAO
+    :param bool uvs: Include texture coordinates in the VAO
+    :return: A geometry object
+    """
+    ctx = _get_active_context()
+
+    R = 1.0 / (rings - 1)
+    S = 1.0 / (sectors - 1)
+
+    vertices = [0] * (rings * sectors * 3)
+    normals = [0] * (rings * sectors * 3)
+    uvs = [0] * (rings * sectors * 2)
+
+    v, n, t = 0, 0, 0
+    for r in range(rings):
+        for s in range(sectors):
+            y = math.sin(-math.pi / 2 + math.pi * r * R)
+            x = math.cos(2 * math.pi * s * S) * math.sin(math.pi * r * R)
+            z = math.sin(2 * math.pi * s * S) * math.sin(math.pi * r * R)
+
+            uvs[t] = s * S
+            uvs[t + 1] = r * R
+
+            vertices[v] = x * radius
+            vertices[v + 1] = y * radius
+            vertices[v + 2] = z * radius
+
+            normals[n] = x
+            normals[n + 1] = y
+            normals[n + 2] = z
+
+            t += 2
+            v += 3
+            n += 3
+
+    indices = [0] * rings * sectors * 6
+    i = 0
+    for r in range(rings - 1):
+        for s in range(sectors - 1):
+            indices[i] = r * sectors + s
+            indices[i + 1] = (r + 1) * sectors + (s + 1)
+            indices[i + 2] = r * sectors + (s + 1)
+
+            indices[i + 3] = r * sectors + s
+            indices[i + 4] = (r + 1) * sectors + s
+            indices[i + 5] = (r + 1) * sectors + (s + 1)
+            i += 6
+
+    content = [
+        BufferDescription(ctx.buffer(data=array('f', vertices)), "3f", ["in_position"]),
+    ]
+    if normals:
+        content.append(BufferDescription(ctx.buffer(data=array('f', normals)), "3f", ["in_normal"]))
+    if uvs:
+        content.append(BufferDescription(ctx.buffer(data=array('f', uvs)), "2f", ["in_uv"]))
+
+    return ctx.geometry(
+        content,
+        index_buffer=ctx.buffer(data=array('I', indices)),
+        mode=ctx.TRIANGLES,
+    )

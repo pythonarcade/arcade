@@ -35,14 +35,11 @@ jobs:
         with:
           python-version: 3.x
       - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install setuptools wheel twine
-          python3 -m pip install pyogg pymunk
-          python3 -m pip install -e .
+        run: >-
+          python3 -m pip install build twine
       - name: Build and Upload to Test PyPI
         run: |
-          python3 setup.py sdist bdist_wheel
+          python3 -m build --sdist --wheel --outdir dist/
           python3 -m twine upload dist/*
         env:
           TWINE_USERNAME: __token__

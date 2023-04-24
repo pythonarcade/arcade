@@ -2,11 +2,10 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_scrollable_text
 """
-from arcade.gui.nine_patch import NinePatchTexture
-
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIInputText, UITextArea
+from arcade.gui.nine_patch import NinePatchTexture
 
 LOREM_IPSUM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. "
@@ -26,12 +25,10 @@ LOREM_IPSUM = (
 )
 
 
-class MyWindow(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "Scrollable Text", resizable=True)
-        self.manager = UIManager()
-        self.manager.enable()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
         bg_tex = NinePatchTexture(
             left=5,
@@ -48,22 +45,33 @@ class MyWindow(arcade.Window):
             text_color=(0, 0, 0, 255),
         )
 
-        self.manager.add(text_area.with_padding(all=15).with_background(texture=bg_tex))
+        self.ui.add(text_area.with_padding(all=15).with_background(texture=bg_tex))
 
-        self.manager.add(
+        self.ui.add(
             UIInputText(x=340, y=200, width=200, height=50, text="Hello")
             .with_background(texture=bg_tex)
             .with_padding(all=10)
         )
 
-        self.manager.add(
+        self.ui.add(
             UIInputText(x=340, y=110, width=200, height=50, text="").with_border(),
         )
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-window = MyWindow()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

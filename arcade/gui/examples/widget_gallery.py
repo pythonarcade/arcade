@@ -20,14 +20,12 @@ from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
 
 
-class UIMockup(arcade.Window):
+class MyView(arcade.View):
     def __init__(self):
-        super().__init__(800, 600, "UI Gallery", resizable=True)
-        self.manager = UIManager()
-        self.manager.enable()
-        self.background_color = arcade.color.DARK_BLUE_GRAY
+        super().__init__()
+        self.ui = UIManager()
 
-        anchor = self.manager.add(UIAnchorLayout())
+        anchor = self.ui.add(UIAnchorLayout())
         grid = anchor.add(
             UIGridLayout(
                 size_hint=(0.9, 0.9),
@@ -149,9 +147,9 @@ class UIMockup(arcade.Window):
 
         example_text = dedent(
             """
-        Gamers can feel when developers are passionate about their games. 
-        They can smell it like a dog smells fear. 
-        Don't be afraid to hold onto your unique vision: 
+        Gamers can feel when developers are passionate about their games.
+        They can smell it like a dog smells fear.
+        Don't be afraid to hold onto your unique vision:
         just be aware that it may not turn out exactly how you envisioned.
         """
         )
@@ -163,10 +161,21 @@ class UIMockup(arcade.Window):
             child=UITextArea(text=example_text, height=150).with_border(),
         )
 
+    def on_show_view(self):
+        self.window.background_color = arcade.color.DARK_BLUE_GRAY
+        # Enable UIManager when view is shown to catch window events
+        self.ui.enable()
+
+    def on_hide_view(self):
+        # Disable UIManager when view gets inactive
+        self.ui.disable()
+
     def on_draw(self):
         self.clear()
-        self.manager.draw()
+        self.ui.draw()
 
 
-window = UIMockup()
-arcade.run()
+if __name__ == '__main__':
+    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window.show_view(MyView())
+    window.run()

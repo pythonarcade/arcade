@@ -20,9 +20,13 @@ arcade_path = Path(arcade.__file__).parent
 
 datas = [
     (
-        arcade_path / "resources",
-        "./arcade/resources",
+        arcade_path / "resources" / "system",
+        "./arcade/resources/system",
     ),
+    (
+        arcade_path / "VERSION",
+        "./arcade/VERSION",
+    )
 ]
 
 if is_win:

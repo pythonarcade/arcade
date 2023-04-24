@@ -95,7 +95,7 @@ class GameView(FadingView):
 
     def on_key_press(self, key, _modifiers):
         """ Handle key presses. In this case, we'll just count a 'space' as
-        game over and advance to the game over view. """
+        game over and advance to the game overview. """
         if key == arcade.key.SPACE:
             self.fade_out = 0
 
@@ -110,7 +110,7 @@ class GameOverView(FadingView):
         self.background_color = arcade.color.BLACK
 
     def on_draw(self):
-        """ Draw the game over view """
+        """ Draw the game overview """
         self.clear()
         arcade.draw_text("Game Over - press SPACE to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.WHITE, 30, anchor_x="center")

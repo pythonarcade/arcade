@@ -403,6 +403,8 @@ Backgrounds
 
    :ref:`background_parallax`
 
+.. _examples_cameras:
+
 Cameras
 ^^^^^^^
 
@@ -433,7 +435,7 @@ Cameras
 View Management
 ---------------
 
-.. _view-examples:
+.. _view_examples:
 
 Instruction and Game Over Screens
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -726,6 +728,12 @@ OpenGL
    :target: normal_mapping.html
 
    :ref:`normal_mapping`
+
+.. figure:: thumbs/spritelist_interaction_visualize_dist_los.png
+   :figwidth: 170px
+   :target: spritelist_interaction_visualize_dist_los.html
+
+   :ref:`spritelist_interaction_visualize_dist_los`
 
 .. _concept_games:
 

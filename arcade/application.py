@@ -18,7 +18,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color
+from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 
@@ -29,6 +29,17 @@ MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
 _window: 'Window'
+
+__all__ = [
+    "get_screens",
+    "NoOpenGLException",
+    "Window",
+    "open_window",
+    "View",
+    "MOUSE_BUTTON_LEFT",
+    "MOUSE_BUTTON_MIDDLE",
+    "MOUSE_BUTTON_RIGHT"
+]
 
 
 def get_screens():
@@ -122,6 +133,12 @@ class Window(pyglet.window.Window):
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
+                    depth_size=24,
+                    stencil_size=8,
+                    red_size=8,
+                    green_size=8,
+                    blue_size=8,
+                    alpha_size=8,
                 )
                 display = pyglet.canvas.get_display()
                 screen = display.get_default_screen()
@@ -131,17 +148,31 @@ class Window(pyglet.window.Window):
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
-        # If we still don't have a config 
+        # If we still don't have a config
         if not config:
             config = pyglet.gl.Config(
                 major_version=gl_version[0],
                 minor_version=gl_version[1],
                 opengl_api=gl_api,
                 double_buffer=True,
+                depth_size=24,
+                stencil_size=8,
+                red_size=8,
+                green_size=8,
+                blue_size=8,
+                alpha_size=8,
             )
         try:
-            super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
+            super().__init__(
+                width=width,
+                height=height,
+                caption=title,
+                resizable=resizable,
+                config=config,
+                vsync=vsync,
+                visible=visible,
+                style=style,
+            )
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
@@ -220,14 +251,20 @@ class Window(pyglet.window.Window):
 
     def clear(
             self,
-            color: Optional[Color] = None,
+            color: Optional[RGBA255OrNormalized] = None,
             normalized: bool = False,
             viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
-        :param Color color: Optional color overriding the current background color
+        :param color: (Optional) override the current background color
+            with one of the following:
+
+            1. A :py:class:`~arcade.types.Color` instance
+            2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
+            3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
+
         :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
@@ -243,22 +280,28 @@ class Window(pyglet.window.Window):
 
         Examples::
 
-            # Use Arcade's built in color values
+            # Use Arcade's built in Color values
             window.background_color = arcade.color.AMAZON
 
-            # Specify RGB value directly (red)
-            window.background_color = 255, 0, 0
+            # Set the background color with a custom Color instance
+            MY_RED = arcade.types.Color(255, 0, 0)
+            window.background_color = MY_RED
 
-        If the background color is an ``RGB`` value instead of ``RGBA``
-        we assume alpha value 255.
+            # Set the backgrund color directly from an RGBA tuple
+            window.background_color = 255, 0, 0, 255
+
+            # (Discouraged)
+            # Set the background color directly from an RGB tuple
+            # RGB tuples will assume 255 as the opacity / alpha value
+            window.background_color = 255, 0, 0
 
         :type: Color
         """
         return self._background_color
 
     @background_color.setter
-    def background_color(self, value: Color):
-        self._background_color = value
+    def background_color(self, value: RGBA255):
+        self._background_color = Color.from_iterable(value)
 
     def run(self) -> None:
         """
@@ -678,7 +721,7 @@ class Window(pyglet.window.Window):
         """
         if not isinstance(new_view, View):
             raise ValueError("Must pass an arcade.View object to "
-                             "Window.show_view()")
+                             f"Window.show_view() {type(new_view)}")
 
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
@@ -937,14 +980,20 @@ class View:
 
     def clear(
         self,
-        color: Optional[Color] = None,
+        color: Optional[RGBA255OrNormalized] = None,
         normalized: bool = False,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
-        :param Color color: Optional color overriding the current background color
+        :param color: (Optional) override the current background color
+            with one of the following:
+
+            1. A :py:class:`~arcade.types.Color` instance
+            2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
+            3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
+
         :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """

@@ -18,7 +18,7 @@ class MyGame(arcade.Window):
         self.time = 0
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
-        self.torch_list = arcade.SpriteList(is_static=True)
+        self.torch_list = arcade.SpriteList()
         self.torch_list.extend([
             arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=100, center_y=150),
             arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=300, center_y=150),

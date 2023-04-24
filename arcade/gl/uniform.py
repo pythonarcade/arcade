@@ -8,9 +8,12 @@ class Uniform:
     """
     A Program uniform
 
-    :param int location: The location of the uniform in the program
-    :param str name: Name of the uniform in the program
-    :param gl.GLenum data_type: The data type of the uniform (GL_FLOAT
+    :param ctx: The context
+    :param program_id: The program id to which this uniform belongs
+    :param location: The uniform location
+    :param name: The uniform name
+    :param data_type: The data type of the uniform
+    :param array_length: The array length of the uniform
     """
 
     _uniform_getters = {
@@ -109,6 +112,10 @@ class Uniform:
         self._array_length = array_length
         # Number of components (including per array entry)
         self._components = 0
+        #: The getter function configured for this uniform
+        #: The setter function configured for this uniform
+        self.getter = None
+        self.setter = None
         self._setup_getters_and_setters()
 
     @property
@@ -230,7 +237,7 @@ class Uniform:
 
         return setter_func
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Uniform '{self._name}' loc={self._location} array_length={self._array_length}>"
 
 
@@ -241,9 +248,13 @@ class UniformBlock:
     __slots__ = ("glo", "index", "size", "name")
 
     def __init__(self, glo: int, index: int, size: int, name: str):
+        #: The OpenGL object handle
         self.glo = glo
+        #: The index of the uniform block
         self.index = index
+        #: The size of the uniform block
         self.size = size
+        #: The name of the uniform block
         self.name = name
 
     @property
@@ -260,9 +271,18 @@ class UniformBlock:
         gl.glUniformBlockBinding(self.glo, self.index, binding)
 
     def getter(self):
+        """
+        The getter function for this uniform block.
+        Returns self.
+        """
         return self
 
     def setter(self, value: int):
+        """
+        The setter function for this uniform block.
+
+        :param value: The binding index to set.
+        """
         self.binding = value
 
     def __str__(self):

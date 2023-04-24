@@ -1,15 +1,17 @@
 import PIL.Image
 
-import arcade
 from arcade.texture import Texture
-from arcade.resources import resolve_resource_path
-from .base import Sprite, PyMunk
+from arcade.resources import resolve
+from .base import BasicSprite, SpriteType
+# from .simple import SimpleSprite
+from .sprite import Sprite
+from .mixins import PymunkMixin, PyMunk
 from .animated import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
     AnimatedWalkingSprite,
 )
-from .simple import SpriteSolidColor, SpriteCircle
+from .colored import SpriteSolidColor, SpriteCircle
 from .enums import (
     FACE_LEFT,
     FACE_RIGHT,
@@ -29,7 +31,7 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     as PNGs, either as sprite sheets or a frame per file.
     """
 
-    file_name = resolve_resource_path(resource_name)
+    file_name = resolve(resource_name)
     image_object = PIL.Image.open(file_name)
     if not image_object.is_animated:
         raise TypeError(f"The file {resource_name} is not an animated gif.")
@@ -40,7 +42,7 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
         frame_duration = image_object.info['duration']
         image = image_object.convert("RGBA")
         texture = Texture(image)
-        texture.origin = f"{resource_name}|{frame}"
+        texture.file_path = file_name
         sprite.textures.append(texture)
         sprite.frames.append(AnimationKeyframe(0, frame_duration, texture))
 
@@ -48,30 +50,22 @@ def load_animated_gif(resource_name) -> AnimatedTimeBasedSprite:
     return sprite
 
 
-def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
-    """
-    Returns the distance between the center of two given sprites
-
-    :param Sprite sprite1: Sprite one
-    :param Sprite sprite2: Sprite two
-    :return: Distance
-    :rtype: float
-    """
-    return arcade.get_distance(*sprite1._position, *sprite2._position)
-
-
 __all__ = [
+    "SpriteType",
+    "BasicSprite",
+    # "SimpleSprite",
     "Sprite",
     "PyMunk",
     "AnimatedTimeBasedSprite",
     "AnimationKeyframe",
     "AnimatedWalkingSprite",
     "load_animated_gif",
-    "get_distance_between_sprites",
     "SpriteSolidColor",
     "SpriteCircle",
     "FACE_LEFT",
     "FACE_RIGHT",
     "FACE_UP",
     "FACE_DOWN",
+    "PymunkMixin",
+    "Pymunk",
 ]

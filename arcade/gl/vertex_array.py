@@ -46,6 +46,7 @@ class VertexArray:
         self._ctx = ctx
         self._program = program
         self._content = content
+        #: The OpenGL resource ID
         self.glo = glo = gl.GLuint()
         self._num_vertices = -1
         self._ibo = index_buffer
@@ -286,7 +287,7 @@ class VertexArray:
                 "Attempt to issue rendering commands outside the buffer. "
                 f"first = {first}, count = {count} is reaching past "
                 f"the buffer end. The buffer have room for {max_commands} "
-                f"draw commands. byte size {buffer.size}, stride {stride}." 
+                f"draw commands. byte size {buffer.size}, stride {stride}."
             )
 
         gl.glBindVertexArray(self.glo)
@@ -361,6 +362,17 @@ class VertexArray:
         instances: int = 1,
         buffer_offset=0,
     ):
+        """
+        Run a transform feedback writing to separate buffers.
+
+        :param List[Buffer] buffers: The buffers to write the output
+        :param gl.GLenum mode: The input primitive mode
+        :param gl.GLenum output_mode: The output primitive mode
+        :param int first: Offset start vertex
+        :param int vertices: Number of vertices to render
+        :param int instances: Number of instances to render
+        :param int buffer_offset: Byte offset for the buffer (target)
+        """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
 

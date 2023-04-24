@@ -1,9 +1,17 @@
-import arcade
+import os
+from pathlib import Path
+
+if os.environ.get("ARCADE_PYTEST_USE_RUST"):
+    import arcade_accelerate
+    arcade_accelerate.bootstrap()
+
 import pytest
 
-# Reduce the atlas size
-arcade.ArcadeContext.atlas_size = 2048, 2048
+import arcade
 
+PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
+FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
+arcade.resources.add_resource_handle("fixtures", FIXTURE_ROOT)
 WINDOW = None
 
 
@@ -22,9 +30,10 @@ def prepare_window(window: arcade.Window):
 
     window.switch_to()
     ctx = window.ctx
-    ctx._default_atlas = None  # Clear the global atlas
+    ctx._atlas = None  # Clear the global atlas
     arcade.cleanup_texture_cache()  # Clear the global texture cache
     window.hide_view()  # Disable views if any is active
+    window.dispatch_pending_events()
 
     # Reset context (various states)
     ctx.reset()
@@ -32,6 +41,7 @@ def prepare_window(window: arcade.Window):
     window.flip()
     window.clear()
     ctx.gc_mode = "context_gc"
+    ctx.gc()
 
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
@@ -48,11 +58,8 @@ def ctx():
     """
     window = create_window()
     arcade.set_window(window)
-    try:
-        prepare_window(window)
-        yield window.ctx
-    finally:
-        window.flip()
+    prepare_window(window)
+    return window.ctx
 
 
 @pytest.fixture(scope="session")
@@ -65,7 +72,7 @@ def ctx_static():
     window = create_window()
     arcade.set_window(window)
     prepare_window(window)
-    yield window.ctx
+    return window.ctx
 
 
 @pytest.fixture(scope="function")
@@ -79,8 +86,5 @@ def window():
     """
     window = create_window()
     arcade.set_window(window)
-    try:
-        prepare_window(window)
-        yield window
-    finally:
-        window.flip()
+    prepare_window(window)
+    return window

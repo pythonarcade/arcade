@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from typing import Optional, Union
 
-from arcade.resources import resolve_resource_path
+from arcade.resources import resolve
 import pyglet
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
@@ -19,13 +19,20 @@ else:
 
 import pyglet.media as media
 
+__all__ = [
+    "Sound",
+    "load_sound",
+    "play_sound",
+    "stop_sound"
+]
+
 
 class Sound:
     """This class represents a sound you can play."""
 
     def __init__(self, file_name: Union[str, Path], streaming: bool = False):
         self.file_name: str = ""
-        file_name = resolve_resource_path(file_name)
+        file_name = resolve(file_name)
 
         if not Path(file_name).is_file():
             raise FileNotFoundError(
@@ -161,6 +168,11 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     :returns: Sound object which can be used by the  :func:`play_sound` function.
     :rtype: Sound
     """
+    # Initialize the audio driver if it hasn't been already.
+    # This call is to avoid audio driver initialization
+    # the first time a sound is played.
+    # This call is inexpensive if the driver is already initialized.
+    media.get_audio_driver()
 
     file_name = str(path)
     try:

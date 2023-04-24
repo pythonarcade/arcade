@@ -3,16 +3,45 @@ from typing import Optional, List
 
 import arcade
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UILayout, UIWidget
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
 
 
 class UIDropdown(UILayout):
+    """
+    A dropdown layout. When clicked displays a list of options provided.
+
+    Triggers an event when an option is clicked, the event can be read by
+
+    .. code:: py
+
+        dropdown = Dropdown()
+
+        @dropdown.event()
+        def on_change(event: UIOnChangeEvent):
+            print(event.old_value, event.new_value)
+
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
+    :param float width: Width of each of the option.
+    :param float height: Height of each of the option.
+    :param str default: The default value shown.
+    :param list[str] options: The options displayed when the layout is clicked.
+    :param style: Used to style the dropdown.
+    """
     DIVIDER = None
 
     def __init__(
-        self, default: Optional[str] = None, options: Optional[List[str]] = None, style=None, **kwargs
+        self,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        default: Optional[str] = None,
+        options: Optional[List[str]] = None,
+        style=None, **kwargs
     ):
         if style is None:
             style = {}
@@ -23,7 +52,13 @@ class UIDropdown(UILayout):
         self._options = options
         self._value = default
 
-        super().__init__(style=style, **kwargs)
+        super().__init__(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            style=style,
+            **kwargs)
 
         # Setup button showing value
         self._default_button = UIFlatButton(
@@ -33,12 +68,11 @@ class UIDropdown(UILayout):
         self._default_button.on_click = self._on_button_click  # type: ignore
 
         self._layout = UIBoxLayout()
-        self._layout.visible = False
+        self._overlay_visible = False
         self._update_options()
 
         # add children after super class setup
         self.add(self._default_button)
-        self.add(self._layout)
 
         self.register_event_type("on_change")
 
@@ -46,10 +80,12 @@ class UIDropdown(UILayout):
 
     @property
     def value(self):
+        """Current selected option."""
         return self._value
 
     @value.setter
     def value(self, value):
+        """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value
         self._default_button.text = self._value
@@ -87,13 +123,37 @@ class UIDropdown(UILayout):
             )
             button.on_click = self._on_option_click
 
+    def _find_ui_manager(self):
+        # search tree for uimanager
+
+        parent = self.parent
+        while isinstance(parent, UIWidget):
+            parent = parent.parent
+
+        return parent if isinstance(parent, UIManager) else None
+
+    def _show_overlay(self):
+        manager = self._find_ui_manager()
+        if manager is None:
+            raise Exception("UIDropdown could not find UIManager in its parents.")
+
+        manager.add(self._layout, layer=10)
+        self._overlay_visible = True
+
+    def _hide_overlay(self):
+        self._layout.parent.remove(self._layout)
+        self._overlay_visible = False
+
     def _on_button_click(self, event: UIOnClickEvent):
-        self._layout.visible = not self._layout.visible
+        if self._overlay_visible:
+            self._hide_overlay()
+        else:
+            self._show_overlay()
 
     def _on_option_click(self, event: UIOnClickEvent):
         source: UIFlatButton = event.source
         self.value = source.text
-        self._layout.visible = False
+        self._hide_overlay()
 
     def do_layout(self):
         self._default_button.rect = self.rect
@@ -105,4 +165,5 @@ class UIDropdown(UILayout):
             .align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
+        """To be implemented by the user, triggered when the current selected value is changed to a different option."""
         pass

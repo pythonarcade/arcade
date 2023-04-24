@@ -47,8 +47,8 @@ SPARK_PAIRS = [
     [SPARK_TEXTURES[7], SPARK_TEXTURES[2]],
 ]
 ROCKET_SMOKE_TEXTURE = arcade.make_soft_circle_texture(15, arcade.color.GRAY)
-PUFF_TEXTURE = arcade.make_soft_circle_texture(80, (40, 40, 40))
-FLASH_TEXTURE = arcade.make_soft_circle_texture(70, (128, 128, 90))
+PUFF_TEXTURE = arcade.make_soft_circle_texture(80, (40, 40, 40, 255))
+FLASH_TEXTURE = arcade.make_soft_circle_texture(70, (128, 128, 90, 255))
 CLOUD_TEXTURES = [
     arcade.make_soft_circle_texture(50, arcade.color.WHITE),
     arcade.make_soft_circle_texture(50, arcade.color.LIGHT_GRAY),
@@ -340,9 +340,9 @@ class FireworksApp(arcade.Window):
         self.clear()
         for e in self.emitters:
             e.draw()
-        arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)
+        arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, 25, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrtb_rectangle_filled(mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
+        arcade.draw_lrbt_rectangle_filled(mid - 2, mid + 2, 10, SPINNER_HEIGHT, arcade.color.DARK_BROWN)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

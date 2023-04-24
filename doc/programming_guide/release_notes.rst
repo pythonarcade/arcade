@@ -110,6 +110,7 @@ Changes
 
     * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
+    * :py:class:`~arcade.gui.widgets.constructs.UIButtonRow` (`PR1580 <https://github.com/pythonarcade/arcade/pull/1580>`_ and `PR1253 <https://github.com/pythonarcade/arcade/pull/1253>`_)
 
   * Arcade :py:class:`~arcade.gui.property.Property`:
 

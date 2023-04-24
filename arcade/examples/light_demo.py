@@ -17,7 +17,7 @@ MOVEMENT_SPEED = 5
 
 # This is the color used for 'ambient light'. If you don't want any
 # ambient light, set it to black.
-AMBIENT_COLOR = (10, 10, 10)
+AMBIENT_COLOR = (10, 10, 10, 255)
 
 
 class MyGame(arcade.Window):

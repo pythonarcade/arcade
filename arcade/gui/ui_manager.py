@@ -9,9 +9,8 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional
+from typing import List, Dict, TypeVar, Iterable, Optional, Type
 
-from pyglet.math import Mat4
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
@@ -29,12 +28,13 @@ from arcade.gui.events import (
     UIOnUpdateEvent,
 )
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
+from arcade.gui.widgets import UIWidget, Rect
+from arcade.camera import SimpleCamera
 
 W = TypeVar("W", bound=UIWidget)
 
 
-class UIManager(EventDispatcher, UIWidgetParent):
+class UIManager(EventDispatcher):
     """
     UIManager is the central component within Arcade's GUI system.
     Handles window events, layout process and rendering.
@@ -51,21 +51,36 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     .. code:: py
 
-        manager = UIManager()
-        manager.enable() # hook up window events
+        class MyView(arcade.View):
+            def __init__():
+                super().__init__()
+                manager = UIManager()
 
-        manager.add(Dummy())
+                manager.add(Dummy())
 
-        def on_draw():
-            self.clear()
+            def on_show_view(self):
+                # Set background color
+                self.window.background_color = arcade.color.DARK_BLUE_GRAY
 
-            ...
+                # Enable UIManager when view is shown to catch window events
+                self.ui.enable()
 
-            manager.draw() # draws the UI on screen
+            def on_hide_view(self):
+                # Disable UIManager when view gets inactive
+                self.ui.disable()
+
+            def on_draw():
+                self.clear()
+
+                ...
+
+                manager.draw() # draws the UI on screen
 
     """
 
     _enabled = False
+
+    OVERLAY_LAYER = 10
 
     def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
@@ -73,24 +88,30 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
-
+        #: Camera used when drawing the UI
+        self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
-    def add(self, widget: W, *, index=None) -> W:
+    def add(self, widget: W, *, index=None, layer=0) -> W:
         """
         Add a widget to the :class:`UIManager`.
         Added widgets will receive ui events and be rendered.
 
         By default the latest added widget will receive ui events first and will be rendered on top of others.
 
+        The UIManager supports layered setups, widgets added to a higher layer are drawn above lower layers
+        and receive events first.
+        The layer 10 is reserved for overlaying components like dropdowns or tooltips.
+
         :param widget: widget to add
         :param index: position a widget is added, None has the highest priority
+        :param layer: layer which the widget should be added to, higher layer are above
         :return: the widget
         """
         if index is None:
-            self.children[0].append(widget)
+            self.children[layer].append(widget)
         else:
-            self.children[0].insert(max(len(self.children), index), widget)
+            self.children[layer].insert(max(len(self.children), index), widget)
         widget.parent = self
         self.trigger_render()
         return widget
@@ -123,7 +144,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls=UIWidget) -> Iterable[W]:
+    def get_widgets_at(self, pos, cls: Type[W] = UIWidget) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -131,11 +152,14 @@ class UIManager(EventDispatcher, UIWidgetParent):
         :param cls: class which the widget should be instance of
         :return: iterator of widgets of given type at position
         """
+        def check_type(widget) -> W:  # should be TypeGuard[W]
+            return isinstance(widget, cls)  # type: ignore
+
         for widget in self.walk_widgets():
-            if isinstance(widget, cls) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.collide_with_point(*pos):
                 yield widget
 
-    def _get_surface(self, layer: int):
+    def _get_surface(self, layer: int) -> Surface:
         if layer not in self._surfaces:
             if len(self._surfaces) > 2:
                 raise Exception("Don't use too much layers!")
@@ -145,7 +169,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 pixel_ratio=self.window.get_pixel_ratio(),
             )
 
-        return self._surfaces.get(layer)
+        return self._surfaces[layer]
 
     def trigger_render(self):
         """
@@ -205,6 +229,8 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
         on_draw is not registered, to provide full control about draw order,
         so it has to be called by the devs themselves.
+
+        Within a view, this method should be called from :py:meth:`arcade.View.on_show_view()`.
         """
         if not self._enabled:
             self._enabled = True
@@ -255,41 +281,15 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._do_layout()
 
         ctx = self.window.ctx
-
-        # When drawing into the framebuffer we need to set a separate
-        # blend function for the alpha component.
-        ctx.blend_func = (
-            ctx.SRC_ALPHA,
-            ctx.ONE_MINUS_SRC_ALPHA,  # RGB blend func (default)
-            ctx.ONE,
-            ctx.ONE_MINUS_SRC_ALPHA,  # Alpha blend func
-        )
-
-        # Reset view matrix so content is not rendered into
-        # the surface with offset
-        prev_view = self.window.view
-        prev_proj = self.window.projection
-        self.window.view = Mat4()
-        self.window.projection = Mat4()
-
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
-        # Restore view/proj matrix allowing the surface to be scrolled
-        self.window.view = prev_view
-        self.window.projection = prev_proj
-
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
-
         # Draw layers
+        self.camera.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
-
-        # Reset back to default blend function
-        ctx.blend_func = ctx.BLEND_DEFAULT
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -302,24 +302,10 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
             ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
         """
-        # TODO This code does not work anymore, for now no camera support by default
-        # vx, vy, vw, vh = self.window.ctx.viewport
-        # pl, pr, pb, pt = self.window.ctx.projection_2d
-        # proj_width, proj_height = pr - pl, pt - pb
-        # dx, dy = proj_width / vw, proj_height / vh
-        # return (x - vx) * dx, (y - vy) * dy
-
-        # NOTE: For now we just take view and projection scrolling into account
-        #       This doesn't support rotation and scaling
-        # Get x and y translation in the view matrix
-        x -= self.window.view[12]
-        y -= self.window.view[13]
-        # Get x and y translation in the projection matrix
-        proj_2d = self.window.ctx.projection_2d
-        x += proj_2d[0]
-        y += proj_2d[2]
-        # Return adjusted coordinates
-        return x, y
+        # NOTE: Only support scrolling until cameras support transforming
+        #       mouse coordinates
+        px, py = self.camera.position
+        return x + px, y + py
 
     def on_event(self, event) -> bool:
         layers = sorted(self.children.keys(), reverse=True)
@@ -374,6 +360,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
+        self.camera.resize(width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
