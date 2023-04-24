@@ -50,7 +50,7 @@ To install all necessary development dependencies, run this command in your
 terminal from inside the top level of the arcade directory:
 
 ```shell
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 If you get an error like the one below, you probably need to update your pip version:
