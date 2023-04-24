@@ -6,7 +6,7 @@ a name, as well as control the draw order. In addition it provides a
 helper function to create a Scene directly from a TileMap object.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
@@ -28,6 +28,24 @@ class Scene:
     def __init__(self) -> None:
         self._sprite_lists: List[SpriteList] = []
         self._name_mapping: Dict[str, SpriteList] = {}
+
+    def __len__(self) -> int:
+        """
+        Get length of `_sprite_lists`.
+        """
+        return len(self._sprite_lists)
+
+    def __delitem__(self, sprite_list: Union[str, SpriteList]) -> None:
+        """
+        Remove the SpriteList from `_sprite_lists` and `_name_mapping`.
+
+        :param Union[str, SpriteList] sprite_list: which SpriteList to delete - can
+        be either the name of the SpriteList or the SpriteList object.
+        """
+        if isinstance(sprite_list, str):
+            self.remove_sprite_list_by_name(sprite_list)
+        else:
+            self.remove_sprite_list_by_object(sprite_list)
 
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
@@ -188,7 +206,7 @@ class Scene:
 
         :param str name: The name to give the SpriteList.
         :param str after: The name of the SpriteList to place this one after.
-        :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
+        :param bool use_spatial_hash: Whether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
         """
         if sprite_list is None:
@@ -355,4 +373,3 @@ class Scene:
 
         for sprite_list in self._sprite_lists:
             sprite_list.draw_hit_boxes(color, line_thickness)
-
