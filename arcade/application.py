@@ -219,7 +219,7 @@ class Window(pyglet.window.Window):
             self.mouse = None
 
     @property
-    def current_view(self) -> Optional["View"]:
+    def current_view(self) -> Optional[View]:
         """
         This property returns the current view being shown.
         To set a different view, call the
@@ -695,7 +695,7 @@ class Window(pyglet.window.Window):
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: 'View') -> None:
+    def show_view(self, new_view: View) -> None:
         """
         Select the view to show in the next frame.
         This is not a blocking call showing the view.
@@ -782,7 +782,7 @@ class Window(pyglet.window.Window):
     def _create(self) -> None:
         super()._create()
 
-    def _recreate(self, changes) -> None:
+    def _recreate(self, changes: [str]) -> None:
         super()._recreate(changes)
 
     def flip(self) -> None:
@@ -812,7 +812,7 @@ class Window(pyglet.window.Window):
         """ Switch the this window. """
         super().switch_to()
 
-    def set_caption(self, caption) -> None:
+    def set_caption(self, caption: str) -> None:
         """ Set the caption for the window. """
         super().set_caption(caption)
 
@@ -844,7 +844,7 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible=None) -> None:
+    def set_mouse_platform_visible(self, platform_visible: bool=None) -> None:
         """
         .. warning:: You are probably looking for
                      :meth:`~.Window.set_mouse_visible`!
@@ -859,15 +859,15 @@ class Window(pyglet.window.Window):
         """
         super().set_mouse_platform_visible(platform_visible)
 
-    def set_exclusive_mouse(self, exclusive=True) -> None:
+    def set_exclusive_mouse(self, exclusive: bool=True) -> None:
         """ Capture the mouse. """
         super().set_exclusive_mouse(exclusive)
 
-    def set_exclusive_keyboard(self, exclusive=True) -> None:
+    def set_exclusive_keyboard(self, exclusive: bool=True) -> None:
         """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
-    def get_system_mouse_cursor(self, name) -> None:
+    def get_system_mouse_cursor(self, name: str) -> Optional["DefualtMouseCursor", "XlibMouseCursor"]:
         """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 
@@ -957,7 +957,7 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(self, section: Optional[SectionManager], at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 

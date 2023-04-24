@@ -14,7 +14,7 @@ _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
 
 
-def _dispatch_event(self, *args):
+def _dispatch_event(self, *args) -> None:
     """
     This function will be monkey-patched over Pyglet's dispatch event function.
     """
@@ -49,7 +49,7 @@ def _dispatch_event(self, *args):
         data.popleft()
 
 
-def print_timings():
+def print_timings() -> None:
     """
     Print event handler statistics to stdout as a table.
 
@@ -77,8 +77,7 @@ def print_timings():
         on_draw           60       0.0020
     """
     global _timings
-    print()
-    print("Event          Count Average Time")
+    print("\nEvent          Count Average Time")
     print("-------------- ----- ------------")
     for index in _timings:
         data = _timings[index]
