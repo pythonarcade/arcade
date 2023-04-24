@@ -6,6 +6,7 @@ import os
 from shutil import which, rmtree
 import subprocess
 from pathlib import Path
+from typing import Union, List
 
 SPHINXOPTS      = []
 SPHINXBUILD     = "sphinx-build"
@@ -51,10 +52,12 @@ for library in libraries:
 import typer
 app = typer.Typer()
 
-def run(args: str | list[str]):
+
+def run(args: Union[str, List[str]]) -> None:
     result = subprocess.run(args)
     if result.returncode != 0:
         exit(result.returncode)
+
 
 @app.command()
 def clean():
