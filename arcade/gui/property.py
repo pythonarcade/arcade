@@ -1,6 +1,6 @@
 import sys
 import traceback
-from typing import TypeVar, Optional, Union
+from typing import TypeVar, Optional, Union, Callable
 from weakref import WeakKeyDictionary, ref
 
 
