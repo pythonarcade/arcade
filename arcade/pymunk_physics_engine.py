@@ -10,13 +10,14 @@ from pyglet.math import Vec2
 
 from arcade import Sprite
 
-LOG = logging.getLogger(__name__)
-
 __all__ = [
     "PymunkPhysicsObject",
     "PymunkException",
     "PymunkPhysicsEngine"
 ]
+
+
+LOG = logging.getLogger(__name__)
 
 
 class PymunkPhysicsObject:
