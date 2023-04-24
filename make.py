@@ -13,8 +13,21 @@ SPHINXOPTS      = []
 SPHINXBUILD     = "sphinx-build"
 SPHINXAUTOBUILD = "sphinx-autobuild"
 PAPER_SIZE      = None
-BUILDDIR        = "build"
+DOCDIR          = "doc"
+BUILDDIR        = DOCDIR + "/build"
 
+
+# Linting
+RUFF        = "ruff"
+RUFFOPTS    = ["arcade"]
+MYPY        = "mypy"
+MYPYOPTS    = ["arcade"]
+
+
+# Testing
+PYTEST  = "pytest"
+TESTDIR = "tests"
+UNITTESTS = TESTDIR + "/unit"
 
 # Internal variables.
 PAPER_SIZE_OPTS = {}
@@ -22,15 +35,11 @@ PAPER_SIZE_OPTS[None] = []
 PAPER_SIZE_OPTS['a4'] = ['-D', 'latex_paper_size=a4']
 PAPER_SIZE_OPTS['letter'] = ['-D', 'latex_paper_size=letter']
 ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
-SPHINXAUTOBUILDOPTS = ['--watch', '../arcade']
+SPHINXAUTOBUILDOPTS = ['--watch', './arcade']
 
 # Important: the i18n builder cannot share the environment and doctrees with the others
 # This allows for internationalization / localization of doc.
 I18NSPHINXOPTS      = [*PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
-
-
-# Change dirs into root arcade project folder
-os.chdir(Path(__file__).parent.resolve())
 
 
 # User-friendly check for dependencies and binaries
@@ -334,6 +343,37 @@ def pseudoxml():
     run([SPHINXBUILD, "-b", "pseudoxml", *ALLSPHINXOPTS, f"{BUILDDIR}/pseudoxml"])
     print()
     print("Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml.")
+
+
+@app.command()
+def lint():
+    run([RUFF, *RUFFOPTS])
+    print("Ruff Finished.")
+    run([MYPY, *MYPYOPTS])
+    print("Mypy Finished.")
+    print("Linting Complete.")
+
+
+@app.command()
+def ruff():
+    run([RUFF, *RUFFOPTS])
+    print("Ruff Finished.")
+
+
+@app.command()
+def mypy():
+    run([MYPY, *MYPYOPTS])
+    print("MyPy Finished.")
+
+
+@app.command()
+def test_full():
+    run([PYTEST, TESTDIR])
+
+
+@app.command()
+def test():
+    run([PYTEST, UNITTESTS])
 
 
 if __name__ == "__main__":
