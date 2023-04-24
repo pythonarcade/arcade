@@ -1,24 +1,10 @@
 .. _platformer_part_two:
 
-Step 2 - Textures, Sprites, and SpriteLists
--------------------------------------------
+Step 2 - Textures and Sprites
+-----------------------------
 
-Our next step in this tutorial is to draw some things on the Screen. In order to
-do that we need to cover a few topics.
-
-In this chapter we'll cover:
-
-* Textures
-
-  * See documentation for :class:`arcade.Texture`
-
-* Sprites
-
-  * See documentation for :class:`arcade.Sprite`
-
-* SpriteLists
-
-  * See documentation for :class:`arcade.SpriteList`
+Our next step in this tutorial is to draw something on the Screen. In order to
+do that we need to cover two topics, Textures and Sprites.
 
 At the end of this chapter, we'll have something that looks like this. It's largely the
 same as last chapter, but now we are drawing a character onto the screen:
@@ -78,41 +64,13 @@ Creating a Sprite is simple, we can make one for our player in our ``__init__`` 
     You can also skip ``arcade.load_texture`` from the previous step and pass the image file to ``arcade.Sprite`` in place of the Texture object. 
     A Texture will automatically be created for you. However, it may desirable in larger projects to manage your textures directly.
 
-Sprite Lists
-~~~~~~~~~~~~
-
-:class:`arcade.SpriteList` exists to draw a collection of Sprites all at once. Let's say for example that you have
-100,000 box Sprites that you want to draw. A naive implementation for this might do a for loop over
-all of your box sprites and call the ``draw()`` function on each one.
-
-This approach is extremely un-performant. Instead, you can add all of your boxes to a :class:`arcade.SpriteList`
-and then draw the SpriteList. Doing this, you are able to draw all 100,000 sprites for approximately the exact
-same cost as drawing one sprite.
-
-In this scenario, we would have 1 Texture, which is our image of the box. 100,000 Sprites using that texture, which are
-all at different positions, and 1 SpriteList containing the 100,000 Sprites.
-
-.. note::
-    This is due to Arcade being a heavily GPU based library. GPUs are really good at doing things in batches.
-    This means we can send all the information about our sprites to the GPU, and then tell it to draw them all
-    at once. However if we just draw one sprite at a time, then we have to go on a round trip from our CPU to
-    our GPU every time.
-
-Even if you are only drawing one Sprite, you should still create a SpriteList for it. Outside of small debugging
-it is never better to draw an individual Sprite than it is to add it to a SpriteList.
-
-Let's go ahead and create one for our player inside our ``__init__`` function, and add the player to it.
+Now we can draw the sprite by adding this to our ``on_draw`` function:
 
 .. code-block::
 
-    self.player_list = arcade.SpriteList()
-    self.player_list.append(self.player_sprite)
+    self.player_sprite.draw()
 
-Finally in our ``on_draw`` function, we can draw the SpriteList for the player:
-
-.. code-block::
-
-    self.player_list.draw()
+We're now drawing a Sprite to the screen! In the next chapter, we will introduce techniques to draw many(even hundreds of thousands) sprites at once.
 
 Source Code
 ~~~~~~~~~~~
@@ -120,19 +78,18 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 24-34, 48-49
+    :emphasize-lines: 24-30, 44-45
 
 Running this code should result in a character being drawn on the screen, like in
 the image at the start of the chapter.
 
 * Documentation for the :class:`arcade.Texture` class
 * Documentation for the :class:`arcade.Sprite` class
-* Documentation for the :class:`arcade.SpriteList` class
 
 .. note::
 
-    Once the code example is up and working, try adjusting the code for the following:
+    Once you have the code up and working, try adjusting the code for the following:
 
     * Adjust the code and try putting the sprite in new positions(Try setting the positions using other attributes of Sprite)
-    * Use different images for the texture (see :ref:`resources` for the build-in images, or try using your own images.)
-    * Practice placing more sprites individually, via a loop, or by a list of coordinates.
+    * Use different images for the texture (see :ref:`resources` for the built-in images, or try using your own images.)
+    * Practice placing more sprites in different ways(like placing many with a loop)

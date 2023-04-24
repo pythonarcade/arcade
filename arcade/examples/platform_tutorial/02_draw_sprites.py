@@ -29,10 +29,6 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 128
 
-        # SpriteList for our player
-        self.player_list = arcade.SpriteList()
-        self.player_list.append(self.player_sprite)
-
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def setup(self):
@@ -46,7 +42,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw our sprites
-        self.player_list.draw()
+        self.player_sprite.draw()
 
 
 def main():
