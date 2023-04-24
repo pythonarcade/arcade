@@ -187,12 +187,12 @@ class _ObservableList(list):
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs) -> None:  # type: ignore
+    def __iadd__(self, *largs):  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
 
-    def __imul__(self, *largs) -> None:  # type: ignore
+    def __imul__(self, *largs):  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self

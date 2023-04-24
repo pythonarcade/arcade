@@ -60,7 +60,7 @@ class VertexArray:
 
         self.ctx.stats.incr("vertex_array")
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         return f"<VertexArray {self.glo.value}>"
 
     def __del__(self) -> None:
@@ -69,7 +69,7 @@ class VertexArray:
             self._ctx.objects.append(self)
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """
         The Context this object belongs to
 
