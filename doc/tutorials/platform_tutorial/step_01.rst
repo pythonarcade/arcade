@@ -18,17 +18,11 @@ Installation
   * Install Arcade with ``pip install arcade``.
   * Here are the longer, official :ref:`installation-instructions`.
 
-I highly recommend using the free community edition of PyCharm as an editor.
-If you do, see :ref:`install-pycharm`.
-
-.. _kenney.nl: https://kenney.nl/
-
 Open a Window
 ~~~~~~~~~~~~~
 
 The example below opens up a blank window. Set up a project and get the code
-below working. (It is also in the zip file as
-``01_open_window.py``.)
+below working.
 
 .. note::
 
@@ -46,9 +40,9 @@ You should end up with a window like this:
 .. image:: step_01.png
    :width: 75%
 
-Once you get the code working, figure out how to adjust the code so you can:
+Once you get the code working, try figuring out how to adjust the code so you can:
 
-* Change the screen size
+* Change the screen size(or even make the Window resizable or fullscreen)
 * Change the title
 * Change the background color
 
