@@ -17,6 +17,7 @@ def test_delitem():
     scene = arcade.Scene()
     scene.add_sprite_list("Walls")
     scene.add_sprite_list("Player")
+    scene.add_sprite_list("Coins")
     del scene["Player"]
 
     with pytest.raises(KeyError):
@@ -26,3 +27,8 @@ def test_delitem():
 
     with pytest.raises(KeyError):
         scene["Walls"]
+
+    del scene[0]
+
+    with pytest.raises(KeyError):
+        scene["Coins"]
