@@ -734,7 +734,7 @@ class ShapeElementList(Generic[TShape]):
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
-        self.shape_list = []
+        self.shape_list: List[TShape] = []
         self.change_x = 0
         self.change_y = 0
         self._center_x = 0
@@ -742,7 +742,7 @@ class ShapeElementList(Generic[TShape]):
         self._angle = 0
         self.program = self.ctx.shape_element_list_program
         self.batches: Dict[int, _Batch] = OrderedDict()
-        self.dirties = set()
+        self.dirties: Set[_Batch] = set()
 
     def append(self, item: TShape) -> None:
         """
@@ -872,7 +872,7 @@ class ShapeElementList(Generic[TShape]):
         """ Return an iterable object of sprites. """
         return iter(self.shape_list)
 
-    def __getitem__(self, i) -> TShape:
+    def __getitem__(self, i: int) -> TShape:
         return self.shape_list[i]
 
 
