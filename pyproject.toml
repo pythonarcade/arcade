@@ -54,6 +54,7 @@ dev = [
     "sphinx-copybutton==0.5.1",
     # Intentionally kept at 2.3 until this bugfix is published: https://github.com/jdillard/sphinx-sitemap/pull/62
     "sphinx-sitemap==2.3.0",
+    "typer==0.7.0",
     "wheel",
 ]
 

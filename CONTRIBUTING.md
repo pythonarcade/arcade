@@ -96,7 +96,7 @@ cd doc
 
 Run the doc build to build the web page files, and host a webserver to preview:
 ```commandline
-make serve
+python ./make.py serve
 ```
 
 You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the docs.
@@ -116,7 +116,7 @@ cd doc
 
 Run the doc build to build the web page files:
 ```commandline
-make html
+python ./make.py html
 ```
 The `build/html` directory will contain the generated website files.
 
