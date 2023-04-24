@@ -1,7 +1,6 @@
 """
 Build script for documentation
 """
-from glob import glob
 import os
 from shutil import which, rmtree
 import subprocess
