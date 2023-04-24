@@ -8,11 +8,14 @@ import subprocess
 from pathlib import Path
 from typing import Union, List
 
+
+# General sphinx state / options
 SPHINXOPTS      = []
 SPHINXBUILD     = "sphinx-build"
 SPHINXAUTOBUILD = "sphinx-autobuild"
 PAPER           = None
 BUILDDIR        = "build"
+
 
 # Internal variables.
 PAPEROPTS = {}
@@ -21,10 +24,15 @@ PAPEROPTS['a4'] = ['-D', 'latex_paper_size=a4']
 PAPEROPTS['letter'] = ['-D', 'latex_paper_size=letter']
 ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPEROPTS[PAPER], *SPHINXOPTS, '.']
 SPHINXAUTOBUILDOPTS = ['--watch', '../arcade']
-# the i18n builder cannot share the environment and doctrees with the others
+
+# Important: the i18n builder cannot share the environment and doctrees with the others
+# This allows for internationalization / localization of doc.
 I18NSPHINXOPTS      = [*PAPEROPTS[PAPER], *SPHINXOPTS, '.']
 
+
+# Change dirs into root arcade project folder
 os.chdir(Path(__file__).parent.resolve())
+
 
 # User-friendly check for dependencies and binaries
 binaries = ['sphinx-build', 'sphinx-autobuild']
@@ -46,7 +54,6 @@ for library in libraries:
         print("Python dependencies not found: " + ', '.join(not_found))
         print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
         exit(1)
-    
 
 
 import typer
@@ -328,6 +335,7 @@ def pseudoxml():
     run([SPHINXBUILD, "-b", "pseudoxml", *ALLSPHINXOPTS, f"{BUILDDIR}/pseudoxml"])
     print()
     print("Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml.")
+
 
 if __name__ == "__main__":
     app()
