@@ -3,7 +3,8 @@ Functions used to support easing
 """
 from math import pi, sin, cos
 from dataclasses import dataclass
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Optional, Union
+from __future__ import annotations
 from .math import get_distance
 
 
@@ -147,7 +148,7 @@ def easing(percent: float, easing_data: EasingData) -> float:
 
 def ease_angle(start_angle: float, end_angle: float, *, 
                  time=None, rate=None, ease_function: Callable = linear
-                 ) -> EasingData:
+                 ) -> Optional[EasingData]:
     """
     Set up easing for angles.
     """
@@ -185,7 +186,7 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool,
     easing_data.cur_period = min(easing_data.cur_period, easing_data.end_period)
     percent: float = easing_data.cur_period / easing_data.end_period
 
-    angle: EasingData = easing(percent, easing_data)
+    angle: float = easing(percent, easing_data)
 
     if percent >= 1.0:
         done = True
@@ -211,7 +212,7 @@ def ease_value(start_value: float, end_value: float, *, time:
 
     if rate:
         diff = abs(start_value - end_value)
-        time: float = diff / rate
+        time = diff / rate
 
     easing_data = EasingData(start_value=start_value,
                              end_value=end_value,
@@ -249,13 +250,13 @@ def ease_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float
     Update easing between two values/
     """
     easing_data.cur_period += delta_time
-    easing_data.cur_period: float = min(easing_data.cur_period, easing_data.end_period)
+    easing_data.cur_period = min(easing_data.cur_period, easing_data.end_period)
     if easing_data.end_period == 0:
-        percent: float = 1.0
-        value: EasingData = easing_data.end_value
+        percent = 1.0
+        value = easing_data.end_value
     else:
-        percent: float = easing_data.cur_period / easing_data.end_period
-        value: EasingData = easing(percent, easing_data)
+        percent = easing_data.cur_period / easing_data.end_period
+        value = easing(percent, easing_data)
 
     done: bool = percent >= 1.0
     return done, value
