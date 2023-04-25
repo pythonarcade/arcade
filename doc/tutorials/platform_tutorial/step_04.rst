@@ -4,19 +4,94 @@
 Step 4 - Add User Control
 -------------------------
 
-Now we need to be able to get the user to move around.
+Now we've got a character and a world for them to exist in, but what fun is a game if
+you can't control the character and move around? In this Chapter we'll explore adding
+keyboard input in Arcade.
 
-First, at the top of the program add a constant that controls how many pixels
-per update our character travels:
+First, at the top of our program, we'll want to add a new constant that controls how 
+many pixels per update our character travels:
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
-    :caption: 04_user_control.py - Player Move Speed Constant
-    :lines: 15-16
+.. code-block::
+    
+    PLAYER_MOVEMENT_SPEED = 5
 
-Next, at the end of our ``setup`` method, we need to create a physics engine that will
-move our player and keep her from running through walls. The ``PhysicsEngineSimple``
-class takes two parameters: The moving
-sprite, and a list of sprites the moving sprite can't move through.
+In order to handle the keyboard input, we need to add to add two new functions to our
+Window class, ``on_key_press`` and ``on_key_release``. These functions will automatically
+be called by Arcade whenever a key on the keyboard is pressed or released. Inside these
+functions, based on the key that was pressed or released, we will move our character.
+
+.. code-block::
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        """Called whenever a key is released."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = 0
+
+In these boxes, we are modifying the ``change_x`` and ``change_y`` attributes on our
+player Sprite. Changing these values will not actually perform the move on the Sprite.
+In order to apply this change, we need to create a physics engine with our Sprite,
+and update the physics engine every frame. The physics engine will then be responsible
+for actually moving the sprite.
+
+The reason we give the physics engine this responsibility instead of doing it ourselves,
+is so that we can let the physics engine do collision detections, and allow/disallow a
+movement based on the result. In later chapters, we'll use more advanced physics engines
+which can do things like allow jumping with gravity, or climbing on ladders for example.
+
+.. note::
+
+    This method of tracking the speed to the key the player presses is simple, but
+    isn't perfect. If the player hits both left and right keys at the same time,
+    then lets off the left one, we expect the player to move right. This method won't
+    support that. If you want a slightly more complex method that does, see
+    :ref:`sprite_move_keyboard_better`.
+
+Let's create a simple physics engine in our ``__init__`` function. We will do this by passing
+it our player sprite, and the SpriteList containing our walls.
+
+.. code-block::
+
+    self.physics_engine = arcade.PhysicsEngineSimple(
+        self.player_sprite, self.wall_list
+    )
+
+Now we have a physics engine, but we still need to update it every frame. In order to do this
+we will add a new function to our Window class, called ``on_update``. This function is similar to
+``on_draw``, it will be called by Arcade at a default of 60 times per second. It will also give
+us a ``delta_time`` parameter that tells the amount of time between the last call and the current one.
+This value will be used in some calculations in future chapters. Within this function, we will update
+our physics engine. Which will process collision detections and move our player based on it's ``change_x``
+and ``change_y`` values.
+
+.. code-block::
+
+    def on_update(self, delta_time):
+        """Movement and Game Logic"""
+
+        self.physics_engine.update()
+
+At this point you should be able to run the game, and move the character around with the keyboard.
+If the physics engine is working properly, the character should not be able to move through the ground
+or the boxes.
 
 For more information about the physics engine we are using in this tutorial,
 see :py:class:`arcade.PhysicsEngineSimple`.
@@ -27,50 +102,11 @@ see :py:class:`arcade.PhysicsEngineSimple`.
     are very simple, but easy physics engines. See
     :ref:`pymunk_platformer_tutorial` for a more advanced physics engine.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
-    :caption: 04_user_control.py - Create Physics Engine
-    :lines: 73-76
-
-Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
-change the location of the sprite. (There are also attributes for top, bottom,
-left, right, and angle that will move the sprite.)
-
-Each sprite has ``change_x`` and ``change_y`` variables. These can be used to
-hold the velocity that the sprite is moving with. We will adjust these
-based on what key the user hits. If the user hits the right arrow key
-we want a positive value for ``change_x``. If the value is 5, it will move
-5 pixels per frame.
-
-In this case, when the user presses a key we'll change the sprites change x and y.
-The physics engine will look at that, and move the player unless she'll hit a wall.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
-    :caption: 04_user_control.py - Handle key-down
-    :linenos:
-    :pyobject: MyGame.on_key_press
-
-On releasing the key, we'll put our speed back to zero.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
-    :caption: 04_user_control.py - Handle key-up
-    :linenos:
-    :pyobject: MyGame.on_key_release
-
 .. note::
 
-    This method of tracking the speed to the key the player presses is simple, but
-    isn't perfect. If the player hits both left and right keys at the same time,
-    then lets off the left one, we expect the player to move right. This method won't
-    support that. If you want a slightly more complex method that does, see
-    :ref:`sprite_move_keyboard_better`.
-
-Our ``on_update`` method is called about 60 times per second. We'll ask the physics
-engine to move our player based on her ``change_x`` and ``change_y``.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
-    :caption: 04_user_control.py - Update the sprites
-    :linenos:
-    :pyobject: MyGame.on_update
+    If you want to see how the collisions are checked, try using the ``draw_hit_boxes()`` function
+    on the player and wall SpriteLists inside the ``on_draw`` function. This will show you what the
+    hitboxes that the physics engine uses look like. 
 
 Source Code
 ~~~~~~~~~~~
@@ -78,4 +114,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
     :caption: 04_user_control.py - User Control
     :linenos:
-    :emphasize-lines: 15-16, 35-36, 73-76, 87-115
+    :emphasize-lines: 13-17, 53, 65, 93-121
