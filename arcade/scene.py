@@ -245,7 +245,7 @@ class Scene:
 
         This function serves to completely remove the SpriteList from the Scene.
 
-        :param str SpriteList: The SpriteList to remove.
+        :param SpriteList sprite_list: The SpriteList to remove.
         """
         self._sprite_lists.remove(sprite_list)
         self._name_mapping = {
