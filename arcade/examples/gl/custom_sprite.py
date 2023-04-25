@@ -50,14 +50,14 @@ class GeoSprites(arcade.Window):
                 size = in_size;
             }
             """,
-            geometry_shader="""           
+            geometry_shader="""
             #version 330
 
             // Configure inputs and outputs for the geometry shader
             // We are taking single points form the vertex shader per invocation
             // and emitting 4 new vertices creating a quad/sprites
             layout (points) in;
-            layout (triangle_strip, max_vertices = 4) out;            
+            layout (triangle_strip, max_vertices = 4) out;
 
             // A uniform buffer that will automagically contain pyglet's projection matrix
             uniform WindowBlock {

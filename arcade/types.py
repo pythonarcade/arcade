@@ -16,6 +16,7 @@ from typing import (
     Union,
     TYPE_CHECKING, TypeVar
 )
+from typing_extensions import Self
 
 from pytiled_parser import Properties
 
@@ -44,6 +45,26 @@ RGBA255 = RGBA[int]
 RGBANormalized = RGBA[float]
 
 RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
+
+
+__all__ = [
+    "BufferProtocol",
+    "Color",
+    "ColorLike",
+    "IPoint",
+    "PathOrTexture",
+    "Point",
+    "PointList",
+    "NamedPoint",
+    "Rect",
+    "RectList",
+    "RGB",
+    "RGBA255",
+    "RGBANormalized",
+    "RGBA255OrNormalized",
+    "TiledObject",
+    "Vector"
+]
 
 
 class Color(RGBA255):
@@ -93,9 +114,9 @@ class Color(RGBA255):
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
-    def __deepcopy__(self, _):
-        """Allow to deepcopy Colors"""
-        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
+    def __deepcopy__(self, _) -> Self:
+        """Allow :py:func:`~copy.deepcopy` to be used with Color"""
+        return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
@@ -117,7 +138,7 @@ class Color(RGBA255):
         return self[3]
 
     @classmethod
-    def from_iterable(cls, iterable: Iterable[int]) -> "Color":
+    def from_iterable(cls, iterable: Iterable[int]) -> Self:
         """
         Create a color from an :py:class`Iterable` with 3-4 elements
 
@@ -147,7 +168,7 @@ class Color(RGBA255):
         else:
             a = 255
 
-        return Color(r, g, b, a=a)
+        return cls(r, g, b, a=a)
 
     @property
     def normalized(self) -> RGBANormalized:
@@ -169,7 +190,7 @@ class Color(RGBA255):
         return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
 
     @classmethod
-    def from_gray(cls, brightness: int, a: int = 255) -> "Color":
+    def from_gray(cls, brightness: int, a: int = 255) -> Self:
         """
         Return a shade of gray of the given brightness.
 
@@ -194,10 +215,10 @@ class Color(RGBA255):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(brightness, brightness, brightness, a=a)
+        return cls(brightness, brightness, brightness, a=a)
 
     @classmethod
-    def from_uint24(cls, color: int, a: int = 255) -> "Color":
+    def from_uint24(cls, color: int, a: int = 255) -> Self:
         """
         Return a Color from an unsigned 3-byte (24 bit) integer.
 
@@ -229,7 +250,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_uint32(cls, color: int) -> "Color":
+    def from_uint32(cls, color: int) -> Self:
         """
         Return a Color tuple for a given unsigned 4-byte (32-bit) integer
 
@@ -256,7 +277,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_normalized(cls, color_normalized: RGBANormalized) -> "Color":
+    def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
         """
         Convert normalized (0.0 to 1.0) channels into an RGBA Color
 
@@ -302,7 +323,7 @@ class Color(RGBA255):
         return cls(int(255 * r), int(255 * g), int(255 * b), a=int(255 * a))
 
     @classmethod
-    def from_hex_string(cls, code: str) -> "Color":
+    def from_hex_string(cls, code: str) -> Self:
         """
         Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
 
@@ -354,7 +375,7 @@ class Color(RGBA255):
         g: Optional[int] = None,
         b: Optional[int] = None,
         a: Optional[int] = None,
-    ) -> "Color":
+    ) -> Self:
         """
         Return a random color.
 

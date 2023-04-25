@@ -34,7 +34,7 @@ class Transform:
     order = (
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.UPPER_RIGHT.value,
-        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_LEFT.value,
         VertexOrder.LOWER_RIGHT.value,
     )
 
@@ -145,9 +145,9 @@ class FlipLeftRightTransform(Transform):
         VertexOrder.UPPER_RIGHT.value,
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_RIGHT.value,
-        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_LEFT.value,
     )
- 
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,
@@ -160,7 +160,7 @@ class FlipTopBottomTransform(Transform):
     Flip texture vertically / top to bottom.
     """
     order = (
-        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_LEFT.value,
         VertexOrder.LOWER_RIGHT.value,
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.UPPER_RIGHT.value,
@@ -179,7 +179,7 @@ class TransposeTransform(Transform):
     """
     order = (
         VertexOrder.UPPER_LEFT.value,
-        VertexOrder.LOWER_LEFT.value, 
+        VertexOrder.LOWER_LEFT.value,
         VertexOrder.UPPER_RIGHT.value,
         VertexOrder.LOWER_RIGHT.value,
     )
@@ -189,7 +189,7 @@ class TransposeTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate270Transform.transform_hit_box_points(points)
+        points = Rotate90Transform.transform_hit_box_points(points)
         return points
 
 
@@ -209,7 +209,7 @@ class TransverseTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate90Transform.transform_hit_box_points(points)
+        points = Rotate270Transform.transform_hit_box_points(points)
         return points
 
 

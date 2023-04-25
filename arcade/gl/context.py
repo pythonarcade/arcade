@@ -416,7 +416,7 @@ class Context:
             # Make sure only blending is enabled
             ctx.enable_only(ctx.BLEND)
             # Make sure only depth test and culling is enabled
-            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)        
+            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
         self._flags = set(args)
 

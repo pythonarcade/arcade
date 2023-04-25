@@ -40,7 +40,7 @@ class App(Window):
 
             in vec2 in_pos;
 
-            // This in the index of this specific vertex. 
+            // This in the index of this specific vertex.
             // Flat just specifies that the value shouldn't be interpolated between vertices.
             flat out int vert_id;
             out vec2 vert_pos;
@@ -50,7 +50,7 @@ class App(Window):
 
                 vert_id = gl_VertexID;
                 vert_pos = in_pos;
-            }       
+            }
 
             """,
             fragment_shader="""
@@ -61,7 +61,7 @@ class App(Window):
             // predefining the function which will be over written with the code injection.
             // the random function takes in 1, 2, 3, or 4 floats and returns a new float between 0 and 1
             float random(vec2 v);
-            float random(vec3 v); 
+            float random(vec3 v);
             float random(vec4 v);
 
             // Both of these are used as seed values to make sure each call is unique
@@ -76,7 +76,7 @@ class App(Window):
             void main(){
 
                 float red = random(vec4(vert_pos.x, vert_pos.y, time_seed, vert_id));
-                float green = random(vec4(vert_id, time_seed, vert_pos.y, vert_pos.x)); 
+                float green = random(vec4(vert_id, time_seed, vert_pos.y, vert_pos.x));
                 float blue = random(vec4(vert_pos.y, vert_pos.x, time_seed, vert_id));
                 frag_colour = vec4(red, green, blue, 1.0);
             }

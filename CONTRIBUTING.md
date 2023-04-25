@@ -26,7 +26,7 @@ Discussion can happen in a GitHub issue's comments or on [Arcade's Discord serve
 ## After Making Changes
 
 After you finish your changes, you should do the following:
-1. Test your changes with Arcade's test suite as well as with `mypy arcade` & `ruff arcade`
+1. Test your changes according to the [Testing](#testing) section below
 2. Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests)
 from your fork to Arcade's development branch.
 
@@ -50,7 +50,7 @@ To install all necessary development dependencies, run this command in your
 terminal from inside the top level of the arcade directory:
 
 ```shell
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 If you get an error like the one below, you probably need to update your pip version:
@@ -74,33 +74,62 @@ in this repo for current tests.
 
 ### Testing Code Changes
 
-First, run `mypy arcade` and then `ruff arcade` from inside the arcade folder. You should fix
-any issues they report.
-
-Then run the framework's unit tests with the following command:
+First, run the below command to run our linting tools automatically. This will run Mypy
+and Ruff against Arcade. The first run of this may take some as MyPy will not have any
+caches built up. Sub-sequent runs will be much faster.
 
 ```shell
-pytest tests/unit
+python make.py lint
+```
+
+If you want to run either of these tools invidually, you can do
+
+```shell
+python make.py ruff
+```
+
+or 
+
+```shell
+python make.py mypy
+```
+
+Now you run the framework's unit tests with the following command:
+
+```shell
+python make.py test
 ```
 
 ### Building & Testing Documentation
 
+#### Automatic Rebuild with Live Reload
+
 You can build & preview documentation locally using the following steps.
 
-Change into the doc directory:
+Run the doc build to build the web page files, and host a webserver to preview:
 ```commandline
-cd doc
+python make.py serve
 ```
+
+You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the docs.
+
+The `doc/build/html` directory will contain the generated website files.  When you change source files,
+it will automatically regenerate, and browser tabs will automatically refresh to show your updates.
+
+If you suspect the automatic rebuilds are failing to detect changes, you can
+run a simpler one-time build using the following instructions.
+
+#### One-time build
 
 Run the doc build to build the web page files:
 ```commandline
-make html
+python make.py html
 ```
-The `build/html` directory will contain the generated website files.
+The `doc/build/html` directory will contain the generated website files.
 
 Start a local web server to preview the doc:
 ```commandline
-python -m http.server -d build/html
+python -m http.server -d doc/build/html
 ```
 
 You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the doc.

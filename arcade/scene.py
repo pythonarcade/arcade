@@ -6,13 +6,16 @@ a name, as well as control the draw order. In addition it provides a
 helper function to create a Scene directly from a TileMap object.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
 from arcade.tilemap import TileMap
 
 from warnings import warn
+
+__all__ = ["Scene"]
+
 
 class Scene:
     """
@@ -25,7 +28,28 @@ class Scene:
     def __init__(self) -> None:
         self._sprite_lists: List[SpriteList] = []
         self._name_mapping: Dict[str, SpriteList] = {}
-        
+
+    def __len__(self) -> int:
+        """
+        Get length of `_sprite_lists`.
+        """
+        return len(self._sprite_lists)
+
+    def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
+        """
+        Remove the SpriteList from `_sprite_lists` and `_name_mapping`.
+
+        :param Union[int, str, SpriteList] sprite_list: which SpriteList to delete - can
+        be the index of the SpriteList in `_sprite_lists`, the name of the SpriteList or
+        the SpriteList object.
+        """
+        if isinstance(sprite_list, int):
+            self.remove_sprite_list_by_index(sprite_list)
+        elif isinstance(sprite_list, str):
+            self.remove_sprite_list_by_name(sprite_list)
+        else:
+            self.remove_sprite_list_by_object(sprite_list)
+
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
@@ -180,13 +204,12 @@ class Scene:
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
 
         This will add a new SpriteList to the scene after the specified SpriteList in the draw order.
-
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
 
         :param str name: The name to give the SpriteList.
         :param str after: The name of the SpriteList to place this one after.
-        :param bool use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
+        :param bool use_spatial_hash: Whether or not to use spatial hash if creating a new SpriteList.
         :param SpriteList sprite_list: The SpriteList to add, optional.
         """
         if sprite_list is None:
@@ -224,12 +247,25 @@ class Scene:
         old_index = self._sprite_lists.index(name_list)
         self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
+    def remove_sprite_list_by_index(
+        self,
+        index: int
+    ) -> None:
+        """
+        Remove a SpriteList by its index.
+
+        This function serves to completely remove the SpriteList from the Scene.
+
+        :param int index: The index of the SpriteList to remove.
+        """
+        self.remove_sprite_list_by_object(self._sprite_lists[index])
+
     def remove_sprite_list_by_name(
         self,
         name: str,
     ) -> None:
         """
-        Remove a SpriteList by it's name.
+        Remove a SpriteList by its name.
 
         This function serves to completely remove the SpriteList from the Scene.
 
@@ -242,7 +278,7 @@ class Scene:
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
         """
         Remove a SpriteList from the Scene.
-
+        
         This function serves to completely remove the SpriteList from the Scene.
 
         :param SpriteList sprite_list: The SpriteList to remove.
@@ -273,8 +309,8 @@ class Scene:
     def on_update(self, delta_time: float = 1 / 60, names: Optional[List[str]] = None) -> None:
         """
         Used to call on_update of SpriteLists contained in the scene.
-        Similar to update() but allows passing a delta_time variable.
 
+        Similar to update() but allows passing a delta_time variable.
         If `names` parameter is provided then only the specified spritelists
         will be updated. If `names` is not provided, then every SpriteList
         in the scene will have on_update called.
@@ -360,4 +396,3 @@ class Scene:
 
         for sprite_list in self._sprite_lists:
             sprite_list.draw_hit_boxes(color, line_thickness)
-    
