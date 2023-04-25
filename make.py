@@ -15,6 +15,8 @@ SPHINXAUTOBUILD   = "sphinx-autobuild"
 PAPER_SIZE        = None
 DOCDIR            = "doc"
 BUILDDIR          = "build"
+# Intentionally brittle; the user should not be building as root
+HOME             = Path.home().expanduser().resolve(strict=True)
 
 # Used for user output; relative to project root
 FULL_BUILD_PREFIX = f"{DOCDIR}/{BUILDDIR}"
@@ -192,8 +194,8 @@ def devhelp():
     print()
     print("Build finished.")
     print("To view the help file:")
-    print("# mkdir -p $$HOME/.local/share/devhelp/Arcade")
-    print(f"# ln -s {FULL_BUILD_PREFIX}/devhelp $$HOME/.local/share/devhelp/Arcade")
+    print(f"# mkdir -p {HOME}/.local/share/devhelp/Arcade")
+    print(f"# ln -s {FULL_BUILD_PREFIX}/devhelp {HOME}/.local/share/devhelp/Arcade")
     print("# devhelp")
 
 
