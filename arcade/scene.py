@@ -278,7 +278,7 @@ class Scene:
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
         """
         Remove a SpriteList from the Scene.
-        
+
         This function serves to completely remove the SpriteList from the Scene.
 
         :param SpriteList sprite_list: The SpriteList to remove.
