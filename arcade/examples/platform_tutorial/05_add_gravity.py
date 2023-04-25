@@ -106,7 +106,8 @@ class MyGame(arcade.Window):
         """Called whenever a key is pressed."""
 
         if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
