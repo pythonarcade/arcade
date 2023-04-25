@@ -1,6 +1,6 @@
 import sys
 import traceback
-from typing import TypeVar, Optional, Union, Callable
+from typing import TypeVar, Optional, Union, Callable, Any
 from weakref import WeakKeyDictionary, ref
 
 
@@ -14,7 +14,7 @@ class _Obs:
     def __init__(self) -> None:
         self.value = None
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners = set()
+        self.listeners: Set[Callable] = set()
 
 
 P = TypeVar("P")
@@ -31,14 +31,14 @@ class Property:
     __slots__ = "name", "default_factory", "obs"
     name: str
 
-    def __init__(self, default: Optional[object]=None, default_factory: callable=None) -> None:
+    def __init__(self, default: Any=None, default_factory: Callable=None) -> None:
         if default_factory is None:
             default_factory = lambda prop, instance: default
 
         self.default_factory = default_factory
-        self.obs = WeakKeyDictionary()
+        self.obs: WeakKeyDictionary[Any: _Obs] = WeakKeyDictionary()
 
-    def _get_obs(self, instance: Optional[object]) -> _Obs:
+    def _get_obs(self, instance: Any) -> _Obs:
         obs = self.obs.get(instance)
         if obs is None:
             obs = _Obs()
@@ -46,17 +46,17 @@ class Property:
             self.obs[instance] = obs
         return obs
 
-    def get(self, instance: Optional[object]) -> Optional[object]:
+    def get(self, instance: Any) -> Any:
         obs = self._get_obs(instance)
         return obs.value
 
-    def set(self, instance: Optional[object], value: Optional[object]) -> None:
+    def set(self, instance: Any, value: Any) -> None:
         obs = self._get_obs(instance)
         if obs.value != value:
             obs.value = value
             self.dispatch(instance, value)
 
-    def dispatch(self, instance: Optional[object], value: Optional[object]) -> None:
+    def dispatch(self, instance: Any, value: Any) -> None:
         obs = self._get_obs(instance)
         for listener in obs.listeners:
             try:
@@ -68,7 +68,7 @@ class Property:
                 )
                 traceback.print_exc()
 
-    def bind(self, instance: Optional[object], callback: callable) -> None:
+    def bind(self, instance: Any, callback: Callable) -> None:
         obs = self._get_obs(instance)
         # Instance methods are bound methods, which can not be referenced by normal `ref()`
         # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
@@ -77,16 +77,16 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Optional[object], owner) -> Optional[object]:
+    def __get__(self, instance: Any, owner) -> Any:
         if instance is None:
             return self
         return self.get(instance)
 
-    def __set__(self, instance: Optional[object], value: Optional[object]) -> None:
+    def __set__(self, instance: Any, value: Any) -> None:
         self.set(instance, value)
 
 
-def bind(instance, property: str, callback: callable) -> None:
+def bind(instance, property: str, callback: Callable) -> None:
     """
     Binds a function to the change event of the property. A reference to the function will be kept,
     so that it will be still invoked, even if it would normally have been garbage collected.
@@ -136,21 +136,21 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs):
+    def pop(self, *largs: list):
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
 
-    def popitem(self):
+    def popitem(self: list):
         result = dict.popitem(self)
         self.dispatch()
         return result
 
-    def setdefault(self, *largs) -> None:
+    def setdefault(self, *largs: list) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs) -> None:
+    def update(self, *largs: list) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -164,14 +164,14 @@ class DictProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableDict)
 
-    def set(self, instance, value: dict) -> None:
+    def set(self, instance: Any, value: dict) -> None:
         value = _ObservableDict(self, instance, value)
         super().set(instance, value)
 
 
 class _ObservableList(list):
     # Internal class to observe changes inside a native python list.
-    def __init__(self, prop: Property, instance, *largs) -> None:
+    def __init__(self, prop: Property, instance: Any, *largs: list) -> None:
         self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
@@ -179,25 +179,25 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key: Any, value: list) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
-    def __delitem__(self, key) -> None:
+    def __delitem__(self, key: Any) -> None:
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs):  # type: ignore
+    def __iadd__(self, *largs: list) -> _ObservableList:  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
 
-    def __imul__(self, *largs):  # type: ignore
+    def __imul__(self, *largs: list) -> _ObservableList:  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
 
-    def append(self, *largs) -> None:
+    def append(self, *largs: list) -> None:
         list.append(self, *largs)
         self.dispatch()
 
@@ -205,24 +205,24 @@ class _ObservableList(list):
         list.clear(self)
         self.dispatch()
 
-    def remove(self, *largs) -> None:
+    def remove(self, *largs: list) -> None:
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs) -> None:
+    def insert(self, *largs: list) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs) -> None:
+    def pop(self, *largs: list) -> None:
         result = list.pop(self, *largs)
         self.dispatch()
         return result
 
-    def extend(self, *largs) -> None:
+    def extend(self, *largs: list) -> None:
         list.extend(self, *largs)
         self.dispatch()
 
-    def sort(self, **kwargs) -> None:
+    def sort(self, **kwargs: dict) -> None:
         list.sort(self, **kwargs)
         self.dispatch()
 
@@ -240,6 +240,6 @@ class ListProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableList)
 
-    def set(self, instance, value: dict) -> None:
+    def set(self, instance: Any, value: dict) -> None:
         value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)
