@@ -6,8 +6,8 @@ python -m arcade.examples.platform_tutorial.04_user_control
 import arcade
 
 # Constants
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 650
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
