@@ -218,11 +218,11 @@ class _ObservableList(list):
         self.dispatch()
         return result
 
-    def extend(self, *largs: list) -> None:
+    def extend(self, *largs: Iterable[Any, ...]) -> None:
         list.extend(self, *largs)
         self.dispatch()
 
-    def sort(self, **kwargs: dict) -> None:
+    def sort(self, **kwargs: Dict) -> None:
         list.sort(self, **kwargs)
         self.dispatch()
 

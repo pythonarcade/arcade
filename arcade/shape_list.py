@@ -68,8 +68,8 @@ class Shape:
         self.data = array("f", [c for a in zip(self.points, self.colors) for b in a for c in b])
         self.vertices = len(points)
 
-        self.geometry = None
-        self.buffer = None
+        self.geometry: ["Geometry"] = None
+        self.buffer: Optional[ArcadeContext] = None
 
     def _init_geometry(self) -> None:
         # NOTE: When drawing a single shape we're not using an index buffer
@@ -735,11 +735,11 @@ class ShapeElementList(Generic[TShape]):
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
         self.shape_list: List[TShape] = []
-        self.change_x = 0
-        self.change_y = 0
-        self._center_x = 0
-        self._center_y = 0
-        self._angle = 0
+        self.change_x: float = 0
+        self.change_y: float = 0
+        self._center_x: float = 0
+        self._center_y: float = 0
+        self._angle: float = 0
         self.program = self.ctx.shape_element_list_program
         self.batches: Dict[int, _Batch] = OrderedDict()
         self.dirties: Set[_Batch] = set()

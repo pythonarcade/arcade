@@ -177,7 +177,7 @@ def ease_angle(start_angle: float, end_angle: float, *,
     return easing_data
 
 
-def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, EasingData]:
+def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float]:
     """
     Update angle easing.
     """

@@ -11,7 +11,7 @@ import pyglet
 
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
-from pyglet.window import MouseCursor, DefaultMouseCursor
+from pyglet.window import MouseCursor, DefaultMouseCursor, XlibMouseCursor
 
 import arcade
 from arcade import get_display_size
@@ -20,7 +20,7 @@ from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.types import Color, RGBA255, RGBA255OrNormalized
-from arcade import SectionManager
+from arcade import SectionManager, Section
 from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
@@ -958,7 +958,7 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section: Optional["Section"], at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(self, section: Optional[Section], at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 
