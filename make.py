@@ -166,8 +166,8 @@ def qthelp():
     run([SPHINXBUILD, "-b", "qthelp", *ALLSPHINXOPTS, f"{BUILDDIR}/qthelp"])
     print()
     print('Build finished; now you can run "qcollectiongenerator" with the' +
-          ".qhcp project file in $(BUILDDIR)/qthelp, like this:")
-    print("# qcollectiongenerator $(BUILDDIR)/qthelp/Arcade.qhcp")
+          f".qhcp project file in {FULL_BUILD_PREFIX}/qthelp, like this:")
+    print(f"# qcollectiongenerator {FULL_BUILD_PREFIX}/qthelp/Arcade.qhcp")
     print("To view the help file:")
     print(f"# assistant -collectionFile {FULL_BUILD_PREFIX}/qthelp/Arcade.qhc")
 
