@@ -116,6 +116,16 @@ def cd_context(directory: PathLike) -> Generator[Path, None, None]:
 
 
 def run(args: Union[str, List[str]], cd: Optional[PathLike] = None) -> None:
+    """
+    Try to run `args` with subprocess, switching into & out of `cd` if provided.
+
+    Switching back out should occur regardless of any exceptions, unless the
+    interpreter crashes.
+
+    :param args: the command to run.
+    :param cd: a directory to switch into beforehand, if any.
+    :return:
+    """
     if cd is not None:
         with cd_context(_resolve(cd, strict=True)):
             result = subprocess.run(args)
