@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
 
         # SpriteList for our boxes and ground
         # Putting our ground and box Sprites in the same SpriteList
-        # will make it easier to perform collision detectio against
+        # will make it easier to perform collision detection against
         # them later on. Setting the spatial hash to True will make
         # collision detection much faster if the objects in this
         # SpriteList do not move.

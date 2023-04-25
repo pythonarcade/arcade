@@ -117,7 +117,7 @@ Source Code
 
     Once you have the code up and working, try-out the following:
 
-    * See if you can change the colors of all the boxes and groud using the SpriteList
+    * See if you can change the colors of all the boxes and ground using the SpriteList
     * Try and make a SpriteList invisible
 
 Run This Chapter
