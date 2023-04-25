@@ -119,4 +119,10 @@ Source Code
 
     * See if you can change the colors of all the boxes and groud using the SpriteList
     * Try and make a SpriteList invisible
-    
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.03_more_sprites

@@ -51,3 +51,10 @@ Once you get the code working, try figuring out how to adjust the code so you ca
 
 * Look through the documentation for the :class:`arcade.Window`
   class to get an idea of everything it can do.
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.01_open_window

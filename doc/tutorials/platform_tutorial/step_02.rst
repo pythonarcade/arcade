@@ -93,3 +93,10 @@ the image at the start of the chapter.
     * Adjust the code and try putting the sprite in new positions(Try setting the positions using other attributes of Sprite)
     * Use different images for the texture (see :ref:`resources` for the built-in images, or try using your own images.)
     * Practice placing more sprites in different ways(like placing many with a loop)
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.02_draw_sprites
