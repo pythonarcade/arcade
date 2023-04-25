@@ -9,12 +9,15 @@ from typing import Union, List
 
 
 # General sphinx state / options
-SPHINXOPTS      = []
-SPHINXBUILD     = "sphinx-build"
-SPHINXAUTOBUILD = "sphinx-autobuild"
-PAPER_SIZE      = None
-DOCDIR          = "doc"
-BUILDDIR        = "build"
+SPHINXOPTS        = []
+SPHINXBUILD       = "sphinx-build"
+SPHINXAUTOBUILD   = "sphinx-autobuild"
+PAPER_SIZE        = None
+DOCDIR            = "doc"
+BUILDDIR          = "build"
+
+# Used for user output; relative to project root
+FULL_BUILD_PREFIX = f"{DOCDIR}/{BUILDDIR}"
 
 
 # Linting
@@ -91,7 +94,7 @@ def html():
     """
     run([SPHINXBUILD, "-b", "html", *ALLSPHINXOPTS, f"{BUILDDIR}/html"])
     print()
-    print("Build finished. The HTML pages are in $(BUILDDIR)/html.")
+    print(f"Build finished. The HTML pages are in {FULL_BUILD_PREFIX}/html.")
 
 
 @app.command()
@@ -109,7 +112,7 @@ def dirhtml():
     """
     run([SPHINXBUILD, "-b", "dirhtml", *ALLSPHINXOPTS, f"{BUILDDIR}/dirhtml"])
     print()
-    print("Build finished. The HTML pages are in $(BUILDDIR)/dirhtml.")
+    print(f"Build finished. The HTML pages are in {FULL_BUILD_PREFIX}/dirhtml.")
 
 
 @app.command()
@@ -119,7 +122,7 @@ def singlehtml():
     """
     run([SPHINXBUILD, "-b", "singlehtml", *ALLSPHINXOPTS, f"{BUILDDIR}/singlehtml"])
     print()
-    print("Build finished. The HTML page is in $(BUILDDIR)/singlehtml.")
+    print(f"Build finished. The HTML page is in {FULL_BUILD_PREFIX}/singlehtml.")
 
 
 @app.command()
@@ -150,7 +153,7 @@ def htmlhelp():
     run([SPHINXBUILD, "-b", "htmlhelp", *ALLSPHINXOPTS, f"{BUILDDIR}/htmlhelp"])
     print()
     print("Build finished; now you can run HTML Help Workshop with the" +
-          ".hhp project file in $(BUILDDIR)/htmlhelp.")
+          f".hhp project file in {FULL_BUILD_PREFIX}/htmlhelp.")
 
 
 @app.command()
@@ -161,10 +164,10 @@ def qthelp():
     run([SPHINXBUILD, "-b", "qthelp", *ALLSPHINXOPTS, f"{BUILDDIR}/qthelp"])
     print()
     print('Build finished; now you can run "qcollectiongenerator" with the' +
-          ".qhcp project file in $(BUILDDIR)/qthelp, like this:")
-    print("# qcollectiongenerator $(BUILDDIR)/qthelp/Arcade.qhcp")
+          f".qhcp project file in {FULL_BUILD_PREFIX}/qthelp, like this:")
+    print(f"# qcollectiongenerator {FULL_BUILD_PREFIX}/qthelp/Arcade.qhcp")
     print("To view the help file:")
-    print("# assistant -collectionFile $(BUILDDIR)/qthelp/Arcade.qhc")
+    print(f"# assistant -collectionFile {FULL_BUILD_PREFIX}/qthelp/Arcade.qhc")
 
 
 @app.command()
@@ -174,7 +177,7 @@ def applehelp():
     """
     run([SPHINXBUILD, "-b", "applehelp", *ALLSPHINXOPTS, f"{BUILDDIR}/applehelp"])
     print()
-    print("Build finished. The help book is in $(BUILDDIR)/applehelp.")
+    print(f"Build finished. The help book is in {FULL_BUILD_PREFIX}/applehelp.")
     print("N.B. You won't be able to view it unless you put it in" +
           "~/Library/Documentation/Help or install it in your application" +
           "bundle.")
@@ -185,12 +188,13 @@ def devhelp():
     """
     to make HTML files and a Devhelp project
     """
+    home = Path.home().expanduser().resolve(strict=True)
     run([SPHINXBUILD, "-b", "devhelp", *ALLSPHINXOPTS, f"{BUILDDIR}/devhelp"])
     print()
     print("Build finished.")
     print("To view the help file:")
-    print("# mkdir -p $$HOME/.local/share/devhelp/Arcade")
-    print("# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Arcade")
+    print(f"# mkdir -p {home}/.local/share/devhelp/Arcade")
+    print(f"# ln -s {FULL_BUILD_PREFIX}/devhelp {home}/.local/share/devhelp/Arcade")
     print("# devhelp")
 
 
@@ -201,7 +205,7 @@ def epub():
     """
     run([SPHINXBUILD, "-b", "epub", *ALLSPHINXOPTS, f"{BUILDDIR}/epub"])
     print()
-    print("Build finished. The epub file is in $(BUILDDIR)/epub.")
+    print(f"Build finished. The epub file is in {FULL_BUILD_PREFIX}/epub.")
 
 
 @app.command()
@@ -211,7 +215,7 @@ def latex():
     """
     run([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print()
-    print("Build finished; the LaTeX files are in $(BUILDDIR)/latex.")
+    print(f"Build finished; the LaTeX files are in {FULL_BUILD_PREFIX}/latex.")
     print("Run \`make' in that directory to run these through (pdf)latex" +
           "(use \`make latexpdf' here to do that automatically).")
 
@@ -224,7 +228,7 @@ def latexpdf():
     run([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print("Running LaTeX files through pdflatex...")
     run(['make', '-C', f'{BUILDDIR}/latex', 'all-pdf'])
-    print("pdflatex finished; the PDF files are in $(BUILDDIR)/latex.")
+    print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
 @app.command()
@@ -235,7 +239,7 @@ def latexpdfja():
     run([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print("Running LaTeX files through platex and dvipdfmx...")
     run(['make', '-C', f'{BUILDDIR}/latex', 'all-pdf-ja'])
-    print("pdflatex finished; the PDF files are in $(BUILDDIR)/latex.")
+    print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
 @app.command()
@@ -245,7 +249,7 @@ def text():
     """
     run([SPHINXBUILD, "-b", "text", *ALLSPHINXOPTS, f"{BUILDDIR}/text"])
     print()
-    print("Build finished. The text files are in $(BUILDDIR)/text.")
+    print(f"Build finished. The text files are in {FULL_BUILD_PREFIX}/text.")
 
 
 @app.command()
@@ -255,7 +259,7 @@ def man():
     """
     run([SPHINXBUILD, "-b", "man", *ALLSPHINXOPTS, f"{BUILDDIR}/man"])
     print()
-    print("Build finished. The manual pages are in $(BUILDDIR)/man.")
+    print(f"Build finished. The manual pages are in {FULL_BUILD_PREFIX}/man.")
 
 
 @app.command()
@@ -265,7 +269,7 @@ def texinfo():
     """
     run([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print()
-    print("Build finished. The Texinfo files are in $(BUILDDIR)/texinfo.")
+    print(f"Build finished. The Texinfo files are in {FULL_BUILD_PREFIX}/texinfo.")
     print("Run \`make' in that directory to run these through makeinfo" +
           "(use \`make info' here to do that automatically).")
 
@@ -278,7 +282,7 @@ def info():
     run([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print("Running Texinfo files through makeinfo...")
     run(['make', '-C', f'{BUILDDIR}/texinfo', 'info'])
-    print("makeinfo finished; the Info files are in $(BUILDDIR)/texinfo.")
+    print(f"makeinfo finished; the Info files are in {FULL_BUILD_PREFIX}/texinfo.")
 
 
 @app.command()
@@ -288,7 +292,7 @@ def gettext():
     """
     run([SPHINXBUILD, "-b", "gettext", *I18NSPHINXOPTS, f"{BUILDDIR}/locale"])
     print()
-    print("Build finished. The message catalogs are in $(BUILDDIR)/locale.")
+    print(f"Build finished. The message catalogs are in {FULL_BUILD_PREFIX}/locale.")
 
 
 @app.command()
@@ -298,7 +302,7 @@ def changes():
     """
     run([SPHINXBUILD, "-b", "changes", *ALLSPHINXOPTS, f"{BUILDDIR}/changes"])
     print()
-    print("The overview file is in $(BUILDDIR)/changes.")
+    print(f"The overview file is in {FULL_BUILD_PREFIX}/changes.")
 
 
 @app.command()
@@ -309,7 +313,7 @@ def linkcheck():
     run([SPHINXBUILD, "-b", "linkcheck", *ALLSPHINXOPTS, f"{BUILDDIR}/linkcheck"])
     print()
     print("Link check complete; look for any errors in the above output " +
-          "or in $(BUILDDIR)/linkcheck/output.txt.")
+          f"or in {FULL_BUILD_PREFIX}/linkcheck/output.txt.")
 
 
 @app.command()
@@ -319,7 +323,7 @@ def doctest():
     """
     run([SPHINXBUILD, "-b", "doctest", *ALLSPHINXOPTS, f"{BUILDDIR}/doctest"])
     print("Testing of doctests in the sources finished, look at the " +
-          "results in $(BUILDDIR)/doctest/output.txt.")
+          f"results in {FULL_BUILD_PREFIX}/doctest/output.txt.")
 
 
 @app.command()
@@ -329,21 +333,21 @@ def coverage():
     """
     run([SPHINXBUILD, "-b", "coverage", *ALLSPHINXOPTS, f"{BUILDDIR}/coverage"])
     print("Testing of coverage in the sources finished, look at the " +
-          "results in $(BUILDDIR)/coverage/python.txt.")
+          f"results in {FULL_BUILD_PREFIX}/coverage/python.txt.")
 
 
 @app.command()
 def xml():
     run([SPHINXBUILD, "-b", "xml", *ALLSPHINXOPTS, f"{BUILDDIR}/xml"])
     print()
-    print("Build finished. The XML files are in $(BUILDDIR)/xml.")
+    print(f"Build finished. The XML files are in {FULL_BUILD_PREFIX}/xml.")
 
 
 @app.command()
 def pseudoxml():
     run([SPHINXBUILD, "-b", "pseudoxml", *ALLSPHINXOPTS, f"{BUILDDIR}/pseudoxml"])
     print()
-    print("Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml.")
+    print(f"Build finished. The pseudo-XML files are in {FULL_BUILD_PREFIX}/pseudoxml.")
 
 
 @app.command()
