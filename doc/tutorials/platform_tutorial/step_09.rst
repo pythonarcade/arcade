@@ -64,4 +64,4 @@ Run This Chapter
 
 .. code-block::
 
-  python -m arcade.examples.platform_tutorial.08_coins
+  python -m arcade.examples.platform_tutorial.09_sound
