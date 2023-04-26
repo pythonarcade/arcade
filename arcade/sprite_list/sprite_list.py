@@ -134,11 +134,11 @@ class SpriteList(Generic[SpriteType]):
         # Index buffer
         self._sprite_index_data = array("i", [0] * self._idx_capacity)
 
-        self._sprite_pos_buf = None
-        self._sprite_size_buf = None
-        self._sprite_angle_buf = None
-        self._sprite_color_buf = None
-        self._sprite_texture_buf = None
+        self._sprite_pos_buf: Optional[Buffer] = None
+        self._sprite_size_buf: Optional[Buffer] = None
+        self._sprite_angle_buf: Optional[Buffer] = None
+        self._sprite_color_buf: Optional[Buffer] = None
+        self._sprite_texture_buf: Optional[Buffer] = None
         # Index buffer
         self._sprite_index_buf = None
 

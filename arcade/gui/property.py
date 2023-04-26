@@ -1,6 +1,16 @@
 import sys
 import traceback
-from typing import TypeVar, Optional, Union, Callable, Any
+from typing import (
+    TypeVar, 
+    Optional, 
+    Union, 
+    Callable, 
+    Any, 
+    Iterable, 
+    Dict, 
+    List, 
+    Set
+)
 from weakref import WeakKeyDictionary, ref
 
 
@@ -31,7 +41,7 @@ class Property:
     __slots__ = "name", "default_factory", "obs"
     name: str
 
-    def __init__(self, default: Any=None, default_factory: Callable=None) -> None:
+    def __init__(self, default: Any=None, default_factory: Optional[Callable]=None) -> None:
         if default_factory is None:
             default_factory = lambda prop, instance: default
 
@@ -136,21 +146,21 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: list):
+    def pop(self, *largs: List):
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
 
-    def popitem(self: list):
+    def popitem(self: List):
         result = dict.popitem(self)
         self.dispatch()
         return result
 
-    def setdefault(self, *largs: list) -> None:
+    def setdefault(self, *largs: List) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: list) -> None:
+    def update(self, *largs: List) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -164,14 +174,14 @@ class DictProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableDict)
 
-    def set(self, instance: Any, value: dict) -> None:
+    def set(self, instance: Any, value: Dict) -> None:
         value = _ObservableDict(self, instance, value)
         super().set(instance, value)
 
 
 class _ObservableList(list):
     # Internal class to observe changes inside a native python list.
-    def __init__(self, prop: Property, instance: Any, *largs: list) -> None:
+    def __init__(self, prop: Property, instance: Any, *largs: List) -> None:
         self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
@@ -179,7 +189,7 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key: Any, value: list) -> None:
+    def __setitem__(self, key: Any, value: List) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
@@ -187,17 +197,17 @@ class _ObservableList(list):
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs: list) -> _ObservableList:  # type: ignore
+    def __iadd__(self, *largs: List) -> _ObservableList:  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
 
-    def __imul__(self, *largs: list) -> _ObservableList:  # type: ignore
+    def __imul__(self, *largs: List) -> _ObservableList:  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
 
-    def append(self, *largs: list) -> None:
+    def append(self, *largs: List) -> None:
         list.append(self, *largs)
         self.dispatch()
 
@@ -205,15 +215,15 @@ class _ObservableList(list):
         list.clear(self)
         self.dispatch()
 
-    def remove(self, *largs: list) -> None:
+    def remove(self, *largs: List) -> None:
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs: list) -> None:
+    def insert(self, *largs: List) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs: list) -> None:
+    def pop(self, *largs: List) -> None:
         result = list.pop(self, *largs)
         self.dispatch()
         return result
@@ -240,6 +250,6 @@ class ListProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableList)
 
-    def set(self, instance: Any, value: dict) -> None:
+    def set(self, instance: Any, value: Dict) -> None:
         value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)

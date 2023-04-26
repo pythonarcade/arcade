@@ -11,7 +11,7 @@ import pyglet
 
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
-from pyglet.window import MouseCursor, DefaultMouseCursor, XlibMouseCursor
+from pyglet.window import MouseCursor, XlibMouseCursor, DefaultMouseCursor
 
 import arcade
 from arcade import get_display_size
@@ -868,7 +868,7 @@ class Window(pyglet.window.Window):
         """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
-    def get_system_mouse_cursor(self, name: str) -> Optional[DefualtMouseCursor, XlibMouseCursor]:
+    def get_system_mouse_cursor(self, name: str) -> Optional[DefaultMouseCursor, XlibMouseCursor]:
         """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 
@@ -958,7 +958,7 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section: Optional[Section], at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(self, section: Section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 

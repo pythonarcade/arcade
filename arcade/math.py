@@ -190,8 +190,8 @@ def rand_vec_magnitude(
     :param hi_magnitude: The higher magnitude
     :return: A random vector
     """
-    mag = random.uniform(lo_magnitude, hi_magnitude)
-    vel = _Vec2.from_polar(angle, mag)
+    mag: float = random.uniform(lo_magnitude, hi_magnitude)
+    vel: _Vec2 = _Vec2.from_polar(angle, mag)
     return vel.as_tuple()
 
 
