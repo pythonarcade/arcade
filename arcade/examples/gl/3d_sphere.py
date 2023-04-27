@@ -154,7 +154,7 @@ class Sphere3D(arcade.Window):
             else:
                 self.flags.add(self.ctx.CULL_FACE)
 
-        self.text_wireframe.text = f"SPACE: Toggle wireframe ({self.ctx.wireframe})"
+        self.text_wireframe.text = f"SPACE: Toggle wireframe ({self.wireframe})"
         self.text_fs.text = f"F: Toggle fullscreen ({self.fullscreen})"
         self.text_depth.text = f"F1: Toggle depth test ({self.ctx.DEPTH_TEST in self.flags})"
         self.text_cull.text = f"F2: Toggle cull face ({self.ctx.CULL_FACE in self.flags})"
