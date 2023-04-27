@@ -1,6 +1,8 @@
 """
 Depth-sort sprites using a depth buffer in the GL context.
 
+Press the space bar to toggle depth testing during drawing.
+
 During each update, the depth of each sprite is updated to follow a
 cosine wave. Afterward, the following is drawn:
 
@@ -36,6 +38,7 @@ class MyGame(arcade.Window):
 
         self.sprite_list = arcade.SpriteList()
         self.time = 0.0
+        self.use_depth: bool = True
 
         for i in range(NUM_SPRITES):
             sprite = arcade.Sprite(
@@ -48,8 +51,11 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        # This context manager temporarily enables depth testing
-        with self.ctx.enabled(self.ctx.DEPTH_TEST):
+        if self.use_depth:
+            # This context manager temporarily enables depth testing
+            with self.ctx.enabled(self.ctx.DEPTH_TEST):
+                self.sprite_list.draw()
+        else:
             self.sprite_list.draw()
 
         # Draw wave visualization markers over each sprite
@@ -58,6 +64,10 @@ class MyGame(arcade.Window):
                 SPRITE_X_START + SPRITE_X_STEP * i, SPRITE_Y + sprite.depth,
                 arcade.color.WHITE, DOT_SIZE
             )
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.SPACE:
+            self.use_depth = not self.use_depth
 
     def on_update(self, delta_time):
         self.time += delta_time
