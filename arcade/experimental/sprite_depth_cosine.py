@@ -5,10 +5,11 @@ During each update, the depth of each sprite is updated to follow a
 cosine wave. Afterward, the following is drawn:
 
  * All sprites in depth-sorted order
- * A white square for every sprite moving with the wave along the y axis
+ * A white square centered over each sprite along the x-axis, and moving
+   with the wave along the y-axis
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.experimental.sprite_depth_cosine
+python -m arcade.experimental.sprite_depth_cosine
 """
 import math
 import arcade
@@ -29,7 +30,7 @@ DOT_SIZE = 10
 class MyGame(arcade.Window):
 
     def __init__(self):
-        super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example")
+        super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
 
         texture = arcade.load_texture(":resources:images/test_textures/xy_square.png")
 
