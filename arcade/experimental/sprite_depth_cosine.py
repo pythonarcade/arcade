@@ -15,6 +15,7 @@ python -m arcade.experimental.sprite_depth_cosine
 """
 import math
 import arcade
+from pyglet.graphics import Batch
 
 
 # All constants are in pixels
@@ -35,10 +36,17 @@ class MyGame(arcade.Window):
         super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
 
         texture = arcade.load_texture(":resources:images/test_textures/xy_square.png")
+        self.text_batch = Batch()
+
+        self.use_depth: bool = True
+        self.text_use_depth = arcade.Text(
+            "SPACE: Toggle depth testing (True)",
+            start_x=10, start_y=30, font_size=15, color=arcade.color.WHITE,
+            batch=self.text_batch
+        )
 
         self.sprite_list = arcade.SpriteList()
         self.time = 0.0
-        self.use_depth: bool = True
 
         for i in range(NUM_SPRITES):
             sprite = arcade.Sprite(
@@ -65,9 +73,12 @@ class MyGame(arcade.Window):
                 arcade.color.WHITE, DOT_SIZE
             )
 
+        self.text_batch.draw()
+
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
             self.use_depth = not self.use_depth
+            self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
         self.time += delta_time
