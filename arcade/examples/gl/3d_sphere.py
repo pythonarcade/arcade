@@ -68,7 +68,7 @@ class Sphere3D(arcade.Window):
 
         self.text_batch = Batch()
         self.text_cull = arcade.Text(
-            "F2: Toggle cull face (true)",
+            "F2: Toggle cull face (True)",
             start_x=10, start_y=10, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
