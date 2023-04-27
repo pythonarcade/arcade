@@ -961,11 +961,11 @@ class SpriteList(Generic[SpriteType]):
         """
         Draw this list of sprites.
 
-        :param filter: Optional parameter to set OpenGL filter, such as
+        :param Optional[gl filter] filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
-        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
+        :param bool pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
                           Shortcut for setting filter=GL_NEAREST.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
+        :param Optional[gl blend function] blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:

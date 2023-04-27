@@ -11,7 +11,7 @@ import pyglet
 
 import pyglet.gl as gl
 from pyglet.canvas.base import ScreenMode
-from pyglet.window import MouseCursor, XlibMouseCursor, DefaultMouseCursor
+from pyglet.window import MouseCursor
 
 import arcade
 from arcade import get_display_size
@@ -868,7 +868,7 @@ class Window(pyglet.window.Window):
         """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
-    def get_system_mouse_cursor(self, name: str) -> Optional[DefaultMouseCursor, XlibMouseCursor]:
+    def get_system_mouse_cursor(self, name: str) -> Optional[MouseCursor]:
         """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 

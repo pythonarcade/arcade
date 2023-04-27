@@ -46,7 +46,7 @@ class Property:
             default_factory = lambda prop, instance: default
 
         self.default_factory = default_factory
-        self.obs: WeakKeyDictionary[Any: _Obs] = WeakKeyDictionary()
+        self.obs: WeakKeyDictionary[Any, _Obs] = WeakKeyDictionary()
 
     def _get_obs(self, instance: Any) -> _Obs:
         obs = self.obs.get(instance)
@@ -87,7 +87,7 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Any, owner) -> Any:
+    def __get__(self, instance: Any, owner) -> Union[Property, Any]:
         if instance is None:
             return self
         return self.get(instance)
@@ -146,21 +146,21 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: List):
+    def pop(self, *largs: List[Any]) -> Any:
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
 
-    def popitem(self: List):
+    def popitem(self) -> Tuple[Any, Any]:
         result = dict.popitem(self)
         self.dispatch()
         return result
 
-    def setdefault(self, *largs: List) -> None:
+    def setdefault(self, *largs: List[Any]) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: List) -> None:
+    def update(self, *largs: List[Any]) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -189,7 +189,7 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key: Any, value: List) -> None:
+    def __setitem__(self, key: Any, value: List[Any]) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
@@ -202,7 +202,7 @@ class _ObservableList(list):
         self.dispatch()
         return self
 
-    def __imul__(self, *largs: List) -> _ObservableList:  # type: ignore
+    def __imul__(self, *largs: List[Any]) -> _ObservableList:  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
@@ -219,16 +219,16 @@ class _ObservableList(list):
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs: List) -> None:
+    def insert(self, *largs: List[Any]) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs: List) -> None:
+    def pop(self, *largs: List[Any]) -> Any:
         result = list.pop(self, *largs)
         self.dispatch()
         return result
 
-    def extend(self, *largs: Iterable[Any, ...]) -> None:
+    def extend(self, *largs: List) -> None:
         list.extend(self, *largs)
         self.dispatch()
 
