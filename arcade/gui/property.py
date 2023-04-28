@@ -149,7 +149,7 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: Union[Dict[Any, Any], MutableMapping[Any, Any]]) -> Any:
+    def pop(self, *largs: Any) -> Any:
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
@@ -163,7 +163,7 @@ class _ObservableDict(dict):
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: Any) -> None:
+    def update(self, *largs: Iterable) -> None:
         dict.update(self, *largs)
         self.dispatch()
 

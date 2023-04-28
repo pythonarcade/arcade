@@ -5,7 +5,7 @@ derive from.
 import logging
 import os
 import time
-from typing import Tuple, Optional
+from typing import List, Tuple, Optional
 
 import pyglet
 
@@ -783,7 +783,7 @@ class Window(pyglet.window.Window):
     def _create(self) -> None:
         super()._create()
 
-    def _recreate(self, changes: [str]) -> None:
+    def _recreate(self, changes: List[str]) -> None:
         super()._recreate(changes)
 
     def flip(self) -> None:
