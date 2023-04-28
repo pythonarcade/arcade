@@ -25,11 +25,10 @@ from typing import (
 
 import pyglet.gl as gl
 
-from arcade.types import Color, Point, PointList, RGBA255
+from arcade.types import Color, Point, PointList, RGBA255, BufferProtocol
 from arcade import get_window, get_points_for_thick_line
 from arcade.gl import BufferDescription
 from arcade.gl import Program
-from ..types import BufferProtocol
 from .vertex_array import Geometry
 from arcade import ArcadeContext
 

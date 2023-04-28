@@ -90,7 +90,7 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Property, owner) -> Property:
+    def __get__(self, instance: Any, owner) -> Union[Property, Any]:
         if instance is None:
             return self
         return self.get(instance)
@@ -149,7 +149,7 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: MutableMapping) -> Any:
+    def pop(self, *largs: Union[Dict[Any, Any], MutableMapping[Any, Any]]) -> Any:
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
@@ -159,11 +159,11 @@ class _ObservableDict(dict):
         self.dispatch()
         return result
 
-    def setdefault(self, *largs: MutableMapping) -> None:
+    def setdefault(self, *largs: Any) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: MutableMapping) -> None:
+    def update(self, *largs: Any) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -192,7 +192,7 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key: Any, value: MutableSequence) -> None:
+    def __setitem__(self, key: Union[int, slice], value: Any) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
@@ -222,7 +222,7 @@ class _ObservableList(list):
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs: int) -> None:
+    def insert(self, *largs: Any) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
@@ -235,7 +235,7 @@ class _ObservableList(list):
         list.extend(self, *largs)
         self.dispatch()
 
-    def sort(self, **kwargs: Callable) -> None:
+    def sort(self, **kwargs) -> None:
         list.sort(self, **kwargs)
         self.dispatch()
 
