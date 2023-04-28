@@ -90,7 +90,7 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Any, owner) -> Union[Property, Any]:
+    def __get__(self, instance: Any, owner) -> Any:
         if instance is None:
             return self
         return self.get(instance)

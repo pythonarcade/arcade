@@ -27,9 +27,7 @@ import pyglet.gl as gl
 
 from arcade.types import Color, Point, PointList, RGBA255, BufferProtocol
 from arcade import get_window, get_points_for_thick_line
-from arcade.gl import BufferDescription
-from arcade.gl import Program
-from .vertex_array import Geometry
+from arcade.gl import BufferDescription, Program, Geometry
 from arcade import ArcadeContext
 
 from .math import rotate_point
@@ -70,8 +68,8 @@ class Shape:
         self.data = array("f", [c for a in zip(self.points, self.colors) for b in a for c in b])
         self.vertices = len(points)
 
-        self.geometry: [Geometry] = None
-        self.buffer: Optional[BufferProtocol] = None
+        self.geometry: Optional[Geometry] = None
+        self.buffer: Optional[Buffer] = None
 
     def _init_geometry(self) -> None:
         # NOTE: When drawing a single shape we're not using an index buffer
