@@ -1,15 +1,18 @@
 import sys
 import traceback
 from typing import (
-    TypeVar, 
-    Optional, 
-    Union, 
-    Callable, 
-    Any, 
-    Iterable, 
-    Dict, 
-    List, 
-    Set
+    TypeVar,
+    Optional,
+    Union,
+    Tuple,
+    Callable,
+    Any,
+    Iterable,
+    Dict,
+    List,
+    Set,
+    MutableMapping,
+    MutableSequence
 )
 from weakref import WeakKeyDictionary, ref
 
@@ -87,7 +90,7 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Any, owner) -> Union[Property, Any]:
+    def __get__(self, instance: Property, owner) -> Property:
         if instance is None:
             return self
         return self.get(instance)
@@ -146,7 +149,7 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: List[Any]) -> Any:
+    def pop(self, *largs: MutableMapping) -> Any:
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
@@ -156,11 +159,11 @@ class _ObservableDict(dict):
         self.dispatch()
         return result
 
-    def setdefault(self, *largs: List[Any]) -> None:
+    def setdefault(self, *largs: MutableMapping) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: List[Any]) -> None:
+    def update(self, *largs: MutableMapping) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -189,7 +192,7 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key: Any, value: List[Any]) -> None:
+    def __setitem__(self, key: Any, value: MutableSequence) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
@@ -202,12 +205,12 @@ class _ObservableList(list):
         self.dispatch()
         return self
 
-    def __imul__(self, *largs: List[Any]) -> _ObservableList:  # type: ignore
+    def __imul__(self, *largs: int) -> _ObservableList:  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
 
-    def append(self, *largs: List) -> None:
+    def append(self, *largs: Any) -> None:
         list.append(self, *largs)
         self.dispatch()
 
@@ -215,24 +218,24 @@ class _ObservableList(list):
         list.clear(self)
         self.dispatch()
 
-    def remove(self, *largs: List) -> None:
+    def remove(self, *largs: Any) -> None:
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs: List[Any]) -> None:
+    def insert(self, *largs: int) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs: List[Any]) -> Any:
+    def pop(self, *largs: int) -> Any:
         result = list.pop(self, *largs)
         self.dispatch()
         return result
 
-    def extend(self, *largs: List) -> None:
+    def extend(self, *largs: Iterable[Any]) -> None:
         list.extend(self, *largs)
         self.dispatch()
 
-    def sort(self, **kwargs: Dict) -> None:
+    def sort(self, **kwargs: Callable) -> None:
         list.sort(self, **kwargs)
         self.dispatch()
 
@@ -250,6 +253,6 @@ class ListProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableList)
 
-    def set(self, instance: Any, value: Dict) -> None:
+    def set(self, instance: Any, value: List) -> None:
         value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)
