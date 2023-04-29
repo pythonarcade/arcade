@@ -64,6 +64,27 @@ Upgrade by running the following command:
 pip install --upgrade pip
 ```
 
+### Optional: Enable running the build script with `./make.py` on Mac & Linux
+
+On Mac & Linux, you can enable running `make.py` using `./make.py` instead
+of `python make.py` as follows:
+
+1. Make sure you are in the root directory of the repo
+2. Run `chmod +x make.py`
+
+You can now substitute `./make.py` anywhere the rest of this document
+says `python make.py`.
+
+For example, this command:
+```commandline
+python make.py lint
+```
+
+can now be run this way:
+```shell
+./make.py lint
+```
+
 ## Testing
 
 You should test your changes locally before submitting a pull request
