@@ -1,0 +1,28 @@
+{
+    "include": ["arcade", "tests"],
+
+    // Sets a variety of strict typechecking rules which are loosened by the
+    // overrides below.
+    "typeCheckingMode": "strict",
+
+    // Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
+    "useLibraryCodeForTypes": true,
+    "reportMissingTypeStubs": "none",
+
+    // This flags everywhere we don't *explicitly* annotate types, even when the
+    // type is being inferred.
+    // IMO not necessary, since a *different* diagnostic will still flag when
+    // inference fails.
+    "reportMissingParameterType": false,
+
+    // Flags every time you access `_` properties from outside of the class.
+    // Not helpful IMO, too many good reasons for arcade to access its own internals.
+    "reportPrivateUsage": false,
+
+    "reportUnknownArgumentType": "none",
+    "reportUnknownParameterType": "none",
+    "reportUnknownMemberType": "none",
+    "reportUnknownVariableType": "none",
+
+    "reportUnusedImport": "information"
+}
