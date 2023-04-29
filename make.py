@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """
-Build script for documentation
+Build script to simplify running:
+
+* Tests
+* Code quality checks
+* Documentation builds
+
+For help, see the following:
+
+* CONTRIBUTING.md
+* The output of python make.py --help
 """
 import os
 from contextlib import contextmanager
