@@ -12,7 +12,7 @@ from typing import (
     List,
     Set,
     MutableMapping,
-    MutableSequence
+    Mapping,    
 )
 from weakref import WeakKeyDictionary, ref
 
@@ -163,7 +163,7 @@ class _ObservableDict(dict):
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: Union[Iterable[Tuple], MutableMapping]) -> None:
+    def update(self, *largs: Union[Iterable[Tuple], Mapping]) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
@@ -192,7 +192,7 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key: Union[int, slice], value: Any) -> None:
+    def __setitem__(self, key, value: Any) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
