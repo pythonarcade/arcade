@@ -19,3 +19,6 @@ makefile text
 *.mp3 binary
 *.gif binary
 *.wav binary
+
+# Tell github that pyrightconfig.json is JSONC and allows comments
+pyrightconfig.json linguist-language=JSONC
