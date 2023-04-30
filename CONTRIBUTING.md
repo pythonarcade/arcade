@@ -147,7 +147,7 @@ On Mac & Linux, you can enable running `make.py` using `./make.py` instead
 of `python make.py` as follows:
 
 1. Make sure you are in the root directory of the repo
-2. Run `chmod +x make.py`
+2. Run `chmod u+x make.py`
 
 You can run the make script with `./make.py` instead of `python make.py`.
 
