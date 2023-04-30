@@ -454,5 +454,13 @@ def test():
     run([PYTEST, UNITTESTS])
 
 
+@app.command()
+def whichshell():
+    """to find out which shell your system seems to be running"""
+
+    shell_name = Path(os.environ.get('SHELL')).stem
+    print(f"Your current shell appears to be: {shell_name}")
+
+
 if __name__ == "__main__":
     app()

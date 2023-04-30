@@ -64,7 +64,9 @@ Upgrade by running the following command:
 pip install --upgrade pip
 ```
 
-### Optional: Enable running the build script with `./make.py` on Mac & Linux
+### Optional: Improve Ergonomics on Mac and Linux
+
+#### Enable `./make.py`
 
 On Mac & Linux, you can enable running `make.py` using `./make.py` instead
 of `python make.py` as follows:
@@ -84,6 +86,36 @@ can now be run this way:
 ```shell
 ./make.py lint
 ```
+
+#### Enable Shell Completions
+
+After enabling the short-form syntax as outlined above, you can also enable tab
+completion for commands on the following supported shells:
+
+* `bash` (the most common default shell)
+* `zsh`
+* `fish`
+* `powershell`
+* `powersh`
+
+For example, if you have typed the following...
+```shell
+./make.py h
+```
+
+Tab completion would allow you to press tab to auto-complete the command:
+```shell
+./make.py html
+```
+
+To enable this feature, most users can follow these steps:
+
+1. Run `./make.py whichshell` to find out what your default shell is
+2. If it is one of the supported shells, run `./make.py --install-completion $(basename "$SHELL")`
+3. Restart your terminal
+
+If your default shell is not the shell you prefer using for arcade development,
+you may need to specify it to completion install command directly.
 
 ## Testing
 
