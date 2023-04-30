@@ -32,6 +32,7 @@ from . import geometry
 __all__ = [
     "Buffer",
     "BufferDescription",
+    "ComputeShader",
     "Context",
     "Framebuffer",
     "Geometry",
@@ -39,6 +40,6 @@ __all__ = [
     "Query",
     "ShaderException",
     "VertexArray",
-    "Texture",
+    "Texture2D",
     "geometry",
 ]

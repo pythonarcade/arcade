@@ -33,6 +33,8 @@ from arcade.types import RGBA255
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
+__all__ = ["Surface"]
+
 
 class Rect(NamedTuple):
     """

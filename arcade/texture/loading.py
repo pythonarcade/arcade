@@ -160,7 +160,7 @@ def _load_or_get_image(
 
 
 def load_texture_pair(
-    file_name: str,
+    file_name: Union[str, Path],
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None
 ) -> Tuple[Texture, Texture]:
     """

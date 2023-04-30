@@ -108,7 +108,7 @@ class TileMap:
     :param Union[str, Path] map_file: A JSON map file for a Tiled map to initialize from
     :param float scaling: Global scaling to apply to all Sprites.
     :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
-    :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+    :param bool use_spatial_hash: If set to True, this will make moving a sprite
            in the SpriteList slower, but it will speed up collision detection
            with items in the SpriteList. Great for doing collision detection
            with static walls/platforms.
@@ -179,7 +179,7 @@ class TileMap:
         map_file: Union[str, Path] = "",
         scaling: float = 1.0,
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
@@ -626,7 +626,7 @@ class TileMap:
         layer: pytiled_parser.ImageLayer,
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
@@ -717,7 +717,7 @@ class TileMap:
         layer: pytiled_parser.TileLayer,
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
@@ -792,7 +792,7 @@ class TileMap:
         layer: pytiled_parser.ObjectLayer,
         texture_atlas: "TextureAtlas",
         scaling: float = 1.0,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
@@ -984,7 +984,7 @@ def load_tilemap(
     map_file: Union[str, Path],
     scaling: float = 1.0,
     layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
-    use_spatial_hash: Optional[bool] = None,
+    use_spatial_hash: bool = False,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     offset: Vec2 = Vec2(0, 0),
     texture_atlas: Optional["TextureAtlas"] = None,
@@ -1001,7 +1001,7 @@ def load_tilemap(
 
     :param Union[str, Path] map_file: The JSON map file.
     :param float scaling: The global scaling to apply to all Sprite's within the map.
-    :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+    :param bool use_spatial_hash: If set to True, this will make moving a sprite
                in the SpriteList slower, but it will speed up collision detection
                with items in the SpriteList. Great for doing collision detection
                with static walls/platforms.
