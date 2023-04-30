@@ -1,5 +1,15 @@
+#!/usr/bin/env python3
 """
-Build script for documentation
+Build script to simplify running:
+
+* Tests
+* Code quality checks
+* Documentation builds
+
+For help, see the following:
+
+* CONTRIBUTING.md
+* The output of python make.py --help
 """
 import os
 from contextlib import contextmanager
@@ -442,6 +452,27 @@ def test_full():
 @app.command()
 def test():
     run([PYTEST, UNITTESTS])
+
+
+SHELLS_WITH_AUTOCOMPLETE = (
+    'bash',
+    'zsh',
+    'fish',
+    'powershell',
+    'powersh'
+)
+
+
+@app.command()
+def whichshell():
+    """to find out which shell your system seems to be running"""
+
+    shell_name = Path(os.environ.get('SHELL')).stem
+    print(f"Your default shell appears to be: {shell_name}")
+
+    if shell_name in SHELLS_WITH_AUTOCOMPLETE:
+        print("This shell is known to support tab-completion!")
+        print("See CONTRIBUTING.md for more information on how to enable it.")
 
 
 if __name__ == "__main__":
