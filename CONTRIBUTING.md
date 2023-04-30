@@ -189,4 +189,5 @@ To enable this feature, most users can follow these steps:
 3. Restart your terminal
 
 If your default shell is not the shell you prefer using for arcade development,
-you may need to specify it to the completion install command directly.
+you may need to specify it to the command above directly instead of using
+autodetection.
