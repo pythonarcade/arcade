@@ -151,7 +151,7 @@ def run_doc(args: Union[str, List[str]]) -> None:
     run(args, cd=FULL_DOC_DIR)
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def clean():
     """
     Delete built website files.
@@ -161,7 +161,7 @@ def clean():
             os.remove(item) if os.path.isfile(item) else rmtree(item)
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def html():
     """
     to make standalone HTML files
@@ -171,7 +171,7 @@ def html():
     print(f"Build finished. The HTML pages are in {FULL_BUILD_PREFIX}/html.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def serve():
     """
     Build and serve standalone HTML files, with automatic rebuilds and live reload.
@@ -179,7 +179,7 @@ def serve():
     run_doc([SPHINXAUTOBUILD, *SPHINXAUTOBUILDOPTS, '-b', 'html', *ALLSPHINXOPTS, f'{BUILDDIR}/html'])
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def dirhtml():
     """
     to make HTML files named index.html in directories
@@ -189,7 +189,7 @@ def dirhtml():
     print(f"Build finished. The HTML pages are in {FULL_BUILD_PREFIX}/dirhtml.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def singlehtml():
     """
     to make a single large HTML file
@@ -199,7 +199,7 @@ def singlehtml():
     print(f"Build finished. The HTML page is in {FULL_BUILD_PREFIX}/singlehtml.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def pickle():
     """
     to make pickle files
@@ -209,7 +209,7 @@ def pickle():
     print("Build finished; now you can process the pickle files.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def json():
     """
     to make JSON files
@@ -219,7 +219,7 @@ def json():
     print("Build finished; now you can process the JSON files.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def htmlhelp():
     """
     to make HTML files and a HTML help project
@@ -230,7 +230,7 @@ def htmlhelp():
           f".hhp project file in {FULL_BUILD_PREFIX}/htmlhelp.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def qthelp():
     """
     to make HTML files and a qthelp project
@@ -244,7 +244,7 @@ def qthelp():
     print(f"# assistant -collectionFile {FULL_BUILD_PREFIX}/qthelp/Arcade.qhc")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def applehelp():
     """
     to make an Apple Help Book
@@ -257,7 +257,7 @@ def applehelp():
           "bundle.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def devhelp():
     """
     to make HTML files and a Devhelp project
@@ -272,7 +272,7 @@ def devhelp():
     print("# devhelp")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def epub():
     """
     to make an epub
@@ -282,7 +282,7 @@ def epub():
     print(f"Build finished. The epub file is in {FULL_BUILD_PREFIX}/epub.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def latex():
     """
     to make LaTeX files, you can set PAPER_SIZE=a4 or PAPER_SIZE=letter
@@ -294,7 +294,7 @@ def latex():
           "(use \`make latexpdf' here to do that automatically).")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def latexpdf():
     """
     to make LaTeX files and run them through pdflatex
@@ -305,7 +305,7 @@ def latexpdf():
     print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def latexpdfja():
     """
     to make LaTeX files and run them through platex/dvipdfmx
@@ -316,7 +316,7 @@ def latexpdfja():
     print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def text():
     """
     to make text files
@@ -326,7 +326,7 @@ def text():
     print(f"Build finished. The text files are in {FULL_BUILD_PREFIX}/text.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def man():
     """
     to make manual pages
@@ -336,7 +336,7 @@ def man():
     print(f"Build finished. The manual pages are in {FULL_BUILD_PREFIX}/man.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def texinfo():
     """
     to make Texinfo files
@@ -348,7 +348,7 @@ def texinfo():
           "(use \`make info' here to do that automatically).")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def info():
     """
     to make Texinfo files and run them through makeinfo
@@ -359,7 +359,7 @@ def info():
     print(f"makeinfo finished; the Info files are in {FULL_BUILD_PREFIX}/texinfo.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def gettext():
     """
     to make PO message catalogs
@@ -369,7 +369,7 @@ def gettext():
     print(f"Build finished. The message catalogs are in {FULL_BUILD_PREFIX}/locale.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def changes():
     """
     to make an overview of all changed/added/deprecated items
@@ -379,7 +379,7 @@ def changes():
     print(f"The overview file is in {FULL_BUILD_PREFIX}/changes.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def linkcheck():
     """
     to check all external links for integrity
@@ -390,7 +390,7 @@ def linkcheck():
           f"or in {FULL_BUILD_PREFIX}/linkcheck/output.txt.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def doctest():
     """
     to run all doctests embedded in the documentation (if enabled)
@@ -400,7 +400,7 @@ def doctest():
           f"results in {FULL_BUILD_PREFIX}/doctest/output.txt.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def coverage():
     """
     to run coverage check of the documentation (if enabled)
@@ -410,21 +410,21 @@ def coverage():
           f"results in {FULL_BUILD_PREFIX}/coverage/python.txt.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def xml():
     run_doc([SPHINXBUILD, "-b", "xml", *ALLSPHINXOPTS, f"{BUILDDIR}/xml"])
     print()
     print(f"Build finished. The XML files are in {FULL_BUILD_PREFIX}/xml.")
 
 
-@app.command()
+@app.command(rich_help_panel="Docs")
 def pseudoxml():
     run_doc([SPHINXBUILD, "-b", "pseudoxml", *ALLSPHINXOPTS, f"{BUILDDIR}/pseudoxml"])
     print()
     print(f"Build finished. The pseudo-XML files are in {FULL_BUILD_PREFIX}/pseudoxml.")
 
 
-@app.command()
+@app.command(rich_help_panel="Coding")
 def lint():
     """
     Run all linting tasks: ruff and mypy
@@ -434,31 +434,32 @@ def lint():
     print("Linting Complete.")
 
 
-@app.command()
+@app.command(rich_help_panel="Coding")
 def ruff():
     run([RUFF, *RUFFOPTS])
     print("Ruff Finished.")
 
 
-@app.command()
+@app.command(rich_help_panel="Coding")
 def mypy():
     "Typecheck using mypy"
     run([MYPY, *MYPYOPTS])
     print("MyPy Finished.")
 
-@app.command()
+
+@app.command(rich_help_panel="Coding")
 def pyright():
     "Typecheck using pyright"
     run([PYRIGHT, *PYRIGHTOPTS])
     print("Pyright Finished.")
 
 
-@app.command()
+@app.command(rich_help_panel="Coding")
 def test_full():
     run([PYTEST, TESTDIR])
 
 
-@app.command()
+@app.command(rich_help_panel="Coding")
 def test():
     run([PYTEST, UNITTESTS])
 
