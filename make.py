@@ -446,6 +446,12 @@ def mypy():
     run([MYPY, *MYPYOPTS])
     print("MyPy Finished.")
 
+@app.command()
+def pyright():
+    "Typecheck using pyright"
+    run([PYRIGHT, *PYRIGHTOPTS])
+    print("Pyright Finished.")
+
 
 @app.command(rich_help_panel="Code Quality")
 def pyright():
