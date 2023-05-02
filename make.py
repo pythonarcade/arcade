@@ -48,7 +48,8 @@ RUFF        = "ruff"
 RUFFOPTS    = ["arcade"]
 MYPY        = "mypy"
 MYPYOPTS    = ["arcade"]
-
+PYRIGHT     = "pyright"
+PYRIGHTOPTS = []
 
 # Testing
 PYTEST  = "pytest"
@@ -425,10 +426,11 @@ def pseudoxml():
 
 @app.command()
 def lint():
-    run([RUFF, *RUFFOPTS])
-    print("Ruff Finished.")
-    run([MYPY, *MYPYOPTS])
-    print("Mypy Finished.")
+    """
+    Run all linting tasks: ruff and mypy
+    """
+    ruff()
+    mypy()
     print("Linting Complete.")
 
 
@@ -440,8 +442,15 @@ def ruff():
 
 @app.command()
 def mypy():
+    "Typecheck using mypy"
     run([MYPY, *MYPYOPTS])
     print("MyPy Finished.")
+
+@app.command()
+def pyright():
+    "Typecheck using pyright"
+    run([PYRIGHT, *PYRIGHTOPTS])
+    print("Pyright Finished.")
 
 
 @app.command()
