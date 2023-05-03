@@ -77,26 +77,7 @@ class Window(pyglet.window.Window):
     :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
     """
-    slots = (
-        "headless",
-        "_draw_rate",
-        "_update_rate",
-        "_current_view",
-        "current_view",
-        "_current_camera",
-        "current_camera",
-        "textbox_time",
-        "key",
-        "flip_count",
-        "static_display",
-        "_ctx",
-        "ctx",
-        "_background_color",
-        "background_color",
-        "keyboard",
-        "mouse",
-        "_resizable",
-    )
+
     def __init__(
         self,
         width: int = 800,
@@ -954,12 +935,7 @@ class View:
     """
     Support different views/screens in a window.
     """
-    __slots__ = (
-        "window",
-        "key",
-        "_section_manager",
-        "section_manager",
-    )
+    
     def __init__(self,
                  window: Optional[Window] = None) -> None:
 
