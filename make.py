@@ -461,6 +461,7 @@ def test_full():
 
 @app.command(rich_help_panel="Coding")
 def test():
+    """Run unit tests (Run this before making a pull request)!"""
     run([PYTEST, UNITTESTS])
 
 
