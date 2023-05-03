@@ -175,6 +175,8 @@ Tab completion would allow you to press tab to auto-complete the command:
 ./make.py html
 ```
 
+Note that this may interfere if you work on other projects that also have a `make.py` file.
+
 To enable this feature, most users can follow these steps:
 
 1. Run `./make.py whichshell` to find out what your default shell is
