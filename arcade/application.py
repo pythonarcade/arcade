@@ -76,7 +76,7 @@ class Window(pyglet.window.Window):
     :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
     """
-    slots = (
+    __slots__ = (
         "headless",
         "_draw_rate",
         "_update_rate",
