@@ -935,7 +935,13 @@ class View:
     """
     Support different views/screens in a window.
     """
-
+    __slots__ = (
+        "window",
+        "key",
+        "_section_manager",
+        "section_manager",
+        "",
+    )
     def __init__(self,
                  window: Optional[Window] = None) -> None:
 
