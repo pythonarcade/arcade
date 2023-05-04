@@ -66,7 +66,8 @@ class Buffer:
         elif reserve > 0:
             self._size = reserve
             # populate the buffer with zero byte values
-            data = (gl.GLubyte * self._size)(0)
+            gl.GLubyte.__mul__
+            data = (gl.GLubyte * self._size)()
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")

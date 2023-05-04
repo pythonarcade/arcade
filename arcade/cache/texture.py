@@ -89,6 +89,7 @@ class TextureCache:
         # TODO: Consider using Texture.origin instead of file_path
         #       Consider also caching origin that is not a file name
         name = texture.cache_name
+        file_path = str(file_path)
         if strong:
             self._strong_entries.put(name, texture)
             if self._strong_file_entries.get(file_path):

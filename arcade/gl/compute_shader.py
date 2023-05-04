@@ -17,7 +17,7 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._uniforms: Dict[str, Uniform] = dict()
+        self._uniforms: Dict[str, UniformBlock | Uniform] = dict()
 
         from arcade.gl import ShaderException
 
@@ -129,6 +129,7 @@ class ComputeShader:
         except KeyError:
             raise KeyError(f"Uniform with the name `{item}` was not found.")
 
+        assert uniform.getter
         return uniform.getter()
 
     def __setitem__(self, key, value):
@@ -142,6 +143,7 @@ class ComputeShader:
         except KeyError:
             raise KeyError(f"Uniform with the name `{key}` was not found.")
 
+        assert uniform.setter
         uniform.setter(value)
 
     def __hash__(self) -> int:
@@ -216,7 +218,7 @@ class ComputeShader:
         of Matrices.
         """
         u_size = gl.GLint()
-        u_type = gl.GLenum()
+        u_type = gl.GLenumActual()
         buf_size = 192  # max uniform character length
         u_name = create_string_buffer(buf_size)
         gl.glGetActiveUniform(

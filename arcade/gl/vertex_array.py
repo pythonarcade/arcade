@@ -537,7 +537,7 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: Optional[gl.GLenum] = None,
+        mode: Optional[gl.GLenum | int] = None,
         first: int = 0,
         vertices: Optional[int] = None,
         instances: int = 1,

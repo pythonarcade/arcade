@@ -384,7 +384,7 @@ class Camera(SimpleCamera):
         return self._scale
 
     @scale.setter
-    def scale(self, new_scale: Tuple[int, int]) -> None:
+    def scale(self, new_scale: Tuple[int | float, int | float]) -> None:
         """
         Sets the x, y scale (zoom property just sets scale to the same value).
         This also updates the projection matrix with an orthogonal
@@ -393,7 +393,7 @@ class Camera(SimpleCamera):
         if new_scale[0] <= 0 or new_scale[1] <= 0:
             raise ValueError("Scale must be greater than zero")
 
-        self._scale = new_scale
+        self._scale = (float(new_scale[0]), float(new_scale[1]))
 
         # Changing the scale (zoom) affects both projection_matrix and view_matrix
         self._set_projection_matrix(

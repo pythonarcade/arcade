@@ -1,4 +1,5 @@
 import logging
+import typing
 import weakref
 from collections import deque
 from contextlib import contextmanager
@@ -7,6 +8,7 @@ from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, T
                     Union)
 
 import pyglet
+import pyglet.gl.lib
 from pyglet import gl
 from pyglet.window import Window
 
@@ -1266,7 +1268,7 @@ class Limits:
             values = (c_int * length)()
             gl.glGetIntegerv(enum, values)
             return tuple(values)
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return tuple([0] * length)
 
     def get(self, enum: gl.GLenum, default=0) -> int:
@@ -1275,7 +1277,7 @@ class Limits:
             value = c_int()
             gl.glGetIntegerv(enum, value)
             return value.value
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return default
 
     def get_float(self, enum: gl.GLenum, default=0.0) -> float:
@@ -1284,12 +1286,14 @@ class Limits:
             value = c_float()
             gl.glGetFloatv(enum, value)
             return value.value
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return default
 
     def get_str(self, enum: gl.GLenum) -> str:
         """Get a string limit"""
         try:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return "Unknown"
+
+__typecheck_1__: pyglet.gl.base.Context = typing.cast(Context, 'dummy')

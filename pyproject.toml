@@ -108,6 +108,18 @@ exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
 useLibraryCodeForTypes = true
 reportMissingTypeStubs = "none"
 
+typeCheckingMode = "basic"
+# Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
+useLibraryCodeForTypes = true
+reportMissingTypeStubs = "none"
+# Ignore diagnostics where something might be `None`; too many of them
+reportOptionalCall = none",
+reportOptionalContextManager = "none"
+reportOptionalIterable = "none"
+reportOptionalMemberAccess = "none"
+reportOptionalOperand = "none"
+reportOptionalSubscript = "none"
+
 [tool.coverage.run]
 source = ["arcade"]
 omit = ["./arcade/examples/*", "./arcade/gui/examples/*", "./arcade/experimental/*", "./env/*", "./tests/*", "./doc/*", "./Win*/*"]
