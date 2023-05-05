@@ -9,7 +9,7 @@ EXAMPLE_ROOT = "arcade.examples"
 SKIP_FILENAME_PATTERNS = ("__", "perf_test", "text_loc")
 
 
-def check_single_example_docstring(path: Path, name: str):
+def check_single_example_docstring(path: Path, name: str) -> None:
     """
     Read & check a single file for an appropriate docstring
 
@@ -44,7 +44,7 @@ def check_single_example_docstring(path: Path, name: str):
     assert run_line in docstring, f"{run_line} not in {name} docstring."
 
 
-def check_submodules(module_path: str):
+def check_submodules(module_path: str) -> None:
     module = importlib.import_module(module_path)
     for finder, name, is_pkg in pkgutil.iter_modules(module.__path__):
         path = Path(finder.path) / f"{name}.py"
