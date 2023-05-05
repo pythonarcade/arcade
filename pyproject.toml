@@ -103,16 +103,19 @@ norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "
 
 [tool.pyright]
 include = ["arcade"]
-exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
-# Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
-useLibraryCodeForTypes = true
-reportMissingTypeStubs = "none"
-
+exclude = [
+    "venv",
+    "arcade/__pyinstaller",
+    "arcade/examples",
+    "arcade/experimental",
+    "tests",
+    "doc"
+]
 typeCheckingMode = "basic"
 # Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
 useLibraryCodeForTypes = true
 reportMissingTypeStubs = "none"
-# Ignore diagnostics where something might be `None`; too many of them
+# Ignore diagnostics about values that might be `None`
 reportOptionalCall = none",
 reportOptionalContextManager = "none"
 reportOptionalIterable = "none"
