@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Iterable, List, Union
+from typing import Optional, Iterable, List, Sequence, Union
 
 from pyglet import gl
 
@@ -9,9 +9,9 @@ from arcade.types import BufferProtocol
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
-GLenumLike = gl.GLenum | int
+GLenumLike = Union[gl.GLenum, int]
 PyGLenum = int
-GLuintLike = gl.GLuint | int
+GLuintLike = Union[gl.GLuint, int]
 PyGLuint = int
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
@@ -192,7 +192,7 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats = {
+    _formats: dict[str, tuple[Optional[PyGLenum], int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -231,7 +231,7 @@ class BufferDescription:
         self,
         buffer: Buffer,
         formats: str,
-        attributes: Iterable[str],
+        attributes: Sequence[str],
         normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
@@ -270,7 +270,7 @@ class BufferDescription:
                 f"attributes ({len(self.attributes)})"
             )
 
-        def zip_attrs(formats, attributes):
+        def zip_attrs(formats: list[str], attributes: Sequence[str]):
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:
@@ -306,6 +306,8 @@ class BufferDescription:
                 )
 
             gl_type, byte_size = self._formats[data_type]
+            assert attr_name
+            assert gl_type
             self.formats.append(
                 AttribFormat(
                     attr_name, gl_type, components, byte_size, offset=self.stride

@@ -1,5 +1,4 @@
 from ctypes import cast, POINTER
-from typing import Callable
 from pyglet import gl
 
 from .exceptions import ShaderException

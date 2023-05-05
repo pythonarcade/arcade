@@ -34,7 +34,7 @@ from pyglet.math import Vec2
 
 from arcade.math import rotate_point
 from arcade.resources import resolve
-from arcade.types import MutablePoint, Point, TiledObject
+from arcade.types import Point, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000

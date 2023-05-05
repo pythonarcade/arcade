@@ -15,7 +15,7 @@ class _Obs(Generic[P]):
     def __init__(self, value: P):
         self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners = set()
+        self.listeners: set[Callable[[], Any]] = set()
 
 
 class Property(Generic[P]):
@@ -34,7 +34,7 @@ class Property(Generic[P]):
             default_factory = lambda prop, instance: cast(P, default)
 
         self.default_factory = default_factory
-        self.obs = WeakKeyDictionary()
+        self.obs: WeakKeyDictionary[Any, _Obs] = WeakKeyDictionary()
 
     def _get_obs(self, instance) -> _Obs:
         obs = self.obs.get(instance)
@@ -76,7 +76,7 @@ class Property(Generic[P]):
 
     def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self # pyright: ignore
+            return self # type: ignore
         return self.get(instance)
 
     def __set__(self, instance, value):

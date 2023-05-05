@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import Any, Tuple
+from typing import Any, Optional, Sequence, Tuple
 
 from PIL.Image import Image
 
@@ -54,7 +54,7 @@ class HitBox:
         self._bottom = None
         self._top = None
 
-        self._adjusted_points = None
+        self._adjusted_points: Optional[PointList] = None
         self._adjusted_cache_dirty = True
 
     @property
@@ -111,9 +111,9 @@ class HitBox:
             self._points, position=self._position, scale=self._scale, angle=angle
         )
 
-    def get_adjusted_points(self) -> list[Point]:
+    def get_adjusted_points(self) -> Sequence[Point]:
         if not self._adjusted_cache_dirty:
-            return self._adjusted_points # pyright: ignore
+            return self._adjusted_points # type: ignore
 
         def _adjust_point(point) -> Point:
             x, y = point
@@ -125,7 +125,7 @@ class HitBox:
 
         self._adjusted_points = [_adjust_point(point) for point in self.points]
         self._adjusted_cache_dirty = False
-        return self._adjusted_points
+        return self._adjusted_points # type: ignore [return-value]
 
 
 class RotatableHitBox(HitBox):
