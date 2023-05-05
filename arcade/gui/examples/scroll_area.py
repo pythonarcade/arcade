@@ -16,12 +16,13 @@ import arcade
 from arcade import Window
 from arcade.gui import UIManager, UIWidget, Property, Surface, UIDummy, UIEvent, bind, \
     UIMouseDragEvent, UIMouseScrollEvent, UIMouseEvent, UIBoxLayout, UIFlatButton, UIInputText
+from arcade.types import Point
 
 
 class UIScrollArea(UIWidget):
-    scroll_x = Property(default=0)
-    scroll_y = Property(default=0)
-    canvas_size = Property(default=(300, 300))
+    scroll_x = Property[float](default=0)
+    scroll_y = Property[float](default=0)
+    canvas_size = Property[Point](default=(300, 300))
 
     scroll_speed = 1.3
     invert_scroll = False
