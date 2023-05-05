@@ -31,10 +31,10 @@ def check_submodules(module_path: str):
     module = importlib.import_module(module_path)
     for finder, name, is_pkg in pkgutil.iter_modules(module.__path__):
         path = Path(finder.path) / f"{name}.py"
-        check_code_docstring(path, f"{module_path}.{name}")
+        check_single_example_docstring(path, f"{module_path}.{name}")
 
 
-def check_code_docstring(path: Path, name: str):
+def check_single_example_docstring(path: Path, name: str):
     """
     Read & check a single file for an appropriate docstring
 
