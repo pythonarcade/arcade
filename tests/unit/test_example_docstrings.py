@@ -58,11 +58,13 @@ def check_single_example_docstring(path: Path, name: str):
     :param path: Path to the file
     :param name: Name of module
     """
+
+    # Read the file & extract the docstring
     code = ast.parse(path.read_text())
     docstring = ast.get_docstring(code)
-    run_line = f"python -m {name}"
 
     # print(f"Checking if example {name} has a run instruction..")
+    run_line = f"python -m {name}"
     assert docstring is not None, f"{run_line} not in {name} docstring."
     assert run_line in docstring, f"{run_line} not in {name} docstring."
 
