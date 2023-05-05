@@ -4,14 +4,15 @@ from pathlib import Path
 import pkgutil
 import arcade.examples
 
+
 EXAMPLE_ROOT = "arcade.examples"
+SKIP_FILENAME_PATTERNS = ("__", "perf_test", "text_loc")
 
 
 def test_docstrings():
     """
     Check each example for a docstring with correct run instructions.
     """
-    ignore_patterns = ["__", "perf_test", "text_loc"]
 
     # Get all the modules in the examples directory
     check_submodules(EXAMPLE_ROOT)
@@ -21,7 +22,7 @@ def test_docstrings():
         if not path.is_dir():
             continue
 
-        if any(pattern in path.name for pattern in ignore_patterns):
+        if any(pattern in path.name for pattern in SKIP_FILENAME_PATTERNS):
             continue
 
         check_submodules(f"{EXAMPLE_ROOT}.{path.name}")
