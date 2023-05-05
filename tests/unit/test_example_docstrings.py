@@ -39,10 +39,9 @@ def check_code_docstring(path: Path, name: str):
     path: Path to the file
     name: Name of module
     """
-    with open(path) as f:
-        code = ast.parse(f.read())
-        docstring = ast.get_docstring(code)
-        run_line = f"python -m {name}"
-        # print(f"Checking if example {name} has a run instruction..")
-        assert docstring is not None, f"{run_line} not in {name} docstring."
-        assert run_line in docstring, f"{run_line} not in {name} docstring."
+    code = ast.parse(path.read_text())
+    docstring = ast.get_docstring(code)
+    run_line = f"python -m {name}"
+    # print(f"Checking if example {name} has a run instruction..")
+    assert docstring is not None, f"{run_line} not in {name} docstring."
+    assert run_line in docstring, f"{run_line} not in {name} docstring."
