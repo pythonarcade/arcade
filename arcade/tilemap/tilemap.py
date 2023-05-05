@@ -412,6 +412,7 @@ class TileMap:
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
+        assert map_source
         map_directory = os.path.dirname(map_source)
         image_file = _get_image_source(tile, map_directory)
 

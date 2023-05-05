@@ -15,7 +15,7 @@ import weakref
 from pyglet import gl
 
 from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
+from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES, PyGLenum
 from .exceptions import ShaderException
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -85,7 +85,7 @@ class Program:
         self._attributes = []  # type: List[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Uniform | UniformBlock] = {}
+        self._uniforms: Dict[str, Uniform] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -276,7 +276,6 @@ class Program:
         except KeyError:
             raise KeyError(f"Uniform with the name `{item}` was not found.")
 
-        assert uniform.getter
         return uniform.getter()
 
     def __setitem__(self, key, value):
@@ -291,7 +290,6 @@ class Program:
         except KeyError:
             raise KeyError(f"Uniform with the name `{key}` was not found.")
 
-        assert uniform.setter
         uniform.setter(value)
 
     def set_uniform_safe(self, name: str, value: Any):
@@ -375,7 +373,7 @@ class Program:
         for i in range(num_attrs.value):
             c_name = create_string_buffer(256)
             c_size = gl.GLint()
-            c_type = gl.GLenumActual()
+            c_type = gl.GLenum()
             gl.glGetActiveAttrib(
                 self._glo,  # program to query
                 i,  # index (not the same as location)
@@ -451,7 +449,7 @@ class Program:
         of Matrices.
         """
         u_size = gl.GLint()
-        u_type = gl.GLenumActual()
+        u_type = gl.GLenum()
         buf_size = 192  # max uniform character length
         u_name = create_string_buffer(buf_size)
         gl.glGetActiveUniform(
@@ -488,7 +486,7 @@ class Program:
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
-    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+    def compile_shader(source: str, shader_type: PyGLenum) -> gl.GLuint:
         """Compile the shader code of the given type.
 
         `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...

@@ -1,4 +1,5 @@
 from ctypes import cast, POINTER
+from typing import Callable
 from pyglet import gl
 
 from .exceptions import ShaderException
@@ -114,8 +115,6 @@ class Uniform:
         self._components = 0
         #: The getter function configured for this uniform
         #: The setter function configured for this uniform
-        self.getter = None
-        self.setter = None
         self._setup_getters_and_setters()
 
     @property

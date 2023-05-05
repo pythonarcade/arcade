@@ -217,7 +217,7 @@ class TransverseTransform(Transform):
 # but it's faster to just pre-calculate it.
 # Key is the vertex order
 # Value is the orientation (flip_left_right, flip_top_down, rotation)
-ORIENTATIONS = {
+ORIENTATIONS: dict[tuple[int, int, int, int], tuple[int, bool, bool]] = {
     (0, 1, 2, 3): (0, False, False),  # Default
     (2, 0, 3, 1): (90, False, False),  # Rotate 90
     (3, 2, 1, 0): (180, False, False),  # Rotate 180

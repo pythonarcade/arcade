@@ -4,7 +4,7 @@ import re
 from pyglet import gl
 
 from .exceptions import ShaderException
-from .types import SHADER_TYPE_NAMES
+from .types import SHADER_TYPE_NAMES, PyGLenum
 
 
 class ShaderSource:
@@ -31,7 +31,7 @@ class ShaderSource:
         ctx: gl.Context,
         source: str,
         common: Optional[Iterable[str]],
-        source_type: gl.GLenum,
+        source_type: PyGLenum,
     ):
         """Create a shader source wrapper."""
         self._source = source.strip()

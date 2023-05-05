@@ -419,6 +419,7 @@ ColorLike = Union[RGB, RGBA255]
 # Vector = Point
 Point = Tuple[float, float]
 Point3 = Tuple[float, float, float]
+IntPoint = Tuple[int, int]
 class MutablePoint(Protocol):
     def __getitem__(self, key: Literal[0] | Literal[1]) -> float: ...
     def __setitem__(self, key: Literal[0] | Literal[1], value: float) -> None: ...

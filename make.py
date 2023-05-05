@@ -290,8 +290,8 @@ def latex():
     run_doc([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print()
     print(f"Build finished; the LaTeX files are in {FULL_BUILD_PREFIX}/latex.")
-    print("Run \`make' in that directory to run these through (pdf)latex" +
-          "(use \`make latexpdf' here to do that automatically).")
+    print("Run `make' in that directory to run these through (pdf)latex" +
+          "(use `make latexpdf' here to do that automatically).")
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -344,8 +344,8 @@ def texinfo():
     run_doc([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print()
     print(f"Build finished. The Texinfo files are in {FULL_BUILD_PREFIX}/texinfo.")
-    print("Run \`make' in that directory to run these through makeinfo" +
-          "(use \`make info' here to do that automatically).")
+    print("Run `make' in that directory to run these through makeinfo" +
+          "(use `make info' here to do that automatically).")
 
 
 @app.command(rich_help_panel="Additional Doc Formats")

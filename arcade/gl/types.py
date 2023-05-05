@@ -9,6 +9,10 @@ from arcade.types import BufferProtocol
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
+GLenumLike = gl.GLenum | int
+PyGLenum = int
+GLuintLike = gl.GLuint | int
+PyGLuint = int
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
 _int_base_format = (
@@ -102,7 +106,7 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: gl.GLenum) -> str:
+def gl_name(gl_type: PyGLenum) -> str | PyGLenum:
     """Return the name of a gl type"""
     return GL_NAMES.get(gl_type, gl_type)
 
@@ -112,7 +116,7 @@ class AttribFormat:
     Represents an attribute in a BufferDescription or a Program.
 
     :param str name: Name of the attribute
-    :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param GLenumLike gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
     :param int bytes_per_component: Number of bytes a single component takes
     :param int offset: (Optional offset for BufferDescription)
     :param int location: (Optional location for program attribute)
@@ -128,7 +132,7 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: str, gl_type: gl.GLenum, components: int, bytes_per_component: int, offset=0, location=0
+        self, name: str, gl_type: PyGLenum, components: int, bytes_per_component: int, offset=0, location=0
     ):
         self.name: str = name
         self.gl_type = gl_type
@@ -344,7 +348,7 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name: str, enum: gl.GLenum, gl_type: gl.GLenum, gl_size: int, components: int):
+    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int):
         self.name = name
         self.enum = enum
         self.gl_type = gl_type

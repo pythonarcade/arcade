@@ -111,9 +111,9 @@ class HitBox:
             self._points, position=self._position, scale=self._scale, angle=angle
         )
 
-    def get_adjusted_points(self):
+    def get_adjusted_points(self) -> list[Point]:
         if not self._adjusted_cache_dirty:
-            return self._adjusted_points
+            return self._adjusted_points # pyright: ignore
 
         def _adjust_point(point) -> Point:
             x, y = point
