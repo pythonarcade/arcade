@@ -44,11 +44,28 @@ def check_single_example_docstring(path: Path, name: str) -> None:
     assert run_line in docstring, f"{run_line} not in {name} docstring."
 
 
-def check_submodules(module_path: str) -> None:
-    module = importlib.import_module(module_path)
-    for finder, name, is_pkg in pkgutil.iter_modules(module.__path__):
-        path = Path(finder.path) / f"{name}.py"
-        check_single_example_docstring(path, f"{module_path}.{name}")
+def check_submodules(parent_module_absolute_name: str) -> None:
+    """
+    Check docstrings for all immediate child modules of the passed absolute name
+
+    It is important to understand that module names and file paths are different things:
+
+    * A module name is what Python sees the module's name as (``"arcade.color"``)
+    * A file path is the location on disk (``C:|Users\Reader\python_project\game.py``)
+
+    :param parent_module_absolute_name: The absolute import name of the module to check.
+    """
+    # Get the file system location of the named parent module
+    parent_module_info = importlib.import_module(parent_module_absolute_name)
+    parent_module_file_path = parent_module_info.__path__
+
+    # Check all modules nested immediately inside it on the file system
+    for finder, child_module_name, is_pkg in pkgutil.iter_modules(parent_module_file_path):
+
+        child_module_file_path = Path(finder.path) / f"{child_module_name}.py"
+        child_module_absolute_name = f"{parent_module_absolute_name}.{child_module_name}"
+
+        check_single_example_docstring(child_module_file_path, child_module_absolute_name)
 
 
 def test_docstrings():
