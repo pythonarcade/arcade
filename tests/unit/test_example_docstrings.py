@@ -9,32 +9,6 @@ EXAMPLE_ROOT = "arcade.examples"
 SKIP_FILENAME_PATTERNS = ("__", "perf_test", "text_loc")
 
 
-def test_docstrings():
-    """
-    Check each example for a docstring with correct run instructions.
-    """
-
-    # Get all the modules in the examples directory
-    check_submodules(EXAMPLE_ROOT)
-
-    # Check subdirectories
-    for path in Path(arcade.examples.__path__[0]).iterdir():
-        if not path.is_dir():
-            continue
-
-        if any(pattern in path.name for pattern in SKIP_FILENAME_PATTERNS):
-            continue
-
-        check_submodules(f"{EXAMPLE_ROOT}.{path.name}")
-
-
-def check_submodules(module_path: str):
-    module = importlib.import_module(module_path)
-    for finder, name, is_pkg in pkgutil.iter_modules(module.__path__):
-        path = Path(finder.path) / f"{name}.py"
-        check_single_example_docstring(path, f"{module_path}.{name}")
-
-
 def check_single_example_docstring(path: Path, name: str):
     """
     Read & check a single file for an appropriate docstring
@@ -68,3 +42,29 @@ def check_single_example_docstring(path: Path, name: str):
     run_line = f"python -m {name}"
     assert docstring is not None, f"{run_line} not in {name} docstring."
     assert run_line in docstring, f"{run_line} not in {name} docstring."
+
+
+def check_submodules(module_path: str):
+    module = importlib.import_module(module_path)
+    for finder, name, is_pkg in pkgutil.iter_modules(module.__path__):
+        path = Path(finder.path) / f"{name}.py"
+        check_single_example_docstring(path, f"{module_path}.{name}")
+
+
+def test_docstrings():
+    """
+    Check each example for a docstring with correct run instructions.
+    """
+
+    # Get all the modules in the examples directory
+    check_submodules(EXAMPLE_ROOT)
+
+    # Check subdirectories
+    for path in Path(arcade.examples.__path__[0]).iterdir():
+        if not path.is_dir():
+            continue
+
+        if any(pattern in path.name for pattern in SKIP_FILENAME_PATTERNS):
+            continue
+
+        check_submodules(f"{EXAMPLE_ROOT}.{path.name}")
