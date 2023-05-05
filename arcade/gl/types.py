@@ -132,9 +132,9 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: str, gl_type: PyGLenum, components: int, bytes_per_component: int, offset=0, location=0
+        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0, location=0
     ):
-        self.name: str = name
+        self.name = name
         self.gl_type = gl_type
         self.components = components
         self.bytes_per_component = bytes_per_component
@@ -306,8 +306,6 @@ class BufferDescription:
                 )
 
             gl_type, byte_size = self._formats[data_type]
-            assert attr_name
-            assert gl_type
             self.formats.append(
                 AttribFormat(
                     attr_name, gl_type, components, byte_size, offset=self.stride
