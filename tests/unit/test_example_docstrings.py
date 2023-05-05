@@ -6,7 +6,6 @@ import arcade.examples
 
 
 EXAMPLE_ROOT = "arcade.examples"
-SKIP_FILENAME_PATTERNS = ("__", "perf_test", "text_loc")
 
 
 def check_single_example_docstring(path: Path, name: str) -> None:
@@ -81,7 +80,7 @@ def test_docstrings():
         if not path.is_dir():
             continue
 
-        if any(pattern in path.name for pattern in SKIP_FILENAME_PATTERNS):
+        if any(pattern in path.name for pattern in ("__", "perf_test", "text_loc")):
             continue
 
         check_submodules(f"{EXAMPLE_ROOT}.{path.name}")
