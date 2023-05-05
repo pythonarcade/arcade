@@ -58,7 +58,7 @@ class BasicSprite:
         self._scale = scale, scale
         self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
-        self.Hitbox_outline = None
+        self.Hitbox_outline: Optional[arcade.Shape] = None
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
@@ -226,7 +226,7 @@ class BasicSprite:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
         self.resync_Hitbox_outline()
-        
+
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
