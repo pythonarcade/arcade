@@ -9,8 +9,7 @@ EXAMPLE_ROOT = "arcade.examples"
 
 def test_docstrings():
     """
-    Check each example for docstring.
-    Check each example for valid run instructions.
+    Check each example for a docstring with correct run instructions.
     """
     ignore_patterns = ["__", "perf_test", "text_loc"]
 
