@@ -590,6 +590,9 @@ class BasicSprite:
         self.Hitbox_outline.draw()
 
     def resync_Hitbox_outline(self):
+        """
+        Resyncs Hitbox_outline if it has been drawn before
+        """
         if not self.Hitbox_outline:
             points = self.hit_box.get_adjusted_points()
             # NOTE: This is a COPY operation. We don't want to modify the points.
