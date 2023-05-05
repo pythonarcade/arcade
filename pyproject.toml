@@ -109,14 +109,15 @@ exclude = [
     "arcade/examples",
     "arcade/experimental",
     "tests",
-    "doc"
+    "doc",
+    "make.py"
 ]
 typeCheckingMode = "basic"
 # Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
 useLibraryCodeForTypes = true
 reportMissingTypeStubs = "none"
 # Ignore diagnostics about values that might be `None`
-reportOptionalCall = none",
+reportOptionalCall = "none"
 reportOptionalContextManager = "none"
 reportOptionalIterable = "none"
 reportOptionalMemberAccess = "none"
