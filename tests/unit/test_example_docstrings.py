@@ -36,12 +36,33 @@ def check_submodules(module_path: str):
 
 def check_code_docstring(path: Path, name: str):
     """
-    path: Path to the file
-    name: Name of module
+    Read & check a single file for an appropriate docstring
+
+    A docstring should consist of the following:
+
+    1. A summary line explaining what it demonstrates per PEP-0257
+       (https://peps.python.org/pep-0257/#multi-line-docstrings)
+    2. If necessary, a further minimal explanation of how it will do so
+    3. A line specifying how this example can be as a module run, usually at
+       the end
+
+    Example::
+
+       \"\"\"
+       Show a timer on screen
+
+       If Python and Arcade are installed, this example can be run from the command line with:
+       python -m arcade.examples.sprite_rooms
+       \"\"\"
+
+    :param path: Path to the file
+    :param name: Name of module
     """
     code = ast.parse(path.read_text())
     docstring = ast.get_docstring(code)
     run_line = f"python -m {name}"
+
     # print(f"Checking if example {name} has a run instruction..")
     assert docstring is not None, f"{run_line} not in {name} docstring."
     assert run_line in docstring, f"{run_line} not in {name} docstring."
+
