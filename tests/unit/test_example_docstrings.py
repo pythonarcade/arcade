@@ -69,18 +69,25 @@ def check_submodules(parent_module_absolute_name: str) -> None:
 
 def test_docstrings():
     """
-    Check each example for a docstring with correct run instructions.
+    Ensure each user-facing example has a docstring with correct run instructions.
     """
 
-    # Get all the modules in the examples directory
+    # Check all immediate child python files in arcade.examples
     check_submodules(EXAMPLE_ROOT)
 
-    # Check subdirectories
-    for path in Path(arcade.examples.__path__[0]).iterdir():
-        if not path.is_dir():
+    # For each immediate child folder module in arcade.examples,
+    # check the immediate child python files for correct docstrings.
+    for folder_submodule_path in Path(arcade.examples.__path__[0]).iterdir():
+
+        # Skip file modules we already covered above outside the loop
+        if not folder_submodule_path.is_dir():
             continue
 
-        if any(pattern in path.name for pattern in ("__", "perf_test", "text_loc")):
+        folder_submodule_name = folder_submodule_path.name
+
+        # Skip anything which isn't a user-facing example
+        if any(pattern in folder_submodule_name for pattern in ("__", "perf_test", "text_loc")):
             continue
 
-        check_submodules(f"{EXAMPLE_ROOT}.{path.name}")
+        # Check the grandchildren inside the child folder module
+        check_submodules(f"{EXAMPLE_ROOT}.{folder_submodule_name}")
