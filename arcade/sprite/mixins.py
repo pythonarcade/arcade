@@ -1,8 +1,8 @@
 from typing import Optional, Union, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from arcade import Vec2
     from pymunk import Vec2d
+    from pyglet.math import Vec2
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
