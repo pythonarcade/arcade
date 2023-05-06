@@ -1,3 +1,13 @@
+"""
+Arrange elements in line with grid tiles with UIGridLayout
+
+UIGridLayout allows you to place elements to cover one or more
+cells of a grid. To assign an element more than one grid square,
+use the col_span and row_span keyword arguments.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.grid_layout
+"""
 import arcade
 from arcade.gui import UIManager
 from arcade.gui.widgets import UIDummy
