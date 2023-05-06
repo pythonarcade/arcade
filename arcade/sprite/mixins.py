@@ -1,4 +1,4 @@
-from typing import Optional, Union, TYPE_CHECKING
+from typing import Optional, Union, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade import Vec2
