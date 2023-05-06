@@ -163,7 +163,7 @@ class _ObservableDict(dict):
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: Union[Iterable[Tuple], Mapping]) -> None:
+    def update(self, *largs: Union[Iterable[Dict], Dict]) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
