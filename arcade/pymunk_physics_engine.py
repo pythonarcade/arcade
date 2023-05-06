@@ -62,9 +62,9 @@ class PymunkPhysicsEngine:
                    body_type: int = DYNAMIC,
                    damping: Optional[float] = None,
                    gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None,
-                   max_velocity: Optional[int] = None,
-                   max_horizontal_velocity: Optional[int] = None,
-                   max_vertical_velocity: Optional[int] = None,
+                   max_velocity: Optional[float] = None,
+                   max_horizontal_velocity: Optional[float] = None,
+                   max_vertical_velocity: Optional[float] = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
                    ):

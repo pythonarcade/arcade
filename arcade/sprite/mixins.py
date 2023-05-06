@@ -11,14 +11,15 @@ class PyMunk:
     )
 
     def __init__(self) -> None:
-        self.damping = None
-        self.gravity = None
-        self.max_velocity = None
-        self.max_horizontal_velocity = None
-        self.max_vertical_velocity = None
+        self.damping: Optional[float] = None
+        self.gravity: Optional[float] = None
+        self.max_velocity: Optional[float] = None
+        self.max_horizontal_velocity: Optional[float] = None
+        self.max_vertical_velocity: Optional[float] = None
 
 
 class PymunkMixin:
+    """Sprite uses this to add pymunk"""
 
     def __init__(self) -> None:
         self.pymunk = PyMunk()

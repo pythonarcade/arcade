@@ -957,7 +957,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter: Optional["gl filter"]=None, pixelated: bool=False, blend_function: Optional["gl blend function"]=None) -> None:
+    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False, blend_function: Optional[int]=None) -> None:
         """
         Draw this list of sprites.
 
