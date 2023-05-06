@@ -163,7 +163,14 @@ class _ObservableDict(dict):
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs: Union[Iterable[MutableMapping], MutableMapping]) -> None:
+    @overload
+    def update(self, __m: Mapping, **kwargs: Any) -> None: ...
+    @overload
+    def update(self, __m: Iterable[Tuple[Any, Any]], **kwargs: Any) -> None: ...
+    @overload
+    def update(self, **kwargs: Any) -> None: ...
+    
+    def update(self, *largs) -> None:
         dict.update(self, *largs)
         self.dispatch()
 
