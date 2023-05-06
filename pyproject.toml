@@ -48,13 +48,14 @@ dev = [
     "pygments==2.14.0",
     "docutils==0.19",
     "furo",
+    "pyright",
     "pyyaml==6.0",
     "sphinx==6.2.1",
     "sphinx-autobuild==2021.3.14",
     "sphinx-copybutton==0.5.1",
     # Intentionally kept at 2.3 until this bugfix is published: https://github.com/jdillard/sphinx-sitemap/pull/62
     "sphinx-sitemap==2.3.0",
-    "typer==0.7.0",
+    "typer[all]==0.7.0",
     "wheel",
 ]
 
@@ -103,6 +104,9 @@ norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "
 [tool.pyright]
 include = ["arcade"]
 exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
+# Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
+useLibraryCodeForTypes = true
+reportMissingTypeStubs = "none"
 
 [tool.coverage.run]
 source = ["arcade"]
