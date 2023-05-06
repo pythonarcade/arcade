@@ -67,6 +67,7 @@ The Python Arcade Library
 .. image:: images/example_games.svg
    :alt: Programming guide icon
    :class: heading-icon
+   :target: programming_guide
 
 .. toctree::
    :maxdepth: 1
@@ -74,6 +75,7 @@ The Python Arcade Library
 
    programming_guide/install/index
    programming_guide/get_started
+   programming_guide/sprites/index
    programming_guide/how_to_get_help
    programming_guide/directory_structure
    programming_guide/edge_artifacts/index
@@ -91,6 +93,7 @@ The Python Arcade Library
    programming_guide/gui/index
    programming_guide/performance_tips
    programming_guide/sections
+   programming_guide/index
 
 .. image:: images/API.svg
    :alt: API icon

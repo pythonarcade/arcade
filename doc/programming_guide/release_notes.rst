@@ -47,6 +47,7 @@ API in a way that is not compatible with how it was used in 2.6.
   are also using any custom :py:class:`~arcade.TextureAtlas`.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
+* `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -2349,4 +2350,3 @@ Enhancements
 * `Issue 131 <https://github.com/pvcraven/arcade/issues/131>`_: Add example code on how to do full-screen games
 * `Issue 113 <https://github.com/pvcraven/arcade/issues/113>`_: Add example code showing enemy turning around when hitting a wall
 * `Issue 67 <https://github.com/pvcraven/arcade/issues/67>`_: Improved support and documentation for joystick/game controllers
-

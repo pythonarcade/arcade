@@ -20,11 +20,11 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.ui_manager import UIManager
+from arcade.gui.widgets import UILayout
 from arcade.gui.widgets.layout import (
     UIBoxLayout,
     UIAnchorLayout,
-    UIGridLayout,
-    UILayout,
+    UIGridLayout
 )
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget

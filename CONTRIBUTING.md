@@ -26,7 +26,7 @@ Discussion can happen in a GitHub issue's comments or on [Arcade's Discord serve
 ## After Making Changes
 
 After you finish your changes, you should do the following:
-1. Test your changes with Arcade's test suite as well as with `mypy arcade` & `ruff arcade`
+1. Test your changes according to the [Testing](#testing) section below
 2. Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests)
 from your fork to Arcade's development branch.
 
@@ -50,7 +50,7 @@ To install all necessary development dependencies, run this command in your
 terminal from inside the top level of the arcade directory:
 
 ```shell
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 If you get an error like the one below, you probably need to update your pip version:
@@ -64,6 +64,9 @@ Upgrade by running the following command:
 pip install --upgrade pip
 ```
 
+Mac & Linux users can improve their development experience further by following the optional
+steps at the end of this document.
+
 ## Testing
 
 You should test your changes locally before submitting a pull request
@@ -74,35 +77,117 @@ in this repo for current tests.
 
 ### Testing Code Changes
 
-First, run `mypy arcade` and then `ruff arcade` from inside the arcade folder. You should fix
-any issues they report.
-
-Then run the framework's unit tests with the following command:
+First, run the below command to run our linting tools automatically. This will run Mypy
+and Ruff against Arcade. The first run of this may take some as MyPy will not have any
+caches built up. Sub-sequent runs will be much faster.
 
 ```shell
-pytest tests/unit
+python make.py lint
+```
+
+If you want to run either of these tools invidually, you can do
+
+```shell
+python make.py ruff
+```
+
+or 
+
+```shell
+python make.py mypy
+```
+
+Now you run the framework's unit tests with the following command:
+
+```shell
+python make.py test
 ```
 
 ### Building & Testing Documentation
 
+#### Automatic Rebuild with Live Reload
+
 You can build & preview documentation locally using the following steps.
 
-Change into the doc directory:
+Run the doc build to build the web page files, and host a webserver to preview:
 ```commandline
-cd doc
+python make.py serve
 ```
+
+You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the docs.
+
+The `doc/build/html` directory will contain the generated website files.  When you change source files,
+it will automatically regenerate, and browser tabs will automatically refresh to show your updates.
+
+If you suspect the automatic rebuilds are failing to detect changes, you can
+run a simpler one-time build using the following instructions.
+
+#### One-time build
 
 Run the doc build to build the web page files:
 ```commandline
-make html
+python make.py html
 ```
-The `build/html` directory will contain the generated website files.
+The `doc/build/html` directory will contain the generated website files.
 
 Start a local web server to preview the doc:
 ```commandline
-python -m http.server -d build/html
+python -m http.server -d doc/build/html
 ```
 
 You can now open [http://localhost:8000](http://localhost:8000) in your browser to preview the doc.
 
 Be sure to re-run build & refresh to update after making changes!
+
+## Optional: Improve Ergonomics on Mac and Linux
+
+### Enable `./make.py`
+
+On Mac & Linux, you can enable running `make.py` using `./make.py` instead
+of `python make.py` as follows:
+
+1. Make sure you are in the root directory of the repo
+2. Run `chmod u+x make.py`
+
+You can run the make script with `./make.py` instead of `python make.py`.
+
+For example, this command:
+```commandline
+python make.py lint
+```
+
+can now be run this way:
+```shell
+./make.py lint
+```
+
+### Enable Shell Completions
+
+After enabling the short-form syntax as outlined above, you can also enable tab
+completion for commands on the following supported shells:
+
+* `bash` (the most common default shell)
+* `zsh`
+* `fish`
+* `powershell`
+* `powersh`
+
+For example, if you have typed the following...
+```shell
+./make.py h
+```
+
+Tab completion would allow you to press tab to auto-complete the command:
+```shell
+./make.py html
+```
+
+To enable this feature, most users can follow these steps:
+
+1. Run `./make.py whichshell` to find out what your default shell is
+2. If it is one of the supported shells, run `./make.py --install-completion $(basename "$SHELL")`
+3. Restart your terminal
+
+If your default shell is not the shell you prefer using for arcade development,
+you may need to specify it to the command above directly instead of using
+autodetection.

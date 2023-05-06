@@ -5,6 +5,26 @@ from arcade.types import Point, Vector
 _PRECISION = 2
 
 
+__all__ = [
+    "round_fast",
+    "clamp",
+    "lerp",
+    "lerp_vec",
+    "lerp_angle",
+    "rand_in_rect",
+    "rand_in_circle",
+    "rand_on_circle",
+    "rand_on_line",
+    "rand_angle_360_deg",
+    "rand_angle_spread_deg",
+    "rand_vec_spread_deg",
+    "rand_vec_magnitude",
+    "get_distance",
+    "rotate_point",
+    "get_angle_degrees",
+    "get_angle_radians",
+]
+
 def round_fast(value: float, precision: int) -> float:
     """
     A high performance version of python's built-in round() function.
@@ -14,13 +34,13 @@ def round_fast(value: float, precision: int) -> float:
 
     Example::
 
-        >>> round(3.5662457892, 1) 
+        >>> round(3.5662457892, 1)
         3.6
-        >>> round(3.5662457892, 2) 
+        >>> round(3.5662457892, 2)
         3.57
-        >>> round(3.5662457892, 3) 
+        >>> round(3.5662457892, 3)
         3.566
-        >>> round(3.5662457892, 4) 
+        >>> round(3.5662457892, 4)
         3.5662
 
     :param value: The value to round
@@ -131,7 +151,7 @@ def rand_on_circle(center: Point, radius: float) -> Point:
 def rand_on_line(pos1: Point, pos2: Point) -> Point:
     """
     Given two points defining a line, return a random point on that line.
-    
+
     :param pos1: The first point
     :param pos2: The second point
     :return: A random point on the line
@@ -142,7 +162,7 @@ def rand_on_line(pos1: Point, pos2: Point) -> Point:
 
 def rand_angle_360_deg() -> float:
     """
-    Returns a random angle in degrees.   
+    Returns a random angle in degrees.
     """
     return random.uniform(0.0, 360.0)
 

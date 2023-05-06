@@ -6,6 +6,11 @@ For more info on this API, see https://pyglet.readthedocs.io/en/latest/programmi
 
 import pyglet.input
 
+__all__ = [
+    "get_controllers",
+    "ControllerManager"
+]
+
 
 def get_controllers():
     """This returns a list of controllers, it is synonymous with calling ``pyglet.input.get_controllers()``

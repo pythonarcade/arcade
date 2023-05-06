@@ -6,7 +6,7 @@ and nearby sprites when they are within a certain distance.
 
 This builds on a previous example adding line of sight (LoS)
 checks by using texture lookups. We our walls into a
-texture and read the pixels in a line between the 
+texture and read the pixels in a line between the
 player and the target sprite to check if the path is
 colliding with something.
 
@@ -31,7 +31,7 @@ class SpriteListInteraction(arcade.Window):
         # Player
         self.player = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=0.25,            
+            scale=0.25,
         )
 
         # Wall sprites we are checking collision against

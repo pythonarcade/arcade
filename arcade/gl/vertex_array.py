@@ -287,7 +287,7 @@ class VertexArray:
                 "Attempt to issue rendering commands outside the buffer. "
                 f"first = {first}, count = {count} is reaching past "
                 f"the buffer end. The buffer have room for {max_commands} "
-                f"draw commands. byte size {buffer.size}, stride {stride}." 
+                f"draw commands. byte size {buffer.size}, stride {stride}."
             )
 
         gl.glBindVertexArray(self.glo)
@@ -364,7 +364,7 @@ class VertexArray:
     ) -> None:
         """
         Run a transform feedback writing to separate buffers.
-        
+
         :param List[Buffer] buffers: The buffers to write the output
         :param gl.GLenum mode: The input primitive mode
         :param gl.GLenum output_mode: The output primitive mode

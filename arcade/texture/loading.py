@@ -37,7 +37,7 @@ def load_texture(
     :param int y: Y coordinate of the texture in the image.
     :param int width: Width of the texture in the image.
     :param int height: Height of the texture in the image.
-    :param str hit_box_algorithm: 
+    :param str hit_box_algorithm:
     :returns: New :class:`Texture` object.
     :raises: ValueError
     """
@@ -72,7 +72,7 @@ def _load_tilemap_texture(
     :param int y: Y coordinate of the texture in the image.
     :param int width: Width of the texture in the image.
     :param int height: Height of the texture in the image.
-    :param str hit_box_algorithm: 
+    :param str hit_box_algorithm:
     :returns: New :class:`Texture` object.
     :raises: ValueError
     """
@@ -133,7 +133,7 @@ def _load_or_get_image(
 ) -> Tuple[ImageData, bool]:
     """
     Load an image, or return a cached version
-    
+
     :param str file_path: Path to image
     :param str hit_box_algorithm: The hit box algorithm
     :param hash: Hash of the image
@@ -160,7 +160,7 @@ def _load_or_get_image(
 
 
 def load_texture_pair(
-    file_name: str,
+    file_name: Union[str, Path],
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None
 ) -> Tuple[Texture, Texture]:
     """
@@ -228,7 +228,7 @@ def load_textures(
         if not sub_image:
             Texture.validate_crop(image, x, y, width, height)
             sub_image = ImageData(image.crop((x, y, x + width, y + height)))
-            _cache.image_data_cache.put(image_cache_name, sub_image)            
+            _cache.image_data_cache.put(image_cache_name, sub_image)
 
         # Do we have a texture for this sub-image?
         texture_cache_name = Texture.create_cache_name(hash=sub_image.hash, hit_box_algorithm=hit_box_algorithm)

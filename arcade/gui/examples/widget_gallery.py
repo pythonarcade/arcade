@@ -147,9 +147,9 @@ class MyView(arcade.View):
 
         example_text = dedent(
             """
-        Gamers can feel when developers are passionate about their games. 
-        They can smell it like a dog smells fear. 
-        Don't be afraid to hold onto your unique vision: 
+        Gamers can feel when developers are passionate about their games.
+        They can smell it like a dog smells fear.
+        Don't be afraid to hold onto your unique vision:
         just be aware that it may not turn out exactly how you envisioned.
         """
         )

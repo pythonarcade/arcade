@@ -5,7 +5,7 @@ If Python and Arcade are installed, this example can be run from the
 command line with:
 python -m arcade.examples.sound_speed_demo
 
-Left click a button to play a sound. 
+Left click a button to play a sound.
 
 Each button plays the same sound sample in a slightly different way.
 
