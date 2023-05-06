@@ -12,7 +12,7 @@ class PyMunk:
 
     def __init__(self) -> None:
         self.damping: Optional[float] = None
-        self.gravity: Optional[float] = None
+        self.gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None
         self.max_velocity: Optional[float] = None
         self.max_horizontal_velocity: Optional[float] = None
         self.max_vertical_velocity: Optional[float] = None
