@@ -160,7 +160,7 @@ class _ObservableDict(dict):
         dict.setdefault(self, *largs)
         self.dispatch()
 
-    def update(self, *largs) -> None:
+    def update(self, *largs):
         dict.update(self, *largs)
         self.dispatch()
 
