@@ -1,4 +1,8 @@
-from typing import Optional, Union
+from typing import Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from arcade import Vec2
+    from pymunk import Vec2d
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
@@ -12,7 +16,7 @@ class PyMunk:
 
     def __init__(self) -> None:
         self.damping: Optional[float] = None
-        self.gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None
+        self.gravity: Optional[Union[Vec2d, Tuple[float, float], Vec2]] = None
         self.max_velocity: Optional[float] = None
         self.max_horizontal_velocity: Optional[float] = None
         self.max_vertical_velocity: Optional[float] = None
