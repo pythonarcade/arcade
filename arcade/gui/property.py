@@ -12,7 +12,8 @@ from typing import (
     List,
     Set,
     MutableMapping,
-    Mapping,    
+    Mapping,
+    overload
 )
 from weakref import WeakKeyDictionary, ref
 
@@ -169,7 +170,7 @@ class _ObservableDict(dict):
     def update(self, __m: Iterable[Tuple[Any, Any]], **kwargs: Any) -> None: ...
     @overload
     def update(self, **kwargs: Any) -> None: ...
-    
+
     def update(self, *largs) -> None:
         dict.update(self, *largs)
         self.dispatch()
