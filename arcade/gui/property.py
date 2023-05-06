@@ -1,7 +1,6 @@
 import sys
 import traceback
 from typing import (
-    TypeVar,
     Optional,
     Union,
     Tuple,
@@ -11,9 +10,9 @@ from typing import (
     Dict,
     List,
     Set,
-    MutableMapping,
     Mapping,
-    overload
+    overload,
+    SupportsIndex
 )
 from weakref import WeakKeyDictionary, ref
 
@@ -29,9 +28,6 @@ class _Obs:
         self.value = None
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
         self.listeners: Set[Callable] = set()
-
-
-P = TypeVar("P")
 
 
 class Property:
@@ -234,7 +230,7 @@ class _ObservableList(list):
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs: int) -> Any:
+    def pop(self, *largs: SupportsIndex) -> Any:
         result = list.pop(self, *largs)
         self.dispatch()
         return result
