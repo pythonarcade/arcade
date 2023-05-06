@@ -945,6 +945,7 @@ class View:
         self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
         self._section_manager: Optional[SectionManager] = None
+        
 
     @property
     def section_manager(self) -> SectionManager:
