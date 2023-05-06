@@ -402,8 +402,5 @@ class Scene:
         return bool(self._sprite_lists)
 
     def __contains__(self, item: Union[str, SpriteList]) -> bool:
-        """
-        Returns whether or not the item is in _sprite_lists 
-        or is a value in _name_mapping
-        """
+"""True when `item` is in `_sprite_lists` or is a value in `_name_mapping`"""
         return item in self._sprite_lists or item in self._name_mapping
