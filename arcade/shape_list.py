@@ -27,7 +27,7 @@ import pyglet.gl as gl
 
 from arcade.types import Color, Point, PointList, RGBA255, BufferProtocol
 from arcade import get_window, get_points_for_thick_line
-from arcade.gl import BufferDescription, Program, Geometry
+from arcade.gl import BufferDescription, Program, Geometry, Buffer
 from arcade import ArcadeContext
 
 from .math import rotate_point
