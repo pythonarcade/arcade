@@ -937,6 +937,7 @@ class View:
         "window",
         "key",
         "_section_manager",
+        "__weakref__"
     )
     def __init__(self,
                  window: Optional[Window] = None):
