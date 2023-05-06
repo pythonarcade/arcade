@@ -1,4 +1,4 @@
-
+from typing import Optional
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
