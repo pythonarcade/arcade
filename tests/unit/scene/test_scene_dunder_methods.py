@@ -32,3 +32,34 @@ def test_delitem():
 
     with pytest.raises(KeyError):
         scene["Coins"]
+
+def test_bool():
+    scene = arcade.Scene()
+    assert bool(scene) == False
+
+    scene.add_sprite_list("Walls")
+    assert bool(scene) == True
+
+def test_contains():
+    scene = arcade.Scene()
+    "Walls" not in scene
+    None not in scene
+    
+    Walls_SpriteList = arcade.SpriteList()
+    scene.add_sprite_list("Walls", sprite_list = Walls_SpriteList)
+    assert "Walls" in scene
+
+    test_sprite = arcade.Sprite()
+    Walls_SpriteList.append(test_sprite)
+    assert Walls_SpriteList in scene
+
+
+    Coins_SpriteList = arcade.SpriteList()
+    scene.add_sprite_list("Coins", sprite_list = Coins_SpriteList)
+    assert "Coins" in scene
+
+    test_sprite = arcade.Sprite()
+    Coins_SpriteList.append(test_sprite)
+    assert Coins_SpriteList in scene
+
+    assert None not in scene
