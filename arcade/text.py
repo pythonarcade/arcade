@@ -12,6 +12,14 @@ from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
 
+__all__ = [
+    "load_font",
+    "Text",
+    "create_text_sprite",
+    "draw_text"
+]
+
+
 def load_font(path: Union[str, Path]) -> None:
     """
     Load fonts in a file (usually .ttf) adding them to a global font registry.
@@ -408,7 +416,7 @@ class Text:
     @property
     def size(self):
         """
-        Get the size of the label        
+        Get the size of the label
         """
         return self._label.width, self._label.height
 

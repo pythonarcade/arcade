@@ -415,7 +415,7 @@ class Texture2D:
             texture.swizzle = 'R000'
 
             # Reverse the components
-            texture.swizzle = 'ABGR'        
+            texture.swizzle = 'ABGR'
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)

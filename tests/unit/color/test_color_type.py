@@ -16,6 +16,10 @@ BAD_NORMALIZED = (-0.01, 1.01)
 MIXED_NORMALIZED = OK_NORMALIZED + BAD_NORMALIZED
 
 
+class ColorSubclass(Color):
+    pass
+
+
 def at_least_one_in(i: Iterable) -> Callable[[Iterable], bool]:
     """Return a callable which returns true when at least one elt is in iterable i"""
 
@@ -45,6 +49,11 @@ def test_color_from_iterable_returns_same_color():
         assert Color.from_iterable(color) is color
 
 
+def test_color_from_iterable_inheritance():
+    color = ColorSubclass.from_iterable(colors.AO)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_uint24():
     assert Color.from_uint24(0xFFFFFF) == (255, 255, 255, 255)
     assert Color.from_uint24((1 << 16) + (2 << 8) + 3) == (1, 2, 3, 255)
@@ -56,6 +65,11 @@ def test_color_from_uint24():
         Color.from_uint24("moo")
 
 
+def test_color_from_uint24_inheritance():
+    color = ColorSubclass.from_uint24(0xFFFFFF)
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_uint32():
     assert Color.from_uint32(4294967295) == (255, 255, 255, 255)
     assert Color.from_uint32((1 << 24) + (2 << 16) + (3 << 8) + 4) == (1, 2, 3, 4)
@@ -64,6 +78,11 @@ def test_color_from_uint32():
 
     with pytest.raises(TypeError):
         Color.from_uint32("bad")
+
+
+def test_color_from_uint32_inheritance():
+    color = ColorSubclass.from_uint32(0xFFFFFFFF)
+    assert isinstance(color, ColorSubclass)
 
 
 def test_color_from_normalized():
@@ -96,6 +115,11 @@ def test_color_from_normalized():
             Color.from_normalized(bad_rgba_channels)
 
 
+def test_from_normalized_inheritance():
+    color = ColorSubclass.from_normalized((1.0, 1.0, 1.0, 1.0))
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_from_gray():
     OK_255 = (0, 255)
     BAD_255 = (-1, 256)
@@ -117,6 +141,11 @@ def test_color_from_gray():
     for bad_arg in BAD_255:
         with pytest.raises(ValueError):
             Color.from_gray(bad_arg)
+
+
+def test_color_from_gray_inheritance():
+    color = ColorSubclass.from_gray(255, a=255)
+    assert isinstance(color, ColorSubclass)
 
 
 def test_color_from_hex_string():
@@ -149,6 +178,11 @@ def test_color_from_hex_string():
             Color.from_hex_string(bad_value)
 
 
+def test_color_from_hex_string_inheritance():
+    color = ColorSubclass.from_hex_string("#fff")
+    assert isinstance(color, ColorSubclass)
+
+
 def test_color_normalized_property():
     assert colors.BLACK.normalized == (0.0, 0.0, 0.0, 1.0)
     assert colors.WHITE.normalized == (1.0, 1.0, 1.0, 1.0)
@@ -156,9 +190,15 @@ def test_color_normalized_property():
     assert colors.GRAY.normalized == (128 / 255, 128 / 255, 128 / 255, 1.0)
 
 
-def test_deepcopy_color():
+def test_deepcopy_color_values():
     expected_color = Color(255, 255, 255, 255)
     assert deepcopy(expected_color) == expected_color
+
+
+def test_deepcopy_color_inheritance():
+    color_subclass_instance = ColorSubclass(255, 255, 255, a=255)
+    deep = deepcopy(color_subclass_instance)
+    assert isinstance(deep, ColorSubclass)
 
 
 RANDINT_RETURN_RESULT = 128
@@ -180,3 +220,8 @@ def test_color_random(randint_is_constant):
                 expected = 0
 
             assert channel_value == expected
+
+
+def test_color_random_inheritance(randint_is_constant):
+    color = ColorSubclass.random()
+    assert isinstance(color, ColorSubclass)

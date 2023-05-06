@@ -7,7 +7,8 @@ from arcade.types import RGBA255
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
@@ -40,7 +41,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
     class UIStyle(UIStyleBase):
         """
         Used to style the texture button. Below is its use case.
-        
+
         .. code:: py
 
             button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
@@ -189,7 +190,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         current_state = self.get_current_state()
         current_texture = self._textures.get(current_state)
         if current_texture:
-            surface.draw_texture(0, 0, self.width, self.height, current_texture)
+            surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
 
     def apply_style(self, style: UIStyle):
         """
@@ -219,7 +220,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
-    
+
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
     :param float x: x coordinate of bottom left
@@ -236,7 +237,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     class UIStyle(UIStyleBase):
         """
         Used to style the button. Below is its use case.
-        
+
         .. code:: py
 
             button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})

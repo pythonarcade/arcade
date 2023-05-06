@@ -58,7 +58,7 @@ class Sphere3D(arcade.Window):
                 if (l < 0.0) {
                     l = abs(l);
                     fragColor = vec4(0.75, 0.0, 0.0, 1.0) * (0.25 + abs(l) * 0.75);
-                } else {        
+                } else {
                     fragColor = vec4(1.0) * (0.25 + abs(l) * 0.75);
                 }
             }
@@ -68,7 +68,7 @@ class Sphere3D(arcade.Window):
 
         self.text_batch = Batch()
         self.text_cull = arcade.Text(
-            "F2: Toggle cull face (true)",
+            "F2: Toggle cull face (True)",
             start_x=10, start_y=10, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
@@ -138,26 +138,29 @@ class Sphere3D(arcade.Window):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             self.close()
+
         elif key == arcade.key.F:
             self.set_fullscreen(not self.fullscreen)
+            self.text_fs.text = f"F: Toggle fullscreen ({self.fullscreen})"
+
         elif key == arcade.key.SPACE:
             self.wireframe = not self.wireframe
             self.set_vsync(True)
+            self.text_wireframe.text = f"SPACE: Toggle wireframe ({self.wireframe})"
+
         elif key == arcade.key.F1:
             if self.ctx.DEPTH_TEST in self.flags:
                 self.flags.remove(self.ctx.DEPTH_TEST)
             else:
                 self.flags.add(self.ctx.DEPTH_TEST)
+            self.text_depth.text = f"F1: Toggle depth test ({self.ctx.DEPTH_TEST in self.flags})"
+
         elif key == arcade.key.F2:
             if self.ctx.CULL_FACE in self.flags:
                 self.flags.remove(self.ctx.CULL_FACE)
             else:
                 self.flags.add(self.ctx.CULL_FACE)
-
-        self.text_wireframe.text = f"SPACE: Toggle wireframe ({self.ctx.wireframe})"
-        self.text_fs.text = f"F: Toggle fullscreen ({self.fullscreen})"
-        self.text_depth.text = f"F1: Toggle depth test ({self.ctx.DEPTH_TEST in self.flags})"
-        self.text_cull.text = f"F2: Toggle cull face ({self.ctx.CULL_FACE in self.flags})"
+            self.text_cull.text = f"F2: Toggle cull face ({self.ctx.CULL_FACE in self.flags})"
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.drag = True

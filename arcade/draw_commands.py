@@ -26,6 +26,39 @@ from arcade import (
 )
 from arcade.utils import warning, ReplacementWarning
 
+__all__ = [
+    "draw_arc_filled",
+    "draw_arc_outline",
+    "draw_parabola_filled",
+    "draw_parabola_outline",
+    "draw_circle_filled",
+    "draw_circle_outline",
+    "draw_ellipse_filled",
+    "draw_ellipse_outline",
+    "draw_line_strip",
+    "draw_line",
+    "draw_lines",
+    "draw_point",
+    "draw_points",
+    "draw_polygon_filled",
+    "draw_polygon_outline",
+    "draw_triangle_filled",
+    "draw_triangle_outline",
+    "draw_lrtb_rectangle_outline",
+    "draw_lrbt_rectangle_outline",
+    "draw_xywh_rectangle_outline",
+    "draw_rectangle_outline",
+    "draw_lrtb_rectangle_filled",
+    "draw_lrbt_rectangle_filled",
+    "draw_xywh_rectangle_filled",
+    "draw_rectangle_filled",
+    "draw_scaled_texture_rectangle",
+    "draw_texture_rectangle",
+    "draw_lrwh_rectangle_textured",
+    "get_pixel",
+    "get_image"
+]
+
 # --- BEGIN ARC FUNCTIONS # # #
 
 

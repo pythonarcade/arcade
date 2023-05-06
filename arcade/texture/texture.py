@@ -29,6 +29,8 @@ if TYPE_CHECKING:
     from arcade import TextureAtlas
     from arcade.sprite_list import SpriteList
 
+__all__ = ["ImageData", "Texture"]
+
 LOG = logging.getLogger(__name__)
 
 

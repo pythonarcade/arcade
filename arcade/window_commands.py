@@ -24,6 +24,23 @@ if TYPE_CHECKING:
 
 _window: Optional["Window"] = None
 
+__all__ = [
+    "get_display_size",
+    "pause",
+    "get_window",
+    "set_window",
+    "set_viewport",
+    "close_window",
+    "run",
+    "exit",
+    "start_render",
+    "finish_render",
+    "set_background_color",
+    "schedule",
+    "unschedule",
+    "schedule_once"
+]
+
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     """
@@ -171,7 +188,7 @@ def run():
     window = get_window()
 
     # Used in some unit test
-    if os.environ.get('ARCADE_TEST'):       
+    if os.environ.get('ARCADE_TEST'):
         window.on_update(window._update_rate)
         window.on_draw()
     elif window.headless:
@@ -249,7 +266,7 @@ def start_render() -> None:
     """
     Clears the window.
 
-    More practical alternatives to this function is 
+    More practical alternatives to this function is
     :py:meth:`arcade.Window.clear`
     or :py:meth:`arcade.View.clear`.
     """

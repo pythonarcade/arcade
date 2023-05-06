@@ -23,6 +23,10 @@ datas = [
         arcade_path / "resources" / "system",
         "./arcade/resources/system",
     ),
+    (
+        arcade_path / "VERSION",
+        "./arcade/VERSION",
+    )
 ]
 
 if is_win:

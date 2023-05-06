@@ -93,32 +93,36 @@ def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     :returns: True if sprites overlap.
     :rtype: bool
     """
+
+    #NOTE: for speed becuase attribute look ups are slow.
     sprite1_position = sprite1._position
     sprite1_width = sprite1._width
     sprite1_height = sprite1._height
     sprite2_position = sprite2._position
     sprite2_width = sprite2._width
     sprite2_height = sprite2._height
+
     radius_sum = (
         (sprite1_width if sprite1_width > sprite1_height else sprite1_height)
         + (sprite2_width if sprite2_width > sprite2_height else sprite2_height)
     )
+
     # Multiply by half of the theoretical max diagonal length for an estimation of distance
     radius_sum *= 0.71  # 1.42 / 2
-    radius_sum_x2 = radius_sum * radius_sum
+    radius_sum_sq = radius_sum * radius_sum
 
     diff_x = sprite1_position[0] - sprite2_position[0]
-    diff_x2 = diff_x * diff_x
-    if diff_x2 > radius_sum_x2:
+    diff_x_sq = diff_x * diff_x
+    if diff_x_sq > radius_sum_sq:
         return False
 
     diff_y = sprite1_position[1] - sprite2_position[1]
-    diff_y2 = diff_y * diff_y
-    if diff_y2 > radius_sum_x2:
+    diff_y_sq = diff_y * diff_y
+    if diff_y_sq > radius_sum_sq:
         return False
 
-    distance = diff_x2 + diff_y2
-    if distance > radius_sum_x2:
+    distance = diff_x_sq + diff_y_sq
+    if distance > radius_sum_sq:
         return False
 
     return are_polygons_intersecting(
@@ -245,7 +249,7 @@ def check_for_collision_with_lists(
             raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
     sprites: List[SpriteType] = []
-    sprites_to_check: Iterable[SpriteType]    
+    sprites_to_check: Iterable[SpriteType]
 
     for sprite_list in sprite_lists:
         if sprite_list.spatial_hash is not None and method == 1:

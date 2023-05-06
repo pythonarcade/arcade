@@ -36,7 +36,7 @@ class SpriteListInteraction(arcade.Window):
         # Player
         self.player = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=0.5,            
+            scale=0.5,
         )
 
         # This program draws lines from the player/origin
