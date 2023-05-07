@@ -330,7 +330,7 @@ class Sprite(BasicSprite, PymunkMixin):
         :param Point point: Point to face towards.
         :param float max: Maximum the sprite will move
         """
-        self.position = lerp_vec(self.position, Point, max_move)
+        self.position = lerp_vec(self.position, point, max_move)
 
     # ---- Draw Methods ----
 
