@@ -28,7 +28,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255
+from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -765,7 +765,7 @@ class UIDummy(UIInteractiveWidget):
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
-        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color = Color.random(a=255)
 
     def on_update(self, dt):
         self.border_width = 2 if self.hovered else 0
