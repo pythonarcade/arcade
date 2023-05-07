@@ -316,7 +316,10 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Face the sprite towards a point. Assumes sprite image is facing upwards.
 
+        Lower max_rotation and update regularly to have smooth rotation.
+
         :param Point point: Point to face towards.
+        :param float max_rotation: Maximun the Sprite can rotate
         """
         angle = get_angle_degrees(self.center_x, self.center_y, point[0], point[1])
     
@@ -327,8 +330,10 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Move the sprite towards a point.
 
+        Lower max_move and update regularly to have smooth movement.
+
         :param Point point: Point to face towards.
-        :param float max: Maximum the sprite will move
+        :param float max_move: Maximum the sprite will move
         """
         self.position = lerp_vec(self.position, point, max_move)
 
