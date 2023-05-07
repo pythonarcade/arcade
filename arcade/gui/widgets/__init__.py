@@ -33,7 +33,7 @@ from arcade.types import RGBA255, Color
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
-__all__ = ["Surface"]
+__all__ = ["Surface", "UIDummy"]
 
 
 class Rect(NamedTuple):
