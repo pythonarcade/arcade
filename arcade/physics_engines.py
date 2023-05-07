@@ -399,8 +399,6 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
-
         for platform_list in self.platforms:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
@@ -432,6 +430,8 @@ class PhysicsEnginePlatformer:
                             platform.change_y *= -1
 
                     platform.center_y += platform.change_y
+                    
+        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites
