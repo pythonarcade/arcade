@@ -322,7 +322,7 @@ class Sprite(BasicSprite, PymunkMixin):
         :param float max_rotation: Maximun the Sprite can rotate
         """
         angle = get_angle_degrees(self.center_x, self.center_y, point[0], point[1])
-    
+
         # Reverse angle because sprite angles are backwards
         self.angle = lerp_angle(self.angle, -angle, max_rotation)
 
