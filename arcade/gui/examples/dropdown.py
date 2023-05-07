@@ -1,3 +1,12 @@
+"""
+Creating a dropdown menu with UIDropDown
+
+When an option in the UIDropDown is chosen, this example will respond
+by changing the text displayed on screen to reflect it.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.dropdown
+"""
 import arcade
 from arcade.gui import UIManager, UILabel, UIOnChangeEvent
 from arcade.gui.widgets.dropdown import UIDropdown
