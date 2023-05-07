@@ -95,7 +95,7 @@ select = [
 
 
 [tool.mypy]
-disable-error-code = union-attr
+disable_error_code = "annotation-unchecked"
 
 [tool.pytest.ini_options]
 norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "dist", "tempt"]
