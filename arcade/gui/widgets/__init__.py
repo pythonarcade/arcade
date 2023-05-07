@@ -723,7 +723,7 @@ class UIDummy(UIInteractiveWidget):
     When clicked, it does the following:
 
     * Outputs its `rect` attribute to the console
-    * Changes its color to a new, random color
+    * Changes its color to a random fully opaque color
 
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
