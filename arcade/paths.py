@@ -355,8 +355,7 @@ def has_line_of_sight(point_1: Point,
         point_2: End position position
         walls: List of all blocking sprites
         max_distance: Max distance point 1 can see
-        check_resolution: Check every x pixels for a sprite. Trade-off
-                                    between accuracy and speed.
+        check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
     Returns:
         Whether or not point_1 to point_2 is blocked by any wall in walls
     """
