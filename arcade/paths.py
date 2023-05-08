@@ -341,12 +341,14 @@ def astar_calculate_path(start_point: Point,
 def has_line_of_sight(point_1: Point,
                       point_2: Point,
                       walls: SpriteList,
-                      max_distance: int = -1,
+                      max_distance: float = float("inf"),
                       check_resolution: int = 2) -> bool:
     """
     Determine if we have line of sight between two points.
+
     NOTE: Try to make sure that spatial hashing is enabled
     on the wall SpriteList or this will be very slow.
+    NOTE: Make sure max_distance is positive.
 
     Args:
         point_1: Start position
@@ -365,7 +367,7 @@ def has_line_of_sight(point_1: Point,
         step_distance = step * check_resolution
         u = step_distance / distance
         midpoint = lerp_vec(point_1, point_2, u)
-        if max_distance != -1 and step_distance > max_distance:
+        if step_distance > max_distance:
             return False
         # print(point_1, point_2, step, u, step_distance, midpoint)
         sprite_list = get_sprites_at_point(midpoint, walls)
@@ -403,5 +405,4 @@ def has_line_of_sight(point_1: Point,
 #         x += x_inc
 #         y += y_inc
 
-#     return points
 #     return points
