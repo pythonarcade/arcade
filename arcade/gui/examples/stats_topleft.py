@@ -1,3 +1,14 @@
+"""
+Displaying stats in the window's top left corner
+
+This example displays numerical stats with labels by using the following:
+
+* A UILabel subclass which uses string formatting to convert numbers
+* Vertical UIBoxLayouts to hold the quantity labels & number columns
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.stats_topleft
+"""
 import arcade
 from arcade.gui import UIManager, UILabel, UIBoxLayout
 from arcade.gui.widgets.layout import UIAnchorLayout
