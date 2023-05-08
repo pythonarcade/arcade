@@ -2,16 +2,16 @@
 Classic A-star algorithm for path finding.
 """
 from typing import (
-    List, 
-    Optional, 
-    Set, 
-    Tuple, 
-    Union, 
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
     Dict
 )
 
 from arcade import (
-    Sprite, SpriteList, 
+    Sprite, SpriteList,
     check_for_collision_with_list,
     get_sprites_at_point
 )
@@ -161,8 +161,8 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
     Returns:
         The path from start to end. Returns None if is path is not found
     """
-    G: Dict[float] = {}  # Actual movement cost to each position from the start position
-    F: Dict[float] = {}  # Estimated movement cost of start to end going via this position
+    G: Dict[Point, float] = {}  # Actual movement cost to each position from the start position
+    F: Dict[Point, float] = {}  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
