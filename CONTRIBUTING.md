@@ -141,15 +141,9 @@ Be sure to re-run build & refresh to update after making changes!
 
 ## Optional: Improve Ergonomics on Mac and Linux
 
-### Enable `./make.py`
+### `./make.py` shorthand
 
-On Mac & Linux, you can enable running `make.py` using `./make.py` instead
-of `python make.py` as follows:
-
-1. Make sure you are in the root directory of the repo
-2. Run `chmod u+x make.py`
-
-You can run the make script with `./make.py` instead of `python make.py`.
+On Mac & Linux, you can run the make script as `./make.py` instead of `python make.py`.
 
 For example, this command:
 ```commandline
@@ -163,8 +157,7 @@ can now be run this way:
 
 ### Enable Shell Completions
 
-After enabling the short-form syntax as outlined above, you can also enable tab
-completion for commands on the following supported shells:
+On Mac & Linux, you can enable tab completion for commands on the following supported shells:
 
 * `bash` (the most common default shell)
 * `zsh`
@@ -181,6 +174,8 @@ Tab completion would allow you to press tab to auto-complete the command:
 ```shell
 ./make.py html
 ```
+
+Note that this may interfere if you work on other projects that also have a `make.py` file.
 
 To enable this feature, most users can follow these steps:
 

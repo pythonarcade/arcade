@@ -1,3 +1,13 @@
+"""
+Arrange widgets in vertical or horizontal lines with UIBoxLayout
+
+The direction UIBoxLayout follows is controlled by the `vertical` keyword
+argument. It is True by default. Pass False to it to arrange elements in
+a horizontal line.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.box_layout
+"""
 import arcade
 from arcade.gui import UIManager, UIBoxLayout
 from arcade.gui.widgets import UIDummy, UISpace
