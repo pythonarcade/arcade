@@ -29,9 +29,9 @@ def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,
                      blocking_sprites: SpriteList) -> bool:
     """
-    Return if position is blocked    
-    
-    Returns whether or not the moving_sprite is blocked 
+    Return if position is blocked
+
+    Returns whether or not the moving_sprite is blocked
     at position is blocked of the sprite in blocking_sprites
 
     Args:
@@ -107,10 +107,10 @@ class _AStarGraph(object):
     def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
         """
         Returns vertexes around the point
-        
+
         Args:
             pos: Gets the points around the position.
-        
+
         Returns:
             Returns vertexes around the point
         """
@@ -127,10 +127,10 @@ class _AStarGraph(object):
     def move_cost(self, a: Point, b: Point) -> float:
         """
         Returns a float of the cost to move
-        
+
         moving to corners costs more than to the side.
-        A barrier's cost is float("inf) so that that 
-        the Algorith will never go on it
+        A barrier's cost is float("inf) so that that
+        the Algorithm will never go on it
 
         Args:
             a: The 1st point to compare
@@ -344,8 +344,8 @@ def has_line_of_sight(point_1: Point,
                       max_distance: int = -1,
                       check_resolution: int = 2) -> bool:
     """
-    Determine if we have line of sight between two points. 
-    NOTE: Try to make sure that spatial hashing is enabled 
+    Determine if we have line of sight between two points.
+    NOTE: Try to make sure that spatial hashing is enabled
     on the wall SpriteList or this will be very slow.
 
     Args:
