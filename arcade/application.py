@@ -933,14 +933,9 @@ class View:
     """
     Support different views/screens in a window.
     """
-    __slots__ = (
-        "window",
-        "key",
-        "_section_manager",
-        "__weakref__"
-    )
     def __init__(self,
-                 window: Optional[Window] = None):
+                 window: Optional[Window] = None
+                 ) -> None:
 
         self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
@@ -1137,3 +1132,16 @@ class View:
         :param int y: y position of mouse
         """
         pass
+
+class SlotsView(View):
+    """Wrapper to View that adds __slots__"""
+    __slots__ = (
+        "window",
+        "key",
+        "_section_manager",
+        "__weakref__"
+    )
+    def __init__(self,
+                window: Optional[Window] = None
+                ) -> None:
+        super().__init__(window)
