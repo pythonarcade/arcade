@@ -75,11 +75,11 @@ class _AStarGraph(object):
     A gird with barriers that is used in _AStarSearch
 
     Attributes:
-        barriers: Is turned into a set, and then used for _AStarSearch
-        left: Far left side x value
-        right: Far right side x value
-        bottom: Far bottom side y value
-        top: Far top side y value
+        barriers (Union[List, Tuple, Set]): Is turned into a set, and then used for _AStarSearch
+        left (int): Far left side x value
+        right (int): Far right side x value
+        bottom (int): Far bottom side y value
+        top (int): Far top side y value
     """
 
     def __init__(self, barriers: Union[List, Tuple, Set],
@@ -240,14 +240,14 @@ class AStarBarrierList:
     A* path finding.
 
     Attributes:
-        moving_sprite: Sprite that will be moving
-        blocking_sprites: Sprites that can block movement
-        grid_size: Size of the grid, in pixels
-        left: Left border of playing field
-        right: Right border of playing field
-        bottom: Bottom of playing field
-        top: Top of playing field
-        barrier_list: List of barriers to use in _AStarSearch
+        moving_sprite (BasicSprite): Sprite that will be moving
+        blocking_sprites (SpriteList): Sprites that can block movement
+        grid_size (int): Size of the grid, in pixels
+        left (int): Left border of playing field
+        right (int): Right border of playing field
+        bottom (int): Bottom of playing field
+        top (int): Top of playing field
+        barrier_list (Optional[Set]): SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
     def __init__(self,
                  moving_sprite: Sprite,
@@ -307,7 +307,7 @@ def astar_calculate_path(start_point: Point,
     Args:
         start_point: Where it starts
         end_point: Where it ends
-        astar_barrier_list: Class with the boundries class to use in the AStarSearch Algorithm
+        astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
         diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
 
     Returns:
