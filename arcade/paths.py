@@ -1,12 +1,20 @@
 """
 Classic A-star algorithm for path finding.
 """
-from typing import List, Optional, Set, Tuple, Union
+from typing import (
+    List, 
+    Optional, 
+    Set, 
+    Tuple, 
+    Union, 
+    Dict
+)
 
-from arcade import (Sprite, SpriteList, 
-                    check_for_collision_with_list,
-                    get_sprites_at_point
-                    )
+from arcade import (
+    Sprite, SpriteList, 
+    check_for_collision_with_list,
+    get_sprites_at_point
+)
 from arcade.math import get_distance, lerp_vec
 from arcade.types import Point
 
@@ -153,8 +161,8 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
     Returns:
         The path from start to end. Returns None if is path is not found
     """
-    G = {}  # Actual movement cost to each position from the start position
-    F = {}  # Estimated movement cost of start to end going via this position
+    G: Dict[float] = {}  # Actual movement cost to each position from the start position
+    F: Dict[float] = {}  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
@@ -292,7 +300,7 @@ class AStarBarrierList:
 def astar_calculate_path(start_point: Point,
                          end_point: Point,
                          astar_barrier_list: AStarBarrierList,
-                         diagonal_movement: bool=True) -> Optional[Point]:
+                         diagonal_movement: bool=True) -> Optional[List[Point]]:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
