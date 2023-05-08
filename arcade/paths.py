@@ -152,7 +152,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
     """
     Returns a path from start to end using the AStarSearch Algorithm
 
-    Graph is used to check for barriers. 
+    Graph is used to check for barriers.
 
     Args:
         start: point to start at
