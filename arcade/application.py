@@ -1136,8 +1136,8 @@ class View:
 class SlotsView(View):
     """
     Wrapper to View that adds __slots__
-    
-    NOTE: Running into memory issues from a large number of views 
+
+    NOTE: Running into memory issues from a large number of views
     suggests potential underlying issues with a project's design
     CONSIDER looking/improving your project's design first
     """
