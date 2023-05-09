@@ -22,8 +22,13 @@ class Scene:
     Class that represents a `scene` object. Most games will use Scenes to render their Sprites.
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/tutorials/views/index.html
-
     """
+
+    __slots__ = (
+        "_sprite_lists",
+        "_name_mapping",
+        
+    )
 
     def __init__(self) -> None:
         self._sprite_lists: List[SpriteList] = []

@@ -9,7 +9,7 @@ class _Obs:
     Internal holder for Property value and change listeners
     """
 
-    __slots__ = "value", "listeners"
+    __slots__ = ("value", "listeners")
 
     def __init__(self):
         self.value = None
@@ -28,7 +28,7 @@ class Property:
     :param default_factory: A callable which returns the default value.
                             Will be called with the property and the instance
     """
-    __slots__ = "name", "default_factory", "obs"
+    __slots__ = ("name", "default_factory", "obs")
     name: str
 
     def __init__(self, default=None, default_factory=None):
@@ -115,7 +115,13 @@ def bind(instance, property: str, callback):
 
 
 class _ObservableDict(dict):
-    # Internal class to observe changes inside a native python dict.
+    """Internal class to observe changes inside a native python dict."""
+
+    __slots__ = (
+        "prop",
+        "obj"
+    )
+
     def __init__(self, prop: Property, instance, *largs):
         self.prop: Property = prop
         self.obj = ref(instance)
@@ -170,7 +176,13 @@ class DictProperty(Property):
 
 
 class _ObservableList(list):
-    # Internal class to observe changes inside a native python list.
+    """Internal class to observe changes inside a native python list."""
+
+    __slots__ = (
+        "prop",
+        "obj"
+    )
+
     def __init__(self, prop: Property, instance, *largs):
         self.prop: Property = prop
         self.obj = ref(instance)

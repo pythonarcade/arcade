@@ -45,7 +45,16 @@ def _heuristic(start: Point, goal: Point):
 
 
 class _AStarGraph(object):
-    # Define a class board like grid with two barriers
+    """Define a class board like grid with two barriers"""
+
+    __slots__ = (
+        "barriers",
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "movement_directions"
+    )
 
     def __init__(self, barriers: Union[List, Tuple, Set],
                  left: int,
@@ -92,6 +101,7 @@ class _AStarGraph(object):
 
 
 def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[Point]]:
+    """An AStarSearch Algorithm for pathfinding"""
     G = {}  # Actual movement cost to each position from the start position
     F = {}  # Estimated movement cost of start to end going via this position
 
@@ -176,6 +186,19 @@ class AStarBarrierList:
     :param int bottom: Bottom of playing field
     :param int top: Top of playing field
     """
+
+    __slots__ = (
+        "grid_size",
+        "bottom",
+        "top",
+        "left",
+        "right",
+        "bottom",
+        "moving_sprite",
+        "blocking_sprites",
+        "barrier_list"
+    )
+
     def __init__(self,
                  moving_sprite: Sprite,
                  blocking_sprites: SpriteList,
