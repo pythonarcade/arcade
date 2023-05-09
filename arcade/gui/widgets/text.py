@@ -220,9 +220,11 @@ class UITextWidget(UIAnchorLayout):
     @property
     def multiline(self):
         """
-        Multiline state of the widget. Newlines indicated with ``\n`` will only
-        be honored if this is set to true. If you want a scrollable text widget,
-        use :py:class:`~arcade.gui.TextArea`.
+        Get or set the multiline mode.
+
+        Newline characters (``"\\n"``) will only be honored when this is set to ``True``.
+        If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
+        instead.
         """
         return self.label.multiline
 
