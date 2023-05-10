@@ -18,68 +18,18 @@ from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
-
-class UISlider(UIStyledWidget["UISlider.UIStyle"]):
+class _SliderParent:
     """
-    A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
+    Parent Slider all sliders inherit from
 
-    There are four states of the UISlider i.e normal, hovered, pressed and disabled.
-
-    :param float value: Current value of the curosr of the slider.
-    :param float min_value: Minimum value of the slider.
-    :param float max_value: Maximum value of the slider.
-    :param float x: x coordinate of bottom left.
-    :param float y: y coordinate of bottom left.
-    :param float width: Width of the slider.
-    :param float height: Height of the slider.
-    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
-
+    Creates the base slider properties and methods.
+    NOTE: Does NOT inherit from UIWidget
+    do that in the child class.
     """
-
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
     disabled = Property(False)
-
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Used to style the slider for different states. Below is its use case.
-
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        bg: RGBA255 = Color(94, 104, 117)
-        border: RGBA255 = Color(77, 81, 87)
-        border_width: int = 1
-        filled_bar: RGBA255 = Color(50, 50, 50)
-        unfilled_bar: RGBA255 = Color(116, 125, 123)
-
-    DEFAULT_STYLE = {
-        "normal": UIStyle(),
-        "hover": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
-            border_width=2,
-            filled_bar=Color(50, 50, 50),
-            unfilled_bar=Color(116, 125, 123),
-        ),
-        "press": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
-            border_width=3,
-            filled_bar=Color(50, 50, 50),
-            unfilled_bar=Color(116, 125, 123),
-        ),
-        "disabled": UIStyle(
-            bg=Color(94, 104, 117),
-            border=Color(77, 81, 87),
-            border_width=1,
-            filled_bar=Color(50, 50, 50),
-            unfilled_bar=Color(116, 125, 123),
-        )
-    }
 
     def __init__(
         self,
@@ -87,28 +37,8 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         value: float = 0,
         min_value: float = 0,
         max_value: float = 100,
-        x: float = 0,
-        y: float = 0,
-        width: float = 300,
-        height: float = 20,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
-        style: Union[Mapping[str, "UISlider.UIStyle"], None] = None,  # typing: ignore
         **kwargs,
     ):
-        super().__init__(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            size_hint=size_hint,
-            size_hint_min=size_hint_min,
-            size_hint_max=size_hint_max,
-            style=style or UISlider.DEFAULT_STYLE,
-            **kwargs,
-        )
-
         self.value = value
         self.vmin = min_value
         self.vmax = max_value
@@ -169,6 +99,138 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
             self.norm_value = (x - cr.x - self.cursor_radius) / float(
                 self.content_width - 2 * self.cursor_radius
             )
+    
+    def do_render(self, surface: Surface):
+        """Override"""
+        pass
+
+    def _cursor_pos(self) -> Tuple[float, float]:
+        return self.value_x, self.y + self.height // 2
+
+    def _is_on_cursor(self, x: float, y: float) -> bool:
+        cursor_center_x, cursor_center_y = self._cursor_pos()
+        cursor_radius = self.cursor_radius
+        distance_to_cursor = get_distance(x, y, cursor_center_x, cursor_center_y)
+        return distance_to_cursor <= cursor_radius
+
+    def on_event(self, event: UIEvent) -> Optional[bool]:
+        if isinstance(event, UIMouseMovementEvent):
+            self.hovered = self._is_on_cursor(event.x, event.y)
+
+        if isinstance(event, UIMouseDragEvent):
+            if self.pressed:
+                old_value = self.value
+                self.value_x = event.x
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
+
+        if isinstance(event, UIMousePressEvent):
+            if self._is_on_cursor(event.x, event.y):
+                self.pressed = True
+
+        if isinstance(event, UIMouseReleaseEvent):
+            self.pressed = False
+
+        return EVENT_UNHANDLED
+
+    def on_change(self, event: UIOnChangeEvent):
+        """To be implemented by the user, triggered when the cursor's value is changed."""
+        pass
+
+class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
+    """
+    A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
+
+    There are four states of the UISlider i.e normal, hovered, pressed and disabled.
+
+    :param float value: Current value of the curosr of the slider.
+    :param float min_value: Minimum value of the slider.
+    :param float max_value: Maximum value of the slider.
+    :param float x: x coordinate of bottom left.
+    :param float y: y coordinate of bottom left.
+    :param float width: Width of the slider.
+    :param float height: Height of the slider.
+    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
+
+    """
+
+    @dataclass
+    class UIStyle(UIStyleBase):
+        """
+        Used to style the slider for different states. Below is its use case.
+
+        .. code:: py
+
+            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+        """
+        bg: RGBA255 = Color(94, 104, 117)
+        border: RGBA255 = Color(77, 81, 87)
+        border_width: int = 1
+        filled_bar: RGBA255 = Color(50, 50, 50)
+        unfilled_bar: RGBA255 = Color(116, 125, 123)
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
+            border_width=2,
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
+        ),
+        "press": UIStyle(
+            bg=Color(96, 103, 112),
+            border=Color(77, 81, 87),
+            border_width=3,
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
+        ),
+        "disabled": UIStyle(
+            bg=Color(94, 104, 117),
+            border=Color(77, 81, 87),
+            border_width=1,
+            filled_bar=Color(50, 50, 50),
+            unfilled_bar=Color(116, 125, 123),
+        )
+    }
+
+    def __init__(
+        self,
+        *,
+        value: float = 0,
+        min_value: float = 0,
+        max_value: float = 100,
+        x: float = 0,
+        y: float = 0,
+        width: float = 300,
+        height: float = 20,
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        style: Optional[Mapping[str, "UISlider.UIStyle"]] = None,  # typing: ignore
+        **kwargs,
+    ):
+        _SliderParent.__init__(
+            value=value,
+            min_value=min_value,
+            max_value=max_value,
+            **kwargs,
+        )
+        
+        UIStyledWidget["UISlider.UIStyle"].__init__(
+            value=value,
+            min_value=min_value,
+            max_value=max_value,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+            style=style or UISlider.DEFAULT_STYLE,
+            **kwargs,
+        )
+        
 
     def do_render(self, surface: Surface):
         style = self.get_current_style()
@@ -224,35 +286,3 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
             cursor_outline_color,
             border_width,
         )
-
-    def _cursor_pos(self) -> Tuple[int, int]:
-        return self.value_x, self.y + self.height // 2
-
-    def _is_on_cursor(self, x: float, y: float) -> bool:
-        cursor_center_x, cursor_center_y = self._cursor_pos()
-        cursor_radius = self.cursor_radius
-        distance_to_cursor = get_distance(x, y, cursor_center_x, cursor_center_y)
-        return distance_to_cursor <= cursor_radius
-
-    def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UIMouseMovementEvent):
-            self.hovered = self._is_on_cursor(event.x, event.y)
-
-        if isinstance(event, UIMouseDragEvent):
-            if self.pressed:
-                old_value = self.value
-                self.value_x = event.x
-                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
-
-        if isinstance(event, UIMousePressEvent):
-            if self._is_on_cursor(event.x, event.y):
-                self.pressed = True
-
-        if isinstance(event, UIMouseReleaseEvent):
-            self.pressed = False
-
-        return EVENT_UNHANDLED
-
-    def on_change(self, event: UIOnChangeEvent):
-        """To be implemented by the user, triggered when the cursor's value is changed."""
-        pass
