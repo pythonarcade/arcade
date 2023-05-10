@@ -94,18 +94,18 @@ class Surface:
         width: float,
         height: float,
         tex: Union[Texture, NinePatchTexture],
-        angle=0,
+        angle: float = 0.0,
         alpha: int = 255,
     ):
         if isinstance(tex, NinePatchTexture):
             if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a position != (0,0) yet")
+                raise NotImplementedError("Ninepatch does not support a position != (0,0) yet")
 
-            if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a angle != 0 yet")
+            if angle != 0.0:
+                raise NotImplementedError("Ninepatch does not support a angle != 0 yet")
 
-            if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a alpha != 255 yet")
+            if alpha != 0:
+                raise NotImplementedError("Ninepatch does not support a alpha != 255 yet")
 
             tex.draw_sized(size=(width, height))
         else:
