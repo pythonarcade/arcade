@@ -25,33 +25,12 @@ class _SliderParent:
     Creates the base slider properties and methods.
     NOTE: Does NOT inherit from UIWidget
     do that in the child class.
+    NOTE: put self.register_event_type("on_change") in child classes
     """
     value = Property(0)
     hovered = Property(False)
     pressed = Property(False)
     disabled = Property(False)
-
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Override
-
-        Used to style the slider for different states. 
-        Some child classes use it in their initialization 
-        while others use it like:
-
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        
-
-    DEFAULT_STYLE = {
-        "normal": UIStyle(),
-        "hover": UIStyle(),
-        "press": UIStyle(),
-        "disabled": UIStyle()
-    }
 
     def __init__(
         self,
@@ -67,8 +46,6 @@ class _SliderParent:
         self.vmax = max_value
 
         self.cursor_radius = cursor_radius
-
-        self.register_event_type("on_change")
 
     def get_current_state(self) -> str:
         """Returns the current state of the slider i.e disabled, press, hover or normal."""
@@ -255,7 +232,8 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
         bind(self, "hovered", self.trigger_render)
         bind(self, "pressed", self.trigger_render)
         bind(self, "disabled", self.trigger_render)
-        
+
+        self.register_event_type("on_change")
 
     def do_render(self, surface: Surface):
         style = self.get_current_style()
