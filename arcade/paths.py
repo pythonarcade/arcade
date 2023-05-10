@@ -106,7 +106,9 @@ class _AStarGraph(object):
 
     def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
         """
-        Returns vertexes around the point
+Return neighbors for this point according to ``self.movement_directions``
+
+These are not guaranteed to be reachable or valid points.
 
         Args:
             pos: Gets the points around the position.
