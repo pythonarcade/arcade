@@ -1,13 +1,19 @@
 """
-This example is a POC for a UIScrollArea.
+This example is a proof-of-concept for a UIScrollArea.
 
-You can move the UIScrollArea using the mouse wheel or draging it with the middle mouse button
+You can currently scroll through the UIScrollArea in the following ways:
 
-Missing:
-- Thoughtful API
-- UIScrollBars
+* scrolling the mouse wheel
+* dragging with middle mouse button
+
+It currently needs the following improvements:
+
+* A better API, including scroll direction control
+* UIScrollBars
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.scroll_area
 """
-
 from typing import Iterable, Optional
 
 from pyglet.event import EVENT_UNHANDLED
