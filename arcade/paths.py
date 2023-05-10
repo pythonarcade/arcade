@@ -51,7 +51,7 @@ def _spot_is_blocked(position: Point,
 
 def _heuristic(start: Point, goal: Point) -> float:
     """
-    Returns the heuristic of the 2 points
+    Returns a heuristic value for the passed points.
 
     Args:
         start: The 1st point to compare
