@@ -27,7 +27,6 @@ class Scene:
     __slots__ = (
         "_sprite_lists",
         "_name_mapping",
-        
     )
 
     def __init__(self) -> None:
