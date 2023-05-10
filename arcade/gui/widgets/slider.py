@@ -31,10 +31,33 @@ class _SliderParent:
     pressed = Property(False)
     disabled = Property(False)
 
+    @dataclass
+    class UIStyle(UIStyleBase):
+        """
+        Override
+
+        Used to style the slider for different states. 
+        Some child classes use it in their initialization 
+        while others use it like:
+
+        .. code:: py
+
+            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+        """
+        
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(),
+        "press": UIStyle(),
+        "disabled": UIStyle()
+    }
+
     def __init__(
         self,
         *,
         value: float = 0,
+        cursor_radius = 20,
         min_value: float = 0,
         max_value: float = 100,
         **kwargs,
@@ -43,13 +66,7 @@ class _SliderParent:
         self.vmin = min_value
         self.vmax = max_value
 
-        self.cursor_radius = self.height // 3
-
-        # trigger render on value changes
-        bind(self, "value", self.trigger_full_render)
-        bind(self, "hovered", self.trigger_render)
-        bind(self, "pressed", self.trigger_render)
-        bind(self, "disabled", self.trigger_render)
+        self.cursor_radius = cursor_radius
 
         self.register_event_type("on_change")
 
@@ -104,8 +121,9 @@ class _SliderParent:
         """Override"""
         pass
 
-    def _cursor_pos(self) -> Tuple[float, float]:
-        return self.value_x, self.y + self.height // 2
+    def _cursor_pos(self):
+        """Override"""
+        pass
 
     def _is_on_cursor(self, x: float, y: float) -> bool:
         cursor_center_x, cursor_center_y = self._cursor_pos()
@@ -211,6 +229,7 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
     ):
         _SliderParent.__init__(
             value=value,
+            cursor_radius = height//3,
             min_value=min_value,
             max_value=max_value,
             **kwargs,
@@ -230,6 +249,12 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
             style=style or UISlider.DEFAULT_STYLE,
             **kwargs,
         )
+
+        # trigger render on value changes
+        bind(self, "value", self.trigger_full_render)
+        bind(self, "hovered", self.trigger_render)
+        bind(self, "pressed", self.trigger_render)
+        bind(self, "disabled", self.trigger_render)
         
 
     def do_render(self, surface: Surface):
@@ -286,3 +311,6 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
             cursor_outline_color,
             border_width,
         )
+
+    def _cursor_pos(self) -> Tuple[float, float]:
+        return self.value_x, self.y + self.height // 2
