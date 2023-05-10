@@ -132,7 +132,8 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0, location=0
+        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0,
+        location=0
     ):
         self.name = name
         self.gl_type = gl_type
