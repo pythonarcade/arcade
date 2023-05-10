@@ -6,7 +6,7 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
-from .types import PyGLuint, pixel_formats, BufferOrBufferProtocol
+from .types import pixel_formats, BufferOrBufferProtocol
 from ..types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -115,8 +115,8 @@ class Texture2D:
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
         filter: Optional[Tuple[gl.GLuint, gl.GLuint]] = None,
-        wrap_x: Optional[PyGLuint] = None,
-        wrap_y: Optional[PyGLuint] = None,
+        wrap_x: Optional[gl.GLuint] = None,
+        wrap_y: Optional[gl.GLuint] = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,

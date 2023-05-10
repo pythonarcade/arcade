@@ -231,9 +231,9 @@ def sphere(
     R = 1.0 / (rings - 1)
     S = 1.0 / (sectors - 1)
 
-    vertices = [0.0] * (rings * sectors * 3)
-    normals = [0.0] * (rings * sectors * 3)
-    uvs = [0.0] * (rings * sectors * 2)
+    vertices = [0] * (rings * sectors * 3)
+    normals = [0] * (rings * sectors * 3)
+    uvs = [0] * (rings * sectors * 2)
 
     v, n, t = 0, 0, 0
     for r in range(rings):
