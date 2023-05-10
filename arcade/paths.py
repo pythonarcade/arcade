@@ -72,7 +72,7 @@ def _heuristic(start: Point, goal: Point) -> float:
 class _AStarGraph(object):
     # Define a class board like grid with two barriers
     """
-    A gird with barriers that is used in _AStarSearch
+    A grid which tracks barriers to movement.
 
     Attributes:
         barriers (Union[List, Tuple, Set]): Is turned into a set, and then used for _AStarSearch
