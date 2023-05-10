@@ -106,7 +106,7 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: PyGLenum) -> str | PyGLenum:
+def gl_name(gl_type: PyGLenum) -> Union[str, PyGLenum]:
     """Return the name of a gl type"""
     return GL_NAMES.get(gl_type, gl_type)
 

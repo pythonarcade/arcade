@@ -569,7 +569,7 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Point | Point3):
+    def position(self, point: Union[Point, Point3]):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         if len(point) == 3:
             self._label.position = point
