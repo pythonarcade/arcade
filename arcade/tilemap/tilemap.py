@@ -571,7 +571,7 @@ class TileMap:
                         point = point[1], point[0]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    cast(list[Point], points),
+                    cast(List[Point], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
