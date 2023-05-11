@@ -211,6 +211,7 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
         style: Optional[Mapping[str, "UISlider.UIStyle"]] = None,  # typing: ignore
         **kwargs,
     ) -> None:
+
         _SliderParent.__init__(
             value=value,
             cursor_radius = height//3,
@@ -300,7 +301,7 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
     def _cursor_pos(self) -> Tuple[float, float]:
         return self.value_x, self.y + self.height // 2
 
-class UITextureSlider(_SliderParent, UIWidget):
+class UITextureSlider(UISlider):
     """
     Slider using Textures
     """
@@ -325,15 +326,7 @@ class UITextureSlider(_SliderParent, UIWidget):
         self.bar = bar
         self.thumb = thumb
 
-        _SliderParent.__init__(
-            value=value,
-            cursor_radius = height//3,
-            min_value=min_value,
-            max_value=max_value,
-            **kwargs,
-        )
-
-        UIWidget.__init__(
+        super().__init__(
             value=value,
             min_value=min_value,
             max_value=max_value,
@@ -344,17 +337,9 @@ class UITextureSlider(_SliderParent, UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=style or UISlider.DEFAULT_STYLE,
+            style=style,
             **kwargs
         )
-
-        # trigger render on value changes
-        bind(self, "value", self.trigger_full_render)
-        bind(self, "hovered", self.trigger_render)
-        bind(self, "pressed", self.trigger_render)
-        bind(self, "disabled", self.trigger_render)
-
-        self.register_event_type("on_change")
 
     def do_render(self, surface: Surface) -> None:
         style: UISlider.UIStyle = self.get_current_style()  # type: ignore
@@ -388,6 +373,3 @@ class UITextureSlider(_SliderParent, UIWidget):
             height=self.height,
             tex=self.thumb,
         )
-
-    def _cursor_pos(self) -> Tuple[float, float]:
-        return self.value_x, self.y + self.height // 2
