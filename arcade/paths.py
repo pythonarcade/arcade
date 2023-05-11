@@ -27,13 +27,14 @@ def _spot_is_blocked(position: Point,
 
 def _heuristic(start: Point, goal: Point):
     """
+    Returns the heuristic of the 2 poitns
 
     Args:
-        start:
-        goal:
+        start: The 1st point to compare
+        goal: The 2nd point to compare
 
     Returns:
-
+        The heuristic of the 2 points
     """
     # Use Chebyshev distance heuristic if we can move one square either
     # adjacent or diagonal
