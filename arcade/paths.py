@@ -31,16 +31,11 @@ def _spot_is_blocked(position: Point,
     """
     Return if position is blocked
 
-    Returns whether or not the moving_sprite is blocked
-    at position is blocked of the sprite in blocking_sprites
+    :param Point position: position to put moving_sprite at
+    :param Sprite moving_sprite: Sprite to use
+    :param SpriteList blocking_sprites: List of Sprites to check against
 
-    Args:
-        position: position to put moving_sprite at
-        moving_sprite: Sprite to use
-        blocking_sprites: List of Sprites to check against
-
-    Returns:
-        If the Sprite would hit anything in blocking_sprites at the position
+    :return: If the Sprite would hit anything in blocking_sprites at the position
     """
     original_pos = moving_sprite.position
     moving_sprite.position = position
@@ -53,12 +48,10 @@ def _heuristic(start: Point, goal: Point) -> float:
     """
     Returns a heuristic value for the passed points.
 
-    Args:
-        start: The 1st point to compare
-        goal: The 2nd point to compare
+    :param Point start: The 1st point to compare
+    :param Point goal: The 2nd point to compare
 
-    Returns:
-        The heuristic of the 2 points
+    :return: The heuristic of the 2 points
     """
     # Use Chebyshev distance heuristic if we can move one square either
     # adjacent or diagonal
@@ -70,16 +63,14 @@ def _heuristic(start: Point, goal: Point) -> float:
 
 
 class _AStarGraph(object):
-    # Define a class board like grid with two barriers
     """
-    A grid which tracks barriers to movement.
+    A grid which tracks 2 barriers and a moving sprite.
 
-    Attributes:
-        barriers (Union[List, Tuple, Set]): Is turned into a set, and then used for _AStarSearch
-        left (int): Far left side x value
-        right (int): Far right side x value
-        bottom (int): Far bottom side y value
-        top (int): Far top side y value
+    :param Union[List, Tuple, Set] barriers: Is turned into a set, and then used for _AStarSearch
+    :param int left: Far left side x value
+    :param int right: Far right side x value
+    :param int bottom: Far bottom side y value
+    :param int top: Far top side y value
     """
 
     def __init__(self, barriers: Union[List, Tuple, Set],
@@ -106,15 +97,13 @@ class _AStarGraph(object):
 
     def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
         """
-Return neighbors for this point according to ``self.movement_directions``
+        Return neighbors for this point according to ``self.movement_directions``
 
-These are not guaranteed to be reachable or valid points.
+        These are not guaranteed to be reachable or valid points.
 
-        Args:
-            pos: Gets the points around the position.
+        :param Point pos: Which position to search around
 
-        Returns:
-            Returns vertexes around the point
+        :return: Returns vertexes around the point
         """
         n = []
         # Moves allow link a chess king
@@ -130,16 +119,14 @@ These are not guaranteed to be reachable or valid points.
         """
         Returns a float of the cost to move
 
-        moving to corners costs more than to the side.
+        Moving diagonally costs more than to the side.
         A barrier's cost is float("inf) so that that
         the Algorithm will never go on it
 
-        Args:
-            a: The 1st point to compare
-            b: The 2nd point to compare
+        :param Point a: The 1st point to compare
+        :param Point b: The 2nd point to compare
 
-        Returns:
-            The move cost of moving bettween of the 2 points
+        :return: The move cost of moving between of the 2 points
         """
         if b in self.barriers:
             return float('inf')  # Infitely high cost to enter barrier squares
@@ -156,12 +143,10 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
 
     Graph is used to check for barriers.
 
-    Args:
-        start: point to start at
-        end: point to end at
+    :param Point start: point to start at
+    :param Point end: point to end at
 
-    Returns:
-        The path from start to end. Returns None if is path is not found
+    :return: The path from start to end. Returns None if is path is not found
     """
     G: Dict[Point, float] = {}  # Actual movement cost to each position from the start position
     F: Dict[Point, float] = {}  # Estimated movement cost of start to end going via this position
@@ -241,15 +226,14 @@ class AStarBarrierList:
     Class that manages a list of barriers that can be encountered during
     A* path finding.
 
-    Attributes:
-        moving_sprite (BasicSprite): Sprite that will be moving
-        blocking_sprites (SpriteList): Sprites that can block movement
-        grid_size (int): Size of the grid, in pixels
-        left (int): Left border of playing field
-        right (int): Right border of playing field
-        bottom (int): Bottom of playing field
-        top (int): Top of playing field
-        barrier_list (Optional[Set]): SpriteList of barriers to use in _AStarSearch, None if not recalculated
+    :param BasicSprite moving_sprite: Sprite that will be moving
+    :param SpriteList blocking_sprites: Sprites that can block movement
+    :param int grid_size: Size of the grid, in pixels
+    :param int left: Left border of playing field
+    :param int right: Right border of playing field
+    :param int bottom: Bottom of playing field
+    :param int top: Top of playing field
+    :param Optional[Set] barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
     def __init__(self,
                  moving_sprite: Sprite,
@@ -306,14 +290,12 @@ def astar_calculate_path(start_point: Point,
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
-    Args:
-        start_point: Where it starts
-        end_point: Where it ends
-        astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
-        diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
+    :param Point start_point: Where it starts
+    :param Point end_point: Where it ends
+    :param AStarBarrierList astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
+    :param bool diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
 
-    Returns:
-        List of points(the path), or None if no path is found
+    :return: List of points(the path), or None if no path is found
     """
 
     grid_size = astar_barrier_list.grid_size
@@ -340,8 +322,8 @@ def astar_calculate_path(start_point: Point,
     return revised_result
 
 
-def has_line_of_sight(point_1: Point,
-                      point_2: Point,
+def has_line_of_sight(observer: Point,
+                      target: Point,
                       walls: SpriteList,
                       max_distance: float = float("inf"),
                       check_resolution: int = 2) -> bool:
@@ -352,14 +334,18 @@ def has_line_of_sight(point_1: Point,
     on the wall SpriteList or this will be very slow.
     NOTE: Make sure max_distance is positive.
 
-    Args:
-        point_1: Start position
-        point_2: End position position
-        walls: List of all blocking sprites
-        max_distance: Max distance point 1 can see
-        check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
-    Returns:
-        Whether or not point_1 to point_2 is blocked by any wall in walls
+    :param Point observer: Start position
+    :param Point target: End position position
+    :param SpriteList walls: List of all blocking sprites
+    :param int max_distance: Max distance point 1 can see
+    :param int check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
+
+    .. warning:: Try to make sure spatial hashing is enabled on ``walls``!
+
+                 If spatial hashing is not enabled, this function may run
+                 very slowly!
+
+    :return: Whether or not oberver to target is blocked by any wall in walls
     """
     distance = get_distance(point_1[0], point_1[1],
                             point_2[0], point_2[1])
