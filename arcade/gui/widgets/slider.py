@@ -16,7 +16,7 @@ from arcade.gui import (
 )
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
-from arcade.gui.style import UIStyleBase, UIStyledWidget
+from arcade.gui.style import UIStyleBase, UIStyledWidget, UIWidget
 
 class _SliderParent:
     """
@@ -58,7 +58,7 @@ class _SliderParent:
         else:
             return "normal"
 
-    def _x_for_value(self, value):
+    def _x_for_value(self, value) -> float:
         x = self.content_rect.x
         nval = (value - self.vmin) / self.vmax
         return (
@@ -68,22 +68,22 @@ class _SliderParent:
         )
 
     @property
-    def norm_value(self):
+    def norm_value(self) -> float:
         """Normalized value between 0.0 and 1.0"""
         return (self.value - self.vmin) / self.vmax
 
     @norm_value.setter
-    def norm_value(self, value):
+    def norm_value(self, value: float) -> None:
         """Normalized value between 0.0 and 1.0"""
         self.value = min(value * (self.vmax - self.vmin) + self.vmin, self.vmax)
 
     @property
-    def value_x(self):
+    def value_x(self) -> float:
         """Returns the current value of the cursor of the slider."""
         return self._x_for_value(self.value)
 
     @value_x.setter
-    def value_x(self, nx):
+    def value_x(self, nx: float) -> None:
         cr = self.content_rect
 
         x = min(cr.right - self.cursor_radius, max(nx, cr.x + self.cursor_radius))
@@ -94,12 +94,14 @@ class _SliderParent:
                 self.content_width - 2 * self.cursor_radius
             )
     
-    def do_render(self, surface: Surface):
+    def do_render(self, surface: Surface) -> None:
         """Override"""
         pass
 
-    def _cursor_pos(self):
-        """Override"""
+    def _cursor_pos(self) -> Tuple[int, int]:
+        """
+        Override, do in child class
+        """
         pass
 
     def _is_on_cursor(self, x: float, y: float) -> bool:
@@ -127,8 +129,13 @@ class _SliderParent:
 
         return EVENT_UNHANDLED
 
-    def on_change(self, event: UIOnChangeEvent):
-        """To be implemented by the user, triggered when the cursor's value is changed."""
+    def on_change(self, event: UIOnChangeEvent) -> None:
+        """
+        To be implemented by the user, triggered when the cursor's value is changed.
+
+        Class inheriting must inherit from a widget
+        and do register_event_type("on_change")        
+        """
         pass
 
 class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
@@ -198,12 +205,12 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
         y: float = 0,
         width: float = 300,
         height: float = 20,
-        size_hint=None,
-        size_hint_min=None,
-        size_hint_max=None,
+        size_hint: Optional[int]=None,
+        size_hint_min: Optional[int]=None,
+        size_hint_max: Optional[int]=None,
         style: Optional[Mapping[str, "UISlider.UIStyle"]] = None,  # typing: ignore
         **kwargs,
-    ):
+    ) -> None:
         _SliderParent.__init__(
             value=value,
             cursor_radius = height//3,
@@ -235,7 +242,7 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
 
         self.register_event_type("on_change")
 
-    def do_render(self, surface: Surface):
+    def do_render(self, surface: Surface) -> None:
         style = self.get_current_style()
 
         self.prepare_render(surface)
@@ -288,6 +295,98 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
             cursor_radius,
             cursor_outline_color,
             border_width,
+        )
+
+    def _cursor_pos(self) -> Tuple[float, float]:
+        return self.value_x, self.y + self.height // 2
+
+class UITextureSlider(_SliderParent, UIWidget):
+    """
+    Slider using Textures
+    """
+
+    def __init__(
+        self,
+        bar: Union[Texture, NinePatchTexture],
+        thumb: Union[Texture, NinePatchTexture],
+        value: float = 0,
+        min_value: float = 0,
+        max_value: float = 100,
+        x: float = 0,
+        y: float = 0,
+        width: float = 300,
+        height: float = 20,
+        size_hint: Optional[int]=None,
+        size_hint_min: Optional[int]=None,
+        size_hint_max: Optional[int]=None,
+        style: Optional[Mapping[str, "UISlider.UIStyle"]]=None,
+        **kwargs
+    ) -> None:
+        self.bar = bar
+        self.thumb = thumb
+
+        _SliderParent.__init__(
+            value=value,
+            cursor_radius = height//3,
+            min_value=min_value,
+            max_value=max_value,
+            **kwargs,
+        )
+
+        UIWidget.__init__(
+            value=value,
+            min_value=min_value,
+            max_value=max_value,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max,
+            style=style or UISlider.DEFAULT_STYLE,
+            **kwargs
+        )
+
+        # trigger render on value changes
+        bind(self, "value", self.trigger_full_render)
+        bind(self, "hovered", self.trigger_render)
+        bind(self, "pressed", self.trigger_render)
+        bind(self, "disabled", self.trigger_render)
+
+        self.register_event_type("on_change")
+
+    def do_render(self, surface: Surface) -> None:
+        style: UISlider.UIStyle = self.get_current_style()  # type: ignore
+
+        self.prepare_render(surface)
+
+        surface.draw_texture(0, 0, self.width, self.height, self.bar)
+
+        # TODO accept constructor params
+        slider_height = self.height // 4
+        slider_left_x = self._x_for_value(self.vmin)
+        cursor_center_x = self.value_x
+
+        slider_bottom = (self.height - slider_height) // 2
+
+        # slider
+        arcade.draw_xywh_rectangle_filled(
+            slider_left_x - self.x,
+            slider_bottom,
+            cursor_center_x - slider_left_x,
+            slider_height,
+            style.filled_bar,
+        )
+
+        # cursor
+        rel_cursor_x = cursor_center_x - self.x
+        surface.draw_texture(
+            x=rel_cursor_x - self.thumb.width // 4 + 2,
+            y=0,
+            width=self.thumb.width // 2,
+            height=self.height,
+            tex=self.thumb,
         )
 
     def _cursor_pos(self) -> Tuple[float, float]:
