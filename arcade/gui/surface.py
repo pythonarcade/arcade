@@ -101,7 +101,7 @@ class Surface:
             if angle != 0.0:
                 raise NotImplementedError("Ninepatch does not support a angle != 0 yet")
 
-            if alpha != 0:
+            if alpha != 255:
                 raise NotImplementedError("Ninepatch does not support a alpha != 255 yet")
 
             tex.draw_sized(size=(width, height))
