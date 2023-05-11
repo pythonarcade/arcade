@@ -23,9 +23,12 @@ class _SliderParent:
     Parent Slider all sliders inherit from
 
     Creates the base slider properties and methods.
-    NOTE: Does NOT inherit from UIWidget
-    do that in the child class.
     NOTE: put self.register_event_type("on_change") in child classes
+
+    .. warning:: Not all users can scroll easily!
+
+                     Does NOT inherit from UIWidget
+                        do that in the child class.
     """
     value = Property(0)
     hovered = Property(False)
