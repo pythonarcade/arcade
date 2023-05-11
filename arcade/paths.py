@@ -347,16 +347,15 @@ def has_line_of_sight(observer: Point,
 
     :return: Whether or not oberver to target is blocked by any wall in walls
     """
-    distance = get_distance(point_1[0], point_1[1],
-                            point_2[0], point_2[1])
+    distance = get_distance(observer[0], observer[1],
+                            target[0], target[1])
     steps = int(distance // check_resolution)
     for step in range(steps + 1):
         step_distance = step * check_resolution
         u = step_distance / distance
-        midpoint = lerp_vec(point_1, point_2, u)
+        midpoint = lerp_vec(observer, target, u)
         if step_distance > max_distance:
             return False
-        # print(point_1, point_2, step, u, step_distance, midpoint)
         sprite_list = get_sprites_at_point(midpoint, walls)
         if len(sprite_list) > 0:
             return False
