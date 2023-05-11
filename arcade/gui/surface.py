@@ -98,9 +98,6 @@ class Surface:
         alpha: int = 255,
     ):
         if isinstance(tex, NinePatchTexture):
-            if x != 0 or y != 0:
-                raise NotImplementedError("Ninepatch does not support a position != (0,0) yet")
-
             if angle != 0.0:
                 raise NotImplementedError("Ninepatch does not support a angle != 0 yet")
 
