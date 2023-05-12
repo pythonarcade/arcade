@@ -525,6 +525,9 @@ class UIWidget(EventDispatcher, ABC):
     def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
 
+    def __iter__(self):
+        return iter(self.children)
+
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
