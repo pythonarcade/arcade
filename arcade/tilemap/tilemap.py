@@ -48,7 +48,7 @@ __all__ = [
 
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
-def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
@@ -67,6 +67,10 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
         image_y = tile.y
         width = tile.width
         height = tile.height
+        if TYPE_CHECKING:
+            # pytiled_parser guarantees this will be set despite the typehint
+            assert width is not None
+            assert height is not None
 
     return image_x, image_y, width, height
 
@@ -412,7 +416,9 @@ class TileMap:
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
-        assert map_source
+        if TYPE_CHECKING:
+            # pytiled_parser guarantees this will be set despite the typehint
+            assert map_source is not None
         map_directory = os.path.dirname(map_source)
         image_file = _get_image_source(tile, map_directory)
 
@@ -444,8 +450,6 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            assert width
-            assert height
             texture = _load_tilemap_texture(
                 image_file,  # type: ignore
                 x=image_x,
