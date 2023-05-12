@@ -231,7 +231,7 @@ class Window(pyglet.window.Window):
             self.mouse = None
 
     @property
-    def current_view(self) -> Optional[View]:
+    def current_view(self) -> Optional["View"]:
         """
         This property returns the current view being shown.
         To set a different view, call the
@@ -707,7 +707,7 @@ class Window(pyglet.window.Window):
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: View) -> None:
+    def show_view(self, new_view: "View") -> None:
         """
         Select the view to show in the next frame.
         This is not a blocking call showing the view.
@@ -946,7 +946,7 @@ class View:
     """
     Support different views/screens in a window.
     """
-    
+
     def __init__(self,
                  window: Optional[Window] = None) -> None:
 
@@ -969,7 +969,8 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section: Section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(self, section: Section, at_index: Optional[int] = None, 
+                    at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 

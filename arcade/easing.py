@@ -1,10 +1,11 @@
 """
 Functions used to support easing
 """
+from __future__ import annotations
+
 from math import pi, sin, cos
 from dataclasses import dataclass
-from typing import Callable, Tuple, Optional, Union
-from __future__ import annotations
+from typing import Callable, Tuple, Optional
 from .math import get_distance
 
 
@@ -146,7 +147,7 @@ def easing(percent: float, easing_data: EasingData) -> float:
         easing_data.ease_function(percent)
 
 
-def ease_angle(start_angle: float, end_angle: float, *, 
+def ease_angle(start_angle: float, end_angle: float, *,
                  time=None, rate=None, ease_function: Callable = linear
                  ) -> Optional[EasingData]:
     """
@@ -200,8 +201,8 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool,
     return done, angle
 
 
-def ease_value(start_value: float, end_value: float, *, time: 
-                         Optional[float]=None, rate: Optional[float]=None, 
+def ease_value(start_value: float, end_value: float, *, time:
+                         Optional[float]=None, rate: Optional[float]=None,
                          ease_function: Callable=linear) -> EasingData:
     """
     Get an easing value
@@ -223,9 +224,9 @@ def ease_value(start_value: float, end_value: float, *, time:
     return easing_data
 
 
-def ease_position(start_position: Tuple[float, float], 
-                             end_position: Tuple[float, float], *, 
-                             time: Optional[float]=None, rate: 
+def ease_position(start_position: Tuple[float, float],
+                             end_position: Tuple[float, float], *,
+                             time: Optional[float]=None, rate:
                              Optional[float]=None, ease_function: Callable=linear
                              ) -> Tuple[EasingData, EasingData]:
     """

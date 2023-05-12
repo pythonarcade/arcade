@@ -1,14 +1,14 @@
+from __future__ import annotations
+
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Callable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.math import get_angle_degrees
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point
-
-from __future__ import annotations
 
 from .base import BasicSprite
 from .mixins import PymunkMixin

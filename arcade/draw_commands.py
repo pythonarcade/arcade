@@ -405,7 +405,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
 
 def draw_line_strip(point_list: PointList,
-                    color: RGBA255, 
+                    color: RGBA255,
                     line_width: float = 1) -> None:
     """
     Draw a multi-point line.
@@ -572,9 +572,8 @@ def draw_polygon_filled(point_list: PointList,
     flattened_list = tuple(i for g in triangle_points for i in g)
     _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
-
 def draw_polygon_outline(point_list: PointList,
-                         color: RGBA255, 
+                         color: RGBA255,
                          line_width: float = 1) -> None:
     """
     Draw a polygon outline. Also known as a "line loop."
@@ -606,7 +605,7 @@ def draw_polygon_outline(point_list: PointList,
 
 def draw_triangle_filled(x1: float, y1: float,
                          x2: float, y2: float,
-                         x3: float, y3: float, 
+                         x3: float, y3: float,
                          color: RGBA255) -> None:
     """
     Draw a filled in triangle.
@@ -951,11 +950,11 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-def draw_lrwh_rectangle_textured(bottom_left_x: float, 
+def draw_lrwh_rectangle_textured(bottom_left_x: float,
                                  bottom_left_y: float,
                                  width: float,
                                  height: float,
-                                 texture: Texture, 
+                                 texture: Texture,
                                  angle: float = 0,
                                  alpha: int = 255) -> None:
     """

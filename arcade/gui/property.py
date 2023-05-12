@@ -2,7 +2,6 @@ import sys
 import traceback
 from typing import (
     Optional,
-    Union,
     Tuple,
     Callable,
     Any,
@@ -10,8 +9,6 @@ from typing import (
     Dict,
     List,
     Set,
-    Mapping,
-    overload,
     SupportsIndex
 )
 from weakref import WeakKeyDictionary, ref
@@ -197,12 +194,12 @@ class _ObservableList(list):
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs: List) -> _ObservableList:  # type: ignore
+    def __iadd__(self, *largs: List) -> "_ObservableList":  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
 
-    def __imul__(self, *largs: int) -> _ObservableList:  # type: ignore
+    def __imul__(self, *largs: int) -> "_ObservableList":  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
