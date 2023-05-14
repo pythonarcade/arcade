@@ -54,6 +54,7 @@ __all__ = [
     "BufferProtocol",
     "Color",
     "ColorLike",
+    "ColorFloat",
     "IPoint",
     "PathOrTexture",
     "Point",
@@ -410,6 +411,322 @@ class Color(RGBA255):
             b = random.randint(0, 255)
         if a is None:
             a = random.randint(0, 255)
+
+        return cls(r, g, b, a)
+
+
+class ColorFloat(RGBANormalized):
+    """
+    A :py:class:`tuple` subclass representing a floating point RGBA color.
+
+    As with the :py:class:`.Color` class:
+
+    * This class provides helpful utility methods
+    * You can use regular RGB or RGBA float tuples in most places arcade
+      accepts instances of this class.
+
+    Unlike the byte-value color class, values *may* fall outside the
+    recommended range, although it is not always desirable. GPUs often
+    clamp final color values, but the specifics are left up to shaders.
+    Please see the following for more information on shaders, normalized
+    values, & the GPU:
+
+    * :ref:`tutorials_shaders`
+    * `Chapter 2 of The Book of Shaders <https://thebookofshaders.com/02/>`_
+
+    Usage Examples::
+
+        >>> from arcade.types import ColorFloat
+        >>> ColorFloat(1.0, 0.0, 0.0)
+        Color(r=1.0, g=0.0, b=0.0, a=1.0)
+
+        >>> ColorFloat(*rgb_green_norm_tuple, 0.5)
+        Color(r=0.0, g=1.0, b=0.0 a=0.5)
+
+    :param r: the red channel value as a float, ideally between 0.0 and 1.0
+    :param g: the green channel value as a float, ideally between 0.0 and 1.0
+    :param b: the blue channel  value as a float, ideally between 0.0 and 1.0
+    :param a: the alpha or transparency channel of the color, ideally between
+        0.0 and 1.0
+    """
+
+    def __new__(cls, r: float, g: float, b: float, a: float = 1.0):
+        # Typechecking is ignored because of a mypy bug involving
+        # tuples & super:
+        # https://github.com/python/mypy/issues/8541
+        return super().__new__(cls, (r, g, b, a))  # type: ignore
+
+    def __deepcopy__(self, _):
+        """Allow deepcopy to be used with ColorFloat"""
+        return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
+
+    @property
+    def r(self) -> float:
+        return self[0]
+
+    @property
+    def g(self) -> float:
+        return self[1]
+
+    @property
+    def b(self) -> float:
+        return self[2]
+
+    @property
+    def a(self) -> float:
+        return self[3]
+
+    @classmethod
+    def from_iterable(cls, iterable: Iterable[float]) -> Self:
+        """
+        Create a float color from an :py:class:`~typing.Iterable` with 3-4 elements.
+
+        If the passed iterable is already a ColorFloat instance, it will be
+        returned unchanged. If the iterable has less than 3 or more than
+        4 elements, a ValueError will be raised.
+
+        Otherwise, the function will attempt to create a new Color
+        instance. The usual rules apply, ie all values must be between
+        0 and 255, inclusive.
+
+        :param iterable: An iterable which unpacks to 3 or 4 elements,
+            each between 0 and 255, inclusive.
+        """
+        if isinstance(iterable, cls):
+            return iterable
+
+        # We use unpacking because there isn't a good way of specifying
+        # lengths for sequences as of 3.8, our minimum Python version as
+        # of May 2023: https://github.com/python/typing/issues/786
+        r, g, b, *_a = iterable
+
+        if _a:
+            if len(_a) > 1:
+                raise ValueError("iterable must unpack to 3 or 3 values")
+            a = _a[0]
+        else:
+            a = 1.0
+
+        return cls(r, g, b, a=a)
+
+    @property
+    def as_color255(self) -> Color:
+        """
+        Attempt to return this color as a tuple of 4 byte-range values.
+
+        If any of this color's channels would convert to a value outside
+        the valid byte range (``0`` to ``255``), a
+        :py:class:`~arcade.utils.NormalizedRangeError` will be raised.
+
+        Examples::
+
+            >>> color_white_normalized.as_color255
+            Color(r=255, g=255, b=255, a=255)
+
+        """
+        return Color.from_normalized(self)
+
+    @classmethod
+    def from_gray(cls, brightness: float, a: float = 1.0) -> Self:
+        """
+        Return a shade of gray of the given brightness.
+
+        Example::
+
+            >>> custom_white_float = ColorFloat.from_gray(1.0)
+            >>> print(custom_white_float)
+            ColorNorm(r=1.0, g=1.0, b=1.0, a=1.0)
+
+            >>> half_opacity_gray_float = ColorFloat.from_gray(0.5, 0.5)
+            >>> print(half_opacity_gray_float)
+            ColorNorm(r=0.5, g=0.5, b=0.5 a=0.5)
+
+        :param brightness: How bright the shade should be
+        :param a: A transparency value (fully opaque by default)
+        :return:
+        """
+
+        return cls(brightness, brightness, brightness, a=a)
+
+    @classmethod
+    def from_uint24(cls, color: int, a: int = 255) -> Self:
+        """
+        Return a ColorFloat from an unsigned 3-byte (24 bit) integer.
+
+        These ints may be between 0 and 16777215 (``0xFFFFFF``), inclusive.
+
+        Example::
+
+            >>> ColorFloat.from_uint24(16777215)
+            Color(r=1.0, g=1.0, b=1.0, a=1.0)
+
+            >>> ColorFloat.from_uint24(0xFF0000)
+            Color(r=255, g=0, b=0, a=255)
+
+        :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
+        :param a: an alpha value to use between 0 and 255, inclusive.
+        """
+
+        if not 0 <= color <= MAX_UINT24:
+            raise IntOutsideRangeError("color", color, 0, MAX_UINT24)
+
+        if not 0 <= a <= 255:
+            raise ByteRangeError("a", a)
+
+        return cls(
+            ((color & 0xFF0000) >> 16) / 255,
+            ((color & 0xFF00) >> 8) / 255,
+            (color & 0xFF) / 255,
+            a=a / 255
+        )
+
+    @classmethod
+    def from_uint32(cls, color: int) -> Self:
+        """
+        Return a ColorFloat for a given unsigned 4-byte (32-bit) integer
+
+        The bytes are interpreted as R, G, B, A.
+
+        Examples::
+
+            >>> ColorFloat.from_uint32(4294967295)
+            ColorNorm(r=1.0, g=1.0, b=1.0, a=1.0)
+
+            >>> ColorFloat.from_uint32(0xFF0000FF)
+            ColorNorm(r=1.0, g=0.0, b=0.0, a=1.0)
+
+        :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        """
+        if not 0 <= color <= MAX_UINT32:
+            raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
+
+        return cls(
+            ((color & 0xFF000000) >> 24) / 255,
+            ((color & 0xFF0000) >> 16) / 255,
+            ((color & 0xFF00) >> 8) / 255,
+            a=(color & 0xFF) / 255
+        )
+
+    @classmethod
+    def from_color255(cls, color255: RGBA255) -> Self:
+        """
+        Convert byte-value (0 to 255) channels into a ColorFloat.
+
+        Note that unlike :py:meth:`Color.from_normalized`, this function
+        does not validate the data passed into it.
+
+        Examples::
+
+            >>> ColorFloat.from_color255((255, 0, 0, 255))
+            Color(r=1.0, g=0, b=0, a=1.0)
+
+            >>> normalized_half_opacity_green = (0, 255, 0, 127)
+            >>> ColorFloat.from_color255(normalized_half_opacity_green)
+            Color(r=0.0, g=1.0, b=0.0, a=0.4980392156862745)
+
+        :param color255: The color as byte (0 to 255) RGBA values.
+        :return:
+        """
+        r, g, b, *_a = color255
+
+        if _a:
+            if len(_a) > 1:
+                raise ValueError("color255 must unpack to 3 or 3 values")
+            a = _a[0]
+
+        else:
+            a = 255
+
+        return cls(r / 255, g / 255, b / 255, a / 255)
+
+    @classmethod
+    def from_hex_string(cls, code: str) -> Self:
+        """
+        Return a ColorFloat corresponding to a hex code 3, 4, 6, or 8 digits in length
+
+        Prefixing it with a pound sign (``#`` / hash symbol) is
+        optional. It will be ignored if present.
+
+        The capitalization of the hex digits (``'f'`` vs ``'F'``)
+        does not matter.
+
+        3 and 6 digit hex codes will be treated as if they have an opacity of
+        1.0.
+
+        3 and 4 digit hex codes will be expanded.
+
+        Examples::
+
+            >>> ColorFloat.from_hex_string("#ff00ff")
+            ColorFloat(r=1.0, g=0.0, b=1.0, a=1.0)
+
+            >>> ColorFloat.from_hex_string("#ff00ff00")
+            ColorFloat(r=1.0, g=0.0, b=1.0, a=0.0)
+
+            >>> ColorFloat.from_hex_string("#FFF")
+            ColorFloat(r=1.0, g=1.0, b=1.0, a=1.0)
+
+            >>> ColorFloat.from_hex_string("FF0A")
+            ColorFloat(r=1.0, g=1.0, b=0.0, a=0.6666666666666666)
+
+        """
+        code = code.lstrip("#")
+
+        # This looks unusual, but it matches CSS color code expansion
+        # behavior for 3 and 4 digit hex codes.
+        if len(code) <= 4:
+            code = "".join(char * 2 for char in code)
+
+        if len(code) == 6:
+            # full opacity if no alpha specified
+            return cls(int(code[:2], 16) / 255, int(code[2:4], 16) / 255, int(code[4:6], 16) / 255, 1.0)
+        elif len(code) == 8:
+            return cls(
+                int(code[:2], 16) / 255, int(code[2:4], 16) / 255, int(code[4:6], 16) / 255, int(code[6:8], 16) / 255)
+
+        raise ValueError(f"Improperly formatted color: '{code}'")
+
+    @classmethod
+    def random(
+        cls,
+        r: Optional[float] = None,
+        g: Optional[float] = None,
+        b: Optional[float] = None,
+        a: Optional[float] = None,
+    ) -> Self:
+        """
+        Return a float color with channels randomized between 0.0 and 1.0.
+
+        The parameters are optional, and can be used to set the value of
+        a particular channel. If a channel is not specified, its value
+        will be randomly generated.
+
+        Examples::
+
+            # Randomize all channels
+            >>> ColorFloat.random()
+            ColorFloat(r=0.6119509544690285, g=0.8696232474682342, b=0.9889997022676941, a= 0.35839819935010764)
+
+            # Randomized red channel with fixed green, blue, & alpha
+            >>> ColorFloat.random(g=1.0, b=1.0, a=1.0)
+            ColorFloat(r=0.31173154398785363, g=1.0, b=1.0, a=1.0)
+
+        :param r: Fixed value for red channel
+        :param g: Fixed value for green channel
+        :param b: Fixed value for blue channel
+        :param a: Fixed value for alpha channel
+        """
+        if r is None:
+            r = random.random()
+        if g is None:
+            g = random.random()
+        if b is None:
+            b = random.random()
+        if a is None:
+            a = random.random()
 
         return cls(r, g, b, a)
 
