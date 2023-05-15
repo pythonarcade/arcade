@@ -561,10 +561,10 @@ class ColorFloat(RGBANormalized):
         Example::
 
             >>> ColorFloat.from_uint24(16777215)
-            Color(r=1.0, g=1.0, b=1.0, a=1.0)
+            ColorFloat(r=1.0, g=1.0, b=1.0, a=1.0)
 
             >>> ColorFloat.from_uint24(0xFF0000)
-            Color(r=255, g=0, b=0, a=255)
+            ColorFloat(r=1.0, g=0.0, b=0.0, a=1.0)
 
         :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
