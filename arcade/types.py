@@ -176,7 +176,7 @@ class Color(RGBA255):
         return cls(r, g, b, a=a)
 
     @property
-    def normalized(self) -> "ColorFloat":
+    def normalized(self) -> ColorFloat:
         """
         Return this color as a tuple of 4 normalized floats.
 
