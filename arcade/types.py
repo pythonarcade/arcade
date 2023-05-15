@@ -183,13 +183,13 @@ class Color(RGBA255):
         Examples::
 
             >>> arcade.color.WHITE.normalized
-            (1.0, 1.0, 1.0, 1.0)
+            ColorFloat(1.0, 1.0, 1.0, 1.0)
 
             >>> arcade.color.BLACK.normalized
-            (0.0, 0.0, 0.0, 1.0)
+            ColorFloat(0.0, 0.0, 0.0, 1.0)
 
             >>> arcade.color.TRANSPARENT_BLACK.normalized
-            (0.0, 0.0, 0.0, 0.0)
+            ColorFloat(0.0, 0.0, 0.0, 0.0)
 
         """
         return ColorFloat(r=self[0] / 255, g=self[1] / 255, b=self[2] / 255, a=self[3] / 255)
