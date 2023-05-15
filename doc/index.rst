@@ -110,15 +110,15 @@ The Python Arcade Library
    :maxdepth: 1
    :caption: Source Code & Contributing
 
+   GitHub <https://github.com/pythonarcade/arcade>
+   programming_guide/release_notes
+   License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
    contributing_guide/index
    contributing_guide/directory_structure
    contributing_guide/how_to_contribute
    contributing_guide/how_to_build
    contributing_guide/how_to_submit_changes
    contributing_guide/release_checklist
-   GitHub <https://github.com/pythonarcade/arcade>
-   programming_guide/release_notes
-   License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
 
 .. image:: images/social.svg
    :alt: Social icon
