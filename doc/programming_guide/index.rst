@@ -24,7 +24,6 @@ external documentation where applicable.
    sprites/index
    how_to_get_help
    edge_artifacts/index
-   how_to_submit_changes
    how_to_contribute
    how_to_build
    logging

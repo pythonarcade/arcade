@@ -31,3 +31,4 @@ and practices.
     :maxdepth: 1
 
     directory_structure
+    how_to_submit_changes
