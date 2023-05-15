@@ -1,4 +1,4 @@
-.. _directory_structure:
+.. _directory-structure:
 
 Directory Structure
 ===================
