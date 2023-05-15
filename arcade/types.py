@@ -417,17 +417,19 @@ class Color(RGBA255):
 
 class ColorFloat(RGBANormalized):
     """
-    A :py:class:`tuple` subclass representing a floating point RGBA color.
+    A :py:class:`tuple` subclass holding a floating point RGBA color.
 
     As with the :py:class:`.Color` class:
 
-    * This class provides helpful utility methods
-    * You can use regular RGB or RGBA float tuples in most places arcade
-      accepts instances of this class.
+    * This class provides utility methods for common tasks
+    * You can use regular RGB or RGBA float tuples in most places
+      arcade will accept instances of this class
 
     Unlike the byte-value color class, values *may* fall outside the
     recommended range, although it is not always desirable. GPUs often
-    clamp final color values, but the specifics are left up to shaders.
+    clamp final color values lower than ``0.0`` or higher than ``1.0``,
+    but the specifics are left up to shaders.
+
     Please see the following for more information on shaders, normalized
     values, & the GPU:
 
