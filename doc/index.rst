@@ -77,7 +77,6 @@ The Python Arcade Library
    programming_guide/get_started
    programming_guide/sprites/index
    programming_guide/how_to_get_help
-   programming_guide/directory_structure
    programming_guide/edge_artifacts/index
    programming_guide/how_to_submit_changes
    programming_guide/how_to_contribute
@@ -116,6 +115,7 @@ The Python Arcade Library
    :caption: Source Code & Contributing
 
    contributing_guide/index
+   contributing_guide/directory_structure
    GitHub <https://github.com/pythonarcade/arcade>
    programming_guide/release_notes
    License <https://github.com/pythonarcade/arcade/blob/development/license.rst>

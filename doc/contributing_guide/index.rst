@@ -29,3 +29,5 @@ and practices.
 
 .. toctree::
     :maxdepth: 1
+
+    directory_structure
