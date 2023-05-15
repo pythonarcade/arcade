@@ -623,7 +623,7 @@ class ColorFloat(RGBANormalized):
         Examples::
 
             >>> ColorFloat.from_color255((255, 0, 0, 255))
-            Color(r=1.0, g=0, b=0, a=1.0)
+            Color(r=1.0, g=0.0, b=0.0, a=1.0)
 
             >>> normalized_half_opacity_green = (0, 255, 0, 127)
             >>> ColorFloat.from_color255(normalized_half_opacity_green)
