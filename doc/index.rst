@@ -79,7 +79,6 @@ The Python Arcade Library
    programming_guide/how_to_get_help
    programming_guide/edge_artifacts/index
    programming_guide/logging
-   programming_guide/release_checklist
    programming_guide/pygame_comparison
    programming_guide/headless
    programming_guide/vsync
