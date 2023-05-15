@@ -538,11 +538,11 @@ class ColorFloat(RGBANormalized):
 
             >>> custom_white_float = ColorFloat.from_gray(1.0)
             >>> print(custom_white_float)
-            ColorNorm(r=1.0, g=1.0, b=1.0, a=1.0)
+            ColorFloat(r=1.0, g=1.0, b=1.0, a=1.0)
 
             >>> half_opacity_gray_float = ColorFloat.from_gray(0.5, 0.5)
             >>> print(half_opacity_gray_float)
-            ColorNorm(r=0.5, g=0.5, b=0.5 a=0.5)
+            ColorFloat(r=0.5, g=0.5, b=0.5 a=0.5)
 
         :param brightness: How bright the shade should be
         :param a: A transparency value (fully opaque by default)
@@ -593,10 +593,10 @@ class ColorFloat(RGBANormalized):
         Examples::
 
             >>> ColorFloat.from_uint32(4294967295)
-            ColorNorm(r=1.0, g=1.0, b=1.0, a=1.0)
+            ColorFloat(r=1.0, g=1.0, b=1.0, a=1.0)
 
             >>> ColorFloat.from_uint32(0xFF0000FF)
-            ColorNorm(r=1.0, g=0.0, b=0.0, a=1.0)
+            ColorFloat(r=1.0, g=0.0, b=0.0, a=1.0)
 
         :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
