@@ -25,7 +25,6 @@ external documentation where applicable.
    how_to_get_help
    edge_artifacts/index
    logging
-   release_checklist
    pygame_comparison
    headless
    vsync
