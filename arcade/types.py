@@ -431,7 +431,7 @@ class ColorFloat(RGBANormalized):
     Please see the following for more information on shaders, normalized
     values, & the GPU:
 
-    * :ref:`tutorials_shaders`
+    * :ref:`Arcade's shader tutorials <tutorials_shaders>`
     * `Chapter 2 of The Book of Shaders <https://thebookofshaders.com/02/>`_
 
     Usage Examples::
