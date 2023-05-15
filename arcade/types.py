@@ -176,7 +176,7 @@ class Color(RGBA255):
         return cls(r, g, b, a=a)
 
     @property
-    def normalized(self) -> RGBANormalized:
+    def normalized(self) -> "ColorFloat":
         """
         Return this color as a tuple of 4 normalized floats.
 
@@ -192,7 +192,7 @@ class Color(RGBA255):
             (0.0, 0.0, 0.0, 0.0)
 
         """
-        return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
+        return ColorFloat(r=self[0] / 255, g=self[1] / 255, b=self[2] / 255, a=self[3] / 255)
 
     @classmethod
     def from_gray(cls, brightness: int, a: int = 255) -> Self:
