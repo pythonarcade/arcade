@@ -217,6 +217,12 @@ class HitBox:
 
 
 class RotatableHitBox(HitBox):
+    """
+    A hit box with support for rotation.
+
+    Rotation is separated from the basic hitbox because it is much
+    slower than offsetting and scaling.
+    """
     def __init__(
         self,
         points: PointList,
@@ -226,10 +232,13 @@ class RotatableHitBox(HitBox):
         scale: Tuple[float, float] = (1.0, 1.0),
     ):
         super().__init__(points, position=position, scale=scale)
-        self._angle = angle
+        self._angle: float = angle
 
     @property
-    def angle(self):
+    def angle(self) -> float:
+        """
+        The angle to rotate the raw points by in degrees
+        """
         return self._angle
 
     @angle.setter
@@ -237,7 +246,14 @@ class RotatableHitBox(HitBox):
         self._angle = angle
         self._adjusted_cache_dirty = True
 
-    def get_adjusted_points(self):
+    def get_adjusted_points(self) -> PointList:
+        """
+        Return the offset, scaled, & rotated points of this hitbox.
+
+        As with :py:meth:`.HitBox.get_adjusted_points`, this method only
+        recalculates the adjusted values when necessary.
+        :return:
+        """
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
