@@ -1,3 +1,13 @@
+"""
+Changing UI styles in response to events
+
+This example has a button which cycles its appearance through a
+repeating list of different styles when pressed, except when it
+is disabled by the user.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.style_v2
+"""
 from itertools import cycle
 
 import arcade

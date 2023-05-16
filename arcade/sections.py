@@ -8,6 +8,11 @@ from arcade import SimpleCamera, get_window
 if TYPE_CHECKING:
     from arcade import View
 
+__all__ = [
+    "Section",
+    "SectionManager"
+]
+
 
 class Section:
     """

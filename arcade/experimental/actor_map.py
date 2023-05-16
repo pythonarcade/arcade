@@ -125,7 +125,7 @@ class Map:
             ":resources:images/tiles/dirtCenter.png",
         ]
         self.textures = [
-            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box) 
+            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box)
             for path in texture_paths
         ]
 

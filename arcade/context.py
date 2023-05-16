@@ -21,6 +21,7 @@ from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
+__all__ = ["ArcadeContext"]
 
 class ArcadeContext(Context):
     """

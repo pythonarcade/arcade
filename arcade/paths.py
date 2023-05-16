@@ -8,6 +8,12 @@ from arcade import (Sprite, SpriteList, check_for_collision_with_list,
 from arcade.math import get_distance, lerp_vec
 from arcade.types import Point
 
+__all__ = [
+    "AStarBarrierList",
+    "astar_calculate_path",
+    "has_line_of_sight"
+]
+
 
 def _spot_is_blocked(position: Point,
                      moving_sprite: Sprite,
@@ -21,13 +27,14 @@ def _spot_is_blocked(position: Point,
 
 def _heuristic(start: Point, goal: Point):
     """
+    Returns the heuristic of the 2 poitns
 
     Args:
-        start:
-        goal:
+        start: The 1st point to compare
+        goal: The 2nd point to compare
 
     Returns:
-
+        The heuristic of the 2 points
     """
     # Use Chebyshev distance heuristic if we can move one square either
     # adjacent or diagonal

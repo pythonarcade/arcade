@@ -13,6 +13,16 @@ _pyglets_dispatch_event = None
 _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
 
+__all__ = [
+    "print_timings",
+    "clear_timings",
+    "get_timings",
+    "enable_timings",
+    "disable_timings",
+    "get_fps",
+    "timings_enabled"
+]
+
 
 def _dispatch_event(self, *args):
     """

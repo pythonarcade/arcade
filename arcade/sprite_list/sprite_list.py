@@ -93,7 +93,7 @@ class SpriteList(Generic[SpriteType]):
 
     def __init__(
         self,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
         atlas: Optional["TextureAtlas"] = None,
         capacity: int = 100,
@@ -156,7 +156,7 @@ class SpriteList(Generic[SpriteType]):
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
         self.spatial_hash: Optional[SpatialHash] = None
-        if use_spatial_hash is True:
+        if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.properties: Optional[Dict[str, Any]] = None

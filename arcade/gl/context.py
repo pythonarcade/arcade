@@ -211,6 +211,17 @@ class Context:
         self._point_size = 1.0
         self._flags: Set[int] = set()
         self._wireframe = False
+        # Options for cull_face
+        self._cull_face_options = {
+            "front": gl.GL_FRONT,
+            "back": gl.GL_BACK,
+            "front_and_back": gl.GL_FRONT_AND_BACK,
+        }
+        self._cull_face_options_reverse = {
+            gl.GL_FRONT: "front",
+            gl.GL_BACK: "back",
+            gl.GL_FRONT_AND_BACK: "front_and_back",
+        }
 
         # Context GC as default. We need to call Context.gc() to free opengl resources
         self._gc_mode = "context_gc"
@@ -416,7 +427,7 @@ class Context:
             # Make sure only blending is enabled
             ctx.enable_only(ctx.BLEND)
             # Make sure only depth test and culling is enabled
-            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)        
+            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
         self._flags = set(args)
 
@@ -618,8 +629,50 @@ class Context:
             ValueError("blend_func takes a tuple of 2 or 4 values")
 
     # def blend_equation(self)
-    # def front_face(self)
-    # def cull_face(self)
+
+    @property
+    def front_face(self) -> str:
+        """
+        Configure front face winding order of triangles.
+
+        By default the counter-clockwise winding side is the front face.
+        This can be set set to clockwise or counter-clockwise::
+
+            ctx.front_face = "cw"
+            ctx.front_face = "ccw"
+        """
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_FRONT_FACE, value)
+        return "cw" if value.value == gl.GL_CW else "ccw"
+
+    @front_face.setter
+    def front_face(self, value: str):
+        if value not in ["cw", "ccw"]:
+            raise ValueError("front_face must be 'cw' or 'ccw'")
+        gl.glFrontFace(gl.GL_CW if value == "cw" else gl.GL_CCW)
+
+    @property
+    def cull_face(self) -> str:
+        """
+        The face side to cull when face culling is enabled.
+
+        By default the back face is culled. This can be set to
+        front, back or front_and_back::
+
+            ctx.cull_face = "front"
+            ctx.cull_face = "back"
+            ctx.cull_face = "front_and_back"
+        """
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_CULL_FACE_MODE, value)
+        return self._cull_face_options_reverse[value.value]
+
+    @cull_face.setter
+    def cull_face(self, value):
+        if value not in self._cull_face_options:
+            raise ValueError("cull_face must be", list(self._cull_face_options.keys()))
+
+        gl.glCullFace(self._cull_face_options[value])
 
     @property
     def wireframe(self) -> bool:

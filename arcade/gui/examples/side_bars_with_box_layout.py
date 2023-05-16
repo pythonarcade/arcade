@@ -1,3 +1,17 @@
+"""
+Creating sidebar-like layouts with UIBoxLayout
+
+This example creates left, right, top, and bottom bars by combining the following:
+
+* Placing box layouts inside other box layouts (see the box_layouts example)
+* Size hints (see the size_hints example)
+
+To turn this into a real UI, you  can replace the UIDummy widgets with layout
+objects which contain other widgets.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.side_bars_with_box_layout
+"""
 import arcade
 from arcade.gui import UIManager, UIDummy, UIBoxLayout
 

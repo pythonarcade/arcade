@@ -8,6 +8,8 @@ from pyglet.graphics import Batch
 import arcade
 from arcade.types import Color, RGBA255
 
+__all__ = ["PerfGraph"]
+
 
 class PerfGraph(arcade.Sprite):
     """

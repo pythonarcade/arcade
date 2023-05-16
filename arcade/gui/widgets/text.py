@@ -17,7 +17,8 @@ from arcade.gui.events import (
     UIMouseScrollEvent,
 )
 from arcade.gui.property import bind
-from arcade.gui.widgets import UIWidget, Surface, Rect
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIWidget, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import RGB, RGBA255, Color
 

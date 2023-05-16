@@ -105,7 +105,8 @@ Faster Drawing with ShapeElementLists
 
    :ref:`gradients`
 
-.. _sprites:
+
+.. _sprite_examples:
 
 Sprites
 -------
@@ -402,6 +403,8 @@ Backgrounds
    :target: background_parallax.html
 
    :ref:`background_parallax`
+
+.. _camera_examples:
 
 Cameras
 ^^^^^^^

@@ -17,6 +17,11 @@ if TYPE_CHECKING:
 FourIntTuple = Tuple[int, int, int, int]
 FourFloatTuple = Tuple[float, float, float, float]
 
+__all__ = [
+    "SimpleCamera",
+    "Camera"
+]
+
 
 class SimpleCamera:
     """

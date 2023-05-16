@@ -420,7 +420,7 @@ class TextureAtlas:
         Return a list of all the textures in the atlas.
 
         A new list is constructed from the internal weak set of textures.
-                
+
         :rtype: Set[Texture]
         """
         return list(self._textures)
@@ -454,7 +454,7 @@ class TextureAtlas:
 
         # Add the image if we don't already have it.
         # If the atlas is full we will try to resize it.
-        if not self.has_image(texture.image_data):            
+        if not self.has_image(texture.image_data):
             try:
                 x, y, slot, region = self.allocate(texture.image_data)
             except AllocatorException:
@@ -783,7 +783,7 @@ class TextureAtlas:
         # Update the texture regions. We need to copy the image regions
         # and re-apply the transforms on each texture
         for texture in textures:
-            self._allocate_texture(texture)            
+            self._allocate_texture(texture)
 
         self.texture_uv_texture.write(self._texture_uv_data)
         self._texture_uv_data_changed = False

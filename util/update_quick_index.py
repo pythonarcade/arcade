@@ -4,6 +4,10 @@ Script used to create the quick index
 import os
 import re
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+from vfs import Vfs
 
 # The project root
 ROOT = Path(__file__).parent.parent.resolve()
@@ -218,11 +222,9 @@ def process_directory(directory: Path, quick_index_file):
 
         # print(package, title, api_file_name, full_api_file_name)
 
-        new_api_file = True
-        if os.path.isfile(full_api_file_name):
-            new_api_file = False
+        new_api_file = not vfs.exists(full_api_file_name)
 
-        api_file = open(full_api_file_name, "a")
+        api_file = vfs.open(full_api_file_name, "a")
 
         if new_api_file:
             api_file.write(f".. _{api_file_name[:-4]}_api:")
@@ -324,15 +326,14 @@ def clear_api_directory():
     Delete the API files and make new ones
     """
     directory = ROOT / "doc/api_docs/api"
-    file_list = directory.glob('*.rst')
-    for file in file_list:
-        os.remove(file)
+    vfs.delete_glob(str(directory), '*.rst')
 
+vfs = Vfs()
 
 def main():
     clear_api_directory()
 
-    text_file = open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
+    text_file = vfs.open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
     text_file.write("The arcade module\n")
@@ -371,6 +372,9 @@ def main():
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
+
+    vfs.write()
+
     print("Done creating quick_index.rst")
 
 

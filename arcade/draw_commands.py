@@ -26,6 +26,39 @@ from arcade import (
 )
 from arcade.utils import warning, ReplacementWarning
 
+__all__ = [
+    "draw_arc_filled",
+    "draw_arc_outline",
+    "draw_parabola_filled",
+    "draw_parabola_outline",
+    "draw_circle_filled",
+    "draw_circle_outline",
+    "draw_ellipse_filled",
+    "draw_ellipse_outline",
+    "draw_line_strip",
+    "draw_line",
+    "draw_lines",
+    "draw_point",
+    "draw_points",
+    "draw_polygon_filled",
+    "draw_polygon_outline",
+    "draw_triangle_filled",
+    "draw_triangle_outline",
+    "draw_lrtb_rectangle_outline",
+    "draw_lrbt_rectangle_outline",
+    "draw_xywh_rectangle_outline",
+    "draw_rectangle_outline",
+    "draw_lrtb_rectangle_filled",
+    "draw_lrbt_rectangle_filled",
+    "draw_xywh_rectangle_filled",
+    "draw_rectangle_filled",
+    "draw_scaled_texture_rectangle",
+    "draw_texture_rectangle",
+    "draw_lrwh_rectangle_textured",
+    "get_pixel",
+    "get_image"
+]
+
 # --- BEGIN ARC FUNCTIONS # # #
 
 
@@ -252,6 +285,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     :param RGBA255 color: Either a :py:class:`~arcade.types.Color` instance
         or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
     :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
+         Useful when drawing a circle with a low segment count, to make an octagon for example.
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
@@ -297,11 +331,11 @@ def draw_ellipse_outline(center_x: float, center_y: float,
         or a :py:class:`~arcade.types.Color` instance.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
+         Useful when drawing a circle with a low segment count, to make an octagon for example.
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
-    :param float tilt_angle: Tile of the circle. Useful when drawing a circle with a low segment count
     """
     window = get_window()
     ctx = window.ctx

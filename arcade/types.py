@@ -2,6 +2,7 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
+import random
 from collections import namedtuple
 from collections.abc import ByteString
 from pathlib import Path
@@ -15,6 +16,7 @@ from typing import (
     Union,
     TYPE_CHECKING, TypeVar
 )
+from typing_extensions import Self
 
 from pytiled_parser import Properties
 
@@ -43,6 +45,26 @@ RGBA255 = RGBA[int]
 RGBANormalized = RGBA[float]
 
 RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
+
+
+__all__ = [
+    "BufferProtocol",
+    "Color",
+    "ColorLike",
+    "IPoint",
+    "PathOrTexture",
+    "Point",
+    "PointList",
+    "NamedPoint",
+    "Rect",
+    "RectList",
+    "RGB",
+    "RGBA255",
+    "RGBANormalized",
+    "RGBA255OrNormalized",
+    "TiledObject",
+    "Vector"
+]
 
 
 class Color(RGBA255):
@@ -92,9 +114,9 @@ class Color(RGBA255):
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
-    def __deepcopy__(self, _):
-        """Allow to deepcopy Colors"""
-        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
+    def __deepcopy__(self, _) -> Self:
+        """Allow :py:func:`~copy.deepcopy` to be used with Color"""
+        return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
@@ -116,7 +138,7 @@ class Color(RGBA255):
         return self[3]
 
     @classmethod
-    def from_iterable(cls, iterable: Iterable[int]) -> "Color":
+    def from_iterable(cls, iterable: Iterable[int]) -> Self:
         """
         Create a color from an :py:class`Iterable` with 3-4 elements
 
@@ -141,12 +163,12 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("iterable must unpack to 3 or 3 values")
+                raise ValueError("iterable must unpack to 3 or 4 values")
             a = _a[0]
         else:
             a = 255
 
-        return Color(r, g, b, a=a)
+        return cls(r, g, b, a=a)
 
     @property
     def normalized(self) -> RGBANormalized:
@@ -168,7 +190,7 @@ class Color(RGBA255):
         return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
 
     @classmethod
-    def from_gray(cls, brightness: int, a: int = 255) -> "Color":
+    def from_gray(cls, brightness: int, a: int = 255) -> Self:
         """
         Return a shade of gray of the given brightness.
 
@@ -193,10 +215,10 @@ class Color(RGBA255):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(brightness, brightness, brightness, a=a)
+        return cls(brightness, brightness, brightness, a=a)
 
     @classmethod
-    def from_uint24(cls, color: int, a: int = 255) -> "Color":
+    def from_uint24(cls, color: int, a: int = 255) -> Self:
         """
         Return a Color from an unsigned 3-byte (24 bit) integer.
 
@@ -228,7 +250,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_uint32(cls, color: int) -> "Color":
+    def from_uint32(cls, color: int) -> Self:
         """
         Return a Color tuple for a given unsigned 4-byte (32-bit) integer
 
@@ -255,7 +277,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_normalized(cls, color_normalized: RGBANormalized) -> "Color":
+    def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
         """
         Convert normalized (0.0 to 1.0) channels into an RGBA Color
 
@@ -301,7 +323,7 @@ class Color(RGBA255):
         return cls(int(255 * r), int(255 * g), int(255 * b), a=int(255 * a))
 
     @classmethod
-    def from_hex_string(cls, code: str) -> "Color":
+    def from_hex_string(cls, code: str) -> Self:
         """
         Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
 
@@ -345,6 +367,47 @@ class Color(RGBA255):
             return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
 
         raise ValueError(f"Improperly formatted color: '{code}'")
+
+    @classmethod
+    def random(
+        cls,
+        r: Optional[int] = None,
+        g: Optional[int] = None,
+        b: Optional[int] = None,
+        a: Optional[int] = None,
+    ) -> Self:
+        """
+        Return a random color.
+
+        The parameters are optional and can be used to fix the value of
+        a particular channel. If a channel is not fixed, it will be
+        randomly generated.
+
+        Examples::
+
+            # Randomize all channels
+            >>> Color.random()
+            Color(r=35, g=145, b=4, a=200)
+
+            # Random color with fixed alpha
+            >>> Color.random(a=255)
+            Color(r=25, g=99, b=234, a=255)
+
+        :param int r: Fixed value for red channel
+        :param int g: Fixed value for green channel
+        :param int b: Fixed value for blue channel
+        :param int a: Fixed value for alpha channel
+        """
+        if r is None:
+            r = random.randint(0, 255)
+        if g is None:
+            g = random.randint(0, 255)
+        if b is None:
+            b = random.randint(0, 255)
+        if a is None:
+            a = random.randint(0, 255)
+
+        return cls(r, g, b, a)
 
 
 ColorLike = Union[RGB, RGBA255]

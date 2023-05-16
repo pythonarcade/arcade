@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "pyglet>=2.0.3,<2.1",
+    "pyglet>=2.0.7,<2.1",
     "pillow~=9.4.0",
     "pymunk~=6.4.0",
     "pytiled-parser~=2.2.0"
@@ -48,21 +48,14 @@ dev = [
     "pygments==2.14.0",
     "docutils==0.19",
     "furo",
+    "pyright",
     "pyyaml==6.0",
-    "sphinx==6.1.3",
+    "sphinx==6.2.1",
+    "sphinx-autobuild==2021.3.14",
     "sphinx-copybutton==0.5.1",
-    "sphinx-sitemap==2.5.0",
-    "wheel",
-]
-
-docs = [
-    "pygments==2.14.0",
-    "docutils==0.19",
-    "furo",
-    "pyyaml==6.0",
-    "sphinx==6.1.3",
-    "sphinx-copybutton==0.5.1",
-    "sphinx-sitemap==2.5.0",
+    # Intentionally kept at 2.3 until this bugfix is published: https://github.com/jdillard/sphinx-sitemap/pull/62
+    "sphinx-sitemap==2.3.0",
+    "typer[all]==0.7.0",
     "wheel",
 ]
 
@@ -93,6 +86,14 @@ ignore = ["F811", "E731", "E741"]
 show-source = true
 line-length = 120
 exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs"]
+select = [
+    "E",
+    "F",
+    # Whitespace linting must be re-enabled manually for ruff
+    # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
+    "W"
+]
+
 
 [tool.mypy]
 disable_error_code = "annotation-unchecked"
@@ -103,6 +104,9 @@ norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "
 [tool.pyright]
 include = ["arcade"]
 exclude = ["venv", "arcade/examples", "arcade/experimental", "tests", "doc"]
+# Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
+useLibraryCodeForTypes = true
+reportMissingTypeStubs = "none"
 
 [tool.coverage.run]
 source = ["arcade"]
