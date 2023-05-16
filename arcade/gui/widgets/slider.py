@@ -80,16 +80,20 @@ class _SliderParent:
 
     @property
     def value_x(self) -> float:
-        """Returns the current value of the cursor of the slider."""
-        return self._x_for_value(self.value)
+        """Override, do in child class"""
+        return 0.0
 
     @value_x.setter
+    def value_x(self, nx):
+        """Override, do in child class"""
+        pass
+
     def _x_for_value(self, value) -> float:
-        """Override, do in child classe"""
+        """Override, do in child class"""
         return 0.0
     
     def do_render(self, surface: Surface) -> None:
-        """Override, do in child classe"""
+        """Override, do in child class"""
         pass
 
     def _cursor_pos(self) -> Tuple[float, float]:
@@ -237,7 +241,23 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
 
         self.register_event_type("on_change")
 
+    @property
+    def value_x(self) -> float:
+        """Returns the current value of the cursor of the slider."""
+        return self._x_for_value(self.value)
+
     @value_x.setter
+    def value_x(self, nx):
+        cr = self.content_rect
+
+        x = min(cr.right - self.cursor_radius, max(nx, cr.x + self.cursor_radius))
+        if self.width == 0:
+            self.norm_value = 0
+        else:
+            self.norm_value = (x - cr.x - self.cursor_radius) / float(
+                self.content_width - 2 * self.cursor_radius
+            )
+
     def _x_for_value(self, value) -> float:
         x = self.content_rect.x
         nval = (value - self.vmin) / self.vmax
