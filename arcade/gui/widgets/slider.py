@@ -14,6 +14,7 @@ from arcade.gui import (
     UIMousePressEvent,
     UIMouseReleaseEvent,
 )
+from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget, UIWidget
@@ -61,15 +62,6 @@ class _SliderParent:
         else:
             return "normal"
 
-    def _x_for_value(self, value) -> float:
-        x = self.content_rect.x
-        nval = (value - self.vmin) / self.vmax
-        return (
-            x
-            + self.cursor_radius
-            + nval * (self.content_width - 2 * self.cursor_radius)
-        )
-
     @property
     def norm_value(self) -> float:
         """Normalized value between 0.0 and 1.0"""
@@ -98,14 +90,18 @@ class _SliderParent:
             )
     
     def do_render(self, surface: Surface) -> None:
-        """Override"""
+        """Override, do in child classe"""
         pass
 
-    def _cursor_pos(self) -> Tuple[int, int]:
+    def _x_for_value(self, value) -> float:
+        """Override, do in child class"""
+        return 0.0
+
+    def _cursor_pos(self) -> Tuple[float, float]:
         """
         Override, do in child class
         """
-        pass
+        return (0.0, 0.0)
 
     def _is_on_cursor(self, x: float, y: float) -> bool:
         cursor_center_x, cursor_center_y = self._cursor_pos()
@@ -211,7 +207,7 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
         size_hint: Optional[int]=None,
         size_hint_min: Optional[int]=None,
         size_hint_max: Optional[int]=None,
-        style: Optional[Mapping[str, "UISlider.UIStyle"]] = None,  # typing: ignore
+        style: Optional[Mapping[str, UISlider.UIStyle]] = None,  # typing: ignore
         **kwargs,
     ) -> None:
 
@@ -301,6 +297,15 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
             border_width,
         )
 
+    def _x_for_value(self, value) -> float:
+        x = self.content_rect.x
+        nval = (value - self.vmin) / self.vmax
+        return (
+            x
+            + self.cursor_radius
+            + nval * (self.content_width - 2 * self.cursor_radius)
+        )
+
     def _cursor_pos(self) -> Tuple[float, float]:
         return self.value_x, self.y + self.height // 2
 
@@ -323,7 +328,7 @@ class UITextureSlider(UISlider):
         size_hint: Optional[int]=None,
         size_hint_min: Optional[int]=None,
         size_hint_max: Optional[int]=None,
-        style: Optional[Mapping[str, "UISlider.UIStyle"]]=None,
+        style: Optional[Mapping[str, UISlider.UIStyle]]=None,
         **kwargs
     ) -> None:
         self.bar = bar
