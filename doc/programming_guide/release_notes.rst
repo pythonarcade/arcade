@@ -187,6 +187,8 @@ Changes
   * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
     when the extension is available.
   * Fixed many implicit type conversions in the shader code for wider support.
+  * Added ``front_face`` property on the context for configuring front face winding order of triangles
+  * Added ``cull_face`` property on the context for configuring what triangle face to cull
 
 * :py:class:`~arcade.tilemap.TileMap`
 
