@@ -35,7 +35,7 @@ def test_delitem():
 
 def test_bool():
     scene = arcade.Scene()
-    assert bool(scene) == False
+    assert not scene
 
     scene.add_sprite_list("Walls")
     assert bool(scene) == True
