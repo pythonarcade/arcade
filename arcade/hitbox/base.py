@@ -93,6 +93,10 @@ class HitBox:
         self._position = position
         self._scale = scale
 
+        # Per Clepto's testing as of around May 2023, these are better
+        # left uncached because caching them is somehow slower than what
+        # we currently do. Any readers should feel free to retest /
+        # investigate further.
         self._left = None
         self._right = None
         self._bottom = None
