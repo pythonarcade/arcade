@@ -12,9 +12,9 @@ __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
 
 
 # Speed / typing workaround:
-# 1. Makes sure we don't reallocate new empty tuples
+# 1. Eliminate extra allocations
 # 2. Allows HitBox & subclass typing annotation to work cleanly
-_EMPTY_TUPLE = tuple()
+_EMPTY_POINT_LIST: PointList = tuple()
 
 
 class HitBoxAlgorithm:
@@ -99,7 +99,7 @@ class HitBox:
 
         # This empty tuple will be replaced the first time
         # get_adjusted_points is called
-        self._adjusted_points: PointList = _EMPTY_TUPLE
+        self._adjusted_points: PointList = _EMPTY_POINT_LIST
         self._adjusted_cache_dirty = True
 
     @property
