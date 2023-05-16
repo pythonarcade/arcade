@@ -13,28 +13,52 @@ __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
 
 class HitBoxAlgorithm:
     """
-    Base class for hit box algorithms. Hit box algorithms are used to calculate the
-    points that make up a hit box for a sprite.
+    The base class for hit box algorithms.
+
+    Hit box algorithms are intended to calculate the points which make up
+    a hit box for a given :py:class:`~PIL.Image.Image`. However, advanced
+    users can also repurpose them for other tasks.
     """
 
     #: The name of the algorithm
     name = "base"
-    #: Should points for this algorithm be cached?
+
+    #: Whether points for this algorithm should be cached
     cache = True
 
     @property
     def param_str(self) -> str:
         """
-        Return a string representation of the parameters used to create this algorithm.
+        A string representation of the parameters used to create this algorithm.
 
-        This is used in caching.
+        This is used when caching :py:class:`~arcade.Texture` instances.
         """
         return ""
 
     def calculate(self, image: Image, **kwargs) -> PointList:
+        """
+        Calculate hit box points for a given image.
+
+        .. warning:: This method should not be made into a class method!
+
+                     Although this base class does not take arguments
+                     when initialized, subclasses use them to alter how
+                     a specific instance handles image data by default.
+
+        :param image: The image to calculate hitbox points for
+        :param kwargs: keyword arguments
+        :return: A list of hit box points.
+        """
         raise NotImplementedError
 
     def __call__(self, *args: Any, **kwds: Any) -> "HitBoxAlgorithm":
+        """
+        Shorthand allowing any instance to be used identically to the base type.
+
+        :param args: The same positional arguments as `__init__`
+        :param kwds: The same keyword arguments as `__init__`
+        :return: A new HitBoxAlgorithm instance
+        """
         return self.__class__(*args, **kwds)
 
 
