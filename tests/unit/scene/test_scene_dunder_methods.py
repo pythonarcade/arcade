@@ -13,6 +13,7 @@ def test_len():
 
     assert len(scene) == 3
 
+
 def test_delitem():
     scene = arcade.Scene()
     scene.add_sprite_list("Walls")
@@ -33,33 +34,35 @@ def test_delitem():
     with pytest.raises(KeyError):
         scene["Coins"]
 
+
 def test_bool():
     scene = arcade.Scene()
-    assert bool(scene) == False
+    assert not scene
 
     scene.add_sprite_list("Walls")
-    assert bool(scene) == True
+    assert scene
+
 
 def test_contains():
     scene = arcade.Scene()
-    "Walls" not in scene
-    None not in scene
+    assert "Walls" not in scene
+    assert None not in scene
     
-    Walls_SpriteList = arcade.SpriteList()
-    scene.add_sprite_list("Walls", sprite_list = Walls_SpriteList)
+    walls_spriteList = arcade.SpriteList()
+    scene.add_sprite_list("Walls", use_spatial_hash=True, sprite_list=walls_spriteList)
     assert "Walls" in scene
 
     test_sprite = arcade.Sprite()
-    Walls_SpriteList.append(test_sprite)
+    walls_spriteList.append(test_sprite)
     assert Walls_SpriteList in scene
 
 
-    Coins_SpriteList = arcade.SpriteList()
-    scene.add_sprite_list("Coins", sprite_list = Coins_SpriteList)
+    coins_spriteList = arcade.SpriteList()
+    scene.add_sprite_list("Coins", use_spatial_hash=True, sprite_list=coins_spriteList)
     assert "Coins" in scene
 
     test_sprite = arcade.Sprite()
-    Coins_SpriteList.append(test_sprite)
-    assert Coins_SpriteList in scene
+    coins_spriteList.append(test_sprite)
+    assert coins_spriteList in scene
 
     assert None not in scene
