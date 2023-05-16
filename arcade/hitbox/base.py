@@ -198,7 +198,10 @@ class HitBox:
         Return the positions of points, scaled and offset from the center.
 
         Unlike the boundary helper properties (left, etc), this method will
-        only recalculate the values if something was changed.
+        only recalculate the values when necessary:
+
+        * The first time this method is called
+        * After properties affecting adjusted position were changed
         """
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
