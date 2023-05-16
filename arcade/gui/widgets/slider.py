@@ -6,6 +6,7 @@ from pyglet.event import EVENT_UNHANDLED
 import arcade
 from arcade.math import get_distance
 from arcade.types import Color, RGBA255
+from arcade.texture.texture import Texture
 from arcade.gui import (
     Surface,
     UIEvent,
@@ -13,8 +14,11 @@ from arcade.gui import (
     UIMouseDragEvent,
     UIMousePressEvent,
     UIMouseReleaseEvent,
+    UIManager,
+    Surface,
+    UIAnchorLayout,
+    NinePatchTexture
 )
-from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget, UIWidget
@@ -29,7 +33,9 @@ class _SliderParent:
     .. warning:: Not all users can scroll easily!
 
                      Does NOT inherit from UIWidget
-                        do that in the child class.
+                        do that and all other
+                        relevant functions
+                        in the child class.
     """
     value = Property(0)
     hovered = Property(False)
@@ -78,24 +84,13 @@ class _SliderParent:
         return self._x_for_value(self.value)
 
     @value_x.setter
-    def value_x(self, nx: float) -> None:
-        cr = self.content_rect
-
-        x = min(cr.right - self.cursor_radius, max(nx, cr.x + self.cursor_radius))
-        if self.width == 0:
-            self.norm_value = 0
-        else:
-            self.norm_value = (x - cr.x - self.cursor_radius) / float(
-                self.content_width - 2 * self.cursor_radius
-            )
+    def _x_for_value(self, value) -> float:
+        """Override, do in child classe"""
+        return 0.0
     
     def do_render(self, surface: Surface) -> None:
         """Override, do in child classe"""
         pass
-
-    def _x_for_value(self, value) -> float:
-        """Override, do in child class"""
-        return 0.0
 
     def _cursor_pos(self) -> Tuple[float, float]:
         """
@@ -242,6 +237,16 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
 
         self.register_event_type("on_change")
 
+    @value_x.setter
+    def _x_for_value(self, value) -> float:
+        x = self.content_rect.x
+        nval = (value - self.vmin) / self.vmax
+        return (
+            x
+            + self.cursor_radius
+            + nval * (self.content_width - 2 * self.cursor_radius)
+        )
+
     def do_render(self, surface: Surface) -> None:
         style = self.get_current_style()
 
@@ -295,15 +300,6 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
             cursor_radius,
             cursor_outline_color,
             border_width,
-        )
-
-    def _x_for_value(self, value) -> float:
-        x = self.content_rect.x
-        nval = (value - self.vmin) / self.vmax
-        return (
-            x
-            + self.cursor_radius
-            + nval * (self.content_width - 2 * self.cursor_radius)
         )
 
     def _cursor_pos(self) -> Tuple[float, float]:
