@@ -37,8 +37,11 @@ class HitBoxAlgorithm:
         """
         A string representation of the parameters used to create this algorithm.
 
-        Subclasses should override this method to return a meaningful value since this
-        method is called when caching :py:class:`~arcade.Texture` instances.
+        It will be incorporated at the end of the string returned by
+        :py:meth:`Texture.create_cache_name <arcade.Texture.create_cache_name>`.
+        Subclasses should override this method to return a value which allows
+        distinguishing different configurations of a particular hit box
+        algorithm.
         """
         return ""
 
