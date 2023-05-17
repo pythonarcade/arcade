@@ -185,7 +185,7 @@ class HitBox:
         """
         Create a rotatable instance of this hit box.
 
-        The internal point list is transferred directly instead of
+        The internal ``PointList`` is transferred directly instead of
         deepcopied, so care should be taken if using a mutable internal
         representation.
 
