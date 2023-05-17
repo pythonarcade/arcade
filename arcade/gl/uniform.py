@@ -24,25 +24,41 @@ class Uniform:
 
     _uniform_setters = {
         # uniform type: (gl_type, setter, length, count)
-        # integers
+        # Integers 32 bit
         gl.GL_INT: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
         gl.GL_INT_VEC2: (gl.GLint, gl.glProgramUniform2iv, gl.glUniform2iv, 2, 1),
         gl.GL_INT_VEC3: (gl.GLint, gl.glProgramUniform3iv, gl.glUniform3iv, 3, 1),
         gl.GL_INT_VEC4: (gl.GLint, gl.glProgramUniform4iv, gl.glUniform4iv, 4, 1),
-        # Unsigned integers
+        # Unsigned integers 32 bit
         gl.GL_UNSIGNED_INT: (gl.GLuint, gl.glProgramUniform1uiv, gl.glUniform1uiv, 1, 1),
         gl.GL_UNSIGNED_INT_VEC2: (gl.GLuint, gl.glProgramUniform2uiv, gl.glUniform2uiv, 2, 1),
         gl.GL_UNSIGNED_INT_VEC3: (gl.GLuint, gl.glProgramUniform3uiv, gl.glUniform3uiv, 3, 1),
         gl.GL_UNSIGNED_INT_VEC4: (gl.GLuint, gl.glProgramUniform4uiv, gl.glUniform4uiv, 4, 1),
+        # Integers 64 bit unsigned
+        gl.GL_INT64_ARB: (gl.GLint64, gl.glProgramUniform1i64vARB, gl.glUniform1i64vARB, 1, 1),
+        gl.GL_INT64_VEC2_ARB: (gl.GLint64, gl.glProgramUniform2i64vARB, gl.glUniform2i64vARB, 2, 1),
+        gl.GL_INT64_VEC3_ARB: (gl.GLint64, gl.glProgramUniform3i64vARB, gl.glUniform3i64vARB, 3, 1),
+        gl.GL_INT64_VEC4_ARB: (gl.GLint64, gl.glProgramUniform4i64vARB, gl.glUniform4i64vARB, 4, 1),
+        # Unsigned integers 64 bit
+        gl.GL_UNSIGNED_INT64_ARB: (gl.GLuint64, gl.glProgramUniform1ui64vARB, gl.glUniform1ui64vARB, 1, 1),
+        gl.GL_UNSIGNED_INT64_VEC2_ARB: (gl.GLuint64, gl.glProgramUniform2ui64vARB, gl.glUniform2ui64vARB, 2, 1),
+        gl.GL_UNSIGNED_INT64_VEC3_ARB: (gl.GLuint64, gl.glProgramUniform3ui64vARB, gl.glUniform3ui64vARB, 3, 1),
+        gl.GL_UNSIGNED_INT64_VEC4_ARB: (gl.GLuint64, gl.glProgramUniform4ui64vARB, gl.glUniform4ui64vARB, 4, 1),
         # Bools
         gl.GL_BOOL: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
         gl.GL_BOOL_VEC2: (gl.GLint, gl.glProgramUniform2iv, gl.glUniform2iv, 2, 1),
         gl.GL_BOOL_VEC3: (gl.GLint, gl.glProgramUniform3iv, gl.glUniform3iv, 3, 1),
         gl.GL_BOOL_VEC4: (gl.GLint, gl.glProgramUniform4iv, gl.glUniform4iv, 4, 1),
+        # Floats 32 bit
         gl.GL_FLOAT: (gl.GLfloat, gl.glProgramUniform1fv, gl.glUniform1fv, 1, 1),
         gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glProgramUniform2fv, gl.glUniform2fv, 2, 1),
         gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glProgramUniform3fv, gl.glUniform3fv, 3, 1),
         gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glProgramUniform4fv, gl.glUniform4fv, 4, 1),
+        # Floats 64 bit
+        gl.GL_DOUBLE: (gl.GLdouble, gl.glProgramUniform1dv, gl.glUniform1dv, 1, 1),
+        gl.GL_DOUBLE_VEC2: (gl.GLdouble, gl.glProgramUniform2dv, gl.glUniform2dv, 2, 1),
+        gl.GL_DOUBLE_VEC3: (gl.GLdouble, gl.glProgramUniform3dv, gl.glUniform3dv, 3, 1),
+        gl.GL_DOUBLE_VEC4: (gl.GLdouble, gl.glProgramUniform4dv, gl.glUniform4dv, 4, 1),
         # 1D Samplers
         gl.GL_SAMPLER_1D: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
         gl.GL_INT_SAMPLER_1D: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
