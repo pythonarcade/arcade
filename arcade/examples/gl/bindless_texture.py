@@ -13,6 +13,9 @@ we call a "handle". This handle can be stored in a buffer and
 declared as a sampler type (it's a 64 bit integer under the hood).
 There is no need to bind the texture. They are all just available
 though the handles.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.gl.bindless_texture
 """
 from array import array
 from typing import List
