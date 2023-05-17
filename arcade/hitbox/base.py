@@ -96,15 +96,6 @@ class HitBox:
         self._position = position
         self._scale = scale
 
-        # Per Clepto's testing as of around May 2023, these are better
-        # left uncached because caching them is somehow slower than what
-        # we currently do. Any readers should feel free to retest /
-        # investigate further.
-        self._left = None
-        self._right = None
-        self._bottom = None
-        self._top = None
-
         # This empty tuple will be replaced the first time
         # get_adjusted_points is called
         self._adjusted_points: PointList = _EMPTY_POINT_LIST
@@ -133,6 +124,10 @@ class HitBox:
         self._position = position
         self._adjusted_cache_dirty = True
 
+    # Per Clepto's testing as of around May 2023, these are better
+    # left uncached because caching them is somehow slower than what
+    # we currently do. Any readers should feel free to retest /
+    # investigate further.
     @property
     def left(self) -> float:
         """
