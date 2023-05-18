@@ -172,14 +172,14 @@ class TileMap:
     "The width in pixels of each tile."
     tile_height: float
     "The height in pixels of each tile."
-    background_color: Color | None
+    background_color: Optional[Color]
     "The background color of the map."
     scaling: float
     "A global scaling value to be applied to all Sprites in the map."
-    sprite_lists: dict[str, SpriteList]
+    sprite_lists: Dict[str, SpriteList]
     """A dictionary mapping SpriteLists to their layer names. This is used
                     for all tile layers of the map."""
-    object_lists: dict[str, list[TiledObject]]
+    object_lists: Dict[str, List[TiledObject]]
     """
     A dictionary mapping TiledObjects to their layer names. This is used
     for all object layers of the map.
