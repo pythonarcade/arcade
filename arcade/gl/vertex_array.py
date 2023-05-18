@@ -146,7 +146,7 @@ class VertexArray:
         # Build the vao according to the shader's attribute specifications
         for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
-            if prog_attr.name.startswith("gl_"):
+            if prog_attr.name is not None and prog_attr.name.startswith("gl_"):
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
