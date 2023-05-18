@@ -18,8 +18,23 @@ from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
+@dataclass
+class UIStyle(UIStyleBase):
+    """
+    Used to style the slider for different states. Below is its use case.
 
-class UISlider(UIStyledWidget["UISlider.UIStyle"]):
+    .. code:: py
+
+        button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+    """
+    bg: RGBA255 = Color(94, 104, 117)
+    border: RGBA255 = Color(77, 81, 87)
+    border_width: int = 1
+    filled_bar: RGBA255 = Color(50, 50, 50)
+    unfilled_bar: RGBA255 = Color(116, 125, 123)
+
+
+class UISlider(UIStyledWidget[UIStyle]):
     """
     A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
 
@@ -41,20 +56,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     pressed = Property(False)
     disabled = Property(False)
 
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Used to style the slider for different states. Below is its use case.
-
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        bg: RGBA255 = Color(94, 104, 117)
-        border: RGBA255 = Color(77, 81, 87)
-        border_width: int = 1
-        filled_bar: RGBA255 = Color(50, 50, 50)
-        unfilled_bar: RGBA255 = Color(116, 125, 123)
+    UIStyle = UIStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
