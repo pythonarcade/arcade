@@ -106,8 +106,10 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: PyGLenum) -> Union[str, PyGLenum]:
+def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
     """Return the name of a gl type"""
+    if gl_type is None:
+        return None
     return GL_NAMES.get(gl_type, gl_type)
 
 
