@@ -5,7 +5,7 @@ import weakref
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription, gl_name
+from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -146,7 +146,7 @@ class VertexArray:
         # Build the vao according to the shader's attribute specifications
         for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
-            if prog_attr.name.startswith("gl_"):
+            if prog_attr.name is not None and prog_attr.name.startswith("gl_"):
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
@@ -239,7 +239,7 @@ class VertexArray:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
     def render(
-        self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1
+        self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
     ):
         """Render the VertexArray to the currently active framebuffer.
 
@@ -259,7 +259,7 @@ class VertexArray:
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
-    def render_indirect(self, buffer: Buffer, mode: gl.GLuint, count, first, stride):
+    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride):
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -300,8 +300,8 @@ class VertexArray:
     def transform_interleaved(
         self,
         buffer: Buffer,
-        mode: gl.GLenum,
-        output_mode: gl.GLenum,
+        mode: GLenumLike,
+        output_mode: GLenumLike,
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -310,8 +310,8 @@ class VertexArray:
         """Run a transform feedback.
 
         :param Buffer buffer: The buffer to write the output
-        :param gl.GLenum mode: The input primitive mode
-        :param gl.GLenum output_mode: The output primitive mode
+        :param GLenumLike mode: The input primitive mode
+        :param GLenumLike output_mode: The output primitive mode
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
@@ -355,8 +355,8 @@ class VertexArray:
     def transform_separate(
         self,
         buffers: List[Buffer],
-        mode: gl.GLenum,
-        output_mode: gl.GLenum,
+        mode: GLenumLike,
+        output_mode: GLenumLike,
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -366,8 +366,8 @@ class VertexArray:
         Run a transform feedback writing to separate buffers.
 
         :param List[Buffer] buffers: The buffers to write the output
-        :param gl.GLenum mode: The input primitive mode
-        :param gl.GLenum output_mode: The output primitive mode
+        :param GLenumLike mode: The input primitive mode
+        :param GLenumLike output_mode: The output primitive mode
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
@@ -537,7 +537,7 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: Optional[gl.GLenum] = None,
+        mode: Optional[GLenumLike] = None,
         first: int = 0,
         vertices: Optional[int] = None,
         instances: int = 1,
@@ -549,7 +549,7 @@ class Geometry:
         or have resized the buffers after the geometry instance was created.
 
         :param Program program: The Program to render with
-        :param gl.GLenum mode: Override what primitive mode should be used
+        :param GLenumLike mode: Override what primitive mode should be used
         :param int first: Offset start vertex
         :param int vertices: Override the number of vertices to render
         :param int instances: Number of instances to render

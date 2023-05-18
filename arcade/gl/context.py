@@ -7,6 +7,7 @@ from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, T
                     Union)
 
 import pyglet
+import pyglet.gl.lib
 from pyglet import gl
 from pyglet.window import Window
 
@@ -17,7 +18,7 @@ from .glsl import ShaderSource
 from .program import Program
 from .query import Query
 from .texture import Texture2D
-from .types import BufferDescription
+from .types import BufferDescription, GLenumLike, PyGLenum
 from .vertex_array import Geometry
 from ..types import BufferProtocol
 
@@ -872,9 +873,9 @@ class Context:
         components: int = 4,
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
-        wrap_x: Optional[gl.GLenum] = None,
-        wrap_y: Optional[gl.GLenum] = None,
-        filter: Optional[Tuple[gl.GLenum, gl.GLenum]] = None,
+        wrap_x: Optional[PyGLenum] = None,
+        wrap_y: Optional[PyGLenum] = None,
+        filter: Optional[Tuple[GLenumLike, GLenumLike]] = None,
         samples: int = 0,
         immutable: bool = False,
     ) -> Texture2D:
@@ -1313,36 +1314,36 @@ class Limits:
 
             warn("Error happened while querying of limits. Moving on ..")
 
-    def get_int_tuple(self, enum: gl.GLenum, length: int):
+    def get_int_tuple(self, enum: GLenumLike, length: int):
         """Get an enum as an int tuple"""
         try:
             values = (c_int * length)()
             gl.glGetIntegerv(enum, values)
             return tuple(values)
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return tuple([0] * length)
 
-    def get(self, enum: gl.GLenum, default=0) -> int:
+    def get(self, enum: GLenumLike, default=0) -> int:
         """Get an integer limit"""
         try:
             value = c_int()
             gl.glGetIntegerv(enum, value)
             return value.value
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return default
 
-    def get_float(self, enum: gl.GLenum, default=0.0) -> float:
+    def get_float(self, enum: GLenumLike, default=0.0) -> float:
         """Get a float limit"""
         try:
             value = c_float()
             gl.glGetFloatv(enum, value)
             return value.value
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return default
 
-    def get_str(self, enum: gl.GLenum) -> str:
+    def get_str(self, enum: GLenumLike) -> str:
         """Get a string limit"""
         try:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
-        except gl.lib.GLException:
+        except pyglet.gl.lib.GLException:
             return "Unknown"

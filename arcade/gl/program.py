@@ -15,7 +15,7 @@ import weakref
 from pyglet import gl
 
 from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
+from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES, PyGLenum
 from .exceptions import ShaderException
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -93,7 +93,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: List[Tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
@@ -486,7 +486,7 @@ class Program:
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
-    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+    def compile_shader(source: str, shader_type: PyGLenum) -> gl.GLuint:
         """Compile the shader code of the given type.
 
         `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
