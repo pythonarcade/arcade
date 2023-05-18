@@ -54,8 +54,7 @@ def test_contains():
 
     test_sprite = arcade.Sprite()
     walls_spriteList.append(test_sprite)
-    assert Walls_SpriteList in scene
-
+    assert walls_spriteList in scene
 
     coins_spriteList = arcade.SpriteList()
     scene.add_sprite_list("Coins", use_spatial_hash=True, sprite_list=coins_spriteList)
