@@ -23,13 +23,8 @@ external documentation where applicable.
    get_started
    sprites/index
    how_to_get_help
-   directory_structure
    edge_artifacts/index
-   how_to_submit_changes
-   how_to_contribute
-   how_to_build
    logging
-   release_checklist
    pygame_comparison
    headless
    vsync
