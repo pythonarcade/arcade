@@ -130,7 +130,7 @@ def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     )
 
 
-def _get_nearby_sprites(sprite: SpriteType, sprite_list: SpriteList) -> List[SpriteType]:
+def _get_nearby_sprites(sprite: BasicSprite, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []

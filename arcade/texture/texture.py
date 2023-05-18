@@ -288,7 +288,7 @@ class Texture:
         return self._file_path
 
     @file_path.setter
-    def file_path(self, path: Path):
+    def file_path(self, path: Optional[Path]):
         self._file_path = path
 
     @property
