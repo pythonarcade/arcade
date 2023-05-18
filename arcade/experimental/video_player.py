@@ -20,7 +20,7 @@ class VideoPlayer:
     :param loop: Pass `True` to make the video loop.
     """
 
-    def __init__(self, path: Union[str, Path], loop=False):
+    def __init__(self, path: Union[str, Path], loop: bool = False):
         self.player = pyglet.media.Player()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))
@@ -31,7 +31,7 @@ class VideoPlayer:
         self._width = arcade.get_window().width
         self._height = arcade.get_window().height
 
-    def draw(self, left: int = 0, bottom: int = 0, size: Optional[Tuple[int, int]] = None):
+    def draw(self, left: int = 0, bottom: int = 0, size: Optional[Tuple[int, int]] = None) -> None:
         """
         Call this in `on_draw`.
 
@@ -53,16 +53,16 @@ class VideoPlayer:
                 )
 
     @property
-    def width(self):
+    def width(self) -> int:
         """Video width."""
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Video height."""
         return self._height
 
-    def get_video_size(self):
+    def get_video_size(self) -> Tuple[int, int]:
         if not self.player.source or not self.player.source.video_format:
             return 0, 0
         video_format = self.player.source.video_format
@@ -74,13 +74,12 @@ class VideoPlayer:
             height /= video_format.sample_aspect
         return width, height
 
-
 class VideoPlayerView(arcade.View):
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: Union[str, Path]) -> None:
         super().__init__()
         self.video_player = VideoPlayer(path)
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         self.clear()
         self.video_player.draw()
 

@@ -25,7 +25,7 @@ class VideoPlayerCV2:
     :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: Union[str, Path], loop: bool=False):
+    def __init__(self, path: Union[str, Path], loop: bool = False):
         self.loop = loop
 
         self.ctx = arcade.get_window().ctx
@@ -85,16 +85,16 @@ class VideoPlayerCV2:
         self.texture.swizzle = "BGR1"
 
     @property
-    def width(self):
+    def width(self) -> int:
         """Video width."""
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Video height."""
         return self._height
 
-    def draw(self):
+    def draw(self) -> None:
         """Call this in `on_draw`."""
 
         # Bind video texture to texture channel 0
@@ -102,7 +102,7 @@ class VideoPlayerCV2:
         # Draw a fullscreen quad using our texture program
         self.quad_fs.render(self.program)
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
         """Move the frame forward."""
         self.time += delta_time
 
@@ -128,7 +128,7 @@ class CV2PlayerView(arcade.View):
     :param path: Path of the video that is to be played.
     :param resize: Change the window size to the video size
     """
-    def __init__(self, path: str, loop: bool=False, resize: bool=False):
+    def __init__(self, path: Union[str, Path], loop: bool = False, resize: bool = False):
         super().__init__()
 
         self.video_player = VideoPlayerCV2(path, loop)
@@ -136,11 +136,11 @@ class CV2PlayerView(arcade.View):
         if resize:
             self.window.set_size(self.video_player.width, self.video_player.height)
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         self.clear()
         self.video_player.draw()
 
-    def on_update(self, delta_time: float):
+    def on_update(self, delta_time: float) -> None:
         self.video_player.update(delta_time)
 
 
