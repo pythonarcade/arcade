@@ -28,12 +28,12 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255
+from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
-__all__ = ["Surface"]
+__all__ = ["Surface", "UIDummy"]
 
 
 class Rect(NamedTuple):
@@ -525,6 +525,9 @@ class UIWidget(EventDispatcher, ABC):
     def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
 
+    def __iter__(self):
+        return iter(self.children)
+
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
@@ -716,8 +719,14 @@ class UIInteractiveWidget(UIWidget):
 
 class UIDummy(UIInteractiveWidget):
     """
-    Solid color widget, used for testing.
-    Prints own rect on click.
+    Solid color widget used for testing & examples
+
+    It should not be subclassed for real-world usage.
+
+    When clicked, it does the following:
+
+    * Outputs its `rect` attribute to the console
+    * Changes its color to a random fully opaque color
 
     :param float x: x coordinate of bottom left
     :param float y: y coordinate of bottom left
@@ -759,7 +768,7 @@ class UIDummy(UIInteractiveWidget):
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
-        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color = Color.random(a=255)
 
     def on_update(self, dt):
         self.border_width = 2 if self.hovered else 0

@@ -58,3 +58,19 @@ def test_widget_events_passed_to_children():
 
     # THEN
     assert triggered is True
+
+
+def test_iterate_widget_children(window):
+    # GIVEN
+    parent = UIDummy()
+    child1 = UIDummy()
+    child2 = UIDummy()
+    child3 = UIDummy()
+
+    # WHEN
+    parent.add(child1)
+    parent.add(child2)
+    child2.add(child3)
+
+    # THEN
+    assert list(parent) == [child1, child2]
