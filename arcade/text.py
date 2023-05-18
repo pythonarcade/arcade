@@ -214,7 +214,7 @@ class Text:
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation, # type: ignore pending https://github.com/pyglet/pyglet/issues/843
+            rotation=rotation, # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
             group=group
         )
@@ -662,8 +662,8 @@ def create_text_sprite(
     )
 def draw_text(
     text: Any,
-    start_x: float,
-    start_y: float,
+    start_x: int,
+    start_y: int,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -675,7 +675,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    start_z: float = 0
+    start_z: int = 0
 ):
     """
     A simple way for beginners to draw text.
