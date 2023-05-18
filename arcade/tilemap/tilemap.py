@@ -67,10 +67,6 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, i
         image_y = tile.y
         width = tile.width
         height = tile.height
-        if TYPE_CHECKING:
-            # pytiled_parser guarantees this will be set despite the typehint
-            assert width is not None
-            assert height is not None
 
     return image_x, image_y, width, height
 
@@ -416,9 +412,6 @@ class TileMap:
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
-        if TYPE_CHECKING:
-            # pytiled_parser guarantees this will be set despite the typehint
-            assert map_source is not None
         map_directory = os.path.dirname(map_source)
         image_file = _get_image_source(tile, map_directory)
 
