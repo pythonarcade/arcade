@@ -229,8 +229,8 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(
-    sprite: SpriteType,
-    sprite_lists: Iterable[SpriteList],
+    sprite: BasicSprite,
+    sprite_lists: Iterable[SpriteList[SpriteType]],
     method=1,
 ) -> List[SpriteType]:
     """
@@ -246,7 +246,7 @@ def check_for_collision_with_lists(
     """
     if __debug__:
         if not isinstance(sprite, BasicSprite):
-            raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+            raise TypeError(f"Parameter 1 is not an instance of the BasicSprite class, it is an instance of {type(sprite)}.")
 
     sprites: List[SpriteType] = []
     sprites_to_check: Iterable[SpriteType]
