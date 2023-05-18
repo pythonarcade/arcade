@@ -50,7 +50,7 @@ class PymunkPhysicsEngine:
     KINEMATIC = pymunk.Body.KINEMATIC
     MOMENT_INF = float('inf')
 
-    def __init__(self, gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]]=(0, 0), 
+    def __init__(self, gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]]=(0, 0),
                 damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
         # -- Pymunk
         self.space = pymunk.Space()

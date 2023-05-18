@@ -969,7 +969,7 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section: Section, at_index: Optional[int] = None, 
+    def add_section(self, section: Section, at_index: Optional[int] = None,
                     at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
