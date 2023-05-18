@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Un
 
 import pytiled_parser
 import pytiled_parser.tiled_object
+from pytiled_parser import Color
 
 from arcade import (
     AnimatedTimeBasedSprite,
@@ -157,23 +158,35 @@ class TileMap:
 
     The keys and their values in each layer are passed to the layer processing functions
     using the `**` operator on the dictionary.
-
-
-    Attributes:
-        :tiled_map: The pytiled-parser map object. This can be useful for implementing features
-                    that aren't supported by this class by accessing the raw map data directly.
-        :width: The width of the map in tiles. This is the number of tiles, not pixels.
-        :height: The height of the map in tiles. This is the number of tiles, not pixels.
-        :tile_width: The width in pixels of each tile.
-        :tile_height: The height in pixels of each tile.
-        :background_color: The background color of the map.
-        :scaling: A global scaling value to be applied to all Sprites in the map.
-        :sprite_lists: A dictionary mapping SpriteLists to their layer names. This is used
-                       for all tile layers of the map.
-        :object_lists: A dictionary mapping TiledObjects to their layer names. This is used
-                       for all object layers of the map.
-        :offset: A tuple containing the X and Y position offset values.
     """
+
+    tiled_map: pytiled_parser.TiledMap
+    """
+    The pytiled-parser map object. This can be useful for implementing features
+    that aren't supported by this class by accessing the raw map data directly.
+    """
+    width: float
+    "The width of the map in tiles. This is the number of tiles, not pixels."
+    height: float
+    "The height of the map in tiles. This is the number of tiles, not pixels."
+    tile_width: float
+    "The width in pixels of each tile."
+    tile_height: float
+    "The height in pixels of each tile."
+    background_color: Optional[Color]
+    "The background color of the map."
+    scaling: float
+    "A global scaling value to be applied to all Sprites in the map."
+    sprite_lists: Dict[str, SpriteList]
+    """A dictionary mapping SpriteLists to their layer names. This is used
+                    for all tile layers of the map."""
+    object_lists: Dict[str, List[TiledObject]]
+    """
+    A dictionary mapping TiledObjects to their layer names. This is used
+    for all object layers of the map.
+    """
+    offset: Vec2
+    "A tuple containing the X and Y position offset values."
 
     def __init__(
         self,
