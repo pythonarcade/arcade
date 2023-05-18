@@ -110,6 +110,7 @@ The Python Arcade Library
    :maxdepth: 1
    :caption: Source Code & Contributing
 
+   contributing_guide/index
    GitHub <https://github.com/pythonarcade/arcade>
    programming_guide/release_notes
    License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
