@@ -2,6 +2,7 @@
 Module specifying data custom types used for type hinting.
 """
 from array import array
+import ctypes
 import random
 from collections import namedtuple
 from collections.abc import ByteString
@@ -415,6 +416,7 @@ ColorLike = Union[RGB, RGBA255]
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
 Point = Tuple[float, float]
+Point3 = Tuple[float, float, float]
 IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
@@ -440,4 +442,4 @@ class TiledObject(NamedTuple):
 # the PEP and Python doc for more information:
 # https://peps.python.org/pep-0688/
 # https://docs.python.org/3/c-api/buffer.html
-BufferProtocol = Union[ByteString, memoryview, array]
+BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

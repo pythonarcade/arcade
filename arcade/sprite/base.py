@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import Point, Color, RGBA255
+from arcade.types import Point, Color, RGBA255, PointList
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -579,7 +579,7 @@ class BasicSprite:
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-        points = self.hit_box.get_adjusted_points()
+        points: PointList = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
         arcade.draw_line_strip(points, color=color, line_width=line_thickness)
