@@ -1,10 +1,9 @@
 import logging
-import typing
 import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import (TYPE_CHECKING, Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
+from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
                     Union)
 
 import pyglet
@@ -1348,8 +1347,3 @@ class Limits:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
         except pyglet.gl.lib.GLException:
             return "Unknown"
-
-if TYPE_CHECKING:
-    # Arcade's Context is passed into code paths that require a pyglet Context
-    # So we must prove they are compatible.
-    __typecheck__: pyglet.gl.base.Context = typing.cast(Context, '__typecheck__')
