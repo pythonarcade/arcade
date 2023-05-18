@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.abspath('../arcade'))
 # Don't change to
 # from arcade.version import VERSION
 # or read the docs build will fail.
-from version import VERSION
+from version import VERSION # pyright: ignore [reportMissingImports]
 
 RELEASE = VERSION
 

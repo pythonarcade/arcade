@@ -299,7 +299,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     ]
 
 
-def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[SpriteType]:
+def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites whose center_x, center_y match the given point.
     This does NOT return sprites that overlap the point, the center has to be an exact match.
@@ -328,7 +328,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     return [s for s in sprites_to_check if s.position == point]
 
 
-def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[SpriteType]:
+def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
     the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,

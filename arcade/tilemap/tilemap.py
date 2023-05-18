@@ -12,7 +12,7 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -46,8 +46,9 @@ __all__ = [
     "read_tmx"
 ]
 
+prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
-def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
@@ -556,18 +557,18 @@ class TileMap:
 
                 if tile.flipped_vertically:
                     for point in points:
-                        point[1] *= -1
+                        point = point[0], point[1] * -1
 
                 if tile.flipped_horizontally:
                     for point in points:
-                        point[0] *= -1
+                        point = point[0] * -1, point[1]
 
                 if tile.flipped_diagonally:
                     for point in points:
-                        point[0], point[1] = point[1], point[0]
+                        point = point[1], point[0]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    points,
+                    cast(List[Point], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
@@ -859,28 +860,28 @@ class TileMap:
                     my_sprite.alpha = int(opacity * 255)
 
                 if cur_object.properties and "change_x" in cur_object.properties:
-                    my_sprite.change_x = float(cur_object.properties["change_x"])
+                    my_sprite.change_x = prop_to_float(cur_object.properties["change_x"])
 
                 if cur_object.properties and "change_y" in cur_object.properties:
-                    my_sprite.change_y = float(cur_object.properties["change_y"])
+                    my_sprite.change_y = prop_to_float(cur_object.properties["change_y"])
 
                 if cur_object.properties and "boundary_bottom" in cur_object.properties:
-                    my_sprite.boundary_bottom = float(
+                    my_sprite.boundary_bottom = prop_to_float(
                         cur_object.properties["boundary_bottom"]
                     )
 
                 if cur_object.properties and "boundary_top" in cur_object.properties:
-                    my_sprite.boundary_top = float(
+                    my_sprite.boundary_top = prop_to_float(
                         cur_object.properties["boundary_top"]
                     )
 
                 if cur_object.properties and "boundary_left" in cur_object.properties:
-                    my_sprite.boundary_left = float(
+                    my_sprite.boundary_left = prop_to_float(
                         cur_object.properties["boundary_left"]
                     )
 
                 if cur_object.properties and "boundary_right" in cur_object.properties:
-                    my_sprite.boundary_right = float(
+                    my_sprite.boundary_right = prop_to_float(
                         cur_object.properties["boundary_right"]
                     )
 

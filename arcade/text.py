@@ -7,7 +7,7 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point, RGBA255
+from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
 from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
@@ -180,7 +180,7 @@ class Text:
         text: str,
         start_x: float,
         start_y: float,
-        color: RGBA255 = arcade.color.WHITE,
+        color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
         align: str = "left",
@@ -569,7 +569,7 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Point):
+    def position(self, point: Union[Point, Point3]):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         if len(point) == 3:
             self._label.position = point

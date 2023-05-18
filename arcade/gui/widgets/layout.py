@@ -553,10 +553,10 @@ class UIGridLayout(UILayout):
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
@@ -662,10 +662,10 @@ class UIGridLayout(UILayout):
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
