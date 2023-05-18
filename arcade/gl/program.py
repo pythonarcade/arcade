@@ -93,7 +93,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders: list[tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: List[Tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:

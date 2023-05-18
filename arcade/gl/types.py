@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Iterable, List, Sequence, Union
+from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union
 
 from pyglet import gl
 
@@ -193,7 +193,7 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats: dict[str, tuple[Optional[PyGLenum], int]] = {
+    _formats: Dict[str, Tuple[Optional[PyGLenum], int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -271,7 +271,7 @@ class BufferDescription:
                 f"attributes ({len(self.attributes)})"
             )
 
-        def zip_attrs(formats: list[str], attributes: Sequence[str]):
+        def zip_attrs(formats: List[str], attributes: Sequence[str]):
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:
