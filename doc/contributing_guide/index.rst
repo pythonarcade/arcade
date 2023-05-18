@@ -29,3 +29,9 @@ and practices.
 
 .. toctree::
     :maxdepth: 1
+
+    directory_structure
+    how_to_contribute
+    how_to_build
+    how_to_submit_changes
+    release_checklist
