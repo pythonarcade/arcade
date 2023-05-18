@@ -76,18 +76,16 @@ class VideoPlayer:
 
 
 class VideoPlayerView(arcade.View):
-    def __init__(self, path) -> None:
+    def __init__(self, path: str) -> None:
         super().__init__()
-
         self.video_player = VideoPlayer(path)
 
     def on_draw(self):
         self.clear()
-
         self.video_player.draw()
 
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(VideoPlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
+    window.show_view(VideoPlayerView(":resources:video/snake.mp4"))
     window.run()

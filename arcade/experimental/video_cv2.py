@@ -25,7 +25,8 @@ class VideoPlayerCV2:
     :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: Union[str, Path]):
+    def __init__(self, path: Union[str, Path], loop: bool=False):
+        self.loop = loop
 
         self.ctx = arcade.get_window().ctx
 
@@ -74,6 +75,9 @@ class VideoPlayerCV2:
         self.current_frame = 0
         self.time: float = 0.0
 
+        # Get the number of frames in the video
+        self.frames: int = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+
         # Create and configure the OpenGL texture for the video
         self.texture = self.ctx.texture((self._width, self._height), components=3)
         # Swap the components in the texture because cv2 returns BGR data
@@ -110,20 +114,30 @@ class VideoPlayerCV2:
             exists, frame = self.video.read()
             if exists:
                 self.texture.write(frame)
+            # loop if we are at the end of the video
+            elif self.loop:
+                self.time = 0.0
+                self.video.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
 
 
 class CV2PlayerView(arcade.View):
-    def __init__(self, path: str):
+    """A simple view to hold a video player using cv2.
+    requires opencv-python
+
+    :param path: Path of the video that is to be played.
+    :param resize: Change the window size to the video size
+    """
+    def __init__(self, path: str, loop: bool=False, resize: bool=False):
         super().__init__()
 
-        self.video_player = VideoPlayerCV2(path)
+        self.video_player = VideoPlayerCV2(path, loop)
 
-        # Change the window size to the video size
-        self.window.set_size(self.video_player.width, self.video_player.height)
+        if resize:
+            self.window.set_size(self.video_player.width, self.video_player.height)
 
     def on_draw(self):
         self.clear()
-
         self.video_player.draw()
 
     def on_update(self, delta_time: float):
@@ -132,5 +146,5 @@ class CV2PlayerView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(CV2PlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
+    window.show_view(CV2PlayerView(":resources:video/snake.mp4", loop=True, resize=False))
     window.run()
