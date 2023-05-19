@@ -388,8 +388,10 @@ class Framebuffer:
                 if len(color) == 3:
                     gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
                 else:
+                    # mypy does not understand that color[3] is guaranteed to work in this codepath, pyright does.
+                    # We can remove this type: ignore if we switch to pyright.
                     gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255 # type: ignore
                     )
 
             if self.depth_attachment:

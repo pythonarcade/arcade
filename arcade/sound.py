@@ -109,12 +109,16 @@ class Sound:
             media.Source._players.remove(player)
 
     def get_length(self) -> Optional[float]:
-        """Get length of audio in seconds"""
+        """
+        Get length of audio in seconds, or `None` for audio sources
+        that do not know their duration.
+        """
         return self.source.duration
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
-        # known limitiation: streaming sources do not set duration, will throw an error
+        # limitiation: pyglet sources do not guarantee they will have a numeric
+        # duration. If source.duration is None, this will throw an error
         return player.time >= self.source.duration # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
