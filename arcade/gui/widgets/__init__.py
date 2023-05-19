@@ -4,7 +4,6 @@ from typing import (
     NamedTuple,
     Iterable,
     Optional,
-    Self,
     Union,
     TYPE_CHECKING,
     TypeVar,
@@ -12,6 +11,7 @@ from typing import (
     List,
     Dict,
 )
+from typing_extensions import Self
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 

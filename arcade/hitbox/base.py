@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import Any, Self, Sequence, Tuple
+from typing import Any, Sequence, Tuple
+from typing_extensions import Self
 
 from PIL.Image import Image
 

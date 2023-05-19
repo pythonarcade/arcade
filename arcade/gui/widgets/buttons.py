@@ -13,7 +13,7 @@ from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
 @dataclass
-class UIStyle(UIStyleBase):
+class UITextureButtonStyle(UIStyleBase):
     """
     Used to style the texture button. Below is its use case.
 
@@ -26,7 +26,7 @@ class UIStyle(UIStyleBase):
     font_color: RGBA255 = arcade.color.WHITE
     border_width: int = 2
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget[UIStyle], UITextWidget):
+class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
     """
     A button with an image for the face of the button.
 
@@ -50,7 +50,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UIStyle], UITextWidget
 
     _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
 
-    UIStyle = UIStyle
+    UIStyle = UITextureButtonStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -193,7 +193,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UIStyle], UITextWidget
         if current_texture:
             surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
 
-    def apply_style(self, style: UIStyle):
+    def apply_style(self, style: UITextureButtonStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """

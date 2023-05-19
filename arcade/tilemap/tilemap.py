@@ -743,6 +743,9 @@ class TileMap:
             lazy=self._lazy,
         )
         map_array = layer.data
+        if TYPE_CHECKING:
+            # Can never be None because we already detect and reject infinite maps
+            assert map_array
 
         # Loop through the layer and add in the list
         for row_index, row in enumerate(map_array):
@@ -950,18 +953,19 @@ class TileMap:
             elif isinstance(
                 cur_object, pytiled_parser.tiled_object.Polygon
             ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
-                shape = []
+                points: List[Point] = []
+                shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
                     y = (self.height * self.tile_height) - (
                         point.y + cur_object.coordinates.y
                     )
                     point = (x + offset[0], y + offset[1])
-                    shape.append(point)
+                    points.append(point)
 
                 # If shape is a polyline, and it is closed, we need to remove the duplicate end point
-                if shape[0][0] == shape[-1][0] and shape[0][1] == shape[-1][1]:
-                    shape.pop()
+                if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
+                    points.pop()
             elif isinstance(cur_object, pytiled_parser.tiled_object.Ellipse):
                 hw = cur_object.size.width / 2
                 hh = cur_object.size.height / 2
@@ -972,12 +976,13 @@ class TileMap:
                 angles = [
                     step / total_steps * 2 * math.pi for step in range(total_steps)
                 ]
-                shape = []
+                points = []
+                shape = points
                 for angle in angles:
                     x = hw * math.cos(angle) + cx
                     y = -(hh * math.sin(angle) + cy)
                     point = (x + offset[0], y + offset[1])
-                    shape.append(point)
+                    points.append(point)
             elif isinstance(cur_object, pytiled_parser.tiled_object.Text):
                 pass
             else:

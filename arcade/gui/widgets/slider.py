@@ -19,7 +19,7 @@ from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 @dataclass
-class UIStyle(UIStyleBase):
+class UISliderStyle(UIStyleBase):
     """
     Used to style the slider for different states. Below is its use case.
 
@@ -34,7 +34,7 @@ class UIStyle(UIStyleBase):
     unfilled_bar: RGBA255 = Color(116, 125, 123)
 
 
-class UISlider(UIStyledWidget[UIStyle]):
+class UISlider(UIStyledWidget[UISliderStyle]):
     """
     A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
 
@@ -56,7 +56,7 @@ class UISlider(UIStyledWidget[UIStyle]):
     pressed = Property(False)
     disabled = Property(False)
 
-    UIStyle = UIStyle
+    UIStyle = UISliderStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -96,7 +96,7 @@ class UISlider(UIStyledWidget[UIStyle]):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, "UISlider.UIStyle"], None] = None,  # typing: ignore
+        style: Union[Mapping[str, UISliderStyle], None] = None,
         **kwargs,
     ):
         super().__init__(
