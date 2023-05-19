@@ -108,13 +108,14 @@ class Sound:
         if player in media.Source._players:
             media.Source._players.remove(player)
 
-    def get_length(self) -> float:
+    def get_length(self) -> Optional[float]:
         """Get length of audio in seconds"""
         return self.source.duration
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
-        return player.time >= self.source.duration
+        # known limitiation: streaming sources do not set duration, will throw an error
+        return player.time >= self.source.duration # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
         """
@@ -135,7 +136,7 @@ class Sound:
         :returns: A float, 0 for volume off, 1 for full volume.
         :rtype: float
         """
-        return player.volume
+        return player.volume # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
     def set_volume(self, volume, player: media.Player) -> None:
         """
