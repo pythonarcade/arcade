@@ -189,7 +189,7 @@ def play_sound(
     pan: float = 0.0,
     looping: bool = False,
     speed: float = 1.0,
-) -> media.Player:
+) -> Optional[media.Player]:
     """
     Play a sound.
 
@@ -212,6 +212,7 @@ def play_sound(
         return sound.play(volume, pan, looping, speed)
     except Exception as ex:
         print("Error playing sound.", ex)
+        return None
 
 
 def stop_sound(player: media.Player):
