@@ -9,7 +9,8 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeGuard, TypeVar, Iterable, Optional, Type, Union
+from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+from typing_extensions import TypeGuard
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
