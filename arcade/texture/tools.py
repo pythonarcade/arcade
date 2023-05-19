@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw
 import arcade
+import arcade.cache
 from .texture import ImageData, Texture
 from arcade.types import IPoint
 from arcade import cache
