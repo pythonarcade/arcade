@@ -1,6 +1,8 @@
 """
 Module specifying data custom types used for type hinting.
 """
+from __future__ import annotations
+
 from array import array
 import ctypes
 import random
@@ -56,6 +58,7 @@ __all__ = [
     "PathOrTexture",
     "Point",
     "PointList",
+    "EMPTY_POINT_LIST",
     "NamedPoint",
     "Rect",
     "RectList",
@@ -421,7 +424,14 @@ IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
+
 PointList = Sequence[Point]
+# Speed / typing workaround:
+# 1. Eliminate extra allocations
+# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
+EMPTY_POINT_LIST: PointList = tuple()
+
+
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 
