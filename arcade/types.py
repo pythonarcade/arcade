@@ -424,6 +424,7 @@ NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 PointList = Sequence[Point]
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
+FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
 
 PathOrTexture = Optional[Union[str, Path, "Texture"]]
 

@@ -6,7 +6,7 @@ from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Point, RGBOrA255, Rect
+from arcade.types import FloatRect, Point, RGBOrA255
 
 
 class Surface:
@@ -158,7 +158,7 @@ class Surface:
 
     def draw(
         self,
-        area: Optional[Rect] = None,
+        area: Optional[FloatRect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
