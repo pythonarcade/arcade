@@ -44,6 +44,9 @@ class Sound:
             self.file_name, streaming=streaming
         )
 
+        if self.source.duration is None:
+            raise Exception("Audio duration must be known when loaded, but this audio source returned `None`")
+
         self.min_distance = (
             100000000  # setting the players to this allows for 2D panning with 3D audio
         )
@@ -108,17 +111,14 @@ class Sound:
         if player in media.Source._players:
             media.Source._players.remove(player)
 
-    def get_length(self) -> Optional[float]:
-        """
-        Get length of audio in seconds, or `None` for audio sources
-        that do not know their duration.
-        """
-        return self.source.duration
+    def get_length(self) -> float:
+        """Get length of audio in seconds"""
+        # We validate that duration is known when loading the source
+        return self.source.duration # type: ignore
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
-        # limitiation: pyglet sources do not guarantee they will have a numeric
-        # duration. If source.duration is None, this will throw an error
+        # We validate that duration is known when loading the source
         return player.time >= self.source.duration # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
