@@ -1,10 +1,12 @@
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Optional, Tuple, List, TYPE_CHECKING
+from typing import Optional, Tuple, List, TYPE_CHECKING, Union
 import weakref
 
 
 from pyglet import gl
+
+from arcade.types import RGBOrA255, RGBOrANormalized
 
 from .texture import Texture2D
 from .types import pixel_formats
@@ -344,7 +346,7 @@ class Framebuffer:
 
     def clear(
         self,
-        color=(0.0, 0.0, 0.0, 0.0),
+        color: Union[RGBOrA255, RGBOrANormalized] =(0.0, 0.0, 0.0, 0.0),
         *,
         depth: float = 1.0,
         normalized: bool = False,
