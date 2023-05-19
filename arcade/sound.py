@@ -189,7 +189,7 @@ def play_sound(
     pan: float = 0.0,
     looping: bool = False,
     speed: float = 1.0,
-) -> Optional[media.Player]:
+) -> media.Player:
     """
     Play a sound.
 

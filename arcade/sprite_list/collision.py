@@ -83,7 +83,7 @@ def check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     return _check_for_collision(sprite1, sprite2)
 
 
-def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
+def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
     Check for collision between two sprites.
 
