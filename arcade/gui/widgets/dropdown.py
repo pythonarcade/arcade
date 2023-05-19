@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import arcade
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
@@ -40,7 +40,7 @@ class UIDropdown(UILayout):
         width: float = 100,
         height: float = 100,
         default: Optional[str] = None,
-        options: Optional[List[str]] = None,
+        options: Optional[List[Union[str, None]]] = None,
         style=None, **kwargs
     ):
         if style is None:
