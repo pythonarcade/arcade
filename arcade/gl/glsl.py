@@ -1,8 +1,9 @@
-from typing import Dict, Iterable, List, Optional
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
 import re
 
 from pyglet import gl
-from .context import Context as ArcadeGlContext
+if TYPE_CHECKING:
+    from .context import Context as ArcadeGlContext
 
 from .exceptions import ShaderException
 from .types import SHADER_TYPE_NAMES, PyGLenum
@@ -29,7 +30,7 @@ class ShaderSource:
     """
     def __init__(
         self,
-        ctx: ArcadeGlContext,
+        ctx: 'ArcadeGlContext',
         source: str,
         common: Optional[Iterable[str]],
         source_type: PyGLenum,
