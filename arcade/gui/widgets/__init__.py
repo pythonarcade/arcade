@@ -4,6 +4,7 @@ from typing import (
     NamedTuple,
     Iterable,
     Optional,
+    Self,
     Union,
     TYPE_CHECKING,
     TypeVar,
@@ -531,7 +532,7 @@ class UIWidget(EventDispatcher, ABC):
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
-    def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
+    def with_border(self, width=2, color=(0, 0, 0)) -> Self:
         """
         Sets border properties
         :param width: border width

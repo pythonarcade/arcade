@@ -166,7 +166,6 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param Optional[Point] position: The position to draw the surface at.
         :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
         """
         # Set blend function

@@ -35,7 +35,7 @@ from pyglet.math import Vec2
 
 from arcade.math import rotate_point
 from arcade.resources import resolve
-from arcade.types import Point, TiledObject
+from arcade.types import Point, Rect, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -818,7 +818,7 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
-        shape = None
+        shape: Union[List[Point], Rect, Point, None] = None
 
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
@@ -831,6 +831,8 @@ class TileMap:
                     )
 
                 tile = self._get_tile_by_gid(cur_object.gid)
+                if tile is None:
+                    raise Exception(f"Tile with gid not found: {cur_object.gid}")
                 my_sprite = self._create_sprite_from_tile(
                     tile,
                     scaling=scaling,
@@ -917,7 +919,7 @@ class TileMap:
                     - cur_object.coordinates.y
                 ) * scaling
 
-                shape = [x + offset[0], y + offset[1]]
+                shape = (x + offset[0], y + offset[1])
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
                 if cur_object.size.width == 0 and cur_object.size.height == 0:
                     print(
@@ -930,7 +932,7 @@ class TileMap:
                         - cur_object.coordinates.y
                     ) * scaling
 
-                    shape = [x + offset[0], y + offset[1]]
+                    shape = (x + offset[0], y + offset[1])
                 else:
                     x = cur_object.coordinates.x + offset[0]
                     y = cur_object.coordinates.y + offset[1]
@@ -939,10 +941,10 @@ class TileMap:
                     ex = x + cur_object.size.width
                     ey = -(y + cur_object.size.height)
 
-                    p1 = [sx, sy]
-                    p2 = [ex, sy]
-                    p3 = [ex, ey]
-                    p4 = [sx, ey]
+                    p1 = (sx, sy)
+                    p2 = (ex, sy)
+                    p3 = (ex, ey)
+                    p4 = (sx, ey)
 
                     shape = [p1, p2, p3, p4]
             elif isinstance(
@@ -974,7 +976,7 @@ class TileMap:
                 for angle in angles:
                     x = hw * math.cos(angle) + cx
                     y = -(hh * math.sin(angle) + cy)
-                    point = [x + offset[0], y + offset[1]]
+                    point = (x + offset[0], y + offset[1])
                     shape.append(point)
             elif isinstance(cur_object, pytiled_parser.tiled_object.Text):
                 pass

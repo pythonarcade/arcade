@@ -113,7 +113,7 @@ class UIDropdown(UILayout):
 
             button = self._layout.add(
                 UIFlatButton(
-                    text=option,
+                    text=option, # type: ignore  # is definitely a string
                     width=self.width,
                     height=self.height,
                     style=active_style

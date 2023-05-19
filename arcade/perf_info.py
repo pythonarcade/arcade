@@ -9,7 +9,8 @@ import time
 
 # Evil globals
 _timings: Dict = {}
-_pyglets_dispatch_event = None
+# Save the original pyglet dispatch event function
+_pyglets_dispatch_event = pyglet.window.BaseWindow.dispatch_event
 _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
 

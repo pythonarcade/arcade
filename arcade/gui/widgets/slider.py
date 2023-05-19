@@ -136,7 +136,7 @@ class UISlider(UIStyledWidget[UIStyle]):
         else:
             return "normal"
 
-    def _x_for_value(self, value):
+    def _x_for_value(self, value: float):
         x = self.content_rect.x
         nval = (value - self.vmin) / self.vmax
         return (
@@ -227,7 +227,7 @@ class UISlider(UIStyledWidget[UIStyle]):
             border_width,
         )
 
-    def _cursor_pos(self) -> Tuple[int, int]:
+    def _cursor_pos(self) -> Tuple[float, float]:
         return self.value_x, int(self.y + self.height // 2)
 
     def _is_on_cursor(self, x: float, y: float) -> bool:

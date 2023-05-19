@@ -9,7 +9,7 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type
+from typing import List, Dict, TypeGuard, TypeVar, Iterable, Optional, Type, Union
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -164,8 +164,8 @@ class UIManager(EventDispatcher):
         :param layer: layer to search, None will search through all layers
         :return: iterator of widgets of given type at position
         """
-        def check_type(widget) -> W:  # should be TypeGuard[W]
-            return isinstance(widget, cls)  # type: ignore
+        def check_type(widget) -> TypeGuard[W]:
+            return isinstance(widget, cls)
 
         for widget in self.walk_widgets(layer=layer):
             if check_type(widget) and widget.rect.collide_with_point(*pos):
@@ -319,7 +319,7 @@ class UIManager(EventDispatcher):
         px, py = self.camera.position
         return x + px, y + py
 
-    def on_event(self, event) -> bool:
+    def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:
             for child in reversed(self.children[layer]):
