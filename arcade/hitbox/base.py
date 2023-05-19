@@ -27,7 +27,7 @@ class HitBoxAlgorithm:
     cache = True
 
     @property
-    def param_str(self) -> str:
+    def texture_cache_name(self) -> str:
         """
         A string representation of the parameters used to create this algorithm.
 
