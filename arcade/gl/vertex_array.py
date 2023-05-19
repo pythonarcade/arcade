@@ -593,7 +593,7 @@ class Geometry:
         program: Program,
         buffer: Buffer,
         *,
-        mode: Optional[gl.GLuint] = None,
+        mode: Optional[GLuintLike] = None,
         count: int = -1,
         first: int = 0,
         stride: int = 0,

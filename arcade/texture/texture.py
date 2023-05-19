@@ -288,7 +288,7 @@ class Texture:
         return self._file_path
 
     @file_path.setter
-    def file_path(self, path: Path):
+    def file_path(self, path: Optional[Path]):
         self._file_path = path
 
     @property
@@ -301,7 +301,7 @@ class Texture:
         return self._crop_values
 
     @crop_values.setter
-    def crop_values(self, crop: Tuple[int, int, int, int]):
+    def crop_values(self, crop: Optional[Tuple[int, int, int, int]]):
         self._crop_values = crop
 
     @property

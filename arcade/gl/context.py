@@ -875,7 +875,7 @@ class Context:
         data: Optional[BufferProtocol] = None,
         wrap_x: Optional[PyGLenum] = None,
         wrap_y: Optional[PyGLenum] = None,
-        filter: Optional[Tuple[GLenumLike, GLenumLike]] = None,
+        filter: Optional[Tuple[PyGLenum, PyGLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
     ) -> Texture2D:

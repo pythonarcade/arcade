@@ -127,7 +127,7 @@ class PerfGraph(arcade.Sprite):
             self._vertical_axis_text_objects.append(
                 arcade.Text(
                     "0",  # Ensure the lowest y axis label is always 0
-                    self._left_x, y_level,
+                    self._left_x, int(y_level),
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
             self._grid_lines.append(

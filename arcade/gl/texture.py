@@ -114,7 +114,7 @@ class Texture2D:
         components: int = 4,
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
-        filter: Optional[Tuple[gl.GLuint, gl.GLuint]] = None,
+        filter: Optional[Tuple[PyGLuint, PyGLuint]] = None,
         wrap_x: Optional[PyGLuint] = None,
         wrap_y: Optional[PyGLuint] = None,
         target=gl.GL_TEXTURE_2D,

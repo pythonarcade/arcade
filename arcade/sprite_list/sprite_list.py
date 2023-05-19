@@ -156,7 +156,7 @@ class SpriteList(Generic[SpriteType]):
         from .spatial_hash import SpatialHash
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
-        self.spatial_hash: Optional[SpatialHash] = None
+        self.spatial_hash: Optional[SpatialHash[SpriteType]] = None
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 

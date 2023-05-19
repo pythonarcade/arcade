@@ -1,4 +1,5 @@
 import PIL
+import PIL.Image
 
 from arcade import cache, hitbox
 from arcade.texture import (
