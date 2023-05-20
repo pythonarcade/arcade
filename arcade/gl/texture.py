@@ -846,10 +846,15 @@ class Texture2D:
             resident (bool): Make the texture resident.
         """
         handle = gl.glGetTextureHandleARB(self._glo)
+        is_resident = gl.glIsTextureHandleResidentARB(handle)
+
+        # Ensure we don't try to make a resident texture resident again
         if resident:
-            gl.glMakeTextureHandleResidentARB(handle)
+            if not is_resident:
+                gl.glMakeTextureHandleResidentARB(handle)
         else:
-            gl.glMakeTextureHandleNonResidentARB(handle)
+            if is_resident:
+                gl.glMakeTextureHandleNonResidentARB(handle)
 
         return handle
 
