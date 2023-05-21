@@ -126,7 +126,6 @@ class CV2PlayerView(arcade.View):
     A simple view to hold a video player using cv2.
 
     Requires the opencv-python module to be installed.
-    """
 
     :param path: Path of the video that is to be played.
     :param resize: Change the window size to the video size
@@ -149,5 +148,5 @@ class CV2PlayerView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(CV2PlayerView(":resources:video/snake.mp4", loop=True, resize=False))
+    window.show_view(CV2PlayerView(":resources:video/earth.mp4", loop=True, resize=False))
     window.run()

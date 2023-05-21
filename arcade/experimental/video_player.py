@@ -86,5 +86,5 @@ class VideoPlayerView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(VideoPlayerView(":resources:video/snake.mp4"))
+    window.show_view(VideoPlayerView(":resources:video/earth.mp4"))
     window.run()
