@@ -122,8 +122,11 @@ class VideoPlayerCV2:
 
 
 class CV2PlayerView(arcade.View):
-    """A simple view to hold a video player using cv2.
-    requires opencv-python
+    """
+    A simple view to hold a video player using cv2.
+
+    Requires the opencv-python module to be installed.
+    """
 
     :param path: Path of the video that is to be played.
     :param resize: Change the window size to the video size
