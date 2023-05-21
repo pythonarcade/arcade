@@ -20,7 +20,7 @@ __all__ = [
 
 # Keep cv2 an optional dependency
 try:
-    from .video_cv2 import VideoPlayerCV2, CV2PlayerView
+    from .video_cv2 import VideoPlayerCV2, CV2PlayerView # noqa: F401
 
     __all__.extend([
         "VideoPlayerCV2",
