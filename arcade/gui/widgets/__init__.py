@@ -29,7 +29,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color, RGBOrA255
+from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -760,7 +760,7 @@ class UIDummy(UIInteractiveWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
         )
-        self.color: RGBOrA255 = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
 
         self.bg_color = (

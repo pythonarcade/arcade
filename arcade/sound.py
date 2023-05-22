@@ -45,7 +45,7 @@ class Sound:
         )
 
         if self.source.duration is None:
-            raise Exception("Audio duration must be known when loaded, but this audio source returned `None`")
+            raise ValueError("Audio duration must be known when loaded, but this audio source returned `None`")
 
         self.min_distance = (
             100000000  # setting the players to this allows for 2D panning with 3D audio
