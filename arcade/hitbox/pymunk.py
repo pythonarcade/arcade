@@ -23,16 +23,9 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     default_detail = 4.5
 
     def __init__(self, *, detail: Optional[float] = None):
+        super().__init__()
         self.detail = detail or self.default_detail
-
-    @property
-    def cache_name(self) -> str:
-        """
-        Return a string representation of the parameters used to create this algorithm.
-
-        This is used in caching.
-        """
-        return f"detail={self.detail}"
+        self._cache_name += f"|detail={self.detail}"
 
     def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
         """Create a new instance with new default values"""

@@ -44,8 +44,8 @@ def test_texture_cache_name():
 
     # Detailed has a detail parameter for the number of points
     # Test default value and specifying a value
-    assert hitbox.algo_detailed.cache_name == "detail=4.5"
-    assert hitbox.algo_detailed(detail=10.0).cache_name == "detail=10.0"
+    assert hitbox.algo_detailed.cache_name == "PymunkHitBoxAlgorithm|detail=4.5"
+    assert hitbox.algo_detailed(detail=10.0).cache_name == "PymunkHitBoxAlgorithm|detail=10.0"
 
 
 def test_call_override():
