@@ -26,7 +26,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         self.detail = detail or self.default_detail
 
     @property
-    def texture_cache_name(self) -> str:
+    def cache_name(self) -> str:
         """
         Return a string representation of the parameters used to create this algorithm.
 

@@ -10,7 +10,7 @@ def test_create():
     assert texture.height == 10
     assert texture.file_path is None
     assert texture.crop_values is None
-    assert texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm.texture_cache_name}|"
+    assert texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm.cache_name}|"
     assert texture.image_data.hash == "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5"
 
     with pytest.raises(TypeError):
@@ -19,7 +19,7 @@ def test_create():
 
 def test_create_override_name():
     texture = arcade.Texture(Image.new("RGBA", (10, 10)), hash="test")
-    assert texture.cache_name == f"test|{texture._vertex_order}|{texture.hit_box_algorithm.texture_cache_name}|"
+    assert texture.cache_name == f"test|{texture._vertex_order}|{texture.hit_box_algorithm.cache_name}|"
 
 
 def test_hitbox_algo_selection():
