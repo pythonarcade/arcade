@@ -20,11 +20,21 @@ class HitBoxAlgorithm:
     users can also repurpose them for other tasks.
     """
 
-    #: The name of the algorithm
-    name = "base"
-
     #: Whether points for this algorithm should be cached
     cache = True
+
+    def __init__(self):
+        self._texture_cache_base = self.__class__.__name__
+        self._texture_cache_name: str = ""  # Temporary value
+        self._build_texture_cache_name()
+
+    def _build_texture_cache_name(self) -> None:
+        """
+        Set the texture cache name to its final value.
+
+        Subclasses should override this to build clear cache names.
+        """
+        self._texture_cache_name = self._texture_cache_base
 
     @property
     def texture_cache_name(self) -> str:
@@ -37,7 +47,7 @@ class HitBoxAlgorithm:
         distinguishing different configurations of a particular hit box
         algorithm.
         """
-        return ""
+        return self._texture_cache_name
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """

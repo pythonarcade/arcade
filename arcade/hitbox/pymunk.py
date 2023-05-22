@@ -18,7 +18,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     This is a more accurate algorithm generating more points. The
     point count can be controlled with the ``detail`` parameter.
     """
-    name = "pymunk"
+
     #: The default detail when creating a new instance.
     default_detail = 4.5
 
