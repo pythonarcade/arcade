@@ -226,7 +226,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         )
 
     def _cursor_pos(self) -> Tuple[int, int]:
-        return self.value_x, self.y + self.height // 2
+        return self.value_x, int(self.y + self.height // 2)
 
     def _is_on_cursor(self, x: float, y: float) -> bool:
         cursor_center_x, cursor_center_y = self._cursor_pos()

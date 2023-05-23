@@ -12,10 +12,11 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
+from pytiled_parser import Color
 
 from arcade import (
     AnimatedTimeBasedSprite,
@@ -46,8 +47,9 @@ __all__ = [
     "read_tmx"
 ]
 
+prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
-def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
@@ -156,23 +158,35 @@ class TileMap:
 
     The keys and their values in each layer are passed to the layer processing functions
     using the `**` operator on the dictionary.
-
-
-    Attributes:
-        :tiled_map: The pytiled-parser map object. This can be useful for implementing features
-                    that aren't supported by this class by accessing the raw map data directly.
-        :width: The width of the map in tiles. This is the number of tiles, not pixels.
-        :height: The height of the map in tiles. This is the number of tiles, not pixels.
-        :tile_width: The width in pixels of each tile.
-        :tile_height: The height in pixels of each tile.
-        :background_color: The background color of the map.
-        :scaling: A global scaling value to be applied to all Sprites in the map.
-        :sprite_lists: A dictionary mapping SpriteLists to their layer names. This is used
-                       for all tile layers of the map.
-        :object_lists: A dictionary mapping TiledObjects to their layer names. This is used
-                       for all object layers of the map.
-        :offset: A tuple containing the X and Y position offset values.
     """
+
+    tiled_map: pytiled_parser.TiledMap
+    """
+    The pytiled-parser map object. This can be useful for implementing features
+    that aren't supported by this class by accessing the raw map data directly.
+    """
+    width: float
+    "The width of the map in tiles. This is the number of tiles, not pixels."
+    height: float
+    "The height of the map in tiles. This is the number of tiles, not pixels."
+    tile_width: float
+    "The width in pixels of each tile."
+    tile_height: float
+    "The height in pixels of each tile."
+    background_color: Optional[Color]
+    "The background color of the map."
+    scaling: float
+    "A global scaling value to be applied to all Sprites in the map."
+    sprite_lists: Dict[str, SpriteList]
+    """A dictionary mapping SpriteLists to their layer names. This is used
+                    for all tile layers of the map."""
+    object_lists: Dict[str, List[TiledObject]]
+    """
+    A dictionary mapping TiledObjects to their layer names. This is used
+    for all object layers of the map.
+    """
+    offset: Vec2
+    "A tuple containing the X and Y position offset values."
 
     def __init__(
         self,
@@ -556,18 +570,18 @@ class TileMap:
 
                 if tile.flipped_vertically:
                     for point in points:
-                        point[1] *= -1
+                        point = point[0], point[1] * -1
 
                 if tile.flipped_horizontally:
                     for point in points:
-                        point[0] *= -1
+                        point = point[0] * -1, point[1]
 
                 if tile.flipped_diagonally:
                     for point in points:
-                        point[0], point[1] = point[1], point[0]
+                        point = point[1], point[0]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    points,
+                    cast(List[Point], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
@@ -859,28 +873,28 @@ class TileMap:
                     my_sprite.alpha = int(opacity * 255)
 
                 if cur_object.properties and "change_x" in cur_object.properties:
-                    my_sprite.change_x = float(cur_object.properties["change_x"])
+                    my_sprite.change_x = prop_to_float(cur_object.properties["change_x"])
 
                 if cur_object.properties and "change_y" in cur_object.properties:
-                    my_sprite.change_y = float(cur_object.properties["change_y"])
+                    my_sprite.change_y = prop_to_float(cur_object.properties["change_y"])
 
                 if cur_object.properties and "boundary_bottom" in cur_object.properties:
-                    my_sprite.boundary_bottom = float(
+                    my_sprite.boundary_bottom = prop_to_float(
                         cur_object.properties["boundary_bottom"]
                     )
 
                 if cur_object.properties and "boundary_top" in cur_object.properties:
-                    my_sprite.boundary_top = float(
+                    my_sprite.boundary_top = prop_to_float(
                         cur_object.properties["boundary_top"]
                     )
 
                 if cur_object.properties and "boundary_left" in cur_object.properties:
-                    my_sprite.boundary_left = float(
+                    my_sprite.boundary_left = prop_to_float(
                         cur_object.properties["boundary_left"]
                     )
 
                 if cur_object.properties and "boundary_right" in cur_object.properties:
-                    my_sprite.boundary_right = float(
+                    my_sprite.boundary_right = prop_to_float(
                         cur_object.properties["boundary_right"]
                     )
 

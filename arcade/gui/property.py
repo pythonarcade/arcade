@@ -1,7 +1,10 @@
 import sys
 import traceback
+
 from typing import (
     Optional,
+    TypeVar,
+    Generic,
     Tuple,
     Callable,
     Any,
@@ -9,25 +12,26 @@ from typing import (
     Dict,
     List,
     Set,
-    SupportsIndex
+    cast
 )
 from weakref import WeakKeyDictionary, ref
 
+P = TypeVar("P")
 
-class _Obs:
+class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
     """
 
     __slots__ = "value", "listeners"
 
-    def __init__(self) -> None:
-        self.value = None
+    def __init__(self, value: P) -> None:
+        self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners: Set[Callable] = set()
+        self.listeners: Set[Callable[[], Any]] = set()
 
 
-class Property:
+class Property(Generic[P]):
     """
     An observable property which triggers observers when changed.
 
@@ -38,9 +42,9 @@ class Property:
     __slots__ = "name", "default_factory", "obs"
     name: str
 
-    def __init__(self, default: Any=None, default_factory: Optional[Callable]=None) -> None:
+    def __init__(self, default: Optional[P] = None, default_factory: Optional[Callable[[Any, Any], P]] = None):
         if default_factory is None:
-            default_factory = lambda prop, instance: default
+            default_factory = lambda prop, instance: cast(P, default)
 
         self.default_factory = default_factory
         self.obs: WeakKeyDictionary[Any, _Obs] = WeakKeyDictionary()
@@ -48,12 +52,11 @@ class Property:
     def _get_obs(self, instance: Any) -> _Obs:
         obs = self.obs.get(instance)
         if obs is None:
-            obs = _Obs()
-            obs.value = self.default_factory(self, instance)
+            obs = _Obs(self.default_factory(self, instance))
             self.obs[instance] = obs
         return obs
 
-    def get(self, instance: Any) -> Any:
+    def get(self, instance) -> P:
         obs = self._get_obs(instance)
         return obs.value
 
@@ -84,9 +87,9 @@ class Property:
     def __set_name__(self, owner, name: str):
         self.name = name
 
-    def __get__(self, instance: Any, owner) -> Any:
+    def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self
+            return self # type: ignore
         return self.get(instance)
 
     def __set__(self, instance: Any, value: Any) -> None:

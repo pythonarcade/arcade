@@ -31,6 +31,7 @@ from contextlib import contextmanager
 from weakref import WeakSet
 
 import PIL
+import PIL.Image
 from PIL import Image, ImageDraw
 from pyglet.image.atlas import (
     Allocator,
@@ -1003,7 +1004,7 @@ class TextureAtlas:
             for rg in self._image_regions.values():
                 p1 = rg.x, rg.y
                 p2 = rg.x + rg.width - 1, rg.y + rg.height - 1
-                draw.rectangle([p1, p2], outline=border_color, width=1)
+                draw.rectangle((p1, p2), outline=border_color, width=1)
 
         if flip:
             image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)

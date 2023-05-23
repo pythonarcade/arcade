@@ -7,7 +7,7 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point, RGBA255
+from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
 from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
 
@@ -178,9 +178,9 @@ class Text:
     def __init__(
         self,
         text: str,
-        start_x: float,
-        start_y: float,
-        color: RGBA255 = arcade.color.WHITE,
+        start_x: int,
+        start_y: int,
+        color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
         align: str = "left",
@@ -193,7 +193,7 @@ class Text:
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
         group: Optional[pyglet.graphics.Group] = None,
-        start_z: float = 0
+        start_z: int = 0
     ):
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -214,7 +214,7 @@ class Text:
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation,
+            rotation=rotation, # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
             group=group
         )
@@ -569,7 +569,7 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Point):
+    def position(self, point: Union[Point, Point3]):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         if len(point) == 3:
             self._label.position = point
@@ -662,8 +662,8 @@ def create_text_sprite(
     )
 def draw_text(
     text: Any,
-    start_x: float,
-    start_y: float,
+    start_x: int,
+    start_y: int,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -675,7 +675,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    start_z: float = 0
+    start_z: int = 0
 ):
     """
     A simple way for beginners to draw text.

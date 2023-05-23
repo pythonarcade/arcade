@@ -10,6 +10,7 @@ from typing import List, Tuple, Optional
 import pyglet
 
 import pyglet.gl as gl
+import pyglet.window.mouse
 from pyglet.canvas.base import ScreenMode
 from pyglet.window import MouseCursor
 
