@@ -16,6 +16,8 @@ GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
 
+NUM_STARS = 4000
+
 
 class MyWindow(arcade.Window):
 
@@ -31,7 +33,7 @@ class MyWindow(arcade.Window):
         # --- Class instance variables
 
         # Number of balls to move
-        self.num_balls = 4000
+        self.num_balls = NUM_STARS
 
         # This has something to do with how we break the calculations up
         # and parallelize them.
