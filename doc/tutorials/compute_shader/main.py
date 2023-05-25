@@ -31,7 +31,7 @@ class MyWindow(arcade.Window):
         # --- Class instance variables
 
         # Number of balls to move
-        self.num_balls = 40000
+        self.num_balls = 4000
 
         # This has something to do with how we break the calculations up
         # and parallelize them.
