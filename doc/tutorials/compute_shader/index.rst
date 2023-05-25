@@ -11,7 +11,7 @@ Using the compute shader, you can use the GPU to perform calculations thousands
 of times faster than just by using the CPU.
 
 In this example, we will simulate a star field using an 'N-Body simulation'. Each
-star is effected by each other star's gravity. For 1,000 stars, this means we have
+star is affected by the gravity of every other star. For 1,000 stars, this means we have
 1,000 x 1,000 = 1,000,000 million calculations to perform for each frame.
 The video has 65,000 stars, requiring 4.2 billion gravity force calculations per frame.
 On high-end hardware it can still run at 60 fps!
