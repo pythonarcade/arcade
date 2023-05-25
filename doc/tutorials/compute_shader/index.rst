@@ -19,7 +19,7 @@ On high-end hardware it can still run at 60 fps!
 How does this work?
 There are three major parts to this program:
 
-* The Python code, this glues everything together.
+* The Python code, which glues everything together.
 * The visualization shaders, which let us see the data.
 * The compute shader, which moves everything.
 
