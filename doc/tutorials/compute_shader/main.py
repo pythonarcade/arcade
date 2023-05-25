@@ -32,8 +32,8 @@ class MyWindow(arcade.Window):
 
         # --- Class instance variables
 
-        # Number of balls to move
-        self.num_balls = NUM_STARS
+        # Number of stars to move
+        self.num_stars = NUM_STARS
 
         # This has something to do with how we break the calculations up
         # and parallelize them.
@@ -87,7 +87,7 @@ class MyWindow(arcade.Window):
                                                               str(self.group_y))
         self.compute_shader = self.ctx.compute_shader(source=compute_shader_source)
 
-        # Program for visualizing the balls
+        # Program for visualizing the stars
         self.program = self.ctx.program(
             vertex_shader=vertex_shader_source,
             geometry_shader=geometry_shader_source,
@@ -127,7 +127,7 @@ class MyWindow(arcade.Window):
         # Run compute shader
         self.compute_shader.run(group_x=self.group_x, group_y=self.group_y)
 
-        # Draw the balls
+        # Draw the stars
         self.vao_2.render(self.program)
 
         # Swap the buffers around (we are ping-ping rendering between two buffers)
@@ -139,7 +139,7 @@ class MyWindow(arcade.Window):
         self.perf_graph_list.draw()
 
     def gen_initial_data(self):
-        for i in range(self.num_balls):
+        for i in range(self.num_stars):
             # Position/radius
             yield random.randrange(0, self.width)
             yield random.randrange(0, self.height)
