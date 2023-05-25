@@ -104,8 +104,7 @@ class MyWindow(arcade.Window):
 
         # Create the FPS performance graph
         graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="FPS")
-        graph.center_x = GRAPH_WIDTH / 2
-        graph.center_y = self.height - GRAPH_HEIGHT / 2
+        graph.position = GRAPH_WIDTH / 2, self.height - GRAPH_HEIGHT / 2
         self.perf_graph_list.append(graph)
 
     def on_draw(self):
