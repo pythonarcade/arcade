@@ -172,5 +172,7 @@ class MyWindow(arcade.Window):
 
         return array('f', _data_generator())
 
-app = MyWindow()
-arcade.run()
+
+if __name__ == "__main__":
+    app = MyWindow()
+    arcade.run()
