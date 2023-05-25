@@ -1,6 +1,9 @@
 #version 430
 
-// Set up our compute groups
+// Set up our compute groups.
+// The COMPUTE_SIZE_X and COMPUTE_SIZE_Y values will be replaced
+// by the Python code with actual values. This does not happen
+// automatically, and must be called manually.
 layout(local_size_x=COMPUTE_SIZE_X, local_size_y=COMPUTE_SIZE_Y) in;
 
 // Input uniforms go here if you need them.
