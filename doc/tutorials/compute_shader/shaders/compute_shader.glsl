@@ -9,8 +9,8 @@ layout(local_size_x=COMPUTE_SIZE_X, local_size_y=COMPUTE_SIZE_Y) in;
 //uniform vec2 force;
 //uniform float frame_time;
 
-// Structure of the ball data
-struct Ball
+// Structure of the star data
+struct Star
 {
     vec4 pos;
     vec4 vel;
@@ -18,38 +18,38 @@ struct Ball
 };
 
 // Input buffer
-layout(std430, binding=0) buffer balls_in
+layout(std430, binding=0) buffer stars_in
 {
-    Ball balls[];
+    Star stars[];
 } In;
 
 // Output buffer
-layout(std430, binding=1) buffer balls_out
+layout(std430, binding=1) buffer stars_out
 {
-    Ball balls[];
+    Star stars[];
 } Out;
 
 void main()
 {
-    int curBallIndex = int(gl_GlobalInvocationID);
+    int curStarIndex = int(gl_GlobalInvocationID);
 
-    Ball in_ball = In.balls[curBallIndex];
+    Star in_star = In.stars[curStarIndex];
 
-    vec4 p = in_ball.pos.xyzw;
-    vec4 v = in_ball.vel.xyzw;
+    vec4 p = in_star.pos.xyzw;
+    vec4 v = in_star.vel.xyzw;
 
-    // Move the ball according to the current force
+    // Move the star according to the current force
     p.xy += v.xy;
 
     // Calculate the new force based on all the other bodies
-    for (int i=0; i < In.balls.length(); i++) {
+    for (int i=0; i < In.stars.length(); i++) {
         // If enabled, this will keep the star from calculating gravity on itself
         // However, it does slow down the calcluations do do this check.
         //  if (i == x)
         //      continue;
 
         // Calculate distance squared
-        float dist = distance(In.balls[i].pos.xyzw.xy, p.xy);
+        float dist = distance(In.stars[i].pos.xyzw.xy, p.xy);
         float distanceSquared = dist * dist;
 
         // If stars get too close the fling into never-never land.
@@ -59,7 +59,7 @@ void main()
         float simulationSpeed = 0.002;
         float force = min(minDistance, gravityStrength / distanceSquared) * -simulationSpeed;
 
-        vec2 diff = p.xy - In.balls[i].pos.xyzw.xy;
+        vec2 diff = p.xy - In.stars[i].pos.xyzw.xy;
         // We should normalize this I think, but it doesn't work.
         //  diff = normalize(diff);
         vec2 delta_v = diff * force;
@@ -67,12 +67,12 @@ void main()
     }
 
 
-    Ball out_ball;
-    out_ball.pos.xyzw = p.xyzw;
-    out_ball.vel.xyzw = v.xyzw;
+    Star out_star;
+    out_star.pos.xyzw = p.xyzw;
+    out_star.vel.xyzw = v.xyzw;
 
-    vec4 c = in_ball.color.xyzw;
-    out_ball.color.xyzw = c.xyzw;
+    vec4 c = in_star.color.xyzw;
+    out_star.color.xyzw = c.xyzw;
 
-    Out.balls[curBallIndex] = out_ball;
+    Out.stars[curStarIndex] = out_star;
 }
