@@ -8,11 +8,11 @@ from typing import Generator
 import arcade
 from arcade.gl import BufferDescription
 
-# Window dimensions
+# Window dimensions in pixels
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
-# Size of performance graphs
+# Size of performance graphs in pixels
 GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
