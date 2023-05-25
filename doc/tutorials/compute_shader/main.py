@@ -3,6 +3,7 @@ Compute shader with buffers
 """
 import random
 from array import array
+from typing import Generator
 
 import arcade
 from arcade.gl import BufferDescription
@@ -55,11 +56,8 @@ class MyWindow(arcade.Window):
         # We will swap which buffer instance is the initial value and
         # which is used as the current value to write to.
 
-        # Generate the initial randomized star positions
-        initial_data = self.gen_initial_data()
-
         # ssbo = shader storage buffer object
-        self.ssbo_initial = self.ctx.buffer(data=array('f', initial_data))
+        self.ssbo_initial = self.ctx.buffer(data=self.gen_initial_data())
         self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_initial.size)
 
         # vao = vertex array object
@@ -143,26 +141,36 @@ class MyWindow(arcade.Window):
         # Draw the graphs
         self.perf_graph_list.draw()
 
-    def gen_initial_data(self):
-        for i in range(self.num_stars):
-            # Position/radius
-            yield random.randrange(0, self.width)
-            yield random.randrange(0, self.height)
-            yield 0.0  # z (padding)
-            yield 6.0
+    def gen_initial_data(self) -> array:
 
-            # Velocity
-            yield 0.0
-            yield 0.0
-            yield 0.0  # vz (padding)
-            yield 0.0  # vw (padding)
+        def _data_generator() -> Generator[float, None, None]:
+            """
+            A generator function yielding floats.
 
-            # Color
-            yield 1.0  # r
-            yield 1.0  # g
-            yield 1.0  # b
-            yield 1.0  # a
+            Although generators are usually a way to avoid storing all
+            data in memory at once, this example uses one as a way to
+            legibly describe the layout of data in the buffer.
+            """
+            for i in range(self.num_stars):
+                # Position/radius
+                yield random.randrange(0, self.width)
+                yield random.randrange(0, self.height)
+                yield 0.0  # z (padding, unused by shaders)
+                yield 6.0
 
+                # Velocity
+                yield 0.0
+                yield 0.0
+                yield 0.0  # vz (padding, unused by shaders)
+                yield 0.0  # vw (padding, unused by shaders)
+
+                # Color
+                yield 1.0  # r
+                yield 1.0  # g
+                yield 1.0  # b
+                yield 1.0  # a
+
+        return array('f', _data_generator())
 
 app = MyWindow()
 arcade.run()
