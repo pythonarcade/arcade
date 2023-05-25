@@ -25,7 +25,7 @@ class MyWindow(arcade.Window):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT,
                          "Compute Shader",
                          gl_version=(4, 3),
-                         resizable=True)
+                         resizable=False)
         self.center_window()
 
         # --- Class instance variables
