@@ -47,23 +47,28 @@ class MyWindow(arcade.Window):
         # 4x4 = Four floats used for calculating velocity. Not needed for visualization.
         # 4f = color -> rgba
         buffer_format = "4f 4x4 4f"
-        # Generate the initial data that we will put in buffer 1.
-        initial_data = self.gen_initial_data()
-
-        # Create data buffers for the compute shader
-        # We ping-pong render between these two buffers
-        # ssbo = shader storage buffer object
-        self.ssbo_1 = self.ctx.buffer(data=array('f', initial_data))
-        self.ssbo_2 = self.ctx.buffer(reserve=self.ssbo_1.size)
 
         # Attribute variable names for the vertex shader
         attributes = ["in_vertex", "in_color"]
-        self.vao_1 = self.ctx.geometry(
-            [BufferDescription(self.ssbo_1, buffer_format, attributes)],
+
+        # Create pairs of data buffers for the compute & vertex shaders.
+        # We will swap which buffer instance is the initial value and
+        # which is used as the current value to write to.
+
+        # Generate the initial randomized star positions
+        initial_data = self.gen_initial_data()
+
+        # ssbo = shader storage buffer object
+        self.ssbo_initial = self.ctx.buffer(data=array('f', initial_data))
+        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_initial.size)
+
+        # vao = vertex array object
+        self.vao_initial = self.ctx.geometry(
+            [BufferDescription(self.ssbo_initial, buffer_format, attributes)],
             mode=self.ctx.POINTS,
         )
-        self.vao_2 = self.ctx.geometry(
-            [BufferDescription(self.ssbo_2, buffer_format, attributes)],
+        self.vao_current = self.ctx.geometry(
+            [BufferDescription(self.ssbo_current, buffer_format, attributes)],
             mode=self.ctx.POINTS,
         )
 
@@ -114,8 +119,8 @@ class MyWindow(arcade.Window):
         self.ctx.enable(self.ctx.BLEND)
 
         # Bind buffers
-        self.ssbo_1.bind_to_storage_buffer(binding=0)
-        self.ssbo_2.bind_to_storage_buffer(binding=1)
+        self.ssbo_initial.bind_to_storage_buffer(binding=0)
+        self.ssbo_current.bind_to_storage_buffer(binding=1)
 
         # Set input variables for compute shader
         # These are examples, although this example doesn't use them
@@ -123,16 +128,17 @@ class MyWindow(arcade.Window):
         # self.compute_shader["force"] = force
         # self.compute_shader["frame_time"] = self.run_time
 
-        # Run compute shader
+        # Run compute shader to calculate new positions for this frame
         self.compute_shader.run(group_x=self.group_x, group_y=self.group_y)
 
-        # Draw the stars
-        self.vao_2.render(self.program)
+        # Draw the current star positions
+        self.vao_current.render(self.program)
 
-        # Swap the buffers around (we are ping-ping rendering between two buffers)
-        self.ssbo_1, self.ssbo_2 = self.ssbo_2, self.ssbo_1
-        # Swap what geometry we draw
-        self.vao_1, self.vao_2 = self.vao_2, self.vao_1
+        # Swap the buffer pairs.
+        # The buffers for the current state become the initial state,
+        # and the data of this frame's initial state will be overwritten.
+        self.ssbo_initial, self.ssbo_current = self.ssbo_current, self.ssbo_initial
+        self.vao_initial, self.vao_current = self.vao_current, self.vao_initial
 
         # Draw the graphs
         self.perf_graph_list.draw()
