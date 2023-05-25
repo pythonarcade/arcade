@@ -8,8 +8,8 @@ import arcade
 from arcade.gl import BufferDescription
 
 # Window dimensions
-WINDOW_WIDTH = 2300
-WINDOW_HEIGHT = 1300
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 
 # Size of performance graphs
 GRAPH_WIDTH = 200
