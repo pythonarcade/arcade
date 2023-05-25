@@ -25,7 +25,7 @@ class MyWindow(arcade.Window):
         # Call parent constructor
         # Ask for OpenGL 4.3 context, as we need that for compute shader support.
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT,
-                         "Compute Shader",
+                         "Star Gravity with a Compute Shader",
                          gl_version=(4, 3),
                          resizable=False)
         self.center_window()
