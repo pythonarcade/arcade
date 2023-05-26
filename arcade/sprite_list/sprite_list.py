@@ -957,7 +957,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False, blend_function: Optional[int]=None) -> None:
+    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False, blend_function: Union[Tuple[int, int], Tuple[int, int, int, int], None]=None) -> None:
         """
         Draw this list of sprites.
 
@@ -1059,11 +1059,11 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_data.extend([0] * extend_by)
 
         if self._initialized:
-            self._sprite_pos_buf.orphan(double=True)# type: ignore
-            self._sprite_size_buf.orphan(double=True)# type: ignore
-            self._sprite_angle_buf.orphan(double=True)# type: ignore
-            self._sprite_color_buf.orphan(double=True)# type: ignore
-            self._sprite_texture_buf.orphan(double=True)# type: ignore
+            self._sprite_pos_buf.orphan(double=True)
+            self._sprite_size_buf.orphan(double=True)
+            self._sprite_angle_buf.orphan(double=True)
+            self._sprite_color_buf.orphan(double=True)
+            self._sprite_texture_buf.orphan(double=True)
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True

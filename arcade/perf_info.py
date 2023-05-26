@@ -87,7 +87,8 @@ def print_timings() -> None:
         on_draw           60       0.0020
     """
     global _timings
-    print("\nEvent          Count Average Time")
+    print()
+    print("Event          Count Average Time")
     print("-------------- ----- ------------")
     for index in _timings:
         data = _timings[index]
