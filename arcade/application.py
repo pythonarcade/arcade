@@ -44,7 +44,7 @@ __all__ = [
 ]
 
 
-def get_screens() -> list:
+def get_screens() -> List[Screen]:
     """
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with arcade.Window to select which
