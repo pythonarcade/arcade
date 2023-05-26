@@ -240,7 +240,7 @@ class VertexArray:
 
     def render(
         self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
-
+        ) -> None:
         """Render the VertexArray to the currently active framebuffer.
 
         :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
