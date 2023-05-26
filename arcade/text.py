@@ -622,7 +622,7 @@ def create_text_texture(text: str,
         bold=bold,
         italic=italic,
         multiline=multiline,
-        )
+    )
 
     if not _label.content_width or not _label.content_height:
         warn("Either width or height is 0")
