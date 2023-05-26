@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from math import cos, radians, sin
 from typing import Any, Sequence, Tuple
+from typing_extensions import Self
 
 from PIL.Image import Image
 
@@ -61,7 +62,7 @@ class HitBoxAlgorithm:
         """
         raise NotImplementedError
 
-    def __call__(self, *args: Any, **kwds: Any) -> "HitBoxAlgorithm":
+    def __call__(self, *args: Any, **kwds: Any) -> Self:
         """
         Shorthand allowing any instance to be used identically to the base type.
 
@@ -69,7 +70,7 @@ class HitBoxAlgorithm:
         :param kwds: The same keyword arguments as `__init__`
         :return: A new HitBoxAlgorithm instance
         """
-        return self.__class__(*args, **kwds)
+        return self.__class__(*args, **kwds)  # type: ignore
 
 
 class HitBox:

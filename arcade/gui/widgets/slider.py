@@ -18,8 +18,23 @@ from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
+@dataclass
+class UISliderStyle(UIStyleBase):
+    """
+    Used to style the slider for different states. Below is its use case.
 
-class UISlider(UIStyledWidget["UISlider.UIStyle"]):
+    .. code:: py
+
+        button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+    """
+    bg: RGBA255 = Color(94, 104, 117)
+    border: RGBA255 = Color(77, 81, 87)
+    border_width: int = 1
+    filled_bar: RGBA255 = Color(50, 50, 50)
+    unfilled_bar: RGBA255 = Color(116, 125, 123)
+
+
+class UISlider(UIStyledWidget[UISliderStyle]):
     """
     A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
 
@@ -41,20 +56,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
     pressed = Property(False)
     disabled = Property(False)
 
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Used to style the slider for different states. Below is its use case.
-
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        bg: RGBA255 = Color(94, 104, 117)
-        border: RGBA255 = Color(77, 81, 87)
-        border_width: int = 1
-        filled_bar: RGBA255 = Color(50, 50, 50)
-        unfilled_bar: RGBA255 = Color(116, 125, 123)
+    UIStyle = UISliderStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -94,7 +96,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, "UISlider.UIStyle"], None] = None,  # typing: ignore
+        style: Union[Mapping[str, UISliderStyle], None] = None,
         **kwargs,
     ):
         super().__init__(
@@ -134,7 +136,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
         else:
             return "normal"
 
-    def _x_for_value(self, value):
+    def _x_for_value(self, value: float):
         x = self.content_rect.x
         nval = (value - self.vmin) / self.vmax
         return (
@@ -225,7 +227,7 @@ class UISlider(UIStyledWidget["UISlider.UIStyle"]):
             border_width,
         )
 
-    def _cursor_pos(self) -> Tuple[int, int]:
+    def _cursor_pos(self) -> Tuple[float, float]:
         return self.value_x, int(self.y + self.height // 2)
 
     def _is_on_cursor(self, x: float, y: float) -> bool:

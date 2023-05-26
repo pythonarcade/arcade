@@ -11,6 +11,7 @@ from typing import (
     List,
     Dict,
 )
+from typing_extensions import Self
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -531,7 +532,7 @@ class UIWidget(EventDispatcher, ABC):
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
-    def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
+    def with_border(self, width=2, color=(0, 0, 0)) -> Self:
         """
         Sets border properties
         :param width: border width
@@ -759,7 +760,7 @@ class UIDummy(UIInteractiveWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
         )
-        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
 
         self.bg_color = (
