@@ -3,6 +3,7 @@ Compute shader with buffers
 """
 import random
 from array import array
+from pathlib import Path
 from typing import Generator
 
 import arcade
@@ -73,14 +74,10 @@ class MyWindow(arcade.Window):
         # --- Create shaders
 
         # Load in the shader source code safely & auto-close files
-        with open("shaders/compute_shader.glsl") as file:
-            compute_shader_source = file.read()
-        with open("shaders/vertex_shader.glsl") as file:
-            vertex_shader_source = file.read()
-        with open("shaders/fragment_shader.glsl") as file:
-            fragment_shader_source = file.read()
-        with open("shaders/geometry_shader.glsl") as file:
-            geometry_shader_source = file.read()
+        compute_shader_source = Path("shaders/compute_shader.glsl").read_text()
+        vertex_shader_source = Path("shaders/vertex_shader.glsl").read_text()
+        fragment_shader_source = Path("shaders/fragment_shader.glsl").read_text()
+        geometry_shader_source = Path("shaders/geometry_shader.glsl").read_text()
 
         # Create our compute shader.
         # Search/replace to set up our compute groups
