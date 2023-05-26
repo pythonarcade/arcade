@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import random
 from arcade.types import Point, Vector
