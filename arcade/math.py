@@ -1,6 +1,7 @@
 import math
 import random
 from arcade.types import Point, Vector
+from typing_extensions import Self
 
 _PRECISION = 2
 
@@ -231,20 +232,20 @@ class _Vec2:
         self.y: float = y
 
     @staticmethod
-    def from_polar(angle, radius: float) -> "_Vec2":
+    def from_polar(angle, radius: float) -> Self:
         rads = math.radians(angle)
         return _Vec2(radius * math.cos(rads), radius * math.sin(rads))
 
-    def __add__(self, other: "_Vec2") -> "_Vec2":
+    def __add__(self, other: "_Vec2") -> Self:
         return _Vec2(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other: "_Vec2") -> "_Vec2":
+    def __sub__(self, other: "_Vec2") -> Self:
         return _Vec2(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other: "_Vec2") -> "_Vec2":
+    def __mul__(self, other: "_Vec2") -> Self:
         return _Vec2(self.x * other.x, self.y * other.y)
 
-    def __truediv__(self, other: "_Vec2") -> "_Vec2":
+    def __truediv__(self, other: "_Vec2") -> Self:
         return _Vec2(self.x / other.x, self.y / other.y)
 
     def __iter__(self):

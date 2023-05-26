@@ -368,7 +368,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> "TextureAtlas":
+    def atlas(self) -> TextureAtlas:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
