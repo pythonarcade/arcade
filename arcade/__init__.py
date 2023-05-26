@@ -395,6 +395,7 @@ if not getattr(sys, 'is_pyglet_doc_run', False):
     # Load additional game controller mappings to Pyglet
     if not pyglet.options['headless']:
         try:
+            import pyglet.input.controller
             mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
             pyglet.input.controller.add_mappings_from_file(mappings_file)
         except AssertionError:

@@ -9,7 +9,8 @@ The better gui for arcade
 - TextArea with scroll support
 """
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type
+from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+from typing_extensions import TypeGuard
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -128,13 +129,24 @@ class UIManager(EventDispatcher):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: Optional[UIWidget] = None) -> Iterable[UIWidget]:
-        """walks through widget tree, in reverse draw order (most top drawn widget first)"""
-        layer = 0
-        children = root.children if root else self.children[layer]
-        for child in reversed(children):
-            yield from self.walk_widgets(root=child)
-            yield child
+    def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
+        """
+        walks through widget tree, in reverse draw order (most top drawn widget first)
+
+        :param root: root widget to start from, if None, the layer is used
+        :param layer: layer to search, None will search through all layers
+        """
+        if layer is None:
+            layers = sorted(self.children.keys(), reverse=True)
+        else:
+            layers = [layer]
+
+        for layer in layers:
+
+            children = root.children if root else self.children[layer]
+            for child in reversed(children):
+                yield from self.walk_widgets(root=child)
+                yield child
 
     def clear(self):
         """
@@ -144,18 +156,19 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls: Type[W] = UIWidget) -> Iterable[W]:
+    def get_widgets_at(self, pos, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
         :param pos: Pos within the widget bounds
-        :param cls: class which the widget should be instance of
+        :param cls: class which the widget should be an instance of
+        :param layer: layer to search, None will search through all layers
         :return: iterator of widgets of given type at position
         """
-        def check_type(widget) -> W:  # should be TypeGuard[W]
-            return isinstance(widget, cls)  # type: ignore
+        def check_type(widget) -> TypeGuard[W]:
+            return isinstance(widget, cls)
 
-        for widget in self.walk_widgets():
+        for widget in self.walk_widgets(layer=layer):
             if check_type(widget) and widget.rect.collide_with_point(*pos):
                 yield widget
 
@@ -307,7 +320,7 @@ class UIManager(EventDispatcher):
         px, py = self.camera.position
         return x + px, y + py
 
-    def on_event(self, event) -> bool:
+    def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:
             for child in reversed(self.children[layer]):

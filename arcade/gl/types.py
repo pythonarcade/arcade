@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Iterable, List, Union
+from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union
 
 from pyglet import gl
 
@@ -9,6 +9,10 @@ from arcade.types import BufferProtocol
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
+GLenumLike = Union[gl.GLenum, int]
+PyGLenum = int
+GLuintLike = Union[gl.GLuint, int]
+PyGLuint = int
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
 _int_base_format = (
@@ -102,8 +106,10 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: gl.GLenum) -> str:
+def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
     """Return the name of a gl type"""
+    if gl_type is None:
+        return None
     return GL_NAMES.get(gl_type, gl_type)
 
 
@@ -112,7 +118,7 @@ class AttribFormat:
     Represents an attribute in a BufferDescription or a Program.
 
     :param str name: Name of the attribute
-    :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param GLenumLike gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
     :param int bytes_per_component: Number of bytes a single component takes
     :param int offset: (Optional offset for BufferDescription)
     :param int location: (Optional location for program attribute)
@@ -128,9 +134,10 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: str, gl_type: gl.GLenum, components: int, bytes_per_component: int, offset=0, location=0
+        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0,
+        location=0
     ):
-        self.name: str = name
+        self.name = name
         self.gl_type = gl_type
         self.components = components
         self.bytes_per_component = bytes_per_component
@@ -188,7 +195,7 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats = {
+    _formats: Dict[str, Tuple[Optional[PyGLenum], int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -227,7 +234,7 @@ class BufferDescription:
         self,
         buffer: Buffer,
         formats: str,
-        attributes: Iterable[str],
+        attributes: Sequence[str],
         normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
@@ -266,7 +273,7 @@ class BufferDescription:
                 f"attributes ({len(self.attributes)})"
             )
 
-        def zip_attrs(formats, attributes):
+        def zip_attrs(formats: List[str], attributes: Sequence[str]):
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:
@@ -344,7 +351,7 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name: str, enum: gl.GLenum, gl_type: gl.GLenum, gl_size: int, components: int):
+    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int):
         self.name = name
         self.enum = enum
         self.gl_type = gl_type

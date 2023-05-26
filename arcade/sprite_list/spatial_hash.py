@@ -5,6 +5,7 @@ from typing import (
     Dict,
     Generic,
 )
+from arcade.sprite.base import BasicSprite
 from arcade.types import Point, IPoint, Rect
 from arcade.sprite import SpriteType
 
@@ -92,7 +93,7 @@ class SpatialHash(Generic[SpriteType]):
         # Delete the sprite from the bucket tracker
         del self.buckets_for_sprite[sprite]
 
-    def get_sprites_near_sprite(self, sprite: SpriteType) -> Set[SpriteType]:
+    def get_sprites_near_sprite(self, sprite: BasicSprite) -> Set[SpriteType]:
         """
         Get all the sprites that are in the same buckets as the given sprite.
 

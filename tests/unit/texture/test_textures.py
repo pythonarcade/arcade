@@ -51,7 +51,7 @@ def test_texture_constructor_hit_box_algo():
     Texture(name="allows_none_hitbox", image=image, hit_box_algorithm=hitbox.algo_bounding_box)
     Texture(name="old_behavior_preserved", image=image)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Texture(name="random", image=image, hit_box_algorithm="definitely invalid")
 
 
