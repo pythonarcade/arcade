@@ -81,7 +81,6 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     """
-
     Helper for drawing pyglet labels with rotation within arcade.
 
     Originally part of draw_text in this module, now abstracted and improved
@@ -569,7 +568,8 @@ class Text:
             self._label.position = *point, self._label.z
 
 
-def create_text_texture(text: str,
+def create_text_texture(
+    text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -629,9 +629,9 @@ def create_text_texture(text: str,
         return arcade.Texture.create_empty(text, (0, 0))
 
     texture = arcade.Texture.create_empty(text, (width, height))
-
     if not texture_atlas:
         texture_atlas = arcade.get_window().ctx.default_atlas
+
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
         fbo.clear((0, 0, 0, 255))
@@ -691,7 +691,9 @@ def create_text_sprite(
         italic = italic,
         anchor_x = anchor_x,
         multiline = multiline,
-        texture_atlas = texture_atlas)
+        texture_atlas = texture_atlas
+    )
+
     size = texture._size
     return arcade.Sprite(
         texture,
