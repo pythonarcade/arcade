@@ -623,12 +623,22 @@ def create_text_texture(
         italic=italic,
         multiline=multiline,
     )
+    lines = _label._get_lines()
+    right = _label._get_right(lines)
+    left = _label._get_left(lines)
+    top = _label._get_top(lines)
+    bottom = _label._get_bottom(lines)
+
+    size = (
+        int(right - left),
+        int(top - bottom),
+    )
 
     if not _label.content_width or not _label.content_height:
         warn("Either width or height is 0")
         return arcade.Texture.create_empty(text, (0, 0))
 
-    texture = arcade.Texture.create_empty(text, (width, height))
+    texture = arcade.Texture.create_empty(text, size)
     if not texture_atlas:
         texture_atlas = arcade.get_window().ctx.default_atlas
 
