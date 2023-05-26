@@ -12,6 +12,7 @@ from typing import (
     Dict,
     List,
     Set,
+    SupportsIndex,
     cast
 )
 from weakref import WeakKeyDictionary, ref
