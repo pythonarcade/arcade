@@ -117,11 +117,11 @@ class MyWindow(arcade.Window):
         self.ssbo_initial.bind_to_storage_buffer(binding=0)
         self.ssbo_current.bind_to_storage_buffer(binding=1)
 
-        # Set input variables for compute shader
-        # These are examples, although this example doesn't use them
+        # If you wanted, you could set input variables for compute shader
+        # as in the lines commented out below. You would have to add or
+        # uncomment corresponding lines in compute_shader.glsl
         # self.compute_shader["screen_size"] = self.get_size()
-        # self.compute_shader["force"] = force
-        # self.compute_shader["frame_time"] = self.run_time
+        # self.compute_shader["frame_time"] = self.frame_time
 
         # Run compute shader to calculate new positions for this frame
         self.compute_shader.run(group_x=self.group_x, group_y=self.group_y)

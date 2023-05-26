@@ -6,10 +6,9 @@
 // automatically, and must be called manually.
 layout(local_size_x=COMPUTE_SIZE_X, local_size_y=COMPUTE_SIZE_Y) in;
 
-// Input uniforms go here if you need them.
-// Some examples:
+// Input uniforms would go here if you need them.
+// The examples below match the ones commented out in main.py
 //uniform vec2 screen_size;
-//uniform vec2 force;
 //uniform float frame_time;
 
 // Structure of the star data
