@@ -62,7 +62,7 @@ class UIDropdown(UILayout):
 
         # Setup button showing value
         self._default_button = UIFlatButton(
-            text=self._value, width=self.width, height=self.height
+            text=self._value, width=self.width, height=self.height # type: ignore  # pending https://github.com/pythonarcade/arcade/issues/1799
         )
 
         self._default_button.on_click = self._on_button_click  # type: ignore
