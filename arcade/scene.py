@@ -115,14 +115,18 @@ class Scene:
 
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         """
-        Add a Sprite to a SpriteList in the Scene with the specified name.
+        Add a Sprite to the SpriteList with the specified name.
 
-        If the desired SpriteList does not exist, it will automatically be created
-        and added to the Scene. This will default the SpriteList to be added to the end
-        of the draw order, and created with no extra options like using spatial hashing.
+        If there is no SpriteList for the given ``name``, one will be
+        created with :py:class:`SpriteList`'s default arguments and
+        added to the end (top) of the scene's current draw order.
 
-        If you need more control over where the SpriteList goes or need it to use Spatial Hash,
-        then the SpriteList should be added separately and then have the Sprites added.
+        To fully customize the SpriteList's options, you should create
+        it directly and add it to the scene with one of the following:
+
+        * :py:meth:`.add_sprite_list_before`
+        * :py:meth:`.add_sprite_list`
+        * :py:meth:`.add_sprite_list_after`
 
         :param str name: The name of the `SpriteList` to add to or create.
         :param Sprite sprite: The `Sprite` to add.
