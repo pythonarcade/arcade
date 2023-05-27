@@ -162,9 +162,9 @@ class MyWindow(arcade.Window):
                 yield 0.0  # vw (padding, unused by shaders)
 
                 # Color
-                yield 1.0  # r
-                yield 1.0  # g
-                yield 1.0  # b
+                yield random.uniform(0.5, 1.0)  # r
+                yield random.uniform(0.5, 1.0)  # g
+                yield random.uniform(0.5, 1.0)  # b
                 yield 1.0  # a
 
         return array('f', _data_generator())
