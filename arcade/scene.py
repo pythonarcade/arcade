@@ -1,9 +1,13 @@
 """
-This module provides a Scene Manager class.
+This module provides a Scene class which acts as a sprite list manager.
 
-This class let's you add Sprites/SpriteLists to a scene and give them
-a name, as well as control the draw order. In addition it provides a
-helper function to create a Scene directly from a TileMap object.
+It allows you to do the following:
+
+* Group sprite lists into a larger object, using them like layers
+* Draw & update the contained sprite lists
+* Add sprites by name
+* Load from tiled map objects
+* Control sprite list draw order within the group
 """
 
 from typing import Dict, List, Optional, Union, Iterable, Tuple
