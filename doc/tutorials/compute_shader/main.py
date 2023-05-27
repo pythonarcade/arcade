@@ -61,7 +61,7 @@ class MyWindow(arcade.Window):
         # Attribute variable names for the vertex shader
         attributes = ["in_vertex", "in_color"]
 
-        # Create pairs of data buffers for the compute & vertex shaders.
+        # Create pairs of buffers for the compute & visualization shaders.
         # We will swap which buffer instance is the initial value and
         # which is used as the current value to write to.
 
