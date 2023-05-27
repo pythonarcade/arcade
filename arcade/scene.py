@@ -6,7 +6,7 @@ a name, as well as control the draw order. In addition it provides a
 helper function to create a Scene directly from a TileMap object.
 """
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
@@ -314,15 +314,20 @@ class Scene:
             key: val for key, val in self._name_mapping.items() if val != sprite_list
         }
 
-    def update(self, names: Optional[List[str]] = None) -> None:
+    def update(self, names: Optional[Iterable[str]] = None) -> None:
         """
-        Used to update SpriteLists contained in the scene.
+        Call :py:meth:`~arcade.SpriteList.update` on the scene's sprite lists.
 
-        If `names` parameter is provided then only the specified spritelists
-        will be updated. If `names` is not provided, then every SpriteList
-        in the scene will be updated.
+        By default, this method calls :py:meth:`~arcade.SpriteList.update`
+        on the scene's sprite lists in the default draw order.
 
-        :param Optional[List[str]] names: A list of names of SpriteLists to update.
+        You can limit and reorder the updates with the ``names``
+        argument by passing a list of names in the scene. The sprite
+        lists will be drawn in the order of the passed iterable. If a
+        name is not in the scene, a :py:class:`KeyError` will be raised.
+
+        :param Optional[Iterable[str]] names:
+            An iterable of sprite list names to update, such as a list.
         """
         if names:
             for name in names:
@@ -332,17 +337,21 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.update()
 
-    def on_update(self, delta_time: float = 1 / 60, names: Optional[List[str]] = None) -> None:
+    def on_update(self, delta_time: float = 1 / 60, names: Optional[Iterable[str]] = None) -> None:
         """
-        Used to call on_update of SpriteLists contained in the scene.
+        Call :py:meth:`~arcade.SpriteList.on_update` on the scene's sprite lists.
 
-        Similar to update() but allows passing a delta_time variable.
-        If `names` parameter is provided then only the specified spritelists
-        will be updated. If `names` is not provided, then every SpriteList
-        in the scene will have on_update called.
+        By default, this method calls :py:meth:`~arcade.SpriteList.on_update`
+        on the scene's sprite lists in the default draw order.
 
-        :param float delta_time: Time since last update.
-        :param Optional[List[str]] names: A list of names of SpriteLists to update.
+        You can limit and reorder the updates with the ``names``
+        argument by passing a list of names in the scene. The sprite
+        lists will be drawn in the order of the passed iterable. If a
+        name is not in the scene, a :py:class:`KeyError` will be raised.
+
+        :param float delta_time: The time step to update by in seconds.
+        :param Optional[Iterable[str]] names:
+            An iterable of sprite list names to update, such as a list.
         """
         if names:
             for name in names:
@@ -353,17 +362,22 @@ class Scene:
             sprite_list.on_update(delta_time)
 
     def update_animation(
-        self, delta_time: float, names: Optional[List[str]] = None
+        self, delta_time: float, names: Optional[Iterable[str]] = None
     ) -> None:
         """
-        Used to update the animation of SpriteLists contained in the scene.
+        Call :py:meth:`~arcade.SpriteList.update_animation` on the scene's sprite lists.
 
-        If `names` parameter is provided then only the specified spritelists
-        will be updated. If `names` is not provided, then every SpriteList
-        in the scene will be updated.
+        By default, this method calls :py:meth:`~arcade.SpriteList.update_animation`
+        on each sprite list in the scene in the default draw order.
 
-        :param float delta_time: The delta time for the update.
-        :param Optional[List[str]] names: A list of names of SpriteLists to update.
+        You can limit and reorder the updates with the ``names``
+        argument by passing a list of names in the scene. The sprite
+        lists will be drawn in the order of the passed iterable. If a
+        name is not in the scene, a :py:class:`KeyError` will be raised.
+
+        :param float delta_time: The time step to update by in seconds.
+        :param Optional[Iterable[str]] names:
+            An iterable of sprite list names to update, such as a list.
         """
         if names:
             for name in names:
