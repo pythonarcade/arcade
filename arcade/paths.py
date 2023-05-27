@@ -330,10 +330,6 @@ def has_line_of_sight(observer: Point,
     """
     Determine if we have line of sight between two points.
 
-    NOTE: Try to make sure that spatial hashing is enabled
-    on the wall SpriteList or this will be very slow.
-    NOTE: Make sure max_distance is positive.
-
     :param Point observer: Start position
     :param Point target: End position position
     :param SpriteList walls: List of all blocking sprites
@@ -347,6 +343,8 @@ def has_line_of_sight(observer: Point,
 
     :return: Whether or not oberver to target is blocked by any wall in walls
     """
+    if max_distance <= 0:
+        raise ValueError("max_distance must be greater than zero")
     distance = get_distance(observer[0], observer[1],
                             target[0], target[1])
     steps = int(distance // check_resolution)
