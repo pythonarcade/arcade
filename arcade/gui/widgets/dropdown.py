@@ -62,7 +62,7 @@ class UIDropdown(UILayout):
 
         # Setup button showing value
         self._default_button = UIFlatButton(
-            text=self._value, width=self.width, height=self.height
+            text=self._value or "", width=self.width, height=self.height
         )
 
         self._default_button.on_click = self._on_button_click  # type: ignore
@@ -103,24 +103,24 @@ class UIDropdown(UILayout):
         active_style["normal"]["bg"] = (55, 66, 81)
 
         for option in self._options:
-            if option == self.DIVIDER:
+            if option is None:  # UIDropdown.DIVIDER = None
                 self._layout.add(
                     UIWidget(width=self.width, height=2).with_background(
                         color=arcade.color.GRAY
                     )
                 )
                 continue
-
-            button = self._layout.add(
-                UIFlatButton(
-                    text=option, # type: ignore  # is definitely a string
-                    width=self.width,
-                    height=self.height,
-                    style=active_style
-                    if self.value == option
-                    else UIFlatButton.DEFAULT_STYLE,
+            else:
+                button = self._layout.add(
+                    UIFlatButton(
+                        text=option,
+                        width=self.width,
+                        height=self.height,
+                        style=active_style
+                        if self.value == option
+                        else UIFlatButton.DEFAULT_STYLE,
+                    )
                 )
-            )
             button.on_click = self._on_option_click
 
     def _find_ui_manager(self):
