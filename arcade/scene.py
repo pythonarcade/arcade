@@ -46,11 +46,21 @@ class Scene:
 
     def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
         """
-        Remove the SpriteList from `_sprite_lists` and `_name_mapping`.
+        Remove a sprite list from this scene by its index, name, or instance value.
 
-        :param Union[int, str, SpriteList] sprite_list: which SpriteList to delete - can
-        be the index of the SpriteList in `_sprite_lists`, the name of the SpriteList or
-        the SpriteList object.
+        .. tip:: Use a more specific method when speed is important!
+
+                 This method uses :py:func:`isinstance`, which can be slow.
+
+        Consider the following alternatives:
+
+        * :py:meth:`.remove_sprite_list_by_index`
+        * :py:meth:`.remove_sprite_list_by_name`
+        * :py:meth:`.remove_sprite_list_by_object`
+
+        :param Union[int, str, SpriteList] sprite_list:
+            The index, name, or :py:class:`~arcade.SpriteList` instance to remove from
+            this scene.
         """
         if isinstance(sprite_list, int):
             self.remove_sprite_list_by_index(sprite_list)
