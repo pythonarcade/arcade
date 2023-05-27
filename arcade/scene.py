@@ -25,11 +25,12 @@ class Scene:
     with single calls. It also provides convenience methods, but some of them
     trade execution speed for convenience.
 
-    * Support for python keywords such as ``in``, ``del``, as well as :py:func:`len`
-    * Fine-grained but slow convenience methods for adding, deleting, and reordering
-      sprites and sprite lists
+    * Fine-grained convenience methods for adding, deleting, and reordering
+      sprite lists
     * :py:meth:`.from_tilemap`, which creates a new scene from a
       :py:class:`~arcade.tilemap.TileMap` already loaded from tiled data
+    * Flexible but slow convenience methods & support for python keywords such
+      as ``in``, ``del``
 
     For an example of how to use this class, see :ref:`platformer_part_three`.
     """
