@@ -19,10 +19,19 @@ __all__ = ["Scene"]
 
 class Scene:
     """
-    Class that represents a `scene` object. Most games will use Scenes to render their Sprites.
-    For examples on how to use this class, see:
-    https://api.arcade.academy/en/latest/tutorials/views/index.html
+    Uses :py:class:`~arcade.SpriteList` instances as layers, allowing bulk updates & drawing.
 
+    The primary use of this class is to update or draw multiple sprite lists
+    with single calls. It also provides convenience methods, but some of them
+    trade execution speed for convenience.
+
+    * Support for python keywords such as ``in``, ``del``, as well as :py:func:`len`
+    * Fine-grained but slow convenience methods for adding, deleting, and reordering
+      sprites and sprite lists
+    * :py:meth:`.from_tilemap`, which creates a new scene from a
+      :py:class:`~arcade.tilemap.TileMap` already loaded from tiled data
+
+    For an example of how to use this class, see :ref:`platformer_part_three`.
     """
 
     def __init__(self) -> None:
