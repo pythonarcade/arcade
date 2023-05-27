@@ -23,18 +23,18 @@ __all__ = ["Scene"]
 
 class Scene:
     """
-    Uses :py:class:`~arcade.SpriteList` instances as layers, allowing bulk updates & drawing.
+    Stores :py:class:`~arcade.SpriteList`s as named layers, allowing bulk updates & drawing.
 
-    The primary use of this class is to update or draw multiple sprite lists
-    with single calls. It also provides convenience methods, but some of them
-    trade execution speed for convenience.
+    In addition to allowing you to update or draw multiple sprite lists
+    with one call, this class also provides convenience methods:
 
-    * Fine-grained convenience methods for adding, deleting, and reordering
-      sprite lists
+    * :py:meth:`.add_sprite` to allow adding sprites to layers dynamically
     * :py:meth:`.from_tilemap`, which creates a new scene from a
       :py:class:`~arcade.tilemap.TileMap` already loaded from tiled data
-    * Flexible but slow convenience methods & support for python keywords such
-      as ``in``, ``del``
+    * Fine-grained convenience methods for adding, deleting, and reordering
+      sprite lists
+    * Flexible but slow convenience methods & support for the ``in`` & ``del``
+      Python keywords.
 
     For an example of how to use this class, see :ref:`platformer_part_three`.
     """
