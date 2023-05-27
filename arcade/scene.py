@@ -254,7 +254,7 @@ class Scene:
         after: str,
     ) -> None:
         """
-        Move a given SpriteList in the scene to after another given SpriteList.
+        Move a given SpriteList in the scene to be after another given SpriteList.
 
         This will adjust the render order so that the SpriteList specified by `name`
         is placed after the one specified by `after`.
@@ -278,9 +278,7 @@ class Scene:
         index: int
     ) -> None:
         """
-        Remove a SpriteList by its index.
-
-        This function serves to completely remove the SpriteList from the Scene.
+        Remove a SpriteList from the scene by its index in the draw order.
 
         :param int index: The index of the SpriteList to remove.
         """
@@ -291,9 +289,10 @@ class Scene:
         name: str,
     ) -> None:
         """
-        Remove a SpriteList by its name.
+        Remove a SpriteList from the scene by its name.
 
-        This function serves to completely remove the SpriteList from the Scene.
+        A :py:class:`KeyError` will be raised if the SpriteList is not
+        in the scene.
 
         :param str name: The name of the SpriteList to remove.
         """
@@ -303,9 +302,10 @@ class Scene:
 
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
         """
-        Remove a SpriteList from the Scene.
+        Remove the passed SpriteList instance from the Scene.
 
-        This function serves to completely remove the SpriteList from the Scene.
+        A :py:class:`ValueError` will be raised if the passed sprite
+        list is not in the scene.
 
         :param SpriteList sprite_list: The SpriteList to remove.
         """
