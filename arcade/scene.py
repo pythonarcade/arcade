@@ -6,7 +6,7 @@ a name, as well as control the draw order. In addition it provides a
 helper function to create a Scene directly from a TileMap object.
 """
 
-from typing import Dict, List, Optional, Union, Iterable
+from typing import Dict, List, Optional, Union, Iterable, Tuple
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
@@ -387,31 +387,59 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.update_animation(delta_time)
 
-    def draw(self, names: Optional[List[str]] = None, **kwargs) -> None:
+    def draw(
+        self,
+        names: Optional[Iterable[str]] = None,
+        filter: Optional[int] = None,
+        pixelated: bool = False,
+        blend_function: Optional[Union[Tuple[int, int], Tuple[int, int, int, int]]] = None,
+        **kwargs
+    ) -> None:
         """
-        Draw the Scene.
+        Call :py:meth:`~arcade.SpriteList.draw` on the scene's sprite lists.
 
-        If `names` parameter is provided then only the specified SpriteLists
-        will be drawn. They will be drawn in the order that the names in the
-        list were arranged. If `names` is not provided, then every SpriteList
-        in the scene will be drawn according the order of the main _sprite_lists
-        attribute of the Scene.
+        By default, this method calls :py:meth:`~arcade.SpriteList.draw`
+        on each sprite list in the scene in the default draw order.
 
-        :param Optional[List[str]] names: A list of names of SpriteLists to draw.
-        :param filter: Optional parameter to set OpenGL filter, such as
-                       `gl.GL_NEAREST` to avoid smoothing.
-        :param blend_function: Optional parameter to set the OpenGL blend function
-            used for drawing the sprite list, such as `arcade.Window.ctx.BLEND_ADDITIVE`
-            or `arcade.Window.ctx.BLEND_DEFAULT`
+        You can limit and reorder the draw calls with the ``names``
+        argument by passing a list of names in the scene. The sprite
+        lists will be drawn in the order of the passed iterable. If a
+        name is not in the scene, a :py:class:`KeyError` will be raised.
+
+        The other named keyword arguments are the same as those of
+        :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>`. The
+        ``**kwargs`` option is for advanced users who have
+        subclassed :py:class:`~arcade.SpriteList`.
+
+        :param Optional[Iterable[str]] names: An iterable of sprite list
+            names to draw from lowest index to highest.
+        :param Optional[int] filter: Optional parameter to set OpenGL filter, such as
+           ``gl.GL_NEAREST`` to avoid smoothing.
+        :param bool pixelated: ``True`` for pixel art and ``False`` for
+            smooth scaling.
+        :param Optional[Union[Tuple[int, int], Tuple[int, int, int, int]]] blend_function:
+            Use the specified OpenGL blend function while drawing the
+            sprite list, such as ``arcade.Window.ctx.BLEND_ADDITIVE``
+            or ``arcade.Window.ctx.BLEND_DEFAULT``.
         """
 
         if names:
             for name in names:
-                self._name_mapping[name].draw(**kwargs)
+                self._name_mapping[name].draw(
+                    filter=filter,
+                    pixelated=pixelated,
+                    blend_function=blend_function,
+                    **kwargs
+                )
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.draw(**kwargs)
+            sprite_list.draw(
+                filter=filter,
+                pixelated=pixelated,
+                blend_function=blend_function,
+                **kwargs
+            )
 
     def draw_hit_boxes(
         self,
