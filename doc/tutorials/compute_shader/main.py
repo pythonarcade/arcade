@@ -103,7 +103,7 @@ class MyWindow(arcade.Window):
             fragment_shader=fragment_shader_source,
         )
 
-        # --- Create FPS graph
+        # --- Create the FPS graph
 
         # Enable timings for the performance graph
         arcade.enable_timings()
