@@ -87,9 +87,13 @@ class Scene:
 
     def get_sprite_list(self, name: str) -> SpriteList:
         """
-        Helper function to retrieve a `SpriteList` by name.
+        Retrieve a sprite list by name.
 
-        The name mapping can be accessed directly, this is just here for ease of use.
+        It is also possible to access sprite lists the following ways:
+
+        * ``scene_instance[name]``
+        * directly accessing ``scene_instance._name_mapping``, although this may
+          get flagged by linters as bad style.
 
         :param str name: The name of the `SpriteList` to retrieve.
         """
