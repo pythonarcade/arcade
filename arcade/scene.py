@@ -75,10 +75,8 @@ class Scene:
         """
         Create a new Scene from a `TileMap` object.
 
-        This will look at all the SpriteLists in a TileMap object and create
-        a Scene with them. This will automatically keep SpriteLists in the same
-        order as they are defined in the TileMap class, which is the order that
-        they are defined within Tiled.
+        The SpriteLists will use the layer names and ordering as defined in the
+        Tiled file.
 
         :param TileMap tilemap: The `TileMap` object to create the scene from.
         """
