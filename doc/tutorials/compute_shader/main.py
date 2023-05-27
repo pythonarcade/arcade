@@ -37,10 +37,18 @@ class MyWindow(arcade.Window):
         # Number of stars to move
         self.num_stars = NUM_STARS
 
-        # This has something to do with how we break the calculations up
-        # and parallelize them.
+        # Compute shaders use groups to parallelize execution.
+        # You don't need to understand how this works yet, but the
+        # values below should serve as reasonable defaults. Later, we'll
+        # preprocess the shader source by replacing the templating token
+        # with its corresponding value.
         self.group_x = 256
         self.group_y = 1
+
+        self.compute_shader_defines = {
+            "COMPUTE_SIZE_X": self.group_x,
+            "COMPUTE_SIZE_Y": self.group_y
+        }
 
         # --- Create buffers
 
@@ -71,23 +79,24 @@ class MyWindow(arcade.Window):
             mode=self.ctx.POINTS,
         )
 
-        # --- Create shaders
+        # --- Create our compute shader
 
-        # Load in the shader source code safely & auto-close files
+        # Load in the raw source code safely & auto-close the file
         compute_shader_source = Path("shaders/compute_shader.glsl").read_text()
+
+        # Preprocess it by replacing each define with its value as a string
+        for templating_token, value in self.compute_shader_defines.items():
+            compute_shader_source = compute_shader_source.replace(templating_token, str(value))
+
+        self.compute_shader = self.ctx.compute_shader(source=compute_shader_source)
+
+        # --- Create the visualization shaders
+
         vertex_shader_source = Path("shaders/vertex_shader.glsl").read_text()
         fragment_shader_source = Path("shaders/fragment_shader.glsl").read_text()
         geometry_shader_source = Path("shaders/geometry_shader.glsl").read_text()
 
-        # Create our compute shader.
-        # Search/replace to set up our compute groups
-        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_X",
-                                                              str(self.group_x))
-        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_Y",
-                                                              str(self.group_y))
-        self.compute_shader = self.ctx.compute_shader(source=compute_shader_source)
-
-        # Program for visualizing the stars
+        # Create the complete shader program which will draw the stars
         self.program = self.ctx.program(
             vertex_shader=vertex_shader_source,
             geometry_shader=geometry_shader_source,
