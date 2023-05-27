@@ -66,12 +66,12 @@ class MyWindow(arcade.Window):
         # which is used as the current value to write to.
 
         # ssbo = shader storage buffer object
-        self.ssbo_initial = self.ctx.buffer(data=self.gen_initial_data())
-        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_initial.size)
+        self.ssbo_previous = self.ctx.buffer(data=self.gen_initial_data())
+        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_previous.size)
 
         # vao = vertex array object
-        self.vao_initial = self.ctx.geometry(
-            [BufferDescription(self.ssbo_initial, buffer_format, attributes)],
+        self.vao_previous = self.ctx.geometry(
+            [BufferDescription(self.ssbo_previous, buffer_format, attributes)],
             mode=self.ctx.POINTS,
         )
         self.vao_current = self.ctx.geometry(
@@ -123,7 +123,7 @@ class MyWindow(arcade.Window):
         self.ctx.enable(self.ctx.BLEND)
 
         # Bind buffers
-        self.ssbo_initial.bind_to_storage_buffer(binding=0)
+        self.ssbo_previous.bind_to_storage_buffer(binding=0)
         self.ssbo_current.bind_to_storage_buffer(binding=1)
 
         # If you wanted, you could set input variables for compute shader
@@ -141,8 +141,8 @@ class MyWindow(arcade.Window):
         # Swap the buffer pairs.
         # The buffers for the current state become the initial state,
         # and the data of this frame's initial state will be overwritten.
-        self.ssbo_initial, self.ssbo_current = self.ssbo_current, self.ssbo_initial
-        self.vao_initial, self.vao_current = self.vao_current, self.vao_initial
+        self.ssbo_previous, self.ssbo_current = self.ssbo_current, self.ssbo_previous
+        self.vao_previous, self.vao_current = self.vao_current, self.vao_previous
 
         # Draw the graphs
         self.perf_graph_list.draw()
