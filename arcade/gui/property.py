@@ -50,7 +50,7 @@ class Property(Generic[P]):
         self.default_factory = default_factory
         self.obs: WeakKeyDictionary[Any, _Obs] = WeakKeyDictionary()
 
-    def _get_obs(self, instance: Any) -> _Obs:
+    def _get_obs(self, instance) -> _Obs:
         obs = self.obs.get(instance)
         if obs is None:
             obs = _Obs(self.default_factory(self, instance))
@@ -61,13 +61,13 @@ class Property(Generic[P]):
         obs = self._get_obs(instance)
         return obs.value
 
-    def set(self, instance: Any, value: Any) -> None:
+    def set(self, instance, value) -> None:
         obs = self._get_obs(instance)
         if obs.value != value:
             obs.value = value
             self.dispatch(instance, value)
 
-    def dispatch(self, instance: Any, value: Any) -> None:
+    def dispatch(self, instance, value) -> None:
         obs = self._get_obs(instance)
         for listener in obs.listeners:
             try:
@@ -79,7 +79,7 @@ class Property(Generic[P]):
                 )
                 traceback.print_exc()
 
-    def bind(self, instance: Any, callback: Callable) -> None:
+    def bind(self, instance, callback: Callable) -> None:
         obs = self._get_obs(instance)
         # Instance methods are bound methods, which can not be referenced by normal `ref()`
         # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
@@ -93,7 +93,7 @@ class Property(Generic[P]):
             return self # type: ignore
         return self.get(instance)
 
-    def __set__(self, instance: Any, value: Any) -> None:
+    def __set__(self, instance, value) -> None:
         self.set(instance, value)
 
 
@@ -147,7 +147,7 @@ class _ObservableDict(dict):
         dict.clear(self)
         self.dispatch()
 
-    def pop(self, *largs: Any) -> Any:
+    def pop(self, *largs):
         result = dict.pop(self, *largs)
         self.dispatch()
         return result
@@ -157,7 +157,7 @@ class _ObservableDict(dict):
         self.dispatch()
         return result
 
-    def setdefault(self, *largs: Any) -> None:
+    def setdefault(self, *largs) -> None:
         dict.setdefault(self, *largs)
         self.dispatch()
 
@@ -175,14 +175,14 @@ class DictProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableDict)
 
-    def set(self, instance: Any, value: Dict) -> None:
+    def set(self, instance, value: Dict) -> None:
         value = _ObservableDict(self, instance, value)
         super().set(instance, value)
 
 
 class _ObservableList(list):
     # Internal class to observe changes inside a native python list.
-    def __init__(self, prop: Property, instance: Any, *largs: List) -> None:
+    def __init__(self, prop: Property, instance, *largs: List) -> None:
         self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
@@ -190,11 +190,11 @@ class _ObservableList(list):
     def dispatch(self) -> None:
         self.prop.dispatch(self.obj(), self)
 
-    def __setitem__(self, key, value: Any) -> None:
+    def __setitem__(self, key, value) -> None:
         list.__setitem__(self, key, value)
         self.dispatch()
 
-    def __delitem__(self, key: Any) -> None:
+    def __delitem__(self, key) -> None:
         list.__delitem__(self, key)
         self.dispatch()
 
@@ -208,7 +208,7 @@ class _ObservableList(list):
         self.dispatch()
         return self
 
-    def append(self, *largs: Any) -> None:
+    def append(self, *largs) -> None:
         list.append(self, *largs)
         self.dispatch()
 
@@ -216,15 +216,15 @@ class _ObservableList(list):
         list.clear(self)
         self.dispatch()
 
-    def remove(self, *largs: Any) -> None:
+    def remove(self, *largs) -> None:
         list.remove(self, *largs)
         self.dispatch()
 
-    def insert(self, *largs: Any) -> None:
+    def insert(self, *largs) -> None:
         list.insert(self, *largs)
         self.dispatch()
 
-    def pop(self, *largs: SupportsIndex) -> Any:
+    def pop(self, *largs: SupportsIndex) :
         result = list.pop(self, *largs)
         self.dispatch()
         return result
@@ -251,6 +251,6 @@ class ListProperty(Property):
     def __init__(self) -> None:
         super().__init__(default_factory=_ObservableList)
 
-    def set(self, instance: Any, value: List) -> None:
+    def set(self, instance, value: List) -> None:
         value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)
