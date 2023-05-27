@@ -40,7 +40,7 @@ class Scene:
 
     def __len__(self) -> int:
         """
-        Get length of `_sprite_lists`.
+        Return the number of sprite lists in this scene.
         """
         return len(self._sprite_lists)
 
