@@ -622,7 +622,7 @@ def create_text_texture(
         align=align,
         bold=bold,
         italic=italic,
-        multiline=multiline,
+        multiline=True,
     )
     lines = _label._get_lines()
     left = _label._get_left()
