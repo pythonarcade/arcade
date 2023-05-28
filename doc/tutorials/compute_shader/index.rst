@@ -64,14 +64,19 @@ Visualization Shaders
 
 Now that we have the data, we need to be able to visualize it. We'll do
 it by applying vertex, geometry, and fragment shaders to convert the
-data in the SSBO into pixels. The flow of data will look like this:
+data in the SSBO into pixels. For each star's 12 floats in the array, the
+following flow of data will take place:
 
 .. image:: shaders.svg
 
+Vertex Shader
+^^^^^^^^^^^^^
 
-The **vertex shader** doesn't do much more than separate out the radius
-variable from the group of floats used to store position. It gets data
-from the SSBO in the following way:
+In this tutorial, the vertex shader will be run for each star's 12 float
+long stretch of raw padded data in ``self.ssbo_current``. Each execution
+will output clean typed data to an instance of the geometry shader.
+
+Data is read in as follows:
 
 * The x, y, and radius of each star are accessed via ``in_vertex``
 * The floating point RGBA color of the star, via ``in_color``
@@ -81,13 +86,26 @@ from the SSBO in the following way:
     :caption: shaders/vertex_shader.glsl
     :linenos:
 
+The variables below are then passed as inputs to the geometry shader:
+
+* ``vertex_pos``
+* ``vertex_color``
+* ``vertex_radius``
+
+Geometry Shader
+^^^^^^^^^^^^^^^
+
 The **geometry shader** converts the single point (which we can't render) to
-a square, which we can render. It changes the one point, to four points of a quad.
+a square, which we can render. It converts a single point to a quad made of
+four points centered on the input point.
 
 .. literalinclude:: shaders/geometry_shader.glsl
     :language: glsl
     :caption: shaders/geometry_shader.glsl
     :linenos:
+
+Fragment Shader
+^^^^^^^^^^^^^^^
 
 The **fragment shader** runs for each pixel. It produces the soft glow effect of the
 star, and rounds off the quad into a circle.
