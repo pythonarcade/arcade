@@ -23,20 +23,58 @@ There are three major parts to this program:
 * The visualization shaders, which let us see the data.
 * The compute shader, which moves everything.
 
+Buffers
+-------
+
+We need a place to store the data we'll visualize. To do so, we'll create
+two **Shader Storage Buffer Objects** (SSBOs) of floating point numbers from
+within our Python code. One will hold the old position, and the other will be
+used to store the newly calculated star positions.
+
+Each buffer must be able to store the following for each star:
+
+1. The x, y, and radius of each star stored
+2. The velocity of the star, which will be unused by the visualization
+3. The floating point RGBA color of the star
+
+
+Generating Aligned Data
+^^^^^^^^^^^^^^^^^^^^^^^
+
+To avoid issues with GPU memory alignment quirks, we'll use the function
+below to generate well-aligned data ready to load into the SSBO. The
+docstrings & comments explain why in greater detail:
+
+.. literalinclude:: main.py
+    :language: python
+    :caption:  Generating Well-Aligned Data to Load onto the GPU
+    :lines: 24-63
+
+Allocating the Buffers
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: main.py
+    :language: python
+    :caption: Allocating the Buffers & Loading the Data onto the GPU
+    :lines: 87-109
+
+
 Visualization Shaders
 ---------------------
 
-There are multiple visualization shaders, which operate in this order:
+Now that we have the data, we need to be able to visualize it. We'll do
+it by applying vertex, geometry, and fragment shaders to convert the
+data in the SSBO into pixels. The flow of data will look like this:
 
 .. image:: shaders.svg
 
-The Python program creates a **shader storage buffer object** (SSBO) of
-floating point numbers. This buffer
-has the x, y, z and radius of each star stored in ``in_vertex``. It also
-stores the color in ``in_color``.
 
 The **vertex shader** doesn't do much more than separate out the radius
-variable from the group of floats used to store position.
+variable from the group of floats used to store position. It gets data
+from the SSBO in the following way:
+
+* The x, y, and radius of each star are accessed via ``in_vertex``
+* The floating point RGBA color of the star, via ``in_color``
 
 .. literalinclude:: shaders/vertex_shader.glsl
     :language: glsl
