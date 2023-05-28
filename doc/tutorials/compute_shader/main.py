@@ -156,6 +156,12 @@ class MyWindow(arcade.Window):
             Although generators are usually a way to avoid storing all
             data in memory at once, this example uses one as a way to
             legibly describe the layout of data in the buffer.
+
+            The data includes padding for the following reasons:
+
+            1. GPUs expect SSBO data to align to multiples 4
+            2. GLSLS's vec3 type is actually a vec4 with compiler-side restrictions
+            3. We avoid misleading the user by using vec4 consistently instead
             """
             for i in range(self.num_stars):
                 # Position/radius
