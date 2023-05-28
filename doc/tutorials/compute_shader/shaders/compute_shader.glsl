@@ -54,8 +54,9 @@ void main()
         float dist = distance(In.stars[i].pos.xyzw.xy, p.xy);
         float distanceSquared = dist * dist;
 
-        // If stars get too close the fling into never-never land.
-        // So use a minimum distance
+        // If distance is too small, extremely high forces can result and
+        // fling the star into escape velocity and forever off the screen.
+        // Using a reasonable minimum distance to prevents this.
         float minDistance = 0.02;
         float gravityStrength = 0.3;
         float simulationSpeed = 0.002;
