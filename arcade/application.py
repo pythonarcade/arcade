@@ -1133,9 +1133,9 @@ class View:
         """
         pass
 
-class SlotsView(View):
+class SlotsView:
     """
-    Wrapper to View that adds __slots__
+    View that adds __slots__
 
     NOTE: Running into memory issues from a large number of views
     suggests potential underlying issues with a project's design
@@ -1150,4 +1150,198 @@ class SlotsView(View):
     def __init__(self,
                 window: Optional[Window] = None
                 ) -> None:
-        super().__init__(window)
+        self.window = arcade.get_window() if window is None else window
+        self.key: Optional[int] = None
+        self._section_manager: Optional[SectionManager] = None
+
+    @property
+    def section_manager(self) -> SectionManager:
+        """ lazy instantiation of the section manager """
+        if self._section_manager is None:
+            self._section_manager = SectionManager(self)
+        return self._section_manager
+
+    @property
+    def has_sections(self) -> bool:
+        """ Return if the View has sections """
+        if self._section_manager is None:
+            return False
+        else:
+            return self.section_manager.has_sections
+
+    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+        """
+        Adds a section to the view Section Manager.
+
+        :param section: the section to add to this section manager
+        :param at_index: inserts the section at that index for event capture and update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
+        """
+        self.section_manager.add_section(section, at_index, at_draw_order)
+
+    def clear(
+        self,
+        color: Optional[RGBA255OrNormalized] = None,
+        normalized: bool = False,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
+    ):
+        """Clears the View's Window with the configured background color
+        set through :py:attr:`arcade.Window.background_color`.
+
+        :param color: (Optional) override the current background color
+            with one of the following:
+
+            1. A :py:class:`~arcade.types.Color` instance
+            2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
+            3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
+
+        :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
+        :param Tuple[int, int, int, int] viewport: The viewport range to clear
+        """
+        self.window.clear(color, normalized, viewport)
+
+    def on_update(self, delta_time: float):
+        """To be overridden"""
+        pass
+
+    def on_draw(self):
+        """Called when this view should draw"""
+        pass
+
+    def on_show(self):
+        """Deprecated. Use :py:meth:`~arcade.View.on_show_view` instead."""
+        pass
+
+    def on_show_view(self):
+        """
+        Called once when the view is shown.
+
+        .. seealso:: :py:meth:`~arcade.View.on_hide_view`
+        """
+        pass
+
+    def on_hide_view(self):
+        """Called once when this view is hidden."""
+        pass
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        """
+        Override this function to add mouse functionality.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
+        """
+        pass
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param int x: x position of the mouse
+        :param int y: y position of the mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              active during this event. See :ref:`keyboard_modifiers`.
+        """
+        pass
+
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int dx: Change in x since the last time this method was called
+        :param int dy: Change in y since the last time this method was called
+        :param int _buttons: Which button is pressed
+        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              active during this event. See :ref:`keyboard_modifiers`.
+        """
+        self.on_mouse_motion(x, y, dx, dy)
+
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              active during this event. See :ref:`keyboard_modifiers`.
+        """
+        pass
+
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+        """
+        User moves the scroll wheel.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        :param int scroll_x: ammout of x pixels scrolled since last call
+        :param int scroll_y: ammout of y pixels scrolled since last call
+        """
+        pass
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """
+        Override this function to add key press functionality.
+
+        :param int symbol: Key that was hit
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              active during this event. See :ref:`keyboard_modifiers`.
+        """
+        try:
+            self.key = symbol
+        except AttributeError:
+            pass
+
+    def on_key_release(self, _symbol: int, _modifiers: int):
+        """
+        Override this function to add key release functionality.
+
+        :param int _symbol: Key that was hit
+        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                               active during this event. See :ref:`keyboard_modifiers`.
+        """
+        try:
+            self.key = None
+        except AttributeError:
+            pass
+
+    def on_resize(self, width: int, height: int):
+        """
+        Called when the window is resized while this view is active.
+        :py:meth:`~arcade.Window.on_resize` is also called separately.
+        By default this method does nothing and can be overridden to
+        handle resize logic.
+        """
+        pass
+
+    def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse was moved into the window.
+        This event will not be triggered if the mouse is currently being
+        dragged.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        """
+        pass
+
+    def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse was moved outside of the window.
+        This event will not be triggered if the mouse is currently being
+        dragged. Note that the coordinates of the mouse pointer will be
+        outside of the window rectangle.
+
+        :param int x: x position of mouse
+        :param int y: y position of mouse
+        """
+        pass
