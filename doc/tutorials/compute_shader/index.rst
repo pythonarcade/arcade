@@ -118,8 +118,8 @@ star's quad.
     :linenos:
 
 
-Compute Shaders
----------------
+Compute Shader
+--------------
 
 Now that we have a way to display data, we should update it.
 
