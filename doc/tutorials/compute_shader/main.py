@@ -1,5 +1,5 @@
 """
-Compute shader with buffers
+N-Body Gravity with Compute Shaders & Buffers
 """
 import random
 from array import array
@@ -63,7 +63,7 @@ def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -
     return array('f', _data_generator())
 
 
-class MyWindow(arcade.Window):
+class NBodyGravityWindow(arcade.Window):
 
     def __init__(self):
         # Ask for OpenGL context supporting version 4.3 or greater when
@@ -71,7 +71,7 @@ class MyWindow(arcade.Window):
         # support.
         super().__init__(
             WINDOW_WIDTH, WINDOW_HEIGHT,
-            "Star Gravity with a Compute Shader",
+            "N-Body Gravity with Compute Shaders & Buffers",
             gl_version=(4, 3),
             resizable=False
         )
@@ -196,5 +196,5 @@ class MyWindow(arcade.Window):
 
 
 if __name__ == "__main__":
-    app = MyWindow()
+    app = NBodyGravityWindow()
     arcade.run()
