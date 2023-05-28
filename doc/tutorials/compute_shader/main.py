@@ -78,10 +78,52 @@ class NBodyGravityWindow(arcade.Window):
         # Attempt to put the window in the center of the screen.
         self.center_window()
 
-        # --- Class instance variables
+        # --- Create buffers
 
-        # Number of stars to move
-        self.num_stars = NUM_STARS
+        # Create pairs of buffers for the compute & visualization shaders.
+        # We will swap which buffer instance is the initial value and
+        # which is used as the current value to write to.
+
+        # ssbo = shader storage buffer object
+        self.ssbo_previous = self.ctx.buffer(data=gen_initial_data(self.get_size()))
+        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_previous.size)
+
+        # vao = vertex array object
+        # Format string describing how to interpret the SSBO buffer data.
+        # 4f = position and size -> x, y, z, radius
+        # 4x4 = Four floats used for calculating velocity. Not needed for visualization.
+        # 4f = color -> rgba
+        buffer_format = "4f 4x4 4f"
+
+        # Attribute variable names for the vertex shader
+        attributes = ["in_vertex", "in_color"]
+
+        self.vao_previous = self.ctx.geometry(
+            [BufferDescription(self.ssbo_previous, buffer_format, attributes)],
+            mode=self.ctx.POINTS,
+        )
+        self.vao_current = self.ctx.geometry(
+            [BufferDescription(self.ssbo_current, buffer_format, attributes)],
+            mode=self.ctx.POINTS,
+        )
+
+        # --- Create the visualization shaders
+
+        vertex_shader_source = Path("shaders/vertex_shader.glsl").read_text()
+        fragment_shader_source = Path("shaders/fragment_shader.glsl").read_text()
+        geometry_shader_source = Path("shaders/geometry_shader.glsl").read_text()
+
+        # Create the complete shader program which will draw the stars
+        self.program = self.ctx.program(
+            vertex_shader=vertex_shader_source,
+            geometry_shader=geometry_shader_source,
+            fragment_shader=fragment_shader_source,
+        )
+
+        # --- Create our compute shader
+
+        # Load in the raw source code safely & auto-close the file
+        compute_shader_source = Path("shaders/compute_shader.glsl").read_text()
 
         # Compute shaders use groups to parallelize execution.
         # You don't need to understand how this works yet, but the
@@ -96,58 +138,11 @@ class NBodyGravityWindow(arcade.Window):
             "COMPUTE_SIZE_Y": self.group_y
         }
 
-        # --- Create buffers
-
-        # Format of the buffer data.
-        # 4f = position and size -> x, y, z, radius
-        # 4x4 = Four floats used for calculating velocity. Not needed for visualization.
-        # 4f = color -> rgba
-        buffer_format = "4f 4x4 4f"
-
-        # Attribute variable names for the vertex shader
-        attributes = ["in_vertex", "in_color"]
-
-        # Create pairs of buffers for the compute & visualization shaders.
-        # We will swap which buffer instance is the initial value and
-        # which is used as the current value to write to.
-
-        # ssbo = shader storage buffer object
-        self.ssbo_previous = self.ctx.buffer(data=gen_initial_data(self.get_size()))
-        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_previous.size)
-
-        # vao = vertex array object
-        self.vao_previous = self.ctx.geometry(
-            [BufferDescription(self.ssbo_previous, buffer_format, attributes)],
-            mode=self.ctx.POINTS,
-        )
-        self.vao_current = self.ctx.geometry(
-            [BufferDescription(self.ssbo_current, buffer_format, attributes)],
-            mode=self.ctx.POINTS,
-        )
-
-        # --- Create our compute shader
-
-        # Load in the raw source code safely & auto-close the file
-        compute_shader_source = Path("shaders/compute_shader.glsl").read_text()
-
-        # Preprocess it by replacing each define with its value as a string
+        # Preprocess the source by replacing each define with its value as a string
         for templating_token, value in self.compute_shader_defines.items():
             compute_shader_source = compute_shader_source.replace(templating_token, str(value))
 
         self.compute_shader = self.ctx.compute_shader(source=compute_shader_source)
-
-        # --- Create the visualization shaders
-
-        vertex_shader_source = Path("shaders/vertex_shader.glsl").read_text()
-        fragment_shader_source = Path("shaders/fragment_shader.glsl").read_text()
-        geometry_shader_source = Path("shaders/geometry_shader.glsl").read_text()
-
-        # Create the complete shader program which will draw the stars
-        self.program = self.ctx.program(
-            vertex_shader=vertex_shader_source,
-            geometry_shader=geometry_shader_source,
-            fragment_shader=fragment_shader_source,
-        )
 
         # --- Create the FPS graph
 
