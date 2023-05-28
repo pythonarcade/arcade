@@ -4,7 +4,7 @@ Compute shader with buffers
 import random
 from array import array
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Tuple
 
 import arcade
 from arcade.gl import BufferDescription
@@ -19,6 +19,48 @@ GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
 
 NUM_STARS = 4000
+
+
+def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -> array:
+    """
+    Generate an :py:class:`~array.array` of randomly positioned star data.
+
+    Some of this data is wasted as padding because:
+
+    1. GPUs expect SSBO data to be aligned to multiples of 4
+    2. GLSL's vec3 is actually a vec4 with compiler-side restrictions,
+       so we have to use 4-length vectors anyway.
+
+    :param screen_size: A (width, height) of the area to generate stars in
+    :param num_stars: How many stars to generate
+    :return: an array of star position data
+    """
+    width, height = screen_size
+
+    def _data_generator() -> Generator[float, None, None]:
+        """Inner generator function used to illustrate memory layout"""
+
+        for i in range(num_stars):
+            # Position/radius
+            yield random.randrange(0, width)
+            yield random.randrange(0, height)
+            yield 0.0  # z (padding, unused by shaders)
+            yield 6.0
+
+            # Velocity (unused by visualization shaders)
+            yield 0.0
+            yield 0.0
+            yield 0.0  # vz (padding, unused by shaders)
+            yield 0.0  # vw (padding, unused by shaders)
+
+            # Color
+            yield random.uniform(0.5, 1.0)  # r
+            yield random.uniform(0.5, 1.0)  # g
+            yield random.uniform(0.5, 1.0)  # b
+            yield 1.0  # a
+
+    # Use the generator function to fill an array in RAM
+    return array('f', _data_generator())
 
 
 class MyWindow(arcade.Window):
@@ -66,7 +108,7 @@ class MyWindow(arcade.Window):
         # which is used as the current value to write to.
 
         # ssbo = shader storage buffer object
-        self.ssbo_previous = self.ctx.buffer(data=self.gen_initial_data())
+        self.ssbo_previous = self.ctx.buffer(data=gen_initial_data(self.get_size()))
         self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_previous.size)
 
         # vao = vertex array object
@@ -147,42 +189,6 @@ class MyWindow(arcade.Window):
         # Draw the graphs
         self.perf_graph_list.draw()
 
-    def gen_initial_data(self) -> array:
-
-        def _data_generator() -> Generator[float, None, None]:
-            """
-            A generator function yielding floats.
-
-            Although generators are usually a way to avoid storing all
-            data in memory at once, this example uses one as a way to
-            legibly describe the layout of data in the buffer.
-
-            The data includes padding for the following reasons:
-
-            1. GPUs expect SSBO data to align to multiples 4
-            2. GLSLS's vec3 type is actually a vec4 with compiler-side restrictions
-            3. We avoid misleading the user by using vec4 consistently instead
-            """
-            for i in range(self.num_stars):
-                # Position/radius
-                yield random.randrange(0, self.width)
-                yield random.randrange(0, self.height)
-                yield 0.0  # z (padding, unused by shaders)
-                yield 6.0
-
-                # Velocity (unused by visualization shaders)
-                yield 0.0
-                yield 0.0
-                yield 0.0  # vz (padding, unused by shaders)
-                yield 0.0  # vw (padding, unused by shaders)
-
-                # Color
-                yield random.uniform(0.5, 1.0)  # r
-                yield random.uniform(0.5, 1.0)  # g
-                yield random.uniform(0.5, 1.0)  # b
-                yield 1.0  # a
-
-        return array('f', _data_generator())
 
 
 if __name__ == "__main__":
