@@ -18,10 +18,15 @@ GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
 
-NUM_STARS = 4000
+NUM_STARS: int = 4000
+USE_COLORED_STARS: bool = True
 
 
-def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -> array:
+def gen_initial_data(
+        screen_size: Tuple[int, int],
+        num_stars: int = NUM_STARS,
+        use_color: bool = False
+) -> array:
     """
     Generate an :py:class:`~array.array` of randomly positioned star data.
 
@@ -33,9 +38,11 @@ def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -
 
     :param screen_size: A (width, height) of the area to generate stars in
     :param num_stars: How many stars to generate
+    :param use_color: Whether to generate white or randomized pastel stars
     :return: an array of star position data
     """
     width, height = screen_size
+    color_channel_min = 0.5 if use_color else 1.0
 
     def _data_generator() -> Generator[float, None, None]:
         """Inner generator function used to illustrate memory layout"""
@@ -54,9 +61,9 @@ def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -
             yield 0.0  # vw (padding, unused by shaders)
 
             # Color
-            yield random.uniform(0.5, 1.0)  # r
-            yield random.uniform(0.5, 1.0)  # g
-            yield random.uniform(0.5, 1.0)  # b
+            yield random.uniform(color_channel_min, 1.0)  # r
+            yield random.uniform(color_channel_min, 1.0)  # g
+            yield random.uniform(color_channel_min, 1.0)  # b
             yield 1.0  # a
 
     # Use the generator function to fill an array in RAM
@@ -85,7 +92,7 @@ class NBodyGravityWindow(arcade.Window):
         # which is used as the current value to write to.
 
         # ssbo = shader storage buffer object
-        initial_data = gen_initial_data(self.get_size())
+        initial_data = gen_initial_data(self.get_size(), use_color=USE_COLORED_STARS)
         self.ssbo_previous = self.ctx.buffer(data=initial_data)
         self.ssbo_current = self.ctx.buffer(data=initial_data)
 
