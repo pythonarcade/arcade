@@ -95,9 +95,9 @@ The variables below are then passed as inputs to the geometry shader:
 Geometry Shader
 ^^^^^^^^^^^^^^^
 
-The **geometry shader** converts a single point into a square which
-the GPU can render. It does this by adding four points centered on
-the input point.
+The **geometry shader** converts a single point into a quad, in this
+case a square, which the GPU can render. It does this by emitting four
+points centered on the input point.
 
 .. literalinclude:: shaders/geometry_shader.glsl
     :language: glsl
@@ -121,22 +121,29 @@ star's quad.
 Compute Shaders
 ---------------
 
-This program runs two buffers. We have an **input buffer**, with all our current data. We perform
-calculations on that data and write to the **output buffer**. We then swap those buffers for the
-next frame, where we use the output of the previous frame as the input to the next frame.
+Now that we have a way to display data, we should update it.
+
+We created pairs of buffers earlier. We will use one SSBO as an
+**input buffer** holding the previous frame's data, and another
+as our **output** buffer to write results to.
+
+We then swap our buffers each frame after drawing, using the output
+as the input of the next frame, and repeat the process until the program
+stops running.
 
 .. literalinclude:: shaders/compute_shader.glsl
     :language: glsl
     :caption: shaders/compute_shader.glsl
     :linenos:
 
-Python Program
---------------
+The Finished Python Program
+---------------------------
 
-Read through the code here, I've tried hard to explain all the parts in the comments.
+The code includes thorough docstrings and annotations explaining how it works.
 
 .. literalinclude:: main.py
     :caption: main.py
     :linenos:
 
-An expanded version of this, with support for 3D, is available at: https://github.com/pvcraven/n-body
+An expanded version of this tutorial whith support for 3D is available at:
+https://github.com/pvcraven/n-body
