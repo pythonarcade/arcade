@@ -95,9 +95,9 @@ The variables below are then passed as inputs to the geometry shader:
 Geometry Shader
 ^^^^^^^^^^^^^^^
 
-The **geometry shader** converts the single point (which we can't render) to
-a square, which we can render. It converts a single point to a quad made of
-four points centered on the input point.
+The **geometry shader** converts a single point into a square which
+the GPU can render. It does this by adding four points centered on
+the input point.
 
 .. literalinclude:: shaders/geometry_shader.glsl
     :language: glsl

@@ -8,10 +8,14 @@ uniform Projection {
     uniform mat4 matrix;
 } proj;
 
+
+// The outputs from the vertex shader are used as inputs
 in vec2 vertex_pos[];
 in float vertex_radius[];
 in vec4 vertex_color[];
 
+// These are used with EmitVertex to generate four points of
+// a quad centered around vertex_pos[0].
 out vec2 g_uv;
 out vec3 g_color;
 
@@ -37,6 +41,7 @@ void main() {
     g_uv = vec2(1, 0);
     EmitVertex();
 
+    // End geometry emmission
     EndPrimitive();
 }
 
