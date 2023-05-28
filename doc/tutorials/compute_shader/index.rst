@@ -28,8 +28,8 @@ Buffers
 
 We need a place to store the data we'll visualize. To do so, we'll create
 two **Shader Storage Buffer Objects** (SSBOs) of floating point numbers from
-within our Python code. One will hold the old position, and the other will be
-used to store the newly calculated star positions.
+within our Python code. One will hold the previous frame's star positions,
+and the other will be used to store calculate the next frame's positions.
 
 Each buffer must be able to store the following for each star:
 
