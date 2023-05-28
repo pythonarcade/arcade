@@ -66,12 +66,16 @@ def gen_initial_data(screen_size: Tuple[int, int], num_stars: int = NUM_STARS) -
 class MyWindow(arcade.Window):
 
     def __init__(self):
-        # Call parent constructor
-        # Ask for OpenGL 4.3 context, as we need that for compute shader support.
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT,
-                         "Star Gravity with a Compute Shader",
-                         gl_version=(4, 3),
-                         resizable=False)
+        # Ask for OpenGL context supporting version 4.3 or greater when
+        # calling the parent initializer to make sure we have compute shader
+        # support.
+        super().__init__(
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            "Star Gravity with a Compute Shader",
+            gl_version=(4, 3),
+            resizable=False
+        )
+        # Attempt to put the window in the center of the screen.
         self.center_window()
 
         # --- Class instance variables
