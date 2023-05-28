@@ -170,7 +170,7 @@ class MyWindow(arcade.Window):
                 yield 0.0  # z (padding, unused by shaders)
                 yield 6.0
 
-                # Velocity
+                # Velocity (unused by visualization shaders)
                 yield 0.0
                 yield 0.0
                 yield 0.0  # vz (padding, unused by shaders)
