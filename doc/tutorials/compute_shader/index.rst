@@ -107,8 +107,10 @@ the input point.
 Fragment Shader
 ^^^^^^^^^^^^^^^
 
-The **fragment shader** runs for each pixel. It produces the soft glow effect of the
-star, and rounds off the quad into a circle.
+A **fragment shader** runs for each pixel in a quad. It converts a UV
+coordinate within the quad to a float RGBA value. In this tutorial's
+case, the shader produces the soft glowing circle on the surface of each
+star's quad.
 
 .. literalinclude:: shaders/fragment_shader.glsl
     :language: glsl
