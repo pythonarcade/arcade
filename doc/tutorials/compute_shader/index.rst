@@ -7,10 +7,10 @@ Compute Shader Tutorial
 
    <div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/e/ab8d87" frameborder="0" width="100%" height="100%" allowfullscreen style="width: 100%; height: 100%; position: absolute;"></iframe></div>
 
-Using the compute shader, you can use the GPU to perform calculations thousands
-of times faster than just by using the CPU.
+For certain types of calculations, compute shaders on the GPU can be
+thousands of times faster than on the CPU alone.
 
-In this example, we will simulate a star field using an 'N-Body simulation'. Each
+In this tutorial, we will simulate a star field using an 'N-Body simulation'. Each
 star is affected by the gravity of every other star. For 1,000 stars, this means we have
 1,000 x 1,000 = 1,000,000 million calculations to perform for each frame.
 The video has 65,000 stars, requiring 4.2 billion gravity force calculations per frame.
@@ -19,9 +19,9 @@ On high-end hardware it can still run at 60 fps!
 How does this work?
 There are three major parts to this program:
 
-* The Python code, which glues everything together.
-* The visualization shaders, which let us see the data.
-* The compute shader, which moves everything.
+* The Python code, which allocates buffers & glues everything together
+* The visualization shaders, which let us see the data in the buffers
+* The compute shader, which moves everything
 
 Buffers
 -------
