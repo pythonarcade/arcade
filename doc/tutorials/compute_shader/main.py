@@ -85,8 +85,9 @@ class NBodyGravityWindow(arcade.Window):
         # which is used as the current value to write to.
 
         # ssbo = shader storage buffer object
-        self.ssbo_previous = self.ctx.buffer(data=gen_initial_data(self.get_size()))
-        self.ssbo_current = self.ctx.buffer(reserve=self.ssbo_previous.size)
+        initial_data = gen_initial_data(self.get_size())
+        self.ssbo_previous = self.ctx.buffer(data=initial_data)
+        self.ssbo_current = self.ctx.buffer(data=initial_data)
 
         # vao = vertex array object
         # Format string describing how to interpret the SSBO buffer data.
