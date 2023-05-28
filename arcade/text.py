@@ -10,6 +10,7 @@ import arcade
 from arcade.types import Color, Point, RGBA255
 from arcade.resources import resolve
 from arcade.utils import PerformanceWarning, warning
+from arcade.color import TRANSPARENT_BLACK
 from warnings import warn
 
 def load_font(path: Union[str, Path]) -> None:
@@ -572,7 +573,7 @@ def create_text_texture(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: int = 100,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
@@ -624,8 +625,8 @@ def create_text_texture(
         multiline=multiline,
     )
     lines = _label._get_lines()
-    right = _label._get_right(lines)
-    left = _label._get_left(lines)
+    left = _label._get_left()
+    right = left + _label.content_width
     top = _label._get_top(lines)
     bottom = _label._get_bottom(lines)
 
@@ -644,7 +645,7 @@ def create_text_texture(
 
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
-        fbo.clear((0, 0, 0, 255))
+        fbo.clear(TRANSPARENT_BLACK)
         _draw_pyglet_label(_label)
     return texture
 
