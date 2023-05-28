@@ -9,8 +9,8 @@ uniform Projection {
 } proj;
 
 in vec2 vertex_pos[];
-in vec4 vertex_color[];
 in float vertex_radius[];
+in vec4 vertex_color[];
 
 out vec2 g_uv;
 out vec3 g_color;

@@ -89,8 +89,8 @@ Data is read in as follows:
 The variables below are then passed as inputs to the geometry shader:
 
 * ``vertex_pos``
-* ``vertex_color``
 * ``vertex_radius``
+* ``vertex_color``
 
 Geometry Shader
 ^^^^^^^^^^^^^^^
