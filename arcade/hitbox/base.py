@@ -6,16 +6,9 @@ from typing_extensions import Self
 
 from PIL.Image import Image
 
-from arcade.types import Point, PointList
-
+from arcade.types import Point, PointList, EMPTY_POINT_LIST
 
 __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
-
-
-# Speed / typing workaround:
-# 1. Eliminate extra allocations
-# 2. Allows HitBox & subclass typing annotation to work cleanly
-_EMPTY_POINT_LIST: PointList = tuple()
 
 
 class HitBoxAlgorithm:
@@ -99,7 +92,7 @@ class HitBox:
 
         # This empty tuple will be replaced the first time
         # get_adjusted_points is called
-        self._adjusted_points: PointList = _EMPTY_POINT_LIST
+        self._adjusted_points: PointList = EMPTY_POINT_LIST
         self._adjusted_cache_dirty = True
 
     @property
