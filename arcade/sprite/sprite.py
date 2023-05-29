@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
-from arcade.math import get_angle_degrees, lerp_vec, lerp_angle
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point
 
@@ -311,31 +310,6 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         self.velocity = 0, 0
         self.change_angle = 0
-
-    def face_towards_point(self, point: Point, max_rotation: float = float("inf")) -> None:
-        """
-        Face the sprite towards a point. Assumes sprite image is facing upwards.
-
-        Lower max_rotation and update regularly to have smooth rotation.
-
-        :param Point point: Point to face towards.
-        :param float max_rotation: Maximun the Sprite can rotate
-        """
-        angle = get_angle_degrees(self.center_x, self.center_y, point[0], point[1])
-
-        # Reverse angle because sprite angles are backwards
-        self.angle = lerp_angle(self.angle, -angle, max_rotation)
-
-    def move_towards(self, point: Point, max_move: float = float("inf")) -> None:
-        """
-        Move the sprite towards a point.
-
-        Lower max_move and update regularly to have smooth movement.
-
-        :param Point point: Point to face towards.
-        :param float max_move: Maximum the sprite will move
-        """
-        self.position = lerp_vec(self.position, point, max_move)
 
     # ---- Draw Methods ----
 
