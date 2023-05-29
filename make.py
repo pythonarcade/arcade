@@ -427,10 +427,11 @@ def pseudoxml():
 @app.command(rich_help_panel="Code Quality")
 def lint():
     """
-    Run all linting tasks: ruff and mypy (Run this before making a pull request!)
+    Run all linting tasks: ruff, mypy, and pyright (Run this before making a pull request!)
     """
     ruff()
     mypy()
+    pyright()
     print("Linting Complete.")
 
 
