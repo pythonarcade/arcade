@@ -203,10 +203,10 @@ class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
         y: float = 0,
         width: float = 300,
         height: float = 20,
-        size_hint: Optional[int]=None,
-        size_hint_min: Optional[int]=None,
-        size_hint_max: Optional[int]=None,
-        style: Optional[Mapping[str, UISlider.UIStyle]] = None,  # typing: ignore
+        size_hint: Optional[Tuple[float, float]]=None,
+        size_hint_min: Optional[Tuple[int, int]]=None,
+        size_hint_max: Optional[Tuple[int, int]]=None,
+        style: Optional[Mapping[str, UIStyle]] = None,  # typing: ignore
         **kwargs,
     ) -> None:
 
@@ -341,9 +341,9 @@ class UITextureSlider(UISlider):
         y: float = 0,
         width: float = 300,
         height: float = 20,
-        size_hint: Optional[int]=None,
-        size_hint_min: Optional[int]=None,
-        size_hint_max: Optional[int]=None,
+        size_hint: Optional[Tuple[float, float]]=None,
+        size_hint_min: Optional[Tuple[int, int]]=None,
+        size_hint_max: Optional[Tuple[int, int]]=None,
         style: Optional[Mapping[str, UISlider.UIStyle]]=None,
         **kwargs
     ) -> None:
