@@ -141,7 +141,7 @@ class _SliderParent:
         """
         pass
 
-class UISlider(_SliderParent, UIStyledWidget["UIStyle"]):
+class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
     """
     A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
 
