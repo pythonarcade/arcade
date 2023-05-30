@@ -313,7 +313,7 @@ class ArcadeContext(Context):
 
         :type: pyglet.math.Mat4
         """
-        self.window.view
+        return self.window.view
 
     @view_matrix_2d.setter
     def view_matrix_2d(self, value: Mat4):

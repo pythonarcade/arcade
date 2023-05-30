@@ -22,6 +22,7 @@ from typing import (
     Union,
     Generic,
     Callable,
+    cast,
 )
 
 from arcade import (
@@ -155,7 +156,7 @@ class SpriteList(Generic[SpriteType]):
         from .spatial_hash import SpatialHash
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
-        self.spatial_hash: Optional[SpatialHash] = None
+        self.spatial_hash: Optional[SpatialHash[SpriteType]] = None
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
@@ -223,6 +224,8 @@ class SpriteList(Generic[SpriteType]):
                 raise ValueError("Attempting to use a sprite without a texture")
             self._update_texture(sprite)
             if hasattr(sprite, "textures"):
+                if TYPE_CHECKING:
+                    assert isinstance(sprite, Sprite)
                 for texture in sprite.textures or []:
                     self._atlas.add(texture)
 
@@ -749,7 +752,7 @@ class SpriteList(Generic[SpriteType]):
         random.shuffle(pairs)
 
         # Reconstruct the lists again from pairs
-        sprites, indices = zip(*pairs)
+        sprites, indices = cast(Tuple[List[SpriteType], List[int]], zip(*pairs))
         self.sprite_list = list(sprites)
         self._sprite_index_data = array("I", indices)
 

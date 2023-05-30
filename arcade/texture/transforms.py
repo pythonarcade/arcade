@@ -5,7 +5,7 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
-from typing import Tuple
+from typing import Dict, Tuple
 from enum import Enum
 from arcade.math import rotate_point
 from arcade.types import PointList
@@ -217,7 +217,7 @@ class TransverseTransform(Transform):
 # but it's faster to just pre-calculate it.
 # Key is the vertex order
 # Value is the orientation (flip_left_right, flip_top_down, rotation)
-ORIENTATIONS = {
+ORIENTATIONS: Dict[Tuple[int, int, int, int], Tuple[int, bool, bool]] = {
     (0, 1, 2, 3): (0, False, False),  # Default
     (2, 0, 3, 1): (90, False, False),  # Rotate 90
     (3, 2, 1, 0): (180, False, False),  # Rotate 180
