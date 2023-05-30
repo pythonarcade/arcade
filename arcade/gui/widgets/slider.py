@@ -37,6 +37,11 @@ class _SliderParent:
                         do that and all other
                         relevant functions
                         in the child class.
+
+    :param float value: Current value of slider
+    :param float cursor_radius: Size of button that slides slider
+    :param float min_value: Min value of slider
+    :param float max_value: Max value of slider
     """
     value = Property(0)
     hovered = Property(False)
@@ -47,7 +52,7 @@ class _SliderParent:
         self,
         *,
         value: float = 0,
-        cursor_radius = 20,
+        cursor_radius: float = 20,
         min_value: float = 0,
         max_value: float = 100,
         **kwargs,
@@ -137,7 +142,7 @@ class _SliderParent:
         """
         pass
 
-class UISlider(_SliderParent, UIStyledWidget["UISlider.UIStyle"]):
+class UISlider(_SliderParent, UIStyledWidget["UIStyle"]):
     """
     A simple horizontal slider. The value of the slider can be set by moving the cursor(indicator).
 
