@@ -42,6 +42,7 @@ class _SliderParent:
     :param float cursor_radius: Size of button that slides slider
     :param float min_value: Min value of slider
     :param float max_value: Max value of slider
+
     """
     value = Property(0)
     hovered = Property(False)
