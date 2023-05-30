@@ -23,6 +23,7 @@ from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget, UIWidget
 
+@dataclass
 class _SliderParent:
     """
     Parent Slider all sliders inherit from
