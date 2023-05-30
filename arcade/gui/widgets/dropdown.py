@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import arcade
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
@@ -40,7 +40,7 @@ class UIDropdown(UILayout):
         width: float = 100,
         height: float = 100,
         default: Optional[str] = None,
-        options: Optional[List[str]] = None,
+        options: Optional[List[Union[str, None]]] = None,
         style=None, **kwargs
     ):
         if style is None:
@@ -62,7 +62,7 @@ class UIDropdown(UILayout):
 
         # Setup button showing value
         self._default_button = UIFlatButton(
-            text=self._value, width=self.width, height=self.height
+            text=self._value or "", width=self.width, height=self.height
         )
 
         self._default_button.on_click = self._on_button_click  # type: ignore
@@ -79,16 +79,16 @@ class UIDropdown(UILayout):
         self.with_border(color=arcade.color.RED)
 
     @property
-    def value(self):
+    def value(self) -> Optional[str]:
         """Current selected option."""
         return self._value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: Optional[str]):
         """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value
-        self._default_button.text = self._value
+        self._default_button.text = self._value or ""
 
         self._update_options()
         self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, value))
@@ -103,24 +103,24 @@ class UIDropdown(UILayout):
         active_style["normal"]["bg"] = (55, 66, 81)
 
         for option in self._options:
-            if option == self.DIVIDER:
+            if option is None:  # UIDropdown.DIVIDER = None
                 self._layout.add(
                     UIWidget(width=self.width, height=2).with_background(
                         color=arcade.color.GRAY
                     )
                 )
                 continue
-
-            button = self._layout.add(
-                UIFlatButton(
-                    text=option,
-                    width=self.width,
-                    height=self.height,
-                    style=active_style
-                    if self.value == option
-                    else UIFlatButton.DEFAULT_STYLE,
+            else:
+                button = self._layout.add(
+                    UIFlatButton(
+                        text=option,
+                        width=self.width,
+                        height=self.height,
+                        style=active_style
+                        if self.value == option
+                        else UIFlatButton.DEFAULT_STYLE,
+                    )
                 )
-            )
             button.on_click = self._on_option_click
 
     def _find_ui_manager(self):

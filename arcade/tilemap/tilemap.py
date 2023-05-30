@@ -12,10 +12,11 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
+from pytiled_parser import Color
 
 from arcade import (
     AnimatedTimeBasedSprite,
@@ -34,7 +35,7 @@ from pyglet.math import Vec2
 
 from arcade.math import rotate_point
 from arcade.resources import resolve
-from arcade.types import Point, TiledObject
+from arcade.types import Point, Rect, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -46,8 +47,9 @@ __all__ = [
     "read_tmx"
 ]
 
+prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
-def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
@@ -156,23 +158,35 @@ class TileMap:
 
     The keys and their values in each layer are passed to the layer processing functions
     using the `**` operator on the dictionary.
-
-
-    Attributes:
-        :tiled_map: The pytiled-parser map object. This can be useful for implementing features
-                    that aren't supported by this class by accessing the raw map data directly.
-        :width: The width of the map in tiles. This is the number of tiles, not pixels.
-        :height: The height of the map in tiles. This is the number of tiles, not pixels.
-        :tile_width: The width in pixels of each tile.
-        :tile_height: The height in pixels of each tile.
-        :background_color: The background color of the map.
-        :scaling: A global scaling value to be applied to all Sprites in the map.
-        :sprite_lists: A dictionary mapping SpriteLists to their layer names. This is used
-                       for all tile layers of the map.
-        :object_lists: A dictionary mapping TiledObjects to their layer names. This is used
-                       for all object layers of the map.
-        :offset: A tuple containing the X and Y position offset values.
     """
+
+    tiled_map: pytiled_parser.TiledMap
+    """
+    The pytiled-parser map object. This can be useful for implementing features
+    that aren't supported by this class by accessing the raw map data directly.
+    """
+    width: float
+    "The width of the map in tiles. This is the number of tiles, not pixels."
+    height: float
+    "The height of the map in tiles. This is the number of tiles, not pixels."
+    tile_width: float
+    "The width in pixels of each tile."
+    tile_height: float
+    "The height in pixels of each tile."
+    background_color: Optional[Color]
+    "The background color of the map."
+    scaling: float
+    "A global scaling value to be applied to all Sprites in the map."
+    sprite_lists: Dict[str, SpriteList]
+    """A dictionary mapping SpriteLists to their layer names. This is used
+                    for all tile layers of the map."""
+    object_lists: Dict[str, List[TiledObject]]
+    """
+    A dictionary mapping TiledObjects to their layer names. This is used
+    for all object layers of the map.
+    """
+    offset: Vec2
+    "A tuple containing the X and Y position offset values."
 
     def __init__(
         self,
@@ -556,18 +570,18 @@ class TileMap:
 
                 if tile.flipped_vertically:
                     for point in points:
-                        point[1] *= -1
+                        point = point[0], point[1] * -1
 
                 if tile.flipped_horizontally:
                     for point in points:
-                        point[0] *= -1
+                        point = point[0] * -1, point[1]
 
                 if tile.flipped_diagonally:
                     for point in points:
-                        point[0], point[1] = point[1], point[0]
+                        point = point[1], point[0]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    points,
+                    cast(List[Point], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
@@ -729,6 +743,9 @@ class TileMap:
             lazy=self._lazy,
         )
         map_array = layer.data
+        if TYPE_CHECKING:
+            # Can never be None because we already detect and reject infinite maps
+            assert map_array
 
         # Loop through the layer and add in the list
         for row_index, row in enumerate(map_array):
@@ -804,7 +821,7 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
-        shape = None
+        shape: Union[List[Point], Rect, Point, None] = None
 
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
@@ -817,6 +834,8 @@ class TileMap:
                     )
 
                 tile = self._get_tile_by_gid(cur_object.gid)
+                if tile is None:
+                    raise Exception(f"Tile with gid not found: {cur_object.gid}")
                 my_sprite = self._create_sprite_from_tile(
                     tile,
                     scaling=scaling,
@@ -859,28 +878,28 @@ class TileMap:
                     my_sprite.alpha = int(opacity * 255)
 
                 if cur_object.properties and "change_x" in cur_object.properties:
-                    my_sprite.change_x = float(cur_object.properties["change_x"])
+                    my_sprite.change_x = prop_to_float(cur_object.properties["change_x"])
 
                 if cur_object.properties and "change_y" in cur_object.properties:
-                    my_sprite.change_y = float(cur_object.properties["change_y"])
+                    my_sprite.change_y = prop_to_float(cur_object.properties["change_y"])
 
                 if cur_object.properties and "boundary_bottom" in cur_object.properties:
-                    my_sprite.boundary_bottom = float(
+                    my_sprite.boundary_bottom = prop_to_float(
                         cur_object.properties["boundary_bottom"]
                     )
 
                 if cur_object.properties and "boundary_top" in cur_object.properties:
-                    my_sprite.boundary_top = float(
+                    my_sprite.boundary_top = prop_to_float(
                         cur_object.properties["boundary_top"]
                     )
 
                 if cur_object.properties and "boundary_left" in cur_object.properties:
-                    my_sprite.boundary_left = float(
+                    my_sprite.boundary_left = prop_to_float(
                         cur_object.properties["boundary_left"]
                     )
 
                 if cur_object.properties and "boundary_right" in cur_object.properties:
-                    my_sprite.boundary_right = float(
+                    my_sprite.boundary_right = prop_to_float(
                         cur_object.properties["boundary_right"]
                     )
 
@@ -903,7 +922,7 @@ class TileMap:
                     - cur_object.coordinates.y
                 ) * scaling
 
-                shape = [x + offset[0], y + offset[1]]
+                shape = (x + offset[0], y + offset[1])
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
                 if cur_object.size.width == 0 and cur_object.size.height == 0:
                     print(
@@ -916,7 +935,7 @@ class TileMap:
                         - cur_object.coordinates.y
                     ) * scaling
 
-                    shape = [x + offset[0], y + offset[1]]
+                    shape = (x + offset[0], y + offset[1])
                 else:
                     x = cur_object.coordinates.x + offset[0]
                     y = cur_object.coordinates.y + offset[1]
@@ -925,27 +944,28 @@ class TileMap:
                     ex = x + cur_object.size.width
                     ey = -(y + cur_object.size.height)
 
-                    p1 = [sx, sy]
-                    p2 = [ex, sy]
-                    p3 = [ex, ey]
-                    p4 = [sx, ey]
+                    p1 = (sx, sy)
+                    p2 = (ex, sy)
+                    p3 = (ex, ey)
+                    p4 = (sx, ey)
 
                     shape = [p1, p2, p3, p4]
             elif isinstance(
                 cur_object, pytiled_parser.tiled_object.Polygon
             ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
-                shape = []
+                points: List[Point] = []
+                shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
                     y = (self.height * self.tile_height) - (
                         point.y + cur_object.coordinates.y
                     )
                     point = (x + offset[0], y + offset[1])
-                    shape.append(point)
+                    points.append(point)
 
                 # If shape is a polyline, and it is closed, we need to remove the duplicate end point
-                if shape[0][0] == shape[-1][0] and shape[0][1] == shape[-1][1]:
-                    shape.pop()
+                if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
+                    points.pop()
             elif isinstance(cur_object, pytiled_parser.tiled_object.Ellipse):
                 hw = cur_object.size.width / 2
                 hh = cur_object.size.height / 2
@@ -956,12 +976,13 @@ class TileMap:
                 angles = [
                     step / total_steps * 2 * math.pi for step in range(total_steps)
                 ]
-                shape = []
+                points = []
+                shape = points
                 for angle in angles:
                     x = hw * math.cos(angle) + cx
                     y = -(hh * math.sin(angle) + cy)
-                    point = [x + offset[0], y + offset[1]]
-                    shape.append(point)
+                    point = (x + offset[0], y + offset[1])
+                    points.append(point)
             elif isinstance(cur_object, pytiled_parser.tiled_object.Text):
                 pass
             else:

@@ -6,7 +6,7 @@ from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Point, Rect, RGBA255
+from arcade.types import RGBA255, FloatRect, Point
 
 
 class Surface:
@@ -158,7 +158,7 @@ class Surface:
 
     def draw(
         self,
-        area: Optional[Rect] = None,
+        area: Optional[FloatRect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
@@ -166,7 +166,6 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param Optional[Point] position: The position to draw the surface at.
         :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
         """
         # Set blend function
