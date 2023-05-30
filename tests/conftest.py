@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
-    import arcade_accelerate
+    import arcade_accelerate # pyright: ignore [reportMissingImports]
     arcade_accelerate.bootstrap()
 
 import pytest

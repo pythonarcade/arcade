@@ -6,7 +6,7 @@ from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import Point, Rect, RGBA255
+from arcade.types import RGBA255, FloatRect, Point
 
 
 class Surface:
@@ -94,18 +94,15 @@ class Surface:
         width: float,
         height: float,
         tex: Union[Texture, NinePatchTexture],
-        angle=0,
+        angle: float = 0.0,
         alpha: int = 255,
     ):
         if isinstance(tex, NinePatchTexture):
-            if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a position != (0,0) yet")
+            if angle != 0.0:
+                raise NotImplementedError(f"Ninepatch does not support an angle != 0 yet, but got {angle}")
 
-            if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a angle != 0 yet")
-
-            if x != 0 or y != 0:
-                raise ValueError("Ninepatch does not support a alpha != 255 yet")
+            if alpha != 255:
+                raise NotImplementedError(f"Ninepatch does not support an alpha != 255 yet, but got {alpha}")
 
             tex.draw_sized(size=(width, height))
         else:
@@ -161,7 +158,7 @@ class Surface:
 
     def draw(
         self,
-        area: Optional[Rect] = None,
+        area: Optional[FloatRect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
@@ -169,7 +166,6 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param Optional[Point] position: The position to draw the surface at.
         :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
         """
         # Set blend function
