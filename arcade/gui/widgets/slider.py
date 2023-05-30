@@ -14,14 +14,12 @@ from arcade.gui import (
     UIMouseDragEvent,
     UIMousePressEvent,
     UIMouseReleaseEvent,
-    UIManager,
     Surface,
-    UIAnchorLayout,
     NinePatchTexture
 )
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
-from arcade.gui.style import UIStyleBase, UIStyledWidget, UIWidget
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 @dataclass
 class _SliderParent:
@@ -98,7 +96,7 @@ class _SliderParent:
     def _x_for_value(self, value) -> float:
         """Override, do in child class"""
         return 0.0
-    
+
     def do_render(self, surface: Surface) -> None:
         """Override, do in child class"""
         pass
@@ -139,7 +137,7 @@ class _SliderParent:
         To be implemented by the user, triggered when the cursor's value is changed.
 
         Class inheriting must inherit from a widget
-        and do register_event_type("on_change")        
+        and do register_event_type("on_change")    
         """
         pass
 
@@ -224,7 +222,7 @@ class UISlider(_SliderParent, UIStyledWidget["UIStyle"]):
             max_value=max_value,
             **kwargs,
         )
-        
+
         UIStyledWidget["UISlider.UIStyle"].__init__(
             value=value,
             min_value=min_value,
