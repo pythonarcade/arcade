@@ -79,16 +79,16 @@ class UIDropdown(UILayout):
         self.with_border(color=arcade.color.RED)
 
     @property
-    def value(self):
+    def value(self) -> Optional[str]:
         """Current selected option."""
         return self._value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: Optional[str]):
         """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value
-        self._default_button.text = self._value
+        self._default_button.text = self._value or ""
 
         self._update_options()
         self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, value))
