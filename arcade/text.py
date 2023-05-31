@@ -622,7 +622,7 @@ def create_text_texture(
         align=align,
         bold=bold,
         italic=italic,
-        multiline=True,
+        multiline=multiline,
     )
     lines = _label._get_lines()
     left = _label._get_left()
@@ -654,7 +654,7 @@ def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: int = 100,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
