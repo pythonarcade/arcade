@@ -937,12 +937,14 @@ class TileMap:
 
                     shape = (x + offset[0], y + offset[1])
                 else:
-                    x = cur_object.coordinates.x + offset[0]
-                    y = cur_object.coordinates.y + offset[1]
-                    sx = x
-                    sy = -y
-                    ex = x + cur_object.size.width
-                    ey = -(y + cur_object.size.height)
+                    sx = cur_object.coordinates.x * scaling + offset[0]
+                    sy = (
+                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+                        - cur_object.coordinates.y
+                    ) * scaling + offset[1]
+
+                    ex = sx + cur_object.size.width * scaling
+                    ey = sy - cur_object.size.height * scaling
 
                     p1 = (sx, sy)
                     p2 = (ex, sy)
