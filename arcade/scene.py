@@ -271,19 +271,20 @@ class Scene:
         after: str,
     ) -> None:
         """
-        Move the named SpriteList in the scene to be after another SpriteList.
+        Move a named SpriteList in the scene to be after another SpriteList in the scene.
 
-        This will adjust the render order so that the SpriteList
-        specified by ``name`` is placed after the one specified by
-        ``after``.
+        A :py:class:`.SceneKeyError` will be raised if either ``name`` or ``after`` contain
+        a name not currently in the scene. This exception can be handled as a
+        :py:class:`KeyError`.
 
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
         """
         if name not in self._name_mapping:
-            raise ValueError(
-                f"Tried to move unknown SpriteList with the name {name} in Scene"
-            )
+            raise SceneKeyError(name)
+
+        if after not in self._name_mapping:
+            raise SceneKeyError(after)
 
         name_list = self._name_mapping[name]
         after_list = self._name_mapping[after]
