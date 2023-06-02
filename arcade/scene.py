@@ -21,6 +21,17 @@ from warnings import warn
 __all__ = ["Scene"]
 
 
+class SceneKeyError(KeyError):
+    """
+    Helper subclass of :py:class:`KeyError` which performs templating.
+
+    :param name: the name of the missing :py:class:`~arcade.SpriteList`
+    """
+
+    def __init__(self, name: str):
+        super().__init__(f"This scene does not contain a SpriteList named {name!r}.")
+
+
 class Scene:
     """
     Stores :py:class:`~arcade.SpriteList`s as named layers, allowing bulk updates & drawing.
@@ -206,21 +217,18 @@ class Scene:
         """
         Move a named SpriteList in the scene to be before another SpriteList in the scene.
 
-        A :py:class:`KeyError` will be raised if either ``name`` or ``before`` contain
-        a name not currently in the scene.
+        A :py:class:`.SceneKeyError` will be raised if either ``name`` or ``before`` contain
+        a name not currently in the scene. This exception can be handled as a
+        :py:class:`KeyError`.
 
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
         """
         if name not in self._name_mapping:
-            raise KeyError(
-                f"Tried to move unknown SpriteList with the name {name!r} in Scene"
-            )
+            raise SceneKeyError(name)
 
         if before not in self._name_mapping:
-            raise KeyError(
-                f"Tried to move unknown SpriteList with the name {before!r} in Scene"
-            )
+            raise SceneKeyError(before)
 
         name_list = self._name_mapping[name]
         before_list = self._name_mapping[before]
