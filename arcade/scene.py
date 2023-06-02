@@ -213,8 +213,8 @@ class Scene:
         :param str before: The name of the SpriteList to place it before.
         """
         if name not in self._name_mapping:
-            raise ValueError(
-                f"Tried to move unknown SpriteList with the name {name} in Scene"
+            raise KeyError(
+                f"Tried to move unknown SpriteList with the name {name!r} in Scene"
             )
 
         name_list = self._name_mapping[name]
