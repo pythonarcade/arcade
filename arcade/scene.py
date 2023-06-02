@@ -204,10 +204,10 @@ class Scene:
         before: str,
     ) -> None:
         """
-        Move a given SpriteList in the scene to before another given SpriteList.
+        Move a named SpriteList in the scene to be before another SpriteList in the scene.
 
-        This will adjust the render order so that the SpriteList specified by `name`
-        is placed before the one specified by `before`.
+        A :py:class:`KeyError` will be raised if either ``name`` or ``before`` contain
+        a name not currently in the scene.
 
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
@@ -215,6 +215,11 @@ class Scene:
         if name not in self._name_mapping:
             raise KeyError(
                 f"Tried to move unknown SpriteList with the name {name!r} in Scene"
+            )
+
+        if before not in self._name_mapping:
+            raise KeyError(
+                f"Tried to move unknown SpriteList with the name {before!r} in Scene"
             )
 
         name_list = self._name_mapping[name]
@@ -258,10 +263,11 @@ class Scene:
         after: str,
     ) -> None:
         """
-        Move a given SpriteList in the scene to be after another given SpriteList.
+        Move the named SpriteList in the scene to be after another SpriteList.
 
-        This will adjust the render order so that the SpriteList specified by `name`
-        is placed after the one specified by `after`.
+        This will adjust the render order so that the SpriteList
+        specified by ``name`` is placed after the one specified by
+        ``after``.
 
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
