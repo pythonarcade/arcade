@@ -18,7 +18,7 @@ from arcade.tilemap import TileMap
 
 from warnings import warn
 
-__all__ = ["Scene"]
+__all__ = ["Scene", "SceneKeyError"]
 
 
 class SceneKeyError(KeyError):
@@ -34,13 +34,13 @@ class SceneKeyError(KeyError):
 
 class Scene:
     """
-    Stores :py:class:`~arcade.SpriteList`s as named layers, allowing bulk updates & drawing.
+    Stores :py:class:`~arcade.SpriteList` instances as named layers, allowing bulk updates & drawing.
 
     In addition to allowing you to update or draw multiple sprite lists
     with one call, this class also provides convenience methods:
 
     * :py:meth:`.add_sprite` to allow adding sprites to layers dynamically
-    * :py:meth:`.from_tilemap`, which creates a new scene from a
+    * :py:meth:`.Scene.from_tilemap`, which creates a new scene from a
       :py:class:`~arcade.tilemap.TileMap` already loaded from tiled data
     * Fine-grained convenience methods for adding, deleting, and reordering
       sprite lists
@@ -217,9 +217,9 @@ class Scene:
         """
         Move a named SpriteList in the scene to be before another SpriteList in the scene.
 
-        A :py:class:`.SceneKeyError` will be raised if either ``name`` or ``before`` contain
-        a name not currently in the scene. This exception can be handled as a
-        :py:class:`KeyError`.
+        A :py:class:`~arcade.scene.SceneKeyError` will be raised if either ``name``
+        or ``before`` contain a name not currently in the scene. This exception can
+        be handled as a :py:class:`KeyError`.
 
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
@@ -273,9 +273,9 @@ class Scene:
         """
         Move a named SpriteList in the scene to be after another SpriteList in the scene.
 
-        A :py:class:`.SceneKeyError` will be raised if either ``name`` or ``after`` contain
-        a name not currently in the scene. This exception can be handled as a
-        :py:class:`KeyError`.
+        A :py:class:`~arcade.scene.SceneKeyError` will be raised if either ``name``
+        or ``after`` contain a name not currently in the scene. This exception can
+        be handled as a :py:class:`KeyError`.
 
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
