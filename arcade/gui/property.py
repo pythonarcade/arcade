@@ -198,7 +198,7 @@ class _ObservableList(list):
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs: List) -> "_ObservableList":  # type: ignore
+    def __iadd__(self, *largs: Iterable) -> "_ObservableList":  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
@@ -229,7 +229,7 @@ class _ObservableList(list):
         self.dispatch()
         return result
 
-    def extend(self, *largs: Iterable[Any]) -> None:
+    def extend(self, *largs: Iterable) -> None:
         list.extend(self, *largs)
         self.dispatch()
 
