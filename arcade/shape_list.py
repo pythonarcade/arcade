@@ -118,7 +118,7 @@ class Shape:
         if self.geometry is None:
             self._init_geometry()
 
-        self.geometry.render(self.program, mode=self.mode) # pyright: ignore [reportOptionalMemberAccess]
+        self.geometry.render(self.program, mode=self.mode)  # type: ignore
 
 def create_line(
     start_x: float,
