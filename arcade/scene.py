@@ -395,3 +395,11 @@ class Scene:
 
         for sprite_list in self._sprite_lists:
             sprite_list.draw_hit_boxes(color, line_thickness)
+
+    def __bool__(self) -> bool:
+        """Returns whether or not `_sprite_lists` contains anything"""
+        return bool(self._sprite_lists)
+
+    def __contains__(self, item: Union[str, SpriteList]) -> bool:
+        """True when `item` is in `_sprite_lists` or is a value in `_name_mapping`"""
+        return item in self._sprite_lists or item in self._name_mapping

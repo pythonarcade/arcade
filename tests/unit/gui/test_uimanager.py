@@ -1,7 +1,7 @@
 from arcade.gui import UIManager, UIDummy
 
 
-def test_iterate_children_flat(window):
+def test_walk_widgets(window):
     manager = UIManager()
     widget1 = UIDummy()
     manager.add(widget1)
@@ -11,7 +11,31 @@ def test_iterate_children_flat(window):
     assert children == [widget1]
 
 
-def test_iterate_children_tree(window):
+def test_walk_widgets_of_specific_layer(window):
+    manager = UIManager()
+    widget1 = UIDummy()
+    widget2 = UIDummy()
+    manager.add(widget1)
+    manager.add(widget2, layer=1)
+
+    children = list(child for child in manager.walk_widgets(layer=1))
+
+    assert children == [widget2]
+
+
+def test_walk_widgets_of_all_layers(window):
+    manager = UIManager()
+    widget1 = UIDummy()
+    widget2 = UIDummy()
+    manager.add(widget1)
+    manager.add(widget2, layer=1)
+
+    children = list(child for child in manager.walk_widgets(layer=None))
+
+    assert children == [widget2, widget1]
+
+
+def test_walk_widgets_down_the_tree(window):
     manager = UIManager()
     widget1 = UIDummy()
     widget2 = UIDummy()
@@ -23,7 +47,7 @@ def test_iterate_children_tree(window):
     assert children == [widget2, widget1]
 
 
-def test_get_top_widget(window):
+def test_get_widgets_at(window):
     manager = UIManager()
     widget1 = UIDummy(x=50, y=50, width=100, height=100)
     widget2 = UIDummy(x=75, y=75, width=50, height=50)
@@ -35,6 +59,39 @@ def test_get_top_widget(window):
 
     children = list(manager.get_widgets_at(pos=(60, 60)))
     assert children == [widget1]
+
+
+def test_get_widgets_at_from_layer_0_by_default(window):
+    manager = UIManager()
+    widget1 = UIDummy(x=50, y=50, width=100, height=100)
+    widget2 = UIDummy(x=50, y=50, width=100, height=100)
+    manager.add(widget1, layer=0)
+    manager.add(widget2, layer=1)
+
+    children = list(manager.get_widgets_at(pos=(100, 100)))
+    assert children == [widget1]
+
+
+def test_get_widgets_at_from_specific_layer(window):
+    manager = UIManager()
+    widget1 = UIDummy(x=50, y=50, width=100, height=100)
+    widget2 = UIDummy(x=50, y=50, width=100, height=100)
+    manager.add(widget1, layer=0)
+    manager.add(widget2, layer=1)
+
+    children = list(manager.get_widgets_at(pos=(60, 60), layer=1))
+    assert children == [widget2]
+
+
+def test_get_widgets_at_from_all_layers(window):
+    manager = UIManager()
+    widget1 = UIDummy(x=50, y=50, width=100, height=100)
+    widget2 = UIDummy(x=50, y=50, width=100, height=100)
+    manager.add(widget1, layer=0)
+    manager.add(widget2, layer=1)
+
+    children = list(manager.get_widgets_at(pos=(60, 60), layer=None))
+    assert children == [widget2, widget1]
 
 
 def test_get_top_widget_by_cls(window):

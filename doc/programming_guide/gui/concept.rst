@@ -3,79 +3,111 @@
 GUI Concepts
 ------------
 
-GUI elements are represented as instances of :class:`UIWidget`. The GUI is structured like a tree, every widget
-can have other widgets as children.
+GUI elements are represented as instances of :py:class:`~arcade.gui.UIWidget`.
+The GUI is structured like a tree; every widget can have other widgets as
+children.
 
-The root of the tree is the :class:`UIManager`. The UIManager connects the user interactions with the GUI.
-Read more about :ref:`UIEvent`.
+The root of the tree is the :py:class:`~arcade.gui.UIManager`. The
+:class:`UIManager` connects the user interactions with the GUI. Read more about
+:ref:`UIEvent`.
 
-Classes of Arcades GUI code are prefixed with UI- to make them easy to identify and search for in autocompletion.
+Classes of arcade's GUI code are prefixed with ``UI-`` to make them easy to
+identify and search for in autocompletion.
 
 UIWidget
 ========
 
-:class:`UIWidget` are the core of Arcades GUI. A widget represents the behaviour and graphical
-representation of any element (like Buttons or Text)
+The :py:class:`~arcade.gui.UIWidget` class is the core of arcade's GUI system.
+Widgets specify the behavior and graphical representation of any UI element,
+such as buttons or labels.
 
-A :class:`UIWidget` has following properties
+A :class:`UIWidget` has following properties.
 
-**rect**
-    x and y coordinates (bottom left of the widget), width and height
+``rect``
+    A tuple with four slots. The first two are x and y coordinates (bottom
+    left of the widget), and the last two are width and height.
 
-**children**
-    Child widgets, rendered within this widget
-    A :class:`UIWidget` will not move or resize its children, use a :class:`UILayout` instead.
+``children``
+    Child widgets rendered within this widget. A :class:`UIWidget` will not
+    move or resize its children; use a :py:class:`~arcade.gui.UILayout`
+    instead.
 
-**size_hint**
-    tuple of two floats, defines how much of the parents space it would like to occupy (range: 0.0-1.0).
-    For maximal vertical and horizontal expansion, define `size_hint` of 1 for the axis.
+``size_hint``
+    A tuple of two normalized floats (``0.0``-``1.0``) describing the portion
+    of the parent's width and height this widget prefers to occupy.
+    
+    Examples::
+    
+        # Prefer to take up all space within the parent
+        widget.size_hint = (1.0, 1.0)
+    
+        # Prefer to take up the full width & half the height of the parent
+        widget.size_hint = (1.0, 0.5)
+        # Prefer using 1/10th of the available width & height
+        widget.size_hint = (0.1, 0.1)
 
-**size_hint_min**
-    tuple of two ints, defines minimal size of the widget.
-    If set, changing the size of a widget to a lower values will use this size instead.
+``size_hint_min``
+    A tuple of two integers defining the minimum width and height of the
+    widget. Attempting to set a smaller width or height on the widget will fail
+    by defaulting to the minimum values specified here.
 
-**size_hint_max**
-    tuple of two ints, defines maximum size of the widget.
-    If set, changing the size of a widget to a higher values will use this size instead.
+``size_hint_max``
+    A tuple of two integers defining the maximum width and height of the
+    widget. Attempting to set a larger width or height greater will fail by
+    defaulting to the to the maximum values specified here.
 
-    *size_hint*, *size_hint_min*, and *size_hint_max* are values that are additional information of a widget, but do not
-    effect the widget on its own. :class:`UILayout` may use these information to place or resize a widget.
+.. warning:: Size hints do nothing on their own!
+
+    They are hints to :class:`UILayout` instances, which may choose to use or
+    ignore them.
 
 Rendering
-.........
+`````````
 
-:meth:`UIWidget.do_render` is called recursively if rendering was requested via :meth:`UIWidget.trigger_render`.
-In case widgets have to request their parents to render use :meth:`UIWidget.trigger_full_render`
+:py:meth:`~arcade.gui.UIWidget.do_render` is called recursively if rendering
+was requested via :py:meth:`~arcade.gui.UIWidget.trigger_render`. In case
+widgets have to request their parents to render, use
+:py:meth:`arcade.gui.UIWidget.trigger_full_render`.
 
-The widget has to draw itself and child widgets within :meth:`UIWidget.do_render`. Due to the deferred functionality
-render does not have to check any dirty variables, as long as state changes use the trigger function.
+The widget has to draw itself and child widgets within
+:py:meth:`~arcade.gui.UIWidget.do_render`. Due to the deferred functionality
+render does not have to check any dirty variables, as long as state changes use
+the :py:meth:`~arcade.gui.UIWidget.trigger_full_render` method.
 
-For widgets, that might have transparent areas, they have to request a full rendering.
+For widgets, that might have transparent areas, they have to request a full
+rendering.
+
+.. warning::
 
     Enforced rendering of the whole GUI might be very expensive!
 
 UILayout
 ========
 
-:class:`UILayout` are widgets, which reserve the option to move or resize children. They might respect special properties
-of a widget like *size_hint*, *size_hint_min*, or *size_hint_max*.
+:py:class:`~arcade.gui.UILayout` are widgets, which reserve the option to move
+or resize children. They might respect special properties of a widget like
+``size_hint``, ``size_hint_min``, or ``size_hint_max``.
 
-The :class:`UILayout` only resize a child's dimension (x or y axis) if size_hint provides a value for the axis, which is not `None` for the dimension.
+The :py:class:`arcade.gui.UILayout` only resizes a child's dimension (x or y
+axis) if ``size_hint`` provides a value for the axis, which is not ``None`` for
+the dimension.
 
 
 Algorithm
-.........
+`````````
 
-:class:`UIManager` triggers the layout and render process right before the actual frame draw.
-This opens the possibility, to adjust to multiple changes only ones.
+:py:class:`arcade.gui.UIManager` triggers the layout and render process right
+before the actual frame draw. This opens the possibility to adjust to multiple
+changes only once.
 
-Example: Executed steps within :class:`UIBoxLayout`:
+**Example**: Executed steps within :py:class:`~arcade.gui.UIBoxLayout`:
 
-1. :meth:`UIBoxLayout.do_layout`
-    1. collect current size, size_hint, size_hint_min of children
-    2. calculate the new position and sizes
-    3. set position and size of children
-2. recursive call `do_layout` on child layouts (last step in :meth:`UIBoxLayout.do_layout`)
+1. :py:meth:`~arcade.UIBoxLayout.do_layout`
+    1. Collect current ``size``, ``size_hint``, ``size_hint_min`` of children
+    2. Calculate the new position and sizes
+    3. Set position and size of children
+2. Recursively call ``do_layout`` on child layouts (last step in
+   :py:meth:`~arcade.gui.UIBoxLayout.do_layout`)
 
 .. code-block::
 
@@ -110,7 +142,7 @@ Example: Executed steps within :class:`UIBoxLayout`:
          └─────────┘          └────────┘                      └────────┘
 
 Size hint support
-+++++++++++++++++
+^^^^^^^^^^^^^^^^^
 
 +--------------------------+------------+----------------+----------------+
 |                          | size_hint  | size_hint_min  | size_hint_max  |
@@ -127,99 +159,317 @@ Size hint support
 UIMixin
 =======
 
-Mixin classes are a base class which can be used to apply some specific behaviour. Currently the available Mixins are
-still under heavy development.
+Mixin classes are a base class which can be used to apply some specific
+behaviour. Currently the available Mixins are still under heavy development.
 
 Constructs
 ==========
 
-Constructs are predefined structures of widgets and layouts like a message box or (not yet available) file dialogues.
+Constructs are predefined structures of widgets and layouts like a message box
+or (not yet available) file dialogues.
 
 
 Available Elements
 ==================
 
-- :class:`UIWidget`:
-    - :class:`UIFlatButton` - 2D flat button for simple interactions (hover, press, release, click)
-    - :class:`UITextureButton` - textured button (use :meth:`arcade.load_texture()`) for simple interactions (hover, press, release, click)
-    - :class:`UILabel` - Simple text, supports multiline, fits content
-    - :class:`UIInputText` - field to accept user text input
-    - :class:`UITextArea` - Multiline scrollable text widget.
-    - :class:`UISpriteWidget` - Embeds a Sprite within the GUI tree
-- :class:`UILayout`:
-    - :class:`UIBoxLayout` - Places widgets next to each other (vertical or horizontal)
-    - :class:`UIAnchorLayout` - Places widgets within itself following anchor information
-    - :class:`UIGridLayout` - Places widgets within a grid
-- Constructs
-    - :class:`UIMessageBox` - Popup box with a message text and a few buttons.
-- Mixins
-    - :class:`UIDraggableMixin` - Makes a widget draggable.
-    - :class:`UIMouseFilterMixin` - Catches mouse events that occure within the widget boundaries.
-    - :class:`UIWindowLikeMixin` - Combination of :class:`UIDraggableMixin` and :class:`UIMouseFilterMixin`.
+Buttons
+```````
+
+As with most widgets, buttons take ``x``, ``y``, ``width``, and ``height``
+parameters for their sizing. Buttons specifically have two more parameters -
+``text`` and ``multiline``.
+
+All button types support styling. And they are text widgets, which means you
+can use the :py:attr:`~arcade.gui.UITextWidget._label` attribute to get the
+label component of the button.
+
+Flat button
+^^^^^^^^^^^
+
+**Name**: :py:class:`~arcade.gui.FlatButton`
+
+A flat button for simple interactions (hover, press, release, click). This
+button is created with a simple rectangle. Flat buttons can quickly create a
+nice-looking button. However, depending on your use case, you may want to use
+a texture button to further customize your look and feel.
+
+Styling options are shown in the table below.
+
++----------------+------------------------------------------------------------+
+|Name            |Description                                                 |
++================+============================================================+
+|``font_size``   |Font size for the button text. Defaults to 12.              |
++----------------+------------------------------------------------------------+
+|``font_name``   |Font name or family for the button text. If a tuple is      |
+|                |supplied then arcade will attempt to load all of the fonts, |
+|                |prioritizing the first one. Defaults to                     |
+|                |``("calibri", "arial")``.                                   |
++----------------+------------------------------------------------------------+
+|``font_color``  |Font color for the button text (foreground). Defaults to    |
+|                |white for normal, hover, and disabled states. Defaults to   |
+|                |black for pressed state.                                    |
++----------------+------------------------------------------------------------+
+|``bg``          |Background color of the button. This modifies the color of  |
+|                |the rectangle within the button and not the border. Instead |
+|                |of making each of these different colors for each of your   |
+|                |buttons, set these towards a common color theme. Defaults to|
+|                |gray for hover and disabled states. Otherwise it is white.  |
++----------------+------------------------------------------------------------+
+|``border``      |Border color. It is common to only modify this in a focus or|
+|                |hover state. Defaults to white or turquoise for hover.      |
++----------------+------------------------------------------------------------+
+|``border_width``|Width of the border/outline of the button. It is common to  |
+|                |make this thicker on a hover or focus state, however an     |
+|                |overly thick border will result in your GUI looking old or  |
+|                |low-quality. Defaults to 2.                                 |
++----------------+------------------------------------------------------------+
+
+Image/texture button
+^^^^^^^^^^^^^^^^^^^^
+
+**Name**: :py:class:`~arcade.gui.UITextureButton`
+
+An image button. Textures are supplied from :py:func:`arcade.load_texture` for
+simple interactions (hover, press, release, click). A texture lets you further
+customize the look of the widget better than styling.
+
+A texture button a few more arguments than a flat button. ``texture``,
+``texture_hovered``, and ``texture_pressed`` will change the texture displayed
+on the button respectively. ``scale`` will change the scaling or size of the
+button - it's similar to the sprite :py:attr:`~arcade.Sprite.scale`.
+
+.. hint::
+    This widget *does* have ``width`` and ``height`` parameters, but they only
+    stretch the texture instead of resizing it with keeping the borders. This
+    feature is currently in-progress.
+
+Texture buttons have fewer styling options when they have a texture compared to
+flat buttons.
+
++----------------+------------------------------------------------------------+
+|Name            |Description                                                 |
++================+============================================================+
+|``font_size``   |Font size for the button text. Defaults to 12.              |
++----------------+------------------------------------------------------------+
+|``font_name``   |Font name or family for the button text. If a tuple is      |
+|                |supplied then arcade will attempt to load all of the fonts, |
+|                |prioritizing the first one. Defaults to                     |
+|                |``("calibri", "arial")``.                                   |
++----------------+------------------------------------------------------------+
+|``font_color``  |Font color for the button text (foreground). Defaults to    |
+|                |white for normal, hover, and disabled states. Defaults to   |
+|                |black for pressed state.                                    |
++----------------+------------------------------------------------------------+
+|``border_width``|Width of the border/outline of the button. It is common to  |
+|                |make this thicker on a hover or focus state, however an     |
+|                |overly thick border will result in your GUI looking old or  |
+|                |low-quality. Defaults to 2.                                 |
++----------------+------------------------------------------------------------+
+
+Text widgets
+````````````
+
+All text widgets take ``x`` and ``y`` positioning parameters. They also accept
+``text`` and ``multiline`` options.
+
+Label
+^^^^^
+
+**Name**: :py:class:`~arcade.gui.UILabel`
+
+A label is used to display text as instruction for the user. Multiline text is
+supported, and what would have been its style options were moved into the
+parameters.
+
+This widget has no style options whatsoever, and they have been moved into the
+parameters. ``bold`` and ``italic`` will set the text to bold or italic.
+``align`` specifies the justification of the text. Additionally it takes
+``font_name``, ``font_size``, and ``text_color`` options.
+
+Using the :py:attr:`~arcade.gui.UILabel.label` property accesses the internal
+:py:class:`~arcade.Text` class. 
+
+.. hint::
+    A :py:attr:`~arcade.gui.UILabel.text` attribute can modify the displayed
+    text. Beware-calling this again and again will give a lot of lag. Use
+    :py:meth:`~arcade.Text.begin_update` and py:meth:`~arcade.Text.end_update`
+    to speed things up.
+
+Text input field
+^^^^^^^^^^^^^^^^
+
+**Name**: :py:class:`~arcade.gui.UIInputText`
+
+A text field allows a user to input a basic string. It uses pyglet's
+:py:class:`~pyglet.text.layout.IncrementalTextLayout` and its
+:py:class:`~pyglet.text.caret.Caret`. These are stored in ``layout`` and
+``caret`` properties.
+
+This widget takes ``width`` and ``height`` properties and uses a rectangle to
+display a background behind the layout.
+
+A text input field allows the user to move a caret around text to modify it, as
+well as selecting parts of text to replace or delete it. Motion symbols for a
+text field are listed in :py:mod:`pyglet.window.key` module.
+
+Text area
+^^^^^^^^^
+
+**Name**: :py:class:`~arcade.gui.UITextArea`
+
+A text area is a scrollable text widget. A user can scroll the mouse to view a
+rendered text document. **This does not support editing text**. Think of it as
+a scrollable label instead of a text field.
+
+``width`` and ``height`` allocate a size for the text area. If text does not
+fit within these dimensions then only part of it will be displayed. Scrolling
+the mouse will display other sections of the text incrementally. Other
+parameters include ``multiline`` and ``scroll_speed``. See
+:py:attr:`~pyglet.text.layout.ScrollableTextLayout.view_y` on scroll speed.
+
+Use ``layout`` and ``doc`` to get the pyglet layout and document for the
+text area, respectively.
 
 .. _UIEvent:
 
-UIEvents
-========
+User-interface events
+=====================
 
-UIEvents are fully typed dataclasses, which provide information about a event effecting the UI.
+Arcade's GUI events are fully typed dataclasses, which provide information
+about an event affecting the UI.
 
-All pyglet window events are converted by the UIManager into UIEvents and passed via dispatch_event
-to the ``on_event`` callbacks.
+All pyglet window events are converted by the
+:py:class:`~arcade.gui.UIManager` into :class:`UIEvents` and passed via
+:py:meth:`~pyglet.event.EventDispatcher.dispatch_event` to the
+:py:meth:`~arcade.gui.UIWidget.on_event` callbacks.
 
-Widget specific UIEvents like UIOnClick are dispatched via "on_event" and are then  dispatched as specific event types (like 'on_click')
+Widget-specific events (such as :py:class:`~arcade.gui.UIOnClickEvent` are
+dispatched via ``on_event`` and are then  dispatched as specific event types
+(like ``on_click``).
 
-- :class:`UIEvent` - Base class for all events
-- :class:`UIMouseEvent` - Base class for mouse related event
-    - :class:`UIMouseMovementEvent` - Mouse moves
-    - :class:`UIMousePressEvent` - Mouse button pressed
-    - :class:`UIMouseDragEvent` - Mouse pressed and moved (drag)
-    - :class:`UIMouseReleaseEvent` - Mouse button released
-    - :class:`UIMouseScrollEvent` - Mouse scolls
-- :class:`UITextEvent` - Text input from user
-- :class:`UITextMotionEvent` - Text motion events like arrows
-- :class:`UITextMotionSelectEvent` - Text motion events for selection
-- :class:`UIOnUpdateEvent` - arcade.Window `on_update` callback
+A full list of event attributes is shown below.
 
-Widget specific events
-......................
++---------------------------+-----------------------------------------+
+|Event                      |Attributes                               |
++===========================+=========================================+
+|``UIEvent``                |None                                     |
++---------------------------+-----------------------------------------+
+|``UIMouseEvent``           |``x``, ``y``                             |
++---------------------------+-----------------------------------------+
+|``UIMouseMovementEvent``   |``dx``, ``dy``                           |
++---------------------------+-----------------------------------------+
+|``UIMousePressEvent``      |``dx``, ``dy``, ``button``, ``modifiers``|
++---------------------------+-----------------------------------------+
+|``UIMouseDragEvent``       |``dx``, ``dy``                           |
++---------------------------+-----------------------------------------+
+|``UIMouseScrollEvent``     |``scroll_x``, ``scroll_y``               |
++---------------------------+-----------------------------------------+
+|``UIKeyEvent``             |``symbol``, ``modifiers``                |
++---------------------------+-----------------------------------------+
+|``UIKeyReleaseEvent``      |None                                     |
++---------------------------+-----------------------------------------+
+|``UITextEvent``            |``text``                                 |
++---------------------------+-----------------------------------------+
+|``UITextMotionEvent``      |``motion``                               |
++---------------------------+-----------------------------------------+
+|``UITextMotionSelectEvent``|``selection``                            |
++---------------------------+-----------------------------------------+
+|``UIOnClickEvent``         |None                                     |
++---------------------------+-----------------------------------------+
+|``UIOnUpdateEvent``        |``dt``                                   |
++---------------------------+-----------------------------------------+
+|``UIOnChangeEvent``        |``old_value``, ``new_value``             |
++---------------------------+-----------------------------------------+
+|``UIOnActionEvent``        |``action``                               |
++---------------------------+-----------------------------------------+
 
-Widget events are only dispatched as a Pyglet event on a widget itself and are not passed through the widget tree.
+- :py:class:`arcade.gui.UIEvent`. Base class for all events.
+- :py:class:`arcade.gui.UIMouseEvent`. Base class for mouse-related events.
+    - :py:class:`arcade.gui.UIMouseMovementEvent`. Mouse motion. This event
+      has an additional ``pos`` property that returns a tuple of the x and y
+      coordinates.
+    - :py:class:`~arcade.gui.UIMousePressEvent`. Mouse button pressed.
+    - :py:class:`~arcade.gui.UIMouseDragEvent`. Mouse pressed and moved (drag).
+    - :py:class:`~arcade.gui.UIMouseReleaseEvent`. Mouse button release.
+    - :py:class:`~arcade.gui.UIMouseScrollEvent`. Mouse scroll.
+- :py:class:`~arcade.gui.UITextEvent`. Text input from user. This is only used
+  for text fields and is the text as a string that was inputed.
+- :py:class:`~arcade.gui.UITextMotionEvent`. Text motion events. This includes
+  moving the text around with the caret. Examples include using the arrow
+  keys, backspace, delete, or any of the home/end and PgUp/PgDn keys. Holding
+  ``Control`` with an arrow key shifts the caret by a entire word or paragraph.
+  Moving the caret via the mouse does not trigger this event.
+- :py:class:`~arcade.gui.UITextMotionSelectEvent`. Text motion events for
+  selection. Holding down the ``Shift`` key and pressing arrow keys
+  (``Control`` optional) will select character(s). Additionally, using a
+  ``Control-A`` keyboard combination will select all text. Selecting text via
+  the mouse does not trigger this event.
+- :py:class:`~arcade.gui.UIOnUpdateEvent`. This is a callback to the arcade
+  :py:class:`~arcade.Window.on_update` method.
 
-- :class:`UIOnClickEvent` - Click event of :class:`UIInteractiveWidget` class
-- :class:`UIOnChangeEvent` - A value of a :class:`UIWidget` has changed
-- :class:`UIOnActionEvent` - An action results from interaction with the :class:`UIWidget` (mostly used in constructs)
+Widget-specific events
+``````````````````````
 
-Different Event Systems
+Widget events are only dispatched as a pyglet event on a widget itself and are
+not passed through the widget tree.
+
+- :py:class:`~arcade.gui.UIOnClickEvent`. Click event of
+  :py:class:`~arcade.gui.UIInteractiveWidget` class. This is triggered on
+  widget press.
+- :py:class:`~arcade.gui.UIOnChangeEvent`. A value of a
+  :py:class:`~arcade.gui.UIWidget` has changed.
+- :py:class:`~arcade.gui.UIOnActionEvent`. An action results from interaction
+  with the :py:class:`~arcade.gui.UIWidget` (mostly used in constructs)
+
+Different event systems
 =======================
 
-The GUI uses different event systems, dependent on the required flow. A game developer should mostly interact with UIEvents
-which are dispatched from specific UIWidgets like ``on_click`` of a button.
+Arcade's GUI uses different event systems, dependent on the required flow. A
+game developer should mostly interact with user-interface events, which are
+dispatched from specific :py:class:`~arcade.gui.UIWidget`s like an ``on_click``
+of a button.
 
-In rare cases a developer might implement some UIWidgets or wants to modify the existing GUI behavior. In those cases a
-developer might register own Pyglet event types on UIWidgets or overwrite the ``UIWidget.on_event`` method.
+In rare cases a developer might implement some widgets themselves or want to
+modify the existing GUI behavior. In those cases a developer might register own
+pyglet event types on widgets or overwrite the
+:py:class:`~arcade.gui.UIWidget.on_event` method. In that case, refer to
+existing widgets as an example.
 
-Pyglet Window Events
-....................
+Pyglet window events
+````````````````````
 
-Received by UIManager, dispatched via ``UIWidget.dispatch_event("on_event", UIEvent(...))``.
-Window Events are wrapped into subclasses of UIEvent.
+Pyglet window events are received by :py:class:`~arcade.gui.UIManager`.
 
-Pyglet EventDispatcher - UIWidget
-.................................
+You can dispatch them via::
 
-UIWidgets implement Pyglets EventDispatcher and register an ``on_event`` event type.
-``UIWidget.on_event`` contains specific event handling and should not be overwritten without deeper understanding of the consequences.
-To add custom event handling use the decorator syntax to add another listener (``@UIWidget.event("on_event")``).
+    UIWidget.dispatch_event("on_event", UIEvent(...))
 
-UIEvents
-........
+Window events are wrapped into subclasses of :py:class:`~arcade.gui.UIEvent`.
 
-UIEvents are typed representations of events that are passed within the GUI. UIWidgets might define and dispatch their own subclasses of UIEvents.
+Pyglet event dispatcher - UIWidget
+``````````````````````````````````
+
+Widgets implement pyglet's :py:class:`~pyglet.event.EventDispatcher` and
+register an ``on_event`` event type.
+
+:py:meth:`~arcade.gui.UIWidget.on_event` contains specific event handling and
+should not be overwritten without deeper understanding of the consequences.
+
+To add custom event handling, use the decorator syntax to add another
+listener::
+
+    @UIWidget.event("on_event")
+
+User-interface events
+`````````````````````
+
+User-interface events are typed representations of events that are passed
+within the GUI. Widgets might define and dispatch their own subclasses of these
+events.
 
 Property
-........
+````````
 
-``Property`` is an pure-Python implementation of Kivy Properties. They are used to detect attribute
-changes of UIWidgets and trigger rendering. They should only be used in arcade internal code.
-
+:py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy
+Properties. They are used to detect attribute changes of widgets and trigger
+rendering. They should only be used in arcade internal code.

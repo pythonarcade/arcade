@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
-from arcade.math import get_angle_degrees
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point
 
@@ -312,22 +311,18 @@ class Sprite(BasicSprite, PymunkMixin):
         self.velocity = 0, 0
         self.change_angle = 0
 
-    def face_point(self, point: Point) -> None:
-        """
-        Face the sprite towards a point. Assumes sprite image is facing upwards.
-
-        :param Point point: Point to face towards.
-        """
-        angle = get_angle_degrees(self.center_x, self.center_y, point[0], point[1])
-
-        # Reverse angle because sprite angles are backwards
-        self.angle = -angle
-
     # ---- Draw Methods ----
 
     def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
         """
-        Draw the sprite.
+        A debug method which draws the sprite into the current OpenGL context.
+
+        .. warning:: You are probably looking for :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>`!
+
+                     Drawing individual sprites is slow compared to using :py:class:`~arcade.SpriteList`.
+                     See :ref:`pg_spritelists_why` for more information.
+
+        This method should not be relied on. It may be removed one day.
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.

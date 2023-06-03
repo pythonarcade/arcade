@@ -83,7 +83,7 @@ def check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     return _check_for_collision(sprite1, sprite2)
 
 
-def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
+def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
     Check for collision between two sprites.
 
@@ -130,7 +130,7 @@ def _check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
     )
 
 
-def _get_nearby_sprites(sprite: SpriteType, sprite_list: SpriteList) -> List[SpriteType]:
+def _get_nearby_sprites(sprite: BasicSprite, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []
@@ -229,8 +229,8 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(
-    sprite: SpriteType,
-    sprite_lists: Iterable[SpriteList],
+    sprite: BasicSprite,
+    sprite_lists: Iterable[SpriteList[SpriteType]],
     method=1,
 ) -> List[SpriteType]:
     """
@@ -246,7 +246,9 @@ def check_for_collision_with_lists(
     """
     if __debug__:
         if not isinstance(sprite, BasicSprite):
-            raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+            raise TypeError(
+                f"Parameter 1 is not an instance of the BasicSprite class, it is an instance of {type(sprite)}."
+            )
 
     sprites: List[SpriteType] = []
     sprites_to_check: Iterable[SpriteType]
@@ -299,7 +301,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     ]
 
 
-def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[SpriteType]:
+def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites whose center_x, center_y match the given point.
     This does NOT return sprites that overlap the point, the center has to be an exact match.
@@ -328,7 +330,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sp
     return [s for s in sprites_to_check if s.position == point]
 
 
-def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList) -> List[SpriteType]:
+def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
     the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,

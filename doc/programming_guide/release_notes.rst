@@ -106,10 +106,12 @@ Changes
         * ``UIWidget.padding_bottom``
         * ``UIWidget.padding_left``
     * Update and add example code.
+    * Iterable (providing direct children)
 
   * New widgets:
 
     * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
+    * :py:class:`~arcade.gui.widgets.image.UIImage`
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
     * :py:class:`~arcade.gui.widgets.constructs.UIButtonRow` (`PR1580 <https://github.com/pythonarcade/arcade/pull/1580>`_ and `PR1253 <https://github.com/pythonarcade/arcade/pull/1253>`_)
 
@@ -185,6 +187,8 @@ Changes
   * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
     when the extension is available.
   * Fixed many implicit type conversions in the shader code for wider support.
+  * Added ``front_face`` property on the context for configuring front face winding order of triangles
+  * Added ``cull_face`` property on the context for configuring what triangle face to cull
 
 * :py:class:`~arcade.tilemap.TileMap`
 
