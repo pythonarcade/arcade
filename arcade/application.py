@@ -11,7 +11,7 @@ import pyglet
 
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.canvas.base import ScreenMode
+from pyglet.canvas.base import ScreenMode, Screen
 from pyglet.window import MouseCursor
 
 import arcade
