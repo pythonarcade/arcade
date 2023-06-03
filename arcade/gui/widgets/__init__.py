@@ -662,11 +662,11 @@ class UIInteractiveWidget(UIWidget):
 
     def __init__(
         self,
+        width: float,
+        height: float,
         *,
         x: float = 0,
         y: float = 0,
-        width: float,
-        height: float,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,

@@ -17,12 +17,13 @@ from arcade.gui import (
     Surface,
     NinePatchTexture
 )
+from arcade.gui import UIInteractiveWidget
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
 @dataclass
-class _SliderParent:
+class _SliderParent():
     """
     Parent Slider all sliders inherit from
 
@@ -56,6 +57,7 @@ class _SliderParent:
         max_value: float = 100,
         **kwargs,
     ):
+
         self.value = value
         self.vmin = min_value
         self.vmax = max_value
