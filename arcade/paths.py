@@ -169,7 +169,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
         current = None
         current_fscore = None
         for pos in sorted(open_vertices):
-            if current is None or F[pos] < current_fscore:
+            if current is None or F[pos] < current_fscore:  # type: ignore
                 current_fscore = F[pos]
                 current = pos
 
