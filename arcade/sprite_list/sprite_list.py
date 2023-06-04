@@ -957,7 +957,8 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False, blend_function: Union[Tuple[int, int], Tuple[int, int, int, int], None]=None) -> None:
+    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False,
+            blend_function: Union[Tuple[int, int], Tuple[int, int, int, int], None]=None) -> None:
         """
         Draw this list of sprites.
 
