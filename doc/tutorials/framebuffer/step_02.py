@@ -7,7 +7,7 @@ SCREEN_TITLE = "Starting Template Simple"
 
 
 class RandomFilter(RenderTargetTexture):
-    def __init__(self, width, height):
+    def __init__(self, width, height) -> None:
         super().__init__(width, height)
         self.program = self.ctx.program(
             vertex_shader="""
@@ -51,7 +51,7 @@ class RandomFilter(RenderTargetTexture):
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title)
         self.filter = RandomFilter(width, height)
 

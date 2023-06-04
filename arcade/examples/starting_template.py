@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
     with your own code. Don't leave 'pass' in this program.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title)
 
         self.background_color = arcade.color.AMAZON

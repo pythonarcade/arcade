@@ -10,7 +10,7 @@ class PyMunk:
         "max_vertical_velocity",
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.damping = None
         self.gravity = None
         self.max_velocity = None
@@ -20,7 +20,7 @@ class PyMunk:
 
 class PymunkMixin:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.pymunk = PyMunk()
         self.force = [0.0, 0.0]
 

@@ -38,7 +38,7 @@ class Query:
         "_primitives",
     )
 
-    def __init__(self, ctx: "Context", samples=True, time=True, primitives=True):
+    def __init__(self, ctx: "Context", samples=True, time=True, primitives=True) -> None:
         # TODO: Support querying a subset of these queries (faster)
         # TODO: Evalute of this query should be included
         # gl.GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN

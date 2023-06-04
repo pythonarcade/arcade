@@ -6,7 +6,7 @@ SCREEN_TITLE = "An Empty Program"
 
 
 class MyWindow(arcade.Window):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.center_window()
         self.background_color = arcade.color.ALMOND

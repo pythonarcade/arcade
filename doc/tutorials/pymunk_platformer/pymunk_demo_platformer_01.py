@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 600
 class GameWindow(arcade.Window):
     """ Main Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Create the variables """
 
         # Init the parent class

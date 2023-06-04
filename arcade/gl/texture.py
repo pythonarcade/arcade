@@ -121,7 +121,7 @@ class Texture2D:
         depth=False,
         samples: int = 0,
         immutable: bool = False,
-    ):
+    ) -> None:
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
         self._width, self._height = size

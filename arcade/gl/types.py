@@ -136,7 +136,7 @@ class AttribFormat:
     def __init__(
         self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0,
         location=0
-    ):
+    ) -> None:
         self.name = name
         self.gl_type = gl_type
         self.components = components
@@ -237,7 +237,7 @@ class BufferDescription:
         attributes: Sequence[str],
         normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
-    ):
+    ) -> None:
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
@@ -351,7 +351,8 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int):
+    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum,
+                 gl_size: int, components: int) -> None:
         self.name = name
         self.enum = enum
         self.gl_type = gl_type

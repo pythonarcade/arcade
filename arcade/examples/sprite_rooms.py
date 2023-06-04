@@ -24,7 +24,7 @@ class Room:
     This class holds all the information about the
     different rooms.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         # You may want many lists. Lists for coins, monsters, etc.
         self.wall_list = None
 
@@ -128,7 +128,7 @@ def setup_room_2():
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Initializer
         """

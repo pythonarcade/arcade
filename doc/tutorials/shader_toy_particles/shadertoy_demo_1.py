@@ -5,7 +5,7 @@ from arcade.experimental import Shadertoy
 # Derive an application window from Arcade's parent Window class
 class MyGame(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Call the parent constructor
         super().__init__(width=1920, height=1080)
 

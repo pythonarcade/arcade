@@ -22,7 +22,7 @@ class EmitController:
 
 class EmitBurst(EmitController):
     """Used to configure an Emitter to emit particles in one burst"""
-    def __init__(self, count: int):
+    def __init__(self, count: int) -> None:
         self._is_complete = False
         self._count = count
 
@@ -38,7 +38,7 @@ class EmitBurst(EmitController):
 
 class EmitMaintainCount(EmitController):
     """Used to configure an Emitter so it emits particles so that the given count is always maintained"""
-    def __init__(self, particle_count: int):
+    def __init__(self, particle_count: int) -> None:
         self._target_count = particle_count
 
     def how_many(self, delta_time: float, current_particle_count: int) -> int:
@@ -50,7 +50,7 @@ class EmitMaintainCount(EmitController):
 
 class EmitInterval(EmitController):
     """Base class used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
-    def __init__(self, emit_interval: float):
+    def __init__(self, emit_interval: float) -> None:
         if emit_interval <= 0:
             raise ValueError("Invalid value for emit_interval. Must be larger than 0.")
         self._emit_interval = emit_interval
@@ -70,7 +70,7 @@ class EmitInterval(EmitController):
 
 class EmitterIntervalWithCount(EmitInterval):
     """Configure an Emitter to emit particles with given interval, ending after emitting given number of particles"""
-    def __init__(self, emit_interval: float, particle_count: int):
+    def __init__(self, emit_interval: float, particle_count: int) -> None:
         super().__init__(emit_interval)
         self._count_remaining = particle_count
 
@@ -86,7 +86,7 @@ class EmitterIntervalWithCount(EmitInterval):
 
 class EmitterIntervalWithTime(EmitInterval):
     """Configure an Emitter to emit particles with given interval, ending after given number of seconds"""
-    def __init__(self, emit_interval: float, lifetime: float):
+    def __init__(self, emit_interval: float, lifetime: float) -> None:
         super().__init__(emit_interval)
         self._lifetime = lifetime
 
@@ -111,7 +111,7 @@ class Emitter:
         change_xy: Vector = (0.0, 0.0),
         emit_done_cb: Optional[Callable[["Emitter"], None]] = None,
         reap_cb: Optional[Callable[[], None]] = None
-    ):
+    ) -> None:
         self.change_x = change_xy[0]
         self.change_y = change_xy[1]
 

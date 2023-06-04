@@ -11,7 +11,7 @@ from arcade.experimental.gaussian_kernel import gaussian_kernel
 
 class PostProcessing:
     """Base class"""
-    def __init__(self, size: Tuple[int, int], *args, **kwargs):
+    def __init__(self, size: Tuple[int, int], *args, **kwargs) -> None:
         self._size = size
         window = get_window()
         if not window:
@@ -52,7 +52,7 @@ class PostProcessing:
 
 class GaussianBlurPass(PostProcessing):
 
-    def __init__(self, size, kernel_size=5, sigma=2, multiplier=0, step=1):
+    def __init__(self, size, kernel_size=5, sigma=2, multiplier=0, step=1) -> None:
         super().__init__(size)
         self._kernel_size = kernel_size
         self._sigma = sigma
@@ -78,7 +78,8 @@ class GaussianBlurPass(PostProcessing):
 
 class GaussianBlurHorizontal(GaussianBlurPass):
     """ Blur the buffer horizontally. """
-    def __init__(self, size: Tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
+    def __init__(self, size: Tuple[int, int], kernel_size=5,
+                 sigma=2, multiplier=1, step=1) -> None:
         super().__init__(size, kernel_size=5, sigma=2, multiplier=1, step=1)
         color_attachment = self.ctx.texture(size,
                                             components=3,
@@ -104,7 +105,8 @@ class GaussianBlurHorizontal(GaussianBlurPass):
 class GaussianBlurVertical(GaussianBlurPass):
     """ Blur the buffer vertically. """
 
-    def __init__(self, size: Tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
+    def __init__(self, size: Tuple[int, int], kernel_size=5,
+                 sigma=2, multiplier=1, step=1) -> None:
         super().__init__(size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
         self._fbo = self.ctx.framebuffer(
             color_attachments=self.ctx.texture(size,
@@ -129,7 +131,7 @@ class GaussianBlurVertical(GaussianBlurPass):
 
 class GaussianBlur(PostProcessing):
     """ Do both horizontal and vertical blurs. """
-    def __init__(self, size, kernel_size=5, sigma=2, multiplier=0, step=1):
+    def __init__(self, size, kernel_size=5, sigma=2, multiplier=0, step=1) -> None:
         super().__init__(size)
         self._blur_x = GaussianBlurHorizontal(
             size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
@@ -150,7 +152,7 @@ class BloomEffect(PostProcessing):
                  sigma: float = 2,
                  mu: float = 0,
                  multiplier: float = 5,
-                 step: int = 1):
+                 step: int = 1) -> None:
         super().__init__(size, kernel_size=kernel_size)
 
         self._gaussian_1 = GaussianBlur(

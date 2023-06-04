@@ -12,7 +12,7 @@ class _Obs(Generic[P]):
 
     __slots__ = "value", "listeners"
 
-    def __init__(self, value: P):
+    def __init__(self, value: P) -> None:
         self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
         self.listeners: Set[Callable[[], Any]] = set()
@@ -29,7 +29,8 @@ class Property(Generic[P]):
     __slots__ = "name", "default_factory", "obs"
     name: str
 
-    def __init__(self, default: Optional[P] = None, default_factory: Optional[Callable[[Any, Any], P]] = None):
+    def __init__(self, default: Optional[P] = None,
+                 default_factory: Optional[Callable[[Any, Any], P]] = None) -> None:
         if default_factory is None:
             default_factory = lambda prop, instance: cast(P, default)
 
@@ -113,7 +114,7 @@ def bind(instance, property: str, callback):
 
 class _ObservableDict(dict):
     # Internal class to observe changes inside a native python dict.
-    def __init__(self, prop: Property, instance, *largs):
+    def __init__(self, prop: Property, instance, *largs) -> None:
         self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
@@ -158,7 +159,7 @@ class DictProperty(Property):
     Only dict are allowed. Any other classes are forbidden.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(default_factory=_ObservableDict)
 
     def set(self, instance, value: dict):
@@ -168,7 +169,7 @@ class DictProperty(Property):
 
 class _ObservableList(list):
     # Internal class to observe changes inside a native python list.
-    def __init__(self, prop: Property, instance, *largs):
+    def __init__(self, prop: Property, instance, *largs) -> None:
         self.prop: Property = prop
         self.obj = ref(instance)
         super().__init__(*largs)
@@ -234,7 +235,7 @@ class ListProperty(Property):
     Only list are allowed. Any other classes are forbidden.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(default_factory=_ObservableList)
 
     def set(self, instance, value: dict):

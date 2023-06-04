@@ -15,7 +15,7 @@ import arcade
 
 class MultisampleFramebuffer(arcade.Window):
 
-    def __init__(self, width, height):
+    def __init__(self, width, height) -> None:
         super().__init__(width, height, "Multisampled Framebuffer")
         self.time = 0
 

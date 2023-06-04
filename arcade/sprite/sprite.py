@@ -67,7 +67,7 @@ class Sprite(BasicSprite, PymunkMixin):
         center_y: float = 0.0,
         angle: float = 0.0,
         **kwargs,
-    ):
+    ) -> None:
         if isinstance(path_or_texture, Texture):
             _texture = path_or_texture
             _textures = [_texture]

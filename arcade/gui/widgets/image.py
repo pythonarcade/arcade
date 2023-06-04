@@ -18,7 +18,7 @@ class UIImage(UIWidget):
         self,
         texture: Union[Texture, NinePatchTexture],
         **kwargs,
-    ):
+    ) -> None:
         self.texture = texture
 
         super().__init__(**kwargs)

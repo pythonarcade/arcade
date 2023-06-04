@@ -132,7 +132,7 @@ def make_skyline(width, skyline_height, skyline_color,
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """ Initializer """
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, antialiasing=True)

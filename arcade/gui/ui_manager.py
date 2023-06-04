@@ -83,7 +83,7 @@ class UIManager(EventDispatcher):
 
     OVERLAY_LAYER = 10
 
-    def __init__(self, window: Optional[arcade.Window] = None):
+    def __init__(self, window: Optional[arcade.Window] = None) -> None:
         super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}

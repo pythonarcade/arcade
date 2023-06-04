@@ -25,7 +25,7 @@ class VideoPlayerCV2:
     :param path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: Union[str, Path]):
+    def __init__(self, path: Union[str, Path]) -> None:
 
         self.ctx = arcade.get_window().ctx
 
@@ -113,7 +113,7 @@ class VideoPlayerCV2:
 
 
 class CV2PlayerView(arcade.View):
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         super().__init__()
 
         self.video_player = VideoPlayerCV2(path)

@@ -16,7 +16,7 @@ class BloomFilter:
         self,
         width: int, height: int,
         intensity: float
-    ):
+    ) -> None:
         self.shadertoy = Shadertoy.create_from_file(
             (width, height),
             ":system:shaders/bloom/bloom_filter_image.glsl"

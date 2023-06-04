@@ -20,7 +20,7 @@ class ShadertoyVideo(arcade.View):
     Make sure to inherit this view and call super for `__init__`, `on_draw`, `on_update` and `on_resize`.
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         super().__init__()
         self.shadertoy = Shadertoy(
             self.window.get_framebuffer_size(),

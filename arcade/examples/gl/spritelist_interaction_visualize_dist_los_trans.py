@@ -33,7 +33,7 @@ INTERACTION_RADIUS = 200
 
 class SpriteListInteraction(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "SpriteList Interaction - LoS")
 
         # Player

@@ -47,7 +47,7 @@ class MenuView(arcade.View):
 class GameView(arcade.View):
     """ Manage the 'game' view for our program. """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         # Create variables here
 

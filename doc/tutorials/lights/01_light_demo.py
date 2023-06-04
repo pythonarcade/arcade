@@ -13,7 +13,7 @@ MOVEMENT_SPEED = 5
 class MyGame(arcade.Window):
     """ Main Game Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Set up the class. """
         super().__init__(width, height, title, resizable=True)
 

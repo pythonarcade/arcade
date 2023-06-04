@@ -77,7 +77,7 @@ class Program:
         tess_evaluation_shader: Optional[str] = None,
         varyings: Optional[List[str]] = None,
         varyings_capture_mode: str = "interleaved",
-    ):
+    ) -> None:
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
         self._varyings = varyings or []

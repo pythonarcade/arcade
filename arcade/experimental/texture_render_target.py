@@ -10,7 +10,7 @@ class RenderTargetTexture:
     This can be used in creative ways.
     """
 
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int) -> None:
         """Create a RenderTargetTexture.
 
         :param int width: Width of the render target in pixels

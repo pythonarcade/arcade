@@ -14,7 +14,7 @@ SCREEN_TITLE = "Implement Views Example"
 class GameView(arcade.View):
     """ Our custom Window Class"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """ Initializer """
         # Call the parent class initializer
         super().__init__()

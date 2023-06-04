@@ -32,7 +32,7 @@ class Profiler:
 
     :param str sort_by: function sort order
     """
-    def __init__(self, sort_by="tottime"):
+    def __init__(self, sort_by="tottime") -> None:
         self._sort_by = sort_by
         self._profiler = cProfile.Profile()
 

@@ -31,7 +31,7 @@ FRAME_DELAY = 2  # The game will only update every 2th frame
 
 class GameOfLife(arcade.Window):
 
-    def __init__(self, width, height):
+    def __init__(self, width, height) -> None:
         super().__init__(width, height, "Game of Life - Shader Version")
         self.frame = 0
 

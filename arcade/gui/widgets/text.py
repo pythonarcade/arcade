@@ -71,7 +71,7 @@ class UILabel(UIWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
         # Use Arcade wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
             start_x=0,
@@ -153,7 +153,7 @@ class UITextWidget(UIAnchorLayout):
     The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
     """
 
-    def __init__(self, text: str = "", multiline: bool = False, **kwargs):
+    def __init__(self, text: str = "", multiline: bool = False, **kwargs) -> None:
         super().__init__(text=text, **kwargs)
         self._label = UILabel(
             text=text,
@@ -407,7 +407,7 @@ class UITextArea(UIWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,

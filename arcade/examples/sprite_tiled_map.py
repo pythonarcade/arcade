@@ -37,7 +37,7 @@ GRAVITY = 1.1
 class MyGame(arcade.Window):
     """Main application class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializer
         """

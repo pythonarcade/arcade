@@ -14,7 +14,7 @@ from .base import AtlasRegion, TextureAtlas
 
 class FakeImage:
     """A fake PIL image"""
-    def __init__(self, size):
+    def __init__(self, size) -> None:
         self.size = size
 
     @property

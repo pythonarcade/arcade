@@ -79,7 +79,7 @@ class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
                  ladder_list: arcade.SpriteList,
-                 hit_box_algorithm: arcade.hitbox.HitBoxAlgorithm):
+                 hit_box_algorithm: arcade.hitbox.HitBoxAlgorithm) -> None:
         """ Init """
         # Let parent initialize
         super().__init__()
@@ -211,7 +211,7 @@ class BulletSprite(arcade.SpriteSolidColor):
 class GameWindow(arcade.Window):
     """ Main Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Create the variables """
 
         # Init the parent class

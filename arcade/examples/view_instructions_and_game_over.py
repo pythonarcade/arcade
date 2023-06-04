@@ -59,7 +59,7 @@ class InstructionView(arcade.View):
 
 
 class GameView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.time_taken = 0
@@ -141,7 +141,7 @@ class GameView(arcade.View):
 
 
 class GameOverView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.time_taken = 0
 

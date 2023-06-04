@@ -10,7 +10,7 @@ class Vfs:
     This avoids invalidating sphinx cache and causing endless rebuild loops w/
     sphinx-autobuild.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self.files: dict[str, VirtualFile] = dict()
         self.files_to_delete: set[Path] = set()
 
@@ -57,7 +57,7 @@ class Vfs:
 
 
 class VirtualFile:
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         self.path = path
         self.content = ''
     def write(self, str: str):

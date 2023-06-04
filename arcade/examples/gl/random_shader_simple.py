@@ -28,7 +28,7 @@ def generate_points(count: int):
 
 class App(Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._point_count = 128  # the number of points we want showing up
         self._time_seed = time()  # so that the colours change every run we store the time at run to use as a seed

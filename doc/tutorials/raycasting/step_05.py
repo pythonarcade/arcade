@@ -21,7 +21,7 @@ PLAYING_FIELD_HEIGHT = 1600
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title)
 
         # The shader toy and 'channels' we'll be using

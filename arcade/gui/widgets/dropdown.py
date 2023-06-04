@@ -42,7 +42,7 @@ class UIDropdown(UILayout):
         default: Optional[str] = None,
         options: Optional[List[Union[str, None]]] = None,
         style=None, **kwargs
-    ):
+    ) -> None:
         if style is None:
             style = {}
 

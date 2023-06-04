@@ -40,7 +40,7 @@ class InstructionView(arcade.View):
 class GameOverView(arcade.View):
     """ View to show when game is over """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """ This is run once when we switch to this view """
         super().__init__()
         self.texture = arcade.load_texture("game_over.png")
@@ -65,7 +65,7 @@ class GameOverView(arcade.View):
 class GameView(arcade.View):
     """ Our custom Window Class"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """ Initializer """
         # Call the parent class initializer
         super().__init__()

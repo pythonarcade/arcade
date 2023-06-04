@@ -21,7 +21,7 @@ class Player(arcade.Sprite):
     """
     Sprite that turns and moves
     """
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(":resources:images/topdown_tanks/tank_green.png")
 
         # Destination point is where we are going
@@ -135,7 +135,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
         self.background_color = arcade.color.SAND

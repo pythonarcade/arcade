@@ -21,7 +21,7 @@ SCREEN_TITLE = "Geometry Shader"
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Set up the application.
         """

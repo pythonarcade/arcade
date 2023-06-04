@@ -34,7 +34,7 @@ class UITextureToggle(UIInteractiveWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs
-    ):
+    ) -> None:
         # Generate hover and pressed texture by changing the brightness
         if on_texture is None:
             raise ValueError("You have to provide a `on_texture`")

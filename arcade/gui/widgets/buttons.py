@@ -92,7 +92,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
 
         if width is None and texture is not None:
             width = texture.size[0]
@@ -291,7 +291,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         size_hint_max=None,
         style=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,

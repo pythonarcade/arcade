@@ -12,7 +12,7 @@ from arcade.gl import geometry
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title, resizable=False)
 
         # Use the standard cube

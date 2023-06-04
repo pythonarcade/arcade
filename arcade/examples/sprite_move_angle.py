@@ -24,7 +24,7 @@ ANGLE_SPEED = 5
 class Player(arcade.Sprite):
     """ Player class """
 
-    def __init__(self, image, scale):
+    def __init__(self, image, scale) -> None:
         """ Set up the player """
 
         # Call the parent init
@@ -50,7 +50,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Initializer
         """

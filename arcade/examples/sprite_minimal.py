@@ -11,7 +11,7 @@ import arcade
 
 class WhiteSpriteCircleExample(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(800, 600, "White SpriteCircle Example")
         self.sprites = None
         self.setup()

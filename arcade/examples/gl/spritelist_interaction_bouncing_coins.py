@@ -27,7 +27,7 @@ NUM_COINS = 10_000
 
 class GPUBouncingCoins(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
 
         # Generate lots of coins in random positions

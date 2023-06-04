@@ -27,7 +27,7 @@ TEXTURE_RIGHT = 1
 
 class Player(arcade.Sprite):
 
-    def __init__(self):
+    def __init__(self) -> None:
         left, right = arcade.load_texture_pair(":resources:images/enemies/bee.png")
         super().__init__(left, scale=SPRITE_SCALING)
         self.textures.append(right)
@@ -48,7 +48,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Initializer
         """

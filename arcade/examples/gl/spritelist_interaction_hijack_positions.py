@@ -16,7 +16,7 @@ NUM_COINS = 500
 
 class HijackSpritePositions(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(720, 720, "Hijack Sprite Positions", resizable=True)
         self.time = 0
 

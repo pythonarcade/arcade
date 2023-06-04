@@ -12,7 +12,7 @@ FADE_RATE = 5
 
 
 class FadingView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.fade_out = None
         self.fade_in = 255

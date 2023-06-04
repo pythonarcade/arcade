@@ -62,7 +62,7 @@ class UIAnchorLayout(UILayout):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -226,7 +226,7 @@ class UIBoxLayout(UILayout):
         space_between=0,
         style=None,
         **kwargs
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -502,7 +502,7 @@ class UIGridLayout(UILayout):
         row_count: int = 1,
         style=None,
         **kwargs
-    ):
+    ) -> None:
 
         super(UIGridLayout, self).__init__(
             x=x,

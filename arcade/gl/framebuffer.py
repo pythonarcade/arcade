@@ -62,7 +62,7 @@ class Framebuffer:
 
     def __init__(
         self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture2D] = None
-    ):
+    ) -> None:
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
         if not color_attachments:
@@ -531,7 +531,7 @@ class DefaultFrameBuffer(Framebuffer):
     is_default = True
     __slots__ = ()
 
-    def __init__(self, ctx: "Context"):
+    def __init__(self, ctx: "Context") -> None:
         self._ctx = ctx
         # TODO: Can we query this?
         self._samples = 0

@@ -47,7 +47,7 @@ BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
-    def __init__(self):
+    def __init__(self) -> None:
         """ Set up player """
         super().__init__(40, 10, color=arcade.color.SLATE_GRAY)
         self.face_right = True
@@ -114,7 +114,7 @@ class Player(arcade.SpriteSolidColor):
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
-    def __init__(self, width, height, color):
+    def __init__(self, width, height, color) -> None:
         super().__init__(width, height, color)
         self.distance = 0
 
@@ -144,7 +144,7 @@ class Particle(arcade.SpriteSolidColor):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Initializer """
 
         # Call the parent class initializer

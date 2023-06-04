@@ -34,7 +34,7 @@ CAMERA_SPEED = 0.1
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Initializer """
 
         # Call the parent init

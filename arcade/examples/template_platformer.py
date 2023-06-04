@@ -30,7 +30,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT,

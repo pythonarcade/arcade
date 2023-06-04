@@ -30,7 +30,7 @@ class Burst:
 
 class MyWindow(arcade.Window):
     """ Main window"""
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.burst_list = []
 

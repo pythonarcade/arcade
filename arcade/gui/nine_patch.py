@@ -74,7 +74,7 @@ class NinePatchTexture:
         top: int,
         texture: arcade.Texture,
         atlas: Optional[arcade.TextureAtlas] = None
-    ):
+    ) -> None:
         self._ctx = arcade.get_window().ctx
 
         # TODO: Cache in context?

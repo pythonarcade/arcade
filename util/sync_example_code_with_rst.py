@@ -8,7 +8,7 @@ ref_pattern = re.compile(":ref:`(.*)`")
 
 
 class Processor:
-    def __init__(self):
+    def __init__(self) -> None:
         self.file_list = []
         self.file_reference_list = []
         self.links_to_rst_files = []

@@ -73,7 +73,7 @@ def random_radius(start=5, end=25):
 
 class GameWindow(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title, antialiasing=True, resizable=True)
         self.set_vsync(False)
 

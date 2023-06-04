@@ -26,7 +26,7 @@ SCREEN_TITLE = "CHIP-8 Screen"
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """CHIP-8 Screen"""
         super().__init__(width, height, title)
         self.program = self.ctx.program(

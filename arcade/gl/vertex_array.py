@@ -42,7 +42,7 @@ class VertexArray:
         content: Sequence[BufferDescription],
         index_buffer: Optional[Buffer] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._program = program
         self._content = content
@@ -445,7 +445,7 @@ class Geometry:
         index_buffer: Optional[Buffer] = None,
         mode: Optional[int] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._content = list(content or [])
         self._index_buffer = index_buffer

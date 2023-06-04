@@ -15,7 +15,7 @@ SCREEN_TITLE = "Making a Menu"
 class MainView(arcade.View):
     """This is the class where your normal game would go."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.manager = arcade.gui.UIManager()
@@ -61,7 +61,7 @@ class MainView(arcade.View):
 class MenuView(arcade.View):
     """Main menu view class."""
 
-    def __init__(self, main_view):
+    def __init__(self, main_view) -> None:
         super().__init__()
 
         self.manager = arcade.gui.UIManager()
@@ -147,7 +147,7 @@ class MenuView(arcade.View):
 class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     """Acts like a fake view/window."""
 
-    def __init__(self, ):
+    def __init__(self) -> None:
         super().__init__(size_hint=(1, 1))
 
         # Setup frame which will act like the window.

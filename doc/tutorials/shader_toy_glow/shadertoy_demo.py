@@ -4,7 +4,7 @@ from arcade.experimental import Shadertoy
 
 class MyGame(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Call the parent constructor
         super().__init__(width=1920, height=1080, title="Shader Demo", resizable=True)
 

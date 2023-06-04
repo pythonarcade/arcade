@@ -38,7 +38,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         height: float,
         message_text: str,
         buttons=("Ok",),
-    ):
+    ) -> None:
         if not buttons:
             raise ValueError("At least a single value has to be available for `buttons`")
 
@@ -120,7 +120,7 @@ class UIButtonRow(UIBoxLayout):
         space_between: int = 10,
         style: Optional[Any] = None,
         button_factory: type = UIFlatButton,
-    ):
+    ) -> None:
         super().__init__(
             vertical=vertical,
             align=align,

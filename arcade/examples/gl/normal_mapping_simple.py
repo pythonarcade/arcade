@@ -21,7 +21,7 @@ from arcade.gl import geometry
 
 class NormalMapping(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(512, 512, "Normal Mapping")
 
         # Load the color (diffuse) and normal texture

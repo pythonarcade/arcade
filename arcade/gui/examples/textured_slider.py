@@ -29,7 +29,7 @@ class UITextureSlider(UISlider):
         thumb: Union[Texture, NinePatchTexture],
         style=None,
         **kwargs
-    ):
+    ) -> None:
         self.bar = bar
         self.thumb = thumb
         style = style or UISlider.DEFAULT_STYLE
@@ -71,7 +71,7 @@ class UITextureSlider(UISlider):
 
 
 class MyView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.ui = UIManager()
 

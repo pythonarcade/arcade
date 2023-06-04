@@ -22,7 +22,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Set up the application.
         """

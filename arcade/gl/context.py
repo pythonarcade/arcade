@@ -163,7 +163,8 @@ class Context:
     }
     _valid_apis = ('gl', 'gles')
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
+    def __init__(self, window: pyglet.window.Window,
+                 gc_mode: str = "context_gc", gl_api: str = "gl") -> None:
         self._window_ref = weakref.ref(window)
         if gl_api not in self._valid_apis:
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
@@ -1119,7 +1120,7 @@ class ContextStats:
     """
     Runtime allocation statistics of OpenGL objects.
     """
-    def __init__(self, warn_threshold=100):
+    def __init__(self, warn_threshold=100) -> None:
         self.warn_threshold = warn_threshold
         #: Textures (created, freed)
         self.texture = (0, 0)
@@ -1169,7 +1170,7 @@ class ContextStats:
 class Limits:
     """OpenGL Limitations"""
 
-    def __init__(self, ctx):
+    def __init__(self, ctx) -> None:
         self._ctx = ctx
         #: Minor version number of the OpenGL API supported by the current context
         self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)

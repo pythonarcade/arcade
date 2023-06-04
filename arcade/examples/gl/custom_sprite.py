@@ -30,7 +30,7 @@ from arcade.gl.types import BufferDescription
 
 class GeoSprites(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(800, 600, "Custom Sprites", resizable=True)
         self.program = self.ctx.program(
             vertex_shader="""

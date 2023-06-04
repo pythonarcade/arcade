@@ -12,7 +12,7 @@ SCREEN_TITLE = "Drag and Drop Cards"
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.background_color = arcade.color.AMAZON

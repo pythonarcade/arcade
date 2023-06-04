@@ -16,7 +16,7 @@ from pyglet.graphics import Batch
 
 class Sphere3D(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title, resizable=True)
         self.sphere = geometry.sphere(1.0, 32, 32, uvs=False)
         # Simple color lighting program

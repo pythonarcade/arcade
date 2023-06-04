@@ -17,7 +17,7 @@ from arcade.gui import UIManager, UIDummy, UIBoxLayout
 
 
 class MyView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.ui = UIManager()
 

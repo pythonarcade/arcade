@@ -45,7 +45,7 @@ void main() {
 
 class App(arcade.Window):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # We need to specify OpenGL 4.3 when using Compute Shaders
         super().__init__(*SIZE, "Compute Shader", gl_version=(4, 3))
         self.time = 0

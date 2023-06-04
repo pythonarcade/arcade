@@ -51,7 +51,7 @@ class ShadertoyBase:
     :param Tuple[int,int] size: screen/area size
     :param str source: The mainImage shader source
     """
-    def __init__(self, size: Tuple[int, int], source: str):
+    def __init__(self, size: Tuple[int, int], source: str) -> None:
         self._ctx = get_window().ctx
         self._size = size
         self._source = source
@@ -350,7 +350,7 @@ class ShadertoyBuffer(ShadertoyBase):
     :param str source: mainImage shader source
     :param bool repeat: Repeat/wrap mode for the underlying texture
     """
-    def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
+    def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False) -> None:
         super().__init__(size, source)
         self._texture = self.ctx.texture(self._size, components=4)
         self._fbo = self.ctx.framebuffer(color_attachments=[self._texture])
@@ -424,7 +424,7 @@ class Shadertoy(ShadertoyBase):
             fragColor = vec4(fragCoord, 0.0, 1.0);
         }
     """
-    def __init__(self, size: Tuple[int, int], main_source: str):
+    def __init__(self, size: Tuple[int, int], main_source: str) -> None:
         """
         :param [int, int] size: pixel size if the output
         :param str main_source: The main glsl source with mainImage function

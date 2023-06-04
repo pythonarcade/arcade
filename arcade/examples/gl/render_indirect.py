@@ -35,7 +35,7 @@ WINDOW_HEIGHT = 600
 
 class RenderIndirect(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "Render Indirect", gl_version=(4, 3))
         # We don't want vsync when using a query to measure performance
         self.set_vsync(False)

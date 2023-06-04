@@ -102,7 +102,8 @@ class Uniform:
         "_ctx",
     )
 
-    def __init__(self, ctx, program_id, location, name, data_type, array_length):
+    def __init__(self, ctx, program_id, location,
+                 name, data_type, array_length) -> None:
         self._ctx = ctx
         self._program_id = program_id
         self._location = location
@@ -245,7 +246,7 @@ class UniformBlock:
     """
     __slots__ = ("glo", "index", "size", "name")
 
-    def __init__(self, glo: int, index: int, size: int, name: str):
+    def __init__(self, glo: int, index: int, size: int, name: str) -> None:
         #: The OpenGL object handle
         self.glo = glo
         #: The index of the uniform block

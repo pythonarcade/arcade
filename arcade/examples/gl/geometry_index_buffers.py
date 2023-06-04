@@ -15,7 +15,7 @@ from arcade.gl import BufferDescription
 
 class IndexBufferExample(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title)
         self.program = self.ctx.program(
             vertex_shader="""

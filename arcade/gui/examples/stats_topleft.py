@@ -17,7 +17,7 @@ from arcade.gui.widgets.layout import UIAnchorLayout
 class UINumberLabel(UILabel):
     _value: float = 0
 
-    def __init__(self, value=0, format="{value:.0f}", *args, **kwargs):
+    def __init__(self, value=0, format="{value:.0f}", *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.format = format
         self.value = value
@@ -34,7 +34,7 @@ class UINumberLabel(UILabel):
 
 
 class MyView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         # Init UIManager
         self.ui = UIManager()

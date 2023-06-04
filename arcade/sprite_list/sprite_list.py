@@ -100,7 +100,7 @@ class SpriteList(Generic[SpriteType]):
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
-    ):
+    ) -> None:
         self.program = None
         if atlas:
             self._atlas: TextureAtlas = atlas

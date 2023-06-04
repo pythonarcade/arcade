@@ -44,7 +44,7 @@ class Buffer:
 
     def __init__(
         self, ctx: "Context", data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
-    ):
+    ) -> None:
 
         self._ctx = ctx
         self._glo = glo = gl.GLuint()

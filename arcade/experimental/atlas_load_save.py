@@ -51,7 +51,7 @@ class AtlasLoadSave(arcade.Window):
     This class demonstrates how to load and save texture atlases.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(1280, 720, "Atlas Load Save")
         self.done = False
 

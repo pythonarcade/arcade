@@ -54,7 +54,7 @@ LEFT_FACING = 1
 
 
 class PlayerSprite(arcade.Sprite):
-    def __init__(self):
+    def __init__(self) -> None:
         # Let parent initialize
         super().__init__()
 
@@ -159,7 +159,7 @@ class PlayerSprite(arcade.Sprite):
 class GameWindow(arcade.Window):
     """ Main Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Create the variables """
 
         # Init the parent class

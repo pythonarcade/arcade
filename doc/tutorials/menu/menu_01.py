@@ -14,7 +14,7 @@ SCREEN_TITLE = "Making a Menu"
 class MainView(arcade.View):
     """ Main application class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def on_show_view(self):

@@ -34,7 +34,7 @@ def test_event_order_from_view(window):
     events = []
 
     class MyView(arcade.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
             self.mng = UIManager()
 
@@ -73,7 +73,7 @@ def test_event_consumed_by_widget(window):
     events = []
 
     class MyView(arcade.View):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
             self.mng = UIManager()
             button = UIFlatButton(x=50, y=50, width=100, height=50, text="Click ME")

@@ -35,7 +35,7 @@ class UIScrollArea(UIWidget):
 
     def __init__(self, *, x: float = 0, y: float = 0, width: float = 300, height: float = 300,
                  children: Iterable["UIWidget"] = tuple(), size_hint=None, size_hint_min=None, size_hint_max=None,
-                 **kwargs):
+                 **kwargs) -> None:
         super().__init__(x=x, y=y, width=width, height=height, children=children, size_hint=size_hint,
                          size_hint_min=size_hint_min, size_hint_max=size_hint_max, **kwargs)
         self.surface = Surface(
@@ -103,7 +103,7 @@ class UIScrollArea(UIWidget):
 
 class MyWindow(Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.ui = UIManager()

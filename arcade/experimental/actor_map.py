@@ -15,7 +15,7 @@ from arcade import hitbox
 
 class ActorMap(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(512, 512, "Actor Map")
         self.shaders = Shaders(self.ctx)
         self.map = Map(self.ctx, size=(4096, 4096))
@@ -48,7 +48,7 @@ class Actor:
         rotation: float = 0.0,
         area: Tuple[float, float] = (256, 256),
         view_distance: float = 120.0,
-    ):
+    ) -> None:
         self.ctx = map.ctx
         self.map = map
         self.shaders = shaders
@@ -92,7 +92,7 @@ class Map:
     Sprites for out map to keep things less messy
     """
 
-    def __init__(self, ctx, *, size: Tuple[int, int]):
+    def __init__(self, ctx, *, size: Tuple[int, int]) -> None:
         self.ctx = ctx
         self.size = size
 
@@ -173,7 +173,7 @@ class Shaders:
     Quick and dirty contains for all the shaders we're using.
     We don't want to compile a program/shader multiple times.
     """
-    def __init__(self, ctx):
+    def __init__(self, ctx) -> None:
         self.ctx = ctx
         self.actor_view = self.ctx.program(
             vertex_shader="""

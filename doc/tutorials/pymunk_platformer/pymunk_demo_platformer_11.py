@@ -77,7 +77,7 @@ BULLET_GRAVITY = 300
 
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
-    def __init__(self):
+    def __init__(self) -> None:
         """ Init """
         # Let parent initialize
         super().__init__()
@@ -169,7 +169,7 @@ class BulletSprite(arcade.SpriteSolidColor):
 class GameWindow(arcade.Window):
     """ Main Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Create the variables """
 
         # Init the parent class

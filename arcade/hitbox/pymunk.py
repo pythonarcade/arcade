@@ -22,7 +22,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     #: The default detail when creating a new instance.
     default_detail = 4.5
 
-    def __init__(self, *, detail: Optional[float] = None):
+    def __init__(self, *, detail: Optional[float] = None) -> None:
         self.detail = detail or self.default_detail
 
     @property

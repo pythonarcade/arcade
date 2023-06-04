@@ -49,7 +49,7 @@ PLAYER_MAX_VERTICAL_SPEED = 1600
 class GameWindow(arcade.Window):
     """ Main Window """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Create the variables """
 
         # Init the parent class

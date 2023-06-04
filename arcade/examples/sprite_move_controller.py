@@ -25,7 +25,7 @@ DEAD_ZONE = 0.05
 class Player(arcade.Sprite):
     """ Player sprite """
 
-    def __init__(self, filename, scale):
+    def __init__(self, filename, scale) -> None:
         super().__init__(filename, scale=scale)
 
         self.controller = None
@@ -100,7 +100,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """
         Initializer
         """

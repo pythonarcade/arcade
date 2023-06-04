@@ -47,7 +47,7 @@ class SpriteSolidColor(Sprite):
         color: RGBA255 = Color(255, 255, 255, 255),
         angle: float = 0,
         **kwargs,
-    ):
+    ) -> None:
         texture = Texture(
             self._default_image,
             hit_box_points=(
@@ -89,7 +89,7 @@ class SpriteCircle(Sprite):
                       center to transparent edges.
     """
 
-    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
+    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs) -> None:
         radius = int(radius)
         diameter = radius * 2
 

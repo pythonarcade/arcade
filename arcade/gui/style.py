@@ -36,7 +36,7 @@ class UIStyledWidget(UIWidget, Generic[StyleRef]):
     # TODO detect StyleBase changes, so that style changes can trigger rendering.
     style: Mapping = DictProperty()  # type: ignore
 
-    def __init__(self, *, style: Mapping[str, StyleRef], **kwargs):
+    def __init__(self, *, style: Mapping[str, StyleRef], **kwargs) -> None:
         self.style = style
         super().__init__(**kwargs)
 

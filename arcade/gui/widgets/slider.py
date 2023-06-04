@@ -98,7 +98,7 @@ class UISlider(UIStyledWidget[UISliderStyle]):
         size_hint_max=None,
         style: Union[Mapping[str, UISliderStyle], None] = None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,

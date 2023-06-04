@@ -20,7 +20,7 @@ class Particle(Sprite):
             scale: float = 1.0,
             alpha: int = 255,
             mutation_callback=None
-    ):
+    ) -> None:
         super().__init__(path_or_texture, scale=scale)
         self.center_x = center_xy[0]
         self.center_y = center_xy[1]
@@ -58,7 +58,7 @@ class EternalParticle(Particle):
             scale: float = 1.0,
             alpha: int = 255,
             mutation_callback=None
-    ):
+    ) -> None:
         super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha,
                          mutation_callback)
 
@@ -81,7 +81,7 @@ class LifetimeParticle(Particle):
             scale: float = 1.0,
             alpha: int = 255,
             mutation_callback=None
-    ):
+    ) -> None:
         super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha,
                          mutation_callback)
         self.lifetime_original = lifetime
@@ -112,7 +112,7 @@ class FadeParticle(LifetimeParticle):
             start_alpha: int = 255,
             end_alpha: int = 0,
             mutation_callback=None
-    ):
+    ) -> None:
         super().__init__(filename_or_texture, change_xy, lifetime, center_xy, angle, change_angle, scale, start_alpha,
                          mutation_callback)
         self.start_alpha = start_alpha

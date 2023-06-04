@@ -20,7 +20,7 @@ class VideoPlayer:
     :param loop: Pass `True` to make the video loop.
     """
 
-    def __init__(self, path: Union[str, Path], loop=False):
+    def __init__(self, path: Union[str, Path], loop=False) -> None:
         self.player = pyglet.media.Player()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))

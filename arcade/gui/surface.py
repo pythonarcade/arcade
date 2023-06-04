@@ -21,7 +21,7 @@ class Surface:
         size: Tuple[int, int],
         position: Tuple[int, int] = (0, 0),
         pixel_ratio: float = 1.0,
-    ):
+    ) -> None:
         self.ctx = arcade.get_window().ctx
         self._size = size
         self._pos = position

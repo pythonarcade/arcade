@@ -29,7 +29,7 @@ LEFT_FACING = 1
 
 
 class PlayerCharacter(arcade.Sprite):
-    def __init__(self):
+    def __init__(self) -> None:
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
 
@@ -86,7 +86,7 @@ class PlayerCharacter(arcade.Sprite):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         """ Set up the game and initialize the variables. """
         super().__init__(width, height, title)
 

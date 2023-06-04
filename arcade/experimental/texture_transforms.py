@@ -16,7 +16,7 @@ TRANSFORMS = [
 
 class App(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(1200, 600, "Atlas Revamp Check")
         paths = [
             ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png",

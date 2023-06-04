@@ -244,7 +244,7 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_min=None,  # in pixel
         size_hint_max=None,  # in pixel
         **kwargs,
-    ):
+    ) -> None:
         self._rendered = False
         self.rect = Rect(x, y, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
@@ -671,7 +671,7 @@ class UIInteractiveWidget(UIWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -750,7 +750,7 @@ class UIDummy(UIInteractiveWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -818,7 +818,7 @@ class UISpriteWidget(UIWidget):
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -903,7 +903,7 @@ class UISpace(UIWidget):
         size_hint_max=None,
         style=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(
             x=x,
             y=y,

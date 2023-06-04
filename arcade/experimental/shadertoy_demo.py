@@ -5,7 +5,7 @@ from arcade.experimental.shadertoy import Shadertoy
 
 class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title) -> None:
         super().__init__(width, height, title, resizable=True)
         self.shadertoy = Shadertoy.create_from_file(
             self.get_framebuffer_size(),

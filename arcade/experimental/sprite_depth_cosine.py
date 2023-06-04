@@ -32,7 +32,7 @@ DOT_SIZE = 10
 
 class MyGame(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
 
         texture = arcade.load_texture(":resources:images/test_textures/xy_square.png")

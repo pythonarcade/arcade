@@ -13,7 +13,7 @@ import arcade
 
 class GeoCullingTest(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(800, 400, "Cull test", resizable=True)
         self.proj = self.ctx.projection_2d
         self.texture = arcade.Texture(

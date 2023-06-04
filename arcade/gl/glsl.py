@@ -34,7 +34,7 @@ class ShaderSource:
         source: str,
         common: Optional[Iterable[str]],
         source_type: PyGLenum,
-    ):
+    ) -> None:
         """Create a shader source wrapper."""
         self._source = source.strip()
         self._type = source_type

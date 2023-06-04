@@ -63,7 +63,7 @@ def load_texture_pair(filename):
 
 
 class Entity(arcade.Sprite):
-    def __init__(self, name_folder, name_file):
+    def __init__(self, name_folder, name_file) -> None:
         super().__init__()
 
         # Default to facing right
@@ -110,7 +110,7 @@ class Entity(arcade.Sprite):
 
 
 class Enemy(Entity):
-    def __init__(self, name_folder, name_file):
+    def __init__(self, name_folder, name_file) -> None:
         # Setup parent class
         super().__init__(name_folder, name_file)
 
@@ -142,7 +142,7 @@ class Enemy(Entity):
 
 
 class RobotEnemy(Enemy):
-    def __init__(self):
+    def __init__(self) -> None:
         # Set up parent class
         super().__init__("robot", "robot")
 
@@ -150,7 +150,7 @@ class RobotEnemy(Enemy):
 
 
 class ZombieEnemy(Enemy):
-    def __init__(self):
+    def __init__(self) -> None:
         # Set up parent class
         super().__init__("zombie", "zombie")
 
@@ -160,7 +160,7 @@ class ZombieEnemy(Enemy):
 class PlayerCharacter(Entity):
     """Player Sprite"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Set up parent class
         super().__init__("male_person", "malePerson")
 
@@ -239,7 +239,7 @@ class GameView(arcade.View):
     Main application class.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializer for the game
         """

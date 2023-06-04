@@ -70,7 +70,7 @@ SMOKE_CHANCE = 0.25
 
 class Smoke(arcade.SpriteCircle):
     """ This represents a puff of smoke """
-    def __init__(self, size):
+    def __init__(self, size) -> None:
         super().__init__(size, arcade.color.LIGHT_GRAY, soft=True)
         self.change_y = SMOKE_RISE_RATE
         self.scale = SMOKE_START_SCALE
@@ -90,7 +90,7 @@ class Smoke(arcade.SpriteCircle):
 
 class Particle(arcade.SpriteCircle):
     """ Explosion particle """
-    def __init__(self, my_list):
+    def __init__(self, my_list) -> None:
         # Choose a random color
         color = random.choice(PARTICLE_COLORS)
 
@@ -147,7 +147,7 @@ class Particle(arcade.SpriteCircle):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """ Initializer """
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

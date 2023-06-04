@@ -18,7 +18,7 @@ class Light:
         radius: float = 50.0,
         color: RGBOrA255 = WHITE,
         mode: str = 'hard',
-    ):
+    ) -> None:
         """
         Create a Light.
 
@@ -72,7 +72,7 @@ class Light:
 
 class LightLayer(RenderTargetTexture):
 
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int) -> None:
         """
         Create a LightLayer
 

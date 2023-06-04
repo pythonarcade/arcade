@@ -27,7 +27,7 @@ class SurfaceTexture:
     making it simple to synchronize the data.
     """
 
-    def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]):
+    def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]) -> None:
         self._ctx = ctx
         self._size = size
         self._surface = pygame.Surface(size, flags=pygame.SRCALPHA)
@@ -86,7 +86,7 @@ class SurfaceTexture:
 
 
 class PygameInteraction(arcade.Window):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(512, 512, "Pygame Interaction")
         self.surface_texture = SurfaceTexture(self.ctx, size=(160, 160))
         self.time = 0

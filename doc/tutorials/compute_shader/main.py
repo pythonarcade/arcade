@@ -72,7 +72,7 @@ def gen_initial_data(
 
 class NBodyGravityWindow(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Ask for OpenGL context supporting version 4.3 or greater when
         # calling the parent initializer to make sure we have compute shader
         # support.

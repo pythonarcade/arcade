@@ -22,7 +22,7 @@ class CRTFilter:
         display_warp: Vec2 = (1.0 / 32.0, 1.0 / 24.0),
         mask_dark: float = 0.5,
         mask_light: float = 1.5,
-    ):
+    ) -> None:
         self.shadertoy = Shadertoy.create_from_file(
             (width, height),
             ":resources:shaders/shadertoy/crt_monitor_filter.glsl"

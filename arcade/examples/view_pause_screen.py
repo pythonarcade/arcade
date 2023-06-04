@@ -35,7 +35,7 @@ class MenuView(arcade.View):
 
 
 class GameView(arcade.View):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                            scale=SPRITE_SCALING)
@@ -77,7 +77,7 @@ class GameView(arcade.View):
 
 
 class PauseView(arcade.View):
-    def __init__(self, game_view):
+    def __init__(self, game_view) -> None:
         super().__init__()
         self.game_view = game_view
 

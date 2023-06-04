@@ -15,7 +15,7 @@ CURRENT_DIR = Path(__file__).parent.resolve()
 
 class RayMarcherSimple(arcade.Window):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(720, 720, "Simple Ray Marcher", resizable=True)
         self.program = self.ctx.load_program(
             vertex_shader=CURRENT_DIR / "ray_marching_simple_vs.glsl",

@@ -105,7 +105,7 @@ class AtlasRegion:
         width: int,
         height: int,
         texture_coordinates: Optional[Tuple[float, float, float, float, float, float, float, float]] = None,
-    ):
+    ) -> None:
         self.x = x
         self.y = y
         self.width = width
@@ -227,7 +227,7 @@ class TextureAtlas:
         auto_resize: bool = True,
         ctx: Optional["ArcadeContext"] = None,
         capacity: int = 2,
-    ):
+    ) -> None:
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size

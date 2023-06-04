@@ -39,7 +39,7 @@ CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 class Card(arcade.Sprite):
     """ Card sprite """
 
-    def __init__(self, suit, value, scale=1):
+    def __init__(self, suit, value, scale=1) -> None:
         """ Card constructor """
 
         # Attributes for suit and value
@@ -56,7 +56,7 @@ class Card(arcade.Sprite):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Sprite list with all the cards, no matter what pile they are in.
