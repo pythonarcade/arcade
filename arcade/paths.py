@@ -1,6 +1,7 @@
 """
 Classic A-star algorithm for path finding.
 """
+import math
 from typing import (
     cast,
     List,
@@ -167,9 +168,9 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
             break
         # Get the vertex in the open list with the lowest F score
         current = None
-        current_fscore = None
+        current_fscore = math.inf
         for pos in sorted(open_vertices):
-            if current is None or F[pos] < current_fscore:  # type: ignore
+            if current is None or F[pos] < current_fscore:
                 current_fscore = F[pos]
                 current = pos
 

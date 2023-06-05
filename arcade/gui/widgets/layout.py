@@ -301,6 +301,13 @@ class UIBoxLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
+    def fit_content(self):
+        """
+        Resize the layout to fit the content. This will take the minimal required size into account.
+        """
+        self._update_size_hints()
+        self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
+
     def do_layout(self):
         start_y = self.content_rect.top
         start_x = self.content_rect.left
