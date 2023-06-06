@@ -370,8 +370,7 @@ class Scene:
         lists will be drawn in the order of the passed iterable. If a
         name is not in the scene, a :py:class:`KeyError` will be raised.
 
-        :param names:
-            An iterable of sprite list names to update, such as a list.
+        :param names: Which layers & what order to update them in.
         """
         if names:
             for name in names:
@@ -394,8 +393,7 @@ class Scene:
         name is not in the scene, a :py:class:`KeyError` will be raised.
 
         :param delta_time: The time step to update by in seconds.
-        :param names:
-            An iterable of sprite list names to update, such as a list.
+        :param names: Which layers & what order to update them in.
         """
         if names:
             for name in names:
@@ -420,8 +418,7 @@ class Scene:
         name is not in the scene, a :py:class:`KeyError` will be raised.
 
         :param delta_time: The time step to update by in seconds.
-        :param names:
-            An iterable of sprite list names to update, such as a list.
+        :param names: Which layers & what order to update them in.
         """
         if names:
             for name in names:
@@ -455,8 +452,7 @@ class Scene:
         ``**kwargs`` option is for advanced users who have
         subclassed :py:class:`~arcade.SpriteList`.
 
-        :param names: An iterable of sprite list
-            names to draw from the lowest index to highest.
+        :param names: Which layers to draw & what order to draw them in.
         :param filter: Optional parameter to set OpenGL filter, such as
            ``gl.GL_NEAREST`` to avoid smoothing.
         :param pixelated: ``True`` for pixel art and ``False`` for
@@ -502,7 +498,7 @@ class Scene:
 
         :param color: The RGBA color to use to draw the hit boxes with.
         :param line_thickness: How many pixels thick the hit box outlines should be
-        :param names: Which layers & what order to draw the hit boxes for them in
+        :param names: Which layers & what order to draw their hit boxes in.
         """
 
         if names:
