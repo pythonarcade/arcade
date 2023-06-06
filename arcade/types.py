@@ -522,6 +522,7 @@ class ColorFloat(RGBANormalized):
         If any of this color's channels would convert to a value outside
         the valid byte range (``0`` to ``255``), a
         :py:class:`~arcade.utils.NormalizedRangeError` will be raised.
+        It can be handled as a :py:class:`ValueError`.
 
         Examples::
 
@@ -559,6 +560,11 @@ class ColorFloat(RGBANormalized):
         Return a ColorFloat from an unsigned 3-byte (24 bit) integer.
 
         These ints may be between 0 and 16777215 (``0xFFFFFF``), inclusive.
+
+        The bytes will be interpreted as R, G, B. The optional ``a`` keyword
+        argument can be used to specify an alpha channel value for the color
+        other than 255.
+
 
         Example::
 
