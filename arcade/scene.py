@@ -23,13 +23,28 @@ __all__ = ["Scene", "SceneKeyError"]
 
 class SceneKeyError(KeyError):
     """
-    Helper subclass of :py:class:`KeyError` which performs templating.
+    Raised when a py:class:`.Scene` cannot find a layer for a specified name.
+
+    It is a subclass of :py:class:`KeyError`, and you can handle it as
+    one if you wish::
+
+        try:
+            # this will raise a SceneKeyError
+            scene_instance.add_sprite("missing_layer_name", arcade.SpriteSolidColor(10,10))
+
+        # We can handle it as a KeyError because it is a subclass of it
+        except KeyError as e:
+            print("Your error handling should go here")
+
+    The main purpose of this class is to help arcade's developers keep
+    error messages consistent.
 
     :param name: the name of the missing :py:class:`~arcade.SpriteList`
     """
 
     def __init__(self, name: str):
         super().__init__(f"This scene does not contain a SpriteList named {name!r}.")
+        self.layer_name = name
 
 
 class Scene:
