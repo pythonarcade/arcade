@@ -81,7 +81,8 @@ class Scene:
 
         .. tip:: Use a more specific method when speed is important!
 
-                 This method uses :py:func:`isinstance`, which can be slow.
+                 This method uses :py:func:`isinstance`, which will
+                 slow down your program if used frequently!
 
         Consider the following alternatives:
 
