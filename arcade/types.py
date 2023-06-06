@@ -306,7 +306,7 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("color_normalized must unpack to 3 or 3 values")
+                raise ValueError("color_normalized must unpack to 3 or 4 values")
             a = _a[0]
 
             if not 0.0 <= a <= 1.0:
