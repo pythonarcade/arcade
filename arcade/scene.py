@@ -160,8 +160,8 @@ class Scene:
         * :py:meth:`.add_sprite_list`
         * :py:meth:`.add_sprite_list_after`
 
-        :param str name: The name of the `SpriteList` to add to or create.
-        :param Sprite sprite: The `Sprite` to add.
+        :param str name: The name of the sprite list to add to or create.
+        :param Sprite sprite: The sprite to add.
         """
         if name in self._name_mapping:
             self._name_mapping[name].append(sprite)
