@@ -104,12 +104,13 @@ class Scene:
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
-        Create a new Scene from a `TileMap` object.
+        Create a new Scene from a :py:class:`~arcade.tilemap.TileMap` object.
 
         The SpriteLists will use the layer names and ordering as defined in the
         Tiled file.
 
-        :param TileMap tilemap: The `TileMap` object to create the scene from.
+        :param TileMap tilemap: The :py:class:`~arcade.tilemap.TileMap`
+            object to create the scene from.
         """
         scene = cls()
         for name, sprite_list in tilemap.sprite_lists.items():
