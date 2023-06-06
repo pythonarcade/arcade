@@ -133,12 +133,12 @@ class Scene:
 
     def __getitem__(self, key: str) -> SpriteList:
         """
-        Retrieve a `SpriteList` by name.
+        Retrieve a sprite list by name.
 
         This is here for ease of use to make sub-scripting the scene object directly
         to retrieve a SpriteList possible.
 
-        :param str key: The name of the 'SpriteList' to retreive.
+        :param str key: The name of the sprite list to retrieve
         """
         if key in self._name_mapping:
             return self._name_mapping[key]
