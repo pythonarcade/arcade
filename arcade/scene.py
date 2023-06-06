@@ -488,17 +488,21 @@ class Scene:
     def draw_hit_boxes(
         self,
         color: RGBA255 = Color(0, 0, 0, 255),
-        line_thickness: float = 1,
-        names: Optional[List[str]] = None,
+        line_thickness: float = 1.0,
+        names: Optional[Iterable[str]] = None,
     ) -> None:
         """
-        Draw hitboxes for all sprites in the scene.
+        Draw debug hit box outlines for sprites in the scene's layers.
 
-        If `names` parameter is provided then only the specified SpriteLists
-        will be drawn. They will be drawn in the order that the names in the
-        list were arranged. If `names` is not provided, then every SpriteList
-        in the scene will be drawn according to the order of the main _sprite_lists
-        attribute of the Scene.
+        If ``names`` is a valid iterable of layer names in the scene, then hit boxes
+        will be drawn for the specified layers in the order of the passed iterable.
+
+        If `names` is not provided, then every layer's hit boxes will be drawn in the
+        order specified.
+
+        :param color: The RGBA color to use to draw the hit boxes with.
+        :param line_thickness: How many pixels thick the hit box outlines should be
+        :param names: Which layers & what order to draw the hit boxes for them in
         """
 
         if names:
