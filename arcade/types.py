@@ -623,8 +623,8 @@ class ColorFloat(RGBANormalized):
         """
         Convert byte-value (0 to 255) channels into a ColorFloat.
 
-        Note that unlike :py:meth:`Color.from_normalized`, this function
-        does not validate the data passed into it.
+        Unlike :py:meth:`Color.from_normalized`, this function does not
+        validate the data passed into it.
 
         Examples::
 
