@@ -642,7 +642,7 @@ class ColorFloat(RGBANormalized):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("color255 must unpack to 3 or 3 values")
+                raise ValueError("color255 must unpack to 3 or 4 values")
             a = _a[0]
 
         else:
