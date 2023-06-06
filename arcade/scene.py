@@ -143,7 +143,7 @@ class Scene:
         if key in self._name_mapping:
             return self._name_mapping[key]
 
-        raise KeyError(f"Scene does not contain a layer named: {key}")
+        raise SceneKeyError(key)
 
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         """
