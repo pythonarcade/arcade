@@ -179,7 +179,7 @@ class Scene:
         """
         Add a SpriteList to the scene with the specified name.
 
-        This will add a new SpriteList to the scene at the end of the draw order.
+        This will add a new SpriteList as a layer above the others in the scene.
 
         If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
         created, and the `use_spatial_hash` parameter will be respected for that creation.
@@ -206,18 +206,19 @@ class Scene:
         """
         Add a sprite list to the scene with the specified name before another SpriteList.
 
-        If no sprite list is supplied via the ``sprite_list`` parameter then a new one
-        will be created. Aside using the value of ``use_spatial_hash`` passed to this
+        If no sprite list is supplied via the ``sprite_list`` parameter, then a new one
+        will be created. Aside from the value of ``use_spatial_hash`` passed to this
         method, it will use the default arguments for a new :py:class:`SpriteList`.
 
         The added sprite list will be drawn under the sprite list named in ``before``.
 
-        :param str name: The name to give the sprite list.
-        :param str before: The name of the SpriteList to place this one before.
-        :param bool use_spatial_hash: If creating a new sprite list, selects whether to
-            enable spatial hashing.
-        :param SpriteList sprite_list: If a sprite list passed via this argument, it will
-            be used instead of creating a new one.
+        :param str name: The name to give the new layer.
+        :param str before: The name of the layer to place the new
+            one before.
+        :param bool use_spatial_hash: If creating a new sprite list, selects
+            whether to enable spatial hashing.
+        :param SpriteList sprite_list: If a sprite list is passed via
+            this argument, it will be used instead of creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -266,14 +267,18 @@ class Scene:
         """
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
 
-        This will add a new SpriteList to the scene after the specified SpriteList in the draw order.
-        If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
-        created, and the `use_spatial_hash` parameter will be respected for that creation.
+        If no sprite list is supplied via the ``sprite_list`` parameter, then a new one
+        will be created. Aside from the value of ``use_spatial_hash`` passed to this
+        method, it will use the default arguments for a new :py:class:`SpriteList`.
 
-        :param str name: The name to give the SpriteList.
-        :param str after: The name of the SpriteList to place this one after.
-        :param bool use_spatial_hash: Whether or not to use spatial hash if creating a new SpriteList.
-        :param SpriteList sprite_list: The SpriteList to add, optional.
+        The added sprite list will be drawn above the sprite list named in ``after``.
+
+        :param str name: The name to give the layer.
+        :param str after: The name of the layer to place the new one after.
+        :param bool use_spatial_hash: If creating a new sprite list, selects
+            whether to enable spatial hashing.
+        :param SpriteList sprite_list: If a sprite list is passed via
+            this argument, it will be used instead of creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
