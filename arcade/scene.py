@@ -124,7 +124,7 @@ class Scene:
         It is also possible to access sprite lists the following ways:
 
         * ``scene_instance[name]``
-        * directly accessing ``scene_instance._name_mapping``, although this may
+        * directly accessing ``scene_instance._name_mapping``, although this will
           get flagged by linters as bad style.
 
         :param name: The name of the sprite list to retrieve.
@@ -181,12 +181,13 @@ class Scene:
 
         This will add a new SpriteList as a layer above the others in the scene.
 
-        If no SpriteList is supplied via the `sprite_list` parameter then a new one will be
-        created, and the `use_spatial_hash` parameter will be respected for that creation.
+        If no SpriteList is supplied via the ``sprite_list`` parameter then a new one will be
+        created, and the ``use_spatial_hash`` parameter will be respected for that creation.
 
-        :param name: The name to give the SpriteList.
-        :param use_spatial_hash: Wether or not to use spatial hash if creating a new SpriteList.
-        :param sprite_list: The SpriteList to add, optional.
+        :param name: The name to give the new layer.
+        :param use_spatial_hash: If creating a new sprite list, whether
+            to enable spatial hashing on it.
+        :param sprite_list: Use a specific sprite list rather than creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
