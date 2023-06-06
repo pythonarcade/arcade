@@ -127,7 +127,7 @@ class Scene:
         * directly accessing ``scene_instance._name_mapping``, although this may
           get flagged by linters as bad style.
 
-        :param str name: The name of the `SpriteList` to retrieve.
+        :param str name: The name of the sprite list to retrieve.
         """
         return self._name_mapping[name]
 
