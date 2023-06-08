@@ -56,7 +56,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         # Trace the image finding all the outlines and holes
         line_sets = self.trace_image(image)
         if len(line_sets) == 0:
-            return tuple()
+            return self.create_bounding_box(image)
 
         # Get the largest line set
         line_set = self.select_largest_line_set(line_sets)

@@ -19,10 +19,4 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
 
         :Returns: List of points
         """
-        size = image.size
-        return (
-            (-size[0] / 2, -size[1] / 2),
-            (size[0] / 2, -size[1] / 2),
-            (size[0] / 2, size[1] / 2),
-            (-size[0] / 2, size[1] / 2),
-        )
+        return self.create_bounding_box(image)

@@ -28,7 +28,7 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
         bbox = image.getbbox()
         # If there is no bounding box the image is empty
         if bbox is None:
-            return tuple()
+            return self.create_bounding_box(image)
 
         left_border, top_border, right_border, bottom_border = bbox
         right_border -= 1
