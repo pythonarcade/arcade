@@ -1,7 +1,9 @@
 """
 Classic A-star algorithm for path finding.
 """
+import math
 from typing import (
+    cast,
     List,
     Optional,
     Set,
@@ -166,7 +168,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
             break
         # Get the vertex in the open list with the lowest F score
         current = None
-        current_fscore = None
+        current_fscore = math.inf
         for pos in sorted(open_vertices):
             if current is None or F[pos] < current_fscore:
                 current_fscore = F[pos]
@@ -319,7 +321,7 @@ def astar_calculate_path(start_point: Point,
     # Currently 'result' is in grid locations. We need to convert them to pixel
     # locations.
     revised_result = [_expand(p, grid_size) for p in result]
-    return revised_result
+    return cast(List[Point], revised_result)
 
 
 def has_line_of_sight(observer: Point,

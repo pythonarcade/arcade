@@ -361,6 +361,7 @@ class UIInputText(UIWidget):
     @text.setter
     def text(self, value):
         self.doc.text = value
+        self.trigger_full_render()
 
     def do_render(self, surface: Surface):
         self._update_layout()

@@ -19,8 +19,7 @@ class VideoPlayer:
     :param path: Path of the video that is to be played.
     :param loop: Pass `True` to make the video loop.
     """
-
-    def __init__(self, path: Union[str, Path], loop=False) -> None:
+    def __init__(self, path: Union[str, Path], loop: bool = False) -> None::
         self.player = pyglet.media.Player()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))
@@ -31,7 +30,7 @@ class VideoPlayer:
         self._width = arcade.get_window().width
         self._height = arcade.get_window().height
 
-    def draw(self, left: int = 0, bottom: int = 0, size: Optional[Tuple[int, int]] = None):
+    def draw(self, left: int = 0, bottom: int = 0, size: Optional[Tuple[int, int]] = None) -> None:
         """
         Call this in `on_draw`.
 
@@ -53,16 +52,16 @@ class VideoPlayer:
                 )
 
     @property
-    def width(self):
+    def width(self) -> int:
         """Video width."""
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Video height."""
         return self._height
 
-    def get_video_size(self):
+    def get_video_size(self) -> Tuple[int, int]:
         if not self.player.source or not self.player.source.video_format:
             return 0, 0
         video_format = self.player.source.video_format
@@ -74,20 +73,17 @@ class VideoPlayer:
             height /= video_format.sample_aspect
         return width, height
 
-
 class VideoPlayerView(arcade.View):
-    def __init__(self, path) -> None:
+    def __init__(self, path: Union[str, Path]) -> None:
         super().__init__()
-
         self.video_player = VideoPlayer(path)
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         self.clear()
-
         self.video_player.draw()
 
 
 if __name__ == '__main__':
     window = arcade.Window(800, 600, "Video Player")
-    window.show_view(VideoPlayerView("/home/ibrahim/PycharmProjects/pyweek/35/Tetris-in-Ohio/assets/rain.mp4"))
+    window.show_view(VideoPlayerView(":resources:video/earth.mp4"))
     window.run()

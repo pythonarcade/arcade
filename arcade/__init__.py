@@ -181,6 +181,7 @@ from .sprite_list import get_sprites_in_rect
 from .sprite_list import SpatialHash
 
 from .scene import Scene
+from .scene import SceneKeyError
 
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
@@ -260,6 +261,7 @@ __all__ = [
     'Section',
     'SectionManager',
     'Scene',
+    'SceneKeyError',
     'Sound',
     'BasicSprite',
     'Sprite',
