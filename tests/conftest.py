@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import gc
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
     import arcade_accelerate # pyright: ignore [reportMissingImports]
@@ -42,6 +43,7 @@ def prepare_window(window: arcade.Window):
     window.clear()
     ctx.gc_mode = "context_gc"
     ctx.gc()
+    gc.collect()
 
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
