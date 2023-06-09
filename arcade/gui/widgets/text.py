@@ -127,9 +127,16 @@ class UILabel(UIWidget):
 
     @text.setter
     def text(self, value):
-        self.label.text = value
-        self._update_layout()
-        self.trigger_full_render()
+        """
+        Update text of the label.
+
+        This triggers a full render to ensure that previous text is cleared out.
+        """
+
+        if self.label.text != value:
+            self.label.text = value
+            self._update_layout()
+            self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
