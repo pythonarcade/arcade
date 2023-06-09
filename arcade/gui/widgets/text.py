@@ -20,37 +20,51 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255
+from arcade.types import RGBA255, Color, RGBOrA255, RGB
+
 
 
 class UILabel(UIWidget):
-    """A simple text label. Also supports multiline text.
-    In case you want to scroll text use a :class:`UITextArea`
-    By default a :class:`UILabel` will fit its initial content,
-    if the text changed use :meth:`UILabel.fit_content` to adjust the size.
+    """A simple text label. This widget is meant to display user instructions or
+    information. This label supports multiline text.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: width of widget. Defaults to text width if not specified.
-    :param float height: height of widget. Defaults to text height if not specified.
-    :param str text: text of the label.
-    :param font_name: a list of fonts to use. Program will start at the beginning of the list
-                      and keep trying to load fonts until success.
-    :param float font_size: size of font.
-    :param RGBA255 text_color: Color of font.
-    :param bool bold: Bold font style.
-    :param bool italic: Italic font style.
+    If you want to make a scrollable viewing text box, use a
+    :py:class:`~arcade.gui.UITextArea`.
+
+    By default, a label will fit its initial content. If the text is changed use
+    :py:meth:`~arcade.gui.UILabel.fit_content` to adjust the size.
+
+    :param float x: x position (default anchor is bottom-left).
+    :param float y: y position (default anchor is bottom-left).
+    :param float width: Width of the label. Defaults to text width if not
+                        specified. See
+                        :py:meth:`~pyglet.text.layout.TextLayout.content_width`.
+    :param float height: Height of the label. Defaults to text height if not
+                         specified. See
+                         :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
+    :param str text: Text displayed on the label.
+    :param font_name: A list of fonts to use. Arcade will start at the beginning
+                      of the tuple and keep trying to load fonts until success.
+    :param float font_size: Font size of font.
+    :param RGBA255 text_color: Color of the text.
+    :param bool bold: If enabled, the label's text will be in a **bold** style.
+    :param bool italic: If enabled, the label's text will be in an *italic*
+                        style.
     :param bool stretch: Stretch font style.
-    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied.
-                      One of ``"left"``, ``"center"`` or ``"right"``.
-    :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
-    :param bool multiline: if multiline is true, a \\n will start a new line.
-                           A UITextWidget with multiline of true is the same thing as UITextArea.
-
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: Not used.
+    :param str align: Horizontal alignment of text on a line. This only applies
+                      if a width is supplied. Valid options include ``"left"``,
+                      ``"center"`` or ``"right"``.
+    :param float dpi: Resolution of the fonts in the layout. Defaults to 96.
+    :param bool multiline: If enabled, a ``\\n`` will start a new line. A
+                           :py:class:`~arcade.gui.UITextWidget` with
+                           ``multiline`` of True is the same thing as
+                           a :py:class:`~arcade.gui.UITextArea`.
+    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
+                      space of the parent should be requested.
+    :param size_hint_min: Minimum size hint width and height in pixel.
+    :param size_hint_max: Maximum size hint width and height in pixel.
+    :param style: Not used. Labels will have no need for a style; they are too
+                  simple (just a text display).
     """
 
     def __init__(
@@ -72,7 +86,7 @@ class UILabel(UIWidget):
         size_hint_max=None,
         **kwargs,
     ) -> None:
-        # Use Arcade wrapper of pyglet.Label for text rendering
+        # Use Arcade Text wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
             start_x=0,
             start_y=0,
@@ -84,10 +98,11 @@ class UILabel(UIWidget):
             bold=bold,
             italic=italic,
             align=align,
-            anchor_y="bottom",  # position text bottom left, to fit into scissor box
-            multiline=multiline,
+            anchor_y="bottom",   # Position text bottom left to fit into scissor
+            multiline=multiline, # area
             **kwargs,
         )
+
         super().__init__(
             x=x,
             y=y,
@@ -99,9 +114,9 @@ class UILabel(UIWidget):
             **kwargs,
         )
 
-        # set label size, if the width or height was given
-        # because border and padding can only be applied later, we can avoid `fit_content()`
-        # and set with and height separately
+        # Set the label size. If the width or height was given because border
+        # and padding can only be applied later, we can avoid ``fit_content``
+        # and set with and height separately.
         if width:
             self.label.width = int(width)
         if height:
@@ -111,7 +126,7 @@ class UILabel(UIWidget):
 
     def fit_content(self):
         """
-        Sets the width and height of this UIWidget to contain the whole text.
+        Set the width and height of the label to contain the whole text.
         """
         base_width = self._padding_left + self._padding_right + 2 * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
@@ -127,9 +142,16 @@ class UILabel(UIWidget):
 
     @text.setter
     def text(self, value):
-        self.label.text = value
-        self._update_layout()
-        self.trigger_full_render()
+        """
+        Update text of the label.
+
+        This triggers a full render to ensure that previous text is cleared out.
+        """
+
+        if self.label.text != value:
+            self.label.text = value
+            self._update_layout()
+            self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
@@ -150,16 +172,21 @@ class UILabel(UIWidget):
 class UITextWidget(UIAnchorLayout):
     """
     Adds the ability to add text to a widget.
-    The text can be placed within the widget using UIAnchorLayout parameters with `place_text()`.
+
+    The text can be placed within the widget using
+    :py:class:`~arcade.gui.UIAnchorLayout` parameters with
+    :py:meth:`~arcade.gui.UITextWidget.place_text`.
     """
 
     def __init__(self, text: str = "", multiline: bool = False, **kwargs) -> None:
         super().__init__(text=text, **kwargs)
+
         self._label = UILabel(
             text=text,
             multiline=multiline,
             width=1000 if multiline else None
         )  # width 1000 try to prevent line wrap if multiline is enabled
+
         self.add(self._label)
         self.ui_label.fit_content()
 
@@ -172,7 +199,8 @@ class UITextWidget(UIAnchorLayout):
                    align_y: float = 0,
                    **kwargs):
         """
-        This allows to place widgets text within the widget using UIAnchorLayout parameters.
+        Place widget's text within the widget using
+        :py:class:`~arcade.gui.UIAnchorLayout` parameters.
         """
         self.remove(self._label)
         self.add(
@@ -186,6 +214,10 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def text(self):
+        """
+        Text of the widget. Modifying this repeatedly will cause significant
+        lag; calculating glyph position is very expensive.
+        """
         return self._label.text
 
     @text.setter
@@ -196,6 +228,13 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def multiline(self):
+        """
+        Get or set the multiline mode.
+
+        Newline characters (``"\\n"``) will only be honored when this is set to ``True``.
+        If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
+        instead.
+        """
         return self.label.multiline
 
     @multiline.setter
@@ -206,6 +245,9 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def ui_label(self) -> UILabel:
+        """
+        Internal py:class:`~arcade.gui.UILabel` used for rendering the text.
+        """
         return self._label
 
     @property
@@ -215,24 +257,39 @@ class UITextWidget(UIAnchorLayout):
 
 class UIInputText(UIWidget):
     """
-    An input field the user can type text into.
+    An input field the user can type text into. This is useful in returning
+    string input from the user. A caret is displayed, which the user can move
+    around with a mouse or keyboard.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param width: width of widget
-    :param height: height of widget
-    :param text: Text to show
-    :param font_name: string or tuple of font names, to load
-    :param font_size: size of the text
-    :param text_color: color of the text
-    :param multiline: support for multiline
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: not used
+    A mouse drag selects text, a mouse press moves the caret, and keys can move
+    around the caret. Arcade confirms that the field is active before allowing
+    users to type, so it is okay to have multiple of these.
+
+    :param float x: x position (default anchor is bottom-left).
+    :param float y: y position (default anchor is bottom-left).
+    :param width: Width of the text field.
+    :param height: Height of the text field.
+    :param text: Initial text displayed. This can be modified later
+                 programmatically or by the user's interaction with the caret.
+    :param font_name: A list of fonts to use. Arcade will start at the beginning
+                      of the tuple and keep trying to load fonts until success.
+    :param font_size: Font size of font.
+    :param text_color: Color of the text.
+    :param multiline: If enabled, a ``\\n`` will start a new line. A
+                      :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of
+                      True is the same thing as
+                      a :py:class:`~arcade.gui.UITextArea`.
+    :param caret_color: RGB color of the caret.
+    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
+                      space of the parent should be requested.
+    :param size_hint_min: Minimum size hint width and height in pixel.
+    :param size_hint_max: Maximum size hint width and height in pixel.
+    :param style: Style has not been implemented for this widget, however it
+                  will be added in the near future.
     """
 
-    # move layout one pixel into the scissor box, so the caret is also shown at position 0
+    # Move layout one pixel into the scissor box so the caret is also shown at
+    # position 0.
     LAYOUT_OFFSET = 1
 
     def __init__(
@@ -246,6 +303,7 @@ class UIInputText(UIWidget):
         font_size: float = 12,
         text_color: RGBOrA255 = (0, 0, 0, 255),
         multiline=False,
+        caret_color: RGB = (0, 0, 0),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -276,13 +334,15 @@ class UIInputText(UIWidget):
             self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
         )
         self.layout.x += self.LAYOUT_OFFSET
-        self.caret = Caret(self.layout, color=(0, 0, 0))
+        self.caret = Caret(self.layout, color=caret_color)
         self.caret.visible = False
 
         self._blink_state = self._get_caret_blink_state()
 
     def _get_caret_blink_state(self):
-        return self.caret.visible and self._active and self.caret._blink_visible
+        """Check whether or not the caret is currently blinking or not."""
+        return self.caret.visible and self._active and \
+               self.caret._blink_visible
 
     def on_update(self, dt):
         # Only trigger render if blinking state changed
@@ -292,7 +352,7 @@ class UIInputText(UIWidget):
             self.trigger_full_render()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
-        # if not active, check to activate, return
+        # If not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
@@ -301,7 +361,7 @@ class UIInputText(UIWidget):
                 self.caret.position = len(self.doc.text)
                 return EVENT_UNHANDLED
 
-        # if active check to deactivate
+        # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
@@ -312,7 +372,7 @@ class UIInputText(UIWidget):
                 self.caret.on_deactivate()
                 return EVENT_UNHANDLED
 
-        # if active pass all non press events to caret
+        # If active pass all non press events to caret
         if self._active:
             # Act on events if active
             if isinstance(event, UITextEvent):
@@ -325,17 +385,20 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
+            if isinstance(event, UIMouseEvent) and \
+               self.rect.collide_with_point(
                 event.x, event.y
             ):
                 x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy, event.buttons, event.modifiers
+                        x, y, event.dx, event.dy,
+                        event.buttons, event.modifiers
                     )
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
-                    self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
+                    self.caret.on_mouse_scroll(
+                        x, y, event.scroll_x, event.scroll_y)
                     self.trigger_full_render()
 
         if super().on_event(event):
@@ -373,23 +436,26 @@ class UIInputText(UIWidget):
 
 class UITextArea(UIWidget):
     """
-    A text area for scrollable text.
+    A text area that allows users to view large documents of text by scrolling
+    the mouse.
 
-
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param width: width of widget
-    :param height: height of widget
-    :param text: Text to show
-    :param font_name: string or tuple of font names, to load
-    :param font_size: size of the text
-    :param text_color: color of the text
-    :param multiline: support for multiline
-    :param scroll_speed: speed of scrolling
-    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
-    :param size_hint_min: min width and height in pixel
-    :param size_hint_max: max width and height in pixel
-    :param style: not used
+    :param float x: x position (default anchor is bottom-left).
+    :param float y: y position (default anchor is bottom-left).
+    :param width: Width of the text area.
+    :param height: Height of the text area.
+    :param text: Initial text displayed.
+    :param font_name: A list of fonts to use. Arcade will start at the beginning
+                      of the tuple and keep trying to load fonts until success.
+    :param font_size: Font size of font.
+    :param text_color: Color of the text.
+    :param multiline: If enabled, a ``\\n`` will start a new line.
+    :param scroll_speed: Speed of mouse scrolling.
+    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
+                      space of the parent should be requested.
+    :param size_hint_min: Minimum size hint width and height in pixel.
+    :param size_hint_max: Maximum size hint width and height in pixel.
+    :param style: Style has not been implemented for this widget, however it
+                  will be added in the near future.
     """
 
     def __init__(
@@ -422,7 +488,8 @@ class UITextArea(UIWidget):
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.
         # Measured in pixels per 'click'
-        self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
+        self.scroll_speed = scroll_speed if scroll_speed is not None \
+                            else font_size
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(
@@ -446,7 +513,7 @@ class UITextArea(UIWidget):
 
     def fit_content(self):
         """
-        Sets the width and height of this UIWidget to contain the whole text.
+        Set the width and height of the text area to contain the whole text.
         """
         self.rect = Rect(
             self.x,
