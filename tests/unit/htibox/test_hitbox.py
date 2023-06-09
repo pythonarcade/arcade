@@ -37,15 +37,15 @@ def test_calculate_hit_box_points_detailed():
         hitbox.calculate_hit_box_points_detailed(image)
 
 
-def test_param_str():
+def test_texture_cache_name():
     # These algos don't have any parameters
-    assert hitbox.algo_simple.param_str == ""
-    assert hitbox.algo_bounding_box.param_str == ""
+    assert hitbox.algo_simple.cache_name == "SimpleHitBoxAlgorithm"
+    assert hitbox.algo_bounding_box.cache_name == "BoundingHitBoxAlgorithm"
 
     # Detailed has a detail parameter for the number of points
     # Test default value and specifying a value
-    assert hitbox.algo_detailed.param_str == "detail=4.5"
-    assert hitbox.algo_detailed(detail=10.0).param_str == "detail=10.0"
+    assert hitbox.algo_detailed.cache_name == "PymunkHitBoxAlgorithm|detail=4.5"
+    assert hitbox.algo_detailed(detail=10.0).cache_name == "PymunkHitBoxAlgorithm|detail=10.0"
 
 
 def test_call_override():

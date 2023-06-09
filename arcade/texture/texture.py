@@ -241,7 +241,7 @@ class Texture:
         if not isinstance(hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
-        return f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
+        return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
 
     @classmethod
     def create_atlas_name(

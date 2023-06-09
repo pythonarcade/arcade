@@ -18,21 +18,14 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     This is a more accurate algorithm generating more points. The
     point count can be controlled with the ``detail`` parameter.
     """
-    name = "pymunk"
+
     #: The default detail when creating a new instance.
     default_detail = 4.5
 
     def __init__(self, *, detail: Optional[float] = None) -> None:
+        super().__init__()
         self.detail = detail or self.default_detail
-
-    @property
-    def param_str(self) -> str:
-        """
-        Return a string representation of the parameters used to create this algorithm.
-
-        This is used in caching.
-        """
-        return f"detail={self.detail}"
+        self._cache_name += f"|detail={self.detail}"
 
     def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
         """Create a new instance with new default values"""

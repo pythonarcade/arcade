@@ -969,6 +969,47 @@ class TextureAtlas:
 
         return size, size
 
+    def get_texture_image(self, texture: "Texture") -> Image.Image:
+        """
+        Get a Pillow image of a texture's region in the atlas.
+        This can be used to inspect the contents of the atlas
+        or to save the texture to disk.
+
+        :param Texture texture: The texture to get the image for
+        :return: A pillow image containing the pixel data in the atlas
+        """
+        region = self.get_image_region_info(texture.image_data.hash)
+        viewport = (
+            region.x + self._border,
+            region.y + self._border,
+            region.width,
+            region.height,
+        )
+        data = self.fbo.read(viewport=viewport, components=4)
+        return Image.frombytes("RGBA", (region.width, region.height), data)
+
+    def sync_texture_image(self, texture: "Texture") -> None:
+        """
+        Updates a texture's image with the contents in the
+        texture atlas. This is usually not needed, but if
+        you have altered a texture in the atlas directly
+        this can be used to copy the image data back into
+        the texture.
+
+        Updating the image will not change the texture's
+        hash or the texture's hit box points.
+
+        .. warning::
+
+            This method is somewhat expensive and should be used sparingly.
+            Altering the internal image of a texture is not recommended
+            unless you know exactly what you're doing. Textures are
+            supposed to be immutable.
+
+        :param Texture texture: The texture to update
+        """
+        texture.image_data.image = self.get_texture_image(texture)
+
     def to_image(
         self,
         flip: bool = False,
