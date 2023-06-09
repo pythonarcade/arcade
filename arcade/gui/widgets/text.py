@@ -20,7 +20,7 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255
+from arcade.types import RGBA255, Color, RGBOrA255, RGB
 
 
 
