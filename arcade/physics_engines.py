@@ -430,7 +430,7 @@ class PhysicsEnginePlatformer:
                             platform.change_y *= -1
 
                     platform.center_y += platform.change_y
-                    
+
         complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
