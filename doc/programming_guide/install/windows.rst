@@ -76,3 +76,34 @@ If you happen to be using pipenv, then the appropriate command is:
 
 ``python3 -m pipenv install arcade``
 
+Install Arcade under WSL
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to use arcade on Ubuntu WSL, here are multiple guides depending on what you want.
+You can also explore running headless.
+
+TODO: ^^^ link to docs page, help pls
+
+Launching with NVIDIA GPUs
+--------------------------
+
+I recommend installing this together with CUDA. This does install the latest drivers:
+
+```
+sudo apt update && sudo apt upgrade -y && wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
+sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb
+sudo dpkg -i cuda-repo-wsl-ubuntu-12-1-local_12.1.1-1_amd64.deb
+sudo cp /var/cuda-repo-wsl-ubuntu-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cuda
+```
+
+To install without cuda, pick one of the available `nvidia-driver-xxx` packages you can find in the output of ``apt search nvidia-driver``.
+
+Launching with software rendering
+---------------------------------
+
+You need to have EGL installed. Easiest way is:
+
+``sudo apt install libglfw3-dev libgles2-mesa-dev``
