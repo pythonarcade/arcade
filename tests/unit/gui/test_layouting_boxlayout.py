@@ -294,6 +294,7 @@ def test_vertical_resize_child_according_size_hint_full(window):
     assert box.size == (200, 200)
     assert dummy_1.size == (200, 200)
 
+
 def test_vertical_resize_child_according_size_hint_half(window):
     box = UIBoxLayout(width=200, height=200, vertical=True)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
@@ -315,6 +316,7 @@ def test_vertical_resize_children_according_size_hint(window):
     assert dummy_1.size == (300, approx(100 + 200 / 3 * 2))
     assert dummy_2.size == (150, approx(100 + 200 / 3 * 1))
 
+
 def test_vertical_ignores_size_hint_none(window):
     box = UIBoxLayout(width=300, height=400, vertical=True)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, None)))
@@ -327,6 +329,16 @@ def test_vertical_ignores_size_hint_none(window):
     assert dummy_2.size == (100, 300)
 
 
+def test_vertical_fit_content(window):
+    box = UIBoxLayout(width=100, height=100, vertical=True)
+    _ = box.add(UIDummy(width=100, height=50))
+    _ = box.add(UIDummy(width=20, height=100))
+
+    box.fit_content()
+
+    assert box.size == (100, 150)
+
+
 def test_horizontal_resize_child_according_size_hint_full(window):
     box = UIBoxLayout(width=200, height=200, vertical=False)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
@@ -336,6 +348,7 @@ def test_horizontal_resize_child_according_size_hint_full(window):
     assert box.size == (200, 200)
     assert dummy_1.size == (200, 200)
 
+
 def test_horizontal_resize_child_according_size_hint_half(window):
     box = UIBoxLayout(width=200, height=200, vertical=False)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
@@ -344,6 +357,7 @@ def test_horizontal_resize_child_according_size_hint_half(window):
 
     assert box.size == (200, 200)
     assert dummy_1.size == (100, 100)
+
 
 def test_horizontal_resize_children_according_size_hint(window):
     box = UIBoxLayout(width=300, height=400, vertical=False)
@@ -367,5 +381,15 @@ def test_horizontal_ignores_size_hint_none(window):
     assert box.size == (300, 400)
     assert dummy_1.size == (200, 100)
     assert dummy_2.size == (100, 400)
+
+
+def test_horizontal_fit_content(window):
+    box = UIBoxLayout(width=100, height=100, vertical=False)
+    _ = box.add(UIDummy(width=100, height=50))
+    _ = box.add(UIDummy(width=20, height=100))
+
+    box.fit_content()
+
+    assert box.size == (120, 100)
 
 # TODO test size hint < 1 (do not take full width)

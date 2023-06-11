@@ -20,14 +20,14 @@ class HitBoxAlgorithm:
     users can also repurpose them for other tasks.
     """
 
-    #: The name of the algorithm
-    name = "base"
-
     #: Whether points for this algorithm should be cached
     cache = True
 
+    def __init__(self):
+        self._cache_name = self.__class__.__name__
+
     @property
-    def param_str(self) -> str:
+    def cache_name(self) -> str:
         """
         A string representation of the parameters used to create this algorithm.
 
@@ -37,7 +37,7 @@ class HitBoxAlgorithm:
         distinguishing different configurations of a particular hit box
         algorithm.
         """
-        return ""
+        return self._cache_name
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """
@@ -257,7 +257,7 @@ class RotatableHitBox(HitBox):
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
-        rad = radians(self._angle)
+        rad = radians(-self._angle)
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 

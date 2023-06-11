@@ -9,7 +9,6 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
     Simple hit box algorithm. This algorithm attempts to trim out transparent pixels
     from an image to create a hit box.
     """
-    name = "simple"
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """
