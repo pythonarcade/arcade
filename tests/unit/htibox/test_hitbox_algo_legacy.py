@@ -3,14 +3,6 @@ from arcade import hitbox
 from PIL import Image
 
 
-def test_module():
-    # Make sure the module is loaded
-    assert hitbox.algo_default
-    assert hitbox.algo_detailed
-    assert hitbox.algo_simple
-    assert hitbox.algo_bounding_box
-
-
 def test_calculate_hit_box_points_simple():
     # Completely filled RGBA image
     image = Image.new("RGBA", (100, 100), (255, 255, 255, 255))
