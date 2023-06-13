@@ -34,9 +34,6 @@ from arcade.types import Color, RGBA255
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
-if TYPE_CHECKING:
-    from arcade import Texture, TextureAtlas
-
 LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
@@ -102,7 +99,7 @@ class SpriteList(Generic[SpriteType]):
     ):
         self.program = None
         if atlas:
-            self._atlas: TextureAtlas = atlas
+            self._atlas = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -186,7 +183,7 @@ class SpriteList(Generic[SpriteType]):
 
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = (
+        self._atlas = (
             getattr(self, "_atlas", None) or self.ctx.default_atlas
         )
 
@@ -368,7 +365,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> TextureAtlas:
+    def atlas(self) -> "TextureAtlas":
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
