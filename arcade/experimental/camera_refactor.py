@@ -1,16 +1,21 @@
-from typing import TYPE_CHECKING, Tuple, Optional, Union, Protocol
+from typing import TYPE_CHECKING, Tuple, Optional, Protocol, Union
 from contextlib import contextmanager
 
 from dataclasses import dataclass
 
 from arcade.window_commands import get_window
 
-from pyglet.math import Mat4, Vec3
+from pyglet.math import Mat4, Vec3, Vec4, Vec2
 
 if TYPE_CHECKING:
     from arcade.application import Window
 
-from arcade.application import Window
+from arcade import Window
+
+FourIntTuple = Tuple[int, int, int, int]
+FourFloatTuple = Union[Tuple[float, float, float, float], Vec4]
+ThreeFloatTuple = Union[Tuple[float, float, float], Vec3]
+TwoFloatTuple = Union[Tuple[float, float], Vec2]
 
 
 @dataclass
@@ -23,14 +28,20 @@ class ViewData:
     :param position: A 3D vector which describes where the camera is located.
     :param up: A 3D vector which describes which direction is up (+y).
     :param forward: a 3D vector which describes which direction is forwards (+z).
+    :param zoom: A scaler that records the zoom of the camera. While this most often affects the projection matrix
+                 it allows camera controllers access to the zoom functionality
+                 without interacting with the projection data.
     """
     # Viewport data
-    viewport: Tuple[int, int, int, int]
+    viewport: FourIntTuple
 
     # View matrix data
-    position: Tuple[float, float, float]
-    up: Tuple[float, float, float]
-    forward: Tuple[float, float, float]
+    position: ThreeFloatTuple
+    up: ThreeFloatTuple
+    forward: ThreeFloatTuple
+
+    # Zoom
+    zoom: float
 
 
 @dataclass
@@ -48,8 +59,6 @@ class OrthographicProjectionData:
     :param top: The top most value, which gets mapped to y = 1.0 (anything above this value is not visible).
     :param near: The 'closest' value, which gets mapped to z = -1.0 (anything below this value is not visible).
     :param far: The 'furthest' value, Which gets mapped to z = 1.0 (anything above this value is not visible).
-    :param zoom: A scaler which defines how much the Orthographic projection scales by. Is a simpler way of changing the
-    width and height of the projection.
     """
     left: float
     right: float
@@ -57,7 +66,6 @@ class OrthographicProjectionData:
     top: float
     near: float
     far: float
-    zoom: float
 
 
 @dataclass
@@ -75,7 +83,11 @@ class PerspectiveProjectionData:
     fov: float
     near: float
     far: float
-    zoom: float
+
+
+class Projection(Protocol):
+    near: float
+    far: float
 
 
 class Projector(Protocol):
@@ -87,10 +99,8 @@ class Projector(Protocol):
     def activate(self) -> "Projector":
         ...
 
-
-class Projection(Protocol):
-    near: float
-    far: float
+    def get_map_coordinates(self, screen_coordinate: TwoFloatTuple) -> TwoFloatTuple:
+        ...
 
 
 class Camera(Protocol):
@@ -103,7 +113,7 @@ class OrthographicCamera:
     The simplest from of an orthographic camera.
     Using ViewData and OrthographicProjectionData PoDs (Pack of Data)
     it generates the correct projection and view matrices. It also
-    provides meths and a context manager for using the matrices in
+    provides methods and a context manager for using the matrices in
     glsl shaders.
 
     This class provides no methods for manipulating the PoDs.
@@ -123,17 +133,25 @@ class OrthographicCamera:
 
         self._view = view or ViewData(
             (0, 0, self._window.width, self._window.height),  # Viewport
-            (self._window.width / 2, self._window.height / 2, 0),  # Position
-            (0.0, 1.0, 0.0),  # Up
-            (0.0, 0.0, 1.0)  # Forward
+            Vec3(self._window.width / 2, self._window.height / 2, 0),  # Position
+            Vec3(0.0, 1.0, 0.0),  # Up
+            Vec3(0.0, 0.0, 1.0),  # Forward
+            1.0  # Zoom
         )
 
         self._projection = projection or OrthographicProjectionData(
-            0, self._window.width,  # Left, Right
-            0, self._window.height,  # Bottom, Top
+            -0.5 * self._window.width, 0.5 * self._window.width,  # Left, Right
+            -0.5 * self._window.height, 0.5 * self._window.height,  # Bottom, Top
             -100, 100,  # Near, Far
-            1.0  # Zoom
         )
+
+    @property
+    def view(self):
+        return self._view
+
+    @property
+    def projection(self):
+        return self._projection
 
     @property
     def viewport(self):
@@ -167,10 +185,10 @@ class OrthographicCamera:
         # Scale the projection by the zoom value. Both the width and the height
         # share a zoom value to avoid ugly stretching.
         _true_projection = (
-            _projection_center[0] - _projection_half_size[0] / self._projection.zoom,
-            _projection_center[0] + _projection_half_size[0] / self._projection.zoom,
-            _projection_center[1] - _projection_half_size[1] / self._projection.zoom,
-            _projection_center[1] + _projection_half_size[1] / self._projection.zoom
+            _projection_center[0] - _projection_half_size[0] / self._view.zoom,
+            _projection_center[0] + _projection_half_size[0] / self._view.zoom,
+            _projection_center[1] - _projection_half_size[1] / self._view.zoom,
+            _projection_center[1] + _projection_half_size[1] / self._view.zoom
         )
         return Mat4.orthogonal_projection(*_true_projection, self._projection.near, self._projection.far)
 
@@ -178,11 +196,17 @@ class OrthographicCamera:
         """
         Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
         """
-        return Mat4.look_at(
-            self._view.position,
-            (self._view.position[0] + self._view.forward[0], self._view.position[1] + self._view.forward[1]),
-            self._view.up
-        )
+        fo = Vec3(*self._view.forward).normalize()  # Forward Vector
+        up = Vec3(*self._view.up).normalize()  # Initial Up Vector (Not perfectly aligned to forward vector)
+        ri = fo.cross(up)  # Right Vector
+        up = ri.cross(fo)  # Up Vector
+        po = Vec3(*self._view.position)
+        return Mat4((
+            ri.x,  up.x,  fo.x,  0,
+            ri.y,  up.y,  fo.y,  0,
+            ri.z,  up.z,  fo.z,  0,
+            -ri.dot(po), -up.dot(po), -fo.dot(po), 1
+        ))
 
     def use(self):
         """
@@ -217,6 +241,23 @@ class OrthographicCamera:
             yield self
         finally:
             previous_projector.use()
+
+    def get_map_coordinates(self, screen_coordinate: TwoFloatTuple) -> TwoFloatTuple:
+        """
+        Maps a screen position to a pixel position.
+        """
+
+        screen_x = 2.0 * (screen_coordinate[0] - self._view.viewport[0]) / self._view.viewport[2] - 1
+        screen_y = 2.0 * (screen_coordinate[1] - self._view.viewport[1]) / self._view.viewport[3] - 1
+
+        _view = self._generate_view_matrix()
+        _projection = self._generate_projection_matrix()
+
+        screen_position = Vec4(screen_x, screen_y, 0.0, 1.0)
+
+        _full = ~(_projection @ _view)
+
+        return _full @ screen_position
 
 
 class PerspectiveCamera:
@@ -245,14 +286,14 @@ class PerspectiveCamera:
             (0, 0, self._window.width, self._window.height),  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
-            (0.0, 0.0, 1.0)  # Forward
+            (0.0, 0.0, 1.0),  # Forward
+            1.0  # Zoom
         )
 
         self._projection = projection or PerspectiveProjectionData(
             self._window.width / self._window.height,  # Aspect ratio
             90,  # Field of view (degrees)
-            0.1, 100,  # Near, Far
-            1.0  # Zoom.
+            0.1, 100  # Near, Far
         )
 
     @property
@@ -272,7 +313,7 @@ class PerspectiveCamera:
         fov resulting in 2x zoom effect.
         """
 
-        _true_fov = self._projection.fov / self._projection.zoom
+        _true_fov = self._projection.fov / self._view.zoom
         return Mat4.perspective_projection(
             self._projection.aspect,
             self._projection.near,
@@ -284,11 +325,17 @@ class PerspectiveCamera:
         """
         Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
         """
-        return Mat4.look_at(
-            self._view.position,
-            (self._view.position[0] + self._view.forward[0], self._view.position[1] + self._view.forward[1]),
-            self._view.up
-        )
+        fo = Vec3(*self._view.forward).normalize()  # Forward Vector
+        up = Vec3(*self._view.up).normalize()  # Initial Up Vector (Not perfectly aligned to forward vector)
+        ri = fo.cross(up)  # Right Vector
+        up = ri.cross(fo)  # Up Vector
+        po = Vec3(*self._view.position)
+        return Mat4((
+            ri.x,  up.x,  fo.x,  0,
+            ri.y,  up.y,  fo.y,  0,
+            ri.z,  up.z,  fo.z,  0,
+            -ri.dot(po), -up.dot(po), -fo.dot(po), 1
+        ))
 
     def use(self):
         """
@@ -324,3 +371,110 @@ class PerspectiveCamera:
         finally:
             previous_projector.use()
 
+    def get_map_coordinates(self, screen_coordinate: TwoFloatTuple) -> TwoFloatTuple:
+        """
+        Maps a screen position to a pixel position at the near clipping plane of the camera.
+        """
+        ...
+
+    def get_map_coordinates_at_depth(self,
+                                     screen_coordinate: TwoFloatTuple,
+                                     depth: float) -> TwoFloatTuple:
+        """
+        Maps a screen position to a pixel position at the specific depth supplied.
+        """
+        ...
+
+
+class SimpleCamera:
+    """
+    A simple camera which uses an orthographic camera and a simple 2D Camera Controller.
+    It also implements an update method that allows for an interpolation between two points
+
+    Written to be backwards compatible with the old SimpleCamera.
+    """
+
+    def __init__(self, *,
+                 window: Optional["Window"] = None,
+                 viewport: Optional[FourIntTuple] = None,
+                 projection: Optional[FourFloatTuple] = None,
+                 position: Optional[TwoFloatTuple] = None,
+                 up: Optional[TwoFloatTuple] = None,
+                 zoom: Optional[float] = None,
+                 near: Optional[float] = None,
+                 far: Optional[float] = None,
+                 view_data: Optional[ViewData] = None,
+                 projection_data: Optional[OrthographicProjectionData] = None
+                 ):
+        self._window = window or get_window()
+
+        if any((viewport, projection, position, up, zoom, near, far)) and any((view_data, projection_data)):
+            raise ValueError("Provided both view data or projection data, and raw values."
+                             "You only need to supply one or the other")
+
+        if any((viewport, projection, position, up, zoom, near, far)):
+            self._view = ViewData(
+                viewport or (0, 0, self._window.width, self._window.height),
+                position or (self._window.width / 2, self._window.height / 2, 0.0),
+                up or (0, 1.0, 0.0),
+                (0.0, 0.0, 1.0),
+                zoom or 1.0
+            )
+            _projection = OrthographicProjectionData(
+                projection[0] or 0.0, projection[1] or self._window.height,  # Left, Right
+                projection[2] or 0.0, projection[3] or self._window.height,  # Bottom, Top
+                near or -100, far or 100  # Near, Far
+            )
+        else:
+            self._view = view_data or ViewData(
+                (0, 0, self._window.width, self._window.height),  # Viewport
+                (self._window.width / 2, self._window.height / 2, 0.0),  # Position
+                (0, 1.0, 0.0),  # Up
+                (0.0, 0.0, 1.0),  # Forward
+                1.0  # Zoom
+            )
+            _projection = projection_data or OrthographicProjectionData(
+                0.0, self._window.width,  # Left, Right
+                0.0, self._window.height,  # Bottom, Top
+                -100, 100  # Near, Far
+            )
+
+        self._camera = OrthographicCamera(
+            window=self._window,
+            view=self._view,
+            projection=_projection
+        )
+
+    def use(self):
+        """
+        Sets the active camera to this object.
+        Then generates the view and projection matrices.
+        Finally, the gl context viewport is set, as well as the projection and view matrices.
+        """
+
+        ...
+
+    @contextmanager
+    def activate(self) -> Projector:
+        """
+        A context manager version of Camera2DOrthographic.use() which allows for the use of
+        `with` blocks. For example, `with camera.activate() as cam: ...`.
+
+        :WARNING:
+            Currently there is no 'default' camera within arcade. This means this method will raise a value error
+            as self._window.current_camera is None initially. To solve this issue you only need to make a default
+            camera and call the use() method.
+        """
+        previous_projector = self._window.current_camera
+        try:
+            self.use()
+            yield self
+        finally:
+            previous_projector.use()
+
+    def get_map_coordinates(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+        """
+        Maps a screen position to a pixel position.
+        """
+
+        ...
