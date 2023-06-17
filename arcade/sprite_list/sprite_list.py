@@ -35,6 +35,10 @@ from arcade.types import Color, RGBA255
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
+if TYPE_CHECKING:
+    from arcade import TextureAtlas, Texture
+
+
 LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
