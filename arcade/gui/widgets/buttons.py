@@ -12,8 +12,21 @@ from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
+@dataclass
+class UITextureButtonStyle(UIStyleBase):
+    """
+    Used to style the texture button. Below is its use case.
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UIStyle"], UITextWidget):
+    .. code:: py
+
+        button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+    """
+    font_size: int = 12
+    font_name: FontNameOrNames = ("calibri", "arial")
+    font_color: RGBA255 = arcade.color.WHITE
+    border_width: int = 2
+
+class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
     """
     A button with an image for the face of the button.
 
@@ -37,19 +50,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
 
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Used to style the texture button. Below is its use case.
-
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        font_size: int = 12
-        font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: RGBA255 = arcade.color.WHITE
-        border_width: int = 2
+    UIStyle = UITextureButtonStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -192,7 +193,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         if current_texture:
             surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
 
-    def apply_style(self, style: UIStyle):
+    def apply_style(self, style: UITextureButtonStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """

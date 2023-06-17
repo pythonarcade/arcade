@@ -162,7 +162,7 @@ def disable_timings() -> None:
         raise ValueError("Timings are not enabled.")
 
     # Restore the original pyglet dispatch event function
-    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event
+    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event # type: ignore
 
     clear_timings()
 

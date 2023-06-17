@@ -238,7 +238,7 @@ class Text:
         self._label.batch = batch
 
     @property
-    def group(self) -> pyglet.graphics.Group:
+    def group(self) -> Optional[pyglet.graphics.Group]:
         return self._label.group
 
     @group.setter
@@ -386,7 +386,7 @@ class Text:
         self._label.color = Color.from_iterable(color)
 
     @property
-    def width(self) -> int:
+    def width(self) -> Optional[int]:
         """
         Get or set the width of the label in pixels.
         This value affects text flow when multiline text is used.
@@ -400,7 +400,7 @@ class Text:
         self._label.width = width
 
     @property
-    def height(self) -> int:
+    def height(self) -> Optional[int]:
         """
         Get or set the height of the label in pixels
         This value affects text flow when multiline text is used.

@@ -10,6 +10,7 @@ from ctypes import (
     create_string_buffer,
 )
 from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union, Optional
+import typing
 import weakref
 
 from pyglet import gl
@@ -85,7 +86,7 @@ class Program:
         self._attributes = []  # type: List[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: Dict[str, Union[Uniform, UniformBlock]] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -318,7 +319,7 @@ class Program:
         if name not in self._uniforms:
             return
 
-        uniform = self._uniforms[name]
+        uniform = typing.cast(Uniform, self._uniforms[name])
         _len = uniform._array_length * uniform._components
         if _len == 1:
             self.set_uniform_safe(name, value[0])
