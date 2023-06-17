@@ -1,5 +1,5 @@
 from ctypes import c_void_p, byref
-from typing import Dict, List, Optional, Sequence, Union
+from typing import Dict, List, Optional, Sequence, Union, TYPE_CHECKING
 import weakref
 
 from pyglet import gl
@@ -7,6 +7,9 @@ from pyglet import gl
 from .buffer import Buffer
 from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
+
+if TYPE_CHECKING:
+    from .context import Context
 
 
 index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSIGNED_INT]
