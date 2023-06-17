@@ -1,10 +1,12 @@
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Optional, Tuple, List, TYPE_CHECKING
+from typing import Optional, Tuple, List, TYPE_CHECKING, Union
 import weakref
 
 
 from pyglet import gl
+
+from arcade.types import RGBOrA255, RGBOrANormalized
 
 from .texture import Texture2D
 from .types import pixel_formats
@@ -344,7 +346,7 @@ class Framebuffer:
 
     def clear(
         self,
-        color=(0.0, 0.0, 0.0, 0.0),
+        color: Union[RGBOrA255, RGBOrANormalized] =(0.0, 0.0, 0.0, 0.0),
         *,
         depth: float = 1.0,
         normalized: bool = False,
@@ -386,8 +388,10 @@ class Framebuffer:
                 if len(color) == 3:
                     gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
                 else:
+                    # mypy does not understand that color[3] is guaranteed to work in this codepath, pyright does.
+                    # We can remove this type: ignore if we switch to pyright.
                     gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255 # type: ignore
                     )
 
             if self.depth_attachment:

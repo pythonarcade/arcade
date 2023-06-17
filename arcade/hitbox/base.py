@@ -2,19 +2,13 @@ from __future__ import annotations
 
 from math import cos, radians, sin
 from typing import Any, Sequence, Tuple
+from typing_extensions import Self
 
 from PIL.Image import Image
 
-from arcade.types import Point, PointList
-
+from arcade.types import Point, PointList, EMPTY_POINT_LIST
 
 __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
-
-
-# Speed / typing workaround:
-# 1. Eliminate extra allocations
-# 2. Allows HitBox & subclass typing annotation to work cleanly
-_EMPTY_POINT_LIST: PointList = tuple()
 
 
 class HitBoxAlgorithm:
@@ -26,14 +20,14 @@ class HitBoxAlgorithm:
     users can also repurpose them for other tasks.
     """
 
-    #: The name of the algorithm
-    name = "base"
-
     #: Whether points for this algorithm should be cached
     cache = True
 
+    def __init__(self):
+        self._cache_name = self.__class__.__name__
+
     @property
-    def param_str(self) -> str:
+    def cache_name(self) -> str:
         """
         A string representation of the parameters used to create this algorithm.
 
@@ -43,7 +37,7 @@ class HitBoxAlgorithm:
         distinguishing different configurations of a particular hit box
         algorithm.
         """
-        return ""
+        return self._cache_name
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """
@@ -61,7 +55,7 @@ class HitBoxAlgorithm:
         """
         raise NotImplementedError
 
-    def __call__(self, *args: Any, **kwds: Any) -> "HitBoxAlgorithm":
+    def __call__(self, *args: Any, **kwds: Any) -> Self:
         """
         Shorthand allowing any instance to be used identically to the base type.
 
@@ -69,7 +63,7 @@ class HitBoxAlgorithm:
         :param kwds: The same keyword arguments as `__init__`
         :return: A new HitBoxAlgorithm instance
         """
-        return self.__class__(*args, **kwds)
+        return self.__class__(*args, **kwds)  # type: ignore
 
 
 class HitBox:
@@ -98,7 +92,7 @@ class HitBox:
 
         # This empty tuple will be replaced the first time
         # get_adjusted_points is called
-        self._adjusted_points: PointList = _EMPTY_POINT_LIST
+        self._adjusted_points: PointList = EMPTY_POINT_LIST
         self._adjusted_cache_dirty = True
 
     @property
@@ -263,7 +257,7 @@ class RotatableHitBox(HitBox):
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
-        rad = radians(self._angle)
+        rad = radians(-self._angle)
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 

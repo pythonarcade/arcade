@@ -12,7 +12,7 @@ from typing import Union
 import arcade
 from arcade import Texture
 from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
-from arcade.gui.widgets.slider import UISlider
+from arcade.gui.widgets.slider import UISlider, UISliderStyle
 
 
 class UITextureSlider(UISlider):
@@ -37,7 +37,7 @@ class UITextureSlider(UISlider):
         super().__init__(style=style, **kwargs)
 
     def do_render(self, surface: Surface):
-        style: UISlider.UIStyle = self.get_current_style()  # type: ignore
+        style: UISliderStyle = self.get_current_style()  # type: ignore
 
         self.prepare_render(surface)
 

@@ -20,7 +20,7 @@ class MyView(arcade.View):
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
         self.dropdown = UIDropdown(
             default="Platformer",
-            options=["Arcade", None, "Platformer", "Jump and Run"],
+            options=["Arcade", UIDropdown.DIVIDER, "Platformer", "Jump and Run"],
             height=50,
             width=200,
         )
