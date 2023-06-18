@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple, Optional, Protocol, Union
+from typing import TYPE_CHECKING, Tuple, Optional, Protocol, Union, Iterator
 from contextlib import contextmanager
 from math import radians, degrees, cos, sin, atan2, pi
 
@@ -97,7 +97,7 @@ class Projector(Protocol):
         ...
 
     @contextmanager
-    def activate(self) -> "Projector":
+    def activate(self) -> Iterator["Projector"]:
         ...
 
     def get_map_coordinates(self, screen_coordinate: TwoFloatTuple) -> TwoFloatTuple:
@@ -226,7 +226,7 @@ class OrthographicCamera:
         self._window.view = _view
 
     @contextmanager
-    def activate(self) -> Projector:
+    def activate(self) -> Iterator[Projector]:
         """
         A context manager version of Camera2DOrthographic.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
@@ -355,7 +355,7 @@ class PerspectiveCamera:
         self._window.view = _view
 
     @contextmanager
-    def activate(self) -> Projector:
+    def activate(self) -> Iterator[Projector]:
         """
         A context manager version of Camera2DOrthographic.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
@@ -421,9 +421,13 @@ class SimpleCamera:
                 (0.0, 0.0, 1.0),
                 zoom or 1.0
             )
+            _projection = projection or (
+                0.0, self._window.width,
+                0.0, self._window.height
+            )
             self._projection = OrthographicProjectionData(
-                projection[0] or 0.0, projection[1] or self._window.height,  # Left, Right
-                projection[2] or 0.0, projection[3] or self._window.height,  # Bottom, Top
+                _projection[0] or 0.0, _projection[1] or self._window.hwidth,  # Left, Right
+                _projection[2] or 0.0, _projection[3] or self._window.height,  # Bottom, Top
                 near or -100, far or 100  # Near, Far
             )
         else:
@@ -672,7 +676,7 @@ class SimpleCamera:
         self._camera.use()
 
     @contextmanager
-    def activate(self) -> Projector:
+    def activate(self) -> Iterator[Projector]:
         """
         A context manager version of Camera2DOrthographic.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
@@ -735,7 +739,7 @@ class DefaultProjector:
         self._window.projection = self._projection_matrix
 
     @contextmanager
-    def activate(self) -> Projector:
+    def activate(self) -> Iterator[Projector]:
         previous = self._window.current_camera
         try:
             self.use()
