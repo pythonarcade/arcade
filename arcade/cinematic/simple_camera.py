@@ -40,10 +40,12 @@ class SimpleCamera:
                              "Only supply one or the other")
 
         if any((viewport, projection, position, up, zoom, near, far)):
+            _pos = position or (0.0, 0.0)
+            _up = up or (0.0, 1.0)
             self._view = ViewData(
                 viewport or (0, 0, self._window.width, self._window.height),
-                position or (0.0, 0.0, 0.0),
-                up or (0, 1.0, 0.0),
+                (_pos[0], _pos[1], 0.0),
+                (_up[0], _up[1], 0.0),
                 (0.0, 0.0, 1.0),
                 zoom or 1.0
             )
@@ -76,8 +78,8 @@ class SimpleCamera:
             projection=self._projection
         )
 
-        self._easing_speed = 0.0
-        self._position_goal = None
+        self._easing_speed: float = 0.0
+        self._position_goal: Tuple[float, float] = self.position
 
     # Basic properties for modifying the viewport and orthographic projection
 
@@ -204,7 +206,8 @@ class SimpleCamera:
         A 2D normalised vector which defines which direction corresponds to the +Y axis.
         generally easier to use the `rotate` and `rotate_to` methods as they use an angle value.
         """
-        self._view.up = tuple(Vec3(up[0], up[1], 0.0).normalize())
+        _up = Vec3(up[0], up[1], 0.0).normalize()
+        self._view.up = (_up[0], _up[1], _up[2])
 
     @property
     def angle(self) -> float:

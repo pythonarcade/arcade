@@ -2,12 +2,14 @@
 Camera class
 """
 import math
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Iterator
+from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec2, Vec3
 
 import arcade
 from arcade.types import Point
+from arcade.cinematic.types import Projector
 from arcade.math import get_distance
 
 if TYPE_CHECKING:
@@ -262,6 +264,15 @@ class SimpleCamera:
         self._window.ctx.viewport = self._viewport  # sets viewport of the camera
         self._window.projection = self._combined_matrix  # sets projection position and zoom
         self._window.view = Mat4()  # Set to identity matrix for now
+
+    @contextmanager
+    def activate(self) -> Iterator[Projector]:
+        previous_camera = self._window.current_camera
+        try:
+            self.use()
+            yield self
+        finally:
+            previous_camera.use()
 
 
 class Camera(SimpleCamera):

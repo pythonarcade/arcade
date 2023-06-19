@@ -208,7 +208,7 @@ class Window(pyglet.window.Window):
         self._background_color: Color = TRANSPARENT_BLACK
 
         self._current_view: Optional[View] = None
-        self.current_camera: Optional[Projector] = DefaultProjector(window=self)
+        self.current_camera: Projector = DefaultProjector(window=self)
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
