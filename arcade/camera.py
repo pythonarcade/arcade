@@ -217,13 +217,15 @@ class SimpleCamera:
 
         self.move_to(target, speed)
 
-    def get_map_coordinates(self, camera_vector: Union[Vec2, tuple]) -> Vec2:
+    def get_map_coordinates(self, camera_vector: Union[Vec2, tuple]) -> Tuple[float, float]:
         """
         Returns map coordinates in pixels from screen coordinates based on the camera position
 
         :param Vec2 camera_vector: Vector captured from the camera viewport
         """
-        return Vec2(*self.position) + Vec2(*camera_vector)
+        _mapped_position = Vec2(*self.position) + Vec2(*camera_vector)
+
+        return _mapped_position[0], _mapped_position[1]
 
     def resize(self, viewport_width: int, viewport_height: int, *,
                resize_projection: bool = True) -> None:

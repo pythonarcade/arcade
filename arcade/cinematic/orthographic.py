@@ -160,4 +160,6 @@ class OrthographicCamera:
 
         _full = ~(_projection @ _view)
 
-        return _full @ screen_position
+        _mapped_position = _full @ screen_position
+
+        return _mapped_position[0], _mapped_position[1]

@@ -137,7 +137,9 @@ class PerspectiveCamera:
 
         _full = ~(_projection @ _view)
 
-        return _full @ screen_position
+        _mapped_position = _full @ screen_position
+
+        return _mapped_position[0], _mapped_position[1]
 
     def get_map_coordinates_at_depth(self,
                                      screen_coordinate: Tuple[float, float],
@@ -157,4 +159,6 @@ class PerspectiveCamera:
 
         _full = ~(_projection @ _view)
 
-        return _full @ screen_position
+        _mapped_position = _full @ screen_position
+
+        return _mapped_position[0], _mapped_position[1]
