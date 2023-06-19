@@ -1,7 +1,7 @@
 from typing import Protocol, Tuple, Iterator
 from contextlib import contextmanager
 
-from arcade.cinematic.data import ViewData, PerspectiveProjectionData, OrthographicProjectionData
+from arcade.cinematic.data import ViewData
 
 
 class Projection(Protocol):
