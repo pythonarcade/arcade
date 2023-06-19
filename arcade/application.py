@@ -22,6 +22,8 @@ from arcade.context import ArcadeContext
 from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
+from arcade.cinematic import Projector
+from arcade.cinematic.default import DefaultProjector
 
 LOG = logging.getLogger(__name__)
 
@@ -201,16 +203,16 @@ class Window(pyglet.window.Window):
         # self.invalid = False
         set_window(self)
 
+        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
+        set_viewport(0, self.width, 0, self.height)
+        self._background_color: Color = TRANSPARENT_BLACK
+
         self._current_view: Optional[View] = None
-        self.current_camera: Optional[arcade.SimpleCamera] = None
+        self.current_camera: Optional[Projector] = DefaultProjector(window=self)
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
         self.static_display: bool = False
-
-        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
-        set_viewport(0, self.width, 0, self.height)
-        self._background_color: Color = TRANSPARENT_BLACK
 
         # See if we should center the window
         if center_window:
