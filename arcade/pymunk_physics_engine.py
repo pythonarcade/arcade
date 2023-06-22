@@ -135,7 +135,7 @@ class PymunkPhysicsEngine:
         body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
-        def velocity_callback(my_body: pymunk.Body, my_gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2],
+        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float],
                               my_damping: float, dt: float) -> None:
             """ Used for custom damping, gravity, and max_velocity. """
 
