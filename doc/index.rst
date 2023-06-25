@@ -116,7 +116,6 @@ The Python Arcade Library
    contributing_guide/index
    contributing_guide/directory_structure
    contributing_guide/how_to_contribute
-   contributing_guide/how_to_build
    contributing_guide/how_to_submit_changes
    contributing_guide/release_checklist
 

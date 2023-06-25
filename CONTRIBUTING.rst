@@ -140,6 +140,8 @@ it will automatically regenerate, and browser tabs will automatically refresh to
 If you suspect the automatic rebuilds are failing to detect changes, you can
 run a simpler one-time build using the following instructions.
 
+.. _how-to-compile:
+
 One-time build
 ~~~~~~~~~~~~~~
 
