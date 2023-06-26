@@ -1,7 +1,10 @@
 """
 Module specifying data custom types used for type hinting.
 """
+from __future__ import annotations
+
 from array import array
+import ctypes
 import random
 from collections import namedtuple
 from collections.abc import ByteString
@@ -55,6 +58,7 @@ __all__ = [
     "PathOrTexture",
     "Point",
     "PointList",
+    "EMPTY_POINT_LIST",
     "NamedPoint",
     "Rect",
     "RectList",
@@ -302,7 +306,7 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("color_normalized must unpack to 3 or 3 values")
+                raise ValueError("color_normalized must unpack to 3 or 4 values")
             a = _a[0]
 
             if not 0.0 <= a <= 1.0:
@@ -415,13 +419,22 @@ ColorLike = Union[RGB, RGBA255]
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
 Point = Tuple[float, float]
+Point3 = Tuple[float, float, float]
 IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
+
 PointList = Sequence[Point]
+# Speed / typing workaround:
+# 1. Eliminate extra allocations
+# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
+EMPTY_POINT_LIST: PointList = tuple()
+
+
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
+FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
 
 PathOrTexture = Optional[Union[str, Path, "Texture"]]
 
@@ -440,4 +453,4 @@ class TiledObject(NamedTuple):
 # the PEP and Python doc for more information:
 # https://peps.python.org/pep-0688/
 # https://docs.python.org/3/c-api/buffer.html
-BufferProtocol = Union[ByteString, memoryview, array]
+BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

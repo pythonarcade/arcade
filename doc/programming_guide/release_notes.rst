@@ -207,6 +207,9 @@ Changes
     ``layer_options`` dictionary.
     If no custom atlas is provided, then the global default atlas will be used (This is how it works pre-Arcade 3.0).
   * Fix for animated tiles from sprite sheets
+  * TextureAtlas: Added ``sync_texture_image`` method to sync the texture in the atlas back into
+    the internal pillow image in the ``arcade.Texture``.
+  * TextureAtlas: Added ``get_texture_image`` method to get pixel data of a texture in the atlas as a pillow image.
 
 * Collision Detection
 

@@ -1,4 +1,4 @@
-from typing import Iterable, List, TypeVar, Tuple, Optional
+from typing import Iterable, List, TypeVar, Tuple, Optional, cast
 
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
@@ -301,6 +301,13 @@ class UIBoxLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
+    def fit_content(self):
+        """
+        Resize the layout to fit the content. This will take the minimal required size into account.
+        """
+        self._update_size_hints()
+        self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
+
     def do_layout(self):
         start_y = self.content_rect.top
         start_x = self.content_rect.left
@@ -549,14 +556,10 @@ class UIGridLayout(UILayout):
 
     def _update_size_hints(self):
 
-        child_sorted_row_wise = [
-            [None for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
-
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
@@ -589,11 +592,6 @@ class UIGridLayout(UILayout):
                 max_height_per_row[i][col_num] = (0, 0)
 
             max_height_per_row[row_num][col_num] = (shmn_h, row_span)
-
-            for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
-            ]:
-                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_width_ratio_list = []
         principal_height_ratio_list = []
@@ -658,14 +656,14 @@ class UIGridLayout(UILayout):
         if not self.children:
             return
 
-        child_sorted_row_wise = [
+        child_sorted_row_wise = cast(List[List[UIWidget]], [
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
+        ])
 
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 

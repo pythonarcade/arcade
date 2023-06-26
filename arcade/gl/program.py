@@ -10,12 +10,13 @@ from ctypes import (
     create_string_buffer,
 )
 from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union, Optional
+import typing
 import weakref
 
 from pyglet import gl
 
 from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
+from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES, PyGLenum
 from .exceptions import ShaderException
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -85,7 +86,7 @@ class Program:
         self._attributes = []  # type: List[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: Dict[str, Union[Uniform, UniformBlock]] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -93,7 +94,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: List[Tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
@@ -318,7 +319,7 @@ class Program:
         if name not in self._uniforms:
             return
 
-        uniform = self._uniforms[name]
+        uniform = typing.cast(Uniform, self._uniforms[name])
         _len = uniform._array_length * uniform._components
         if _len == 1:
             self.set_uniform_safe(name, value[0])
@@ -486,7 +487,7 @@ class Program:
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
-    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+    def compile_shader(source: str, shader_type: PyGLenum) -> gl.GLuint:
         """Compile the shader code of the given type.
 
         `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...

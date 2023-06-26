@@ -8,7 +8,7 @@ Build script to simplify running:
 
 For help, see the following:
 
-* CONTRIBUTING.md
+* CONTRIBUTING.rst
 * The output of python make.py --help
 """
 import os
@@ -76,7 +76,7 @@ for binary in binaries:
     not_found = [binary for binary in binaries if which(binary) is None]
     if not_found:
         print("Command-line tools not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
+        print("Did you forget to install them with `pip`?  See CONTRIBUTING.rst file for instructions.")
         exit(1)
 for library in libraries:
     def find(library):
@@ -87,7 +87,7 @@ for library in libraries:
     not_found = [library for library in libraries if not find(library)]
     if not_found:
         print("Python dependencies not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
+        print("Did you forget to install them with `pip`?  See CONTRIBUTING.rst file for instructions.")
         exit(1)
 
 
@@ -290,8 +290,8 @@ def latex():
     run_doc([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print()
     print(f"Build finished; the LaTeX files are in {FULL_BUILD_PREFIX}/latex.")
-    print("Run \`make' in that directory to run these through (pdf)latex" +
-          "(use \`make latexpdf' here to do that automatically).")
+    print("Run `make' in that directory to run these through (pdf)latex" +
+          "(use `make latexpdf' here to do that automatically).")
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -344,8 +344,8 @@ def texinfo():
     run_doc([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print()
     print(f"Build finished. The Texinfo files are in {FULL_BUILD_PREFIX}/texinfo.")
-    print("Run \`make' in that directory to run these through makeinfo" +
-          "(use \`make info' here to do that automatically).")
+    print("Run `make' in that directory to run these through makeinfo" +
+          "(use `make info' here to do that automatically).")
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -427,10 +427,11 @@ def pseudoxml():
 @app.command(rich_help_panel="Code Quality")
 def lint():
     """
-    Run all linting tasks: ruff and mypy (Run this before making a pull request!)
+    Run all linting tasks: ruff, mypy, and pyright (Run this before making a pull request!)
     """
     ruff()
     mypy()
+    pyright()
     print("Linting Complete.")
 
 
@@ -483,7 +484,7 @@ def whichshell():
 
     if shell_name in SHELLS_WITH_AUTOCOMPLETE:
         print("This shell is known to support tab-completion!")
-        print("See CONTRIBUTING.md for more information on how to enable it.")
+        print("See CONTRIBUTING.rst for more information on how to enable it.")
 
 
 if __name__ == "__main__":

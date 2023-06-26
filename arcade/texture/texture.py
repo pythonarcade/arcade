@@ -163,7 +163,7 @@ class Texture:
         elif isinstance(image, ImageData):
             self._image_data = image
         else:
-            raise ValueError(
+            raise TypeError(
                 "image must be an instance of PIL.Image.Image or ImageData, "
                 f"not {type(image)}"
             )
@@ -180,7 +180,7 @@ class Texture:
 
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
         if not isinstance(self._hit_box_algorithm, HitBoxAlgorithm):
-            raise ValueError(
+            raise TypeError(
                 f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
             )
 
@@ -241,7 +241,7 @@ class Texture:
         if not isinstance(hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
-        return f"{hash}|{vertex_order}|{hit_box_algorithm.name}|{hit_box_algorithm.param_str}"
+        return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
 
     @classmethod
     def create_atlas_name(
@@ -288,7 +288,7 @@ class Texture:
         return self._file_path
 
     @file_path.setter
-    def file_path(self, path: Path):
+    def file_path(self, path: Optional[Path]):
         self._file_path = path
 
     @property
@@ -301,7 +301,7 @@ class Texture:
         return self._crop_values
 
     @crop_values.setter
-    def crop_values(self, crop: Tuple[int, int, int, int]):
+    def crop_values(self, crop: Optional[Tuple[int, int, int, int]]):
         self._crop_values = crop
 
     @property
