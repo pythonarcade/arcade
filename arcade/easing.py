@@ -202,7 +202,7 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool,
 
 
 def ease_value(start_value: float, end_value: float, *, time:
-                         Optional[float]=None, rate: Optional[float]=None,
+                         float=0, rate: float=0,
                          ease_function: Callable=linear) -> EasingData:
     """
     Get an easing value
