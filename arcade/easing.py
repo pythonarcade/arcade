@@ -240,8 +240,14 @@ def ease_position(start_position: Tuple[float, float],
     if rate is not None:
         time = distance / rate
 
-    easing_data_x: EasingData = ease_value(start_position[0], end_position[0], time=time, ease_function=ease_function)
-    easing_data_y: EasingData = ease_value(start_position[1], end_position[1], time=time, ease_function=ease_function)
+    easing_data_x: EasingData = ease_value(
+        start_position[0], end_position[0],
+        time=time, ease_function=ease_function # type: ignore[arg-type]
+    )
+    easing_data_y: EasingData = ease_value(
+        start_position[1], end_position[1],
+        time=time, ease_function=ease_function # type: ignore[arg-type]
+    )
 
     return easing_data_x, easing_data_y
 
