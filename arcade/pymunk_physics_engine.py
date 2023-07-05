@@ -147,7 +147,7 @@ class PymunkPhysicsEngine:
 
             # Custom gravity
             if sprite.pymunk.gravity is not None:
-                my_gravity = sprite.pymunk.gravity
+                my_gravity = sprite.pymunk.gravity # type: ignore
 
             # Go ahead and update velocity
             pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)
