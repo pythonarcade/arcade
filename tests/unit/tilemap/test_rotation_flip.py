@@ -65,3 +65,73 @@ def test_rotation_mirror(window):
     wall = wall_list[7]
     assert wall.position == (1344, 64)
     assert wall.texture._vertex_order == tt.TransposeTransform.order
+
+    # --- Object ---
+    assert "Objects Sprites" in my_map.sprite_lists
+    wall_list = my_map.sprite_lists["Objects Sprites"]
+
+    line = 64+128*2
+    wall = wall_list[0]
+    assert wall.properties["name"] == "not"
+    assert wall.position == (64, line)
+
+    wall = wall_list[1]
+    assert wall.properties["name"] == "h"
+    assert wall.position == (64+128*1, line)
+
+    wall = wall_list[2]
+    assert wall.properties["name"] == "90"
+    assert wall.position == (64+128*3, line) # this do fail
+
+    wall = wall_list[3]
+    assert wall.properties["name"] == "h90"
+    assert wall.position == (64+128*4, line) # this do fail
+
+    wall = wall_list[4]
+    assert wall.properties["name"] == "180"
+    assert wall.position == (64+128*6, line)
+    
+    wall = wall_list[5]
+    assert wall.properties["name"] == "h180"
+    assert wall.position == (64+128*7, line)
+
+    wall = wall_list[6]
+    assert wall.properties["name"] == "-90"
+    assert wall.position == (64+128*9, line)  # this do fail
+
+    wall = wall_list[7]
+    assert wall.properties["name"] == "h-90"
+    assert wall.position == (64+128*10, line) # this do fail
+
+    line = 64+128*4
+    wall = wall_list[8]
+    assert wall.properties["name"] == "v"
+    assert wall.position == (64, line)
+
+    wall = wall_list[9]
+    assert wall.properties["name"] == "hv"
+    assert wall.position == (64+128*1, line)
+
+    wall = wall_list[10]
+    assert wall.properties["name"] == "v90"
+    assert wall.position == (64+128*3, line)  # this do fail
+
+    wall = wall_list[11]
+    assert wall.properties["name"] == "hv90"
+    assert wall.position == (64+128*4, line) # this do fail
+
+    wall = wall_list[12]
+    assert wall.properties["name"] == "v180"
+    assert wall.position == (64+128*6, line)
+
+    wall = wall_list[13]
+    assert wall.properties["name"] == "hv180"
+    assert wall.position == (64+128*7, line)
+
+    wall = wall_list[14]
+    assert wall.properties["name"] == "v-90"
+    assert wall.position == (64+128*9, line) # this do fail
+
+    wall = wall_list[15]
+    assert wall.properties["name"] == "hv-90"
+    assert wall.position == (64+128*10, line) # this do fail
