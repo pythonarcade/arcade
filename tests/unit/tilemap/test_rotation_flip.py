@@ -132,11 +132,11 @@ def test_object_rotation_placement():
 
     wall = wall_list[2]
     assert wall.properties["name"] == "90"
-    assert wall.position == (64+128*3, line) # this do fail
+    assert wall.position == (64+128*3, line)
 
     wall = wall_list[3]
     assert wall.properties["name"] == "h90"
-    assert wall.position == (64+128*4, line) # this do fail
+    assert wall.position == (64+128*4, line)
 
     wall = wall_list[4]
     assert wall.properties["name"] == "180"
@@ -148,11 +148,11 @@ def test_object_rotation_placement():
 
     wall = wall_list[6]
     assert wall.properties["name"] == "-90"
-    assert wall.position == (64+128*9, line)  # this do fail
+    assert wall.position == (64+128*9, line)
 
     wall = wall_list[7]
     assert wall.properties["name"] == "h-90"
-    assert wall.position == (64+128*10, line) # this do fail
+    assert wall.position == (64+128*10, line)
 
     line = 64+128*4
     wall = wall_list[8]
@@ -165,11 +165,11 @@ def test_object_rotation_placement():
 
     wall = wall_list[10]
     assert wall.properties["name"] == "v90"
-    assert wall.position == (64+128*3, line)  # this do fail
+    assert wall.position == (64+128*3, line)
 
     wall = wall_list[11]
     assert wall.properties["name"] == "hv90"
-    assert wall.position == (64+128*4, line) # this do fail
+    assert wall.position == (64+128*4, line)
 
     wall = wall_list[12]
     assert wall.properties["name"] == "v180"
@@ -181,8 +181,8 @@ def test_object_rotation_placement():
 
     wall = wall_list[14]
     assert wall.properties["name"] == "v-90"
-    assert wall.position == (64+128*9, line) # this do fail
+    assert wall.position == (64+128*9, line)
 
     wall = wall_list[15]
     assert wall.properties["name"] == "hv-90"
-    assert wall.position == (64+128*10, line) # this do fail
+    assert wall.position == (64+128*10, line)
