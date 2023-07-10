@@ -11,7 +11,7 @@ def _transform(*transforms):
     return order
 
 
-def test_rotation_mirror(window):
+def test_rotation_mirror():
     # Read in the tiled map
     my_map = arcade.load_tilemap(":fixtures:tilemaps/rotation.json")
 
