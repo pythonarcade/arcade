@@ -66,6 +66,11 @@ def test_rotation_mirror():
     assert wall.position == (1344, 64)
     assert wall.texture._vertex_order == tt.TransposeTransform.order
 
+
+def test_object_rotation_placement():
+    # Read in the tiled map
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/rotation.json")
+
     # --- Object ---
     assert "Objects Sprites" in my_map.sprite_lists
     wall_list = my_map.sprite_lists["Objects Sprites"]
