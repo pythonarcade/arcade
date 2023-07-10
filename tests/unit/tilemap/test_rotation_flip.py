@@ -67,6 +67,52 @@ def test_rotation_mirror():
     assert wall.texture._vertex_order == tt.TransposeTransform.order
 
 
+def test_object_rotation_orientation():
+    # Read in the tiled map
+    my_map = arcade.load_tilemap(":fixtures:tilemaps/rotation.json")
+
+    assert my_map.tile_width == 128
+    assert my_map.tile_height == 128
+    assert my_map.width == 11
+    assert my_map.height == 10
+    # --- Object ---
+    assert "Objects Sprites" in my_map.sprite_lists
+    wall_list = my_map.sprite_lists["Objects Sprites"]
+    
+    # Check for the direction of rotation
+    # not rotated the top is aligned with the grid
+    wall = wall_list[16]
+    assert wall.properties["name"] == "r0"
+    assert (wall.top / 128).is_integer()
+    assert not (wall.bottom / 128).is_integer()
+    assert (wall.left / 128).is_integer()
+    assert (wall.right / 128).is_integer()
+
+    # Turned 90 to the left
+    wall = wall_list[17]
+    assert wall.properties["name"] == "r1"
+    assert (wall.top / 128).is_integer()
+    assert (wall.bottom / 128).is_integer()
+    assert (wall.left / 128).is_integer()
+    assert not (wall.right / 128).is_integer()
+
+    # Turned 180 
+    wall = wall_list[18]
+    assert wall.properties["name"] == "r2"
+    assert not (wall.top / 128).is_integer()
+    assert (wall.bottom / 128).is_integer()
+    assert (wall.left / 128).is_integer()
+    assert (wall.right / 128).is_integer()
+
+    # Turned 270 to the left (90 to the right) 
+    wall = wall_list[19]
+    assert wall.properties["name"] == "r3"
+    assert (wall.top / 128).is_integer()
+    assert (wall.bottom / 128).is_integer()
+    assert not (wall.left / 128).is_integer()
+    assert (wall.right / 128).is_integer()
+
+
 def test_object_rotation_placement():
     # Read in the tiled map
     my_map = arcade.load_tilemap(":fixtures:tilemaps/rotation.json")
