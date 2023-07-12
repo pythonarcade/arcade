@@ -720,7 +720,9 @@ class TileMap:
         my_sprite.center_x = (
             (layer.offset[0] * scaling) + my_sprite.width / 2
         ) + offset[0]
-        my_sprite.center_y = (layer.offset[1]) + offset[1]
+        my_sprite.top = (
+            self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+            - layer.offset[1]) * scaling + offset[1]
 
         sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
