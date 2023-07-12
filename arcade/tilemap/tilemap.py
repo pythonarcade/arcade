@@ -700,7 +700,7 @@ class TileMap:
         args = {
             "filename": image_file,
             "scale": scaling,
-            "texture": my_texture,
+            "path_or_texture": my_texture,
             "hit_box_algorithm": hit_box_algorithm,
         }
 
