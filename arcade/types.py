@@ -631,8 +631,8 @@ class ColorFloat(RGBANormalized):
             >>> ColorFloat.from_color255((255, 0, 0, 255))
             Color(r=1.0, g=0.0, b=0.0, a=1.0)
 
-            >>> normalized_half_opacity_green = (0, 255, 0, 127)
-            >>> ColorFloat.from_color255(normalized_half_opacity_green)
+            >>> color255_half_opacity_green = (0, 255, 0, 127)
+            >>> ColorFloat.from_color255(color255_half_opacity_green)
             Color(r=0.0, g=1.0, b=0.0, a=0.4980392156862745)
 
         :param color255: The color as byte (0 to 255) RGBA values.
