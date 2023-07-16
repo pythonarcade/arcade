@@ -1,9 +1,9 @@
 """
 Simple video recorder with cv2.
-Records Arcade screen to a video file, with minimal 
+Records Arcade screen to a video file, with minimal
 I/O operations and minimal memory usage.
 
-We read pixels directly from OpenGL framebuffer, then into 
+We read pixels directly from OpenGL framebuffer, then into
 a NumPy array that we can hand to OpenCV for the video writing.
 
 The other ways of doing this with built-in arcade.get_image()
@@ -59,7 +59,7 @@ class VideoRecorderCV2(arcade.Window):
 
         # make something happen for our video
         arcade.set_background_color(arcade.types.Color(self.frames % 255, 0, 0))
-    
+
     # This is sort of a re-implementation of arcade.get_image(). Really the only difference
     # is in the last line, where we create a numpy array with the buffer instead of
     # creating a PIL image, and the fact that we are just capturing the whole screen instead
@@ -68,10 +68,10 @@ class VideoRecorderCV2(arcade.Window):
         image_buffer = (gl.GLubyte * (3 * self.width * self.height))(0)
         gl.glReadPixels(0, 0, self.width, self.height, gl.GL_BGR, gl.GL_UNSIGNED_BYTE, image_buffer)
         return numpy.frombuffer(image_buffer, dtype='uint8').reshape(self.height, self.width, 3)  # type: ignore
-    
+
 
 def main():
-    game = VideoRecorderCV2(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    VideoRecorderCV2(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 
