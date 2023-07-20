@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec3, Vec4
 
-from arcade.cinematic.data import ViewData, PerspectiveProjectionData
+from arcade.cinematic.data import CameraData, PerspectiveProjectionData
 from arcade.cinematic.types import Projector
 
 from arcade.window_commands import get_window
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
-class PerspectiveCamera:
+class PerspectiveProjector:
     """
     The simplest from of a perspective camera.
     Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
@@ -29,11 +29,11 @@ class PerspectiveCamera:
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
-                 view: Optional[ViewData] = None,
+                 view: Optional[CameraData] = None,
                  projection: Optional[PerspectiveProjectionData] = None):
         self._window: "Window" = window or get_window()
 
-        self._view = view or ViewData(
+        self._view = view or CameraData(
             (0, 0, self._window.width, self._window.height),  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
@@ -48,12 +48,12 @@ class PerspectiveCamera:
         )
 
     @property
-    def viewport(self):
-        return self._view.viewport
+    def view(self) -> CameraData:
+        return self._view
 
     @property
-    def position(self):
-        return self._view.position
+    def projection(self) -> PerspectiveProjectionData:
+        return self._projection
 
     def _generate_projection_matrix(self) -> Mat4:
         """

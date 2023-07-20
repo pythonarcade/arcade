@@ -1,7 +1,7 @@
 from typing import Protocol, Tuple, Iterator
 from contextlib import contextmanager
 
-from arcade.cinematic.data import ViewData
+from arcade.cinematic.data import CameraData
 
 
 class Projection(Protocol):
@@ -23,6 +23,6 @@ class Projector(Protocol):
 
 
 class Camera(Protocol):
-    _view: ViewData
+    _view: CameraData
     _projection: Projection
 

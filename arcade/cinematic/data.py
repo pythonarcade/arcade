@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ViewData:
+class CameraData:
     """
-    A PoD (Packet of Data) which holds the necessary data for a functional camera excluding the projection data
+    A PoD (Packet of Data) which holds the necessary data for a functional camera excluding the projection data.
 
     :param viewport: The pixel bounds which will be drawn onto. (left, bottom, width, height)
 

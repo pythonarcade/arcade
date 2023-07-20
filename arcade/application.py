@@ -23,7 +23,7 @@ from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 from arcade.cinematic import Projector
-from arcade.cinematic.default import DefaultProjector
+from arcade.cinematic.default import _DefaultProjector
 
 LOG = logging.getLogger(__name__)
 
@@ -208,7 +208,7 @@ class Window(pyglet.window.Window):
         self._background_color: Color = TRANSPARENT_BLACK
 
         self._current_view: Optional[View] = None
-        self.current_camera: Projector = DefaultProjector(window=self)
+        self.current_camera: Projector = _DefaultProjector(window=self)
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec3, Vec4
 
-from arcade.cinematic.data import ViewData, OrthographicProjectionData
+from arcade.cinematic.data import CameraData, OrthographicProjectionData
 from arcade.cinematic.types import Projector
 
 from arcade.window_commands import get_window
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
-class OrthographicCamera:
+class OrthographicProjector:
     """
     The simplest from of an orthographic camera.
     Using ViewData and OrthographicProjectionData PoDs (Pack of Data)
@@ -30,11 +30,11 @@ class OrthographicCamera:
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
-                 view: Optional[ViewData] = None,
+                 view: Optional[CameraData] = None,
                  projection: Optional[OrthographicProjectionData] = None):
         self._window: "Window" = window or get_window()
 
-        self._view = view or ViewData(
+        self._view = view or CameraData(
             (0, 0, self._window.width, self._window.height),  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
@@ -49,20 +49,12 @@ class OrthographicCamera:
         )
 
     @property
-    def view(self):
+    def view_data(self) -> CameraData:
         return self._view
 
     @property
-    def projection(self):
+    def projection_data(self) -> OrthographicProjectionData:
         return self._projection
-
-    @property
-    def viewport(self):
-        return self._view.viewport
-
-    @property
-    def position(self):
-        return self._view.position
 
     def _generate_projection_matrix(self) -> Mat4:
         """
@@ -132,11 +124,6 @@ class OrthographicCamera:
         """
         A context manager version of Camera2DOrthographic.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
-
-        :WARNING:
-            Currently there is no 'default' camera within arcade. This means this method will raise a value error
-            as self._window.current_camera is None initially. To solve this issue you only need to make a default
-            camera and call the use() method.
         """
         previous_projector = self._window.current_camera
         try:
@@ -149,6 +136,7 @@ class OrthographicCamera:
         """
         Maps a screen position to a pixel position.
         """
+        # TODO: better doc string
 
         screen_x = 2.0 * (screen_coordinate[0] - self._view.viewport[0]) / self._view.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._view.viewport[1]) / self._view.viewport[3] - 1

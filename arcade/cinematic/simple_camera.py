@@ -1,16 +1,15 @@
-from typing import Optional, Tuple, Iterator, TYPE_CHECKING
+from typing import Optional, Tuple, Iterator
 from contextlib import contextmanager
 from math import atan2, cos, sin, degrees, radians
 
 from pyglet.math import Vec3
 
-from arcade.cinematic.data import ViewData, OrthographicProjectionData
+from arcade.cinematic.data import CameraData, OrthographicProjectionData
 from arcade.cinematic.types import Projector
-from arcade.cinematic.orthographic import OrthographicCamera
+from arcade.cinematic.orthographic import OrthographicProjector
 
 from arcade.window_commands import get_window
-if TYPE_CHECKING:
-    from arcade import Window
+from arcade import Window
 
 
 class SimpleCamera:
@@ -30,19 +29,19 @@ class SimpleCamera:
                  zoom: Optional[float] = None,
                  near: Optional[float] = None,
                  far: Optional[float] = None,
-                 view_data: Optional[ViewData] = None,
+                 camera_data: Optional[CameraData] = None,
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
         self._window = window or get_window()
 
-        if any((viewport, projection, position, up, zoom, near, far)) and any((view_data, projection_data)):
+        if any((viewport, projection, position, up, zoom, near, far)) and any((camera_data, projection_data)):
             raise ValueError("Provided both data structures and raw values."
                              "Only supply one or the other")
 
         if any((viewport, projection, position, up, zoom, near, far)):
             _pos = position or (0.0, 0.0)
             _up = up or (0.0, 1.0)
-            self._view = ViewData(
+            self._view = CameraData(
                 viewport or (0, 0, self._window.width, self._window.height),
                 (_pos[0], _pos[1], 0.0),
                 (_up[0], _up[1], 0.0),
@@ -59,7 +58,7 @@ class SimpleCamera:
                 near or -100, far or 100  # Near, Far
             )
         else:
-            self._view = view_data or ViewData(
+            self._view = camera_data or CameraData(
                 (0, 0, self._window.width, self._window.height),  # Viewport
                 (self._window.width / 2, self._window.height / 2, 0.0),  # Position
                 (0, 1.0, 0.0),  # Up
@@ -72,7 +71,7 @@ class SimpleCamera:
                 -100, 100  # Near, Far
             )
 
-        self._camera = OrthographicCamera(
+        self._camera = OrthographicProjector(
             window=self._window,
             view=self._view,
             projection=self._projection
@@ -308,11 +307,6 @@ class SimpleCamera:
         """
         A context manager version of Camera2DOrthographic.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
-
-        :WARNING:
-            Currently there is no 'default' camera within arcade. This means this method will raise a value error
-            as self._window.current_camera is None initially. To solve this issue you only need to make a default
-            camera and call the use() method.
         """
         previous_projector = self._window.current_camera
         try:
@@ -325,5 +319,6 @@ class SimpleCamera:
         """
         Maps a screen position to a pixel position.
         """
+        # TODO: better doc string
 
         return self._camera.get_map_coordinates(screen_coordinate)
