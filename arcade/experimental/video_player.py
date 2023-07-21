@@ -23,7 +23,7 @@ class VideoPlayer:
     def __init__(self, path: Union[str, Path], loop: bool = False):
         self.player = pyglet.media.Player()
         self.player.loop = loop
-        self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))
+        self.player.queue(pyglet.media.load(str(arcade.resources.resolve(path))))
         self.player.play()
 
         self.ctx = arcade.get_window().ctx

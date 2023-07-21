@@ -257,7 +257,7 @@ class RotatableHitBox(HitBox):
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
-        rad = radians(self._angle)
+        rad = radians(-self._angle)
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
