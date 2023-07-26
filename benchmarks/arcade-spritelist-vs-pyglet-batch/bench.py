@@ -63,7 +63,7 @@ pyglet_image = pyglet.image.load(png_path)
 
 def create_bullet_pyglet():
     # Create a new bullet
-    new_bullet = pyglet.sprite.Sprite(pyglet_image, batch=pyglet_batch)
+    new_bullet = pyglet.sprite.Sprite(pyglet_image, batch=pyglet_batch, subpixel=True)
     new_bullet.position = (rng.randint(0, SCREEN_WIDTH), rng.randint(0, SCREEN_HEIGHT), 0)
     speed = rng.random() * (BULLET_VELOCITY_MAX - BULLET_VELOCITY_MIN) + BULLET_VELOCITY_MIN
     angle = rng.random() * math.pi * 2
