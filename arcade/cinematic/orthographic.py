@@ -27,6 +27,7 @@ class OrthographicProjector:
     be inefficient. If you suspect this is causing slowdowns
     profile before optimising with a dirty value check.
     """
+    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
                  window: Optional["Window"] = None,

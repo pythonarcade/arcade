@@ -26,6 +26,7 @@ class PerspectiveProjector:
     If used every frame or multiple times per frame this may
     be inefficient.
     """
+    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
                  window: Optional["Window"] = None,

@@ -14,6 +14,7 @@ class _DefaultProjector:
     An extremely limited projector which lacks any kind of control. This is only here to act as the default camera
     used internally by arcade. There should be no instance where a developer would want to use this class.
     """
+    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *, window: Optional["Window"] = None):
         self._window: "Window" = window or get_window()

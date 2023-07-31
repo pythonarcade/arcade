@@ -19,6 +19,7 @@ class SimpleCamera:
 
     Written to be backwards compatible with the old SimpleCamera.
     """
+    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
@@ -224,8 +225,8 @@ class SimpleCamera:
         """
         rad = radians(angle)
         self.up = (
-            cos(rad),
-            sin(rad)
+            sin(rad),
+            cos(rad)
         )
 
     def move_to(self, vector: Tuple[float, float], speed: float = 1.0) -> None:
