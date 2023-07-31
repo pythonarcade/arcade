@@ -333,10 +333,9 @@ class BufferDescription:
         if not isinstance(other, BufferDescription):
             raise ValueError(f"The only logical comparison to a BufferDescription"
                              f"is a BufferDescription not {type(other)}")
-        for self_attrib in self.attributes:
-            for other_attrib in other.attributes:
-                return True
-        return False
+
+        # Equal if we share the same attribute
+        return len(set(self.attributes) & set(other.attributes)) > 0
 
 
 class TypeInfo:

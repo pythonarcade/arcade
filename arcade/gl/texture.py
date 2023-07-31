@@ -815,6 +815,49 @@ class Texture2D:
 
         gl.glBindImageTexture(unit, self._glo, level, 0, 0, access, self._internal_format)
 
+    def get_handle(self, resident: bool = True) -> int:
+        """
+        Get a handle for bindless texture access.
+
+        Once a handle is created its parameters cannot be changed.
+        Attempting to do so will have no effect. (filter, wrap etc).
+        There is no way to undo this immutability.
+
+        Handles cannot be used by shaders until they are resident.
+        This method can be called multiple times to move a texture
+        in and out of residency::
+
+            >> texture.get_handle(resident=False)
+            4294969856
+            >> texture.get_handle(resident=True)
+            4294969856
+
+        Ths same handle is returned if the handle already exists.
+
+        .. note:: Limitations from the OpenGL wiki
+
+            The amount of storage available for resident images/textures may be less
+            than the total storage for textures that is available. As such, you should
+            attempt to minimize the time a texture spends being resident. Do not attempt
+            to take steps like making textures resident/unresident every frame or something.
+            But if you are finished using a texture for some time, make it unresident.
+
+        Keyword Args:
+            resident (bool): Make the texture resident.
+        """
+        handle = gl.glGetTextureHandleARB(self._glo)
+        is_resident = gl.glIsTextureHandleResidentARB(handle)
+
+        # Ensure we don't try to make a resident texture resident again
+        if resident:
+            if not is_resident:
+                gl.glMakeTextureHandleResidentARB(handle)
+        else:
+            if is_resident:
+                gl.glMakeTextureHandleNonResidentARB(handle)
+
+        return handle
+
     def __repr__(self) -> str:
         return "<Texture glo={} size={}x{} components={}>".format(
             self._glo.value, self._width, self._height, self._components

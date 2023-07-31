@@ -189,6 +189,9 @@ Changes
   * Fixed many implicit type conversions in the shader code for wider support.
   * Added ``front_face`` property on the context for configuring front face winding order of triangles
   * Added ``cull_face`` property on the context for configuring what triangle face to cull
+  * Added support for bindless textures
+  * Added support for 64 bit integer uniforms
+  * Added support for 64 float uniforms
 
 * :py:class:`~arcade.tilemap.TileMap`
 
