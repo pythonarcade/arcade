@@ -8,6 +8,10 @@ from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade.application import Window
 
+__all__ = [
+    '_DefaultProjector'
+]
+
 
 class _DefaultProjector:
     """
@@ -49,5 +53,5 @@ class _DefaultProjector:
         finally:
             previous.use()
 
-    def get_map_coordinates(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         return screen_coordinate

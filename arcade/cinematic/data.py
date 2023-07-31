@@ -2,6 +2,13 @@ from typing import Tuple
 from dataclasses import dataclass
 
 
+__all__ = [
+    'CameraData',
+    'OrthographicProjectionData',
+    'PerspectiveProjectionData'
+]
+
+
 @dataclass
 class CameraData:
     """

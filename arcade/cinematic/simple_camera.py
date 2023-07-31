@@ -12,6 +12,11 @@ from arcade.window_commands import get_window
 from arcade import Window
 
 
+__all__ = [
+    'SimpleCamera'
+]
+
+
 class SimpleCamera:
     """
     A simple camera which uses an orthographic camera and a simple 2D Camera Controller.
@@ -316,7 +321,7 @@ class SimpleCamera:
         finally:
             previous_projector.use()
 
-    def get_map_coordinates(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         """
         Maps a screen position to a pixel position.
         """

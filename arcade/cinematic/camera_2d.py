@@ -1,5 +1,4 @@
 from typing import Optional, Tuple, Iterator
-from warnings import warn
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
@@ -11,9 +10,9 @@ from arcade.cinematic.types import Projector
 from arcade.application import Window
 from arcade.window_commands import get_window
 
-__all__ = {
+__all__ = [
     'Camera2D'
-}
+]
 
 
 class Camera2D:
@@ -68,12 +67,14 @@ class Camera2D:
         self._window = window or get_window()
 
         assert (
-            any((viewport, position, up, zoom)) and camera_data,
+            any((viewport, position, up, zoom)) and camera_data
+        ), (
             "Camera2D Warning: Provided both a CameraData object and raw values. Defaulting to CameraData."
         )
 
         assert (
-            any((projection, near, far)) and projection_data,
+            any((projection, near, far)) and projection_data
+        ), (
             "Camera2D Warning: Provided both an OrthographicProjectionData object and raw values."
             "Defaulting to OrthographicProjectionData."
         )
@@ -648,7 +649,7 @@ class Camera2D:
         """
         Set the left most pixel drawn to on the X axis.
         """
-        self._data.viewport = (_left,) + self._data.viewport[2:]
+        self._data.viewport = (_left,) + self._data.viewport[1:]
 
     @property
     def viewport_right(self) -> int:
@@ -726,7 +727,7 @@ class Camera2D:
         clock-wise.
         """
         # Note that this is flipped as we want 0 degrees to be vert. Normally you have y first and then x.
-        return atan2(self._data.position[0], self._data.position[1])
+        return degrees(atan2(self._data.position[0], self._data.position[1]))
 
     @angle.setter
     def angle(self, value: float):
@@ -814,7 +815,7 @@ class Camera2D:
         finally:
             previous_projection.use()
 
-    def get_map_coordinate(self, screen_coordinates: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinates: Tuple[float, float]) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the viewport and returns

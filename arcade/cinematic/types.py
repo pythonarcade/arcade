@@ -4,6 +4,13 @@ from contextlib import contextmanager
 from arcade.cinematic.data import CameraData
 
 
+__all__ = [
+    'Projection',
+    'Projector',
+    'Camera'
+]
+
+
 class Projection(Protocol):
     near: float
     far: float
@@ -18,7 +25,7 @@ class Projector(Protocol):
     def activate(self) -> Iterator["Projector"]:
         ...
 
-    def get_map_coordinates(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         ...
 
 

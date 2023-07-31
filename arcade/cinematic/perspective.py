@@ -11,6 +11,11 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
+__all__ = [
+    'PerspectiveProjector'
+]
+
+
 class PerspectiveProjector:
     """
     The simplest from of a perspective camera.
@@ -123,7 +128,7 @@ class PerspectiveProjector:
         finally:
             previous_projector.use()
 
-    def get_map_coordinates(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         """
         Maps a screen position to a pixel position at the near clipping plane of the camera.
         """
@@ -142,9 +147,9 @@ class PerspectiveProjector:
 
         return _mapped_position[0], _mapped_position[1]
 
-    def get_map_coordinates_at_depth(self,
-                                     screen_coordinate: Tuple[float, float],
-                                     depth: float) -> Tuple[float, float]:
+    def map_coordinate_at_depth(self,
+                                screen_coordinate: Tuple[float, float],
+                                depth: float) -> Tuple[float, float]:
         """
         Maps a screen position to a pixel position at the specific depth supplied.
         """
