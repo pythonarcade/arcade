@@ -815,7 +815,7 @@ class Camera2D:
         finally:
             previous_projection.use()
 
-    def map_coordinate(self, screen_coordinates: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the viewport and returns
@@ -823,7 +823,7 @@ class Camera2D:
 
         Essentially reverses the effects of the projector.
 
-        :param screen_coordinates: The pixel coordinates to map back to world coordinates.
+        :param screen_coordinate: The pixel coordinates to map back to world coordinates.
         """
 
-        return self._ortho_projector.get_map_coordinates(screen_coordinates)
+        return self._ortho_projector.map_coordinate(screen_coordinate)

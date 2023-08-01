@@ -327,4 +327,4 @@ class SimpleCamera:
         """
         # TODO: better doc string
 
-        return self._camera.get_map_coordinates(screen_coordinate)
+        return self._camera.map_coordinate(screen_coordinate)

@@ -9,11 +9,14 @@ if TYPE_CHECKING:
     from arcade.application import Window
 
 __all__ = [
-    '_DefaultProjector'
+    'DefaultProjector'
 ]
 
 
-class _DefaultProjector:
+# As this class is only supposed to be used internally
+# I wanted to place an _ in front, but the linting complains
+# about it being a protected class.
+class DefaultProjector:
     """
     An extremely limited projector which lacks any kind of control. This is only here to act as the default camera
     used internally by arcade. There should be no instance where a developer would want to use this class.

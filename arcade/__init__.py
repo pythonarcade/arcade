@@ -84,7 +84,6 @@ from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
 
-from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -241,8 +240,6 @@ __all__ = [
     'AnimatedWalkingSprite',
     'AnimationKeyframe',
     'ArcadeContext',
-    'Camera',
-    'SimpleCamera',
     'ControllerManager',
     'FACE_DOWN',
     'FACE_LEFT',

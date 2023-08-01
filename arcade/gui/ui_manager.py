@@ -30,7 +30,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import SimpleCamera
+from arcade.cinematic import OrthographicProjector, OrthographicProjectionData
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -90,7 +90,9 @@ class UIManager(EventDispatcher):
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
         #: Camera used when drawing the UI
-        self.camera = SimpleCamera()
+        self.projector = OrthographicProjector(
+            projection=OrthographicProjectionData(0, self.window.width, 0, self.window.height, -100, 100)
+        )
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -298,7 +300,7 @@ class UIManager(EventDispatcher):
             self._do_render()
 
         # Draw layers
-        self.camera.use()
+        self.projector.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
@@ -317,7 +319,7 @@ class UIManager(EventDispatcher):
         """
         # NOTE: Only support scrolling until cameras support transforming
         #       mouse coordinates
-        px, py = self.camera.position
+        px, py = self.projector.view_data.position[:2]
         return x + px, y + py
 
     def on_event(self, event) -> Union[bool, None]:
@@ -373,7 +375,7 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        self.camera.resize(width, height)
+        self.projector.view_data.viewport = (0, 0, width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
