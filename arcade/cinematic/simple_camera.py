@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Iterator
+from typing import TYPE_CHECKING, Optional, Tuple, Iterator
 from contextlib import contextmanager
 from math import atan2, cos, sin, degrees, radians
 
@@ -9,7 +9,8 @@ from arcade.cinematic.types import Projector
 from arcade.cinematic.orthographic import OrthographicProjector
 
 from arcade.window_commands import get_window
-from arcade import Window
+if TYPE_CHECKING:
+    from arcade import Window
 
 
 __all__ = [
