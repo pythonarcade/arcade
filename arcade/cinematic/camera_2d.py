@@ -54,7 +54,7 @@ class Camera2D:
     # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
-                 window: Optional[Window] = None,
+                 window: Optional["Window"] = None,
                  viewport: Optional[Tuple[int, int, int, int]] = None,
                  position: Optional[Tuple[float, float]] = None,
                  up: Optional[Tuple[float, float]] = None,
@@ -65,7 +65,7 @@ class Camera2D:
                  camera_data: Optional[CameraData] = None,
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
-        self._window = window or get_window()
+        self._window: "Window" = window or get_window()
 
         assert (
             any((viewport, position, up, zoom)) and camera_data
