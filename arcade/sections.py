@@ -4,10 +4,10 @@ import math
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
 from arcade import get_window
-from arcade.cinematic import Projector
 from arcade.cinematic.default import DefaultProjector
 
 if TYPE_CHECKING:
+    from arcade.cinematic import Projector
     from arcade import View
 
 __all__ = [
