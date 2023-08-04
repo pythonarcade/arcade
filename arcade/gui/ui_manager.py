@@ -30,7 +30,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
-from arcade.cinematic import OrthographicProjector, OrthographicProjectionData
+from arcade.camera import OrthographicProjector, OrthographicProjectionData
 
 W = TypeVar("W", bound=UIWidget)
 

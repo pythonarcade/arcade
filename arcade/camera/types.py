@@ -1,7 +1,7 @@
 from typing import Protocol, Tuple, Iterator
 from contextlib import contextmanager
 
-from arcade.cinematic.data import CameraData
+from arcade.camera.data import CameraData
 
 
 __all__ = [

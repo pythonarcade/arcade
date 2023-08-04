@@ -4,9 +4,9 @@ from math import atan2, cos, sin, degrees, radians
 
 from pyglet.math import Vec3
 
-from arcade.cinematic.data import CameraData, OrthographicProjectionData
-from arcade.cinematic.types import Projector
-from arcade.cinematic.orthographic import OrthographicProjector
+from arcade.camera.data import CameraData, OrthographicProjectionData
+from arcade.camera.types import Projector
+from arcade.camera.orthographic import OrthographicProjector
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:

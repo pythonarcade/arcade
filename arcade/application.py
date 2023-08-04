@@ -22,8 +22,8 @@ from arcade.context import ArcadeContext
 from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
-from arcade.cinematic import Projector
-from arcade.cinematic.default import DefaultProjector
+from arcade.camera import Projector
+from arcade.camera.default import DefaultProjector
 
 LOG = logging.getLogger(__name__)
 

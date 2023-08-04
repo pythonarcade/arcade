@@ -218,7 +218,7 @@ from .perf_graph import PerfGraph
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
-from arcade import cinematic as cinematic
+from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
 from arcade import types as types
