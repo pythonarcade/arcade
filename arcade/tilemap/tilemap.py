@@ -12,15 +12,13 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import (TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple,
-                    Union, cast)
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
 from pytiled_parser import Color
 
-from arcade import (AnimatedTimeBasedSprite, AnimationKeyframe, Sprite,
-                    SpriteList, get_window)
+from arcade import AnimatedTimeBasedSprite, AnimationKeyframe, Sprite, SpriteList, get_window
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 from arcade.texture.loading import _load_tilemap_texture
 
@@ -132,12 +130,13 @@ class TileMap:
         offset - A tuple containing X and Y position offsets for the layer
         custom_class_callback - A function(callable) may be supplied to this option, the function will be called by \
                         tilemap loader, and should return a subclass of arcade.Sprite. The pytiled_parser.Tile object \
-                        will be passed as an argument to this function, so the function MUST accept one argument. If using \
-                        this functionality with an image layer, then the argument will simply be None, as there is no tile \
-                        but it must still be an argument that the function accepts. Users can then analyze any aspect of the \
-                        provided tile in order to determine and return the class that should be used. An example of this would be \
-                        returning an AnimatedTimeBasedSprite for animated tiles within a layer, but a normal Sprite for non-animated.
-        custom_class_args - Custom arguments, passed into the constructor of the Sprite returned by custom_class_callback. \
+                        will be passed as an argument to this function, so the function MUST accept one argument. If \
+                        using this functionality with an image layer, then the argument will simply be None, as there \
+                        is no tile but it must still be an argument that the function accepts. Users can then analyze \
+                        any aspect of the provided tile in order to determine and return the class that should be \
+                        used. An example of this would be returning an AnimatedTimeBasedSprite for animated tiles \
+                        within a layer, but a normal Sprite for non-animated.
+        custom_class_args - Arguments passed into the constructor of the Sprite returned by custom_class_callback. \
                             This should be a dictionary of keyword arguments that your Sprite class expects
         texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is \
                         supplied then the one defined at the map level will be used.
