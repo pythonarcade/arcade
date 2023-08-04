@@ -18,13 +18,7 @@ import pytiled_parser
 import pytiled_parser.tiled_object
 from pytiled_parser import Color
 
-from arcade import (
-    AnimatedTimeBasedSprite,
-    AnimationKeyframe,
-    Sprite,
-    SpriteList,
-    get_window,
-)
+from arcade import AnimatedTimeBasedSprite, AnimationKeyframe, Sprite, SpriteList, get_window
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 from arcade.texture.loading import _load_tilemap_texture
 
@@ -134,9 +128,10 @@ class TileMap:
         scaling - A float providing layer specific Sprite scaling.
         hit_box_algorithm - The hit box algorithm to use for the Sprite's in this layer.
         offset - A tuple containing X and Y position offsets for the layer
-        custom_class - All objects in the layer are created from this class instead of Sprite. \
-                       Must be subclass of Sprite.
-        custom_class_args - Custom arguments, passed into the constructor of the custom_class
+        custom_class_callback - A function(callable) may be supplied to this option, the function will be called by \
+                        tilemap loader, and should return a subclass of arcade.Sprite.
+        custom_class_args - Custom arguments, passed into the constructor of the Sprite returned by custom_class_callback. \
+                            This should be a dictionary of keyword arguments that your Sprite class expects
         texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is \
                         supplied then the one defined at the map level will be used.
 
@@ -149,7 +144,7 @@ class TileMap:
                     "use_spatial_hash": True,
                     "scaling": 2.5,
                     "offset": (-128, 64),
-                    "custom_class": Platform,
+                    "custom_class_callback": get_platform_function,
                     "custom_class_args": {
                         "health": 100
                     }
@@ -251,7 +246,7 @@ class TileMap:
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
             "offset": self.offset,
-            "custom_class": None,
+            "custom_class_callback": None,
             "custom_class_args": {},
             "texture_atlas": texture_atlas,
         }
@@ -418,7 +413,7 @@ class TileMap:
         tile: pytiled_parser.Tile,
         scaling: float = 1.0,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        custom_class: Optional[type] = None,
+        custom_class_callback: Optional[Callable[[], Optional[type]]] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
@@ -427,6 +422,10 @@ class TileMap:
         map_source = self.tiled_map.map_file
         map_directory = os.path.dirname(map_source)
         image_file = _get_image_source(tile, map_directory)
+
+        custom_class: Optional[type] = None
+        if custom_class_callback:
+            custom_class = custom_class_callback()
 
         if tile.animation:
             if not custom_class:
@@ -439,7 +438,6 @@ class TileMap:
                     Custom classes for animated tiles must subclass AnimatedTimeBasedSprite.
                     """
                 )
-            # print(custom_class.__name__)
             args = {"path_or_texture": image_file, "scale": scaling}
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
@@ -643,7 +641,7 @@ class TileMap:
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class_callback: Optional[Callable[[], Optional[type]]] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
@@ -685,6 +683,10 @@ class TileMap:
                     new_data.append(item)
 
             my_texture.image.putdata(new_data)
+
+        custom_class = None
+        if custom_class_callback:
+            custom_class = custom_class_callback()
 
         if not custom_class:
             custom_class = Sprite
@@ -734,7 +736,7 @@ class TileMap:
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class_callback: Optional[Callable[[], Optional[type]]] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
@@ -768,7 +770,7 @@ class TileMap:
                     tile,
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
-                    custom_class=custom_class,
+                    custom_class_callback=custom_class_callback,
                     custom_class_args=custom_class_args,
                 )
 
@@ -812,7 +814,7 @@ class TileMap:
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class_callback: Optional[Callable[[], Optional[type]]] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
         if not scaling:
@@ -840,7 +842,7 @@ class TileMap:
                     tile,
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
-                    custom_class=custom_class,
+                    custom_class_callback=custom_class_callback,
                     custom_class_args=custom_class_args,
                 )
 
