@@ -8,7 +8,7 @@ python -m arcade.examples.sprite_move_scrolling_shake
 """
 
 import random
-import math
+# import math
 import arcade
 
 SPRITE_SCALING = 0.5
