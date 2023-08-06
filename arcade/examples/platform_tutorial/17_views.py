@@ -292,8 +292,8 @@ class GameView(arcade.View):
 
         # Set up the Cameras
         viewport = (0, 0, self.window.width, self.window.height)
-        self.camera = arcade.SimpleCamera(viewport=viewport)
-        self.gui_camera = arcade.SimpleCamera(viewport=viewport)
+        self.camera = arcade.camera.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.camera.SimpleCamera(viewport=viewport)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"

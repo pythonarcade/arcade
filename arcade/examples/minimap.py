@@ -63,8 +63,8 @@ class MyGame(arcade.Window):
 
         # Camera for sprites, and one for our GUI
         viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.SimpleCamera(viewport=viewport)
-        self.camera_gui = arcade.SimpleCamera(viewport=viewport)
+        self.camera_sprites = arcade.camera.SimpleCamera(viewport=viewport)
+        self.camera_gui = arcade.camera.SimpleCamera(viewport=viewport)
 
     def setup(self):
         """ Set up the game and initialize the variables. """

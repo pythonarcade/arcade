@@ -65,8 +65,8 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Setup the Cameras
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.SimpleCamera()
+        self.camera_gui = arcade.camera.SimpleCamera()
 
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"

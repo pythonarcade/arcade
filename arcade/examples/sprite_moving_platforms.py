@@ -55,8 +55,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.SimpleCamera()
+        self.camera_gui = arcade.camera.SimpleCamera()
 
         self.left_down = False
         self.right_down = False

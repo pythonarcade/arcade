@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
             self.player_sprite, walls, gravity_constant=GRAVITY
         )
 
-        self.camera = arcade.SimpleCamera()
-        self.gui_camera = arcade.SimpleCamera()
+        self.camera = arcade.camera.SimpleCamera()
+        self.gui_camera = arcade.camera.SimpleCamera()
 
         # Center camera on user
         self.pan_camera_to_user()

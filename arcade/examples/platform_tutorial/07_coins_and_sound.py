@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Camera
-        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+        self.camera = arcade.camera.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
         # Initialize Scene
         self.scene = arcade.Scene()
