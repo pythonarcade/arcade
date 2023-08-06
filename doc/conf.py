@@ -54,6 +54,7 @@ RELEASE = VERSION
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -116,6 +117,9 @@ pygments_style = 'default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+napoleon_numpy_docstring = False
+napoleon_google_docstring = True
 
 # -- Options for HTML output ----------------------------------------------
 
