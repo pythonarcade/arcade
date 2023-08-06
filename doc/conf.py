@@ -64,6 +64,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
     'sphinx_sitemap',
+    'sphinxcontrib.prettyspecialmethods'
 ]
 
 # --- Spell check. Never worked well.
