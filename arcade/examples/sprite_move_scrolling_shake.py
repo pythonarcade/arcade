@@ -153,9 +153,9 @@ class MyGame(arcade.Window):
 
             # --- Shake the camera ---
             # Pick a random direction
-            shake_direction = random.random() * 2 * math.pi
+            # shake_direction = random.random() * 2 * math.pi
             # How 'far' to shake
-            shake_amplitude = 10
+            # shake_amplitude = 10
             # Calculate a vector based on that
             # shake_vector = (
             #     math.cos(shake_direction) * shake_amplitude,
