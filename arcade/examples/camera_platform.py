@@ -130,8 +130,8 @@ class MyGame(arcade.Window):
         self.scene.add_sprite("Player", self.player_sprite)
 
         viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera = arcade.Camera(viewport=viewport)
-        self.gui_camera = arcade.Camera(viewport=viewport)
+        self.camera = arcade.camera.SimpleCamera(viewport=viewport)
+        self.gui_camera = arcade.camera.SimpleCamera(viewport=viewport)
 
         # Center camera on user
         self.pan_camera_to_user()
@@ -255,7 +255,7 @@ class MyGame(arcade.Window):
         for bomb in bombs_hit:
             bomb.remove_from_sprite_lists()
             print("Pow")
-            self.camera.shake((4, 7))
+            # TODO: self.camera.shake((4, 7)) -> Camera Missing This Functionality
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.12)

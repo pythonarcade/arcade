@@ -48,6 +48,7 @@ titles = {
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
     'math.py': ['Math', 'math.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
@@ -202,6 +203,7 @@ def process_directory(directory: Path, quick_index_file):
             "math.py": "arcade.math",
             "earclip.py": "arcade.earclip",
             "shape_list.py": "arcade.shape_list",
+            "camera": "arcade.camera"
         }
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 

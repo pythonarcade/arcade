@@ -109,7 +109,7 @@ class SimpleCamera:
         """ Set the viewport (left, bottom, width, height) """
         self.set_viewport(viewport)
 
-    def set_viewport(self, viewport:Tuple[int, int, int, int]) -> None:
+    def set_viewport(self, viewport: Tuple[int, int, int, int]) -> None:
         self._view.viewport = viewport
 
     @property
@@ -329,3 +329,18 @@ class SimpleCamera:
         # TODO: better doc string
 
         return self._camera.map_coordinate(screen_coordinate)
+
+    def resize(self, viewport_width: int, viewport_height: int, *,
+               resize_projection: bool = True) -> None:
+        """
+        Resize the camera's viewport. Call this when the window resizes.
+
+        :param int viewport_width: Width of the viewport
+        :param int viewport_height: Height of the viewport
+        :param bool resize_projection: if True the projection will also be resized
+        """
+        new_viewport = (self.viewport[0], self.viewport[1], viewport_width, viewport_height)
+        self.set_viewport(new_viewport)
+        if resize_projection:
+            self.projection = (self._projection.left, viewport_width,
+                               self._projection.bottom, viewport_height)

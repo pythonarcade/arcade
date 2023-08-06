@@ -23,7 +23,7 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.camera = arcade.SimpleCamera()
+        self.camera = arcade.camera.SimpleCamera()
 
         # Load the background from file. Sized to match the screen
         self.background = background.Background.from_file(

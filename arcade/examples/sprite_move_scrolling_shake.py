@@ -54,8 +54,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera()
-        self.camera_gui = arcade.Camera()
+        self.camera_sprites = arcade.camera.SimpleCamera()
+        self.camera_gui = arcade.camera.Camera()
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
@@ -166,9 +166,10 @@ class MyGame(arcade.Window):
             # How fast to damp the shake
             shake_damping = 0.9
             # Do the shake
-            self.camera_sprites.shake(shake_vector,
-                                      speed=shake_speed,
-                                      damping=shake_damping)
+            # TODO: Camera missing shake.
+            # self.camera_sprites.shake(shake_vector,
+            #                           speed=shake_speed,
+            #                           damping=shake_damping)
 
     def scroll_to_player(self):
         """

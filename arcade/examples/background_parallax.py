@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
         # Set the background color to match the sky in the background images
         self.background_color = (162, 84, 162, 255)
 
-        self.camera = arcade.SimpleCamera()
+        self.camera = arcade.camera.SimpleCamera()
 
         # Create a background group to hold all the landscape's layers
         self.backgrounds = background.ParallaxGroup()

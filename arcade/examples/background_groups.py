@@ -28,7 +28,7 @@ class MyGame(arcade.Window):
         # Set the background color to equal to that of the first background.
         self.background_color = (5, 44, 70)
 
-        self.camera = arcade.SimpleCamera()
+        self.camera = arcade.camera.SimpleCamera()
 
         # create a background group which will hold all the backgrounds.
         self.backgrounds = background.BackgroundGroup()
