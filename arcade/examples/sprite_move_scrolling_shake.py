@@ -157,14 +157,14 @@ class MyGame(arcade.Window):
             # How 'far' to shake
             shake_amplitude = 10
             # Calculate a vector based on that
-            shake_vector = (
-                math.cos(shake_direction) * shake_amplitude,
-                math.sin(shake_direction) * shake_amplitude
-            )
+            # shake_vector = (
+            #     math.cos(shake_direction) * shake_amplitude,
+            #     math.sin(shake_direction) * shake_amplitude
+            # )
             # Frequency of the shake
-            shake_speed = 1.5
+            # shake_speed = 1.5
             # How fast to damp the shake
-            shake_damping = 0.9
+            # shake_damping = 0.9
             # Do the shake
             # TODO: Camera missing shake.
             # self.camera_sprites.shake(shake_vector,
