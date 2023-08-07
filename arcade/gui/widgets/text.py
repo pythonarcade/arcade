@@ -552,7 +552,7 @@ class UITextArea(UIWidget):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                self.layout.view_y += event.scroll_y * self.scroll_speed   # type: ignore
+                self.layout.view_y += event.scroll_y * self.scroll_speed   # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
                 self.trigger_full_render()
 
         if super().on_event(event):
