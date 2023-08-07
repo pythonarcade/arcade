@@ -270,7 +270,7 @@ class Color(RGBA255):
             >>> Color.from_uint32(0xFF0000FF)
             Color(r=255, g=0, b=0, a=255)
 
-        :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
@@ -301,7 +301,7 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param RGBANormalized color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
+        :param color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
         :return:
         """
         r, g, b, *_a = color_normalized
@@ -399,10 +399,10 @@ class Color(RGBA255):
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param int r: Fixed value for red channel
-        :param int g: Fixed value for green channel
-        :param int b: Fixed value for blue channel
-        :param int a: Fixed value for alpha channel
+        :param r: Fixed value for red channel
+        :param g: Fixed value for green channel
+        :param b: Fixed value for blue channel
+        :param a: Fixed value for alpha channel
         """
         if r is None:
             r = random.randint(0, 255)

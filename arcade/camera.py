@@ -147,7 +147,7 @@ class SimpleCamera:
         """
         Helper method. This will just pre-compute the projection and combined matrix
 
-        :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
+        :param update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
         self._projection_matrix = Mat4.orthogonal_projection(*self._projection, -100, 100)
         if update_combined_matrix:
@@ -157,7 +157,7 @@ class SimpleCamera:
         """
         Helper method. This will just pre-compute the view and combined matrix
 
-        :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
+        :param update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
 
         # Figure out our 'real' position
@@ -181,8 +181,8 @@ class SimpleCamera:
         The camera will lerp towards this position based on the provided speed,
         updating its position every time the use() function is called.
 
-        :param Vec2 vector: Vector to move the camera towards.
-        :param Vec2 speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
+        :param vector: Vector to move the camera towards.
+        :param speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
         """
         self.goal_position = Vec2(*vector)
         self.move_speed = speed
@@ -221,7 +221,7 @@ class SimpleCamera:
         """
         Returns map coordinates in pixels from screen coordinates based on the camera position
 
-        :param Vec2 camera_vector: Vector captured from the camera viewport
+        :param camera_vector: Vector captured from the camera viewport
         """
         return Vec2(*self.position) + Vec2(*camera_vector)
 
@@ -230,9 +230,9 @@ class SimpleCamera:
         """
         Resize the camera's viewport. Call this when the window resizes.
 
-        :param int viewport_width: Width of the viewport
-        :param int viewport_height: Height of the viewport
-        :param bool resize_projection: if True the projection will also be resized
+        :param viewport_width: Width of the viewport
+        :param viewport_height: Height of the viewport
+        :param resize_projection: if True the projection will also be resized
         """
         new_viewport = (self._viewport[0], self._viewport[1], viewport_width, viewport_height)
         self.set_viewport(new_viewport)
@@ -272,12 +272,12 @@ class Camera(SimpleCamera):
     It is very useful for separating a scrolling screen of sprites, and a GUI overlay.
     For an example of this in action, see :ref:`sprite_move_scrolling`.
 
-    :param tuple viewport: (left, bottom, width, height) size of the viewport. If None the window size will be used.
-    :param tuple projection: (left, right, bottom, top) size of the projection. If None the window size will be used.
-    :param float zoom: the zoom to apply to the projection
-    :param float rotation: the angle in degrees to rotate the projection
-    :param tuple anchor: the x, y point where the camera rotation will anchor. Default is the center of the viewport.
-    :param Window window: Window to associate with this camera, if working with a multi-window program.
+    :param viewport: (left, bottom, width, height) size of the viewport. If None the window size will be used.
+    :param projection: (left, right, bottom, top) size of the projection. If None the window size will be used.
+    :param zoom: the zoom to apply to the projection
+    :param rotation: the angle in degrees to rotate the projection
+    :param anchor: the x, y point where the camera rotation will anchor. Default is the center of the viewport.
+    :param window: Window to associate with this camera, if working with a multi-window program.
     """
     def __init__(
         self, *,
@@ -331,7 +331,7 @@ class Camera(SimpleCamera):
         """
         Helper method. This will just pre-compute the projection and combined matrix
 
-        :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
+        :param update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
         # apply zoom
         left, right, bottom, top = self._projection
@@ -347,7 +347,7 @@ class Camera(SimpleCamera):
     def _set_view_matrix(self, *, update_combined_matrix: bool = True) -> None:
         """
         Helper method. This will just pre-compute the view and combined matrix
-        :param bool update_combined_matrix: if True will also update the combined matrix (projection @ view)
+        :param update_combined_matrix: if True will also update the combined matrix (projection @ view)
         """
 
         # Figure out our 'real' position plus the shake
@@ -540,9 +540,9 @@ class Camera(SimpleCamera):
         """
         Add a camera shake.
 
-        :param Vec2 velocity: Vector to start moving the camera
-        :param float speed: How fast to shake
-        :param float damping: How fast to stop shaking
+        :param velocity: Vector to start moving the camera
+        :param speed: How fast to shake
+        :param damping: How fast to stop shaking
         """
         if not isinstance(velocity, Vec2):
             velocity = Vec2(*velocity)
@@ -568,8 +568,8 @@ class Camera(SimpleCamera):
         the specified point. If a sprite has a different center_x/center_y but touches the point,
         this will return that sprite.
 
-        :param Point point: Point to check
-        :param SpriteList sprite_list: SpriteList to check against
+        :param point: Point to check
+        :param sprite_list: SpriteList to check against
 
         :returns: List of sprites colliding, or an empty list.
         :rtype: list

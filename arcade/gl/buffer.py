@@ -29,12 +29,12 @@ class Buffer:
 
     .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
 
-    :param Context ctx: The context this buffer belongs to
-    :param BufferProtocol data: The data this buffer should contain.
+    :param ctx: The context this buffer belongs to
+    :param data: The data this buffer should contain.
                                 It can be a ``bytes`` instance or any
                                 object supporting the buffer protocol.
-    :param int reserve: Create a buffer of a specific byte size
-    :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
+    :param reserve: Create a buffer of a specific byte size
+    :param usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
     """
 
     __slots__ = "_ctx", "_glo", "_size", "_usage", "__weakref__"
@@ -140,8 +140,8 @@ class Buffer:
     def read(self, size: int = -1, offset: int = 0) -> bytes:
         """Read data from the buffer.
 
-        :param int size: The bytes to read. -1 means the entire buffer (default)
-        :param int offset: Byte read offset
+        :param size: The bytes to read. -1 means the entire buffer (default)
+        :param offset: Byte read offset
         :rtype: bytes
         """
         if size == -1:
@@ -185,8 +185,8 @@ class Buffer:
         truncated to fit. If the supplied data is smaller than the
         buffer, the remaining bytes will be left unchanged.
 
-        :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
-        :param int offset: The byte offset
+        :param data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
+        :param offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         size, data = data_to_ctypes(data)
@@ -199,10 +199,10 @@ class Buffer:
     def copy_from_buffer(self, source: "Buffer", size=-1, offset=0, source_offset=0):
         """Copy data into this buffer from another buffer
 
-        :param Buffer source: The buffer to copy from
-        :param int size: The amount of bytes to copy
-        :param int offset: The byte offset to write the data in this buffer
-        :param int source_offset: The byte offset to read from the source buffer
+        :param source: The buffer to copy from
+        :param size: The amount of bytes to copy
+        :param offset: The byte offset to write the data in this buffer
+        :param source_offset: The byte offset to read from the source buffer
         """
         # Read the entire source buffer into this buffer
         if size == -1:
@@ -233,8 +233,8 @@ class Buffer:
         If the current buffer is busy in rendering operations
         it will be deallocated by OpenGL when completed.
 
-        :param int size: New size of buffer. -1 will retain the current size.
-        :param bool double: Is passed in with `True` the buffer size will be doubled
+        :param size: New size of buffer. -1 will retain the current size.
+        :param double: Is passed in with `True` the buffer size will be doubled
         """
         if size > -1:
             self._size = size
@@ -249,9 +249,9 @@ class Buffer:
         """Bind this buffer to a uniform block location.
         In most cases it will be sufficient to only provide a binding location.
 
-        :param int binding: The binding location
-        :param int offset: byte offset
-        :param int size: size of the buffer to bind.
+        :param binding: The binding location
+        :param offset: byte offset
+        :param size: size of the buffer to bind.
         """
         if size < 0:
             size = self.size
@@ -262,9 +262,9 @@ class Buffer:
         """
         Bind this buffer as a shader storage buffer.
 
-        :param int binding: The binding location
-        :param int offset: Byte offset in the buffer
-        :param int size: The size in bytes. The entire buffer will be mapped by default.
+        :param binding: The binding location
+        :param offset: Byte offset in the buffer
+        :param size: The size in bytes. The entire buffer will be mapped by default.
         """
         if size < 0:
             size = self.size

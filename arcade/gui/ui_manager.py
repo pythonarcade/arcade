@@ -123,7 +123,7 @@ class UIManager(EventDispatcher):
         """
         Removes the given widget from UIManager.
 
-        :param UIWidget child: widget to remove
+        :param child: widget to remove
         """
         for children in self.children.values():
             if child in children:

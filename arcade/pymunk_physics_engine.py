@@ -378,10 +378,10 @@ class PymunkPhysicsEngine:
         """
         Tell the physics engine to perform calculations.
 
-        :param float delta_time: Time to move the simulation forward. Keep this
+        :param delta_time: Time to move the simulation forward. Keep this
                                  value constant, do not use varying values for
                                  each step.
-        :param bool resync_sprites: Resynchronize Arcade graphical sprites to be
+        :param resync_sprites: Resynchronize Arcade graphical sprites to be
                                     at the same location as their Pymunk counterparts.
                                     If running multiple steps per frame, set this to
                                     false for the first steps, and true for the last

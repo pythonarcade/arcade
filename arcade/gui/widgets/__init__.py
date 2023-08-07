@@ -209,8 +209,8 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -577,8 +577,8 @@ class UIWidget(EventDispatcher, ABC):
         A color or texture can be used for background,
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
-        :param RGBA255 color: A color used as background
-        :param arcade.Texture texture: A texture or ninepatch texture used as background
+        :param color: A color used as background
+        :param texture: A texture or ninepatch texture used as background
         :return: self
         """
         if color is not ...:
@@ -647,8 +647,8 @@ class UIInteractiveWidget(UIWidget):
     """
     Base class for widgets which use mouse interaction (hover, pressed, clicked)
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -731,8 +731,8 @@ class UIDummy(UIInteractiveWidget):
     * Outputs its `rect` attribute to the console
     * Changes its color to a random fully opaque color
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param color: fill color for the widget
     :param width: width of widget
     :param height: height of widget
@@ -797,8 +797,8 @@ class UIDummy(UIInteractiveWidget):
 class UISpriteWidget(UIWidget):
     """Create a UI element with a sprite that controls what is displayed.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param sprite: Sprite to embed in gui
@@ -849,8 +849,8 @@ class UILayout(UIWidget):
     """
     Base class for widgets, which position themselves or their children.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param children: Child widgets of this group
@@ -882,8 +882,8 @@ class UISpace(UIWidget):
     """
     Widget reserving space, can also have a background color.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param color: Color for widget area

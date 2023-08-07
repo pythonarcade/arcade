@@ -42,13 +42,13 @@ class UISlider(UIStyledWidget[UISliderStyle]):
 
     There are four states of the UISlider i.e normal, hovered, pressed and disabled.
 
-    :param float value: Current value of the curosr of the slider.
-    :param float min_value: Minimum value of the slider.
-    :param float max_value: Maximum value of the slider.
-    :param float x: x coordinate of bottom left.
-    :param float y: y coordinate of bottom left.
-    :param float width: Width of the slider.
-    :param float height: Height of the slider.
+    :param value: Current value of the curosr of the slider.
+    :param min_value: Minimum value of the slider.
+    :param max_value: Maximum value of the slider.
+    :param x: x coordinate of bottom left.
+    :param y: y coordinate of bottom left.
+    :param width: Width of the slider.
+    :param height: Height of the slider.
     :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
 
     """

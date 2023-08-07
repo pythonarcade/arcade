@@ -74,23 +74,23 @@ class SpriteList(Generic[SpriteType]):
     For the advanced options check the advanced section in the
     arcade documentation.
 
-    :param bool use_spatial_hash: If set to True, this will make creating a sprite, and
+    :param use_spatial_hash: If set to True, this will make creating a sprite, and
             moving a sprite
             in the SpriteList slower, but it will speed up collision detection
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
-    :param int spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
-    :param TextureAtlas atlas: (Advanced) The texture atlas for this sprite list. If no
+    :param spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
+    :param atlas: (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
-    :param int capacity: (Advanced) The initial capacity of the internal buffer.
+    :param capacity: (Advanced) The initial capacity of the internal buffer.
             It's a suggestion for the maximum amount of sprites this list
             can hold. Can normally be left with default value.
-    :param bool lazy: (Advanced) Enabling lazy spritelists ensures no internal OpenGL
+    :param lazy: (Advanced) Enabling lazy spritelists ensures no internal OpenGL
                       resources are created until the first draw call or ``initialize()``
                       is called. This can be useful when making spritelists in threads
                       because only the main thread is allowed to interact with
                       OpenGL.
-    :param bool visible: Setting this to False will cause the SpriteList to not
+    :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
 
@@ -525,7 +525,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Return the index of a sprite in the spritelist
 
-        :param Sprite sprite: Sprite to find and return the index of
+        :param sprite: Sprite to find and return the index of
 
         :rtype: int
         """
@@ -585,7 +585,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Pop off the last sprite, or the given index, from the list
 
-        :param int index: Index of sprite to remove, defaults to -1 for the last item.
+        :param index: Index of sprite to remove, defaults to -1 for the last item.
         """
         if len(self.sprite_list) == 0:
             raise (ValueError("pop from empty list"))
@@ -598,7 +598,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Add a new sprite to the list.
 
-        :param Sprite sprite: Sprite to add to the list.
+        :param sprite: Sprite to add to the list.
         """
         # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
@@ -633,8 +633,8 @@ class SpriteList(Generic[SpriteType]):
     def swap(self, index_1: int, index_2: int):
         """
         Swap two sprites by index
-        :param int index_1: Item index to swap
-        :param int index_2: Item index to swap
+        :param index_1: Item index to swap
+        :param index_2: Item index to swap
         """
         # Swap order in spritelist
         sprite_1 = self.sprite_list[index_1]
@@ -653,7 +653,7 @@ class SpriteList(Generic[SpriteType]):
     def remove(self, sprite: SpriteType):
         """
         Remove a specific sprite from the list.
-        :param Sprite sprite: Item to remove from the list
+        :param sprite: Item to remove from the list
         """
         # print(f"{id(self)} : {id(sprite)} remove")
         try:
@@ -686,7 +686,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Extends the current list with the given iterable
 
-        :param list sprites: Iterable of Sprites to add to the list
+        :param sprites: Iterable of Sprites to add to the list
         """
         for sprite in sprites:
             self.append(sprite)
@@ -695,8 +695,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Inserts a sprite at a given index.
 
-        :param int index: The index at which to insert
-        :param Sprite sprite: The sprite to insert
+        :param index: The index at which to insert
+        :param sprite: The sprite to insert
         """
         if sprite in self.sprite_list:
             raise ValueError("Sprite is already in list")
@@ -786,7 +786,7 @@ class SpriteList(Generic[SpriteType]):
             spritelist.sort(key=create_y_pos_comparison)
 
         :param key: A function taking a sprite as an argument returning a comparison key
-        :param bool reverse: If set to ``True`` the sprites will be sorted in reverse
+        :param reverse: If set to ``True`` the sprites will be sorted in reverse
         """
         # Ensure the index buffer is normalized
         self._normalize_index_buffer()
@@ -869,8 +869,8 @@ class SpriteList(Generic[SpriteType]):
         This can be a very expensive operation depending on the
         size of the sprite list.
 
-        :param float change_x: Amount to change all x values by
-        :param float change_y: Amount to change all y values by
+        :param change_x: Amount to change all x values by
+        :param change_y: Amount to change all y values by
         """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
@@ -881,7 +881,7 @@ class SpriteList(Generic[SpriteType]):
         Preload a set of textures that will be used for sprites in this
         sprite list.
 
-        :param array texture_list: List of textures.
+        :param texture_list: List of textures.
         """
         if not self.ctx:
             raise ValueError("Cannot preload textures before the window is created")
@@ -1173,7 +1173,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1188,7 +1188,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1202,7 +1202,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
@@ -1213,7 +1213,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the depth of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 2] = sprite._depth
@@ -1225,7 +1225,7 @@ class SpriteList(Generic[SpriteType]):
         of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
@@ -1239,7 +1239,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1251,7 +1251,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1262,7 +1262,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2 + 1] = sprite._height
@@ -1273,7 +1273,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_angle_data[slot] = sprite._angle

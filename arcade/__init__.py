@@ -19,7 +19,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 
 def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
-    :param int level: The log level. Defaults to DEBUG.
+    :param level: The log level. Defaults to DEBUG.
     """
     import logging
     level = level or logging.DEBUG

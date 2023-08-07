@@ -168,7 +168,7 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param Optional[Rect] area: Limit the area in the surface we're drawing (x, y, w, h)
+        :param area: Limit the area in the surface we're drawing (x, y, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -187,8 +187,8 @@ class Surface:
         """
         Resize the internal texture by re-allocating a new one
 
-        :param Tuple[int,int] size: The new size in pixels (xy)
-        :param float pixel_ratio: The pixel scale of the window
+        :param size: The new size in pixels (xy)
+        :param pixel_ratio: The pixel scale of the window
         """
         # Texture re-allocation is expensive so we should block unnecessary calls.
         if self._size == size and self._pixel_ratio == pixel_ratio:

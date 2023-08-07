@@ -15,8 +15,8 @@ class RenderTargetTexture:
     def __init__(self, width: int, height: int):
         """Create a RenderTargetTexture.
 
-        :param int width: Width of the render target in pixels
-        :param int height: Height of the render target in pixels
+        :param width: Width of the render target in pixels
+        :param height: Height of the render target in pixels
         """
         self.window = get_window()
         if not self.window:

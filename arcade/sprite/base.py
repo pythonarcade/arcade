@@ -425,7 +425,7 @@ class BasicSprite:
         Update the sprite. Similar to update, but also takes a delta-time.
         It can be called manually or by the SpriteList's on_update method.
 
-        :param float delta_time: Time since last update.
+        :param delta_time: Time since last update.
         """
         pass
 
@@ -436,7 +436,7 @@ class BasicSprite:
 
         This can be called manually or by the SpriteList's update_animation method.
 
-        :param float delta_time: Time since last update.
+        :param delta_time: Time since last update.
         """
         pass
 
@@ -598,7 +598,7 @@ class BasicSprite:
         """
         Check if point is within the current sprite.
 
-        :param Point point: Point to check.
+        :param point: Point to check.
         :return: True if the point is contained within the sprite's boundary.
         :rtype: bool
         """
@@ -610,7 +610,7 @@ class BasicSprite:
     def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
-        :param Sprite other: the other sprite to check against.
+        :param other: the other sprite to check against.
         :return: True or False, whether or not they are overlapping.
         :rtype: bool
         """
@@ -623,7 +623,7 @@ class BasicSprite:
     ) -> List[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
-        :param SpriteList sprite_list: SpriteList to check against
+        :param sprite_list: SpriteList to check against
         :return: List of all overlapping Sprites from the original SpriteList
         :rtype: list
         """

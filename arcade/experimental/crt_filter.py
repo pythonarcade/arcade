@@ -8,12 +8,12 @@ class CRTFilter:
     """
     CRT Filter
 
-    :param int width:
-    :param int height:
-    :param float resolution_down_scale:
-    :param float hard_scan: -8.0 soft, -16.0 medium
-    :param float hard_pix: Hardness of pixels in the scan line. -2.0 soft, -4.0 medium
-    :param Vec2 display_warp: Display warp. 0 = None, 1.0/8.0 = extreme
+    :param width:
+    :param height:
+    :param resolution_down_scale:
+    :param hard_scan: -8.0 soft, -16.0 medium
+    :param hard_pix: Hardness of pixels in the scan line. -2.0 soft, -4.0 medium
+    :param display_warp: Display warp. 0 = None, 1.0/8.0 = extreme
     """
     def __init__(
         self,

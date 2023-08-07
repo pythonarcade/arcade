@@ -57,7 +57,7 @@ class HitBoxCache:
             points = cache.get("hash|(0, 1, 2, 3)|simple|")
 
         :param keys: List of keys to use for the cache entry
-        :param str hit_box_algorithm: The hit box algorithm used
+        :param hit_box_algorithm: The hit box algorithm used
         """
         from arcade import Texture
 
@@ -79,8 +79,8 @@ class HitBoxCache:
             # Cache with custom string
             cache.put("my_custom_points", points)
 
-        :param List[Any] keys: List of keys to use for the cache entry
-        :param PointList points: The hit box points
+        :param keys: List of keys to use for the cache entry
+        :param points: The hit box points
         """
         from arcade import Texture
 
@@ -124,8 +124,8 @@ class HitBoxCache:
 
         if the file extension is ".gz" the file will be compressed.
 
-        :param Path path: The path to save the cache to
-        :param int indent: The indentation level for the json file
+        :param path: The path to save the cache to
+        :param indent: The indentation level for the json file
         """
         if indent == 0:
             data_str = json.dumps(self._entries)

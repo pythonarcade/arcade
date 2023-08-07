@@ -54,16 +54,16 @@ class NinePatchTexture:
     * Areas ``(2)`` and ``(8)`` only stretch horizontally.
     * Areas ``(4)`` and ``(6)`` only stretch vertically.
 
-    :param int left: The width of the left border of the 9-patch
+    :param left: The width of the left border of the 9-patch
         (in pixels)
-    :param int right: The width of the right border of the 9-patch
+    :param right: The width of the right border of the 9-patch
         (in pixels)
-    :param int bottom: The height of the bottom border of the 9-patch
+    :param bottom: The height of the bottom border of the 9-patch
         (in pixels)
-    :param int top: The height of the top border of the 9-patch
+    :param top: The height of the top border of the 9-patch
         (in pixels)
-    :param Texture texture: The raw texture to use for the 9-patch
-    :param TextureAtlas atlas: Specify an atlas other than arcade's default
+    :param texture: The raw texture to use for the 9-patch
+    :param atlas: Specify an atlas other than arcade's default
         texture atlas
     """
 

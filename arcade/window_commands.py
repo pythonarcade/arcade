@@ -50,7 +50,7 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
 
     The size of the primary monitor is returned by default.
 
-    :param int screen_id: The screen number
+    :param screen_id: The screen number
     :return: Tuple containing the width and height of the screen
     :rtype: tuple
     """
@@ -68,7 +68,7 @@ def pause(seconds: float) -> None:
         This is mostly used for unit tests and is not likely to be
         a good solution for pausing an application or game.
 
-    :param float seconds: Time interval to pause in seconds.
+    :param seconds: Time interval to pause in seconds.
     """
     time.sleep(cast(float, seconds))
 
@@ -94,7 +94,7 @@ def set_window(window: Optional["Window"]) -> None:
     """
     Set a handle to the current window.
 
-    :param Window window: Handle to the current window.
+    :param window: Handle to the current window.
     """
     global _window
     _window = window
@@ -137,10 +137,10 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
         and ``window.ctx.viewport`` (:py:meth:`~arcade.gl.Context.viewport`)
         can be used to set viewport and projection separately.
 
-    :param Number left: Left-most (smallest) x value.
-    :param Number right: Right-most (largest) x value.
-    :param Number bottom: Bottom (smallest) y value.
-    :param Number top: Top (largest) y value.
+    :param left: Left-most (smallest) x value.
+    :param right: Right-most (largest) x value.
+    :param bottom: Bottom (smallest) y value.
+    :param top: Top (largest) y value.
     """
     window = get_window()
     # Get the active framebuffer
@@ -338,8 +338,8 @@ def schedule(function_pointer: Callable, interval: float):
         arcade.schedule(some_action, 1)
         # Unschedule
 
-    :param Callable function_pointer: Pointer to the function to be called.
-    :param float interval: Interval to call the function (float or integer)
+    :param function_pointer: Pointer to the function to be called.
+    :param interval: Interval to call the function (float or integer)
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
@@ -356,7 +356,7 @@ def unschedule(function_pointer: Callable):
         arcade.schedule(some_action, 1)
         arcade.unschedule(some_action)
 
-    :param Callable function_pointer: Pointer to the function to be unscheduled.
+    :param function_pointer: Pointer to the function to be unscheduled.
     """
     pyglet.clock.unschedule(function_pointer)
 
@@ -376,7 +376,7 @@ def schedule_once(function_pointer: Callable, delay: float):
         # Call the function once after 1 second
         arcade.schedule_one(some_action, 1)
 
-    :param Callable function_pointer: Pointer to the function to be called.
-    :param float delay: Delay in seconds
+    :param function_pointer: Pointer to the function to be called.
+    :param delay: Delay in seconds
     """
     pyglet.clock.schedule_once(function_pointer, delay)

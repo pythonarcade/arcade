@@ -101,15 +101,15 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
 class UIButtonRow(UIBoxLayout):
     """
     Places buttons in a row.
-    :param bool vertical: Whether the button row is vertical or not.
-    :param str align: Where to align the button row.
-    :param Any size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent should be requested.
+    :param vertical: Whether the button row is vertical or not.
+    :param align: Where to align the button row.
+    :param size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent should be requested.
     :param size_hint_min: Min width and height in pixel.
     :param size_hint_max: Max width and height in pixel.
-    :param int space_between: The space between the children.
-    :param Any style: Not used.
+    :param space_between: The space between the children.
+    :param style: Not used.
     :param Tuple[str, ...] button_labels: The labels for the buttons.
-    :param Callable callback: The callback function which will receive the text of the clicked button.
+    :param callback: The callback function which will receive the text of the clicked button.
     """
 
     def __init__(

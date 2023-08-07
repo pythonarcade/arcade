@@ -14,8 +14,8 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 
-    :param HitBox poly_a: List of points that define the first polygon.
-    :param HitBox poly_b: List of points that define the second polygon.
+    :param poly_a: List of points that define the first polygon.
+    :param poly_b: List of points that define the second polygon.
     :Returns: True or false depending if polygons intersect
     :rtype bool:
     """
@@ -61,9 +61,9 @@ def is_point_in_box(p: Point, q: Point, r: Point) -> bool:
     """
     Return True if point q is inside the box defined by p and r.
 
-    :param Point p: Point 1
-    :param Point q: Point 2
-    :param Point r: Point 3
+    :param p: Point 1
+    :param q: Point 2
+    :param r: Point 3
     :Returns: True or false depending if points are collinear
     """
     return (
@@ -84,9 +84,9 @@ def get_triangle_orientation(p: Point, q: Point, r: Point) -> int:
       * 1 --> Clockwise
       * 2 --> Counterclockwise
 
-    :param Point p: Point 1
-    :param Point q: Point 2
-    :param Point r: Point 3
+    :param p: Point 1
+    :param q: Point 2
+    :param r: Point 3
     :Returns: 0, 1, or 2 depending on orientation
     """
     val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
@@ -104,10 +104,10 @@ def are_lines_intersecting(p1: Point, q1: Point, p2: Point, q2: Point) -> bool:
     Given two lines defined by points p1, q1 and p2, q2, the function
     returns true if the two lines intersect.
 
-    :param Point p1: Point 1
-    :param Point q1: Point 2
-    :param Point p2: Point 3
-    :param Point q2: Point 4
+    :param p1: Point 1
+    :param q1: Point 2
+    :param p2: Point 3
+    :param q2: Point 4
     :Returns: True or false depending if lines intersect
     """
     o1 = get_triangle_orientation(p1, q1, p2)
@@ -143,9 +143,9 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
     """
     Checks if a point is inside a polygon of three or more points.
 
-    :param float x: X coordinate of point
-    :param float y: Y coordinate of point
-    :param PointList polygon_point_list: List of points that define the polygon.
+    :param x: X coordinate of point
+    :param y: Y coordinate of point
+    :param polygon_point_list: List of points that define the polygon.
     :Returns: True or false depending if point is inside polygon
     """
     p = x, y

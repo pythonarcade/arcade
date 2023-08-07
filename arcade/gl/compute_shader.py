@@ -117,9 +117,9 @@ class ComputeShader:
         a size for a dimension or uses ``1`` as size you don't have to supply
         this parameter.
 
-        :param int group_x: The number of work groups to be launched in the X dimension.
-        :param int group_y: The number of work groups to be launched in the y dimension.
-        :param int group_z: The number of work groups to be launched in the z dimension.
+        :param group_x: The number of work groups to be launched in the X dimension.
+        :param group_y: The number of work groups to be launched in the y dimension.
+        :param group_z: The number of work groups to be launched in the z dimension.
         """
         self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)

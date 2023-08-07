@@ -25,7 +25,7 @@ def calculate_hit_box_points_simple(image: Image, *args) -> PointList:
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
-    :param Image image: Image get hit box from.
+    :param image: Image get hit box from.
 
     :Returns: List of points
     """
@@ -40,8 +40,8 @@ def calculate_hit_box_points_detailed(
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
-    :param Image image: Image get hit box from.
-    :param int hit_box_detail: How detailed to make the hit box. There's a
+    :param image: Image get hit box from.
+    :param hit_box_detail: How detailed to make the hit box. There's a
                                trade-off in number of points vs. accuracy.
 
     :Returns: List of points

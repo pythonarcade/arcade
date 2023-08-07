@@ -228,7 +228,7 @@ class PhysicsEngineSimple:
     games. It is easier to get
     started with this engine than more sophisticated engines like PyMunk.
 
-    :param Sprite player_sprite: The moving sprite
+    :param player_sprite: The moving sprite
     :param  Union[SpriteList, Iterable[SpriteList] walls: The sprites it can't move through.
         This can be one or multiple spritelists.
     """
@@ -269,10 +269,10 @@ class PhysicsEnginePlatformer:
     and ``boundary_right`` attribute of the Sprite. You need only set an initial
     ``change_x`` or ``change_y`` on it.
 
-    :param Sprite player_sprite: The moving sprite
+    :param player_sprite: The moving sprite
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
         This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
-    :param float gravity_constant: Downward acceleration per frame
+    :param gravity_constant: Downward acceleration per frame
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
         This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
@@ -357,7 +357,7 @@ class PhysicsEnginePlatformer:
         If you enable multi-jump, you MUST call increment_jump_counter()
         every time the player jumps. Otherwise they can jump infinitely.
 
-        :param int allowed_jumps:
+        :param allowed_jumps:
         """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True

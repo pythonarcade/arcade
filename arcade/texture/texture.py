@@ -48,8 +48,8 @@ class ImageData:
     The ability to provide a hash directly is mainly there
     for ensuring we can load and save texture atlases to disk.
 
-    :param PIL.Image.Image image: The image for this texture
-    :param str hash: The hash of the image
+    :param image: The image for this texture
+    :param hash: The hash of the image
     """
 
     __slots__ = ("image", "hash", "__weakref__")
@@ -122,11 +122,11 @@ class Texture:
     and the hit box data for this image used in collision detection.
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
-    :param PIL.Image.Image image: The image or ImageData for this texture
-    :param str hit_box_algorithm: The algorithm to use for calculating the hit box.
-    :param HitBox hit_box_points: A list of hitbox points for the texture to use (Optional).
+    :param image: The image or ImageData for this texture
+    :param hit_box_algorithm: The algorithm to use for calculating the hit box.
+    :param hit_box_points: A list of hitbox points for the texture to use (Optional).
                                      Completely overrides the hit box algorithm.
-    :param str hash: Optional unique name for the texture. Can be used to make this texture
+    :param hash: Optional unique name for the texture. Can be used to make this texture
                      globally unique. By default the hash of the pixel data is used.
     """
 
@@ -232,9 +232,9 @@ class Texture:
         """
         Create a cache name for the texture.
 
-        :param ImageData image_data: The image data
+        :param image_data: The image data
         :param hit_box_algorithm: The hit box algorithm
-        :param dict hit_box_args: The hit box algorithm arguments
+        :param hit_box_args: The hit box algorithm arguments
         :param Tuple[int, int, int, int] vertex_order: The vertex order
         :return: str
         """
@@ -318,7 +318,7 @@ class Texture:
             It can cause problems with the texture atlas and
             hit box points.
 
-        :param PIL.Image.Image image: The image to set
+        :param image: The image to set
         """
         return self._image_data.image
 
@@ -417,9 +417,9 @@ class Texture:
         """
         Create a filled texture. This is an alias for :py:meth:`create_empty`.
 
-        :param str name: Name of the texture
+        :param name: Name of the texture
         :param Tuple[int, int] size: Size of the texture
-        :param RGBA255 color: Color of the texture
+        :param color: Color of the texture
         :return: Texture
         """
         return cls.create_empty(name, size, color)
@@ -438,8 +438,8 @@ class Texture:
         with the dimensions in ``size`` because there is no non-blank
         pixel data to calculate a hit box.
 
-        :param str name: The unique name for this texture
-        :param Tuple[int,int] size: The xy size of the internal image
+        :param name: The unique name for this texture
+        :param size: The xy size of the internal image
 
         This function has multiple uses, including:
 
@@ -586,7 +586,7 @@ class Texture:
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :param int count: Number of 90 degree steps to rotate.
+        :param count: Number of 90 degree steps to rotate.
         :return: Texture
         """
         angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
@@ -627,7 +627,7 @@ class Texture:
         """
         Create a new texture with the given transform applied.
 
-        :param Transform transform: Transform to apply
+        :param transform: Transform to apply
         :return: New texture
         """
         new_hit_box_points = transform.transform_hit_box_points(self._hit_box_points)
@@ -668,11 +668,11 @@ class Texture:
         the crop is 0 width or height, the original texture is
         returned.
 
-        :param int x: X position to start crop
-        :param int y: Y position to start crop
-        :param int width: Width of crop
-        :param int height: Height of crop
-        :param bool cache: If True, the cropped texture will be cached
+        :param x: X position to start crop
+        :param y: Y position to start crop
+        :param width: Width of crop
+        :param height: Height of crop
+        :param cache: If True, the cropped texture will be cached
         :return: Texture
         """
         # Return self if the crop is the same size as the original image
@@ -730,7 +730,7 @@ class Texture:
         """
         Remove this texture from the cache.
 
-        :param bool ignore_error: If True, ignore errors if the texture is not in the cache
+        :param ignore_error: If True, ignore errors if the texture is not in the cache
         :return: None
         """
         _cache.texture_cache.delete(self)
@@ -799,12 +799,12 @@ class Texture:
                      and should be used sparingly. The method simply
                      creates a sprite internally and draws it.
 
-        :param float center_x: X position to draw texture
-        :param float center_y: Y position to draw texture
-        :param float width: Width to draw texture
-        :param float height: Height to draw texture
-        :param float angle: Angle to draw texture
-        :param int alpha: Alpha value to draw texture
+        :param center_x: X position to draw texture
+        :param center_y: Y position to draw texture
+        :param width: Width to draw texture
+        :param height: Height to draw texture
+        :param angle: Angle to draw texture
+        :param alpha: Alpha value to draw texture
         """
         from arcade import Sprite
 
@@ -840,11 +840,11 @@ class Texture:
                      and should be used sparingly. The method simply
                      creates a sprite internally and draws it.
 
-        :param float center_x: X location of where to draw the texture.
-        :param float center_y: Y location of where to draw the texture.
-        :param float scale: Scale to draw rectangle. Defaults to 1.
-        :param float angle: Angle to rotate the texture by.
-        :param int alpha: The transparency of the texture `(0-255)`.
+        :param center_x: X location of where to draw the texture.
+        :param center_y: Y location of where to draw the texture.
+        :param scale: Scale to draw rectangle. Defaults to 1.
+        :param angle: Angle to rotate the texture by.
+        :param alpha: The transparency of the texture `(0-255)`.
         """
         from arcade import Sprite
 

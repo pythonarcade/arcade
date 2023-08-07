@@ -40,14 +40,14 @@ class Program:
 
         program['MyUniform'] = value
 
-    :param Context ctx: The context this program belongs to
-    :param str vertex_shader: vertex shader source
-    :param str fragment_shader: fragment shader source
-    :param str geometry_shader: geometry shader source
-    :param str tess_control_shader: tessellation control shader source
-    :param str tess_evaluation_shader: tessellation evaluation shader source
-    :param List[str] varyings: List of out attributes used in transform feedback.
-    :param str varyings_capture_mode: The capture mode for transforms.
+    :param ctx: The context this program belongs to
+    :param vertex_shader: vertex shader source
+    :param fragment_shader: fragment shader source
+    :param geometry_shader: geometry shader source
+    :param tess_control_shader: tessellation control shader source
+    :param tess_evaluation_shader: tessellation evaluation shader source
+    :param varyings: List of out attributes used in transform feedback.
+    :param varyings_capture_mode: The capture mode for transforms.
                                         ``"interleaved"`` means all out attribute will be written to a single buffer.
                                         ``"separate"`` means each out attribute will be written separate buffers.
                                         Based on these settings the `transform()` method will accept a single
@@ -299,8 +299,8 @@ class Program:
         """
         Safely set a uniform catching KeyError.
 
-        :param str name: The uniform name
-        :param Any value: The uniform value
+        :param name: The uniform name
+        :param value: The uniform value
         """
         try:
             self[name] = value
@@ -315,8 +315,8 @@ class Program:
         actual array and sets a subset of the values if needed.
         If the uniform don't exist no action will be done.
 
-        :param str name: Name of uniform
-        :param List[Any] value: List of values
+        :param name: Name of uniform
+        :param value: List of values
         """
         if name not in self._uniforms:
             return

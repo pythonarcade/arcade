@@ -73,16 +73,16 @@ def draw_arc_filled(center_x: float, center_y: float,
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
-    :param float center_x: x position that is the center of the arc.
-    :param float center_y: y position that is the center of the arc.
-    :param float width: width of the arc.
-    :param float height: height of the arc.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the arc.
+    :param center_y: y position that is the center of the arc.
+    :param width: width of the arc.
+    :param height: height of the arc.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float start_angle: start angle of the arc in degrees.
-    :param float end_angle: end angle of the arc in degrees.
-    :param float tilt_angle: angle the arc is tilted (clockwise).
-    :param float num_segments: Number of line segments used to draw arc.
+    :param start_angle: start angle of the arc in degrees.
+    :param end_angle: end angle of the arc in degrees.
+    :param tilt_angle: angle the arc is tilted (clockwise).
+    :param num_segments: Number of line segments used to draw arc.
     """
     unrotated_point_list = [(0.0, 0.0)]
 
@@ -115,17 +115,17 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
-    :param float center_x: x position that is the center of the arc.
-    :param float center_y: y position that is the center of the arc.
-    :param float width: width of the arc.
-    :param float height: height of the arc.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the arc.
+    :param center_y: y position that is the center of the arc.
+    :param width: width of the arc.
+    :param height: height of the arc.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float start_angle: start angle of the arc in degrees.
-    :param float end_angle: end angle of the arc in degrees.
-    :param float border_width: width of line in pixels.
-    :param float tilt_angle: angle the arc is tilted (clockwise).
-    :param int num_segments: float of triangle segments that make up this
+    :param start_angle: start angle of the arc in degrees.
+    :param end_angle: end angle of the arc in degrees.
+    :param border_width: width of line in pixels.
+    :param tilt_angle: angle the arc is tilted (clockwise).
+    :param num_segments: float of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     """
     unrotated_point_list = []
@@ -171,13 +171,13 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     """
     Draws a filled in parabola.
 
-    :param float start_x: The starting x position of the parabola
-    :param float start_y: The starting y position of the parabola
-    :param float end_x: The ending x position of the parabola
-    :param float height: The height of the parabola
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param start_x: The starting x position of the parabola
+    :param start_y: The starting y position of the parabola
+    :param end_x: The ending x position of the parabola
+    :param height: The height of the parabola
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
+    :param tilt_angle: The angle of the tilt of the parabola (clockwise)
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -194,14 +194,14 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     """
     Draws the outline of a parabola.
 
-    :param float start_x: The starting x position of the parabola
-    :param float start_y: The starting y position of the parabola
-    :param float end_x: The ending x position of the parabola
-    :param float height: The height of the parabola
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param start_x: The starting x position of the parabola
+    :param start_y: The starting y position of the parabola
+    :param end_x: The ending x position of the parabola
+    :param height: The height of the parabola
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float border_width: The width of the parabola
-    :param float tilt_angle: The angle of the tilt of the parabola (clockwise)
+    :param border_width: The width of the parabola
+    :param tilt_angle: The angle of the tilt of the parabola (clockwise)
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -224,13 +224,13 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     """
     Draw a filled-in circle.
 
-    :param float center_x: x position that is the center of the circle.
-    :param float center_y: y position that is the center of the circle.
-    :param float radius: width of the circle.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the circle.
+    :param center_y: y position that is the center of the circle.
+    :param radius: width of the circle.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
-    :param int num_segments: Number of triangle segments that make up this
+    :param tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
+    :param num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
@@ -247,15 +247,15 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     """
     Draw the outline of a circle.
 
-    :param float center_x: x position that is the center of the circle.
-    :param float center_y: y position that is the center of the circle.
-    :param float radius: width of the circle.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the circle.
+    :param center_y: y position that is the center of the circle.
+    :param radius: width of the circle.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float border_width: Width of the circle outline in pixels.
-    :param float tilt_angle: Angle in degrees to tilt the circle (clockwise).
+    :param border_width: Width of the circle outline in pixels.
+    :param tilt_angle: Angle in degrees to tilt the circle (clockwise).
                              Useful for low segment count circles
-    :param int num_segments: Number of triangle segments that make up this
+    :param num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
@@ -278,17 +278,17 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     """
     Draw a filled in ellipse.
 
-    :param float center_x: x position that is the center of the circle.
-    :param float center_y: y position that is the center of the circle.
-    :param float width: width of the ellipse.
-    :param float height: height of the ellipse.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the circle.
+    :param center_y: y position that is the center of the circle.
+    :param width: width of the ellipse.
+    :param height: height of the ellipse.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param RGBA255 color: Either a :py:class:`~arcade.types.Color` instance
+    :param color: Either a :py:class:`~arcade.types.Color` instance
         or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
-    :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
+    :param tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
          Useful when drawing a circle with a low segment count, to make an octagon for example.
-    :param int num_segments: Number of triangle segments that make up this
+    :param num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
@@ -325,16 +325,16 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     """
     Draw the outline of an ellipse.
 
-    :param float center_x: x position that is the center of the circle.
-    :param float center_y: y position that is the center of the circle.
-    :param float width: width of the ellipse.
-    :param float height: height of the ellipse.
-    :param RGBA255 color: A 3 or 4 length tuple of 0-255 channel values
+    :param center_x: x position that is the center of the circle.
+    :param center_y: y position that is the center of the circle.
+    :param width: width of the ellipse.
+    :param height: height of the ellipse.
+    :param color: A 3 or 4 length tuple of 0-255 channel values
         or a :py:class:`~arcade.types.Color` instance.
-    :param float border_width: Width of the circle outline in pixels.
-    :param float tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
+    :param border_width: Width of the circle outline in pixels.
+    :param tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
          Useful when drawing a circle with a low segment count, to make an octagon for example.
-    :param int num_segments: Number of triangle segments that make up this
+    :param num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
@@ -377,7 +377,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
     :param point_list: List of points making up the line. Each point is
          in a list. So it is a list of lists.
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
     """
     window = get_window()
@@ -411,10 +411,10 @@ def draw_line_strip(point_list: PointList,
     """
     Draw a multi-point line.
 
-    :param PointList point_list: List of x, y points that make up this strip
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param point_list: List of x, y points that make up this strip
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
-    :param float line_width: Width of the line
+    :param line_width: Width of the line
     """
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
@@ -436,13 +436,13 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
     Draw a line.
 
-    :param float start_x: x position of line starting point.
-    :param float start_y: y position of line starting point.
-    :param float end_x: x position of line ending point.
-    :param float end_y: y position of line ending point.
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param start_x: x position of line starting point.
+    :param start_y: y position of line starting point.
+    :param end_x: x position of line ending point.
+    :param end_y: y position of line ending point.
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
-    :param float line_width: Width of the line in pixels.
+    :param line_width: Width of the line in pixels.
     """
     window = get_window()
     ctx = window.ctx
@@ -473,11 +473,11 @@ def draw_lines(point_list: PointList,
 
     Draw a line between each pair of points specified.
 
-    :param PointList point_list: List of points making up the lines. Each point is
+    :param point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
-    :param float line_width: Width of the line in pixels.
+    :param line_width: Width of the line in pixels.
     """
     window = get_window()
     ctx = window.ctx
@@ -511,11 +511,11 @@ def draw_point(x: float, y: float, color: RGBA255, size: float):
     """
     Draw a point.
 
-    :param float x: x position of point.
-    :param float y: y position of point.
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param x: x position of point.
+    :param y: y position of point.
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
-    :param float size: Size of the point in pixels.
+    :param size: Size of the point in pixels.
     """
     draw_rectangle_filled(x, y, size, size, color)
 
@@ -524,11 +524,11 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
     """
     Draw a set of points.
 
-    :param PointList point_list: List of points Each point is
+    :param point_list: List of points Each point is
          in a list. So it is a list of lists.
-    :param RGBA255 color: A color, specified as an RGBA tuple or a
+    :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
-    :param float size: Size of the point in pixels.
+    :param size: Size of the point in pixels.
     """
     window = get_window()
     ctx = window.ctx
@@ -565,9 +565,9 @@ def draw_polygon_filled(point_list: PointList,
     """
     Draw a polygon that is filled in.
 
-    :param PointList point_list: List of points making up the lines. Each point is
+    :param point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param RGBA255 color: The color, specified in RGB or RGBA format.
+    :param color: The color, specified in RGB or RGBA format.
     """
     triangle_points = earclip(point_list)
     flattened_list = tuple(i for g in triangle_points for i in g)
@@ -579,11 +579,11 @@ def draw_polygon_outline(point_list: PointList,
     """
     Draw a polygon outline. Also known as a "line loop."
 
-    :param PointList point_list: List of points making up the lines. Each point is
+    :param point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-    :param RGBA255 color: The color of the outline as an RGBA :py:class:`tuple` or
+    :param color: The color of the outline as an RGBA :py:class:`tuple` or
         :py:class:`~arcade.types.Color` instance.
-    :param int line_width: Width of the line in pixels.
+    :param line_width: Width of the line in pixels.
     """
     new_point_list = list(point_list)
     new_point_list.append(point_list[0])
@@ -610,13 +610,13 @@ def draw_triangle_filled(x1: float, y1: float,
     """
     Draw a filled in triangle.
 
-    :param float x1: x value of first coordinate.
-    :param float y1: y value of first coordinate.
-    :param float x2: x value of second coordinate.
-    :param float y2: y value of second coordinate.
-    :param float x3: x value of third coordinate.
-    :param float y3: y value of third coordinate.
-    :param RGBA255 color: Color of the triangle as an RGBA :py:class:`tuple` or
+    :param x1: x value of first coordinate.
+    :param y1: y value of first coordinate.
+    :param x2: x value of second coordinate.
+    :param y2: y value of second coordinate.
+    :param x3: x value of third coordinate.
+    :param y3: y value of third coordinate.
+    :param color: Color of the triangle as an RGBA :py:class:`tuple` or
         :py:class:`~arcade.types.Color` instance.
     """
     point_list = (
@@ -635,15 +635,15 @@ def draw_triangle_outline(x1: float, y1: float,
     """
     Draw a the outline of a triangle.
 
-    :param float x1: x value of first coordinate.
-    :param float y1: y value of first coordinate.
-    :param float x2: x value of second coordinate.
-    :param float y2: y value of second coordinate.
-    :param float x3: x value of third coordinate.
-    :param float y3: y value of third coordinate.
-    :param RGBA255 color: RGBA255 of triangle as an RGBA
+    :param x1: x value of first coordinate.
+    :param y1: y value of first coordinate.
+    :param x2: x value of second coordinate.
+    :param y2: y value of second coordinate.
+    :param x3: x value of third coordinate.
+    :param y3: y value of third coordinate.
+    :param color: RGBA255 of triangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param float border_width: Width of the border in pixels. Defaults to 1.
+    :param border_width: Width of the border in pixels. Defaults to 1.
     """
     point_list = (
         (x1, y1),
@@ -672,13 +672,13 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     .. deprecated:: 3.0
        Use :py:func:`draw_lrbt_rectangle_outline` instead!
 
-    :param float left: The x coordinate of the left edge of the rectangle.
-    :param float right: The x coordinate of the right edge of the rectangle.
-    :param float top: The y coordinate of the top of the rectangle.
-    :param float bottom: The y coordinate of the rectangle bottom.
-    :param RGBA255 color: The color of the rectangle as an RGBA
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param right: The x coordinate of the right edge of the rectangle.
+    :param top: The y coordinate of the top of the rectangle.
+    :param bottom: The y coordinate of the rectangle bottom.
+    :param color: The color of the rectangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param float border_width: The width of the border in pixels. Defaults to one.
+    :param border_width: The width of the border in pixels. Defaults to one.
     :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
@@ -703,12 +703,12 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
-    :param float left: The x coordinate of the left edge of the rectangle.
-    :param float right: The x coordinate of the right edge of the rectangle.
-    :param float bottom: The y coordinate of the rectangle bottom.
-    :param float top: The y coordinate of the top of the rectangle.
-    :param Color color: The color of the rectangle.
-    :param float border_width: The width of the border in pixels. Defaults to one.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param right: The x coordinate of the right edge of the rectangle.
+    :param bottom: The y coordinate of the rectangle bottom.
+    :param top: The y coordinate of the top of the rectangle.
+    :param color: The color of the rectangle.
+    :param border_width: The width of the border in pixels. Defaults to one.
     :Raises ValueError: Raised if left > right or top < bottom.
 
     """
@@ -735,13 +735,13 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a rectangle extending from bottom left to top right
 
-    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param float width: The width of the rectangle.
-    :param float height: The height of the rectangle.
-    :param RGBA255 color: The color of the rectangle as an RGBA
+    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param width: The width of the rectangle.
+    :param height: The height of the rectangle.
+    :param color: The color of the rectangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param float border_width: The width of the border in pixels. Defaults to one.
+    :param border_width: The width of the border in pixels. Defaults to one.
     """
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
@@ -755,14 +755,14 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     """
     Draw a rectangle outline.
 
-    :param float center_x: x coordinate of top left rectangle point.
-    :param float center_y: y coordinate of top left rectangle point.
-    :param float width: width of the rectangle.
-    :param float height: height of the rectangle.
-    :param RGBA255 color: The color of the rectangle as an RGBA
+    :param center_x: x coordinate of top left rectangle point.
+    :param center_y: y coordinate of top left rectangle point.
+    :param width: width of the rectangle.
+    :param height: height of the rectangle.
+    :param color: The color of the rectangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param float border_width: width of the lines, in pixels.
-    :param float tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
+    :param border_width: width of the lines, in pixels.
+    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
     """
     i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
     i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
@@ -798,11 +798,11 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     .. deprecated:: 3.0
        Use :py:func:`draw_lrbt_rectangle_filled` instead!
 
-    :param float left: The x coordinate of the left edge of the rectangle.
-    :param float right: The x coordinate of the right edge of the rectangle.
-    :param float top: The y coordinate of the top of the rectangle.
-    :param float bottom: The y coordinate of the rectangle bottom.
-    :param RGBA255 color: The color of the rectangle as an RGBA
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param right: The x coordinate of the right edge of the rectangle.
+    :param top: The y coordinate of the top of the rectangle.
+    :param bottom: The y coordinate of the rectangle bottom.
+    :param color: The color of the rectangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :Raises AttributeError: Raised if left > right or top < bottom.
     """
@@ -823,11 +823,11 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
-    :param float left: The x coordinate of the left edge of the rectangle.
-    :param float right: The x coordinate of the right edge of the rectangle.
-    :param float bottom: The y coordinate of the rectangle bottom.
-    :param float top: The y coordinate of the top of the rectangle.
-    :param Color color: The color of the rectangle.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param right: The x coordinate of the right edge of the rectangle.
+    :param bottom: The y coordinate of the rectangle bottom.
+    :param top: The y coordinate of the top of the rectangle.
+    :param color: The color of the rectangle.
     :Raises ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
@@ -849,11 +849,11 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a filled rectangle extending from bottom left to top right
 
-    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param float width: The width of the rectangle.
-    :param float height: The height of the rectangle.
-    :param RGBA255 color: The color of the rectangleas an RGBA
+    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param width: The width of the rectangle.
+    :param height: The height of the rectangle.
+    :param color: The color of the rectangleas an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
     center_x = bottom_left_x + (width / 2)
@@ -867,13 +867,13 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     """
     Draw a filled-in rectangle.
 
-    :param float center_x: x coordinate of rectangle center.
-    :param float center_y: y coordinate of rectangle center.
-    :param float width: width of the rectangle.
-    :param float height: height of the rectangle.
-    :param RGBA255 color: The color of the rectangle as an RGBA
+    :param center_x: x coordinate of rectangle center.
+    :param center_y: y coordinate of rectangle center.
+    :param width: width of the rectangle.
+    :param height: height of the rectangle.
+    :param color: The color of the rectangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param float tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
+    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
     window = get_window()
     ctx = window.ctx
@@ -918,13 +918,13 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
     consider `pyglet's batching features
     <https://pyglet.readthedocs.io/en/master/modules/graphics/index.html#batches-and-groups>`_.
 
-    :param float center_x: x coordinate of rectangle center.
-    :param float center_y: y coordinate of rectangle center.
-    :param int texture: identifier of texture returned from
+    :param center_x: x coordinate of rectangle center.
+    :param center_y: y coordinate of rectangle center.
+    :param texture: identifier of texture returned from
                         load_texture() call
-    :param float scale: scale of texture
-    :param float angle: rotation of the rectangle (clockwise). Defaults to zero.
-    :param float alpha: Transparency of image. 0 is fully transparent,
+    :param scale: scale of texture
+    :param angle: rotation of the rectangle (clockwise). Defaults to zero.
+    :param alpha: Transparency of image. 0 is fully transparent,
                         255 (default) is fully visible
     """
     texture.draw_scaled(center_x, center_y, scale, angle, alpha)
@@ -939,13 +939,13 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     """
     Draw a textured rectangle on-screen.
 
-    :param float center_x: x coordinate of rectangle center.
-    :param float center_y: y coordinate of rectangle center.
-    :param float width: width of texture
-    :param float height: height of texture
-    :param int texture: identifier of texture returned from load_texture() call
-    :param float angle: rotation of the rectangle. Defaults to zero (clockwise).
-    :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    :param center_x: x coordinate of rectangle center.
+    :param center_y: y coordinate of rectangle center.
+    :param width: width of texture
+    :param height: height of texture
+    :param texture: identifier of texture returned from load_texture() call
+    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
+    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
@@ -958,13 +958,13 @@ def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a texture extending from bottom left to top right.
 
-    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param float width: The width of the rectangle.
-    :param float height: The height of the rectangle.
-    :param int texture: identifier of texture returned from load_texture() call
-    :param float angle: rotation of the rectangle. Defaults to zero (clockwise).
-    :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param width: The width of the rectangle.
+    :param height: The height of the rectangle.
+    :param texture: identifier of texture returned from load_texture() call
+    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
+    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
     center_x = bottom_left_x + (width / 2)
@@ -976,9 +976,9 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """
     Given an x, y, will return a color value of that point.
 
-    :param int x: x location
-    :param int y: y location
-    :param int components: Number of components to fetch. By default we fetch 3
+    :param x: x location
+    :param y: y location
+    :param components: Number of components to fetch. By default we fetch 3
         3 components (RGB). 4 components would be RGBA.
 
     :rtype: Tuple[int, ...]
@@ -1007,10 +1007,10 @@ def get_image(x: int = 0, y: int = 0, width: Optional[int] = None, height: Optio
         image = get_image()
         image.save('screenshot.png', 'PNG')
 
-    :param int x: Start (left) x location
-    :param int y: Start (top) y location
-    :param int width: Width of image. Leave blank for grabbing the 'rest' of the image
-    :param int height: Height of image. Leave blank for grabbing the 'rest' of the image
+    :param x: Start (left) x location
+    :param y: Start (top) y location
+    :param width: Width of image. Leave blank for grabbing the 'rest' of the image
+    :param height: Height of image. Leave blank for grabbing the 'rest' of the image
     :returns: A Pillow Image
     :rtype: PIL.Image.Image
     """
