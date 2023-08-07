@@ -305,7 +305,6 @@ class BasicSprite:
             # Toggle visible
             sprite.visible = not sprite.visible
 
-        :rtype: bool
         """
         return self._color[3] > 0
 
@@ -600,7 +599,6 @@ class BasicSprite:
 
         :param point: Point to check.
         :return: True if the point is contained within the sprite's boundary.
-        :rtype: bool
         """
         from arcade.geometry import is_point_in_polygon
 
@@ -612,7 +610,6 @@ class BasicSprite:
 
         :param other: the other sprite to check against.
         :return: True or False, whether or not they are overlapping.
-        :rtype: bool
         """
         from arcade import check_for_collision
 
@@ -625,7 +622,6 @@ class BasicSprite:
 
         :param sprite_list: SpriteList to check against
         :return: List of all overlapping Sprites from the original SpriteList
-        :rtype: list
         """
         from arcade import check_for_collision_with_list
 

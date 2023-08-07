@@ -63,7 +63,6 @@ def make_soft_circle_texture(
     :param hit_box_algorithm: The hit box algorithm
 
     :returns: New :class:`Texture` object.
-    :rtype: arcade.Texture
     """
     # Name must be unique for caching
     name = cache.crate_str_from_values(

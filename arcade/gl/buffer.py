@@ -142,7 +142,6 @@ class Buffer:
 
         :param size: The bytes to read. -1 means the entire buffer (default)
         :param offset: Byte read offset
-        :rtype: bytes
         """
         if size == -1:
             size = self._size - offset

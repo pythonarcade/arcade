@@ -250,7 +250,6 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Get or set custom sprite properties.
 
-        :rtype: Dict[str, Any]
         """
         if self._properties is None:
             self._properties = {}

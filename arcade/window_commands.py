@@ -52,7 +52,6 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
 
     :param screen_id: The screen number
     :return: Tuple containing the width and height of the screen
-    :rtype: tuple
     """
     display = pyglet.canvas.Display()
     screen = display.get_screens()[screen_id]

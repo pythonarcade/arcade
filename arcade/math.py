@@ -309,7 +309,6 @@ def rotate_point(
     :param cy: y value of the center point you want to rotate around
     :param angle_degrees: Angle, in degrees, to rotate
     :return: Return rotated (x, y) pair
-    :rtype: Point
     """
     temp_x = x - cx
     temp_y = y - cy

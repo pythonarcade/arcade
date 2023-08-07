@@ -29,7 +29,6 @@ def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> fl
     :param sprite1: Sprite one
     :param sprite2: Sprite two
     :return: Distance
-    :rtype: float
     """
     return get_distance(*sprite1._position, *sprite2._position)
 
@@ -46,7 +45,6 @@ def get_closest_sprite(
 
     :return: A tuple containing the closest sprite and the minimum distance.
              If the spritelist is empty we return ``None``.
-    :rtype: Optional[Tuple[Sprite, float]]
     """
     if len(sprite_list) == 0:
         return None
@@ -69,7 +67,6 @@ def check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     :param sprite2: Second sprite
 
     :Returns: True or False depending if the sprites intersect.
-    :rtype: bool
     """
     if __debug__:
         if not isinstance(sprite1, BasicSprite):
@@ -93,7 +90,6 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     :param sprite2: Sprite 2
 
     :returns: True if sprites overlap.
-    :rtype: bool
     """
 
     #NOTE: for speed becuase attribute look ups are slow.
@@ -195,7 +191,6 @@ def check_for_collision_with_list(
         2 is GPU based, 3 is simple check-everything. Defaults to 0.
 
     :returns: List of sprites colliding, or an empty list.
-    :rtype: list
     """
     if __debug__:
         if not isinstance(sprite, BasicSprite):
@@ -244,7 +239,6 @@ def check_for_collision_with_lists(
         2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
 
     :returns: List of sprites colliding, or an empty list.
-    :rtype: list
     """
     if __debug__:
         if not isinstance(sprite, BasicSprite):
@@ -281,7 +275,6 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     :param sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
-    :rtype: list
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
@@ -312,7 +305,6 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]
     :param sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
-    :rtype: list
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
@@ -344,7 +336,6 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List
     :param sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
-    :rtype: list
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):

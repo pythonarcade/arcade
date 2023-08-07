@@ -335,7 +335,6 @@ class Context:
         This is only needed when ``gc_mode`` is ``context_gc``.
 
         :return: The number of resources destroyed
-        :rtype: int
         """
         # Loop the array until all objects are gone.
         # Deleting one object might add new ones so we need
@@ -848,7 +847,6 @@ class Context:
                                     any other object supporting the buffer protocol.
         :param reserve: The number of bytes to reserve
         :param usage: Buffer usage. 'static', 'dynamic' or 'stream'
-        :rtype: :py:class:`~arcade.gl.Buffer`
         """
         return Buffer(self, data, reserve=reserve, usage=usage)
 
@@ -862,7 +860,6 @@ class Context:
 
         :param color_attachments: List of textures we want to render into
         :param depth_attachment: Depth texture
-        :rtype: :py:class:`~arcade.gl.Framebuffer`
         """
         return Framebuffer(
             self, color_attachments=color_attachments, depth_attachment=depth_attachment
@@ -1042,7 +1039,6 @@ class Context:
                                           ``"separate"`` means each out attribute will be written separate buffers.
                                           Based on these settings the `transform()` method will accept a single
                                           buffer or a list of buffer.
-        :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
@@ -1102,7 +1098,6 @@ class Context:
         :param time: Measure rendering duration
         :param primitives: Collect the number of primitives emitted
 
-        :rtype: :py:class:`~arcade.gl.Query`
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 

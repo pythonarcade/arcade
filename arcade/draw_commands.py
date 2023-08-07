@@ -981,7 +981,6 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     :param components: Number of components to fetch. By default we fetch 3
         3 components (RGB). 4 components would be RGBA.
 
-    :rtype: Tuple[int, ...]
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
 
@@ -1012,7 +1011,6 @@ def get_image(x: int = 0, y: int = 0, width: Optional[int] = None, height: Optio
     :param width: Width of image. Leave blank for grabbing the 'rest' of the image
     :param height: Height of image. Leave blank for grabbing the 'rest' of the image
     :returns: A Pillow Image
-    :rtype: PIL.Image.Image
     """
     window = get_window()
 

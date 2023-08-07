@@ -29,7 +29,6 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
 
     :param size: width and height
     :param pos: Center position x and y
-    :rtype: A :py:class:`~arcade.gl.geometry.Geometry` instance.
     """
     ctx = _get_active_context()
     width, height = size
@@ -80,7 +79,6 @@ def cube(
 
     :param size: size of the cube as a 3-component tuple
     :param center: center of the cube as a 3-component tuple
-    :rtype: arcade.gl.Geometry
     :returns: A cube
     """
     ctx = _get_active_context()

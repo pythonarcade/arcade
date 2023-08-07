@@ -329,7 +329,6 @@ class PhysicsEnginePlatformer:
         and we return a True.
 
         :returns: True if there is a platform below us
-        :rtype: bool
         """
 
         # Move down to see if we are on a platform

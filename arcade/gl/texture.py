@@ -626,7 +626,6 @@ class Texture2D:
 
         :param level:  The texture level to read
         :param alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
-        :rtype: bytearray
         """
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
