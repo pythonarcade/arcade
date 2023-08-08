@@ -66,15 +66,16 @@ class Camera2D:
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
         self._window: "Window" = window or get_window()
+        print(camera_data, any((viewport, position, up, zoom)))
 
         assert (
-            any((viewport, position, up, zoom)) and camera_data
+            not any((viewport, position, up, zoom)) and not camera_data
         ), (
             "Camera2D Warning: Provided both a CameraData object and raw values. Defaulting to CameraData."
         )
 
         assert (
-            any((projection, near, far)) and projection_data
+            not any((projection, near, far)) and not projection_data
         ), (
             "Camera2D Warning: Provided both an OrthographicProjectionData object and raw values."
             "Defaulting to OrthographicProjectionData."
@@ -86,7 +87,7 @@ class Camera2D:
             viewport or (0, 0, self._window.width, self._window.height),
             (_pos[0], _pos[1], 0.0),
             (_up[0], _up[1], 0.0),
-            (0.0, 0.0, 1.0),
+            (0.0, 0.0, -1.0),
             zoom or 1.0
         )
 

@@ -44,7 +44,7 @@ class OrthographicProjector:
             (0, 0, self._window.width, self._window.height),  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
-            (0.0, 0.0, 1.0),  # Forward
+            (0.0, 0.0, -1.0),  # Forward
             1.0  # Zoom
         )
 
@@ -103,10 +103,10 @@ class OrthographicProjector:
         up = ri.cross(fo)  # Up Vector
         po = Vec3(*self._view.position)
         return Mat4((
-            ri.x,  up.x,  fo.x,  0,
-            ri.y,  up.y,  fo.y,  0,
-            ri.z,  up.z,  fo.z,  0,
-            -ri.dot(po), -up.dot(po), -fo.dot(po), 1
+            ri.x,  up.x,  -fo.x,  0,
+            ri.y,  up.y,  -fo.y,  0,
+            ri.z,  up.z,  -fo.z,  0,
+            -ri.dot(po), -up.dot(po), fo.dot(po), 1
         ))
 
     def use(self):

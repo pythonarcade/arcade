@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 
-def _3_lerp(s: Tuple[float, float, float], e: Tuple[float, float, float], t: float):
+def _interpolate_3D(s: Tuple[float, float, float], e: Tuple[float, float, float], t: float):
     s_x, s_y, s_z = s
     e_x, e_y, e_z = e
 
@@ -30,7 +30,7 @@ def simple_follow(speed: float, target: Tuple[float, float, float], data: Camera
     :param data: The camera data object which stores its position, rotation, and direction.
     """
 
-    data.position = _3_lerp(data.position, target, speed)
+    data.position = _interpolate_3D(data.position, target, speed)
 
 
 def simple_follow_2D(speed: float, target: Tuple[float, float], data: CameraData):
@@ -63,7 +63,7 @@ def simple_easing(percent: float,
                  speed does not stay constant. See arcade.easing for examples.
     """
 
-    data.position = _3_lerp(start, target, func(percent))
+    data.position = _interpolate_3D(start, target, func(percent))
 
 
 def simple_easing_2D(percent: float,
