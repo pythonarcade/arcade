@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Iterable, List, TypeVar
+from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
 from arcade.types import Point, Color, RGBA255, PointList
@@ -47,7 +47,7 @@ class BasicSprite:
         scale: float = 1.0,
         center_x: float = 0,
         center_y: float = 0,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         self._position = (center_x, center_y)
         self._depth = 0.0

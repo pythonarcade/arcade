@@ -10,10 +10,10 @@ It allows you to do the following:
 * Control sprite list draw order within the group
 """
 
-from typing import Dict, List, Optional, Union, Iterable, Tuple
+from typing import Dict, List, Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color, RGBA255
+from arcade.types import Color, RGBA255, OpenGlFilters, BlendFunctions
 from arcade.tilemap import TileMap
 
 from warnings import warn
@@ -432,9 +432,9 @@ class Scene:
     def draw(
         self,
         names: Optional[Iterable[str]] = None,
-        filter: Optional[int] = None,
+        filter: Optional[OpenGlFilters] = None,
         pixelated: bool = False,
-        blend_function: Optional[Union[Tuple[int, int], Tuple[int, int, int, int]]] = None,
+        blend_function: Optional[BlendFunctions] = None,
         **kwargs
     ) -> None:
         """

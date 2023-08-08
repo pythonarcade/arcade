@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
-from arcade.types import PathOrTexture, Point
+from arcade.types import PathOrTexture, Point, OpenGlFilters, BlendFunctions
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
@@ -66,7 +66,7 @@ class Sprite(BasicSprite, PymunkMixin):
         center_x: float = 0.0,
         center_y: float = 0.0,
         angle: float = 0.0,
-        **kwargs,
+        **kwargs: Any,
     ):
         if isinstance(path_or_texture, Texture):
             _texture = path_or_texture
@@ -255,7 +255,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._properties
 
     @properties.setter
-    def properties(self, value):
+    def properties(self, value: Dict[str, Any]):
         self._properties = value
 
     # --- Movement methods -----
@@ -313,7 +313,13 @@ class Sprite(BasicSprite, PymunkMixin):
 
     # ---- Draw Methods ----
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
+    def draw(
+            self,
+            *,
+            filter: Optional[OpenGlFilters] | None = None,
+            pixelated: Optional[bool] = None,
+            blend_function: Optional[BlendFunctions] = None
+    ) -> None:
         """
         A debug method which draws the sprite into the current OpenGL context.
 
@@ -399,7 +405,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self.physics_engines.clear()
 
-    def register_physics_engine(self, physics_engine) -> None:
+    def register_physics_engine(self, physics_engine: Any) -> None:
         """
         Register a physics engine on the sprite.
         This is only needed if you actually need a reference
