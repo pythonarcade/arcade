@@ -67,7 +67,6 @@ The Python Arcade Library
 .. image:: images/example_games.svg
    :alt: Programming guide icon
    :class: heading-icon
-   :target: programming_guide
 
 .. toctree::
    :maxdepth: 1
