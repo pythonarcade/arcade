@@ -1,7 +1,7 @@
 .. _installation-instructions:
 
-Installation Instructions
-=========================
+Installation
+============
 
 Arcade runs on Windows, Mac OS X, and Linux.
 

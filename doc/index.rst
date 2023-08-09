@@ -11,7 +11,7 @@ The Python Arcade Library
 
 .. |Go| image:: images/woman_sprinter.svg
    :width: 48
-   :alt: Get started here
+   :alt: Start Here
    :target: get_started.html
 
 .. raw:: html
@@ -21,8 +21,8 @@ The Python Arcade Library
         <td>
            <h2>
              <a class="reference internal" href="programming_guide/get_started.html">
-               <img alt="Get started here" src="_images/woman_sprinter.svg" width="48">
-               <span class="std std-ref">Get Started Here</span>
+               <img alt="Start Here" src="_images/woman_sprinter.svg" width="48">
+               <span class="std std-ref">Start Here</span>
              </a>
              <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
            </h2>
