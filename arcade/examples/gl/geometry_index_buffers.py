@@ -7,6 +7,8 @@ In most cases we can get away with unsigned 32 bit integers.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.geometry_index_buffers
 """
+from __future__ import annotations
+
 from array import array
 
 import arcade

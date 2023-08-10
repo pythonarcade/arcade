@@ -24,6 +24,8 @@ handles or handles that are not resident can cause crashes.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.bindless_texture
 """
+from __future__ import annotations
+
 from array import array
 from typing import List
 from itertools import cycle

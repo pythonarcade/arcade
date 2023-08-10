@@ -1,8 +1,9 @@
 """
 Physics engines for top-down or platformers.
 """
-# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
+from __future__ import annotations
 
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
 from typing import Iterable, List, Optional, Union, cast
 

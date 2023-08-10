@@ -8,6 +8,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_tiled_map
 """
 
+from __future__ import annotations
+
 import time
 
 import arcade

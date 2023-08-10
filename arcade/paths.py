@@ -1,6 +1,8 @@
 """
 Classic A-star algorithm for path finding.
 """
+from __future__ import annotations
+
 import math
 from typing import (
     cast,

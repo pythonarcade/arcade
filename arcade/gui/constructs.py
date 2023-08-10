@@ -1,6 +1,8 @@
 """
 Constructs, are prepared widget combinations, you can use for common use-cases
 """
+from __future__ import annotations
+
 from typing import Any, Optional
 
 import arcade

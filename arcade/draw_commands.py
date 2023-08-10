@@ -6,6 +6,8 @@ Many of these commands are slow, because they load everything to the
 graphics card each time a shape is drawn. For faster drawing, see the
 Buffered Draw Commands.
 """
+from __future__ import annotations
+
 import array
 import math
 from typing import Optional, Tuple

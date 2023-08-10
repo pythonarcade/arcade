@@ -12,6 +12,8 @@ The window can be resized.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.spritelist_interaction_bouncing_coins
 """
+from __future__ import annotations
+
 from array import array
 from random import randint, uniform
 

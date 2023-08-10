@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import (
     c_char,
     c_int,

@@ -15,6 +15,8 @@ Note:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sections_demo_1
 """
+from __future__ import annotations
+
 from typing import Optional
 
 import arcade

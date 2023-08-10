@@ -4,6 +4,8 @@ Various utility functions.
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
 """
+from __future__ import annotations
+
 import functools
 import platform
 import sys

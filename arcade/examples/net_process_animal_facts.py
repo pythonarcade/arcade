@@ -28,6 +28,8 @@ Controls:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.net_process_animal_facts
 """
+from __future__ import annotations
+
 import PIL.Image
 import random
 import time

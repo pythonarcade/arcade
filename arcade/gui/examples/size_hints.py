@@ -17,6 +17,8 @@ Please note the following:
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.size_hints
 """
+from __future__ import annotations
+
 import arcade
 from arcade.gui import UIManager, UIBoxLayout
 from arcade.gui.widgets import UIDummy

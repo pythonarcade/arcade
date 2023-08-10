@@ -12,6 +12,8 @@ get very obvious artifacts all along the axis that not used.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.random_shader_simple
 """
+from __future__ import annotations
+
 from time import time
 from array import array
 from random import random

@@ -4,6 +4,8 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.3d_cube_with_cubes
 """
+from __future__ import annotations
+
 from pyglet.math import Mat4
 
 import arcade

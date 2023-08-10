@@ -17,6 +17,8 @@ So this will delete that last period and flip around the dash.
 ALSO note that this bumps the version AFTER the deploy.
 So if we are at version 2.7.3.dev5 that's the version deploy. Bump will bump it to dev6.
 """
+from __future__ import annotations
+
 import os
 
 

@@ -1,6 +1,8 @@
 """
 Post-processing shaders.
 """
+from __future__ import annotations
+
 from typing import Tuple
 from arcade.context import ArcadeContext
 from arcade.gl.texture import Texture2D

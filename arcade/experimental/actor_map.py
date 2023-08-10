@@ -5,6 +5,8 @@ then view that map form different actor viewpoints.
 This example is using the lower level rendering API
 in arcade.
 """
+from __future__ import annotations
+
 import random
 from typing import Tuple
 

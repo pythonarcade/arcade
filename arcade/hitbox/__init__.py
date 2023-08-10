@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PIL.Image import Image
 
 from arcade.types import PointList

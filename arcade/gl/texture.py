@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import byref, string_at
 import weakref
 from typing import Optional, Tuple, Union, TYPE_CHECKING

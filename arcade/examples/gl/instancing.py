@@ -8,6 +8,8 @@ To make things a bit more interesting we also rotate the triangle.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.instancing
 """
+from __future__ import annotations
+
 import random
 from array import array
 
