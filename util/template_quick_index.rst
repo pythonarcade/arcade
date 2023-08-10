@@ -6,14 +6,6 @@
           "paging":   false,
           "dom": '<"bottom"flp><"clear">'
         } );
-        $('table#quickapigui').DataTable( {
-          "paging":   false,
-          "dom": '<"bottom"flp><"clear">'
-        } );
-        $('table#tilemap').DataTable( {
-          "paging":   false,
-          "dom": '<"bottom"flp><"clear">'
-        } );
     } );
     </script>
 

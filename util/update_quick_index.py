@@ -302,26 +302,6 @@ table_header_arcade = """
    * - Name
      - Group"""
 
-table_header_gui = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapigui
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_tiled = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapitiled
-   :class: display
-
-   * - Name
-     - Group"""
-
 
 def clear_api_directory():
     """
@@ -350,27 +330,10 @@ def main():
     process_directory(ROOT / "arcade/texture", text_file)
     process_directory(ROOT / "arcade/texture_atlas", text_file)
     process_directory(ROOT / "arcade/text", text_file)
-
-    # text_file.write(f"The ``arcade.gl`` module\n")
-    # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.gui module\n")
-    text_file.write("---------------------\n\n")
-
-    text_file.write(table_header_gui)
-
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.tilemap module\n")
-    text_file.write("-------------------------\n\n")
-
-    text_file.write(table_header_tiled)
-
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
