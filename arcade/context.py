@@ -2,6 +2,8 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any, Iterable, Dict, Optional, Tuple, Union, Sequence
 from contextlib import contextmanager

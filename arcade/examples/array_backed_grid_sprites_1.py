@@ -12,6 +12,8 @@ There are faster ways, but this works for smaller grid sizes.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_1
 """
+from __future__ import annotations
+
 import arcade
 
 # Set how many rows and columns we will have

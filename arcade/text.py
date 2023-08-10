@@ -1,6 +1,8 @@
 """
 Drawing text with pyglet label
 """
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
 

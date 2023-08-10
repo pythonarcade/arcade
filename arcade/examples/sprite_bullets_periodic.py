@@ -4,6 +4,8 @@ Show how to have enemies shoot bullets at regular intervals.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bullets_periodic
 """
+from __future__ import annotations
+
 import arcade
 
 SCREEN_WIDTH = 800

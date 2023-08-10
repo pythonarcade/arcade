@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 import arcade
 from arcade.experimental.shadertoy import Shadertoy

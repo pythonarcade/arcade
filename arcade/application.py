@@ -2,6 +2,8 @@
 The main window class that all object-oriented applications should
 derive from.
 """
+from __future__ import annotations
+
 import logging
 import os
 import time

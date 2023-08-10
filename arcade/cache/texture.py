@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Optional, TYPE_CHECKING, Union, List
 from pathlib import Path
 from weakref import WeakValueDictionary

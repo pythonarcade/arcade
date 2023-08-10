@@ -5,6 +5,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.happy_face
 """
 
+from __future__ import annotations
+
 import arcade
 
 # Set constants for the screen size

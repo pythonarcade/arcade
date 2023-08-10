@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from arcade.gui.constructs import UIMessageBox, UIButtonRow
 from arcade.gui.events import UIEvent
 from arcade.gui.events import UIKeyEvent

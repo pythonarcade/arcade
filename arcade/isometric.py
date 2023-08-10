@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from arcade.shape_list import ShapeElementList, create_line
 from typing import Tuple
 from arcade.types import RGBA255

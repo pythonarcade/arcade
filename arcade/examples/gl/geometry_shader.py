@@ -8,6 +8,8 @@ We generate two triangles on the fly displaying a quad.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.geometry_shader
 """
+from __future__ import annotations
+
 import random
 from array import array
 import arcade

@@ -9,6 +9,8 @@ This example displays numerical stats with labels by using the following:
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.stats_topleft
 """
+from __future__ import annotations
+
 import arcade
 from arcade.gui import UIManager, UILabel, UIBoxLayout
 from arcade.gui.widgets.layout import UIAnchorLayout

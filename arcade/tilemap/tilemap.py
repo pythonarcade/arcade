@@ -7,6 +7,8 @@ For more info on Tiled see: https://www.mapeditor.org/
 For more info on pytiled-parser see: https://github.com/Beefy-Swain/pytiled_parser
 """
 
+from __future__ import annotations
+
 import copy
 import math
 import os

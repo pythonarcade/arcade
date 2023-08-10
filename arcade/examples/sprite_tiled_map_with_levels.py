@@ -7,6 +7,8 @@ Tiled available from: https://www.mapeditor.org/
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_tiled_map_with_levels
 """
+from __future__ import annotations
+
 import time
 
 import arcade

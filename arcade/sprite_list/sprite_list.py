@@ -5,6 +5,8 @@ SpriteList is orders of magnitude faster then drawing
 individual sprites.
 """
 
+from __future__ import annotations
+
 import logging
 import random
 from array import array

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from arcade import get_window
 from arcade.types import RGBA255
 from arcade.gl import geometry

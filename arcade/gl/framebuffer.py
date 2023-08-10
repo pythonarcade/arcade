@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import c_int, string_at
 from contextlib import contextmanager
 from typing import Optional, Tuple, List, TYPE_CHECKING, Union

@@ -11,6 +11,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.view_pause_screen
 """
 
+from __future__ import annotations
+
 import arcade
 
 WIDTH = 800
