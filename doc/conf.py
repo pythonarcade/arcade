@@ -6,6 +6,7 @@ Generate HTML docs
 import runpy
 import sys
 import os
+import sphinx.ext.autodoc
 
 # --- Pre-processing Tasks
 
@@ -252,8 +253,24 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
+def on_autodoc_process_bases(app, name, obj, options, bases):
+    # Strip `object` from bases, it's just noise
+    bases[:] = [base for base in bases if base is not object]
+
+class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
+    def add_directive_header(self, sig: str) -> None:
+        r = super().add_directive_header(sig)
+        # Strip empty `Bases: `, will be empty when only superclass is `object`
+        # cuz we remove it earlier
+        strings = self.directive.result
+        if strings[-1] == '   Bases: ':
+            strings.pop()
+        return r
+
 def setup(app):
     app.add_css_file("css/custom.css")
+    app.add_autodocumenter(ClassDocumenter)
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
+    app.connect('autodoc-process-bases', on_autodoc_process_bases)
