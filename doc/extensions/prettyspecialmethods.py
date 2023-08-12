@@ -12,7 +12,7 @@
     :license: MIT, see LICENSE for details.
 """
 
-import pbr.version
+# import pbr.version
 import sphinx.addnodes as SphinxNodes
 from docutils import nodes
 from docutils.nodes import Text
@@ -23,8 +23,8 @@ from docutils.parsers.rst import directives
 import sphinx.ext.autodoc
 
 
-__version__ = pbr.version.VersionInfo(
-    'prettyspecialmethods').version_string()
+# __version__ = pbr.version.VersionInfo(
+#     'prettyspecialmethods').version_string()
 
 
 ATTR_TOC_SIG = '_prettyspecialmethods_sig'
@@ -293,4 +293,5 @@ def setup(app):
     app.add_config_value(CONF_SIG_PREFIX, 'implements', True)
     app.connect('autodoc-skip-member', show_special_methods)
     app.registry.add_directive_to_domain('py', 'method', PyMethod)
-    return {'version': __version__, 'parallel_read_safe': True}
+    # return {'version': __version__, 'parallel_read_safe': True}
+    return {'parallel_read_safe': True}
