@@ -35,6 +35,7 @@ autodoc_default_options = {
     'undoc-members': True,
     'show-inheritance': True
 }
+toc_object_entries_show_parents = 'hide'
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
