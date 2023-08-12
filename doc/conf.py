@@ -29,7 +29,7 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
     'members': True,
-    'member-order': 'bysource',
+    'member-order': 'groupwise',
     'undoc-members': True,
     'show-inheritance': True
 }
