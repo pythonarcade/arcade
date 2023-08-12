@@ -16,7 +16,7 @@
 import sphinx.addnodes as SphinxNodes
 from docutils import nodes
 from docutils.nodes import Text
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 import sphinx.domains.python
 from sphinx.domains.python import py_sig_re
 from docutils.parsers.rst import directives
@@ -238,7 +238,7 @@ class PyMethod(sphinx.domains.python.PyMethod):
             return None
         return method_name
 
-    def get_signature_prefix(self, sig: str) -> list[nodes.Node]:
+    def get_signature_prefix(self, sig: str) -> List[nodes.Node]:
         prefix = super().get_signature_prefix(sig)
         signature_prefix = getattr(self.env.app.config, CONF_SIG_PREFIX)
         if signature_prefix:
