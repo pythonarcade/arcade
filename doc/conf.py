@@ -7,6 +7,8 @@ import runpy
 import sys
 import os
 import sphinx.ext.autodoc
+import sphinx.transforms
+import docutils.nodes
 
 # --- Pre-processing Tasks
 
@@ -267,6 +269,18 @@ class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
             strings.pop()
         return r
 
+class Transform(sphinx.transforms.SphinxTransform):
+    default_priority = 800
+    def apply(self):
+        self.document.walk(Visitor(self.document))
+class Visitor(docutils.nodes.SparseNodeVisitor):
+    def visit_desc_annotation(self, node):
+        # Remove `property` prefix from properties so they look the same as
+        # attributes
+        if 'property' in node.astext():
+            node.parent.remove(node)
+
+
 def setup(app):
     app.add_css_file("css/custom.css")
     app.add_autodocumenter(ClassDocumenter)
@@ -274,3 +288,4 @@ def setup(app):
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
+    app.add_transform(Transform)
