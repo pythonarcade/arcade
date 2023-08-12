@@ -36,6 +36,7 @@ autodoc_default_options = {
     'show-inheritance': True
 }
 toc_object_entries_show_parents = 'hide'
+prettyspecialmethods_signature_prefix = '🧙'
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
@@ -64,7 +65,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
     'sphinx_sitemap',
-    'sphinxcontrib.prettyspecialmethods'
+    'doc.extensions.prettyspecialmethods'
 ]
 
 # --- Spell check. Never worked well.
