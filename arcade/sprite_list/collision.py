@@ -59,7 +59,7 @@ def get_closest_sprite(
     return sprite_list[min_pos], min_distance
 
 
-def check_for_collision(sprite1: SpriteType, sprite2: SpriteType) -> bool:
+def check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
     Check for a collision between two sprites.
 
