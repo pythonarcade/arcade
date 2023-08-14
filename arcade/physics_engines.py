@@ -4,12 +4,13 @@ Physics engines for top-down or platformers.
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
 import math
-from typing import Iterable, List, Optional, Union
+from typing import Iterable, List, Optional, Union, cast
 
 from arcade import (
     BasicSprite,
     Sprite,
     SpriteList,
+    SpriteType,
     check_for_collision,
     check_for_collision_with_lists
 )
@@ -54,7 +55,7 @@ def _circular_check(player: Sprite, walls: List[SpriteList]):
         vary *= 2
 
 
-def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) -> List[Union[Sprite, BasicSprite]]:
+def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool) -> List[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
@@ -231,12 +232,12 @@ class PhysicsEngineSimple:
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, Iterable[SpriteList]]):
+    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList[BasicSprite], Iterable[SpriteList[BasicSprite]]]):
         assert isinstance(player_sprite, Sprite)
 
         if walls:
             if isinstance(walls, SpriteList):
-                self.walls = [walls]
+                self.walls = [cast(SpriteList[BasicSprite], walls)]
             else:
                 self.walls = list(walls)
         else:
