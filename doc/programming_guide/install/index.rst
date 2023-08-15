@@ -12,10 +12,10 @@ Select the instructions for your platform:
 .. toctree::
    :maxdepth: 1
 
-   pycharm
    windows
    mac
    linux
    source
+   pycharm
    obsolete
 

@@ -1,6 +1,6 @@
 .. _how-to-contribute:
 
-How to Contribute
+Ways to Contribute
 =================
 
 We would love to have you contribute to the project! There are several

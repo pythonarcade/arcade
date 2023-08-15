@@ -35,7 +35,6 @@ for the Python Arcade library. See also:
     api/window
     api/sound
     api/path_finding
-    api/version
     api/isometric
     api/earclip
     api/easing
@@ -47,7 +46,7 @@ for the Python Arcade library. See also:
 
 .. toctree::
     :maxdepth: 1
-    :caption: Arcade GUI
+    :caption: GUI
 
     api/gui
     api/gui_widgets
@@ -57,16 +56,8 @@ for the Python Arcade library. See also:
 
 .. toctree::
     :maxdepth: 1
-    :caption: Arcade Sub Modules
+    :caption: Constants
 
     arcade.key
     arcade.csscolor
     arcade.color
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Other Information
-
-    resources
-    keyboard
-
