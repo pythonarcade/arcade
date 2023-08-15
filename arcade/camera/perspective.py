@@ -12,7 +12,8 @@ if TYPE_CHECKING:
 
 
 __all__ = [
-    'PerspectiveProjector'
+    'PerspectiveProjector',
+    'PerspectiveProjectionData'
 ]
 
 
@@ -50,11 +51,11 @@ class PerspectiveProjector:
         self._projection = projection or PerspectiveProjectionData(
             self._window.width / self._window.height,  # Aspect ratio
             90,  # Field of view (degrees)
-            0.1, 100  # Near, Far
+            0.1, 1000  # Near, Far
         )
 
     @property
-    def view(self) -> CameraData:
+    def view_data(self) -> CameraData:
         return self._view
 
     @property

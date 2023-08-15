@@ -1,15 +1,58 @@
 from typing import Tuple, Callable
+from math import sin, cos, radians
 
 from arcade.camera.data import CameraData
 from arcade.easing import linear
-
+from pyglet.math import Vec3
 
 __all__ = [
     'simple_follow',
     'simple_follow_2D',
     'simple_easing',
-    'simple_easing_2D'
+    'simple_easing_2D',
+    'quaternion_rotation',
+    'rotate_around_forward',
+    'rotate_around_up',
+    'rotate_around_right'
 ]
+
+
+def quaternion_rotation(_axis: Tuple[float, float, float],
+                        _vector: Tuple[float, float, float],
+                        _angle: float) -> Tuple[float, float, float]:
+    # Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+    _rotation_rads = -radians(_angle)
+    p1, p2, p3 = _vector
+    _c2, _s2 = cos(_rotation_rads / 2.0), sin(_rotation_rads / 2.0)
+
+    q0, q1, q2, q3 = (
+        _c2,
+        _s2 * _axis[0],
+        _s2 * _axis[1],
+        _s2 * _axis[2]
+    )
+    q0_2, q1_2, q2_2, q3_2 = q0 ** 2, q1 ** 2, q2 ** 2, q3 ** 2
+    q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
+
+    _x = p1 * (q0_2 + q1_2 - q2_2 - q3_2) + 2.0 * (p2 * (q12 - q03) + p3 * (q02 + q13))
+    _y = p2 * (q0_2 - q1_2 + q2_2 - q3_2) + 2.0 * (p1 * (q03 + q12) + p3 * (q23 - q01))
+    _z = p3 * (q0_2 - q1_2 - q2_2 + q3_2) + 2.0 * (p1 * (q13 - q02) + p2 * (q01 + q23))
+
+    return _x, _y, _z
+
+
+def rotate_around_forward(data: CameraData, angle: float):
+    data.up = quaternion_rotation(data.forward, data.up, angle)
+
+
+def rotate_around_up(data: CameraData, angle: float):
+    data.forward = quaternion_rotation(data.up, data.forward, angle)
+
+
+def rotate_around_right(data: CameraData, angle: float):
+    _right = tuple(Vec3(*data.forward).cross(*data.up))
+    data.forward = quaternion_rotation(_right, data.forward, angle)
+    data.up = quaternion_rotation(_right, data.up, angle)
 
 
 def _interpolate_3D(s: Tuple[float, float, float], e: Tuple[float, float, float], t: float):

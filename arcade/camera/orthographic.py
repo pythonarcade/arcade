@@ -12,7 +12,8 @@ if TYPE_CHECKING:
 
 
 __all__ = [
-    'OrthographicProjector'
+    'OrthographicProjector',
+    'OrthographicProjectionData'
 ]
 
 

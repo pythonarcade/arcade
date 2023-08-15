@@ -27,12 +27,12 @@ class CameraData:
     viewport: Tuple[int, int, int, int]
 
     # View matrix data
-    position: Tuple[float, float, float]
-    up: Tuple[float, float, float]
-    forward: Tuple[float, float, float]
+    position: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+    up: Tuple[float, float, float] = (0.0, 0.0, 1.0)
+    forward: Tuple[float, float, float] = (0.0, -1.0, 0.0)
 
     # Zoom
-    zoom: float
+    zoom: float = 1.0
 
 
 @dataclass
