@@ -244,10 +244,6 @@ def process_directory(directory: Path, quick_index_file):
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
-
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
@@ -271,10 +267,6 @@ def process_directory(directory: Path, quick_index_file):
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
-
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autofunction:: {full_class_name}\n\n")
 
