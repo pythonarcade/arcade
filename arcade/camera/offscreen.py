@@ -3,45 +3,18 @@ from contextlib import contextmanager
 
 from arcade.window_commands import get_window
 from arcade.camera.types import Projector
-from arcade.gl import Framebuffer, Texture2D, Geometry, Program
+from arcade.gl import Framebuffer, Texture2D, Geometry
 from arcade.gl.geometry import quad_2d_fs
 if TYPE_CHECKING:
     from arcade.application import Window
 
 
 class OffScreenSpace:
-    vertex_shader: str = """
-    #version 330
-    
-    in vec2 in_uv;
-    in vec2 in_vert;
-    
-    out vec2 out_uv;
-    
-    void main(){
-        out_uv = in_uv;
-        gl_Position = vec4(in_vert, 0.0, 1.0);
-    }
-    """
-    fragment_shader: str = """
-    #version 330
-    
-    uniform sampler2D texture0;
-    
-    in vec2 out_uv;
-    
-    out vec4 out_colour;
-    
-    void main(){
-        out_colour = texture(texture0, out_uv);
-    }
-    """
-    geometry: Geometry = None
-    program: Program = None
+    _geometry: Optional[Geometry] = quad_2d_fs()
 
     def __init__(self, *,
-                 window: "Window" = None,
-                 size: Tuple[int, int] = None,
+                 window: Optional["Window"] = None,
+                 size: Optional[Tuple[int, int]] = None,
                  color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
                  depth_attachment: Optional[Texture2D] = None):
         self._win: "Window" = window or get_window()
@@ -52,20 +25,15 @@ class OffScreenSpace:
             depth_attachment=depth_attachment or None
         )
 
-        if OffScreenSpace.geometry is None:
-            OffScreenSpace.geometry = quad_2d_fs()
-        if OffScreenSpace.program is None:
-            OffScreenSpace.program = self._win.ctx.program(
-                vertex_shader=OffScreenSpace.vertex_shader,
-                fragment_shader=OffScreenSpace.fragment_shader
-            )
+        if OffScreenSpace._geometry is None:
+            OffScreenSpace._geometry = quad_2d_fs()
 
     def show(self):
         self._fbo.color_attachments[0].use(0)
-        OffScreenSpace.geometry.render(OffScreenSpace.program)
+        OffScreenSpace._geometry.render(self._win.ctx.utility_textured_quad_program)
 
     @contextmanager
-    def activate(self, *, projector: Projector = None, show: bool = False, clear: bool = False):
+    def activate(self, *, projector: Optional[Projector] = None, show: bool = False, clear: bool = False):
         previous = self._win.ctx.active_framebuffer
         prev_cam = self._win.current_camera if projector is not None else None
         try:

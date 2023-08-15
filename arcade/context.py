@@ -132,6 +132,14 @@ class ArcadeContext(Context):
         self.collision_buffer = self.buffer(reserve=1024 * 4)
         self.collision_query = self.query(samples=False, time=False, primitives=True)
 
+        # General Utility
+
+        # renders a quad (without projection) with a single 4-component texture.
+        self.utility_textured_quad_program: Program = self.load_program(
+            vertex_shader=":system:shaders/util/textured_quad_vs.glsl",
+            fragment_shader=":system:shaders/collision/textured_quad_fs.glsl",
+        )
+
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea

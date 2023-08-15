@@ -1,6 +1,6 @@
 # TODO: Are 2D and 3D versions of a very simple controller
 #  intended to be used for debugging.
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, Tuple, Optional
 from copy import deepcopy
 
 from pyglet.math import Vec3
@@ -34,7 +34,7 @@ class PolledCameraController2D:
     MOVE_SPEED: float = 600.0
     ROTATE_SPEED: float = 60.0
 
-    def __init__(self, data: CameraData, *, window: "Window" = None):
+    def __init__(self, data: CameraData, *, window: Optional["Window"] = None):
         self._win: "Window" = window or get_window()
 
         self._data: CameraData = data
@@ -117,7 +117,7 @@ class PolledCameraController3D:
     MOVE_SPEED: float = 600.0
     ROTATE_SPEED: float = 60.0
 
-    def __init__(self, data: CameraData, *, window: "Window" = None, center_mouse: bool = True):
+    def __init__(self, data: CameraData, *, window: Optional["Window"] = None, center_mouse: bool = True):
         self._win: "Window" = window or get_window()
 
         self._data: CameraData = data
@@ -181,39 +181,3 @@ class PolledCameraController3D:
                 _cam_pos[2] + dt * self.MOVE_SPEED * (_right[2] * _strafe + _for[2] * _move)
             )
             self._data.position = _cam_pos
-
-
-def fps_test():
-    from random import randrange as uniform
-
-    from arcade import Window, SpriteSolidColor, SpriteList
-    from arcade.camera import OrthographicProjector, PerspectiveProjector
-
-    win = Window()
-    proj = OrthographicProjector()
-    cont = PolledCameraController2D(proj.view_data)
-    sprites = SpriteList()
-    sprites.extend(
-        tuple(SpriteSolidColor(uniform(25, 125), uniform(25, 125), uniform(0, win.width), uniform(0, win.height))
-              for _ in range(uniform(10, 15)))
-    )
-
-    def on_mouse_motion(x, y, dx, dy, *args):
-        pass
-    win.on_mouse_motion = on_mouse_motion
-
-    def on_update(dt):
-        cont.update(dt)
-    win.on_update = on_update
-
-    def on_draw():
-        win.clear()
-        proj.use()
-        sprites.draw(pixelated=True)
-    win.on_draw = on_draw
-
-    win.run()
-
-
-if __name__ == '__main__':
-    fps_test()

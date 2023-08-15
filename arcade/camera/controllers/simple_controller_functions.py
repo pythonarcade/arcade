@@ -50,7 +50,8 @@ def rotate_around_up(data: CameraData, angle: float):
 
 
 def rotate_around_right(data: CameraData, angle: float):
-    _right = tuple(Vec3(*data.forward).cross(*data.up))
+    _crossed_vec = Vec3(*data.forward).cross(*data.up)
+    _right: Tuple[float, float, float] = (_crossed_vec.x, _crossed_vec.y, _crossed_vec.z)
     data.forward = quaternion_rotation(_right, data.forward, angle)
     data.up = quaternion_rotation(_right, data.up, angle)
 
