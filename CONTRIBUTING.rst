@@ -128,6 +128,7 @@ Automatic Rebuild with Live Reload
 You can build & preview documentation locally using the following steps.
 
 Run the doc build to build the web page files, and host a webserver to preview:
+
 .. code-block:: shell
 
     python make.py serve
