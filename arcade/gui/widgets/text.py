@@ -23,7 +23,6 @@ from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import RGBA255, Color, RGBOrA255, RGB
 
 
-
 class UILabel(UIWidget):
     """A simple text label. This widget is meant to display user instructions or
     information. This label supports multiline text.
@@ -488,8 +487,10 @@ class UITextArea(UIWidget):
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.
         # Measured in pixels per 'click'
-        self.scroll_speed = scroll_speed if scroll_speed is not None \
-                            else font_size
+        self.scroll_speed = (
+            scroll_speed if scroll_speed is not None
+            else font_size
+        )
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(
@@ -551,7 +552,7 @@ class UITextArea(UIWidget):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                self.layout.view_y += event.scroll_y * self.scroll_speed
+                self.layout.view_y += event.scroll_y * self.scroll_speed   # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
                 self.trigger_full_render()
 
         if super().on_event(event):
