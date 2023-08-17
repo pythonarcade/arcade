@@ -11,7 +11,16 @@ if TYPE_CHECKING:
 
 class ScreenShaker2D:
     """
-    Uses the equation Ae^{-fx}sin(v 2 pi x) to create shake effect which falls off over time.
+    Uses the equation Ae^{-fx}sin(v 2 pi x) to create shake effect which lessens over time.
+    The shaking can be started with using the Start method. Every value has a default,
+    and a temporary value. The temporary values are reset every time the animation
+    is started. To stop the animation call stop or stop_in. These do not instantly
+    stop the animation, but rather change the animation curve to have a smoother stop.
+    The animation also has a jitter value in degrees which is how much to rotate the
+    shake direction each oscillation.
+
+    If you want the shaking to stay the same intensity and then quickly stop it is easiest
+    to set the falloff to 0.0, and then call stop when you want the shaking to stop.
 
     where:
         A is the amplitude (size)
@@ -19,6 +28,16 @@ class ScreenShaker2D:
         v is the speed
         x is the time since start
         e is euler's constant
+
+
+    Args:
+        camera_data: The Camera Data to manipulate.
+        window: The Arcade Window, uses currently active by default.
+        default_shake_size: The maximum distance away from the starting position (Equal to A).
+        default_shake_falloff: The rate that the screen shake weakens (Equal to f).
+        default_shake_speed: The speed or frequency of oscillations (Equal to v).
+        default_shake_jitter: The max angle that the shake direction can change by.
+        default_shake_direction: The direction the oscillations follow.
     """
 
     stop_range: float = 0.1
