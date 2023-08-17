@@ -723,8 +723,9 @@ class Window(pyglet.window.Window):
         :param View new_view: View to show
         """
         if not isinstance(new_view, View):
-            raise ValueError("Must pass an arcade.View object to "
-                             f"Window.show_view() {type(new_view)}")
+            raise TypeError(
+                f"Window.show_view() takes an arcade.View,"
+                f"but it got a {type(new_view)}.")
 
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
