@@ -49,13 +49,13 @@ class UsageAttempt(arcade.Window):
         text_sprite = arcade.create_text_sprite(
             "First line\nsecond line",
             multiline=True,
-            width=200,
+            width=100,
         )
         text_sprite.position = self.width // 2, self.height // 2
         self.sprites.append(text_sprite)
 
         self._label = pyglet.text.Label(
-            text="First line\nsecond line\nTHIRD NIGER",
+            text="First line\nsecond line\nTHIRD Line",
             x = 200,
             y = 200,
             font_name="Arial",
