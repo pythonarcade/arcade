@@ -1,4 +1,4 @@
-# TODO: Are 2D and 3D versions of a very simple controller
+# TODO: Add 2D and 3D versions of a polled input controller
 #  intended to be used for debugging.
 from typing import TYPE_CHECKING, Tuple, Optional
 from copy import deepcopy

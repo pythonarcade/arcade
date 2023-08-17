@@ -24,7 +24,7 @@ class IsometricCameraController:
         self._up: Tuple[float, float, float] = up
         self._right: Tuple[float, float, float] = right
 
-    def update_position(self):
+    def update_camera(self):
         # Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         _pos_rads = radians(26.565 if self._pixel_angle else 30.0)
         _c, _s = cos(_pos_rads), sin(_pos_rads)

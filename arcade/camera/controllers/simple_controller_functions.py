@@ -50,7 +50,9 @@ def rotate_around_up(data: CameraData, angle: float):
 
 
 def rotate_around_right(data: CameraData, angle: float):
-    _crossed_vec = Vec3(*data.forward).cross(*data.up)
+    _forward = Vec3(data.forward[0], data.forward[1], data.forward[2])
+    _up = Vec3(data.up[0], data.up[1], data.up[2])
+    _crossed_vec = _forward.cross(_up)
     _right: Tuple[float, float, float] = (_crossed_vec.x, _crossed_vec.y, _crossed_vec.z)
     data.forward = quaternion_rotation(_right, data.forward, angle)
     data.up = quaternion_rotation(_right, data.up, angle)
@@ -128,4 +130,3 @@ def simple_easing_2D(percent: float,
     """
 
     simple_easing(percent, start + (0,), target + (0,), data, func)
-

@@ -51,7 +51,6 @@ class Camera2D:
     :param ProjectionData projection_data: A data class which holds all the data needed to define the projection of
                                            the camera.
     """
-    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
@@ -116,7 +115,6 @@ class Camera2D:
         If you use any of the built-in arcade camera-controllers
         or make your own this is the property to access.
         """
-        # TODO: Do not add setter
         return self._data
 
     @property
@@ -134,7 +132,6 @@ class Camera2D:
         most use cases will only change the projection
         on screen resize.
         """
-        # TODO: Do not add setter
         return self._projection
 
     @property

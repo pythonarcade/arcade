@@ -137,7 +137,7 @@ class ArcadeContext(Context):
         # renders a quad (without projection) with a single 4-component texture.
         self.utility_textured_quad_program: Program = self.load_program(
             vertex_shader=":system:shaders/util/textured_quad_vs.glsl",
-            fragment_shader=":system:shaders/collision/textured_quad_fs.glsl",
+            fragment_shader=":system:shaders/util/textured_quad_fs.glsl",
         )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----

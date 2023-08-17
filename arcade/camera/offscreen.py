@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 class OffScreenSpace:
     _geometry: Optional[Geometry] = quad_2d_fs()
 
+    # TODO: Doc String
+
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  size: Optional[Tuple[int, int]] = None,
