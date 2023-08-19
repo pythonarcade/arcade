@@ -49,7 +49,7 @@ jobs:
       - name: build-docs
         run: |
           sphinx-build doc build -W
-      # Prepare the Pull Request Payload artifact. If this fails, we
+      # Prepare the Pull Request Payload artifact. If this fails,
       # we fail silently using the `continue-on-error` option. It's
       # nice if this succeeds, but if it fails for any reason, it
       # does not mean that our lint-test checks failed.
