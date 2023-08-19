@@ -1,4 +1,4 @@
-# This mainly tests to make sure the build docs work
+# This does code inspection and checks to make sure building of docs works
 
 name: GitHub Ubuntu test
 
