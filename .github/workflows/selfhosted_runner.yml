@@ -36,8 +36,7 @@ jobs:
       - name: Install dependencies part 2
         run: |
           source .venv/bin/activate
-          python -m pip install -I -e .[dependencies]
-          python -m pip install pytest typer[all]==0.7.0
+          python -m pip install -I -e .[dev]
       - name: code-inspection
         run: | 
           source .venv/bin/activate
