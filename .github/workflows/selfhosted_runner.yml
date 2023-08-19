@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies part 2
         run: |
           source .venv/bin/activate
-        # python -m pip install -I -e .[dev]
+          python -m pip install -I -e .
       - name: Test with pytest
         run: |
           source .venv/bin/activate
