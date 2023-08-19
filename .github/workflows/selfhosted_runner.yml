@@ -1,3 +1,4 @@
+# This is our full unit tests
 name: Windows self-hosted test
 
 on:
@@ -16,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
         architecture: ['x64']
 
     steps:
@@ -32,7 +33,6 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install -U pip wheel setuptools
-          python -m pip install pyogg pymunk
       - name: Install dependencies part 2
         run: |
           source .venv/bin/activate
