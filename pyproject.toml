@@ -47,7 +47,7 @@ dev = [
     "pytest-mock",
     "pytest-cov",
     "pygments==2.16.1",
-    "docutils==0.19",
+    "docutils==0.20.1",
     "furo",
     "pyright==1.1.322",
     "pyyaml==6.0.1",
