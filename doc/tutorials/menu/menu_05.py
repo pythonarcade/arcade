@@ -3,6 +3,8 @@ Menu.
 
 Shows the usage of almost every gui widget, switching views and making a modal.
 """
+from typing import List
+
 import arcade
 import arcade.gui
 
@@ -155,7 +157,7 @@ class MenuView(arcade.View):
 class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     """Acts like a fake view/window."""
 
-    def __init__(self, title: str, input_text: str, toggle_label: str, dropdown_options: list, slider_label: str):
+    def __init__(self, title: str, input_text: str, toggle_label: str, dropdown_options: List[str], slider_label: str):
         super().__init__(size_hint=(1, 1))
 
         # Setup frame which will act like the window.
