@@ -10,7 +10,7 @@ on:
 jobs:
 
   verifytypes:
-    name: verifytypes
+    name: Verify types
     runs-on: ubuntu-latest
 
     steps:
