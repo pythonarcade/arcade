@@ -64,6 +64,7 @@ dev2 = [
     "pytest",
     "pytest-mock",
     "pytest-cov",
+    "typer[all]==0.7.0",
 ]
 
 [project.scripts]
