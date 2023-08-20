@@ -1,6 +1,6 @@
 # This is our full unit tests
 # Self-hosted, run on an old notebook
-name: Unit tests
+name: Unit testing
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 jobs:
 
   build:
-    name: Unit Testing
+    name: Unit tests
     runs-on: self-hosted
 
     strategy:

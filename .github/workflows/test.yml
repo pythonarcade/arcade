@@ -1,6 +1,6 @@
 # This does code inspection and checks to make sure building of docs works
 
-name: GitHub action tests
+name:  Code inspections
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 jobs:
 
   build:
-    name: test
+    name: Code inspections
     runs-on: ${{ matrix.os }}
 
     strategy:
