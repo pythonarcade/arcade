@@ -1,5 +1,6 @@
 # This is our full unit tests
-name: Windows self-hosted test
+# Self-hosted, run on an old notebook
+name: Unit tests
 
 on:
   push:
@@ -11,7 +12,7 @@ on:
 jobs:
 
   build:
-    name: Self Hosted Testing
+    name: Unit Testing
     runs-on: self-hosted
 
     strategy:
