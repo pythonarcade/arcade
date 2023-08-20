@@ -37,6 +37,7 @@ Source = "https://github.com/pythonarcade/arcade"
 Book = "https://learn.arcade.academy"
 
 [project.optional-dependencies]
+# Used for dev work
 dev = [
     "pytest",
     "mypy",
@@ -46,7 +47,7 @@ dev = [
     "pytest-mock",
     "pytest-cov",
     "pygments==2.16.1",
-    "docutils==0.20.1",
+    "docutils==0.19",
     "furo",
     "pyright==1.1.322",
     "pyyaml==6.0.1",
@@ -58,11 +59,11 @@ dev = [
     "typer[all]==0.7.0",
     "wheel",
 ]
+# Testing only
 dev2 = [
     "pytest",
     "pytest-mock",
     "pytest-cov",
-    "wheel",
 ]
 
 [project.scripts]
