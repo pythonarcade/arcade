@@ -51,7 +51,7 @@ dev = [
     "furo",
     "pyright==1.1.322",
     "pyyaml==6.0.1",
-    "sphinx==7.1.2",
+    "sphinx==7.2.2",
     "sphinx-autobuild==2021.3.14",
     "sphinx-copybutton==0.5.2",
     # Intentionally kept at 2.3 until this bugfix is published: https://github.com/jdillard/sphinx-sitemap/pull/62
