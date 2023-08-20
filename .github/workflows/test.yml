@@ -1,6 +1,6 @@
 # This does code inspection and checks to make sure building of docs works
 
-name:  Code inspections
+name:  GitHub based tests
 
 on:
   push:
@@ -48,9 +48,6 @@ jobs:
         if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
         run: | 
           python ./make.py ruff
-      - name: build-docs
-        run: |
-          sphinx-build doc build -W
       # Prepare the Pull Request Payload artifact. If this fails,
       # we fail silently using the `continue-on-error` option. It's
       # nice if this succeeds, but if it fails for any reason, it
@@ -74,7 +71,7 @@ jobs:
           path: pull_request_payload.json
 
   builddoc:
-    name: Documentation test
+    name: Documentation build test
     runs-on: ${{ matrix.os }}
 
     strategy:
