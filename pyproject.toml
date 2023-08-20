@@ -50,7 +50,7 @@ dev = [
     "docutils==0.19",
     "furo",
     "pyright==1.1.322",
-    "pyyaml==6.0",
+    "pyyaml==6.0.1",
     "sphinx==7.1.2",
     "sphinx-autobuild==2021.3.14",
     "sphinx-copybutton==0.5.2",
@@ -60,13 +60,12 @@ dev = [
     "wheel",
 ]
 # Testing only
-dev2 = [
+testing_libraries = [
     "pytest",
     "pytest-mock",
     "pytest-cov",
-    "pyyaml==6.0",
+    "pyyaml==6.0.1",
     "typer[all]==0.7.0",
-    "wheel",
 ]
 
 [project.scripts]
