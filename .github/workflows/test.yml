@@ -36,6 +36,18 @@ jobs:
         id: wheel
         run: |
           python -m pip install -e .[dev]
+      - name: "code-inspection: mypy"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
+        run: | 
+          python ./make.py mypy
+      - name: "code-inspection: pyright"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
+        run: | 
+          python ./make.py pyright
+      - name: "code-inspection: ruff"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
+        run: | 
+          python ./make.py ruff
       - name: build-docs
         run: |
           sphinx-build doc build -W
@@ -61,8 +73,8 @@ jobs:
           name: pull-request-payload
           path: pull_request_payload.json
 
-  docbuild:
-    name: Test building documents
+  builddoc:
+    name: Documentation test
     runs-on: ${{ matrix.os }}
 
     strategy:
