@@ -8,6 +8,11 @@ sphinx:
 python:
   # If you change this, you also need to update .github/workflows/test.yml
   # to make sure doc test builds run on the same version.
+  #
+  # Why 3.9?
+  #  1. It's the lowest version compatible w/ Sphinx 7.2.2, a doc build dependency
+  #  2. Better doc build accessibility for contributors who may have trouble
+  #     setting up newer Python versions (Debian, etc).
   version: 3.9
   install:
     - method: pip
