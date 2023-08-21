@@ -6,6 +6,8 @@ sphinx:
   configuration: doc/conf.py
 
 python:
+  # If you change this, you also need to update .github/workflows/test.yml
+  # to make sure doc test builds run on the same version.
   version: 3.9
   install:
     - method: pip
