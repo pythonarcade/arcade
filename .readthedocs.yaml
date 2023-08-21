@@ -6,7 +6,7 @@ sphinx:
   configuration: doc/conf.py
 
 python:
-  version: 3.8
+  version: 3.9
   install:
     - method: pip
       path: .
