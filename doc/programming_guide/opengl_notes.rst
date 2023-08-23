@@ -1,7 +1,7 @@
 .. _open_gl_notes:
 
-OpenGL Notes
-============
+OpenGL
+======
 
 Arcade is using OpenGL for the underlying rendering. OpenGL
 functionality is given to use through pyglet when a window
