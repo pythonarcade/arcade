@@ -32,7 +32,7 @@ Then, perform the following steps:
 #. Run `pip install -e .[dev]` to perform a dev install.
 
 
-Then you can improve these parts of the project:
+Afterwards, you can improve these parts of the project:
 
 * **Document** - Edit the reStructuredText_ and docstrings_ to make the Arcade
   documentation better.
