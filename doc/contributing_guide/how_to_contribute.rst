@@ -23,6 +23,15 @@ First, take some time to understand the project layout:
 * :ref:`how-to-compile`
 * :ref:`how-to-submit-changes`
 
+
+Then, perform the following steps:
+
+#. Make sure you have Python 3.9+ installed rather than 3.8+ to meet
+   dev tool requirements.
+#. Make a virtual environment.
+#. Run `pip install -e .[dev]` to perform a dev install.
+
+
 Then you can improve these parts of the project:
 
 * **Document** - Edit the reStructuredText_ and docstrings_ to make the Arcade
