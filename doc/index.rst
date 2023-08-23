@@ -11,7 +11,7 @@ The Python Arcade Library
 
 ..
    Wrapped in raw html to avoid repeating twice in the PDF, since this blurb is
-   repeated in `about/introduction.rst`
+   repeated in `get_started/introduction.rst`
 .. raw:: html
 
    <p>
