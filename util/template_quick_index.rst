@@ -19,8 +19,8 @@
 
 .. _quick_index:
 
-Index
-=====
+API Index
+=========
 
 * :ref:`color`
 * :ref:`csscolor`

@@ -118,7 +118,7 @@ The Python Arcade Library
    :maxdepth: 1
    :caption: API
 
-   api_docs/api/quick_index
+   Index<api_docs/api/quick_index>
    Reference<api_docs/arcade>
    api_docs/resources
 
