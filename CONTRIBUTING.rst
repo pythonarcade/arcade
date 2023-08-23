@@ -42,9 +42,12 @@ The rest of the guide will help you get to this point & explain how to test in m
 Requirements
 ------------
 
-This guide assumes you've already done the following:
+Although using arcade only requires Python 3.8 or higher, development
+currently requires 3.9 or higher.
 
-1. `Installed python with pip <https://wiki.python.org/moin/BeginnersGuide/Download>`_
+The rest of this guide assumes you've already done the following:
+
+1. `Installed Python 3.9+ with pip <https://wiki.python.org/moin/BeginnersGuide/Download>`_
 2. `Installed git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
 3. `Forked the repo on GitHub <https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository>`_
 4. `Cloned your fork locally <https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository>`_
