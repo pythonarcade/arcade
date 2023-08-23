@@ -45,10 +45,10 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Get Started
 
-   about/introduction
-   programming_guide/get_started
-   programming_guide/install/index
-   programming_guide/how_to_get_help
+   get_started/introduction
+   get_started/get_started
+   get_started/install/index
+   get_started/how_to_get_help
 
 .. image:: images/example_code.svg
    :alt: Example Code
@@ -79,6 +79,7 @@ game without learning a complex framework.
    tutorials/compiling_with_nuitka/index
    tutorials/shader_tutorials
    tutorials/menu/index
+   tutorials/framebuffer/index
 
 .. image:: images/example_games.svg
    :alt: Programming guide icon
@@ -97,7 +98,6 @@ game without learning a complex framework.
    programming_guide/edge_artifacts/index
    programming_guide/logging
    programming_guide/opengl_notes
-   tutorials/framebuffer/index
    programming_guide/performance_tips
    programming_guide/headless
    programming_guide/vsync
