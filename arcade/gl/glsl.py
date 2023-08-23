@@ -24,11 +24,11 @@ class ShaderSource:
     NOTE: We do assume the source is neat enough to be parsed
     this way and don't contain several statements on one line.
 
-    :param Context ctx: The context this framebuffer belongs to
-    :param str source: The source code
+    :param ctx: The context this framebuffer belongs to
+    :param source: The source code
     :common List[str] common: Common source code to inject
-    :param int source_type: The shader type
-    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
+    :param source_type: The shader type
+    :param depth_attachment: A depth attachment (optional)
     """
     def __init__(
         self,
@@ -97,7 +97,7 @@ class ShaderSource:
     def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
         """Return the shader source
 
-        :param dict defines: Defines to replace in the source.
+        :param defines: Defines to replace in the source.
         """
         if not defines:
             return "\n".join(self._lines)
@@ -129,8 +129,8 @@ class ShaderSource:
     def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
         """Locate and apply #define values
 
-        :param List[str] lines: List of source lines
-        :param dict defines: dict with ``name: value`` pairs.
+        :param lines: List of source lines
+        :param defines: dict with ``name: value`` pairs.
         """
         for nr, line in enumerate(lines):
             line = line.strip()

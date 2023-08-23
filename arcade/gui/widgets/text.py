@@ -35,28 +35,28 @@ class UILabel(UIWidget):
     By default, a label will fit its initial content. If the text is changed use
     :py:meth:`~arcade.gui.UILabel.fit_content` to adjust the size.
 
-    :param float x: x position (default anchor is bottom-left).
-    :param float y: y position (default anchor is bottom-left).
-    :param float width: Width of the label. Defaults to text width if not
+    :param x: x position (default anchor is bottom-left).
+    :param y: y position (default anchor is bottom-left).
+    :param width: Width of the label. Defaults to text width if not
                         specified. See
                         :py:meth:`~pyglet.text.layout.TextLayout.content_width`.
-    :param float height: Height of the label. Defaults to text height if not
+    :param height: Height of the label. Defaults to text height if not
                          specified. See
                          :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
-    :param str text: Text displayed on the label.
+    :param text: Text displayed on the label.
     :param font_name: A list of fonts to use. Arcade will start at the beginning
                       of the tuple and keep trying to load fonts until success.
-    :param float font_size: Font size of font.
-    :param RGBA255 text_color: Color of the text.
-    :param bool bold: If enabled, the label's text will be in a **bold** style.
-    :param bool italic: If enabled, the label's text will be in an *italic*
+    :param font_size: Font size of font.
+    :param text_color: Color of the text.
+    :param bold: If enabled, the label's text will be in a **bold** style.
+    :param italic: If enabled, the label's text will be in an *italic*
                         style.
-    :param bool stretch: Stretch font style.
-    :param str align: Horizontal alignment of text on a line. This only applies
+    :param stretch: Stretch font style.
+    :param align: Horizontal alignment of text on a line. This only applies
                       if a width is supplied. Valid options include ``"left"``,
                       ``"center"`` or ``"right"``.
-    :param float dpi: Resolution of the fonts in the layout. Defaults to 96.
-    :param bool multiline: If enabled, a ``\\n`` will start a new line. A
+    :param dpi: Resolution of the fonts in the layout. Defaults to 96.
+    :param multiline: If enabled, a ``\\n`` will start a new line. A
                            :py:class:`~arcade.gui.UITextWidget` with
                            ``multiline`` of True is the same thing as
                            a :py:class:`~arcade.gui.UITextArea`.
@@ -266,8 +266,8 @@ class UIInputText(UIWidget):
     around the caret. Arcade confirms that the field is active before allowing
     users to type, so it is okay to have multiple of these.
 
-    :param float x: x position (default anchor is bottom-left).
-    :param float y: y position (default anchor is bottom-left).
+    :param x: x position (default anchor is bottom-left).
+    :param y: y position (default anchor is bottom-left).
     :param width: Width of the text field.
     :param height: Height of the text field.
     :param text: Initial text displayed. This can be modified later
@@ -440,8 +440,8 @@ class UITextArea(UIWidget):
     A text area that allows users to view large documents of text by scrolling
     the mouse.
 
-    :param float x: x position (default anchor is bottom-left).
-    :param float y: y position (default anchor is bottom-left).
+    :param x: x position (default anchor is bottom-left).
+    :param y: y position (default anchor is bottom-left).
     :param width: Width of the text area.
     :param height: Height of the text area.
     :param text: Initial text displayed.

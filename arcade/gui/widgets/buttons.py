@@ -34,17 +34,17 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
 
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: width of widget. Defaults to texture width if not specified.
-    :param float height: height of widget. Defaults to texture height if not specified.
-    :param Texture texture: texture to display for the widget.
-    :param Texture texture_hovered: different texture to display if mouse is hovering over button.
-    :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
-    :param str text: text to add to the button.
-    :param bool multiline: allows to wrap text, if not enough width available
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
+    :param width: width of widget. Defaults to texture width if not specified.
+    :param height: height of widget. Defaults to texture height if not specified.
+    :param texture: texture to display for the widget.
+    :param texture_hovered: different texture to display if mouse is hovering over button.
+    :param texture_pressed: different texture to display if mouse button is pressed while hovering over button.
+    :param text: text to add to the button.
+    :param multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button for different states.
-    :param float scale: scale the button, based on the base texture size.
+    :param scale: scale the button, based on the base texture size.
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
@@ -226,12 +226,12 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: width of widget. Defaults to texture width if not specified.
-    :param float height: height of widget. Defaults to texture height if not specified.
-    :param str text: text to add to the button.
-    :param bool multiline: allows to wrap text, if not enough width available
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
+    :param width: width of widget. Defaults to texture width if not specified.
+    :param height: height of widget. Defaults to texture height if not specified.
+    :param text: text to add to the button.
+    :param multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button
 
     """

@@ -39,9 +39,9 @@ class Framebuffer:
             ]
         )
 
-    :param Context ctx: The context this framebuffer belongs to
-    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
-    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
+    :param ctx: The context this framebuffer belongs to
+    :param color_attachments: List of color attachments.
+    :param depth_attachment: A depth attachment (optional)
     """
 
     #: Is this the default framebuffer? (window buffer)
@@ -321,7 +321,7 @@ class Framebuffer:
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all rendering commands
 
-        :param bool force: Force the framebuffer binding even if the system
+        :param force: Force the framebuffer binding even if the system
                            already believes it's already bound.
         """
         self._use(force=force)
@@ -366,9 +366,9 @@ class Framebuffer:
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param tuple color: A 3 or 4 component tuple containing the color
-        :param float depth: Value to clear the depth buffer (unused)
-        :param bool normalized: If the color values are normalized or not
+        :param color: A 3 or 4 component tuple containing the color
+        :param depth: Value to clear the depth buffer (unused)
+        :param normalized: If the color values are normalized or not
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
@@ -409,10 +409,10 @@ class Framebuffer:
         """
         Read framebuffer pixels
 
-        :param Tuple[int,int,int,int] viewport: The x, y, with, height to read
-        :param int components:
-        :param int attachment: The attachment id to read from
-        :param str dtype: The data type to read
+        :param viewport: The x, y, with, height to read
+        :param components:
+        :param attachment: The attachment id to read from
+        :param dtype: The data type to read
         :return: pixel data as a bytearray
         """
         # TODO: use texture attachment info to determine read format?

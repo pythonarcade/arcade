@@ -57,7 +57,7 @@ class AnimatedTimeBasedSprite(Sprite):
         """
         Logic for updating the animation.
 
-        :param float delta_time: Time since last update.
+        :param delta_time: Time since last update.
         """
         self.time_counter += delta_time
         while self.time_counter > self.frames[self.cur_frame_idx].duration / 1000.0:
@@ -116,7 +116,7 @@ class AnimatedWalkingSprite(Sprite):
         """
         Logic for texture animation.
 
-        :param float delta_time: Time since last update.
+        :param delta_time: Time since last update.
         """
         x1 = self.center_x
         x2 = self.last_texture_change_center_x

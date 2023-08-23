@@ -25,12 +25,12 @@ class UIDropdown(UILayout):
         def on_change(event: UIOnChangeEvent):
             print(event.old_value, event.new_value)
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: Width of each of the option.
-    :param float height: Height of each of the option.
-    :param str default: The default value shown.
-    :param list[str] options: The options displayed when the layout is clicked.
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
+    :param width: Width of each of the option.
+    :param height: Height of each of the option.
+    :param default: The default value shown.
+    :param options: The options displayed when the layout is clicked.
     :param style: Used to style the dropdown.
     """
     DIVIDER = None

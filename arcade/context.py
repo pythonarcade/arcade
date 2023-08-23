@@ -35,8 +35,8 @@ class ArcadeContext(Context):
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
 
-    :param pyglet.window.Window window: The pyglet window
-    :param str gc_mode: The garbage collection mode for opengl objects.
+    :param window: The pyglet window
+    :param gc_mode: The garbage collection mode for opengl objects.
                         ``auto`` is just what we would expect in python
                         while ``context_gc`` (default) requires you to call ``Context.gc()``.
                         The latter can be useful when using multiple threads when
@@ -367,17 +367,17 @@ class ArcadeContext(Context):
                 fragment_shader="frag.glsl",
             )
 
-        :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
-        :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
-        :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
-        :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
-        :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
-        :param List[Union[str,pathlib.Path]] common: Common files to be included in all shaders
-        :param dict defines: Substitute ``#define`` values in the source
-        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+        :param vertex_shader: path to vertex shader
+        :param fragment_shader: path to fragment shader (optional)
+        :param geometry_shader: path to geometry shader (optional)
+        :param tess_control_shader: Tessellation Control Shader
+        :param tess_evaluation_shader: Tessellation Evaluation Shader
+        :param common: Common files to be included in all shaders
+        :param defines: Substitute ``#define`` values in the source
+        :param varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
                                                  but some more complex out structures we can't detect.
-        :param str varyings_capture_mode: The capture mode for transforms.
+        :param varyings_capture_mode: The capture mode for transforms.
                                           ``"interleaved"`` means all out attribute will be written to a single buffer.
                                           ``"separate"`` means each out attribute will be written separate buffers.
                                           Based on these settings the `transform()` method will accept a single
@@ -430,8 +430,8 @@ class ArcadeContext(Context):
 
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
-        :param Union[str,pathlib.Path] path: Path to texture
-        :param Iterable[Union[str,pathlib.Path]] common: Common source injected into compute shader
+        :param path: Path to texture
+        :param common: Common source injected into compute shader
         """
         from arcade.resources import resolve
         path = resolve(path)
@@ -459,9 +459,9 @@ class ArcadeContext(Context):
             # Load a texture using Arcade resource handle
             texture = window.ctx.load_texture(":textures:background.png")
 
-        :param Union[str,pathlib.Path] path: Path to texture
-        :param bool flip: Flips the image upside down
-        :param bool build_mipmaps: Build mipmaps for the texture
+        :param path: Path to texture
+        :param flip: Flips the image upside down
+        :param build_mipmaps: Build mipmaps for the texture
         """
         from arcade.resources import resolve
 
@@ -494,7 +494,7 @@ class ArcadeContext(Context):
 
             #include :my_shader:lib/common.glsl
 
-        :param str source: Shader
+        :param source: Shader
         """
         from arcade.resources import resolve
         lines = source.splitlines()
@@ -514,9 +514,9 @@ class ArcadeContext(Context):
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
 
-        :param Framebuffer fbo: Framebuffer to get image from
-        :param int components: Number of components to read
-        :param bool flip: Flip the image upside down
+        :param fbo: Framebuffer to get image from
+        :param components: Number of components to read
+        :param flip: Flip the image upside down
         """
         mode = "RGBA"[:components]
         image = Image.frombuffer(

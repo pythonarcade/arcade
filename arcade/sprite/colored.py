@@ -24,14 +24,14 @@ class SpriteSolidColor(Sprite):
     sprite type, so concerns about memory usage non-existent regardless
     of size or number of sprite variations.
 
-    :param int width: Width of the sprite in pixels
-    :param int height: Height of the sprite in pixels
-    :param float center_x: Initial x position of the sprite
-    :param float center_y: Initial y position of the sprite
-    :param ColorLike color: The color of the sprite as a
+    :param width: Width of the sprite in pixels
+    :param height: Height of the sprite in pixels
+    :param center_x: Initial x position of the sprite
+    :param center_y: Initial y position of the sprite
+    :param color: The color of the sprite as a
         :py:class:`~arcade.types.Color`, an RGBA tuple, or an RGB
         tuple.
-    :param float angle: Initial angle of the sprite in degrees
+    :param angle: Initial angle of the sprite in degrees
     """
 
     __slots__ = ()
@@ -85,9 +85,9 @@ class SpriteCircle(Sprite):
     ``True``. The circle will fade from an opaque center to transparent
     at the edges.
 
-    :param int radius: Radius of the circle in pixels
-    :param Color color: The Color of the sprite as an RGB or RGBA tuple
-    :param bool soft: If ``True``, the circle will fade from an opaque
+    :param radius: Radius of the circle in pixels
+    :param color: The Color of the sprite as an RGB or RGBA tuple
+    :param soft: If ``True``, the circle will fade from an opaque
                       center to transparent edges.
     """
 

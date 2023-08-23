@@ -34,12 +34,12 @@ def load_texture(
     specify a sub-rectangle of the image to load. If not specified, the
     entire image is loaded.
 
-    :param str file_name: Name of the file to that holds the texture.
-    :param int x: X coordinate of the texture in the image.
-    :param int y: Y coordinate of the texture in the image.
-    :param int width: Width of the texture in the image.
-    :param int height: Height of the texture in the image.
-    :param str hit_box_algorithm:
+    :param file_name: Name of the file to that holds the texture.
+    :param x: X coordinate of the texture in the image.
+    :param y: Y coordinate of the texture in the image.
+    :param width: Width of the texture in the image.
+    :param height: Height of the texture in the image.
+    :param hit_box_algorithm:
     :returns: New :class:`Texture` object.
     :raises: ValueError
     """
@@ -69,12 +69,12 @@ def _load_tilemap_texture(
     specify a sub-rectangle of the image to load. If not specified, the
     entire image is loaded.
 
-    :param str file_name: Name of the file to that holds the texture.
-    :param int x: X coordinate of the texture in the image.
-    :param int y: Y coordinate of the texture in the image.
-    :param int width: Width of the texture in the image.
-    :param int height: Height of the texture in the image.
-    :param str hit_box_algorithm:
+    :param file_name: Name of the file to that holds the texture.
+    :param x: X coordinate of the texture in the image.
+    :param y: Y coordinate of the texture in the image.
+    :param width: Width of the texture in the image.
+    :param height: Height of the texture in the image.
+    :param hit_box_algorithm:
     :returns: New :class:`Texture` object.
     :raises: ValueError
     """
@@ -136,8 +136,8 @@ def _load_or_get_image(
     """
     Load an image, or return a cached version
 
-    :param str file_path: Path to image
-    :param str hit_box_algorithm: The hit box algorithm
+    :param file_path: Path to image
+    :param hit_box_algorithm: The hit box algorithm
     :param hash: Hash of the image
     :return: Tuple of image data and a boolean indicating if the image
              was fetched from cache
@@ -169,8 +169,8 @@ def load_texture_pair(
     Load a texture pair, with the second being a mirror image of the first.
     Useful when doing animations and the character can face left/right.
 
-    :param str file_name: Path to texture
-    :param str hit_box_algorithm: The hit box algorithm
+    :param file_name: Path to texture
+    :param hit_box_algorithm: The hit box algorithm
     """
     LOG.info("load_texture_pair: %s ", file_name)
     texture = load_texture(file_name, hit_box_algorithm=hit_box_algorithm)
@@ -196,13 +196,13 @@ def load_textures(
     left, see:
     http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
-    :param str file_name: Name of the file.
-    :param List image_location_list: List of image sub-locations. Each rectangle should be
+    :param file_name: Name of the file.
+    :param image_location_list: List of image sub-locations. Each rectangle should be
            a `List` of four floats: `[x, y, width, height]`.
-    :param bool mirrored: If set to `True`, the image is mirrored left to right.
-    :param bool flipped: If set to `True`, the image is flipped upside down.
-    :param str hit_box_algorithm: One of None, 'None', 'Simple' (default) or 'Detailed'.
-    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+    :param mirrored: If set to `True`, the image is mirrored left to right.
+    :param flipped: If set to `True`, the image is flipped upside down.
+    :param hit_box_algorithm: One of None, 'None', 'Simple' (default) or 'Detailed'.
+    :param hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
     :returns: List of :class:`Texture`'s.
 
     :raises: ValueError
@@ -261,13 +261,13 @@ def load_spritesheet(
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> List[Texture]:
     """
-    :param str file_name: Name of the file to that holds the texture.
-    :param int sprite_width: Width of the sprites in pixels
-    :param int sprite_height: Height of the sprites in pixels
-    :param int columns: Number of tiles wide the image is.
-    :param int count: Number of tiles in the image.
-    :param int margin: Margin between images
-    :param str hit_box_algorithm: The hit box algorithm
+    :param file_name: Name of the file to that holds the texture.
+    :param sprite_width: Width of the sprites in pixels
+    :param sprite_height: Height of the sprites in pixels
+    :param columns: Number of tiles wide the image is.
+    :param count: Number of tiles in the image.
+    :param margin: Margin between images
+    :param hit_box_algorithm: The hit box algorithm
     :returns List: List of :class:`Texture` objects.
     """
     LOG.info("load_spritesheet: %s ", file_name)
