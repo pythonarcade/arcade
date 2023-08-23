@@ -1,6 +1,8 @@
 """
 See: https://www.shadertoy.com/view/lsBfRc
 """
+from __future__ import annotations
+
 from arcade.experimental import Shadertoy
 
 

@@ -9,6 +9,8 @@ same, like a window.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.ninepatch
 """
+from __future__ import annotations
+
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIAnchorLayout, UIWidget, NinePatchTexture

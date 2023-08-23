@@ -3,6 +3,8 @@ This submodule has functions that control opening, closing, rendering, and other
 It also has commands for scheduling pauses and scheduling interval functions.
 """
 
+from __future__ import annotations
+
 import gc
 import time
 import os
@@ -194,6 +196,7 @@ def run():
     elif window.headless:
         # We are entering headless more an will emulate an event loop
         import time
+
         # Ensure the initial delta time is not 0 to be
         # more in line with how a normal window works.
         delta_time = window._draw_rate

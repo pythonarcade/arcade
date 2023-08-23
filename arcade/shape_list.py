@@ -5,6 +5,8 @@ This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
+from __future__ import annotations
+
 from array import array
 from collections import OrderedDict
 import itertools

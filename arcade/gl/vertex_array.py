@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import c_void_p, byref
 from typing import Dict, List, Optional, Sequence, TYPE_CHECKING, Union
 import weakref

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED

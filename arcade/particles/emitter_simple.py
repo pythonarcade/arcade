@@ -3,6 +3,8 @@ Convenience functions that provide a much simpler interface to Emitters and Part
 
 These trade away some flexibility in favor of simplicity to allow beginners to start using particle systems.
 """
+from __future__ import annotations
+
 import random
 
 from typing import Sequence, Type

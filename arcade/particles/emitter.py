@@ -2,6 +2,8 @@
 Emitter - Invisible object that determines when Particles are emitted, actually emits them, and manages them
 over their lifetime
 """
+from __future__ import annotations
+
 import arcade
 from .particle import Particle
 from typing import Optional, Callable, cast

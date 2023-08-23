@@ -3,6 +3,8 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.02_draw_sprites
 """
+from __future__ import annotations
+
 import arcade
 
 # Constants

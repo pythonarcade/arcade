@@ -11,6 +11,8 @@ Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
+from __future__ import annotations
+
 import copy
 import math
 import time
@@ -45,8 +47,8 @@ from arcade.texture.transforms import Transform
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
-    from arcade.texture import ImageData
     from arcade.gl import Texture2D
+    from arcade.texture import ImageData
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx

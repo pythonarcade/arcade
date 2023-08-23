@@ -4,6 +4,8 @@ Example showing how to draw text to the screen.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.drawing_text
 """
+from __future__ import annotations
+
 import arcade
 
 SCREEN_WIDTH = 1200

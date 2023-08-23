@@ -12,6 +12,8 @@ can handle very large grids and still have the same performance.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_2
 """
+from __future__ import annotations
+
 import arcade
 
 # Set how many rows and columns we will have

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .base import TextureAtlas
 from .helpers import save_atlas, load_atlas
 

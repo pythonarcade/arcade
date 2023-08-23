@@ -6,6 +6,9 @@ Generate HTML docs
 import runpy
 import sys
 import os
+import sphinx.ext.autodoc
+import sphinx.transforms
+import docutils.nodes
 
 # --- Pre-processing Tasks
 
@@ -26,6 +29,12 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 # }
 
 autodoc_inherit_docstrings = False
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'groupwise',
+    'undoc-members': True,
+    'show-inheritance': True
+}
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
@@ -246,8 +255,37 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
+def on_autodoc_process_bases(app, name, obj, options, bases):
+    # Strip `object` from bases, it's just noise
+    bases[:] = [base for base in bases if base is not object]
+
+class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
+    def add_directive_header(self, sig: str) -> None:
+        r = super().add_directive_header(sig)
+        # Strip empty `Bases: `, will be empty when only superclass is `object`
+        # cuz we remove it earlier
+        strings = self.directive.result
+        if strings[-1] == '   Bases: ':
+            strings.pop()
+        return r
+
+class Transform(sphinx.transforms.SphinxTransform):
+    default_priority = 800
+    def apply(self):
+        self.document.walk(Visitor(self.document))
+class Visitor(docutils.nodes.SparseNodeVisitor):
+    def visit_desc_annotation(self, node):
+        # Remove `property` prefix from properties so they look the same as
+        # attributes
+        if 'property' in node.astext():
+            node.parent.remove(node)
+
+
 def setup(app):
     app.add_css_file("css/custom.css")
+    app.add_autodocumenter(ClassDocumenter)
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
+    app.connect('autodoc-process-bases', on_autodoc_process_bases)
+    app.add_transform(Transform)

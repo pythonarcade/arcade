@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 from random import randint
 from typing import (

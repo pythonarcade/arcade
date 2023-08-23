@@ -1,6 +1,8 @@
 """
 Experimental stuff. API may change.
 """
+from __future__ import annotations
+
 from .video_player import VideoPlayer, VideoPlayerView
 from .texture_render_target import RenderTargetTexture
 from .shadertoy import Shadertoy, ShadertoyBuffer, ShadertoyBase
@@ -20,7 +22,7 @@ __all__ = [
 
 # Keep cv2 an optional dependency
 try:
-    from .video_cv2 import VideoPlayerCV2, CV2PlayerView # noqa: F401
+    from .video_cv2 import CV2PlayerView, VideoPlayerCV2  # noqa: F401
 
     __all__.extend([
         "VideoPlayerCV2",

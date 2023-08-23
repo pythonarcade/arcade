@@ -6,6 +6,8 @@ Use a fireworks display to demonstrate "real-world" uses of Emitters and Particl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.particle_fireworks
 """
+from __future__ import annotations
+
 import random
 import pyglet
 from pyglet.math import Vec2

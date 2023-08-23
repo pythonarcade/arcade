@@ -4,6 +4,8 @@ Example code showing how to create some of the different UIWidgets.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_widgets
 """
+from __future__ import annotations
+
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons

@@ -3,8 +3,9 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-# flake8: noqa: E402
+from __future__ import annotations
 
+# flake8: noqa: E402
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os

@@ -6,6 +6,8 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rooms
 """
+from __future__ import annotations
+
 import arcade
 
 SPRITE_SCALING = 0.5
