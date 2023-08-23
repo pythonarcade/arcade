@@ -58,7 +58,6 @@ titles = {
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
     '__main__.py': ['Misc Utility Functions', 'utility.rst'],
     'utils.py': ['Misc Utility Functions', 'utility.rst'],
-    'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
@@ -102,6 +101,9 @@ titles = {
     'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
+excluded_modules = [
+    'version.py'
+]
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
@@ -211,7 +213,7 @@ def process_directory(directory: Path, quick_index_file):
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
-        elif path_name not in titles:
+        elif path_name not in titles and path_name not in excluded_modules:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
             print(f"No title for '{path_name}'.")
