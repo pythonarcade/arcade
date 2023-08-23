@@ -244,10 +244,6 @@ def process_directory(directory: Path, quick_index_file):
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
-
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
@@ -272,10 +268,6 @@ def process_directory(directory: Path, quick_index_file):
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
-
                 api_file.write(f".. autofunction:: {full_class_name}\n\n")
 
                 # print(f"  Function {item}")
@@ -297,26 +289,6 @@ table_header_arcade = """
    :widths: 50 50
    :header-rows: 1
    :name: quickapi
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_gui = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapigui
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_tiled = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapitiled
    :class: display
 
    * - Name
@@ -350,27 +322,10 @@ def main():
     process_directory(ROOT / "arcade/texture", text_file)
     process_directory(ROOT / "arcade/texture_atlas", text_file)
     process_directory(ROOT / "arcade/text", text_file)
-
-    # text_file.write(f"The ``arcade.gl`` module\n")
-    # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.gui module\n")
-    text_file.write("---------------------\n\n")
-
-    text_file.write(table_header_gui)
-
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.tilemap module\n")
-    text_file.write("-------------------------\n\n")
-
-    text_file.write(table_header_tiled)
-
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
