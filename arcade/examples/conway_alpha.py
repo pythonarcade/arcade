@@ -8,6 +8,8 @@ After installing the "arcade" package version 2.4.4+, this program can be run by
 typing:
 python -m arcade.examples.conway_alpha
 """
+from __future__ import annotations
+
 import arcade
 import random
 

@@ -7,6 +7,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.bloom_defender
 """
 
+from __future__ import annotations
+
 import arcade
 import random
 

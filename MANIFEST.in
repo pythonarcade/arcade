@@ -7,6 +7,7 @@ recursive-include arcade *.typed
 recursive-include arcade/resources *.txt *.md *.url
 recursive-include arcade/resources *.mp3 *.wav *.ogg
 recursive-include arcade/resources *.png *.jpg *.gif
+recursive-include arcade/resources *.mp4
 recursive-include arcade/resources *.json
 recursive-include arcade/resources *.glsl
 recursive-include arcade/resources *.yml

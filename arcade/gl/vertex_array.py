@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import c_void_p, byref
 from typing import Dict, List, Optional, Sequence, TYPE_CHECKING, Union
 import weakref
@@ -5,7 +7,7 @@ import weakref
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription, gl_name
+from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -146,7 +148,7 @@ class VertexArray:
         # Build the vao according to the shader's attribute specifications
         for _, prog_attr in enumerate(program.attributes):
             # Do we actually have an attribute with this name in buffer descriptions?
-            if prog_attr.name.startswith("gl_"):
+            if prog_attr.name is not None and prog_attr.name.startswith("gl_"):
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
@@ -239,14 +241,14 @@ class VertexArray:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
     def render(
-        self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1
+        self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
     ):
         """Render the VertexArray to the currently active framebuffer.
 
-        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param int first: The first vertex to render from
-        :param int vertices: Number of vertices to render
-        :param int instances: OpenGL instance, used in using vertices over and over
+        :param mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param first: The first vertex to render from
+        :param vertices: Number of vertices to render
+        :param instances: OpenGL instance, used in using vertices over and over
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
@@ -259,17 +261,17 @@ class VertexArray:
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
-    def render_indirect(self, buffer: Buffer, mode: gl.GLuint, count, first, stride):
+    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride):
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
         .. Warning:: This requires OpenGL 4.3
 
-        :param Buffer buffer: The buffer containing one or multiple draw parameters
-        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param int count: The number if indirect draw calls to run
-        :param int first: The first indirect draw call to start on
-        :param int stride: The byte stride of the draw command buffer.
+        :param buffer: The buffer containing one or multiple draw parameters
+        :param mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param count: The number if indirect draw calls to run
+        :param first: The first indirect draw call to start on
+        :param stride: The byte stride of the draw command buffer.
                            Keep the default (0) if the buffer is tightly packed.
         """
         # The default buffer stride for array and indexed
@@ -300,8 +302,8 @@ class VertexArray:
     def transform_interleaved(
         self,
         buffer: Buffer,
-        mode: gl.GLenum,
-        output_mode: gl.GLenum,
+        mode: GLenumLike,
+        output_mode: GLenumLike,
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -309,13 +311,13 @@ class VertexArray:
     ):
         """Run a transform feedback.
 
-        :param Buffer buffer: The buffer to write the output
-        :param gl.GLenum mode: The input primitive mode
-        :param gl.GLenum output_mode: The output primitive mode
-        :param int first: Offset start vertex
-        :param int vertices: Number of vertices to render
-        :param int instances: Number of instances to render
-        :param int buffer_offset: Byte offset for the buffer (target)
+        :param buffer: The buffer to write the output
+        :param mode: The input primitive mode
+        :param output_mode: The output primitive mode
+        :param first: Offset start vertex
+        :param vertices: Number of vertices to render
+        :param instances: Number of instances to render
+        :param buffer_offset: Byte offset for the buffer (target)
         """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
@@ -355,8 +357,8 @@ class VertexArray:
     def transform_separate(
         self,
         buffers: List[Buffer],
-        mode: gl.GLenum,
-        output_mode: gl.GLenum,
+        mode: GLenumLike,
+        output_mode: GLenumLike,
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -365,13 +367,13 @@ class VertexArray:
         """
         Run a transform feedback writing to separate buffers.
 
-        :param List[Buffer] buffers: The buffers to write the output
-        :param gl.GLenum mode: The input primitive mode
-        :param gl.GLenum output_mode: The output primitive mode
-        :param int first: Offset start vertex
-        :param int vertices: Number of vertices to render
-        :param int instances: Number of instances to render
-        :param int buffer_offset: Byte offset for the buffer (target)
+        :param buffers: The buffers to write the output
+        :param mode: The input primitive mode
+        :param output_mode: The output primitive mode
+        :param first: Offset start vertex
+        :param vertices: Number of vertices to render
+        :param instances: Number of instances to render
+        :param buffer_offset: Byte offset for the buffer (target)
         """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
@@ -421,10 +423,10 @@ class Geometry:
 
     Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
 
-    :param Context ctx: The context this object belongs to
-    :param list content: List of BufferDescriptions
-    :param Buffer index_buffer: Index/element buffer
-    :param int mode: The default draw mode
+    :param ctx: The context this object belongs to
+    :param content: List of BufferDescriptions
+    :param index_buffer: Index/element buffer
+    :param mode: The default draw mode
     """
 
     __slots__ = (
@@ -454,11 +456,11 @@ class Geometry:
         self._vao_cache: Dict[str, VertexArray] = {}
         self._num_vertices: int = -1
         """
-        :param Context ctx: The context this object belongs to
-        :param list content: (optional) List of BufferDescriptions
-        :param Buffer index_buffer: (optional) Index/element buffer
-        :param int mode: (optional) The default draw mode
-        :param int index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
+        :param ctx: The context this object belongs to
+        :param content: (optional) List of BufferDescriptions
+        :param index_buffer: (optional) Index/element buffer
+        :param mode: (optional) The default draw mode
+        :param index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
         """
         if self._index_buffer and self._index_element_size not in (1, 2, 4):
             raise ValueError("index_element_size must be 1, 2, or 4")
@@ -537,7 +539,7 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: Optional[gl.GLenum] = None,
+        mode: Optional[GLenumLike] = None,
         first: int = 0,
         vertices: Optional[int] = None,
         instances: int = 1,
@@ -548,11 +550,11 @@ class Geometry:
         so overriding vertices is not needed unless you have a special case
         or have resized the buffers after the geometry instance was created.
 
-        :param Program program: The Program to render with
-        :param gl.GLenum mode: Override what primitive mode should be used
-        :param int first: Offset start vertex
-        :param int vertices: Override the number of vertices to render
-        :param int instances: Number of instances to render
+        :param program: The Program to render with
+        :param mode: Override what primitive mode should be used
+        :param first: Offset start vertex
+        :param vertices: Override the number of vertices to render
+        :param instances: Number of instances to render
         """
         program.use()
         vao = self.instance(program)
@@ -593,7 +595,7 @@ class Geometry:
         program: Program,
         buffer: Buffer,
         *,
-        mode: Optional[gl.GLuint] = None,
+        mode: Optional[GLuintLike] = None,
         count: int = -1,
         first: int = 0,
         stride: int = 0,
@@ -626,13 +628,13 @@ class Geometry:
         in the buffer. By default we assume this is 16 for array rendering
         (no index buffer) and 20 for indexed rendering (with index buffer)
 
-        :param Program program: The program to execute
-        :param Buffer buffer: The buffer containing one or multiple draw parameters
-        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param int count: The number if indirect draw calls to run.
+        :param program: The program to execute
+        :param buffer: The buffer containing one or multiple draw parameters
+        :param mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param count: The number if indirect draw calls to run.
                           If omitted all draw commands in the buffer will be executed.
-        :param int first: The first indirect draw call to start on
-        :param int stride: The byte stride of the draw command buffer.
+        :param first: The first indirect draw call to start on
+        :param stride: The byte stride of the draw command buffer.
                            Keep the default (0) if the buffer is tightly packed.
         """
         program.use()
@@ -656,14 +658,14 @@ class Geometry:
 
         If a geometry shader is used the output primitive mode is automatically detected.
 
-        :param Program program: The Program to render with
+        :param program: The Program to render with
         :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
             This depends on the programs ``varyings_capture_mode``. We can transform
             into one buffer interlaved or transform each attribute into separate buffers.
-        :param int first: Offset start vertex
-        :param int vertices: Number of vertices to render
-        :param int instances: Number of instances to render
-        :param int buffer_offset: Byte offset for the buffer
+        :param first: Offset start vertex
+        :param vertices: Number of vertices to render
+        :param instances: Number of instances to render
+        :param buffer_offset: Byte offset for the buffer
         """
         program.use()
         vao = self.instance(program)

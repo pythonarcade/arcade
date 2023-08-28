@@ -274,10 +274,10 @@ field.
     :caption: Adding toggle button to the layout
     :lines: 217
 
-Adding a Dropdowm
+Adding a Dropdown
 ~~~~~~~~~~~~~~~~~
 
-We add a dropdowm by using ``UIDropdown``.
+We add a dropdown by using ``UIDropdown``.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown

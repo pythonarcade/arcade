@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from array import array
 from typing import Any, Tuple
 from ctypes import c_byte

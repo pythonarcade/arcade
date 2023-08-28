@@ -3,6 +3,8 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.17_views
 """
+from __future__ import annotations
+
 import math
 
 import arcade
@@ -685,8 +687,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-if __name__ == "__main__":
-    main()
-    main()
     main()

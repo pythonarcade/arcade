@@ -1,3 +1,15 @@
+"""
+Customizing buttons with text & textures.
+
+This example showcases arcade's range of different built-in button types
+and how they can be used to customize a UI. A UIGridLayout is used to
+arrange buttons.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.button_with_text
+"""
+from __future__ import annotations
+
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIImage

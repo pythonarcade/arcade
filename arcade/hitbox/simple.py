@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Tuple
 from PIL.Image import Image
 from arcade.types import Point, PointList
@@ -9,14 +11,13 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
     Simple hit box algorithm. This algorithm attempts to trim out transparent pixels
     from an image to create a hit box.
     """
-    name = "simple"
 
     def calculate(self, image: Image, **kwargs) -> PointList:
         """
         Given an RGBA image, this returns points that make up a hit box around it. Attempts
         to trim out transparent pixels.
 
-        :param Image image:
+        :param image:
 
         :Returns: List of points
         """

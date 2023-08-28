@@ -20,6 +20,8 @@ use a Query to count how many results the shader gave us.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los_trans
 """
+from __future__ import annotations
+
 import random
 import struct
 import arcade

@@ -149,3 +149,35 @@ def test_shader_include_fail(ctx):
     """
     with pytest.raises(FileNotFoundError):
         ctx.shader_inc(src)
+
+
+def test_front_face(ctx):
+    """Test front face"""
+    # Default
+    assert ctx.front_face == "ccw"
+
+    # Set valid values
+    ctx.front_face = "cw"
+    assert ctx.front_face == "cw"
+    ctx.front_face = "ccw"
+    assert ctx.front_face == "ccw"
+
+    # Set invalid value
+    with pytest.raises(ValueError):
+        ctx.front_face = "moo"
+
+
+def test_cull_face(ctx):
+    assert ctx.cull_face == "back"
+
+    # Set valid values
+    ctx.cull_face = "front"
+    assert ctx.cull_face == "front"
+    ctx.cull_face = "back"
+    assert ctx.cull_face == "back"
+    ctx.cull_face = "front_and_back"
+    assert ctx.cull_face == "front_and_back"
+
+    # Set invalid value
+    with pytest.raises(ValueError):
+        ctx.cull_face = "moo"

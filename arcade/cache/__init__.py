@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, List
 from .hit_box import HitBoxCache
 from .texture import TextureCache

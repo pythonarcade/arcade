@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .sprite_list import SpriteList
 from .spatial_hash import SpatialHash
 from .collision import (

@@ -1,6 +1,8 @@
 """
 This module pre-defines several colors.
 """
+from __future__ import annotations
+
 from arcade.types import Color
 
 AERO_BLUE = Color(201, 255, 229, 255)

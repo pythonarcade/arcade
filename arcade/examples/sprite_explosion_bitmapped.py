@@ -9,6 +9,8 @@ Explosion graphics from https://www.explosiongenerator.com/
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_explosion_bitmapped
 """
+from __future__ import annotations
+
 import random
 import arcade
 

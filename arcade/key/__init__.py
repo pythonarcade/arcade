@@ -3,6 +3,8 @@
 Constants used to signify what keys on the keyboard were pressed.
 """
 
+from __future__ import annotations
+
 # Key modifiers
 # Done in powers of two, so you can do a bit-wise 'and' to detect
 # multiple modifiers.

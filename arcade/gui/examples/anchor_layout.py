@@ -1,7 +1,15 @@
 """
-Example shows how to use UIAnchorWidget to position widgets on screen.
-Dummy widgets indicate hovered, pressed and clicked.
+Positioning UI elements with UIAnchorLayout
+
+UIAnchorLayout aligns widgets added to it to directional anchors, which
+include  "left", "center_x", or "top". Dummy widgets react to click events
+by changing color.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.anchor_layout
 """
+
+from __future__ import annotations
 
 import arcade
 from arcade.gui import UIManager

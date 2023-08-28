@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pyglet.input
 from typing import List
 from pyglet.input import Joystick
@@ -16,7 +18,7 @@ def get_joysticks() -> List[Joystick]:
 
     :return: List of game controllers
     """
-    return pyglet.input.get_joysticks()
+    return pyglet.input.get_joysticks() # type: ignore  # pending https://github.com/pyglet/pyglet/issues/842
 
 
 def get_game_controllers() -> List[Joystick]:

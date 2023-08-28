@@ -1,26 +1,26 @@
+from __future__ import annotations
+
 import sys
 import traceback
-from typing import TypeVar
+from typing import Any, Callable, Generic, Optional, Set, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
+P = TypeVar("P")
 
-class _Obs:
+class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
     """
 
     __slots__ = "value", "listeners"
 
-    def __init__(self):
-        self.value = None
+    def __init__(self, value: P):
+        self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners = set()
+        self.listeners: Set[Callable[[], Any]] = set()
 
 
-P = TypeVar("P")
-
-
-class Property:
+class Property(Generic[P]):
     """
     An observable property which triggers observers when changed.
 
@@ -31,22 +31,21 @@ class Property:
     __slots__ = "name", "default_factory", "obs"
     name: str
 
-    def __init__(self, default=None, default_factory=None):
+    def __init__(self, default: Optional[P] = None, default_factory: Optional[Callable[[Any, Any], P]] = None):
         if default_factory is None:
-            default_factory = lambda prop, instance: default
+            default_factory = lambda prop, instance: cast(P, default)
 
         self.default_factory = default_factory
-        self.obs = WeakKeyDictionary()
+        self.obs: WeakKeyDictionary[Any, _Obs] = WeakKeyDictionary()
 
     def _get_obs(self, instance) -> _Obs:
         obs = self.obs.get(instance)
         if obs is None:
-            obs = _Obs()
-            obs.value = self.default_factory(self, instance)
+            obs = _Obs(self.default_factory(self, instance))
             self.obs[instance] = obs
         return obs
 
-    def get(self, instance):
+    def get(self, instance) -> P:
         obs = self._get_obs(instance)
         return obs.value
 
@@ -77,9 +76,9 @@ class Property:
     def __set_name__(self, owner, name):
         self.name = name
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self
+            return self # type: ignore
         return self.get(instance)
 
     def __set__(self, instance, value):

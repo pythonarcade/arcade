@@ -1,7 +1,16 @@
-from typing import Iterable, List, TypeVar, Tuple, Optional
+from __future__ import annotations
+
+from typing import Iterable, List, TypeVar, Tuple, Optional, cast
 
 from arcade.gui.property import bind
 from arcade.gui.widgets import UIWidget, UILayout
+
+__all__ = [
+    "UILayout",
+    "UIAnchorLayout",
+    "UIBoxLayout",
+    "UIGridLayout"
+]
 
 W = TypeVar("W", bound="UIWidget")
 
@@ -189,8 +198,8 @@ class UIBoxLayout(UILayout):
     children) will be distributed to the child widgets based on their
     ``size_hint``.
 
-    :param float x: ``x`` coordinate of the bottom left corner.
-    :param float y: ``y`` coordinate of the bottom left corner.
+    :param x: ``x`` coordinate of the bottom left corner.
+    :param y: ``y`` coordinate of the bottom left corner.
     :param vertical: Layout children vertical (True) or horizontal (False).
     :param align: Align children in orthogonal direction::
                   - ``x``: ``left``, ``center``, and ``right``
@@ -293,6 +302,13 @@ class UIBoxLayout(UILayout):
         base_width = self._padding_left + self._padding_right + 2 * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
+
+    def fit_content(self):
+        """
+        Resize the layout to fit the content. This will take the minimal required size into account.
+        """
+        self._update_size_hints()
+        self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
 
     def do_layout(self):
         start_y = self.content_rect.top
@@ -458,14 +474,14 @@ class UIGridLayout(UILayout):
     Children are resized based on ``size_hint``. Maximum and minimum
     ``size_hint``s only take effect if a ``size_hint`` is given.
 
-    :param float x: ``x`` coordinate of bottom left corner.
-    :param float y: ``y`` coordinate of bottom left corner.
-    :param str align_horizontal: Align children in orthogonal direction.
+    :param x: ``x`` coordinate of bottom left corner.
+    :param y: ``y`` coordinate of bottom left corner.
+    :param align_horizontal: Align children in orthogonal direction.
                                  Options include ``left``, ``center``, and
                                  ``right``.
-    :param str align_vertical: Align children in orthogonal direction. Options
+    :param align_vertical: Align children in orthogonal direction. Options
                                include ``top``, ``center``, and ``bottom``.
-    :param Iterable[UIWidget] children: Initial list of children. More can be
+    :param children: Initial list of children. More can be
                                         added later.
     :param size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if the
                       :py:class:`~arcade.gui.UIWidget` would like to grow.
@@ -473,9 +489,9 @@ class UIGridLayout(UILayout):
     :param size_hint_max: Maximum width and height in pixels.
     :param horizontal_spacing: Space between columns.
     :param vertical_spacing: Space between rows.
-    :param int column_count: Number of columns in the grid. This can be changed
+    :param column_count: Number of columns in the grid. This can be changed
                              later.
-    :param int row_count: Number of rows in the grid. This can be changed
+    :param row_count: Number of rows in the grid. This can be changed
                           later.
     """
 
@@ -542,14 +558,10 @@ class UIGridLayout(UILayout):
 
     def _update_size_hints(self):
 
-        child_sorted_row_wise = [
-            [None for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
-
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
@@ -582,11 +594,6 @@ class UIGridLayout(UILayout):
                 max_height_per_row[i][col_num] = (0, 0)
 
             max_height_per_row[row_num][col_num] = (shmn_h, row_span)
-
-            for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
-            ]:
-                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_width_ratio_list = []
         principal_height_ratio_list = []
@@ -626,14 +633,14 @@ class UIGridLayout(UILayout):
         """
         Add a widget to the grid layout.
 
-        :param UIWidget child: Specified child widget to add.
-        :param int col_num: Column index in which the widget is to be added.
+        :param child: Specified child widget to add.
+        :param col_num: Column index in which the widget is to be added.
                             The first column is numbered 0; which is the top
                             left corner.
-        :param int row_num: The row number in which the widget is to be added.
+        :param row_num: The row number in which the widget is to be added.
                             The first row is numbered 0; which is the
-        :param int col_span: Number of columns the widget will stretch for.
-        :param int row_span: Number of rows the widget will stretch for.
+        :param col_span: Number of columns the widget will stretch for.
+        :param row_span: Number of rows the widget will stretch for.
         """
         return super().add(
             child,
@@ -651,14 +658,14 @@ class UIGridLayout(UILayout):
         if not self.children:
             return
 
-        child_sorted_row_wise = [
+        child_sorted_row_wise = cast(List[List[UIWidget]], [
             [None for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
+        ])
 
-        max_width_per_column = [
+        max_width_per_column: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
-        max_height_per_row = [
+        max_height_per_row: list[list[tuple[float, int]]] = [
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 

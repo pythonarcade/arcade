@@ -1,5 +1,5 @@
-Working with the Keyboard
-=========================
+Keyboard
+========
 
 .. _keyboard_events:
 

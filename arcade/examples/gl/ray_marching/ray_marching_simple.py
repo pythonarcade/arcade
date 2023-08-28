@@ -6,6 +6,8 @@ To make this simpler to follow we've based it on the
 "Ray Marching for Dummies!" video from The Art of Code
 YouTube channel : https://www.youtube.com/watch?v=PGtv-dBi2wE
 """
+from __future__ import annotations
+
 from pathlib import Path
 import arcade
 from arcade.gl import geometry

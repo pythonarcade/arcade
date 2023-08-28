@@ -3,8 +3,9 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-# flake8: noqa: E402
+from __future__ import annotations
 
+# flake8: noqa: E402
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
@@ -18,7 +19,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 
 def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
-    :param int level: The log level. Defaults to DEBUG.
+    :param level: The log level. Defaults to DEBUG.
     """
     import logging
     level = level or logging.DEBUG
@@ -181,6 +182,7 @@ from .sprite_list import get_sprites_in_rect
 from .sprite_list import SpatialHash
 
 from .scene import Scene
+from .scene import SceneKeyError
 
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
@@ -260,6 +262,7 @@ __all__ = [
     'Section',
     'SectionManager',
     'Scene',
+    'SceneKeyError',
     'Sound',
     'BasicSprite',
     'Sprite',
@@ -395,6 +398,7 @@ if not getattr(sys, 'is_pyglet_doc_run', False):
     # Load additional game controller mappings to Pyglet
     if not pyglet.options['headless']:
         try:
+            import pyglet.input.controller
             mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
             pyglet.input.controller.add_mappings_from_file(mappings_file)
         except AssertionError:

@@ -4,6 +4,8 @@ This animation example shows how perform a radar sweep animation.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.radar_sweep
 """
+from __future__ import annotations
+
 import arcade
 import math
 

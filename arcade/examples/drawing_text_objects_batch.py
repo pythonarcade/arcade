@@ -10,6 +10,8 @@ same cost as drawing just one Text object directly.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.drawing_text_objects_batch
 """
+from __future__ import annotations
+
 import arcade
 import pyglet.graphics
 

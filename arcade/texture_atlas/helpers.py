@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
 from time import perf_counter
-from typing import Dict, Tuple
+from typing import Dict, Tuple, cast
+
+import PIL.Image
 
 import arcade
 from arcade import cache
@@ -118,7 +122,7 @@ def load_atlas(
     image_map: Dict[str, ImageData] = {}
     for im in meta['images']:
         image_data = ImageData(
-            FakeImage(im['region']['size']),
+            cast(PIL.Image.Image, FakeImage(im['region']['size'])),
             im['hash'],
         )
         atlas._images.add(image_data)

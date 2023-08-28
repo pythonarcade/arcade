@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 from random import randint
 from typing import (
@@ -11,6 +13,7 @@ from typing import (
     List,
     Dict,
 )
+from typing_extensions import Self
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -28,10 +31,12 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255
+from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
+
+__all__ = ["Surface", "UIDummy"]
 
 
 class Rect(NamedTuple):
@@ -204,8 +209,8 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -523,10 +528,13 @@ class UIWidget(EventDispatcher, ABC):
     def children(self) -> List["UIWidget"]:
         return [child for child, data in self._children]
 
+    def __iter__(self):
+        return iter(self.children)
+
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
-    def with_border(self, width=2, color=(0, 0, 0)) -> "UIWidget":
+    def with_border(self, width=2, color=(0, 0, 0)) -> Self:
         """
         Sets border properties
         :param width: border width
@@ -569,8 +577,8 @@ class UIWidget(EventDispatcher, ABC):
         A color or texture can be used for background,
         if a texture is given, start and end point can be added to use the texture as ninepatch.
 
-        :param RGBA255 color: A color used as background
-        :param arcade.Texture texture: A texture or ninepatch texture used as background
+        :param color: A color used as background
+        :param texture: A texture or ninepatch texture used as background
         :return: self
         """
         if color is not ...:
@@ -639,8 +647,8 @@ class UIInteractiveWidget(UIWidget):
     """
     Base class for widgets which use mouse interaction (hover, pressed, clicked)
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -714,11 +722,17 @@ class UIInteractiveWidget(UIWidget):
 
 class UIDummy(UIInteractiveWidget):
     """
-    Solid color widget, used for testing.
-    Prints own rect on click.
+    Solid color widget used for testing & examples
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    It should not be subclassed for real-world usage.
+
+    When clicked, it does the following:
+
+    * Outputs its `rect` attribute to the console
+    * Changes its color to a random fully opaque color
+
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param color: fill color for the widget
     :param width: width of widget
     :param height: height of widget
@@ -748,7 +762,7 @@ class UIDummy(UIInteractiveWidget):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
         )
-        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
 
         self.bg_color = (
@@ -757,7 +771,7 @@ class UIDummy(UIInteractiveWidget):
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
-        self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self.color = Color.random(a=255)
 
     def on_update(self, dt):
         self.border_width = 2 if self.hovered else 0
@@ -783,8 +797,8 @@ class UIDummy(UIInteractiveWidget):
 class UISpriteWidget(UIWidget):
     """Create a UI element with a sprite that controls what is displayed.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param sprite: Sprite to embed in gui
@@ -835,8 +849,8 @@ class UILayout(UIWidget):
     """
     Base class for widgets, which position themselves or their children.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param children: Child widgets of this group
@@ -868,8 +882,8 @@ class UISpace(UIWidget):
     """
     Widget reserving space, can also have a background color.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param color: Color for widget area

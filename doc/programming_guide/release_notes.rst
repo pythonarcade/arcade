@@ -47,6 +47,7 @@ API in a way that is not compatible with how it was used in 2.6.
   are also using any custom :py:class:`~arcade.TextureAtlas`.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
+* `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -105,10 +106,12 @@ Changes
         * ``UIWidget.padding_bottom``
         * ``UIWidget.padding_left``
     * Update and add example code.
+    * Iterable (providing direct children)
 
   * New widgets:
 
     * :py:class:`~arcade.gui.widgets.dropdown.UIDropdown`
+    * :py:class:`~arcade.gui.widgets.image.UIImage`
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
     * :py:class:`~arcade.gui.widgets.constructs.UIButtonRow` (`PR1580 <https://github.com/pythonarcade/arcade/pull/1580>`_ and `PR1253 <https://github.com/pythonarcade/arcade/pull/1253>`_)
 
@@ -184,6 +187,11 @@ Changes
   * Uniforms are now set using ``glProgramUniform`` instead of ``glUniform``
     when the extension is available.
   * Fixed many implicit type conversions in the shader code for wider support.
+  * Added ``front_face`` property on the context for configuring front face winding order of triangles
+  * Added ``cull_face`` property on the context for configuring what triangle face to cull
+  * Added support for bindless textures
+  * Added support for 64 bit integer uniforms
+  * Added support for 64 float uniforms
 
 * :py:class:`~arcade.tilemap.TileMap`
 
@@ -199,6 +207,9 @@ Changes
     ``layer_options`` dictionary.
     If no custom atlas is provided, then the global default atlas will be used (This is how it works pre-Arcade 3.0).
   * Fix for animated tiles from sprite sheets
+  * TextureAtlas: Added ``sync_texture_image`` method to sync the texture in the atlas back into
+    the internal pillow image in the ``arcade.Texture``.
+  * TextureAtlas: Added ``get_texture_image`` method to get pixel data of a texture in the atlas as a pillow image.
 
 * Collision Detection
 
@@ -2349,4 +2360,3 @@ Enhancements
 * `Issue 131 <https://github.com/pvcraven/arcade/issues/131>`_: Add example code on how to do full-screen games
 * `Issue 113 <https://github.com/pvcraven/arcade/issues/113>`_: Add example code showing enemy turning around when hitting a wall
 * `Issue 67 <https://github.com/pvcraven/arcade/issues/67>`_: Improved support and documentation for joystick/game controllers
-
