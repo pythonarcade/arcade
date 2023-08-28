@@ -3,10 +3,6 @@
 Step 13 - More Types of Layers
 ------------------------------
 
-Next we will add support for multiple levels to our game. Again we will make use of Arcade's
-built-in maps for this. We'll have two levels, and when the player hits the end of the second
-level we'll reset the game using our ``setup`` function so they can play again.
-
 For this example, we'll switch to a different built-in map that has more layers we can do things with.
 
 In our setup function, load this map instead of the one from Chapter 12:
@@ -62,6 +58,6 @@ Source Code
 ~~~~~~~~~~~
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/13_more_layers.py
-    :caption: Add Enemies
+    :caption: More Layers
     :linenos:
     :emphasize-lines: 70-71, 78-83, 152-156

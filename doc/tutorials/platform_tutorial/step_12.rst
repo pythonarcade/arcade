@@ -3,9 +3,11 @@
 Step 12 - Loading a Map From a Map Editor
 -----------------------------------------
 
-In this chapter we will start using a map editor called `<Tiled https://mapeditor.org>`_.
+In this chapter we will start using a map editor called `Tiled`_.
 Tiled is a popular 2D map editor, it can be used with any game engine, but Arcade has specific integrations
 for working with Tiled.
+
+.. _Tiled: https://www.mapeditor.org/
 
 We'll explore how to load maps from Tiled in this tutorial using Arcade's built-in :class:`arcade.TileMap` class
 using some maps from the built-in resources that Arcade comes with. We won't cover actually building a map
