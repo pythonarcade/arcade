@@ -69,7 +69,7 @@ class Sprite(BasicSprite, PymunkMixin):
         center_y: float = 0.0,
         angle: float = 0.0,
         **kwargs,
-    ):
+    ) -> None:
         if isinstance(path_or_texture, Texture):
             _texture = path_or_texture
             _textures = [_texture]
@@ -133,7 +133,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._angle
 
     @angle.setter
-    def angle(self, new_value: float):
+    def angle(self, new_value: float) -> None:
         if new_value == self._angle:
             return
 
@@ -155,7 +155,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._angle / 180.0 * math.pi
 
     @radians.setter
-    def radians(self, new_value: float):
+    def radians(self, new_value: float) -> None:
         self.angle = new_value * 180.0 / math.pi
 
     @property
@@ -176,7 +176,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._velocity
 
     @velocity.setter
-    def velocity(self, new_value: Point):
+    def velocity(self, new_value: Point) -> None:
         self._velocity = new_value
 
     @property
@@ -185,7 +185,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self.velocity[0]
 
     @change_x.setter
-    def change_x(self, new_value: float):
+    def change_x(self, new_value: float) -> None:
         self._velocity = new_value, self._velocity[1]
 
     @property
@@ -194,7 +194,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self.velocity[1]
 
     @change_y.setter
-    def change_y(self, new_value: float):
+    def change_y(self, new_value: float) -> None:
         self._velocity = self._velocity[0], new_value
 
     @property
@@ -205,7 +205,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]):
+    def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]) -> None:
         if type(hit_box) == HitBox:
             self._hit_box = hit_box.create_rotatable(self.angle)
         else:
@@ -219,7 +219,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._texture
 
     @texture.setter
-    def texture(self, texture: Texture):
+    def texture(self, texture: Texture) -> None:
         if texture == self._texture:
             return
 
@@ -256,7 +256,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._properties
 
     @properties.setter
-    def properties(self, value):
+    def properties(self, value) -> None:
         self._properties = value
 
     # --- Movement methods -----
@@ -314,7 +314,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     # ---- Draw Methods ----
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None) -> None:
+    def draw(self, *, filter=None, pixelated=False, blend_function=None) -> None:
         """
         A debug method which draws the sprite into the current OpenGL context.
 
@@ -369,7 +369,7 @@ class Sprite(BasicSprite, PymunkMixin):
             if sprite_list.spatial_hash is not None:
                 sprite_list.spatial_hash.move(self)
 
-    def append_texture(self, texture: Texture):
+    def append_texture(self, texture: Texture) -> None:
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.

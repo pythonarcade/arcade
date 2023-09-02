@@ -212,8 +212,8 @@ def rand_vec_magnitude(
     :param hi_magnitude: The higher magnitude
     :return: A random vector
     """
-    mag = random.uniform(lo_magnitude, hi_magnitude)
-    vel = _Vec2.from_polar(angle, mag)
+    mag: float = random.uniform(lo_magnitude, hi_magnitude)
+    vel: _Vec2 = _Vec2.from_polar(angle, mag)
     return vel.as_tuple()
 
 
@@ -227,37 +227,37 @@ class _Vec2:
     """
     __slots__ = ['x', 'y']
 
-    def __init__(self, x: float, y: float):
+    def __init__(self, x: float, y: float) -> None:
         # see if first argument is an iterable with two items
         self.x: float = x
         self.y: float = y
 
     @staticmethod
-    def from_polar(angle, radius):
+    def from_polar(angle, radius: float) -> _Vec2:
         rads = math.radians(angle)
         return _Vec2(radius * math.cos(rads), radius * math.sin(rads))
 
-    def __add__(self, other):
+    def __add__(self, other: "_Vec2") -> _Vec2:
         return _Vec2(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other):
+    def __sub__(self, other: "_Vec2") -> _Vec2:
         return _Vec2(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other):
+    def __mul__(self, other: "_Vec2") -> _Vec2:
         return _Vec2(self.x * other.x, self.y * other.y)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: "_Vec2") -> _Vec2:
         return _Vec2(self.x / other.x, self.y / other.y)
 
     def __iter__(self):
         yield self.x
         yield self.y
 
-    def length(self):
+    def length(self) -> float:
         """return the length (magnitude) of the vector"""
         return math.sqrt(self.x**2 + self.y**2)
 
-    def dot(self, other):
+    def dot(self, other: "_Vec2") -> float:
         return self.x * other.x + self.y * other.y
 
     def __repr__(self):

@@ -38,7 +38,8 @@ from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
 if TYPE_CHECKING:
-    from arcade import Texture, TextureAtlas
+    from arcade import TextureAtlas, Texture
+
 
 LOG = logging.getLogger(__name__)
 
@@ -105,7 +106,7 @@ class SpriteList(Generic[SpriteType]):
     ):
         self.program = None
         if atlas:
-            self._atlas: TextureAtlas = atlas
+            self._atlas = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -137,11 +138,11 @@ class SpriteList(Generic[SpriteType]):
         # Index buffer
         self._sprite_index_data = array("i", [0] * self._idx_capacity)
 
-        self._sprite_pos_buf = None
-        self._sprite_size_buf = None
-        self._sprite_angle_buf = None
-        self._sprite_color_buf = None
-        self._sprite_texture_buf = None
+        self._sprite_pos_buf: Optional[Buffer] = None
+        self._sprite_size_buf: Optional[Buffer] = None
+        self._sprite_angle_buf: Optional[Buffer] = None
+        self._sprite_color_buf: Optional[Buffer] = None
+        self._sprite_texture_buf: Optional[Buffer] = None
         # Index buffer
         self._sprite_index_buf = None
 
@@ -189,7 +190,7 @@ class SpriteList(Generic[SpriteType]):
 
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = (
+        self._atlas = (
             getattr(self, "_atlas", None) or self.ctx.default_atlas
         )
 
@@ -902,7 +903,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._write_sprite_buffers_to_gpu()
 
-    def _write_sprite_buffers_to_gpu(self):
+    def _write_sprite_buffers_to_gpu(self) -> None:
         LOG.debug(
             "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
             id(self),
@@ -957,16 +958,18 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
+    def draw(self, *, filter: Optional[int]=None, pixelated: bool=False,
+            blend_function: Union[Tuple[int, int], Tuple[int, int, int, int], None]=None) -> None:
         """
         Draw this list of sprites.
 
-        :param filter: Optional parameter to set OpenGL filter, such as
+        :param Optional[gl filter] filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
-        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter=GL_NEAREST.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
-                         sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
+        :param bool pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
+                          Shortcut for setting filter=GL_NEAREST
+        :param Optional[gl blend function] blend_function: Optional parameter to set the OpenGL blend
+                         function used for drawing the sprite list, such as
+                         'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
@@ -1014,7 +1017,7 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
 
-    def _normalize_index_buffer(self):
+    def _normalize_index_buffer(self) -> None:
         """
         Removes unused slots in the index buffer.
         The other buffers don't need this because they re-use slots.
@@ -1033,7 +1036,7 @@ class SpriteList(Generic[SpriteType]):
         # NOTE: Right now the index buffer is always normalized
         pass
 
-    def _grow_sprite_buffers(self):
+    def _grow_sprite_buffers(self) -> None:
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
         if self._sprite_buffer_slots <= self._buf_capacity:
@@ -1058,11 +1061,11 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_data.extend([0] * extend_by)
 
         if self._initialized:
-            self._sprite_pos_buf.orphan(double=True)
-            self._sprite_size_buf.orphan(double=True)
-            self._sprite_angle_buf.orphan(double=True)
-            self._sprite_color_buf.orphan(double=True)
-            self._sprite_texture_buf.orphan(double=True)
+            self._sprite_pos_buf.orphan(double=True)  # type: ignore
+            self._sprite_size_buf.orphan(double=True)  # type: ignore
+            self._sprite_angle_buf.orphan(double=True)  # type: ignore
+            self._sprite_color_buf.orphan(double=True)  # type: ignore
+            self._sprite_texture_buf.orphan(double=True)  # type: ignore
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
@@ -1070,7 +1073,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_changed = True
         self._sprite_texture_changed = True
 
-    def _grow_index_buffer(self):
+    def _grow_index_buffer(self) -> None:
         # Extend the index buffer capacity if needed
         if self._sprite_index_slots <= self._idx_capacity:
             return
@@ -1098,7 +1101,7 @@ class SpriteList(Generic[SpriteType]):
 
         self._sprite_index_changed = True
 
-    def _update_all(self, sprite: SpriteType):
+    def _update_all(self, sprite: SpriteType) -> None:
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -1137,7 +1140,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_data[slot] = tex_slot
         self._sprite_texture_changed = True
 
-    def _update_texture(self, sprite) -> None:
+    def _update_texture(self, sprite: SpriteType) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
         # We cannot interact with texture atlases unless the context

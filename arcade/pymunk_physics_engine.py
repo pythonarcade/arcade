@@ -52,7 +52,8 @@ class PymunkPhysicsEngine:
     KINEMATIC = pymunk.Body.KINEMATIC
     MOMENT_INF = float('inf')
 
-    def __init__(self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
+    def __init__(self, gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]]=(0, 0),
+                damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
@@ -71,9 +72,9 @@ class PymunkPhysicsEngine:
                    body_type: int = DYNAMIC,
                    damping: Optional[float] = None,
                    gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None,
-                   max_velocity: Optional[int] = None,
-                   max_horizontal_velocity: Optional[int] = None,
-                   max_vertical_velocity: Optional[int] = None,
+                   max_velocity: Optional[float] = None,
+                   max_horizontal_velocity: Optional[float] = None,
+                   max_vertical_velocity: Optional[float] = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
                    ):
@@ -136,7 +137,8 @@ class PymunkPhysicsEngine:
         body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
-        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float):
+        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float],  # pyright: ignore
+                              my_damping: float, dt: float) -> None:
             """ Used for custom damping, gravity, and max_velocity. """
 
             # Custom damping
@@ -147,7 +149,7 @@ class PymunkPhysicsEngine:
 
             # Custom gravity
             if sprite.pymunk.gravity is not None:
-                my_gravity = sprite.pymunk.gravity
+                my_gravity = sprite.pymunk.gravity # type: ignore
 
             # Go ahead and update velocity
             pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)

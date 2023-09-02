@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from math import pi, sin, cos
 from dataclasses import dataclass
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Optional
 from .math import get_distance
 
 
@@ -21,7 +21,7 @@ class EasingData:
     end_value: float
     ease_function: Callable
 
-    def reset(self):
+    def reset(self) -> None:
         self.cur_period = self.start_period
 
 
@@ -147,7 +147,9 @@ def easing(percent: float, easing_data: EasingData) -> float:
         easing_data.ease_function(percent)
 
 
-def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None, ease_function: Callable = linear):
+def ease_angle(start_angle: float, end_angle: float, *,
+                 time=None, rate=None, ease_function: Callable = linear
+                 ) -> Optional[EasingData]:
     """
     Set up easing for angles.
     """
@@ -176,16 +178,16 @@ def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None, ea
     return easing_data
 
 
-def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
+def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float]:
     """
     Update angle easing.
     """
-    done = False
+    done: bool = False
     easing_data.cur_period += delta_time
     easing_data.cur_period = min(easing_data.cur_period, easing_data.end_period)
-    percent = easing_data.cur_period / easing_data.end_period
+    percent: float = easing_data.cur_period / easing_data.end_period
 
-    angle = easing(percent, easing_data)
+    angle: float = easing(percent, easing_data)
 
     if percent >= 1.0:
         done = True
@@ -199,16 +201,19 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
     return done, angle
 
 
-def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ease_function=linear):
+def ease_value(start_value: float, end_value: float, *, time:
+                         float=0, rate: float=0,
+                         ease_function: Callable=linear) -> EasingData:
     """
     Get an easing value
     """
-    if rate is not None:
+
+    if not time or not rate:
+        raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
+
+    if rate:
         diff = abs(start_value - end_value)
         time = diff / rate
-
-    if time is None:
-        raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
 
     easing_data = EasingData(start_value=start_value,
                              end_value=end_value,
@@ -219,11 +224,15 @@ def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ea
     return easing_data
 
 
-def ease_position(start_position, end_position, *, time=None, rate=None, ease_function=linear):
+def ease_position(start_position: Tuple[float, float],
+                             end_position: Tuple[float, float], *,
+                             time: Optional[float]=None, rate:
+                             Optional[float]=None, ease_function: Callable=linear
+                             ) -> Tuple[EasingData, EasingData]:
     """
     Get an easing position
     """
-    distance = get_distance(start_position[0],
+    distance: float = get_distance(start_position[0],
                             start_position[1],
                             end_position[0],
                             end_position[1])
@@ -231,13 +240,19 @@ def ease_position(start_position, end_position, *, time=None, rate=None, ease_fu
     if rate is not None:
         time = distance / rate
 
-    easing_data_x = ease_value(start_position[0], end_position[0], time=time, ease_function=ease_function)
-    easing_data_y = ease_value(start_position[1], end_position[1], time=time, ease_function=ease_function)
+    easing_data_x: EasingData = ease_value(
+        start_position[0], end_position[0],
+        time=time, ease_function=ease_function # type: ignore[arg-type]
+    )
+    easing_data_y: EasingData = ease_value(
+        start_position[1], end_position[1],
+        time=time, ease_function=ease_function # type: ignore[arg-type]
+    )
 
     return easing_data_x, easing_data_y
 
 
-def ease_update(easing_data: EasingData, delta_time: float) -> Tuple:
+def ease_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float]:
     """
     Update easing between two values/
     """
@@ -250,5 +265,5 @@ def ease_update(easing_data: EasingData, delta_time: float) -> Tuple:
         percent = easing_data.cur_period / easing_data.end_period
         value = easing(percent, easing_data)
 
-    done = percent >= 1.0
+    done: bool = percent >= 1.0
     return done, value

@@ -1,4 +1,8 @@
+from typing import Optional, Union, Tuple, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from pymunk import Vec2d
+    from pyglet.math import Vec2
 
 from __future__ import annotations
 
@@ -13,20 +17,21 @@ class PyMunk:
         "max_vertical_velocity",
     )
 
-    def __init__(self):
-        self.damping = None
-        self.gravity = None
-        self.max_velocity = None
-        self.max_horizontal_velocity = None
-        self.max_vertical_velocity = None
+    def __init__(self) -> None:
+        self.damping: Optional[float] = None
+        self.gravity: Optional[Union[Vec2d, Tuple[float, float], Vec2]] = None
+        self.max_velocity: Optional[float] = None
+        self.max_horizontal_velocity: Optional[float] = None
+        self.max_vertical_velocity: Optional[float] = None
 
 
 class PymunkMixin:
+    """Sprite uses this to add pymunk"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.pymunk = PyMunk()
         self.force = [0.0, 0.0]
 
-    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+    def pymunk_moved(self, physics_engine, dx: float, dy: float, d_angle: float) -> None:
         """Called by the pymunk physics engine if this sprite moves."""
         pass

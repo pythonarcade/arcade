@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import math
-from typing import List
+from typing import List, Optional
 
 from .sprite import Sprite
 from arcade import Texture
@@ -37,7 +37,7 @@ class AnimatedTimeBasedSprite(Sprite):
     """
     def __init__(
         self,
-        path_or_texture: PathOrTexture = None,
+        path_or_texture: Optional[PathOrTexture] = None,
         center_x: float = 0.0,
         center_y: float = 0.0,
         scale: float = 1.0,

@@ -14,6 +14,7 @@ import pyglet
 import pyglet.gl as gl
 import pyglet.window.mouse
 from pyglet.canvas.base import ScreenMode
+from pyglet.window import MouseCursor
 
 import arcade
 from arcade import get_display_size
@@ -22,7 +23,7 @@ from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.types import Color, RGBA255, RGBA255OrNormalized
-from arcade import SectionManager
+from arcade import SectionManager, Section
 from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
@@ -110,7 +111,7 @@ class Window(pyglet.window.Window):
         enable_polling: bool = True,
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
-    ):
+    ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
@@ -255,7 +256,7 @@ class Window(pyglet.window.Window):
             color: Optional[RGBA255OrNormalized] = None,
             normalized: bool = False,
             viewport: Optional[Tuple[int, int, int, int]] = None,
-    ):
+    ) -> None:
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
@@ -301,7 +302,7 @@ class Window(pyglet.window.Window):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, value: RGBA255):
+    def background_color(self, value: RGBA255) -> None:
         self._background_color = Color.from_iterable(value)
 
     def run(self) -> None:
@@ -313,7 +314,7 @@ class Window(pyglet.window.Window):
         """
         arcade.run()
 
-    def close(self):
+    def close(self) -> None:
         """ Close the Window. """
         super().close()
         # Make sure we don't reference the window any more
@@ -325,7 +326,7 @@ class Window(pyglet.window.Window):
                        screen: Optional['Window'] = None,
                        mode: Optional[ScreenMode] = None,
                        width: Optional[float] = None,
-                       height: Optional[float] = None):
+                       height: Optional[float] = None) -> None:
         """
         Set if we are full screen or not.
 
@@ -352,7 +353,7 @@ class Window(pyglet.window.Window):
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
-    def on_update(self, delta_time: float):
+    def on_update(self, delta_time: float) -> None:
         """
         Move everything. Perform collision checks. Do all the game logic here.
 
@@ -361,14 +362,14 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def _dispatch_updates(self, delta_time: float):
+    def _dispatch_updates(self, delta_time: float) -> None:
         """
         Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
         dispatches the on_update events.
         """
         self.dispatch_event('on_update', delta_time)
 
-    def set_update_rate(self, rate: float):
+    def set_update_rate(self, rate: float) -> None:
         """
         Set how often the on_update function should be dispatched.
         For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
@@ -379,7 +380,7 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(self._dispatch_updates)
         pyglet.clock.schedule_interval(self._dispatch_updates, rate)
 
-    def set_draw_rate(self, rate: float):
+    def set_draw_rate(self, rate: float) -> None:
         """
         Set how often the on_draw function should be run.
         For example, set.set_draw_rate(1 / 60) will set the draw rate to 60 frames per second.
@@ -388,7 +389,7 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
         pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> None:
         """
         Called repeatedly while the mouse is moving over the window.
 
@@ -401,7 +402,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """
         Called once whenever a mouse button gets pressed down.
 
@@ -425,7 +426,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int) -> None:
         """
         Called repeatedly while the mouse moves with a button down.
 
@@ -441,7 +442,7 @@ class Window(pyglet.window.Window):
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> None:
         """
         Called once whenever a mouse button gets released.
 
@@ -459,7 +460,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> None:
         """
         Called repeatedly while a mouse scroll wheel moves.
 
@@ -490,7 +491,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def set_mouse_visible(self, visible: bool = True):
+    def set_mouse_visible(self, visible: bool = True) -> None:
         """
         Set whether to show the system's cursor while over the window
 
@@ -522,7 +523,7 @@ class Window(pyglet.window.Window):
         """
         super().set_mouse_visible(visible)
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    def on_key_press(self, symbol: int, modifiers: int) -> None:
         """
         Called once when a key gets pushed down.
 
@@ -542,7 +543,7 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
-    def on_key_release(self, symbol: int, modifiers: int):
+    def on_key_release(self, symbol: int, modifiers: int) -> None:
         """
         Called once when a key gets released.
 
@@ -566,13 +567,13 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         """
         Override this function to add your custom drawing code.
         """
         pass
 
-    def on_resize(self, width: int, height: int):
+    def on_resize(self, width: int, height: int) -> None:
         """
         Override this function to add custom code to be called any time the window
         is resized. The main responsibility of this method is updating
@@ -601,7 +602,7 @@ class Window(pyglet.window.Window):
                 original_viewport[2] + height
             )
 
-    def set_min_size(self, width: int, height: int):
+    def set_min_size(self, width: int, height: int) -> None:
         """ Wrap the Pyglet window call to set minimum size
 
         :param width: width in pixels.
@@ -613,7 +614,7 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set min size on non-resizable window')
 
-    def set_max_size(self, width: int, height: int):
+    def set_max_size(self, width: int, height: int) -> None:
         """ Wrap the Pyglet window call to set maximum size
 
         :param width: width in pixels.
@@ -627,7 +628,7 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set max size on non-resizable window')
 
-    def set_size(self, width: int, height: int):
+    def set_size(self, width: int, height: int) -> None:
         """
         Ignore the resizable flag and set the size
 
@@ -655,7 +656,7 @@ class Window(pyglet.window.Window):
 
         return super().get_location()
 
-    def set_visible(self, visible: bool = True):
+    def set_visible(self, visible: bool = True) -> None:
         """
         Set if the window is visible or not. Normally, a program's window is visible.
 
@@ -664,7 +665,7 @@ class Window(pyglet.window.Window):
         super().set_visible(visible)
 
     # noinspection PyMethodMayBeStatic
-    def set_viewport(self, left: float, right: float, bottom: float, top: float):
+    def set_viewport(self, left: float, right: float, bottom: float, top: float) -> None:
         """
         Set the viewport. (What coordinates we can see.
         Used to scale and/or scroll the screen).
@@ -683,11 +684,11 @@ class Window(pyglet.window.Window):
         """ Get the viewport. (What coordinates we can see.) """
         return self.ctx.projection_2d
 
-    def use(self):
+    def use(self) -> None:
         """Bind the window's framebuffer for rendering commands"""
         self.ctx.screen.use()
 
-    def test(self, frames: int = 10):
+    def test(self, frames: int = 10) -> None:
         """
         Used by unit test cases. Runs the event loop a few times and stops.
 
@@ -707,7 +708,7 @@ class Window(pyglet.window.Window):
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: 'View'):
+    def show_view(self, new_view: "View") -> None:
         """
         Select the view to show in the next frame.
         This is not a blocking call showing the view.
@@ -774,7 +775,7 @@ class Window(pyglet.window.Window):
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
         # for details)
 
-    def hide_view(self):
+    def hide_view(self) -> None:
         """
         Hide the currently active view (if any) returning us
         back to ``on_draw`` and ``on_update`` functions in the window.
@@ -792,13 +793,13 @@ class Window(pyglet.window.Window):
         self.remove_handlers(self._current_view)
         self._current_view = None
 
-    def _create(self):
+    def _create(self) -> None:
         super()._create()
 
-    def _recreate(self, changes):
+    def _recreate(self, changes: List[str]) -> None:
         super()._recreate(changes)
 
-    def flip(self):
+    def flip(self) -> None:
         """
         Window framebuffers normally have a back and front buffer.
         This method makes the back buffer visible and hides the front buffer.
@@ -821,43 +822,43 @@ class Window(pyglet.window.Window):
 
         super().flip()
 
-    def switch_to(self):
+    def switch_to(self) -> None:
         """ Switch the this window. """
         super().switch_to()
 
-    def set_caption(self, caption):
+    def set_caption(self, caption: str) -> None:
         """ Set the caption for the window. """
         super().set_caption(caption)
 
-    def set_minimum_size(self, width: int, height: int):
+    def set_minimum_size(self, width: int, height: int) -> None:
         """ Set smallest window size. """
         super().set_minimum_size(width, height)
 
-    def set_maximum_size(self, width, height):
+    def set_maximum_size(self, width: int, height: int) -> None:
         """ Set largest window size. """
         super().set_maximum_size(width, height)
 
-    def set_location(self, x, y):
+    def set_location(self, x: int, y: int) -> None:
         """ Set location of the window. """
         super().set_location(x, y)
 
-    def activate(self):
+    def activate(self) -> None:
         """ Activate this window. """
         super().activate()
 
-    def minimize(self):
+    def minimize(self) -> None:
         """ Minimize the window. """
         super().minimize()
 
-    def maximize(self):
+    def maximize(self) -> None:
         """ Maximize  the window. """
         super().maximize()
 
-    def set_vsync(self, vsync: bool):
+    def set_vsync(self, vsync: bool) -> None:
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible=None):
+    def set_mouse_platform_visible(self, platform_visible: Optional[bool]=None) -> None:
         """
         .. warning:: You are probably looking for
                      :meth:`~.Window.set_mouse_visible`!
@@ -872,23 +873,23 @@ class Window(pyglet.window.Window):
         """
         super().set_mouse_platform_visible(platform_visible)
 
-    def set_exclusive_mouse(self, exclusive=True):
+    def set_exclusive_mouse(self, exclusive: bool=True) -> None:
         """ Capture the mouse. """
         super().set_exclusive_mouse(exclusive)
 
-    def set_exclusive_keyboard(self, exclusive=True):
+    def set_exclusive_keyboard(self, exclusive: bool=True) -> None:
         """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
-    def get_system_mouse_cursor(self, name):
+    def get_system_mouse_cursor(self, name: str) -> Optional[MouseCursor]:
         """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 
-    def dispatch_events(self):
+    def dispatch_events(self) -> None:
         """ Dispatch events """
         super().dispatch_events()
 
-    def on_mouse_enter(self, x: int, y: int):
+    def on_mouse_enter(self, x: int, y: int) -> None:
         """
         Called once whenever the mouse enters the window area on screen.
 
@@ -900,7 +901,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_leave(self, x: int, y: int):
+    def on_mouse_leave(self, x: int, y: int) -> None:
         """
         Called once whenever the mouse leaves the window area on screen.
 
@@ -948,7 +949,7 @@ class View:
     """
 
     def __init__(self,
-                 window: Optional[Window] = None):
+                 window: Optional[Window] = None) -> None:
 
         self.window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
@@ -969,7 +970,8 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(self, section: Section, at_index: Optional[int] = None,
+                    at_draw_order: Optional[int] = None) -> None:
         """
         Adds a section to the view Section Manager.
 
@@ -984,7 +986,7 @@ class View:
         color: Optional[RGBA255OrNormalized] = None,
         normalized: bool = False,
         viewport: Optional[Tuple[int, int, int, int]] = None,
-    ):
+    ) -> None:
         """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
@@ -1000,19 +1002,19 @@ class View:
         """
         self.window.clear(color, normalized, viewport)
 
-    def on_update(self, delta_time: float):
+    def on_update(self, delta_time: float) -> None:
         """To be overridden"""
         pass
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         """Called when this view should draw"""
         pass
 
-    def on_show(self):
+    def on_show(self) -> None:
         """Deprecated. Use :py:meth:`~arcade.View.on_show_view` instead."""
         pass
 
-    def on_show_view(self):
+    def on_show_view(self) -> None:
         """
         Called once when the view is shown.
 
@@ -1020,11 +1022,11 @@ class View:
         """
         pass
 
-    def on_hide_view(self):
+    def on_hide_view(self) -> None:
         """Called once when this view is hidden."""
         pass
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> None:
         """
         Override this function to add mouse functionality.
 
@@ -1035,7 +1037,7 @@ class View:
         """
         pass
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """
         Override this function to add mouse button functionality.
 
@@ -1049,7 +1051,7 @@ class View:
         """
         pass
 
-    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int) -> None:
         """
         Override this function to add mouse button functionality.
 
@@ -1063,7 +1065,7 @@ class View:
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> None:
         """
         Override this function to add mouse button functionality.
 
@@ -1077,7 +1079,7 @@ class View:
         """
         pass
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> None:
         """
         User moves the scroll wheel.
 
@@ -1088,7 +1090,7 @@ class View:
         """
         pass
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    def on_key_press(self, symbol: int, modifiers: int) -> None:
         """
         Override this function to add key press functionality.
 
@@ -1101,7 +1103,7 @@ class View:
         except AttributeError:
             pass
 
-    def on_key_release(self, _symbol: int, _modifiers: int):
+    def on_key_release(self, _symbol: int, _modifiers: int) -> None:
         """
         Override this function to add key release functionality.
 
@@ -1114,7 +1116,7 @@ class View:
         except AttributeError:
             pass
 
-    def on_resize(self, width: int, height: int):
+    def on_resize(self, width: int, height: int) -> None:
         """
         Called when the window is resized while this view is active.
         :py:meth:`~arcade.Window.on_resize` is also called separately.
@@ -1123,7 +1125,7 @@ class View:
         """
         pass
 
-    def on_mouse_enter(self, x: int, y: int):
+    def on_mouse_enter(self, x: int, y: int) -> None:
         """
         Called when the mouse was moved into the window.
         This event will not be triggered if the mouse is currently being
@@ -1134,7 +1136,7 @@ class View:
         """
         pass
 
-    def on_mouse_leave(self, x: int, y: int):
+    def on_mouse_leave(self, x: int, y: int) -> None:
         """
         Called when the mouse was moved outside of the window.
         This event will not be triggered if the mouse is currently being
