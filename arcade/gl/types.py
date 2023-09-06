@@ -1,5 +1,6 @@
 import re
 from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union
+from typing_extensions import TypeAlias
 
 from pyglet import gl
 
@@ -13,6 +14,13 @@ GLenumLike = Union[gl.GLenum, int]
 PyGLenum = int
 GLuintLike = Union[gl.GLuint, int]
 PyGLuint = int
+
+
+OpenGlFilter: TypeAlias = Tuple[PyGLenum, PyGLenum]
+BlendFunction: TypeAlias = Union[
+    Tuple[PyGLenum, PyGLenum],
+    Tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
+]
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
 _int_base_format = (

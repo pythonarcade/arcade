@@ -13,7 +13,8 @@ It allows you to do the following:
 from typing import Dict, List, Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color, RGBA255, OpenGlFilter, BlendFunction
+from arcade.types import Color, RGBA255
+from arcade.gl.types import OpenGlFilter, BlendFunction
 from arcade.tilemap import TileMap
 
 from warnings import warn

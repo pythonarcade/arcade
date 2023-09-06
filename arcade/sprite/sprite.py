@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
-from arcade.types import PathOrTexture, Point, OpenGlFilter, BlendFunction
+from arcade.types import PathOrTexture, Point
+from arcade.gl.types import OpenGlFilter, BlendFunction
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
