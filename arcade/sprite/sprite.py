@@ -317,7 +317,7 @@ class Sprite(BasicSprite, PymunkMixin):
     def draw(
             self,
             *,
-            filter: Optional[OpenGlFilter] | None = None,
+            filter: Optional[OpenGlFilter] = None,
             pixelated: Optional[bool] = None,
             blend_function: Optional[BlendFunction] = None
     ) -> None:
