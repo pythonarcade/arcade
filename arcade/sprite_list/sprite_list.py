@@ -31,7 +31,7 @@ from arcade import (
     get_window,
     gl,
 )
-from arcade.types import Color, RGBA255, OpenGlFilters, BlendFunctions
+from arcade.types import Color, RGBA255, OpenGlFilter, BlendFunction
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -963,9 +963,9 @@ class SpriteList(Generic[SpriteType]):
     def draw(
             self,
             *,
-            filter: Optional[OpenGlFilters] = None,
+            filter: Optional[OpenGlFilter] = None,
             pixelated: Optional[bool] = None,
-            blend_function: Optional[BlendFunctions] = None
+            blend_function: Optional[BlendFunction] = None
     ) -> None:
         """
         Draw this list of sprites.

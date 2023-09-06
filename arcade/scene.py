@@ -13,7 +13,7 @@ It allows you to do the following:
 from typing import Dict, List, Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color, RGBA255, OpenGlFilters, BlendFunctions
+from arcade.types import Color, RGBA255, OpenGlFilter, BlendFunction
 from arcade.tilemap import TileMap
 
 from warnings import warn
@@ -432,9 +432,9 @@ class Scene:
     def draw(
         self,
         names: Optional[Iterable[str]] = None,
-        filter: Optional[OpenGlFilters] = None,
+        filter: Optional[OpenGlFilter] = None,
         pixelated: bool = False,
-        blend_function: Optional[BlendFunctions] = None,
+        blend_function: Optional[BlendFunction] = None,
         **kwargs
     ) -> None:
         """

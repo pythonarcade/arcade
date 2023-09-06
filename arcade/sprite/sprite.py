@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
-from arcade.types import PathOrTexture, Point, OpenGlFilters, BlendFunctions
+from arcade.types import PathOrTexture, Point, OpenGlFilter, BlendFunction
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
@@ -316,9 +316,9 @@ class Sprite(BasicSprite, PymunkMixin):
     def draw(
             self,
             *,
-            filter: Optional[OpenGlFilters] | None = None,
+            filter: Optional[OpenGlFilter] | None = None,
             pixelated: Optional[bool] = None,
-            blend_function: Optional[BlendFunctions] = None
+            blend_function: Optional[BlendFunction] = None
     ) -> None:
         """
         A debug method which draws the sprite into the current OpenGL context.

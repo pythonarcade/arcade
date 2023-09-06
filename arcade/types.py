@@ -55,14 +55,14 @@ RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
 # equivalent to the following filters (under arcade.gl.enums):
 # NEAREST, LINEAR, NEAREST_MIPMAP_NEAREST, LINEAR_MIPMAP_NEAREST,
 # NEAREST_MIPMAP_LINEAR, LINEAR_MIPMAP_LINEAR
-OpenGlFilters: TypeAlias = Union[Literal[9728], Literal[9729], Literal[9984],
+OpenGlFilter: TypeAlias = Union[Literal[9728], Literal[9729], Literal[9984],
                                  Literal[9985], Literal[9986], Literal[9987]]
 
 # equivalent to the following blend_functions (under arcade.gl.enums):
 # ZERO, ONE, SRC_COLOR, ONE_MINUS_SRC_COLOR,
 # SRC_ALPHA, ONE_MINUS_SRC_ALPHA, DST_ALPHA,
 # ONE_MINUS_DST_ALPHA, DST_COLOR, ONE_MINUS_DST_COLOR
-BlendFunctions: TypeAlias = Union[Literal[0], Literal[1], Literal[768],
+BlendFunction: TypeAlias = Union[Literal[0], Literal[1], Literal[768],
                                   Literal[769], Literal[770], Literal[771],
                                   Literal[772], Literal[773], Literal[774],
                                   Literal[775]]
