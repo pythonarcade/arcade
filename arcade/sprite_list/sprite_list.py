@@ -22,7 +22,7 @@ from typing import (
     Union,
     Generic,
     Callable,
-    cast,
+    cast, Sized,
 )
 
 from arcade import (
@@ -994,11 +994,11 @@ class SpriteList(Generic[SpriteType]):
         # Set custom filter or reset to default
         if filter:
             if hasattr(filter, '__len__', ): # assume it's a collection
-                if len(filter) != 2:
+                if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
                 self.atlas.texture.filter = tuple(filter)  # type: ignore
             else:  # assume it's an int
-                self.atlas.texture.filter = filter, filter
+                self.atlas.texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
             self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
