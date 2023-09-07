@@ -269,9 +269,11 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
+
 def on_autodoc_process_bases(app, name, obj, options, bases):
     # Strip `object` from bases, it's just noise
     bases[:] = [base for base in bases if base is not object]
+
 
 class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
     """A replacement for the default autodocumenter.
@@ -304,10 +306,12 @@ class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
             strings.pop()
         return r
 
+
 class Transform(sphinx.transforms.SphinxTransform):
     default_priority = 800
     def apply(self):
         self.document.walk(Visitor(self.document))
+
 class Visitor(docutils.nodes.SparseNodeVisitor):
     def visit_desc_annotation(self, node):
         # Remove `property` prefix from properties so they look the same as
