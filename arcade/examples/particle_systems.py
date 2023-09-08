@@ -10,6 +10,8 @@ setting from the previous example.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.particle_systems
 """
+from __future__ import annotations
+
 import arcade
 import pyglet
 import random

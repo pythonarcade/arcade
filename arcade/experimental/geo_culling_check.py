@@ -6,6 +6,8 @@ leave the screen.
 Simply run the program and move draw the sprites around using the mouse.
 """
 
+from __future__ import annotations
+
 from arcade.sprite import Sprite
 import PIL
 import arcade

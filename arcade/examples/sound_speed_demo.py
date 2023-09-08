@@ -14,6 +14,8 @@ slower, and the ones to the right play faster. The buttons higher on
 the screen are quieter, while the ones further down are louder.
 """
 
+from __future__ import annotations
+
 import typing
 
 import arcade

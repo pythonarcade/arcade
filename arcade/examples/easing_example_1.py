@@ -10,6 +10,8 @@ See example 2 for how to use easings for angles.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.easing_example_1
 """
+from __future__ import annotations
+
 import arcade
 from arcade import easing
 from arcade.types import Color

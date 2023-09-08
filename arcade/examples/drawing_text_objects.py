@@ -5,6 +5,8 @@ This is much faster than using draw_text
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.drawing_text_objects
 """
+from __future__ import annotations
+
 import arcade
 
 SCREEN_WIDTH = 1200

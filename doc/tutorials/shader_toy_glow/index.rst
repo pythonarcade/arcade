@@ -1,7 +1,7 @@
 .. _shader_toy_tutorial_glow:
 
-Shader Toy Tutorial - Glow
-==========================
+Shader Toy - Glow
+=================
 
 .. figure:: cyber_fuji_2020.png
    :width: 60%

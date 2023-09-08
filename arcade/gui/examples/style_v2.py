@@ -8,6 +8,8 @@ is disabled by the user.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.style_v2
 """
+from __future__ import annotations
+
 from itertools import cycle
 
 import arcade

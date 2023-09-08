@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union
 
@@ -117,11 +119,11 @@ class AttribFormat:
     """"
     Represents an attribute in a BufferDescription or a Program.
 
-    :param str name: Name of the attribute
-    :param GLenumLike gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-    :param int bytes_per_component: Number of bytes a single component takes
-    :param int offset: (Optional offset for BufferDescription)
-    :param int location: (Optional location for program attribute)
+    :param name: Name of the attribute
+    :param gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param bytes_per_component: Number of bytes a single component takes
+    :param offset: (Optional offset for BufferDescription)
+    :param location: (Optional location for program attribute)
     """
 
     __slots__ = (
@@ -186,11 +188,11 @@ class BufferDescription:
             ['in_pos', 'in_uv'],
         )
 
-    :param Buffer buffer: The buffer to describe
-    :param str formats: The format of each attribute
-    :param list attributes: List of attributes names (strings)
-    :param list normalized: list of attribute names that should be normalized
-    :param bool instanced: ``True`` if this is per instance data
+    :param buffer: The buffer to describe
+    :param formats: The format of each attribute
+    :param attributes: List of attributes names (strings)
+    :param normalized: list of attribute names that should be normalized
+    :param instanced: ``True`` if this is per instance data
     """
 
     # Describe all variants of a format string to simplify parsing (single component)
@@ -333,10 +335,9 @@ class BufferDescription:
         if not isinstance(other, BufferDescription):
             raise ValueError(f"The only logical comparison to a BufferDescription"
                              f"is a BufferDescription not {type(other)}")
-        for self_attrib in self.attributes:
-            for other_attrib in other.attributes:
-                return True
-        return False
+
+        # Equal if we share the same attribute
+        return len(set(self.attributes) & set(other.attributes)) > 0
 
 
 class TypeInfo:

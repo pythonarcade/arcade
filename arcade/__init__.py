@@ -3,8 +3,9 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-# flake8: noqa: E402
+from __future__ import annotations
 
+# flake8: noqa: E402
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
@@ -18,7 +19,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 
 def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
-    :param int level: The log level. Defaults to DEBUG.
+    :param level: The log level. Defaults to DEBUG.
     """
     import logging
     level = level or logging.DEBUG

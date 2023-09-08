@@ -8,6 +8,8 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scrolling
 - TextArea with scroll support
 """
+from __future__ import annotations
+
 from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
 from typing_extensions import TypeGuard
@@ -121,7 +123,7 @@ class UIManager(EventDispatcher):
         """
         Removes the given widget from UIManager.
 
-        :param UIWidget child: widget to remove
+        :param child: widget to remove
         """
         for children in self.children.values():
             if child in children:

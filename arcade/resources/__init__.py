@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Dict, List, Union
 from arcade.utils import warning, ReplacementWarning
@@ -113,7 +115,7 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     the first path, it will look in the next path, and so on. The search
     is done in reverse order, so the last path added is searched first.
 
-    :param str handle: The name of the handle
+    :param handle: The name of the handle
     :param Union[str, Path] path: The absolute path to a directory
     """
     if isinstance(path, str):
@@ -142,7 +144,7 @@ def get_resource_handle_paths(handle: str) -> List[Path]:
     """
     Returns the paths for a resource handle.
 
-    :param str handle: The name of the handle
+    :param handle: The name of the handle
     """
     try:
         return handles[handle]

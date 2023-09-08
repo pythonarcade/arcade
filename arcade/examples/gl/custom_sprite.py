@@ -22,6 +22,8 @@ Hold and drag the mouse to scroll around.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.custom_sprite
 """
+from __future__ import annotations
+
 from random import randint
 from array import array
 import arcade

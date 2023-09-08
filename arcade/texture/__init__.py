@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .texture import Texture, ImageData
 from .loading import (
     load_texture,

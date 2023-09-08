@@ -5,6 +5,8 @@ This example is ported from moderngl : https://github.com/moderngl/moderngl/blob
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.tessellation
 """
+from __future__ import annotations
+
 from array import array
 
 import arcade

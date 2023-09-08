@@ -45,7 +45,8 @@ def test_resource_listing_is_complete():
             continue
         if path.suffix in skip_extensions:
             continue
-        if any(path.is_relative_to(skip_path) for skip_path in skip_paths):
+        if any(str(path).startswith(str(skip_path)) for skip_path in skip_paths):
+        # if any(path.is_relative_to(skip_path) for skip_path in skip_paths): # Python 3.9+
             continue
         paths_in_resources.add(path)
 

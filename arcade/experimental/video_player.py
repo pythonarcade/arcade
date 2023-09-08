@@ -4,6 +4,8 @@ Experimental video player using pyglet.
 This requires that you have ffmpeg installed
 and you might need to tell pyglet where it's located.
 """
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
@@ -22,7 +24,7 @@ class VideoPlayer:
     def __init__(self, path: Union[str, Path], loop: bool = False) -> None:
         self.player = pyglet.media.Player()
         self.player.loop = loop
-        self.player.queue(pyglet.media.load(str(arcade.resources.resolve_resource_path(path))))
+        self.player.queue(pyglet.media.load(str(arcade.resources.resolve(path))))
         self.player.play()
 
         self.ctx = arcade.get_window().ctx

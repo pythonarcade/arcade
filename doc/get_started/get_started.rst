@@ -1,7 +1,7 @@
 .. _get-started-here:
 
-Get Started Here
-================
+Start Here
+==========
 
 .. image:: images/treasure-map.svg
     :width: 40%
@@ -21,8 +21,8 @@ Getting Help
 If you get stuck, you can always ask for help! See the page on
 :ref:`how-to-get-help` for more information.
 
-Starting Tutorials
-------------------
+Tutorials
+---------
 
 If you are already familiar with basic Python programming, follow the
 :ref:`platformer_tutorial` as a quick way to get up and running.

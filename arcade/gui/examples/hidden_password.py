@@ -8,6 +8,8 @@ required for login screens
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.hidden_password
 """
+from __future__ import annotations
+
 from typing import Optional
 
 import arcade

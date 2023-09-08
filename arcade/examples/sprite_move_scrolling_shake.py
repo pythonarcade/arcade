@@ -7,6 +7,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_move_scrolling_shake
 """
 
+from __future__ import annotations
+
 import random
 import math
 import arcade

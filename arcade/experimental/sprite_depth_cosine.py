@@ -13,6 +13,8 @@ cosine wave. Afterward, the following is drawn:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.sprite_depth_cosine
 """
+from __future__ import annotations
+
 import math
 import arcade
 from pyglet.graphics import Batch

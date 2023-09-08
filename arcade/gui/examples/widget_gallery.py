@@ -6,6 +6,8 @@ See the other GUI examples for more information.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.widget_gallery
 """
+from __future__ import annotations
+
 from textwrap import dedent
 
 import arcade

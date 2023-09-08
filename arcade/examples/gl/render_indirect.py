@@ -19,6 +19,8 @@ or without index buffer.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.render_indirect
 """
+from __future__ import annotations
+
 from random import (
     randint,
     random,

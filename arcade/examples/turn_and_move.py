@@ -6,6 +6,8 @@ Right-click to cause the tank to move to that point.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.turn_and_move
 """
+from __future__ import annotations
+
 import math
 import arcade
 

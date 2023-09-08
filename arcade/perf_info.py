@@ -1,6 +1,8 @@
 """
 Utility functions to keep performance information
 """
+from __future__ import annotations
+
 import collections
 from typing import Dict
 
@@ -180,7 +182,7 @@ def get_fps(frame_count: int = 60) -> float:
     See :ref:`performance_statistics_example` for an example of how to
     use function.
 
-    :param int frame_count: How many frames to calculate the FPS over.
+    :param frame_count: How many frames to calculate the FPS over.
     """
     cur_time = time.perf_counter()
     if len(_frame_times) == 0:

@@ -12,6 +12,8 @@ in a separate buffer with separate capture mode.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_multi
 """
+from __future__ import annotations
+
 import struct
 import arcade
 

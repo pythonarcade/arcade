@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PIL import Image, ImageDraw
 import arcade
 import arcade.cache

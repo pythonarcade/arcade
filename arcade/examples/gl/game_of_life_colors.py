@@ -16,6 +16,8 @@ The cell and window size can be tweaked in the parameters below.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.game_of_life_colors
 """
+from __future__ import annotations
+
 import random
 from array import array
 

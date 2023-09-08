@@ -7,6 +7,8 @@ in this example to match the theme of your project.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.textured_slider
 """
+from __future__ import annotations
+
 from typing import Union
 
 import arcade

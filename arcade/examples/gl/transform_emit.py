@@ -7,6 +7,8 @@ This example was created on a Raspberry PI 4.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_emit
 """
+from __future__ import annotations
+
 # import struct
 import random
 from array import array

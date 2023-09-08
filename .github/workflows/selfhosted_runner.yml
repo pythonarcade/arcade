@@ -1,4 +1,6 @@
-name: Windows self-hosted test
+# This is our full unit tests
+# Self-hosted, run on an old notebook
+name: Unit testing
 
 on:
   push:
@@ -10,14 +12,21 @@ on:
 jobs:
 
   build:
-    name: Self Hosted Testing
+    name: Unit tests
     runs-on: self-hosted
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.8', '3.9.13', '3.10', '3.11']
+        architecture: ['x64']
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies part 1
         run: |
@@ -25,20 +34,10 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install -U pip wheel setuptools
-          python -m pip install pyogg pymunk
       - name: Install dependencies part 2
         run: |
           source .venv/bin/activate
-          python -m pip install -I -e .[dev]
-      - name: code-inspection
-        run: | 
-          source .venv/bin/activate
-          mypy arcade
-          ruff arcade
-      - name: build-docs
-        run: |
-          source .venv/bin/activate
-          sphinx-build doc build -W
+          python -m pip install -I -e .[testing_libraries]
       - name: Test with pytest
         run: |
           source .venv/bin/activate
@@ -64,7 +63,7 @@ jobs:
       - name: Upload a Build Artifact
         if: always() && steps.prepare-artifact.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: pull-request-payload
           path: pull_request_payload.json

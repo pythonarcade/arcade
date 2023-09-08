@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PIL.Image import Image
 from arcade.types import PointList
 from .base import HitBoxAlgorithm
@@ -14,7 +16,7 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
         Given an RGBA image, this returns points that make up a hit box around it
         without any attempt to trim out transparent pixels.
 
-        :param Image image: Image get hit box from.
+        :param image: Image get hit box from.
 
         :Returns: List of points
         """

@@ -8,6 +8,8 @@ use the col_span and row_span keyword arguments.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.grid_layout
 """
+from __future__ import annotations
+
 import arcade
 from arcade.gui import UIManager
 from arcade.gui.widgets import UIDummy

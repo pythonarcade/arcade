@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Dict, Tuple, Union
 from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
 import weakref
@@ -115,9 +117,9 @@ class ComputeShader:
         a size for a dimension or uses ``1`` as size you don't have to supply
         this parameter.
 
-        :param int group_x: The number of work groups to be launched in the X dimension.
-        :param int group_y: The number of work groups to be launched in the y dimension.
-        :param int group_z: The number of work groups to be launched in the z dimension.
+        :param group_x: The number of work groups to be launched in the X dimension.
+        :param group_y: The number of work groups to be launched in the y dimension.
+        :param group_z: The number of work groups to be launched in the z dimension.
         """
         self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)

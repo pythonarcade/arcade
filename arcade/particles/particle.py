@@ -1,6 +1,8 @@
 """
 Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
 """
+from __future__ import annotations
+
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
 from arcade.types import Point, Vector

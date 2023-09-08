@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .particle import (
     Particle,
     EternalParticle,

@@ -12,6 +12,8 @@ but should work with any recent version of Pygame.
     pip install -I pygame-ce==2.1.3
 
 """
+from __future__ import annotations
+
 import math
 from typing import Tuple
 

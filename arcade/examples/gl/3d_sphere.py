@@ -7,6 +7,8 @@ and how different context flags affects the rendering of a 3d object.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.3d_sphere
 """
+from __future__ import annotations
+
 import arcade
 from arcade.math import clamp
 from arcade.gl import geometry

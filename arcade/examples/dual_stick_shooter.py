@@ -7,6 +7,8 @@ not present, the game will fail back to use keyboard controls (WASD to move, arr
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.dual_stick_shooter
 """
+from __future__ import annotations
+
 import math
 import pprint
 import random

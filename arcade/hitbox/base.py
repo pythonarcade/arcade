@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from __future__ import annotations
+
 from math import cos, radians, sin
 from typing import Any, Sequence, Tuple
 from typing_extensions import Self
@@ -257,7 +259,7 @@ class RotatableHitBox(HitBox):
         if not self._adjusted_cache_dirty:
             return self._adjusted_points
 
-        rad = radians(self._angle)
+        rad = radians(-self._angle)
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
