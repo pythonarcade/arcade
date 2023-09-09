@@ -4,6 +4,8 @@ Using a Vertex Buffer Object With Lines
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.lines_buffered
 """
+from __future__ import annotations
+
 import random
 import arcade
 from arcade.shape_list import (

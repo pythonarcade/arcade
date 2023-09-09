@@ -8,6 +8,8 @@ a horizontal line.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.box_layout
 """
+from __future__ import annotations
+
 import arcade
 from arcade.gui import UIManager, UIBoxLayout
 from arcade.gui.widgets import UIDummy, UISpace

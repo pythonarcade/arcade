@@ -3,6 +3,8 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.07_coins_and_sound
 """
+from __future__ import annotations
+
 import arcade
 
 # Constants

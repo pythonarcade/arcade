@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import PIL.Image
 
 from arcade.texture import Texture

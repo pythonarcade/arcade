@@ -4,6 +4,8 @@ Pymunk 2
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_joint_builder
 """
+from __future__ import annotations
+
 import arcade
 import pymunk
 import timeit

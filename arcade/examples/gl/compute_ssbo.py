@@ -23,6 +23,8 @@ The compute shader in this example works in one dimension for simplicity.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.compute_ssbo
 """
+from __future__ import annotations
+
 import random
 import math
 from array import array

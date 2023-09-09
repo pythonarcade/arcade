@@ -7,6 +7,8 @@ from the command line with:
 python -m arcade.examples.bouncing_rectangle
 """
 
+from __future__ import annotations
+
 import arcade
 
 # --- Set up the constants

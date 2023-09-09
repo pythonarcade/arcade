@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pyglet.input
 from typing import List
 from pyglet.input import Joystick

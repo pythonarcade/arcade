@@ -1,6 +1,8 @@
 """
 See: https://www.shadertoy.com/view/lsBfRc
 """
+from __future__ import annotations
+
 from arcade.experimental import Shadertoy
 
 
@@ -8,8 +10,8 @@ class BloomFilter:
     """
     CRT Filter
 
-    :param int width:
-    :param int height:
+    :param width:
+    :param height:
 
     """
     def __init__(

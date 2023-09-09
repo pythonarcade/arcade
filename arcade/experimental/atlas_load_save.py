@@ -8,6 +8,8 @@ Load atlas:
 python arcade/experimental/atlas_load_save.py load
 """
 
+from __future__ import annotations
+
 import sys
 import math
 import pprint

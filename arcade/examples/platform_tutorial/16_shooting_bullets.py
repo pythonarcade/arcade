@@ -3,6 +3,8 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.16_shooting_bullets
 """
+from __future__ import annotations
+
 import math
 
 import arcade

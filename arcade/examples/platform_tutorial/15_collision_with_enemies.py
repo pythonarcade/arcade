@@ -3,6 +3,8 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.15_collision_with_enemies
 """
+from __future__ import annotations
+
 import math
 
 import arcade

@@ -7,6 +7,8 @@ to match the theme of your game.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.toggle
 """
+from __future__ import annotations
+
 import arcade
 from arcade import View, load_texture
 from arcade.gui import UIManager, UIAnchorLayout

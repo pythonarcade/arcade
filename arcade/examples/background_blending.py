@@ -9,6 +9,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.background_blending
 """
 
+from __future__ import annotations
+
 import arcade
 import arcade.background as background
 

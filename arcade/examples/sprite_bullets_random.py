@@ -4,6 +4,8 @@ Show how to have enemies shoot bullets at random intervals.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bullets_random
 """
+from __future__ import annotations
+
 import arcade
 import random
 

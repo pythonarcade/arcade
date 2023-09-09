@@ -5,6 +5,8 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
+from __future__ import annotations
+
 from typing import Dict, Tuple
 from enum import Enum
 from arcade.math import rotate_point

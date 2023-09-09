@@ -19,6 +19,8 @@ Dependencies:
     pip install opencv-python numpy
 """
 
+from __future__ import annotations
+
 import cv2  # type: ignore
 import numpy  # type: ignore
 import pyglet.gl as gl

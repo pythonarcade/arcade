@@ -1,7 +1,7 @@
 .. _installation-instructions:
 
-Installation Instructions
-=========================
+Installation
+============
 
 Arcade runs on Windows, Mac OS X, and Linux.
 
@@ -12,10 +12,10 @@ Select the instructions for your platform:
 .. toctree::
    :maxdepth: 1
 
-   pycharm
    windows
    mac
    linux
    source
+   pycharm
    obsolete
 
