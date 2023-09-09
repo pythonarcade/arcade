@@ -11,6 +11,41 @@ if TYPE_CHECKING:
 
 class ScreenShaker2D:
     """
+    sqrt{x} * e^{-x}
+    """
+
+    def __init__(self, camera_data: CameraData, *,
+                 default_falloff: float = 1.0,
+                 default_acceleration: float = 1.0,
+                 default_amplitude: float = 1.0,
+                 default_direction: Optional[Tuple[float, float]] = None):
+        self._data: CameraData = camera_data
+
+        self._d_falloff: float = default_falloff
+        self._d_acceleration: float = default_acceleration
+        self._d_amplitude: float = default_amplitude
+        self._d_direction: Optional[Tuple[float, float]] = default_direction
+
+        self._t_falloff: float = default_falloff
+        self._t_acceleration: float = default_acceleration
+        self._t_amplitude: float = default_amplitude
+        self._t_direction: Optional[Tuple[float, float]] = default_direction
+
+    def _curve(self, _t: float):
+        pass
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
+    def stop_after(self, seconds: float):
+        pass
+
+
+class ScreenShaker2D_old:
+    """
     Uses the equation Ae^{-fx}sin(v 2 pi x) to create shake effect which lessens over time.
     The shaking can be started with using the Start method. Every value has a default,
     and a temporary value. The temporary values are reset every time the animation
