@@ -74,16 +74,6 @@ class _AStarGraph(object):
     :param int bottom: Far bottom side y value
     :param int top: Far top side y value
     """
-
-    __slots__ = (
-        "barriers",
-        "left",
-        "right",
-        "top",
-        "bottom",
-        "movement_directions"
-    )
-
     def __init__(self, barriers: Union[List, Tuple, Set],
                  left: int,
                  right: int,
@@ -246,19 +236,6 @@ class AStarBarrierList:
     :param int top: Top of playing field
     :param Optional[Set] barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
-
-    __slots__ = (
-        "grid_size",
-        "bottom",
-        "top",
-        "left",
-        "right",
-        "bottom",
-        "moving_sprite",
-        "blocking_sprites",
-        "barrier_list"
-    )
-
     def __init__(self,
                  moving_sprite: Sprite,
                  blocking_sprites: SpriteList,
