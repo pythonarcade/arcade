@@ -1,3 +1,5 @@
+import pytest
+
 import arcade
 import pyglet
 
@@ -13,6 +15,10 @@ def test_window(window: arcade.Window):
     arcade.set_background_color(arcade.color.AMAZON)
     w = arcade.get_window()
     assert w is not None
+
+    for not_a_view in ("string", 1, ("not", "a", "view")):
+        with pytest.raises(TypeError):
+            w.show_view(not_a_view)
 
     # NOTE: Window managers can enforce difference sizes
     # Make sure the arguments get passed to the window

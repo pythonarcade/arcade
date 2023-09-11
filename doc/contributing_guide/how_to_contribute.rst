@@ -1,7 +1,7 @@
 .. _how-to-contribute:
 
-How to Contribute
-=================
+Ways to Contribute
+==================
 
 We would love to have you contribute to the project! There are several
 ways that you can do so.
@@ -23,7 +23,16 @@ First, take some time to understand the project layout:
 * :ref:`how-to-compile`
 * :ref:`how-to-submit-changes`
 
-Then you can improve these parts of the project:
+
+Then, perform the following steps:
+
+#. Make sure you have Python 3.9+ installed rather than 3.8+ to meet
+   dev tool requirements.
+#. Make a virtual environment.
+#. Run `pip install -e .[dev]` to perform a dev install.
+
+
+Afterwards, you can improve these parts of the project:
 
 * **Document** - Edit the reStructuredText_ and docstrings_ to make the Arcade
   documentation better.

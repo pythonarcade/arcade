@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
@@ -36,11 +38,11 @@ class Sprite(BasicSprite, PymunkMixin):
 
              It uses fewer resources at the cost of having fewer features.
 
-    :param str path_or_texture: Path to an image file, or a texture object.
-    :param float center_x: Location of the sprite in pixels.
-    :param float center_y: Location of the sprite in pixels.
-    :param float scale: Show the image at this many times its original size.
-    :param float angle: The initial rotation of the sprite in degrees
+    :param path_or_texture: Path to an image file, or a texture object.
+    :param center_x: Location of the sprite in pixels.
+    :param center_y: Location of the sprite in pixels.
+    :param scale: Show the image at this many times its original size.
+    :param angle: The initial rotation of the sprite in degrees
     """
 
     __slots__ = (
@@ -249,7 +251,6 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Get or set custom sprite properties.
 
-        :rtype: Dict[str, Any]
         """
         if self._properties is None:
             self._properties = {}
@@ -380,7 +381,7 @@ class Sprite(BasicSprite, PymunkMixin):
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        :param arcade.Texture texture: Texture to add to the list of available textures
+        :param texture: Texture to add to the list of available textures
 
         """
         self.textures.append(texture)
@@ -390,7 +391,7 @@ class Sprite(BasicSprite, PymunkMixin):
         Set the current texture by texture number.
         The number is the index into ``self.textures``.
 
-        :param int texture_no: Index into ``self.textures``
+        :param texture_no: Index into ``self.textures``
         """
         texture = self.textures[texture_no]
         self.texture = texture

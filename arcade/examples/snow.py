@@ -9,6 +9,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.snow
 """
 
+from __future__ import annotations
+
 import random
 import math
 import arcade

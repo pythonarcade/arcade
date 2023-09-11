@@ -1,7 +1,7 @@
 .. _shader_toy_tutorial_particles:
 
-Shader Toy Tutorial - Particles
-===============================
+Shader Toy - Particles
+======================
 
 .. contents::
 

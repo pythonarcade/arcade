@@ -5,6 +5,8 @@ and the three ways to process button events.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_flat_button
 """
+from __future__ import annotations
+
 import arcade
 import arcade.gui
 

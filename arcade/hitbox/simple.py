@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Tuple
 from PIL.Image import Image
 from arcade.types import Point, PointList
@@ -15,7 +17,7 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
         Given an RGBA image, this returns points that make up a hit box around it. Attempts
         to trim out transparent pixels.
 
-        :param Image image:
+        :param image:
 
         :Returns: List of points
         """

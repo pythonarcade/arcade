@@ -12,6 +12,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.shape_list_demo_2
 """
 
+from __future__ import annotations
+
 import arcade
 import timeit
 

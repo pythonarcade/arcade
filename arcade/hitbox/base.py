@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from __future__ import annotations
+
 from math import cos, radians, sin
 from typing import Any, Sequence, Tuple
 from typing_extensions import Self

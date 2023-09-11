@@ -15,6 +15,8 @@ python -m arcade.examples.pymunk_box_stacks
 Click and drag with the mouse to move the boxes.
 """
 
+from __future__ import annotations
+
 import arcade
 import pymunk
 import timeit

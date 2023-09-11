@@ -10,7 +10,9 @@ It allows you to do the following:
 * Control sprite list draw order within the group
 """
 
-from typing import Dict, List, Optional, Union, Iterable
+from __future__ import annotations
+
+from typing import Dict, List, Optional, Union, Iterable, Tuple
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255

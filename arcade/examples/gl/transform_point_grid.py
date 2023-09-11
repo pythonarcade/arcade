@@ -16,6 +16,8 @@ Increase the window resolution to get more points.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_point_grid
 """
+from __future__ import annotations
+
 import random
 import time
 from array import array

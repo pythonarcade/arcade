@@ -14,6 +14,8 @@ It currently needs the following improvements:
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.scroll_area
 """
+from __future__ import annotations
+
 from typing import Iterable, Optional
 
 from pyglet.event import EVENT_UNHANDLED

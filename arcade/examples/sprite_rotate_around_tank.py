@@ -21,6 +21,8 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rotate_around_tank
 """
+from __future__ import annotations
+
 import math
 import arcade
 from arcade.types import Point
