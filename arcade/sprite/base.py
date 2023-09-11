@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar
+from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
 from arcade.types import Point, Color, RGBA255, PointList

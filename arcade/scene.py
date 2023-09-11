@@ -12,7 +12,7 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union, Iterable, Tuple
+from typing import Dict, List, Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
