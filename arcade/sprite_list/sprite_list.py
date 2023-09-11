@@ -24,7 +24,7 @@ from typing import (
     Union,
     Generic,
     Callable,
-    cast,
+    cast, Sized,
 )
 
 from arcade import (
@@ -34,6 +34,7 @@ from arcade import (
     gl,
 )
 from arcade.types import Color, RGBA255
+from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -957,7 +958,13 @@ class SpriteList(Generic[SpriteType]):
         """
         self._init_deferred()
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
+    def draw(
+            self,
+            *,
+            filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
+            pixelated: Optional[bool] = None,
+            blend_function: Optional[BlendFunction] = None
+    ) -> None:
         """
         Draw this list of sprites.
 
@@ -983,7 +990,12 @@ class SpriteList(Generic[SpriteType]):
 
         # Set custom filter or reset to default
         if filter:
-            self.atlas.texture.filter = filter, filter
+            if hasattr(filter, '__len__', ): # assume it's a collection
+                if len(cast(Sized, filter)) != 2:
+                    raise ValueError("Can't use sequence of length != 2")
+                self.atlas.texture.filter = tuple(filter)  # type: ignore
+            else:  # assume it's an int
+                self.atlas.texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
             self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
