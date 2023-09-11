@@ -9,8 +9,6 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_no_coins_on_walls
 """
-from __future__ import annotations
-
 import arcade
 import random
 
