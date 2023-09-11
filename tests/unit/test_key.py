@@ -1,8 +1,8 @@
 
 def test_key():
     from arcade import key
-    names = key.__dict__.keys()
-    # temp fix which will be replaced with fuller, more meaningful
-    # tests in the coming days. The values are as follows:
-    # 214 key constants + from __future__ import annotations
-    assert 215 == len(names)
+    names = [
+        k for k in key.__dict__.keys()
+        if not k.startswith("__") and k.isupper()
+    ]
+    assert 205 == len(names)
