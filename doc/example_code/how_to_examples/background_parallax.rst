@@ -5,6 +5,11 @@
 Parallax
 ========
 
+.. warning:: This example is experimental!
+
+             The features it uses may change rapidly or be replaced in
+             future arcade releases!
+
 .. image:: background_parallax.png
     :width: 600px
     :align: center
