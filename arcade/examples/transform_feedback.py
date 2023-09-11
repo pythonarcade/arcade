@@ -18,8 +18,6 @@ There are no predetermined paths and they system just lives on its own.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.transform_feedback
 """
-from __future__ import annotations
-
 from array import array
 import math
 import time

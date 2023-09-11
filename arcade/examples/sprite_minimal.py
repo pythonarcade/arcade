@@ -6,8 +6,6 @@ Draws a single sprite in the middle screen.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_minimal
 """
-from __future__ import annotations
-
 import arcade
 
 

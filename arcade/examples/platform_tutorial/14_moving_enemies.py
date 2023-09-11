@@ -3,8 +3,6 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.14_moving_enemies
 """
-from __future__ import annotations
-
 import math
 
 import arcade

@@ -18,8 +18,6 @@ panning, which is how much the sound plays in the left speaker vs the
 right speaker. Lower rows play the sound louder than the higher ones.
 """
 
-from __future__ import annotations
-
 import typing
 
 import arcade

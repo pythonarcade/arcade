@@ -9,8 +9,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_move_walls
 """
 
-from __future__ import annotations
-
 import arcade
 
 SPRITE_SCALING = 0.5
