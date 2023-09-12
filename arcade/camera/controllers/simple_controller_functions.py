@@ -6,9 +6,9 @@ from arcade.easing import linear
 from pyglet.math import Vec3
 
 __all__ = [
-    'simple_follow',
+    'simple_follow_3D',
     'simple_follow_2D',
-    'simple_easing',
+    'simple_easing_3D',
     'simple_easing_2D',
     'quaternion_rotation',
     'rotate_around_forward',
@@ -67,7 +67,7 @@ def _interpolate_3D(s: Tuple[float, float, float], e: Tuple[float, float, float]
 
 # A set of four methods for moving a camera smoothly in a straight line in various different ways.
 
-def simple_follow(speed: float, target: Tuple[float, float, float], data: CameraData):
+def simple_follow_3D(speed: float, target: Tuple[float, float, float], data: CameraData):
     """
     A simple method which moves the camera linearly towards the target point.
 
@@ -87,10 +87,10 @@ def simple_follow_2D(speed: float, target: Tuple[float, float], data: CameraData
     :param target: The 2D position the camera should move towards in world space.
     :param data: The camera data object which stores its position, rotation, and direction.
     """
-    simple_follow(speed, target + (0,), data)
+    simple_follow_3D(speed, target + (0,), data)
 
 
-def simple_easing(percent: float,
+def simple_easing_3D(percent: float,
                   start: Tuple[float, float, float],
                   target: Tuple[float, float, float],
                   data: CameraData, func: Callable[[float], float] = linear):
@@ -129,4 +129,4 @@ def simple_easing_2D(percent: float,
                  speed does not stay constant. See arcade.easing for examples.
     """
 
-    simple_easing(percent, start + (0,), target + (0,), data, func)
+    simple_easing_3D(percent, start + (0,), target + (0,), data, func)

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ScreenShaker2D:
     """
-    sqrt{x} * e^{-x}
+    Ae^{-fx} - Ae^{-(z+f)x}
     """
 
     def __init__(self, camera_data: CameraData, *,
