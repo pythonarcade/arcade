@@ -944,14 +944,17 @@ class SpriteList(Generic[SpriteType]):
 
     def initialize(self):
         """
-        Create the internal OpenGL resources.
-        This can be done if the sprite list is lazy or was created before the window / context.
-        The initialization will happen on the first draw if this method is not called.
-        This is acceptable for most people, but this method gives you the ability to pre-initialize
-        to potentially void initial stalls during rendering.
+        Request immediate creation of OpenGL resources for this list.
 
-        Calling this otherwise will have no effect. Calling this method in another thread
-        will result in an OpenGL error.
+        Calling this method is optional. It only has an effect for lists
+        created with ``lazy=True``. If this method is not called,
+        uninitialized sprite lists will automatically initialize OpenGL
+        resources on their first :py:meth:`~SpriteList.draw` call instead.
+
+        This method is useful for performance optimization, advanced
+        techniques, and writing tests. Do not call it across thread
+        boundaries. See :ref:`pg_spritelist_advanced_lazy_spritelists`
+        to learn more.
         """
         self._init_deferred()
 
