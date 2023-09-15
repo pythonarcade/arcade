@@ -1160,7 +1160,9 @@ class SpriteList(Generic[SpriteType]):
         if not sprite._texture:
             return
 
-        tex_slot, _ = self._atlas.add(sprite._texture)
+        # Ugly syntax makes type checking pass without perf hit from cast
+        tex_slot: int = self._atlas.add( # type: ignore
+            sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
