@@ -33,6 +33,7 @@ from arcade import (
     get_window,
     gl,
 )
+from arcade.gl import Texture2D
 from arcade.types import Color, RGBA255
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
@@ -1000,8 +1001,9 @@ class SpriteList(Generic[SpriteType]):
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
-        # Workaround for Optional[TextureAtlas] + slow . lookup speed
-        atlas_texture: Texture2D = self.atlas.texture  # type: ignore
+        # Workarounds for Optional[TextureAtlas] + slow . lookup speed
+        atlas: TextureAtlas = self.atlas # type: ignore
+        atlas_texture: Texture2D = atlas.texture
 
         # Set custom filter or reset to default
         if filter:
@@ -1025,8 +1027,8 @@ class SpriteList(Generic[SpriteType]):
 
         self.program["spritelist_color"] = self._color
 
-        self._atlas.texture.use(0)
-        self._atlas.use_uv_texture(1)
+        atlas_texture.use(0)
+        atlas.use_uv_texture(1)
         if not self._geometry:
             raise ValueError("Attempting to render without '_geometry' field being set.")
         self._geometry.render(
