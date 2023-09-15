@@ -621,7 +621,7 @@ class SpriteList(Generic[SpriteType]):
         if self._initialized:
             if sprite.texture is None:
                 raise ValueError("Sprite must have a texture when added to a SpriteList")
-            self._atlas.add(sprite.texture)
+            self._atlas.add(sprite.texture)  # type: ignore
 
     def swap(self, index_1: int, index_2: int):
         """
