@@ -968,6 +968,16 @@ class SpriteList(Generic[SpriteType]):
         """
         Draw this list of sprites.
 
+        Uninitialized sprite lists will first create OpenGL resources
+        before drawing. This may cause a performance stutter when the
+        following are true:
+
+        1. You created the sprite list with ``lazy=True``
+        2. You did not call :py:meth:`~SpriteList.initialize` before drawing
+        3. You are initializing many sprites and/or lists at once
+
+        See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
+
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
