@@ -1,5 +1,6 @@
 import pytest
 import arcade
+from arcade import TextureAtlas
 
 
 def test_create():
@@ -14,6 +15,7 @@ def test_create():
     assert len(spritelist) == 100
     assert spritelist.spatial_hash is not None
     assert spritelist._initialized is False
+    assert spritelist.atlas is None
 
     arcade.set_window(None)
     with pytest.raises(RuntimeError):
@@ -30,4 +32,5 @@ def test_create_2(window):
     assert spritelist._initialized
     assert spritelist._sprite_pos_buf
     assert spritelist._geometry
+    assert isinstance(spritelist.atlas, TextureAtlas)
     spritelist.draw()
