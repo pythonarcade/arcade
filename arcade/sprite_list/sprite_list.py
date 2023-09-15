@@ -1000,22 +1000,25 @@ class SpriteList(Generic[SpriteType]):
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
+        # Workaround for Optional[TextureAtlas] + slow . lookup speed
+        atlas_texture: Texture2D = self.atlas.texture  # type: ignore
+
         # Set custom filter or reset to default
         if filter:
             if hasattr(filter, '__len__', ): # assume it's a collection
                 if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
-                self.atlas.texture.filter = tuple(filter)  # type: ignore
+                atlas_texture.filter = tuple(filter)  # type: ignore
             else:  # assume it's an int
-                self.atlas.texture.filter = cast(OpenGlFilter, (filter, filter))
+                atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # Handle the pixelated shortcut
         if pixelated:
-            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
