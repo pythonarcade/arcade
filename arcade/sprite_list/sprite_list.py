@@ -942,7 +942,7 @@ class SpriteList(Generic[SpriteType]):
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
-    def initialize(self):
+    def initialize(self) -> None:
         """
         Request immediate creation of OpenGL resources for this list.
 
