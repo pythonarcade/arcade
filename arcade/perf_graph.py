@@ -287,7 +287,9 @@ class PerfGraph(arcade.Sprite):
                 text_object.text = f"{int(index * view_y_legend_increment)}"
 
         # Render to the internal texture
-        with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+        # This ugly spacing is intentional to make type checking work.
+        with atlas.render_into( # type: ignore
+                self.minimap_texture, projection=self.proj) as fbo:
 
             # Set the background color
             fbo.clear(self.background_color)
