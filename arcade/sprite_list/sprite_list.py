@@ -880,7 +880,9 @@ class SpriteList(Generic[SpriteType]):
             raise ValueError("Cannot preload textures before the window is created")
 
         for texture in texture_list:
-            self._atlas.add(texture)
+            # Ugly spacing is a fast workaround for None type checking issues
+            self._atlas.add( # type: ignore
+                texture)
 
 
     def write_sprite_buffers_to_gpu(self) -> None:
