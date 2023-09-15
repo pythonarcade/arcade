@@ -86,15 +86,10 @@ class SpriteList(Generic[SpriteType]):
     :param capacity: (Advanced) The initial capacity of the internal buffer.
             It's a suggestion for the maximum amount of sprites this list
             can hold. Can normally be left with default value.
-    :param lazy: (Advanced) Delay creating OpenGL resources for the sprite list
-        until its first call of either of these methods:
-
-        1. py:meth:`~SpriteList.draw`
-        2. :py:meth:`~SpriteList.initialize`
-
-        This is useful for advanced techniques like parallel loading or world
-        generation. See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn
-        more.
+    :param lazy: (Advanced) ``True`` delays creating OpenGL resources
+            for the sprite list until either its :py:meth:`~SpriteList.draw`
+            or :py:meth:`~SpriteList.initialize` method is called. See
+            :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
