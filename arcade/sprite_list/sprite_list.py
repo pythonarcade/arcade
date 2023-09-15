@@ -105,8 +105,7 @@ class SpriteList(Generic[SpriteType]):
         visible: bool = True,
     ):
         self.program = None
-        if atlas:
-            self._atlas: TextureAtlas = atlas
+        self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -190,9 +189,8 @@ class SpriteList(Generic[SpriteType]):
 
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = (
-            getattr(self, "_atlas", None) or self.ctx.default_atlas
-        )
+        if not self._atlas:
+            self._atlas =  self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -371,7 +369,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> "TextureAtlas":
+    def atlas(self) -> Optional["TextureAtlas"]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
