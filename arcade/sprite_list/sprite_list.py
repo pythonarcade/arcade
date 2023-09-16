@@ -33,6 +33,7 @@ from arcade import (
     get_window,
     gl,
 )
+from arcade.gl import Texture2D
 from arcade.types import Color, RGBA255
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
@@ -86,11 +87,10 @@ class SpriteList(Generic[SpriteType]):
     :param capacity: (Advanced) The initial capacity of the internal buffer.
             It's a suggestion for the maximum amount of sprites this list
             can hold. Can normally be left with default value.
-    :param lazy: (Advanced) Enabling lazy spritelists ensures no internal OpenGL
-                      resources are created until the first draw call or ``initialize()``
-                      is called. This can be useful when making spritelists in threads
-                      because only the main thread is allowed to interact with
-                      OpenGL.
+    :param lazy: (Advanced) ``True`` delays creating OpenGL resources
+            for the sprite list until either its :py:meth:`~SpriteList.draw`
+            or :py:meth:`~SpriteList.initialize` method is called. See
+            :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
@@ -105,8 +105,7 @@ class SpriteList(Generic[SpriteType]):
         visible: bool = True,
     ):
         self.program = None
-        if atlas:
-            self._atlas: TextureAtlas = atlas
+        self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -190,9 +189,8 @@ class SpriteList(Generic[SpriteType]):
 
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = (
-            getattr(self, "_atlas", None) or self.ctx.default_atlas
-        )
+        if not self._atlas:
+            self._atlas =  self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -371,7 +369,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> "TextureAtlas":
+    def atlas(self) -> Optional["TextureAtlas"]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
@@ -624,7 +622,7 @@ class SpriteList(Generic[SpriteType]):
         if self._initialized:
             if sprite.texture is None:
                 raise ValueError("Sprite must have a texture when added to a SpriteList")
-            self._atlas.add(sprite.texture)
+            self._atlas.add(sprite.texture)  # type: ignore
 
     def swap(self, index_1: int, index_2: int):
         """
@@ -883,7 +881,9 @@ class SpriteList(Generic[SpriteType]):
             raise ValueError("Cannot preload textures before the window is created")
 
         for texture in texture_list:
-            self._atlas.add(texture)
+            # Ugly spacing is a fast workaround for None type checking issues
+            self._atlas.add( # type: ignore
+                texture)
 
 
     def write_sprite_buffers_to_gpu(self) -> None:
@@ -945,16 +945,19 @@ class SpriteList(Generic[SpriteType]):
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
-    def initialize(self):
+    def initialize(self) -> None:
         """
-        Create the internal OpenGL resources.
-        This can be done if the sprite list is lazy or was created before the window / context.
-        The initialization will happen on the first draw if this method is not called.
-        This is acceptable for most people, but this method gives you the ability to pre-initialize
-        to potentially void initial stalls during rendering.
+        Request immediate creation of OpenGL resources for this list.
 
-        Calling this otherwise will have no effect. Calling this method in another thread
-        will result in an OpenGL error.
+        Calling this method is optional. It only has an effect for lists
+        created with ``lazy=True``. If this method is not called,
+        uninitialized sprite lists will automatically initialize OpenGL
+        resources on their first :py:meth:`~SpriteList.draw` call instead.
+
+        This method is useful for performance optimization, advanced
+        techniques, and writing tests. Do not call it across thread
+        boundaries. See :ref:`pg_spritelist_advanced_lazy_spritelists`
+        to learn more.
         """
         self._init_deferred()
 
@@ -967,6 +970,16 @@ class SpriteList(Generic[SpriteType]):
     ) -> None:
         """
         Draw this list of sprites.
+
+        Uninitialized sprite lists will first create OpenGL resources
+        before drawing. This may cause a performance stutter when the
+        following are true:
+
+        1. You created the sprite list with ``lazy=True``
+        2. You did not call :py:meth:`~SpriteList.initialize` before drawing
+        3. You are initializing many sprites and/or lists at once
+
+        See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
@@ -988,30 +1001,34 @@ class SpriteList(Generic[SpriteType]):
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
+        # Workarounds for Optional[TextureAtlas] + slow . lookup speed
+        atlas: TextureAtlas = self.atlas # type: ignore
+        atlas_texture: Texture2D = atlas.texture
+
         # Set custom filter or reset to default
         if filter:
             if hasattr(filter, '__len__', ): # assume it's a collection
                 if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
-                self.atlas.texture.filter = tuple(filter)  # type: ignore
+                atlas_texture.filter = tuple(filter)  # type: ignore
             else:  # assume it's an int
-                self.atlas.texture.filter = cast(OpenGlFilter, (filter, filter))
+                atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # Handle the pixelated shortcut
         if pixelated:
-            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
 
         self.program["spritelist_color"] = self._color
 
-        self._atlas.texture.use(0)
-        self._atlas.use_uv_texture(1)
+        atlas_texture.use(0)
+        atlas.use_uv_texture(1)
         if not self._geometry:
             raise ValueError("Attempting to render without '_geometry' field being set.")
         self._geometry.render(
@@ -1143,7 +1160,9 @@ class SpriteList(Generic[SpriteType]):
         if not sprite._texture:
             return
 
-        tex_slot, _ = self._atlas.add(sprite._texture)
+        # Ugly syntax makes type checking pass without perf hit from cast
+        tex_slot: int = self._atlas.add( # type: ignore
+            sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -1159,8 +1178,10 @@ class SpriteList(Generic[SpriteType]):
 
         if not sprite._texture:
             return
-
-        tex_slot, _ = self._atlas.add(sprite._texture)
+        atlas = self._atlas
+        # Ugly spacing makes type checking work with specificity
+        tex_slot: int = atlas.add( # type: ignore
+            sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
