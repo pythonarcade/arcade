@@ -259,7 +259,7 @@ class ArcadeContext(Context):
     def projection_matrix(self) -> Mat4:
         """
         Get the current projection matrix.
-        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+        This 4x4 float32 matrix is calculated by cameras.
 
         This property simply gets and sets pyglet's projection matrix.
 
