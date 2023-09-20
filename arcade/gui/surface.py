@@ -9,6 +9,7 @@ from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, FloatRect, Point
+from pyglet.math import Mat4
 
 
 class Surface:
@@ -132,7 +133,7 @@ class Surface:
         Also resets the limit of the surface (viewport).
         """
         # Set viewport and projection
-        proj = self.ctx.projection_2d
+        proj = self.ctx.projection_matrix
         self.limit(0, 0, *self.size)
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -142,7 +143,7 @@ class Surface:
             yield self
 
         # Restore projection and blend function
-        self.ctx.projection_2d = proj
+        self.ctx.projection_matrix = proj
         self.ctx.blend_func = blend_func
 
     def limit(self, x, y, width, height):
@@ -156,7 +157,7 @@ class Surface:
 
         width = max(width, 1)
         height = max(height, 1)
-        self.ctx.projection_2d = 0, width, 0, height
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, width, 0, height, -100, 100)
 
     def draw(
         self,

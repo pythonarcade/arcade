@@ -26,8 +26,8 @@ GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING
 # and the edge of the screen.
 VIEWPORT_MARGIN_TOP = 60
 VIEWPORT_MARGIN_BOTTOM = 60
-VIEWPORT_RIGHT_MARGIN = 270
-VIEWPORT_LEFT_MARGIN = 270
+VIEWPORT_MARGIN_RIGHT = 270
+VIEWPORT_MARGIN_LEFT = 270
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -55,8 +55,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         self.physics_engine = None
-        self.view_left = 0
-        self.view_bottom = 0
+        self.cam = None
         self.end_of_map = 0
         self.game_over = False
         self.last_time = None
@@ -111,10 +110,8 @@ class MyGame(arcade.Window):
         if self.tile_map.background_color:
             self.background_color = self.tile_map.background_color
 
-        # Set the view port boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
+        # Reset cam
+        self.cam = arcade.camera.Camera2D()
 
     def on_draw(self):
         """
@@ -137,8 +134,8 @@ class MyGame(arcade.Window):
         if self.fps_message:
             arcade.draw_text(
                 self.fps_message,
-                self.view_left + 10,
-                self.view_bottom + 40,
+                self.cam.left + 10,
+                self.cam.bottom + 40,
                 arcade.color.BLACK,
                 14,
             )
@@ -152,14 +149,14 @@ class MyGame(arcade.Window):
         distance = self.player_sprite.right
         output = f"Distance: {distance:.0f}"
         arcade.draw_text(
-            output, self.view_left + 10, self.view_bottom + 20, arcade.color.BLACK, 14
+            output, self.cam.left + 10, self.cam.bottom + 20, arcade.color.BLACK, 14
         )
 
         if self.game_over:
             arcade.draw_text(
                 "Game Over",
-                self.view_left + 200,
-                self.view_bottom + 200,
+                self.cam.left + 200,
+                self.cam.bottom + 200,
                 arcade.color.BLACK,
                 30,
             )
@@ -204,44 +201,36 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Track if we need to change the view port
+        # Track if we need to change the viewport
 
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_LEFT_MARGIN
+        left_bndry = self.cam.left + VIEWPORT_MARGIN_LEFT
         if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+            self.cam.left -= left_bndry - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_RIGHT_MARGIN
+        right_bndry = self.cam.right - VIEWPORT_MARGIN_RIGHT
         if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+            self.cam.left += self.player_sprite.right - right_bndry
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN_TOP
+        top_bndry = self.cam.top - VIEWPORT_MARGIN_TOP
         if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+            self.cam.bottom += self.player_sprite.top - top_bndry
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN_BOTTOM
+        bottom_bndry = self.cam.bottom + VIEWPORT_MARGIN_BOTTOM
         if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+            self.cam.bottom -= bottom_bndry - self.player_sprite.bottom
             changed = True
 
-        # If we need to scroll, go ahead and do it.
         if changed:
-            self.view_left = int(self.view_left)
-            self.view_bottom = int(self.view_bottom)
-            arcade.set_viewport(
-                self.view_left,
-                SCREEN_WIDTH + self.view_left,
-                self.view_bottom,
-                SCREEN_HEIGHT + self.view_bottom,
-            )
+            self.cam.use()
 
 
 def main():

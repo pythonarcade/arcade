@@ -308,6 +308,7 @@ class TextureAtlas:
         for tex in textures or []:
             self.add(tex)
 
+
     @property
     def width(self) -> int:
         """
@@ -354,7 +355,8 @@ class TextureAtlas:
         The maximum size of the atlas in pixels (x, y)
 
         """
-        return self._max_size
+        # TODO solve typing issue
+        return self._max_size  # type: ignore
 
     @property
     def auto_resize(self) -> bool:
@@ -880,7 +882,7 @@ class TextureAtlas:
         were `0, 0` is the lower left corner and `width, height` (of texture)
         is the upper right corner.
 
-        This method should should be used with the ``with`` statement::
+        This method should be used with the ``with`` statement::
 
             with atlas.render_into(texture):
                 # Draw commands here
@@ -894,22 +896,24 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
+        prev_projection = self._ctx.projection_matrix
+
         region = self._texture_regions[texture.atlas_name]
-        proj_prev = self._ctx.projection_2d
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)
-        # Flip the top and bottom because we need to render things upside down
-        projection = projection[0], projection[1], projection[3], projection[2]
-        self._ctx.projection_2d = projection
+
+        self._ctx.projection_matrix = Mat4.orthogonal_projection(projection[0], projection[1],
+                                                                 projection[3], projection[2],
+                                                                 -100, 100)
 
         with self._fbo.activate() as fbo:
             fbo.viewport = region.x, region.y, region.width, region.height
             try:
                 yield fbo
             finally:
-                fbo.viewport = 0, 0, *self._fbo.size
+                fbo.viewport = 0, 0, *fbo.size
 
-        self._ctx.projection_2d = proj_prev
+        self._ctx.projection_matrix = prev_projection
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":

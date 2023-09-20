@@ -10,6 +10,7 @@ python -m arcade.examples.astar_pathfinding
 from __future__ import annotations
 
 import arcade
+from arcade import camera
 import random
 
 SPRITE_IMAGE_SIZE = 128
@@ -66,6 +67,9 @@ class MyGame(arcade.Window):
 
         # Set the window background color
         self.background_color = arcade.color.AMAZON
+
+        # Camera
+        self.cam = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -142,6 +146,8 @@ class MyGame(arcade.Window):
                                                     playing_field_bottom_boundary,
                                                     playing_field_top_boundary)
 
+        self.cam = camera.Camera2D()
+
     def on_draw(self):
         """
         Render the screen.
@@ -188,8 +194,8 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Keep track of if we changed the boundary. We don't want to call the
-        # set_viewport command if we didn't change the view port.
+        # Keep track of if we changed the boundary. We don't want to update the
+        # viewport or projection if we didn't change the view port.
         changed = False
 
         # Scroll left
@@ -225,10 +231,12 @@ class MyGame(arcade.Window):
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            self.cam.projection = (
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom)
+            self.cam.use()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

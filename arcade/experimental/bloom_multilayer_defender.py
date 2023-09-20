@@ -174,8 +174,8 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
-        self.view_bottom = 0
-        self.view_left = 0
+        # Camera
+        self.cam = None
 
         # Set the background color
         self.background_color = arcade.color.BLACK
@@ -243,6 +243,8 @@ class MyGame(arcade.Window):
             sprite.center_y = random.randrange(600)
             self.enemy_sprite_list.append(sprite)
 
+        self.cam = arcade.camera.Camera2D()
+
     def on_draw(self):
         """ Render the screen. """
         # This command has to happen before we start drawing
@@ -254,10 +256,7 @@ class MyGame(arcade.Window):
         self.slight_bloom_screen.use()
         self.slight_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        self.cam.use()
 
         # Draw all the sprites on the screen that should have a 'slight' bloom
         self.star_sprite_list.draw()
@@ -266,10 +265,7 @@ class MyGame(arcade.Window):
         self.intense_bloom_screen.use()
         self.intense_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        self.cam.use()
 
         # Draw all the sprites on the screen that should have a 'intense' bloom
         self.bullet_sprite_list.draw()
@@ -277,10 +273,7 @@ class MyGame(arcade.Window):
         # Now draw to the actual screen
         self.use()
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        self.cam.use()
 
         # --- Bloom related ---
 
@@ -329,23 +322,23 @@ class MyGame(arcade.Window):
                     self.bullet_sprite_list.append(particle)
 
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = self.cam.left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+            self.cam.left -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        right_boundary = self.cam.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
+            self.cam.right += self.player_sprite.right - right_boundary
 
         # Scroll up
-        self.view_bottom = DEFAULT_BOTTOM_VIEWPORT
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
+        self.cam.bottom = DEFAULT_BOTTOM_VIEWPORT
+        top_boundary = self.cam.top - TOP_VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
+            self.cam.top += self.player_sprite.top - top_boundary
 
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
+        self.cam.left = int(self.cam.left)
+        self.cam.bottom = int(self.cam.bottom)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

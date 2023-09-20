@@ -52,7 +52,7 @@ class SimpleCamera:
                 viewport or (0, 0, self._window.width, self._window.height),
                 (_pos[0], _pos[1], 0.0),
                 (_up[0], _up[1], 0.0),
-                (0.0, 0.0, 1.0),
+                (0.0, 0.0, -1.0),
                 zoom or 1.0
             )
             _projection = projection or (
@@ -69,7 +69,7 @@ class SimpleCamera:
                 (0, 0, self._window.width, self._window.height),  # Viewport
                 (self._window.width / 2, self._window.height / 2, 0.0),  # Position
                 (0, 1.0, 0.0),  # Up
-                (0.0, 0.0, 1.0),  # Forward
+                (0.0, 0.0, -1.0),  # Forward
                 1.0  # Zoom
             )
             self._projection = projection_data or OrthographicProjectionData(

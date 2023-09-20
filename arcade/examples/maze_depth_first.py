@@ -103,9 +103,8 @@ class MyGame(arcade.Window):
         # Physics engine
         self.physics_engine = None
 
-        # Used to scroll
-        self.view_bottom = 0
-        self.view_left = 0
+        # Camera for scrolling
+        self.cam = None
 
         # Time to process
         self.processing_time = 0
@@ -183,10 +182,8 @@ class MyGame(arcade.Window):
         # Set the background color
         self.background_color = arcade.color.AMAZON
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
+        # Setup Camera
+        self.cam = arcade.camera.Camera2D()
 
     def on_draw(self):
         """
@@ -208,20 +205,20 @@ class MyGame(arcade.Window):
 
         output = f"Sprite Count: {sprite_count}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 20 + self.view_bottom,
+                         self.cam.left + 20,
+                         SCREEN_HEIGHT - 20 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 40 + self.view_bottom,
+                         self.cam.left + 20,
+                         SCREEN_HEIGHT - 40 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 60 + self.view_bottom,
+                         self.cam.left + 20,
+                         SCREEN_HEIGHT - 60 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -257,39 +254,44 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Track if we need to change the viewport
-
+        # Keep track of if we changed the boundary. We don't want to
+        # update the camera if we don't need to.
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+        left_boundary = self.cam.left + VIEWPORT_MARGIN
+        if self.player_sprite.left < left_boundary:
+            self.cam.left -= left_boundary - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+        right_boundary = self.cam.right - VIEWPORT_MARGIN
+        if self.player_sprite.right > right_boundary:
+            self.cam.right += self.player_sprite.right - right_boundary
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+        top_boundary = self.cam.top - VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundary:
+            self.cam.top += self.player_sprite.top - top_boundary
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+        bottom_boundary = self.cam.bottom + VIEWPORT_MARGIN
+        if self.player_sprite.bottom < bottom_boundary:
+            self.cam.bottom -= bottom_boundary - self.player_sprite.bottom
             changed = True
 
+        # If we changed the boundary values, update the view port to match
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            # Make sure our boundaries are integer values. While the view port does
+            # support floating point numbers, for this application we want every pixel
+            # in the view port to map directly onto a pixel on the screen. We don't want
+            # any rounding errors.
+            self.cam.left = int(self.cam.left)
+            self.cam.bottom = int(self.cam.bottom)
+
+            self.cam.use()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

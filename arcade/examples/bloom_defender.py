@@ -113,7 +113,7 @@ class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
     def __init__(self, width, height, color):
-        super().__init__(width, height, color)
+        super().__init__(width, height, color=color)
         self.distance = 0
 
     def update(self):
@@ -163,11 +163,11 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Set the background color of the window
         self.background_color = arcade.color.BLACK
+
+        # Camera
+        self.cam = arcade.camera.Camera2D()
 
         # --- Bloom related ---
 
@@ -244,10 +244,7 @@ class MyGame(arcade.Window):
         self.bloom_screen.use()
         self.bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        self.cam.use()
 
         # Draw all the sprites on the screen that should have a bloom
         self.star_sprite_list.draw()
@@ -256,10 +253,7 @@ class MyGame(arcade.Window):
         # Now draw to the actual screen
         self.use()
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        self.cam.use()
 
         # --- Bloom related ---
 
@@ -306,23 +300,23 @@ class MyGame(arcade.Window):
                     self.bullet_sprite_list.append(particle)
 
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = self.cam.left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+            self.cam.left -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        right_boundary = self.cam.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
+            self.cam.right += self.player_sprite.right - right_boundary
 
         # Scroll up
-        self.view_bottom = DEFAULT_BOTTOM_VIEWPORT
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
+        self.cam.bottom = DEFAULT_BOTTOM_VIEWPORT
+        top_boundary = DEFAULT_BOTTOM_VIEWPORT + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
+            self.cam.bottom += self.player_sprite.top - top_boundary
 
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
+        self.cam.left = int(self.cam.left)
+        self.cam.bottom = int(self.cam.bottom)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

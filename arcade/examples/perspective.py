@@ -108,6 +108,12 @@ class Perspective(arcade.Window):
                 ) 
         self.time = 0
 
+        self.offscreen_cam = arcade.camera.Camera2D(
+            position=(0.0, 0.0),
+            viewport=(0, 0, self.fbo.width, self.fbo.height),
+            projection=(0, self.fbo.width, 0, self.fbo.height)
+        )
+
     def on_draw(self):
         # Every frame we can update the offscreen texture if needed
         self.draw_offscreen()
@@ -136,7 +142,7 @@ class Perspective(arcade.Window):
         # Activate the offscreen framebuffer and draw the sprites into it
         with self.fbo.activate() as fbo:
             fbo.clear()
-            arcade.set_viewport(0, self.fbo.width, 0, self.fbo.height)
+            self.offscreen_cam.use()
             self.spritelist.draw()
 
     def on_resize(self, width: int, height: int):

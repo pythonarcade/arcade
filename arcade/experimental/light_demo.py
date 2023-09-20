@@ -76,7 +76,7 @@ class MyGame(arcade.Window):
         self.moving_light.radius = 300 + math.sin(self.time * 2.34) * 150
 
     def on_resize(self, width, height):
-        arcade.set_viewport(0, width, 0, height)
+        self.use_default_camera()
         self.light_layer.resize(width, height)
 
 

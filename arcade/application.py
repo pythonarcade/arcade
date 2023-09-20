@@ -17,7 +17,6 @@ from pyglet.canvas.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
-from arcade import set_viewport
 from arcade import set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
@@ -205,11 +204,11 @@ class Window(pyglet.window.Window):
         set_window(self)
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
-        set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = TRANSPARENT_BLACK
 
         self._current_view: Optional[View] = None
-        self.current_camera: Projector = DefaultProjector(window=self)
+        self._default_camera = DefaultProjector(window=self)
+        self.current_camera: Projector = self._default_camera
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
@@ -595,13 +594,8 @@ class Window(pyglet.window.Window):
         #       The arcade context is not created at that time
         if hasattr(self, "_ctx"):
             # Retain projection scrolling if applied
-            original_viewport = self._ctx.projection_2d
-            self.set_viewport(
-                original_viewport[0],
-                original_viewport[0] + width,
-                original_viewport[2],
-                original_viewport[2] + height
-            )
+            self._ctx.viewport = (0, 0, width, height)
+            self.use_default_camera()
 
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
@@ -665,29 +659,24 @@ class Window(pyglet.window.Window):
         """
         super().set_visible(visible)
 
-    # noinspection PyMethodMayBeStatic
-    def set_viewport(self, left: float, right: float, bottom: float, top: float):
-        """
-        Set the viewport. (What coordinates we can see.
-        Used to scale and/or scroll the screen).
-
-        See :py:func:`arcade.set_viewport` for more detailed information.
-
-        :param left:
-        :param right:
-        :param bottom:
-        :param top:
-        """
-        set_viewport(left, right, bottom, top)
-
-    # noinspection PyMethodMayBeStatic
-    def get_viewport(self) -> Tuple[float, float, float, float]:
-        """ Get the viewport. (What coordinates we can see.) """
-        return self.ctx.projection_2d
-
     def use(self):
         """Bind the window's framebuffer for rendering commands"""
         self.ctx.screen.use()
+
+    @property
+    def default_camera(self):
+        """
+        Provides a reference to the default arcade camera.
+        Automatically sets projection and view to the size
+        of the screen. Good for resetting the screen.
+        """
+        return self._default_camera
+
+    def use_default_camera(self):
+        """
+        Uses the default arcade camera. Good for quickly resetting the screen
+        """
+        self._default_camera.use()
 
     def test(self, frames: int = 10):
         """
