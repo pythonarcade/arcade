@@ -76,7 +76,6 @@ class _AStarGraph(object):
     :param bottom: Far bottom side y value
     :param top: Far top side y value
     """
-
     def __init__(self, barriers: Union[List, Tuple, Set],
                  left: int,
                  right: int,

@@ -2,8 +2,6 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.music_control_demo
 """
-from __future__ import annotations
-
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons

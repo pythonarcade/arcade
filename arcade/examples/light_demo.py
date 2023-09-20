@@ -6,8 +6,6 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.light_demo
 """
-from __future__ import annotations
-
 import arcade
 from arcade.experimental.lights import Light, LightLayer
 

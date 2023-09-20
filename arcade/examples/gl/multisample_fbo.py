@@ -9,8 +9,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.gl.multisample_fbo
 """
 
-from __future__ import annotations
-
 import math
 import arcade
 

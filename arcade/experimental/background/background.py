@@ -5,7 +5,7 @@ from typing import Optional, Union, Tuple
 from arcade.window_commands import get_window
 import arcade.gl as gl
 
-from arcade.background import BackgroundTexture
+from arcade.experimental.background import BackgroundTexture
 
 
 class Background:

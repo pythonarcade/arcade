@@ -11,8 +11,6 @@ command line with:
 python -m arcade.examples.sprite_move_keyboard_accel
 """
 
-from __future__ import annotations
-
 import arcade
 
 SPRITE_SCALING = 0.5
