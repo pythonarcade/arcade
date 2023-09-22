@@ -214,10 +214,10 @@ class BufferDescription:
         "f4": (gl.GL_FLOAT, 4),
         "f8": (gl.GL_DOUBLE, 8),
         # Unsigned integers
-        "u": (gl.GL_FLOAT, 4),
-        "u1": (gl.GL_FLOAT, 1),
-        "u2": (gl.GL_FLOAT, 2),
-        "u4": (gl.GL_FLOAT, 4),
+        "u": (gl.GL_UNSIGNED_INT, 4),
+        "u1": (gl.GL_UNSIGNED_BYTE, 1),
+        "u2": (gl.GL_UNSIGNED_SHORT, 2),
+        "u4": (gl.GL_UNSIGNED_INT, 4),
         # Signed integers
         "i": (gl.GL_INT, 4),
         "i1": (gl.GL_BYTE, 1),
