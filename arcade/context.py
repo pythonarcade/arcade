@@ -29,7 +29,7 @@ __all__ = ["ArcadeContext"]
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
-    This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
+    This context is normally accessed through :py:attr:`arcade.Window.ctx`.
 
     Pyglet users can use the base Context class and extend that as they please.
 
@@ -477,7 +477,7 @@ class ArcadeContext(Context):
         self,
         fbo: Framebuffer,
         components: int = 4,
-        flip=True,
+        flip: bool = True,
     ) -> Image.Image:
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.

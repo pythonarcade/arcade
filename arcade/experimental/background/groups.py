@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Union, List, Tuple
 
 import arcade.gl as gl
-from arcade.background import Background
+from arcade.experimental.background import Background
 
 
 class BackgroundGroup:

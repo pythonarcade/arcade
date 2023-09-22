@@ -15,8 +15,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.drawing_primitives
 """
 
-from __future__ import annotations
-
 # Import the Arcade library. If this fails, then try following the instructions
 # for how to install arcade:
 # https://api.arcade.academy/en/latest/install/index.html

@@ -3,8 +3,6 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.13_add_enemies
 """
-from __future__ import annotations
-
 import math
 
 import arcade

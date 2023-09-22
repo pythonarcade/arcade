@@ -9,10 +9,8 @@ texture offset changed. This creates an illusion of moving.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.background_scrolling
 """
-from __future__ import annotations
-
 import arcade
-import arcade.background as background
+import arcade.experimental.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
