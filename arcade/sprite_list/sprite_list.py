@@ -207,7 +207,7 @@ class SpriteList(Generic[SpriteType]):
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
             gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
             gl.BufferDescription(
-                self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]
+                self._sprite_color_buf, "4f1", ["in_color"],
             ),
         ]
         self._geometry = self.ctx.geometry(

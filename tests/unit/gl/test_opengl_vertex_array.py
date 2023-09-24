@@ -21,7 +21,6 @@ def test_geometry(ctx):
             ctx.buffer(reserve=4 * num_vertices),
             '4f1',
             ['in_color'],
-            normalized=['in_color'],
         ),
         BufferDescription(
             ctx.buffer(reserve=8 * num_vertices),

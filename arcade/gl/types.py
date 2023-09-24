@@ -125,13 +125,15 @@ def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
 
 class AttribFormat:
     """"
-    Represents an attribute in a BufferDescription or a Program.
+    Represents a vertex attribute in a BufferDescription / Program.
+    This is attribute metadata used when attempting to map vertex
+    shader inputs.
 
     :param name: Name of the attribute
     :param gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-    :param bytes_per_component: Number of bytes a single component takes
-    :param offset: (Optional offset for BufferDescription)
-    :param location: (Optional location for program attribute)
+    :param bytes_per_component: Number of bytes for a single component
+    :param offset: (Optional) Offset for BufferDescription
+    :param location: (Optional) Location for program attribute
     """
 
     __slots__ = (
@@ -267,9 +269,7 @@ class BufferDescription:
         if not isinstance(buffer, Buffer):
             raise ValueError("buffer parameter must be an arcade.gl.Buffer")
 
-        if not isinstance(self.attributes, list) and not isinstance(
-            self.attributes, tuple
-        ):
+        if not isinstance(self.attributes, (list, tuple)):
             raise ValueError("Attributes must be a list or tuple")
 
         if self.normalized > set(self.attributes):
@@ -296,6 +296,9 @@ class BufferDescription:
 
         self.stride = 0
         for attr_fmt, attr_name in zip_attrs(formats_list, self.attributes):
+            # Automatically make f1 attributes normalized
+            if attr_name is not None and "f1" in attr_fmt:
+                self.normalized.add(attr_name)
             try:
                 components_str, data_type_str, data_size_str = re.split(
                     r"([fiux])", attr_fmt

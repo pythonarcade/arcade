@@ -146,7 +146,6 @@ class ArcadeContext(Context):
                     self.generic_draw_line_strip_color,
                     "4f1",
                     ["in_color"],
-                    normalized=["in_color"],
                 ),
             ]
         )
@@ -159,7 +158,7 @@ class ArcadeContext(Context):
         self.shape_line_geometry = self.geometry(
             [
                 BufferDescription(self.shape_line_buffer_pos, "2f", ["in_vert"]),
-                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
+                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'])
             ]
         )
         # ellipse/circle filled
