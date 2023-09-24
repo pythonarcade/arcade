@@ -94,7 +94,6 @@ class LightLayer(RenderTargetTexture):
                 self._buffer,
                 '2f 1f 1f 3f',
                 ['in_vert', 'in_radius', 'in_attenuation', 'in_color'],
-                normalized=['in_color'],
             ),
         ])
         self._light_program = self.ctx.load_program(
