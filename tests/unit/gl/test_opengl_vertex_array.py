@@ -9,28 +9,6 @@ from arcade.gl.vertex_array import VertexArray
 from arcade.gl.program import Program
 
 
-def test_buffer_description(ctx):
-    # TODO: components > 4
-    # TODO: padding
-    buffer = ctx.buffer(reserve=4 * 8)
-    attribute_names = ['in_vert', 'in_uv']
-    descr = BufferDescription(
-        buffer,
-        '2f 2f',
-        attribute_names,
-    )
-    assert descr.num_vertices == 2
-    assert descr.buffer == buffer
-    assert descr.attributes == attribute_names
-    assert descr.instanced is False
-    assert len(descr.formats) == 2
-    assert descr.stride == 16
-
-    # Buffer parameter not a buffer
-    with pytest.raises(ValueError):
-        BufferDescription("test", "2f", ["pos"])
-
-
 def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(

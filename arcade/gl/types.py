@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union
+from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union, Set
 from typing_extensions import TypeAlias
 
 from pyglet import gl
@@ -224,6 +224,7 @@ class BufferDescription:
         "i2": (gl.GL_SHORT, 2),
         "i4": (gl.GL_INT, 4),
         # Padding (1, 2, 4, 8 bytes)
+        "x": (None, 1),
         "x1": (None, 1),
         "x2": (None, 2),
         "x4": (None, 4),
@@ -253,7 +254,7 @@ class BufferDescription:
         #: List of string attributes
         self.attributes = attributes
         #: List of normalized attributes
-        self.normalized = set() if normalized is None else set(normalized)
+        self.normalized: Set[str] = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
         self.instanced: bool = instanced
         #: Formats of each attribute
@@ -279,7 +280,7 @@ class BufferDescription:
 
         if len(non_padded_formats) != len(self.attributes):
             raise ValueError(
-                f"Different lengths of formats ({len(formats_list)}) and "
+                f"Different lengths of formats ({len(non_padded_formats)}) and "
                 f"attributes ({len(self.attributes)})"
             )
 
