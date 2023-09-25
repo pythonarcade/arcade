@@ -17,19 +17,61 @@ __all__ = [
 ]
 
 
-def quaternion_rotation(_axis: Tuple[float, float, float],
-                        _vector: Tuple[float, float, float],
-                        _angle: float) -> Tuple[float, float, float]:
-    # Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-    _rotation_rads = -radians(_angle)
-    p1, p2, p3 = _vector
+def quaternion_rotation(axis: Tuple[float, float, float],
+                        vector: Tuple[float, float, float],
+                        angle: float) -> Tuple[float, float, float]:
+    """
+    Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
+
+    This method of vector rotation is immune to rotation-lock, however it takes a little more effort
+    to find the axis of rotation rather than 3 angles of rotation.
+    Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html.
+
+    Example:
+        import arcade
+        from arcade.camera.controllers import quaternion_rotation
+
+
+        # Rotating a sprite around a point
+        sprite = arcade.Sprite(center_x=0.0, center_y=10.0)
+        rotation_point = (0.0, 0.0)
+
+        # Find the relative vector between the sprite and point to rotate. (Must be a 3D vector)
+        relative_position = sprite.center_x - rotation_point[0], sprite.center_y - rotation_point[1], 0.0
+
+        # Because arcade uses the X and Y axis for 2D co-ordinates the Z-axis becomes the rotation axis.
+        rotation_axis = (0.0, 0.0, 1.0)
+
+        # Rotate the vector 45 degrees clockwise.
+        new_relative_position = quaternion_rotation(rotation_axis, relative_position, 45)
+
+
+        sprite.position = (
+            rotation_point[0] + new_relative_position[0],
+            rotation_point[1] + new_relative_position[1]
+        )
+
+    Args:
+        axis:
+            The unit length vector that will be rotated around
+        vector:
+            The 3-dimensional vector to be rotated
+        angle:
+            The angle in degrees to rotate the vector clock-wise by
+
+    Returns:
+        A rotated 3-dimension vector with the same length as the argument vector.
+    """
+
+    _rotation_rads = -radians(angle)
+    p1, p2, p3 = vector
     _c2, _s2 = cos(_rotation_rads / 2.0), sin(_rotation_rads / 2.0)
 
     q0, q1, q2, q3 = (
         _c2,
-        _s2 * _axis[0],
-        _s2 * _axis[1],
-        _s2 * _axis[2]
+        _s2 * axis[0],
+        _s2 * axis[1],
+        _s2 * axis[2]
     )
     q0_2, q1_2, q2_2, q3_2 = q0 ** 2, q1 ** 2, q2 ** 2, q3 ** 2
     q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
@@ -42,14 +84,49 @@ def quaternion_rotation(_axis: Tuple[float, float, float],
 
 
 def rotate_around_forward(data: CameraData, angle: float):
+    """
+    Rotate the CameraData up vector around the CameraData forward vector, perfect for rotating the screen.
+    This rotation will be around (0.0, 0.0) of the camera projection.
+    If that is not the center of the screen this method may appear erroneous.
+    Uses arcade.camera.controllers.quaternion_rotation internally.
+
+    Args:
+        data:
+            The camera data to modify. The data's up vector is rotated around its forward vector
+        angle:
+            The angle in degrees to rotate clockwise by
+    """
     data.up = quaternion_rotation(data.forward, data.up, angle)
 
 
 def rotate_around_up(data: CameraData, angle: float):
+    """
+    Rotate the CameraData forward vector around the CameraData up vector.
+    Generally only useful in 3D games.
+    Uses arcade.camera.controllers.quaternion_rotation internally.
+
+    Args:
+        data:
+            The camera data to modify. The data's forward vector is rotated around its up vector
+        angle:
+            The angle in degrees to rotate clockwise by
+    """
     data.forward = quaternion_rotation(data.up, data.forward, angle)
 
 
 def rotate_around_right(data: CameraData, angle: float):
+    """
+    Rotate both the CameraData's forward vector and up vector around a calculated right vector.
+    Generally only useful in 3D games.
+    Uses arcade.camera.controllers.quaternion_rotation internally.
+
+    Args:
+        data:
+            The camera data to modify. The data's forward vector is rotated around its up vector
+        angle:
+            The angle in degrees to rotate clockwise by
+    """
+
     _forward = Vec3(data.forward[0], data.forward[1], data.forward[2])
     _up = Vec3(data.up[0], data.up[1], data.up[2])
     _crossed_vec = _forward.cross(_up)
@@ -87,7 +164,7 @@ def simple_follow_2D(speed: float, target: Tuple[float, float], data: CameraData
     :param target: The 2D position the camera should move towards in world space.
     :param data: The camera data object which stores its position, rotation, and direction.
     """
-    simple_follow_3D(speed, target + (0,), data)
+    simple_follow_3D(speed, (target[0], target[1], 0.0), data)
 
 
 def simple_easing_3D(percent: float,
@@ -129,4 +206,4 @@ def simple_easing_2D(percent: float,
                  speed does not stay constant. See arcade.easing for examples.
     """
 
-    simple_easing_3D(percent, start + (0,), target + (0,), data, func)
+    simple_easing_3D(percent, (start[0], start[1], 0.0), (target[0], target[1], 0.0), data, func)

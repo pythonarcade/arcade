@@ -37,6 +37,8 @@ class ViewportProjector:
                                                              -100, 100)
 
     def use(self):
+        self._window.current_camera = self
+
         self._window.ctx.viewport = self._viewport
 
         self._window.ctx.view_matrix = Mat4()

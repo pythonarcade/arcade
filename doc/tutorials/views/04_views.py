@@ -20,7 +20,7 @@ class InstructionView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        self.window.use_default_camera()
+        self.window.default_camera.use()()
 
     def on_draw(self):
         """ Draw this view """
@@ -47,7 +47,7 @@ class GameOverView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        self.window.use_default_camera()
+        self.window.default_camera.use()()
 
     def on_draw(self):
         """ Draw this view """

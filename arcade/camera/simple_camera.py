@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Optional, Tuple, Iterator
+from warnings import warn
 from contextlib import contextmanager
 from math import atan2, cos, sin, degrees, radians
 
@@ -39,6 +40,9 @@ class SimpleCamera:
                  camera_data: Optional[CameraData] = None,
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
+        warn("arcade.camera.SimpleCamera has been depreciated please use arcade.camera.Camera2D instead",
+             DeprecationWarning)
+
         self._window = window or get_window()
 
         if any((viewport, projection, position, up, zoom, near, far)) and any((camera_data, projection_data)):

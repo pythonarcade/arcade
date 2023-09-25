@@ -595,7 +595,7 @@ class Window(pyglet.window.Window):
         if hasattr(self, "_ctx"):
             # Retain projection scrolling if applied
             self._ctx.viewport = (0, 0, width, height)
-            self.use_default_camera()
+            self.default_camera.use()
 
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
@@ -671,12 +671,6 @@ class Window(pyglet.window.Window):
         of the screen. Good for resetting the screen.
         """
         return self._default_camera
-
-    def use_default_camera(self):
-        """
-        Uses the default arcade camera. Good for quickly resetting the screen
-        """
-        self._default_camera.use()
 
     def test(self, frames: int = 10):
         """

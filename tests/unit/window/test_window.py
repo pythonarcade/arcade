@@ -36,10 +36,10 @@ def test_window(window: arcade.Window):
     w.set_mouse_visible(True)
     w.set_size(width, height)
 
-    v = window.get_viewport()
+    v = window.ctx.viewport
     assert v[0] == 0
-    assert v[1] == width
-    assert v[2] == 0
+    assert v[1] == 0
+    assert v[2] == width
     assert v[3] == height
 
     factor = window.get_pixel_ratio()

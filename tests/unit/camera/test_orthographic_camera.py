@@ -4,7 +4,7 @@ from arcade import camera, Window
 
 
 def test_orthographic_camera(window: Window):
-    default_camera = window.current_camera
+    default_camera = window.default_camera
 
     cam_default = camera.OrthographicProjector()
     default_view = cam_default.view_data
@@ -15,7 +15,7 @@ def test_orthographic_camera(window: Window):
         (0, 0, window.width, window.height),  # Viewport
         (window.width/2, window.height/2, 0),  # Position
         (0.0, 1.0, 0.0),  # Up
-        (0.0, 0.0, 1.0),  # Forward
+        (0.0, 0.0, -1.0),  # Forward
         1.0,  # Zoom
     )
     assert default_projection == camera.OrthographicProjectionData(
@@ -28,16 +28,16 @@ def test_orthographic_camera(window: Window):
     assert cam_default.view_data.position == default_view.position
     assert cam_default.view_data.viewport == default_view.viewport
 
-    # Test that the camera is actually recognised by the camera as being activated
-    assert window.current_camera == default_camera
-    with cam_default.activate() as cam:
-        assert window.current_camera == cam and cam == cam_default
-    assert window.current_camera == default_camera
-
     # Test that the camera is being used.
     cam_default.use()
     assert window.current_camera == cam_default
     default_camera.use()
+    assert window.current_camera == default_camera
+
+    # Test that the camera is actually recognised by the camera as being activated
+    assert window.current_camera == default_camera
+    with cam_default.activate() as cam:
+        assert window.current_camera == cam and cam == cam_default
     assert window.current_camera == default_camera
 
     set_view = camera.CameraData(
