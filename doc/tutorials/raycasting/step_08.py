@@ -39,8 +39,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.SimpleCamera()
+        self.camera_gui = arcade.camera.SimpleCamera()
 
         self.generate_sprites()
 

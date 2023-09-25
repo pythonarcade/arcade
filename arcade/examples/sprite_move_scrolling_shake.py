@@ -55,7 +55,7 @@ class MyGame(arcade.Window):
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
         self.camera_sprites = arcade.camera.SimpleCamera()
-        self.camera_gui = arcade.camera.Camera()
+        self.camera_gui = arcade.camera.SimpleCamera()
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
