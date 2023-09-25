@@ -442,7 +442,7 @@ class TextureAtlas:
             region = self.get_texture_region_info(texture.atlas_name)
             return slot, region
 
-        LOG.info("Attempting to add texture: %s | %s", texture.atlas_name)
+        LOG.info("Attempting to add texture: %s", texture.atlas_name)
 
         # Add the image if we don't already have it.
         # If the atlas is full we will try to resize it.

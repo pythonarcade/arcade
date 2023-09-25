@@ -137,8 +137,8 @@ class ShaderSource:
             if line.startswith("#define"):
                 try:
                     name = line.split()[1]
-                    value = defines.get(name)
-                    if not value:
+                    value = defines.get(name, None)
+                    if value is None:
                         continue
 
                     lines[nr] = "#define {} {}".format(name, str(value))

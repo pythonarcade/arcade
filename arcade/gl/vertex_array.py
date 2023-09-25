@@ -13,7 +13,14 @@ from .program import Program
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
-index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSIGNED_INT]
+# Index buffer types based on index element size
+index_types = [
+    None,  # 0 (not supported)
+    gl.GL_UNSIGNED_BYTE,  # 1 ubyte8
+    gl.GL_UNSIGNED_SHORT,  # 2 ubyte16
+    None,  # 3 (not supported)
+    gl.GL_UNSIGNED_INT  # 4 ubyte32
+]
 
 
 class VertexArray:
