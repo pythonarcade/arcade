@@ -28,8 +28,8 @@ class CameraData:
 
     # View matrix data
     position: Tuple[float, float, float] = (0.0, 0.0, 0.0)
-    up: Tuple[float, float, float] = (0.0, 0.0, 1.0)
-    forward: Tuple[float, float, float] = (0.0, -1.0, 0.0)
+    up: Tuple[float, float, float] = (0.0, 1.0, 0.0)
+    forward: Tuple[float, float, float] = (0.0, 0.0, -1.0)
 
     # Zoom
     zoom: float = 1.0

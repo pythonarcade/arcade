@@ -71,7 +71,7 @@ class SimpleCamera:
         else:
             self._view = camera_data or CameraData(
                 (0, 0, self._window.width, self._window.height),  # Viewport
-                (self._window.width / 2, self._window.height / 2, 0.0),  # Position
+                (0.0, 0.0, 0.0),  # Position
                 (0, 1.0, 0.0),  # Up
                 (0.0, 0.0, -1.0),  # Forward
                 1.0  # Zoom

@@ -134,6 +134,7 @@ class Surface:
         """
         # Set viewport and projection
         proj = self.ctx.projection_matrix
+        view_port = self.ctx.viewport
         self.limit(0, 0, *self.size)
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -144,6 +145,7 @@ class Surface:
 
         # Restore projection and blend function
         self.ctx.projection_matrix = proj
+        self.ctx.viewport = view_port
         self.ctx.blend_func = blend_func
 
     def limit(self, x, y, width, height):
@@ -158,6 +160,7 @@ class Surface:
         width = max(width, 1)
         height = max(height, 1)
         self.ctx.projection_matrix = Mat4.orthogonal_projection(0, width, 0, height, -100, 100)
+        self.ctx.viewport = (0, 0, int(width), int(height))
 
     def draw(
         self,

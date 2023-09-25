@@ -147,7 +147,23 @@ class Camera2D:
         """
         Set the X and Y position of the camera.
         """
-        self._data.position = _pos + self._data.position[2:]
+        self._data.position = (_pos[0], _pos[1], self._data.position[2])
+
+    @property
+    def position(self) -> Tuple[float, float]:
+        """
+        The 2D position of the camera along
+        the X and Y axis. Arcade has the positive
+        Y direction go towards the top of the screen.
+        """
+        return self._data.position[:2]
+
+    @position.setter
+    def position(self, _pos: Tuple[float, float]) -> None:
+        """
+        Set the X and Y position of the camera.
+        """
+        self._data.position = (_pos[0], _pos[1], self._data.position[2])
 
     @property
     def left(self) -> float:

@@ -32,7 +32,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import OrthographicProjector, OrthographicProjectionData
+from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -93,6 +93,7 @@ class UIManager(EventDispatcher):
         self._rendered = False
         #: Camera used when drawing the UI
         self.projector = OrthographicProjector(
+            view=CameraData((0, 0, self.window.width, self.window.height)),
             projection=OrthographicProjectionData(0, self.window.width, 0, self.window.height, -100, 100)
         )
         self.register_event_type("on_event")
@@ -302,27 +303,22 @@ class UIManager(EventDispatcher):
             self._do_render()
 
         # Draw layers
-        self.projector.use()
-        with ctx.enabled(ctx.BLEND):
-            layers = sorted(self.children.keys())
-            for layer in layers:
-                self._get_surface(layer).draw()
+        with self.projector.activate() as cam:
+            with ctx.enabled(ctx.BLEND):
+                layers = sorted(self.children.keys())
+                for layer in layers:
+                    self._get_surface(layer).draw()
 
     def adjust_mouse_coordinates(self, x, y):
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
-        The implementation should work in most common cases.
 
-        If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
-        or overwrite this method using the camera conversion::
-
-            ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
+        It uses the internal camera's map_coordinate methods, and should work with
+        all transformations possible with the basic orthographic camera.
         """
-        # NOTE: Only support scrolling until cameras support transforming
-        #       mouse coordinates
-        px, py = self.projector.view_data.position[:2]
-        return x + px, y + py
+
+        return self.window.current_camera.map_coordinate((x, y))
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
