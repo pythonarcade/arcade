@@ -57,7 +57,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         print("Resize", width, height)
-        self.default_camera.use()()
+        self.default_camera.use()
 
 
 if __name__ == "__main__":
