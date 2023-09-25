@@ -303,7 +303,7 @@ class UIManager(EventDispatcher):
             self._do_render()
 
         # Draw layers
-        with self.projector.activate() as cam:
+        with self.projector.activate():
             with ctx.enabled(ctx.BLEND):
                 layers = sorted(self.children.keys())
                 for layer in layers:
