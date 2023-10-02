@@ -31,7 +31,7 @@ from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 from arcade.texture.loading import _load_tilemap_texture
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
+    from arcade import TextureAtlas, Texture
 
 from pyglet.math import Vec2
 
@@ -102,7 +102,7 @@ def _get_image_source(
     return None
 
 
-def _may_be_flip(tile, texture):
+def _may_be_flip(tile: pytiled_parser.Tile, texture: Texture) -> Texture:
         if tile.flipped_diagonally:
             texture = texture.flip_diagonally()
         if tile.flipped_horizontally:
