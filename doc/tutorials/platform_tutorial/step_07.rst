@@ -27,6 +27,9 @@ the ground previously, and then add them to the scene.
     :caption: Add Coins and Sound
     :lines: 86-91
 
+
+.. _platformer_part_seven_loading_sounds:
+
 Loading Sounds
 ~~~~~~~~~~~~~~
 
@@ -45,6 +48,9 @@ Then we can play our jump sound when the player jumps, by adding it to the ``on_
     :lines: 110-120
     :emphasize-lines: 7
 
+
+.. _platformer_part_seven_playing_sounds:
+
 Collision Detection
 ~~~~~~~~~~~~~~~~~~~
 
@@ -62,6 +68,8 @@ sprite from any SpriteLists it belongs to, effectively deleting it from the game
     Notice that any transparent "white-space" around the image counts as the hitbox.
     You can trim the space in a graphics editor, or later on, we'll go over how to customize the
     hitbox of a Sprite.
+
+
 
 Add the following to the ``on_update`` function to add collision detection and play a sound
 when the player picks up a coin.
