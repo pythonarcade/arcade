@@ -777,9 +777,17 @@ class Context:
 
     # Various utility methods
 
-    def copy_framebuffer(self, src: Framebuffer, dst: Framebuffer):
+    def copy_framebuffer(
+        self,
+        src: Framebuffer,
+        dst: Framebuffer,
+        src_layer_id: int = 0,
+        depth: bool = True,
+    ):
         """
         Copies/blits a framebuffer to another one.
+        We can select one color attachment to copy plus
+        an optional depth attachment.
 
         This operation has many restrictions to ensure it works across
         different platforms and drivers:
@@ -791,15 +799,20 @@ class Context:
 
         :param src: The framebuffer to copy from
         :param dst: The framebuffer we copy to
+        :param glBlitNamedFramebuffer: The color attachment layer to copy from
+        :param depth: Also copy depth attachment if present
         """
+        # TODO: Make make this more configurable (target)
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_layer_id)
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
         gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
         gl.glBlitFramebuffer(
             0, 0, src.width, src.height,  # Make source and dest size the same
             0, 0, src.width, src.height,
-            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
+            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT if depth else 0,
             gl.GL_NEAREST,
         )
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset read buffer
         self.active_framebuffer.use(force=True)
 
     # --- Resource methods ---
