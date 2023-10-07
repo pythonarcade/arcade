@@ -98,6 +98,7 @@ The Python Arcade Library
 
    programming_guide/sprites/index
    programming_guide/keyboard
+   programming_guide/sound
    programming_guide/textures
    programming_guide/sections
    programming_guide/gui/index
