@@ -339,7 +339,7 @@ You can alter the playback of a :py:class:`arcade.Sound`'s data by:
 Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can stop playback through its pyglet :py:meth:`pyglet.media.player.Player`
+You can stop playback through its pyglet :py:class:`~pyglet.media.player.Player`
 instead of the :ref:`stopping helpers <sound-basics-stopping>` as follows:
 
 #. Call the player's :py:meth:`~pyglet.media.player.Player.pause`
