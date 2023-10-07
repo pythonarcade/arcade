@@ -255,7 +255,7 @@ This is because disk access is one of the slowest things a computer can
 do. Avoiding it during gameplay is important if your gameplay needs to
 be fast and smooth.
 
-Any of the following suggest a sound should be loaded a a static effect:
+Any of the following suggest a sound should be loaded as a static effect:
 
 * You need to start playback quickly in response to gameplay.
 * 2 or more "copies" of the sound can be playing at the same time.
