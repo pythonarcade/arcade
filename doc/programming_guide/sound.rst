@@ -8,8 +8,7 @@
 .. _SDL2: https://www.libsdl.org/
 
 .. _pyglet media guide: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html
-.. _positional audio: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#positional-audio
-.. _pyglet's supported media types: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#supported-media-types
+.. _pyglet's guide to supported media types: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#supported-media-types
 .. _pyglet_audio_drivers: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#choosing-the-audio-driver
 
 .. _sound:
@@ -136,25 +135,25 @@ Sounds vs pyglet Players
 """"""""""""""""""""""""
 This is a very important distinction:
 
-* A :py:class:`~arcade.Sound` represents a source of playable data
-* A pyglet :py:class:`~pyglet.media.player.Player` represents a
-  specific playback of that data
+* An :py:class:`arcade.Sound` represents a source of audio data
+* Arcade uses pyglet's :py:class:`~pyglet.media.player.Player` to
+  represent a specific playback of audio data
 
 Imagine you have two characters in a game which both play the same
 :py:class:`~arcade.Sound` when moving. Since they are separate
-characters in the world with separate playbacks of the sound,
-each stores its own :py:class:`~pyglet.media.player.Player`.
+characters in the world, they have separate playbacks of that sound.
+This means each stores its own :py:class:`~pyglet.media.player.Player`.
 
-This allows controlling their playbacks of the movement sound
-separately. For example, one character may get close enough to the
-user's character to talk, attack, or perform some other action.
-You would use that character's pyglet :py:class:`~pyglet.media.player.Player`
-to stop the movement sound's playback.
+The separate pyglet players allow controlling their playbacks of the
+movement sound separately. For example, one character may get close
+enough to the user's character to talk, attack, or perform some other
+action. You would use that character's specific pyglet
+:py:class:`~pyglet.media.player.Player` to stop the corresponding
+playback of the movement sound.
 
-Although this may seem unimportant, it is crucial for games which hide
-parts of the world from view. An enemy with no way to know it's there
-is the most common version of the unknown danger example listed in
-:ref:`sound-why-important`.
+This is crucial for games which hide parts of the world from view.
+An enemy with no way for the user to know it's there is the most
+common version of the unknown danger mentioned in :ref:`sound-why-important`.
 
 See the following to learn more:
 
@@ -339,35 +338,45 @@ You can alter the playback of a :py:class:`arcade.Sound`'s data by:
 Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can stop playback through its pyglet :py:class:`~pyglet.media.player.Player`
-instead of the :ref:`stopping helpers <sound-basics-stopping>` as follows:
+Arcade's functions for :ref:`sound-basics-stopping` call methods on the
+passed pyglet :py:class:`~pyglet.media.player.Player`. This section
+covers how as an introduction to using the player object directly.
 
-#. Call the player's :py:meth:`~pyglet.media.player.Player.pause`
-   method.
-#. Call the player's :py:meth:`~pyglet.media.player.Player.delete`
-   method.
-#. Make sure all references to the player are discarded to allow
-   `garbage collection`_.
+Pausing
+"""""""
+There is no stop method. Instead, the stopping helpers call the
+:py:meth:`Player.pause() <pyglet.media.player.Player.pause>` method.
+
+Stopping Permanently
+""""""""""""""""""""
+The helper functions are for stopping a playback without resuming. If
+you are sure you want don't want to resume, do the following after
+pausing the player:
+
+#. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method
+#. Make sure all references to the player are replaced with ``None`` to
+   allow `garbage collection`_.
 
 Changing Aspects of Playback
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are more ways to alter playback than stopping. Some are more
-qualitative. Many of them can be applied to both ongoing and new sound
-sound data playbacks, but the way to do so differs.
+qualitative. Many of them can be applied to both new and ongoing sound
+data playbacks, but in different ways.
 
 .. _sound-advanced-playback-change-aspects-ongoing:
 
-Change an Ongoing Playback via its Player Object
-""""""""""""""""""""""""""""""""""""""""""""""""
-In addition to the pyglet :py:class:`~pyglet.media.player.Player`'s
-:py:meth:`~pyglet.media.player.Player.pause` method, it also has properties
-and methods for changing aspects of the ongoing playback it represents.
+Change Ongoing Playbacks via Player Objects
+"""""""""""""""""""""""""""""""""""""""""""
+:py:meth:`Player.pause() <pyglet.media.player.Player.pause>` is one of
+many method and property members which change aspects of an ongoing
+playback. It's impossible to cover them all here, especially given the
+complexity of :ref:`positional audio <sound-other-libraries-pyglet-positional>`.
 
-The table below summarizes the most commonly used ones. Superscripts
-link footnotes about potential issues, such as the differences between
-the names of properties and their equivalent keyword arguments in arcade
-functions.
+Instead, the table below summarizes a few of the most useful members in
+the context of arcade. Superscripts link info about potential issues,
+such as name differences between properties and equivalent keyword
+arguments to arcade functions.
 
 .. list-table::
    :header-rows: 1
@@ -377,10 +386,15 @@ functions.
      - Default
      - Purpose
 
+   * - :py:meth:`~pyglet.media.player.Player.pause`
+     - method
+     - N/A
+     - Pause playback resumably.
+
    * - :py:meth:`~pyglet.media.player.Player.play`
      - method
      - N/A
-     - Resume playback.
+     - Resume paused playback.
 
    * - :py:meth:`~pyglet.media.player.Player.seek`
      - method
@@ -421,23 +435,19 @@ functions.
 .. [#inconsistencyspeed]
    Arcade's equivalent keyword for :ref:`sound-basics-playing` is ``speed``
 
-These are only a few of the :py:class:`~pyglet.media.player.Player`'s
-many features. To learn more, consult its documentation and the
-`Controlling playback <pyglet_controlling_playback_>`_ section of
-pyglet's media guide.
-
 .. _sound-advanced-playback-change-aspects-new:
 
 Configure New Playbacks via Keyword Arguments
 """""""""""""""""""""""""""""""""""""""""""""
-Arcade's functions for :ref:`sound-basics-playing` also accept `keyword
-arguments <keyword argument>`_ for configuring playback. The names of
-these keywords are similar or identical to the properties mentioned
-above. See the following to learn more:
+Arcade's helper functions for playing sound also accept keyword
+arguments for configuring playback. As mentioned above, the names of
+these keywords are similar or identical to those of properties on
+:py:class:`~pyglet.media.player.Player`. See the following to learn
+more:
 
-* :ref:`sound_speed_demo`
 * :py:func:`arcade.play_sound`
 * :py:meth:`Sound.play() <arcade.Sound.play>`
+* :ref:`sound_speed_demo`
 
 .. _sound-compat:
 
@@ -446,8 +456,8 @@ Cross-Platform Compatibility
 
 The sections below cover the easiest approach to compatibility.
 
-You can try other options it if you need to. Be aware that doing so
-requires grappling with the factors affecting audio compatibility:
+You can try other options if you need to. Be aware that doing so
+requires grappling with the many factors affecting audio compatibility:
 
 #. The formats which can be loaded
 #. The features supported by playback
@@ -459,7 +469,7 @@ requires grappling with the factors affecting audio compatibility:
 The Most Reliable Formats & Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For most users, the best formats are the following ones:
+For most users, the best approach to formats is:
 
 * Use 16-bit PCM Wave (``.wav``) files for :ref:`sound effects <sound-loading-modes-static>`
 * Use MP3 files for :ref:`long background audio like music <sound-loading-modes-streaming>`
@@ -472,20 +482,21 @@ basic features should work:
 #. :ref:`Adjusting playback volume and speed of playback <sound-advanced-playback>`
 
 Advanced functionality or subsets of it may not, especially
-`positional audio`_. To learn more, see the rest of this page and
-`pyglet's supported media types`_.
+:ref:`positional audio <sound-other-libraries-pyglet-positional>`.
+To learn more, see the rest of this page and `pyglet's guide to
+supported media types`_.
 
 .. _sound-compat-easy-best-effects:
 
 Why 16-bit PCM Wave for Effects?
 """"""""""""""""""""""""""""""""
-Loading 16-bit PCM ``.wav`` ensures all users can load sound effects because:
+Storing sound effects as 16-bit PCM ``.wav`` ensures all users can load them:
 
 #. pyglet :ref:`has built-in in support for this format <sound-compat-loading>`
 #. :ref:`Some platforms can only play 16-bit audio <sound-compat-playback>`
 
-There is another requirement if you want to use  `positional audio`_:
-the files must be mono (single-channel) instead of stereo.
+The files must also be mono rather than stereo if you want to use
+:ref:`positional audio <sound-other-libraries-pyglet-positional>`.
 
 Accepting these limitations is usually worth the compatibility benefits,
 especially as a beginner.
@@ -501,7 +512,7 @@ Why MP3 For Music and Ambiance?
 See the following to learn more:
 
 * :ref:`sound-compat-loading`
-* `Pyglet's Supported Media Types <pyglet's supported media types_>`_
+* `Pyglet's Supported Media Types <pyglet's guide to supported media types_>`_
 
 .. _sound-compat-easy-converting:
 
@@ -527,9 +538,10 @@ convert existing audio. Two of the most famous are summarized below.
      - Advanced
      - Powerful media conversion tool included with the library
 
-These should be able to handle converting from stereo to mono
-for users who want to use `positional audio`_ . Consult their
-documentation to learn how.
+They should be able to handle converting from stereo to mono
+for any users who want to use :ref:`positional audio
+<sound-other-libraries-pyglet-positional>`. Consult the documentation
+for the utilities above to learn how.
 
 .. [#linuxlame]
    Linux users may need to `install the LAME MP3 encoder separately
@@ -577,7 +589,7 @@ common denominators among features. The most restrictive backends are:
 * Mac's only backend, an OpenAL version limited to 16-bit audio
 * PulseAudio on Linux, which has multiple limitations:
 
-  * It lacks support for `positional audio <positional audio_>`_.
+  * It lacks support for :ref:`positional audio <sound-other-libraries-pyglet-positional>`
   * It can `crash under certain circumstances <pyglet_pulseaudiobug_>`_
     when other backends will not:
 
@@ -637,19 +649,45 @@ Other Sound Libraries
 
 Advanced users may have reasons to use other libraries to handle sound.
 
-The most obvious choice is pyglet itself:
+.. _sound-other-libraries-pyglet:
+
+Using Pyglet
+^^^^^^^^^^^^
+The most obvious external library for audio handling is pyglet:
 
 * It's guaranteed to work wherever arcade's sound support does.
-* You are already familiar with using :py:class:`pyglet.media.player.Player`
-  to control playback.
-* It offers more control over media loading and playback than arcade.
+* It offers far better control over media than arcade
+* You may have already used parts of it directly for :ref:`sound-advanced-playback`
 
-If you are interested in porting to using pyglet directly, note that the
-:py:attr:`arcade.Sound.source` attribute is exposed. This means you can
-cleanly interface with pyglet code if you are porting code or want to use
-arcade's built-in resource path resolution.
+Note that :py:attr:`arcade.Sound`'s ``source`` attribute holds a
+:py:class:`pyglet.media.Source`. This means you can start off by cleanly
+using arcade's resource and sound loading with pyglet features as needed.
 
-To learn more, consult the `pyglet media guide`_.
+.. _sound-other-libraries-pyglet-positional:
+
+Notes on Positional Audio
+"""""""""""""""""""""""""
+Positional audio is a set of features which automatically adjust sound
+volumes across the channels for physical speakers based on in-game
+distances.
+
+Although pyglet exposes its support for this through its
+:py:class:`~pyglet.media.player.Player`, arcade does not currently offer
+integrations. You will have to do the setup work yourself.
+
+.. _pyglet_positional_guide: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#positional-audio
+
+If you already have some experience with Python, the following sequence
+of links should serve as a primer for trying positional audio:
+
+#. :ref:`sound-compat-easy-best-effects`
+#. :ref:`sound-compat-playback`
+#. The following sections of pyglet's media guide:
+
+   #. `Controlling playback <pyglet_controlling_playback_>`_
+   #. `Positional audio <pyglet_positional_guide>`_
+
+#. :py:class:`pyglet.media.player.Player`'s full documentation
 
 External Libraries
 ^^^^^^^^^^^^^^^^^^
