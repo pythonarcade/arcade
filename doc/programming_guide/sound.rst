@@ -291,18 +291,22 @@ If you're unsure, avoid streaming unless you can say yes to all of the
 following:
 
 #. The :py:class:`~arcade.Sound` will have at most one playback at a time.
-   [#streamingsource]_
 
 #. The file is long enough to make it worth it.
 
 #. Seeking (skipping to different parts) will be infrequent.
 
-   * Ideally, you will never seek or restart playback suddenly
-   * If you do skip, the jumps will ideally be close enough to
+   * Ideally, you will never seek or restart playback suddenly.
+   * If you do seek, the jumps will ideally be close enough to
      land in the same or next chunk.
 
-.. [#streamingsource]
-   This is a requirement of the underlying :py:class:`pyglet.media.StreamingSource`.
+See the following to learn more:
+
+* :ref:`sound-advanced-playback-change-aspects-ongoing`
+* The :py:class:`pyglet.media.StreamingSource` class used to implement
+  streaming
+
+.. _sound-loading-modes-streaming-freezes:
 
 Streaming Can Cause Freezes
 """""""""""""""""""""""""""
@@ -345,46 +349,70 @@ instead of the :ref:`stopping helpers <sound-basics-stopping>` as follows:
 #. Make sure all references to the player are discarded to allow
    `garbage collection`_.
 
-Changing Playback Parameters
+Changing Aspects of Playback
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ongoing Playback
-""""""""""""""""
-The properties and methods of an ongoing playback's
-:py:class:`pyglet.media.player.Player` allow changing aspects of it.
+There are more ways to alter playback than stopping. Some are more
+qualitative. Many of them can be applied to both ongoing and new sound
+sound data playbacks, but the way to do so differs.
+
+.. _sound-advanced-playback-change-aspects-ongoing:
+
+Change an Ongoing Playback via its Player Object
+""""""""""""""""""""""""""""""""""""""""""""""""
+In addition to the pyglet :py:class:`~pyglet.media.player.Player`'s
+:py:meth:`~pyglet.media.player.Player.pause` method, it also has properties
+and methods for changing aspects of the ongoing playback it represents.
 
 The table below summarizes the most commonly used ones. Superscripts
-link explanations of inconsistencies, such as differences between names
-of properties and their equivalent keyword arguments in arcade functions.
+link footnotes about potential issues, such as the differences between
+the names of properties and their equivalent keyword arguments in arcade
+functions.
 
 .. list-table::
    :header-rows: 1
 
-   * - :py:class:`~pyglet.media.player.Player` Property
+   * - :py:class:`~pyglet.media.player.Player` Member
      - Type
      - Default
      - Purpose
 
+   * - :py:meth:`~pyglet.media.player.Player.play`
+     - method
+     - N/A
+     - Resume playback.
+
+   * - :py:meth:`~pyglet.media.player.Player.seek`
+     - method
+     - N/A
+     - .. warning:: :ref:`Using this option with streaming can cause freezes!
+        <sound-loading-modes-streaming-freezes>`
+
+       Skip to the passed :py:class:`float` timestamp measured as seconds
+       from the audio's start.
+
    * - :py:attr:`~pyglet.media.player.Player.volume`
-     - :py:class:`float`
+     - :py:class:`float` property
      - ``1.0``
-     - The scaling factor for the original sound data's volume. Must be
-       between ``0.0`` (silent) and ``1.0`` (full volume).
+     - The scaling factor to apply to the original audio's volume. Must
+       be between ``0.0`` (silent) and ``1.0`` (full volume).
 
    * - :py:attr:`~pyglet.media.player.Player.loop`
        [#inconsistencyloop]_
-     - :py:class:`bool`
+     - :py:class:`bool` property
      - ``False``
      - Whether to restart playback automatically after finishing. [#streamingnoloop]_
 
    * - :py:attr:`~pyglet.media.player.Player.pitch` [#inconsistencyspeed]_
-     - :py:class:`float`
+     - :py:class:`float` property
      - ``1.0``
-     - How fast to play back the sound; also affects pitch.
+     - How fast to play the sound data; also affects pitch.
 
 .. [#inconsistencyloop]
-   :py:func:`arcade.play_sound` uses ``looping`` as a keyword instead of
-   ``loop``; see `the related GitHub issue <inconsistency_loop_issue_>`_.
+   :py:func:`arcade.play_sound` uses ``looping`` instead. See:
+
+   *  :ref:`sound-advanced-playback-change-aspects-new`
+   * `The related GitHub issue <inconsistency_loop_issue_>`_.
 
 .. [#streamingnoloop]
    Looping is unavailable when ``streaming=True``; see `pyglet's guide to
@@ -393,20 +421,23 @@ of properties and their equivalent keyword arguments in arcade functions.
 .. [#inconsistencyspeed]
    Arcade's equivalent keyword for :ref:`sound-basics-playing` is ``speed``
 
-These are only a few of :py:class:`~pyglet.media.player.Player`'s many
-features. To learn more, consult its documentation and the
+These are only a few of the :py:class:`~pyglet.media.player.Player`'s
+many features. To learn more, consult its documentation and the
 `Controlling playback <pyglet_controlling_playback_>`_ section of
 pyglet's media guide.
 
-Changing Parameters from the Start
-""""""""""""""""""""""""""""""""""
-You can alter playback when :ref:`sound-basics-playing` through `keyword
-arguments <keyword argument>`_ with the same or similar names as the
-properties mentioned above. See the following to learn more:
+.. _sound-advanced-playback-change-aspects-new:
+
+Configure New Playbacks via Keyword Arguments
+"""""""""""""""""""""""""""""""""""""""""""""
+Arcade's functions for :ref:`sound-basics-playing` also accept `keyword
+arguments <keyword argument>`_ for configuring playback. The names of
+these keywords are similar or identical to the properties mentioned
+above. See the following to learn more:
 
 * :ref:`sound_speed_demo`
 * :py:func:`arcade.play_sound`
-* :py:meth:`Sound.play <arcade.Sound.play>`
+* :py:meth:`Sound.play() <arcade.Sound.play>`
 
 .. _sound-compat:
 
