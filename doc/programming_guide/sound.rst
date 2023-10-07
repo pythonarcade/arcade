@@ -145,9 +145,11 @@ Imagine you have two characters in a game which both play the same
 characters in the world with separate playbacks of the sound,
 each stores its own :py:class:`~pyglet.media.player.Player`.
 
-This allows controlling their movement sound playbacks separately. For
-example, one character may get close enough to the player to attack or
-perform some other action.
+This allows controlling their playbacks of the movement sound
+separately. For example, one character may get close enough to the
+user's character to talk, attack, attack perform some other action.
+You would use that character's pyglet player to stop the movement
+sound's playback.
 
 Although this may seem unimportant, it is crucial for games which hide
 parts of the world from view. An enemy with no way to know it's there
