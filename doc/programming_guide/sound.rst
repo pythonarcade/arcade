@@ -108,7 +108,7 @@ See the following to learn more:
 #. :ref:`Platformer Part 7 - Loading Sounds <platformer_part_seven_loading_sounds>`
 #. :ref:`resources`
 #. :py:mod:`pathlib`
-#. :ref:`sound-static-vs-streaming`
+#. :ref:`sound-loading-modes`
 
 .. _sound-basics-playing:
 
@@ -194,10 +194,10 @@ See the following to learn more:
 * :ref:`sound-advanced-playback`
 * `Python's contributor guide article on garbage collection <garbage collection_>`_
 
-.. _sound-static-vs-streaming:
+.. _sound-loading-modes:
 
-Streaming vs Static Audio
--------------------------
+Streaming or Static Loading?
+----------------------------
 
 .. _keyword argument: https://docs.python.org/3/glossary.html#term-argument
 
@@ -243,10 +243,10 @@ The following subheadings will explain each option in detail.
 .. [#staticsourcefoot]
    See the :py:class:`pyglet.media.StaticSource` class used by arcade.
 
-.. _sound-effects:
+.. _sound-loading-modes-static:
 
-Sound Effects are Fast
-^^^^^^^^^^^^^^^^^^^^^^
+Static Sounds Can Be Fastest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As long as you have enough memory, preloading entire sounds prevents
 in-game slowdowns.
@@ -263,7 +263,7 @@ Any of the following suggest a sound should be loaded a a static effect:
 * You need to automatically loop playback.
 * The file is a short clip.
 
-.. _sound-streaming:
+.. _sound-loading-modes-streaming:
 
 Streaming Can Save Memory
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -426,8 +426,8 @@ The Most Reliable Formats & Features
 
 For most users, the best formats are the following ones:
 
-* Use 16-bit PCM Wave (``.wav``) files for :ref:`sound effects <sound-effects>`
-* Use MP3 files for :ref:`long background audio like music <sound-streaming>`
+* Use 16-bit PCM Wave (``.wav``) files for :ref:`sound effects <sound-loading-modes-static>`
+* Use MP3 files for :ref:`long background audio like music <sound-loading-modes-streaming>`
 
 As long as a user has working audio hardware and drivers, the following
 basic features should work:
