@@ -148,10 +148,10 @@ This allows controlling their movement sound playbacks separately. For
 example, one character may get close enough to the player to attack or
 perform some other action.
 
-Although this may seem unimportant, it is crucial if for games which
-hide parts of the world from view. An enemy with no way to know it's
-there is the most common version of the unknown danger example listed
-in :ref:`sound-why-important`.
+Although this may seem unimportant, it is crucial for games which hide
+parts of the world from view. An enemy with no way to know it's there
+is the most common version of the unknown danger example listed in
+:ref:`sound-why-important`.
 
 See the following to learn more:
 
