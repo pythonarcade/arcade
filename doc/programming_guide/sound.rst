@@ -150,8 +150,8 @@ perform some other action.
 
 Although this may seem unimportant, it is crucial if for games which
 hide parts of the world from view. An enemy with no way to know it's
-there is the most common version of an "unknown danger" as described in
-:ref:`sound-why-important`.
+there is the most common version of the unknown danger example listed
+in :ref:`sound-why-important`.
 
 See the following to learn more:
 
