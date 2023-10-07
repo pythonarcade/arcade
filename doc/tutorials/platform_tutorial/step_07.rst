@@ -27,7 +27,6 @@ the ground previously, and then add them to the scene.
     :caption: Add Coins and Sound
     :lines: 86-91
 
-
 .. _platformer_part_seven_loading_sounds:
 
 Loading Sounds
