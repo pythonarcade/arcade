@@ -126,6 +126,32 @@ argument of :py:func:`arcade.play_sound`::
     # Important: this *must* be a Sound instance, not a path or string!
     self.hurt_player = arcade.play_sound(hurt_sound)
 
+Both return a :py:class:`pyglet.media.player.Player`. You should store
+it somewhere if you want to be able to stop or alter a specific playback of
+a :py:class:`~arcade.Sound`'s data.
+
+Sounds vs pyglet Players
+""""""""""""""""""""""""
+This is a very important distinction:
+
+* A :py:class:`~arcade.Sound` represents a source of playable data
+* A pyglet :py:class:`~pyglet.media.player.Player` represents a
+  specific playback of that data
+
+Imagine you have two characters in a game which both play the same
+:py:class:`~arcade.Sound` when moving. Since they are separate
+characters in the world with separate playbacks of the sound,
+each stores its own :py:class:`~pyglet.media.player.Player`.
+
+This allows controlling their movement sound playbacks separately. For
+example, one character may get close enough to the player to attack or
+perform some other action.
+
+Although this may seem unimportant, it is crucial if for games which
+hide parts of the world from view. An enemy with no way to know it's
+there is the most common version of an "unknown danger" as described in
+:ref:`pgsound-why-important`.
+
 See the following to learn more:
 
 #. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
