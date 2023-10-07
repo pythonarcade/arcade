@@ -573,7 +573,7 @@ These benefits become even more important during game jams.
 
 .. [#mp3linux]
    The only time MP3 will be absent is on unusual Linux configurations.
-   See `pyglet's supported media types`_ to learn more.
+   See `pyglet's guide to supported media types`_ to learn more.
 
 .. _sound-compat-playback:
 
