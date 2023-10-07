@@ -604,10 +604,10 @@ Advanced users may have reasons to use other libraries to handle sound.
 
 The most obvious choice is pyglet itself:
 
-* It's guaranteed to work wherever arcade's sound support does
-* You are already familiar with from using
-  :py:class:`pyglet.media.player.Player` to control playback
-* It offers more control over media loading and playback than arcade
+* It's guaranteed to work wherever arcade's sound support does.
+* You are already familiar with using :py:class:`pyglet.media.player.Player`
+  to control playback.
+* It offers more control over media loading and playback than arcade.
 
 If you are interested in porting to using pyglet directly, note that the
 :py:attr:`arcade.Sound.source` attribute is exposed. This means you can
