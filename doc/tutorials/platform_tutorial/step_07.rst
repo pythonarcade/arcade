@@ -69,8 +69,6 @@ sprite from any SpriteLists it belongs to, effectively deleting it from the game
     You can trim the space in a graphics editor, or later on, we'll go over how to customize the
     hitbox of a Sprite.
 
-
-
 Add the following to the ``on_update`` function to add collision detection and play a sound
 when the player picks up a coin.
 
