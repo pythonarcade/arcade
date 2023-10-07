@@ -23,7 +23,7 @@ In addition each section's concepts, there may also be links to example
 code and documentation.
 
 #. :ref:`pgsound-why-important`
-#. :ref:`pgsound-tech-overview`:
+#. :ref:`pgsound-tech-overview`
 
    * :ref:`pgsound-loading`
    * :ref:`pgsound-playing`
