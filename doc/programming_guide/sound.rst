@@ -511,13 +511,17 @@ Backends Determine Playback Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _pyglet_openal: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#openal
+.. _pyglet_pulseaudiobug: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#the-bug
 
 As with formats, you can maximize compatibility by only using the lowest
 common denominators among features. The most restrictive backends are:
 
 * Mac's only backend, an OpenAL version limited to 16-bit audio
-* PulseAudio on Linux, which lacks support for `positional audio
-  <positional audio_>`_ [#openallinux]_
+* PulseAudio on Linux, which has multiple limitations:
+
+  * It lacks support for `positional audio <positional audio_>`_. [#openallinux]_
+  * It can `crash under certain circumstances <pyglet_pulseaudiobug_>`_
+    where OpenAL will not.
 
 Other differences between backends are less drastic. Usually, they will
 be things like the specific positional features supported and the maximum
