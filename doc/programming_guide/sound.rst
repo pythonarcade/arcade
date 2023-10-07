@@ -551,7 +551,10 @@ common denominators among features. The most restrictive backends are:
 
   * It lacks support for `positional audio <positional audio_>`_.
   * It can `crash under certain circumstances <pyglet_pulseaudiobug_>`_
-    where other backends will not.
+    when other backends will not:
+
+    * Pausing / resuming in debuggers
+    * Rarely and unpredictably when multiple sounds are playing
 
 On Linux, the best way to deal with the PulseAudio bug is to `install
 OpenAL <pyglet_openal_>`_. It will often already be installed as a
