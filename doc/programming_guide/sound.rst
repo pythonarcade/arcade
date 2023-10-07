@@ -22,15 +22,15 @@ This page will help you get started by covering the essentials of sound.
 In addition each section's concepts, there may also be links to example
 code and documentation.
 
-#. :ref:`pgsound-why-important`
-#. :ref:`pgsound-tech-overview`
+#. :ref:`sound-why-important`
+#. :ref:`sound-basics`
 
-   * :ref:`pgsound-loading`
-   * :ref:`pgsound-playing`
-   * :ref:`pgsound-stopping`
+   * :ref:`sound-basics-loading`
+   * :ref:`sound-basics-playing`
+   * :ref:`sound-basics-stopping`
 
-#. :ref:`pgsound-compat`
-#. :ref:`pgsound-other-audio-libs` (for advanced users)
+#. :ref:`sound-compat`
+#. :ref:`sound-other-libraries` (for advanced users)
 
 .. rubric:: I'm Impatient!
 
@@ -44,7 +44,7 @@ Users who want to skip to example code should consult the following:
    #. :ref:`platformer_part_seven_loading_sounds`
    #. :ref:`platformer_part_seven_playing_sounds`
 
-.. _pgsound-why-important:
+.. _sound-why-important:
 
 Why Is Sound Important?
 -----------------------
@@ -67,12 +67,12 @@ You can use sound to prevent moments like these. In each example above,
 the right audio can provide the information players need for the game
 to feel fair.
 
-.. _pgsound-tech-overview:
+.. _sound-basics:
 
 Sound Basics
 ------------
 
-.. _pgsound-loading:
+.. _sound-basics-loading:
 
 Loading Sounds
 ^^^^^^^^^^^^^^
@@ -109,7 +109,7 @@ See the following to learn more:
 #. :py:mod:`pathlib`
 #. :ref:`pgsound-static-vs-streaming`
 
-.. _pgsound-playing:
+.. _sound-basics-playing:
 
 Playing Sounds
 ^^^^^^^^^^^^^^
@@ -150,14 +150,14 @@ perform some other action.
 Although this may seem unimportant, it is crucial if for games which
 hide parts of the world from view. An enemy with no way to know it's
 there is the most common version of an "unknown danger" as described in
-:ref:`pgsound-why-important`.
+:ref:`sound-why-important`.
 
 See the following to learn more:
 
 #. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
 #. :ref:`sound_demo`
 
-.. _pgsound-stopping:
+.. _sound-basics-stopping:
 
 Stopping Sounds
 ^^^^^^^^^^^^^^^
@@ -189,8 +189,8 @@ To use them, do the following:
 
 See the following to learn more:
 
-* :ref:`pgsound-reliability`
-* :ref:`pgsound-playback-details`
+* :ref:`sound-compat-easy`
+* :ref:`sound-advanced-playback`
 * `Python's contributor guide article on garbage collection <garbage collection_>`_
 
 .. _pgsound-static-vs-streaming:
@@ -225,7 +225,7 @@ This is the best option for most game sound effects. It's called
 
 The alternative is streaming. Enable it by passing ``True`` through the
 ``streaming`` `keyword argument`_  when you :ref:`load a sound
-<pgsound-loading>`::
+<sound-basics-loading>`::
 
     # Both loading approaches accept the streaming keyword.
     classical_music_track = arcade.load_sound(":resources:music/1918.mp3", streaming=True)
@@ -237,7 +237,7 @@ For an interactive example, see the :ref:`music_control_demo`.
 The following subheadings will explain each option in detail.
 
 .. [#meaningbestformatheader]
-   See :ref:`pgsound-reliability` to learn more.
+   See :ref:`sound-compat-easy` to learn more.
 
 .. [#staticsourcefoot]
    See the :py:class:`pyglet.media.StaticSource` class used by arcade.
@@ -313,7 +313,7 @@ downgrade quality, your game will be at risk of stuttering or freezing.
 
 The best way to handle this is to only use streaming when necessary.
 
-.. _pgsound-playback-details:
+.. _sound-advanced-playback:
 
 Advanced Playback Control
 -------------------------
@@ -326,13 +326,13 @@ You can alter the playback of a :py:class:`arcade.Sound`'s data by:
 * Using properties and methods of a :py:class:`~pyglet.media.player.Player`
   any time before playback has finished
 * Passing keyword arguments with the same (or similar) names as the
-  Player's properties when :ref:`playing the sound <pgsound-playing>`.
+  Player's properties when :ref:`playing the sound <sound-basics-playing>`.
 
 Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can stop playback through its pyglet :py:meth:`pyglet.media.player.Player`
-instead of the :ref:`stopping helpers <pgsound-stopping>` as follows:
+instead of the :ref:`stopping helpers <sound-basics-stopping>` as follows:
 
 #. Call the player's :py:meth:`~pyglet.media.player.Player.pause`
    method.
@@ -387,7 +387,7 @@ of properties and their equivalent keyword arguments in arcade functions.
    controlling playback <pyglet_controlling_playback_>`_.
 
 .. [#inconsistencyspeed]
-   Arcade's equivalent keyword for :ref:`pgsound-playing` is ``speed``
+   Arcade's equivalent keyword for :ref:`sound-basics-playing` is ``speed``
 
 These are only a few of :py:class:`~pyglet.media.player.Player`'s many
 features. Consult its documentation and the `relevant section of the pyglet
@@ -395,7 +395,7 @@ media guide <pyglet_controlling_playback_>`_ to learn more.
 
 Changing Parameters from the Start
 """"""""""""""""""""""""""""""""""
-You can alter playback when :ref:`pgsound-playing` through `keyword
+You can alter playback when :ref:`sound-basics-playing` through `keyword
 arguments <keyword argument>`_ with the same or similar names as the
 properties mentioned above. See the following to learn more:
 
@@ -403,7 +403,7 @@ properties mentioned above. See the following to learn more:
 * :py:func:`arcade.play_sound`
 * :py:meth:`Sound.play <arcade.Sound.play>`
 
-.. _pgsound-compat:
+.. _sound-compat:
 
 Cross-Platform Compatibility
 ----------------------------
@@ -418,7 +418,7 @@ requires grappling with the factors affecting audio compatibility:
 #. The hardware, software, and settings limitations on the first two
 #. The interactions of project requirements with all of the above
 
-.. _pgsound-reliability:
+.. _sound-compat-easy:
 
 The Most Reliable Formats & Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -431,26 +431,26 @@ For most users, the best formats are the following ones:
 As long as a user has working audio hardware and drivers, the following
 basic features should work:
 
-#. :ref:`pgsound-loading` sound effects from Wave files
-#. :ref:`pgsound-playing` and :ref:`pgsound-stopping`
-#. :ref:`Adjusting playback volume and speed of playback <pgsound-playback-details>`
+#. :ref:`sound-basics-loading` sound effects from Wave files
+#. :ref:`sound-basics-playing` and :ref:`sound-basics-stopping`
+#. :ref:`Adjusting playback volume and speed of playback <sound-advanced-playback>`
 
 Advanced functionality or subsets of it may not, especially
 `positional audio`_. To learn more, see the rest of this page and the
 links below:
 
-* :ref:`pgsound-compat-playback`
-* :ref:`pgsound-converting`
+* :ref:`sound-compat-playback`
+* :ref:`sound-compat-easy-converting`
 * `pyglet's supported media types`_
 
-.. _pgsound-reliability-best-effects:
+.. _sound-compat-easy-best-effects:
 
 Why 16-bit PCM Wave for Effects?
 """"""""""""""""""""""""""""""""
 Loading 16-bit PCM ``.wav`` ensures all users can load sound effects because:
 
-#. pyglet :ref:`has built-in in support for this format <pgsound-compat-loading>`
-#. :ref:`Some platforms can only play 16-bit audio <pgsound-compat-playback>`
+#. pyglet :ref:`has built-in in support for this format <sound-compat-loading>`
+#. :ref:`Some platforms can only play 16-bit audio <sound-compat-playback>`
 
 There is another requirement if you want to use  `positional audio`_:
 the files must be mono (single-channel) instead of stereo.
@@ -458,7 +458,7 @@ the files must be mono (single-channel) instead of stereo.
 Accepting these limitations is usually worth the compatibility benefits,
 especially as a beginner.
 
-.. _pgsound-reliability-best-stream:
+.. _sound-compat-easy-best-stream:
 
 Why MP3 For Music and Ambiance?
 """""""""""""""""""""""""""""""
@@ -468,10 +468,10 @@ Why MP3 For Music and Ambiance?
 
 See the following to learn more:
 
-* :ref:`pgsound-compat-loading`
+* :ref:`sound-compat-loading`
 * `Pyglet's Supported Media Types <pyglet's supported media types_>`_
 
-.. _pgsound-converting:
+.. _sound-compat-easy-converting:
 
 Converting Audio Formats
 """"""""""""""""""""""""
@@ -503,7 +503,7 @@ documentation to learn how.
    Linux users may need to `install the LAME MP3 encoder separately
    to export MP3 files <https://manual.audacityteam.org/man/faq_installing_the_lame_mp3_encoder.html>`_.
 
-.. _pgsound-compat-loading:
+.. _sound-compat-loading:
 
 Loading In-Depth
 ^^^^^^^^^^^^^^^^
@@ -531,7 +531,7 @@ These benefits become even more important during game jams.
    The only time MP3 will be absent is on unusual Linux configurations.
    See `pyglet's supported media types`_ to learn more.
 
-.. _pgsound-compat-playback:
+.. _sound-compat-playback:
 
 Backends Determine Playback Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -560,7 +560,7 @@ number of simultaneous sounds.
 See the following to learn more:
 
 * `pyglet's audio driver overview <pyglet_audio_drivers_>`_
-* :ref:`pgsound-other-audio-libs`
+* :ref:`sound-other-libraries`
 
 Choosing the Audio Backend
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -595,7 +595,7 @@ Please see the following to learn more:
 * `pyglet's audio driver documentation <pyglet_audio_drivers_>`_
 * `Working with Environment Variables in Python <python_env_vars_>`_
 
-.. _pgsound-other-audio-libs:
+.. _sound-other-libraries:
 
 Other Sound Libraries
 ---------------------
