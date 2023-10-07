@@ -394,8 +394,9 @@ of properties and their equivalent keyword arguments in arcade functions.
    Arcade's equivalent keyword for :ref:`sound-basics-playing` is ``speed``
 
 These are only a few of :py:class:`~pyglet.media.player.Player`'s many
-features. Consult its documentation and the `relevant section of the pyglet
-media guide <pyglet_controlling_playback_>`_ to learn more.
+features. To learn more, consult its documentation and the
+`Controlling playback <pyglet_controlling_playback_>`_ section of
+pyglet's media guide.
 
 Changing Parameters from the Start
 """"""""""""""""""""""""""""""""""
@@ -440,12 +441,8 @@ basic features should work:
 #. :ref:`Adjusting playback volume and speed of playback <sound-advanced-playback>`
 
 Advanced functionality or subsets of it may not, especially
-`positional audio`_. To learn more, see the rest of this page and the
-links below:
-
-* :ref:`sound-compat-playback`
-* :ref:`sound-compat-easy-converting`
-* `pyglet's supported media types`_
+`positional audio`_. To learn more, see the rest of this page and
+`pyglet's supported media types`_.
 
 .. _sound-compat-easy-best-effects:
 
@@ -566,7 +563,7 @@ number of simultaneous sounds.
 
 See the following to learn more:
 
-* `pyglet's audio driver overview <pyglet_audio_drivers_>`_
+* `Pyglet's Audio Backends <pyglet_audio_drivers_>`_
 * :ref:`sound-other-libraries`
 
 Choosing the Audio Backend
