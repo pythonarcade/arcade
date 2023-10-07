@@ -519,17 +519,17 @@ common denominators among features. The most restrictive backends are:
 * Mac's only backend, an OpenAL version limited to 16-bit audio
 * PulseAudio on Linux, which has multiple limitations:
 
-  * It lacks support for `positional audio <positional audio_>`_. [#openallinux]_
+  * It lacks support for `positional audio <positional audio_>`_.
   * It can `crash under certain circumstances <pyglet_pulseaudiobug_>`_
-    where OpenAL will not.
+    where other backends will not.
+
+On Linux, the best way to deal with the PulseAudio bug is to `install
+OpenAL <pyglet_openal_>`_. It will often already be installed as a
+dependency of other packages.
 
 Other differences between backends are less drastic. Usually, they will
 be things like the specific positional features supported and the maximum
 number of simultaneous sounds.
-
-.. [#openallinux]
-   On Linux, OpenAL is often `installed or available <pyglet_openal_>`_
-   without Mac's limitations.
 
 See the following to learn more:
 
