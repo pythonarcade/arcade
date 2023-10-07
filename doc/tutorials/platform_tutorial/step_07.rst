@@ -48,7 +48,6 @@ Then we can play our jump sound when the player jumps, by adding it to the ``on_
     :lines: 110-120
     :emphasize-lines: 7
 
-
 .. _platformer_part_seven_playing_sounds:
 
 Collision Detection
