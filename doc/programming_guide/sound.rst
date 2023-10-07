@@ -29,6 +29,7 @@ code and documentation.
    * :ref:`sound-basics-playing`
    * :ref:`sound-basics-stopping`
 
+#. :ref:`sound-advanced-playback`
 #. :ref:`sound-compat`
 #. :ref:`sound-other-libraries` (for advanced users)
 
