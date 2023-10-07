@@ -12,7 +12,7 @@
 .. _pyglet's supported media types: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#supported-media-types
 .. _pyglet_audio_drivers: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#choosing-the-audio-driver
 
-.. _pgsound:
+.. _sound:
 
 Sound
 =====
@@ -108,7 +108,7 @@ See the following to learn more:
 #. :ref:`Platformer Part 7 - Loading Sounds <platformer_part_seven_loading_sounds>`
 #. :ref:`resources`
 #. :py:mod:`pathlib`
-#. :ref:`pgsound-static-vs-streaming`
+#. :ref:`sound-static-vs-streaming`
 
 .. _sound-basics-playing:
 
@@ -194,7 +194,7 @@ See the following to learn more:
 * :ref:`sound-advanced-playback`
 * `Python's contributor guide article on garbage collection <garbage collection_>`_
 
-.. _pgsound-static-vs-streaming:
+.. _sound-static-vs-streaming:
 
 Streaming vs Static Audio
 -------------------------
@@ -243,7 +243,7 @@ The following subheadings will explain each option in detail.
 .. [#staticsourcefoot]
    See the :py:class:`pyglet.media.StaticSource` class used by arcade.
 
-.. _pgsound-effects:
+.. _sound-effects:
 
 Sound Effects are Fast
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -263,7 +263,7 @@ Any of the following suggest a sound should be loaded a a static effect:
 * You need to automatically loop playback.
 * The file is a short clip.
 
-.. _pgsound-streaming:
+.. _sound-streaming:
 
 Streaming Can Save Memory
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -426,8 +426,8 @@ The Most Reliable Formats & Features
 
 For most users, the best formats are the following ones:
 
-* Use 16-bit PCM Wave (``.wav``) files for :ref:`sound effects <pgsound-effects>`
-* Use MP3 files for :ref:`long background audio like music <pgsound-streaming>`
+* Use 16-bit PCM Wave (``.wav``) files for :ref:`sound effects <sound-effects>`
+* Use MP3 files for :ref:`long background audio like music <sound-streaming>`
 
 As long as a user has working audio hardware and drivers, the following
 basic features should work:
