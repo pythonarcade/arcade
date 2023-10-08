@@ -12,6 +12,8 @@ from arcade.camera.perspective import PerspectiveProjector
 from arcade.camera.simple_camera import SimpleCamera
 from arcade.camera.camera_2d import Camera2D
 
+import arcade.camera.controllers as controllers
+
 __all__ = [
     'Projection',
     'Projector',
@@ -22,5 +24,6 @@ __all__ = [
     'PerspectiveProjectionData',
     'PerspectiveProjector',
     'SimpleCamera',
-    'Camera2D'
+    'Camera2D',
+    'controllers'
 ]
