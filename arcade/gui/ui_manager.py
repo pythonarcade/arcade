@@ -93,8 +93,9 @@ class UIManager(EventDispatcher):
         self._rendered = False
         #: Camera used when drawing the UI
         self.projector = OrthographicProjector(
-            view=CameraData((0, 0, self.window.width, self.window.height)),
-            projection=OrthographicProjectionData(0, self.window.width, 0, self.window.height, -100, 100)
+            view=CameraData(),
+            projection=OrthographicProjectionData(0, self.window.width, 0, self.window.height, -100, 100,
+                                                  (0, 0, self.window.width, self.window.height))
         )
         self.register_event_type("on_event")
 
@@ -373,7 +374,7 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        self.projector.view_data.viewport = (0, 0, width, height)
+        self.projector.projection.viewport = (0, 0, width, height)
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)

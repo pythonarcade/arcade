@@ -234,7 +234,7 @@ class MyGame(arcade.Window):
             screen_center_y = self.camera.viewport_height/2
         user_centered = screen_center_x, screen_center_y
 
-        arcade.camera.controllers.simple_follow_2D(panning_fraction, user_centered, self.camera.data)
+        arcade.camera.controllers.simple_follow_2D(panning_fraction, user_centered, self.camera.view_data)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

@@ -15,8 +15,21 @@ __all__ = [
 
 
 class ViewportProjector:
+    """
+    A simple Projector which does not rely on any camera PoDs.
+
+    Does not have a way of moving, rotating, or zooming the camera.
+    perfect for something like UI or for mapping to an offscreen framebuffer.
+    """
 
     def __init__(self, viewport: Optional[Tuple[int, int, int, int]] = None, *, window: Optional["Window"] = None):
+        """
+        Initialise a ViewportProjector
+
+        Args:
+            viewport: The viewport to project to.
+            window: The window to bind the camera to. Defaults to the currently active camera.
+        """
         self._window = window or get_window()
 
         self._viewport = viewport or self._window.ctx.viewport
@@ -26,6 +39,9 @@ class ViewportProjector:
 
     @property
     def viewport(self):
+        """
+        The viewport use to derive projection and view matrix.
+        """
         return self._viewport
 
     @viewport.setter
@@ -37,6 +53,10 @@ class ViewportProjector:
                                                              -100, 100)
 
     def use(self):
+        """
+        Set the window's projection and view matrix.
+        Also sets the projector as the windows current camera.
+        """
         self._window.current_camera = self
 
         self._window.ctx.viewport = self._viewport
@@ -46,6 +66,11 @@ class ViewportProjector:
 
     @contextmanager
     def activate(self) -> Iterator[Projector]:
+        """
+        The context manager version of the use method.
+
+        usable with the 'with' block. e.g. 'with ViewportProjector.activate() as cam: ...'
+        """
         previous = self._window.current_camera
         try:
             self.use()
@@ -54,6 +79,11 @@ class ViewportProjector:
             previous.use()
 
     def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+        """
+        Map the screen pos to screen_coordinates.
+
+        Due to the nature of viewport projector this does not do anything.
+        """
         return screen_coordinate
 
 
@@ -68,9 +98,21 @@ class DefaultProjector(ViewportProjector):
     # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *, window: Optional["Window"] = None):
+        """
+        Initialise a ViewportProjector.
+
+        Args:
+            window: The window to bind the camera to. Defaults to the currently active camera.
+        """
         super().__init__(window=window)
 
     def use(self):
+        """
+        Set the window's Projection and View matrices.
+
+        cache's the window viewport to determine the projection matrix.
+        """
+
         if self._window.ctx.viewport != self.viewport:
             self.viewport = self._window.ctx.viewport
         super().use()

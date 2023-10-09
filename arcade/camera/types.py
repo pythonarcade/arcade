@@ -12,6 +12,7 @@ __all__ = [
 
 
 class Projection(Protocol):
+    viewport: Tuple[int, int, int, int]
     near: float
     far: float
 
@@ -25,7 +26,7 @@ class Projector(Protocol):
     def activate(self) -> Iterator["Projector"]:
         ...
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, ...]:
         ...
 
 

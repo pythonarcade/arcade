@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 
 __all__ = [
-    'OrthographicProjector',
-    'OrthographicProjectionData'
+    'OrthographicProjector'
 ]
 
 
@@ -33,16 +32,23 @@ class OrthographicProjector:
     be inefficient. If you suspect this is causing slowdowns
     profile before optimising with a dirty value check.
     """
-    # TODO: ADD PARAMS TO DOC FOR __init__
-
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  view: Optional[CameraData] = None,
                  projection: Optional[OrthographicProjectionData] = None):
+        """
+        Initialise a Projector which produces an orthographic projection matrix using
+        a CameraData and PerspectiveProjectionData PoDs.
+
+        Args:
+            window: The window to bind the camera to. Defaults to the currently active camera.
+            view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
+            projection: The OrthographicProjectionData PoD.
+                        contains the left, right, bottom top, near, and far planes.
+        """
         self._window: "Window" = window or get_window()
 
-        self._view = view or CameraData(
-            (0, 0, self._window.width, self._window.height),  # Viewport
+        self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
             (0.0, 0.0, -1.0),  # Forward
@@ -53,14 +59,22 @@ class OrthographicProjector:
             -0.5 * self._window.width, 0.5 * self._window.width,  # Left, Right
             -0.5 * self._window.height, 0.5 * self._window.height,  # Bottom, Top
             -100, 100,  # Near, Far
+
+            (0, 0, self._window.width, self._window.height)  # Viewport
         )
 
     @property
-    def view_data(self) -> CameraData:
+    def view(self) -> CameraData:
+        """
+        The CameraData. Is a read only property.
+        """
         return self._view
 
     @property
-    def projection_data(self) -> OrthographicProjectionData:
+    def projection(self) -> OrthographicProjectionData:
+        """
+        The OrthographicProjectionData. Is a read only property.
+        """
         return self._projection
 
     def _generate_projection_matrix(self) -> Mat4:
@@ -122,7 +136,7 @@ class OrthographicProjector:
         _projection = self._generate_projection_matrix()
         _view = self._generate_view_matrix()
 
-        self._window.ctx.viewport = self._view.viewport
+        self._window.ctx.viewport = self._projection.viewport
         self._window.projection = _projection
         self._window.view = _view
 
@@ -139,14 +153,22 @@ class OrthographicProjector:
         finally:
             previous_projector.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float, float]:
         """
-        Maps a screen position to a pixel position.
-        """
-        # TODO: better doc string
+        Take in a pixel coordinate from within
+        the range of the window size and returns
+        the world space coordinates.
 
-        screen_x = 2.0 * (screen_coordinate[0] - self._view.viewport[0]) / self._view.viewport[2] - 1
-        screen_y = 2.0 * (screen_coordinate[1] - self._view.viewport[1]) / self._view.viewport[3] - 1
+        Essentially reverses the effects of the projector.
+
+        Args:
+            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
+                               This should ALWAYS be in the range of 0.0 - screen size.
+        Returns:
+            A 3D vector in world space.
+        """
+        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
+        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
 
         _view = self._generate_view_matrix()
         _projection = self._generate_projection_matrix()
@@ -157,4 +179,4 @@ class OrthographicProjector:
 
         _mapped_position = _full @ screen_position
 
-        return _mapped_position[0], _mapped_position[1]
+        return _mapped_position[0], _mapped_position[1], _mapped_position[2]

@@ -26,7 +26,6 @@ class SimpleCamera:
 
     Written to be backwards compatible with the old SimpleCamera.
     """
-    # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
@@ -40,6 +39,25 @@ class SimpleCamera:
                  camera_data: Optional[CameraData] = None,
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
+        """
+        Initialise a Simple Camera Instance with either Camera PoDs or individual arguments
+
+        Args:
+            window: The Arcade Window to bind the camera to.
+                    Defaults to the currently active window.
+            viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
+            position: The 2D position of the camera in the XY plane.
+            up: The 2D unit vector which defines the +Y-axis of the camera space.
+            zoom: A scalar value which is inversely proportional to the size of the camera projection.
+                  i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
+            projection: A 4-float tuple which defines the world space
+                        bounds which the camera projects to the viewport.
+            near: The near clipping plane of the camera.
+            far: The far clipping place of the camera.
+            camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
+            projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
+                             bottom, far, near planes for an orthographic projection.
+        """
         warn("arcade.camera.SimpleCamera has been depreciated please use arcade.camera.Camera2D instead",
              DeprecationWarning)
 
@@ -53,7 +71,6 @@ class SimpleCamera:
             _pos = position or (0.0, 0.0)
             _up = up or (0.0, 1.0)
             self._view = CameraData(
-                viewport or (0, 0, self._window.width, self._window.height),
                 (_pos[0], _pos[1], 0.0),
                 (_up[0], _up[1], 0.0),
                 (0.0, 0.0, -1.0),
@@ -66,11 +83,11 @@ class SimpleCamera:
             self._projection = OrthographicProjectionData(
                 _projection[0] or 0.0, _projection[1] or self._window.hwidth,  # Left, Right
                 _projection[2] or 0.0, _projection[3] or self._window.height,  # Bottom, Top
-                near or -100, far or 100  # Near, Far
+                near or -100, far or 100,  # Near, Far
+                viewport or (0, 0, self._window.width, self._window.height),  # Viewport
             )
         else:
             self._view = camera_data or CameraData(
-                (0, 0, self._window.width, self._window.height),  # Viewport
                 (0.0, 0.0, 0.0),  # Position
                 (0, 1.0, 0.0),  # Up
                 (0.0, 0.0, -1.0),  # Forward
@@ -79,7 +96,8 @@ class SimpleCamera:
             self._projection = projection_data or OrthographicProjectionData(
                 0.0, self._window.width,  # Left, Right
                 0.0, self._window.height,  # Bottom, Top
-                -100, 100  # Near, Far
+                -100, 100,  # Near, Far
+                (0, 0, self._window.width, self._window.height),  # Viewport
             )
 
         self._camera = OrthographicProjector(
@@ -96,17 +114,17 @@ class SimpleCamera:
     @property
     def viewport_width(self) -> int:
         """ Returns the width of the viewport """
-        return self._view.viewport[2]
+        return self._projection.viewport[2]
 
     @property
     def viewport_height(self) -> int:
         """ Returns the height of the viewport """
-        return self._view.viewport[3]
+        return self._projection.viewport[3]
 
     @property
     def viewport(self) -> Tuple[int, int, int, int]:
         """ The pixel area that will be drawn to while this camera is active (left, bottom, width, height) """
-        return self._view.viewport
+        return self._projection.viewport
 
     @viewport.setter
     def viewport(self, viewport: Tuple[int, int, int, int]) -> None:
@@ -114,7 +132,7 @@ class SimpleCamera:
         self.set_viewport(viewport)
 
     def set_viewport(self, viewport: Tuple[int, int, int, int]) -> None:
-        self._view.viewport = viewport
+        self._projection.viewport = viewport
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
@@ -246,8 +264,9 @@ class SimpleCamera:
         The camera will lerp towards this position based on the provided speed,
         updating its position every time the use() function is called.
 
-        :param Vec2 vector: Vector to move the camera towards.
-        :param Vec2 speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
+        Args:
+            vector: The 2D vector position to move the camera towards (in the XY plane)
+            speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
         """
         self._position_goal = vector
         self._easing_speed = speed
@@ -328,20 +347,32 @@ class SimpleCamera:
 
     def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
         """
-        Maps a screen position to a pixel position.
-        """
-        # TODO: better doc string
+        Take in a pixel coordinate from within
+        the range of the viewport and returns
+        the world space coordinates.
 
-        return self._camera.map_coordinate(screen_coordinate)
+        Essentially reverses the effects of the projector.
+
+        Args:
+            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
+                               This should ALWAYS be in the range of 0.0 - screen size.
+        Returns:
+            A 2D vector (Along the XY plane) in world space (same as sprites).
+            perfect for finding if the mouse overlaps with a sprite or ui element irrespective
+            of the camera.
+        """
+
+        return self._camera.map_coordinate(screen_coordinate)[:2]
 
     def resize(self, viewport_width: int, viewport_height: int, *,
                resize_projection: bool = True) -> None:
         """
         Resize the camera's viewport. Call this when the window resizes.
 
-        :param int viewport_width: Width of the viewport
-        :param int viewport_height: Height of the viewport
-        :param bool resize_projection: if True the projection will also be resized
+        Args:
+            viewport_width: Width of the viewport.
+            viewport_height: Height of the viewport.
+            resize_projection: If True the projection will also be resized.
         """
         new_viewport = (self.viewport[0], self.viewport[1], viewport_width, viewport_height)
         self.set_viewport(new_viewport)

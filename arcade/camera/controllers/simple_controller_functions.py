@@ -148,9 +148,10 @@ def simple_follow_3D(speed: float, target: Tuple[float, float, float], data: Cam
     """
     A simple method which moves the camera linearly towards the target point.
 
-    :param speed: The percentage the camera should move towards the target.
-    :param target: The 3D position the camera should move towards in world space.
-    :param data: The camera data object which stores its position, rotation, and direction.
+    Args:
+        speed: The percentage the camera should move towards the target (0.0 - 1.0 range)
+        target: The 3D position the camera should move towards in world space.
+        data: The camera data object which stores its position, rotation, and direction.
     """
 
     data.position = _interpolate_3D(data.position, target, speed)
@@ -160,9 +161,10 @@ def simple_follow_2D(speed: float, target: Tuple[float, float], data: CameraData
     """
     A 2D version of simple_follow. Moves the camera only along the X and Y axis.
 
-    :param speed: The percentage the camera should move towards the target.
-    :param target: The 2D position the camera should move towards in world space.
-    :param data: The camera data object which stores its position, rotation, and direction.
+    Args:
+        speed: The percentage the camera should move towards the target (0.0 - 1.0 range)
+        target: The 2D position the camera should move towards in world space. (vector in XY-plane)
+        data: The camera data object which stores its position, rotation, and direction.
     """
     simple_follow_3D(speed, (target[0], target[1], 0.0), data)
 
@@ -172,18 +174,19 @@ def simple_easing_3D(percent: float,
                   target: Tuple[float, float, float],
                   data: CameraData, func: Callable[[float], float] = linear):
     """
-    A simple method which moves a camera in a straight line between two provided points.
+    A simple method which moves a camera in a straight line between two 3D points.
     It uses an easing function to make the motion smoother. You can use the collection of
     easing methods found in arcade.easing.
 
-    :param percent: The percentage from 0 to 1 which describes
-                    how far between the two points to place the camera.
-    :param start: The 3D point which acts as the starting point for the camera motion.
-    :param target: The 3D point which acts as the final destination for the camera.
-    :param data: The camera data object which stores its position, rotation, and direction.
-    :param func: The easing method to use. It takes in a number between 0-1
-                 and returns a new number in the same range but altered so the
-                 speed does not stay constant. See arcade.easing for examples.
+    Args:
+        percent: The percentage from 0 to 1 which describes
+                 how far between the two points to place the camera.
+        start: The 3D point which acts as the starting point for the camera motion.
+        target: The 3D point which acts as the final destination for the camera.
+        data: The camera data object which stores its position, rotation, and direction.
+        func: The easing method to use. It takes in a number between 0-1
+              and returns a new number in the same range but altered so the
+              speed does not stay constant. See arcade.easing for examples.
     """
 
     data.position = _interpolate_3D(start, target, func(percent))
@@ -194,16 +197,19 @@ def simple_easing_2D(percent: float,
                      target: Tuple[float, float],
                      data: CameraData, func: Callable[[float], float] = linear):
     """
-    A 2D version of simple_easing. Moves the camera only along the X and Y axis.
+    A simple method which moves a camera in a straight line between two 2D points (along XY plane).
+    It uses an easing function to make the motion smoother. You can use the collection of
+    easing methods found in arcade.easing.
 
-    :param percent: The percentage from 0 to 1 which describes
-                    how far between the two points to place the camera.
-    :param start: The 3D point which acts as the starting point for the camera motion.
-    :param target: The 3D point which acts as the final destination for the camera.
-    :param data: The camera data object which stores its position, rotation, and direction.
-    :param func: The easing method to use. It takes in a number between 0-1
-                 and returns a new number in the same range but altered so the
-                 speed does not stay constant. See arcade.easing for examples.
+    Args:
+        percent: The percentage from 0 to 1 which describes
+                 how far between the two points to place the camera.
+        start: The 2D point which acts as the starting point for the camera motion.
+        target: The 2D point which acts as the final destination for the camera.
+        data: The camera data object which stores its position, rotation, and direction.
+        func: The easing method to use. It takes in a number between 0-1
+              and returns a new number in the same range but altered so the
+              speed does not stay constant. See arcade.easing for examples.
     """
 
     simple_easing_3D(percent, (start[0], start[1], 0.0), (target[0], target[1], 0.0), data, func)
