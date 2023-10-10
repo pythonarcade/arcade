@@ -135,7 +135,7 @@ class MyGame(arcade.Window):
         self.camera = arcade.camera.Camera2D(viewport=viewport)
         self.gui_camera = arcade.camera.Camera2D(viewport=viewport)
 
-        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera.data,
+        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera.view_data,
                                                                             max_amplitude=12.5,
                                                                             acceleration_duration=0.05,
                                                                             falloff_time=0.20,

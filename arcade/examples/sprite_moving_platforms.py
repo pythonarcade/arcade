@@ -7,7 +7,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_moving_platforms
 """
 import arcade
-from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -55,8 +54,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.camera.SimpleCamera()
-        self.camera_gui = arcade.camera.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.left_down = False
         self.right_down = False
@@ -205,9 +204,8 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, position, self.camera_sprites.view_data)
 
 
 def main():

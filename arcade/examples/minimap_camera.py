@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
                             DEFAULT_SCREEN_HEIGHT - MINIMAP_HEIGHT,
                             MINIMAP_WIDTH, MINIMAP_HEIGHT)
         minimap_projection = (0, MAP_PROJECTION_WIDTH, 0, MAP_PROJECTION_HEIGHT)
-        self.camera_minimap = arcade.camera.SimpleCamera(viewport=minimap_viewport, projection=minimap_projection)
+        self.camera_minimap = arcade.camera.Camera2D(viewport=minimap_viewport, projection=minimap_projection)
 
         # Set up the player
         self.player_sprite = None
@@ -66,8 +66,8 @@ class MyGame(arcade.Window):
         # Camera for sprites, and one for our GUI
         viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
         projection = (0, DEFAULT_SCREEN_WIDTH, 0, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.camera.SimpleCamera(viewport=viewport, projection=projection)
-        self.camera_gui = arcade.camera.SimpleCamera(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D(viewport=viewport, projection=projection)
+        self.camera_gui = arcade.camera.Camera2D(viewport=viewport)
 
         self.selected_camera = self.camera_minimap
 

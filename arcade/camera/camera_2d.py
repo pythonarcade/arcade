@@ -113,7 +113,7 @@ class Camera2D:
         )
 
     @property
-    def data(self) -> CameraData:
+    def view_data(self) -> CameraData:
         """
         Return the view data for the camera. This includes the
         viewport, position, forward vector, up direction, and zoom.

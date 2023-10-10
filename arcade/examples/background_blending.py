@@ -23,7 +23,7 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.camera = arcade.camera.SimpleCamera()
+        self.camera = arcade.camera.Camera2D()
 
         # Load the first background from file. Sized to match the screen
         self.background_1 = background.Background.from_file(
@@ -51,21 +51,21 @@ class MyGame(arcade.Window):
 
     def pan_camera_to_player(self):
         # This will center the camera on the player.
-        target_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        target_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
+        target_x = self.player_sprite.center_x
+        target_y = self.player_sprite.center_y
 
         # This limits where the player can see. Ensuring they never go too far from the transition.
-        if -self.camera.viewport_width / 2 > target_x:
-            target_x = -self.camera.viewport_width / 2
-        elif target_x > self.background_1.size[0] * 2 - self.camera.viewport_width / 2:
-            target_x = self.background_1.size[0] * 2 - self.camera.viewport_width / 2
+        if 0.0 > target_x:
+            target_x = 0.0
+        elif target_x > self.background_1.size[0] * 2:
+            target_x = self.background_1.size[0] * 2
 
-        if -self.camera.viewport_height / 2 > target_y:
-            target_y = -self.camera.viewport_height / 2
-        elif target_y > self.background_1.size[1] - self.camera.viewport_height / 2:
-            target_y = self.background_1.size[1] - self.camera.viewport_height / 2
+        if 0.0 > target_y:
+            target_y = 0.0
+        elif target_y > self.background_1.size[1]:
+            target_y = self.background_1.size[1]
 
-        self.camera.move_to((target_x, target_y), 0.1)
+        arcade.camera.controllers.simple_follow_2D(0.1, (target_x, target_y), self.camera.view_data)
 
     def on_update(self, delta_time: float):
         new_position = (
@@ -120,7 +120,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.resize(width, height)
+        self.camera.match_screen(and_projection=True)
 
         # This is to ensure the background covers the entire screen.
         self.background_1.size = (width, height)

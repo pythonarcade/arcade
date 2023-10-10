@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
             self.player_sprite, walls, gravity_constant=GRAVITY
         )
 
-        self.camera = arcade.camera.SimpleCamera()
-        self.gui_camera = arcade.camera.SimpleCamera()
+        self.camera = arcade.camera.Camera2D()
+        self.gui_camera = arcade.camera.Camera2D()
 
         # Center camera on user
         self.pan_camera_to_user()
@@ -229,17 +229,15 @@ class MyGame(arcade.Window):
         """ Manage Scrolling """
 
         # This spot would center on the user
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = self.player_sprite.center_x
+        screen_center_y = self.player_sprite.center_y
+        if screen_center_x - self.width/2 < 0:
+            screen_center_x = self.width/2
+        if screen_center_y - self.height/2 < 0:
+            screen_center_y = self.height/2
         user_centered = screen_center_x, screen_center_y
 
-        self.camera.move_to(user_centered, panning_fraction)
+        arcade.camera.controllers.simple_follow_2D(panning_fraction, user_centered, self.camera.view_data)
 
 
 def main():

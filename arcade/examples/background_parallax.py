@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
         # Set the background color to match the sky in the background images
         self.background_color = (162, 84, 162, 255)
 
-        self.camera = arcade.camera.SimpleCamera()
+        self.camera = arcade.camera.Camera2D()
 
         # Create a background group to hold all the landscape's layers
         self.backgrounds = background.ParallaxGroup()
@@ -89,8 +89,8 @@ class MyGame(arcade.Window):
 
     def pan_camera_to_player(self):
         # Move the camera toward the center of the player's sprite
-        target_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        self.camera.move_to((target_x, 0.0), 0.1)
+        target_x = self.player_sprite.center_x
+        arcade.camera.controllers.simple_follow_2D(0.1, (target_x, 0.0), self.camera.view_data)
 
     def on_update(self, delta_time: float):
         # Move the player in our infinite world
@@ -147,7 +147,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.resize(width, height)
+        self.camera.match_screen(and_projection=True)
         full_width_size = (width, SCALED_BG_LAYER_HEIGHT_PX)
 
         # We can iterate through a background group,

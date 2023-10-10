@@ -199,8 +199,8 @@ class MyGame(arcade.Window):
 
         # Set up the Cameras
         viewport = (0, 0, self.width, self.height)
-        self.camera = arcade.camera.SimpleCamera(viewport=viewport)
-        self.gui_camera = arcade.camera.SimpleCamera(viewport=viewport)
+        self.camera = arcade.camera.Camera2D(viewport=viewport)
+        self.gui_camera = arcade.camera.Camera2D(viewport=viewport)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"
@@ -349,17 +349,17 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
     def center_camera_to_player(self):
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        screen_center_x = self.player_sprite.center_x
+        screen_center_y = self.player_sprite.center_y
+
+        # Don't let camera travel past 0
+        if screen_center_x - self.width/2 < 0:
+            screen_center_x = self.width/2
+        if screen_center_y - self.height/2 < 0:
+            screen_center_y = self.height/2
         player_centered = screen_center_x, screen_center_y
 
-        self.camera.move_to(player_centered, 0.2)
+        arcade.camera.controllers.simple_follow_2D(0.2, player_centered, self.camera.view_data)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

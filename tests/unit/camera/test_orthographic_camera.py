@@ -78,18 +78,6 @@ def test_orthographic_camera(window: Window):
     assert window.current_camera == default_camera
 
 
-def test_orthographic_projection_matrix(window: Window):
-    cam_default = camera.OrthographicProjector()
-    default_view = cam_default.view
-    default_projection = cam_default.projection
-
-
-def test_orthographic_view_matrix(window: Window):
-    cam_default = camera.OrthographicProjector()
-    default_view = cam_default.view
-    default_projection = cam_default.projection
-
-
 def test_orthographic_map_coordinates(window: Window):
     cam_default = camera.OrthographicProjector()
     default_view = cam_default.view
