@@ -184,22 +184,22 @@ class MyGame(arcade.Window):
             _target_x -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
+        right_boundary = self.camera_sprites.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
             _target_x += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
+        top_boundary = self.camera_sprites.top - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
             _target_y += self.player_sprite.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = self.camera_sprites.bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
             _target_y -= bottom_boundary - self.player_sprite.bottom
 
         # Scroll to the proper location
-        position = self.view_left, self.view_bottom
+        position = _target_x, _target_y
         arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, position, self.camera_sprites.view_data)
 
     def on_resize(self, width: int, height: int):

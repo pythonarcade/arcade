@@ -39,8 +39,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.camera.SimpleCamera()
-        self.camera_gui = arcade.camera.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.generate_sprites()
 
@@ -187,9 +187,8 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, speed)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        arcade.camera.controllers.simple_follow_2D(speed, position, self.camera.view_data)
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)

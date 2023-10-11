@@ -59,10 +59,6 @@ class MyGame(arcade.Window):
         # List of points we checked to see if there is a barrier there
         self.barrier_list = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Set the window background color
         self.background_color = arcade.color.AMAZON
 
@@ -150,6 +146,8 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
+        self.cam.use()
+
         # This command has to happen before we start drawing
         self.clear()
 
@@ -197,44 +195,29 @@ class MyGame(arcade.Window):
         changed = False
 
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = self.cam.left + VIEWPORT_MARGIN
         if self.player.left < left_boundary:
-            self.view_left -= left_boundary - self.player.left
-            changed = True
+            self.cam.left -= left_boundary - self.player.left
 
         # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        right_boundary = self.cam.right - VIEWPORT_MARGIN
         if self.player.right > right_boundary:
-            self.view_left += self.player.right - right_boundary
-            changed = True
+            self.cam.right += self.player.right - right_boundary
 
         # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        top_boundary = self.cam.top - VIEWPORT_MARGIN
         if self.player.top > top_boundary:
-            self.view_bottom += self.player.top - top_boundary
-            changed = True
+            self.cam.top += self.player.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = self.cam.bottom + VIEWPORT_MARGIN
         if self.player.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player.bottom
-            changed = True
+            self.cam.bottom -= bottom_boundary - self.player.bottom
 
         # Make sure our boundaries are integer values. While the view port does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            self.cam.projection = (
-                self.view_left,
-                SCREEN_WIDTH + self.view_left,
-                self.view_bottom,
-                SCREEN_HEIGHT + self.view_bottom)
-            self.cam.use()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

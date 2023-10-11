@@ -44,6 +44,7 @@ from pyglet.math import Mat4
 import arcade
 from arcade.gl.framebuffer import Framebuffer
 from arcade.texture.transforms import Transform
+from arcade.camera import OrthographicProjector, CameraData, OrthographicProjectionData
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
@@ -303,6 +304,18 @@ class TextureAtlas:
         # Dirty flags for when texture coordinates are changed for each type
         self._image_uv_data_changed = True
         self._texture_uv_data_changed = True
+
+        #Render into camera
+        self._render_camera: OrthographicProjector = OrthographicProjector(
+            view=CameraData(),
+            projection=OrthographicProjectionData(
+                0.0, self._fbo.width,
+                0.0, self._fbo.height,
+                -100.0, 100.0,
+                (0, 0, int(self._fbo.width), int(self._fbo.height))
+            )
+
+        )
 
         # Add all the textures
         for tex in textures or []:
@@ -870,8 +883,8 @@ class TextureAtlas:
 
     @contextmanager
     def render_into(
-        self, texture: "Texture",
-        projection: Optional[Tuple[float, float, float, float]] = None,
+                    self, texture: "Texture",
+                    projection: Optional[Tuple[float, float, float, float]] = None
     ):
         """
         Render directly into a sub-section of the atlas.
@@ -896,24 +909,19 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
-        prev_projection = self._ctx.projection_matrix
 
         region = self._texture_regions[texture.atlas_name]
-        # Use provided projection or default
-        projection = projection or (0, region.width, 0, region.height)
+        # Use provided projection or default, and flip for rendering into a texture.
+        _p = self._render_camera.projection
+        _p.left, _p.right, _p.top, _p.bottom = projection or (0, region.width, 0, region.height)
 
-        self._ctx.projection_matrix = Mat4.orthogonal_projection(projection[0], projection[1],
-                                                                 projection[3], projection[2],
-                                                                 -100, 100)
-
-        with self._fbo.activate() as fbo:
-            fbo.viewport = region.x, region.y, region.width, region.height
-            try:
-                yield fbo
-            finally:
-                fbo.viewport = 0, 0, *fbo.size
-
-        self._ctx.projection_matrix = prev_projection
+        with self._render_camera.activate():
+            with self._fbo.activate() as fbo:
+                fbo.viewport = region.x, region.y, region.width, region.height
+                try:
+                    yield fbo
+                finally:
+                    fbo.viewport = 0, 0, *fbo.size
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":

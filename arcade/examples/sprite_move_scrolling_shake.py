@@ -57,11 +57,11 @@ class MyGame(arcade.Window):
         self.camera_sprites = arcade.camera.Camera2D()
         self.camera_gui = arcade.camera.Camera2D()
 
-        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera.view_data,
-                                                                            max_amplitude=12.5,
-                                                                            acceleration_duration=0.05,
-                                                                            falloff_time=0.20,
-                                                                            shake_frequency=15.0)
+        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera_sprites.view_data,
+                                                                            max_amplitude=15.0,
+                                                                            acceleration_duration=0.1,
+                                                                            falloff_time=0.5,
+                                                                            shake_frequency=10.0)
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 

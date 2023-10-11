@@ -318,8 +318,8 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-
-        return self.window.current_camera.map_coordinate((x, y))
+        print(self.window.current_camera)
+        return self.window.current_camera.map_coordinate((x, y))[:2]
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
@@ -338,7 +338,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(
@@ -348,7 +348,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
@@ -374,7 +374,9 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        self.projector.projection.viewport = (0, 0, width, height)
+        _p = self.projector.projection
+        _p.viewport = (0.0, 0.0, width, height)
+        _p.left, _p.right, _p.bottom, _p.top = 0.0, width, 0.0, height
 
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)

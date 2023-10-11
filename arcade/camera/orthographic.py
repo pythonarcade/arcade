@@ -143,7 +143,7 @@ class OrthographicProjector:
     @contextmanager
     def activate(self) -> Iterator[Projector]:
         """
-        A context manager version of Camera2DOrthographic.use() which allows for the use of
+        A context manager version of OrthographicProjector.use() which allows for the use of
         `with` blocks. For example, `with camera.activate() as cam: ...`.
         """
         previous_projector = self._window.current_camera

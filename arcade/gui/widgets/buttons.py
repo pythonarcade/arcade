@@ -219,7 +219,6 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
             self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
 
 
-
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
