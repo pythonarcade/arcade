@@ -538,10 +538,14 @@ convert existing audio. Two of the most famous are summarized below.
      - Advanced
      - Powerful media conversion tool included with the library
 
-They should be able to handle converting from stereo to mono
-for any users who want to use :ref:`positional audio
-<sound-other-libraries-pyglet-positional>`. Consult the documentation
-for the utilities above to learn how.
+Most versions of these tools should handle the following common tasks:
+
+* Converting audio files from one encoding format to another
+* Converting from stereo to mono for use with :ref:`positional audio
+  <sound-other-libraries-pyglet-positional>`.
+
+To integrate FFmpeg with Arcade as a decoder, you must use FFmpeg
+version 4 or 5. See :ref:`sound-compat-loading` to learn more.
 
 .. [#linuxlame]
    Linux users may need to `install the LAME MP3 encoder separately
@@ -552,11 +556,18 @@ for the utilities above to learn how.
 Loading In-Depth
 ^^^^^^^^^^^^^^^^
 
+.. _pyglet_ffmpeg_install: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#ffmpeg-installation
+
 There are 3 ways arcade can read audio data through pyglet:
 
 #. The built-in pyglet ``.wav`` loading features
 #. Platform-specific components or nearly-universal libraries
 #. Supported cross-platform media libraries, such as PyOgg or `FFmpeg`_
+
+.. warning:: To load through FFmpeg, you must use version 4 or 5!
+
+             This is a requirement imposed by pyglet. See `pyglet's
+             notes on installing FFmpeg <pyglet_ffmpeg_install_>`_.
 
 Everyday Usage
 """"""""""""""
