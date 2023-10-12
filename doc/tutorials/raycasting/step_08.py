@@ -103,8 +103,6 @@ class MyGame(arcade.Window):
 
         # Start centered on the player
         self.scroll_to_player(1.0)
-        self.camera_sprites.update()
-
 
     def on_draw(self):
         # Use our scrolled camera
@@ -128,8 +126,8 @@ class MyGame(arcade.Window):
 
         # Calculate the light position. We have to subtract the camera position
         # from the player position to get screen-relative coordinates.
-        p = (self.player_sprite.position[0] - self.camera_sprites.position[0],
-             self.player_sprite.position[1] - self.camera_sprites.position[1])
+        p = (self.player_sprite.position[0] - self.camera_sprites.left,
+             self.player_sprite.position[1] - self.camera_sprites.bottom)
 
         # Set the uniform data
         self.shadertoy.program['lightPosition'] = p
@@ -188,12 +186,12 @@ class MyGame(arcade.Window):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        arcade.camera.controllers.simple_follow_2D(speed, position, self.camera.view_data)
+        arcade.camera.controllers.simple_follow_2D(speed, position, self.camera_sprites.view_data)
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
         self.shadertoy.resize((width, height))
 
 
