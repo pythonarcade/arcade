@@ -564,10 +564,9 @@ There are 3 ways arcade can read audio data through pyglet:
 #. Platform-specific components or nearly-universal libraries
 #. Supported cross-platform media libraries, such as PyOgg or `FFmpeg`_
 
-.. warning:: To load through FFmpeg, you must use version 4 or 5!
+.. warning:: To load through FFmpeg, you must install FFmpeg 4.X, 5.X, or 6.X!
 
-             This is a requirement imposed by pyglet. See `pyglet's
-             notes on installing FFmpeg <pyglet_ffmpeg_install_>`_.
+             See `pyglet's notes on installing FFmpeg <pyglet_ffmpeg_install_>`_.
 
 Everyday Usage
 """"""""""""""
