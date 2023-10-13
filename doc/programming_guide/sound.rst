@@ -545,7 +545,7 @@ Most versions of these tools should handle the following common tasks:
   <sound-other-libraries-pyglet-positional>`.
 
 To integrate FFmpeg with Arcade as a decoder, you must use FFmpeg
-version 4 or 5. See :ref:`sound-compat-loading` to learn more.
+version 4.X, 5.X, or 6.X. See :ref:`sound-compat-loading` to learn more.
 
 .. [#linuxlame]
    Linux users may need to `install the LAME MP3 encoder separately
@@ -564,9 +564,9 @@ There are 3 ways arcade can read audio data through pyglet:
 #. Platform-specific components or nearly-universal libraries
 #. Supported cross-platform media libraries, such as PyOgg or `FFmpeg`_
 
-.. warning:: To load through FFmpeg, you must install FFmpeg 4.X, 5.X, or 6.X!
-
-             See `pyglet's notes on installing FFmpeg <pyglet_ffmpeg_install_>`_.
+To load through FFmpeg, you must install FFmpeg 4.X, 5.X, or 6.X. This
+is a requirement imposed by pyglet. See `pyglet's notes on installing
+FFmpeg <pyglet_ffmpeg_install_>`_ to learn more.
 
 Everyday Usage
 """"""""""""""
