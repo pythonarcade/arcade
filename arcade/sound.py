@@ -224,16 +224,11 @@ def stop_sound(player: media.Player):
 
     :param player: Player returned from :func:`play_sound`.
     """
-    if isinstance(player, Sound):
-        raise TypeError(
-            "stop_sound takes a media player object returned from the play_sound() command, "
-            "not the loaded Sound object."
-        )
 
     if not isinstance(player, media.Player):
         raise TypeError(
-            "stop_sound takes a media player object returned from the play_sound() command."
-        )
+            "stop_sound takes a media player object returned from the play_sound() command, not a "
+            "loaded Sound object." if isinstance(player, Sound) else f"{player!r}")
 
     player.pause()
     player.delete()
