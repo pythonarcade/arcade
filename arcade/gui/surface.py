@@ -10,7 +10,6 @@ from arcade.camera import OrthographicProjector, OrthographicProjectionData, Cam
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, FloatRect, Point
-from pyglet.math import Mat4
 
 
 class Surface:
@@ -150,9 +149,8 @@ class Surface:
 
         try:
             self.ctx.blend_func = self.blend_func_render_into
-            with self._cam.activate():
-                with self.fbo.activate():
-                    yield self
+            with self.fbo.activate():
+                yield self
         finally:
             # Restore blend function.
             self.ctx.blend_func = blend_func
@@ -160,18 +158,21 @@ class Surface:
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
 
-        self.fbo.viewport = (
+        viewport = (
             int(x * self._pixel_ratio),
             int(y * self._pixel_ratio),
             int(width * self._pixel_ratio),
             int(height * self._pixel_ratio),
         )
+        self.fbo.viewport = viewport
 
         width = max(width, 1)
         height = max(height, 1)
         _p = self._cam.projection
         _p.left, _p.right, _p.bottom, _p.top = 0, width, 0, height
-        self._cam.projection.viewport = (0, 0, int(width), int(height))
+        self._cam.projection.viewport = viewport
+
+        self._cam.use()
 
     def draw(
         self,
@@ -214,3 +215,4 @@ class Surface:
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
+

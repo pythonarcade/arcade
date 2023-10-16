@@ -32,7 +32,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
+from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData, Projector
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -92,11 +92,6 @@ class UIManager(EventDispatcher):
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
         #: Camera used when drawing the UI
-        self.projector = OrthographicProjector(
-            view=CameraData(),
-            projection=OrthographicProjectionData(0, self.window.width, 0, self.window.height, -100, 100,
-                                                  (0, 0, self.window.width, self.window.height))
-        )
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -296,6 +291,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
+        current_cam = self.window.current_camera
         # Request Widgets to prepare for next frame
         self._do_layout()
 
@@ -303,12 +299,14 @@ class UIManager(EventDispatcher):
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
+        # Correct that the ui changes the currently active camera.
+        current_cam.use()
+        
         # Draw layers
-        with self.projector.activate():
-            with ctx.enabled(ctx.BLEND):
-                layers = sorted(self.children.keys())
-                for layer in layers:
-                    self._get_surface(layer).draw()
+        with ctx.enabled(ctx.BLEND):
+            layers = sorted(self.children.keys())
+            for layer in layers:
+                self._get_surface(layer).draw()
 
     def adjust_mouse_coordinates(self, x, y):
         """
@@ -318,7 +316,6 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        print(self.window.current_camera)
         return self.window.current_camera.map_coordinate((x, y))[:2]
 
     def on_event(self, event) -> Union[bool, None]:
@@ -374,10 +371,6 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        _p = self.projector.projection
-        _p.viewport = (0.0, 0.0, width, height)
-        _p.left, _p.right, _p.bottom, _p.top = 0.0, width, 0.0, height
-
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
 
