@@ -211,7 +211,7 @@ def play_sound(
             "Error, passed in a string as a sound. "
             "Make sure to use load_sound first, and use that result in play_sound."
         )
-        raise Exception(msg)
+        raise TypeError(msg)
     try:
         return sound.play(volume, pan, looping, speed)
     except Exception as ex:
