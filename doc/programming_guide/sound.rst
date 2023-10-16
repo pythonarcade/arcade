@@ -328,9 +328,13 @@ Advanced Playback Control
 .. _pyglet_controlling_playback: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#controlling-playback
 .. _inconsistency_loop_issue: https://github.com/pythonarcade/arcade/issues/1915
 
-You can alter the playback of a :py:class:`arcade.Sound`'s data by:
+Arcade's functions for :ref:`sound-basics-stopping` are convenience
+wrappers around the passed pyglet :py:class:`~pyglet.media.player.Player`.
 
-* Using properties and methods of a :py:class:`~pyglet.media.player.Player`
+You can alter a playback of :py:class:`~arcade.Sound` data with more precision
+by:
+
+* Using the properties and methods of its :py:class:`~pyglet.media.player.Player`
   any time before playback has finished
 * Passing keyword arguments with the same (or similar) names as the
   Player's properties when :ref:`playing the sound <sound-basics-playing>`.
@@ -338,24 +342,36 @@ You can alter the playback of a :py:class:`arcade.Sound`'s data by:
 Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Arcade's functions for :ref:`sound-basics-stopping` call methods on the
-passed pyglet :py:class:`~pyglet.media.player.Player`. You can use the
-same methods for finer control, such as pausing and resuming playback.
+The simplest form of advanced control is pausing and resuming playback.
 
 Pausing
 """""""
-There is no stop method. Instead, the stopping helpers call the
-:py:meth:`Player.pause() <pyglet.media.player.Player.pause>` method.
+There is no stop method. Instead, call the :py:meth:`Player.pause()
+<pyglet.media.player.Player.pause>` method::
+
+ # Assume this is inside an Enemy class subclassing arcade.Sprite
+ self.current_player.pause()
 
 Stopping Permanently
 """"""""""""""""""""
-The helper functions are for stopping a playback without resuming. If
-you are sure you want don't want to resume, do the following after
-pausing the player:
+After you've paused a player, you can stop playback permanently:
 
-#. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method
-#. Make sure all references to the player are replaced with ``None`` to
-   allow `garbage collection`_.
+#. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method::
+
+    # Permanently deletes the operating system half of this playback.
+    self.current_player.delete()
+
+   `This specific playback is now permanently over, but you can start
+   new ones.`
+
+#. Make sure all references to the player are replaced with ``None``::
+
+    # Python will delete the pyglet Player once there are 0 references to it
+    self.current_player = None
+
+For a more in-depth explanation of references and auto-deletion, skim
+the start of Python's page on `garbage collection`_. Reading the Abstract
+section of this page should be enough to get started.
 
 Changing Aspects of Playback
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
