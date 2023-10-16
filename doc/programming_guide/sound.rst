@@ -339,8 +339,8 @@ Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Arcade's functions for :ref:`sound-basics-stopping` call methods on the
-passed pyglet :py:class:`~pyglet.media.player.Player`. This section
-covers how as an introduction to using the player object directly.
+passed pyglet :py:class:`~pyglet.media.player.Player`. You can use the
+same methods for finer control, such as pausing and resuming playback.
 
 Pausing
 """""""
