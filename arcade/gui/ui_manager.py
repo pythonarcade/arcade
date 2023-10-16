@@ -32,7 +32,6 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData, Projector
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -301,7 +300,7 @@ class UIManager(EventDispatcher):
 
         # Correct that the ui changes the currently active camera.
         current_cam.use()
-        
+
         # Draw layers
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())

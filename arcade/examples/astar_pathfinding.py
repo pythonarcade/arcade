@@ -190,10 +190,6 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Keep track of if we changed the boundary. We don't want to update the
-        # viewport or projection if we didn't change the view port.
-        changed = False
-
         # Scroll left
         left_boundary = self.cam.left + VIEWPORT_MARGIN
         if self.player.left < left_boundary:
