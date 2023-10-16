@@ -206,11 +206,13 @@ def play_sound(
     if sound is None:
         print("Unable to play sound, no data passed in.")
         return None
+
     elif not isinstance(sound, Sound):
-        msg = [f"Error, got {sound!r} instead of an arcade.Sound."]
-        if isinstance(sound, (str, Path, bytes)):
-            msg.append("Make sure to use load_sound first, and use the result with play_sound.")
-        raise TypeError(' '.join(msg))
+        raise TypeError(
+            f"Error, got {sound!r} instead of an arcade.Sound."
+            f"" if not isinstance(sound, (str, Path, bytes)) else\
+            " Make sure to use load_sound first, and use the result with play_sound.")
+
     try:
         return sound.play(volume, pan, looping, speed)
     except Exception as ex:
