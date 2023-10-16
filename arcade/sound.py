@@ -226,13 +226,13 @@ def stop_sound(player: media.Player):
     """
     if isinstance(player, Sound):
         raise TypeError(
-            "stop_sound takes the media player object returned from the play() command, "
+            "stop_sound takes a media player object returned from the play_sound() command, "
             "not the loaded Sound object."
         )
 
     if not isinstance(player, media.Player):
         raise TypeError(
-            "stop_sound takes a media player object returned from the play() command."
+            "stop_sound takes a media player object returned from the play_sound() command."
         )
 
     player.pause()
