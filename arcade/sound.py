@@ -184,7 +184,7 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     except Exception as ex:
         raise FileNotFoundError(
             f'Unable to load sound file: "{file_name}". Exception: {ex}'
-        )
+        ) from ex
 
 
 def play_sound(
