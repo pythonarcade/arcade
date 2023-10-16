@@ -119,7 +119,7 @@ There are two easy ways to play a :py:class:`~arcade.Sound` object.
 
 One is to call :py:meth:`Sound.play <arcade.Sound.play>` directly::
 
-    hurt_player = hurt_sound.play()
+    self.hurt_player = hurt_sound.play()
 
 The other is to pass a :py:class:`~arcade.Sound` instance as the first
 argument of :py:func:`arcade.play_sound`::
@@ -165,23 +165,22 @@ See the following to learn more:
 Stopping Sounds
 ^^^^^^^^^^^^^^^
 
-.. _garbage collection: https://devguide.python.org/internals/garbage-collector/
 
-Arcade's helper functions are the easiest way to stop playback:
+Arcade's helper functions are the easiest way to stop playback. To use them, do
+the following:
 
-* The :py:func:`arcade.stop_sound` function
-* The :py:meth:`Sound.stop <arcade.Sound.stop>` method of the
-  sound data being played
+#. Choose one of the following:
 
-To use them, do the following:
+   * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to
+     :py:func:`arcade.stop_sound`::
 
-#. Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to one of the helpers::
+      arcade.stop_sound(self.current_playback)
 
-    # These are equivalent, but remember:
-    # 1. You only need to use one of them
-    # 2. You must pass the Player object, not the Sound object
-    arcade.stop_sound(self.current_playback)
-    Sound.stop(self.current_playback)
+   * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to the
+     sound's :py:meth:`~arcade.Sound.stop` method::
+
+      self.hurt_sound.stop(self.current_playback)
+
 
 #. Clear any references to the player to allow its memory to be freed::
 
@@ -194,7 +193,6 @@ See the following to learn more:
 
 * :ref:`sound-compat-easy`
 * :ref:`sound-advanced-playback`
-* `Python's contributor guide article on garbage collection <garbage collection_>`_
 
 .. _sound-loading-modes:
 
@@ -354,6 +352,9 @@ There is no stop method. Instead, call the :py:meth:`Player.pause()
 
 Stopping Permanently
 """"""""""""""""""""
+
+.. _garbage collection: https://devguide.python.org/internals/garbage-collector/
+
 After you've paused a player, you can stop playback permanently:
 
 #. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method::
