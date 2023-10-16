@@ -4,7 +4,7 @@ frame_count = 0
 player = None
 
 
-def test_sound(window):
+def test_sound_normal_load_and_playback(window):
     global frame_count, player
 
     laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
