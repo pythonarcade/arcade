@@ -712,7 +712,7 @@ of links should serve as a primer for trying positional audio:
 #. The following sections of pyglet's media guide:
 
    #. `Controlling playback <pyglet_controlling_playback_>`_
-   #. `Positional audio <pyglet_positional_guide>`_
+   #. `Positional audio <pyglet_positional_guide_>`_
 
 #. :py:class:`pyglet.media.player.Player`'s full documentation
 
