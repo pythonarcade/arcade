@@ -651,7 +651,7 @@ order until it finds one which loads:
 #. ``"silent"``
 
 You can override through the ``ARCADE_SOUND_BACKENDS`` `environment
-variable <python_env_vars>`_. The following rules apply to its value:
+variable <python_env_vars_>`_. The following rules apply to its value:
 
 #. It must be a comma-separated string
 #. Each name must be an audio back-ends supported by pyglet
