@@ -145,9 +145,9 @@ ignore_missing_imports = true
 module = "PIL.*"
 ignore_missing_imports = true
 
-# [[tool.mypy.overrides]]
-# module = "pymunk.*"
-# ignore_missing_imports = true
+[[tool.mypy.overrides]]
+module = "pymunk.*"
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "pytiled_parser.*"
