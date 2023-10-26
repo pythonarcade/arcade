@@ -877,6 +877,8 @@ class Context:
         filter: Optional[Tuple[PyGLenum, PyGLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
+        internal_format: Optional[PyGLenum] = None,
+        compressed: bool = False,
     ) -> Texture2D:
         """Create a 2D Texture.
 
@@ -898,6 +900,9 @@ class Context:
         :param samples: Creates a multisampled texture for values > 0
         :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
+        :param internal_format: The internal format of the texture. This can be used to 
+                                enable sRGB or texture compression.
+        :param compressed: If the texture should be compressed.
         """
         return Texture2D(
             self,
@@ -910,6 +915,8 @@ class Context:
             filter=filter,
             samples=samples,
             immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:

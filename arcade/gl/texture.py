@@ -54,6 +54,7 @@ class Texture2D:
                         sample capability reported by the drivers.
     :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                            required when using textures with compute shaders.
+    :param internal_format: The internal format of the texture
     """
 
     __slots__ = (
@@ -78,6 +79,7 @@ class Texture2D:
         "_anisotropy",
         "_immutable",
         "__weakref__",
+        "_compressed",
     )
     _compare_funcs = {
         None: gl.GL_NONE,
@@ -123,6 +125,8 @@ class Texture2D:
         depth=False,
         samples: int = 0,
         immutable: bool = False,
+        internal_format: Optional[PyGLuint] = None,
+        compressed: bool = False,
     ):
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
@@ -137,6 +141,8 @@ class Texture2D:
         self._immutable = immutable
         self._compare_func: Optional[str] = None
         self._anisotropy = 1.0
+        self._internal_format = internal_format
+        self._compressed = compressed
         # Default filters for float and integer textures
         # Integer textures should have NEAREST interpolation
         # by default 3.3 core doesn't really support it consistently.
@@ -247,7 +253,8 @@ class Texture2D:
         else:
             try:
                 self._format = _format[self._components]
-                self._internal_format = _internal_format[self._components]
+                if self._internal_format is None:
+                    self._internal_format = _internal_format[self._components]
 
                 if self._immutable:
                     # Specify immutable storage for this texture.
@@ -262,25 +269,38 @@ class Texture2D:
                     if data:
                         self.write(data)
                 else:
-                    # Specify mutable storage for this texture.
                     # glTexImage2D can be called multiple times to re-allocate storage
-                    gl.glTexImage2D(
-                        self._target,  # target
-                        0,  # level
-                        self._internal_format,  # internal_format
-                        self._width,  # width
-                        self._height,  # height
-                        0,  # border
-                        self._format,  # format
-                        self._type,  # type
-                        data,  # data
-                    )
+                    # Specify mutable storage for this texture.
+                    if self._compressed is True:
+                        gl.glCompressedTexImage2D(
+                            self._target,  # target
+                            0,  # level
+                            self._internal_format,  # internal_format
+                            self._width,  # width
+                            self._height,  # height
+                            0,  # border
+                            len(data),  # size
+                            data,  # data
+                        )
+                    else:
+                        gl.glTexImage2D(
+                            self._target,  # target
+                            0,  # level
+                            self._internal_format,  # internal_format
+                            self._width,  # width
+                            self._height,  # height
+                            0,  # border
+                            self._format,  # format
+                            self._type,  # type
+                            data,  # data
+                        )
             except gl.GLException as ex:
                 raise gl.GLException(
                     (
                         f"Unable to create texture: {ex} : dtype={self._dtype} "
                         f"size={self.size} components={self._components} "
                         f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
+                        f": {ex}"
                     )
                 )
 
@@ -711,6 +731,12 @@ class Texture2D:
 
     def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
         """Validate the size of the data to be written to the texture"""
+        # TODO: Validate data size for compressed textures
+        #       This might be a bit tricky since the size of the compressed
+        #       data would depend on the algorithm used.
+        if self._compressed is True:
+            return
+
         expected_size = width * height * self._component_size * self._components
         if byte_size != expected_size:
             raise ValueError(
