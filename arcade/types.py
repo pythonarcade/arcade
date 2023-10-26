@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from __future__ import annotations
 
+import sys
 from array import array
 import ctypes
 import random
@@ -449,11 +450,11 @@ class TiledObject(NamedTuple):
     type: Optional[str] = None
 
 
-# This is a temporary workaround for the lack of a way to type annotate
-# objects implementing the buffer protocol. Although there is a PEP to
-# add typing, it is scheduled for 3.12. Since that is years away from
-# being our minimum Python version, we have to use a workaround. See
-# the PEP and Python doc for more information:
-# https://peps.python.org/pep-0688/
-# https://docs.python.org/3/c-api/buffer.html
-BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
+if sys.version_info >= (3, 12):
+    from collections.abc import Buffer as BufferProtocol
+else:
+    # This is used instead of the typing_extensions version since they
+    # use an ABC which registers virtual subclasses. This will not work
+    # with ctypes.Array since virtual subclasses must be concrete.
+    # See: https://peps.python.org/pep-0688/
+    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
