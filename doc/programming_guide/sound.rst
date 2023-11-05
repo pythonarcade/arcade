@@ -92,12 +92,14 @@ The easiest way to use :py:func:`arcade.load_sound`:
     # You can pass strings containing a built-in resource handle,
     hurt_sound = arcade.load_sound(":resources:sounds/hurt1.wav")
     # a pathlib.Path,
-    pathlib_sound = arcade.load_sound(Path("imaginary\windows\path\\file.wav"))
+    pathlib_sound = arcade.load_sound(Path("imaginary\\windows\\path\\file.wav"))
     # or an ordinary string describing a path.
     string_path_sound = arcade.load_sound("imaginary/mac/style/path.wav")
 
 If you prefer a more object-oriented style, you can create
-:py:class:`~arcade.Sound` instances directly::
+:py:class:`~arcade.Sound` instances directly:
+
+.. code-block:: python
 
     from arcade import Sound  # You can also use arcade.Sound directly
 
