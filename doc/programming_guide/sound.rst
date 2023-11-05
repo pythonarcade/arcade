@@ -173,11 +173,9 @@ See the following to learn more:
 Stopping Sounds
 ^^^^^^^^^^^^^^^
 
+Arcade's helper functions are the easiest way to stop playback. To use them:
 
-Arcade's helper functions are the easiest way to stop playback. To use them, do
-the following:
-
-#. Choose one of the following:
+#. Do one of the following:
 
    * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to
      :py:func:`arcade.stop_sound`:
