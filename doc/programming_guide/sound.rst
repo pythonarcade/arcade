@@ -293,7 +293,7 @@ Both save memory by keeping only part of a file into memory at any given
 time. Even on the slowest recent hardware, this usually works if:
 
 * You only stream one media source at a time.
-* You don't try to closely synchronize it with anything else.
+* You don't need synchronize it closely with anything else.
 
 Use Streaming Sparingly
 """""""""""""""""""""""
