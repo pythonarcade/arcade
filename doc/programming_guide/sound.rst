@@ -265,9 +265,16 @@ in-game slowdowns.
 
 This is because disk access is one of the slowest things a computer can
 do. Avoiding it during gameplay is important if your gameplay needs to
-be fast and smooth. For music, consider :
+be fast and smooth.
 
-Any of the following suggest a sound should be loaded as a static effect:
+However, storing full decompressed albums of music in RAM should be
+avoided. Each decompressed minute of CD quality audio uses slightly
+more than 10 MB of RAM. This adds up quickly, so you should strongly
+consider :ref:`streaming <sound-loading-modes-streaming>` music from
+compressed files instead.
+
+Any of the following will suggest specific audio should be loaded
+as a static effect:
 
 * You need to start playback quickly in response to gameplay.
 * Two or more "copies" of the sound can be playing at the same time.
