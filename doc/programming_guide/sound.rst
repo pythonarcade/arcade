@@ -148,20 +148,20 @@ This is a very important distinction:
 * Arcade uses pyglet's :py:class:`~pyglet.media.player.Player` to
   represent a specific playback of audio data
 
-Imagine you have two characters in a game which both play the same
-:py:class:`~arcade.Sound` when moving. Since they are separate
+Imagine you have two non-player characters in a game which both play the
+same :py:class:`~arcade.Sound` when moving. Since they are separate
 characters in the world, they have separate playbacks of that sound.
-This means each stores its own :py:class:`~pyglet.media.player.Player`.
 
-The separate pyglet players allow controlling their playbacks of the
-movement sound separately. For example, one character may get close
-enough to the user's character to talk, attack, or perform some other
-action. You would use that character's specific pyglet
+This means each stores its own :py:class:`~pyglet.media.player.Player`
+object to allow controlling its specific playback of the movement sound.
+For example, one character may get close enough to the user's character
+to talk, attack, or perform some other action. When a character stops
+moving, you would use that character's specific pyglet
 :py:class:`~pyglet.media.player.Player` to stop the corresponding
 playback of the movement sound.
 
 This is crucial for games which hide parts of the world from view.
-An enemy with no way for the user to know it's there is the most
+Enemies without a way for users to detect their presence is the most
 common version of the unknown danger mentioned in :ref:`sound-why-important`.
 
 See the following to learn more:
