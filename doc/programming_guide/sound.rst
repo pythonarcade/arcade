@@ -121,12 +121,16 @@ Playing Sounds
 
 There are two easy ways to play a :py:class:`~arcade.Sound` object.
 
-One is to call :py:meth:`Sound.play <arcade.Sound.play>` directly::
+One is to call :py:meth:`Sound.play <arcade.Sound.play>` directly:
+
+.. code-block:: python
 
     self.hurt_player = hurt_sound.play()
 
 The other is to pass a :py:class:`~arcade.Sound` instance as the first
-argument of :py:func:`arcade.play_sound`::
+argument of :py:func:`arcade.play_sound`:
+
+.. code-block:: python
 
     # Important: this *must* be a Sound instance, not a path or string!
     self.hurt_player = arcade.play_sound(hurt_sound)
