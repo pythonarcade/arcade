@@ -92,7 +92,7 @@ The easiest way to use :py:func:`arcade.load_sound`:
     # You can pass strings containing a built-in resource handle,
     hurt_sound = arcade.load_sound(":resources:sounds/hurt1.wav")
     # a pathlib.Path,
-    pathlib_sound = arcade.load_sound(Path("imaginary\windows\path\file.wav"))
+    pathlib_sound = arcade.load_sound(Path("imaginary\windows\path\\file.wav"))
     # or an ordinary string describing a path.
     string_path_sound = arcade.load_sound("imaginary/mac/style/path.wav")
 
