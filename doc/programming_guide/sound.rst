@@ -270,7 +270,7 @@ be fast and smooth. For music, consider :
 Any of the following suggest a sound should be loaded as a static effect:
 
 * You need to start playback quickly in response to gameplay.
-* 2 or more "copies" of the sound can be playing at the same time.
+* Two or more "copies" of the sound can be playing at the same time.
 * You will unpredictably restart or skip playback through the file.
 * You need to automatically loop playback.
 * The file is a short clip.
