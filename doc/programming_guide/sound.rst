@@ -83,7 +83,9 @@ Before you can play a sound, you need to load its data into memory.
 Arcade provides two ways to do this. Both accept the same arguments and
 return an :py:class:`arcade.Sound` instance.
 
-The easiest way is :py:func:`arcade.load_sound`::
+The easiest way to use :py:func:`arcade.load_sound`:
+
+.. code-block:: python
 
     import arcade
 
