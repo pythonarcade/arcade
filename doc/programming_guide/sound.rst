@@ -356,10 +356,12 @@ The simplest form of advanced control is pausing and resuming playback.
 Pausing
 """""""
 There is no stop method. Instead, call the :py:meth:`Player.pause()
-<pyglet.media.player.Player.pause>` method::
+<pyglet.media.player.Player.pause>` method:
 
- # Assume this is inside an Enemy class subclassing arcade.Sprite
- self.current_player.pause()
+.. code-block:: python
+
+   # Assume this is inside an Enemy class subclassing arcade.Sprite
+   self.current_player.pause()
 
 Stopping Permanently
 """"""""""""""""""""
@@ -368,18 +370,22 @@ Stopping Permanently
 
 After you've paused a player, you can stop playback permanently:
 
-#. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method::
+#. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method:
 
-    # Permanently deletes the operating system half of this playback.
-    self.current_player.delete()
+   .. code-block:: python
+
+      # Permanently deletes the operating system half of this playback.
+      self.current_player.delete()
 
    `This specific playback is now permanently over, but you can start
    new ones.`
 
-#. Make sure all references to the player are replaced with ``None``::
+#. Make sure all references to the player are replaced with ``None``:
 
-    # Python will delete the pyglet Player once there are 0 references to it
-    self.current_player = None
+   .. code-block:: python
+
+      # Python will delete the pyglet Player once there are 0 references to it
+      self.current_player = None
 
 For a more in-depth explanation of references and auto-deletion, skim
 the start of Python's page on `garbage collection`_. Reading the Abstract
