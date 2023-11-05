@@ -180,22 +180,27 @@ the following:
 #. Choose one of the following:
 
    * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to
-     :py:func:`arcade.stop_sound`::
+     :py:func:`arcade.stop_sound`:
 
-      arcade.stop_sound(self.current_playback)
+     .. code-block:: python
+
+        arcade.stop_sound(self.current_playback)
 
    * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to the
-     sound's :py:meth:`~arcade.Sound.stop` method::
+     sound's :py:meth:`~arcade.Sound.stop` method:
 
-      self.hurt_sound.stop(self.current_playback)
+     .. code-block:: python
 
+        self.hurt_sound.stop(self.current_playback)
 
-#. Clear any references to the player to allow its memory to be freed::
+#. Clear any references to the player to allow its memory to be freed:
 
-    # For each object, Python tracks how many other objects use it. If
-    # nothing else uses an object, it will be marked as garbage which
-    # Python can delete automatically to free memory.
-    self.current_playback = None
+   .. code-block:: python
+
+      # For each object, Python tracks how many other objects use it. If
+      # nothing else uses an object, it will be marked as garbage which
+      # Python can delete automatically to free memory.
+      self.current_playback = None
 
 See the following to learn more:
 
