@@ -139,8 +139,9 @@ Both return a :py:class:`pyglet.media.player.Player`. You should store
 it somewhere if you want to be able to stop or alter a specific playback of
 a :py:class:`~arcade.Sound`'s data.
 
-Sounds vs pyglet Players
-""""""""""""""""""""""""
+``arcade.Sound`` vs pyglet's ``Player``
+"""""""""""""""""""""""""""""""""""""""
+
 This is a very important distinction:
 
 * An :py:class:`arcade.Sound` represents a source of audio data
@@ -264,7 +265,7 @@ in-game slowdowns.
 
 This is because disk access is one of the slowest things a computer can
 do. Avoiding it during gameplay is important if your gameplay needs to
-be fast and smooth.
+be fast and smooth. For music, consider :
 
 Any of the following suggest a sound should be loaded as a static effect:
 
