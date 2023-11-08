@@ -324,7 +324,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         style: UIFlatButton.UIStyle = self.get_current_style()
 
         # update label
-        self.apply_style(style)
+        self._apply_style(style)
 
         # Render button
         border_width = style.get("border_width", UIFlatButton.UIStyle.border_width)
@@ -344,7 +344,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
                 border_width=border_width,
             )
 
-    def apply_style(self, style: UIStyle):
+    def _apply_style(self, style: UIStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """
