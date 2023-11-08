@@ -141,6 +141,7 @@ Stylable widgets inherit from `UIStyledWidget`, which provides two basic feature
 
 
 Tha basic idea:
+
 - a stylable widget has a state (e.g. 'normal', 'hover', 'press', or 'disabled')
 - the state is used to define, which style will be applied
 
@@ -167,30 +168,30 @@ Your own stylable widget
             "disabled": UIStyle(color=arcade.color.GRAY)
         }
 
-    def get_current_state(self) -> str:
-        """Returns the current state of the widget i.e disabled, press, hover or normal."""
-        if self.disabled:
-            return "disabled"
-        elif self.pressed:
-            return "press"
-        elif self.hovered:
-            return "hover"
-        else:
-            return "normal"
+        def get_current_state(self) -> str:
+            """Returns the current state of the widget i.e disabled, press, hover or normal."""
+            if self.disabled:
+                return "disabled"
+            elif self.pressed:
+                return "press"
+            elif self.hovered:
+                return "hover"
+            else:
+                return "normal"
 
-    def do_render(self, surface: Surface):
-        self.prepare_render(surface)
+        def do_render(self, surface: Surface):
+            self.prepare_render(surface)
 
-        # get current style
-        style: MyColorBox.UIStyle = self.get_current_style()
+            # get current style
+            style: MyColorBox.UIStyle = self.get_current_style()
 
-        # Get color from current style, it is a good habit to be
-        # bullet proven for missing values in case a dict is provided instead of a UIStyle
-        color = style.get("color", MyColorBox.UIStyle.bg)
+            # Get color from current style, it is a good habit to be
+            # bullet proven for missing values in case a dict is provided instead of a UIStyle
+            color = style.get("color", MyColorBox.UIStyle.bg)
 
-        # render
-        if color: # support for not setting a color at all
-            surface.clear(bg_color)
+            # render
+            if color: # support for not setting a color at all
+                surface.clear(bg_color)
 
 
 
