@@ -69,6 +69,9 @@ class Window(pyglet.window.Window):
     The Window class forms the basis of most advanced games that use Arcade.
     It represents a window on the screen, and manages events.
 
+    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
+    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+
     :param width: Window width
     :param height: Window height
     :param title: Title (appears in title bar)
@@ -79,6 +82,12 @@ class Window(pyglet.window.Window):
     :param antialiasing: Should OpenGL's anti-aliasing be enabled?
     :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
+    :param screen: Pass a pyglet :py:class:`~pyglet.canvas.Screen` to
+        request the window be placed on it. See `pyglet's window size &
+        position guide <pyglet_pg_window_size_position_>`_ to learn more.
+    :param style: Request a non-default window style, such as borderless.
+        Some styles only work in certain situations. See `pyglet's guide
+        to window style <pyglet_pg_window_style_>`_ to learn more.
     :param visible: Should the window be visible immediately
     :param vsync: Wait for vertical screen refresh before swapping buffer \
                        This can make animations and movement look smoother.
