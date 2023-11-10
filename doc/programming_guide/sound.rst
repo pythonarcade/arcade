@@ -52,8 +52,7 @@ Why Is Sound Important?
 
 Sound helps players make sense of what they see.
 
-This is about far more than the game being immersive or cool. For
-example, have you ever run into one of these common problems?
+For example, have you ever run into one of these common problems?
 
 * Danger you never knew was there
 * A character whose reaction seemed unexpected or out of place
