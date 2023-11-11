@@ -263,8 +263,8 @@ The following subheadings will explain each option in detail.
 
 .. _sound-loading-modes-static:
 
-Static Sounds Can Be Fastest
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Static Sounds are for Speed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As long as you have enough memory, preloading entire sounds prevents
 in-game slowdowns.
@@ -290,8 +290,8 @@ as a static effect:
 
 .. _sound-loading-modes-streaming:
 
-Streaming Can Save Memory
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Streaming Saves Memory
+^^^^^^^^^^^^^^^^^^^^^^
 
 Streaming audio from files is very similar to streaming video online.
 
