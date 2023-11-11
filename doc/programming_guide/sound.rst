@@ -143,28 +143,35 @@ a :py:class:`~arcade.Sound`'s data.
 
 This is a very important distinction:
 
-* An :py:class:`arcade.Sound` represents a source of audio data
-* Arcade uses pyglet's :py:class:`~pyglet.media.player.Player` to
-  represent a specific playback of audio data
+* An :py:class:`arcade.Sound` is a source of audio data in memory
+* Starting a playback of audio data returns a new pyglet
+  :py:class:`~pyglet.media.player.Player` which controls that
+  specific playback
 
-Imagine you have two non-player characters in a game which both play the
-same :py:class:`~arcade.Sound` when moving. Since they are separate
-characters in the world, they have separate playbacks of that sound.
+Imagine you have two non-player characters (NPCs) in a game which
+both play the same selection of :py:class:`~arcade.Sound` data. Since
+they are separate characters in the world, their playbacks of the data
+must be independent. To do this, each NPC will keep the pyglet
+:py:class:`~pyglet.media.player.Player` returned when they start
+playing a sound.
 
-This means each stores its own :py:class:`~pyglet.media.player.Player`
-object to allow controlling its specific playback of the movement sound.
-For example, one character may get close enough to the user's character
-to talk, attack, or perform some other action. When a character stops
-moving, you would use that character's specific pyglet
-:py:class:`~pyglet.media.player.Player` to stop the corresponding
-playback of the movement sound.
+For example, an NPC may get close enough to the user's character to
+talk, attack, or perform some other action which requires playing
+a different sound. You would handle this as follows:
 
-This is crucial for games which hide parts of the world from view.
-Enemies without a way for users to detect their presence is the most
-common version of the unknown danger mentioned in :ref:`sound-why-important`.
+#. Use the approaching NPC's pyglet :py:class:`~pyglet.media.player.Player`
+   to stop its current playback
+#. If the NPC starts playing a different sound, store the returned
+   pyglet :py:class:`~pyglet.media.player.Player`
+
+This is especially important when a dangerous NPC or other hazard can
+be invisible. Making invisible hazards play sounds is one of the easiest
+and most popular ways of making their gameplay feel balanced, fair, and
+fun.
 
 See the following to learn more:
 
+#. :ref:`sound-why-important`
 #. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
 #. :ref:`sound_demo`
 
