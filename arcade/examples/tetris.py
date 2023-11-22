@@ -7,6 +7,7 @@ https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.tetris
 """
+# flake8: noqa: E241
 import arcade
 import random
 import PIL
@@ -28,14 +29,14 @@ WINDOW_TITLE = "Tetris"
 
 colors = [
     # RGB
-    (0,   0,   0),
-    (255, 0,   0),
-    (0,   150, 0),
-    (0,   0,   255),
-    (255, 120, 0),
-    (255, 255, 0),
-    (180, 0,   255),
-    (0,   220, 220)
+    (0,   0,   0, 255),
+    (255, 0,   0, 255),
+    (0,   150, 0, 255),
+    (0,   0,   255, 255),
+    (255, 120, 0, 255),
+    (255, 255, 0, 255),
+    (180, 0,   255, 255),
+    (0,   220, 220, 255)
 ]
 
 # Define the shapes of the single parts
@@ -78,7 +79,7 @@ def rotate_clockwise(shape):
 def create_texture(color):
     """ Create a texture for sprites based on the global colors. """
     # noinspection PyUnresolvedReferences
-    image = PIL.Image.new('RGB', (WIDTH, HEIGHT), color)
+    image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
     return arcade.Texture(str(color), image=image)
 
 
@@ -364,7 +365,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
         self.board.sprite_list.draw()
         self.draw_stone()
         return
