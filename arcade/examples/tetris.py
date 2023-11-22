@@ -80,7 +80,7 @@ def create_texture(color):
     """ Create a texture for sprites based on the global colors. """
     # noinspection PyUnresolvedReferences
     image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
-    return arcade.Texture(str(color), image=image)
+    return arcade.Texture(image)
 
 
 #
