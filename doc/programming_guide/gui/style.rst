@@ -20,14 +20,14 @@ Basic Usage
 
 This section covers how to use the existing stylable widgets.
 
-    In the following examples we will use the UIFlatButton as the stylable widget,
+    In the following examples we will use the :py:class:`~arcade.gui.UIFlatButton` as the stylable widget,
     you can do the same with any stylable widget listed above.
 
 
 Quickstart
 ```````````
 
-The following example shows how to adjust the style of a UIFlatButton.
+The following example shows how to adjust the style.
 
 
 .. code-block::
@@ -57,7 +57,7 @@ Default style
 ``````````````
 
 Stylable widgets have a property which holds the default style for
-the type of widget. For the UIFLatButton this is `UIFlatButton.DEFAULT_STYLE`.
+the type of widget. For the :py:class:`~arcade.gui.UIFlatButton` this is `UIFlatButton.DEFAULT_STYLE`.
 
 This default style will be used if no other style is provided within the constructor.
 The default style looks like this:
