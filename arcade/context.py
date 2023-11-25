@@ -353,6 +353,8 @@ class ArcadeContext(Context):
         from arcade.resources import resolve
 
         vertex_shader_src = resolve(vertex_shader).read_text()
+        vertex_shader_src = self.shader_inc(vertex_shader_src)
+
         fragment_shader_src = None
         geometry_shader_src = None
         tess_control_src = None
