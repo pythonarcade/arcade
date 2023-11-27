@@ -572,7 +572,7 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color=...,
+        color: Union["builtins.ellipsis", Color]=...,
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
 
