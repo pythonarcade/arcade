@@ -296,7 +296,10 @@ class Context:
 
         :type: ``pyglet.Window``
         """
-        return self._window_ref()
+        window_ref = self._window_ref()
+        if window_ref is None:
+            raise Exception("Window not available, lost referenz.")
+        return window_ref
 
     @property
     def screen(self) -> Framebuffer:

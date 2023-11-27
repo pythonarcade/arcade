@@ -50,7 +50,7 @@ dev = [
     "pygments==2.16.1",
     "docutils==0.20.1",
     "furo",
-    "pyright==1.1.322",
+    "pyright==1.1.337",
     "pyyaml==6.0.1",
     "sphinx==7.2.2",
     "sphinx-autobuild==2021.3.14",
