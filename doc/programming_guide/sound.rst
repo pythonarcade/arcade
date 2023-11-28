@@ -266,25 +266,38 @@ The following subheadings will explain each option in detail.
 Static Sounds are for Speed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As long as you have enough memory, preloading entire sounds prevents
-in-game slowdowns.
+Static sounds can help your game run smoothly by preloading
+data before gameplay.
 
-This is because disk access is one of the slowest things a computer can
-do. Avoiding it during gameplay is important if your gameplay needs to
-be fast and smooth.
+This is because disk access is one of the slowest things a computer
+can do. Waiting for sounds to load during gameplay can make the
+your game run slowly or stutter. The best way to prevent this is to
+load your sound data ahead of time. Popular approaches for this
+include:
 
-However, storing full decompressed albums of music in RAM should be
-avoided. Each decompressed minute of CD quality audio uses slightly
-more than 10 MB of RAM. This adds up quickly, so you should strongly
-consider :ref:`streaming <sound-loading-modes-streaming>` music from
-compressed files instead.
+* Loading screens
+* Small inter-level "rooms"
+* Multi-threading (best used by experienced programmers)
 
-Any of the following will suggest specific audio should be loaded
-as a static effect:
+Unless music is a central part of your gameplay, you should avoid storing
+fully decompressed albums of music in RAM. Each decompressed minute of CD
+quality audio uses slightly over 10 MB of RAM. This adds up quickly, and
+can slow down or freeze a computer if it fills RAM completely.
+
+For music and long background audio, you should should strongly consider
+:ref:`streaming <sound-loading-modes-streaming>` from compressed files
+instead.
+
+When to Use Static Sounds
+"""""""""""""""""""""""""
+
+If an audio file meets one or more of the following conditions, you may
+want to load it as static audio:
 
 * You need to start playback quickly in response to gameplay.
 * Two or more "copies" of the sound can be playing at the same time.
-* You will unpredictably restart or skip playback through the file.
+* You will unpredictably skip to different times in the file.
+* You will unpredictably restart playback.
 * You need to automatically loop playback.
 * The file is a short clip.
 
@@ -299,15 +312,15 @@ Both save memory by keeping only part of a file into memory at any given
 time. Even on the slowest recent hardware, this usually works if:
 
 * You only stream one media source at a time.
-* You don't need synchronize it closely with anything else.
+* You don't need to synchronize it closely with anything else.
 
-Use Streaming Sparingly
-"""""""""""""""""""""""
+When to Stream
+""""""""""""""
 The best way to use streaming is to only use it when you need it.
 
 Advanced users may be able to handle streaming multiple tracks at a
 time. However, issues with synchronization & interruptions will grow
-with the number and audio quality of the tracks involved.
+with the quantity and quality of the audio tracks involved.
 
 If you're unsure, avoid streaming unless you can say yes to all of the
 following:
@@ -332,10 +345,11 @@ See the following to learn more:
 
 Streaming Can Cause Freezes
 """""""""""""""""""""""""""
-Failing to meet the requirements can cause buffering issues.
+Failing to meet the requirements above can cause buffering issues.
 
-Good compression can help, but it can't fully overcome it. Each skip outside
-the currently loaded data requires reading and decompressing a replacement.
+Good compression on files can help, but it can't fully overcome it. Each
+skip outside the currently loaded data requires reading and decompressing
+a replacement.
 
 In the worst-case scenario, frequent skipping will mean constantly
 buffering instead of playing. Although video streaming sites can
