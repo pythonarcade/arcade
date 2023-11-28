@@ -10,6 +10,8 @@ python -m arcade.examples.camera_example
 
 import time
 
+from pyglet.math import Vec2
+
 import arcade
 
 TILE_SCALING = 0.5
@@ -254,7 +256,7 @@ class MyGame(arcade.Window):
         for bomb in bombs_hit:
             bomb.remove_from_sprite_lists()
             print("Pow")
-            self.camera.shake((4, 7))
+            self.camera.shake(Vec2(4, 7))
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.12)
