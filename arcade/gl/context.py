@@ -6,7 +6,7 @@ from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
 from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
-                    Union)
+                    Union, overload, Literal)
 
 import pyglet
 import pyglet.gl.lib
@@ -296,7 +296,10 @@ class Context:
 
         :type: ``pyglet.Window``
         """
-        return self._window_ref()
+        window_ref = self._window_ref()
+        if window_ref is None:
+            raise Exception("Window not available, lost referenz.")
+        return window_ref
 
     @property
     def screen(self) -> Framebuffer:
@@ -1298,7 +1301,7 @@ class Limits:
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         #: The maximum support window or framebuffer viewport.
         #: This is usually the same as the maximum texture size
-        self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
         #: How many buffers we can have as output when doing a transform(feedback).
         #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
@@ -1310,6 +1313,12 @@ class Limits:
             from warnings import warn
 
             warn("Error happened while querying of limits. Moving on ..")
+
+    @overload
+    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]:...
+
+    @overload
+    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]:...
 
     def get_int_tuple(self, enum: GLenumLike, length: int):
         """Get an enum as an int tuple"""
