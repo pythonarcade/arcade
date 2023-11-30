@@ -354,7 +354,7 @@ def has_line_of_sight(observer: Point,
     distance = get_distance(observer[0], observer[1],
                             target[0], target[1])
     if distance == 0:
-        return False
+        return True
 
     steps = int(distance // check_resolution)
     for step in range(steps + 1):
