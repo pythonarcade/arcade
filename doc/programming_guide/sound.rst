@@ -52,8 +52,7 @@ Why Is Sound Important?
 
 Sound helps players make sense of what they see.
 
-This is about far more than the game being immersive or cool. For
-example, have you ever run into one of these common problems?
+For example, have you ever run into one of these common problems?
 
 * Danger you never knew was there
 * A character whose reaction seemed unexpected or out of place
@@ -83,7 +82,7 @@ Before you can play a sound, you need to load its data into memory.
 Arcade provides two ways to do this. Both accept the same arguments and
 return an :py:class:`arcade.Sound` instance.
 
-The easiest way to use :py:func:`arcade.load_sound`:
+The easiest way is to use :py:func:`arcade.load_sound`:
 
 .. code-block:: python
 
@@ -144,28 +143,35 @@ a :py:class:`~arcade.Sound`'s data.
 
 This is a very important distinction:
 
-* An :py:class:`arcade.Sound` represents a source of audio data
-* Arcade uses pyglet's :py:class:`~pyglet.media.player.Player` to
-  represent a specific playback of audio data
+* An :py:class:`arcade.Sound` is a source of audio data in memory
+* Starting a playback of audio data returns a new pyglet
+  :py:class:`~pyglet.media.player.Player` which controls that
+  specific playback
 
-Imagine you have two non-player characters in a game which both play the
-same :py:class:`~arcade.Sound` when moving. Since they are separate
-characters in the world, they have separate playbacks of that sound.
+Imagine you have two non-player characters (NPCs) in a game which
+both play the same selection of :py:class:`~arcade.Sound` data. Since
+they are separate characters in the world, their playbacks of the data
+must be independent. To do this, each NPC will keep the pyglet
+:py:class:`~pyglet.media.player.Player` returned when they start
+playing a sound.
 
-This means each stores its own :py:class:`~pyglet.media.player.Player`
-object to allow controlling its specific playback of the movement sound.
-For example, one character may get close enough to the user's character
-to talk, attack, or perform some other action. When a character stops
-moving, you would use that character's specific pyglet
-:py:class:`~pyglet.media.player.Player` to stop the corresponding
-playback of the movement sound.
+For example, an NPC may get close enough to the user's character to
+talk, attack, or perform some other action which requires playing
+a different sound. You would handle this as follows:
 
-This is crucial for games which hide parts of the world from view.
-Enemies without a way for users to detect their presence is the most
-common version of the unknown danger mentioned in :ref:`sound-why-important`.
+#. Use the approaching NPC's pyglet :py:class:`~pyglet.media.player.Player`
+   to stop its current playback
+#. If the NPC starts playing a different sound, store the returned
+   pyglet :py:class:`~pyglet.media.player.Player`
+
+This is especially important when a dangerous NPC or other hazard can
+be invisible. Making invisible hazards play sounds is one of the easiest
+and most popular ways of making their gameplay feel balanced, fair, and
+fun.
 
 See the following to learn more:
 
+#. :ref:`sound-why-important`
 #. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
 #. :ref:`sound_demo`
 
@@ -257,35 +263,48 @@ The following subheadings will explain each option in detail.
 
 .. _sound-loading-modes-static:
 
-Static Sounds Can Be Fastest
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Static Sounds are for Speed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As long as you have enough memory, preloading entire sounds prevents
-in-game slowdowns.
+Static sounds can help your game run smoothly by preloading
+data before gameplay.
 
-This is because disk access is one of the slowest things a computer can
-do. Avoiding it during gameplay is important if your gameplay needs to
-be fast and smooth.
+This is because disk access is one of the slowest things a computer
+can do. Waiting for sounds to load during gameplay can make the
+your game run slowly or stutter. The best way to prevent this is to
+load your sound data ahead of time. Popular approaches for this
+include:
 
-However, storing full decompressed albums of music in RAM should be
-avoided. Each decompressed minute of CD quality audio uses slightly
-more than 10 MB of RAM. This adds up quickly, so you should strongly
-consider :ref:`streaming <sound-loading-modes-streaming>` music from
-compressed files instead.
+* Loading screens
+* Small inter-level "rooms"
+* Multi-threading (best used by experienced programmers)
 
-Any of the following will suggest specific audio should be loaded
-as a static effect:
+Unless music is a central part of your gameplay, you should avoid storing
+fully decompressed albums of music in RAM. Each decompressed minute of CD
+quality audio uses slightly over 10 MB of RAM. This adds up quickly, and
+can slow down or freeze a computer if it fills RAM completely.
+
+For music and long background audio, you should should strongly consider
+:ref:`streaming <sound-loading-modes-streaming>` from compressed files
+instead.
+
+When to Use Static Sounds
+"""""""""""""""""""""""""
+
+If an audio file meets one or more of the following conditions, you may
+want to load it as static audio:
 
 * You need to start playback quickly in response to gameplay.
 * Two or more "copies" of the sound can be playing at the same time.
-* You will unpredictably restart or skip playback through the file.
+* You will unpredictably skip to different times in the file.
+* You will unpredictably restart playback.
 * You need to automatically loop playback.
 * The file is a short clip.
 
 .. _sound-loading-modes-streaming:
 
-Streaming Can Save Memory
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Streaming Saves Memory
+^^^^^^^^^^^^^^^^^^^^^^
 
 Streaming audio from files is very similar to streaming video online.
 
@@ -293,15 +312,15 @@ Both save memory by keeping only part of a file into memory at any given
 time. Even on the slowest recent hardware, this usually works if:
 
 * You only stream one media source at a time.
-* You don't need synchronize it closely with anything else.
+* You don't need to synchronize it closely with anything else.
 
-Use Streaming Sparingly
-"""""""""""""""""""""""
+When to Stream
+""""""""""""""
 The best way to use streaming is to only use it when you need it.
 
 Advanced users may be able to handle streaming multiple tracks at a
 time. However, issues with synchronization & interruptions will grow
-with the number and audio quality of the tracks involved.
+with the quantity and quality of the audio tracks involved.
 
 If you're unsure, avoid streaming unless you can say yes to all of the
 following:
@@ -326,10 +345,11 @@ See the following to learn more:
 
 Streaming Can Cause Freezes
 """""""""""""""""""""""""""
-Failing to meet the requirements can cause buffering issues.
+Failing to meet the requirements above can cause buffering issues.
 
-Good compression can help, but it can't fully overcome it. Each skip outside
-the currently loaded data requires reading and decompressing a replacement.
+Good compression on files can help, but it can't fully overcome it. Each
+skip outside the currently loaded data requires reading and decompressing
+a replacement.
 
 In the worst-case scenario, frequent skipping will mean constantly
 buffering instead of playing. Although video streaming sites can
