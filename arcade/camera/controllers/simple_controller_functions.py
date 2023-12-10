@@ -1,4 +1,4 @@
-from typing import Tuple, Callable, Optional
+from typing import Tuple, Callable
 from math import sin, cos, radians
 
 from arcade.camera.data import CameraData

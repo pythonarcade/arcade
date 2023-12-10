@@ -19,7 +19,7 @@ __all__ = [
 class Camera2D:
     """
     A simple orthographic camera. Similar to SimpleCamera, but takes better advantage of the new data structures.
-    As the Simple Camera is depreciated any new project should use this camera instead.
+    As the Simple Camera is depreciated, any new project should use this camera instead.
 
     It provides properties to access every important variable for controlling the camera.
     3D properties such as pos, and up are constrained to a 2D plane. There is no access to the
@@ -65,7 +65,7 @@ class Camera2D:
             projection: A 4-float tuple which defines the world space
                         bounds which the camera projects to the viewport.
             near: The near clipping plane of the camera.
-            far: The far clipping place of the camera.
+            far: The far clipping plane of the camera.
             camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
             projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
                              bottom, far, near planes for an orthographic projection.
@@ -116,7 +116,7 @@ class Camera2D:
     def view_data(self) -> CameraData:
         """
         Return the view data for the camera. This includes the
-        viewport, position, forward vector, up direction, and zoom.
+        position, forward vector, up direction, and zoom.
 
         If you use any of the built-in arcade camera-controllers
         or make your own this is the property to access.
@@ -693,7 +693,7 @@ class Camera2D:
         finally:
             previous_projection.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -710,4 +710,4 @@ class Camera2D:
             of the camera.
         """
 
-        return self._ortho_projector.map_coordinate(screen_coordinate)[:2]
+        return self._ortho_projector.map_coordinate(screen_coordinate, depth)[:2]

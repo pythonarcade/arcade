@@ -1,6 +1,5 @@
 from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
-from math import pi, tan
 
 from pyglet.math import Mat4, Vec3, Vec4
 

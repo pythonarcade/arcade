@@ -1,9 +1,8 @@
-from array import array
-
 import arcade
 import arcade.gl as gl
 
 # TODO: comment for days
+# TODO: Make fit arcade standards for demo
 
 win = arcade.Window()
 win.set_exclusive_mouse()
@@ -54,8 +53,11 @@ def on_mouse_motion(x, y, dx, dy):
     arcade.camera.controllers.rotate_around_up(cam.view, 2.0 * dx/_l)
     _f = cam.view.forward
     arcade.camera.controllers.rotate_around_right(cam.view, 2.0 * -dy/_l, up=False)
-    if abs(cam.view.forward[0]*cam.view.up[0]+cam.view.forward[1]*cam.view.up[1]+cam.view.forward[2]*cam.view.up[2]) > 0.90:
+    cam_dot = cam.view.forward[0]*cam.view.up[0]+cam.view.forward[1]*cam.view.up[1]+cam.view.forward[2]*cam.view.up[2]
+    if abs(cam_dot) > 0.90:
         cam.view.forward = _f
+
+
 win.on_mouse_motion = on_mouse_motion
 
 
@@ -72,6 +74,8 @@ def on_key_press(symbol, modifier):
         strafe += 1
     elif symbol == arcade.key.A:
         strafe -= 1
+
+
 win.on_key_press = on_key_press
 
 
@@ -85,6 +89,8 @@ def on_key_release(symbol, modifier):
         strafe -= 1
     elif symbol == arcade.key.A:
         strafe += 1
+
+
 win.on_key_release = on_key_release
 
 
@@ -101,6 +107,7 @@ def on_update(delta_time):
         _pos[2] + _for[2] * forward * delta_time * 1.0,
     )
 
+
 win.on_update = on_update
 
 
@@ -109,6 +116,8 @@ def on_draw():
     win.clear()
     cam.use()
     geo.render(prog)
+
+
 win.on_draw = on_draw
 
 win.run()

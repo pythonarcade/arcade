@@ -345,7 +345,7 @@ class SimpleCamera:
         finally:
             previous_projector.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the viewport and returns
@@ -362,7 +362,7 @@ class SimpleCamera:
             of the camera.
         """
 
-        return self._camera.map_coordinate(screen_coordinate)[:2]
+        return self._camera.map_coordinate(screen_coordinate, depth)[:2]
 
     def resize(self, viewport_width: int, viewport_height: int, *,
                resize_projection: bool = True) -> None:
