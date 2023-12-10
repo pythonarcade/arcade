@@ -52,7 +52,7 @@ class Camera2D:
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
         """
-        Initialise a Camera2D instance. Either with camera PoDs or individual arguments.
+        Initialize a Camera2D instance. Either with camera PoDs or individual arguments.
 
         Args:
             window: The Arcade Window to bind the camera to.

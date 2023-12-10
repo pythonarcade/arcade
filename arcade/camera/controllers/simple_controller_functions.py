@@ -1,4 +1,4 @@
-from typing import Tuple, Callable
+from typing import Tuple, Callable, Optional
 from math import sin, cos, radians
 
 from arcade.camera.data import CameraData
@@ -10,11 +10,33 @@ __all__ = [
     'simple_follow_2D',
     'simple_easing_3D',
     'simple_easing_2D',
+    'strafe',
     'quaternion_rotation',
     'rotate_around_forward',
     'rotate_around_up',
     'rotate_around_right'
 ]
+
+
+def strafe(data: CameraData, direction: Tuple[float, float]):
+    """
+    Move the CameraData in a 2D direction aligned to the up-right plane of the view.
+    A value of [1, 0] will move the camera sideways while a value of [0, 1]
+    will move the camera upwards. Works irrespective of which direction the camera is facing.
+    Ensure the up and forward vectors are unit-length or the size of the motion will be incorrect.
+    """
+    _forward = Vec3(*data.forward)
+    _up = Vec3(*data.up)
+    _right = _forward.cross(_up)
+
+    _pos = data.position
+
+    offset = _right * direction[0] + _up * direction[1]
+    data.position = (
+        _pos[0] + offset[0],
+        _pos[1] + offset[1],
+        _pos[2] + offset[2]
+    )
 
 
 def quaternion_rotation(axis: Tuple[float, float, float],
@@ -114,7 +136,7 @@ def rotate_around_up(data: CameraData, angle: float):
     data.forward = quaternion_rotation(data.up, data.forward, angle)
 
 
-def rotate_around_right(data: CameraData, angle: float):
+def rotate_around_right(data: CameraData, angle: float, forward: bool = True, up: bool = True):
     """
     Rotate both the CameraData's forward vector and up vector around a calculated right vector.
     Generally only useful in 3D games.
@@ -125,14 +147,20 @@ def rotate_around_right(data: CameraData, angle: float):
             The camera data to modify. The data's forward vector is rotated around its up vector
         angle:
             The angle in degrees to rotate clockwise by
+        forward:
+            Whether to rotate the forward vector around the right vector
+        up:
+            Whether to rotate the up vector around the right vector
     """
 
     _forward = Vec3(data.forward[0], data.forward[1], data.forward[2])
     _up = Vec3(data.up[0], data.up[1], data.up[2])
     _crossed_vec = _forward.cross(_up)
     _right: Tuple[float, float, float] = (_crossed_vec.x, _crossed_vec.y, _crossed_vec.z)
-    data.forward = quaternion_rotation(_right, data.forward, angle)
-    data.up = quaternion_rotation(_right, data.up, angle)
+    if forward:
+        data.forward = quaternion_rotation(_right, data.forward, angle)
+    if up:
+        data.up = quaternion_rotation(_right, data.up, angle)
 
 
 def _interpolate_3D(s: Tuple[float, float, float], e: Tuple[float, float, float], t: float):

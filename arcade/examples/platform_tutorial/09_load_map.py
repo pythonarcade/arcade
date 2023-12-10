@@ -15,6 +15,9 @@ CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
+# Speed of the camera following the player
+CAMERA_SPEED = 0.2
+
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
@@ -161,7 +164,7 @@ class MyGame(arcade.Window):
             screen_center_y = self.height/2
         player_centered = screen_center_x, screen_center_y
 
-        arcade.camera.controllers.simple_follow_2D(0.2, player_centered, self.camera.view_data)
+        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, player_centered, self.camera.view_data)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

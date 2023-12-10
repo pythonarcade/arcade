@@ -25,6 +25,9 @@ SHOOT_SPEED = 15
 BULLET_SPEED = 12
 BULLET_DAMAGE = 25
 
+# Speed of the camera following the player
+CAMERA_SPEED = 0.2
+
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
 GRAVITY = 1.5
@@ -509,7 +512,7 @@ class GameView(arcade.View):
             screen_center_y = self.window.height/2
         player_centered = screen_center_x, screen_center_y
 
-        arcade.camera.controllers.simple_follow_2D(0.2, player_centered, self.camera.view_data)
+        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, player_centered, self.camera.view_data)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

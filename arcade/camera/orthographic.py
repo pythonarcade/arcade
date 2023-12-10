@@ -37,7 +37,7 @@ class OrthographicProjector:
                  view: Optional[CameraData] = None,
                  projection: Optional[OrthographicProjectionData] = None):
         """
-        Initialise a Projector which produces an orthographic projection matrix using
+        Initialize a Projector which produces an orthographic projection matrix using
         a CameraData and PerspectiveProjectionData PoDs.
 
         Args:
@@ -112,10 +112,11 @@ class OrthographicProjector:
         """
         Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
         """
+        # Even if forward and up are normalised floating point error means every vector must be normalised.
         fo = Vec3(*self._view.forward).normalize()  # Forward Vector
-        up = Vec3(*self._view.up).normalize()  # Initial Up Vector (Not perfectly aligned to forward vector)
-        ri = fo.cross(up)  # Right Vector
-        up = ri.cross(fo)  # Up Vector
+        up = Vec3(*self._view.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
+        ri = fo.cross(up).normalize()  # Right Vector
+        up = ri.cross(fo).normalize()  # Up Vector
         po = Vec3(*self._view.position)
         return Mat4((
             ri.x,  up.x,  -fo.x,  0,
@@ -153,7 +154,7 @@ class OrthographicProjector:
         finally:
             previous_projector.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -164,16 +165,19 @@ class OrthographicProjector:
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
+            depth: The depth of the query
         Returns:
             A 3D vector in world space.
         """
+        # TODO: Integrate z-depth
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+        screen_z = 2.0 * (depth - self._projection.near) / (self._projection.far - self._projection.near) - 1
 
         _view = self._generate_view_matrix()
         _projection = self._generate_projection_matrix()
 
-        screen_position = Vec4(screen_x, screen_y, 0.0, 1.0)
+        screen_position = Vec4(screen_x, screen_y, screen_z, 1.0)
 
         _full = ~(_projection @ _view)
 

@@ -1,5 +1,6 @@
 from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
+from math import pi, tan
 
 from pyglet.math import Mat4, Vec3, Vec4
 
@@ -37,7 +38,7 @@ class PerspectiveProjector:
                  view: Optional[CameraData] = None,
                  projection: Optional[PerspectiveProjectionData] = None):
         """
-        Initialise a Projector which produces a perspective projection matrix using
+        Initialize a Projector which produces a perspective projection matrix using
         a CameraData and PerspectiveProjectionData PoDs.
 
         Args:
@@ -98,9 +99,9 @@ class PerspectiveProjector:
         Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
         """
         fo = Vec3(*self._view.forward).normalize()  # Forward Vector
-        up = Vec3(*self._view.up).normalize()  # Initial Up Vector (Not perfectly aligned to forward vector)
-        ri = fo.cross(up)  # Right Vector
-        up = ri.cross(fo)  # Up Vector
+        up = Vec3(*self._view.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
+        ri = fo.cross(up).normalize()  # Right Vector
+        up = ri.cross(fo).normalize()  # Up Vector
         po = Vec3(*self._view.position)
         return Mat4((
             ri.x,  up.x,  -fo.x,  0,
@@ -138,7 +139,7 @@ class PerspectiveProjector:
         finally:
             previous_projector.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -146,53 +147,29 @@ class PerspectiveProjector:
 
         Essentially reverses the effects of the projector.
 
-        Args:
-            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
-                               This should ALWAYS be in the range of 0.0 - screen size.
-        Returns:
-            A 3D vector in world space.
-        """
-        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
-        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
-
-        _view = self._generate_view_matrix()
-        _projection = self._generate_projection_matrix()
-
-        screen_position = Vec4(screen_x, screen_y, -1.0, 1.0)
-
-        _full = ~(_projection @ _view)
-
-        _mapped_position = _full @ screen_position
-
-        return _mapped_position[0], _mapped_position[1], _mapped_position[2]
-
-    def map_coordinate_at_depth(self,
-                                screen_coordinate: Tuple[float, float],
-                                depth: float) -> Tuple[float, float, float]:
-        """
-        Take in a pixel coordinate from within
-        the range of the window size and returns
-        the world space coordinates.
-
-        Essentially reverses the effects of the projector.
+        Because the scale changes depending on the depth tested at,
+        the depth is calculated to be the point at which the projection area
+        matches the area of the camera viewport. This would be the depth at which
+        one pixel in a texture is one pixel on screen.
 
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: the depth that the mouse should be compared against.
-                   Should range from near to far planes of projection.
+            depth: The depth of the query.
         Returns:
             A 3D vector in world space.
         """
+        # TODO Integrate Z-depth
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+        screen_z = 2.0 * (depth - self._projection.near) / (self._projection.far - self._projection.near) - 1
 
         _view = self._generate_view_matrix()
         _projection = self._generate_projection_matrix()
 
-        _depth = 2.0 * depth / (self._projection.far - self._projection.near) - 1
+        print(screen_x, screen_y, screen_z)
 
-        screen_position = Vec4(screen_x, screen_y, _depth, 1.0)
+        screen_position = Vec4(screen_x, screen_y, screen_z, 1.0)
 
         _full = ~(_projection @ _view)
 

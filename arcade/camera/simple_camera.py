@@ -40,7 +40,7 @@ class SimpleCamera:
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
         """
-        Initialise a Simple Camera Instance with either Camera PoDs or individual arguments
+        Initialize a Simple Camera Instance with either Camera PoDs or individual arguments
 
         Args:
             window: The Arcade Window to bind the camera to.

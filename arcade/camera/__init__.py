@@ -4,7 +4,7 @@ Providing a multitude of camera's for any need.
 """
 
 from arcade.camera.data import CameraData, OrthographicProjectionData, PerspectiveProjectionData
-from arcade.camera.types import Projection, Projector, Camera
+from arcade.camera.types import Projection, Projector
 
 from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.perspective import PerspectiveProjector
@@ -17,7 +17,6 @@ import arcade.camera.controllers as controllers
 __all__ = [
     'Projection',
     'Projector',
-    'Camera',
     'CameraData',
     'OrthographicProjectionData',
     'OrthographicProjector',

@@ -6,8 +6,7 @@ from arcade.camera.data import CameraData
 
 __all__ = [
     'Projection',
-    'Projector',
-    'Camera'
+    'Projector'
 ]
 
 
@@ -26,11 +25,5 @@ class Projector(Protocol):
     def activate(self) -> Iterator["Projector"]:
         ...
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float]) -> Tuple[float, ...]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, ...]:
         ...
-
-
-class Camera(Protocol):
-    _view: CameraData
-    _projection: Projection
-

@@ -26,7 +26,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # camera for scrolling
-        self.cam = None
+        self.camera = None
 
     def setup(self):
         """ Create everything """
@@ -52,7 +52,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # setup camera
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
     def on_draw(self):
         """ Draw everything. """
@@ -85,33 +85,33 @@ class MyGame(arcade.Window):
         """ Manage Scrolling """
 
         # Scroll left
-        left_boundary = self.cam.left + VIEWPORT_MARGIN
+        left_boundary = self.camera.left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.cam.left -= left_boundary - self.player_sprite.left
+            self.camera.left -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.cam.right - VIEWPORT_MARGIN
+        right_boundary = self.camera.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.cam.right += self.player_sprite.right - right_boundary
+            self.camera.right += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.cam.top - VIEWPORT_MARGIN
+        top_boundary = self.camera.top - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.cam.top += self.player_sprite.top - top_boundary
+            self.camera.top += self.player_sprite.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.cam.bottom + VIEWPORT_MARGIN
+        bottom_boundary = self.camera.bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            self.cam.bottom -= bottom_boundary - self.player_sprite.bottom
+            self.camera.bottom -= bottom_boundary - self.player_sprite.bottom
 
         # Make sure our boundaries are integer values. While the viewport does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
-        self.cam.left = int(self.cam.left)
-        self.cam.bottom = int(self.cam.bottom)
+        self.camera.left = int(self.camera.left)
+        self.camera.bottom = int(self.camera.bottom)
 
-        self.cam.use()
+        self.camera.use()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
