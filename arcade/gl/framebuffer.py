@@ -433,6 +433,7 @@ class Framebuffer:
                 x, y, width, height = 0, 0, self._width, self._height
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
+            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
         return string_at(data, len(data))
 
