@@ -1,5 +1,4 @@
-Welcome to The Arcade Library!
-==============================
+# Welcome to The Arcade Library!
 
 Arcade is an easy-to-learn Python library for creating 2D video games.
 It is ideal for beginning programmers, or programmers who want to create
@@ -7,25 +6,16 @@ It is ideal for beginning programmers, or programmers who want to create
 
 Arcade is built on top of Pyglet and OpenGL.
 
-.. image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)
-    :target: http://makeapullrequest.com
-    :alt: Pull Requests Welcome
+[<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
+[<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
 
-.. image:: https://img.shields.io/badge/first--timers--only-friendly-blue.svg
-    :alt: first-timers-only Friendly
-    :target: http://www.firsttimersonly.com/
+![PyPI - Downloads](https://img.shields.io/pypi/dm/arcade)
 
-.. image:: https://img.shields.io/pypi/dm/arcade
-    :alt: PyPI - Downloads
+![GitHub Commit Activity](https://img.shields.io/github/commit-activity/m/pythonarcade/arcade)
 
-.. image:: https://img.shields.io/github/commit-activity/m/pythonarcade/arcade
-    :alt: GitHub commit activity
+![MIT License](https://img.shields.io/pypi/l/arcade)
 
-.. image:: https://img.shields.io/pypi/l/arcade
-    :alt: PyPI - License
-
-Documentation
--------------
+## Documentation
 
 * For full documentation see https://api.arcade.academy
 * For installation: https://api.arcade.academy/en/latest/install/index.html
@@ -34,16 +24,13 @@ Documentation
 * Learn Arcade AND how to program: https://learn.arcade.academy
 * Release notes: https://api.arcade.academy/en/latest/development/release_notes.html
 
-Games Using Arcade
-------------------
+## Games Using Arcade
 
 See: https://api.arcade.academy/en/latest/sample_games.html
 
-Citation
---------
+## Citation
 
-.. code-block:: txt
-
+```
     @Online{PythonArcade,
        author = {Paul Vincent Craven},
        title = {Easy to use Python library for creating 2D arcade games.},
@@ -53,8 +40,8 @@ Citation
        howpublished = {\url{https://github.com/pythonarcade/arcade}},
        commit = {<insert hash if needed>}
     }
+```
 
-Contact the Maintainer
-----------------------
+## Contact the Maintainer
 
 paul@cravenfamily.com
