@@ -869,7 +869,7 @@ class TileMap:
                 # center_x = width / 2
                 # center_y = height / 2
                 if cur_object.rotation:
-                    rotation = -math.radians(cur_object.rotation)
+                    rotation = math.radians(cur_object.rotation)
                 else:
                     rotation = 0
 
