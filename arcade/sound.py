@@ -191,7 +191,7 @@ def play_sound(
     sound: Sound,
     volume: float = 1.0,
     pan: float = 0.0,
-    looping: bool = False,
+    loop: bool = False,
     speed: float = 1.0,
 ) -> Optional[media.Player]:
     """
@@ -200,7 +200,7 @@ def play_sound(
     :param sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param volume: Volume, from 0=quiet to 1=loud
     :param pan: Pan, from -1=left to 0=centered to 1=right
-    :param looping: Should we loop the sound over and over?
+    :param loop: Should we loop the sound over and over?
     :param speed: Change the speed of the sound which also changes pitch, default 1.0
     """
     if sound is None:
@@ -214,7 +214,7 @@ def play_sound(
             " Make sure to use load_sound first, then play the result with play_sound.")
 
     try:
-        return sound.play(volume, pan, looping, speed)
+        return sound.play(volume, pan, loop, speed)
     except Exception as ex:
         print("Error playing sound.", ex)
         return None
