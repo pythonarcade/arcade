@@ -4,10 +4,10 @@ GUI Style
 ---------
 
 
-With arcade 3.0 a whole new styling mechanism for GUI widgets was introduced.
-The new styling allows more type safe and clear styling while staying flexible.
+Arcade 3.0 added a new approach for styling GUI widgets. It is flexible, yet also
+improves clarity and type safety.
 
-Following widgets support styling:
+The following widgets support styling:
 
 - :py:class:`~arcade.gui.UITextureButton`
 - :py:class:`~arcade.gui.UIFlatButton`
