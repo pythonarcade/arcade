@@ -7,32 +7,37 @@ GUI Style
 Arcade 3.0 added a new approach for styling GUI widgets. It is flexible, yet also
 improves clarity and type safety.
 
+
+.. _gui_style_which_widgets:
+
+Which Widgets Can I Style?
+=============================
+
 The following widgets support styling:
 
 - :py:class:`~arcade.gui.UITextureButton`
 - :py:class:`~arcade.gui.UIFlatButton`
 - :py:class:`~arcade.gui.UISlider`
 
-For an advanced description about the style system read the 'Advanced' section.
 
 Basic Usage
 ===========
 
-This section covers how to use the existing stylable widgets.
+This section will style a :py:class:`~arcade.gui.UIFlatButton` as an example. You
+can use the same general approach for other stylable widgets, but you may want to
+check their documentation for additional values they may support.
 
-    In the following examples we will use the :py:class:`~arcade.gui.UIFlatButton` as the stylable widget,
-    you can do the same with any stylable widget listed above.
+To create your own widgets, please see the 'Advanced' section.
 
 
 Quickstart
-```````````
+``````````
 
 The following example shows how to adjust the style.
 
-
 .. code-block::
 
-    # create an own style
+    # Styles are dictionaries of UIStyle objects
     new_style = {
         # provide a style for each widget state
         "normal": UIFlatButton.UIStyle(), # use default values for `normal` state
@@ -56,11 +61,13 @@ The following example shows how to adjust the style.
 Default style
 ``````````````
 
-Stylable widgets have a property which holds the default style for
-the type of widget. For the :py:class:`~arcade.gui.UIFlatButton` this is `UIFlatButton.DEFAULT_STYLE`.
+Each stylable widget class has a ``DEFAULT_STYLE`` attribute which holds the
+default style for that type of widget. For example, on
+:py:class:`~arcade.gui.UIFlatButton`, you can access this attribute via
+``UIFlatButton.DEFAULT_STYLE``.
 
-This default style will be used if no other style is provided within the constructor.
-The default style looks like this:
+This default style will be used if no other style is provided when creating an instance
+of the class.
 
 .. code-block::
 
