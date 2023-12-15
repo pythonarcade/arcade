@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 from abc import ABC
 from random import randint
 from typing import (
@@ -13,9 +14,9 @@ from typing import (
     List,
     Dict,
 )
-from typing_extensions import Self
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from typing_extensions import Self
 
 import arcade
 from arcade import Sprite, get_window, Texture
@@ -37,7 +38,6 @@ if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 __all__ = ["Surface", "UIDummy"]
-
 
 class Rect(NamedTuple):
     """
@@ -546,7 +546,12 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     def with_padding(
-        self, top=..., right=..., bottom=..., left=..., all=...
+        self,
+        top: Union["builtins.ellipsis", int] = ...,
+        right: Union["builtins.ellipsis", int] = ...,
+        bottom: Union["builtins.ellipsis", int] = ...,
+        left: Union["builtins.ellipsis", int] = ...,
+        all: Union["builtins.ellipsis", int] = ...
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -567,7 +572,7 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color=...,
+        color: Union["builtins.ellipsis", Color]=...,
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
 

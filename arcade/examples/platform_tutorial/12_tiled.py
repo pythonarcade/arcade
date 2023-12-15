@@ -3,8 +3,6 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.12_tiled
 """
-from __future__ import annotations
-
 import arcade
 
 # Constants

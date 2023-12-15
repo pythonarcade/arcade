@@ -13,10 +13,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.background_parallax
 """
 
-from __future__ import annotations
-
 import arcade
-import arcade.background as background
+import arcade.experimental.background as background
 
 
 SCREEN_TITLE = "Background Group Example"

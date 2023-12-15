@@ -10,8 +10,6 @@ command line with:
 python -m arcade.examples.sprite_collect_coins
 """
 
-from __future__ import annotations
-
 import random
 import arcade
 

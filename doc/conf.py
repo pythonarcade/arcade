@@ -269,11 +269,34 @@ def post_process(_app, _exception):
 #         traceback.print_exc()
 #         raise
 
+
 def on_autodoc_process_bases(app, name, obj, options, bases):
     # Strip `object` from bases, it's just noise
     bases[:] = [base for base in bases if base is not object]
 
+
 class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
+    """A replacement for the default autodocumenter.
+
+    .. warning:: You must monkeypatch the baseclass with this!
+
+                 .. code-block:: python
+
+                    sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
+
+    Why? New ClassDocumenter subclasses appear to be registered for
+    specific names. For example, ``.. autointenum::`` would be declared
+    as follows::
+
+        class IntEnumDocumenter(ClassDocumenter):
+            objtype = 'intenum'
+            # Full class omitted, taken from the extension tutorial:
+            # https://www.sphinx-doc.org/en/master/development/tutorials/autodoc_ext.html#writing-the-extension
+
+    However, this documenter is for the default name, so passing it to
+    `app.app_autodocumenter` will produce a warning about a conflict.
+    Arcade's build config promotes warnings to errors, breaking build.
+    """
     def add_directive_header(self, sig: str) -> None:
         r = super().add_directive_header(sig)
         # Strip empty `Bases: `, will be empty when only superclass is `object`
@@ -283,10 +306,12 @@ class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
             strings.pop()
         return r
 
+
 class Transform(sphinx.transforms.SphinxTransform):
     default_priority = 800
     def apply(self):
         self.document.walk(Visitor(self.document))
+
 class Visitor(docutils.nodes.SparseNodeVisitor):
     def visit_desc_annotation(self, node):
         # Remove `property` prefix from properties so they look the same as
@@ -297,7 +322,9 @@ class Visitor(docutils.nodes.SparseNodeVisitor):
 
 def setup(app):
     app.add_css_file("css/custom.css")
-    app.add_autodocumenter(ClassDocumenter)
+    # IMPORTANT: We can't use app.add_autodocumenter!
+    # See the docstring of ClassDocumenter above for why.
+    sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)

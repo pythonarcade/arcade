@@ -76,7 +76,6 @@ class _AStarGraph(object):
     :param bottom: Far bottom side y value
     :param top: Far top side y value
     """
-
     def __init__(self, barriers: Union[List, Tuple, Set],
                  left: int,
                  right: int,
@@ -349,8 +348,14 @@ def has_line_of_sight(observer: Point,
     """
     if max_distance <= 0:
         raise ValueError("max_distance must be greater than zero")
+    if check_resolution <= 0:
+        raise ValueError("check_resolution must be greater than zero")
+
     distance = get_distance(observer[0], observer[1],
                             target[0], target[1])
+    if distance == 0:
+        return True
+
     steps = int(distance // check_resolution)
     for step in range(steps + 1):
         step_distance = step * check_resolution

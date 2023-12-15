@@ -1,5 +1,4 @@
 import pytest
-import arcade
 from pyglet import gl
 from arcade.gl import types
 

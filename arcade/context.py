@@ -28,7 +28,7 @@ __all__ = ["ArcadeContext"]
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
-    This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
+    This context is normally accessed through :py:attr:`arcade.Window.ctx`.
 
     Pyglet users can use the base Context class and extend that as they please.
 
@@ -146,7 +146,6 @@ class ArcadeContext(Context):
                     self.generic_draw_line_strip_color,
                     "4f1",
                     ["in_color"],
-                    normalized=["in_color"],
                 ),
             ]
         )
@@ -159,7 +158,7 @@ class ArcadeContext(Context):
         self.shape_line_geometry = self.geometry(
             [
                 BufferDescription(self.shape_line_buffer_pos, "2f", ["in_vert"]),
-                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
+                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'])
             ]
         )
         # ellipse/circle filled
@@ -386,6 +385,8 @@ class ArcadeContext(Context):
         from arcade.resources import resolve
 
         vertex_shader_src = resolve(vertex_shader).read_text()
+        vertex_shader_src = self.shader_inc(vertex_shader_src)
+
         fragment_shader_src = None
         geometry_shader_src = None
         tess_control_src = None
@@ -509,7 +510,7 @@ class ArcadeContext(Context):
         self,
         fbo: Framebuffer,
         components: int = 4,
-        flip=True,
+        flip: bool = True,
     ) -> Image.Image:
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
