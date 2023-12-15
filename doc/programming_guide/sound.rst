@@ -40,10 +40,7 @@ Users who want to skip to example code should consult the following:
 #. :ref:`sound_demo`
 #. :ref:`sound_speed_demo`
 #. :ref:`music_control_demo`
-#. :ref:`Platformer Tutorial - Step 7 - Add Coins And Sound <platformer_part_seven>`
-
-   #. :ref:`platformer_part_seven_loading_sounds`
-   #. :ref:`platformer_part_seven_playing_sounds`
+#. :ref:`Platformer Tutorial - Step 9 - Adding Sound <platformer_part_nine>`
 
 .. _sound-why-important:
 
@@ -108,7 +105,6 @@ If you prefer a more object-oriented style, you can create
 
 See the following to learn more:
 
-#. :ref:`Platformer Part 7 - Loading Sounds <platformer_part_seven_loading_sounds>`
 #. :ref:`resources`
 #. :py:mod:`pathlib`
 #. :ref:`sound-loading-modes`
@@ -172,7 +168,6 @@ fun.
 See the following to learn more:
 
 #. :ref:`sound-why-important`
-#. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
 #. :ref:`sound_demo`
 
 .. _sound-basics-stopping:

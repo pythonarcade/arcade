@@ -1,110 +1,76 @@
-
-
 .. _platformer_part_two:
 
-Step 2 - Add Sprites
---------------------
+Step 2 - Textures and Sprites
+-----------------------------
 
-Our next step is to add some sprites_, which are graphics we can see and interact
-with on the screen.
+Our next step in this tutorial is to draw something on the Screen. In order to
+do that we need to cover two topics, Textures and Sprites.
 
-.. _sprites: https://en.wikipedia.org/wiki/Sprite_(computer_graphics)
+At the end of this chapter, we'll have something that looks like this. It's largely the
+same as last chapter, but now we are drawing a character onto the screen:
 
 .. image:: images/title_02.png
     :width: 70%
 
-Setup vs. Init
-~~~~~~~~~~~~~~
+Textures
+~~~~~~~~
 
-In the next code example, ``02_draw_sprites``,
-we'll have both an ``__init__`` method and a
-``setup``.
+Textures are largely just an object to contain image data. Whenever you load an image
+file in Arcade, for example a ``.png`` or ``.jpeg`` file. It becomes a Texture.
 
-The ``__init__`` creates the variables. The variables are set to values such as
-0 or ``None``. The ``setup`` actually creates the object instances, such as
-graphical sprites.
+To do this, internally Arcade uses Pyglet to load the image data, and the texture is
+responsible for keeping track of this image data.
 
-I often get the very reasonable question, "Why have two methods? Why not just
-put everything into ``__init__``? Seems like we are doing twice the work."
-Here's why.
-With a ``setup`` method split out, later on we can easily add
-"restart/play again" functionality to the game.
-A simple call to ``setup`` will reset everything.
-Later, we can expand our game with different levels, and have functions such as
-``setup_level_1`` and ``setup_level_2``.
-
-Sprite Lists
-~~~~~~~~~~~~
-
-Sprites are managed in lists. The ``SpriteList`` class optimizes drawing, movement,
-and collision detection.
-
-We are using two logical groups in our game. A ``player_list`` for the player.
-A ``wall_list`` for walls we can't move through.
+We can create a texture with a simple command, this can be done inside of our ``__init__``
+function. Go ahead and create a texture that we will use to draw a player.
 
 .. code-block::
 
-    self.player_list = arcade.SpriteList()
-    self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+    self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
 
-Sprite lists have an option to use something called "spatial hashing." Spatial
-hashing speeds the time it takes to find collisions, but increases the time it
-takes to move a sprite. Since I don't expect most of my walls to move,
-I'll turn on spatial hashing for these lists. My player moves around a lot,
-so I'll leave it off for her.
+.. note::
 
-Add Sprites to the Game
-~~~~~~~~~~~~~~~~~~~~~~~
+    You might be wondering where this image file is coming from? And what is ``:resources:`` about?
 
-To create sprites we'll use the ``arcade.Sprite`` class.
-We can create an instance of the sprite class with code like this:
+    The ``:resources:`` section of the string above is what Arcade calls a resource handle.
+    You can register your own resource handles to different asset directories. For example you
+    might want to have a ``:characters:`` and a ``:objects:`` handle.
 
-.. code-block::
+    However, you don't have to use a resource handle here, anywhere that you can load files in Arcade will
+    accept resource handles, or just strings to filepaths, or ``Path`` objects from ``pathlib``
 
-    self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
+    Arcade includes the ``:resources:`` handle with a bunch of built-in assets from `kenney <https://kenney.nl>`_.
 
-The first parameter is a string or path to the image you want it to load.
-An optional second parameter will scale the sprite up or down.
-If the second parameter (in this case a constant ``CHARACTER_SCALING``) is set to
-0.5, and the the sprite is 128x128, then both width and height will be scaled
-down 50% for a 64x64 sprite.
+    For more information checkout :ref:`resources`
 
-.. sidebar:: Built-in Resources
+Sprites
+~~~~~~~
 
-    The arcade library has a few built-in :ref:`resources` so we can run
-    examples without downloading images. If you see code samples where sprites
-    are loaded beginning with "resources", that's what's being referenced.
+If Textures are an instance of a particular image, then :class:`arcade.Sprite` is an instance of that image
+on the screen. Say we have a ground or wall texture. We only have one instance of the texture, but we can create 
+multiple instances of Sprite, because we want to have many walls. These will use the same texture, but draw it
+in different positions, or even with different scaling, rotation, or colors/post-processing effects.
 
-Next, we need to tell *where* the sprite goes. You can use the attributes
-``center_x`` and ``center_y`` to position the sprite. You can also use ``top``,
-``bottom``, ``left``, and ``right`` to get or set the sprites location by an
-edge instead of the center. You can also use ``position`` attribute to set both the
-x and y at the same time.
+Creating a Sprite is simple, we can make one for our player in our ``__init__`` function, and then set it's position.
 
 .. code-block::
 
+    self.player_sprite = arcade.Sprite(self.player_texture)
     self.player_sprite.center_x = 64
-    self.player_sprite.center_y = 120
+    self.player_sprite.center_y = 128
 
-Finally, all instances of the ``Sprite`` class need to go in a ``SpriteList``
-class.
+.. note::
+
+    You can also skip ``arcade.load_texture`` from the previous step and pass the image file to ``arcade.Sprite`` in place of the Texture object. 
+    A Texture will automatically be created for you. However, it may desirable in larger projects to manage your textures directly.
+
+Now we can draw the sprite by adding this to our ``on_draw`` function:
 
 .. code-block::
 
-    self.player_list.append(self.player_sprite)
+    self.player_sprite.draw()
 
-We manage groups of sprites by the list that they are in.
-In the example below there's a ``wall_list`` that will hold everything that the
-player character can't walk through. There's also a ``player_list``
-which holds only the player.
-
-* Documentation for the :class:`arcade.Sprite` class
-* Documentation for the :class:`arcade.SpriteList` class
-
-Notice that the code creates ``Sprites`` three ways:
-
-* Creating a ``Sprite`` class, positioning it, adding it to the list
-* Create a series of sprites in a loop
+We're now drawing a Sprite to the screen! In the next chapter, we will introduce techniques to draw many(even hundreds of thousands) sprites at once.
 
 Source Code
 ~~~~~~~~~~~
@@ -112,16 +78,25 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 11-13, 26-29, 36-67, 75-77
+    :emphasize-lines: 24-30, 44-45
 
-Running this code should result in some sprites drawn on the screen, as
-shown in the image at the top of this page.
+Running this code should result in a character being drawn on the screen, like in
+the image at the start of the chapter.
+
+* Documentation for the :class:`arcade.Texture` class
+* Documentation for the :class:`arcade.Sprite` class
 
 .. note::
 
-    Once the code example is up and working, try adjusting the code for the following:
+    Once you have the code up and working, try adjusting the code for the following:
 
-    * Adjust the code and try putting sprites in new positions.
-    * Use different images for sprites (see :ref:`resources` for the build-in images, or use
-      your own images.)
-    * Practice placing individually, via a loop, and by coordinates in a list.
+    * Adjust the code and try putting the sprite in new positions(Try setting the positions using other attributes of Sprite)
+    * Use different images for the texture (see :ref:`resources` for the built-in images, or try using your own images.)
+    * Practice placing more sprites in different ways(like placing many with a loop)
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.02_draw_sprites

@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.05_add_gravity
+python -m arcade.examples.platform_tutorial.07_camera
 """
 import arcade
 
@@ -30,16 +30,13 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variable to hold our texture for our player
-        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+        self.player_texture = None
 
         # Separate variable that holds the player sprite
-        self.player_sprite = arcade.Sprite(self.player_texture)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 128
+        self.player_sprite = None
 
         # SpriteList for our player
-        self.player_list = arcade.SpriteList()
-        self.player_list.append(self.player_sprite)
+        self.player_list = None
 
         # SpriteList for our boxes and ground
         # Putting our ground and box Sprites in the same SpriteList
@@ -47,6 +44,22 @@ class MyGame(arcade.Window):
         # them later on. Setting the spatial hash to True will make
         # collision detection much faster if the objects in this
         # SpriteList do not move.
+        self.wall_list = None
+
+        # A variable to store our camera object
+        self.camera = None
+
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+
+        self.player_sprite = arcade.Sprite(self.player_texture)
+        self.player_sprite.center_x = 64
+        self.player_sprite.center_y = 128
+
+        self.player_list = arcade.SpriteList()
+        self.player_list.append(self.player_sprite)
+
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
 
         # Create the ground
@@ -69,10 +82,10 @@ class MyGame(arcade.Window):
             wall.position = coordinate
             self.wall_list.append(wall)
 
-        # Create a Platformer Physics Engine. 
-        # This will handle moving our player as well as collisions between 
-        # the player sprite and whatever SpriteList we specify for the walls.
-        # It is important to supply static platforms to the walls parameter. There is a
+        # Create a Platformer Physics Engine, this will handle moving our
+        # player as well as collisions between the player sprite and
+        # whatever SpriteList we specify for the walls.
+        # It is important to supply static to the walls parameter. There is a
         # platforms parameter that is intended for moving platforms.
         # If a platform is supposed to move, and is added to the walls list,
         # it will not be moved.
@@ -80,17 +93,19 @@ class MyGame(arcade.Window):
             self.player_sprite, walls=self.wall_list, gravity_constant=GRAVITY
         )
 
-        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
+        # Initialize our camera, setting a viewport the size of our window.
+        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
-    def setup(self):
-        """Set up the game here. Call this function to restart the game."""
-        pass
+        self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
     def on_draw(self):
         """Render the screen."""
 
         # Clear the screen to the background color
         self.clear()
+
+        # Activate our camera before drawing
+        self.camera.use()
 
         # Draw our sprites
         self.player_list.draw()
@@ -102,8 +117,14 @@ class MyGame(arcade.Window):
         # Move the player using our physics engine
         self.physics_engine.update()
 
+        # Center our camera on the player
+        self.camera.center(self.player_sprite.position)
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
+
+        if key == arcade.key.ESCAPE:
+            self.setup()
 
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():

@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.05_add_gravity
+python -m arcade.examples.platform_tutorial.03_more_sprites
 """
 import arcade
 
@@ -12,11 +12,6 @@ SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
-
-# Movement speed of player, in pixels per frame
-PLAYER_MOVEMENT_SPEED = 5
-GRAVITY = 1
-PLAYER_JUMP_SPEED = 20
 
 
 class MyGame(arcade.Window):
@@ -52,7 +47,7 @@ class MyGame(arcade.Window):
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
         for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=TILE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=0.5)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
@@ -64,21 +59,10 @@ class MyGame(arcade.Window):
         for coordinate in coordinate_list:
             # Add a crate on the ground
             wall = arcade.Sprite(
-                ":resources:images/tiles/boxCrate_double.png", scale=TILE_SCALING
+                ":resources:images/tiles/boxCrate_double.png", scale=0.5
             )
             wall.position = coordinate
             self.wall_list.append(wall)
-
-        # Create a Platformer Physics Engine. 
-        # This will handle moving our player as well as collisions between 
-        # the player sprite and whatever SpriteList we specify for the walls.
-        # It is important to supply static platforms to the walls parameter. There is a
-        # platforms parameter that is intended for moving platforms.
-        # If a platform is supposed to move, and is added to the walls list,
-        # it will not be moved.
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, walls=self.wall_list, gravity_constant=GRAVITY
-        )
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
@@ -95,32 +79,6 @@ class MyGame(arcade.Window):
         # Draw our sprites
         self.player_list.draw()
         self.wall_list.draw()
-
-    def on_update(self, delta_time):
-        """Movement and Game Logic"""
-
-        # Move the player using our physics engine
-        self.physics_engine.update()
-
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed."""
-
-        if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-        """Called whenever a key is released."""
-
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
 
 
 def main():
