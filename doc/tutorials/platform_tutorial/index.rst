@@ -33,9 +33,6 @@ commands will run the exact code for that chapter, so you can compare your game 
    step_12
    step_13
    step_14
-   step_15
-   step_16
-   step_17
 
 Currently there are a few more examples that expand beyond where the tutorial leaves off.
 You can see the source code for those examples as well as every chapter in the tutorial on
