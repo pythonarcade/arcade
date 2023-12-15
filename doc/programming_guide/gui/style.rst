@@ -39,7 +39,7 @@ The following example shows how to adjust the style.
 
     # Styles are dictionaries of UIStyle objects
     new_style = {
-        # provide a style for each widget state
+        # You should provide a style for each widget state
         "normal": UIFlatButton.UIStyle(), # use default values for `normal` state
         "hover": UIFlatButton.UIStyle(
             font_color=arcade.color.BLACK,
@@ -55,13 +55,14 @@ The following example shows how to adjust the style.
         )
     }
 
+    # Pass the style dictionary when creating a UI element
     UIFlatButton(style=new_style)
 
 
 Default style
 ``````````````
 
-Each stylable widget class has a ``DEFAULT_STYLE`` attribute which holds the
+Each stylable widget class has a ``DEFAULT_STYLE`` class attribute to hold the
 default style for that type of widget. For example, on
 :py:class:`~arcade.gui.UIFlatButton`, you can access this attribute via
 ``UIFlatButton.DEFAULT_STYLE``.
