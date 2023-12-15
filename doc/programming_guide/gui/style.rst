@@ -11,7 +11,7 @@ improves clarity and type safety.
 .. _gui_style_which_widgets:
 
 Which Widgets Can I Style?
-=============================
+==========================
 
 The following widgets support styling:
 
@@ -60,7 +60,7 @@ The following example shows how to adjust the style.
 
 
 Default style
-``````````````
+`````````````
 
 Each stylable widget class has a ``DEFAULT_STYLE`` class attribute to hold the
 default style for that type of widget. For example, on
@@ -103,7 +103,7 @@ of the class.
         }
 
 Style attributes
-`````````````````
+````````````````
 
 A UIStyle is a typed description of available style options.
 For the UIFlatButton the supported attributes are:
@@ -124,7 +124,7 @@ The style attribute is a dictionary, which maps a state like 'normal, 'hover' et
 to an instance of UIFlatButton.UIStyle.
 
 Wellknown states
-`````````````````
+````````````````
 
 ======== ======================================================
 Name     Description
@@ -200,6 +200,3 @@ Your own stylable widget
             # render
             if color: # support for not setting a color at all
                 surface.clear(bg_color)
-
-
-
