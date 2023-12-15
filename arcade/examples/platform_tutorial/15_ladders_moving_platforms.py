@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.14_multiple_levels
+python -m arcade.examples.platform_tutorial.15_ladders_moving_platforms
 """
 import arcade
 
@@ -57,9 +57,6 @@ class MyGame(arcade.Window):
         # Where is the right edge of the map?
         self.end_of_map = 0
 
-        # Level number to load
-        self.level = 1
-
         # Should we reset the score?
         self.reset_score = True
 
@@ -73,23 +70,22 @@ class MyGame(arcade.Window):
         layer_options = {
             "Platforms": {
                 "use_spatial_hash": True
+            },
+            "Moving Platforms": {
+                "use_spatial_hash": False
+            },
+            "Ladders": {
+                "use_spatial_hash": True
             }
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map2_level_{self.level}.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
-
-        # Add Player Spritelist before "Foreground" layer. This will make the foreground
-        # be drawn after the player, making it appear to be in front of the Player.
-        # Setting before using scene.add_sprite allows us to define where the SpriteList
-        # will be in the draw order. If we just use add_sprite, it will be appended to the
-        # end of the order.
-        self.scene.add_sprite_list_after("Player", "Foreground")
 
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 128
@@ -104,7 +100,11 @@ class MyGame(arcade.Window):
         # If a platform is supposed to move, and is added to the walls list,
         # it will not be moved.
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
+            self.player_sprite,
+            walls=self.scene["Platforms"],
+            gravity_constant=GRAVITY,
+            platforms=self.scene["Moving Platforms"],
+            ladders=self.scene["Ladders"]
         )
 
         # Initialize our camera, setting a viewport the size of our window.
@@ -125,7 +125,6 @@ class MyGame(arcade.Window):
 
         # Calculate the right edge of the map in pixels
         self.end_of_map = (self.tile_map.width * self.tile_map.tile_width) * self.tile_map.scaling
-        print(self.end_of_map)
 
     def on_draw(self):
         """Render the screen."""
@@ -164,23 +163,6 @@ class MyGame(arcade.Window):
             self.score += 75
             self.score_text.text = f"Score: {self.score}"
 
-        if arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene["Don't Touch"]
-        ):
-            arcade.play_sound(self.gameover_sound)
-            self.setup()
-
-        # Check if the player got to the end of the level
-        if self.player_sprite.center_x >= self.end_of_map:
-            # Advance to the next level
-            self.level += 1
-
-            # Turn off score reset when advancing level
-            self.reset_score = False
-
-            # Reload game with new level
-            self.setup()
-
         # Center our camera on the player
         self.camera.center(self.player_sprite.position)
 
@@ -191,9 +173,15 @@ class MyGame(arcade.Window):
             self.setup()
 
         if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+            elif self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 arcade.play_sound(self.jump_sound)
+        
+        if key == arcade.key.DOWN or key == arcade.key.S:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
@@ -207,6 +195,10 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
+        elif key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = 0
 
 
 def main():

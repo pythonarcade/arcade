@@ -1,7 +1,7 @@
 """
 Platformer Game
 
-python -m arcade.examples.platform_tutorial.12_tiled
+python -m arcade.examples.platform_tutorial.13_more_layers
 """
 import arcade
 
