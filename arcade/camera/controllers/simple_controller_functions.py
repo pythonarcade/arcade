@@ -89,12 +89,7 @@ def quaternion_rotation(axis: Tuple[float, float, float],
     p1, p2, p3 = vector
     _c2, _s2 = cos(_rotation_rads / 2.0), sin(_rotation_rads / 2.0)
 
-    q0, q1, q2, q3 = (
-        _c2,
-        _s2 * axis[0],
-        _s2 * axis[1],
-        _s2 * axis[2]
-    )
+    q0, q1, q2, q3 = _c2, _s2 * axis[0], _s2 * axis[1], _s2 * axis[2]
     q0_2, q1_2, q2_2, q3_2 = q0 ** 2, q1 ** 2, q2 ** 2, q3 ** 2
     q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
 
