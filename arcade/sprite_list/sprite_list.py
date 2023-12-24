@@ -93,6 +93,12 @@ class SpriteList(Generic[SpriteType]):
             :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
+    :param cull_mode: The mode which determines how sprites are culled.
+            Only 'orthographic' and 'disabled' are the only options currently.
+            - 'orthographic' is a simple algorithm that assumes an orthographic projection.
+                             This is the default in arcade. If using a perspective projection
+                             it is highly recommended to not use this mode.
+            - 'disabled' is no algorithm, and is used when no valid mode is selected.
     """
 
     def __init__(
@@ -103,6 +109,7 @@ class SpriteList(Generic[SpriteType]):
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
+        cull_mode: str = "orthographic"
     ):
         self.program = None
         self._atlas: Optional[TextureAtlas] = atlas
@@ -110,6 +117,8 @@ class SpriteList(Generic[SpriteType]):
         self._lazy = lazy
         self._visible = visible
         self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
+        # The cull mode which determines how sprites should be culled within the geometry shader.
+        self._cull_mode: str = cull_mode
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or _DEFAULT_CAPACITY
@@ -188,7 +197,8 @@ class SpriteList(Generic[SpriteType]):
             return
 
         self.ctx = get_window().ctx
-        self.program = self.ctx.sprite_list_program_cull
+        self.program = (self.ctx.sprite_list_program_cull if self._cull_mode == 'orthographic' else
+                        self.ctx.sprite_list_program_no_cull)
         if not self._atlas:
             self._atlas =  self.ctx.default_atlas
 
