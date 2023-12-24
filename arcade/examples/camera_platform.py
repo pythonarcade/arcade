@@ -177,6 +177,10 @@ class MyGame(arcade.Window):
         # Draw our Scene
         self.scene.draw()
 
+        # Readjust the camera so the screen shake doesn't affect
+        # the camera following algorithm.
+        self.camera_shake.readjust_camera()
+
         self.gui_camera.use()
 
         # Update fps text periodically

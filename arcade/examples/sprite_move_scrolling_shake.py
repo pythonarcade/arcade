@@ -122,6 +122,9 @@ class MyGame(arcade.Window):
         self.bomb_list.draw()
         self.player_list.draw()
 
+        # Readjust the camera's screen_shake
+        self.camera_shake.readjust_camera()
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 

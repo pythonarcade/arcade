@@ -42,7 +42,7 @@ class ScreenShakeController:
     def __init__(self, camera_data: CameraData, *,
                  max_amplitude: float = 1.0,
                  falloff_time: float = 1.0,
-                 acceleration_duration: float = 1,
+                 acceleration_duration: float = 1.0,
                  shake_frequency: float = 15.0):
         """
         Initialise a screen-shake controller.
@@ -71,7 +71,7 @@ class ScreenShakeController:
         self._shaking: bool = False
         self._length_shaking: float = 0.0
 
-        self._current_vec: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self._current_dir: float = 0.0
         self._last_vector: Tuple[float, float, float] = (0.0, 0.0, 0.0)
         self._last_update_time: float = 0.0
 
@@ -189,6 +189,10 @@ class ScreenShakeController:
         return 1 - _t**3 * (_t * (_t * 6.0 - 15.0) + 10.0)
 
     def _calc_max_amp(self):
+        """
+        Determine the maximum amplitude by using either _acceleration_amp() or _falloff_amp().
+        If falloff duration is less than 0.0 then the falloff never begins and
+        """
         if self._length_shaking <= self._acceleration_duration:
             _t = self._length_shaking / self._acceleration_duration
             return self._acceleration_amp(_t)
@@ -212,7 +216,7 @@ class ScreenShakeController:
         """
         Reset the temporary shaking variables. WILL NOT STOP OR START SCREEN SHAKE.
         """
-        self._current_vec = (0.0, 0.0, 0.0)
+        self._current_dir = 0.0
         self._last_vector = (0.0, 0.0, 0.0)
         self._last_update_time = 0.0
         self._length_shaking = 0.0
@@ -228,6 +232,12 @@ class ScreenShakeController:
         """
         Instantly stop the screen-shake.
         """
+        self._data.position = (
+            self._data.position[0] - self._last_vector[0],
+            self._data.position[1] - self._last_vector[1],
+            self._data.position[2] - self._last_vector[2]
+        )
+
         self.reset()
         self._shaking = False
 
@@ -262,11 +272,10 @@ class ScreenShakeController:
         if (floor(self._last_update_time * 2 * self.shake_frequency) <
                 floor(self._length_shaking * 2.0 * self.shake_frequency))\
                 or self._last_update_time == 0.0:
-            _dir = uniform(-180, 180)
-            self._current_vec = quaternion_rotation(self._data.forward, self._data.up, _dir)
+            self._current_dir = uniform(-180, 180)
 
         _amp = self._calc_amplitude() * self.max_amplitude
-        _vec = self._current_vec
+        _vec = quaternion_rotation(self._data.forward, self._data.up, self._current_dir)
 
         _last = self._last_vector
         _pos = self._data.position
@@ -283,3 +292,17 @@ class ScreenShakeController:
             _vec[2] * _amp
         )
         self._last_update_time = self._length_shaking
+
+    def readjust_camera(self):
+        """
+        Can be called after the camera has been used revert the screen_shake.
+        While not strictly necessary it is highly advisable. If you are moving the
+        camera using an animation or something similar the behavior can start to go
+        awry if you do not readjust after the screen shake.
+        """
+        self._data.position = (
+            self._data.position[0] - self._last_vector[0],
+            self._data.position[1] - self._last_vector[1],
+            self._data.position[2] - self._last_vector[2]
+        )
+        self._last_vector = (0.0, 0.0, 0.0)
