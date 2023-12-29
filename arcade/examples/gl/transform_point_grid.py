@@ -41,9 +41,9 @@ def gen_initial_data(window, width, height):
 def gen_colors(width, height):
     """Generate some random colors"""
     for _ in range(width * height):
-        yield random.uniform(0, 1) 
-        yield random.uniform(0, 1) 
-        yield random.uniform(0, 1) 
+        yield random.uniform(0, 1)
+        yield random.uniform(0, 1)
+        yield random.uniform(0, 1)
 
 
 class MyGame(arcade.Window):
@@ -152,7 +152,7 @@ class MyGame(arcade.Window):
 
         # Calculate delta time (not extremely accurate, but good enough)
         now = time.time()
-        self.frame_time = now - self.last_time 
+        self.frame_time = now - self.last_time
         self.last_time = now
 
         # Move points with transform

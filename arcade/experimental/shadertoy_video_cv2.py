@@ -5,6 +5,8 @@ Dependencies:
     pip install opencv-python
 
 """
+from __future__ import annotations
+
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
 import cv2  # type: ignore

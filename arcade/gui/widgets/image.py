@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Union
 
 from arcade import Texture
@@ -30,7 +32,7 @@ class UIImage(UIWidget):
             surface.draw_texture(
                 x=0,
                 y=0,
-                width=self.width,
-                height=self.height,
+                width=self.content_width,
+                height=self.content_height,
                 tex=self.texture
             )

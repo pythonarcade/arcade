@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from typing import List
 
@@ -7,6 +9,8 @@ from pyglet.graphics import Batch
 
 import arcade
 from arcade.types import Color, RGBA255
+
+__all__ = ["PerfGraph"]
 
 
 class PerfGraph(arcade.Sprite):
@@ -125,7 +129,7 @@ class PerfGraph(arcade.Sprite):
             self._vertical_axis_text_objects.append(
                 arcade.Text(
                     "0",  # Ensure the lowest y axis label is always 0
-                    self._left_x, y_level,
+                    self._left_x, int(y_level),
                     self._font_color, self._font_size,
                     anchor_x="right", anchor_y="center"))
             self._grid_lines.append(
@@ -220,10 +224,13 @@ class PerfGraph(arcade.Sprite):
             return
 
         sprite_list = self.sprite_lists[0]
+        atlas = sprite_list.atlas
 
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
-            with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+            # Please forgive the ugly spacing. It makes type checking work.
+            with atlas.render_into( # type: ignore
+                    self.minimap_texture, projection=self.proj) as fbo:
                 fbo.clear(color=(0, 0, 0, 255))
             return
 
@@ -280,7 +287,9 @@ class PerfGraph(arcade.Sprite):
                 text_object.text = f"{int(index * view_y_legend_increment)}"
 
         # Render to the internal texture
-        with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+        # This ugly spacing is intentional to make type checking work.
+        with atlas.render_into( # type: ignore
+                self.minimap_texture, projection=self.proj) as fbo:
 
             # Set the background color
             fbo.clear(self.background_color)

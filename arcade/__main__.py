@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from arcade.management import show_info
 
 

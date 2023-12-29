@@ -4,6 +4,10 @@ Script used to create the quick index
 import os
 import re
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+from vfs import Vfs
 
 # The project root
 ROOT = Path(__file__).parent.parent.resolve()
@@ -54,7 +58,6 @@ titles = {
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
     '__main__.py': ['Misc Utility Functions', 'utility.rst'],
     'utils.py': ['Misc Utility Functions', 'utility.rst'],
-    'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
@@ -98,6 +101,9 @@ titles = {
     'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
+excluded_modules = [
+    'version.py'
+]
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
@@ -207,7 +213,7 @@ def process_directory(directory: Path, quick_index_file):
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
-        elif path_name not in titles:
+        elif path_name not in titles and path_name not in excluded_modules:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
             print(f"No title for '{path_name}'.")
@@ -218,11 +224,9 @@ def process_directory(directory: Path, quick_index_file):
 
         # print(package, title, api_file_name, full_api_file_name)
 
-        new_api_file = True
-        if os.path.isfile(full_api_file_name):
-            new_api_file = False
+        new_api_file = not vfs.exists(full_api_file_name)
 
-        api_file = open(full_api_file_name, "a")
+        api_file = vfs.open(full_api_file_name, "a")
 
         if new_api_file:
             api_file.write(f".. _{api_file_name[:-4]}_api:")
@@ -239,10 +243,6 @@ def process_directory(directory: Path, quick_index_file):
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
-
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write("    :members:\n")
@@ -267,10 +267,6 @@ def process_directory(directory: Path, quick_index_file):
                 full_class_name = f"{package}.{item}"
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
-
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autofunction:: {full_class_name}\n\n")
 
@@ -298,41 +294,20 @@ table_header_arcade = """
    * - Name
      - Group"""
 
-table_header_gui = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapigui
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_tiled = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapitiled
-   :class: display
-
-   * - Name
-     - Group"""
-
 
 def clear_api_directory():
     """
     Delete the API files and make new ones
     """
     directory = ROOT / "doc/api_docs/api"
-    file_list = directory.glob('*.rst')
-    for file in file_list:
-        os.remove(file)
+    vfs.delete_glob(str(directory), '*.rst')
 
+vfs = Vfs()
 
 def main():
     clear_api_directory()
 
-    text_file = open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
+    text_file = vfs.open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
     include_template(text_file)
 
     text_file.write("The arcade module\n")
@@ -347,30 +322,16 @@ def main():
     process_directory(ROOT / "arcade/texture", text_file)
     process_directory(ROOT / "arcade/texture_atlas", text_file)
     process_directory(ROOT / "arcade/text", text_file)
-
-    # text_file.write(f"The ``arcade.gl`` module\n")
-    # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.gui module\n")
-    text_file.write("---------------------\n\n")
-
-    text_file.write(table_header_gui)
-
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.tilemap module\n")
-    text_file.write("-------------------------\n\n")
-
-    text_file.write(table_header_tiled)
-
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()
+
+    vfs.write()
+
     print("Done creating quick_index.rst")
 
 

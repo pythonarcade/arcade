@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import re
-from typing import Optional, Iterable, List, Union
+from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union, Set
+from typing_extensions import TypeAlias
 
 from pyglet import gl
 
@@ -9,6 +12,17 @@ from arcade.types import BufferProtocol
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
+GLenumLike = Union[gl.GLenum, int]
+PyGLenum = int
+GLuintLike = Union[gl.GLuint, int]
+PyGLuint = int
+
+
+OpenGlFilter: TypeAlias = Tuple[PyGLenum, PyGLenum]
+BlendFunction: TypeAlias = Union[
+    Tuple[PyGLenum, PyGLenum],
+    Tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
+]
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
 _int_base_format = (
@@ -99,23 +113,27 @@ GL_NAMES = {
     gl.GL_UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
     gl.GL_BYTE: "GL_BYTE",
     gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
-}    
+}
 
 
-def gl_name(gl_type: gl.GLenum) -> str:
+def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
     """Return the name of a gl type"""
+    if gl_type is None:
+        return None
     return GL_NAMES.get(gl_type, gl_type)
 
 
 class AttribFormat:
     """"
-    Represents an attribute in a BufferDescription or a Program.
+    Represents a vertex attribute in a BufferDescription / Program.
+    This is attribute metadata used when attempting to map vertex
+    shader inputs.
 
-    :param str name: Name of the attribute
-    :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-    :param int bytes_per_component: Number of bytes a single component takes
-    :param int offset: (Optional offset for BufferDescription)
-    :param int location: (Optional location for program attribute)
+    :param name: Name of the attribute
+    :param gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param bytes_per_component: Number of bytes for a single component
+    :param offset: (Optional) Offset for BufferDescription
+    :param location: (Optional) Location for program attribute
     """
 
     __slots__ = (
@@ -128,9 +146,10 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: str, gl_type: gl.GLenum, components: int, bytes_per_component: int, offset=0, location=0
+        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0,
+        location=0
     ):
-        self.name: str = name
+        self.name = name
         self.gl_type = gl_type
         self.components = components
         self.bytes_per_component = bytes_per_component
@@ -179,16 +198,16 @@ class BufferDescription:
             ['in_pos', 'in_uv'],
         )
 
-    :param Buffer buffer: The buffer to describe
-    :param str formats: The format of each attribute
-    :param list attributes: List of attributes names (strings)
-    :param list normalized: list of attribute names that should be normalized
-    :param bool instanced: ``True`` if this is per instance data
+    :param buffer: The buffer to describe
+    :param formats: The format of each attribute
+    :param attributes: List of attributes names (strings)
+    :param normalized: list of attribute names that should be normalized
+    :param instanced: ``True`` if this is per instance data
     """
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats = {
+    _formats: Dict[str, Tuple[Optional[PyGLenum], int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -197,16 +216,17 @@ class BufferDescription:
         "f4": (gl.GL_FLOAT, 4),
         "f8": (gl.GL_DOUBLE, 8),
         # Unsigned integers
-        "u": (gl.GL_FLOAT, 4),
-        "u1": (gl.GL_FLOAT, 1),
-        "u2": (gl.GL_FLOAT, 2),
-        "u4": (gl.GL_FLOAT, 4),
+        "u": (gl.GL_UNSIGNED_INT, 4),
+        "u1": (gl.GL_UNSIGNED_BYTE, 1),
+        "u2": (gl.GL_UNSIGNED_SHORT, 2),
+        "u4": (gl.GL_UNSIGNED_INT, 4),
         # Signed integers
         "i": (gl.GL_INT, 4),
         "i1": (gl.GL_BYTE, 1),
         "i2": (gl.GL_SHORT, 2),
         "i4": (gl.GL_INT, 4),
         # Padding (1, 2, 4, 8 bytes)
+        "x": (None, 1),
         "x1": (None, 1),
         "x2": (None, 2),
         "x4": (None, 4),
@@ -227,7 +247,7 @@ class BufferDescription:
         self,
         buffer: Buffer,
         formats: str,
-        attributes: Iterable[str],
+        attributes: Sequence[str],
         normalized: Optional[Iterable[str]] = None,
         instanced: bool = False,
     ):
@@ -236,7 +256,7 @@ class BufferDescription:
         #: List of string attributes
         self.attributes = attributes
         #: List of normalized attributes
-        self.normalized = set() if normalized is None else set(normalized)
+        self.normalized: Set[str] = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
         self.instanced: bool = instanced
         #: Formats of each attribute
@@ -249,9 +269,7 @@ class BufferDescription:
         if not isinstance(buffer, Buffer):
             raise ValueError("buffer parameter must be an arcade.gl.Buffer")
 
-        if not isinstance(self.attributes, list) and not isinstance(
-            self.attributes, tuple
-        ):
+        if not isinstance(self.attributes, (list, tuple)):
             raise ValueError("Attributes must be a list or tuple")
 
         if self.normalized > set(self.attributes):
@@ -262,11 +280,11 @@ class BufferDescription:
 
         if len(non_padded_formats) != len(self.attributes):
             raise ValueError(
-                f"Different lengths of formats ({len(formats_list)}) and "
+                f"Different lengths of formats ({len(non_padded_formats)}) and "
                 f"attributes ({len(self.attributes)})"
             )
 
-        def zip_attrs(formats, attributes):
+        def zip_attrs(formats: List[str], attributes: Sequence[str]):
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:
@@ -278,6 +296,9 @@ class BufferDescription:
 
         self.stride = 0
         for attr_fmt, attr_name in zip_attrs(formats_list, self.attributes):
+            # Automatically make f1 attributes normalized
+            if attr_name is not None and "f1" in attr_fmt:
+                self.normalized.add(attr_name)
             try:
                 components_str, data_type_str, data_size_str = re.split(
                     r"([fiux])", attr_fmt
@@ -326,10 +347,9 @@ class BufferDescription:
         if not isinstance(other, BufferDescription):
             raise ValueError(f"The only logical comparison to a BufferDescription"
                              f"is a BufferDescription not {type(other)}")
-        for self_attrib in self.attributes:
-            for other_attrib in other.attributes:
-                return True
-        return False
+
+        # Equal if we share the same attribute
+        return len(set(self.attributes) & set(other.attributes)) > 0
 
 
 class TypeInfo:
@@ -344,7 +364,7 @@ class TypeInfo:
     """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name: str, enum: gl.GLenum, gl_type: gl.GLenum, gl_size: int, components: int):
+    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int):
         self.name = name
         self.enum = enum
         self.gl_type = gl_type

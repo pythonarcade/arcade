@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Mapping, TypeVar, Generic
+from typing import Mapping, TypeVar, Generic, overload, Any
 
 from arcade.gui.property import DictProperty
 from arcade.gui.widgets import UIWidget
@@ -15,6 +17,12 @@ class UIStyleBase:
 
     A styled widget should own a dataclass, which subclasses this class
     """
+
+    @overload
+    def get(self, key, default: str) -> str: ...
+
+    @overload
+    def get(self, key, default: Any) -> Any: ...
 
     def get(self, key, default=None):
         return self[key] if key in self else default

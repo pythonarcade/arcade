@@ -5,13 +5,24 @@ version: 2
 sphinx:
   configuration: doc/conf.py
 
+build:
+  os: ubuntu-22.04
+  tools:
+    # If you change this, you also need to update .github/workflows/test.yml
+    # to make sure doc test builds run on the same version.
+    #
+    # Why 3.9?
+    #  1. It's the lowest version compatible w/ Sphinx 7.2.2, a doc build dependency
+    #  2. Better doc build accessibility for contributors who may have trouble
+    #     setting up newer Python versions (Debian, etc).
+    python: "3.9"
+
 python:
-  version: 3.8
   install:
     - method: pip
       path: .
       extra_requirements:
-        - docs
+        - dev
 
 # Build PDF & ePub
 formats:

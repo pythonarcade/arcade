@@ -57,7 +57,7 @@ def test_crop_grid():
     ss = arcade.SpriteSheet(SPRITE_SHEET_RESOURCE)
     textures = ss.crop_grid(
         size=(8, 16),
-        margins=(0, 1, 0, 0),
+        margin=(0, 1, 0, 0),
         columns=32,
         count=255,
     )

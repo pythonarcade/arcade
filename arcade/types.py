@@ -1,7 +1,13 @@
 """
 Module specifying data custom types used for type hinting.
 """
+from __future__ import annotations
+
+from __future__ import annotations
+
+import sys
 from array import array
+import ctypes
 import random
 from collections import namedtuple
 from collections.abc import ByteString
@@ -14,8 +20,10 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING, TypeVar
+    TYPE_CHECKING,
+    TypeVar
 )
+from typing_extensions import Self
 
 from pytiled_parser import Properties
 
@@ -44,6 +52,27 @@ RGBA255 = RGBA[int]
 RGBANormalized = RGBA[float]
 
 RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
+
+
+__all__ = [
+    "BufferProtocol",
+    "Color",
+    "ColorLike",
+    "IPoint",
+    "PathOrTexture",
+    "Point",
+    "PointList",
+    "EMPTY_POINT_LIST",
+    "NamedPoint",
+    "Rect",
+    "RectList",
+    "RGB",
+    "RGBA255",
+    "RGBANormalized",
+    "RGBA255OrNormalized",
+    "TiledObject",
+    "Vector"
+]
 
 
 class Color(RGBA255):
@@ -93,9 +122,9 @@ class Color(RGBA255):
         # https://github.com/python/mypy/issues/8541
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
-    def __deepcopy__(self, _):
-        """Allow to deepcopy Colors"""
-        return Color(r=self.r, g=self.g, b=self.b, a=self.a)
+    def __deepcopy__(self, _) -> Self:
+        """Allow :py:func:`~copy.deepcopy` to be used with Color"""
+        return self.__class__(r=self.r, g=self.g, b=self.b, a=self.a)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
@@ -117,7 +146,7 @@ class Color(RGBA255):
         return self[3]
 
     @classmethod
-    def from_iterable(cls, iterable: Iterable[int]) -> "Color":
+    def from_iterable(cls, iterable: Iterable[int]) -> Self:
         """
         Create a color from an :py:class`Iterable` with 3-4 elements
 
@@ -142,12 +171,12 @@ class Color(RGBA255):
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("iterable must unpack to 3 or 3 values")
+                raise ValueError("iterable must unpack to 3 or 4 values")
             a = _a[0]
         else:
             a = 255
 
-        return Color(r, g, b, a=a)
+        return cls(r, g, b, a=a)
 
     @property
     def normalized(self) -> RGBANormalized:
@@ -169,7 +198,7 @@ class Color(RGBA255):
         return self[0] / 255, self[1] / 255, self[2] / 255, self[3] / 255
 
     @classmethod
-    def from_gray(cls, brightness: int, a: int = 255) -> "Color":
+    def from_gray(cls, brightness: int, a: int = 255) -> Self:
         """
         Return a shade of gray of the given brightness.
 
@@ -194,10 +223,10 @@ class Color(RGBA255):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return Color(brightness, brightness, brightness, a=a)
+        return cls(brightness, brightness, brightness, a=a)
 
     @classmethod
-    def from_uint24(cls, color: int, a: int = 255) -> "Color":
+    def from_uint24(cls, color: int, a: int = 255) -> Self:
         """
         Return a Color from an unsigned 3-byte (24 bit) integer.
 
@@ -229,7 +258,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_uint32(cls, color: int) -> "Color":
+    def from_uint32(cls, color: int) -> Self:
         """
         Return a Color tuple for a given unsigned 4-byte (32-bit) integer
 
@@ -243,7 +272,7 @@ class Color(RGBA255):
             >>> Color.from_uint32(0xFF0000FF)
             Color(r=255, g=0, b=0, a=255)
 
-        :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
@@ -256,7 +285,7 @@ class Color(RGBA255):
         )
 
     @classmethod
-    def from_normalized(cls, color_normalized: RGBANormalized) -> "Color":
+    def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
         """
         Convert normalized (0.0 to 1.0) channels into an RGBA Color
 
@@ -274,14 +303,14 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param RGBANormalized color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
+        :param color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
         :return:
         """
         r, g, b, *_a = color_normalized
 
         if _a:
             if len(_a) > 1:
-                raise ValueError("color_normalized must unpack to 3 or 3 values")
+                raise ValueError("color_normalized must unpack to 3 or 4 values")
             a = _a[0]
 
             if not 0.0 <= a <= 1.0:
@@ -302,7 +331,7 @@ class Color(RGBA255):
         return cls(int(255 * r), int(255 * g), int(255 * b), a=int(255 * a))
 
     @classmethod
-    def from_hex_string(cls, code: str) -> "Color":
+    def from_hex_string(cls, code: str) -> Self:
         """
         Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
 
@@ -354,7 +383,7 @@ class Color(RGBA255):
         g: Optional[int] = None,
         b: Optional[int] = None,
         a: Optional[int] = None,
-    ) -> "Color":
+    ) -> Self:
         """
         Return a random color.
 
@@ -372,10 +401,10 @@ class Color(RGBA255):
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param int r: Fixed value for red channel
-        :param int g: Fixed value for green channel
-        :param int b: Fixed value for blue channel
-        :param int a: Fixed value for alpha channel
+        :param r: Fixed value for red channel
+        :param g: Fixed value for green channel
+        :param b: Fixed value for blue channel
+        :param a: Fixed value for alpha channel
         """
         if r is None:
             r = random.randint(0, 255)
@@ -394,13 +423,22 @@ ColorLike = Union[RGB, RGBA255]
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
 Point = Tuple[float, float]
+Point3 = Tuple[float, float, float]
 IPoint = Tuple[int, int]
 Vector = Point
 NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
+
 PointList = Sequence[Point]
+# Speed / typing workaround:
+# 1. Eliminate extra allocations
+# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
+EMPTY_POINT_LIST: PointList = tuple()
+
+
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
+FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
 
 PathOrTexture = Optional[Union[str, Path, "Texture"]]
 
@@ -412,11 +450,11 @@ class TiledObject(NamedTuple):
     type: Optional[str] = None
 
 
-# This is a temporary workaround for the lack of a way to type annotate
-# objects implementing the buffer protocol. Although there is a PEP to
-# add typing, it is scheduled for 3.12. Since that is years away from
-# being our minimum Python version, we have to use a workaround. See
-# the PEP and Python doc for more information:
-# https://peps.python.org/pep-0688/
-# https://docs.python.org/3/c-api/buffer.html
-BufferProtocol = Union[ByteString, memoryview, array]
+if sys.version_info >= (3, 12):
+    from collections.abc import Buffer as BufferProtocol
+else:
+    # This is used instead of the typing_extensions version since they
+    # use an ABC which registers virtual subclasses. This will not work
+    # with ctypes.Array since virtual subclasses must be concrete.
+    # See: https://peps.python.org/pep-0688/
+    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

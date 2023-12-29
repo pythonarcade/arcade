@@ -2,6 +2,8 @@
 This module pre-defines colors as defined by the W3C CSS standard:
 https://www.w3.org/TR/2018/PR-css-color-3-20180315/
 """
+from __future__ import annotations
+
 from arcade.types import Color
 
 ALICE_BLUE = Color(240, 248, 255, 255)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Optional, TYPE_CHECKING, Union, List
 from pathlib import Path
 from weakref import WeakValueDictionary
@@ -91,13 +93,13 @@ class TextureCache:
         name = texture.cache_name
         if strong:
             self._strong_entries.put(name, texture)
-            if self._strong_file_entries.get(file_path):
+            if self._strong_file_entries.get(file_path): # type: ignore  # pending https://github.com/pythonarcade/arcade/issues/1752
                 raise ValueError(f"File path {file_path} already in cache")
             if file_path:
                 self._strong_file_entries.put(str(file_path), texture)
         else:
             self._weak_entires.put(name, texture)
-            if self._weak_file_entries.get(file_path):
+            if self._weak_file_entries.get(file_path): # type: ignore  # pending https://github.com/pythonarcade/arcade/issues/1752
                 raise ValueError(f"File path {file_path} already in cache")
             if file_path:
                 self._weak_file_entries.put(str(file_path), texture)

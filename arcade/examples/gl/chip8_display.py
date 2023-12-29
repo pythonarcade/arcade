@@ -6,7 +6,7 @@ This example renders a 64 x 32 pixel display. The pixel format is using
 bits to represent what pixel is enabled/disabled so the byte size of
 the buffer is 8 x 4 = 32 bytes.
 
-References: 
+References:
 http://mattmik.com/files/chip8/mastering/chip8.html
 https://github.com/JohnEarnest/Octo
 
@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
             }
             """
         )
-        # 8 x 4 
+        # 8 x 4
         self.program['projection'] = self.projection
         self.program['screen'] = 0
         b = 0  # border to test scale

@@ -2,14 +2,17 @@
 The main window class that all object-oriented applications should
 derive from.
 """
+from __future__ import annotations
+
 import logging
 import os
 import time
-from typing import Tuple, Optional
+from typing import List, Tuple, Optional
 
 import pyglet
 
 import pyglet.gl as gl
+import pyglet.window.mouse
 from pyglet.canvas.base import ScreenMode
 
 import arcade
@@ -30,15 +33,25 @@ MOUSE_BUTTON_RIGHT = 4
 
 _window: 'Window'
 
+__all__ = [
+    "get_screens",
+    "NoOpenGLException",
+    "Window",
+    "open_window",
+    "View",
+    "MOUSE_BUTTON_LEFT",
+    "MOUSE_BUTTON_MIDDLE",
+    "MOUSE_BUTTON_RIGHT"
+]
 
-def get_screens():
+
+def get_screens() -> List:
     """
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with arcade.Window to select which
     window we full-screen on.
 
     :returns: List of screens, one for each monitor.
-    :rtype: List
     """
     display = pyglet.canvas.get_display()
     return display.get_screens()
@@ -56,24 +69,33 @@ class Window(pyglet.window.Window):
     The Window class forms the basis of most advanced games that use Arcade.
     It represents a window on the screen, and manages events.
 
-    :param int width: Window width
-    :param int height: Window height
-    :param str title: Title (appears in title bar)
-    :param bool fullscreen: Should this be full screen?
-    :param bool resizable: Can the user resize the window?
-    :param float update_rate: How frequently to run the on_update event.
-    :param float draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
-    :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
-    :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
+    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
+    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+
+    :param width: Window width
+    :param height: Window height
+    :param title: Title (appears in title bar)
+    :param fullscreen: Should this be full screen?
+    :param resizable: Can the user resize the window?
+    :param update_rate: How frequently to run the on_update event.
+    :param draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
+    :param antialiasing: Should OpenGL's anti-aliasing be enabled?
+    :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
-    :param bool visible: Should the window be visible immediately
-    :param bool vsync: Wait for vertical screen refresh before swapping buffer \
+    :param screen: Pass a pyglet :py:class:`~pyglet.canvas.Screen` to
+        request the window be placed on it. See `pyglet's window size &
+        position guide <pyglet_pg_window_size_position_>`_ to learn more.
+    :param style: Request a non-default window style, such as borderless.
+        Some styles only work in certain situations. See `pyglet's guide
+        to window style <pyglet_pg_window_style_>`_ to learn more.
+    :param visible: Should the window be visible immediately
+    :param vsync: Wait for vertical screen refresh before swapping buffer \
                        This can make animations and movement look smoother.
-    :param bool gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
-    :param bool center_window: If true, will center the window.
-    :param bool samples: Number of samples used in antialiasing (default 4). \
+    :param gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
+    :param center_window: If true, will center the window.
+    :param samples: Number of samples used in antialiasing (default 4). \
                          Usually this is 2, 4, 8 or 16.
-    :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
+    :param enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
     """
 
@@ -137,7 +159,7 @@ class Window(pyglet.window.Window):
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
-        # If we still don't have a config 
+        # If we still don't have a config
         if not config:
             config = pyglet.gl.Config(
                 major_version=gl_version[0],
@@ -225,7 +247,6 @@ class Window(pyglet.window.Window):
         To set a different view, call the
         :py:meth:`arcade.Window.show_view` method.
 
-        :rtype: arcade.View
         """
         return self._current_view
 
@@ -254,7 +275,7 @@ class Window(pyglet.window.Window):
             2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
             3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
 
-        :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
+        :param normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         color = color if color is not None else self.background_color
@@ -317,15 +338,15 @@ class Window(pyglet.window.Window):
         """
         Set if we are full screen or not.
 
-        :param bool fullscreen:
+        :param fullscreen:
         :param screen: Which screen should we display on? See :func:`get_screens`
-        :param pyglet.canvas.ScreenMode mode:
+        :param mode:
                 The screen will be switched to the given mode.  The mode must
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-        :param int width:
-        :param int height:
+        :param width:
+        :param height:
         """
         super().set_fullscreen(fullscreen, screen, mode, width, height)
 
@@ -344,7 +365,7 @@ class Window(pyglet.window.Window):
         """
         Move everything. Perform collision checks. Do all the game logic here.
 
-        :param float delta_time: Time interval since the last time the function was called.
+        :param delta_time: Time interval since the last time the function was called.
 
         """
         pass
@@ -361,7 +382,7 @@ class Window(pyglet.window.Window):
         Set how often the on_update function should be dispatched.
         For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
 
-        :param float rate: Update frequency in seconds
+        :param rate: Update frequency in seconds
         """
         self._update_rate = rate
         pyglet.clock.unschedule(self._dispatch_updates)
@@ -382,10 +403,10 @@ class Window(pyglet.window.Window):
 
         Override this function to respond to changes in mouse position.
 
-        :param int x: x position of mouse within the window in pixels
-        :param int y: y position of mouse within the window in pixels
-        :param int dx: Change in x since the last time this method was called
-        :param int dy: Change in y since the last time this method was called
+        :param x: x position of mouse within the window in pixels
+        :param y: y position of mouse within the window in pixels
+        :param dx: Change in x since the last time this method was called
+        :param dy: Change in y since the last time this method was called
         """
         pass
 
@@ -399,16 +420,16 @@ class Window(pyglet.window.Window):
 
         .. seealso:: :meth:`~.Window.on_mouse_release`
 
-        :param int x: x position of the mouse
-        :param int y: y position of the mouse
-        :param int button: What button was pressed. This will always be
+        :param x: x position of the mouse
+        :param y: y position of the mouse
+        :param button: What button was pressed. This will always be
                            one of the following:
 
                            * ``arcade.MOUSE_BUTTON_LEFT``
                            * ``arcade.MOUSE_BUTTON_RIGHT``
                            * ``arcade.MOUSE_BUTTON_MIDDLE``
 
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -419,12 +440,12 @@ class Window(pyglet.window.Window):
 
         Override this function to handle dragging.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int dx: Change in x since the last time this method was called
-        :param int dy: Change in y since the last time this method was called
-        :param int buttons: Which button is pressed
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param dx: Change in x since the last time this method was called
+        :param dy: Change in y since the last time this method was called
+        :param buttons: Which button is pressed
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
@@ -437,12 +458,12 @@ class Window(pyglet.window.Window):
         may be useful when you want to use the duration of a mouse click
         to affect gameplay.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int button: What button was hit. One of:
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -469,11 +490,11 @@ class Window(pyglet.window.Window):
                      to maximize the number of people who can play your
                      game!
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int scroll_x: number of steps scrolled horizontally
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param scroll_x: number of steps scrolled horizontally
                              since the last call of this function
-        :param int scroll_y: number of steps scrolled vertically since
+        :param scroll_y: number of steps scrolled vertically since
                              the last call of this function
         """
         pass
@@ -506,7 +527,7 @@ class Window(pyglet.window.Window):
                  <https://pyglet.readthedocs.io/en/master/programming_guide/mouse.html#changing-the-mouse-cursor>`_
                  for more information.
 
-        :param bool visible: Whether to hide the system mouse cursor
+        :param visible: Whether to hide the system mouse cursor
         """
         super().set_mouse_visible(visible)
 
@@ -520,8 +541,8 @@ class Window(pyglet.window.Window):
                  gameplay, you also need to override
                  :meth:`~.Window.on_key_release`.
 
-        :param int symbol: Key that was just pushed down
-        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+        :param symbol: Key that was just pushed down
+        :param modifiers: Bitwise 'and' of all modifiers (shift,
                               ctrl, num lock) active during this event.
                               See :ref:`keyboard_modifiers`.
         """
@@ -544,8 +565,8 @@ class Window(pyglet.window.Window):
           how long a key was pressed
         * Showing which keys are currently pressed down
 
-        :param int symbol: Key that was just released
-        :param int modifiers: Bitwise 'and' of all modifiers (shift,
+        :param symbol: Key that was just released
+        :param modifiers: Bitwise 'and' of all modifiers (shift,
                               ctrl, num lock) active during this event.
                               See :ref:`keyboard_modifiers`.
         """
@@ -573,8 +594,8 @@ class Window(pyglet.window.Window):
                 super().on_resize(width, height)
                 # Add extra resize logic here
 
-        :param int width: New width
-        :param int height: New height
+        :param width: New width
+        :param height: New height
         """
         # NOTE: When a second window is opened pyglet will
         #       dispatch on_resize during the window constructor.
@@ -592,8 +613,8 @@ class Window(pyglet.window.Window):
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
 
-        :param float width: width in pixels.
-        :param float height: height in pixels.
+        :param width: width in pixels.
+        :param height: height in pixels.
         """
 
         if self._resizable:
@@ -604,8 +625,8 @@ class Window(pyglet.window.Window):
     def set_max_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set maximum size
 
-        :param int width: width in pixels.
-        :param int height: height in pixels.
+        :param width: width in pixels.
+        :param height: height in pixels.
         :Raises ValueError:
 
         """
@@ -619,8 +640,8 @@ class Window(pyglet.window.Window):
         """
         Ignore the resizable flag and set the size
 
-        :param int width:
-        :param int height:
+        :param width:
+        :param height:
         """
 
         super().set_size(width, height)
@@ -647,7 +668,7 @@ class Window(pyglet.window.Window):
         """
         Set if the window is visible or not. Normally, a program's window is visible.
 
-        :param bool visible:
+        :param visible:
         """
         super().set_visible(visible)
 
@@ -659,10 +680,10 @@ class Window(pyglet.window.Window):
 
         See :py:func:`arcade.set_viewport` for more detailed information.
 
-        :param Number left:
-        :param Number right:
-        :param Number bottom:
-        :param Number top:
+        :param left:
+        :param right:
+        :param bottom:
+        :param top:
         """
         set_viewport(left, right, bottom, top)
 
@@ -679,7 +700,7 @@ class Window(pyglet.window.Window):
         """
         Used by unit test cases. Runs the event loop a few times and stops.
 
-        :param int frames:
+        :param frames:
         """
         start_time = time.time()
         for _ in range(frames):
@@ -706,11 +727,12 @@ class Window(pyglet.window.Window):
         Calling this function is the same as setting the
         :py:attr:`arcade.Window.current_view` attribute.
 
-        :param View new_view: View to show
+        :param new_view: View to show
         """
         if not isinstance(new_view, View):
-            raise ValueError("Must pass an arcade.View object to "
-                             f"Window.show_view() {type(new_view)}")
+            raise TypeError(
+                f"Window.show_view() takes an arcade.View,"
+                f"but it got a {type(new_view)}.")
 
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
@@ -882,8 +904,8 @@ class Window(pyglet.window.Window):
         This event will not be triggered if the mouse is currently being
         dragged.
 
-        :param int x:
-        :param int y:
+        :param x:
+        :param y:
         """
         pass
 
@@ -895,8 +917,8 @@ class Window(pyglet.window.Window):
         dragged. Note that the coordinates of the mouse pointer will be
         outside of the window rectangle.
 
-        :param int x:
-        :param int y:
+        :param x:
+        :param y:
         """
         pass
 
@@ -914,14 +936,13 @@ def open_window(
     the window handle is stored in a global, but it makes things easier for programmers if they don't
     have to track a window pointer.
 
-    :param Number width: Width of the window.
-    :param Number height: Height of the window.
-    :param str window_title: Title of the window.
-    :param bool resizable: Whether the user can resize the window.
-    :param bool antialiasing: Smooth the graphics?
+    :param width: Width of the window.
+    :param height: Height of the window.
+    :param window_title: Title of the window.
+    :param resizable: Whether the user can resize the window.
+    :param antialiasing: Smooth the graphics?
 
     :returns: Handle to window
-    :rtype: Window
     """
 
     global _window
@@ -983,7 +1004,7 @@ class View:
             2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
             3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
 
-        :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
+        :param normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         self.window.clear(color, normalized, viewport)
@@ -1016,10 +1037,10 @@ class View:
         """
         Override this function to add mouse functionality.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int dx: Change in x since the last time this method was called
-        :param int dy: Change in y since the last time this method was called
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param dx: Change in x since the last time this method was called
+        :param dy: Change in y since the last time this method was called
         """
         pass
 
@@ -1027,12 +1048,12 @@ class View:
         """
         Override this function to add mouse button functionality.
 
-        :param int x: x position of the mouse
-        :param int y: y position of the mouse
-        :param int button: What button was hit. One of:
+        :param x: x position of the mouse
+        :param y: y position of the mouse
+        :param button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -1041,12 +1062,12 @@ class View:
         """
         Override this function to add mouse button functionality.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int dx: Change in x since the last time this method was called
-        :param int dy: Change in y since the last time this method was called
-        :param int _buttons: Which button is pressed
-        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param dx: Change in x since the last time this method was called
+        :param dy: Change in y since the last time this method was called
+        :param _buttons: Which button is pressed
+        :param _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
@@ -1055,12 +1076,12 @@ class View:
         """
         Override this function to add mouse button functionality.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int button: What button was hit. One of:
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -1069,10 +1090,10 @@ class View:
         """
         User moves the scroll wheel.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
-        :param int scroll_x: ammout of x pixels scrolled since last call
-        :param int scroll_y: ammout of y pixels scrolled since last call
+        :param x: x position of mouse
+        :param y: y position of mouse
+        :param scroll_x: ammout of x pixels scrolled since last call
+        :param scroll_y: ammout of y pixels scrolled since last call
         """
         pass
 
@@ -1080,8 +1101,8 @@ class View:
         """
         Override this function to add key press functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param symbol: Key that was hit
+        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
@@ -1093,8 +1114,8 @@ class View:
         """
         Override this function to add key release functionality.
 
-        :param int _symbol: Key that was hit
-        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        :param _symbol: Key that was hit
+        :param _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                                active during this event. See :ref:`keyboard_modifiers`.
         """
         try:
@@ -1117,8 +1138,8 @@ class View:
         This event will not be triggered if the mouse is currently being
         dragged.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
+        :param x: x position of mouse
+        :param y: y position of mouse
         """
         pass
 
@@ -1129,7 +1150,7 @@ class View:
         dragged. Note that the coordinates of the mouse pointer will be
         outside of the window rectangle.
 
-        :param int x: x position of mouse
-        :param int y: y position of mouse
+        :param x: x position of mouse
+        :param y: y position of mouse
         """
         pass

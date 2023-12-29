@@ -4,6 +4,8 @@ The right solution would normally be to replace the sprite with a new
 one, but in instances were images are created manually by code and changing
 over time at (not too frequently) we can update the underlying atlas directly.
 """
+from __future__ import annotations
+
 from itertools import cycle
 import arcade
 
@@ -81,7 +83,7 @@ class AtlasReplaceImage(arcade.Window):
 
     def on_update(self, delta_time: float):
         self.elapsed_time += delta_time
-        # Change textures 
+        # Change textures
         if self.elapsed_time > 1.0:
             # Replace the internal images. They all have the same size (required)
             self.sprite_1.texture.image = next(self.texture_cycle).image

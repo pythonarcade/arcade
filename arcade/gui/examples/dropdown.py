@@ -1,3 +1,14 @@
+"""
+Creating a dropdown menu with UIDropDown
+
+When an option in the UIDropDown is chosen, this example will respond
+by changing the text displayed on screen to reflect it.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.dropdown
+"""
+from __future__ import annotations
+
 import arcade
 from arcade.gui import UIManager, UILabel, UIOnChangeEvent
 from arcade.gui.widgets.dropdown import UIDropdown
@@ -11,7 +22,7 @@ class MyView(arcade.View):
         # Add button to UIManager, use UIAnchorWidget defaults to center on screen
         self.dropdown = UIDropdown(
             default="Platformer",
-            options=["Arcade", None, "Platformer", "Jump and Run"],
+            options=["Arcade", UIDropdown.DIVIDER, "Platformer", "Jump and Run"],
             height=50,
             width=200,
         )

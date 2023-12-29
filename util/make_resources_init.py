@@ -82,7 +82,8 @@ def get_prefix(path: Path) -> str:
 def is_path_ignored(path: Path) -> bool:
     """Return True if the path should be ignored."""
     for ignore_path in IGNORE_PATHS:
-        if path.is_relative_to(ignore_path):
+        # if path.is_relative_to(ignore_path): # Python 3.9+
+        if str(path).startswith(str(ignore_path)):
             return True
     return False
 

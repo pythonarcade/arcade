@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import byref, string_at
 import weakref
 from typing import Optional, Tuple, Union, TYPE_CHECKING
@@ -6,7 +8,7 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
-from .types import pixel_formats, BufferOrBufferProtocol
+from .types import PyGLuint, pixel_formats, BufferOrBufferProtocol
 from ..types import BufferProtocol
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -37,20 +39,20 @@ class Texture2D:
         'u2': UNSIGNED_SHORT
         'u4': UNSIGNED_INT
 
-    :param Context ctx: The context the object belongs to
+    :param ctx: The context the object belongs to
     :param Tuple[int, int] size: The size of the texture
-    :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-    :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-    :param BufferProtocol data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
-    :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
-    :param gl.GLuint wrap_x: Wrap mode x
-    :param gl.GLuint wrap_y: Wrap mode y
-    :param int target: The texture type (Ignored. Legacy)
-    :param bool depth: creates a depth texture if `True`
-    :param int samples: Creates a multisampled texture for values > 0.
+    :param components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+    :param dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
+    :param filter: The minification/magnification filter of the texture
+    :param wrap_x: Wrap mode x
+    :param wrap_y: Wrap mode y
+    :param target: The texture type (Ignored. Legacy)
+    :param depth: creates a depth texture if `True`
+    :param samples: Creates a multisampled texture for values > 0.
                         This value will be clamped between 0 and the max
                         sample capability reported by the drivers.
-    :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
+    :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                            required when using textures with compute shaders.
     """
 
@@ -114,9 +116,9 @@ class Texture2D:
         components: int = 4,
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
-        filter: Optional[Tuple[gl.GLuint, gl.GLuint]] = None,
-        wrap_x: Optional[gl.GLuint] = None,
-        wrap_y: Optional[gl.GLuint] = None,
+        filter: Optional[Tuple[PyGLuint, PyGLuint]] = None,
+        wrap_x: Optional[PyGLuint] = None,
+        wrap_y: Optional[PyGLuint] = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,
@@ -415,7 +417,7 @@ class Texture2D:
             texture.swizzle = 'R000'
 
             # Reverse the components
-            texture.swizzle = 'ABGR'        
+            texture.swizzle = 'ABGR'
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
@@ -622,9 +624,8 @@ class Texture2D:
         """
         Read the contents of the texture.
 
-        :param int level:  The texture level to read
-        :param int alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
-        :rtype: bytearray
+        :param level:  The texture level to read
+        :param alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
         """
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
@@ -659,10 +660,10 @@ class Texture2D:
         :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
-        :param BufferOrBufferProtocol data: :class:`~arcade.gl.Buffer` or
+        :param data: :class:`~arcade.gl.Buffer` or
                                             buffer protocol object with
                                             data to write.
-        :param int level: The texture level to write
+        :param level: The texture level to write
         :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
           The area of the texture to write. 2 or 4 component tuple
         """
@@ -740,8 +741,8 @@ class Texture2D:
                    # Set up linear interpolating minification filter
                    texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
 
-        :param int base: Level the mipmaps start at (usually 0)
-        :param int max_level: The maximum number of levels to generate
+        :param base: Level the mipmaps start at (usually 0)
+        :param max_level: The maximum number of levels to generate
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
@@ -768,8 +769,8 @@ class Texture2D:
         Destroy the texture.
         This is called automatically when the object is garbage collected.
 
-        :param arcade.gl.Context ctx: OpenGL Context
-        :param gl.GLuint glo: The OpenGL texture id
+        :param ctx: OpenGL Context
+        :param glo: The OpenGL texture id
         """
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -783,7 +784,7 @@ class Texture2D:
     def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
 
-        :param int unit: The texture unit to bind the texture.
+        :param unit: The texture unit to bind the texture.
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(self._target, self._glo)
@@ -795,10 +796,10 @@ class Texture2D:
         Note that either or both ``read`` and ``write`` needs to be ``True``.
         The supported modes are: read only, write only, read-write
 
-        :param int unit: The image unit
-        :param bool read: The compute shader intends to read from this image
-        :param bool write: The compute shader intends to write to this image
-        :param int level:
+        :param unit: The image unit
+        :param read: The compute shader intends to read from this image
+        :param write: The compute shader intends to write to this image
+        :param level:
         """
         if self._ctx.gl_api == "gles" and not self._immutable:
             raise ValueError("Textures bound to image units must be created with immutable=True")
@@ -814,6 +815,49 @@ class Texture2D:
             raise ValueError("Illegal access mode. The texture must at least be read or write only")
 
         gl.glBindImageTexture(unit, self._glo, level, 0, 0, access, self._internal_format)
+
+    def get_handle(self, resident: bool = True) -> int:
+        """
+        Get a handle for bindless texture access.
+
+        Once a handle is created its parameters cannot be changed.
+        Attempting to do so will have no effect. (filter, wrap etc).
+        There is no way to undo this immutability.
+
+        Handles cannot be used by shaders until they are resident.
+        This method can be called multiple times to move a texture
+        in and out of residency::
+
+            >> texture.get_handle(resident=False)
+            4294969856
+            >> texture.get_handle(resident=True)
+            4294969856
+
+        Ths same handle is returned if the handle already exists.
+
+        .. note:: Limitations from the OpenGL wiki
+
+            The amount of storage available for resident images/textures may be less
+            than the total storage for textures that is available. As such, you should
+            attempt to minimize the time a texture spends being resident. Do not attempt
+            to take steps like making textures resident/unresident every frame or something.
+            But if you are finished using a texture for some time, make it unresident.
+
+        Keyword Args:
+            resident (bool): Make the texture resident.
+        """
+        handle = gl.glGetTextureHandleARB(self._glo)
+        is_resident = gl.glIsTextureHandleResidentARB(handle)
+
+        # Ensure we don't try to make a resident texture resident again
+        if resident:
+            if not is_resident:
+                gl.glMakeTextureHandleResidentARB(handle)
+        else:
+            if is_resident:
+                gl.glMakeTextureHandleNonResidentARB(handle)
+
+        return handle
 
     def __repr__(self) -> str:
         return "<Texture glo={} size={}x{} components={}>".format(

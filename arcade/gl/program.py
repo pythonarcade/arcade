@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ctypes import (
     c_char,
     c_int,
@@ -10,12 +12,13 @@ from ctypes import (
     create_string_buffer,
 )
 from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union, Optional
+import typing
 import weakref
 
 from pyglet import gl
 
 from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
+from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES, PyGLenum
 from .exceptions import ShaderException
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -37,14 +40,14 @@ class Program:
 
         program['MyUniform'] = value
 
-    :param Context ctx: The context this program belongs to
-    :param str vertex_shader: vertex shader source
-    :param str fragment_shader: fragment shader source
-    :param str geometry_shader: geometry shader source
-    :param str tess_control_shader: tessellation control shader source
-    :param str tess_evaluation_shader: tessellation evaluation shader source
-    :param List[str] varyings: List of out attributes used in transform feedback.
-    :param str varyings_capture_mode: The capture mode for transforms.
+    :param ctx: The context this program belongs to
+    :param vertex_shader: vertex shader source
+    :param fragment_shader: fragment shader source
+    :param geometry_shader: geometry shader source
+    :param tess_control_shader: tessellation control shader source
+    :param tess_evaluation_shader: tessellation evaluation shader source
+    :param varyings: List of out attributes used in transform feedback.
+    :param varyings_capture_mode: The capture mode for transforms.
                                         ``"interleaved"`` means all out attribute will be written to a single buffer.
                                         ``"separate"`` means each out attribute will be written separate buffers.
                                         Based on these settings the `transform()` method will accept a single
@@ -85,7 +88,7 @@ class Program:
         self._attributes = []  # type: List[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: Dict[str, Union[Uniform, UniformBlock]] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -93,7 +96,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: List[Tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
@@ -296,8 +299,8 @@ class Program:
         """
         Safely set a uniform catching KeyError.
 
-        :param str name: The uniform name
-        :param Any value: The uniform value
+        :param name: The uniform name
+        :param value: The uniform value
         """
         try:
             self[name] = value
@@ -312,13 +315,13 @@ class Program:
         actual array and sets a subset of the values if needed.
         If the uniform don't exist no action will be done.
 
-        :param str name: Name of uniform
-        :param List[Any] value: List of values
+        :param name: Name of uniform
+        :param value: List of values
         """
         if name not in self._uniforms:
             return
 
-        uniform = self._uniforms[name]
+        uniform = typing.cast(Uniform, self._uniforms[name])
         _len = uniform._array_length * uniform._components
         if _len == 1:
             self.set_uniform_safe(name, value[0])
@@ -486,7 +489,7 @@ class Program:
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
-    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+    def compile_shader(source: str, shader_type: PyGLenum) -> gl.GLuint:
         """Compile the shader code of the given type.
 
         `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...

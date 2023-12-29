@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from arcade.gui.constructs import UIMessageBox, UIButtonRow
 from arcade.gui.events import UIEvent
 from arcade.gui.events import UIKeyEvent
@@ -20,11 +22,11 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.ui_manager import UIManager
+from arcade.gui.widgets import UILayout
 from arcade.gui.widgets.layout import (
     UIBoxLayout,
     UIAnchorLayout,
-    UIGridLayout,
-    UILayout,
+    UIGridLayout
 )
 from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
@@ -34,8 +36,8 @@ from arcade.gui.widgets.image import UIImage
 from arcade.gui.widgets import UISpace
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
-from arcade.gui.widgets.buttons import UITextureButton, UIFlatButton
-from arcade.gui.widgets.slider import UISlider
+from arcade.gui.widgets.buttons import UITextureButton, UITextureButtonStyle, UIFlatButton
+from arcade.gui.widgets.slider import UISlider, UISliderStyle
 from arcade.gui.widgets import UIWidget
 from arcade.gui.property import ListProperty, DictProperty, Property, bind
 from arcade.gui.mixins import UIDraggableMixin
@@ -75,6 +77,7 @@ __all__ = [
     "UIOnChangeEvent",
     "UIOnClickEvent",
     "UISlider",
+    "UISliderStyle",
     "UIStyleBase",
     "UIStyledWidget",
     "UISpace",
@@ -84,6 +87,7 @@ __all__ = [
     "UITextMotionEvent",
     "UITextMotionSelectEvent",
     "UITextureButton",
+    "UITextureButtonStyle",
     "UITextureToggle",
     "UITextWidget",
     "UIWidget",

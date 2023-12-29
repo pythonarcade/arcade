@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional, Dict, Union
 
@@ -7,28 +9,42 @@ from arcade.types import RGBA255
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.gui.widgets import UIInteractiveWidget, Surface
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
 
+@dataclass
+class UITextureButtonStyle(UIStyleBase):
+    """
+    Used to style the texture button. Below is its use case.
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UIStyle"], UITextWidget):
+    .. code:: py
+
+        button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+    """
+    font_size: int = 12
+    font_name: FontNameOrNames = ("calibri", "arial")
+    font_color: RGBA255 = arcade.color.WHITE
+    border_width: int = 2
+
+class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
     """
     A button with an image for the face of the button.
 
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: width of widget. Defaults to texture width if not specified.
-    :param float height: height of widget. Defaults to texture height if not specified.
-    :param Texture texture: texture to display for the widget.
-    :param Texture texture_hovered: different texture to display if mouse is hovering over button.
-    :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
-    :param str text: text to add to the button.
-    :param bool multiline: allows to wrap text, if not enough width available
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
+    :param width: width of widget. Defaults to texture width if not specified.
+    :param height: height of widget. Defaults to texture height if not specified.
+    :param texture: texture to display for the widget.
+    :param texture_hovered: different texture to display if mouse is hovering over button.
+    :param texture_pressed: different texture to display if mouse button is pressed while hovering over button.
+    :param text: text to add to the button.
+    :param multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button for different states.
-    :param float scale: scale the button, based on the base texture size.
+    :param scale: scale the button, based on the base texture size.
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
@@ -36,19 +52,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 
     _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
 
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """
-        Used to style the texture button. Below is its use case.
-        
-        .. code:: py
-
-            button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
-        """
-        font_size: int = 12
-        font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: RGBA255 = arcade.color.WHITE
-        border_width: int = 2
+    UIStyle = UITextureButtonStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -184,14 +188,14 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
         style = self.get_current_style()
 
         # update label
-        self.apply_style(style)
+        self._apply_style(style)
 
         current_state = self.get_current_state()
         current_texture = self._textures.get(current_state)
         if current_texture:
-            surface.draw_texture(0, 0, self.width, self.height, current_texture)
+            surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
 
-    def apply_style(self, style: UIStyle):
+    def _apply_style(self, style: UITextureButtonStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """
@@ -219,15 +223,15 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget["UITextureButton.UISty
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
-    
+
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param float x: x coordinate of bottom left
-    :param float y: y coordinate of bottom left
-    :param float width: width of widget. Defaults to texture width if not specified.
-    :param float height: height of widget. Defaults to texture height if not specified.
-    :param str text: text to add to the button.
-    :param bool multiline: allows to wrap text, if not enough width available
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
+    :param width: width of widget. Defaults to texture width if not specified.
+    :param height: height of widget. Defaults to texture height if not specified.
+    :param text: text to add to the button.
+    :param multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button
 
     """
@@ -236,7 +240,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     class UIStyle(UIStyleBase):
         """
         Used to style the button. Below is its use case.
-        
+
         .. code:: py
 
             button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})
@@ -320,7 +324,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         style: UIFlatButton.UIStyle = self.get_current_style()
 
         # update label
-        self.apply_style(style)
+        self._apply_style(style)
 
         # Render button
         border_width = style.get("border_width", UIFlatButton.UIStyle.border_width)
@@ -340,7 +344,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
                 border_width=border_width,
             )
 
-    def apply_style(self, style: UIStyle):
+    def _apply_style(self, style: UIStyle):
         """
         Callback which is called right before rendering to apply changes for rendering.
         """

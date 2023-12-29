@@ -17,6 +17,8 @@ So this will delete that last period and flip around the dash.
 ALSO note that this bumps the version AFTER the deploy.
 So if we are at version 2.7.3.dev5 that's the version deploy. Bump will bump it to dev6.
 """
+from __future__ import annotations
+
 import os
 
 
@@ -37,7 +39,6 @@ def _get_version():
         data = _rreplace(data, '-', '.', 1)
     except Exception:
         print(f"ERROR: Unable to load version number via '{my_path}'.")
-        print(f"Files in that directory: {os.listdir(my_path)}")
         data = "0.0.0"
 
     return data

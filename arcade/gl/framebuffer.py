@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Optional, Tuple, List, TYPE_CHECKING
+from typing import Optional, Tuple, List, TYPE_CHECKING, Union
 import weakref
 
 
 from pyglet import gl
+
+from arcade.types import RGBOrA255, RGBOrANormalized
 
 from .texture import Texture2D
 from .types import pixel_formats
@@ -35,9 +39,9 @@ class Framebuffer:
             ]
         )
 
-    :param Context ctx: The context this framebuffer belongs to
-    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
-    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
+    :param ctx: The context this framebuffer belongs to
+    :param color_attachments: List of color attachments.
+    :param depth_attachment: A depth attachment (optional)
     """
 
     #: Is this the default framebuffer? (window buffer)
@@ -177,7 +181,7 @@ class Framebuffer:
 
     def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
-        Get or set the scissor box for this framebuffer.      
+        Get or set the scissor box for this framebuffer.
 
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
@@ -317,7 +321,7 @@ class Framebuffer:
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all rendering commands
 
-        :param bool force: Force the framebuffer binding even if the system
+        :param force: Force the framebuffer binding even if the system
                            already believes it's already bound.
         """
         self._use(force=force)
@@ -344,7 +348,7 @@ class Framebuffer:
 
     def clear(
         self,
-        color=(0.0, 0.0, 0.0, 0.0),
+        color: Union[RGBOrA255, RGBOrANormalized] =(0.0, 0.0, 0.0, 0.0),
         *,
         depth: float = 1.0,
         normalized: bool = False,
@@ -362,9 +366,9 @@ class Framebuffer:
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param tuple color: A 3 or 4 component tuple containing the color
-        :param float depth: Value to clear the depth buffer (unused)
-        :param bool normalized: If the color values are normalized or not
+        :param color: A 3 or 4 component tuple containing the color
+        :param depth: Value to clear the depth buffer (unused)
+        :param normalized: If the color values are normalized or not
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
@@ -386,8 +390,10 @@ class Framebuffer:
                 if len(color) == 3:
                     gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
                 else:
+                    # mypy does not understand that color[3] is guaranteed to work in this codepath, pyright does.
+                    # We can remove this type: ignore if we switch to pyright.
                     gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255 # type: ignore
                     )
 
             if self.depth_attachment:
@@ -403,10 +409,10 @@ class Framebuffer:
         """
         Read framebuffer pixels
 
-        :param Tuple[int,int,int,int] viewport: The x, y, with, height to read
-        :param int components:
-        :param int attachment: The attachment id to read from
-        :param str dtype: The data type to read
+        :param viewport: The x, y, with, height to read
+        :param components:
+        :param attachment: The attachment id to read from
+        :param dtype: The data type to read
         :return: pixel data as a bytearray
         """
         # TODO: use texture attachment info to determine read format?
@@ -427,6 +433,7 @@ class Framebuffer:
                 x, y, width, height = 0, 0, self._width, self._height
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
+            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
         return string_at(data, len(data))
 
@@ -518,7 +525,7 @@ class DefaultFrameBuffer(Framebuffer):
     somewhat sane initial values. Since this is a
     dynamic framebuffer we cannot trust the internal
     values. We can only trust what the pyglet window
-    itself reports related to window size and 
+    itself reports related to window size and
     framebuffer size. This should be updated in the
     ``on_resize`` callback.
     """
@@ -610,7 +617,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
-        Get or set the scissor box for this framebuffer.      
+        Get or set the scissor box for this framebuffer.
 
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor

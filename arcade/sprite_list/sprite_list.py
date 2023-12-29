@@ -5,6 +5,8 @@ SpriteList is orders of magnitude faster then drawing
 individual sprites.
 """
 
+from __future__ import annotations
+
 import logging
 import random
 from array import array
@@ -22,6 +24,7 @@ from typing import (
     Union,
     Generic,
     Callable,
+    cast, Sized,
 )
 
 from arcade import (
@@ -30,7 +33,9 @@ from arcade import (
     get_window,
     gl,
 )
+from arcade.gl import Texture2D
 from arcade.types import Color, RGBA255
+from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
 
@@ -71,29 +76,28 @@ class SpriteList(Generic[SpriteType]):
     For the advanced options check the advanced section in the
     arcade documentation.
 
-    :param bool use_spatial_hash: If set to True, this will make creating a sprite, and
+    :param use_spatial_hash: If set to True, this will make creating a sprite, and
             moving a sprite
             in the SpriteList slower, but it will speed up collision detection
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
-    :param int spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
-    :param TextureAtlas atlas: (Advanced) The texture atlas for this sprite list. If no
+    :param spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
+    :param atlas: (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
-    :param int capacity: (Advanced) The initial capacity of the internal buffer.
+    :param capacity: (Advanced) The initial capacity of the internal buffer.
             It's a suggestion for the maximum amount of sprites this list
             can hold. Can normally be left with default value.
-    :param bool lazy: (Advanced) Enabling lazy spritelists ensures no internal OpenGL
-                      resources are created until the first draw call or ``initialize()``
-                      is called. This can be useful when making spritelists in threads
-                      because only the main thread is allowed to interact with
-                      OpenGL.
-    :param bool visible: Setting this to False will cause the SpriteList to not
+    :param lazy: (Advanced) ``True`` delays creating OpenGL resources
+            for the sprite list until either its :py:meth:`~SpriteList.draw`
+            or :py:meth:`~SpriteList.initialize` method is called. See
+            :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
+    :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
 
     def __init__(
         self,
-        use_spatial_hash: Optional[bool] = None,
+        use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
         atlas: Optional["TextureAtlas"] = None,
         capacity: int = 100,
@@ -101,8 +105,7 @@ class SpriteList(Generic[SpriteType]):
         visible: bool = True,
     ):
         self.program = None
-        if atlas:
-            self._atlas: TextureAtlas = atlas
+        self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -155,8 +158,8 @@ class SpriteList(Generic[SpriteType]):
         from .spatial_hash import SpatialHash
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
-        self.spatial_hash: Optional[SpatialHash] = None
-        if use_spatial_hash is True:
+        self.spatial_hash: Optional[SpatialHash[SpriteType]] = None
+        if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.properties: Optional[Dict[str, Any]] = None
@@ -186,9 +189,8 @@ class SpriteList(Generic[SpriteType]):
 
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = (
-            getattr(self, "_atlas", None) or self.ctx.default_atlas
-        )
+        if not self._atlas:
+            self._atlas =  self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -205,7 +207,7 @@ class SpriteList(Generic[SpriteType]):
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
             gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
             gl.BufferDescription(
-                self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]
+                self._sprite_color_buf, "4f1", ["in_color"],
             ),
         ]
         self._geometry = self.ctx.geometry(
@@ -223,6 +225,8 @@ class SpriteList(Generic[SpriteType]):
                 raise ValueError("Attempting to use a sprite without a texture")
             self._update_texture(sprite)
             if hasattr(sprite, "textures"):
+                if TYPE_CHECKING:
+                    assert isinstance(sprite, Sprite)
                 for texture in sprite.textures or []:
                     self._atlas.add(texture)
 
@@ -283,7 +287,6 @@ class SpriteList(Generic[SpriteType]):
         Get or set the visible flag for this spritelist.
         If visible is ``False`` the ``draw()`` has no effect.
 
-        :rtype: bool
         """
         return self._visible
 
@@ -315,7 +318,6 @@ class SpriteList(Generic[SpriteType]):
         2. Multiply the color channels together: ``texture_color * sprite_color * spritelist_color``
         3. Multiply the floating point values by 255 and round the result
 
-        :rtype: Color
         """
         return Color.from_normalized(self._color)
 
@@ -358,7 +360,6 @@ class SpriteList(Generic[SpriteType]):
 
         This is a shortcut for setting the alpha value in the spritelist color.
 
-        :rtype: float
         """
         return self._color[3]
 
@@ -368,7 +369,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> "TextureAtlas":
+    def atlas(self) -> Optional["TextureAtlas"]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
@@ -504,7 +505,6 @@ class SpriteList(Generic[SpriteType]):
         Get the next available slot in sprite buffers
 
         :return: index slot, buffer_slot
-        :rtype: int
         """
         # Reuse old slots from deleted sprites
         if self._sprite_buffer_free_slots:
@@ -520,9 +520,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Return the index of a sprite in the spritelist
 
-        :param Sprite sprite: Sprite to find and return the index of
+        :param sprite: Sprite to find and return the index of
 
-        :rtype: int
         """
         return self.sprite_list.index(sprite)
 
@@ -580,7 +579,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Pop off the last sprite, or the given index, from the list
 
-        :param int index: Index of sprite to remove, defaults to -1 for the last item.
+        :param index: Index of sprite to remove, defaults to -1 for the last item.
         """
         if len(self.sprite_list) == 0:
             raise (ValueError("pop from empty list"))
@@ -593,7 +592,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Add a new sprite to the list.
 
-        :param Sprite sprite: Sprite to add to the list.
+        :param sprite: Sprite to add to the list.
         """
         # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
@@ -623,13 +622,13 @@ class SpriteList(Generic[SpriteType]):
         if self._initialized:
             if sprite.texture is None:
                 raise ValueError("Sprite must have a texture when added to a SpriteList")
-            self._atlas.add(sprite.texture)
+            self._atlas.add(sprite.texture)  # type: ignore
 
     def swap(self, index_1: int, index_2: int):
         """
         Swap two sprites by index
-        :param int index_1: Item index to swap
-        :param int index_2: Item index to swap
+        :param index_1: Item index to swap
+        :param index_2: Item index to swap
         """
         # Swap order in spritelist
         sprite_1 = self.sprite_list[index_1]
@@ -648,7 +647,7 @@ class SpriteList(Generic[SpriteType]):
     def remove(self, sprite: SpriteType):
         """
         Remove a specific sprite from the list.
-        :param Sprite sprite: Item to remove from the list
+        :param sprite: Item to remove from the list
         """
         # print(f"{id(self)} : {id(sprite)} remove")
         try:
@@ -681,7 +680,7 @@ class SpriteList(Generic[SpriteType]):
         """
         Extends the current list with the given iterable
 
-        :param list sprites: Iterable of Sprites to add to the list
+        :param sprites: Iterable of Sprites to add to the list
         """
         for sprite in sprites:
             self.append(sprite)
@@ -690,8 +689,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Inserts a sprite at a given index.
 
-        :param int index: The index at which to insert
-        :param Sprite sprite: The sprite to insert
+        :param index: The index at which to insert
+        :param sprite: The sprite to insert
         """
         if sprite in self.sprite_list:
             raise ValueError("Sprite is already in list")
@@ -749,7 +748,7 @@ class SpriteList(Generic[SpriteType]):
         random.shuffle(pairs)
 
         # Reconstruct the lists again from pairs
-        sprites, indices = zip(*pairs)
+        sprites, indices = cast(Tuple[List[SpriteType], List[int]], zip(*pairs))
         self.sprite_list = list(sprites)
         self._sprite_index_data = array("I", indices)
 
@@ -781,7 +780,7 @@ class SpriteList(Generic[SpriteType]):
             spritelist.sort(key=create_y_pos_comparison)
 
         :param key: A function taking a sprite as an argument returning a comparison key
-        :param bool reverse: If set to ``True`` the sprites will be sorted in reverse
+        :param reverse: If set to ``True`` the sprites will be sorted in reverse
         """
         # Ensure the index buffer is normalized
         self._normalize_index_buffer()
@@ -864,8 +863,8 @@ class SpriteList(Generic[SpriteType]):
         This can be a very expensive operation depending on the
         size of the sprite list.
 
-        :param float change_x: Amount to change all x values by
-        :param float change_y: Amount to change all y values by
+        :param change_x: Amount to change all x values by
+        :param change_y: Amount to change all y values by
         """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
@@ -876,13 +875,15 @@ class SpriteList(Generic[SpriteType]):
         Preload a set of textures that will be used for sprites in this
         sprite list.
 
-        :param array texture_list: List of textures.
+        :param texture_list: List of textures.
         """
         if not self.ctx:
             raise ValueError("Cannot preload textures before the window is created")
 
         for texture in texture_list:
-            self._atlas.add(texture)
+            # Ugly spacing is a fast workaround for None type checking issues
+            self._atlas.add( # type: ignore
+                texture)
 
 
     def write_sprite_buffers_to_gpu(self) -> None:
@@ -944,22 +945,41 @@ class SpriteList(Generic[SpriteType]):
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
-    def initialize(self):
+    def initialize(self) -> None:
         """
-        Create the internal OpenGL resources.
-        This can be done if the sprite list is lazy or was created before the window / context.
-        The initialization will happen on the first draw if this method is not called.
-        This is acceptable for most people, but this method gives you the ability to pre-initialize
-        to potentially void initial stalls during rendering.
+        Request immediate creation of OpenGL resources for this list.
 
-        Calling this otherwise will have no effect. Calling this method in another thread
-        will result in an OpenGL error.
+        Calling this method is optional. It only has an effect for lists
+        created with ``lazy=True``. If this method is not called,
+        uninitialized sprite lists will automatically initialize OpenGL
+        resources on their first :py:meth:`~SpriteList.draw` call instead.
+
+        This method is useful for performance optimization, advanced
+        techniques, and writing tests. Do not call it across thread
+        boundaries. See :ref:`pg_spritelist_advanced_lazy_spritelists`
+        to learn more.
         """
         self._init_deferred()
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
+    def draw(
+            self,
+            *,
+            filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
+            pixelated: Optional[bool] = None,
+            blend_function: Optional[BlendFunction] = None
+    ) -> None:
         """
         Draw this list of sprites.
+
+        Uninitialized sprite lists will first create OpenGL resources
+        before drawing. This may cause a performance stutter when the
+        following are true:
+
+        1. You created the sprite list with ``lazy=True``
+        2. You did not call :py:meth:`~SpriteList.initialize` before drawing
+        3. You are initializing many sprites and/or lists at once
+
+        See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
@@ -981,25 +1001,34 @@ class SpriteList(Generic[SpriteType]):
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
+        # Workarounds for Optional[TextureAtlas] + slow . lookup speed
+        atlas: TextureAtlas = self.atlas # type: ignore
+        atlas_texture: Texture2D = atlas.texture
+
         # Set custom filter or reset to default
         if filter:
-            self.atlas.texture.filter = filter, filter
+            if hasattr(filter, '__len__', ): # assume it's a collection
+                if len(cast(Sized, filter)) != 2:
+                    raise ValueError("Can't use sequence of length != 2")
+                atlas_texture.filter = tuple(filter)  # type: ignore
+            else:  # assume it's an int
+                atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # Handle the pixelated shortcut
         if pixelated:
-            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
         else:
-            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
 
         self.program["spritelist_color"] = self._color
 
-        self._atlas.texture.use(0)
-        self._atlas.use_uv_texture(1)
+        atlas_texture.use(0)
+        atlas.use_uv_texture(1)
         if not self._geometry:
             raise ValueError("Attempting to render without '_geometry' field being set.")
         self._geometry.render(
@@ -1131,7 +1160,9 @@ class SpriteList(Generic[SpriteType]):
         if not sprite._texture:
             return
 
-        tex_slot, _ = self._atlas.add(sprite._texture)
+        # Ugly syntax makes type checking pass without perf hit from cast
+        tex_slot: int = self._atlas.add( # type: ignore
+            sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -1147,8 +1178,10 @@ class SpriteList(Generic[SpriteType]):
 
         if not sprite._texture:
             return
-
-        tex_slot, _ = self._atlas.add(sprite._texture)
+        atlas = self._atlas
+        # Ugly spacing makes type checking work with specificity
+        tex_slot: int = atlas.add( # type: ignore
+            sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -1168,7 +1201,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1183,7 +1216,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1197,7 +1230,7 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
@@ -1208,7 +1241,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the depth of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 2] = sprite._depth
@@ -1220,7 +1253,7 @@ class SpriteList(Generic[SpriteType]):
         of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
@@ -1234,7 +1267,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1246,7 +1279,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1257,7 +1290,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2 + 1] = sprite._height
@@ -1268,7 +1301,7 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
 
-        :param Sprite sprite: Sprite to update.
+        :param sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_angle_data[slot] = sprite._angle

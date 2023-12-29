@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 
 from PIL import ImageEnhance
@@ -55,7 +57,7 @@ class UITextureToggle(UIInteractiveWidget):
             enhancer.enhance(1.5), name=self.normal_off_tex.cache_name + "_brighter",
         )
         self.pressed_off_tex = Texture(
-            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker", 
+            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker",
         )
 
         self.value = value
@@ -90,7 +92,7 @@ class UITextureToggle(UIInteractiveWidget):
             tex = self.pressed_on_tex if self.value else self.pressed_off_tex
         elif self.hovered:
             tex = self.hover_on_tex if self.value else self.hover_off_tex
-        surface.draw_texture(0, 0, self.width, self.height, tex)
+        surface.draw_texture(0, 0, self.content_width, self.content_height, tex)
 
     def on_change(self, event: UIOnChangeEvent):
         pass

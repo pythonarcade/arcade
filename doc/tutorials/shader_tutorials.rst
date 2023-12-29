@@ -1,5 +1,5 @@
-Shader Tutorials
-================
+Shaders
+=======
 
 .. _tutorials_shaders:
 

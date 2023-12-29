@@ -115,6 +115,11 @@ img.right-image {
     width:100%;
     height:100%;
 }
+/* Make signatures look nice */
+.sig:not(.sig-inline) {
+    /* Highlight even when not hovering */
+    background: var(--color-api-background-hover);
+}
 /* Make Function API look nice */
 .sig-param .n:first-of-type {
     margin-left: 10px;

@@ -1,3 +1,4 @@
+from math import isclose
 import arcade
 from pytiled_parser.common_types import Color
 
@@ -26,13 +27,19 @@ def test_one():
     #
     assert sprite_1.width == 400
     assert sprite_1.height == 1000
-    assert sprite_1.angle == 45
+    assert sprite_1.angle == -45
 
     #
     # Test type and name properties
     #
     assert sprite_1.properties["class"] == "crate"
     assert sprite_1.properties["name"] == "crate1"
+
+    assert "Shapes" in tile_map.object_lists
+    rectangle = tile_map.object_lists["Shapes"][0]
+    assert isclose(rectangle.shape[2][0] - rectangle.shape[0][0], 573.60, abs_tol=0.02)
+    assert isclose(rectangle.shape[0][1] - rectangle.shape[2][1], 469.04, abs_tol=0.02)
+    assert isclose(tile_map.tiled_map.map_size.height * tile_map.tiled_map.tile_size[1] - rectangle.shape[0][1], 630.37, abs_tol=0.02)
 
     # #
     # # Test getting layer in group

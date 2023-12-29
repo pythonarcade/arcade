@@ -1,4 +1,6 @@
-name: GitHub Ubuntu test
+# This does code inspection and checks to make sure building of docs works
+
+name:  GitHub based tests
 
 on:
   push:
@@ -10,13 +12,13 @@ on:
 jobs:
 
   build:
-    name: test
+    name: Code inspections
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.11']
         architecture: ['x64']
 
     steps:
@@ -31,16 +33,22 @@ jobs:
         run: |
           python -m pip install -U pip wheel setuptools
       - name: wheel
+        id: wheel
         run: |
           python -m pip install -e .[dev]
-      - name: code-inspection
+      - name: "code-inspection: mypy"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
         run: | 
-          mypy arcade
-          ruff arcade
-      - name: build-docs
-        run: |
-          sphinx-build doc build -W
-      # Prepare the Pull Request Payload artifact. If this fails, we
+          python ./make.py mypy
+      - name: "code-inspection: pyright"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
+        run: | 
+          python ./make.py pyright
+      - name: "code-inspection: ruff"
+        if: ${{ (success() || failure()) && steps.wheel.outcome == 'success' }}
+        run: | 
+          python ./make.py ruff
+      # Prepare the Pull Request Payload artifact. If this fails,
       # we fail silently using the `continue-on-error` option. It's
       # nice if this succeeds, but if it fails for any reason, it
       # does not mean that our lint-test checks failed.
@@ -57,7 +65,64 @@ jobs:
       - name: Upload a Build Artifact
         if: always() && steps.prepare-artifact.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
+        with:
+          name: pull-request-payload
+          path: pull_request_payload.json
+
+  builddoc:
+
+    name: Documentation build test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        # python-version in must be kept in sync with .readthedocs.yaml
+        #
+        # Why 3.9?
+        #  1. It's the lowest version compatible w/ Sphinx 7.2.2, a doc build dependency
+        #  2. Better doc build accessibility for contributors who may have trouble
+        #     setting up newer Python versions (Debian, etc).
+        python-version: ['3.9']
+        architecture: ['x64']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
+
+      - name: dependencies
+        run: |
+          python -m pip install -U pip wheel setuptools
+      - name: wheel
+        id: wheel
+        run: |
+          python -m pip install -e .[dev]
+      - name: build-docs
+        run: |
+          sphinx-build doc build -W
+      # Prepare the Pull Request Payload artifact. If this fails,
+      # we fail silently using the `continue-on-error` option. It's
+      # nice if this succeeds, but if it fails for any reason, it
+      # does not mean that our lint-test checks failed.
+      - name: Prepare Pull Request Payload artifact
+        id: prepare-artifact
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+      # This only makes sense if the previous step succeeded. To
+      # get the original outcome of the previous step before the
+      # `continue-on-error` conclusion is applied, we use the
+      # `.outcome` value. This step also fails silently.
+      - name: Upload a Build Artifact
+        if: always() && steps.prepare-artifact.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v3
         with:
           name: pull-request-payload
           path: pull_request_payload.json

@@ -3,9 +3,14 @@ Quick Index Generator
 
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
-import arcade
+import sys
 from pathlib import Path
 from typing import List
+
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
+import arcade
+from vfs import Vfs
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
@@ -121,7 +126,7 @@ def process_resource_files(out, file_list: List[Path]):
 
 
 def resources():
-    out = OUT_FILE.open("w")
+    out = vfs.open(OUT_FILE, "w")
 
     out.write(".. _resources:\n")
     out.write("\n")
@@ -144,9 +149,11 @@ def resources():
     out.close()
     print("Done creating resources.rst")
 
+vfs = Vfs()
 
 def main():
     resources()
+    vfs.write()
 
 
 if __name__ == '__main__':

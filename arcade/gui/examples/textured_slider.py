@@ -1,14 +1,28 @@
+"""
+Create a slider using a custom texture subclass
+
+The initial theme is a 90s sci-fi style, but you can replace the textures
+in this example to match the theme of your project.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.textured_slider
+"""
+from __future__ import annotations
+
 from typing import Union
 
 import arcade
 from arcade import Texture
 from arcade.gui import UIManager, Surface, UIAnchorLayout, NinePatchTexture
-from arcade.gui.widgets.slider import UISlider
+from arcade.gui.widgets.slider import UISlider, UISliderStyle
 
 
 class UITextureSlider(UISlider):
     """
-    Slider using
+    A custom slider subclass which supports textures.
+
+    You can copy this as-is into your own project, or you can modify
+    the class to have more features as needed.
     """
 
     def __init__(
@@ -25,7 +39,7 @@ class UITextureSlider(UISlider):
         super().__init__(style=style, **kwargs)
 
     def do_render(self, surface: Surface):
-        style: UISlider.UIStyle = self.get_current_style()  # type: ignore
+        style: UISliderStyle = self.get_current_style()  # type: ignore
 
         self.prepare_render(surface)
 

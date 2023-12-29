@@ -1,7 +1,23 @@
 """
-Example shows how to use UIAnchorWidget to position widgets on screen.
-Dummy widgets indicate hovered, pressed and clicked.
+Sizing widgets using size hint keyword arguments
+
+The following keyword arguments can be used to set preferred size
+information for layouts which arrange widgets
+
+* size_hint
+* size_hint_max
+* size_hint_min
+
+Please note the following:
+
+* These do nothing outside a layout
+* They are only hints, and do not guarantee a specific size will
+  always be set.
+
+If arcade and Python are properly installed, you can run this example with:
+python -m arcade.gui.examples.size_hints
 """
+from __future__ import annotations
 
 import arcade
 from arcade.gui import UIManager, UIBoxLayout

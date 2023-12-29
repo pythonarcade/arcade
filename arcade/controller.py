@@ -4,7 +4,14 @@ Controller API. This is basically just an alias to Pyglet's controller API.
 For more info on this API, see https://pyglet.readthedocs.io/en/latest/programming_guide/input.html#using-controllers
 """
 
+from __future__ import annotations
+
 import pyglet.input
+
+__all__ = [
+    "get_controllers",
+    "ControllerManager"
+]
 
 
 def get_controllers():

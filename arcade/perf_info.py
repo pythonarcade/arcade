@@ -1,6 +1,8 @@
 """
 Utility functions to keep performance information
 """
+from __future__ import annotations
+
 import collections
 from typing import Dict
 
@@ -12,6 +14,16 @@ _timings: Dict = {}
 _pyglets_dispatch_event = None
 _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
+
+__all__ = [
+    "print_timings",
+    "clear_timings",
+    "get_timings",
+    "enable_timings",
+    "disable_timings",
+    "get_fps",
+    "timings_enabled"
+]
 
 
 def _dispatch_event(self, *args):
@@ -152,7 +164,7 @@ def disable_timings() -> None:
         raise ValueError("Timings are not enabled.")
 
     # Restore the original pyglet dispatch event function
-    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event
+    pyglet.window.BaseWindow.dispatch_event = _pyglets_dispatch_event # type: ignore
 
     clear_timings()
 
@@ -170,7 +182,7 @@ def get_fps(frame_count: int = 60) -> float:
     See :ref:`performance_statistics_example` for an example of how to
     use function.
 
-    :param int frame_count: How many frames to calculate the FPS over.
+    :param frame_count: How many frames to calculate the FPS over.
     """
     cur_time = time.perf_counter()
     if len(_frame_times) == 0:

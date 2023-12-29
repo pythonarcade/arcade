@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Dict, Tuple, Union
 from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
 import weakref
@@ -17,7 +19,7 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._uniforms: Dict[str, Uniform] = dict()
+        self._uniforms: Dict[str, Union[UniformBlock, Uniform]] = dict()
 
         from arcade.gl import ShaderException
 
@@ -67,7 +69,7 @@ class ComputeShader:
             gl.glGetProgramiv(self._glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(self._glo, len(log), None, log)
-            raise ShaderException("Program link error: {}".format(log.value.decode()))        
+            raise ShaderException("Program link error: {}".format(log.value.decode()))
 
         self._introspect_uniforms()
         self._introspect_uniform_blocks()
@@ -115,9 +117,9 @@ class ComputeShader:
         a size for a dimension or uses ``1`` as size you don't have to supply
         this parameter.
 
-        :param int group_x: The number of work groups to be launched in the X dimension.
-        :param int group_y: The number of work groups to be launched in the y dimension.
-        :param int group_z: The number of work groups to be launched in the z dimension.
+        :param group_x: The number of work groups to be launched in the X dimension.
+        :param group_y: The number of work groups to be launched in the y dimension.
+        :param group_z: The number of work groups to be launched in the z dimension.
         """
         self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)

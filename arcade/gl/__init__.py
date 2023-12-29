@@ -14,8 +14,9 @@ should be done through methods in a context.
 .. warning:: This module contains the low level rendering API for arcade
              and is only recommended for more advanced users
 """
-# flake8: noqa
+from __future__ import annotations
 
+# flake8: noqa
 from .context import Context
 from .types import BufferDescription
 from .compute_shader import ComputeShader
@@ -32,6 +33,7 @@ from . import geometry
 __all__ = [
     "Buffer",
     "BufferDescription",
+    "ComputeShader",
     "Context",
     "Framebuffer",
     "Geometry",
@@ -39,6 +41,6 @@ __all__ = [
     "Query",
     "ShaderException",
     "VertexArray",
-    "Texture",
+    "Texture2D",
     "geometry",
 ]

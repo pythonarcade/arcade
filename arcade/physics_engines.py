@@ -1,18 +1,26 @@
 """
 Physics engines for top-down or platformers.
 """
-# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
+from __future__ import annotations
 
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, List, Optional, Union
+from typing import Iterable, List, Optional, Union, cast
 
 from arcade import (
+    BasicSprite,
     Sprite,
     SpriteList,
+    SpriteType,
     check_for_collision,
     check_for_collision_with_lists
 )
 from arcade.math import get_distance
+
+__all__ = [
+    "PhysicsEngineSimple",
+    "PhysicsEnginePlatformer"
+]
 
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
@@ -48,7 +56,7 @@ def _circular_check(player: Sprite, walls: List[SpriteList]):
         vary *= 2
 
 
-def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) -> List[Sprite]:
+def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool) -> List[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
@@ -104,7 +112,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) 
 
                 # NOTE: Not all sprites have velocity
                 if getattr(item, "change_x", 0.0) != 0:
-                    moving_sprite.center_x += item.change_x
+                    moving_sprite.center_x += item.change_x  # type: ignore
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         else:
@@ -220,17 +228,17 @@ class PhysicsEngineSimple:
     games. It is easier to get
     started with this engine than more sophisticated engines like PyMunk.
 
-    :param Sprite player_sprite: The moving sprite
+    :param player_sprite: The moving sprite
     :param  Union[SpriteList, Iterable[SpriteList] walls: The sprites it can't move through.
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, Iterable[SpriteList]]):
+    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList[BasicSprite], Iterable[SpriteList[BasicSprite]]]):
         assert isinstance(player_sprite, Sprite)
 
         if walls:
             if isinstance(walls, SpriteList):
-                self.walls = [walls]
+                self.walls = [cast(SpriteList[BasicSprite], walls)]
             else:
                 self.walls = list(walls)
         else:
@@ -261,10 +269,10 @@ class PhysicsEnginePlatformer:
     and ``boundary_right`` attribute of the Sprite. You need only set an initial
     ``change_x`` or ``change_y`` on it.
 
-    :param Sprite player_sprite: The moving sprite
+    :param player_sprite: The moving sprite
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
         This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
-    :param float gravity_constant: Downward acceleration per frame
+    :param gravity_constant: Downward acceleration per frame
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
     :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
         This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
@@ -321,7 +329,6 @@ class PhysicsEnginePlatformer:
         and we return a True.
 
         :returns: True if there is a platform below us
-        :rtype: bool
         """
 
         # Move down to see if we are on a platform
@@ -349,7 +356,7 @@ class PhysicsEnginePlatformer:
         If you enable multi-jump, you MUST call increment_jump_counter()
         every time the player jumps. Otherwise they can jump infinitely.
 
-        :param int allowed_jumps:
+        :param allowed_jumps:
         """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
@@ -394,8 +401,6 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
-
         for platform_list in self.platforms:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
@@ -427,6 +432,8 @@ class PhysicsEnginePlatformer:
                             platform.change_y *= -1
 
                     platform.center_y += platform.change_y
+
+        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites

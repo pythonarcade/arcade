@@ -1,6 +1,7 @@
-from .image_data import ImageData
+from __future__ import annotations
+
+from .texture import Texture, ImageData
 from .spritesheet import SpriteSheet
-from .texture import Texture
 from .loading import (
     load_texture,
     load_textures,

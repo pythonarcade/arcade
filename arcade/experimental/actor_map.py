@@ -5,6 +5,8 @@ then view that map form different actor viewpoints.
 This example is using the lower level rendering API
 in arcade.
 """
+from __future__ import annotations
+
 import random
 from typing import Tuple
 
@@ -125,7 +127,7 @@ class Map:
             ":resources:images/tiles/dirtCenter.png",
         ]
         self.textures = [
-            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box) 
+            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box)
             for path in texture_paths
         ]
 
