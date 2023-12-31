@@ -61,4 +61,4 @@ def test_crop_grid():
         columns=32,
         count=255,
     )
-    assert len(textures) == 256
+    assert len(textures) == 255
