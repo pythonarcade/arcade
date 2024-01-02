@@ -77,8 +77,8 @@ class TextureManager:
         if sprite_sheets:
             self._sprite_sheets.clear()
         if textures:
-            self._texture_cache.flush()
+            self._texture_cache.clear()
         if image_data:
-            self._image_data_cache.flush()
+            self._image_data_cache.clear()
         if hit_boxes:
-            self._hit_box_cache.flush()
+            self._hit_box_cache.clear()
