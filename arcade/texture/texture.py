@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 from weakref import WeakSet
 
 import PIL.Image
@@ -25,6 +25,12 @@ from arcade.texture.transforms import (
     TransposeTransform,
     TransverseTransform,
 )
+
+from arcade.types import PointList
+from arcade.color import TRANSPARENT_BLACK
+from arcade.hitbox import HitBoxAlgorithm
+from arcade import cache as _cache
+from arcade import hitbox
 from arcade.types import RGBA255, PointList
 
 if TYPE_CHECKING:
