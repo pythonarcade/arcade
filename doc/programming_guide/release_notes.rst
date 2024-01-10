@@ -48,6 +48,14 @@ API in a way that is not compatible with how it was used in 2.6.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
 * `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
+* GUI
+
+  * Removed :py:class:`~arcade.gui.widgets.UIWrapper` this is now general available in :py:class:`~arcade.gui.widgets.UILayout`
+  * Removed :py:class:`~arcade.gui.widgets.UIBorder` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIPadding` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UITexturePane` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIAnchorWidget` replaced by :py:class:`~arcade.gui.widgets.UIAnchorLayout`
+
 
 Featured Updates
 ~~~~~~~~~~~~~~~~

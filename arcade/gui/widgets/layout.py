@@ -189,7 +189,8 @@ class UIBoxLayout(UILayout):
         Or use :py:meth:`arcade.gui.UIBoxLayout.fit_content` to resize the layout. The
         bottom-left corner is used as the default anchor point.
 
-    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``.
+    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``. ``size_hint_min`` is automatically
+    updated based on the minimal required space by children.
 
     If a child widget provides a ``size_hint`` for a dimension, the child will
     be resized within the given range of ``size_hint_min`` and
@@ -208,7 +209,6 @@ class UIBoxLayout(UILayout):
     :param size_hint: Size hint for the :py:class:`~arcade.gui.UILayout` if
                       the widget would like to grow. Defaults to ``0, 0`` ->
                       minimal size to contain children.
-    :param size_hint_min: Minimum width and height in pixels.
     :param size_hint_max: Maximum width and height in pixels.
     :param space_between: Space in pixels between the children.
     """
@@ -223,7 +223,6 @@ class UIBoxLayout(UILayout):
         align="center",
         children: Iterable[UIWidget] = tuple(),
         size_hint=(0, 0),
-        size_hint_min=None,
         size_hint_max=None,
         space_between=0,
         style=None,
@@ -236,7 +235,6 @@ class UIBoxLayout(UILayout):
             height=height,
             children=children,
             size_hint=size_hint,
-            size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=style,
             **kwargs
@@ -472,7 +470,8 @@ class UIGridLayout(UILayout):
     ``size_hint_max``.
 
     Children are resized based on ``size_hint``. Maximum and minimum
-    ``size_hint``s only take effect if a ``size_hint`` is given.
+    ``size_hint``s only take effect if a ``size_hint`` is given. ``size_hint_min`` is automatically
+    updated based on the minimal required space by children.
 
     :param x: ``x`` coordinate of bottom left corner.
     :param y: ``y`` coordinate of bottom left corner.
@@ -485,7 +484,6 @@ class UIGridLayout(UILayout):
                                         added later.
     :param size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if the
                       :py:class:`~arcade.gui.UIWidget` would like to grow.
-    :param size_hint_min: Minimum width and height in pixels.
     :param size_hint_max: Maximum width and height in pixels.
     :param horizontal_spacing: Space between columns.
     :param vertical_spacing: Space between rows.
@@ -503,7 +501,6 @@ class UIGridLayout(UILayout):
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
         size_hint=(0, 0),
-        size_hint_min=None,
         size_hint_max=None,
         horizontal_spacing: int = 0,
         vertical_spacing: int = 0,
@@ -520,7 +517,6 @@ class UIGridLayout(UILayout):
             height=0,
             children=children,
             size_hint=size_hint,
-            size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=style,
             **kwargs
