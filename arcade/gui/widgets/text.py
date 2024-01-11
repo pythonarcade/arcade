@@ -87,6 +87,14 @@ class UILabel(UIWidget):
         size_hint_max=None,
         **kwargs,
     ):
+        # If multiline is enabled and no width is given, we need to fit the
+        # size to the text. This is done by setting the width to a very
+        # large value and then fitting the size.
+        adaptive_multiline = False
+        if multiline and not width:
+            width = 999999
+            adaptive_multiline = True
+
         # Use Arcade Text wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
             start_x=0,
@@ -99,10 +107,13 @@ class UILabel(UIWidget):
             bold=bold,
             italic=italic,
             align=align,
-            anchor_y="bottom",   # Position text bottom left to fit into scissor
-            multiline=multiline, # area
+            anchor_y="bottom",   # Position text bottom left to fit into scissor area
+            multiline=multiline,
             **kwargs,
         )
+        if adaptive_multiline:
+            # +1 is required to prevent line wrap
+            width = self.label.content_width + 1
 
         super().__init__(
             x=x,
