@@ -56,3 +56,12 @@ def test_uilabel_fixes_internal_text_to_pos_0_0(window):
     assert label.label.position == (0, 0)
     assert label.position == (10, 10)
 
+def test_adaptive_width_support_for_multiline_text(window):
+    """
+    This test is a bit tricky. Enabling multiline without a width
+    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
+    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    """
+    label = UILabel(text="Multiline\ntext\nwhich\n", multiline=True)
+    assert label.width < 100
+    assert label.height > 20
