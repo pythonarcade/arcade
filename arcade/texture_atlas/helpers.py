@@ -1,3 +1,6 @@
+"""
+THIS IS AN EXPERIMENTAL MODULE WITH NO GUARANTEES OF STABILITY OR SUPPORT.
+"""
 from __future__ import annotations
 
 import json
@@ -67,8 +70,8 @@ def save_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: P
 
     # Textures
     textures = []
-    for texture in atlas._textures:
-        if texture.file_path is None:
+    for texture in atlas.textures:
+        if texture.file_path  is None:
             raise ValueError("Can't save a texture not loaded from a file")
 
         textures.append({
@@ -154,7 +157,7 @@ def load_atlas(
         )
         texture._vertex_order = tuple(tex['vertex_order'])  # type: ignore
         texture._update_cache_names()
-        atlas._textures.add(texture)
+        atlas._textures[texture.atlas_name] = texture
         # Cache the texture strongly so it doesn't get garbage collected
         cache.texture_cache.put(texture, file_path=resource_root / tex['hash'])
         texture.file_path = resource_root / tex['path']

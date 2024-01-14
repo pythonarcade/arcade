@@ -1,5 +1,7 @@
 """
 Quick and dirty atlas load/save testing.
+Loading and saving atlases are not officially supported.
+This is simply an experiment.
 
 Dump atlas:
 python arcade/experimental/atlas_load_save.py save
@@ -19,7 +21,7 @@ from pathlib import Path
 import arcade
 from arcade.texture_atlas.helpers import save_atlas, load_atlas
 
-MODE = 'load'
+MODE = 'save'
 RESOURCE_ROOT = arcade.resources.ASSET_PATH
 DESTINATION = Path.cwd()
 
@@ -78,7 +80,7 @@ class AtlasLoadSave(arcade.Window):
 
         # Make a sprite for each texture
         self.sp = arcade.SpriteList(atlas=self.atlas)
-        for i, texture in enumerate(self.atlas._textures):
+        for i, texture in enumerate(self.atlas.textures):
             pos = i * 64
             sprite = arcade.Sprite(
                 texture,
