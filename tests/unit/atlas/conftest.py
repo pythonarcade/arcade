@@ -26,7 +26,7 @@ class Common:
         # Misc
         assert len(atlas._image_ref_count) == num_images
         # the number of image refs should be the same as the number of textures
-        assert atlas._image_ref_count.count_refs() == num_textures
+        assert atlas._image_ref_count.count_all_refs() == num_textures
         # TODO: Check the size of these when when texture row allocation is fixed
         # atlas._image_uv_data
         # atlas._texture_uv_data
