@@ -10,6 +10,17 @@ We're still building on pyglet's allocator.
 Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
+Allocation:
+Pyglet's allocator is a simple row based allocator only keeping
+track of horizontal strips and how far in the x direction the
+each strip is filled. We can't really "deallocate" unless it's
+a region at the end of a strip and even doing that is awkward.
+
+When an image is removed from the atlas we simply just lose that
+region until we rebuild the atlas. It can be a good idea to count
+the number of lost regions to use as an indicator later. When an
+atlas is full we can first rebuild it if there are lost regions
+instead of increasing the size.
 """
 from __future__ import annotations
 
@@ -161,31 +172,67 @@ class ImageDataRefCounter:
     """
     Helper class to keep track of how many times an image is used
     by a texture in the atlas to determine when it's safe to remove it.
+
+    Multiple Texture instances can and will use the same ImageData
+    instance.
     """
     def __init__(self) -> None:
         self._data: Dict[str, int] = {}
+        self._num_decref = 0
 
     def inc_ref(self, image_data: "ImageData") -> None:
+        """Increment the reference count for an image."""
         self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
-
-    def dec_ref(self, image_data: "ImageData") -> None:
-        # TODO: Should we raise an error if the ref count is 0?
+ 
+    def dec_ref(self, image_data: "ImageData") -> int:
+        """
+        Decrement the reference count for an image returning the new value.
+        """
         if image_data.hash not in self._data:
-            return
-        self._data[image_data.hash] -= 1
-        if self._data[image_data.hash] == 0:
+            raise RuntimeError(f"Image {image_data.hash} not in ref counter")
+
+        val = self._data[image_data.hash] - 1
+        self._data[image_data.hash] = val
+
+        if val < 0:
+            raise RuntimeError(f"Image {image_data.hash} ref count went below zero")
+        if val == 0:
             del self._data[image_data.hash]
 
-    def get_refs(self, image_data: "ImageData") -> int:
+        self._num_decref += 1
+
+        return val
+
+    def get_ref_count(self, image_data: "ImageData") -> int:
+        """
+        Get the reference count for an image.
+
+        Args:
+            image_data (ImageData): The image to get the reference count for
+        """
         return self._data.get(image_data.hash, 0)
 
-    def count_refs(self) -> int:
+    def count_all_refs(self) -> int:
         """Helper function to count the total number of references."""
         return sum(self._data.values())
+
+    def get_total_decref(self, reset=True) -> int:
+        """
+        Get the total number of decrefs.
+
+        Args:
+            reset (bool): Reset the counter after getting the value
+        """
+        num_decref = self._num_decref
+        if reset:
+            self._num_decref = 0
+        return num_decref
 
     def __len__(self) -> int:
         return len(self._data)
 
+    def __repr__(self) -> str:
+        return f"<ImageDataRefCounter ref_count={self.count_all_refs()}>"
 
 class TextureAtlas:
     """
@@ -270,8 +317,10 @@ class TextureAtlas:
         # when to remove an image from the atlas.
         self._image_ref_count = ImageDataRefCounter()
 
-        # A list of all the images this atlas contains
+        # A list of all the images this atlas contains.
+        # Unique by: Internal hash property
         self._images: WeakSet[ImageData] = WeakSet()
+        # Unique by: 
         # A set of textures this atlas contains for fast lookups + set operations
         self._textures: WeakSet["Texture"] = WeakSet()
 
@@ -432,6 +481,7 @@ class TextureAtlas:
 
         :param texture: The texture to add
         :return: texture_id, AtlasRegion tuple
+        :raises AllocatorException: If there are no room for the texture
         """
         # If the texture is already in the atlas we also have the image
         # and can return early with the texture id and region
@@ -442,23 +492,30 @@ class TextureAtlas:
 
         LOG.info("Attempting to add texture: %s", texture.atlas_name)
 
-        # Add the image if we don't already have it.
-        # If the atlas is full we will try to resize it.
+        # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
             try:
                 x, y, slot, region = self.allocate(texture.image_data)
             except AllocatorException:
                 LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
-                if self._auto_resize:
-                    width = min(self.width * 2, self.max_width)
-                    height = min(self.height * 2, self.max_height)
-                    if self._size == (width, height):
-                        raise
-                    self.resize((width, height))
-                    return self.add(texture)
-                else:
+                if not self._auto_resize:
                     raise
 
+                # If we have lost regions we can try to rebuild the atlas
+                removed_image_count = self._image_ref_count.get_total_decref()
+                if removed_image_count > 0:
+                    LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
+                    self.rebuild()
+                    return self.add(texture)
+
+                width = min(self.width * 2, self.max_width)
+                height = min(self.height * 2, self.max_height)
+                if self._size == (width, height):
+                    raise
+                self.resize((width, height))
+                return self.add(texture)
+
+            # Write the pixel data to the atlas texture
             self.write_image(texture.image_data.image, x, y)
 
         self._image_ref_count.inc_ref(texture.image_data)
@@ -480,14 +537,12 @@ class TextureAtlas:
                 f"Max number of slots: {self._num_texture_slots}"
             ))
 
-        # Add the texture to the atlas
         existing_slot = self._texture_uv_slots.get(texture.atlas_name)
         slot = existing_slot if existing_slot is not None else self._texture_uv_slots_free.popleft()
         self._texture_uv_slots[texture.atlas_name] = slot
+
         image_region = self.get_image_region_info(texture.image_data.hash)
-        texture_region = copy.deepcopy(image_region)
-        # Since we copy the original image region we can always apply the
-        # transform without worrying about multiple transforms.
+        texture_region = copy.deepcopy(image_region) 
         texture_region.texture_coordinates = Transform.transform_texture_coordinates_order(
             texture_region.texture_coordinates, texture._vertex_order
         )
@@ -629,7 +684,8 @@ class TextureAtlas:
         Remove a texture from the atlas.
 
         This doesn't erase the pixel data from the atlas texture
-        itself, but leaves the area unclaimed.
+        itself, but leaves the area unclaimed. The area will be
+        reclaimed when the atlas is rebuilt.
 
         :param texture: The texture to remove
         """
@@ -641,17 +697,16 @@ class TextureAtlas:
         self._texture_uv_slots_free.appendleft(slot)
 
         # Decrement the reference count for the image
-        self._image_ref_count.dec_ref(texture.image_data)
         # print("Dec ref", texture.image_data.hash, self._image_ref_count.get_refs(texture.image_data))
 
         # Reclaim the image in the atlas if it's not used by any other texture
-        if self._image_ref_count.get_refs(texture.image_data) == 0:
+        if self._image_ref_count.dec_ref(texture.image_data) == 0:
             self._images.remove(texture.image_data)
             del self._image_regions[texture.image_data.hash]
             slot = self._image_uv_slots[texture.image_data.hash]
             del self._image_uv_slots[texture.image_data.hash]
             self._image_uv_slots_free.appendleft(slot)
-            # print("Reclaimed image", texture.image_data.hash)
+            print("Reclaimed image", texture.image_data.hash)
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -732,6 +787,7 @@ class TextureAtlas:
 
         :param size: The new size
         """
+        print("RESIZE", self.size)
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
 
         # Only resize if the size actually changed
@@ -835,11 +891,11 @@ class TextureAtlas:
             self._fbo.clear()
         self._textures = WeakSet()
         self._images = WeakSet()
-        self._image_ref_count = ImageDataRefCounter()
         self._image_regions = dict()
         self._texture_regions = dict()
         self._allocator = Allocator(*self._size)
         if clear_image_ids:
+            self._image_ref_count = ImageDataRefCounter()
             self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
             self._image_uv_slots = dict()
         if clear_texture_ids:
