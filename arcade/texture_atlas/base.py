@@ -184,7 +184,7 @@ class ImageDataRefCounter:
     def inc_ref(self, image_data: "ImageData") -> None:
         """Increment the reference count for an image."""
         self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
- 
+
     def dec_ref(self, image_data: "ImageData") -> int:
         """
         Decrement the reference count for an image returning the new value.
@@ -254,7 +254,6 @@ class BaseTextureAtlas(abc.ABC):
     def remove(self, texture: "Texture") -> None:
         """Remove a texture from the atlas."""
         raise NotImplementedError
-    
 
 
 class TextureAtlas(BaseTextureAtlas):
@@ -343,10 +342,6 @@ class TextureAtlas(BaseTextureAtlas):
         # A list of all the images this atlas contains.
         # Unique by: Internal hash property
         self._images: WeakSet[ImageData] = WeakSet()
-        # Unique by: 
-        # A set of textures this atlas contains for fast lookups + set operations
-        # self._textures: WeakSet["Texture"] = WeakSet()
-
         # atlas_name: Texture
         self._textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
@@ -571,7 +566,7 @@ class TextureAtlas(BaseTextureAtlas):
         self._texture_uv_slots[texture.atlas_name] = slot
 
         image_region = self.get_image_region_info(texture.image_data.hash)
-        texture_region = copy.deepcopy(image_region) 
+        texture_region = copy.deepcopy(image_region)
         texture_region.texture_coordinates = Transform.transform_texture_coordinates_order(
             texture_region.texture_coordinates, texture._vertex_order
         )
