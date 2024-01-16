@@ -197,6 +197,9 @@ class Text:
         group: Optional[pyglet.graphics.Group] = None,
         start_z: int = 0
     ):
+        # Raises a RuntimeError if no window for better user feedback
+        arcade.get_window()
+
         if align != "center" and align != "left" and align != "right":
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
