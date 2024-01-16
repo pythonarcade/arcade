@@ -1,10 +1,7 @@
 """
 THIS IS WORK IN PROGRESS. DO NOT USE.
 """
-from typing import (
-    Tuple,
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 from .base import TextureAtlasBase
 
