@@ -14,7 +14,7 @@ import arcade
 from arcade import cache
 from arcade.texture import ImageData, Texture
 
-from .base import AtlasRegion, TextureAtlas
+from .atlas_2d import AtlasRegion, TextureAtlas
 
 
 class FakeImage:
