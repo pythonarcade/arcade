@@ -594,6 +594,7 @@ def create_text_sprite(
     anchor_x: str = "left",
     multiline: bool = False,
     texture_atlas: Optional[arcade.TextureAtlas] = None,
+    background_color: Optional[RGBA255] = None,
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -623,6 +624,8 @@ def create_text_sprite(
     :param multiline: Requires width to be set; enables word wrap rather than clipping
     :param texture_atlas: The texture atlas to use for the
         newly created texture. The default global atlas will be used if this is None.
+    :param background_color: The background color of the text. If None, the background
+        will be transparent.
     """
     text_object = Text(
         text,
@@ -651,7 +654,7 @@ def create_text_sprite(
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
-        fbo.clear((0, 0, 0, 255))
+        fbo.clear(background_color or arcade.color.TRANSPARENT_BLACK)
         text_object.draw()
 
     return arcade.Sprite(
