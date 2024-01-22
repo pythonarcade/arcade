@@ -234,6 +234,7 @@ class TextureAtlas(TextureAtlasBase):
         self._images: WeakSet[ImageData] = WeakSet()
         # atlas_name: Texture
         self._textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+        self._unique_textures = WeakSet()
 
         # Texture containing texture coordinates for images and textures
         # The 4096 width is a safe constant for all GL implementations
@@ -369,12 +370,14 @@ class TextureAtlas(TextureAtlasBase):
     @property
     def textures(self) -> List["Texture"]:
         """
-        Return a list of all the textures in the atlas.
-
-        A new list is constructed from the internal weak set of textures.
-
+        All textures instance added to the atlas regardless
+        of their internal state. See :py:ref:`unique_textures``
+        for textures with unique image data and transformation.
         """
         return list(self._textures.values())
+
+    def unique_textures(self) -> List["Texture"]:
+        return list(self._unique_textures)
 
     @property
     def images(self) -> List["ImageData"]:
