@@ -406,11 +406,12 @@ class TextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
-        # Add to the complete list of textures
-        self._textures.add(texture)
+        # Are we storing a reference to this texture?
+        if not self.has_texture(texture):
+            self._textures.add(texture)
+            self._image_ref_count.inc_ref(texture.image_data)
 
-        # If the texture is already in the atlas we also have the image
-        # and can return early with the texture id and region
+        # Do we have a unique texture (hash, vertex order)?
         if self.has_unique_texture(texture):
             slot = self.get_texture_id(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
@@ -445,7 +446,6 @@ class TextureAtlas(TextureAtlasBase):
             self.write_image(texture.image_data.image, x, y)
 
         info = self._allocate_texture(texture)
-        self._image_ref_count.inc_ref(texture.image_data)
         texture.add_atlas_ref(self)
         return info
 
