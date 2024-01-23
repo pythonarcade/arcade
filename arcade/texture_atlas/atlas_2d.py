@@ -803,7 +803,7 @@ class TextureAtlas(TextureAtlasBase):
         """
         # Hold a reference to the old textures
         textures = self.textures
-        self._image_ref_count = ImageDataRefCounter()
+        self._image_ref_count.clear()
         # Clear the atlas but keep the uv slot mapping
         self.clear(clear_image_ids=False, clear_texture_ids=False)
         # Add textures back sorted by height to potentially make more room

@@ -104,6 +104,11 @@ class ImageDataRefCounter:
             self._num_decref = 0
         return num_decref
 
+    def clear(self) -> None:
+        """Clear the reference counter."""
+        self._data.clear()
+        self._num_decref = 0
+
     def __len__(self) -> int:
         return len(self._data)
 
