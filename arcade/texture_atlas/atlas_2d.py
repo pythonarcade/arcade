@@ -625,16 +625,22 @@ class TextureAtlas(TextureAtlasBase):
         except KeyError:
             pass
 
-        del self._unique_textures[texture.atlas_name]
-        # Reclaim the texture uv slot
-        del self._texture_regions[texture.atlas_name]
-        slot = self._texture_uv_slots[texture.atlas_name]
-        del self._texture_uv_slots[texture.atlas_name]
-        self._texture_uv_slots_free.appendleft(slot)
+        # Remove the unique texture if it's there
+        if self.has_unique_texture(texture):
+            del self._unique_textures[texture.atlas_name]
+            # Reclaim the texture uv slot
+            del self._texture_regions[texture.atlas_name]
+            slot = self._texture_uv_slots[texture.atlas_name]
+            del self._texture_uv_slots[texture.atlas_name]
+            self._texture_uv_slots_free.appendleft(slot)
 
         # Reclaim the image in the atlas if it's not used by any other texture
         if self._image_ref_count.dec_ref(texture.image_data) == 0:
-            self._images.remove(texture.image_data)
+            # Image might be GCed already
+            try:
+                self._images.remove(texture.image_data)
+            except KeyError:
+                pass
             del self._image_regions[texture.image_data.hash]
             slot = self._image_uv_slots[texture.image_data.hash]
             del self._image_uv_slots[texture.image_data.hash]
@@ -728,6 +734,7 @@ class TextureAtlas(TextureAtlasBase):
         :param size: The new size
         """
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
+        print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
         if size == self._size:
