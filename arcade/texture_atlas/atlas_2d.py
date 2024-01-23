@@ -232,9 +232,10 @@ class TextureAtlas(TextureAtlasBase):
         # A list of all the images this atlas contains.
         # Unique by: Internal hash property
         self._images: WeakSet[ImageData] = WeakSet()
+        # All textures added to the atlas
+        self._textures: WeakSet[Texture] = WeakSet()
         # atlas_name: Texture
-        self._textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
-        self._unique_textures = WeakSet()
+        self._unique_textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
         # Texture containing texture coordinates for images and textures
         # The 4096 width is a safe constant for all GL implementations
@@ -374,10 +375,18 @@ class TextureAtlas(TextureAtlasBase):
         of their internal state. See :py:ref:`unique_textures``
         for textures with unique image data and transformation.
         """
-        return list(self._textures.values())
+        return list(self._textures)
 
+    @property
     def unique_textures(self) -> List["Texture"]:
-        return list(self._unique_textures)
+        """
+        All unique textures in the atlas.
+
+        These are textures using an image with the same hash
+        and the same vertex order. The full list of all textures
+        can be found in :py:ref:`textures`.
+        """
+        return list(self._unique_textures.values())
 
     @property
     def images(self) -> List["ImageData"]:
@@ -397,9 +406,12 @@ class TextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
+        # Add to the complete list of textures
+        self._textures.add(texture)
+
         # If the texture is already in the atlas we also have the image
         # and can return early with the texture id and region
-        if self.has_texture(texture):
+        if self.has_unique_texture(texture):
             slot = self.get_texture_id(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
             return slot, region
@@ -471,7 +483,7 @@ class TextureAtlas(TextureAtlasBase):
             self._texture_uv_data[offset + i] = texture_region.texture_coordinates[i]
 
         self._texture_uv_data_changed = True
-        self._textures[texture.atlas_name] = texture
+        self._unique_textures[texture.atlas_name] = texture
 
         return slot, texture_region
 
@@ -606,7 +618,13 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        del self._textures[texture.atlas_name]
+        # Remove from the complete list of textures
+        if not self.has_texture(texture):
+            raise RuntimeError(f"Texture {texture} not in atlas")
+
+        self._textures.remove(texture)
+
+        del self._unique_textures[texture.atlas_name]
         # Reclaim the texture uv slot
         del self._texture_regions[texture.atlas_name]
         slot = self._texture_uv_slots[texture.atlas_name]
@@ -682,7 +700,15 @@ class TextureAtlas(TextureAtlasBase):
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
-        return texture.atlas_name in self._textures
+        # TODO: Should we check all textures or unique_textures?
+        return texture in self._textures
+
+    def has_unique_texture(self, texture: "Texture") -> bool:
+        """
+        Check if the atlas already have a texture with the
+        same image data and vertex order
+        """
+        return texture.atlas_name in self._unique_textures
 
     def has_image(self, image_data: "ImageData") -> bool:
         """Check if a image is already in the atlas"""
@@ -728,7 +754,7 @@ class TextureAtlas(TextureAtlasBase):
 
         # Store old images and textures before clearing the atlas
         images = list(self._images)
-        textures = self.textures
+        textures = self.unique_textures
         # Clear the atlas without wiping the image and texture ids
         self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
         for image in sorted(images, key=lambda x: x.height):
@@ -793,6 +819,7 @@ class TextureAtlas(TextureAtlasBase):
     ) -> None:
         """
         Clear and reset the texture atlas.
+
         Note that also clearing "texture_ids" makes the atlas
         lose track of the old texture ids. This
         means the sprite list must be rebuild from scratch.
@@ -800,17 +827,23 @@ class TextureAtlas(TextureAtlasBase):
         :param texture_ids: Clear the assigned texture ids
         :param texture: Clear the contents of the atlas texture itself
         """
+        # TODO: Make the docstring more clear.
         if texture:
             self._fbo.clear()
-        self._textures = WeakValueDictionary()
+
+        self._textures = WeakSet()
+        self._unique_textures = WeakValueDictionary()
+
         self._images = WeakSet()
         self._image_regions = dict()
         self._texture_regions = dict()
         self._allocator = Allocator(*self._size)
+
         if clear_image_ids:
             self._image_ref_count = ImageDataRefCounter()
             self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
             self._image_uv_slots = dict()
+
         if clear_texture_ids:
             self._texture_uv_slots_free = deque(i for i in range(self._num_texture_slots))
             self._texture_uv_slots = dict()
@@ -902,6 +935,8 @@ class TextureAtlas(TextureAtlasBase):
         :param border: The border around each texture in pixels
         :return: An estimated minimum size as a (width, height) tuple
         """
+        # TODO: This method is not very efficient.
+
         # Try to guess some sane minimum size to reduce the brute force iterations
         total_area = sum(t.image.size[0] * t.image.size[1] for t in textures)
         sqrt_size = int(math.sqrt(total_area))
