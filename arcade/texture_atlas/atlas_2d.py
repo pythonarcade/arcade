@@ -409,6 +409,7 @@ class TextureAtlas(TextureAtlasBase):
         # Are we storing a reference to this texture?
         if not self.has_texture(texture):
             self._textures.add(texture)
+            texture.add_atlas_ref(self)
             self._image_ref_count.inc_ref(texture.image_data)
 
         # Do we have a unique texture (hash, vertex order)?
@@ -446,7 +447,6 @@ class TextureAtlas(TextureAtlasBase):
             self.write_image(texture.image_data.image, x, y)
 
         info = self._allocate_texture(texture)
-        texture.add_atlas_ref(self)
         return info
 
     def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
@@ -618,26 +618,25 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        # Remove from the complete list of textures
-        if not self.has_texture(texture):
-            raise RuntimeError(f"Texture {texture} not in atlas")
+        try:
+            self._textures.remove(texture)
 
-        self._textures.remove(texture)
+            del self._unique_textures[texture.atlas_name]
+            # Reclaim the texture uv slot
+            del self._texture_regions[texture.atlas_name]
+            slot = self._texture_uv_slots[texture.atlas_name]
+            del self._texture_uv_slots[texture.atlas_name]
+            self._texture_uv_slots_free.appendleft(slot)
 
-        del self._unique_textures[texture.atlas_name]
-        # Reclaim the texture uv slot
-        del self._texture_regions[texture.atlas_name]
-        slot = self._texture_uv_slots[texture.atlas_name]
-        del self._texture_uv_slots[texture.atlas_name]
-        self._texture_uv_slots_free.appendleft(slot)
-
-        # Reclaim the image in the atlas if it's not used by any other texture
-        if self._image_ref_count.dec_ref(texture.image_data) == 0:
-            self._images.remove(texture.image_data)
-            del self._image_regions[texture.image_data.hash]
-            slot = self._image_uv_slots[texture.image_data.hash]
-            del self._image_uv_slots[texture.image_data.hash]
-            self._image_uv_slots_free.appendleft(slot)
+            # Reclaim the image in the atlas if it's not used by any other texture
+            if self._image_ref_count.dec_ref(texture.image_data) == 0:
+                self._images.remove(texture.image_data)
+                del self._image_regions[texture.image_data.hash]
+                slot = self._image_uv_slots[texture.image_data.hash]
+                del self._image_uv_slots[texture.image_data.hash]
+                self._image_uv_slots_free.appendleft(slot)
+        except KeyError:
+            pass
 
     def update_texture_image(self, texture: "Texture"):
         """
