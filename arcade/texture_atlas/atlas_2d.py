@@ -734,7 +734,7 @@ class TextureAtlas(TextureAtlasBase):
         :param size: The new size
         """
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
-        print("Resizing atlas from", self._size, "to", size)
+        # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
         if size == self._size:
