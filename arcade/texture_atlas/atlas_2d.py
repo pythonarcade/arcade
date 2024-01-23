@@ -618,25 +618,27 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
+        # The texture is not there if GCed but we still
+        # need to remove if it it's a manual action
         try:
             self._textures.remove(texture)
-
-            del self._unique_textures[texture.atlas_name]
-            # Reclaim the texture uv slot
-            del self._texture_regions[texture.atlas_name]
-            slot = self._texture_uv_slots[texture.atlas_name]
-            del self._texture_uv_slots[texture.atlas_name]
-            self._texture_uv_slots_free.appendleft(slot)
-
-            # Reclaim the image in the atlas if it's not used by any other texture
-            if self._image_ref_count.dec_ref(texture.image_data) == 0:
-                self._images.remove(texture.image_data)
-                del self._image_regions[texture.image_data.hash]
-                slot = self._image_uv_slots[texture.image_data.hash]
-                del self._image_uv_slots[texture.image_data.hash]
-                self._image_uv_slots_free.appendleft(slot)
         except KeyError:
             pass
+
+        del self._unique_textures[texture.atlas_name]
+        # Reclaim the texture uv slot
+        del self._texture_regions[texture.atlas_name]
+        slot = self._texture_uv_slots[texture.atlas_name]
+        del self._texture_uv_slots[texture.atlas_name]
+        self._texture_uv_slots_free.appendleft(slot)
+
+        # Reclaim the image in the atlas if it's not used by any other texture
+        if self._image_ref_count.dec_ref(texture.image_data) == 0:
+            self._images.remove(texture.image_data)
+            del self._image_regions[texture.image_data.hash]
+            slot = self._image_uv_slots[texture.image_data.hash]
+            del self._image_uv_slots[texture.image_data.hash]
+            self._image_uv_slots_free.appendleft(slot)
 
     def update_texture_image(self, texture: "Texture"):
         """
