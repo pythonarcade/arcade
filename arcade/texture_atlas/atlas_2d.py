@@ -274,7 +274,6 @@ class TextureAtlas(TextureAtlasBase):
     def width(self) -> int:
         """
         The width of the texture atlas in pixels
-
         """
         return self._size[0]
 
@@ -282,7 +281,6 @@ class TextureAtlas(TextureAtlasBase):
     def height(self) -> int:
         """
         The height of the texture atlas in pixels
-
         """
         return self._size[1]
 
@@ -290,7 +288,6 @@ class TextureAtlas(TextureAtlasBase):
     def size(self) -> Tuple[int, int]:
         """
         The width and height of the texture atlas in pixels
-
         """
         return self._size
 
@@ -298,7 +295,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_width(self) -> int:
         """
         The maximum width of the atlas in pixels
-
         """
         return self._max_size[0]
 
@@ -306,7 +302,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_height(self) -> int:
         """
         The maximum height of the atlas in pixels
-
         """
         return self._max_size[1]
 
@@ -314,7 +309,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_size(self) -> Tuple[int, int]:
         """
         The maximum size of the atlas in pixels (x, y)
-
         """
         return self._max_size
 
@@ -323,7 +317,6 @@ class TextureAtlas(TextureAtlasBase):
         """
         Get or set the auto resize flag for the atlas.
         If enabled the atlas will resize itself when full.
-
         """
         return self._auto_resize
 
@@ -335,7 +328,6 @@ class TextureAtlas(TextureAtlasBase):
     def border(self) -> int:
         """
         The texture border in pixels
-
         """
         return self._border
 
@@ -343,7 +335,6 @@ class TextureAtlas(TextureAtlasBase):
     def texture(self) -> "Texture2D":
         """
         The atlas texture.
-
         """
         return self._texture
 
@@ -351,7 +342,6 @@ class TextureAtlas(TextureAtlasBase):
     def image_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for images.
-
         """
         return self._image_uv_texture
 
@@ -359,7 +349,6 @@ class TextureAtlas(TextureAtlasBase):
     def texture_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for textures.
-
         """
         return self._texture_uv_texture
 
@@ -372,7 +361,7 @@ class TextureAtlas(TextureAtlasBase):
     def textures(self) -> List["Texture"]:
         """
         All textures instance added to the atlas regardless
-        of their internal state. See :py:ref:`unique_textures``
+        of their internal state. See :py:meth:`unique_textures``
         for textures with unique image data and transformation.
         """
         return list(self._textures)
@@ -384,7 +373,7 @@ class TextureAtlas(TextureAtlasBase):
 
         These are textures using an image with the same hash
         and the same vertex order. The full list of all textures
-        can be found in :py:ref:`textures`.
+        can be found in :py:meth:`textures`.
         """
         return list(self._unique_textures.values())
 
@@ -394,7 +383,6 @@ class TextureAtlas(TextureAtlasBase):
         Return a list of all the images in the atlas.
 
         A new list is constructed from the internal weak set of images.
-
         """
         return list(self._images)
 
