@@ -1100,12 +1100,3 @@ class TextureAtlas(TextureAtlasBase):
                 "Attempting to create or resize an atlas to "
                 f"{size} past its maximum size of {self._max_size}"
             )
-
-    def print_contents(self):
-        """Debug method to print the contents of the atlas"""
-        print("Textures:")
-        for texture in self.textures:
-            print("->", texture)
-        print("Images:")
-        for image in self._images:
-            print("->", image)
