@@ -117,6 +117,7 @@ class ImageDataRefCounter:
 
 
 class TextureAtlasBase(abc.ABC):
+    """Generic base for texture atlases."""
 
     def __init__(self, ctx: Optional["ArcadeContext"]):
         self._ctx = ctx or arcade.get_window().ctx
@@ -125,6 +126,7 @@ class TextureAtlasBase(abc.ABC):
     def ctx(self) -> "ArcadeContext":
         return self._ctx
 
+    # NOTE: AtlasRegion only makes sense for 2D atlas. Figure it out.
     # @abc.abstractmethod
     # def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
     #     """Add a texture to the atlas."""
