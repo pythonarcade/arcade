@@ -411,7 +411,7 @@ class TextureAtlas(TextureAtlasBase):
         # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
             try:
-                x, y, slot, region = self.allocate(texture.image_data)
+                x, y, slot, region = self._allocate(texture.image_data)
             except AllocatorException:
                 LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
                 if not self._auto_resize:
@@ -475,7 +475,7 @@ class TextureAtlas(TextureAtlasBase):
 
         return slot, texture_region
 
-    def allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
+    def _allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for an image in the atlas.
 
@@ -754,7 +754,7 @@ class TextureAtlas(TextureAtlasBase):
         # Clear the atlas without wiping the image and texture ids
         self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
         for image in sorted(images, key=lambda x: x.height):
-            self.allocate(image)
+            self._allocate(image)
 
         # Write the new image uv data
         self._image_uv_texture.write(self._image_uv_data, 0)
