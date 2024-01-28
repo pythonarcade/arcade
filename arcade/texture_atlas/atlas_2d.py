@@ -751,8 +751,9 @@ class TextureAtlas(TextureAtlasBase):
         # Store old images and textures before clearing the atlas
         images = list(self._images)
         textures = self.unique_textures
-        # Clear the atlas without wiping the image and texture ids
-        self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
+
+        # Clear the atlas texture wiping the image and texture ids
+        self._clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
         for image in sorted(images, key=lambda x: x.height):
             self._allocate(image)
 
@@ -800,13 +801,15 @@ class TextureAtlas(TextureAtlasBase):
         # Hold a reference to the old textures
         textures = self.textures
         self._image_ref_count.clear()
+
         # Clear the atlas but keep the uv slot mapping
-        self.clear(clear_image_ids=False, clear_texture_ids=False)
+        self._clear(clear_image_ids=False, clear_texture_ids=False)
+
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self.add(texture)
 
-    def clear(
+    def _clear(
         self,
         *,
         clear_image_ids: bool = True,
@@ -814,12 +817,13 @@ class TextureAtlas(TextureAtlasBase):
         texture: bool = True,
     ) -> None:
         """
-        Clear and reset the texture atlas.
+        Clear and reset states in the atlas. This is used internally when
+        resizing or rebuilding the atlas.
 
-        Note that also clearing "texture_ids" makes the atlas
-        lose track of the old texture ids. This
-        means the sprite list must be rebuild from scratch.
+        Clearing "texture_ids" makes the atlas lose track of the old texture ids.
+        This means the sprite list must be rebuild from scratch.
 
+        :param clear_image_ids: Clear the assigned image ids
         :param texture_ids: Clear the assigned texture ids
         :param texture: Clear the contents of the atlas texture itself
         """

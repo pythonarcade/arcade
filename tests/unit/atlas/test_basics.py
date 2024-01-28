@@ -87,7 +87,7 @@ def test_clear(ctx, common):
     atlas.add(tex_a)
     atlas.add(tex_b)
     common.check_internals(atlas, num_images=2, num_textures=2)
-    atlas.clear()
+    atlas._clear()
     common.check_internals(atlas, num_images=0, num_textures=0)
 
 
@@ -167,5 +167,5 @@ def test_uv_buffers_after_change(ctx):
     buf_check(atlas)
     atlas.rebuild()
     buf_check(atlas)
-    atlas.clear()
+    atlas._clear()
     buf_check(atlas)
