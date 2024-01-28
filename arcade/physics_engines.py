@@ -313,12 +313,12 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps: int = 1
         self.allow_multi_jump: bool = False
 
-        def update_ladders(self, ladders):
-            """ Update the current ladder list. """
-            if ladders:
-                self.ladders = [ladders] if isinstance(ladders, arcade.SpriteList) else list(ladders)
-            else:
-                self.ladders = None
+    def update_ladders(self, ladders):
+        """ Update the current ladder list. """
+        if ladders:
+            self.ladders = [ladders] if isinstance(ladders, arcade.SpriteList) else list(ladders)
+        else:
+            self.ladders = None
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """
