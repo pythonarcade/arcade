@@ -311,6 +311,8 @@ class PhysicsEnginePlatformer:
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
+        self.jump_delay = 0
+        self.jump_ticks = 0
         self.allow_multi_jump: bool = False
 
     def is_on_ladder(self):
@@ -342,23 +344,27 @@ class PhysicsEnginePlatformer:
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        if (len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
+                self.jump_ticks >= self.jump_delay):
             return True
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int, jump_delay: Optional[int] = 10):
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
         (1 allows only a single jump, 2 enables double-jump, etc)
 
         If you enable multi-jump, you MUST call increment_jump_counter()
-        every time the player jumps. Otherwise they can jump infinitely.
+        every time the player jumps. Otherwise, they can jump infinitely.
 
-        :param allowed_jumps:
+        :param allowed_jumps: Maximum number of jumps allowed
+        :param jump_delay: Number of ticks before another jump is allowed
         """
         self.allowed_jumps = allowed_jumps
+        self.jump_delay = jump_delay
+        self.jump_ticks = jump_delay
         self.allow_multi_jump = True
 
     def disable_multi_jump(self):
@@ -372,10 +378,44 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int):
-        """ Have the character jump. """
-        self.player_sprite.change_y = velocity
-        self.increment_jump_counter()
+    def jump(self, velocity: int,
+             air_jump_velocity: Optional[int] = None,
+             air_jump_style: Optional[str] = "set",
+             jump_velocity_limit: Optional[int] = None):
+        """ Have the character jump. Multijump can be set with a separate in-air velocity and can be air jumps can be
+        set to be additive, limited, or a set value. Additive only adds to the player's upward velocity. Limited will
+        set or add to the player's velocity. If the player is falling, then their velocity will be set to their air
+        jump speed. Otherwise, it will add their air jump speed up until the jump_velocity limit. Set always sets the
+        player's velocity to their air jump speed. """
+        if self.can_jump():
+            # Air Jump logic
+            if self.jumps_since_ground > 0:
+                # This checks if air_jump_velocity is set. If not it will default to the velocity for all air jumps.
+                if air_jump_velocity:
+                    air_jump = air_jump_velocity
+                else:
+                    air_jump = velocity
+                if air_jump_style == "additive":
+                    self.player_sprite.change_y += air_jump
+                elif air_jump_style == "limited":
+                    if not jump_velocity_limit:
+                        jump_velocity_limit = air_jump
+                    if self.player_sprite.change_y < 0:
+                        self.player_sprite.change_y = air_jump
+                    elif self.player_sprite.change_y + air_jump < jump_velocity_limit:
+                        self.player_sprite.change_y += air_jump
+                    else:
+                        self.player_sprite.change_y = jump_velocity_limit
+                elif air_jump_style == "set":
+                    self.player_sprite.change_y = air_jump
+                else:
+                    raise ValueError("Air jump style set is not valid. Use additive, limited, or set.")
+
+            # Ground Jump Logic
+            else:
+                self.player_sprite.change_y = velocity
+
+            self.increment_jump_counter()
 
     def increment_jump_counter(self):
         """
@@ -383,6 +423,7 @@ class PhysicsEnginePlatformer:
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
+            self.jump_ticks = 0
 
     def update(self):
         """
@@ -400,6 +441,10 @@ class PhysicsEnginePlatformer:
             # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+        if self.allow_multi_jump:
+            if self.jump_ticks < self.jump_delay:
+                self.jump_ticks += 1
 
         for platform_list in self.platforms:
             for platform in platform_list:
