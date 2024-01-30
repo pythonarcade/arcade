@@ -54,16 +54,16 @@ class UIAnchorLayout(UILayout):
     default_anchor_y = "center"
 
     def __init__(
-        self,
-        x: float = 0,
-        y: float = 0,
-        width: float = 100,
-        height: float = 100,
-        children: Iterable["UIWidget"] = tuple(),
-        size_hint=(1, 1),
-        size_hint_min=None,
-        size_hint_max=None,
-        **kwargs
+            self,
+            x: float = 0,
+            y: float = 0,
+            width: float = 1,
+            height: float = 1,
+            children: Iterable["UIWidget"] = tuple(),
+            size_hint=(1, 1),
+            size_hint_min=None,
+            size_hint_max=None,
+            **kwargs
     ):
         super().__init__(
             x=x,
@@ -82,14 +82,14 @@ class UIAnchorLayout(UILayout):
             self._place_child(child, **data)
 
     def add(
-        self,
-        child: W,
-        *,
-        anchor_x: Optional[str] = None,
-        align_x: float = 0,
-        anchor_y: Optional[str] = None,
-        align_y: float = 0,
-        **kwargs
+            self,
+            child: W,
+            *,
+            anchor_x: Optional[str] = None,
+            align_x: float = 0,
+            anchor_y: Optional[str] = None,
+            align_y: float = 0,
+            **kwargs
     ) -> W:
         """
         Add a widget to the layout as a child. Added widgets will receive
@@ -119,12 +119,12 @@ class UIAnchorLayout(UILayout):
         )
 
     def _place_child(
-        self,
-        child: UIWidget,
-        anchor_x: Optional[str] = None,
-        align_x: float = 0,
-        anchor_y: Optional[str] = None,
-        align_y: float = 0,
+            self,
+            child: UIWidget,
+            anchor_x: Optional[str] = None,
+            align_x: float = 0,
+            anchor_y: Optional[str] = None,
+            align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x
         anchor_y = anchor_y or self.default_anchor_y
@@ -214,19 +214,19 @@ class UIBoxLayout(UILayout):
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        width=0,
-        height=0,
-        vertical=True,
-        align="center",
-        children: Iterable[UIWidget] = tuple(),
-        size_hint=(0, 0),
-        size_hint_max=None,
-        space_between=0,
-        style=None,
-        **kwargs
+            self,
+            x=0,
+            y=0,
+            width=1,
+            height=1,
+            vertical=True,
+            align="center",
+            children: Iterable[UIWidget] = tuple(),
+            size_hint=(0, 0),
+            size_hint_max=None,
+            space_between=0,
+            style=None,
+            **kwargs
     ):
         super().__init__(
             x=x,
@@ -321,12 +321,12 @@ class UIBoxLayout(UILayout):
             # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
-                sum(
-                    child.size_hint[1] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                    sum(
+                        child.size_hint[1] or 0
+                        for child in self.children
+                        if child.size_hint
+                    )
+                    or 1
             )  # Prevent division by zero
 
             for child in self.children:
@@ -343,7 +343,7 @@ class UIBoxLayout(UILayout):
 
                     # Maximal growth to parent.width * shw
                     available_growth_height = min_height_value + available_height * (
-                        sh_h / total_size_hint_height
+                            sh_h / total_size_hint_height
                     )
                     max_growth_height = self.height * sh_h
                     new_rect = new_rect.resize(
@@ -388,12 +388,12 @@ class UIBoxLayout(UILayout):
             # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
-                sum(
-                    child.size_hint[0] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                    sum(
+                        child.size_hint[0] or 0
+                        for child in self.children
+                        if child.size_hint
+                    )
+                    or 1
             )  # Prevent division by zero
 
             # TODO Fix layout algorithm, handle size hints per dimension!
@@ -417,13 +417,13 @@ class UIBoxLayout(UILayout):
 
                     # Maximal growth to parent.width * shw
                     available_growth_width = min_width_value + available_width * (
-                        sh_w / total_size_hint_width
+                            sh_w / total_size_hint_width
                     )
                     max_growth_width = self.width * sh_w
                     new_rect = new_rect.resize(
                         width=min(
                             available_growth_width, max_growth_width
-                        )   # This does not enforce the minimum width
+                        )  # This does not enforce the minimum width
                     )
 
                     if shmn_w is not None:
@@ -494,27 +494,28 @@ class UIGridLayout(UILayout):
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        align_horizontal="center",
-        align_vertical="center",
-        children: Iterable[UIWidget] = tuple(),
-        size_hint=(0, 0),
-        size_hint_max=None,
-        horizontal_spacing: int = 0,
-        vertical_spacing: int = 0,
-        column_count: int = 1,
-        row_count: int = 1,
-        style=None,
-        **kwargs
+            self,
+            *,
+            x=0,
+            y=0,
+            align_horizontal="center",
+            align_vertical="center",
+            children: Iterable[UIWidget] = tuple(),
+            size_hint=(0, 0),
+            size_hint_max=None,
+            horizontal_spacing: int = 0,
+            vertical_spacing: int = 0,
+            column_count: int = 1,
+            row_count: int = 1,
+            style=None,
+            **kwargs
     ):
 
         super(UIGridLayout, self).__init__(
             x=x,
             y=y,
-            width=0,
-            height=0,
+            width=1,
+            height=1,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
@@ -608,23 +609,23 @@ class UIGridLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+                sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         )
         content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
+                sum(principal_width_ratio_list)
+                + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
     def add(
-        self,
-        child: W,
-        col_num: int = 0,
-        row_num: int = 0,
-        col_span: int = 1,
-        row_span: int = 1,
-        **kwargs
+            self,
+            child: W,
+            col_num: int = 0,
+            row_num: int = 0,
+            col_span: int = 1,
+            row_span: int = 1,
+            **kwargs
     ) -> W:
         """
         Add a widget to the grid layout.
@@ -682,9 +683,9 @@ class UIGridLayout(UILayout):
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
             for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
-            ]:
-                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
+                       row_num: row_num + row_span  # noqa: E203
+                       ]:
+                row[col_num: col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_height_ratio_list = []
         principal_width_ratio_list = []
