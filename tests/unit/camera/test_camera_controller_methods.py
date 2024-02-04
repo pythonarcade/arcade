@@ -36,15 +36,21 @@ def test_strafe(window: Window):
 
 
 def test_rotate_around_forward(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 
     # When
+    controllers.rotate_around_forward(camera_data, 90)
 
     # Then
+    assert camera_data.up == pytest.approx((-1.0, 0.0, 0.0))
 
 
 def test_rotate_around_up(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 
@@ -54,6 +60,8 @@ def test_rotate_around_up(window: Window):
 
 
 def test_rotate_around_right(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 
@@ -63,6 +71,8 @@ def test_rotate_around_right(window: Window):
 
 
 def test_interpolate(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 
@@ -72,6 +82,8 @@ def test_interpolate(window: Window):
 
 
 def test_simple_follow(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 
@@ -81,6 +93,8 @@ def test_simple_follow(window: Window):
 
 
 def test_simple_easing(window: Window):
+    # TODO
+
     # Given
     camera_data = camera.CameraData()
 

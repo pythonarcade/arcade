@@ -23,10 +23,9 @@ def strafe(data: CameraData, direction: Tuple[float, float]):
     Move the CameraData in a 2D direction aligned to the up-right plane of the view.
     A value of [1, 0] will move the camera sideways while a value of [0, 1]
     will move the camera upwards. Works irrespective of which direction the camera is facing.
-    Ensure the up and forward vectors are unit-length or the size of the motion will be incorrect.
     """
-    _forward = Vec3(*data.forward)
-    _up = Vec3(*data.up)
+    _forward = Vec3(*data.forward).normalize()
+    _up = Vec3(*data.up).normalize()
     _right = _forward.cross(_up)
 
     _pos = data.position

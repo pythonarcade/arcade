@@ -704,6 +704,8 @@ class Camera2D:
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
+            depth: The depth value which is mapped along with the screen coordinates. Because of how
+                   Orthographic perspectives work this does not impact how the screen_coordinates are mapped.
         Returns:
             A 2D vector (Along the XY plane) in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
