@@ -114,9 +114,11 @@ win.on_update = on_update
 def on_draw():
     win.ctx.enable(win.ctx.DEPTH_TEST)
     win.clear()
-    cam.use()
-    geo.render(prog)
 
+    with cam.activate():
+        geo.render(prog)
+
+    arcade.draw_text("Press ESC to quit", win.width//2, 25, anchor_x="center")
 
 win.on_draw = on_draw
 

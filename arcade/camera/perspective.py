@@ -2,7 +2,9 @@ from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec3, Vec4
+from math import tan, radians
 
+import arcade
 from arcade.camera.data import CameraData, PerspectiveProjectionData
 from arcade.camera.types import Projector
 
@@ -138,7 +140,7 @@ class PerspectiveProjector:
         finally:
             previous_projector.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float, float]:
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -146,22 +148,21 @@ class PerspectiveProjector:
 
         Essentially reverses the effects of the projector.
 
-        Because the scale changes depending on the depth tested at,
-        the depth is calculated to be the point at which the projection area
-        matches the area of the camera viewport. This would be the depth at which
-        one pixel in a texture is one pixel on screen.
+        The scale changes as the depth increases. You can
 
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query.
+            depth: The depth of the query. equivalent to the 'Z' coordinate.
+                   If left as None it will attempt to match the scale of the screen.
         Returns:
             A 3D vector in world space.
         """
-        # TODO Integrate Z-depth
+        depth = depth or self._projection.viewport[3] / (2 * tan(radians(self._projection.fov/2)))
+
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
-        screen_z = 2.0 * (depth - self._projection.near) / (self._projection.far - self._projection.near) - 1
+        screen_z = (depth - self._projection.near) / (self._projection.far - self._projection.near)
 
         _view = self._generate_view_matrix()
         _projection = self._generate_projection_matrix()
