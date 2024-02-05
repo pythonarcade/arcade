@@ -315,7 +315,7 @@ class PhysicsEnginePlatformer:
 
     def update_ladders(self, ladders: Union[SpriteList, Iterable[SpriteList]]):
         """ Update the current ladder list. """
-        self.ladders = [ladders] if isinstance(ladders, arcade.SpriteList) else list(ladders)
+        self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """
