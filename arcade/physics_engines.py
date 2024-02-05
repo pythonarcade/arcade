@@ -311,8 +311,8 @@ class PhysicsEnginePlatformer:
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
-        self.jump_delay = 0
-        self.jump_ticks = 0
+        self.jump_delay: int = 0
+        self.jump_ticks: int = 0
         self.allow_multi_jump: bool = False
 
     def is_on_ladder(self):
