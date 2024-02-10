@@ -117,6 +117,7 @@ EXCLUDED_MEMBERS = [
     "load_atlas",
     "save_atlas",
     "ImageDataRefCounter",
+    "UVData",
 ]
 
 def get_member_list(filepath):
