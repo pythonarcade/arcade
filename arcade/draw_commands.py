@@ -814,8 +814,8 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
-    width = right - left + 1
-    height = top - bottom + 1
+    width = right - left
+    height = top - bottom 
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
@@ -838,8 +838,8 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
-    width = right - left + 1
-    height = top - bottom + 1
+    width = right - left
+    height = top - bottom
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
@@ -853,7 +853,7 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     :param bottom_left_y: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
-    :param color: The color of the rectangleas an RGBA
+    :param color: The color of the rectangles an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
     center_x = bottom_left_x + (width / 2)
