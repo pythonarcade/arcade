@@ -192,6 +192,16 @@ class UVData:
         self._slots: Dict[str, int] = dict()
         self._slots_free = deque(i for i in range(0, self._num_slots))
 
+    def clone_with_slots(self) -> "UVData":
+        """
+        Clone the UVData with the same texture and slots only.
+        We can't lose the global slots when re-building or resizing the atlas.
+        """
+        clone = UVData(self._ctx, self._capacity)
+        clone._slots = self._slots
+        clone._slots_free = self._slots_free
+        return clone
+
     @property
     def num_slots(self) -> int:
         """The amount of texture coordinates (x4) this UVData can hold"""
@@ -694,6 +704,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
+        print("Removing texture", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
         try:
@@ -813,7 +824,7 @@ class TextureAtlas(TextureAtlasBase):
         # Create new image uv data temporarily keeping the old one
         self._image_uvs.write_to_texture()
         image_uvs_old = self._image_uvs
-        self._image_uvs = UVData(self._ctx, self._capacity)
+        self._image_uvs = image_uvs_old.clone_with_slots()
 
         # Create new atlas texture and framebuffer
         self._texture = self._ctx.texture(size, components=4)
@@ -870,6 +881,8 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
+        # print("Rebuilding atlas")
+
         # Hold a reference to the old textures
         textures = self.textures
         self._image_ref_count.clear()
