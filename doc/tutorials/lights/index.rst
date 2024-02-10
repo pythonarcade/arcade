@@ -1,7 +1,7 @@
 .. _light_tutorial:
 
-Lights Tutorial
-===============
+Lights
+======
 
 .. image:: lights.png
 

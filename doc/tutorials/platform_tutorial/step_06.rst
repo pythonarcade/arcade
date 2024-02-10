@@ -1,47 +1,62 @@
 .. _platformer_part_six:
 
-Step 6 - Add a Camera
-----------------------
+Step 6 - Resetting
+------------------
 
-We can have our window be a small viewport into a much larger world by adding
-a camera to it. 
+You might have noticed that throughout this tutorial, there has been a ``setup`` function
+in our Window class. So far, we haven't used this function at all, so what is it for?
 
-First we need to create a new variable in our ``__init__`` method:
+Let's imagine that we want a way to "reset" our game to it's initial state. This could be
+because the player lost, and we want to restart the game, or perhaps we just want to give the
+player the option to restart.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
-    :caption: 06_camera.py - Create camera variable
-    :lines: 40-41
+With our current architecture of creating everything in our ``__init__`` function, we would have to
+duplicate all of that logic in another function in order to make that happen, or completely re-create
+our Window, which will be an unpleasent experience for a player.
 
-Next we can initialize the camera in the ``setup`` function:
+In this chapter, we will do a small amount of re-organizing our existing code to make use of this
+setup function in a way that allows to simply call the ``setup`` function whenever we want our game
+to return to it's original state.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
-    :caption: 06_camera.py - Setup Camera
-    :lines: 48-49
+First off, we will change our ``__init__`` function to look like below. We are setting values
+to something like ``None``, 0, or similar. The purpose of this step is to ensure that the attributes
+are created on the class. In Python, we cannot add new attributes to a class outside of the ``__init__`` function.
 
-Then to use our camera when drawing, we can activate it in our ``on_draw`` function:
+.. code-block::
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
-    :caption: 06_camera.py - Use camera when drawing
-    :lines: 96-97
+    def __init__(self):
 
-Now at this point everything should be working the same, but the camera can do a lot
-more than this. We can use the ``move`` function of the camera to scroll it to a different
-position. We can use this functionality to keep the camera centered on the player:
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-We can create a function to calculate the coordinates for the center of our player
-relative to the screen, then move the camera to those. Then we can call that function in
-``on_update`` to actually move it. The new position will be taken into account during
-the ``use`` function in ``on_draw``
+        self.player_texture = None
+        self.player_sprite = None
+        self.player_list = None
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
-    :caption: 06_camera.py - Center camera on player
-    :lines: 121-143
-    :emphasize-lines: 1-14, 22-23
+        self.wall_list = None
+
+Next we will move the actual creation of these objects into our setup function. This looks almost identical
+to our original ``__init__`` function. Try and move these sections of code on your own, if you get stuck you can
+see the ``setup`` function in the full source code listing below.
+
+The last thing we need to do is create a way to reset the game. For now we'll add a simple key press to do it.
+Add the following in your ``on_key_press`` function to reset the game when the Escape key is pressed.
+
+.. code-block::
+
+    if key == arcade.key.ESCAPE:
+        self.setup()
 
 Source Code
 ~~~~~~~~~~~
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
-    :caption: Add a Camera
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_reset.py
+    :caption: Resetting
     :linenos:
-    :emphasize-lines: 40-41, 48-49, 96-97, 121-134, 142-143
+    :emphasize-lines: 33, 36, 39, 47, 49-93, 114-115
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.06_reset

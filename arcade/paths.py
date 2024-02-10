@@ -1,6 +1,8 @@
 """
 Classic A-star algorithm for path finding.
 """
+from __future__ import annotations
+
 import math
 from typing import (
     cast,
@@ -33,9 +35,9 @@ def _spot_is_blocked(position: Point,
     """
     Return if position is blocked
 
-    :param Point position: position to put moving_sprite at
-    :param Sprite moving_sprite: Sprite to use
-    :param SpriteList blocking_sprites: List of Sprites to check against
+    :param position: position to put moving_sprite at
+    :param moving_sprite: Sprite to use
+    :param blocking_sprites: List of Sprites to check against
 
     :return: If the Sprite would hit anything in blocking_sprites at the position
     """
@@ -50,8 +52,8 @@ def _heuristic(start: Point, goal: Point) -> float:
     """
     Returns a heuristic value for the passed points.
 
-    :param Point start: The 1st point to compare
-    :param Point goal: The 2nd point to compare
+    :param start: The 1st point to compare
+    :param goal: The 2nd point to compare
 
     :return: The heuristic of the 2 points
     """
@@ -69,12 +71,11 @@ class _AStarGraph(object):
     A grid which tracks 2 barriers and a moving sprite.
 
     :param Union[List, Tuple, Set] barriers: Is turned into a set, and then used for _AStarSearch
-    :param int left: Far left side x value
-    :param int right: Far right side x value
-    :param int bottom: Far bottom side y value
-    :param int top: Far top side y value
+    :param left: Far left side x value
+    :param right: Far right side x value
+    :param bottom: Far bottom side y value
+    :param top: Far top side y value
     """
-
     def __init__(self, barriers: Union[List, Tuple, Set],
                  left: int,
                  right: int,
@@ -103,7 +104,7 @@ class _AStarGraph(object):
 
         These are not guaranteed to be reachable or valid points.
 
-        :param Point pos: Which position to search around
+        :param pos: Which position to search around
 
         :return: Returns vertexes around the point
         """
@@ -125,8 +126,8 @@ class _AStarGraph(object):
         A barrier's cost is float("inf) so that that
         the Algorithm will never go on it
 
-        :param Point a: The 1st point to compare
-        :param Point b: The 2nd point to compare
+        :param a: The 1st point to compare
+        :param b: The 2nd point to compare
 
         :return: The move cost of moving between of the 2 points
         """
@@ -145,8 +146,8 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
 
     Graph is used to check for barriers.
 
-    :param Point start: point to start at
-    :param Point end: point to end at
+    :param start: point to start at
+    :param end: point to end at
 
     :return: The path from start to end. Returns None if is path is not found
     """
@@ -228,14 +229,14 @@ class AStarBarrierList:
     Class that manages a list of barriers that can be encountered during
     A* path finding.
 
-    :param BasicSprite moving_sprite: Sprite that will be moving
-    :param SpriteList blocking_sprites: Sprites that can block movement
-    :param int grid_size: Size of the grid, in pixels
-    :param int left: Left border of playing field
-    :param int right: Right border of playing field
-    :param int bottom: Bottom of playing field
-    :param int top: Top of playing field
-    :param Optional[Set] barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
+    :param moving_sprite: Sprite that will be moving
+    :param blocking_sprites: Sprites that can block movement
+    :param grid_size: Size of the grid, in pixels
+    :param left: Left border of playing field
+    :param right: Right border of playing field
+    :param bottom: Bottom of playing field
+    :param top: Top of playing field
+    :param barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
     def __init__(self,
                  moving_sprite: Sprite,
@@ -292,10 +293,10 @@ def astar_calculate_path(start_point: Point,
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
-    :param Point start_point: Where it starts
-    :param Point end_point: Where it ends
-    :param AStarBarrierList astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
-    :param bool diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
+    :param start_point: Where it starts
+    :param end_point: Where it ends
+    :param astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
+    :param diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
 
     :return: List of points(the path), or None if no path is found
     """
@@ -332,11 +333,11 @@ def has_line_of_sight(observer: Point,
     """
     Determine if we have line of sight between two points.
 
-    :param Point observer: Start position
-    :param Point target: End position position
-    :param SpriteList walls: List of all blocking sprites
-    :param int max_distance: Max distance point 1 can see
-    :param int check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
+    :param observer: Start position
+    :param target: End position position
+    :param walls: List of all blocking sprites
+    :param max_distance: Max distance point 1 can see
+    :param check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
 
     .. warning:: Try to make sure spatial hashing is enabled on ``walls``!
 
@@ -347,8 +348,14 @@ def has_line_of_sight(observer: Point,
     """
     if max_distance <= 0:
         raise ValueError("max_distance must be greater than zero")
+    if check_resolution <= 0:
+        raise ValueError("check_resolution must be greater than zero")
+
     distance = get_distance(observer[0], observer[1],
                             target[0], target[1])
+    if distance == 0:
+        return True
+
     steps = int(distance // check_resolution)
     for step in range(steps + 1):
         step_distance = step * check_resolution
@@ -367,8 +374,8 @@ def has_line_of_sight(observer: Point,
 #     """
 #     Bresenham's line algorithm
 
-#     :param Point start:
-#     :param Point end:
+#     :param start:
+#     :param end:
 #     :return: List of points
 #     """
 #     x1, y1 = start

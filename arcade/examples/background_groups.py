@@ -12,7 +12,7 @@ python -m arcade.examples.background_groups
 """
 
 import arcade
-import arcade.background as background
+import arcade.experimental.background as background
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

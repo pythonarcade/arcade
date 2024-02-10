@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Iterable, List, TypeVar, Tuple, Optional, cast
 
 from arcade.gui.property import bind
@@ -52,16 +54,16 @@ class UIAnchorLayout(UILayout):
     default_anchor_y = "center"
 
     def __init__(
-        self,
-        x: float = 0,
-        y: float = 0,
-        width: float = 100,
-        height: float = 100,
-        children: Iterable["UIWidget"] = tuple(),
-        size_hint=(1, 1),
-        size_hint_min=None,
-        size_hint_max=None,
-        **kwargs
+            self,
+            x: float = 0,
+            y: float = 0,
+            width: float = 1,
+            height: float = 1,
+            children: Iterable["UIWidget"] = tuple(),
+            size_hint=(1, 1),
+            size_hint_min=None,
+            size_hint_max=None,
+            **kwargs
     ):
         super().__init__(
             x=x,
@@ -80,14 +82,14 @@ class UIAnchorLayout(UILayout):
             self._place_child(child, **data)
 
     def add(
-        self,
-        child: W,
-        *,
-        anchor_x: Optional[str] = None,
-        align_x: float = 0,
-        anchor_y: Optional[str] = None,
-        align_y: float = 0,
-        **kwargs
+            self,
+            child: W,
+            *,
+            anchor_x: Optional[str] = None,
+            align_x: float = 0,
+            anchor_y: Optional[str] = None,
+            align_y: float = 0,
+            **kwargs
     ) -> W:
         """
         Add a widget to the layout as a child. Added widgets will receive
@@ -117,12 +119,12 @@ class UIAnchorLayout(UILayout):
         )
 
     def _place_child(
-        self,
-        child: UIWidget,
-        anchor_x: Optional[str] = None,
-        align_x: float = 0,
-        anchor_y: Optional[str] = None,
-        align_y: float = 0,
+            self,
+            child: UIWidget,
+            anchor_x: Optional[str] = None,
+            align_x: float = 0,
+            anchor_y: Optional[str] = None,
+            align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x
         anchor_y = anchor_y or self.default_anchor_y
@@ -187,7 +189,8 @@ class UIBoxLayout(UILayout):
         Or use :py:meth:`arcade.gui.UIBoxLayout.fit_content` to resize the layout. The
         bottom-left corner is used as the default anchor point.
 
-    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``.
+    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``. ``size_hint_min`` is automatically
+    updated based on the minimal required space by children.
 
     If a child widget provides a ``size_hint`` for a dimension, the child will
     be resized within the given range of ``size_hint_min`` and
@@ -196,8 +199,8 @@ class UIBoxLayout(UILayout):
     children) will be distributed to the child widgets based on their
     ``size_hint``.
 
-    :param float x: ``x`` coordinate of the bottom left corner.
-    :param float y: ``y`` coordinate of the bottom left corner.
+    :param x: ``x`` coordinate of the bottom left corner.
+    :param y: ``y`` coordinate of the bottom left corner.
     :param vertical: Layout children vertical (True) or horizontal (False).
     :param align: Align children in orthogonal direction::
                   - ``x``: ``left``, ``center``, and ``right``
@@ -206,26 +209,24 @@ class UIBoxLayout(UILayout):
     :param size_hint: Size hint for the :py:class:`~arcade.gui.UILayout` if
                       the widget would like to grow. Defaults to ``0, 0`` ->
                       minimal size to contain children.
-    :param size_hint_min: Minimum width and height in pixels.
     :param size_hint_max: Maximum width and height in pixels.
     :param space_between: Space in pixels between the children.
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        width=0,
-        height=0,
-        vertical=True,
-        align="center",
-        children: Iterable[UIWidget] = tuple(),
-        size_hint=(0, 0),
-        size_hint_min=None,
-        size_hint_max=None,
-        space_between=0,
-        style=None,
-        **kwargs
+            self,
+            x=0,
+            y=0,
+            width=1,
+            height=1,
+            vertical=True,
+            align="center",
+            children: Iterable[UIWidget] = tuple(),
+            size_hint=(0, 0),
+            size_hint_max=None,
+            space_between=0,
+            style=None,
+            **kwargs
     ):
         super().__init__(
             x=x,
@@ -234,7 +235,6 @@ class UIBoxLayout(UILayout):
             height=height,
             children=children,
             size_hint=size_hint,
-            size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=style,
             **kwargs
@@ -321,12 +321,12 @@ class UIBoxLayout(UILayout):
             # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
-                sum(
-                    child.size_hint[1] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                    sum(
+                        child.size_hint[1] or 0
+                        for child in self.children
+                        if child.size_hint
+                    )
+                    or 1
             )  # Prevent division by zero
 
             for child in self.children:
@@ -343,7 +343,7 @@ class UIBoxLayout(UILayout):
 
                     # Maximal growth to parent.width * shw
                     available_growth_height = min_height_value + available_height * (
-                        sh_h / total_size_hint_height
+                            sh_h / total_size_hint_height
                     )
                     max_growth_height = self.height * sh_h
                     new_rect = new_rect.resize(
@@ -388,12 +388,12 @@ class UIBoxLayout(UILayout):
             # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
-                sum(
-                    child.size_hint[0] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                    sum(
+                        child.size_hint[0] or 0
+                        for child in self.children
+                        if child.size_hint
+                    )
+                    or 1
             )  # Prevent division by zero
 
             # TODO Fix layout algorithm, handle size hints per dimension!
@@ -417,13 +417,13 @@ class UIBoxLayout(UILayout):
 
                     # Maximal growth to parent.width * shw
                     available_growth_width = min_width_value + available_width * (
-                        sh_w / total_size_hint_width
+                            sh_w / total_size_hint_width
                     )
                     max_growth_width = self.width * sh_w
                     new_rect = new_rect.resize(
                         width=min(
                             available_growth_width, max_growth_width
-                        )   # This does not enforce the minimum width
+                        )  # This does not enforce the minimum width
                     )
 
                     if shmn_w is not None:
@@ -470,55 +470,54 @@ class UIGridLayout(UILayout):
     ``size_hint_max``.
 
     Children are resized based on ``size_hint``. Maximum and minimum
-    ``size_hint``s only take effect if a ``size_hint`` is given.
+    ``size_hint``s only take effect if a ``size_hint`` is given. ``size_hint_min`` is automatically
+    updated based on the minimal required space by children.
 
-    :param float x: ``x`` coordinate of bottom left corner.
-    :param float y: ``y`` coordinate of bottom left corner.
-    :param str align_horizontal: Align children in orthogonal direction.
+    :param x: ``x`` coordinate of bottom left corner.
+    :param y: ``y`` coordinate of bottom left corner.
+    :param align_horizontal: Align children in orthogonal direction.
                                  Options include ``left``, ``center``, and
                                  ``right``.
-    :param str align_vertical: Align children in orthogonal direction. Options
+    :param align_vertical: Align children in orthogonal direction. Options
                                include ``top``, ``center``, and ``bottom``.
-    :param Iterable[UIWidget] children: Initial list of children. More can be
+    :param children: Initial list of children. More can be
                                         added later.
     :param size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if the
                       :py:class:`~arcade.gui.UIWidget` would like to grow.
-    :param size_hint_min: Minimum width and height in pixels.
     :param size_hint_max: Maximum width and height in pixels.
     :param horizontal_spacing: Space between columns.
     :param vertical_spacing: Space between rows.
-    :param int column_count: Number of columns in the grid. This can be changed
+    :param column_count: Number of columns in the grid. This can be changed
                              later.
-    :param int row_count: Number of rows in the grid. This can be changed
+    :param row_count: Number of rows in the grid. This can be changed
                           later.
     """
 
     def __init__(
-        self,
-        x=0,
-        y=0,
-        align_horizontal="center",
-        align_vertical="center",
-        children: Iterable[UIWidget] = tuple(),
-        size_hint=(0, 0),
-        size_hint_min=None,
-        size_hint_max=None,
-        horizontal_spacing: int = 0,
-        vertical_spacing: int = 0,
-        column_count: int = 1,
-        row_count: int = 1,
-        style=None,
-        **kwargs
+            self,
+            *,
+            x=0,
+            y=0,
+            align_horizontal="center",
+            align_vertical="center",
+            children: Iterable[UIWidget] = tuple(),
+            size_hint=(0, 0),
+            size_hint_max=None,
+            horizontal_spacing: int = 0,
+            vertical_spacing: int = 0,
+            column_count: int = 1,
+            row_count: int = 1,
+            style=None,
+            **kwargs
     ):
 
         super(UIGridLayout, self).__init__(
             x=x,
             y=y,
-            width=0,
-            height=0,
+            width=1,
+            height=1,
             children=children,
             size_hint=size_hint,
-            size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             style=style,
             **kwargs
@@ -610,35 +609,35 @@ class UIGridLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+                sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         )
         content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
+                sum(principal_width_ratio_list)
+                + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
     def add(
-        self,
-        child: W,
-        col_num: int = 0,
-        row_num: int = 0,
-        col_span: int = 1,
-        row_span: int = 1,
-        **kwargs
+            self,
+            child: W,
+            col_num: int = 0,
+            row_num: int = 0,
+            col_span: int = 1,
+            row_span: int = 1,
+            **kwargs
     ) -> W:
         """
         Add a widget to the grid layout.
 
-        :param UIWidget child: Specified child widget to add.
-        :param int col_num: Column index in which the widget is to be added.
+        :param child: Specified child widget to add.
+        :param col_num: Column index in which the widget is to be added.
                             The first column is numbered 0; which is the top
                             left corner.
-        :param int row_num: The row number in which the widget is to be added.
+        :param row_num: The row number in which the widget is to be added.
                             The first row is numbered 0; which is the
-        :param int col_span: Number of columns the widget will stretch for.
-        :param int row_span: Number of rows the widget will stretch for.
+        :param col_span: Number of columns the widget will stretch for.
+        :param row_span: Number of rows the widget will stretch for.
         """
         return super().add(
             child,
@@ -684,9 +683,9 @@ class UIGridLayout(UILayout):
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
             for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
-            ]:
-                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
+                       row_num: row_num + row_span  # noqa: E203
+                       ]:
+                row[col_num: col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_height_ratio_list = []
         principal_width_ratio_list = []

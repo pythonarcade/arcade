@@ -1,7 +1,7 @@
 .. _arcade-api-gl:
 
-Arcade OpenGL API
-=================
+OpenGL
+======
 
 This is the low level rendering API in Arcade and is used
 internally for all drawing/rendering. It's a higher level

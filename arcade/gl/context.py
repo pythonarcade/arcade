@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import logging
 import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
 from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
-                    Union)
+                    Union, overload, Literal)
 
 import pyglet
 import pyglet.gl.lib
@@ -294,7 +296,10 @@ class Context:
 
         :type: ``pyglet.Window``
         """
-        return self._window_ref()
+        window_ref = self._window_ref()
+        if window_ref is None:
+            raise Exception("Window not available, lost referenz.")
+        return window_ref
 
     @property
     def screen(self) -> Framebuffer:
@@ -333,7 +338,6 @@ class Context:
         This is only needed when ``gc_mode`` is ``context_gc``.
 
         :return: The number of resources destroyed
-        :rtype: int
         """
         # Loop the array until all objects are gone.
         # Deleting one object might add new ones so we need
@@ -788,8 +792,8 @@ class Context:
         * Only the source framebuffer can be multisampled
         * Framebuffers cannot have integer attachments
 
-        :param Framebuffer src: The framebuffer to copy from
-        :param Framebuffer dst: The framebuffer we copy to
+        :param src: The framebuffer to copy from
+        :param dst: The framebuffer we copy to
         """
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
         gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
@@ -842,11 +846,10 @@ class Context:
             dynamic
                 The data contents will be modified repeatedly and used many times.
 
-        :param BufferProtocol data: The buffer data. This can be a ``bytes`` instance or any
+        :param data: The buffer data. This can be a ``bytes`` instance or any
                                     any other object supporting the buffer protocol.
-        :param int reserve: The number of bytes to reserve
-        :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
-        :rtype: :py:class:`~arcade.gl.Buffer`
+        :param reserve: The number of bytes to reserve
+        :param usage: Buffer usage. 'static', 'dynamic' or 'stream'
         """
         return Buffer(self, data, reserve=reserve, usage=usage)
 
@@ -858,9 +861,8 @@ class Context:
     ) -> Framebuffer:
         """Create a Framebuffer.
 
-        :param List[arcade.gl.Texture] color_attachments: List of textures we want to render into
-        :param arcade.gl.Texture depth_attachment: Depth texture
-        :rtype: :py:class:`~arcade.gl.Framebuffer`
+        :param color_attachments: List of textures we want to render into
+        :param depth_attachment: Depth texture
         """
         return Framebuffer(
             self, color_attachments=color_attachments, depth_attachment=depth_attachment
@@ -889,15 +891,15 @@ class Context:
         Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
 
         :param Tuple[int, int] size: The size of the texture
-        :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param BufferProtocol data: The texture data (optional). Can be ``bytes``
+        :param components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+        :param data: The texture data (optional). Can be ``bytes``
                                     or any object supporting the buffer protocol.
-        :param GLenum wrap_x: How the texture wraps in x direction
-        :param GLenum wrap_y: How the texture wraps in y direction
-        :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
-        :param int samples: Creates a multisampled texture for values > 0
-        :param bool immutable: Make the storage (not the contents) immutable. This can sometimes be
+        :param wrap_x: How the texture wraps in x direction
+        :param wrap_y: How the texture wraps in y direction
+        :param filter: Minification and magnification filter
+        :param samples: Creates a multisampled texture for values > 0
+        :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
         """
         return Texture2D(
@@ -919,7 +921,7 @@ class Context:
         in a :py:class:`~arcade.gl.Framebuffer`.
 
         :param Tuple[int, int] size: The size of the texture
-        :param BufferProtocol data: The texture data (optional). Can be
+        :param data: The texture data (optional). Can be
                                     ``bytes`` or any object supporting
                                     the buffer protocol.
         """
@@ -994,11 +996,11 @@ class Context:
                 mode=ctx.POINTS,
             )
 
-        :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
-        :param Buffer index_buffer: Index/element buffer (optional)
-        :param int mode: The default draw mode (optional)
-        :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of a single index/element in the index buffer.
+        :param content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
+        :param index_buffer: Index/element buffer (optional)
+        :param mode: The default draw mode (optional)
+        :param mode: The default draw mode (optional)
+        :param index_element_size: Byte size of a single index/element in the index buffer.
                                        In other words, the index buffer can be 8, 16 or 32 bit integers.
                                        Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
@@ -1025,22 +1027,21 @@ class Context:
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
-        :param str vertex_shader: vertex shader source
-        :param str fragment_shader: fragment shader source (optional)
-        :param str geometry_shader: geometry shader source (optional)
-        :param str tess_control_shader: tessellation control shader source (optional)
-        :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
-        :param list common: Common shader sources injected into all shaders
-        :param dict defines: Substitute #defines values in the source (optional)
-        :param Optional[Sequence[str]] varyings: The name of the out attributes in a transform shader.
+        :param vertex_shader: vertex shader source
+        :param fragment_shader: fragment shader source (optional)
+        :param geometry_shader: geometry shader source (optional)
+        :param tess_control_shader: tessellation control shader source (optional)
+        :param tess_evaluation_shader: tessellation evaluation shader source (optional)
+        :param common: Common shader sources injected into all shaders
+        :param defines: Substitute #defines values in the source (optional)
+        :param varyings: The name of the out attributes in a transform shader.
                                                  This is normally not necessary since we auto detect them,
                                                  but some more complex out structures we can't detect.
-        :param str varyings_capture_mode: The capture mode for transforms.
+        :param varyings_capture_mode: The capture mode for transforms.
                                           ``"interleaved"`` means all out attribute will be written to a single buffer.
                                           ``"separate"`` means each out attribute will be written separate buffers.
                                           Based on these settings the `transform()` method will accept a single
                                           buffer or a list of buffer.
-        :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
@@ -1096,11 +1097,10 @@ class Context:
         """
         Create a query object for measuring rendering calls in opengl.
 
-        :param bool samples: Collect written samples
-        :param bool time: Measure rendering duration
-        :param bool primitives: Collect the number of primitives emitted
+        :param samples: Collect written samples
+        :param time: Measure rendering duration
+        :param primitives: Collect the number of primitives emitted
 
-        :rtype: :py:class:`~arcade.gl.Query`
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
@@ -1108,8 +1108,8 @@ class Context:
         """
         Create a compute shader.
 
-        :param str source: The glsl source
-        :param Iterable[str] common: Common / library source injected into compute shader
+        :param source: The glsl source
+        :param common: Common / library source injected into compute shader
         """
         src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return ComputeShader(self, src.get_source())
@@ -1142,7 +1142,7 @@ class ContextStats:
         """
         Increments a counter.
 
-        :param str key: The attribute name / counter to increment.
+        :param key: The attribute name / counter to increment.
         """
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
@@ -1160,7 +1160,7 @@ class ContextStats:
         """
         Decrement a counter.
 
-        :param str key: The attribute name / counter to decrement.
+        :param key: The attribute name / counter to decrement.
         """
         created, freed = getattr(self, key)
         setattr(self, key, (created, freed + 1))
@@ -1301,7 +1301,7 @@ class Limits:
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         #: The maximum support window or framebuffer viewport.
         #: This is usually the same as the maximum texture size
-        self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
         #: How many buffers we can have as output when doing a transform(feedback).
         #: This is usually 4
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
@@ -1313,6 +1313,12 @@ class Limits:
             from warnings import warn
 
             warn("Error happened while querying of limits. Moving on ..")
+
+    @overload
+    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]:...
+
+    @overload
+    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]:...
 
     def get_int_tuple(self, enum: GLenumLike, length: int):
         """Get an enum as an int tuple"""

@@ -27,7 +27,7 @@ def test_one():
     #
     assert sprite_1.width == 400
     assert sprite_1.height == 1000
-    assert sprite_1.angle == 45
+    assert sprite_1.angle == -45
 
     #
     # Test type and name properties

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 from PIL.Image import Image
 import pymunk
@@ -18,21 +20,14 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     This is a more accurate algorithm generating more points. The
     point count can be controlled with the ``detail`` parameter.
     """
-    name = "pymunk"
+
     #: The default detail when creating a new instance.
     default_detail = 4.5
 
     def __init__(self, *, detail: Optional[float] = None):
+        super().__init__()
         self.detail = detail or self.default_detail
-
-    @property
-    def param_str(self) -> str:
-        """
-        Return a string representation of the parameters used to create this algorithm.
-
-        This is used in caching.
-        """
-        return f"detail={self.detail}"
+        self._cache_name += f"|detail={self.detail}"
 
     def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
         """Create a new instance with new default values"""
@@ -42,8 +37,8 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         """
         Given an RGBA image, this returns points that make up a hit box around it.
 
-        :param Image image: Image get hit box from.
-        :param int detail: How detailed to make the hit box. There's a
+        :param image: Image get hit box from.
+        :param detail: How detailed to make the hit box. There's a
                            trade-off in number of points vs. accuracy.
 
         :Returns: List of points
@@ -73,8 +68,8 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
 
         Coordinates are offset so ``(0,0)`` is the center of the image.
 
-        :param Image image: Image to trace.
-        :param List[Vec2d] line_set: Line set to convert.
+        :param image: Image to trace.
+        :param line_set: Line set to convert.
         """
         # Convert to normal points, offset fo 0,0 is center, flip the y
         hh = image.height / 2.0
@@ -102,7 +97,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         holes in the image. If more than one line set is returned it's important
         to pick the one that covers the most of the image.
 
-        :param Image image: Image to trace.
+        :param image: Image to trace.
         :return: Line sets
         """
         def sample_func(sample_point: Point) -> int:
@@ -158,7 +153,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         """
         Given a list of line sets, return the one that covers the most of the image.
 
-        :param PolylineSet line_sets: List of line sets.
+        :param line_sets: List of line sets.
         :return: List of points that make up the line set.
         """
         if len(line_sets) == 1:

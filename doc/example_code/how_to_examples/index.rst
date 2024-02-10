@@ -433,10 +433,11 @@ Cameras
 
    :ref:`camera_platform`
 
-View Management
----------------
 
 .. _view_examples:
+
+View Management
+---------------
 
 Instruction and Game Over Screens
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

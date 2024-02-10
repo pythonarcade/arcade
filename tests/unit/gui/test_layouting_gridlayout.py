@@ -1,4 +1,4 @@
-from arcade.gui import UIDummy
+from arcade.gui import UIDummy, UIManager, UIBoxLayout, UIAnchorLayout
 from arcade.gui.widgets import Rect
 from arcade.gui.widgets.layout import UIGridLayout
 
@@ -240,6 +240,7 @@ def test_size_hint_and_spacing(window):
     subject.do_layout()
     assert dummy1.size == (100, 100)
 
+
 def test_empty_cells(window):
     dummy1 = UIDummy(width=100, height=100)
 
@@ -254,3 +255,47 @@ def test_empty_cells(window):
     subject.do_layout()
 
     assert dummy1.position == (0, 0)
+
+
+def test_nested_grid_layouts(window):
+    ui = UIManager()
+    outer = UIGridLayout(row_count=1, column_count=1)
+    inner = UIGridLayout(row_count=1, column_count=1)
+
+    inner.add(UIDummy(), 0, 0)
+    outer.add(inner, 0, 0)
+    ui.add(outer)
+
+    ui._do_layout()
+
+    assert inner.rect.size == (100, 100)
+    assert outer.rect.size == (100, 100)
+
+
+def test_nested_box_layouts(window):
+    ui = UIManager()
+    outer = UIGridLayout(row_count=1, column_count=1)
+    inner = UIBoxLayout()
+
+    inner.add(UIDummy())
+    outer.add(inner, 0, 0)
+    ui.add(outer)
+
+    ui._do_layout()
+
+    assert inner.rect.size == (100, 100)
+    assert outer.rect.size == (100, 100)
+
+
+def test_nested_anchor_layouts(window):
+    ui = UIManager()
+    outer = UIGridLayout(row_count=1, column_count=1)
+    inner = UIAnchorLayout(size_hint_min=(100, 100))
+
+    outer.add(inner, 0, 0)
+    ui.add(outer)
+
+    ui._do_layout()
+
+    assert inner.rect.size == (100, 100)
+    assert outer.rect.size == (100, 100)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Dict, List, Union
 from arcade.utils import warning, ReplacementWarning
@@ -104,7 +106,6 @@ def resolve(path: Union[str, Path]) -> Path:
     except FileNotFoundError:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
-
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     """
     Add a resource handle or path to an existing handle.
@@ -113,7 +114,7 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     the first path, it will look in the next path, and so on. The search
     is done in reverse order, so the last path added is searched first.
 
-    :param str handle: The name of the handle
+    :param handle: The name of the handle
     :param Union[str, Path] path: The absolute path to a directory
     """
     if isinstance(path, str):
@@ -142,7 +143,7 @@ def get_resource_handle_paths(handle: str) -> List[Path]:
     """
     Returns the paths for a resource handle.
 
-    :param str handle: The name of the handle
+    :param handle: The name of the handle
     """
     try:
         return handles[handle]
@@ -749,6 +750,7 @@ map_test_map_5 = ':assets:tiled_maps/test_map_5.json'
 map_test_map_6 = ':assets:tiled_maps/test_map_6.json'
 map_test_map_7 = ':assets:tiled_maps/test_map_7.json'
 map_test_objects = ':assets:tiled_maps/test_objects.json'
+video_earth = ':assets:video/earth.mp4'
 gui_button_square_blue = ':system:gui_basic_assets/button_square_blue.png'
 gui_button_square_blue_pressed = ':system:gui_basic_assets/button_square_blue_pressed.png'
 gui_larger = ':system:gui_basic_assets/icons/larger.png'

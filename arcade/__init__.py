@@ -3,8 +3,9 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-# flake8: noqa: E402
+from __future__ import annotations
 
+# flake8: noqa: E402
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
@@ -18,7 +19,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 
 def configure_logging(level: Optional[int] = None):
     """Set up basic logging.
-    :param int level: The log level. Defaults to DEBUG.
+    :param level: The log level. Defaults to DEBUG.
     """
     import logging
     level = level or logging.DEBUG
@@ -97,6 +98,8 @@ from .application import get_screens
 from .application import open_window
 
 from .texture import Texture
+from .texture import TextureManager
+from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
 from .texture import load_texture_pair
@@ -203,8 +206,6 @@ from .paths import astar_calculate_path
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
-from .texture_atlas import load_atlas
-from .texture_atlas import save_atlas
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
@@ -272,9 +273,9 @@ __all__ = [
     'SpriteSolidColor',
     'Text',
     'Texture',
+    'TextureManager',
+    'SpriteSheet',
     'TextureAtlas',
-    'load_atlas',
-    'save_atlas',
     'TileMap',
     'VERSION',
     'View',

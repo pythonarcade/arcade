@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from math import trunc
 from typing import (
     List,
@@ -16,7 +18,7 @@ class SpatialHash(Generic[SpriteType]):
 
     See: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
 
-    :param int cell_size: Size (width and height) of the cells in the spatial hash
+    :param cell_size: Size (width and height) of the cells in the spatial hash
     """
     def __init__(self, cell_size: int) -> None:
         # Sanity check the cell size
@@ -50,7 +52,7 @@ class SpatialHash(Generic[SpriteType]):
         """
         Add a sprite to the spatial hash.
 
-        :param Sprite sprite: The sprite to add
+        :param sprite: The sprite to add
         """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
@@ -75,7 +77,7 @@ class SpatialHash(Generic[SpriteType]):
         """
         Shortcut to remove and re-add a sprite.
 
-        :param Sprite sprite: The sprite to move
+        :param sprite: The sprite to move
         """
         self.remove(sprite)
         self.add(sprite)
@@ -84,7 +86,7 @@ class SpatialHash(Generic[SpriteType]):
         """
         Remove a Sprite.
 
-        :param Sprite sprite: The sprite to remove
+        :param sprite: The sprite to remove
         """
         # Remove the sprite from all the buckets it is in
         for bucket in self.buckets_for_sprite[sprite]:
@@ -97,9 +99,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Get all the sprites that are in the same buckets as the given sprite.
 
-        :param Sprite sprite: The sprite to check
+        :param sprite: The sprite to check
         :return: A set of close-by sprites
-        :rtype: Set
         """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
@@ -120,10 +121,9 @@ class SpatialHash(Generic[SpriteType]):
         """
         Return sprites in the same bucket as the given point.
 
-        :param Point point: The point to check
+        :param point: The point to check
 
         :return: A set of close-by sprites
-        :rtype: Set
         """
         hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
@@ -133,9 +133,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Return sprites in the same buckets as the given rectangle.
 
-        :param Rect rect: The rectangle to check (left, right, bottom, top)
+        :param rect: The rectangle to check (left, right, bottom, top)
         :return: A set of sprites in the rectangle
-        :rtype: Set
         """
         left, right, bottom, top = rect
         min_point = trunc(left), trunc(bottom)

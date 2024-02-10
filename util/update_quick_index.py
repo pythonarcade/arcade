@@ -46,9 +46,14 @@ titles = {
     'texture/texture.py': ['Texture Management', 'texture.rst'],
     'texture/loading.py': ['Texture Management', 'texture.rst'],
     'texture/generate.py': ['Texture Management', 'texture.rst'],
+    'texture/manager.py': ['Texture Management', 'texture.rst'],
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
+    'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
     'math.py': ['Math', 'math.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
@@ -58,12 +63,8 @@ titles = {
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
     '__main__.py': ['Misc Utility Functions', 'utility.rst'],
     'utils.py': ['Misc Utility Functions', 'utility.rst'],
-    'version.py': ['Arcade Version Number', 'version.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -102,13 +103,21 @@ titles = {
     'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
+excluded_modules = [
+    'version.py',
+    'texture_atlas/atlas_array.py',
+    'texture_atlas/atlas_bindless.py',
+    'texture_atlas/helpers.py',
+]
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
     "ImageData",
-    "AtlasRegion",
-    "ImageDataRefCounter",
     "FakeImage",
+    "load_atlas",
+    "save_atlas",
+    "ImageDataRefCounter",
+    "UVData",
 ]
 
 def get_member_list(filepath):
@@ -186,7 +195,7 @@ def process_directory(directory: Path, quick_index_file):
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
-            "texture_atlas": "arcade",
+            "texture_atlas": "arcade.texture_atlas",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
@@ -207,11 +216,12 @@ def process_directory(directory: Path, quick_index_file):
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
         path_name = prepend + path.name
+        # print(package, path.name, path_name)
 
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
-        elif path_name not in titles:
+        elif path_name not in titles and path_name not in excluded_modules:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
             print(f"No title for '{path_name}'.")
@@ -242,10 +252,6 @@ def process_directory(directory: Path, quick_index_file):
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
-
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
@@ -270,10 +276,6 @@ def process_directory(directory: Path, quick_index_file):
                 quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f"{full_class_name}\n")
-                underline = "^" * len(full_class_name)
-                api_file.write(f"{underline}\n\n")
-
                 api_file.write(f".. autofunction:: {full_class_name}\n\n")
 
                 # print(f"  Function {item}")
@@ -295,26 +297,6 @@ table_header_arcade = """
    :widths: 50 50
    :header-rows: 1
    :name: quickapi
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_gui = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapigui
-   :class: display
-
-   * - Name
-     - Group"""
-
-table_header_tiled = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapitiled
    :class: display
 
    * - Name
@@ -348,27 +330,10 @@ def main():
     process_directory(ROOT / "arcade/texture", text_file)
     process_directory(ROOT / "arcade/texture_atlas", text_file)
     process_directory(ROOT / "arcade/text", text_file)
-
-    # text_file.write(f"The ``arcade.gl`` module\n")
-    # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.gui module\n")
-    text_file.write("---------------------\n\n")
-
-    text_file.write(table_header_gui)
-
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
-
-    text_file.write("\n\n")
-    text_file.write("The arcade.tilemap module\n")
-    text_file.write("-------------------------\n\n")
-
-    text_file.write(table_header_tiled)
-
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()

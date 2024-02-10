@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from typing import List
 
@@ -222,10 +224,13 @@ class PerfGraph(arcade.Sprite):
             return
 
         sprite_list = self.sprite_lists[0]
+        atlas = sprite_list.atlas
 
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
-            with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+            # Please forgive the ugly spacing. It makes type checking work.
+            with atlas.render_into( # type: ignore
+                    self.minimap_texture, projection=self.proj) as fbo:
                 fbo.clear(color=(0, 0, 0, 255))
             return
 
@@ -282,7 +287,9 @@ class PerfGraph(arcade.Sprite):
                 text_object.text = f"{int(index * view_y_legend_increment)}"
 
         # Render to the internal texture
-        with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:
+        # This ugly spacing is intentional to make type checking work.
+        with atlas.render_into( # type: ignore
+                self.minimap_texture, projection=self.proj) as fbo:
 
             # Set the background color
             fbo.clear(self.background_color)

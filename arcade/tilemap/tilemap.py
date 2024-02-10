@@ -7,6 +7,8 @@ For more info on Tiled see: https://www.mapeditor.org/
 For more info on pytiled-parser see: https://github.com/Beefy-Swain/pytiled_parser
 """
 
+from __future__ import annotations
+
 import copy
 import math
 import os
@@ -29,7 +31,7 @@ from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 from arcade.texture.loading import _load_tilemap_texture
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
+    from arcade import TextureAtlas, Texture
 
 from pyglet.math import Vec2
 
@@ -100,6 +102,16 @@ def _get_image_source(
     return None
 
 
+def _may_be_flip(tile: pytiled_parser.Tile, texture: Texture) -> Texture:
+        if tile.flipped_diagonally:
+            texture = texture.flip_diagonally()
+        if tile.flipped_horizontally:
+            texture = texture.flip_horizontally()
+        if tile.flipped_vertically:
+            texture = texture.flip_vertically()
+        return texture
+
+
 class TileMap:
     """
     Class that represents a fully parsed and loaded map from Tiled.
@@ -108,22 +120,22 @@ class TileMap:
 
 
     :param Union[str, Path] map_file: A JSON map file for a Tiled map to initialize from
-    :param float scaling: Global scaling to apply to all Sprites.
+    :param scaling: Global scaling to apply to all Sprites.
     :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
-    :param bool use_spatial_hash: If set to True, this will make moving a sprite
+    :param use_spatial_hash: If set to True, this will make moving a sprite
            in the SpriteList slower, but it will speed up collision detection
            with items in the SpriteList. Great for doing collision detection
            with static walls/platforms.
-    :param str hit_box_algorithm: The hit box algorithm to use for the Sprite's in this layer.
-    :param pytiled_parser.TiledMap tiled_map: An already parsed pytiled-parser map object.
+    :param hit_box_algorithm: The hit box algorithm to use for the Sprite's in this layer.
+    :param tiled_map: An already parsed pytiled-parser map object.
            Passing this means that the ``map_file`` argument will be ignored, and the pre-parsed
            map will instead be used. This can be helpful for working with Tiled World files.
-    :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
+    :param offset: Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
-    :param Optional[arcade.TextureAtlas] texture_atlas: A default texture atlas to use for the
+    :param texture_atlas: A default texture atlas to use for the
             SpriteLists created by this map. If not supplied the global default atlas will be used.
-    :param bool lazy: SpriteLists will be created lazily.
+    :param lazy: SpriteLists will be created lazily.
 
 
     The `layer_options` parameter can be used to specify per layer arguments.
@@ -318,8 +330,8 @@ class TileMap:
         If you have a map with 128x128 pixel Tiles, and you supply coordinates 500, 250 to
         this function you'll receive back 3, 2
 
-        :param float x: The X Coordinate to convert
-        :param float y: The Y Coordinate to convert
+        :param x: The X Coordinate to convert
+        :param y: The Y Coordinate to convert
         """
         x = math.floor(x / (self.tile_width * self.scaling))
         y = math.floor(y / (self.tile_height * self.scaling))
@@ -464,12 +476,7 @@ class TileMap:
                 height=height,
                 hit_box_algorithm=hit_box_algorithm,
             )
-            if tile.flipped_diagonally:
-                texture = texture.flip_diagonally()
-            if tile.flipped_horizontally:
-                texture = texture.flip_horizontally()
-            if tile.flipped_vertically:
-                texture = texture.flip_vertically()
+            texture = _may_be_flip(tile, texture)
 
             args = {
                 "path_or_texture": texture,  # type: ignore
@@ -623,6 +630,8 @@ class TileMap:
                             f"tile '{frame_tile.id}', '{image_file}'."
                         )
 
+                    texture = _may_be_flip(tile, texture)
+
                     key_frame = AnimationKeyframe(  # type: ignore
                         frame.tile_id, frame.duration, texture
                     )
@@ -700,7 +709,7 @@ class TileMap:
         args = {
             "filename": image_file,
             "scale": scaling,
-            "texture": my_texture,
+            "path_or_texture": my_texture,
             "hit_box_algorithm": hit_box_algorithm,
         }
 
@@ -720,7 +729,9 @@ class TileMap:
         my_sprite.center_x = (
             (layer.offset[0] * scaling) + my_sprite.width / 2
         ) + offset[0]
-        my_sprite.center_y = (layer.offset[1]) + offset[1]
+        my_sprite.top = (
+            self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+            - layer.offset[1]) * scaling + offset[1]
 
         sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
@@ -858,7 +869,7 @@ class TileMap:
                 # center_x = width / 2
                 # center_y = height / 2
                 if cur_object.rotation:
-                    rotation = -math.radians(cur_object.rotation)
+                    rotation = math.radians(cur_object.rotation)
                 else:
                     rotation = 0
 
@@ -1023,17 +1034,17 @@ def load_tilemap(
     of the `TileMap` class
 
     :param Union[str, Path] map_file: The JSON map file.
-    :param float scaling: The global scaling to apply to all Sprite's within the map.
-    :param bool use_spatial_hash: If set to True, this will make moving a sprite
+    :param scaling: The global scaling to apply to all Sprite's within the map.
+    :param use_spatial_hash: If set to True, this will make moving a sprite
                in the SpriteList slower, but it will speed up collision detection
                with items in the SpriteList. Great for doing collision detection
                with static walls/platforms.
-    :param str hit_box_algorithm: The hit box algorithm to use for collision detection.
+    :param hit_box_algorithm: The hit box algorithm to use for collision detection.
     :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
-    :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
+    :param offset: Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
-    :param bool lazy: SpriteLists will be created lazily.
+    :param lazy: SpriteLists will be created lazily.
     """
     return TileMap(
         map_file=map_file,

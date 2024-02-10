@@ -1,7 +1,7 @@
 .. _compute_shader_tutorial:
 
-Compute Shader Tutorial
-=======================
+Compute Shader
+==============
 
 .. raw:: html
 

@@ -1,7 +1,7 @@
 .. _performance:
 
-Arcade Performance Information
-==============================
+Performance
+===========
 
 
 .. image:: ../images/flame-arrow.svg

@@ -48,6 +48,14 @@ API in a way that is not compatible with how it was used in 2.6.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
 * `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
+* GUI
+
+  * Removed :py:class:`~arcade.gui.widgets.UIWrapper` this is now general available in :py:class:`~arcade.gui.widgets.UILayout`
+  * Removed :py:class:`~arcade.gui.widgets.UIBorder` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIPadding` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UITexturePane` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIAnchorWidget` replaced by :py:class:`~arcade.gui.widgets.UIAnchorLayout`
+
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -189,6 +197,9 @@ Changes
   * Fixed many implicit type conversions in the shader code for wider support.
   * Added ``front_face`` property on the context for configuring front face winding order of triangles
   * Added ``cull_face`` property on the context for configuring what triangle face to cull
+  * Added support for bindless textures
+  * Added support for 64 bit integer uniforms
+  * Added support for 64 float uniforms
 
 * :py:class:`~arcade.tilemap.TileMap`
 
@@ -204,6 +215,9 @@ Changes
     ``layer_options`` dictionary.
     If no custom atlas is provided, then the global default atlas will be used (This is how it works pre-Arcade 3.0).
   * Fix for animated tiles from sprite sheets
+  * TextureAtlas: Added ``sync_texture_image`` method to sync the texture in the atlas back into
+    the internal pillow image in the ``arcade.Texture``.
+  * TextureAtlas: Added ``get_texture_image`` method to get pixel data of a texture in the atlas as a pillow image.
 
 * Collision Detection
 

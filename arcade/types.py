@@ -3,6 +3,9 @@ Module specifying data custom types used for type hinting.
 """
 from __future__ import annotations
 
+from __future__ import annotations
+
+import sys
 from array import array
 import ctypes
 import random
@@ -17,7 +20,8 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING, TypeVar
+    TYPE_CHECKING,
+    TypeVar
 )
 from typing_extensions import Self
 
@@ -268,7 +272,7 @@ class Color(RGBA255):
             >>> Color.from_uint32(0xFF0000FF)
             Color(r=255, g=0, b=0, a=255)
 
-        :param int color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
@@ -299,7 +303,7 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param RGBANormalized color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
+        :param color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
         :return:
         """
         r, g, b, *_a = color_normalized
@@ -397,10 +401,10 @@ class Color(RGBA255):
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param int r: Fixed value for red channel
-        :param int g: Fixed value for green channel
-        :param int b: Fixed value for blue channel
-        :param int a: Fixed value for alpha channel
+        :param r: Fixed value for red channel
+        :param g: Fixed value for green channel
+        :param b: Fixed value for blue channel
+        :param a: Fixed value for alpha channel
         """
         if r is None:
             r = random.randint(0, 255)
@@ -446,11 +450,11 @@ class TiledObject(NamedTuple):
     type: Optional[str] = None
 
 
-# This is a temporary workaround for the lack of a way to type annotate
-# objects implementing the buffer protocol. Although there is a PEP to
-# add typing, it is scheduled for 3.12. Since that is years away from
-# being our minimum Python version, we have to use a workaround. See
-# the PEP and Python doc for more information:
-# https://peps.python.org/pep-0688/
-# https://docs.python.org/3/c-api/buffer.html
-BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
+if sys.version_info >= (3, 12):
+    from collections.abc import Buffer as BufferProtocol
+else:
+    # This is used instead of the typing_extensions version since they
+    # use an ABC which registers virtual subclasses. This will not work
+    # with ctypes.Array since virtual subclasses must be concrete.
+    # See: https://peps.python.org/pep-0688/
+    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import Optional
 
@@ -24,10 +26,10 @@ def make_circle_texture(
     """
     Return a Texture of a circle with the given diameter and color.
 
-    :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param RGBA255 color: Color of the circle as a
+    :param diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
+    :param color: Color of the circle as a
         :py:class:`~arcade.types.Color` instance a 3 or 4 tuple.
-    :param str name: Custom or pre-chosen name for this texture
+    :param name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
@@ -52,16 +54,15 @@ def make_soft_circle_texture(
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
 
-    :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param RGBA255 color: Color of the circle as a 4-length tuple or
+    :param diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
+    :param color: Color of the circle as a 4-length tuple or
         :py:class:`~arcade.types.Color` instance.
-    :param int center_alpha: Alpha value of the circle at its center.
-    :param int outer_alpha: Alpha value of the circle at its edges.
-    :param str name: Custom or pre-chosen name for this texture
-    :param str hit_box_algorithm: The hit box algorithm
+    :param center_alpha: Alpha value of the circle at its center.
+    :param outer_alpha: Alpha value of the circle at its edges.
+    :param name: Custom or pre-chosen name for this texture
+    :param hit_box_algorithm: The hit box algorithm
 
     :returns: New :class:`Texture` object.
-    :rtype: arcade.Texture
     """
     # Name must be unique for caching
     name = cache.crate_str_from_values(
@@ -106,11 +107,11 @@ def make_soft_square_texture(
     """
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
 
-    :param int size: Diameter of the square and dimensions of the square Texture returned.
-    :param RGBA255 color: Color of the square.
-    :param int center_alpha: Alpha value of the square at its center.
-    :param int outer_alpha: Alpha value of the square at its edges.
-    :param str name: Custom or pre-chosen name for this texture
+    :param size: Diameter of the square and dimensions of the square Texture returned.
+    :param color: Color of the square.
+    :param center_alpha: Alpha value of the square at its center.
+    :param outer_alpha: Alpha value of the square at its edges.
+    :param name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
