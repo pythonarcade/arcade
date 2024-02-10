@@ -704,7 +704,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        print("Removing texture", texture.atlas_name)
+        # print("Removing texture", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
         try:
