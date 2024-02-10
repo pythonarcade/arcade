@@ -518,7 +518,7 @@ class TextureAtlas(TextureAtlasBase):
         if not self.has_image(texture.image_data):
             try:
                 # Attempt to allocate space for the image
-                x, y, slot, region = self._allocate(texture.image_data)
+                x, y, slot, region = self._allocate_image(texture.image_data)
                 # Write the pixel data to the atlas texture
                 self.write_image(texture.image_data.image, x, y)
             except AllocatorException:
@@ -574,7 +574,7 @@ class TextureAtlas(TextureAtlasBase):
 
         return slot, texture_region
 
-    def _allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
+    def _allocate_image(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for an image in the atlas or
         update the existing space for the image.
@@ -832,7 +832,7 @@ class TextureAtlas(TextureAtlasBase):
 
         # Re-allocate the images
         for image in sorted(images, key=lambda x: x.height):
-            self._allocate(image)
+            self._allocate_image(image)
         self._image_uvs.write_to_texture()
 
         # Update the texture regions. We need to copy the image regions
