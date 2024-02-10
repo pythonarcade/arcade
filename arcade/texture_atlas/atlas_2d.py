@@ -635,7 +635,11 @@ class TextureAtlas(TextureAtlasBase):
 
     # def write_texture(self, texture: "Texture", x: int, y: int):
     #     """
-    #     Writes an arcade texture to a subsection of the texture atlas
+    #     Writes an arcade texture to a subsection of the texture atlas.
+
+    #     :param texture: The arcade texture
+    #     :param x: The x position to write the texture
+    #     :param y: The y position to write the texture
     #     """
     #     self.write_image(texture.image, x, y)
 
@@ -1012,46 +1016,34 @@ class TextureAtlas(TextureAtlasBase):
 
         return size, size
 
-    def get_texture_image(self, texture: "Texture") -> Image.Image:
+    def read_texture_image_from_atlas(self, texture: "Texture") -> Image.Image:
         """
-        Get a Pillow image of a texture's region in the atlas.
-        This can be used to inspect the contents of the atlas
-        or to save the texture to disk.
+        Read the pixel data for a texture directly from the atlas texture on the GPU.
+        The contents of this image can be altered by rendering into the atlas and
+        is useful in situations were you need the updated pixel data on the python side.
 
         :param texture: The texture to get the image for
         :return: A pillow image containing the pixel data in the atlas
         """
         region = self.get_image_region_info(texture.image_data.hash)
         viewport = (
-            region.x + self._border,
-            region.y + self._border,
+            region.x,
+            region.y,
             region.width,
             region.height,
         )
         data = self.fbo.read(viewport=viewport, components=4)
         return Image.frombytes("RGBA", (region.width, region.height), data)
 
-    def sync_texture_image(self, texture: "Texture") -> None:
+    def update_texture_image_from_atlas(self, texture: "Texture") -> None:
         """
-        Updates a texture's image with the contents in the
-        texture atlas. This is usually not needed, but if
-        you have altered a texture in the atlas directly
-        this can be used to copy the image data back into
-        the texture.
-
-        Updating the image will not change the texture's
-        hash or the texture's hit box points.
-
-        .. warning::
-
-            This method is somewhat expensive and should be used sparingly.
-            Altering the internal image of a texture is not recommended
-            unless you know exactly what you're doing. Textures are
-            supposed to be immutable.
+        Update the arcade Texture's internal image with the pixel data content
+        from the atlas texture on the GPU. This can be useful if you render
+        into the atlas and need to update the texture with the new pixel data.
 
         :param texture: The texture to update
         """
-        texture.image_data.image = self.get_texture_image(texture)
+        texture.image_data.image = self.read_texture_image_from_atlas(texture)
 
     def to_image(
         self,
