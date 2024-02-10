@@ -350,7 +350,7 @@ class PhysicsEnginePlatformer:
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int, jump_delay: Optional[int] = 10):
+    def enable_multi_jump(self, allowed_jumps: int, jump_delay: int = 10):
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
