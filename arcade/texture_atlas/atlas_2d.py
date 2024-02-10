@@ -546,8 +546,7 @@ class TextureAtlas(TextureAtlasBase):
                 # Recursively try to add the texture again
                 return self.add(texture)
 
-        # NOTE: THIS NEEDS TO TO UPDATED! FIGURE OUT LOGIC
-
+        # Finally we can register the texture
         info = self._allocate_texture(texture)
         return info
 
@@ -772,7 +771,6 @@ class TextureAtlas(TextureAtlasBase):
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
-        # TODO: Should we check all textures or unique_textures?
         return texture in self._textures
 
     def has_unique_texture(self, texture: "Texture") -> bool:
@@ -811,10 +809,8 @@ class TextureAtlas(TextureAtlasBase):
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
         self._size = size
-        # Keep the old atlas texture and uv texture
-        # self._image_uv_texture.write(self._image_uv_data, 0)
-        # image_uv_texture_old = self._image_uv_texture
 
+        # Create new image uv data temporarily keeping the old one
         self._image_uvs.write_to_texture()
         image_uvs_old = self._image_uvs
         self._image_uvs = UVData(self._ctx, self._capacity)
@@ -827,8 +823,10 @@ class TextureAtlas(TextureAtlasBase):
         images = list(self._images)
         textures = self.unique_textures
 
-        # Clear the atlas texture wiping the image and texture ids
-        self._clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
+        # Clear the regions and allocator
+        self._image_regions = dict()
+        self._texture_regions = dict()
+        self._allocator = Allocator(*self._size)
 
         # Re-allocate the images
         for image in sorted(images, key=lambda x: x.height):
@@ -877,33 +875,7 @@ class TextureAtlas(TextureAtlasBase):
         self._image_ref_count.clear()
 
         # Clear the atlas but keep the uv slot mapping
-        self._clear(clear_image_ids=False, clear_texture_ids=False)
-
-        # Add textures back sorted by height to potentially make more room
-        for texture in sorted(textures, key=lambda x: x.image.size[1]):
-            self.add(texture)
-
-    def _clear(
-        self,
-        *,
-        clear_image_ids: bool = True,
-        clear_texture_ids: bool = True,
-        texture: bool = True,
-    ) -> None:
-        """
-        Clear and reset states in the atlas. This is used internally when
-        resizing or rebuilding the atlas.
-
-        Clearing "texture_ids" makes the atlas lose track of the old texture ids.
-        This means the sprite list must be rebuild from scratch.
-
-        :param clear_image_ids: Clear the assigned image ids
-        :param texture_ids: Clear the assigned texture ids
-        :param texture: Clear the contents of the atlas texture itself
-        """
-        # TODO: Make the docstring more clear.
-        if texture:
-            self._fbo.clear()
+        self._fbo.clear()
 
         self._textures = WeakSet()
         self._unique_textures = WeakValueDictionary()
@@ -913,12 +885,9 @@ class TextureAtlas(TextureAtlasBase):
         self._texture_regions = dict()
         self._allocator = Allocator(*self._size)
 
-        if clear_image_ids:
-            self._image_ref_count = ImageDataRefCounter()
-            self._image_uvs = UVData(self._ctx, self._capacity)
-
-        if clear_texture_ids:
-            self._texture_uvs = UVData(self._ctx, self._capacity)
+        # Add textures back sorted by height to potentially make more room
+        for texture in sorted(textures, key=lambda x: x.image.size[1]):
+            self.add(texture)
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
