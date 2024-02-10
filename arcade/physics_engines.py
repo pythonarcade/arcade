@@ -290,9 +290,9 @@ class PhysicsEnginePlatformer:
         self.walls: List[SpriteList]
 
         if ladders:
-            self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
-            self.ladders = None
+            self._ladders = None
 
         if platforms:
             if isinstance(platforms, SpriteList):
@@ -313,9 +313,20 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps: int = 1
         self.allow_multi_jump: bool = False
 
-    def update_ladders(self, ladders: Union[SpriteList, Iterable[SpriteList]]):
-        """ Update the current ladder list. """
-        self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+    @property
+    def ladders(self):
+        return self._ladders
+
+    @ladders.setter
+    def ladders(self, ladders: Union[SpriteList, Iterable[SpriteList]]):
+        if ladders:
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+        else:
+            self._ladders = None
+
+    @ladders.deleter
+    def ladders(self):
+        self._ladders = None
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """
