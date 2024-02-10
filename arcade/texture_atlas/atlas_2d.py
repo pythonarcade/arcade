@@ -42,8 +42,15 @@ if TYPE_CHECKING:
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must divide. Must be a power of two number like 64, 256, 512 etx
 RESIZE_STEP = 128
+# This is the maximum size of the float32 UV texture. 4096 is a safe value for
+# OpenGL ES 3.1/2. It's not recommended to go higher than this. This is a 2D
+# texture anyway, so more rows can be added.
 UV_TEXTURE_WIDTH = 4096
+
 LOG = logging.getLogger(__name__)
+
+# Texture coordinates for a texture (4 x vec2)
+TexCoords = Tuple[float, float, float, float, float, float, float, float]
 
 
 class AtlasRegion:
@@ -95,7 +102,7 @@ class AtlasRegion:
         y: int,
         width: int,
         height: int,
-        texture_coordinates: Optional[Tuple[float, float, float, float, float, float, float, float]] = None,
+        texture_coordinates: Optional[TexCoords] = None,
     ):
         self.x = x
         self.y = y
@@ -146,6 +153,133 @@ class AtlasRegion:
         )
 
 
+class UVData:
+    """
+    A container for float32 texture coordinates stored in a texture.
+    Each texture coordinate has a slot/index in the texture and is
+    looked up by a shader to obtain the texture coordinates.
+
+    The purpose of this system is to:
+    * Greatly increase the performance of the texture atlas
+    * Greatly simplify the system
+    * Allow images to move freely around the atlas without having to update the vertex buffers.
+      Meaning we can allow re-building and re-sizing. The resize can even
+      be done in the GPU by rendering the old atlas into the new one.
+    * Avoid spending lots of time packing texture data into buffers
+    * Avoid spending lots of buffer memory
+
+    :param ctx: The arcade context
+    :param capacity: The number of textures the atlas keeps track of.
+                     This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
+    """
+    def __init__(self, ctx: "ArcadeContext", capacity: int):
+        self._ctx = ctx
+        self._capacity = capacity
+        self._num_slots = UV_TEXTURE_WIDTH * capacity
+        self._dirty = False
+
+        # The GPU resource
+        self._texture = self._ctx.texture(
+            (UV_TEXTURE_WIDTH, self._num_slots * 2 // UV_TEXTURE_WIDTH),
+            components=4,
+            dtype="f4",
+        )
+        self._texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
+
+        # Python resources: data + tracker for slots
+        # 8 floats per texture (4 x vec2 coordinates)
+        self._data = array("f", [0] * self._num_slots * 8)
+        self._slots: Dict[str, int] = dict()
+        self._slots_free = deque(i for i in range(0, self._num_slots))
+
+    def clone_with_slots(self) -> "UVData":
+        """
+        Clone the UVData with the same texture and slots only.
+        We can't lose the global slots when re-building or resizing the atlas.
+        """
+        clone = UVData(self._ctx, self._capacity)
+        clone._slots = self._slots
+        clone._slots_free = self._slots_free
+        return clone
+
+    @property
+    def num_slots(self) -> int:
+        """The amount of texture coordinates (x4) this UVData can hold"""
+        return self._num_slots
+
+    @property
+    def num_free_slots(self) -> int:
+        """The amount of free texture coordinates slots"""
+        return len(self._slots_free)
+
+    @property
+    def texture(self) -> "Texture2D":
+        """The texture containing the texture coordinates"""
+        return self._texture
+
+    def get_slot_or_raise(self, name: str) -> int:
+        """
+        Get the slot for a texture by name or raise an exception
+
+        :param name: The name of the texture
+        :return: The slot
+        :raises Exception: If the texture is not found
+        """
+        slot = self._slots.get(name)
+        if slot is None:
+            raise Exception(f"Texture '{name}' not found in UVData")
+        return slot
+
+    def get_existing_or_free_slot(self, name: str) -> int:
+        """
+        Get the slot for a texture by name or a free slot-
+
+        :param name: The name of the texture
+        :return: The slot or a free slot
+        """
+        slot = self._slots.get(name)
+        if slot is not None:
+            return slot
+
+        try:
+            slot = self._slots_free.popleft()
+            self._slots[name] = slot
+            return slot
+        except IndexError:
+            raise Exception((
+                "No more free slots in the UV texture. "
+                f"Max number of slots: {self._num_slots}"
+            ))
+
+    def free_slot_by_name(self, name: str) -> None:
+        """
+        Free a slot for a texture by name.
+
+        :param name: The name of the texture
+        """
+        slot = self._slots.pop(name)
+        if slot is None:
+            raise Exception(f"Texture '{name}' not found in UVData")
+
+        self._slots_free.appendleft(slot)
+
+    def set_slot_data(self, slot: int, data: TexCoords) -> None:
+        """
+        Update the texture coordinates for a slot.
+
+        :param slot: The slot to update
+        :param data: The texture coordinates
+        """
+        self._data[slot * 8:slot * 8 + 8] = array("f", data)
+        self._dirty = True
+
+    def write_to_texture(self) -> None:
+        """Write the texture coordinates to the texture if dirty"""
+        if self._dirty:
+            self._texture.write(self._data, 0)
+            self._dirty = False
+
+
 class TextureAtlas(TextureAtlasBase):
     """
     A texture atlas with a size in a context.
@@ -176,8 +310,8 @@ class TextureAtlas(TextureAtlasBase):
     :param auto_resize: Automatically resize the atlas when full
     :param ctx: The context for this atlas (will use window context if left empty)
     :param capacity: The number of textures the atlas keeps track of.
-                         This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
-                         This value can affect the performance of the atlas.
+                     This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
+                     This value can affect the performance of the atlas.
     """
     def __init__(
         self,
@@ -194,6 +328,7 @@ class TextureAtlas(TextureAtlasBase):
         self._size: Tuple[int, int] = size
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
+        self._capacity = capacity
         self._border: int = border
         if self._border < 0:
             raise ValueError("Border must be 0 or a positive integer")
@@ -203,8 +338,7 @@ class TextureAtlas(TextureAtlasBase):
         # stored in a float32 texture.
         if not isinstance(capacity, int) or capacity < 1:
             raise ValueError("Capacity must be a positive integer")
-        self._num_image_slots = UV_TEXTURE_WIDTH * capacity  # 16k
-        self._num_texture_slots = UV_TEXTURE_WIDTH * capacity  # 16k
+
         self._check_size(self._size)
 
         # The atlas texture
@@ -220,49 +354,32 @@ class TextureAtlas(TextureAtlasBase):
         # by rendering the old atlas into the new one.
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
-        # A dictionary of all the allocated regions for images in the atlas
+        # Texture coordinate data for images and textures.
+        # * The image UVs are used when rebuilding the atlas
+        # * The texture UVs are passed into sprite shaders as a source for texture coordinates
+        self._image_uvs = UVData(self._ctx, capacity)
+        self._texture_uvs = UVData(self._ctx, capacity)
+
+        # A dictionary of all the allocated regions for images/textures in the atlas.
+        # The texture regions are clones of the image regions with transforms applied
+        # in order to map the same image using different orders or texture coordinates.
         # The key is the cache name for a texture
         self._image_regions: Dict[str, AtlasRegion] = dict()
         self._texture_regions: Dict[str, AtlasRegion] = dict()
+
         # Ref counter for images and textures. Per atlas we need to keep
         # track of ho many times an image is used in textures to determine
-        # when to remove an image from the atlas.
+        # when to remove an image from the atlas. We only ever track images
+        # using their sha256 hash to avoid writing the same image multiple times.
         self._image_ref_count = ImageDataRefCounter()
 
         # A list of all the images this atlas contains.
         # Unique by: Internal hash property
         self._images: WeakSet[ImageData] = WeakSet()
+        # All textures added to the atlas
+        self._textures: WeakSet[Texture] = WeakSet()
         # atlas_name: Texture
-        self._textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
-
-        # Texture containing texture coordinates for images and textures
-        # The 4096 width is a safe constant for all GL implementations
-        self._image_uv_texture = self._ctx.texture(
-            (UV_TEXTURE_WIDTH, self._num_texture_slots * 2 // UV_TEXTURE_WIDTH),
-            components=4,
-            dtype="f4",
-        )
-        self._texture_uv_texture = self._ctx.texture(
-            (UV_TEXTURE_WIDTH, self._num_image_slots * 2 // UV_TEXTURE_WIDTH),
-            components=4,
-            dtype="f4",
-        )
-        self._image_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
-        self._texture_uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
-        self._image_uv_data = array("f", [0] * self._num_image_slots * 8)
-        self._texture_uv_data = array("f", [0] * self._num_texture_slots * 8)
-
-        # Free slots in the texture coordinate texture for images and textures
-        self._image_uv_slots_free = deque(i for i in range(0, self._num_image_slots))
-        self._texture_uv_slots_free = deque(i for i in range(0, self._num_texture_slots))
-
-        # Keep track of which slot each texture or image is in
-        self._image_uv_slots: Dict[str, int] = dict()  # hash: slot
-        self._texture_uv_slots: Dict[str, int] = dict()  # cache_name: slot
-
-        # Dirty flags for when texture coordinates are changed for each type
-        self._image_uv_data_changed = True
-        self._texture_uv_data_changed = True
+        self._unique_textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
 
         # Add all the textures
         for tex in textures or []:
@@ -272,7 +389,6 @@ class TextureAtlas(TextureAtlasBase):
     def width(self) -> int:
         """
         The width of the texture atlas in pixels
-
         """
         return self._size[0]
 
@@ -280,7 +396,6 @@ class TextureAtlas(TextureAtlasBase):
     def height(self) -> int:
         """
         The height of the texture atlas in pixels
-
         """
         return self._size[1]
 
@@ -288,7 +403,6 @@ class TextureAtlas(TextureAtlasBase):
     def size(self) -> Tuple[int, int]:
         """
         The width and height of the texture atlas in pixels
-
         """
         return self._size
 
@@ -296,7 +410,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_width(self) -> int:
         """
         The maximum width of the atlas in pixels
-
         """
         return self._max_size[0]
 
@@ -304,7 +417,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_height(self) -> int:
         """
         The maximum height of the atlas in pixels
-
         """
         return self._max_size[1]
 
@@ -312,7 +424,6 @@ class TextureAtlas(TextureAtlasBase):
     def max_size(self) -> Tuple[int, int]:
         """
         The maximum size of the atlas in pixels (x, y)
-
         """
         return self._max_size
 
@@ -321,7 +432,6 @@ class TextureAtlas(TextureAtlasBase):
         """
         Get or set the auto resize flag for the atlas.
         If enabled the atlas will resize itself when full.
-
         """
         return self._auto_resize
 
@@ -333,7 +443,6 @@ class TextureAtlas(TextureAtlasBase):
     def border(self) -> int:
         """
         The texture border in pixels
-
         """
         return self._border
 
@@ -341,7 +450,6 @@ class TextureAtlas(TextureAtlasBase):
     def texture(self) -> "Texture2D":
         """
         The atlas texture.
-
         """
         return self._texture
 
@@ -349,17 +457,15 @@ class TextureAtlas(TextureAtlasBase):
     def image_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for images.
-
         """
-        return self._image_uv_texture
+        return self._image_uvs.texture
 
     @property
     def texture_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for textures.
-
         """
-        return self._texture_uv_texture
+        return self._texture_uvs.texture
 
     @property
     def fbo(self) -> Framebuffer:
@@ -369,12 +475,22 @@ class TextureAtlas(TextureAtlasBase):
     @property
     def textures(self) -> List["Texture"]:
         """
-        Return a list of all the textures in the atlas.
-
-        A new list is constructed from the internal weak set of textures.
-
+        All textures instance added to the atlas regardless
+        of their internal state. See :py:meth:`unique_textures``
+        for textures with unique image data and transformation.
         """
-        return list(self._textures.values())
+        return list(self._textures)
+
+    @property
+    def unique_textures(self) -> List["Texture"]:
+        """
+        All unique textures in the atlas.
+
+        These are textures using an image with the same hash
+        and the same vertex order. The full list of all textures
+        can be found in :py:meth:`textures`.
+        """
+        return list(self._unique_textures.values())
 
     @property
     def images(self) -> List["ImageData"]:
@@ -382,7 +498,6 @@ class TextureAtlas(TextureAtlasBase):
         Return a list of all the images in the atlas.
 
         A new list is constructed from the internal weak set of images.
-
         """
         return list(self._images)
 
@@ -394,10 +509,16 @@ class TextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
-        # If the texture is already in the atlas we also have the image
-        # and can return early with the texture id and region
-        if self.has_texture(texture):
-            slot = self.get_texture_id(texture.atlas_name)
+        # Store a reference to the texture instance if we don't already have it
+        # These are any texture instances regardless of content
+        if not self.has_texture(texture):
+            self._textures.add(texture)
+            texture.add_atlas_ref(self)
+            self._image_ref_count.inc_ref(texture.image_data)
+
+        # Return existing texture if we already have a texture with the same image hash and vertex order
+        if self.has_unique_texture(texture):
+            slot = self._texture_uvs.get_slot_or_raise(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
             return slot, region
 
@@ -406,75 +527,66 @@ class TextureAtlas(TextureAtlasBase):
         # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
             try:
-                x, y, slot, region = self.allocate(texture.image_data)
+                # Attempt to allocate space for the image
+                x, y, slot, region = self._allocate_image(texture.image_data)
+                # Write the pixel data to the atlas texture
+                self.write_image(texture.image_data.image, x, y)
             except AllocatorException:
                 LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
                 if not self._auto_resize:
                     raise
 
-                # If we have lost regions we can try to rebuild the atlas
+                # If we have lost regions/images we can try to rebuild the atlas
                 removed_image_count = self._image_ref_count.get_total_decref()
                 if removed_image_count > 0:
                     LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
                     self.rebuild()
                     return self.add(texture)
 
+                # Double the size of the atlas (capped my max size)
                 width = min(self.width * 2, self.max_width)
                 height = min(self.height * 2, self.max_height)
+                # If the size didn't change we have a problem ..
                 if self._size == (width, height):
                     raise
+
+                # Resize the atlas making more room for images
                 self.resize((width, height))
+
+                # Recursively try to add the texture again
                 return self.add(texture)
 
-            # Write the pixel data to the atlas texture
-            self.write_image(texture.image_data.image, x, y)
-
+        # Finally we can register the texture
         info = self._allocate_texture(texture)
-        self._image_ref_count.inc_ref(texture.image_data)
-        texture.add_atlas_ref(self)
         return info
 
     def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
         """
-        Add the texture to the atlas.
-
-        This reserves a slot in the texture coordinate texture
-        and returns the slot and region. The region is a copy of
-        the image region with the texture coordinates transformed
-        using the texture's vertex order.
+        Add or update a unique texture in the atlas.
+        This is mainly responsible for updating the texture coordinates
         """
-        if len(self._texture_uv_slots_free) == 0:
-            raise AllocatorException((
-                "No more free texture slots in the atlas. "
-                f"Max number of slots: {self._num_texture_slots}"
-            ))
-
         # NOTE: This is also called when re-building the atlas meaning we
         #       need to support updating the texture coordinates for existing textures
-        existing_slot = self._texture_uv_slots.get(texture.atlas_name)
-        slot = existing_slot if existing_slot is not None else self._texture_uv_slots_free.popleft()
-        self._texture_uv_slots[texture.atlas_name] = slot
+        slot = self._texture_uvs.get_existing_or_free_slot(texture.atlas_name)
 
+        # Copy the region for the image and apply the texture transform
         image_region = self.get_image_region_info(texture.image_data.hash)
         texture_region = copy.deepcopy(image_region)
         texture_region.texture_coordinates = Transform.transform_texture_coordinates_order(
             texture_region.texture_coordinates, texture._vertex_order
         )
-        self._texture_regions[texture.atlas_name] = texture_region
+        self._texture_regions[texture.atlas_name] = texture_region  # add or update region
 
         # Put texture coordinates into uv buffer
-        offset = slot * 8
-        for i in range(8):
-            self._texture_uv_data[offset + i] = texture_region.texture_coordinates[i]
-
-        self._texture_uv_data_changed = True
-        self._textures[texture.atlas_name] = texture
+        self._texture_uvs.set_slot_data(slot, texture_region.texture_coordinates)
+        self._unique_textures[texture.atlas_name] = texture  # add or update texture
 
         return slot, texture_region
 
-    def allocate(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
+    def _allocate_image(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
         """
-        Attempts to allocate space for an image in the atlas.
+        Attempts to allocate space for an image in the atlas or
+        update the existing space for the image.
 
         This doesn't write the texture to the atlas texture itself.
         It only allocates space.
@@ -482,12 +594,6 @@ class TextureAtlas(TextureAtlasBase):
         :return: The x, y texture_id, TextureRegion
         """
         image = image_data.image
-
-        if len(self._image_uv_slots_free) == 0:
-            raise AllocatorException((
-                "No more free image slots in the atlas. "
-                f"Max number of slots: {self._num_image_slots}"
-            ))
 
         # Allocate space for texture
         try:
@@ -515,20 +621,15 @@ class TextureAtlas(TextureAtlasBase):
             image.height,
         )
         self._image_regions[image_data.hash] = region
+
         # Get the existing slot for this texture or grab a new one.
         # Existing slots for textures will only happen when re-building
         # the atlas since we want to keep the same slots to avoid
         # re-building the sprite list
-        existing_slot = self._image_uv_slots.get(image_data.hash)
-        slot = existing_slot if existing_slot is not None else self._image_uv_slots_free.popleft()
-        self._image_uv_slots[image_data.hash] = slot
-
+        slot = self._image_uvs.get_existing_or_free_slot(image_data.hash)
         # Put texture coordinates into uv buffer
-        offset = slot * 8
-        for i in range(8):
-            self._image_uv_data[offset + i] = region.texture_coordinates[i]
+        self._image_uvs.set_slot_data(slot, region.texture_coordinates)
 
-        self._image_uv_data_changed = True
         self._images.add(image_data)
         return x, y, slot, region
 
@@ -603,20 +704,30 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        del self._textures[texture.atlas_name]
-        # Reclaim the texture uv slot
-        del self._texture_regions[texture.atlas_name]
-        slot = self._texture_uv_slots[texture.atlas_name]
-        del self._texture_uv_slots[texture.atlas_name]
-        self._texture_uv_slots_free.appendleft(slot)
+        # print("Removing texture", texture.atlas_name)
+        # The texture is not there if GCed but we still
+        # need to remove if it it's a manual action
+        try:
+            self._textures.remove(texture)
+        except KeyError:
+            pass
+
+        # Remove the unique texture if it's there
+        if self.has_unique_texture(texture):
+            del self._unique_textures[texture.atlas_name]
+            # Reclaim the texture uv slot
+            del self._texture_regions[texture.atlas_name]
+            self._texture_uvs.free_slot_by_name(texture.atlas_name)
 
         # Reclaim the image in the atlas if it's not used by any other texture
         if self._image_ref_count.dec_ref(texture.image_data) == 0:
-            self._images.remove(texture.image_data)
+            # Image might be GCed already
+            try:
+                self._images.remove(texture.image_data)
+            except KeyError:
+                pass
             del self._image_regions[texture.image_data.hash]
-            slot = self._image_uv_slots[texture.image_data.hash]
-            del self._image_uv_slots[texture.image_data.hash]
-            self._image_uv_slots_free.appendleft(slot)
+            self._image_uvs.free_slot_by_name(texture.image_data.hash)
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -659,27 +770,26 @@ class TextureAtlas(TextureAtlasBase):
         """
         return self._texture_regions[atlas_name]
 
-    def get_texture_id(self, atlas_name: str) -> int:
+    def get_texture_id(self, texture: "Texture") -> int:
         """
-        Get the uv slot for a texture by atlas name
+        Get the internal id for a Texture in the atlas
 
         :param atlas_name: The name of the texture in the atlas
         :return: The texture id for the given texture name
+        :raises Exception: If the texture is not in the atlas
         """
-        return self._texture_uv_slots[atlas_name]
-
-    def get_image_id(self, hash: str) -> int:
-        """
-        Get the uv slot for a image by hash
-
-        :param hash: The hash of the image
-        :return: The texture id for the given texture name
-        """
-        return self._image_uv_slots[hash]
+        return self._texture_uvs.get_slot_or_raise(texture.atlas_name)
 
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
-        return texture.atlas_name in self._textures
+        return texture in self._textures
+
+    def has_unique_texture(self, texture: "Texture") -> bool:
+        """
+        Check if the atlas already have a texture with the
+        same image data and vertex order
+        """
+        return texture.atlas_name in self._unique_textures
 
     def has_image(self, image_data: "ImageData") -> bool:
         """Check if a image is already in the atlas"""
@@ -698,61 +808,60 @@ class TextureAtlas(TextureAtlasBase):
         :param size: The new size
         """
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
+        # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
         if size == self._size:
             return
 
+        self._check_size(size)
         resize_start = time.perf_counter()
 
-        self._check_size(size)
-        self._size = size
-        # Keep the old atlas texture and uv texture
-        self._image_uv_texture.write(self._image_uv_data, 0)
-        image_uv_texture_old = self._image_uv_texture
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
+        self._size = size
 
-        # Create new image uv texture as input for the copy shader
-        self._image_uv_texture = self._ctx.texture(
-            (UV_TEXTURE_WIDTH, self._num_image_slots * 2 // UV_TEXTURE_WIDTH),
-            components=4,
-            dtype="f4",
-        )
+        # Create new image uv data temporarily keeping the old one
+        self._image_uvs.write_to_texture()
+        image_uvs_old = self._image_uvs
+        self._image_uvs = image_uvs_old.clone_with_slots()
+
         # Create new atlas texture and framebuffer
         self._texture = self._ctx.texture(size, components=4)
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # Store old images and textures before clearing the atlas
         images = list(self._images)
-        textures = self.textures
-        # Clear the atlas without wiping the image and texture ids
-        self.clear(clear_texture_ids=False, clear_image_ids=False, texture=False)
-        for image in sorted(images, key=lambda x: x.height):
-            self.allocate(image)
+        textures = self.unique_textures
 
-        # Write the new image uv data
-        self._image_uv_texture.write(self._image_uv_data, 0)
-        self._image_uv_data_changed = False
+        # Clear the regions and allocator
+        self._image_regions = dict()
+        self._texture_regions = dict()
+        self._allocator = Allocator(*self._size)
+
+        # Re-allocate the images
+        for image in sorted(images, key=lambda x: x.height):
+            self._allocate_image(image)
+        self._image_uvs.write_to_texture()
 
         # Update the texture regions. We need to copy the image regions
         # and re-apply the transforms on each texture
         for texture in textures:
             self._allocate_texture(texture)
-
-        self.texture_uv_texture.write(self._texture_uv_data)
-        self._texture_uv_data_changed = False
+        self._texture_uvs.write_to_texture()
 
         # Bind textures for atlas copy shader
         atlas_texture_old.use(0)
         self._texture.use(1)
-        image_uv_texture_old.use(2)
-        self._image_uv_texture.use(3)
+        image_uvs_old.texture.use(2)
+        self._image_uvs.texture.use(3)
         self._ctx.atlas_resize_program["border"] = float(self._border)
         self._ctx.atlas_resize_program["projection"] = Mat4.orthogonal_projection(
             0, self.width, self.height, 0, -100, 100,
         )
 
+        # Render the old atlas into the new one. This means we actually move
+        # all the textures around from the old to the new position.
         with self._fbo.activate():
             # Ensure no context flags are enabled
             with self._ctx.enabled_only():
@@ -772,45 +881,26 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
+        # print("Rebuilding atlas")
+
         # Hold a reference to the old textures
         textures = self.textures
-        self._image_ref_count = ImageDataRefCounter()
+        self._image_ref_count.clear()
+
         # Clear the atlas but keep the uv slot mapping
-        self.clear(clear_image_ids=False, clear_texture_ids=False)
-        # Add textures back sorted by height to potentially make more room
-        for texture in sorted(textures, key=lambda x: x.image.size[1]):
-            self.add(texture)
+        self._fbo.clear()
 
-    def clear(
-        self,
-        *,
-        clear_image_ids: bool = True,
-        clear_texture_ids: bool = True,
-        texture: bool = True,
-    ) -> None:
-        """
-        Clear and reset the texture atlas.
-        Note that also clearing "texture_ids" makes the atlas
-        lose track of the old texture ids. This
-        means the sprite list must be rebuild from scratch.
-
-        :param texture_ids: Clear the assigned texture ids
-        :param texture: Clear the contents of the atlas texture itself
-        """
-        if texture:
-            self._fbo.clear()
-        self._textures = WeakValueDictionary()
+        self._textures = WeakSet()
+        self._unique_textures = WeakValueDictionary()
         self._images = WeakSet()
+
         self._image_regions = dict()
         self._texture_regions = dict()
         self._allocator = Allocator(*self._size)
-        if clear_image_ids:
-            self._image_ref_count = ImageDataRefCounter()
-            self._image_uv_slots_free = deque(i for i in range(self._num_image_slots))
-            self._image_uv_slots = dict()
-        if clear_texture_ids:
-            self._texture_uv_slots_free = deque(i for i in range(self._num_texture_slots))
-            self._texture_uv_slots = dict()
+
+        # Add textures back sorted by height to potentially make more room
+        for texture in sorted(textures, key=lambda x: x.image.size[1]):
+            self.add(texture)
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
@@ -822,15 +912,11 @@ class TextureAtlas(TextureAtlasBase):
 
         :param unit: The texture unit to bind the uv texture
         """
-        if self._image_uv_data_changed:
-            self._image_uv_texture.write(self._image_uv_data, 0)
-            self._image_uv_data_changed = False
+        # Sync the texture coordinates to the texture if dirty
+        self._image_uvs.write_to_texture()
+        self._texture_uvs.write_to_texture()
 
-        if self._texture_uv_data_changed:
-            self._texture_uv_texture.write(self._texture_uv_data, 0)
-            self._texture_uv_data_changed = False
-
-        self._texture_uv_texture.use(unit)
+        self._texture_uvs.texture.use(unit)
 
     @contextmanager
     def render_into(
@@ -899,6 +985,8 @@ class TextureAtlas(TextureAtlasBase):
         :param border: The border around each texture in pixels
         :return: An estimated minimum size as a (width, height) tuple
         """
+        # TODO: This method is not very efficient.
+
         # Try to guess some sane minimum size to reduce the brute force iterations
         total_area = sum(t.image.size[0] * t.image.size[1] for t in textures)
         sqrt_size = int(math.sqrt(total_area))
@@ -1062,16 +1150,7 @@ class TextureAtlas(TextureAtlasBase):
     def _check_size(self, size: Tuple[int, int]) -> None:
         """Check it the atlas exceeds the hardware limitations"""
         if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
-            raise ValueError(
+            raise Exception(
                 "Attempting to create or resize an atlas to "
                 f"{size} past its maximum size of {self._max_size}"
             )
-
-    def print_contents(self):
-        """Debug method to print the contents of the atlas"""
-        print("Textures:")
-        for texture in self.textures:
-            print("->", texture)
-        print("Images:")
-        for image in self._images:
-            print("->", image)
