@@ -36,9 +36,9 @@ class App(arcade.Window):
         for i, tex in enumerate(self.textures):
             self.spritelist.append(arcade.Sprite(tex, center_x=100 + 130 * i, center_y=300))
 
-        for i in range(8):
+        for i in range(len(TRANSFORMS)):
             sprite = self.spritelist[i]
-            sprite.texture = sprite.texture.transform(TRANSFORMS[6])
+            sprite.texture = sprite.texture.transform(TRANSFORMS[i])
             sprite.hit_box = RotatableHitBox(
                 sprite.texture.hit_box_points,
                 position=sprite._position,
