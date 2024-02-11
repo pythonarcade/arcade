@@ -69,7 +69,7 @@ class HitBoxAlgorithm:
 
     def create_bounding_box(self, image: Image) -> PointList:
         """
-        Crate points for a simple bounding box around an image.
+        Create points for a simple bounding box around an image.
         This is often used as a fallback if a hit box algorithm
         doesn't manage to figure out any reasonable points for
         an image.
