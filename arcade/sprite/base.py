@@ -363,7 +363,7 @@ class BasicSprite:
                 and self._color[2] == color[2]
             ):
                 return
-            self._color = Color(color[0], color[1], color[2], self._color[3])
+            self._color = Color(color[0], color[1], color[2], self._alpha)
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
