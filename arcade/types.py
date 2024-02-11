@@ -3,7 +3,6 @@ Module specifying data custom types used for type hinting.
 """
 from __future__ import annotations
 
-import sys
 from array import array
 import ctypes
 import random
@@ -18,8 +17,7 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING,
-    TypeVar
+    TYPE_CHECKING, TypeVar
 )
 from typing_extensions import Self
 
@@ -86,6 +84,92 @@ __all__ = [
     "Vector"
 ]
 
+
+class RGB(Tuple):
+    """
+    A :py:class:`tuple` subclass representing an RGB color.
+
+    All channels are byte values from 0 to 255, inclusive. If any are
+    outside this range, a :py:class:`~arcade.utils.ByteRangeError` will
+    be raised, which can be handled as a :py:class:`ValueError`.
+
+    :param r: the red channel of the color, between 0 and 255
+    :param g: the green channel of the color, between 0 and 255
+    :param b: the blue channel of the color, between 0 and 255
+    """
+
+    def __new__(cls, r: int, g: int, b: int):
+
+        if not 0 <= r <= 255:
+            raise ByteRangeError("r", r)
+
+        if not 0 <= g <= 255:
+            raise ByteRangeError("g", g)
+
+        if not 0 <= g <= 255:
+            raise ByteRangeError("b", b)
+
+        # Typechecking is ignored because of a mypy bug involving
+        # tuples & super:
+        # https://github.com/python/mypy/issues/8541
+        return super().__new__(cls, (r, g, b))  # type: ignore
+
+    def __deepcopy__(self, _) -> Self:
+        """Allow :py:func:`~copy.deepcopy` to be used with Color"""
+        return self.__class__(r=self.r, g=self.g, b=self.b)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(r={self.r}, g={self.g}, b={self.b})"
+
+    @property
+    def r(self) -> int:
+        return self[0]
+
+    @property
+    def g(self) -> int:
+        return self[1]
+
+    @property
+    def b(self) -> int:
+        return self[2]
+
+    @classmethod
+    def random(
+            cls,
+            r: Optional[int] = None,
+            g: Optional[int] = None,
+            b: Optional[int] = None,
+    ) -> Self:
+        """
+        Return a random color.
+
+        The parameters are optional and can be used to fix the value of
+        a particular channel. If a channel is not fixed, it will be
+        randomly generated.
+
+        Examples::
+
+            # Randomize all channels
+            >>> Color.random()
+            Color(r=35, g=145, b=4, a=200)
+
+            # Random color with fixed alpha
+            >>> Color.random(a=255)
+            Color(r=25, g=99, b=234, a=255)
+
+        :param r: Fixed value for red channel
+        :param g: Fixed value for green channel
+        :param b: Fixed value for blue channel
+        """
+        if r is None:
+            r = random.randint(0, 255)
+        if g is None:
+            g = random.randint(0, 255)
+        if b is None:
+            b = random.randint(0, 255)
+
+        return cls(r, g, b)
+        
 
 class Color(RGBA255):
     """
@@ -501,11 +585,11 @@ class TiledObject(NamedTuple):
     type: Optional[str] = None
 
 
-if sys.version_info >= (3, 12):
-    from collections.abc import Buffer as BufferProtocol
-else:
-    # This is used instead of the typing_extensions version since they
-    # use an ABC which registers virtual subclasses. This will not work
-    # with ctypes.Array since virtual subclasses must be concrete.
-    # See: https://peps.python.org/pep-0688/
-    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
+# This is a temporary workaround for the lack of a way to type annotate
+# objects implementing the buffer protocol. Although there is a PEP to
+# add typing, it is scheduled for 3.12. Since that is years away from
+# being our minimum Python version, we have to use a workaround. See
+# the PEP and Python doc for more information:
+# https://peps.python.org/pep-0688/
+# https://docs.python.org/3/c-api/buffer.html
+BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

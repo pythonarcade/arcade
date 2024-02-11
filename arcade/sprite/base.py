@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
-from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
+from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList, RGB
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -61,6 +61,7 @@ class BasicSprite:
         self._scale = scale, scale
         self._visible = bool(visible)
         self._color: Color = WHITE
+        self._rgb: RGB = RGB(255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -338,6 +339,25 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
+    def rgb(self) -> RGB:
+        """ Gets the sprites RGB. """
+        return self._rgb
+
+    @rgb.setter
+    def rgb(self, color: RGB):
+        if (
+                self._rgb[0] == color[0]
+                and self._rgb[1] == color[1]
+                and self._rgb[2] == color[2]
+        ):
+            return
+        self._rgb = RGB(color[0], color[1], color[2])
+        self._color = Color(self._rgb[0], self._rgb[1], self._rgb[2], self.alpha)
+        
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_color(self)
+
+    @property
     def color(self) -> Color:
         """
         Get or set the RGBA multiply color for the sprite.
@@ -360,7 +380,7 @@ class BasicSprite:
             >>> sprite.color = 255, 0, 0, 128
 
         """
-        return self._color
+        return Color(self.rgb[0], self.rgb[1], self.rgb[2], self.alpha)
 
     @color.setter
     def color(self, color: RGBOrA255):
@@ -373,6 +393,7 @@ class BasicSprite:
             if len(_a) > 1:
                 raise ValueError(f"iterable must unpack to 3 or 4 values not {len(color)}")
             a = _a[0]
+
         else:
             a = self._color.a
 
