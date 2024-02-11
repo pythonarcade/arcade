@@ -315,6 +315,7 @@ class PhysicsEnginePlatformer:
 
     @property
     def ladders(self):
+        """ The ladder list registered with the physics engine."""
         return self._ladders
 
     @ladders.setter
