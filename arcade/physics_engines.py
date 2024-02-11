@@ -382,11 +382,10 @@ class PhysicsEnginePlatformer:
              air_jump_velocity: Optional[int] = None,
              air_jump_style: Optional[str] = "set",
              jump_velocity_limit: Optional[int] = None):
-        """ Have the character jump. Multijump can be set with a separate in-air velocity and can be air jumps can be
-        set to be additive, limited, or a set value. Additive only adds to the player's upward velocity. Limited will
-        set or add to the player's velocity. If the player is falling, then their velocity will be set to their air
-        jump speed. Otherwise, it will add their air jump speed up until the jump_velocity limit. Set always sets the
-        player's velocity to their air jump speed. """
+        """ Have the character jump. Multijump can be set with a separate in-air velocity and air jumps can be
+        set to be additive, limited, or a set value. Additive only adds to the player's change_y velocity. Limited
+        will add to the players' change_y until the jump_velocity limit. Set always sets the players velocity
+        to their air jump speed. """
         if self.can_jump():
             # Air Jump logic
             if self.jumps_since_ground > 0:
