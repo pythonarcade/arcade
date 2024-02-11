@@ -346,7 +346,16 @@ class BasicSprite:
 
     @color.setter
     def color(self, color: RGBA255):
-        if len(color) == 4:
+        if len(color) == 3 or isinstance(color, Color):
+            if (
+                    self._color[0] == color[0]
+                    and self._color[1] == color[1]
+                    and self._color[2] == color[2]
+            ):
+                return
+            self._color = Color(color[0], color[1], color[2], self.alpha)
+
+        elif len(color) == 4:
             if (
                 self._color[0] == color[0]
                 and self._color[1] == color[1]
@@ -356,14 +365,6 @@ class BasicSprite:
                 return
             self._color = Color.from_iterable(color)
 
-        elif len(color) == 3:
-            if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-            ):
-                return
-            self._color = Color(color[0], color[1], color[2], self._alpha)
         else:
             raise ValueError("Color must be three or four ints from 0-255")
 
