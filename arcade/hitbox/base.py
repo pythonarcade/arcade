@@ -67,6 +67,24 @@ class HitBoxAlgorithm:
         """
         return self.__class__(*args, **kwds)  # type: ignore
 
+    def create_bounding_box(self, image: Image) -> PointList:
+        """
+        Create points for a simple bounding box around an image.
+        This is often used as a fallback if a hit box algorithm
+        doesn't manage to figure out any reasonable points for
+        an image.
+
+        :param Image image: The image to create a bounding box for.
+        :return: A tuple of hit box points.
+        """
+        size = image.size
+        return (
+            (-size[0] / 2, -size[1] / 2),
+            (size[0] / 2, -size[1] / 2),
+            (size[0] / 2, size[1] / 2),
+            (-size[0] / 2, size[1] / 2),
+        )
+
 
 class HitBox:
     """
