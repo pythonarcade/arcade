@@ -3,7 +3,6 @@ from __future__ import annotations
 import random
 import arcade
 from arcade.texture import transforms
-from arcade.hitbox import RotatableHitBox
 
 TEST_TEXTURE_PATH = ":resources:images/test_textures/xy_square.png"
 TRANSFORMS = [
