@@ -39,12 +39,7 @@ class App(arcade.Window):
         for i in range(len(TRANSFORMS)):
             sprite = self.spritelist[i]
             sprite.texture = sprite.texture.transform(TRANSFORMS[i])
-            sprite.hit_box = RotatableHitBox(
-                sprite.texture.hit_box_points,
-                position=sprite._position,
-                angle=sprite.angle,
-                scale=sprite._scale,
-            )
+            sprite.sync_hit_box_to_texture()
 
     def on_draw(self):
         self.clear()

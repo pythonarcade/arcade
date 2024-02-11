@@ -421,3 +421,14 @@ class Sprite(BasicSprite, PymunkMixin):
         or a custom one you made.
         """
         self.physics_engines.append(physics_engine)
+
+    def sync_hit_box_to_texture(self):
+        """
+        Update the sprite's hit box to match the current texture's hit box.
+        """
+        self.hit_box = RotatableHitBox(
+            self.texture.hit_box_points,
+            position=self._position,
+            angle=self.angle,
+            scale=self._scale,
+        )
