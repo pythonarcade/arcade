@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
+from typing import TYPE_CHECKING, Iterable, List, TypeVar
 
 import arcade
-from arcade.types import Point, Color, RGBA255, PointList
+from arcade.types import Point, Color, RGBA255, PointList, RGB
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -49,7 +49,7 @@ class BasicSprite:
         scale: float = 1.0,
         center_x: float = 0,
         center_y: float = 0,
-        **kwargs: Any,
+        **kwargs,
     ) -> None:
         self._position = (center_x, center_y)
         self._depth = 0.0
@@ -58,6 +58,7 @@ class BasicSprite:
         self._height = texture.height * scale
         self._scale = scale, scale
         self._color: Color = Color(255, 255, 255, 255)
+        self._rgb: RGB = RGB(255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -320,6 +321,25 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
+    def rgb(self) -> RGB:
+        """ Gets the sprites RGB. """
+        return self._rgb
+
+    @rgb.setter
+    def rgb(self, color: RGB):
+        if (
+                self._rgb[0] == color[0]
+                and self._rgb[1] == color[1]
+                and self._rgb[2] == color[2]
+        ):
+            return
+        self._rgb = RGB(color[0], color[1], color[2])
+        self._color = Color(self._rgb[0], self._rgb[1], self._rgb[2], self.alpha)
+        
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_color(self)
+
+    @property
     def color(self) -> Color:
         """
         Get or set the RGBA multiply color for the sprite.
@@ -342,27 +362,29 @@ class BasicSprite:
             >>> sprite.color = 255, 0, 0, 128
 
         """
-        return self._color
+        return Color(self.rgb[0], self.rgb[1], self.rgb[2], self.alpha)
 
     @color.setter
     def color(self, color: RGBA255):
         if len(color) == 3 or isinstance(color, Color):
             if (
-                    self._color[0] == color[0]
-                    and self._color[1] == color[1]
-                    and self._color[2] == color[2]
+                    self._rgb[0] == color[0]
+                    and self._rgb[1] == color[1]
+                    and self._rgb[2] == color[2]
             ):
                 return
-            self._color = Color(color[0], color[1], color[2], self.alpha)
+            self._rgb = RGB(color[0], color[1], color[2])
+            self._color = Color(self._rgb[0], self._rgb[1], self._rgb[2], self.alpha)
 
         elif len(color) == 4:
             if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-                and self._color[3] == color[3]
+                self._rgb[0] == color[0]
+                and self._rgb[1] == color[1]
+                and self._rgb[2] == color[2]
+                and self._rgb[3] == color[3]
             ):
                 return
+            self._rgb = color
             self._color = Color.from_iterable(color)
 
         else:
