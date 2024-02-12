@@ -3,13 +3,11 @@ from __future__ import annotations
 from typing import Optional
 
 from PIL import ImageEnhance
-from arcade.gui.surface import Surface
-
-from arcade.gui.events import UIOnClickEvent, UIOnChangeEvent
 
 from arcade import Texture
+from arcade.gui.events import UIOnClickEvent, UIOnChangeEvent
 from arcade.gui.property import Property, bind
-
+from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget
 
 
@@ -25,6 +23,7 @@ class UITextureToggle(UIInteractiveWidget):
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
@@ -35,7 +34,7 @@ class UITextureToggle(UIInteractiveWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        **kwargs
+        **kwargs,
     ):
         # Generate hover and pressed texture by changing the brightness
         if on_texture is None:
@@ -43,10 +42,12 @@ class UITextureToggle(UIInteractiveWidget):
         self.normal_on_tex = on_texture
         enhancer = ImageEnhance.Brightness(self.normal_on_tex.image)
         self.hover_on_tex = Texture(
-            enhancer.enhance(1.5), name=self.normal_on_tex.cache_name + "_brighter",
+            enhancer.enhance(1.5),
+            name=self.normal_on_tex.cache_name + "_brighter",
         )
         self.pressed_on_tex = Texture(
-            enhancer.enhance(0.5), name=self.normal_on_tex.cache_name + "_darker",
+            enhancer.enhance(0.5),
+            name=self.normal_on_tex.cache_name + "_darker",
         )
 
         if off_texture is None:
@@ -54,10 +55,12 @@ class UITextureToggle(UIInteractiveWidget):
         self.normal_off_tex = off_texture
         enhancer = ImageEnhance.Brightness(self.normal_off_tex.image)
         self.hover_off_tex = Texture(
-            enhancer.enhance(1.5), name=self.normal_off_tex.cache_name + "_brighter",
+            enhancer.enhance(1.5),
+            name=self.normal_off_tex.cache_name + "_brighter",
         )
         self.pressed_off_tex = Texture(
-            enhancer.enhance(0.5), name=self.normal_off_tex.cache_name + "_darker",
+            enhancer.enhance(0.5),
+            name=self.normal_off_tex.cache_name + "_darker",
         )
 
         self.value = value

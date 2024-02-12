@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from collections import defaultdict
 from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+
+from arcade.types import Point
 from typing_extensions import TypeGuard
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -131,7 +133,9 @@ class UIManager(EventDispatcher):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
+    def walk_widgets(
+        self, *, root: Optional[UIWidget] = None, layer=0
+    ) -> Iterable[UIWidget]:
         """
         walks through widget tree, in reverse draw order (most top drawn widget first)
 
@@ -144,7 +148,6 @@ class UIManager(EventDispatcher):
             layers = [layer]
 
         for layer in layers:
-
             children = root.children if root else self.children[layer]
             for child in reversed(children):
                 yield from self.walk_widgets(root=child)
@@ -158,7 +161,9 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
+    def get_widgets_at(
+        self, pos: Point, cls: Type[W] = UIWidget, layer=0
+    ) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -167,6 +172,7 @@ class UIManager(EventDispatcher):
         :param layer: layer to search, None will search through all layers
         :return: iterator of widgets of given type at position
         """
+
         def check_type(widget) -> TypeGuard[W]:
             return isinstance(widget, cls)
 
@@ -201,7 +207,6 @@ class UIManager(EventDispatcher):
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
-
                 if child.size_hint:
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
