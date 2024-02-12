@@ -5,7 +5,6 @@ from typing import Optional, Dict, Union
 
 import arcade
 from arcade import Texture
-from arcade.types import RGBA255
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import bind, DictProperty
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -13,6 +12,8 @@ from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets.text import UITextWidget
 from arcade.text import FontNameOrNames
+from arcade.types import RGBA255
+
 
 @dataclass
 class UITextureButtonStyle(UIStyleBase):
@@ -23,12 +24,16 @@ class UITextureButtonStyle(UIStyleBase):
 
         button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
     """
+
     font_size: int = 12
     font_name: FontNameOrNames = ("calibri", "arial")
     font_color: RGBA255 = arcade.color.WHITE
     border_width: int = 2
 
-class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
+
+class UITextureButton(
+    UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget
+):
     """
     A button with an image for the face of the button.
 
@@ -73,11 +78,12 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
             border_width=2,
-        )
+        ),
     }
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: Optional[float] = None,
@@ -95,7 +101,6 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         size_hint_max=None,
         **kwargs,
     ):
-
         if width is None and texture is not None:
             width = texture.size[0]
 
@@ -193,7 +198,9 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         current_state = self.get_current_state()
         current_texture = self._textures.get(current_state)
         if current_texture:
-            surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
+            surface.draw_texture(
+                0, 0, self.content_width, self.content_height, current_texture
+            )
 
     def _apply_style(self, style: UITextureButtonStyle):
         """
@@ -208,7 +215,6 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         font_color_changed = self._label.label.color != font_color
 
         if font_name_changed or font_size_changed or font_color_changed:
-
             with self._label.label:
                 self._label.label.font_name = font_name
                 self._label.label.font_size = font_size
@@ -216,8 +222,9 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
-
+            self.ui_label.rect = self.ui_label.rect.max_size(
+                self.content_width, self.content_height
+            )
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -245,6 +252,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
             button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})
         """
+
         font_size: int = 12
         font_name: FontNameOrNames = ("calibri", "arial")
         font_color: RGBA255 = arcade.color.WHITE
@@ -277,11 +285,12 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             bg=arcade.color.GRAY,
             border=None,
             border_width=2,
-        )
+        ),
     }
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
@@ -305,7 +314,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             style=style or self.DEFAULT_STYLE,
             text=text,
             multiline=multiline,
-            **kwargs
+            **kwargs,
         )
 
     def get_current_state(self) -> str:
@@ -357,7 +366,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         font_color_changed = self._label.label.color != font_color
 
         if font_name_changed or font_size_changed or font_color_changed:
-
             with self._label.label:
                 self._label.label.font_name = font_name
                 self._label.label.font_size = font_size
@@ -365,5 +373,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
-
+            self.ui_label.rect = self.ui_label.rect.max_size(
+                self.content_width, self.content_height
+            )
