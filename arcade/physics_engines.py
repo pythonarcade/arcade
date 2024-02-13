@@ -285,12 +285,12 @@ class PhysicsEnginePlatformer:
                  ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
-        self.ladder_list: Optional[List[SpriteList]]
+        self._ladders: Optional[List[SpriteList]]
         self.platforms: List[SpriteList]
         self.walls: List[SpriteList]
 
         if ladders:
-            self._ladders = [ladder_list] if isinstance(ladder_list, SpriteList) else list(ladder_list)
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self._ladders = None
 
@@ -319,9 +319,9 @@ class PhysicsEnginePlatformer:
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladder_list: Union[SpriteList, Iterable[SpriteList]]):
+    def ladders(self, ladders: Union[SpriteList, Iterable[SpriteList]]):
         if ladders:
-            self._ladders = [ladder_list] if isinstance(ladder_list, SpriteList) else list(ladder_list)
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self._ladders = None
 
