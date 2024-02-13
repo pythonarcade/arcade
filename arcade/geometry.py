@@ -8,6 +8,7 @@ Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-g
 from __future__ import annotations
 
 from arcade.types import Point, PointList
+from sys import maxsize as sys_int_maxsize
 
 
 def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
@@ -18,18 +19,19 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     :param poly_b: List of points that define the second polygon.
     :Returns: True or false depending if polygons intersect
     """
-    #if either are [], they don't intersect
+    # if either are [], they don't intersect
     if not poly_a or not poly_b:
         return False
     for polygon in (poly_a, poly_b):
-
         for i1 in range(len(polygon)):
             i2 = (i1 + 1) % len(polygon)
             projection_1 = polygon[i1]
             projection_2 = polygon[i2]
 
-            normal = (projection_2[1] - projection_1[1],
-                      projection_1[0] - projection_2[0])
+            normal = (
+                projection_2[1] - projection_1[1],
+                projection_1[0] - projection_2[0],
+            )
 
             min_a, min_b = (float("inf"),) * 2
             max_a, max_b = (-float("inf"),) * 2
@@ -55,6 +57,7 @@ def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
                 return False
 
     return True
+
 
 def is_point_in_box(p: Point, q: Point, r: Point) -> bool:
     """
@@ -157,7 +160,7 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
 
     # Create a point for line segment
     # from p to infinite
-    extreme = (10000, p[1])
+    extreme = (sys_int_maxsize, p[1])
 
     # To count number of points in polygon
     # whose y-coordinate is equal to
@@ -198,4 +201,3 @@ def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
 
     # Return true if count is odd, false otherwise
     return count % 2 == 1
-

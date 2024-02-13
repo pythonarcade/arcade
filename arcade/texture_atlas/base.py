@@ -104,6 +104,11 @@ class ImageDataRefCounter:
             self._num_decref = 0
         return num_decref
 
+    def clear(self) -> None:
+        """Clear the reference counter."""
+        self._data.clear()
+        self._num_decref = 0
+
     def __len__(self) -> int:
         return len(self._data)
 
@@ -112,6 +117,7 @@ class ImageDataRefCounter:
 
 
 class TextureAtlasBase(abc.ABC):
+    """Generic base for texture atlases."""
 
     def __init__(self, ctx: Optional["ArcadeContext"]):
         self._ctx = ctx or arcade.get_window().ctx
@@ -120,6 +126,7 @@ class TextureAtlasBase(abc.ABC):
     def ctx(self) -> "ArcadeContext":
         return self._ctx
 
+    # NOTE: AtlasRegion only makes sense for 2D atlas. Figure it out.
     # @abc.abstractmethod
     # def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
     #     """Add a texture to the atlas."""

@@ -64,7 +64,13 @@ terminal from inside the top level of the arcade directory:
 
 .. code-block:: shell
 
+    # For Unix-like shells (Linux, macOS)
     pip install -e '.[dev]'
+
+.. code-block:: shell
+
+    # For Windows
+    pip install -e .[dev]
 
 If you get an error like the one below, you probably need to update your pip version:
 
