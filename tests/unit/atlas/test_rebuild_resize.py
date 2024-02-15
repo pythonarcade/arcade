@@ -20,8 +20,8 @@ def test_rebuild(ctx, common):
 
     # Re-build and check states
     atlas.rebuild()
-    assert slot_a == atlas.get_texture_id(tex_big.atlas_name)
-    assert slot_b == atlas.get_texture_id(tex_small.atlas_name)
+    assert slot_a == atlas.get_texture_id(tex_big)
+    assert slot_b == atlas.get_texture_id(tex_small)
     region_aa = atlas.get_texture_region_info(tex_big.atlas_name)
     region_bb = atlas.get_texture_region_info(tex_small.atlas_name)
     common.check_internals(atlas, num_images=2, num_textures=2)

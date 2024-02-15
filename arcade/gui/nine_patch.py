@@ -215,7 +215,7 @@ class NinePatchTexture:
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
         self.program.set_uniform_safe(
-            "texture_id", self._atlas.get_texture_id(self._texture.atlas_name)
+            "texture_id", self._atlas.get_texture_id(self._texture)
         )
         if pixelated:
             self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST

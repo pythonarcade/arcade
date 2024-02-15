@@ -35,10 +35,11 @@ def test_point_not_in_empty_polygon():
     assert result is False
 
 
-def test_are_polygons_intersecting():
-    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)]
-    poly_b = [(25, 25), (25, 75), (75, 75), (75, 25)]
-    assert are_polygons_intersecting(poly_a, poly_b) is True
+def test_point_in_extreme_polygon():
+    # Cf : https://github.com/pythonarcade/arcade/issues/1906
+    polygon = [(9984.0, 2112.0), (10048.0, 2112.0), (10048.0, 2048.0), (9984.0, 2048.0)]
+
+    assert is_point_in_polygon(10016.0, 2080.0, polygon)
 
 
 def test_are_polygons_intersecting():
@@ -48,12 +49,13 @@ def test_are_polygons_intersecting():
 
 
 def test_are_empty_polygons_breaking():
-    poly_a = [] 
+    poly_a = []
     poly_b = []
     assert are_polygons_intersecting(poly_a, poly_b) is False
 
+
 def test_are_mismatched_polygons_breaking():
-    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)] 
+    poly_a = [(0, 0), (0, 50), (50, 50), (50, 0)]
     poly_b = []
     assert are_polygons_intersecting(poly_a, poly_b) is False
 
@@ -74,7 +76,7 @@ def test_are_lines_intersecting():
     line_b = [(0, 0), (50, 50)]
     assert are_lines_intersecting(*line_a, *line_b) is True
 
-    #---------
+    # ---------
     # Two lines clearly intersecting
     line_a = [(0, 0), (50, 50)]
     line_b = [(0, 50), (50, 0)]

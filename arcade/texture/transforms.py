@@ -101,7 +101,7 @@ class Rotate90Transform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -90) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 90) for point in points)
 
 
 class Rotate180Transform(Transform):
@@ -119,7 +119,7 @@ class Rotate180Transform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -180) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 180) for point in points)
 
 
 class Rotate270Transform(Transform):
@@ -136,7 +136,7 @@ class Rotate270Transform(Transform):
     def transform_hit_box_points(
         points: PointList,
     ) -> PointList:
-        return tuple(rotate_point(point[0], point[1], 0, 0, -270) for point in points)
+        return tuple(rotate_point(point[0], point[1], 0, 0, 270) for point in points)
 
 
 class FlipLeftRightTransform(Transform):
@@ -191,7 +191,7 @@ class TransposeTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate90Transform.transform_hit_box_points(points)
+        points = Rotate270Transform.transform_hit_box_points(points)
         return points
 
 
@@ -211,7 +211,7 @@ class TransverseTransform(Transform):
         points: PointList,
     ) -> PointList:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
-        points = Rotate270Transform.transform_hit_box_points(points)
+        points = Rotate90Transform.transform_hit_box_points(points)
         return points
 
 

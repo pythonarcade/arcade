@@ -110,7 +110,9 @@ def test_do_layout_vertical_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
 
-    group = UIBoxLayout(space_between=10, vertical=True, children=[element_1, element_2])
+    group = UIBoxLayout(
+        space_between=10, vertical=True, children=[element_1, element_2]
+    )
 
     group.rect = Rect(100, 200, *group.size_hint_min)
     group.do_layout()
@@ -243,7 +245,9 @@ def test_do_layout_horizontal_align_bottom(window):
 def test_do_layout_horizontal_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
-    group = UIBoxLayout(space_between=10, vertical=False, children=[element_1, element_2])
+    group = UIBoxLayout(
+        space_between=10, vertical=False, children=[element_1, element_2]
+    )
 
     group.rect = Rect(100, 200, *group.size_hint_min)
     group.do_layout()
@@ -278,7 +282,7 @@ def test_size_hint_min_contains_children_horizontal(window):
 def test_size_hint_contains_border_and_padding(window):
     box = UIBoxLayout()
     box.with_border(width=3)
-    box.with_padding(10, 20, 30, 40)
+    box.with_padding(top=10, right=20, bottom=30, left=40)
     box.add(UIDummy(width=100, height=100))
     box.add(UIDummy(width=100, height=100))
 
@@ -391,5 +395,6 @@ def test_horizontal_fit_content(window):
     box.fit_content()
 
     assert box.size == (120, 100)
+
 
 # TODO test size hint < 1 (do not take full width)

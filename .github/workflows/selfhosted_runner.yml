@@ -33,6 +33,7 @@ jobs:
           rm -rf .venv
           python -m venv .venv
           source .venv/bin/activate
+          pip install --upgrade pip
           python -m pip install -U pip wheel setuptools
       - name: Install dependencies part 2
         run: |

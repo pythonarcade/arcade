@@ -285,14 +285,14 @@ class PhysicsEnginePlatformer:
                  ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
-        self.ladders: Optional[List[SpriteList]]
+        self._ladders: Optional[List[SpriteList]]
         self.platforms: List[SpriteList]
         self.walls: List[SpriteList]
 
         if ladders:
-            self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
-            self.ladders = None
+            self._ladders = None
 
         if platforms:
             if isinstance(platforms, SpriteList):
@@ -314,6 +314,22 @@ class PhysicsEnginePlatformer:
         self.jump_delay: int = 0
         self.jump_ticks: int = 0
         self.allow_multi_jump: bool = False
+
+    @property
+    def ladders(self):
+        """ The ladder list registered with the physics engine."""
+        return self._ladders
+
+    @ladders.setter
+    def ladders(self, ladders: Union[SpriteList, Iterable[SpriteList]]):
+        if ladders:
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+        else:
+            self._ladders = None
+
+    @ladders.deleter
+    def ladders(self):
+        self._ladders = None
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """

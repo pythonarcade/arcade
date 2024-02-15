@@ -61,17 +61,20 @@ class UIDropdown(UILayout):
     :param options: The options displayed when the layout is clicked.
     :param style: Used to style the dropdown.
     """
+
     DIVIDER = None
 
     def __init__(
-            self,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 100,
-            default: Optional[str] = None,
-            options: Optional[List[Union[str, None]]] = None,
-            style=None, **kwargs
+        self,
+        *,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 100,
+        default: Optional[str] = None,
+        options: Optional[List[Union[str, None]]] = None,
+        style=None,
+        **kwargs,
     ):
         if style is None:
             style = {}
@@ -82,13 +85,7 @@ class UIDropdown(UILayout):
         self._options = options
         self._value = default
 
-        super().__init__(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            style=style,
-            **kwargs)
+        super().__init__(x=x, y=y, width=width, height=height, style=style, **kwargs)
 
         # Setup button showing value
         self._default_button = UIFlatButton(
@@ -179,10 +176,11 @@ class UIDropdown(UILayout):
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets
-        self._overlay.rect = self._overlay.rect \
-            .resize(*self._overlay.size_hint_min) \
-            .align_top(self.bottom - 2) \
+        self._overlay.rect = (
+            self._overlay.rect.resize(*self._overlay.size_hint_min)
+            .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
+        )
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the current selected value is changed to a different option."""
