@@ -286,8 +286,8 @@ class PhysicsEnginePlatformer:
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
         self._ladders: Optional[List[SpriteList]]
-        self.platforms: List[SpriteList]
-        self.walls: List[SpriteList]
+        self._platforms: List[SpriteList]
+        self._walls: List[SpriteList]
 
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
@@ -300,9 +300,9 @@ class PhysicsEnginePlatformer:
             self._platforms = []
 
         if walls:
-            self.walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
-            self.walls = []
+            self._walls = []
 
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
@@ -310,6 +310,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps: int = 1
         self.allow_multi_jump: bool = False
 
+    # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
     def ladders(self):
         """ The ladder list registered with the physics engine."""
@@ -340,7 +341,7 @@ class PhysicsEnginePlatformer:
 
     @platforms.deleter
     def platforms(self):
-        self._ladders = None
+        self._platforms = []
 
     @property
     def walls(self):
@@ -356,7 +357,8 @@ class PhysicsEnginePlatformer:
 
     @walls.deleter
     def walls(self):
-        self._walls = None
+        print("DELETED")
+        self._walls = []
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """
