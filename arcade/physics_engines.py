@@ -340,13 +340,12 @@ class PhysicsEnginePlatformer:
                 return True
         return False
 
-    def can_jump(self, y_distance: float = 5) -> bool:
+    def is_on_ground(self, y_distance: float = 5) -> bool:
         """
         Method that looks to see if there is a floor under
-        the player_sprite. If there is a floor, the player can jump
-        and we return a True.
+        the player_sprite. If there is a floor, we return a True.
 
-        :returns: True if there is a platform below us
+        :returns: True if there is a platform below us.
         """
 
         # Move down to see if we are on a platform
@@ -359,12 +358,24 @@ class PhysicsEnginePlatformer:
 
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
+            return True
+        else:
+            return False
 
-        if (len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
+    def can_jump(self, y_distance: float = 5) -> bool:
+        """
+        Method that looks to see if there is a floor under the player_sprite or the conditions
+        for multijump are true.
+
+        :returns: True if there is a platform below us or if multijump jump conditions are met.
+        """
+
+        if (self.is_on_ground(y_distance) or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
                 self.jump_ticks >= self.jump_delay):
             return True
         else:
             return False
+
 
     def enable_multi_jump(self, allowed_jumps: int, jump_delay: int = 0):
         """
