@@ -59,5 +59,5 @@ def test_sprite_animated_old(window: arcade.Window):
         character_list.update_animation(delta_time)
 
     window.on_draw = on_draw
-    window.update = update
+    window.on_update = update
     window.test(150)

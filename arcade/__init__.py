@@ -158,10 +158,11 @@ from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
-from .sprite import AnimatedTimeBasedSprite
+from .sprite import TextureAnimationSprite
 from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
-from .sprite import AnimationKeyframe
+from .sprite import TextureAnimation
+from .sprite import TextureKeyframe
 from .sprite import PyMunk
 from .sprite import PymunkMixin
 from .sprite import SpriteType
@@ -237,9 +238,10 @@ from .text import (
 
 __all__ = [
     'AStarBarrierList',
-    'AnimatedTimeBasedSprite',
     'AnimatedWalkingSprite',
-    'AnimationKeyframe',
+    'TextureAnimationSprite',
+    'TextureAnimation',
+    'TextureKeyframe',
     'ArcadeContext',
     'Camera',
     'SimpleCamera',
