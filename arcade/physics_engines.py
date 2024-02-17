@@ -5,10 +5,9 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, List, Optional, Union, cast
+from typing import Iterable, List, Optional, Union
 
 from arcade import (
-    BasicSprite,
     Sprite,
     SpriteList,
     SpriteType,
@@ -301,7 +300,7 @@ class PhysicsEnginePlatformer:
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
-            self._ladders = None
+            self._ladders = []
 
         if platforms:
             self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
@@ -330,11 +329,11 @@ class PhysicsEnginePlatformer:
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
-            self._ladders = None
+            self._ladders = []
 
     @ladders.deleter
     def ladders(self):
-        self._ladders = None
+        self._ladders = []
 
     @property
     def platforms(self):
@@ -366,7 +365,6 @@ class PhysicsEnginePlatformer:
 
     @walls.deleter
     def walls(self):
-        print("DELETED")
         self._walls = []
 
     def is_on_ladder(self):
