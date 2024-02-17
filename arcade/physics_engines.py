@@ -220,8 +220,6 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
     # print(f"Move 2 - {end_time - start_time:7.4f} {loop_count}")
 
     return complete_hit_list
-
-
 class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down
@@ -233,18 +231,29 @@ class PhysicsEngineSimple:
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList[BasicSprite], Iterable[SpriteList[BasicSprite]]]):
-        assert isinstance(player_sprite, Sprite)
+    def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        self.player_sprite: Sprite = player_sprite
+        self._walls: List[SpriteList]
 
         if walls:
-            if isinstance(walls, SpriteList):
-                self.walls = [cast(SpriteList[BasicSprite], walls)]
-            else:
-                self.walls = list(walls)
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
-            self.walls = []
+            self._walls = []
 
-        self.player_sprite = player_sprite
+    @property
+    def walls(self):
+        return self._walls
+
+    @walls.setter
+    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        if walls:
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+        else:
+            self._walls = []
+
+    @walls.deleter
+    def walls(self):
+        self._walls = []
 
     def update(self):
         """
