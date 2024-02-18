@@ -676,7 +676,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Union[Iterable[SpriteType], "SpriteList"]):
+    def extend(self, sprites: Union[Iterable[SpriteType], SpriteList[SpriteType]]):
         """
         Extends the current list with the given iterable
 
@@ -1168,7 +1168,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_data[slot] = tex_slot
         self._sprite_texture_changed = True
 
-    def _update_texture(self, sprite) -> None:
+    def _update_texture(self, sprite: SpriteType) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
         # We cannot interact with texture atlases unless the context
@@ -1274,7 +1274,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def _update_width(self, sprite: SpriteType):
+    def _update_width(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
