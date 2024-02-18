@@ -825,14 +825,14 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.update()
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def on_update(self, delta_time: float = 1 / 60) -> None:
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         """
         for sprite in self.sprite_list:
             sprite.on_update(delta_time)
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    def update_animation(self, delta_time: float = 1 / 60) -> None:
         """
         Call the update_animation in every sprite in the sprite list.
         """
