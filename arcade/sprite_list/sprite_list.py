@@ -252,7 +252,7 @@ class SpriteList(Generic[SpriteType]):
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, index: int, sprite: SpriteType):
+    def __setitem__(self, index: int, sprite: SpriteType) -> None:
         """Replace a sprite at a specific index"""
         # print(f"{id(self)} : {id(sprite)} __setitem__({index})")
 
