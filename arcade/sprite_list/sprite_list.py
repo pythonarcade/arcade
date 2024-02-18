@@ -809,7 +809,7 @@ class SpriteList(Generic[SpriteType]):
         else:
             LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
 
-    def _recalculate_spatial_hashes(self):
+    def _recalculate_spatial_hashes(self) -> None:
         if self.spatial_hash is None:
             from .spatial_hash import SpatialHash
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
