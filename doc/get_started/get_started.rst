@@ -177,7 +177,6 @@ Arcade Skill Tree
     * Study the `Asteroids Example Code <https://github.com/pythonarcade/asteroids>`_.
 
   * Rendering onto a sprite to create a mini-map - :ref:`minimap`
-  * Bloom/glow effect - :ref:`bloom_defender`
   * Learn to do a compute shader in :ref:`compute_shader_tutorial`.
 
 * :ref:`Logging`
