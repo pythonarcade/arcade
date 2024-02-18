@@ -885,7 +885,6 @@ class SpriteList(Generic[SpriteType]):
             self._atlas.add( # type: ignore
                 texture)
 
-
     def write_sprite_buffers_to_gpu(self) -> None:
         """
         Ensure buffers are resized and fresh sprite data
