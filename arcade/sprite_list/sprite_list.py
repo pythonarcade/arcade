@@ -588,7 +588,7 @@ class SpriteList(Generic[SpriteType]):
         self.remove(sprite)
         return sprite
 
-    def append(self, sprite: SpriteType):
+    def append(self, sprite: SpriteType) -> None:
         """
         Add a new sprite to the list.
 
