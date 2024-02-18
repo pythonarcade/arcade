@@ -902,7 +902,7 @@ class SpriteList(Generic[SpriteType]):
         """
         self._write_sprite_buffers_to_gpu()
 
-    def _write_sprite_buffers_to_gpu(self):
+    def _write_sprite_buffers_to_gpu(self) -> None:
         LOG.debug(
             "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
             id(self),
@@ -1042,7 +1042,7 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
 
-    def _normalize_index_buffer(self):
+    def _normalize_index_buffer(self) -> None:
         """
         Removes unused slots in the index buffer.
         The other buffers don't need this because they re-use slots.
@@ -1061,7 +1061,7 @@ class SpriteList(Generic[SpriteType]):
         # NOTE: Right now the index buffer is always normalized
         pass
 
-    def _grow_sprite_buffers(self):
+    def _grow_sprite_buffers(self) -> None:
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
         if self._sprite_buffer_slots <= self._buf_capacity:
@@ -1098,7 +1098,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_changed = True
         self._sprite_texture_changed = True
 
-    def _grow_index_buffer(self):
+    def _grow_index_buffer(self) -> None:
         # Extend the index buffer capacity if needed
         if self._sprite_index_slots <= self._idx_capacity:
             return
@@ -1126,7 +1126,7 @@ class SpriteList(Generic[SpriteType]):
 
         self._sprite_index_changed = True
 
-    def _update_all(self, sprite: SpriteType):
+    def _update_all(self, sprite: SpriteType) -> None:
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -1284,7 +1284,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
-    def _update_height(self, sprite: SpriteType):
+    def _update_height(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -1295,7 +1295,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
-    def _update_angle(self, sprite: SpriteType):
+    def _update_angle(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
