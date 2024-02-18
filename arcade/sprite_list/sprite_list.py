@@ -732,7 +732,7 @@ class SpriteList(Generic[SpriteType]):
 
         self._sprite_index_changed = True
 
-    def shuffle(self):
+    def shuffle(self) -> None:
         """
         Shuffles the current list in-place
         """
