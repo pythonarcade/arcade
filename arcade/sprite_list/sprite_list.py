@@ -870,7 +870,7 @@ class SpriteList(Generic[SpriteType]):
             sprite.center_x += change_x
             sprite.center_y += change_y
 
-    def preload_textures(self, texture_list: List["Texture"]) -> None:
+    def preload_textures(self, texture_list: Iterable["Texture"]) -> None:
         """
         Preload a set of textures that will be used for sprites in this
         sprite list.
