@@ -179,7 +179,7 @@ class SpriteList(Generic[SpriteType]):
         except RuntimeError:
             pass
 
-    def _init_deferred(self):
+    def _init_deferred(self) -> None:
         """
         Since spritelist can be created before the window we need to defer initialization.
         It also makes us able to support lazy loading.
