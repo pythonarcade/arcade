@@ -249,7 +249,7 @@ class SpriteList(Generic[SpriteType]):
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i) -> SpriteType:
         return self.sprite_list[i]
 
     def __setitem__(self, index: int, sprite: SpriteType):
