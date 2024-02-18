@@ -676,7 +676,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Union[Iterable[SpriteType], SpriteList[SpriteType]]):
+    def extend(self, sprites: Union[Iterable[SpriteType], SpriteList[SpriteType]]) -> None:
         """
         Extends the current list with the given iterable
 
