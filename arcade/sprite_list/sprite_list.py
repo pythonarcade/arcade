@@ -716,7 +716,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.add(sprite)
 
-    def reverse(self):
+    def reverse(self) -> None:
         """
         Reverses the current list in-place
         """
