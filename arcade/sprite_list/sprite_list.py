@@ -685,7 +685,7 @@ class SpriteList(Generic[SpriteType]):
         for sprite in sprites:
             self.append(sprite)
 
-    def insert(self, index: int, sprite: SpriteType):
+    def insert(self, index: int, sprite: SpriteType) -> None:
         """
         Inserts a sprite at a given index.
 
