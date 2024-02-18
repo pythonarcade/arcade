@@ -624,7 +624,7 @@ class SpriteList(Generic[SpriteType]):
                 raise ValueError("Sprite must have a texture when added to a SpriteList")
             self._atlas.add(sprite.texture)  # type: ignore
 
-    def swap(self, index_1: int, index_2: int):
+    def swap(self, index_1: int, index_2: int) -> None:
         """
         Swap two sprites by index
         :param index_1: Item index to swap
