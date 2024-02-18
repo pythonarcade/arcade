@@ -644,7 +644,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_index_data[i1] = slot_2
         self._sprite_index_data[i2] = slot_1
 
-    def remove(self, sprite: SpriteType):
+    def remove(self, sprite: SpriteType) -> None:
         """
         Remove a specific sprite from the list.
         :param sprite: Item to remove from the list
