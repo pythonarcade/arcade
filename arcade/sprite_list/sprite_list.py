@@ -106,7 +106,7 @@ class SpriteList(Generic[SpriteType]):
         lazy: bool = False,
         visible: bool = True,
     ):
-        self.program = None
+        self.program: Optional["Program"] = None
         self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
