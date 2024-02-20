@@ -35,7 +35,7 @@ from arcade import (
     get_window,
     gl,
 )
-from arcade.gl import Texture2D
+from arcade.gl import Texture2D, Program
 from arcade.types import Color, RGBA255
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
@@ -106,7 +106,7 @@ class SpriteList(Generic[SpriteType]):
         lazy: bool = False,
         visible: bool = True,
     ):
-        self.program: Optional["Program"] = None
+        self.program: Optional[Program] = None
         self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
