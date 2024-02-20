@@ -469,7 +469,6 @@ arguments to arcade functions.
        be between ``0.0`` (silent) and ``1.0`` (full volume).
 
    * - :py:attr:`~pyglet.media.player.Player.loop`
-       [#inconsistencyloop]_
      - :py:class:`bool` property
      - ``False``
      - Whether to restart playback automatically after finishing. [#streamingnoloop]_
@@ -478,12 +477,6 @@ arguments to arcade functions.
      - :py:class:`float` property
      - ``1.0``
      - How fast to play the sound data; also affects pitch.
-
-.. [#inconsistencyloop]
-   :py:func:`arcade.play_sound` uses ``looping`` instead. See:
-
-   *  :ref:`sound-advanced-playback-change-aspects-new`
-   * `The related GitHub issue <inconsistency_loop_issue_>`_.
 
 .. [#streamingnoloop]
    Looping is unavailable when ``streaming=True``; see `pyglet's guide to
