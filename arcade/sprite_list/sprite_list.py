@@ -24,9 +24,7 @@ from typing import (
     Union,
     Generic,
     Callable,
-    cast,
-    overload,
-    Sized
+    cast, Sized,
 )
 
 from arcade import (
@@ -253,14 +251,6 @@ class SpriteList(Generic[SpriteType]):
     def __iter__(self) -> Iterator[SpriteType]:
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
-
-    @overload
-    def __getitem__(self, i: int) -> SpriteType:
-        ...
-
-    @overload
-    def __getitem__(self, i: slice) -> List[SpriteType]:
-        ...
 
     def __getitem__(self, i):
         return self.sprite_list[i]
