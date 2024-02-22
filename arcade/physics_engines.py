@@ -341,39 +341,39 @@ class PhysicsEnginePlatformer:
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
-    def ladders(self):
+    def ladders(self) -> List[SpriteList]:
         """ The ladder list registered with the physics engine."""
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self._ladders = []
 
     @ladders.deleter
-    def ladders(self):
+    def ladders(self) -> None:
         self._ladders = []
 
     @property
-    def platforms(self):
+    def platforms(self) -> List[SpriteList]:
         """ The moving platform list registered with the physics engine."""
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if platforms:
             self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
         else:
             self._platforms = []
 
     @platforms.deleter
-    def platforms(self):
+    def platforms(self) -> None:
         self._platforms = []
 
     @property
-    def walls(self):
+    def walls(self) -> List[SpriteList]:
         """ The wall list registered with the physics engine."""
         return self._walls
 
@@ -385,11 +385,17 @@ class PhysicsEnginePlatformer:
             self._walls = []
 
     @walls.deleter
-    def walls(self):
+    def walls(self) -> None:
         self._walls = []
 
-    def is_on_ladder(self):
-        """ Return 'true' if the player is in contact with a sprite in the ladder list. """
+    def is_on_ladder(self) -> bool:
+        """Whether the player sprite overlaps with a ladder.
+
+        .. warning: This re-runs collisions every time it is called!
+
+        This returns ``True`` if the :py:attr:`player` sprite is touching
+        any sprite in a `SpriteList` added to the :py:attr:`ladders` list.
+        """
         # Check for touching a ladder
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
@@ -422,7 +428,7 @@ class PhysicsEnginePlatformer:
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int) -> None:
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -436,7 +442,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
 
-    def disable_multi_jump(self):
+    def disable_multi_jump(self) -> None:
         """
         Disables multi-jump.
 
@@ -447,19 +453,19 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int):
+    def jump(self, velocity: int) -> None:
         """ Have the character jump. """
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
 
-    def increment_jump_counter(self):
+    def increment_jump_counter(self) -> None:
         """
         Updates the jump counter for multi-jump tracking
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
 
-    def update(self):
+    def update(self) -> List[SpriteType]:
         """
         Move everything and resolve collisions.
 
