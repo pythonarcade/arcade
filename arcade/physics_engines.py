@@ -228,8 +228,8 @@ class PhysicsEngineSimple:
     started with this engine than more sophisticated engines like PyMunk.
 
     :param player_sprite: The moving sprite
-    :param walls: The sprites it can't move through.
-        This can be one or multiple spritelists.
+    :param walls: The sprites it can't move through. This can be one or
+        more spritelists.
     """
 
     def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
