@@ -267,25 +267,44 @@ class PhysicsEngineSimple:
 
 
 class PhysicsEnginePlatformer:
-    """
-    Simplistic physics engine for use in a platformer. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk.
+    """A physics engine for a simple, single-player platformer.
 
-    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the
-    ``platforms`` parameter will have very extreme benefits to performance.
+    This engine has the following advantages:
 
-    **Note:** This engine will automatically move any Sprites sent to the ``platforms``
-    parameter between a ``boundary_top`` and ``boundary_bottom`` or a ``boundary_left``
-    and ``boundary_right`` attribute of the Sprite. You need only set an initial
-    ``change_x`` or ``change_y`` on it.
+    * More features than :py:class:`PhysicsEngineSimple`
+    * Easier than PyMunk or writing your own engine
+    * Supports automatically moving platforms
 
-    :param player_sprite: The moving sprite
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
-        This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
-    :param gravity_constant: Downward acceleration per frame
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
-        This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
+    .. tip:: For best performance, be sure to do the following!
+
+             #. Add non-moving level elements to :py:attr:`walls`
+             #. Add moving platforms to :py:attr:`platforms`
+
+             This speeds up collision with walls through
+             :ref:`spatial_hashing_performance`.
+
+    Every :py:class:`Sprite` added to  :py:attr:`platforms` will be moved
+    if it has the following properties set:
+
+    * Set limits on vertical movement with ``boundary_top`` and ``boundary_bottom``
+    * Set limits on horizontal movement with ``boundary_left`` and ``boundary_right``
+    * Set a value for ``change_x`` or ``change_y`` to finish enabling movement
+      on an axis
+
+    See the following to learn more:
+
+    * :ref:`platformer_tutorial` for a step-by-step guide
+    * :ref:`sprite_moving_platforms` for a quick example
+
+    :param player_sprite: The player character's sprite.
+    :param platforms: Moving sprites the player can collide with.
+        Non-moving sprites should be added through the ``walls``
+        parameter.
+    :param gravity_constant: Downward acceleration per frame.
+    :param ladders: Ladders the player can climb on
+    :param walls: Non-moving sprites the player can collide with. This
+        Moving sprites should be added through the ``platforms``
+        parameter.
     """
 
     def __init__(self,

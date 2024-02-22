@@ -31,6 +31,8 @@ checks. That can take long enough a game can start slowing below 60 FPS.
 
 How can we speed things up? Arcade can use a technique called **spatial hashing**.
 
+.. _spatial_hashing_performance:
+
 Spatial Hashing
 ^^^^^^^^^^^^^^^
 
