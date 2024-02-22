@@ -296,6 +296,10 @@ class PhysicsEnginePlatformer:
     * :ref:`platformer_tutorial` for a step-by-step guide
     * :ref:`sprite_moving_platforms` for a quick example
 
+    :attr jumps_since_ground: How many times the player has jumped
+        since they last touched the floor.
+    :attr allow_multi_jump: Whether multi-jump is enabled.
+    :attr jumps_allowed: The max number of jumps for multi-jump.
     :param player_sprite: The player character's sprite.
     :param platforms: Moving sprites the player can collide with.
         Non-moving sprites should be added through the ``walls``
@@ -404,26 +408,40 @@ class PhysicsEnginePlatformer:
         return False
 
     def can_jump(self, y_distance: float = 5) -> bool:
-        """
-        Method that looks to see if there is a floor under
-        the player_sprite. If there is a floor, the player can jump
-        and we return a True.
+        """Update jump state and return ``True`` if the player can jump.
 
-        :returns: True if there is a platform below us
+        .. warning:: This method runs collision logic every time it is called!
+
+        This method returns ``True`` if either of these are true:
+
+        #. The player's :py:attr:`~arcade.BasicSprite.center_y` is within ``y_distance`` above a floor
+
+           .. note:: If this happens, :py:attr:`jumps_since_ground` will
+                     be set to ``0``.
+
+        #. The player can use multi-jump:
+
+           * Multi-jump is enabled through :py:attr:`allow_multi_jump`
+           * :py:attr:`jumps_since_ground` is less than :py:attr:`jumps_allowed`
+
+        :returns: ``True`` if the player can jump.
         """
 
-        # Move down to see if we are on a platform
+        # Temporarily move the player down to check for a floor
         self.player_sprite.center_y -= y_distance
-
-        # Check for wall hit
         hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
-
         self.player_sprite.center_y += y_distance
 
+        # Reset the jump counter if there is a floor below the player
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        # Return True immediately if the player is on a floor
+        if len(hit_list) > 0:
+            return True
+
+        # If multi-jump is on and we have jumps left, return True
+        elif self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False
