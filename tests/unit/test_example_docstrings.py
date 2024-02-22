@@ -50,7 +50,7 @@ def check_submodules(parent_module_absolute_name: str) -> None:
     It is important to understand that module names and file paths are different things:
 
     * A module name is what Python sees the module's name as (``"arcade.color"``)
-    * A file path is the location on disk (``C:|Users\\Reader\python_project\game.py``)
+    * A file path is the location on disk (``C:\|Users\\Reader\\python_project\game.py``)
 
     :param parent_module_absolute_name: The absolute import name of the module to check.
     """
