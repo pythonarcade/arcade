@@ -35,7 +35,7 @@ Library Information
    * - Example code
      - :ref:`Arcade Examples<example-code>`
      - `Pygame Examples <https://github.com/pygame/pygame/tree/main/examples>`_
-     -
+     - `Pygame-ce Examples <https://github.com/pygame-community/pygame-ce/tree/main/examples>`_
    * - License
      - `MIT License`_
      - LGPL_
@@ -46,8 +46,8 @@ Library Information
      - `SDL 2 <https://www.libsdl.org/>`_
    * - Back-end audio engine
      - ffmpeg via Pyglet_
-     - `SDL 2 <https://www.libsdl.org/>`_
-     - `SDL 2 <https://www.libsdl.org/>`_
+     - `SDL 2 <https://www.libsdl.org/>`_ and SDL_mixer
+     - `SDL 2 <https://www.libsdl.org/>`_ and SDL_mixer
    * - Example Projects
      - :ref:`sample_games`
      - `Games Made With Pygame <https://www.pygame.org/tags/all>`_
@@ -83,10 +83,10 @@ Here are some comparisons between Arcade 3.0 and Pygame 2.2.0 ce:
      - No
    * - Type Hints
      - Yes
-     - No
+     - Yes
    * - Transparency support
      - Yes
-     - Must specify transparent colorkey
+     - Yes
    * - Camera support
      - `Yes <api/camera.html>`__
      - No
@@ -131,9 +131,8 @@ Here are some comparisons between Arcade 3.0 and Pygame 2.2.0 ce:
      - `Yes <resources.html>`__
      - No
 
-.. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
-         then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
-         graphics card. See for more information.
+.. [#f1] To support rotation and/or scaling, Pygame programs transform Surfaces on the CPU. This can be an expensive
+         operation. Arcade off-loads these operations to the graphics card. See for more information.
 .. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time unless the user
          caches the image with their own code for better performance. Arcade will create an atlas of textures, so that
          multiple sprites with the same image will just reference the same atlas location.
@@ -226,6 +225,3 @@ faster than Pygame that relies on the CPU.
 
 .. _MIT License: https://github.com/pythonarcade/arcade/blob/development/license.rst
 .. _LGPL: https://github.com/pygame/pygame/blob/main/docs/LGPL.txt
-.. _type hinting: https://docs.python.org/3/library/typing.html
-.. _moiré pattern: http://stackoverflow.com/questions/10148479/artifacts-when-drawing-primitives-with-pygame
-.. _2.0: https://github.com/pygame/pygame/releases/tag/2.0.0
