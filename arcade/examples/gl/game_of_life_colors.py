@@ -1,17 +1,17 @@
 """
 Game of Life - Shader Version
 
-We're doing this in in a simple way drawing to textures.
-We need two textures. One to keep the old state and
-another to draw the new state into. These textures are
-flipped around every frame.
+This version uses shaders which draws to textures to
+run Conway's game of life with colors.
 
-This version of Game of Life also use colors. Dominant
-colonies will keep spreading their color.
+Press SPACE to reset the simulation with random data.
 
-Press SPACE to generate new initial data
+It uses two textures: One to keep the old state and
+a second to draw the new state into. These textures are
+flipped around after every update.
 
-The cell and window size can be tweaked in the parameters below.
+You can configure the cell and window size by changing
+the constants at the top of the file after the imports.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.game_of_life_colors
