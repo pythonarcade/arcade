@@ -216,4 +216,6 @@ class GameOfLife(arcade.Window):
             self.write_initial_state()
 
 
-GameOfLife(WINDOW_WIDTH, WINDOW_HEIGHT).run()
+if __name__ == "__main__":
+    game = GameOfLife(WINDOW_WIDTH, WINDOW_HEIGHT)
+    game.run()
