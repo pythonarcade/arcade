@@ -820,7 +820,7 @@ class Context:
         gl.glBlitFramebuffer(
             0, 0, src.width, src.height,  # Make source and dest size the same
             0, 0, src.width, src.height,
-            gl.GL_COLOR_BUFFER_BIT,  # | gl.GL_DEPTH_BUFFER_BIT,
+            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
             gl.GL_NEAREST,
         )
 
