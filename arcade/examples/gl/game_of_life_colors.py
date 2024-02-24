@@ -2,7 +2,7 @@
 Game of Life - Shader Version
 
 This version uses shaders which draws to textures to
-run Conway's game of life with colors.
+run Conway's Game of Life with an added twist: colors.
 
 Press SPACE to reset the simulation with random data.
 
