@@ -15,11 +15,11 @@ python -m arcade.examples.drawing_text_objects_batch
 import arcade
 from pyglet.graphics import Batch
 
-WINDOW_WIDTH = 1200
-WINDOW_HEIGHT = 800
-WINDOW_TITLE = "Drawing Text Example"
-DEFAULT_LINE_HEIGHT = 45
-DEFAULT_FONT_SIZE = 20
+WINDOW_WIDTH = 1200  # Window width in pixels
+WINDOW_HEIGHT = 800  # Window height in pixels
+WINDOW_TITLE = "Drawing Text Example"  # Window title
+DEFAULT_LINE_HEIGHT = 45  # Line height to use in pixels
+DEFAULT_FONT_SIZE = 20  # Default font size in points
 
 
 class MyGame(arcade.Window):
