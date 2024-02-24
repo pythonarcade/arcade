@@ -11,7 +11,6 @@ from array import array
 from collections import OrderedDict
 import itertools
 import math
-from array import array
 from typing import (
     Dict,
     List,
