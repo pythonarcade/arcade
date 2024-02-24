@@ -81,7 +81,7 @@ class SimpleCamera:
                 0.0, self._window.height
             )
             self._projection = OrthographicProjectionData(
-                _projection[0] or 0.0, _projection[1] or self._window.hwidth,  # Left, Right
+                _projection[0] or 0.0, _projection[1] or self._window.width,  # Left, Right
                 _projection[2] or 0.0, _projection[3] or self._window.height,  # Bottom, Top
                 near or -100, far or 100,  # Near, Far
                 viewport or (0, 0, self._window.width, self._window.height),  # Viewport
