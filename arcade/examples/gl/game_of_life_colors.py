@@ -27,7 +27,7 @@ from arcade.gl import geometry
 CELL_SIZE = 2  # Cell size in pixels
 WINDOW_WIDTH = 512  # Width of the window
 WINDOW_HEIGHT = 512  # Height of the window
-FRAME_DELAY = 2  # The game will only update every 2th frame
+FRAME_DELAY = 2  # The game will only update every 2nd frame
 
 
 class GameOfLife(arcade.Window):
