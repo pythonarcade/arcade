@@ -5,10 +5,9 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, List, Optional, Union, cast
+from typing import Iterable, List, Optional, Union
 
 from arcade import (
-    BasicSprite,
     Sprite,
     SpriteList,
     SpriteType,
@@ -220,8 +219,6 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
     # print(f"Move 2 - {end_time - start_time:7.4f} {loop_count}")
 
     return complete_hit_list
-
-
 class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down
@@ -233,18 +230,29 @@ class PhysicsEngineSimple:
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList[BasicSprite], Iterable[SpriteList[BasicSprite]]]):
-        assert isinstance(player_sprite, Sprite)
+    def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        self.player_sprite: Sprite = player_sprite
+        self._walls: List[SpriteList]
 
         if walls:
-            if isinstance(walls, SpriteList):
-                self.walls = [cast(SpriteList[BasicSprite], walls)]
-            else:
-                self.walls = list(walls)
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
-            self.walls = []
+            self._walls = []
 
-        self.player_sprite = player_sprite
+    @property
+    def walls(self):
+        return self._walls
+
+    @walls.setter
+    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        if walls:
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+        else:
+            self._walls = []
+
+    @walls.deleter
+    def walls(self):
+        self._walls = []
 
     def update(self):
         """
@@ -285,33 +293,79 @@ class PhysicsEnginePlatformer:
                  ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
-        self.ladders: Optional[List[SpriteList]]
-        self.platforms: List[SpriteList]
-        self.walls: List[SpriteList]
+        self._ladders: Optional[List[SpriteList]]
+        self._platforms: List[SpriteList]
+        self._walls: List[SpriteList]
 
         if ladders:
-            self.ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
-            self.ladders = None
+            self._ladders = []
 
         if platforms:
-            if isinstance(platforms, SpriteList):
-                self.platforms = [platforms]
-            else:
-                self.platforms = list(platforms)
+            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
         else:
-            self.platforms = []
+            self._platforms = []
 
         if walls:
-            self.walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
         else:
-            self.walls = []
+            self._walls = []
 
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
         self.allow_multi_jump: bool = False
+
+    # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
+    @property
+    def ladders(self):
+        """ The ladder list registered with the physics engine."""
+        return self._ladders
+
+    @ladders.setter
+    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        if ladders:
+            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+        else:
+            self._ladders = []
+
+    @ladders.deleter
+    def ladders(self):
+        self._ladders = []
+
+    @property
+    def platforms(self):
+        """ The moving platform list registered with the physics engine."""
+        return self._platforms
+
+    @platforms.setter
+    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        if platforms:
+            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
+        else:
+            self._platforms = []
+
+    @platforms.deleter
+    def platforms(self):
+        self._platforms = []
+
+    @property
+    def walls(self):
+        """ The wall list registered with the physics engine."""
+        return self._walls
+
+    @walls.setter
+    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+        if walls:
+            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+        else:
+            self._walls = []
+
+    @walls.deleter
+    def walls(self):
+        self._walls = []
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """

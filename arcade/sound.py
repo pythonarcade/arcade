@@ -184,14 +184,14 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     except Exception as ex:
         raise FileNotFoundError(
             f'Unable to load sound file: "{file_name}". Exception: {ex}'
-        )
+        ) from ex
 
 
 def play_sound(
     sound: Sound,
     volume: float = 1.0,
     pan: float = 0.0,
-    looping: bool = False,
+    loop: bool = False,
     speed: float = 1.0,
 ) -> Optional[media.Player]:
     """
@@ -200,20 +200,21 @@ def play_sound(
     :param sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param volume: Volume, from 0=quiet to 1=loud
     :param pan: Pan, from -1=left to 0=centered to 1=right
-    :param looping: Should we loop the sound over and over?
+    :param loop: Should we loop the sound over and over?
     :param speed: Change the speed of the sound which also changes pitch, default 1.0
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
         return None
-    elif isinstance(sound, str):
-        msg = (
-            "Error, passed in a string as a sound. "
-            "Make sure to use load_sound first, and use that result in play_sound."
-        )
-        raise Exception(msg)
+
+    elif not isinstance(sound, Sound):
+        raise TypeError(
+            f"Error, got {sound!r} instead of an arcade.Sound."
+            if not isinstance(sound, (str, Path, bytes)) else\
+            " Make sure to use load_sound first, then play the result with play_sound.")
+
     try:
-        return sound.play(volume, pan, looping, speed)
+        return sound.play(volume, pan, loop, speed)
     except Exception as ex:
         print("Error playing sound.", ex)
         return None
@@ -225,16 +226,11 @@ def stop_sound(player: media.Player):
 
     :param player: Player returned from :func:`play_sound`.
     """
-    if isinstance(player, Sound):
-        raise ValueError(
-            "stop_sound takes the media player object returned from the play() command, "
-            "not the loaded Sound object."
-        )
 
     if not isinstance(player, media.Player):
-        raise ValueError(
-            "stop_sound takes a media player object returned from the play() command."
-        )
+        raise TypeError(
+            "stop_sound takes a media player object returned from the play_sound() command, not a "
+            "loaded Sound object." if isinstance(player, Sound) else f"{player!r}")
 
     player.pause()
     player.delete()

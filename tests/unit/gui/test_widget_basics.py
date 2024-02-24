@@ -113,7 +113,7 @@ def test_widget_content_rect_affected_by_border_width():
 def test_widget_resize():
     # GIVEN
     widget = UIWidget(x=0, y=0, width=100, height=100)
-    widget.with_border(10)
+    widget.with_border(width=10)
 
     # WHEN
     widget.resize(width=50, height=50)

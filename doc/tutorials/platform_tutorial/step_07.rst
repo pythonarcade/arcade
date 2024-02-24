@@ -1,93 +1,67 @@
-
 .. _platformer_part_seven:
 
-Step 7 - Add Coins And Sound
-----------------------------
+Step 7 - Adding a Camera
+------------------------
 
-.. image:: images/title_07.png
-    :width: 70%
+Now that our player can move and jump around, we need to give them a way to explore the world
+beyond the original window. If you've ever played a platformer game, you might be familiar with the
+concept of the screen scrolling to reveal more of the map as the player moves.
 
-Next we will add some coins that the player can pickup. We'll also add a sound to
-be played when they pick it up, as well as a sound for when they jump.
+To achieve this, we can use a Camera, Arcade provides :class:`arcade.SimpleCamera` and :class:`arcade.Camera`.
+They both do the same base thing, but Camera has a bit of extra functionality that SimpleCamera doesn't.
+For now, we will just use the SimpleCamera.
 
-Adding Coins to the Scene
-~~~~~~~~~~~~~~~~~~~~~~~~~
+To start with, let's go ahead and add a variable in our ``__init__`` function to hold it:
 
-First we need to add our coins to the scene. Let's start by adding a constant at the
-top of our application for the coin sprite scaling, similar to our ``TILE_SCALING`` one.
+.. code-block::
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
-    :lines: 14
+    self.camera = None
 
-Next in our ``setup`` function we can create our coins using a for loop like we've done for
-the ground previously, and then add them to the scene.
+Next we can go to our setup function, and initialize it like so:
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
-    :lines: 86-91
+.. code-block::
 
-.. _platformer_part_seven_loading_sounds:
+    self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
 
-Loading Sounds
-~~~~~~~~~~~~~~
+The ``viewport`` parameter here defines the size of the camera. In most circumstances, you will want this
+to be the size of your window. So we specify the bottom and left coordinates of our camera viewport as
+(0, 0), and provide it the width and height of our window.
 
-Now we can load in our sounds for collecting the coin and jumping. Later we will use these
-variables to play the sounds when the specific events happen. Add the following to the
-``__init__`` function to load the sounds:
+In order to use our camera when drawing things to the screen, we only need to add one line to our ``on_draw``
+function. This line should typically come before anything you want to draw with the camera. In later chapters,
+we'll explore using multiple cameras to draw things in different positions. Go ahead and add this line before
+drawing our SpriteLists
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
-    :lines: 44-46
+.. code-block::
 
-Then we can play our jump sound when the player jumps, by adding it to the ``on_key_press`` function:
+    self.camera.use()
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
-    :lines: 110-120
-    :emphasize-lines: 7
+If you run the game at this point, you might notice that nothing has changed, our game is still one static un-moving
+screen. This is because we are never updating the camera's position. In our platformer game, we want the camera to follow
+the player, and keep them in the center of the screen. Arcade provides a helpful function to do this with one line of code.
+In other types of games or more advanced usage you may want to set the cameras position directly in order to create interesting
+effects, but for now all we need is the ``center()`` function of our camera.
 
-.. _platformer_part_seven_playing_sounds:
+If we add the following line to our ``on_update()`` function and run the game, you should now see the player
+stay at the center of the screen, while being able to scroll the screen around to the rest of our map. For fun, see what happens
+if you fall off of the map! Later on, we'll revisit a more advanced camera setup that will take the bounds of our world into
+consideration.
 
-Collision Detection
-~~~~~~~~~~~~~~~~~~~
+.. code-block::
 
-Lastly, we need to find out if the player hit a coin. We can do this in our ``on_update``
-function by using the ``arcade.check_for_collision_with_list`` function. We can pass the
-player sprite, along with a ``SpriteList`` that holds the coins. The function will return
-a list of the coins that the player is currently colliding with. If there are no coins in
-contact, the list will be empty.
-
-Then we can use the ``Sprite.remove_from_sprite_lists`` function which will remove a given
-sprite from any SpriteLists it belongs to, effectively deleting it from the game.
-
-.. note::
-
-    Notice that any transparent "white-space" around the image counts as the hitbox.
-    You can trim the space in a graphics editor, or later on, we'll go over how to customize the
-    hitbox of a Sprite.
-
-Add the following to the ``on_update`` function to add collision detection and play a sound
-when the player picks up a coin.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
-    :lines: 149-159
-
-.. note::
-
-    Spend time placing the coins where you would like them.
-    If you have extra time, try adding more than just coins. Also add gems or keys
-    from the graphics provided.
-
-    You could also subclass the coin sprite and add an attribute for a score
-    value. Then you could have coins worth one point, and gems worth 5, 10, and
-    15 points.
+    self.camera.center(self.player_sprite.position)
 
 Source Code
 ~~~~~~~~~~~
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_coins_and_sound.py
-    :caption: Add Coins and Sound
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_camera.py
+    :caption: Adding a Camera
     :linenos:
-    :emphasize-lines: 14, 44-46, 86-91, 116, 149-159
+    :emphasize-lines: 49-50, 96-97, 107-108, 120-121
+
+Run This Chapter
+~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+  python -m arcade.examples.platform_tutorial.07_camera

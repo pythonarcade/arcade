@@ -1,10 +1,14 @@
+from pathlib import Path
+
+import pytest
+
 import arcade
 
 frame_count = 0
 player = None
 
 
-def test_sound(window):
+def test_sound_normal_load_and_playback(window):
     global frame_count, player
 
     laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
@@ -89,3 +93,35 @@ def test_sound(window):
     window.on_draw = on_draw
     window.test(140)
     player = None
+
+
+def test_sound_play_sound_type_errors(window):
+    # Non-pathlike raises and provides full loading guidance.
+    with pytest.raises(TypeError) as ctx:
+        arcade.play_sound(object())
+        assert ctx.value.args[0].endswith("arcade.Sound.")
+
+    #Pathlike raises and provides full loading guidance.
+    with pytest.raises(TypeError) as ctx:
+        arcade.play_sound("file.wav")
+        assert ctx.value.args[0].endswidth("play_sound.")
+
+    with pytest.raises(TypeError) as ctx:
+        arcade.play_sound(b"file.wav")
+        assert ctx.value.args[0].endswidth("play_sound.")
+
+    with pytest.raises(TypeError) as ctx:
+        arcade.play_sound(Path("file.wav"))
+        assert ctx.value.args[0].endswidth("play_sound.")
+
+
+def test_sound_stop_sound_type_errors(window):
+    sound = arcade.load_sound(":resources:sounds/laser1.wav")
+
+    # Sound raises specific type error
+    with pytest.raises(TypeError) as ctx:
+        arcade.stop_sound(sound)
+        assert ctx.value.args[0].endswith("not the loaded Sound object.")
+
+    with pytest.raises(TypeError) as ctx:
+        arcade.play_sound("file.wav")

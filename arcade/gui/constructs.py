@@ -42,7 +42,9 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         buttons=("Ok",),
     ):
         if not buttons:
-            raise ValueError("At least a single value has to be available for `buttons`")
+            raise ValueError(
+                "At least a single value has to be available for `buttons`"
+            )
 
         super().__init__(size_hint=(1, 1))
         self.register_event_type("on_action")
@@ -53,15 +55,17 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
         frame.with_padding(all=space)
 
-        frame.with_background(texture=NinePatchTexture(
-            left=7,
-            right=7,
-            bottom=7,
-            top=7,
-            texture=arcade.load_texture(
-                ":resources:gui_basic_assets/window/grey_panel.png"
+        frame.with_background(
+            texture=NinePatchTexture(
+                left=7,
+                right=7,
+                bottom=7,
+                top=7,
+                texture=arcade.load_texture(
+                    ":resources:gui_basic_assets/window/grey_panel.png"
+                ),
             )
-        ))
+        )
 
         # Setup text
         frame.add(
@@ -114,6 +118,7 @@ class UIButtonRow(UIBoxLayout):
 
     def __init__(
         self,
+        *,
         vertical: bool = False,
         align: str = "center",
         size_hint: Any = (0, 0),

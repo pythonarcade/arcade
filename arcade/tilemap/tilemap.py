@@ -21,8 +21,9 @@ import pytiled_parser.tiled_object
 from pytiled_parser import Color
 
 from arcade import (
-    AnimatedTimeBasedSprite,
-    AnimationKeyframe,
+    TextureAnimationSprite,
+    TextureKeyframe,
+    TextureAnimation,
     Sprite,
     SpriteList,
     get_window,
@@ -442,13 +443,13 @@ class TileMap:
 
         if tile.animation:
             if not custom_class:
-                custom_class = AnimatedTimeBasedSprite
-            elif not issubclass(custom_class, AnimatedTimeBasedSprite):
+                custom_class = TextureAnimationSprite
+            elif not issubclass(custom_class, TextureAnimationSprite):
                 raise RuntimeError(
                     f"""
                     Tried to use a custom class {custom_class.__name__} for animated tiles
-                    that doesn't subclass AnimatedTimeBasedSprite.
-                    Custom classes for animated tiles must subclass AnimatedTimeBasedSprite.
+                    that doesn't subclass TextureAnimationSprite.
+                    Custom classes for animated tiles must subclass TextureAnimationSprite.
                     """
                 )
             # print(custom_class.__name__)
@@ -576,16 +577,13 @@ class TileMap:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
                 if tile.flipped_vertically:
-                    for point in points:
-                        point = point[0], point[1] * -1
+                    points = [(point[0], -point[1]) for point in points]
 
                 if tile.flipped_horizontally:
-                    for point in points:
-                        point = point[0] * -1, point[1]
+                    points = [(-point[0], point[1]) for point in points]
 
                 if tile.flipped_diagonally:
-                    for point in points:
-                        point = point[1], point[0]
+                    points = [(point[1], point[0]) for point in points]
 
                 my_sprite.hit_box = RotatableHitBox(
                     cast(List[Point], points),
@@ -632,15 +630,15 @@ class TileMap:
 
                     texture = _may_be_flip(tile, texture)
 
-                    key_frame = AnimationKeyframe(  # type: ignore
-                        frame.tile_id, frame.duration, texture
+                    key_frame = TextureKeyframe(  # type: ignore
+                        texture=texture, duration=frame.duration, tile_id=frame.tile_id
                     )
                     key_frame_list.append(key_frame)
 
                     if len(key_frame_list) == 1:
                         my_sprite.texture = key_frame.texture
 
-            cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
+            cast(TextureAnimationSprite, my_sprite).animation = TextureAnimation(keyframes=key_frame_list)  # type: ignore
 
         return my_sprite
 
@@ -869,7 +867,7 @@ class TileMap:
                 # center_x = width / 2
                 # center_y = height / 2
                 if cur_object.rotation:
-                    rotation = -math.radians(cur_object.rotation)
+                    rotation = math.radians(cur_object.rotation)
                 else:
                     rotation = 0
 

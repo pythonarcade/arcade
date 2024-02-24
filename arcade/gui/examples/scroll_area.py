@@ -24,24 +24,27 @@ import arcade
 from arcade import Window
 from arcade.gui import UIManager, UIWidget, Property, Surface, UIDummy, UIEvent, bind, \
     UIMouseDragEvent, UIMouseScrollEvent, UIMouseEvent, UIBoxLayout, UIFlatButton, UIInputText
-from arcade.types import Point
 
 
 class UIScrollArea(UIWidget):
     scroll_x = Property[float](default=0.0)
     scroll_y = Property[float](default=0.0)
-    canvas_size = Property[Point](default=(300.0, 300.0))
 
     scroll_speed = 1.3
     invert_scroll = False
 
-    def __init__(self, *, x: float = 0, y: float = 0, width: float = 300, height: float = 300,
-                 children: Iterable["UIWidget"] = tuple(), size_hint=None, size_hint_min=None, size_hint_max=None,
+    def __init__(self, *,
+                 x: float = 0, y: float = 0, width: float = 300, height: float = 300,
+                 children: Iterable["UIWidget"] = tuple(),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 canvas_size=(300, 300),
                  **kwargs):
         super().__init__(x=x, y=y, width=width, height=height, children=children, size_hint=size_hint,
                          size_hint_min=size_hint_min, size_hint_max=size_hint_max, **kwargs)
         self.surface = Surface(
-            size=(300, 300),
+            size=canvas_size,
         )
 
         bind(self, "scroll_x", self.trigger_full_render)
@@ -72,7 +75,8 @@ class UIScrollArea(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        width, height = self.content_size
+        # draw the whole surface, the scissor box, will limit the visible area on screen
+        width, height = self.surface.size
         self.surface.position = (-self.scroll_x, -self.scroll_y)
         self.surface.draw((0, 0, width, height))
 

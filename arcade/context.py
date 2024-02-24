@@ -44,7 +44,7 @@ class ArcadeContext(Context):
                         it's not clear what thread will gc the object.
     """
 
-    atlas_size = 512, 512
+    atlas_size: Tuple[int, int] = 512, 512
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
 

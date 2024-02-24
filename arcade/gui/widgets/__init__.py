@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 from abc import ABC
 from random import randint
 from typing import (
@@ -13,9 +14,9 @@ from typing import (
     List,
     Dict,
 )
-from typing_extensions import Self
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from typing_extensions import Self
 
 import arcade
 from arcade import Sprite, get_window, Texture
@@ -183,12 +184,7 @@ class Rect(NamedTuple):
         y = min(self.y, rect.y)
         right = max(self.right, rect.right)
         top = max(self.top, rect.top)
-        return Rect(
-            x=x,
-            y=y,
-            width=right - x,
-            height=top - y
-        )
+        return Rect(x=x, y=y, width=right - x, height=top - y)
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -400,11 +396,7 @@ class UIWidget(EventDispatcher, ABC):
         # draw background texture
         if self._bg_tex:
             surface.draw_texture(
-                x=0,
-                y=0,
-                width=self.width,
-                height=self.height,
-                tex=self._bg_tex
+                x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex
             )
 
         # draw border
@@ -534,7 +526,7 @@ class UIWidget(EventDispatcher, ABC):
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
-    def with_border(self, width=2, color=(0, 0, 0)) -> Self:
+    def with_border(self, *, width=2, color=(0, 0, 0)) -> Self:
         """
         Sets border properties
         :param width: border width
@@ -546,7 +538,13 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     def with_padding(
-        self, top=..., right=..., bottom=..., left=..., all=...
+        self,
+        *,
+        top: Union["builtins.ellipsis", int] = ...,
+        right: Union["builtins.ellipsis", int] = ...,
+        bottom: Union["builtins.ellipsis", int] = ...,
+        left: Union["builtins.ellipsis", int] = ...,
+        all: Union["builtins.ellipsis", int] = ...,
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -567,10 +565,9 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color=...,
+        color: Union["builtins.ellipsis", Color] = ...,
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
-
         """
         Set widgets background.
 
@@ -744,6 +741,7 @@ class UIDummy(UIInteractiveWidget):
 
     def __init__(
         self,
+        *,
         x=0,
         y=0,
         width=100,
@@ -829,7 +827,7 @@ class UISpriteWidget(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            **kwargs
+            **kwargs,
         )
         self._sprite = sprite
 
@@ -895,6 +893,7 @@ class UISpace(UIWidget):
 
     def __init__(
         self,
+        *,
         x=0,
         y=0,
         width=100,
@@ -903,7 +902,6 @@ class UISpace(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(

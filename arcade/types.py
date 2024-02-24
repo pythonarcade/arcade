@@ -103,6 +103,8 @@ class Color(RGBA255):
         0 and 255
     """
 
+    __slots__ = ()
+
     def __new__(cls, r: int, g: int, b: int, a: int = 255):
 
         if not 0 <= r <= 255:
