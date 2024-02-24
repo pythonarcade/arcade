@@ -13,7 +13,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.drawing_text_objects_batch
 """
 import arcade
-import pyglet.graphics
+from pyglet.graphics import Batch
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
         self.text_angle = 0
         self.time_elapsed = 0.0
 
-        self.batch = pyglet.graphics.Batch()
+        self.batch = Batch()
 
         # Add the screen title
         start_x = 0
