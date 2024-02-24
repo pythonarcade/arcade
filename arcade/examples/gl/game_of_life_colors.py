@@ -36,7 +36,7 @@ class GameOfLife(arcade.Window):
         super().__init__(width, height, "Game of Life - Shader Version")
         self.frame = 0
 
-        # Configure the size of the playfield (cells)
+        # Calculate how many cells we need to simulate at this pixel size
         self.texture_size = width // CELL_SIZE, height // CELL_SIZE
 
         # Create two textures for the next and previous state (RGB textures)
@@ -86,9 +86,9 @@ class GameOfLife(arcade.Window):
             """,
         )
 
-        # Shader for creating the next game state.
-        # It takes the previous state as input (texture0)
-        # and renders the next state directly into the second texture.
+        # Shader which calculates the next game state.
+        # It uses the previous state as input (texture0) and
+        # renders the next state into the second texture.
         self.life_program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -165,20 +165,23 @@ class GameOfLife(arcade.Window):
         )
 
     def gen_initial_data(self, num_values: int):
-        """
-        Generate initial data. We need to be careful about the initial state.
-        Just throwing in lots of random numbers will make the entire system
-        die in a few frames. We need to give enough room for life to exist.
+        """Generate initial data.
 
-        This might be the slowest possible way we would generate the initial
-        data, but it works for this example :)
+        We need to be careful about the initial game state. Carelessly
+        random numbers will make the simulation die in only a few frames.
+        Instead, we need to generate values which leave room for life
+        to exist.
+
+        The implementtation below is one of the slowest possible ways to
+        would generate the initial data, but it keeps things simple for
+        this example.
         """
         choices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 64, 128, 192, 255]
         for i in range(num_values):
             yield random.choice(choices)
 
     def write_initial_state(self):
-        """Write initial data to the source texture"""
+        """Write initial data to the source texture."""
         size = self.texture_size
         self.texture_1.write(array('B', self.gen_initial_data(size[0] * size[1] * 3)))
 
