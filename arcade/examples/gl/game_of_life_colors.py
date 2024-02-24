@@ -36,16 +36,16 @@ class GameOfLife(arcade.Window):
         self.frame = 0
 
         # Configure the size of the playfield (cells)
-        self.size = width // CELL_SIZE, height // CELL_SIZE
+        self.texture_size = width // CELL_SIZE, height // CELL_SIZE
 
         # Create two textures for the next and previous state (RGB textures)
         self.texture_1 = self.ctx.texture(
-            self.size,
+            self.texture_size,
             components=3,
             filter=(self.ctx.NEAREST, self.ctx.NEAREST),
         )
         self.texture_2 = self.ctx.texture(
-            self.size,
+            self.texture_size,
             components=3,
             filter=(self.ctx.NEAREST, self.ctx.NEAREST)
         )
@@ -178,7 +178,8 @@ class GameOfLife(arcade.Window):
 
     def write_initial_state(self):
         """Write initial data to the source texture"""
-        self.texture_1.write(array('B', self.gen_initial_data(self.size[0] * self.size[1] * 3)))
+        size = self.texture_size
+        self.texture_1.write(array('B', self.gen_initial_data(size[0] * size[1] * 3)))
 
     def on_draw(self):
         self.clear()
