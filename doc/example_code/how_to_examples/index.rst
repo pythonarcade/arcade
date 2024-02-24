@@ -49,6 +49,12 @@ Drawing Primitives
 
    :ref:`drawing_text_objects`
 
+.. figure:: thumbs/drawing_text_objects.png
+   :figwidth: 170px
+   :target: drawing_text_objects_batch.html
+
+   :ref:`drawing_text_objects_batch`
+
 Animating Drawing Primitives
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
