@@ -15,6 +15,7 @@ python -m arcade.examples.drawing_text_objects_batch
 import arcade
 from pyglet.graphics import Batch
 
+
 WINDOW_WIDTH = 1200  # Window width in pixels
 WINDOW_HEIGHT = 800  # Window height in pixels
 WINDOW_TITLE = "Drawing Text Example"  # Window title
