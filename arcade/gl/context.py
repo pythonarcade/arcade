@@ -805,18 +805,27 @@ class Context:
         :param src_attachment_index: The color attachment to copy from
         :param depth: Also copy depth attachment if present
         """
-        # TODO: Make make this more configurable (target)
+        # Set source and dest framebuffer
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
-        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_attachment_index)
         gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
+
+        # TODO: We can support blitting multiple layers here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_attachment_index)
+        if dst.is_default:
+            gl.glDrawBuffer(gl.GL_BACK)
+        else:
+            gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0)
+
+        # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, src._glo)
         gl.glBlitFramebuffer(
             0, 0, src.width, src.height,  # Make source and dest size the same
             0, 0, src.width, src.height,
-            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT if depth else 0,
+            gl.GL_COLOR_BUFFER_BIT,  # | gl.GL_DEPTH_BUFFER_BIT,
             gl.GL_NEAREST,
         )
-        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset read buffer
-        self.active_framebuffer.use(force=True)
+
+        # Reset states. We can also apply previous states here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
 
     # --- Resource methods ---
 

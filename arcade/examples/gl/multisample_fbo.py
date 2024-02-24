@@ -12,15 +12,16 @@ python -m arcade.examples.gl.multisample_fbo
 import math
 import arcade
 
+SAMPLES = 8
 
 class MultisampleFramebuffer(arcade.Window):
 
     def __init__(self, width, height):
-        super().__init__(width, height, "Multisampled Framebuffer")
+        super().__init__(width, height, "Multisampled Framebuffer", samples=SAMPLES)
         self.time = 0
 
         # Create a MSAA texture and framebuffer
-        self.texture = self.ctx.texture(self.get_framebuffer_size(), samples=8)
+        self.texture = self.ctx.texture(self.get_framebuffer_size(), samples=SAMPLES)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
 
     def on_draw(self):
