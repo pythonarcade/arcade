@@ -106,6 +106,7 @@ def resolve(path: Union[str, Path]) -> Path:
     except FileNotFoundError:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
+
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     """
     Add a resource handle or path to an existing handle.

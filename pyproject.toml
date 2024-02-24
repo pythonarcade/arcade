@@ -94,7 +94,7 @@ build-backend = "setuptools.build_meta"
 line-length = 120
 output-format = "full"
 exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs", "arcade/examples/platform_tutorial"]
-lint.ignore = ["F811", "E731", "E741"]
+lint.ignore = ["E731", "E741"]
 lint.select = [
     "E",
     "F",

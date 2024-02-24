@@ -122,7 +122,6 @@ class VideoPlayerCV2:
                 self.video.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
 
-
 class CV2PlayerView(arcade.View):
     """
     A simple view to hold a video player using cv2.

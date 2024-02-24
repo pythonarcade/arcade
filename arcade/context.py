@@ -25,6 +25,7 @@ from arcade.texture_atlas import TextureAtlas
 
 __all__ = ["ArcadeContext"]
 
+
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.

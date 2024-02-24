@@ -217,8 +217,10 @@ class AnimaFactsService:
 
 class Facts:
     """Base class for fact providers"""
+
     def get_fact(self) -> str:
         raise NotImplementedError()
+
     def get_image(self) -> arcade.Texture:
         raise NotImplementedError()
 
