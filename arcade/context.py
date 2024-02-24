@@ -5,7 +5,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Dict, Optional, Union, Sequence
+from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
 from contextlib import contextmanager
 
 import pyglet
