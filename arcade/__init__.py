@@ -33,6 +33,7 @@ def configure_logging(level: Optional[int] = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
 # The following is used to load ffmpeg libraries.
 # Currently Arcade is only shipping binaries for Mac OS
 # as ffmpeg is not needed for support on Windows and Linux.

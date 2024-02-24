@@ -99,7 +99,7 @@ class Sound:
             media.Source._players.remove(player)
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
-            player.on_player_eos = None # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
+            player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
 
         player.on_player_eos = _on_player_eos
         return player
@@ -116,12 +116,12 @@ class Sound:
     def get_length(self) -> float:
         """Get length of audio in seconds"""
         # We validate that duration is known when loading the source
-        return self.source.duration # type: ignore
+        return self.source.duration  # type: ignore
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
         # We validate that duration is known when loading the source
-        return player.time >= self.source.duration # type: ignore
+        return player.time >= self.source.duration  # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
         """
@@ -140,7 +140,7 @@ class Sound:
         :param player: Player returned from :func:`play_sound`.
         :returns: A float, 0 for volume off, 1 for full volume.
         """
-        return player.volume # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
+        return player.volume  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
     def set_volume(self, volume, player: media.Player) -> None:
         """

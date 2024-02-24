@@ -7,6 +7,7 @@ from weakref import WeakKeyDictionary, ref
 
 P = TypeVar("P")
 
+
 class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
@@ -78,7 +79,7 @@ class Property(Generic[P]):
 
     def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self # type: ignore
+            return self  # type: ignore
         return self.get(instance)
 
     def __set__(self, instance, value):

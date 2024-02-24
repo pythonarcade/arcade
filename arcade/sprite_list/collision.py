@@ -92,7 +92,7 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     :returns: True if sprites overlap.
     """
 
-    #NOTE: for speed becuase attribute look ups are slow.
+    # NOTE: for speed because attribute look ups are slow.
     sprite1_position = sprite1._position
     sprite1_width = sprite1._width
     sprite1_height = sprite1._height

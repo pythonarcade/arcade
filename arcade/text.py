@@ -219,7 +219,7 @@ class Text:
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation, # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
+            rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
             group=group
         )

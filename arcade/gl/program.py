@@ -517,7 +517,7 @@ class Program:
                     f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
                 )
                 + "\n".join(
-                    f"{str(i+1).zfill(3)}: {line} "
+                    f"{str(i + 1).zfill(3)}: {line} "
                     for i, line in enumerate(source.split("\n"))
                 )
             )
