@@ -19,9 +19,10 @@ python -m arcade.examples.gl.game_of_life_colors
 import random
 from array import array
 
-from arcade import key
 import arcade
+from arcade import key
 from arcade.gl import geometry
+
 
 CELL_SIZE = 2  # Cell size in pixels
 WINDOW_WIDTH = 512  # Width of the window
