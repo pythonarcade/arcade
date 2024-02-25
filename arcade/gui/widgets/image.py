@@ -18,6 +18,7 @@ class UIImage(UIWidget):
 
     def __init__(
         self,
+        *,
         texture: Union[Texture, NinePatchTexture],
         **kwargs,
     ):
@@ -34,5 +35,5 @@ class UIImage(UIWidget):
                 y=0,
                 width=self.content_width,
                 height=self.content_height,
-                tex=self.texture
+                tex=self.texture,
             )

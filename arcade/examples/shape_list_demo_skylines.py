@@ -10,7 +10,6 @@ from arcade.shape_list import (
     ShapeElementList,
     create_rectangle_filled,
     create_polygon,
-    create_rectangle_filled,
     create_rectangles_filled_with_colors,
 )
 

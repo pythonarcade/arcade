@@ -817,39 +817,39 @@ Particle System
 Tutorials
 ---------
 
-.. figure:: thumbs/11_animate_character.png
+.. figure:: /tutorials/platform_tutorial/intro_screen.png
    :figwidth: 170px
-   :target: platformer_tutorial.html
+   :target: /tutorials/platform_tutorial/index.html
 
    :ref:`platformer_tutorial`
 
 .. figure:: thumbs/solitaire_11.png
    :figwidth: 170px
-   :target: solitaire_tutorial.html
+   :target: /tutorials/card_game/index.html
 
    :ref:`solitaire_tutorial`
 
 .. figure:: thumbs/crt_filter.png
    :figwidth: 170px
-   :target: crt_filter.html
+   :target: /tutorials/crt_filter/index.html
 
    :ref:`crt_filter`
 
 .. figure:: thumbs/raycasting_tutorial.png
    :figwidth: 170px
-   :target: raycasting_tutorial.html
+   :target: /tutorials/raycasting/index.html
 
    :ref:`raycasting_tutorial`
 
 .. figure:: thumbs/pymunk_platformer_tutorial.png
    :figwidth: 170px
-   :target: pymunk_platformer_tutorial.html
+   :target: /tutorials/pymunk_platformer/index.html
 
    :ref:`pymunk_platformer_tutorial`
 
 .. figure:: thumbs/shader_toy_tutorial.png
    :figwidth: 170px
-   :target: shader_toy_tutorial_glow.html
+   :target: /tutorials/shader_toy_glow/index.html
 
    :ref:`shader_toy_tutorial_glow`
 

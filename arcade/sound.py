@@ -99,7 +99,7 @@ class Sound:
             media.Source._players.remove(player)
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
-            player.on_player_eos = None # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
+            player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
 
         player.on_player_eos = _on_player_eos
         return player
@@ -116,12 +116,12 @@ class Sound:
     def get_length(self) -> float:
         """Get length of audio in seconds"""
         # We validate that duration is known when loading the source
-        return self.source.duration # type: ignore
+        return self.source.duration  # type: ignore
 
     def is_complete(self, player: media.Player) -> bool:
         """Return true if the sound is done playing."""
         # We validate that duration is known when loading the source
-        return player.time >= self.source.duration # type: ignore
+        return player.time >= self.source.duration  # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
         """
@@ -140,7 +140,7 @@ class Sound:
         :param player: Player returned from :func:`play_sound`.
         :returns: A float, 0 for volume off, 1 for full volume.
         """
-        return player.volume # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
+        return player.volume  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
     def set_volume(self, volume, player: media.Player) -> None:
         """
@@ -191,7 +191,7 @@ def play_sound(
     sound: Sound,
     volume: float = 1.0,
     pan: float = 0.0,
-    looping: bool = False,
+    loop: bool = False,
     speed: float = 1.0,
 ) -> Optional[media.Player]:
     """
@@ -200,7 +200,7 @@ def play_sound(
     :param sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param volume: Volume, from 0=quiet to 1=loud
     :param pan: Pan, from -1=left to 0=centered to 1=right
-    :param looping: Should we loop the sound over and over?
+    :param loop: Should we loop the sound over and over?
     :param speed: Change the speed of the sound which also changes pitch, default 1.0
     """
     if sound is None:
@@ -214,7 +214,7 @@ def play_sound(
             " Make sure to use load_sound first, then play the result with play_sound.")
 
     try:
-        return sound.play(volume, pan, looping, speed)
+        return sound.play(volume, pan, loop, speed)
     except Exception as ex:
         print("Error playing sound.", ex)
         return None

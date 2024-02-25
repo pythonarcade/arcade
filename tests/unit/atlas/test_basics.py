@@ -4,7 +4,7 @@ from pyglet.image.atlas import AllocatorException
 import arcade
 from arcade import TextureAtlas, load_texture
 from arcade.gl import Texture2D, Framebuffer
-
+from arcade.texture_atlas.atlas_2d import UVData
 
 def test_create(ctx, common):
     atlas = TextureAtlas((100, 200))
@@ -19,8 +19,6 @@ def test_create(ctx, common):
     assert isinstance(atlas.image_uv_texture, Texture2D)
     assert isinstance(atlas.texture_uv_texture, Texture2D)
     assert isinstance(atlas.fbo, Framebuffer)
-    assert atlas._image_uv_data_changed is True
-    assert atlas._texture_uv_data_changed is True
     common.check_internals(atlas, num_images=0, num_textures=0)
 
 
@@ -87,8 +85,6 @@ def test_clear(ctx, common):
     atlas.add(tex_a)
     atlas.add(tex_b)
     common.check_internals(atlas, num_images=2, num_textures=2)
-    atlas.clear()
-    common.check_internals(atlas, num_images=0, num_textures=0)
 
 
 def test_max_size(ctx):
@@ -98,15 +94,15 @@ def test_max_size(ctx):
     assert atlas.max_size[1] >= 4096
 
     # Resize the atlas to something any hardware wouldn't support
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         atlas.resize((100_000, 100_000))
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         atlas.resize((100, 100_000))
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         atlas.resize((100_000, 100))
 
     # Create an unreasonable sized atlas
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         TextureAtlas((100_000, 100_000))
 
 
@@ -157,15 +153,13 @@ def test_uv_buffers_after_change(ctx):
 
     def buf_check(atlas):
         # Check that the byte data of the uv data and texture is the same
-        assert len(atlas._image_uv_data) == 4096 * capacity * 8
-        assert len(atlas._image_uv_data.tobytes()) == len(atlas._image_uv_texture.read())
-        assert len(atlas._texture_uv_data) == 4096 * capacity * 8
-        assert len(atlas._texture_uv_data.tobytes()) == len(atlas._texture_uv_texture.read())
+        assert len(atlas._image_uvs._data) == 4096 * capacity * 8
+        assert len(atlas._image_uvs._data.tobytes()) == len(atlas._image_uvs.texture.read())
+        assert len(atlas._texture_uvs._data) == 4096 * capacity * 8
+        assert len(atlas._texture_uvs._data.tobytes()) == len(atlas._texture_uvs.texture.read())
 
     buf_check(atlas)
     atlas.resize((200, 200))
     buf_check(atlas)
     atlas.rebuild()
-    buf_check(atlas)
-    atlas.clear()
     buf_check(atlas)

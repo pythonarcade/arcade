@@ -229,7 +229,7 @@ class PerfGraph(arcade.Sprite):
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
             # Please forgive the ugly spacing. It makes type checking work.
-            with atlas.render_into( # type: ignore
+            with atlas.render_into(  # type: ignore
                     self.minimap_texture, projection=self.proj) as fbo:
                 fbo.clear(color=(0, 0, 0, 255))
             return
@@ -288,7 +288,7 @@ class PerfGraph(arcade.Sprite):
 
         # Render to the internal texture
         # This ugly spacing is intentional to make type checking work.
-        with atlas.render_into( # type: ignore
+        with atlas.render_into(  # type: ignore
                 self.minimap_texture, projection=self.proj) as fbo:
 
             # Set the background color

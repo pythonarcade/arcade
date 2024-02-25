@@ -25,6 +25,7 @@ from arcade.texture_atlas import TextureAtlas
 
 __all__ = ["ArcadeContext"]
 
+
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
@@ -43,7 +44,7 @@ class ArcadeContext(Context):
                         it's not clear what thread will gc the object.
     """
 
-    atlas_size = 512, 512
+    atlas_size: Tuple[int, int] = 512, 512
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
 
@@ -448,6 +449,8 @@ class ArcadeContext(Context):
         *,
         flip: bool = True,
         build_mipmaps: bool = False,
+        internal_format: Optional[int] = None,
+        compressed: bool = False,
     ) -> Texture2D:
         """
         Loads and creates an OpenGL 2D texture.
@@ -457,12 +460,24 @@ class ArcadeContext(Context):
 
             # Load a texture in current working directory
             texture = window.ctx.load_texture("background.png")
+
             # Load a texture using Arcade resource handle
             texture = window.ctx.load_texture(":textures:background.png")
+
+            # Load and compress a texture
+            texture = window.ctx.load_texture(
+                ":textures:background.png",
+                internal_format=gl.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+                compressed=True,
+            )
 
         :param path: Path to texture
         :param flip: Flips the image upside down
         :param build_mipmaps: Build mipmaps for the texture
+        :param internal_format: The internal format of the texture. This can be used to
+            override the default internal format when using sRGBA or compressed textures.
+        :param compressed: If the internal format is a compressed format meaning your
+            texture will be compressed by the GPU.
         """
         from arcade.resources import resolve
 
@@ -474,7 +489,11 @@ class ArcadeContext(Context):
             image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         texture = self.texture(
-            image.size, components=4, data=image.convert("RGBA").tobytes()
+            image.size,
+            components=4,
+            data=image.convert("RGBA").tobytes(),
+            internal_format=internal_format,
+            compressed=compressed,
         )
         image.close()
 

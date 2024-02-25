@@ -3,12 +3,40 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Optional, List, Union
 
+from pyglet.event import EVENT_HANDLED
+
 import arcade
+from arcade.gui import UIEvent, UIMousePressEvent
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UILayout, UIWidget
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
+
+
+class _UIDropdownOverlay(UIBoxLayout):
+    """
+    Represents the dropdown options overlay.
+
+    Currently only handles closing the overlay when clicked outside of the options.
+    """
+
+    # TODO move also options logic to this class
+
+    def show(self, manager: UIManager):
+        manager.add(self, layer=UIManager.OVERLAY_LAYER)
+
+    def hide(self):
+        """Hide the overlay."""
+        self.parent.remove(self)
+
+    def on_event(self, event: UIEvent) -> Optional[bool]:
+        if isinstance(event, UIMousePressEvent):
+            # Click outside of dropdown options
+            if not self.rect.collide_with_point(event.x, event.y):
+                self.hide()
+                return EVENT_HANDLED
+        return super().on_event(event)
 
 
 class UIDropdown(UILayout):
@@ -33,17 +61,20 @@ class UIDropdown(UILayout):
     :param options: The options displayed when the layout is clicked.
     :param style: Used to style the dropdown.
     """
+
     DIVIDER = None
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
         height: float = 100,
         default: Optional[str] = None,
         options: Optional[List[Union[str, None]]] = None,
-        style=None, **kwargs
+        style=None,
+        **kwargs,
     ):
         if style is None:
             style = {}
@@ -54,13 +85,7 @@ class UIDropdown(UILayout):
         self._options = options
         self._value = default
 
-        super().__init__(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            style=style,
-            **kwargs)
+        super().__init__(x=x, y=y, width=width, height=height, style=style, **kwargs)
 
         # Setup button showing value
         self._default_button = UIFlatButton(
@@ -69,8 +94,7 @@ class UIDropdown(UILayout):
 
         self._default_button.on_click = self._on_button_click  # type: ignore
 
-        self._layout = UIBoxLayout()
-        self._overlay_visible = False
+        self._overlay = _UIDropdownOverlay()
         self._update_options()
 
         # add children after super class setup
@@ -98,22 +122,22 @@ class UIDropdown(UILayout):
 
     def _update_options(self):
         # generate options
-        self._layout.clear()
+        self._overlay.clear()
 
         # is there another way then deepcopy, does it matter? ("premature optimization is the root of all evil")
         active_style = deepcopy(UIFlatButton.DEFAULT_STYLE)
         active_style["normal"]["bg"] = (55, 66, 81)
 
         for option in self._options:
-            if option is None:  # UIDropdown.DIVIDER = None
-                self._layout.add(
+            if option is None:  # None = UIDropdown.DIVIDER, required by pyright
+                self._overlay.add(
                     UIWidget(width=self.width, height=2).with_background(
                         color=arcade.color.GRAY
                     )
                 )
                 continue
             else:
-                button = self._layout.add(
+                button = self._overlay.add(
                     UIFlatButton(
                         text=option,
                         width=self.width,
@@ -126,8 +150,7 @@ class UIDropdown(UILayout):
             button.on_click = self._on_option_click
 
     def _find_ui_manager(self):
-        # search tree for uimanager
-
+        # search tree for UIManager
         parent = self.parent
         while isinstance(parent, UIWidget):
             parent = parent.parent
@@ -139,32 +162,25 @@ class UIDropdown(UILayout):
         if manager is None:
             raise Exception("UIDropdown could not find UIManager in its parents.")
 
-        manager.add(self._layout, layer=10)
-        self._overlay_visible = True
+        self._overlay.show(manager)
 
-    def _hide_overlay(self):
-        self._layout.parent.remove(self._layout)
-        self._overlay_visible = False
-
-    def _on_button_click(self, event: UIOnClickEvent):
-        if self._overlay_visible:
-            self._hide_overlay()
-        else:
-            self._show_overlay()
+    def _on_button_click(self, _: UIOnClickEvent):
+        self._show_overlay()
 
     def _on_option_click(self, event: UIOnClickEvent):
         source: UIFlatButton = event.source
         self.value = source.text
-        self._hide_overlay()
+        self._overlay.hide()
 
     def do_layout(self):
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets
-        self._layout.rect = self._layout.rect \
-            .resize(*self._layout.size_hint_min) \
-            .align_top(self.bottom - 2) \
+        self._overlay.rect = (
+            self._overlay.rect.resize(*self._overlay.size_hint_min)
+            .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
+        )
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the current selected value is changed to a different option."""

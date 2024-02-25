@@ -40,10 +40,7 @@ Users who want to skip to example code should consult the following:
 #. :ref:`sound_demo`
 #. :ref:`sound_speed_demo`
 #. :ref:`music_control_demo`
-#. :ref:`Platformer Tutorial - Step 7 - Add Coins And Sound <platformer_part_seven>`
-
-   #. :ref:`platformer_part_seven_loading_sounds`
-   #. :ref:`platformer_part_seven_playing_sounds`
+#. :ref:`Platformer Tutorial - Step 9 - Adding Sound <platformer_part_nine>`
 
 .. _sound-why-important:
 
@@ -108,7 +105,6 @@ If you prefer a more object-oriented style, you can create
 
 See the following to learn more:
 
-#. :ref:`Platformer Part 7 - Loading Sounds <platformer_part_seven_loading_sounds>`
 #. :ref:`resources`
 #. :py:mod:`pathlib`
 #. :ref:`sound-loading-modes`
@@ -172,7 +168,6 @@ fun.
 See the following to learn more:
 
 #. :ref:`sound-why-important`
-#. :ref:`Platformer Tutorial - Part 7 - Collision Detection <platformer_part_seven_playing_sounds>`
 #. :ref:`sound_demo`
 
 .. _sound-basics-stopping:
@@ -474,7 +469,6 @@ arguments to arcade functions.
        be between ``0.0`` (silent) and ``1.0`` (full volume).
 
    * - :py:attr:`~pyglet.media.player.Player.loop`
-       [#inconsistencyloop]_
      - :py:class:`bool` property
      - ``False``
      - Whether to restart playback automatically after finishing. [#streamingnoloop]_
@@ -483,12 +477,6 @@ arguments to arcade functions.
      - :py:class:`float` property
      - ``1.0``
      - How fast to play the sound data; also affects pitch.
-
-.. [#inconsistencyloop]
-   :py:func:`arcade.play_sound` uses ``looping`` instead. See:
-
-   *  :ref:`sound-advanced-playback-change-aspects-new`
-   * `The related GitHub issue <inconsistency_loop_issue_>`_.
 
 .. [#streamingnoloop]
    Looping is unavailable when ``streaming=True``; see `pyglet's guide to
