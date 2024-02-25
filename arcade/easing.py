@@ -147,7 +147,8 @@ def easing(percent: float, easing_data: EasingData) -> float:
         easing_data.ease_function(percent)
 
 
-def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None, ease_function: Callable = linear) -> Optional[EasingData]:
+def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None,
+               ease_function: Callable = linear) -> Optional[EasingData]:
     """
     Set up easing for angles.
     """
