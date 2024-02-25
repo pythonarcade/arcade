@@ -14,7 +14,6 @@ import pyglet
 from typing import (
     Callable,
     Optional,
-    cast,
     Tuple,
     TYPE_CHECKING
 )
@@ -56,20 +55,6 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     display = pyglet.canvas.Display()
     screen = display.get_screens()[screen_id]
     return screen.width, screen.height
-
-
-def pause(seconds: float) -> None:
-    """
-    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
-
-    .. Warning::
-
-        This is mostly used for unit tests and is not likely to be
-        a good solution for pausing an application or game.
-
-    :param seconds: Time interval to pause in seconds.
-    """
-    time.sleep(cast(float, seconds))
 
 
 def get_window() -> "Window":
