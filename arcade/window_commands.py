@@ -27,7 +27,6 @@ _window: Optional["Window"] = None
 
 __all__ = [
     "get_display_size",
-    "pause",
     "get_window",
     "set_window",
     "set_viewport",
