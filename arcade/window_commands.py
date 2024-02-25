@@ -6,7 +6,6 @@ It also has commands for scheduling pauses and scheduling interval functions.
 from __future__ import annotations
 
 import gc
-import time
 import os
 
 import pyglet
