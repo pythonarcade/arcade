@@ -351,7 +351,6 @@ __all__ = [
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'open_window',
-    'pause',
     'print_timings',
     'play_sound',
     'read_tmx',
