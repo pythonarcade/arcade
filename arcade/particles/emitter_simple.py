@@ -22,7 +22,7 @@ def make_burst_emitter(
         particle_lifetime_min: float,
         particle_lifetime_max: float,
         particle_scale: float = 1.0,
-        fade_particles: bool = True):
+        fade_particles: bool = True) -> Emitter:
     """Returns an emitter that emits all of its particles at once"""
     particle_factory: Type[LifetimeParticle] = LifetimeParticle
     if fade_particles:
@@ -48,7 +48,7 @@ def make_interval_emitter(
         particle_lifetime_min: float,
         particle_lifetime_max: float,
         particle_scale: float = 1.0,
-        fade_particles: bool = True):
+        fade_particles: bool = True) -> Emitter:
     """Returns an emitter that emits its particles at a constant rate for a given amount of time"""
     particle_factory: Type[LifetimeParticle] = LifetimeParticle
     if fade_particles:
