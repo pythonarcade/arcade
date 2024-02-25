@@ -80,6 +80,7 @@ class Texture2D:
         "_immutable",
         "__weakref__",
         "_compressed",
+        "_compressed_data",
     )
     _compare_funcs = {
         None: gl.GL_NONE,
@@ -127,6 +128,7 @@ class Texture2D:
         immutable: bool = False,
         internal_format: Optional[PyGLuint] = None,
         compressed: bool = False,
+        compressed_data: bool = False,
     ):
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
@@ -143,6 +145,7 @@ class Texture2D:
         self._anisotropy = 1.0
         self._internal_format = internal_format
         self._compressed = compressed
+        self._compressed_data = compressed_data
         # Default filters for float and integer textures
         # Integer textures should have NEAREST interpolation
         # by default 3.3 core doesn't really support it consistently.
@@ -271,7 +274,7 @@ class Texture2D:
                 else:
                     # glTexImage2D can be called multiple times to re-allocate storage
                     # Specify mutable storage for this texture.
-                    if self._compressed is True:
+                    if self._compressed_data is True:
                         gl.glCompressedTexImage2D(
                             self._target,  # target
                             0,  # level
@@ -321,6 +324,15 @@ class Texture2D:
         :type: GLuint
         """
         return self._glo
+
+    @property
+    def compressed(self) -> bool:
+        """
+        Is this using a compressed format?
+
+        :type: bool
+        """
+        return self._compressed
 
     @property
     def width(self) -> int:
