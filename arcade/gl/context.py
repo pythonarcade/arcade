@@ -902,8 +902,39 @@ class Context:
         filter: Optional[Tuple[PyGLenum, PyGLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
+        internal_format: Optional[PyGLenum] = None,
+        compressed: bool = False,
+        compressed_data: bool = False,
     ) -> Texture2D:
-        """Create a 2D Texture.
+        """
+        Create a 2D Texture.
+
+        Example::
+
+            # Create a 1024 x 1024 RGBA texture
+            image = PIL.Image.open("my_texture.png")
+            ctx.texture(size=(1024, 1024), components=4, data=image.tobytes())
+
+            # Create and compress a texture. The compression format is set by the internal_format
+            image = PIL.Image.open("my_texture.png")
+            ctx.texture(
+                size=(1024, 1024),
+                components=4,
+                compressed=True,
+                internal_format=gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+                data=image.tobytes(),
+            )
+
+            # Create a compressed texture from raw compressed data. This is an extremely
+            # fast way to load a large number of textures.
+            image_bytes = "<raw compressed data from some source>"
+            ctx.texture(
+                size=(1024, 1024),
+                components=4,
+                internal_format=gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+                compressed_data=True,
+                data=image_bytes,
+            )
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
 
@@ -923,7 +954,15 @@ class Context:
         :param samples: Creates a multisampled texture for values > 0
         :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
+        :param internal_format: The internal format of the texture. This can be used to
+                                enable sRGB or texture compression.
+        :param compressed: Set to True if you want the texture to be compressed.
+                           This assumes you have set a internal_format to a compressed format.
+        :param compressed_data: Set to True if you are passing in raw compressed pixel data.
+                                This implies ``compressed=True``.
         """
+        compressed = compressed or compressed_data
+
         return Texture2D(
             self,
             size,
@@ -935,6 +974,9 @@ class Context:
             filter=filter,
             samples=samples,
             immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
+            compressed_data=compressed_data,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:
