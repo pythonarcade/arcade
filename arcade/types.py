@@ -39,6 +39,15 @@ if TYPE_CHECKING:
 MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
 
+MASK_RGBA_R = 0xFF000000
+MASK_RGBA_G = 0x00FF0000
+MASK_RGBA_B = 0x0000FF00
+MASK_RGBA_A = 0x000000FF
+
+MASK_RGB_R = 0xFF0000
+MASK_RGB_G = 0x00FF00
+MASK_RGB_B = 0x0000FF
+
 ChannelType = TypeVar('ChannelType')
 
 RGB = Tuple[ChannelType, ChannelType, ChannelType]
@@ -408,14 +417,15 @@ class Color(RGBA255):
         :param b: Fixed value for blue channel
         :param a: Fixed value for alpha channel
         """
+        rand = random.randint(0, MAX_UINT32)
         if r is None:
-            r = random.randint(0, 255)
+            r = (rand & MASK_RGBA_R) >> 24
         if g is None:
-            g = random.randint(0, 255)
+            g = (rand & MASK_RGBA_G) >> 16
         if b is None:
-            b = random.randint(0, 255)
+            b = (rand & MASK_RGBA_B) >> 8
         if a is None:
-            a = random.randint(0, 255)
+            a = (rand & MASK_RGBA_A)
 
         return cls(r, g, b, a)
 

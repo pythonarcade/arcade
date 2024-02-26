@@ -206,7 +206,14 @@ RANDINT_RETURN_RESULT = 128
 
 @pytest.fixture
 def randint_is_constant(monkeypatch):
-    monkeypatch.setattr('random.randint', Mock(return_value=RANDINT_RETURN_RESULT))
+    """
+    Replace the randomized color uint32 with a known signal value.
+
+    Since the color randomization masks out channels, we use a known
+    repeated value (128, or 0x80 in hex) to represent a channel fetched
+    from random rather than taken from user input.
+    """
+    monkeypatch.setattr('random.randint', Mock(return_value=0x80808080))
 
 
 def test_color_random(randint_is_constant):
