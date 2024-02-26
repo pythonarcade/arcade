@@ -3,8 +3,6 @@ Module specifying data custom types used for type hinting.
 """
 from __future__ import annotations
 
-from __future__ import annotations
-
 import sys
 from array import array
 import ctypes
@@ -418,6 +416,14 @@ class Color(RGBA255):
             a = random.randint(0, 255)
 
         return cls(r, g, b, a)
+
+    def swizzle(self, swizzle_string: str) -> Tuple[int, ...]:
+        ret = []
+        for c in swizzle_string.lower():
+            if c not in 'rgba':
+                raise Exception("Swizzle string must only contain characters in [RGBArgba].")
+            ret.append(getattr(self, c))
+        return tuple(ret)
 
 
 ColorLike = Union[RGB, RGBA255]
