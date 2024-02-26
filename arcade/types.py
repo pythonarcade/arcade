@@ -408,14 +408,15 @@ class Color(RGBA255):
         :param b: Fixed value for blue channel
         :param a: Fixed value for alpha channel
         """
+        rand = random.randint(0, 0xFFFFFFFF)
         if r is None:
-            r = random.randint(0, 255)
+            r = (rand & 0xFF000000) >> 24
         if g is None:
-            g = random.randint(0, 255)
+            g = (rand & 0x00FF0000) >> 16
         if b is None:
-            b = random.randint(0, 255)
+            b = (rand & 0x0000FF00) >> 8
         if a is None:
-            a = random.randint(0, 255)
+            a = (rand & 0x000000FF)
 
         return cls(r, g, b, a)
 
