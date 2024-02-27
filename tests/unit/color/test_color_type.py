@@ -203,7 +203,7 @@ def test_deepcopy_color_inheritance():
 
 @pytest.mark.parametrize("klass", [Color, ColorSubclass])
 def test_swizzle(klass):
-    color_instance = klass(*range(1,5))
+    color_instance = klass(1, 2, 3, a=4)
 
     assert color_instance.swizzle("r") == (1,)
     assert color_instance.swizzle("g") == (2,)
