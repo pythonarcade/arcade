@@ -3,8 +3,6 @@ Module specifying data custom types used for type hinting.
 """
 from __future__ import annotations
 
-from __future__ import annotations
-
 import sys
 from array import array
 import ctypes
@@ -428,6 +426,42 @@ class Color(RGBA255):
             a = (rand & MASK_RGBA_A)
 
         return cls(r, g, b, a)
+
+    def swizzle(self, swizzle_string: str) -> Tuple[int, ...]:
+        """
+        Get a tuple of channel values in the same order as the passed string.
+
+        This imitates swizzling `as implemented in GLSL <https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling>`_
+
+        .. code-block:: python
+
+           >>> from arcade.types import Color
+           >>> color = Color(180, 90, 0, 255)
+           >>> color.swizzle("abgr")
+           (255, 0, 90, 180)
+
+        You can also use any length of swizzle string and use capital
+        letters. Any capitals will be treated as lower case equivalents.
+
+        .. code-block: python
+
+           >>> from arcade.types import Color
+           >>> color = Color(180, 90, 0, 255)
+           >>> color.swizzle("ABGR")
+           (255, 0, 90, 180)
+
+
+        :param swizzle_string:
+            A string of channel names as letters in ``"RGBArgba"``.
+        :return:
+            A tuple in the same order as the input string.
+        """
+        ret = []
+        for c in swizzle_string.lower():
+            if c not in 'rgba':
+                raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
+            ret.append(getattr(self, c))
+        return tuple(ret)
 
 
 ColorLike = Union[RGB, RGBA255]
