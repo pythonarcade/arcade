@@ -664,7 +664,7 @@ def create_text_sprite(
 @warning(
     message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
     warning_type=PerformanceWarning,
-    )
+)
 def draw_text(
     text: Any,
     x: int,
