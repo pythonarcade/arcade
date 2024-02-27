@@ -845,11 +845,12 @@ def draw_text(
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     ctx = arcade.get_window().ctx
     label = ctx.label_cache.get(key)
-    if align != "center" and align != "left" and align != "right":
+
+    if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-    # if align != "left":
-    #     multiline = True
+    if multiline and width == 0:
+        raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
 
     if not label:
         adjusted_font = _attempt_font_name_resolution(font_name)
