@@ -205,6 +205,9 @@ def test_deepcopy_color_inheritance():
 def test_swizzle(klass):
     color_instance = klass(1, 2, 3, a=4)
 
+    # Edge case
+    assert color_instance.swizzle("") == tuple()
+
     assert color_instance.swizzle("r") == (1,)
     assert color_instance.swizzle("g") == (2,)
     assert color_instance.swizzle("b") == (3,)
