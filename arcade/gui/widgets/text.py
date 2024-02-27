@@ -98,8 +98,8 @@ class UILabel(UIWidget):
 
         # Use Arcade Text wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
-            start_x=0,
-            start_y=0,
+            x=0,
+            y=0,
             text=text,
             font_name=font_name,
             font_size=font_size,
@@ -136,6 +136,7 @@ class UILabel(UIWidget):
             self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
+        self._update_size_hint_min()
 
     def fit_content(self):
         """
@@ -164,6 +165,7 @@ class UILabel(UIWidget):
         if self.label.text != value:
             self.label.text = value
             self._update_layout()
+            self._update_size_hint_min()
             self.trigger_full_render()
 
     def _update_layout(self):
@@ -175,6 +177,9 @@ class UILabel(UIWidget):
             layout.position = 0, 0, 0  # layout always drawn in scissor box
             layout.width = int(self.content_width)
             layout.height = int(self.content_height)
+
+    def _update_size_hint_min(self):
+        self.size_hint_min = self.label.content_width, self.label.content_height
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
@@ -249,11 +254,11 @@ class UITextWidget(UIAnchorLayout):
         If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
         instead.
         """
-        return self.label.multiline
+        return self._label.label.multiline
 
     @multiline.setter
     def multiline(self, value):
-        self.label.multiline = value
+        self._label.label.multiline = value
         self.ui_label.fit_content()
         self.trigger_render()
 
