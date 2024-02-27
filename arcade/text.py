@@ -531,10 +531,10 @@ class Text:
         _draw_pyglet_label(self._label)
 
     def draw_debug(
-            self,
-            anchor_color: RGBA255 = arcade.color.RED,
-            background_color: RGBA255 = arcade.color.DARK_BLUE,
-            outline_color: RGBA255 = arcade.color.WHITE,
+        self,
+        anchor_color: RGBA255 = arcade.color.RED,
+        background_color: RGBA255 = arcade.color.DARK_BLUE,
+        outline_color: RGBA255 = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
@@ -580,18 +580,18 @@ class Text:
 
 
 def create_text_sprite(
-        text: str,
-        color: RGBA255 = arcade.color.WHITE,
-        font_size: float = 12,
-        width: int = 0,
-        align: str = "left",
-        font_name: FontNameOrNames = ("calibri", "arial"),
-        bold: bool = False,
-        italic: bool = False,
-        anchor_x: str = "left",
-        multiline: bool = False,
-        texture_atlas: Optional[arcade.TextureAtlas] = None,
-        background_color: Optional[RGBA255] = None,
+    text: str,
+    color: RGBA255 = arcade.color.WHITE,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    multiline: bool = False,
+    texture_atlas: Optional[arcade.TextureAtlas] = None,
+    background_color: Optional[RGBA255] = None,
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -664,23 +664,23 @@ def create_text_sprite(
 @warning(
     message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
     warning_type=PerformanceWarning,
-)
+    )
 def draw_text(
-        text: Any,
-        x: int,
-        y: int,
-        color: RGBA255 = arcade.color.WHITE,
-        font_size: float = 12,
-        width: int = 0,
-        align: str = "left",
-        font_name: FontNameOrNames = ("calibri", "arial"),
-        bold: bool = False,
-        italic: bool = False,
-        anchor_x: str = "left",
-        anchor_y: str = "baseline",
-        multiline: bool = False,
-        rotation: float = 0,
-        z: int = 0
+    text: Any,
+    x: int,
+    y: int,
+    color: RGBA255 = arcade.color.WHITE,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: FontNameOrNames = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    multiline: bool = False,
+    rotation: float = 0,
+    z: int = 0
 ):
     """
     A simple way for beginners to draw text.
