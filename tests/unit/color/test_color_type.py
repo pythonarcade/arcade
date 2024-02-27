@@ -201,6 +201,26 @@ def test_deepcopy_color_inheritance():
     assert isinstance(deep, ColorSubclass)
 
 
+@pytest.mark.parametrize("klass", [Color, ColorSubclass])
+def test_swizzle(klass):
+    color_instance = klass(1, 2, 3, a=4)
+
+    assert color_instance.swizzle("r") == (1,)
+    assert color_instance.swizzle("g") == (2,)
+    assert color_instance.swizzle("b") == (3,)
+    assert color_instance.swizzle("a") == (4,)
+    assert color_instance.swizzle("R") == (1,)
+    assert color_instance.swizzle("G") == (2,)
+    assert color_instance.swizzle("B") == (3,)
+    assert color_instance.swizzle("A") == (4,)
+
+    assert color_instance.swizzle("ra") == (1, 4)
+    assert color_instance.swizzle("RA") == (1, 4)
+
+    assert color_instance.swizzle("aabbggrr") == (4, 4, 3, 3, 2, 2, 1, 1)
+    assert color_instance.swizzle("AABBGGRR") == (4, 4, 3, 3, 2, 2, 1, 1)
+
+
 RANDINT_RETURN_RESULT = 128
 
 
