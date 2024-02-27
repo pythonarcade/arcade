@@ -7,6 +7,11 @@ from openai import OpenAI, RateLimitError
 client = OpenAI()
 
 
+prompt = """
+You will be provided with a piece of example Python code that uses the Arcade library. 
+Your task is to explain what concept or technique it explains in one paragraph. 
+Do not start the description with the word 'concept'.
+"""
 def process_file(filename):
 
     with open(filename) as f:
@@ -25,7 +30,7 @@ def process_file(filename):
                 messages=[
                     {
                         "role": "system",
-                        "content": "You will be provided with a piece of code, and your task is to explain it in a concise way.",
+                        "content": prompt,
                     },
                     {"role": "user", "content": source_code},
                 ],
@@ -49,6 +54,11 @@ def main():
             f for f in listdir(source_file_path) if isfile(join(source_file_path, f))
         ]
 
+        # files_in_directory = [
+        #     'sprite_health.py',
+        #     'sprite_move_walls.py',
+        #     'sprite_move_scrolling.py'
+        # ]
         count = 0
         for input_file_name in files_in_directory:
             print("Processing file {}".format(input_file_name))
@@ -62,7 +72,7 @@ def main():
             output_file.write(f"Source: :ref:`{input_file_name[:-3]}`\n\n")
             output_file.write(result)
             output_file.write("\n\n")
-            # if count >= 10:
+            # if count >= 2:
             #     break
 
             count += 1
