@@ -290,7 +290,7 @@ class MyGame(arcade.Window):
         self.shoot_timer = 0
 
         # Initialize our arcade.Text object for score
-        self.score_text = arcade.Text(f"Score: {self.score}", start_x = 0, start_y = 5)
+        self.score_text = arcade.Text(f"Score: {self.score}", x=0, y=5)
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 

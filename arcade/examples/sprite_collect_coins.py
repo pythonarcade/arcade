@@ -57,7 +57,7 @@ class MyGame(arcade.Window):
         # Reset the score and the score display
         self.score = 0
         self.score_display = arcade.Text(
-            text="Score: 0", start_x=10, start_y=20,
+            text="Score: 0", x=10, y=20,
             color=arcade.color.WHITE, font_size=14)
 
         # Set up the player

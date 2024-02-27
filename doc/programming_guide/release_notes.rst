@@ -48,6 +48,8 @@ API in a way that is not compatible with how it was used in 2.6.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
 * `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
+* :py:meth:`~arcade.draw_text()` and :py:class:`~arcade.text.Text` arguments have changed. The `start_x` and `start_y` parameters have been
+  removed. The `x` and `y` parameters are now required. `align!=left` does not interfere with `multiline` parameter anymore.
 * GUI
 
   * Removed :py:class:`~arcade.gui.widgets.UIWrapper` this is now general available in :py:class:`~arcade.gui.widgets.UILayout`
