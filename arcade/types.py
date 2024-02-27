@@ -421,7 +421,7 @@ class Color(RGBA255):
         ret = []
         for c in swizzle_string.lower():
             if c not in 'rgba':
-                raise Exception("Swizzle string must only contain characters in [RGBArgba].")
+                raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
         return tuple(ret)
 
