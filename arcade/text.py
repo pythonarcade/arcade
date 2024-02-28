@@ -446,28 +446,28 @@ class Text:
         """
         Pixel location of the left content border.
         """
-        return self._label._get_left()
+        return self._label._get_left_anchor()
 
     @property
     def right(self) -> int:
         """
         Pixel location of the right content border.
         """
-        return self._label._get_left() + self._label.content_width
+        return self._label._get_left_anchor() + self._label.content_width
 
     @property
     def top(self) -> int:
         """
         Pixel location of the top content border.
         """
-        return self._label._get_top(self._label._get_lines())
+        return self._label._get_top_anchor()
 
     @property
     def bottom(self) -> int:
         """
         Pixel location of the bottom content border.
         """
-        return self._label._get_bottom(self._label._get_lines())
+        return self._label._get_bottom_anchor()
 
     @property
     def content_size(self) -> Tuple[int, int]:
