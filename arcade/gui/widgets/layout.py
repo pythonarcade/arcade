@@ -277,6 +277,8 @@ class UIBoxLayout(UILayout):
         self._size_hint_requires_update = True
 
     def _update_size_hints(self):
+        self._size_hint_requires_update = False
+
         required_space_between = max(0, len(self.children) - 1) * self._space_between
         min_child_sizes = [UILayout.min_size_of(child) for child in self.children]
 
@@ -295,8 +297,6 @@ class UIBoxLayout(UILayout):
         base_width = self._padding_left + self._padding_right + 2 * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
-
-        self._size_hint_requires_update = False
 
     def fit_content(self):
         """
@@ -525,7 +525,7 @@ class UIGridLayout(UILayout):
             style=style,
             **kwargs,
         )
-
+        self._size_hint_requires_update = True
         self._horizontal_spacing = horizontal_spacing
         self._vertical_spacing = vertical_spacing
 
@@ -546,7 +546,66 @@ class UIGridLayout(UILayout):
         # initially update size hints
         self._update_size_hints()
 
+    def add(
+        self,
+        child: W,
+        col_num: int = 0,
+        row_num: int = 0,
+        col_span: int = 1,
+        row_span: int = 1,
+        **kwargs,
+    ) -> W:
+        """
+        Add a widget to the grid layout.
+
+        :param child: Specified child widget to add.
+        :param col_num: Column index in which the widget is to be added.
+                            The first column is numbered 0; which is the top
+                            left corner.
+        :param row_num: The row number in which the widget is to be added.
+                            The first row is numbered 0; which is the
+        :param col_span: Number of columns the widget will stretch for.
+        :param row_span: Number of rows the widget will stretch for.
+        """
+        # subscribe to child's changes, which might affect the own size hint
+        bind(child, "_children", self._trigger_size_hint_update)
+        bind(child, "rect", self._trigger_size_hint_update)
+        bind(child, "size_hint", self._trigger_size_hint_update)
+        bind(child, "size_hint_min", self._trigger_size_hint_update)
+        bind(child, "size_hint_max", self._trigger_size_hint_update)
+
+        return super().add(
+            child,
+            col_num=col_num,
+            row_num=row_num,
+            col_span=col_span,
+            row_span=row_span,
+            **kwargs,
+        )
+
+    def remove(self, child: "UIWidget"):
+        # unsubscribe from child's changes
+        unbind(child, "_children", self._trigger_size_hint_update)
+        unbind(child, "rect", self._trigger_size_hint_update)
+        unbind(child, "size_hint", self._trigger_size_hint_update)
+        unbind(child, "size_hint_min", self._trigger_size_hint_update)
+        unbind(child, "size_hint_max", self._trigger_size_hint_update)
+
+        return super().remove(child)
+
+    def _trigger_size_hint_update(self):
+        self._size_hint_requires_update = True
+
+    def prepare_layout(self):
+        """Updates the size hints if required."""
+        super().prepare_layout()
+
+        if self._size_hint_requires_update:
+            self._update_size_hints()
+
     def _update_size_hints(self):
+        self._size_hint_requires_update = False
+
         max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
@@ -597,36 +656,6 @@ class UIGridLayout(UILayout):
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
-
-    def add(
-        self,
-        child: W,
-        col_num: int = 0,
-        row_num: int = 0,
-        col_span: int = 1,
-        row_span: int = 1,
-        **kwargs,
-    ) -> W:
-        """
-        Add a widget to the grid layout.
-
-        :param child: Specified child widget to add.
-        :param col_num: Column index in which the widget is to be added.
-                            The first column is numbered 0; which is the top
-                            left corner.
-        :param row_num: The row number in which the widget is to be added.
-                            The first row is numbered 0; which is the
-        :param col_span: Number of columns the widget will stretch for.
-        :param row_span: Number of rows the widget will stretch for.
-        """
-        return super().add(
-            child,
-            col_num=col_num,
-            row_num=row_num,
-            col_span=col_span,
-            row_span=row_span,
-            **kwargs,
-        )
 
     def do_layout(self):
         initial_left_x = self.content_rect.left
