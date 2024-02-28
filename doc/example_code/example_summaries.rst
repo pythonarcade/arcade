@@ -7,7 +7,7 @@ array_backed_grid.py
 
 Source: :ref:`array_backed_grid`
 
-This Python code demonstrates how to use a two-dimensional array to create and display a grid on the screen. The grid is represented as a list of lists, where each element in the outer list corresponds to a row and contains elements representing individual cells in that row. By iterating through the grid and drawing rectangles based on the values in the array, the code visually represents the grid state. Additionally, it shows how to handle mouse clicks to interact with the grid by toggling cell values between 1 and 0.
+This example demonstrates the use of a two-dimensional list or array (also known as a matrix) to create a visual grid on the screen application using the Python Arcade library. The code defines a grid with a certain number of rows and columns, each of a specific width and height. Each cell in the grid is represented by a number in the array, and these numbers can be updated to change the color of the corresponding cell. Mouse clicks on the screen are translated into cell coordinates so that the user can interact with individual cells. This mechanism can be used to build more complex visual applications like game boards or pixel art editors. The grid is drawn on the screen using Arcade's drawing functions, specifically, rectangles are used to represent cells.
 
 array_backed_grid_buffered.py
 -----------------------------
@@ -15,7 +15,7 @@ array_backed_grid_buffered.py
 
 Source: :ref:`array_backed_grid_buffered`
 
-This example demonstrates how to use a two-dimensional list/array to create and display a grid on the screen using the Arcade library in Python. The grid consists of individual cells that can be toggled between different colors by clicking on them. The program sets up a 2D array to represent the grid, where each element corresponds to the color state of a specific cell. By updating the array and recreating the shapes based on these values, the display can be efficiently refreshed to reflect the changes made by the user interacting with the grid.
+This piece of Python code demonstrates the use of a 2-dimensional grid backed by a list of lists to represent and visualize grid-based information on screen using the Arcade library. The example creates a grid of cells where each cell can be toggled between two colors (white or green) by clicking on it. The code does this by maintaining a list of lists, where each element in the inner list corresponds to a grid cell and has a value of either 0 (white) or 1 (green). The example also computes the screen size required to display the grid with cells of given widths and heights, along with specified margins. Using Arcade's shape list, grid cells are drawn on the screen as rectangles of appropriate colors based on their values in the underlying 2D list. The code also handles mouse click events, converting screen coordinates into grid coordinates, toggling the value of the clicked grid cell, and rebuilding the shape list to update the grid display.
 
 array_backed_grid_sprites_1.py
 ------------------------------
@@ -23,7 +23,7 @@ array_backed_grid_sprites_1.py
 
 Source: :ref:`array_backed_grid_sprites_1`
 
-This Python code demonstrates the concept of using an array-backed grid to display a grid on-screen with sprites in the Arcade library. The grid is represented as a two-dimensional list where each cell can be updated to display a white or green color by altering the values in the list. The code includes functions to sync the grid with the sprite colors, as well as to handle user input by allowing them to click on grid locations to toggle between colors. The use of a two-dimensional list to back the grid simplifies the grid management and rendering process in the game application.
+This example demonstrates how to use a two-dimensional list or array to represent and manipulate the display of a grid on-screen using the Arcade library in Python. It creates a grid using a 2D list, where each cell can have a value of either 0 or 1, representing a white or green cell, respectively. The example then syncs the grid with a sprite list using the `resync_grid_with_sprites` method. This is a more efficient approach compared to rebuilding a shape list for every grid update. However, this implementation still requires inspecting every cell when the grid updates, which might be slow for large grids. The code also demonstrates how to handle user clicks on the grid and change cell values based on the click, updating the sprite colors to match the updated grid.
 
 array_backed_grid_sprites_2.py
 ------------------------------
@@ -31,7 +31,7 @@ array_backed_grid_sprites_2.py
 
 Source: :ref:`array_backed_grid_sprites_2`
 
-This piece of code demonstrates the concept of using a two-dimensional list/array to back the display of a grid on-screen using sprites in the Arcade library. Instead of directly changing the values in the array, the grid is represented by a collection of sprite objects. Each cell in the grid is a sprite, and when interacting with the grid (like clicking on a cell), the color of the corresponding sprite is changed, allowing for efficient updating of large grids without iterating through all cells. This technique improves performance by directly manipulating sprite properties instead of the underlying data structure.
+This example demonstrates the use of a two-dimensional list or array to represent a grid of sprites on the screen using the Arcade library. The grid consists of rows and columns of sprites, which can be updated by simply changing the color of the relevant sprite. This technique allows for efficient handling of large grids while maintaining consistent performance. The example also shows how to handle mouse input to interact with the grid, converting the mouse click coordinates to grid coordinates and toggling the color of the relevant sprite in the grid. The code defines a custom class `MyGame` that inherits from `arcade.Window` and manages the grid of sprites, handling drawing and mouse events.
 
 astar_pathfinding.py
 --------------------
@@ -39,7 +39,7 @@ astar_pathfinding.py
 
 Source: :ref:`astar_pathfinding`
 
-This code demonstrates the usage of the A* pathfinding algorithm in a game using the Arcade library in Python. A* (A-Star) is a popular pathfinding algorithm used to find the shortest path between two points on a grid while avoiding obstacles. In this example, the algorithm calculates a path for an enemy sprite to reach the player sprite, considering walls as barriers. The concept is particularly useful for implementing intelligent movement behaviors in games, such as enemy AI or pathfinding for player characters.
+This example demonstrates the A-Star pathfinding algorithm in a simple game using the Arcade library in Python. A-Star is a popular pathfinding algorithm often used in games to find the shortest path between two points while avoiding obstacles. In this game, there is a player character, walls, and an enemy. The player can move using arrow keys, and the enemy uses the A-Star algorithm to calculate the shortest path to the player while avoiding the walls. The game screen scrolls to keep the player in view, and when the player moves, the enemy updates its path. The example also illustrates the use of the PhysicsEngineSimple for basic collision detection with the walls and setting up the game window, sprites, and their rendering.
 
 asteroid_smasher.py
 -------------------
@@ -47,7 +47,7 @@ asteroid_smasher.py
 
 Source: :ref:`asteroid_smasher`
 
-This piece of code demonstrates the concept of creating a simple game using Python and the Arcade library. It shows how to create different sprites (such as the player spaceship and asteroids), handle user input for movement and shooting, manage collisions between sprites, update sprite positions, and handle game over conditions. The code also includes sound effects, sprite scaling, respawning mechanics, and score tracking, providing a comprehensive example of game development using the Arcade library.
+This example demonstrates a simple 2D game called "Asteroid Smasher" using the Arcade library in Python. In this game, the player commands a spaceship to shoot and destroy incoming asteroids. The game uses various features of the Arcade library, including sprite management for spaceship, asteroids, bullets, and lives, keyboard input handling for spaceship control, and collision detection between sprites. Furthermore, the game includes scoring and asteroid count updates, sound effects, off-screen wrapping for the spaceship and asteroids, and a life system for the spaceship with respawning mechanics. The example showcases the use of object-oriented programming techniques for creating custom sprite classes and managing game state within a main game class.
 
 background_blending.py
 ----------------------
@@ -55,7 +55,7 @@ background_blending.py
 
 Source: :ref:`background_blending`
 
-This example demonstrates the concept of blending backgrounds in a game using the Arcade library. The program loads two infinite scrolling backgrounds and smoothly transitions between them when the player reaches a specific x position on the screen. The level of blending between the two backgrounds is controlled by the player's position, creating a visually appealing effect. Additionally, the program showcases camera movement to follow the player and ensure that the backgrounds and player sprite are displayed correctly on the screen as the player moves.
+The provided Python code using the Arcade library is an example of background blending in a game scenario. This technique involves loading and managing two scrolling game backgrounds, and automatically transitioning or blending between the two when the player sprite reaches a specific position on the x-axis. The blending effect is controlled with blend_layer method. The game player's movements are managed with keyboard inputs, and a simple camera system is used to ensure the rendered view always centers on the Player Sprite. The code also includes logic to manage window resizing, ensuring an adequate background coverage for different screen sizes.
 
 background_groups.py
 --------------------
@@ -63,7 +63,7 @@ background_groups.py
 
 Source: :ref:`background_groups`
 
-This example demonstrates the use of background groups in Arcade, allowing multiple backgrounds to be drawn with a single draw call and enabling their textures to scroll together. Background groups facilitate moving backgrounds collectively by adding the position of the group to the position of each background, resulting in backgrounds that move together but may not be positioned together. By efficiently handling background elements, background groups contribute to creating visually appealing and interactive game environments in Arcade.
+The given Python code using the Arcade library demonstrates the use of background groups and simple cameras in creating a game. The code defines a game window class and specifies properties such as screen height, width, and title. It also sets up player controls for motion. The primary concept this code highlights is how to handle multiple background images, allowing them to be drawn with a single draw call and move or scroll together as a group. It also demonstrates how to utilize a simple camera to keep the player in view, panning as needed to follow the player�s movements.
 
 background_parallax.py
 ----------------------
@@ -71,7 +71,7 @@ background_parallax.py
 
 Source: :ref:`background_parallax`
 
-This example demonstrates how to implement parallax scrolling in a game using the Arcade library. Parallax scrolling is a technique where background layers move at different speeds to create an illusion of depth, adding visual interest and realism to a game environment. The code showcases how to use Arcade's ParallaxGroup to manage and display multiple background layers that scroll at varying speeds, giving the impression of depth and movement in the game world. It also includes features like adjusting the camera position, handling player movement, and creating a seamless, infinite scrolling effect by manipulating the background layers.
+This example demonstrates the use of parallax scrolling in the Arcade library to create a visually appealing, seemingly endless background for a 2D game. Parallax scrolling is a technique where multiple layers of images move at different speeds, creating an illusion of depth and a more immersive experience for the player. The Arcade library provides the ParallaxGroup class to easily implement this technique. In this example, a car moves horizontally across a background consisting of four layers - sky, buildings, palms, and a highway - each moving at a different depth, giving the illusion of distance. The SimpleCamera class in Arcade neatly encapsulates the camera's position, allowing for the seamless tracking and panning of the player's car across the screen. When resized, the background ensures it still occupies the full width of the new screen size.
 
 background_scrolling.py
 -----------------------
@@ -79,7 +79,7 @@ background_scrolling.py
 
 Source: :ref:`background_scrolling`
 
-This example demonstrates how to create a scrolling background in a game using the Arcade library in Python. The program loads a texture from a file and creates a screen-sized background that moves continuously as the player navigates through the game. The background is aligned with the screen, and the texture offset is adjusted to give the appearance of movement, creating an engaging visual experience for the player. It also showcases how to incorporate player motion tracking and camera manipulation to center the view on the player sprite.
+The given code demonstrates the implementation of a scrolling background using the Arcade library in Python. It utilizes the Arcade.experimental.background module to create a screen-sized background texture that is constantly aligned to the camera viewport and changes its texture offset, giving the illusion of movement. The example code also includes a player sprite that the user can control with arrow keys, and the camera is smoothly panned to keep the player at the center of the screen. The scrolling background is achieved by updating the background's position and texture offset to stay in sync with the camera position. This concept and technique can be particularly useful in creating side-scrolling or top-down video games that involve continuous movement through a large environment.
 
 background_stationary.py
 ------------------------
@@ -87,7 +87,7 @@ background_stationary.py
 
 Source: :ref:`background_stationary`
 
-This Python code demonstrates the concept of implementing a stationary background in a game using the Arcade library. The background is loaded from a file and positioned behind the game elements. The 'pan_camera_to_player' function ensures that the camera stays centered on the player sprite as the player moves around the game world, giving the appearance of a stationary background while the player moves within the game environment.
+The provided Python code is a small game application that demonstrates how to implement a stationary background using Python's Arcade library. It details how to load a background image from a file and draw it in a window, with camera functionality that pans to center on the player sprite as it moves around the screen based on user commands. The setup involves creation of a player sprite and tracking its motion with keyboard inputs. Additionally, it ensures that the camera positioning does not allow the player to move off the visible area of the background. This code is a clear example of handling a game's graphical objects, user inputs, and real-time updates to a game's state - mainly the player's movement and the camera view, in an event-driven context.
 
 bouncing_rectangle.py
 ---------------------
@@ -95,7 +95,7 @@ bouncing_rectangle.py
 
 Source: :ref:`bouncing_rectangle`
 
-This code demonstrates the concept of creating a simple animation in a game using the Arcade library in Python. It shows how to create a rectangle that moves around on the screen by changing its position and reversing its direction when it hits the edges of the window, creating a bouncing effect. The code also illustrates how to update the position of the rectangle in each frame and render it on the screen using the `update()` and `draw()` methods within a custom class.
+This example demonstrates how to create a simple animation using the Arcade library in Python, specifically bouncing a rectangle within the confines of a window. It defines a class 'Item' that represents a rectangle with properties like its position, dimensions, and movement along with methods to update its position and draw it on the screen. The main game class, 'MyGame', uses the Arcade Window class to create a window where the rectangle object is animated. The 'on_update' method of the 'MyGame' class is responsible for updating the item's position, while the 'on_draw' method is responsible for rendering it to the screen. The code sets up a basic game loop, continuously calling 'on_update' and 'on_draw' methods to animate the bouncing rectangle.
 
 camera_platform.py
 ------------------
@@ -103,7 +103,7 @@ camera_platform.py
 
 Source: :ref:`camera_platform`
 
-This example demonstrates how to implement a camera system in a 2D game using the Arcade library in Python. The camera follows the player's movements, ensuring that the player remains centered on the screen as they navigate a larger game world. The camera's viewport is defined to keep a margin between the player and the edge of the screen, providing a smooth visual experience for the player. The camera's panning and movement functions are utilized to update the camera position based on the player's location, creating a dynamic and responsive gameplay environment. The camera also includes features like shaking effects, which can be triggered by specific in-game events for added visual impact.
+This Python code is a demonstration of a platform game using the Arcade library. It starts with defining some constants related to the viewport, physics, and layers of the game map. The 'MyGame' class then sets up and manages the game, with functions for initializing, setting up the game, rendering the display, handling key-press events, panning the camera view for a scrolling effect, and updating the game state. Key features include loading a tile map, creating and controlling a player sprite, implementing game physics, collision detection with coins and bombs, and a constantly updating score count. It also includes a game over condition when the player reaches the end of the map. Furthermore, camera movement is managed to create an effect of scrolling viewport, maintaining the player sprite in view during gameplay. The concept of 'Frames per Second' (FPS) is demonstrated by repeatedly calculating and displaying the FPS. This case also includes the creation and utilization of cameras to handle the viewport, and how to shake the camera upon specific events like hitting a bomb.
 
 conway_alpha.py
 ---------------
@@ -111,7 +111,7 @@ conway_alpha.py
 
 Source: :ref:`conway_alpha`
 
-This code demonstrates how to implement Conway's Game of Life using sprites in a grid. It showcases how sprites' 'alpha' values can be used to represent the states of cells in the game (alive or dead), where cells are turned on/off by setting their alpha value to 255 (ALPHA_ON) or 0 (ALPHA_OFF) respectively. The game involves applying specific rules to the grid to simulate cell behavior and evolution over generations, reflecting the concept of cellular automaton and demonstrating how sprite manipulation can be utilized to visualize the game's dynamics.
+This piece of Python code illustrates how to create and manipulate a grid of sprites using the Arcade library. It's an implementation of Conway's Game of Life, a cellular automaton devised by the British mathematician John Horton Conway. The code sets up a grid of sprites, using a two-dimensional list for grid access and a one-dimensional list for drawing. The 'alpha' value of the sprites is used to toggle them 'on' or 'off', simulating live and dead cells in the Game of Life. The game follows a set of rules to decide on the state of a cell in the next generation, based on its current state and the states of its neighboring cells. Each cell in the grid is a sprite that can either be 'alive' (visible) or 'dead' (invisible), thus creating an interactive visual representation of Conway's Game of Life. The simulation updates and displays the grid with each new generation of cells.
 
 drawing_primitives.py
 ---------------------
@@ -119,7 +119,7 @@ drawing_primitives.py
 
 Source: :ref:`drawing_primitives`
 
-This example code demonstrates the usage of drawing primitives in the Arcade library, such as drawing points, lines, polygons, circles, ellipses, arcs, and rectangles on a window. It showcases how to set the background color, draw different shapes, load and display an image on the screen, and finish the rendering process to display the final output to the user. The example provides a clear understanding of how to use various drawing functions available in Arcade for creating graphics in a windowed environment.
+This Python code demonstrates how to use the Arcade library to draw various geometric shapes and lines, how to fill them with color, and how to draw text fields. It uses multiple Arcade functions including draw_line, draw_point, draw_circle_outline, draw_rectangle_filled, draw_ellipse_outline, draw_arc_filled, and more. Each item is drawn on a 600x600 window, with a white background. The code uses a loop to draw a grid onto which the various shapes are positioned. The code also includes examples of how to load and render image textures onto the screen with specified scales and rotation. Notably, every drawing should be enclosed between "start_render" and "finish_render" for it to appear on screen. The script ends with an infinite loop that keeps the window open until it's manually closed. This implementation is a great starting point for basic 2D game design and computer graphics in Python.
 
 drawing_text.py
 ---------------
@@ -127,7 +127,7 @@ drawing_text.py
 
 Source: :ref:`drawing_text`
 
-This example demonstrates how to draw text to the screen in a graphical application using the Arcade library in Python. The code shows how to specify the text content, font size, color, position, alignment, and even rotation. It also includes features like drawing text in different fonts, handling multi-line text, and adjusting the text positioning using anchor points. By utilizing these text-drawing functionalities, developers can create visually appealing user interfaces, display game instructions, show scores, and provide feedback within their Arcade applications.
+This example demonstrates how to draw text in various fonts, styles, positions, and orientations using the Arcade library in Python. It covers various text-related features such as choosing different fonts, including built-in and system fonts; setting font size, bold, and italics properties; and adjusting text alignment using anchor points. Additionally, it shows how to use multiple lines in text using newline characters, automatic text wrapping, and rotating text by updating its angle on every frame update. The example creates a window with two columns of text displaying a variety of these text-drawing techniques, making it easier for users to understand how to use the Arcade library to manipulate and display text on the screen.
 
 drawing_text_objects.py
 -----------------------
@@ -135,7 +135,7 @@ drawing_text_objects.py
 
 Source: :ref:`drawing_text_objects`
 
-This example demonstrates how to efficiently draw text to the screen using Text objects in the Arcade library. Text objects provide a faster way to render text compared to using the `draw_text` method directly. The code showcases various features such as specifying text alignment, using different fonts, handling multi-line text with line breaks, positioning text using anchors, and even rotating text on the screen. This example highlights how Text objects can be utilized to create visually appealing and dynamic text elements in an Arcade application.
+This code is a detailed example on how to use the Arcade library in Python for displaying various forms of text in a created window. The text displays can be both static and dynamic (such as the rotating text in the example), and includes the utilization of different fonts, sizes, colors, multiline text, text positioning and more. The Arcade Text object is utilized and demonstrated here to be highly efficient in rendering text in a graphics window. The example also showcases the method of updating the state of text based on elapsed time in the on_update function and rendering them in the on_draw function. A 'dot' is used to clearly indicate relative positioning of the text. This is not only an example of text rendering, but also indirectly shows object oriented programming and how to structure a game using the Arcade library in Python.
 
 drawing_text_objects_batch.py
 -----------------------------
@@ -143,7 +143,7 @@ drawing_text_objects_batch.py
 
 Source: :ref:`drawing_text_objects_batch`
 
-This code demonstrates the concept of using batches for drawing text efficiently in a game using the Arcade library. By utilizing pyglet's batch functionality, multiple arcade.Text objects are added to a single batch, allowing for the drawing of thousands of text objects with similar performance cost to drawing a single text object directly. This approach helps optimize the rendering process by reducing the number of draw calls required when rendering multiple text elements on the screen.
+This example demonstrates the efficient drawing of text using the Arcade library and pyglet's batch functionality. It showcases different styles, fonts, alignments, and rotations of text objects, as well as multiline text and wrapping. By adding the arcade.Text objects to a batch, the example allows for drawing thousands of text objects at nearly the same cost as drawing a single one directly. The MyGame class initializes various text objects with different properties, updates the rotation of a text object, and draws all the text objects alongside red points to indicate their starting positions. This example is beneficial for understanding how to work with various text styling and formatting options while optimizing performance using batch rendering.
 
 dual_stick_shooter.py
 ---------------------
@@ -151,7 +151,7 @@ dual_stick_shooter.py
 
 Source: :ref:`dual_stick_shooter`
 
-This Python code demonstrates the implementation of a dual-stick shooter game using the Arcade library. It illustrates how to handle player movement and shooting controls using both keyboard inputs and a dual-analog stick controller, showcasing how to interpret controller input values and translate them into in-game actions like player movement, rotating the player sprite, firing bullets, and controlling enemy sprites. The code also includes functionalities like spawning enemies, collision detection, game over conditions, and score tracking.
+This example is a demonstration of game development using the Arcade library in Python. It depicts the creation of a dual-stick shooter game where players can use either a game controller, if present, or keyboard controls. The game involves a player sprite that moves and shoots at spawning enemy sprites, scoring points for each enemy defeated. The player sprite's movement and shooting directions are managed either by the controller or keyboard inputs. If an enemy reaches the player sprite, the game is over. The example employs a variety of concepts such as object-oriented programming (creation of Player, Enemy, and Game classes), usage of internal library functions for sprite list creation, collision detection, scheduled tasks, keyboard and controller input mapping, and rendering game visuals.
 
 easing_example_1.py
 -------------------
@@ -159,7 +159,7 @@ easing_example_1.py
 
 Source: :ref:`easing_example_1`
 
-This piece of example Python code demonstrates the concept of using easing functions in animation using the Arcade library. Easing functions are mathematical equations that control the acceleration and deceleration of movement, creating more natural and visually appealing animations. In this example, different easing functions are applied to the movement of circles on the screen, showcasing various types of easing effects such as linear, ease-in, ease-out, smoothstep, elastic, and others. The code shows how to integrate these easing functions to smoothly update the position of objects over time, leading to more fluid and visually interesting animations.
+The given Python code explains the utilization of easing functions for positioning using the Arcade library. Easing functions are used to give a dynamic or 'animation-like' motion to a static object in programming. It does not simply move the object from one point to another but adds a bit of realism to its movement by accelerating and decelerating it. The example also shows how to use easing for angles. It covers various easing types like linear, ease out, ease in, smoothstep, ease in/out, ease out elastic, ease in back, and many more. These easing types decide the speed of the object at different instances producing various motion effects. This script displays balls moving across the screen using these different types of easings to illustrate their effects and compare them visually.
 
 easing_example_2.py
 -------------------
@@ -167,7 +167,7 @@ easing_example_2.py
 
 Source: :ref:`easing_example_2`
 
-This example demonstrates the use of easing functions to create smooth transitions in position and angles for sprites in a game using the Arcade library. Easing functions are used to control the acceleration and deceleration of sprite movement, allowing for more visually appealing animation effects compared to linear movements. By applying different easing functions, such as linear, ease in, ease out, and smoothstep, developers can achieve varying levels of smoothness and realism in sprite movements within their games.
+This example demonstrates the use of easing functions in the Arcade library to create smooth animations for position and angles. Easing functions provide a way to interpolate between two points or angles, which allows for gradual changes in position or angle over time. The code includes a `Player` class that has methods for updating the sprite's angle and position using different easing functions, and a `MyGame` class that implements the game window and user input. When a user presses numbered keys from 1 to 9, the example demonstrates different easing functions such as linear, ease-in, ease-out, and smoothstep for both angle and position. This helps to understand how different easing functions can affect the game object's motion and rotation, creating more visually appealing and varied animations.
 
 follow_path.py
 --------------
@@ -175,7 +175,7 @@ follow_path.py
 
 Source: :ref:`follow_path`
 
-This code example demonstrates how to create a sprite in the Arcade library that follows a predefined path. The Enemy class defines a sprite that moves along a series of specified points. The update method calculates the angle and distance to the next point and updates the sprite's position accordingly. This concept of having a sprite follow a path is commonly used in game development to create movement patterns for enemy characters or other game entities.
+This example demonstrates how to create a sprite, specifically an enemy sprite, that follows a predetermined path in a game using the Arcade library. It defines an `Enemy` class that inherits from the `arcade.Sprite` class and implements an update function to control the sprite's movements along a specified list of positions. The path is determined by a list of (x, y) coordinates, and the sprite's speed is also taken into account to ensure smooth transitions between path points. The sprite calculates the angle and distance to the next point in its path and uses trigonometry functions to update its position accordingly. When the sprite reaches the end of the path, it loops back to the beginning. In this particular example, the player sprite follows the mouse cursor, and a robot enemy sprite moves along a square-shaped path.
 
 full_screen_example.py
 ----------------------
@@ -183,7 +183,7 @@ full_screen_example.py
 
 Source: :ref:`full_screen_example`
 
-This piece of code demonstrates how to create a full-screen application using the Arcade library in Python. The example includes functionality to toggle between full-screen and windowed modes, as well as options to stretch or maintain the aspect ratio of the window. It showcases how to set the viewport based on the window size and adjust it accordingly when switching between different screen modes. The program also displays text and images on the screen to provide a visual representation of the changes happening based on user input.
+This piece of Python code provides an example of how the Arcade library can be used to create a basic windowed or full-screen mode application with a tile-based interface. The script uses sprites for creating the platform and elements. It demonstrates how to load a sprite, how to draw sprites on the screen, and how to handle key press events to switch between fullscreen and windowed modes. In particular, it highlights the use of fullscreen and viewport features of the arcade.Window class, where 'viewport' refers to the portion of coordinates that are displayed on-screen. You can see it in action with the full screen and windowed modes toggles. The Arcade library facilitates smooth transition between the two modes by adjusting the viewport to match the window size. This example further shows how to use Arcade�s drawing functions to provide instructions to the user about interaction with the display modes.
 
 gradients.py
 ------------
@@ -191,7 +191,7 @@ gradients.py
 
 Source: :ref:`gradients`
 
-This code demonstrates how to create and draw gradients using the Arcade library in Python. Gradients are smooth transitions between two or more colors, which can be applied to different shapes like rectangles, lines, triangles, or ellipses. By specifying the colors at different points of the shape, the code shows how to create visually appealing gradient effects. Additionally, it also illustrates the concept of creating shapes with varying transparency levels to achieve different visual effects.
+This example demonstrates the use of gradients in the Arcade library for drawing various shapes with smooth transitions between colors. It showcases gradients applied to a full-screen background, a smaller rectangle, a pair of lines, a triangle, and an ellipse. The colors and transparency in the gradients are defined by specifying the colors at the vertices of each shape. The gradient effect is achieved by interpolating colors between the defined vertices. The example highlights the flexibility in applying different gradient patterns to shapes, such as transitioning between two colors, fading transparency, or using gradients in the combination of multiple shapes.
 
 gui_flat_button.py
 ------------------
@@ -199,7 +199,7 @@ gui_flat_button.py
 
 Source: :ref:`gui_flat_button`
 
-This code snippet demonstrates how to create a graphical user interface (GUI) using the Arcade library in Python. It showcases the creation of buttons and different ways to handle button click events. The example covers three methods: first, by creating a child class to handle events directly within the class itself; second, by assigning a callback function to handle events; and third, by using a decorator to handle events inline. This code also shows how to use a UIManager to manage UI elements and layout within a view. The UIManager enables the handling of window events and facilitates the creation of interactive GUI applications within an Arcade game or simulation.
+This example demonstrates how to create a functional Graphical User Interface (GUI) using the Arcade library in Python. It specifically showcases the creation of a button and three different methods to handle button click events. The example sets up a series of 'Start Game', 'Settings' and 'Quit' buttons using FlatButton from Arcade's GUI widget library. The buttons are placed inside a vertical BoxLayout for alignment. The first method of handling click events uses a child class (QuitButton), which overrides the on_click method. The second method assigns a callback function (on_click_start) to the start_button's on_click property. Lastly, the third method utilizes a decorator with the on_click event for the settings_button. This code also demonstrates the use of UI events and management. The UIAnchorLayout is used to center the buttons on the screen, and the UIEnabler and UIDisabler methods are called to manage the UI element based on the view's active state.
 
 gui_flat_button_styled.py
 -------------------------
@@ -207,7 +207,7 @@ gui_flat_button_styled.py
 
 Source: :ref:`gui_flat_button_styled`
 
-This example code explains how to style and customize UI elements, specifically UIButton, in the Arcade library. It demonstrates how to define different visual styles for a button such as setting font size, font color, background color, border color, and width for normal, hover, press, and disabled states of the button. By customizing the styles, developers can create visually appealing and interactive user interfaces in their Arcade applications.
+This example demonstrates the use of the Arcade library for creating and styling graphical user interface elements, specifically UIFlatButtons. It shows how to create custom styles for buttons using the UIFlatButton.UIStyle class and how to apply these styles to different button states, such as 'normal', 'hover', 'press', and 'disabled'. The example also illustrates creating a vertical box layout using UIBoxLayout, which aligns the buttons with a specified space between them, and UIAnchorLayout to center the buttons within the window. The UIManager is used in conjunction with these UI elements to handle window events and manage the overall user interface.
 
 gui_ok_messagebox.py
 --------------------
@@ -215,7 +215,7 @@ gui_ok_messagebox.py
 
 Source: :ref:`gui_ok_messagebox`
 
-This code demonstrates the implementation of a user interface (UI) component called `UIMessageBox` using the Arcade library. The `UIMessageBox` displays a message to the user and provides buttons for interaction. The example shows how to create a message box with options, handle user input events, and dynamically update the interface based on the user's actions. It also illustrates how to manage UI elements, such as buttons and labels, and how to control their visibility and layout within the window using the `arcade.gui` module in Arcade.
+This Python code demonstrates how to create and manage a simple graphical user interface (GUI) using the Arcade library. It particularly focuses on the utilization of a message box and a button within this interface. An instance of the "MyView" class, which extends Arcade's "View" class, is established. This class is designed to showcase an 'OK' message box and its behavior. The code creates a GUI box that is centered and contains an actionable button titled, "Show Message Box". Upon clicking this button, it is made invisible and a message box with "Ok" and "Cancel" buttons appears. The chosen option from the message box is displayed once the message box is dismissed.  The Arcade's 'UIManager' is used to manage and handle the UI elements and events such as drawing the UI, clicking the button and enabling/disabling the UI when the view is shown/hidden.
 
 gui_scrollable_text.py
 ----------------------
@@ -223,7 +223,7 @@ gui_scrollable_text.py
 
 Source: :ref:`gui_scrollable_text`
 
-This example code demonstrates how to create a user interface (UI) using the Arcade library in Python. It shows how to use the UIManager class along with UIInputText and UITextArea elements to create interactive elements like text input boxes and scrollable text areas. The code also showcases features such as customizing the appearance of UI elements with textures and padding, as well as enabling and disabling the UIManager to handle window events when the view is shown or hidden.
+This Python code using the Arcade library demonstrates the creation and usage of a graphical user interface (GUI) using UIManager, UIInputText, and UITextArea, along with nine-patch textures. It creates a resizable application window and adds various UI elements to it, including two editable text input fields and a non-editable multi-line text field displaying lorem ipsum content. The UI elements feature a background texture with a nine-patch texture to handle resizing correctly. This code also shows the lifecycle methods of an arcade view (on_show and on_hide_view) being used to enable and disable the UIManager, resulting in catching window events only when the UI is active. This demonstration showcases advanced concepts of using the Arcade library to create an interactive user interface in a Python application.
 
 gui_slider.py
 -------------
@@ -231,7 +231,7 @@ gui_slider.py
 
 Source: :ref:`gui_slider`
 
-This piece of code demonstrates how to create a graphical user interface (GUI) slider using the Arcade library in Python. It shows how to set up a slider widget, display its value, and react to changes in the slider's value. The example also illustrates how to use the UIManager to manage the GUI widgets and handle user interface events effectively. The code highlights the process of binding an event that updates the label text whenever the slider position changes, ultimately showcasing how to create interactive elements in a graphical user interface using Arcade.
+The given example demonstrates the creation and usage of a GUI slider in the Arcade library for Python. It shows how to use the UIManager to handle UI widgets, create a UISlider with specific dimensions and initial value, and create a UILabel to display the current value of the slider. The example also illustrates how to update the displayed value using the on_change event by changing the label's text whenever the slider is dragged. Furthermore, the code sets up a UIAnchorLayout to position the widgets on the screen, and properly handles enabling and disabling the UIManager when the view is shown or hidden.
 
 gui_widgets.py
 --------------
@@ -239,7 +239,7 @@ gui_widgets.py
 
 Source: :ref:`gui_widgets`
 
-This code demonstrates how to create and utilize various user interface (UI) widgets in a Python application with the Arcade library. It showcases the creation of text widgets, flat buttons, and texture buttons, along with handling click events for these widgets. Furthermore, it illustrates the organization of widgets using layout groups to align and structure the UI elements effectively on the screen. Additionally, it highlights the use of a UIManager to manage UI elements and events, enabling the interactive functionality of the widgets within the application's window.
+This example demonstrates how to create and manage various graphical user interface (GUI) elements using the Arcade library in Python. It showcases the creation, configuration, and usage of UI widgets, such as labels, buttons, and layouts. The UIManager class is used to manage and handle UI events. A UIBoxLayout is used to vertically align the UI elements, and a UIAnchorLayout is used to center the child widgets within the window. Different types of widgets, such as UITextArea, UIFlatButton, and UITextureButton, are created, configured, and then added to the layouts. Event handling is done using the on_click function decorators to define actions that occur when the respective UI elements are clicked. This example teaches users how to create a simple UI using the Arcade library and demonstrates the behavior and appearance of different UI elements.
 
 happy_face.py
 -------------
@@ -247,7 +247,7 @@ happy_face.py
 
 Source: :ref:`happy_face`
 
-This code demonstrates how to use the Arcade library in Python to create a simple drawing of a happy face. It covers concepts such as setting up a window, defining screen dimensions, setting background color, rendering shapes (circles and arcs) with specific attributes (such as filled circles and outlined arcs), and managing the display loop to keep the window open for user interaction. The example shows how to use basic Arcade functions to draw shapes and create a graphical output within a window.
+This python code using the Arcade library provides a simple demonstration of how to create graphics and shapes in a display window. The specific shapes drawn in this example form a depiction of a happy face. First, the code establishes the window size with "SCREEN_WIDTH" and "SCREEN_HEIGHT", gives it a title, and sets the background color. Then the "start_render" function is called to start the drawing process. Following this, multiple 'draw' functions are used to create the face, eyes, and smile of the happy face using circles and an arc for the smile. Each shape requires specific parameters to define their size, position, and color. After the drawing process, the "finish_render" function is used to display the result. The 'run' function keeps the window open until the user closes it.
 
 light_demo.py
 -------------
@@ -255,7 +255,7 @@ light_demo.py
 
 Source: :ref:`light_demo`
 
-This piece of code demonstrates how to implement and manipulate lights in a game using the Arcade library. The example shows how to create different types of lights, such as ambient light and colored lights, add them to a light layer, and manipulate them in response to player actions. The code also covers how to control the visibility of lights by adding or removing them from the light layer, as well as how to position lights based on the movement of game objects, like the player character. Additionally, it illustrates how lights can be used to create dynamic and interactive visual effects in a gaming environment.
+The provided code illustrates advanced lighting concepts that can be used in games developed with the Arcade library in Python. The script sets up a basic 2D game world with different kinds of light sources, including ambient light, player-centered light, hard and soft lights of varying colors, as well as lights with varying radii. The concept of layering is also emphasized with the use of a light layer, to which different light sources are added or removed in order to control the lighting effects. The code also demonstrates how to handle light layer resizing with changes in the game window size, as well as how to control character movement and screen scrolling. The program also includes methods for handling user interactions, such as turning the player light on or off by pressing the spacebar, and moving the player character around using the arrow keys. This aspect of the code demonstrates the importance of inputs in controlling the game's conditions and aspects like lighting.
 
 lines_buffered.py
 -----------------
@@ -263,7 +263,7 @@ lines_buffered.py
 
 Source: :ref:`lines_buffered`
 
-This code example demonstrates how to use a Vertex Buffer Object (VBO) with lines in the Arcade library. A VBO is a GPU memory buffer that stores vertex data such as positions, colors, and texture coordinates. By using VBOs, the example efficiently renders a large number of lines by sending vertex data to the GPU once and then accessing it when needed for rendering, reducing the overhead of transferring data between the CPU and GPU. The code generates random lines with different colors and animates them by updating their positions and angles in an optimized manner, showcasing the performance benefits of utilizing VBOs for rendering graphics.
+The provided Python code is an example of using Vertex Buffer Objects with lines in the Arcade library. It demonstrates how to create more complex, colorful objects rendered through vertex buffer objects using drawing primitives such as lines, points, and polygons. After setting up the arcade.Window, random lines are generated using the create_line_strip function to select the points and choose a color from the available color options in the Arcade library. All these random lines are added to the ShapeElementList object, which is a container for draw-awable geometry. The example also shows how to handle the on_draw and on_update events to animate the randomly populated lines around the center of the screen. The principles demonstrated here are fundamental to creating dynamic, visually complex programs or games in Python using the Arcade library.
 
 line_of_sight.py
 ----------------
@@ -271,7 +271,7 @@ line_of_sight.py
 
 Source: :ref:`line_of_sight`
 
-This code demonstrates the concept of creating a line of sight between two entities in a game using the Arcade library. The `on_draw` method uses the `arcade.has_line_of_sight` function to determine if there are any obstacles blocking the line of sight between the player and the enemy. If there are no obstacles, a red line is drawn between the player and the enemy to indicate visibility; otherwise, a white line is drawn. This concept is commonly used in game development for implementing visibility and obstruction mechanics.
+This Python code demonstrates how to use the Arcade library to create a simple video game where the player character can interact with enemies and a changing environment. It showcases key concepts in game development like sprites, game physics, movement controlled by key presses, and view port management for scrolling. The key aspect demonstrated by this script is the 'line of sight' mechanic. An interactive line is drawn between the player and each enemy, changing color if there is an obstruction in the path - such as a wall. This allows the player to visually assess whether their character's line of sight is blocked or not.
 
 maze_depth_first.py
 -------------------
@@ -279,7 +279,7 @@ maze_depth_first.py
 
 Source: :ref:`maze_depth_first`
 
-The provided Python code demonstrates the creation of a maze using a depth-first search maze generation algorithm in the Arcade library. The algorithm involves recursively exploring the grid and carving passages between cells to generate a maze. Additionally, the code showcases the utilization of sprites to represent the maze walls and the player, along with scrolling functionality to keep the player within the visible portion of the screen as they move through the maze.
+This example demonstrates how to create a maze using the depth-first search algorithm in the Arcade library. It generates a random maze of specified width and height with walls and empty cells. The player can navigate through the maze using keyboard input. The example also showcases scrolling and viewport management, ensuring the player remains visible and centered on screen while moving through the maze. Additionally, the code presents two methods for drawing the maze: one that keeps separate sprites for each wall cell and another that uses repeating texture for consecutive cells to reduce the number of sprites. Finally, it includes a performance measurement for processing time and drawing time.
 
 maze_recursive.py
 -----------------
@@ -287,7 +287,7 @@ maze_recursive.py
 
 Source: :ref:`maze_recursive`
 
-This piece of code demonstrates the concept of maze generation using the recursive division method. The algorithm involves splitting the maze into sections and creating openings within walls to form a complex maze structure. By recursively dividing the maze and adding gaps on walls, the code generates a maze with different paths for a player to navigate. This technique showcases how recursion can be used to efficiently create intricate maze layouts for games or other applications.
+This example Python code implements a maze game utilizing the Arcade library, a modern library for 2D graphics with support for Python 3.6+ and PyPy3. The maze is generated with a recursive division method, a technique used to create complex and perfect (i.e., without loops or isolated walls) mazes. The player can navigate through the maze using the arrow keys, and a simple physics engine is employed for collision detection. The game uses sprite-based graphics, where each tile of the maze is a sprite. Various features such as viewport scrolling, sprite merging for more efficient rendering, and player placement within boundaries are demonstrated. Additionally, the game also computes and shows metrics like the sprite count, drawing time, and processing time for performance analysis.
 
 minimap.py
 ----------
@@ -295,7 +295,7 @@ minimap.py
 
 Source: :ref:`minimap`
 
-This code demonstrates how to implement a mini-map feature in a game using the Arcade library in Python. The mini-map provides a small overview of the game environment, allowing the player to see the entire map layout in a compact form. The code includes functionality to render the game environment and player position onto the mini-map, providing a visual aid for navigation and spatial awareness within the game. Additionally, it shows how to implement camera scrolling to keep the player centered on the screen, and how to manage multiple cameras for different purposes, such as sprite rendering and GUI elements.
+This example demonstrates the use of the Arcade library in Python to create a game with a mini-map displaying the player's location and surrounding walls in a larger game world. The game window is resizable, and the main game view updates as the player moves around the map, with the mini-map showing an overview of the entire game area. The example features the creation and management of sprite lists, camera implementation to follow the player's movement, and a physics engine for simple object interaction and collision. Additionally, it shows how to render and update the mini-map using a separate dedicated camera, handle keyboard inputs for character movement, and resize event management for updating the viewport when the window size changes.
 
 minimap_camera.py
 -----------------
@@ -303,7 +303,7 @@ minimap_camera.py
 
 Source: :ref:`minimap_camera`
 
-This Python code demonstrates the implementation of a mini-map feature using the Arcade library. The mini-map provides an overview of the game space, allowing players to see a smaller representation of the entire game area while being able to navigate and interact within the main game screen. The code showcases how to set up multiple cameras - one for the main game view and another for the mini-map view - and how to switch between them based on player input. Additionally, the code shows how to update and center the mini-map viewport on the player's position as they move within the game world, providing players with spatial awareness and aiding navigation.
+This example demonstrates the use of the Arcade library to create a game with a main screen and a mini-map. It includes the implementation of viewport cameras, such as `camera_sprites` for the main screen, `camera_minimap` for the mini-map, and `camera_gui` for the unscrolled view. The code allows you to switch between cameras and adjust the zoom level using keyboard inputs, and it handles window resizing. In the game, the player navigates through a maze of walls while the mini-map provides a smaller, real-time overview of the player's position within the larger game map. The example showcases the versatility and ease of working with multiple views and cameras in an Arcade game.
 
 music_control_demo.py
 ---------------------
@@ -311,7 +311,7 @@ music_control_demo.py
 
 Source: :ref:`music_control_demo`
 
-This code demonstrates how to create a simple music control demo using the Arcade library. It showcases the usage of Arcade's capabilities to load and play music files, create a user interface with buttons for controlling volume, play/pause, skip track, and update visual elements such as time and volume levels on the screen. The example also illustrates how to handle events like button clicks and end of sound (eos) to provide interactive user experiences in a graphical application.
+This example demonstrates the usage of the Arcade library for playing, pausing, and controlling the volume of music in a simple graphical user interface (GUI) with buttons. It uses the Arcade GUI module to create custom buttons with different textures for their normal, hovered, and pressed states. It also showcases how to manage multiple songs, switching between them using the forward button and displaying the current playback time and volume. The buttons control actions such as play/pause, volume up, volume down, and skip forward in the song. The program also handles the end of a song by automatically switching to the next one in the playlist. This is a good example of using the Arcade library for audio playback control and integrating it into custom GUI interfaces.
 
 net_process_animal_facts.py
 ---------------------------
@@ -319,7 +319,7 @@ net_process_animal_facts.py
 
 Source: :ref:`net_process_animal_facts`
 
-This example demonstrates the use of multiprocessing in Python, specifically for running a service in a separate process. The service continuously runs in the background, handling tasks such as fetching random animal facts and images. By using multiprocessing, the main process, which in this case may involve running a game loop, remains responsive while the service operates independently. This technique helps prevent blocking the main application while waiting for time-consuming operations to complete, contributing to a smoother user experience. Additionally, the example showcases the interchange of textures between processes, enabling the display of images fetched by the background service in the main process without impacting performance.
+This example demonstrates the use of the Arcade library with multiprocessing to run a background service that fetches random animal facts and images from various APIs and displays them on the screen. The service runs in a separate process, ensuring that the main game loop runs smoothly while waiting for data. Additionally, textures are shared between processes so that the fetched images can be displayed. The code also includes features such as a spinning loading indicator, a progress bar to show time until the next fact is requested, and various controls for user interaction. The example highlights external content fetching, multiprocessing, and the use of various UI elements provided by the Arcade library.
 
 particle_fireworks.py
 ---------------------
@@ -327,7 +327,7 @@ particle_fireworks.py
 
 Source: :ref:`particle_fireworks`
 
-This Python code demonstrates how to create particle-based fireworks using the Arcade library. It covers concepts such as emitters, particles, textures, and custom particle effects. Emitters generate particles at specified intervals, while particles can have various properties such as textures, lifetimes, and mutation callbacks. The code showcases different types of fireworks (random, ringed, sparkling) with unique particle behaviors like gravity, fading, and movement. Additionally, it includes custom particle classes like `AnimatedAlphaParticle` and `RocketEmitter`, which allow for more advanced particle effects such as animating alpha levels and applying gravity to particles. Overall, the code provides a comprehensive example of utilizing particles and emitters to create dynamic visual effects like fireworks in a game or simulation.
+This example demonstrates the use of the Arcade library to create a particle-based fireworks simulation. It utilizes Emitters and Particles to form various firework types that explode when launched, resulting in visually impressive displays. The program combines multiple particles, such as smoke, sparks, and flashes to produce realistic fireworks effects. Emitters control the particle generation with different strategies like EmitBurst, EmitterIntervalWithTime, and EmitMaintainCount for various visual effects. Overall, this example showcases the potential for creating complex and engaging visual displays using particles and emitters in the Arcade library.
 
 particle_systems.py
 -------------------
@@ -335,7 +335,7 @@ particle_systems.py
 
 Source: :ref:`particle_systems`
 
-This Python code demonstrates the concept of Particle Systems using the Arcade library. Particle systems are used to create visual effects like fire, smoke, explosions, etc., by creating and controlling a large number of small particles. In this code, different types of emitters and particles are created to showcase various effects such as burst emissions, interval emissions, particle lifetimes, velocities, textures, and more. Each emitter generates particles based on specific settings, resulting in diverse visual effects within the game window. The code provides a comprehensive example of how to implement and control particle systems in a game using the Arcade library.
+This Python code illustrates how to use Particle Systems using the Arcade library - demonstrating the use Emitter and Particle classes to create varied effects. The example demonstrated creates a series of different particle emitters, with each variation differing slightly from the previous through changes in settings. These diverse emitters include random particle textures, velocity changes, fading particles, etc. To display these particle effects various emitter functions have been defined, with each function generating a different particle effect. In addition, the script creates a window using the Arcade library's Window class, and the movement and update of these particle systems are controlled by the overriden methods within the custom MyGame class. This example provides a rich display of the potential applications of particle systems in Python-based game development.
 
 performance_statistics.py
 -------------------------
@@ -343,7 +343,7 @@ performance_statistics.py
 
 Source: :ref:`performance_statistics`
 
-This code demonstrates how to use performance profiling tools provided by the Arcade library to measure and display performance statistics while running a game. The example includes features like enabling timings to track event handler calls and their average execution time, displaying a performance graph to visualize FPS (Frames Per Second) and other performance metrics, getting FPS data for the last 60 frames, printing and clearing timings at specific intervals, and toggling timings on and off using key presses. Through these tools, developers can monitor and optimize the performance of their game by analyzing various aspects such as rendering, updating, and event handling.
+This example demonstrates the usage of performance profiling tools provided by the Arcade library in a simple game application where a large number of coin sprites bounce around the screen. The tools used include arcade.enable_timings, arcade.PerfGraph, arcade.get_fps, arcade.print_timings, and arcade.clear_timings. These performance profiling tools help track the number of event handler calls, average execution time for each event type, Frames Per Second (FPS), and update or clear timings for optimization. The example also showcases how to display the performance statistics on-screen and how to manage the game objects using the arcade.Window and arcade.SpriteList classes. Additionally, it allows the user to toggle the profiling tools on and off using the space key.
 
 perspective.py
 --------------
@@ -351,7 +351,7 @@ perspective.py
 
 Source: :ref:`perspective`
 
-This example demonstrates how to use shaders and framebuffer in the Arcade library to create a perspective projection effect. By rendering content into a virtual screen and mapping it onto a texture that can be rotated in 3D space, the code showcases the efficient use of shaders to achieve perspective projection for elements like backgrounds. Concepts such as shaders, matrices for perspective projection, framebuffers, and rendering geometry using buffers are illustrated in this example.
+This example demonstrates the use of perspective projection and shaders to create a 3D effect in an Arcade game. The code creates a virtual framebuffer for off-screen rendering, maps the content onto a texture, and rotates the texture in 3D space using perspective projection. A simple texture shader is used to project and model the matrix, as well as scroll texture coordinates. The example code sets up a geometry buffer for a textured plane and adds sprites to the scene. The on_draw() method updates the offscreen texture, clears the window, applies transformations to the plane's position and rotation, and scrolls the texture coordinates. Finally, the draw_offscreen() method renders the sprites into the framebuffer's texture, and the on_resize() method updates the perspective projection as needed. This technique can be used to create 3D backgrounds or other visual elements in a 2D Arcade game.
 
 procedural_caves_bsp.py
 -----------------------
@@ -359,7 +359,7 @@ procedural_caves_bsp.py
 
 Source: :ref:`procedural_caves_bsp`
 
-This Python code demonstrates procedural cave generation using Binary Space Partitioning (BSP). The BSP technique involves recursively dividing a space into smaller sections until a stopping condition is met. In this specific example, the code generates a dungeon map by splitting the space randomly based on a specified threshold, carving out rooms within the sections, and connecting them with corridors. The BSP algorithm is utilized to create a maze-like structure with interconnected rooms, demonstrating a method to generate complex layouts dynamically. It leverages concepts of randomization, recursion, and spatial partitioning to construct unique cave systems within a game environment using the Arcade library.
+This example demonstrates the procedural generation of random cave systems using Binary Space Partitioning (BSP) combined with the Arcade library. The program generates dungeons using a grid-based algorithm that repeatedly splits the space into regions and carves rooms and corridors between them. The resulting cave systems are then visualized using the Arcade library, rendering walls and the player character as sprites within the environment. The player can navigate the caves using keyboard controls as the camera adjusts its viewport to follow the player. This showcases one method for creating procedural dungeons in a grid-based game while maintaining performance and practicality.
 
 procedural_caves_cellular.py
 ----------------------------
@@ -367,7 +367,7 @@ procedural_caves_cellular.py
 
 Source: :ref:`procedural_caves_cellular`
 
-This example demonstrates the concept of procedural generation using cellular automata to create random cave levels in a game. The cellular automata algorithm iterates through a grid, updating cell states based on certain rules (birth and death limits) and their neighbors' states. By applying this algorithm multiple times, it generates intricate cave structures in the game environment, giving a natural and unpredictable appearance to the levels. The player can interact with the generated cave system, moving around and exploring the environment within the game.
+This example demonstrates the procedural generation of a random cave system using the Python Arcade library and cellular automata. The program initializes a 2D grid, populates it with "alive" cells based on a predetermined chance, and iteratively refines the grid using a cellular automaton, which applies rules for "birth" and "death" to various cells based on the number of neighbor cells. The refined grid is then converted into a set of sprites, with the "alive" cells constituting walls and obstacles. The player's avatar is randomly positioned on the map, and camera scrolling is employed to keep the player at the center of the viewport as they navigate the procedurally generated cave.
 
 pymunk_box_stacks.py
 --------------------
@@ -375,7 +375,7 @@ pymunk_box_stacks.py
 
 Source: :ref:`pymunk_box_stacks`
 
-This example code showcases the integration of the Pymunk physics engine with the Arcade library in Python. It demonstrates the creation of physics-based sprites using Pymunk shapes, as well as interactions such as clicking and dragging objects with the mouse, applying forces to objects, handling collisions, and updating positions based on physics calculations. The Pymunk physics engine provides an efficient way to simulate physical interactions in 2D game development, bringing realism and dynamic behavior to the game world.
+This example demonstrates the integration of the Pymunk physics engine with the Arcade library to create a 2D physics simulation. In this simulation, boxes are stacked in a grid, and users can interact with the simulation by clicking and dragging the boxes or shooting a heavy coin using the right mouse button. The code follows the typical structure of an Arcade application, defining a custom window class, `MyGame`, with methods for handling various events like drawing, mouse input, and updating the state of the simulation. The `PhysicsSprite`, `CircleSprite`, and `BoxSprite` classes are custom sprite classes that associate the Pymunk shapes with the Arcade sprite objects. The `on_draw` method draws the sprites and any additional static elements such as the floor. The `on_mouse_*` methods define how the simulation should respond to user input, while the `on_update` method updates the physics simulation and synchronizes the positions and angles of the sprites with the Pymunk shapes.
 
 pymunk_demo_top_down.py
 -----------------------
@@ -383,7 +383,7 @@ pymunk_demo_top_down.py
 
 Source: :ref:`pymunk_demo_top_down`
 
-This example demonstrates the integration of the Pymunk Physics Engine into an Arcade game. The code sets up various elements within the game, such as player movement, bullet shooting mechanics, collision handling, and physics simulation. The Pymunk Physics Engine is used to apply forces, manage damping, handle collisions, and simulate real-life physics interactions between game objects like the player, walls, bullets, rocks, and gems. The example showcases how Pymunk can be utilized to enhance the gameplay experience by incorporating realistic physics behaviors into a 2D game environment.
+This example demonstrates the use of the Pymunk Physics Engine within the Arcade library to create a top-down game. The game consists of a player character that can move around a screen with a boundary of walls, push a set of rocks and gems, and shoot bullets. The bullets have different attributes such as mass, damping, friction, elasticity, and collision effect). The game world has variable damping and friction for all objects, which control how objects slow down over time. The player's movement is controlled through keyboard inputs, where a force is applied to the player's character in the direction of the key pressed. The example also includes collision handlers for when a bullet hits a rock or wall. The physics engine takes care of all the movement, forces, and collision calculations, making it easier to develop complex physical interactions in the game world.
 
 pymunk_joint_builder.py
 -----------------------
@@ -391,7 +391,7 @@ pymunk_joint_builder.py
 
 Source: :ref:`pymunk_joint_builder`
 
-This Python code utilizes the Arcade library to demonstrate a physics engine integration using the Pymunk library. The example showcases creating shapes with physics properties such as mass and friction, setting up joint constraints like PinJoint and DampedSpring, handling mouse interactions to drag objects, and simulating physics behavior like gravity and collision detection. It also integrates sprite rendering with physics objects to visually represent the physical simulation. The code allows users to interactively create and manipulate physics-based objects on the screen, providing a hands-on illustration of how to incorporate physics simulations into games or simulations using Pymunk and Arcade in Python.
+The provided example demonstrates how to create a physics simulation using the Arcade library combined with the Pymunk library in Python. It covers the use of various physics properties (like gravity, damping, and friction) and interaction with objects in the simulation through mouse controls. The example has different modes such as drag mode, creation of boxes and circles, and the creation of pin joints and damped springs to connect objects. The example is built with a main application class where methods are used to create shapes, handle user inputs, manage the physics engine, and render the scene. Users can also change the physics environment by toggling between "Normal," "Outer Space," and "Layout" gravity and damping settings, and shoot coins using the right mouse button.
 
 pymunk_pegboard.py
 ------------------
@@ -399,7 +399,7 @@ pymunk_pegboard.py
 
 Source: :ref:`pymunk_pegboard`
 
-This example demonstrates the integration of the Pymunk physics engine with the Arcade library to create a pegboard simulation. Pymunk is used to handle physics calculations like gravity, collisions, and movements of objects. The code sets up physics bodies, shapes, and constraints within the Pymunk space and then updates the positions of sprites based on the physics simulation. It also shows how to create circles, apply friction, and add forces, illustrating the concept of simulating physics in games using a physics engine like Pymunk in conjunction with Arcade for rendering and user interaction.
+This Python code provides an example of how to utilize the Arcade library and the Pymunk physics engine together to create a dynamic and interactive simulation. The application displays a grid of static circles (similar to a pegboard), and constantly drops balls at random horizontal positions from the top of the screen. The balls are subject to gravity and bounce off the static circles, the floor, and the walls on the sides. The class `CircleSprite` is used to couple a graphical representation (or sprite) from the Arcade library with a physical body from the Pymunk engine. All the balls and pegs are instances of this class. The main game class `MyGame` includes methods for updating the physics, drawing all the objects on screen, and handling events. This explains how to combine the 2D graphics of the Arcade library with the physical simulations of the Pymunk engine, providing an example of how to implement a more realistic and interactive game or display. The code also demonstrates how to time different events and how to manage and update different game components.
 
 radar_sweep.py
 --------------
@@ -407,7 +407,7 @@ radar_sweep.py
 
 Source: :ref:`radar_sweep`
 
-This example demonstrates how to create an animation using the `Arcade` library in Python. Specifically, it showcases how to implement a radar sweep animation where a line rotates around a center point to simulate a radar scan. The code utilizes object-oriented programming to define a `Radar` class with methods for updating the angle of the sweep and drawing the radar line on the screen. By manipulating trigonometric functions like `sin` and `cos`, the animation creates a smooth rotating effect. Additionally, the `MyGame` class extends `arcade.Window` to manage the game loop, updating the animation, and rendering the graphics on the screen.
+The given Python code demonstrates a radar sweep animation using the Arcade library. It creates a simulation of a radar screen with a rotating sweep line and a circular outline to represent the radar's range. The Radar class contains an update method to adjust the angle of the sweep line and a draw method to render the line and circular outline on the screen. The MyGame class inherits from arcade.Window to create a window with custom dimensions and title, and it overrides the on_update and on_draw methods to update and draw the radar sweep, respectively. The main function initializes the MyGame class and starts the animation by calling arcade.run(). This example provides a visually appealing way to understand trigonometry in motion, specifically the use of sine and cosine functions to move an object in a circular path.
 
 resizable_window.py
 -------------------
@@ -415,7 +415,7 @@ resizable_window.py
 
 Source: :ref:`resizable_window`
 
-This code demonstrates how to create a resizable window using the Arcade library in Python. By setting `resizable=True` in the `__init__` method of the `MyGame` class, the window can be resized by the user. The `on_resize` method is automatically called when the window is resized, allowing you to adjust the content or layout based on the new dimensions. In this example, the method prints the new width and height of the window, showing how you can dynamically respond to changes in the window size.
+The snippet is an example of how to handle window resizing in Python using the Arcade Library. It defines a simple game window that can be resized, with its dimensions output to the console each time a resize occurs. The code defines an "on_resize" method to achieve this; this method is automatically called whenever the game window is resized, updating the window dimensions accordingly. Besides that, the "on_draw" method is overridden to customize the drawing/display on the window: it draws x and y labels at regular intervals along the two axes. When run, the snippet creates an instance of this game window with the specific screen width, screen height, and screen title, and the Arcade game engine is run.
 
 sections_demo_1.py
 ------------------
@@ -423,7 +423,7 @@ sections_demo_1.py
 
 Source: :ref:`sections_demo_1`
 
-This code demonstrates how to implement a user interface with interactive sections using the Arcade library in Python. Each section of the screen is represented by a `ScreenPart` class, which contains its own logic for handling events like mouse input, updating a box sprite inside it, and displaying information. The code shows how to track mouse interactions within each section, select a section when the mouse enters it, drag and release a box within the section, and distinguish between sections independently. The concept of object-oriented programming is utilized to encapsulate behavior within each section, allowing for modular and reusable code.
+The python code demonstrates how to create and manage sections of a screen using the Arcade library. It creates a window which is divided into two sections (left and right). Each section is designated with a certain color and action. The "Box" class represents an object in each section. The "ScreenPart" class represents a section of the screen, it can handle its own events (such as mouse clicking, dragging, entering, and leaving). It also updates and draws the section and the box object in it. The "GameView" class manages the view of the game -- it initializes the game window, divides the window into 2 sections, and draws a line separating these sections. The code shows the encapsulation of game logic within individual classes, and how each class handles its events independently, making the code modular and easy to maintain.
 
 sections_demo_2.py
 ------------------
@@ -431,7 +431,7 @@ sections_demo_2.py
 
 Source: :ref:`sections_demo_2`
 
-This code example showcases the use of Sections in the Arcade library, which are spaces on the screen where game objects or components can exist. In this implementation, each player in a Pong game is represented as a Section, allowing for separate control and management of their paddles and scores. Sections enable a structured way to organize game elements and interact with them, enhancing modularity and reusability in game development. The code also demonstrates how keyboard events can be directed to specific sections based on the pressed key, facilitating player input handling and gameplay mechanics.
+The provided example features an elementary two-player Pong game, which illustrates the use of Sections in the Arcade library, a Python library for creating 2D video games. In this game, each player's motion range on the screen is depicted as a Section. The concept of Sections, which do not need to occupy the entire screen, is unique to this library. Keyboard events can be directed to each Section based on the button pressed, thus enabling two players to play on the same computer. The game also demonstrates the use of Views, as well as the creation, updating, and drawing of sprites (in this case, paddles and a ball), keyboard event handling, collision detection, and game logic implementation (i.e., keeping score and ending the game).
 
 sections_demo_3.py
 ------------------
@@ -439,7 +439,7 @@ sections_demo_3.py
 
 Source: :ref:`sections_demo_3`
 
-This example demonstrates the use of sections in the Arcade library, which allows for organizing code into isolated blocks that handle specific aspects of a game or application. Sections help in structuring code by dividing it into logical units that handle drawing, updating, and responding to events independently. Each section can have its own configuration, enabling easier event handling without the need to constantly check for conditions across the entire application. Additionally, the example includes modal sections, which draw last but capture all events and prevent other sections from updating, providing a way to create pop-ups or user input prompts.
+The code describes how to create a game using the Arcade library in Python. It demonstrates the usage of the Arcade sections to segregate and manage elements in a game's user interface. Arcade Section isolates the piece of code that moves together in the view and receives events only as per section configuration. Distinct game elements such as the ball, the information bar, the panel, the popup window and map for game objects, are all implemented as separate classes each inheriting from the arcade's Section class. They can capture, update, and manage events that concern them. The main game view orchestrates these sections and handles their individual functionality. It highlights how to prevent event dispatching, draw interfaces, use section properties for interactivity, use modal sections, handle key presses, and mouse events.
 
 shapes.py
 ---------
@@ -447,7 +447,8 @@ shapes.py
 
 Source: :ref:`shapes`
 
-This code demonstrates the use of classes and inheritance in Python to create a simple animation of multiple shapes (rectangles, ellipses, and lines) on the screen using the Arcade library. Each shape is defined as a class with methods for drawing and moving. By utilizing classes, the code achieves a clean and organized way to manage and animate multiple objects simultaneously, showcasing the power of object-oriented programming for game development and interactive visual applications.
+The provided Python code demonstrates the use of object-oriented programming (OOP), specifically class inheritance and instance methods, to create and manipulate shapes within the Arcade graphics library. A parent class "Shape" is defined, with child classes "Ellipse", "Rectangle", and "Line" inheriting its properties. Additionally, it shows how to use lists to manage and manipulate multiple instances of objects (in this case, shapes) simultaneously. The code also exemplifies how to use the Arcade window methods for game state updating and rendering. A "MyGame" class is defined which inherits from the arcade.Window class, and overrides the on_update and on_draw methods to update the position of the shapes and draw them respectively. The script creates randomly sized, colored, and placed shapes that move in random directions, providing an understanding of how to create basic animations with multiple objects in Arcade.
+
 
 shape_list_demo_1.py
 --------------------
@@ -455,7 +456,7 @@ shape_list_demo_1.py
 
 Source: :ref:`shape_list_demo_1`
 
-This code demonstrates the concept of optimizing drawing in the Arcade library by reducing draw time. It shows the performance impact of not using buffering when drawing a grid of squares and explains the importance of minimizing the time to load points and colors to the graphics card. By timing the drawing process and understanding the inefficiencies when loading points and colors repeatedly, the code prompts the consideration of buffering techniques to improve rendering speed in Arcade applications.
+This example demonstrates the inefficient method of drawing a grid of squares on the screen using the Arcade library without any optimization or buffering techniques. By individually drawing each square instead of using more efficient techniques such as sprite batching or shape lists, the process becomes time-consuming, resulting in a slower frame rate. The script also measures and displays the time taken per frame to draw the grid to give an idea of the performance impact caused by this approach. This serves as a starting point to demonstrate the importance of optimization in rendering complex scenes using Arcade or other similar libraries.
 
 shape_list_demo_2.py
 --------------------
@@ -463,7 +464,7 @@ shape_list_demo_2.py
 
 Source: :ref:`shape_list_demo_2`
 
-This code demonstrates the concept of using buffered rectangles to efficiently draw a grid of squares on the screen in an Arcade application. By creating the rectangle shapes beforehand and then appending them to a shape list, the drawing process becomes faster compared to loading vertices and colors for each square individually. This technique optimizes the rendering performance by reducing redundant operations when drawing multiple shapes on the screen.
+This example demonstrates the use of the Arcade library to efficiently draw a grid of squares on the screen using buffered rectangles. It does so by creating a ShapeElementList and appending filled rectangle shapes to it with specified positions, dimensions, and colors. The shape_list is then drawn on the screen, effectively rendering the grid. The example also measures and displays the drawing time of each frame to showcase the efficiency of using buffered rectangles in comparison to loading vertices and colors for each frame. This method provides a more optimized rendering process, especially when handling multiple shapes or large grids.
 
 shape_list_demo_3.py
 --------------------
@@ -471,7 +472,7 @@ shape_list_demo_3.py
 
 Source: :ref:`shape_list_demo_3`
 
-The provided example demonstrates how to efficiently draw a grid of squares using a single buffer in the Arcade library. By calculating the points for each rectangle and adding them to a point list, along with specifying colors for each point, all the squares are drawn with one drawing command, resulting in improved speed performance. This technique involves utilizing a ShapeElementList to manage and draw the shapes, demonstrating the power of optimization in drawing complex shapes efficiently in game development or graphical applications using the Arcade library in Python.
+The given Python code illustrates the concept of using buffer to improve the performance of rendering in Arcade library. It creates a grid of square shapes and draws them on the screen using a single draw call, instead of performing multiple draw commands for each square. The square shapes along with their properties such as color and position coordinates are stored in a shape list. When it comes to rendering these squares, all are drawn in one go using the `shape_list.draw()` method, improving the speed and efficiency of the rendering process. The `timeit` module is used to keep track of the time taken for each frame to render. Consideration for the order of the points as well as color gradients is also taken into account. This technique can significantly increase the performance when working with many objects that need to be rendered simultaneously.
 
 shape_list_demo_skylines.py
 ---------------------------
@@ -479,7 +480,7 @@ shape_list_demo_skylines.py
 
 Source: :ref:`shape_list_demo_skylines`
 
-This example demonstrates how to create a cityscape generator using the Arcade library in Python. It showcases the use of ShapeElementList and various shape creation functions like create_rectangle_filled and create_polygon to generate a skyline with buildings, windows, and stars. Additionally, it implements methods for updating the scene with a parallax scrolling effect and dragging the scene around by using mouse input. This example illustrates how to create and manipulate complex shapes and animations in Arcade for game or graphical applications.
+This Python code demonstrates the use of Python's Arcade library to create a simple graphics application that generates a starry city skyline. The code creates an arcade window and implements a cityscape generation feature, complete with buildings and a star field. It takes a procedural approach to create the city skyline, making the height, width, and gap between buildings random. Additionally, the code includes features such as window lights on some buildings and random star locations for a realistic look. The window dragging feature, implemented in the 'on_mouse_drag' function, adds interactivity to the code. This code also illustrates the application of object oriented principles in creating games or simulations. Thus, it highlights the features of the Arcade library, procedural generation and basic user interaction.
 
 slime_invaders.py
 -----------------
@@ -487,7 +488,7 @@ slime_invaders.py
 
 Source: :ref:`slime_invaders`
 
-This example demonstrates how to create a simple game using the Arcade library in Python. It covers concepts such as handling sprites, moving sprites as a group, changing textures of sprites, collision detection, firing projectiles, and overall game logic implementation. Additionally, it showcases how to set up different game states, create game levels, and manage game elements like shields and enemy movements.
+This Python code demonstrates a basic yet complete 2D game implementation using the Arcade library. It takes inspiration from the classic "Space Invaders" game and uses slimes as enemies. The code covers techniques such as sprite and texture handling (for both player and enemies), sprite list management, collision detection, and handling player input. The game has states, represented by 'GAME_OVER' and 'PLAY_GAME', affecting whether, for example, player movement is allowed. It incorporates sound effects for actions like shooting and hitting enemies. The game has a scoring system that increases as enemies are shot, represented on the screen. The implementation further integrates a shield feature designed from a 2D grid of solid color sprites. Unique aspects include making only the bottom-most enemies in a column fire lasers and moving enemies as a coordinated group.
 
 snow.py
 -------
@@ -495,7 +496,7 @@ snow.py
 
 Source: :ref:`snow`
 
-This code demonstrates how to create a simple animation of falling snowflakes using the Python Arcade library. It showcases the concept of creating custom classes, initializing object properties, updating object states over time, and rendering them on the screen. The implementation includes randomly positioning each snowflake, animating their falling movement, resetting their position when they go off-screen, and adding a slight side-to-side drift effect by modifying their x-coordinate based on a cosine function. The example also illustrates the usage of sprite lists and drawing filled circles as graphical elements to represent the snowflakes on the screen.
+This example code demonstrates how to create a simple snowfall animation using the Arcade library in Python. The code defines a Snowflake class to represent individual snowflakes as filled-circles with properties such as position, size, speed, and angle. It further defines a MyGame class that inherits from the arcade.Window class and implements the game loop responsible for handling the snowfall animation. The snowflake instances are stored in a list, and the on_draw() method iterates through the list to render each snowflake on the screen. The on_update() method updates the position of the snowflakes, allowing them to fall at varied speeds and move in a side-to-side motion. The main() function initializes the MyGame class, starts the snowfall, and runs the game loop using arcade.run().
 
 sound_demo.py
 -------------
@@ -503,7 +504,7 @@ sound_demo.py
 
 Source: :ref:`sound_demo`
 
-This code demonstrates the concept of sound panning in game development using the Arcade library. Sound panning refers to the distribution of sound between left and right speakers. By adjusting the panning value of a sound, you can control the placement of the sound in the stereo field, creating a sense of direction and space within the game environment. The code showcases how to create sound buttons with different panning settings and volumes, allowing the player to interact with the sounds by clicking on the corresponding buttons. Additionally, it highlights the distinction between streaming and non-streaming sounds and the considerations when playing them in a game.
+This Python code gives a demonstration of how to handle audio playback using the Arcade library. It demonstrates streaming and non-streaming audio and how each is controlled differently. Using the concept of sprites, it associates each sprite (button) with a different sound that can be played when the button is clicked. For non-streaming audio, the code showcases how to control the panning (distribution of sound in the left and right speakers) and volume. It incorporates error handling, warning users not to play a streaming sound that's already playing by intentionally crashing the demo. For streaming audio (long files), it warns that only one instance can be playing at a time, any additional play request while the sound is still playing raises an exception. This example code enables learning about sound handling, exception handling, and user interaction with audio in Python game development.
 
 sound_speed_demo.py
 -------------------
@@ -511,7 +512,8 @@ sound_speed_demo.py
 
 Source: :ref:`sound_speed_demo`
 
-This code example demonstrates how to create a sound speed demo using the Arcade library in Python. Interactive buttons are set up to play the same sound sample at different speeds and volumes when clicked. By customizing the speed and volume parameters of the sound, users can experience variations in playback that create a dynamic and engaging auditory experience in a graphical user interface application.
+This Python code example demonstrates how to use the Arcade library to work with and manipulate sound in a graphical user interface (GUI). Specifically, it presents an interactive demo in which users can control the speed and volume of a sound effect by clicking on buttons. Each button is associated with a specific speed and volume setting, thanks to the concept of object-oriented programming. The code involves the creation of a "SoundButton" class, which extends the 'arcade.SpriteSolidColor' class and possesses attributes for sound, speed, volume, and position. When a button is clicked, it uses these attributes to play the sound accordingly. The usage of sprite lists and collision detection to manage and detect button input is also demonstrated in the code. The extent to which the Arcade library allows for the easy assemblage of interactive and media-intensive programs is encapsulated well here.
+
 
 sprite_animated_keyframes.py
 ----------------------------
@@ -519,7 +521,7 @@ sprite_animated_keyframes.py
 
 Source: :ref:`sprite_animated_keyframes`
 
-This code demonstrates how to use the TextureAnimationSprite class from the Arcade library to animate a sprite using keyframes. Keyframes are specific points in an animation sequence where a change in an object's position or appearance occurs. In this example, the code creates a TextureAnimationSprite object by loading a series of textures representing different frames of a walking animation for a character, specifying the duration for each frame, and then updating the sprite's animation based on the passage of time. This allows for smooth and controlled animation of sprites in a game or interactive application.
+This example demonstrates the use of the TextureAnimationSprite class in the Arcade library to create an animation using keyframes. It showcases how to load multiple frames of a walking character animation and set their duration. The example then initializes a TextureAnimationSprite object using these keyframes, making the spriteanimated. The on_draw() and on_update() methods are used to render the sprite on the screen and update its animation based on the elapsed time. This technique allows for the creation of smooth and time-based sprite animations in Arcade games.
 
 sprite_bouncing_coins.py
 ------------------------
@@ -527,7 +529,7 @@ sprite_bouncing_coins.py
 
 Source: :ref:`sprite_bouncing_coins`
 
-This code demonstrates the concept of sprite collision detection and response in a game using the Arcade library. It shows how to handle when sprites collide with walls by changing their direction when hitting the wall boundaries, simulating a bouncing effect. This technique is essential for creating interactive and dynamic games where objects need to interact with each other and the environment.
+This example introduces the concept of sprite collision and bouncing in Arcade, a library used for 2D game development in Python. The provided code creates a game window with walls, represented as box images, and "coins" which bounce off of the walls. It demonstrates how to establish a game environment, add sprites to a sprite list, and manage sprite interaction in the game loop. For each coin, the code checks for collision with any of the walls and if detected, it reverses the coin's direction, giving a bouncing effect. The mechanics of this bouncing effect work for both horizontal and vertical angles.
 
 sprite_bullets.py
 -----------------
@@ -535,7 +537,7 @@ sprite_bullets.py
 
 Source: :ref:`sprite_bullets`
 
-This Python code demonstrates the use of sprites and bullets in a game created using the Arcade library. Sprites are 2D images or animations that can be manipulated and displayed on the screen, and in this example, various sprites such as coins and bullets are utilized. The code shows how to create sprite lists, set up sprites with different images and scales, handle user input to shoot bullets from a player sprite, detect collisions between bullets and coins, and remove sprites when they go off-screen or collide. Additionally, the code includes sound effects to enhance the gameplay experience. Overall, this example illustrates how to effectively incorporate sprites and bullets into a game using the Arcade library.
+This example demonstrates the use of sprites and collision detection in the Arcade library to create a simple shooting game. The player controls a character who can shoot bullets upwards to collect coins, which appear randomly on the screen. The player's score increases each time a bullet successfully hits a coin. The example also showcases the loading and playing of sound effects for gunfire and coin collection. The game window displays the player's current score and updates the game state based on user input (mouse movements and clicks) and object collisions.
 
 sprite_bullets_aimed.py
 -----------------------
@@ -543,7 +545,7 @@ sprite_bullets_aimed.py
 
 Source: :ref:`sprite_bullets_aimed`
 
-This code example demonstrates how to implement sprite bullets in a game using the Arcade library in Python. It showcases how to create bullets that are aimed based on the player's input (mouse click), calculate the angle of trajectory using trigonometry, handle the movement of the bullets, detect collisions with other sprites (coins in this case), and update the game logic accordingly (removing coins upon collision, tracking the score, removing bullets when they fly off-screen). By incorporating these elements, the example illustrates the concept of handling sprite interactions and creating a dynamic game environment.
+The given Python code makes use of the Arcade library to create a simple game involving sprite usage. The game has a player at a constant position who can shoot bullets (another sprite) towards the mouse click location. There are also coin sprites randomly positioned across the game window. When the user clicks the mouse, the bullet moves towards the click location and any coin hit by the bullet is removed increasing the player's score. The game incorporates concepts of object-oriented programming for the game and sprite setups, collision detection between sprites and the usage of arcade's drawing functions for displaying the coins, player, and bullet information. Furthermore, it also involves some basic mathematical calculations to correctly orient and guide the bullet towards the desired click location. The game design is modular with separate functions dedicated to setup, drawing objects on screen, updating states, and handling mouse click events.
 
 sprite_bullets_enemy_aims.py
 ----------------------------
@@ -551,7 +553,7 @@ sprite_bullets_enemy_aims.py
 
 Source: :ref:`sprite_bullets_enemy_aims`
 
-This code demonstrates how to implement a mechanism for enemies to shoot bullets aimed at the player in a game developed using the Arcade library. The concept involves calculating the angle between the enemy and the player to determine the direction in which the bullet should travel. By consistently updating the angle each frame and setting the bullet's velocity accordingly, the enemies can shoot bullets accurately towards the player's location. Additionally, the code includes logic to remove bullets when they move off-screen, enhancing the game's performance and ensuring efficient use of resources.
+This example demonstrates how to create enemies that shoot bullets aimed at the player using the Arcade library in Python. The code defines a game with a player-controlled spaceship that can be moved using the mouse, and enemy ships at the top, that rotate to face the player each frame. Every 60 frames, the enemies fire bullets aimed at the player's current position. To achieve this, the code calculates the angle between the enemy and the player in radians, rotates the enemy to face the player, and then angles the bullet sprite accordingly. The bullet's change_x and change_y are calculated based on the angle and bullet speed, and the bullet_list is updated accordingly. The game screen is rendered with the player, enemies, and bullets.
 
 sprite_bullets_periodic.py
 --------------------------
@@ -559,7 +561,7 @@ sprite_bullets_periodic.py
 
 Source: :ref:`sprite_bullets_periodic`
 
-This example demonstrates how to implement periodic shooting behavior for enemies in a game using the Arcade library in Python. The key concept here is utilizing a timer mechanism to track the time elapsed since the last shot was fired by an enemy. By comparing this elapsed time against a predetermined firing interval, the enemy sprite can be programmed to shoot bullets at regular intervals. This approach enables game developers to create dynamic and challenging gameplay scenarios where enemies shoot bullets in a controlled and consistent manner.
+This example demonstrates how to create enemy sprites in an Arcade game that shoot bullets at specified time intervals. It sets up a game window with a player sprite at the bottom and enemy sprites at the top. Each enemy has a timer that tracks the time since it last fired a bullet, as well as a time interval for firing bullets. The `on_update` method in the `EnemySprite` class updates the timer and checks if it's time to fire a new bullet. If the firing time has elapsed, the timer is reset, a new bullet is created, and added to the bullet list. The `MyGame` class handles drawing the sprites, updating their positions, and removing bullets that have gone off the screen. The player's sprite movement is controlled by the mouse's x-axis position.
 
 sprite_bullets_random.py
 ------------------------
@@ -567,7 +569,7 @@ sprite_bullets_random.py
 
 Source: :ref:`sprite_bullets_random`
 
-This example demonstrates how to create enemies that shoot bullets at random intervals in a game using the Arcade library. The code sets up enemy sprites positioned in the top-left and top-right corners of the screen. By looping through each enemy, the program randomly selects a 1 in 200 chance (adjusted based on delta time) for the enemy to shoot a bullet downwards. If the random selection triggers, a bullet sprite is created and added to the bullet list with specific properties to make it move. The bullets are updated each frame, and if they move off-screen, they are removed from the list. This concept showcases how to implement random behavior for enemy actions in a game.
+This example demonstrates how to create a simple game using the Arcade library, where enemy ships shoot bullets at random intervals. The provided code sets up a game window with a player-controlled ship and two enemy ships positioned at the top-left and top-right corners. The enemy ships fire bullets at random intervals based on a 1 in 200 odds adjustment. The game logic and rendering are managed using the Arcade library's functions, including sprite lists, collision detection, and drawing on the screen. The player's ship position is controlled by the movement of the mouse. This code showcases how to create and manage sprites, calculate random intervals for actions (such as shooting bullets), and update the game state accordingly using delta time.
 
 sprite_change_coins.py
 ----------------------
@@ -575,5 +577,382 @@ sprite_change_coins.py
 
 Source: :ref:`sprite_change_coins`
 
-This example demonstrates how to change a sprite's appearance once it is interacted with, such as when a player collects an item in a game. By updating the texture of the sprite and keeping track of its state (in this case, whether it has been collected), the code illustrates a way to visually represent changes in sprite objects during gameplay without removing or eliminating them entirely.
+This example demonstrates how to change a sprite's appearance upon collision with another sprite using the Arcade library in Python. The code creates a simple game where the objective is to collect coins by moving the player (controlled by the mouse) and colliding with them. Instead of eliminating coins upon collision, their appearance is changed to a different image. The `Collectable` class is created to represent an object the player can collect, and it extends the `arcade.Sprite` class with an additional `changed` attribute to track if the sprite has been collected. The main game logic is in the `MyGame` class, which handles sprite updates, collisions, and drawing. The code takes care of updating the player's score and changing the image of a coin upon successful collision using the `on_update` function.
+
+sprite_collect_coins.py
+-----------------------
+.. image:: how_to_examples/sprite_collect_coins.png
+
+Source: :ref:`sprite_collect_coins`
+
+This Python script is a simple game utilizing the Arcade library, demonstrating the creation and usage of sprites. The game consists of a player and certain number of coins. The player sprite moves around the screen via mouse movements, while coins are randomly placed around the screen. Each coin that the player sprite intersects with, a collision, will be removed from the game window and the player's score increments by one. The game concepts covered in this script include sprite creation and interaction, sprite collision detection, score tracking, mouse handling for game control, and the game's methodology structure like initialization, setup, drawing, and updating. The Arcade library in Python offers an easy and convenient way to address these aspects.
+
+sprite_collect_coins_background.py
+----------------------------------
+.. image:: how_to_examples/sprite_collect_coins_background.png
+
+Source: :ref:`sprite_collect_coins_background`
+
+This Python code showcases sprite usage with a simple game implemented using the Arcade library. The game simulates a scenario in which a player, represented by an avatar, collects coins while navigating across a field. Every coin collected increases the player's score. The code details how sprites are instantiated from images, scaled, and positioned in specific locations on the screen. Features used include collision detection, where the game checks if the player's avatar has collected a coin or not, and sprite list operations such as adding or removing sprites. In addition, the Arcade library's methods are employed to handle mouse events to control the player movement, update display elements, and render the 2D game scenario.
+
+sprite_collect_coins_diff_levels.py
+-----------------------------------
+.. image:: how_to_examples/sprite_collect_coins_diff_levels.png
+
+Source: :ref:`sprite_collect_coins_diff_levels`
+
+This Python code is a gamified demonstration of sprite usage in the Arcade library. The game involves a player-controlled sprite collecting coins in three levels. In the first level, the coins are stationary and randomly placed. In the second level, coins fall down from the top, reappearing at the top when they disappear at the bottom. In the final level, coins rise from the bottom. Each time a coin is collected (that is, when a collision between player and coin sprites occurs), the score increases. Transitioning between levels is determined by the total number of coins collected. The game implements mouse movement to control the player's position and draws the player sprite, coin sprites, score, and level on the screen.
+
+sprite_collect_coins_move_bouncing.py
+-------------------------------------
+.. image:: how_to_examples/sprite_collect_coins_move_bouncing.png
+
+Source: :ref:`sprite_collect_coins_move_bouncing`
+
+This example demonstrates the use of the Arcade library to create a simple game with sprite usage. The game consists of a player character controlled by the mouse movement, bouncing coins that move around the screen, and collision detection. The player must collect coins by colliding the character's sprite with the coin's sprite to increase their score. The Coin class inherits from the arcade.Sprite class and contains its movement and bouncing logic. The MyGame class handles game initialization, sprite creation, drawing, and updating game logic like collision detection and score calculation. The game window is created, and the game loop runs using the arcade.run() function.
+
+sprite_collect_coins_move_circle.py
+-----------------------------------
+.. image:: how_to_examples/sprite_collect_coins_move_circle.png
+
+Source: :ref:`sprite_collect_coins_move_circle`
+
+This example demonstrates the use of the Arcade library to create a simple game where the player collects coins orbiting in circles. The game begins by initializing and setting up the game window, creating the player's sprite, and generating a number of coins that move in circular orbits with varying radius, center, and speed. The main game loop involves updating all sprites, handling mouse movement to control the player's position, detecting collisions between the player and coins, and increasing the player's score for each collected coin. Additionally, the game renders the player and coin sprites, and displays the current score on the screen. This example showcases the usage of sprite creation, custom sprite classes, updating sprite positions using math functions, collision detection, and handling user input for a basic interactive game.
+
+sprite_collect_coins_move_down.py
+---------------------------------
+.. image:: how_to_examples/sprite_collect_coins_move_down.png
+
+Source: :ref:`sprite_collect_coins_move_down`
+
+This provided Python code is a simple graphical game made with the Arcade library. The game generates a player along with multiple coin sprites randomly across the screen. The player moves with the mouse cursor, and the objective is to collect coins by moving the player sprite over them. Each time a coin is collected, it disappears and the player's score increases by one. The code demonstrates fundamental concepts in game design such as sprite initiation, collision detection and screen updating. For instance, when a coin is collected, a collision event is triggered and the corresponding sprite is removed from the sprite list. The code also uses object-oriented programming where each component of the game (the player, the coins, the window) are represented as classes.
+
+sprite_collect_rotating.py
+--------------------------
+.. image:: how_to_examples/sprite_collect_rotating.png
+
+Source: :ref:`sprite_collect_rotating`
+
+This example demonstrates the use of the Arcade library to create a simple game, where a player collects rotating coins with their character controlled by mouse movement. It showcases the creation of custom sprite classes, specifically for the player and the coin, and how to perform different actions such as sprite movement, rotation, and collision detection. The example also includes the usage of sprite lists for managing multiple instances of the same sprite type (coins) and how to display the game's score on the screen. Overall, this code snippet is a basic example of how to develop a game using the Arcade library, manage sprites, and implement game logic.
+
+sprite_enemies_in_platformer.py
+-------------------------------
+.. image:: how_to_examples/sprite_enemies_in_platformer.png
+
+Source: :ref:`sprite_enemies_in_platformer`
+
+This example demonstrates how to create and control enemy sprites in a platformer game using the Arcade library. It shows how to draw various game elements like walls, platforms, crates, and enemies (worms), while also updating their positions and handling collisions between the player and the enemies. It sets up the player's movement with a physics engine and utilizes collision detection to reverse an enemy's direction when it hits a boundary or wall. Additionally, the example checks for collisions between the player and the enemy sprites, ending the game if a collision occurs. Overall, this code snippet showcases how to implement basic enemy interaction and movement in a platformer game using the Arcade library.
+
+sprite_explosion_bitmapped.py
+-----------------------------
+.. image:: how_to_examples/sprite_explosion_bitmapped.png
+
+Source: :ref:`sprite_explosion_bitmapped`
+
+This Python script demonstrates how to create and animate an explosion in a video game using the Arcade library in Python. First, it defines a class Explosion which contains a series of textures, each representing a different frame of the explosion animation. The game window is then initialized with a series of bitmapped resources, including the sprite lists for the game objects - player, coins, bullets, and explosion. Whenever a bullet hits a coin, it triggers an explosion at the coin's location and increments the score. The script constantly checks for events such as game initialization, mouse movements, mouse clicks, and the game update cycle, responding to these events with appropriate actions like creating bullets, moving the player, and animating explosions. Additionally, playing sounds for shooting and explosions is also demonstrated, enhancing the gaming experience.
+
+sprite_explosion_particles.py
+-----------------------------
+.. image:: how_to_examples/sprite_explosion_particles.png
+
+Source: :ref:`sprite_explosion_particles`
+
+The given code demonstrates a simple arcade game using the Arcade library in Python. The game involves a player moving a spaceship and shooting at randomly placed coins. Each successful hit generates a 'particle effect', visually represented as an explosion and audibly as a sound effect. Two classes, 'Smoke' and 'Particle', are used to generate special effects of smoke and explosion particles when a coin is hit by a bullet. These classes use various adjustable parameters like fade rate, speed, color, gravity, and more to control their behavior. The 'MyGame' class implements the game logic, including handling user input, collision detection between sprites, score tracking, and sprite updates. The game uses several sprite lists to manage different types of sprites. Additionally, 'arcade.draw_text()' is used to display the score on screen during the game.
+
+sprite_face_left_or_right.py
+----------------------------
+.. image:: how_to_examples/sprite_face_left_or_right.png
+
+Source: :ref:`sprite_face_left_or_right`
+
+This Python code illustrates the usage of sprite movements and adjustments based on user inputs in the Arcade library. It shows how to create a sprite, add it to the screen, and change its position or texture based on certain conditions. Specifically, it creates a game where the sprite image can face left or right determined by the direction keys. Using texture indices, the sprite's texture is set depending on the movement direction. The program also defines game aspects like screen dimensions, sprite scaling, or movement speed and implements methods to handle key press and release events to adjust the sprite's position on screen. Moreover, the 'on_update' function ensures the sprite's position is updated each frame based on the latest user input.
+
+sprite_follow_simple.py
+-----------------------
+.. image:: how_to_examples/sprite_follow_simple.png
+
+Source: :ref:`sprite_follow_simple`
+
+The provided Python code demonstrates how to create a game using the Arcade library, with a focus on having Sprites -- objects on the screen -- following the player (in this case, following the mouse cursor). The player and coins are represented by instances of the arcade.Sprite class, with various properties such as their position(on screen) and image that is rendered. Multiple coins sprites are generated and added to a list, each coin independently follows the player with the help of the follow_sprite function in the Coin class. The program handles logic for sprite collisions; if a player collides with a coin, the coin is removed from the list of sprites and the overall game score is increased by 1. The game also handles mouse movement to move the player sprite, and has an on_draw method to continuously render the game graphics onto the screen.
+
+sprite_follow_simple_2.py
+-------------------------
+.. image:: how_to_examples/sprite_follow_simple_2.png
+
+Source: :ref:`sprite_follow_simple_2`
+
+The given Python code demonstrates the use of the Arcade library to create a simple game where a player, controlled by the mouse, moves around the screen to collect coins. The coins follow the player in a more sophisticated manner by calculating a vector towards the player and randomly updating it based on the player's location. This creates a more engaging and dynamic gaming experience compared to a static coin position. The code also utilizes the concept of sprites, specifically the Arcade Sprite class to represent the player and the coins in the game. The program updates the score and manages collisions between the player and the coins by removing the collected coins and incrementing the score.
+
+sprite_health.py
+----------------
+.. image:: how_to_examples/sprite_health.png
+
+Source: :ref:`sprite_health`
+
+This Python code provides a detailed demonstration of how to create a game using the Arcade library. The game involves a player sprite that avoids being hit by bullets fired by an enemy sprite. The player sprite's health, represented by an indicator bar, decreases by a fixed damage amount each time the player is hit by a bullet. The indicator bar accurately reflects the player's remaining health by adjusting its fullness. The player can move their sprite using the mouse. The program utilizes various components of the Arcade library, which includes sprite creation and manipulation, collision detection, game logic for sprite interaction (such as bullet firing and movement, updating player health), and gameplay control (such as setting up the game, updating sprite properties, and rendering the game screen). The code follows the object-oriented paradigm, with the creation of different classes representing game elements. This includes the 'Player', 'Bullet', 'IndicatorBar', and 'MyGame' classes. The 'main' function serves as the entry point to the game.
+
+sprite_minimal.py
+-----------------
+.. image:: how_to_examples/sprite_minimal.png
+
+Source: :ref:`sprite_minimal`
+
+This example demonstrates the use of the Arcade library to create and draw a minimal sprite on the screen. It showcases the process of creating a custom `WhiteSpriteCircleExample` class that inherits from `arcade.Window`. The `setup` method initializes a `SpriteList`, creates a white circle sprite with a 30-pixel radius, sets its position to the center of the screen, and appends the sprite to the `SpriteList`. The `on_draw` method is responsible for drawing the sprite on the screen by calling the `draw()` method on the `SpriteList`. The program creates an instance of `WhiteSpriteCircleExample` and runs the game window, displaying a single white circle sprite in the center of the window.
+
+sprite_move_angle.py
+--------------------
+.. image:: how_to_examples/sprite_move_angle.png
+
+Source: :ref:`sprite_move_angle`
+
+This example demonstrates how to use the Arcade library to create a simple game with a sprite that moves based on angle and speed. It includes a custom 'Player' class that inherits from 'arcade.Sprite' with an 'update' method to handle sprite movement based on its speed, angle, and user input. The 'MyGame' class is responsible for managing the game state, such as creating and updating sprites, handling user inputs, and drawing the screen. The example showcases how to create and manipulate sprites, handle keyboard events, and use math functions (trigonometry) to calculate the new position of the sprite based on its angle and speed.
+
+sprite_move_animation.py
+------------------------
+.. image:: how_to_examples/sprite_move_animation.png
+
+Source: :ref:`sprite_move_animation`
+
+This example demonstrates the usage of the Arcade library for creating a basic game with sprite animation and movement. It showcases loading and animating a player character sprite, handling keyboard input for player movement, detecting and responding to collisions between the player and items (coins), and managing game state such as score. The code defines a custom PlayerCharacter class, which extends the arcade.Sprite class, and a MyGame class, which handles the game's main functionality including user input, animation updates, collisions, and game logic. The example uses some external resources, such as images from the Kenney.nl asset pack, and handles flipping between image sequences or walking and idle animations depending on the user input and the direction in which the player character is facing.
+
+sprite_move_controller.py
+-------------------------
+.. image:: how_to_examples/sprite_move_controller.png
+
+Source: :ref:`sprite_move_controller`
+
+This example demonstrates how to use the Arcade library to control a sprite's movement using a game controller. The Player class, which is a subclass of arcade.Sprite, is designed to handle controller input events and move the player sprite accordingly. The main application class, MyGame, sets up the game environment and initializes the player sprite. The player sprite's position is updated based on the controller's input values for the x and y axes. The example also provides a fallback for keyboard input if there are no controllers connected. The code showcases how to respond to button presses, button releases, and stick movements using Arcade's built-in methods for controller handling.
+
+sprite_move_keyboard.py
+-----------------------
+.. image:: how_to_examples/sprite_move_keyboard.png
+
+Source: :ref:`sprite_move_keyboard`
+
+This example demonstrates how to move a sprite on the screen using keyboard input in a simple 2D game created with the Arcade library. It creates a Player class that inherits from the arcade.Sprite class, and overrides the update method for custom movement logic. The MyGame class inherits from arcade.Window, and in this class, the player sprite is created, drawn, and updated with user input. The on_key_press and on_key_release methods of the MyGame class are utilized to detect key-presses and key-releases, respectively, and update the player's movement speed accordingly. The Player class takes care of moving the sprite and keeping it within the bounds of the game window, preventing it from moving off-screen.
+
+sprite_move_keyboard_accel.py
+-----------------------------
+.. image:: how_to_examples/sprite_move_keyboard_accel.png
+
+Source: :ref:`sprite_move_keyboard_accel`
+
+This Python code demonstrates how to implement basic game mechanics like acceleration and friction in a game setting without the help of a physics engine. It uses the Arcade library. The code defines sprites and sprite characteristics, and then applies both friction and acceleration to manipulate the sprite's velocity. Friction is applied whenever player sprite is moving, slowing it down progressively when no keys are being pressed. Acceleration is applied when keys corresponding to directions (up, down, left, right) are pressed, increasing the sprite's velocity in the pressed direction up to a maximum speed. The code also ensures that the player sprite does not move out of the window boundaries. Lastly, the velocity in each direction (x and y) is constantly displayed on the screen.
+
+sprite_move_keyboard_better.py
+------------------------------
+.. image:: how_to_examples/sprite_move_keyboard_better.png
+
+Source: :ref:`sprite_move_keyboard_better`
+
+The given Python code demonstrates how to use the Arcade library to create a sprite and move it on the screen with the keyboard. It shows an improved version of a sprite move keyboard concept. The position of the sprite is updated based on the currently pressed keys, without abrupt moves or stops. The sprite does not move off the screen, if the sprite is moving off the screen, it's position is set to the screen edge. The sprite artwork is not present in the code, but it suggests that it can be obtained from the website kenney.nl. In the game, the sprite movement is updated based on the status of key press. If a key is continuously pressed, the sprite will move in that direction until the key is released. It also defines a main function to initiate the arcade environment, run the game setup, and start the game engine.
+
+sprite_move_scrolling.py
+------------------------
+.. image:: how_to_examples/sprite_move_scrolling.png
+
+Source: :ref:`sprite_move_scrolling`
+
+This Python example code demonstrates the use of the Arcade library to create a scrollable game window that has its camera follow the player around a map. A player's sprite can move within a boundary that's larger than the screen. Wall sprites are generated and placed around the screen for the player to navigate around. Player controls are handled with keyboard input resulting in directional movement around the game space. Further, the code describes the creation of two cameras: one for the player sprite and another for the GUI, which allows the player sprite to move independently of the GUI. A 'scroll_to_player' function is implemented that ensures the camera follows the player sprite around the game world. This code outlines the essential aspects of creating a game environment where the game view follows the user's character around the screen, providing a larger exploration space compared to the screen size.
+
+sprite_move_scrolling_box.py
+----------------------------
+.. image:: how_to_examples/sprite_move_scrolling_box.png
+
+Source: :ref:`sprite_move_scrolling_box`
+
+The given Python code is a rather comprehensive demonstration of Arcade library to create a simple 2D video game. More specifically, it showcases how to make a scrolling screen around a player sprite that moves based on the key inputs by the user. The game environment is sufficiently sizable, so the camera follows the player's movement to keep the player always visible on the screen conditionally keeping the player a certain margin away from the screen edge. Not only that, this code also illustrates how to resize the game window and manipulate the scrolling proportionally according to the new window size, creation and management of sprite lists to hold the player and wall sprites, and use of a physics engine for collision detection. The entire game logic resides in a class named MyGame that inherits from the arcade.Window class, the main application class for making games with Arcade.
+
+sprite_move_scrolling_shake.py
+------------------------------
+.. image:: how_to_examples/sprite_move_scrolling_shake.png
+
+Source: :ref:`sprite_move_scrolling_shake`
+
+This example demonstrates the use of the Arcade library in a simple 2D game with a scrolling screen and camera shake effect. The player controls a character moving around a large playing field with walls and bombs. The camera follows the player and keeps them in view by smoothly panning around the playing field. The shake effect is applied when the player's character collides with a bomb. The effect is achieved by randomly choosing a direction and amplitude for the shake, then applying a damping factor to the shake speed. The game also features basic collision detection using the physics engine to prevent the character from moving through walls and to recognize collisions with bombs.
+
+sprite_move_walls.py
+--------------------
+.. image:: how_to_examples/sprite_move_walls.png
+
+Source: :ref:`sprite_move_walls`
+
+This example demonstrates the use of sprites and the Arcade library in Python to create a simple game where a player's character can move around a screen with walls. The code sets up a window and initializes various sprite lists, including a player sprite and walls, to show how movement is enabled and how collision between the player and walls is handled. It uses the Arcade PhysicsEngineSimple to manage these interactions. The example also includes user input via arrow keys to control the player's movement direction. Lastly, it defines event handlers for key presses/releases and updates, while the screen is rendered, implementing the core game loop.
+
+sprite_moving_platforms.py
+--------------------------
+.. image:: how_to_examples/sprite_moving_platforms.png
+
+Source: :ref:`sprite_moving_platforms`
+
+The given Python code is an example of a 2D platform game built using the Arcade library. It presents a sprite (character) moving over static and moving platforms, demonstrating how to create and animate sprites, handle keyboard input for character control, ensure sprite and platform collisions, and implement a scrolling camera. The script also shows the use of a physics engine for realistic movements. The character can move left or right, as well as jump up. The camera follows the character across the game world. Additionally, the game includes a feature to display the distance traveled by the character. When the user interacts with keyboard keys, the character performs appropriate movements, providing an interactive gaming experience.
+
+sprite_no_coins_on_walls.py
+---------------------------
+.. image:: how_to_examples/sprite_no_coins_on_walls.png
+
+Source: :ref:`sprite_no_coins_on_walls`
+
+This Python script explains the concept of creating and managing sprites using the Arcade library, a package that allows the creation of 2D games. Specifically, it illustrates how to place sprites (in this case, coin images) within a game environment in a way that prevents overlap with other sprites, in this case, the player and the walls. The program forms part of a simple game in which the coins are distributed randomly across the screen. The application has key press handlers to control player movement and an update method to refresh gameplay. The code exemplifies sprite collision checking where each coin's position is validated to be free of any walls or other coins before being finally placed, ensuring 'clean', non-overlapping sprite placement. This is achieved through iteration and the use of Arcade's built-in collision checking function.
+
+sprite_properties.py
+--------------------
+.. image:: how_to_examples/sprite_properties.png
+
+Source: :ref:`sprite_properties`
+
+This example demonstrates how to store and manipulate custom properties on sprites using the Arcade library in Python. In the given code, a simple game is created where a player sprite can interact with coin sprites and a trigger sprite. When the player sprite touches a coin sprite, its custom property 'intensity' is set to 'bright' and its alpha value is increased to 255, making it more visible. If the player sprite touches the trigger sprite, it destroys all coin sprites with 'intensity' set to 'bright'. The example also showcases how to display dynamic text on the screen, in this case, showing instructions and the status of the coin sprites in terms of their 'intensity' property. The custom property illustrated in the example can be a powerful way to store game-specific information on sprites and modify them accordingly.
+
+sprite_rooms.py
+---------------
+.. image:: how_to_examples/sprite_rooms.png
+
+Source: :ref:`sprite_rooms`
+
+This Python script demonstrates the creation of a game with multiple rooms using the Arcade library. There are two rooms in the game where each room has a different layout of walls constructed by a set of tiles. The player can move between rooms and interact with their environment. Arcade's PhysicsEngineSimple class is used to manage the physics interactions between the player sprite and the environment. The state of the room and the player are updated in each frame depending on the player's actions and the frame rate. The code is structured in an object-oriented way which makes it modular and reusable. This program can easily be extended to a more complex game with more rooms and sprites.
+
+sprite_rotate_around_point.py
+-----------------------------
+.. image:: how_to_examples/sprite_rotate_around_point.png
+
+Source: :ref:`sprite_rotate_around_point`
+
+The provided Python code illustrates the usage of the Arcade library to implement sprite rotation around a specific point. Sprites, commonly used in gaming, are graphic objects that can be moved independently within a game. The code creates a subclass "RotatingSprite" from the "arcade.Sprite" class that includes a method which allows the sprite to rotate around a specific point to a certain degree. Furthermore, the code demonstrates the usage of this subclass within an Arcade window. The example includes two sprites; a laser and a platform, rotating around defined positions at different speeds. Both the speed of rotation and angle of the sprite upon rotation can be modified within the code, providing flexibility for various gaming scenarios.
+
+sprite_rotate_around_tank.py
+----------------------------
+.. image:: how_to_examples/sprite_rotate_around_tank.png
+
+Source: :ref:`sprite_rotate_around_tank`
+
+This example demonstrates the implementation of rotation around a point in a 2D game using the Arcade library in Python. The code features a player-controllable tank with a barrel that follows the mouse cursor. The barrel can be rotated correctly (with the barrel's rear against the tank's center) and incorrectly (around the barrel's center pinned to the tank's center) by pressing the 'P' key. The example uses a subclass of the arcade.Sprite called RotatingSprite to enable rotating sprites around a specific point. Additionally, it includes keyboard controls for movement (WASD keys) and displays text on the screen to indicate the current rotation mode (correct or incorrect) and control instructions. This example is useful for understanding how to implement rotation for objects like gun turrets in 2D games.
+
+sprite_tiled_map.py
+-------------------
+.. image:: how_to_examples/sprite_tiled_map.png
+
+Source: :ref:`sprite_tiled_map`
+
+This example demonstrates how to load and display a Tiled map using the Arcade library in Python. Additionally, it shows how to handle player movements and interactions with objects on the map, as well as implement basic game logic and physics. The example sets up an Arcade window with a specified size and title, initializes sprite lists for the player, walls, and coins, and creates a physics engine to handle platformer-style gravity and collisions. The map is loaded from a JSON file and the necessary sprite lists are created. The game updates the player's position based on input from arrow keys, checks for collisions with coins, and keeps track of the player's distance and score. The camera is set to pan smoothly to the player, ensuring the player remains visible on the screen as they navigate the level. The example also includes code for rendering animated text on the screen, such as displaying "Game Over" when the player reaches the end of the map.
+
+sprite_tiled_map_with_levels.py
+-------------------------------
+.. image:: how_to_examples/sprite_tiled_map_with_levels.png
+
+Source: :ref:`sprite_tiled_map_with_levels`
+
+The provided example is a platformer game created using the Arcade library in Python. This game loads tile-based maps with different levels and includes a player character that the user controls. The user can make the player jump and move left or right on the screen. The game also incorporates basic physics concepts such as gravity and checks if the player character has hit the edges of the viewport to move the view and simulate scrolling in the game. The player's movements and interactions are governed by a simple physics engine. This game also keeps track of and displays statistics like the frame rate and the distance covered by the player. It also features game-over condition if all levels have been completed.
+
+starting_template.py
+--------------------
+.. image:: how_to_examples/starting_template.png
+
+Source: :ref:`starting_template`
+
+This example demonstrates the use of the Arcade library to create a basic game structure in Python. It serves as a starting template upon which users can build their own games. The template consists of a class named `MyGame` that inherits from `arcade.Window`. This class contains various methods for handling game-related events such as setting up the game, drawing on the screen, updating game logic, detecting keyboard and mouse inputs. The provided template initializes the game window with its width, height, and title, sets the background color and includes placeholders for users to customize the game with their own sprites, logic, and event handling. The `main` function creates a game instance using this class, sets it up, and then starts the game loop via `arcade.run()`. Upon execution, this code sets up a basic game window where users can build and modify their own game components.
+
+template_platformer.py
+----------------------
+.. image:: how_to_examples/template_platformer.png
+
+Source: :ref:`template_platformer`
+
+This Python code is an example of a basic platformer game using the Arcade library. It demonstrates various aspects of implementing a platformer game, such as maintaining game states, using a tile map for creating a game level, handling user input, implementing player movement physics, and collision detection between player and other game objects. The code also incorporates a simple camera system that keeps the player at the center of the screen and a scoring system to track the player's progress. Additionally, the example supports screen resizing, which adjusts the game camera to maintain an optimal view of the game world. Overall, this template can be used as a starting point to create a more complex platformer game with additional features, levels, and interactivity.
+
+tetris.py
+---------
+.. image:: how_to_examples/tetris.png
+
+Source: :ref:`tetris`
+
+This piece of Python code demonstrates how to build a simple clone of the game Tetris using the Arcade library. It creates a grid for the game, defines the shapes of the blocks (tetrominoes), defines their movements (left, right, down, rotation), and handles the game logic which includes generating new blocks, checking for collision between blocks as well as the block and the grid edges, and removing complete rows from the grid. The Arcade library allows the code to easily maintain a game loop, detect keyboard inputs, and draw on screen. A grid is maintained as a 2D list to track occupied and unoccupied cells. Each frame updates the game state and redraws the board, ensuring smooth gameplay. The game ends when a new block cannot be placed on the screen without colliding with existing blocks.
+
+text_loc_example.po
+-------------------
+.. image:: how_to_examples/text_loc_example.png
+
+Source: :ref:`text_loc_example`
+
+The provided example demonstrates the usage of localization in Python projects, specifically using Arcade library. Localization allows developers to adapt their software to different languages and regions, making the user interface more accessible and user-friendly to non-English speakers. In this example, text from the script is translated from English to another language (e.g., "Simple line of text in 12 point" to "Línea simple de texto en 12 puntos."). This involves using gettext calls to retrieve the appropriate translation, and storing translation data in separate files, thus making it easy to manage and maintain translations for different languages.
+
+text_loc_example.pot
+--------------------
+.. image:: how_to_examples/text_loc_example..png
+
+Source: :ref:`text_loc_example.`
+
+The provided Python code example pertains to the usage of gettext, a localization (l10n) and internationalization (i18n) library. In software development, l10n and i18n methodologies aim to adapt software to different languages, regional differences, and technical requirements of a target locale. The code piece specifically represents a PO (Portable Object) file template, used by gettext for translation. The metadata at the top includes the project version, dates, translator information, language team, and encoding details. Further, a text string, "Simple line of text in 12 point", is displayed to be translated (indicated by the msgid), with the translation to be placed in the msgstr field.
+
+text_loc_example_done.py
+------------------------
+.. image:: how_to_examples/text_loc_example_done.png
+
+Source: :ref:`text_loc_example_done`
+
+This Python code demonstrates how to display text on the screen using the Arcade library. It sets up a basic game window and uses the gettext module to provide localization, enabling the translation of the displayed text into different languages based on the user's locale. The main class defines an initialization method, an update method for rotating the text, and a draw method for rendering the screen. A point is marked as the start for the text, and the draw_text method is used to print the localized text onto the screen from that point. The 'run()' function of the arcade module starts the game, and this is placed in the main function, which is called when the script is run.
+
+text_loc_example_start.py
+-------------------------
+.. image:: how_to_examples/text_loc_example_start.png
+
+Source: :ref:`text_loc_example_start`
+
+This example demonstrates how to draw text on the screen using the Arcade library in Python. It creates a window with a white background and displays a simple line of text using the `arcade.draw_text()` function. The text is displayed at a specific starting point (start_x, start_y), indicated by a blue dot, and updates the angle of the text over time using the `on_update()` method. The main focus of this example is illustrating how to use the Arcade library to render text on the screen, and to show the relation of the displayed text in respect to the specified start x and y coordinates.
+
+timer.py
+--------
+.. image:: how_to_examples/timer.png
+
+Source: :ref:`timer`
+
+This Python code demonstrates how to create an on-screen timer using the Arcade library. The script sets up a window with a specific width, height, and title, and initializes a "MyGame" class, extending the library's "Window" class. The class has a text object to display the time and a "total_time" variable to keep track of the elapsed time. The "on_update" method accumulates total time and converts this time into minutes, seconds, and hundreds of seconds using division and modulus operations, displaying the time on-screen with string formatting. Every frame, the timer's time updates, and the timer text is redrawn with its new time. This example could be used in a game where time tracking is necessary, such as a speed-run game or countdown timer.
+
+transform_feedback.py
+---------------------
+.. image:: how_to_examples/transform_feedback.png
+
+Source: :ref:`transform_feedback`
+
+The given Python code is an illustration of a concept known as Transform Feedback in the context of a graphics rendering pipeline in Arcade game library. In this case, it implements a basic physical simulation where a group of points behave under a pseudo gravitational force. Transform feedback mainly allows the output of vertex shader operations to be captured in buffer objects. This approach can be extensively used for implementing simulations, complex animations, and procedural geometry as it permits processing of the original geometry to output new geometry. In this example, a gravity shader simulates the effect of gravity on a set of randomly initialized points. The positions and velocities of these points are stored in two buffers and the gravity program updates these values following gravity simulation. This technique of updating between two buffers is often referred to as 'ping-ponging'. The render process visualizes the points in updated positions. The buffers are swapped at the end of each frame, yielding a perpetual update and render cycle with real-time motion of points under gravity.
+
+transitions.py
+--------------
+.. image:: how_to_examples/transitions.png
+
+Source: :ref:`transitions`
+
+This example demonstrates how to create and transition between different views in a Python program using the Arcade library. It showcases a simple structure of a game with a menu, a game view, and a game over view. The transitions between each view are achieved by using a fading effect, which is implemented in the FadingView class. The FadingView class is then inherited by the other view classes (MenuView, GameView, and GameOverView) to handle the fading and updating of views. Pressing the spacebar key initiates the fade out effect, and upon completion, the next view is displayed with a fade in effect. The main function sets up the window, creates a MenuView instance, and starts the Arcade event loop.
+
+
+turn_and_move.py
+----------------
+.. image:: how_to_examples/turn_and_move.png
+
+Source: :ref:`turn_and_move`
+
+This Python code demonstrates the use of the Arcade library to create a simple game where a tank is controlled by the user through mouse clicks. The game is set up in a window with a specified width, height, and title. In the game, the tank (or Player class) can be moved to any point in the gaming window by right-clicking your mouse. It utilizes the principle of trigonometry to calculate the angle and distance between the current position of the tank and the destination point, and adjusts the speed and rotation accordingly for the tank to reach the desired location. The Player class also includes methods for updating the game state according to user input and the game's rules to reflect changes in player state and position. The MyGame class defines the game window, initializes the game variables, updates the state of the game, and handles user mouse clicks. Finally, the main function is responsible for running the game.
+
+view_instructions_and_game_over.py
+----------------------------------
+.. image:: how_to_examples/view_instructions_and_game_over.png
+
+Source: :ref:`view_instructions_and_game_over`
+
+This example demonstrates how to use separate views for different screens or stages of a game using the Python Arcade library. It covers how to create instruction screens, display "Game Over" text, allow the user to restart the game, and pass data between different views. The example utilizes multiple classes that inherit from arcade.View, each representing a separate screen (e.g., MenuView, InstructionView, GameView, and GameOverView). These classes have their own draw, update, and window event methods to update and render each screen accordingly. It also shows how data can be passed between views or stored on a shared window object.
+
+view_pause_screen.py
+--------------------
+.. image:: how_to_examples/view_pause_screen.png
+
+Source: :ref:`view_pause_screen`
+
+The provided code demonstrates how to create a pause screen in a game without resetting the game state, using the Arcade library in Python. It does this by defining separate classes for each screen or view in the game, such as "MenuView," "GameView," and "PauseView", which inherit from the arcade.View class. Each view class has its own draw, update, and window event methods. Switching between views is done by creating a view instance and using the "self.window.show_view(view)" method. The example showcases a game with a moving sprite that can be paused and resumed using the Escape key without losing the sprite position and with the possibility to return to the main menu and restart the game.
+
+view_screens_minimal.py
+-----------------------
+.. image:: how_to_examples/view_screens_minimal.png
+
+Source: :ref:`view_screens_minimal`
+
+This example demonstrates how to use the Arcade library to display a sequence of screens in a game by utilizing the 'arcade.View' class. Each screen is managed by a separate class that inherits from 'arcade.View', and has its own draw, update, and window event methods. These views can be easily switched by creating a new view object and setting it with the 'self.window.set_view(view)' method. The example includes a menu screen, a game screen, and a game over screen, each with their own user input events and background colors. This approach makes it simpler to organize and manage screen-specific code and data in the game development process.
 

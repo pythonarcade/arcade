@@ -45,7 +45,7 @@ def process_file(filename):
 
 def main():
     output_file_name = "../doc/example_code/example_summaries.rst"
-    with open(output_file_name, "w") as output_file:
+    with open(output_file_name, "a") as output_file:
         output_file.write("Example Code\n")
         output_file.write("============\n\n")
 
@@ -61,6 +61,8 @@ def main():
         # ]
         count = 0
         for input_file_name in files_in_directory:
+            if input_file_name <= 'sprite_collect_coins_diff_levels.py':
+                continue
             print("Processing file {}".format(input_file_name))
             result = process_file(source_file_path + input_file_name)
             output_file.write(f"{input_file_name}\n")
