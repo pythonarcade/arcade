@@ -6,7 +6,7 @@ Arcade welcomes contributions, including:
 * `Bug reports & feature suggestions <https://github.com/pythonarcade/arcade/issues>`_
 * Bug fixes
 * Implementations of requested features
-* Corrections & additions to the documentation 
+* Corrections & additions to the documentation
 * Improvements to the tests
 
 If you're looking for a way to contribute, try checking
@@ -116,7 +116,7 @@ If you want to run either of these tools individually, you can do
 
     python make.py ruff
 
-or 
+or
 
 .. code-block:: shell
 
@@ -127,6 +127,24 @@ Now you run the framework's unit tests with the following command:
 .. code-block:: shell
 
     python make.py test
+
+Use pre-commit to automatically run tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, ruff, mypy, and pyright against your changes before you commit them.
+To install pre-commit, run the following command:
+
+.. code-block:: shell
+
+    pip install pre-commit
+    # or on Mac
+    brew install pre-commit
+
+Then, run the following command to install the pre-commit hooks:
+
+.. code-block:: shell
+
+    pre-commit install
 
 Building & Testing Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
