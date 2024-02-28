@@ -766,6 +766,10 @@ class MyGame(arcade.Window):
             arcade.close_window()
 
 
-if __name__ == "__main__":
+def main():
     game = MyGame()
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

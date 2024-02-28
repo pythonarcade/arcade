@@ -359,7 +359,10 @@ class Window(pyglet.window.Window):
 
         window_width, window_height = self.get_size()
         # Center the window
-        self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+        try:
+            self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+        except Exception:
+            print("moo")
 
     def on_update(self, delta_time: float):
         """
