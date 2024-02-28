@@ -201,6 +201,8 @@ class UIManager(EventDispatcher):
     def execute_layout(self):
         """
         Execute layout process for all widgets.
+
+        This is automatically called during :py:meth:`UIManager.draw()`.
         """
         self._do_layout()
 
