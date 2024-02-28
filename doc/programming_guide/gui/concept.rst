@@ -236,7 +236,7 @@ Available:
 - :py:class:`UIWindowLikeMixin`
 
 UIConstructs
-==========
+============
 
 Constructs are predefined structures of widgets and layouts like a message box.
 
