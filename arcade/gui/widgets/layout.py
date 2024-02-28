@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, List, TypeVar, Tuple, Optional, cast
+from typing import Iterable, List, TypeVar, Optional, cast
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UIWidget, UILayout

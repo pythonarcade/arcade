@@ -871,7 +871,7 @@ class UILayout(UIWidget):
     """
 
     @staticmethod
-    def min_size_of(child: UIWidget) -> Tuple[int, int]:
+    def min_size_of(child: UIWidget) -> Tuple[float, float]:
         """
         Resolves the minimum size of a child. If it has a size_hint set for the axis,
         it will use size_hint_min if set, otherwise the size will be used.
