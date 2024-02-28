@@ -62,7 +62,7 @@ class UIScrollArea(UIWidget):
         if not self.visible:
             return False
 
-        should_render = force or not self._rendered
+        should_render = force or self._requires_render
         rendered = False
 
         with self.surface.activate():

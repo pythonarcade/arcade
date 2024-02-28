@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable, List, TypeVar, Tuple, Optional, cast
 
-from arcade.gui.property import bind
+from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UIWidget, UILayout
 
 __all__ = ["UILayout", "UIAnchorLayout", "UIBoxLayout", "UIGridLayout"]
@@ -241,6 +241,8 @@ class UIBoxLayout(UILayout):
         self.vertical = vertical
         self._space_between = space_between
 
+        self._size_hint_requires_update = True
+
         bind(self, "_children", self._update_size_hints)
         bind(self, "_border_width", self._update_size_hints)
 
@@ -249,38 +251,32 @@ class UIBoxLayout(UILayout):
         bind(self, "_padding_top", self._update_size_hints)
         bind(self, "_padding_bottom", self._update_size_hints)
 
-        # Initially update size hints
-        self._update_size_hints()
+    def add(self, child: W, **kwargs) -> W:
+        # subscribe to child's changes, which might affect the own size hint
+        bind(child, "_children", self._trigger_size_hint_update)
+        bind(child, "rect", self._trigger_size_hint_update)
+        bind(child, "size_hint", self._trigger_size_hint_update)
+        bind(child, "size_hint_min", self._trigger_size_hint_update)
+        bind(child, "size_hint_max", self._trigger_size_hint_update)
 
-    @staticmethod
-    def _layouting_allowed(child: UIWidget) -> Tuple[bool, bool]:
-        """
-        Checks if ``size_hint`` is given for the dimension. This would allow
-        the layout to resize this widget.
+        return super().add(child, **kwargs)
 
-        :return: Horizontal and vertical.
-        """
-        sh_w, sh_h = child.size_hint or (None, None)
-        return sh_w is not None, sh_h is not None
+    def remove(self, child: "UIWidget"):
+        # unsubscribe from child's changes
+        unbind(child, "_children", self._trigger_size_hint_update)
+        unbind(child, "rect", self._trigger_size_hint_update)
+        unbind(child, "size_hint", self._trigger_size_hint_update)
+        unbind(child, "size_hint_min", self._trigger_size_hint_update)
+        unbind(child, "size_hint_max", self._trigger_size_hint_update)
+
+        return super().remove(child)
+
+    def _trigger_size_hint_update(self):
+        self._size_hint_requires_update = True
 
     def _update_size_hints(self):
         required_space_between = max(0, len(self.children) - 1) * self._space_between
-
-        def min_size(child: UIWidget) -> Tuple[float, float]:
-            """
-            Determine the minimum size of a child widget.
-
-            This can be the minimum size hint (``size_hint_min``). If no size
-            hints are provided the child size has to stay the same and the
-            minimal size is the current size.
-            """
-            h_allowed, v_allowed = UIBoxLayout._layouting_allowed(child)
-            shmn_w, shmn_h = child.size_hint_min or (None, None)
-            shmn_w = shmn_w or 0 if h_allowed else child.width
-            shmn_h = shmn_h or 0 if v_allowed else child.height
-            return shmn_w, shmn_h
-
-        min_child_sizes = [min_size(child) for child in self.children]
+        min_child_sizes = [UILayout.min_size_of(child) for child in self.children]
 
         if len(self.children) == 0:
             width = 0
@@ -304,6 +300,14 @@ class UIBoxLayout(UILayout):
         """
         self._update_size_hints()
         self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
+
+    def prepare_layout(self):
+        """Updates the size hints if required."""
+        super().prepare_layout()
+
+        if self._size_hint_requires_update:
+            self._update_size_hints()
+            self._size_hint_requires_update = False
 
     def do_layout(self):
         start_y = self.content_rect.top
@@ -539,16 +543,6 @@ class UIGridLayout(UILayout):
         # initially update size hints
         self._update_size_hints()
 
-    @staticmethod
-    def _layouting_allowed(child: UIWidget) -> Tuple[bool, bool]:
-        """
-        Checks if size_hint is given for the dimension, which would allow the layout to resize this widget
-
-        :return: horizontal, vertical
-        """
-        sh_w, sh_h = child.size_hint or (None, None)
-        return sh_w is not None, sh_h is not None
-
     def _update_size_hints(self):
         max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
@@ -557,25 +551,13 @@ class UIGridLayout(UILayout):
             [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
         ]
 
-        def min_size(child: UIWidget) -> Tuple[float, float]:
-            """
-            Determine min size of a child widget
-            This can be the size_hint_min. If no size_hints are provided the child size has to stay the same and
-            the minimal size is the current size.
-            """
-            h_allowed, v_allowed = UIGridLayout._layouting_allowed(child)
-            shmn_w, shmn_h = child.size_hint_min or (None, None)
-            shmn_w = shmn_w or 0 if h_allowed else child.width
-            shmn_h = shmn_h or 0 if v_allowed else child.height
-            return shmn_w, shmn_h
-
         for child, data in self._children:
             col_num = data["col_num"]
             row_num = data["row_num"]
             col_span = data["col_span"]
             row_span = data["row_span"]
 
-            shmn_w, shmn_h = min_size(child)
+            shmn_w, shmn_h = UILayout.min_size_of(child)
 
             for i in range(col_num, col_span + col_num):
                 max_width_per_column[i][row_num] = (0, 0)
