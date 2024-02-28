@@ -59,7 +59,7 @@ class Rect(NamedTuple):
 
     def collide_with_point(self, x, y):
         left, bottom, width, height = self
-        return left < x < left + width and bottom < y < bottom + height
+        return left <= x <= left + width and bottom <= y <= bottom + height
 
     def scale(self, scale: float) -> "Rect":
         """Returns a new rect with scale applied"""
