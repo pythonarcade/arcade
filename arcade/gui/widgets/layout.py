@@ -251,6 +251,8 @@ class UIBoxLayout(UILayout):
         bind(self, "_padding_top", self._update_size_hints)
         bind(self, "_padding_bottom", self._update_size_hints)
 
+        self._update_size_hints()
+
     def add(self, child: W, **kwargs) -> W:
         # subscribe to child's changes, which might affect the own size hint
         bind(child, "_children", self._trigger_size_hint_update)
@@ -294,6 +296,8 @@ class UIBoxLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
         self.size_hint_min = base_width + width, base_height + height
 
+        self._size_hint_requires_update = False
+
     def fit_content(self):
         """
         Resize the layout to fit the content. This will take the minimal required size into account.
@@ -307,7 +311,6 @@ class UIBoxLayout(UILayout):
 
         if self._size_hint_requires_update:
             self._update_size_hints()
-            self._size_hint_requires_update = False
 
     def do_layout(self):
         start_y = self.content_rect.top
