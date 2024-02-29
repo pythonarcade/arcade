@@ -31,28 +31,29 @@ class ViewportProjector:
             window: The window to bind the camera to. Defaults to the currently active window.
         """
         self._window = window or get_window()
-
         self._viewport = viewport or self._window.ctx.viewport
-        self._projection_matrix: Mat4 = Mat4.orthogonal_projection(0.0, self._viewport[2],
-                                                                   0.0, self._viewport[3],
-                                                                   -100, 100)
+        self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
+            0.0, self._viewport[2],
+            0.0, self._viewport[3],
+            -100, 100
+        )
 
     @property
-    def viewport(self):
+    def viewport(self) -> Tuple[int, int, int, int]:
         """
         The viewport use to derive projection and view matrix.
         """
         return self._viewport
 
     @viewport.setter
-    def viewport(self, viewport: Tuple[int, int, int, int]):
+    def viewport(self, viewport: Tuple[int, int, int, int]) -> None:
         self._viewport = viewport
+        self._projection_matrix = Mat4.orthogonal_projection(
+            0, viewport[2],
+            0, viewport[3],
+            -100, 100)
 
-        self._projection_matrix = Mat4.orthogonal_projection(0, viewport[2],
-                                                             0, viewport[3],
-                                                             -100, 100)
-
-    def use(self):
+    def use(self) -> None:
         """
         Set the window's projection and view matrix.
         Also sets the projector as the windows current camera.
@@ -106,7 +107,7 @@ class DefaultProjector(ViewportProjector):
         """
         super().__init__(window=window)
 
-    def use(self):
+    def use(self) -> None:
         """
         Set the window's Projection and View matrices.
 

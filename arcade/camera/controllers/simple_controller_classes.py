@@ -97,7 +97,7 @@ class ScreenShakeController:
         return self._acceleration_duration + self.falloff_duration
 
     @duration.setter
-    def duration(self, _duration: float):
+    def duration(self, _duration: float) -> None:
         if _duration <= 0.0:
             self.falloff_duration = -1.0
 
@@ -125,7 +125,7 @@ class ScreenShakeController:
         return self._acceleration_duration
 
     @acceleration_duration.setter
-    def acceleration_duration(self, _duration):
+    def acceleration_duration(self, _duration: float) -> None:
         if _duration < 0.0:
             self._acceleration_duration = 0.0
         else:
@@ -143,7 +143,7 @@ class ScreenShakeController:
         return 1 / self._acceleration_duration
 
     @acceleration.setter
-    def acceleration(self, _acceleration: float):
+    def acceleration(self, _acceleration: float) -> None:
         if _acceleration <= 0.0:
             self._acceleration_duration = 0.0
         else:
@@ -162,7 +162,7 @@ class ScreenShakeController:
         return (15 / 8) * (1 / self.falloff_duration)
 
     @falloff.setter
-    def falloff(self, _falloff: float):
+    def falloff(self, _falloff: float) -> None:
         if _falloff <= 0.0:
             self.falloff_duration = -1.0
         else:
@@ -188,7 +188,7 @@ class ScreenShakeController:
         """
         return 1 - _t**3 * (_t * (_t * 6.0 - 15.0) + 10.0)
 
-    def _calc_max_amp(self):
+    def _calc_max_amp(self) -> float:
         """
         Determine the maximum amplitude by using either _acceleration_amp() or _falloff_amp().
         If falloff duration is less than 0.0 then the falloff never begins and
@@ -206,13 +206,13 @@ class ScreenShakeController:
 
         return 0.0
 
-    def _calc_amplitude(self):
+    def _calc_amplitude(self) -> float:
         _max_amp = self._calc_max_amp()
         _sin_amp = sin(self.shake_frequency * 2.0 * pi * self._length_shaking)
 
         return _sin_amp * _max_amp
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the temporary shaking variables. WILL NOT STOP OR START SCREEN SHAKE.
         """
@@ -221,14 +221,14 @@ class ScreenShakeController:
         self._last_update_time = 0.0
         self._length_shaking = 0.0
 
-    def start(self):
+    def start(self) -> None:
         """
         Start the screen-shake.
         """
         self.reset()
         self._shaking = True
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Instantly stop the screen-shake.
         """
@@ -241,7 +241,7 @@ class ScreenShakeController:
         self.reset()
         self._shaking = False
 
-    def update(self, delta_time: float):
+    def update(self, delta_time: float) -> None:
         """
         Update the time, and decide if the shaking should stop.
         Does not actually set the camera position.
@@ -260,7 +260,7 @@ class ScreenShakeController:
         if self.falloff_duration > 0.0 and self._length_shaking >= self.duration:
             self.stop()
 
-    def update_camera(self):
+    def update_camera(self) -> None:
         """
         Update the position of the camera. Call this just before using the camera.
         because the controller is modifying the PoD directly it stores the last
@@ -293,7 +293,7 @@ class ScreenShakeController:
         )
         self._last_update_time = self._length_shaking
 
-    def readjust_camera(self):
+    def readjust_camera(self) -> None:
         """
         Can be called after the camera has been used revert the screen_shake.
         While not strictly necessary it is highly advisable. If you are moving the

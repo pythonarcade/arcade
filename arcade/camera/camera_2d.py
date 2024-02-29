@@ -249,7 +249,7 @@ class Camera2D:
         return self._projection.right - self._projection.left
 
     @projection_width.setter
-    def projection_width(self, _width: float):
+    def projection_width(self, _width: float) -> None:
         w = self.projection_width
         l = self.projection_left / w  # Normalised Projection left
         r = self.projection_right / w  # Normalised Projection Right
@@ -607,7 +607,7 @@ class Camera2D:
         return degrees(atan2(self._data.position[0], self._data.position[1]))
 
     @angle.setter
-    def angle(self, value: float):
+    def angle(self, value: float) -> None:
         """
         Set the 2D UP vector using an angle.
         This starts with 0 degrees as [0, 1]

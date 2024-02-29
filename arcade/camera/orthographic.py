@@ -125,7 +125,7 @@ class OrthographicProjector:
             -ri.dot(po), -up.dot(po), fo.dot(po), 1
         ))
 
-    def use(self):
+    def use(self) -> None:
         """
         Sets the active camera to this object.
         Then generates the view and projection matrices.
