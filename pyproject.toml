@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "pyglet>=2.0.11,<2.1",
+    "pyglet>=2.0.12,<2.1",
     "pillow~=10.0.0",
     "pymunk~=6.5.1",
     "pytiled-parser~=2.2.3"
