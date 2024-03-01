@@ -317,7 +317,7 @@ class SimpleCamera:
             if self.position == self._position_goal:
                 self._easing_speed = 0.0
 
-    def use(self):
+    def use(self) -> None:
         """
         Sets the active camera to this object.
         Then generates the view and projection matrices.
