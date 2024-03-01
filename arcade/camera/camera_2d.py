@@ -141,19 +141,6 @@ class Camera2D:
         return self._projection
 
     @property
-    def pos(self) -> Tuple[float, float]:
-        """
-        The 2D position of the camera along
-        the X and Y axis. Arcade has the positive
-        Y direction go towards the top of the screen.
-        """
-        return self._data.position[:2]
-
-    @pos.setter
-    def pos(self, _pos: Tuple[float, float]) -> None:
-        self._data.position = (_pos[0], _pos[1], self._data.position[2])
-
-    @property
     def position(self) -> Tuple[float, float]:
         """
         The 2D position of the camera along
