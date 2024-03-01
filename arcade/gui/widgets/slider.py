@@ -20,6 +20,7 @@ from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 
+
 @dataclass
 class UISliderStyle(UIStyleBase):
     """

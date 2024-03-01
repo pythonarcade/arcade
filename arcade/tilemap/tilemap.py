@@ -52,6 +52,7 @@ __all__ = [
 
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
+
 def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
@@ -104,13 +105,13 @@ def _get_image_source(
 
 
 def _may_be_flip(tile: pytiled_parser.Tile, texture: Texture) -> Texture:
-        if tile.flipped_diagonally:
-            texture = texture.flip_diagonally()
-        if tile.flipped_horizontally:
-            texture = texture.flip_horizontally()
-        if tile.flipped_vertically:
-            texture = texture.flip_vertically()
-        return texture
+    if tile.flipped_diagonally:
+        texture = texture.flip_diagonally()
+    if tile.flipped_horizontally:
+        texture = texture.flip_horizontally()
+    if tile.flipped_vertically:
+        texture = texture.flip_vertically()
+    return texture
 
 
 class TileMap:

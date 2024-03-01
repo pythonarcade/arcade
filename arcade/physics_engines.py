@@ -219,6 +219,8 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
     # print(f"Move 2 - {end_time - start_time:7.4f} {loop_count}")
 
     return complete_hit_list
+
+
 class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down

@@ -136,11 +136,12 @@ def warning(warning_type: Type[Warning], message: str = "", **kwargs):
 
 def generate_uuid_from_kwargs(**kwargs) -> str:
     """
-    Given key/pair combos, returns a string in uuid format.
-    Such as `text='hi', size=32` it will return "text-hi-size-32".
-    Called with no parameters, id does NOT return a random unique id.
+    Given key/pair combos, returns a string in "UUID" format.
+    With inputs such as `text='hi', size=32` it will return `"text=hi|size=32"`.
+    This function does NOT return a random unique ID.
+    It must be called with parameters, and will raise an error if passed no keyword arguments.
     """
-    if len(kwargs) == 0:
+    if not kwargs:
         raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
 
     return "|".join(f"{key}={str(value)}" for key, value in kwargs.items())

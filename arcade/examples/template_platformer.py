@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
         arcade.draw_text(score_text,
-                         start_x=10,
-                         start_y=10,
+                         x=10,
+                         y=10,
                          color=arcade.csscolor.WHITE,
                          font_size=18)
 

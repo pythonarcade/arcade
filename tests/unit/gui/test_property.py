@@ -1,6 +1,6 @@
 import gc
 
-from arcade.gui.property import Property, bind
+from arcade.gui.property import Property, bind, unbind
 
 
 class MyObject:
@@ -17,7 +17,7 @@ class Observer:
         self.called = (args, kwargs)
 
 
-def test_callback():
+def test_bind_callback():
     observer = Observer()
 
     my_obj = MyObject()
@@ -29,6 +29,19 @@ def test_callback():
     my_obj.name = "New Name"
 
     assert observer.called == (tuple(), {})
+
+
+def test_unbind_callback():
+    observer = Observer()
+
+    my_obj = MyObject()
+    bind(my_obj, "name", observer)
+
+    # WHEN
+    unbind(my_obj, "name", observer)
+    my_obj.name = "New Name"
+
+    assert not observer.called
 
 
 def test_get_default():

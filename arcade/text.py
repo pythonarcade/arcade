@@ -9,10 +9,9 @@ from typing import Any, Optional, Tuple, Union
 import pyglet
 
 import arcade
-from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
 from arcade.resources import resolve
+from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
-
 
 __all__ = [
     "load_font",
@@ -129,9 +128,9 @@ class Text:
     explanation for how to use each of them. For example code, see :ref:`drawing_text_objects`.
 
     :param text: Initial text to display. Can be an empty string
-    :param start_x: x position to align the text's anchor point with
-    :param start_y: y position to align the text's anchor point with
-    :param start_z: z position to align the text's anchor point with
+    :param x: x position to align the text's anchor point with
+    :param y: y position to align the text's anchor point with
+    :param z: z position to align the text's anchor point with
     :param color: Color of the text as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
     :param font_size: Size of the text in points
@@ -153,8 +152,8 @@ class Text:
 
     By default, the text is placed so that:
 
-    - the left edge of its bounding box is at ``start_x``
-    - its baseline is at ``start_y``
+    - the left edge of its bounding box is at ``x``
+    - its baseline is at ``y``
 
     The baseline is located along the line the bottom of the text would
     be written on, excluding letters with tails such as y:
@@ -180,8 +179,8 @@ class Text:
     def __init__(
         self,
         text: str,
-        start_x: int,
-        start_y: int,
+        x: int,
+        y: int,
         color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
@@ -195,20 +194,23 @@ class Text:
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
         group: Optional[pyglet.graphics.Group] = None,
-        start_z: int = 0
+        z: int = 0
     ):
         # Raises a RuntimeError if no window for better user feedback
         arcade.get_window()
 
-        if align != "center" and align != "left" and align != "right":
+        if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
+
+        if multiline and width == 0:
+            raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
             text=text,
-            x=start_x,
-            y=start_y,
-            z=start_z,
+            x=x,
+            y=y,
+            z=z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -219,7 +221,7 @@ class Text:
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation, # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
+            rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
             group=group
         )
@@ -311,17 +313,17 @@ class Text:
         self._label.y = y
 
     @property
-    def start_z(self) -> float:
+    def z(self) -> float:
         """
         Get or set the z position of the label
         """
         return self._label.z
 
-    @start_z.setter
-    def start_z(self, start_z: float):
-        if self._label.z == start_z:
+    @z.setter
+    def z(self, z: float):
+        if self._label.z == z:
             return
-        self._label.z = start_z
+        self._label.z = z
 
     @property
     def font_name(self) -> FontNameOrNames:
@@ -444,28 +446,28 @@ class Text:
         """
         Pixel location of the left content border.
         """
-        return self._label._get_left()
+        return self._label.left
 
     @property
     def right(self) -> int:
         """
         Pixel location of the right content border.
         """
-        return self._label._get_left() + self._label.content_width
+        return self._label.right
 
     @property
     def top(self) -> int:
         """
         Pixel location of the top content border.
         """
-        return self._label._get_top(self._label._get_lines())
+        return self._label.top
 
     @property
     def bottom(self) -> int:
         """
         Pixel location of the bottom content border.
         """
-        return self._label._get_bottom(self._label._get_lines())
+        return self._label.bottom
 
     @property
     def content_size(self) -> Tuple[int, int]:
@@ -480,11 +482,6 @@ class Text:
 
     @align.setter
     def align(self, align: str):
-
-        # duplicates the logic used in the rest of this module
-        if align != "left":
-            self.multiline = True
-
         self._label.set_style("align", align)
 
     @property
@@ -586,7 +583,7 @@ def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: Optional[int] = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
@@ -629,8 +626,8 @@ def create_text_sprite(
     """
     text_object = Text(
         text,
-        start_x=0,
-        start_y=0,
+        x=0,
+        y=0,
         color=color,
         font_size=font_size,
         width=width,
@@ -667,11 +664,11 @@ def create_text_sprite(
 @warning(
     message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
     warning_type=PerformanceWarning,
-    )
+)
 def draw_text(
     text: Any,
-    start_x: int,
-    start_y: int,
+    x: int,
+    y: int,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int = 0,
@@ -683,7 +680,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    start_z: int = 0
+    z: int = 0
 ):
     """
     A simple way for beginners to draw text.
@@ -708,9 +705,9 @@ def draw_text(
     Example code can be found at :ref:`drawing_text`.
 
     :param text: Text to display. The object passed in will be converted to a string
-    :param start_x: x position to align the text's anchor point with
-    :param start_y: y position to align the text's anchor point with
-    :param start_z: z position to align the text's anchor point with
+    :param x: x position to align the text's anchor point with
+    :param y: y position to align the text's anchor point with
+    :param z: z position to align the text's anchor point with
     :param color: Color of the text as an RGBA tuple or
         :py:class:`~arcade.types.Color` instance.
     :param font_size: Size of the text in points
@@ -726,8 +723,8 @@ def draw_text(
 
     By default, the text is placed so that:
 
-    - the left edge of its bounding box is at ``start_x``
-    - its baseline is at ``start_y``
+    - the left edge of its bounding box is at ``x``
+    - its baseline is at ``y``
 
     The baseline of text is the line it would be written on:
 
@@ -750,11 +747,11 @@ def draw_text(
     ``anchor_x`` and ``anchor_y`` specify how to calculate the anchor point,
     which affects how the text is:
 
-    - Placed relative to ``start_x`` and ``start_y``
+    - Placed relative to ``x`` and ``y``
     - Rotated
 
-    By default, the text is drawn so that ``start_x`` is at the left of
-    the text's bounding box and ``start_y`` is at the baseline.
+    By default, the text is drawn so that ``x`` is at the left of
+    the text's bounding box and ``y`` is at the baseline.
 
     You can set a custom anchor point by passing combinations of the
     following values for ``anchor_x`` and ``anchor_y``:
@@ -768,15 +765,15 @@ def draw_text(
           - Anchor Position
 
         * - ``"left"`` `(default)`
-          - Text drawn with its left side at ``start_x``
+          - Text drawn with its left side at ``x``
           - Anchor point on the left side of the text's bounding box
 
         * - ``"center"``
-          - Text drawn horizontally centered on ``start_x``
+          - Text drawn horizontally centered on ``x``
           - Anchor point at horizontal center of text's bounding box
 
         * - ``"right"``
-          - Text drawn with its right side at ``start_x``
+          - Text drawn with its right side at ``x``
           - Anchor placed on the right side of the text's bounding box
 
 
@@ -789,21 +786,21 @@ def draw_text(
           - Anchor Position
 
         * - ``"baseline"`` `(default)`
-          - Text drawn with baseline on ``start_y``.
+          - Text drawn with baseline on ``y``.
           - Anchor placed at the text rendering baseline
 
         * - ``"top"``
-          - Text drawn with its top aligned with ``start_y``
+          - Text drawn with its top aligned with ``y``
           - Anchor point placed at the top of the text
 
         * - ``"bottom"``
-          - Text drawn with its absolute bottom aligned with ``start_y``,
+          - Text drawn with its absolute bottom aligned with ``y``,
             including the space for tails on letters such as y and g
           - Anchor point placed at the bottom of the text after the
             space allotted for letters such as y and g
 
         * - ``"center"``
-          - Text drawn with its vertical center on ``start_y``
+          - Text drawn with its vertical center on ``y``
           - Anchor placed at the vertical center of the text
 
 
@@ -830,8 +827,8 @@ def draw_text(
            the text value, styling, as well as values for ``anchor_x``
            and ``anchor_y``
 
-    2. The text is placed so its anchor point is at ``(start_x,
-       start_y))``
+    2. The text is placed so its anchor point is at ``(x,
+       y))``
 
     3. The text is rotated around its anchor point before finally
        being drawn
@@ -848,20 +845,21 @@ def draw_text(
     key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
     ctx = arcade.get_window().ctx
     label = ctx.label_cache.get(key)
-    if align != "center" and align != "left" and align != "right":
+
+    if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-    if align != "left":
-        multiline = True
+    if multiline and width == 0:
+        raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
 
     if not label:
         adjusted_font = _attempt_font_name_resolution(font_name)
 
         label = arcade.Text(
             text=str(text),
-            start_x=start_x,
-            start_y=start_y,
-            start_z=start_z,
+            x=x,
+            y=y,
+            z=z,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -879,8 +877,8 @@ def draw_text(
     # These updates are quite expensive
     if label.text != text:
         label.text = str(text)
-    if label.x != start_x or label.y != start_y or label.start_z != start_z:
-        label.position = start_x, start_y, start_z  # type: ignore
+    if label.x != x or label.y != y or label.z != z:
+        label.position = x, y, z  # type: ignore
     if label.color != color:
         label.color = color
     if label.rotation != rotation:

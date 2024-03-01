@@ -33,6 +33,7 @@ def configure_logging(level: Optional[int] = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
 # The following is used to load ffmpeg libraries.
 # Currently Arcade is only shipping binaries for Mac OS
 # as ffmpeg is not needed for support on Windows and Linux.
@@ -75,7 +76,6 @@ from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_window
-from .window_commands import pause
 from .window_commands import schedule
 from .window_commands import run
 from .window_commands import set_background_color
@@ -348,7 +348,6 @@ __all__ = [
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'open_window',
-    'pause',
     'print_timings',
     'play_sound',
     'read_tmx',

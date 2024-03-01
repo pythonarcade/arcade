@@ -9,10 +9,7 @@ def test_place_widget(window):
     dummy3 = UIDummy(width=100, height=100)
     dummy4 = UIDummy(width=100, height=100)
 
-    subject = UIGridLayout(
-        column_count=2,
-        row_count=2
-    )
+    subject = UIGridLayout(column_count=2, row_count=2)
 
     subject.add(dummy1, 0, 0)
     subject.add(dummy2, 0, 1)
@@ -34,10 +31,7 @@ def test_place_widget(window):
 def test_can_handle_empty_cells(window):
     dummy1 = UIDummy(width=100, height=100)
 
-    subject = UIGridLayout(
-        column_count=2,
-        row_count=2
-    )
+    subject = UIGridLayout(column_count=2, row_count=2)
 
     subject.add(dummy1, 0, 0)
 
@@ -56,10 +50,7 @@ def test_place_widget_with_different_sizes(window):
     dummy3 = UIDummy(width=100, height=50)
     dummy4 = UIDummy(width=50, height=50)
 
-    subject = UIGridLayout(
-        column_count=2,
-        row_count=2
-    )
+    subject = UIGridLayout(column_count=2, row_count=2)
 
     subject.add(dummy1, 0, 0)
     subject.add(dummy2, 0, 1)
@@ -80,10 +71,7 @@ def test_place_widget_with_different_sizes(window):
 def test_place_widget_within_content_rect(window):
     dummy1 = UIDummy(width=100, height=100)
 
-    subject = UIGridLayout(
-        column_count=1,
-        row_count=1
-    ).with_padding(left=10, bottom=20)
+    subject = UIGridLayout(column_count=1, row_count=1).with_padding(left=10, bottom=20)
 
     subject.add(dummy1, 0, 0)
 
@@ -166,8 +154,10 @@ def test_fit_content_by_default(window):
 
 def test_adjust_children_size_relative(window):
     dummy1 = UIDummy(width=100, height=100)
-    dummy2 = UIDummy(width=50, height=50, size_hint=(.75, .75))
-    dummy3 = UIDummy(width=100, height=100, size_hint=(.5, .5), size_hint_min=(60, 60))
+    dummy2 = UIDummy(width=50, height=50, size_hint=(0.75, 0.75))
+    dummy3 = UIDummy(
+        width=100, height=100, size_hint=(0.5, 0.5), size_hint_min=(60, 60)
+    )
     dummy4 = UIDummy(width=100, height=100)
 
     subject = UIGridLayout(
@@ -194,8 +184,8 @@ def test_adjust_children_size_relative(window):
 
 def test_does_not_adjust_children_without_size_hint(window):
     dummy1 = UIDummy(width=100, height=100)
-    dummy2 = UIDummy(width=50, height=50, size_hint=(.75, None))
-    dummy3 = UIDummy(width=50, height=50, size_hint=(None, .75))
+    dummy2 = UIDummy(width=50, height=50, size_hint=(0.75, None))
+    dummy3 = UIDummy(width=50, height=50, size_hint=(None, 0.75))
     dummy4 = UIDummy(width=100, height=100)
 
     subject = UIGridLayout(
@@ -266,7 +256,7 @@ def test_nested_grid_layouts(window):
     outer.add(inner, 0, 0)
     ui.add(outer)
 
-    ui._do_layout()
+    ui.execute_layout()
 
     assert inner.rect.size == (100, 100)
     assert outer.rect.size == (100, 100)
@@ -281,7 +271,7 @@ def test_nested_box_layouts(window):
     outer.add(inner, 0, 0)
     ui.add(outer)
 
-    ui._do_layout()
+    ui.execute_layout()
 
     assert inner.rect.size == (100, 100)
     assert outer.rect.size == (100, 100)
@@ -295,7 +285,22 @@ def test_nested_anchor_layouts(window):
     outer.add(inner, 0, 0)
     ui.add(outer)
 
-    ui._do_layout()
+    ui.execute_layout()
 
     assert inner.rect.size == (100, 100)
     assert outer.rect.size == (100, 100)
+
+
+def test_update_size_hint_min_on_child_size_change(window):
+    ui = UIManager()
+    grid = UIGridLayout(row_count=1, column_count=1)
+    dummy = UIDummy(size_hint_min=(100, 100), size_hint=(0, 0))
+
+    grid.add(dummy, 0, 0)
+    ui.add(grid)
+
+    dummy.size_hint_min = (200, 200)
+    ui.execute_layout()
+
+    assert dummy.rect.size == (200, 200)
+    assert grid.rect.size == (200, 200)

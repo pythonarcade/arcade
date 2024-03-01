@@ -1,4 +1,5 @@
 import pytest
+import time
 
 import arcade
 import pyglet
@@ -53,6 +54,6 @@ def test_window(window: arcade.Window):
         pass
 
     arcade.schedule(f, 1/60)
-    arcade.pause(0.01)
+    time.sleep(0.01)
     arcade.unschedule(f)
     window.test()

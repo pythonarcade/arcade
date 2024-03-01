@@ -1,23 +1,26 @@
 """
-This is the same as the examples for drawing text using the one-off draw_text function
-as well as the Text objects example. This takes it one step further though. Here we are
-creating Text objects, and then adding them to a Pyglet Batch object, and drawing them
-all with one draw command.
+The current fastest way to draw text with arcade.
 
-Using this method, we can draw thousands and thousands of text objects with nearly the
-same cost as drawing just one Text object directly.
+This example improves on the other two text-drawing examples
+by using pyglet's batch functionality.
+
+Although pyglet's batches do not support non-drawing features like
+arcade's SpriteList, they offer similar benefits for drawing. Adding
+arcade.Text objects to a batch allows drawing thousands of them with
+almost the same cost as drawing a single one directly.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.drawing_text_objects_batch
 """
 import arcade
-import pyglet.graphics
+from pyglet.graphics import Batch
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Drawing Text Example"
-DEFAULT_LINE_HEIGHT = 45
-DEFAULT_FONT_SIZE = 20
+
+WINDOW_WIDTH = 1200  # Window width in pixels
+WINDOW_HEIGHT = 800  # Window height in pixels
+WINDOW_TITLE = "Drawing Text Example"  # Window title
+DEFAULT_LINE_HEIGHT = 45  # Line height to use in pixels
+DEFAULT_FONT_SIZE = 20  # Default font size in points
 
 
 class MyGame(arcade.Window):
@@ -32,18 +35,18 @@ class MyGame(arcade.Window):
         self.text_angle = 0
         self.time_elapsed = 0.0
 
-        self.batch = pyglet.graphics.Batch()
+        self.batch = Batch()
 
         # Add the screen title
         start_x = 0
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
         self.title = arcade.Text(
             "Text Drawing Examples",
             start_x,
             start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE * 2,
-            width=SCREEN_WIDTH,
+            width=WINDOW_WIDTH,
             align="center",
             batch=self.batch,
         )
@@ -51,7 +54,7 @@ class MyGame(arcade.Window):
         # start_x and start_y make the start point for the text. We draw a dot to make it
         # easy too see the text in relation to its start x and y.
         start_x = 10
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         self.fonts = arcade.Text(
             "Fonts:",
             start_x,
@@ -219,7 +222,7 @@ class MyGame(arcade.Window):
 
         # --- Column 2 ---
         start_x = 750
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         self.text_positioning = arcade.Text(
             "Text Positioning:",
             start_x,
@@ -384,7 +387,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    MyGame(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     arcade.run()
 
 

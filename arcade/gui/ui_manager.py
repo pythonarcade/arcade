@@ -11,29 +11,21 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union
 
-from arcade.types import Point
+from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
-from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-
 import arcade
-from arcade.gui.events import (
-    UIMouseMovementEvent,
-    UIMousePressEvent,
-    UIMouseReleaseEvent,
-    UIMouseScrollEvent,
-    UITextEvent,
-    UIMouseDragEvent,
-    UITextMotionEvent,
-    UITextMotionSelectEvent,
-    UIKeyPressEvent,
-    UIKeyReleaseEvent,
-    UIOnUpdateEvent,
-)
+from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
+                               UIMouseDragEvent, UIMouseMovementEvent,
+                               UIMousePressEvent, UIMouseReleaseEvent,
+                               UIMouseScrollEvent, UIOnUpdateEvent,
+                               UITextEvent, UITextMotionEvent,
+                               UITextMotionSelectEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, Rect
+from arcade.gui.widgets import Rect, UIWidget
+from arcade.types import Point
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -91,7 +83,7 @@ class UIManager(EventDispatcher):
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
-        self._rendered = False
+        self._requires_render = True
         #: Camera used when drawing the UI
         self.register_event_type("on_event")
 
@@ -192,9 +184,17 @@ class UIManager(EventDispatcher):
 
     def trigger_render(self):
         """
-        Request rendering of all widgets
+        Request rendering of all widgets before next draw
         """
-        self._rendered = False
+        self._requires_render = True
+
+    def execute_layout(self):
+        """
+        Execute layout process for all widgets.
+
+        This is automatically called during :py:meth:`UIManager.draw()`.
+        """
+        self._do_layout()
 
     def _do_layout(self):
         layers = sorted(self.children.keys())
@@ -205,6 +205,10 @@ class UIManager(EventDispatcher):
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
+                # prepare children, so size_hints are calculated
+                child._prepare_layout()
+
+                # actual layout
                 if child.size_hint:
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
@@ -221,11 +225,12 @@ class UIManager(EventDispatcher):
                         shm_w or child.width, shm_h or child.height
                     )
 
+                # continue layout process down the tree
                 child._do_layout()
 
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
-        force = force or not self._rendered
+        force = force or self._requires_render
         for layer in layers:
             surface = self._get_surface(layer)
 
@@ -239,7 +244,7 @@ class UIManager(EventDispatcher):
                 for child in self.children[layer]:
                     child._do_render(surface, force)
 
-        self._rendered = True
+        self._requires_render = False
 
     def enable(self) -> None:
         """
@@ -296,8 +301,21 @@ class UIManager(EventDispatcher):
 
     def draw(self) -> None:
         current_cam = self.window.current_camera
-        # Request Widgets to prepare for next frame
-        self._do_layout()
+        """
+        Will draw all widgets to the window.
+
+        UIManager caches all rendered widgets into a framebuffer (something like a window sized image)
+        and only updates the framebuffer if a widget requests rendering via trigger_render().
+
+        To ensure that the children are positioned properly,
+        a layout process is executed before rendering, changes might also trigger a re-rendering of all widgets.
+
+        Layouting is a two-step process:
+        1. Prepare layout, which prepares children and updates own values
+        2. Do layout, which actually sets the position and size of the children
+        """
+        # Request widgets to prepare for next frame
+        self.execute_layout()
 
         ctx = self.window.ctx
         with ctx.enabled(ctx.BLEND):

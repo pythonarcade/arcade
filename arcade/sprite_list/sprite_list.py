@@ -193,7 +193,7 @@ class SpriteList(Generic[SpriteType]):
         self.ctx = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         if not self._atlas:
-            self._atlas =  self.ctx.default_atlas
+            self._atlas = self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -885,7 +885,7 @@ class SpriteList(Generic[SpriteType]):
 
         for texture in texture_list:
             # Ugly spacing is a fast workaround for None type checking issues
-            self._atlas.add( # type: ignore
+            self._atlas.add(  # type: ignore
                 texture)
 
     def write_sprite_buffers_to_gpu(self) -> None:
@@ -1004,12 +1004,12 @@ class SpriteList(Generic[SpriteType]):
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Workarounds for Optional[TextureAtlas] + slow . lookup speed
-        atlas: TextureAtlas = self.atlas # type: ignore
+        atlas: TextureAtlas = self.atlas  # type: ignore
         atlas_texture: Texture2D = atlas.texture
 
         # Set custom filter or reset to default
         if filter:
-            if hasattr(filter, '__len__', ): # assume it's a collection
+            if hasattr(filter, '__len__', ):  # assume it's a collection
                 if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
                 atlas_texture.filter = tuple(filter)  # type: ignore
@@ -1090,11 +1090,11 @@ class SpriteList(Generic[SpriteType]):
 
         if self._initialized:
             # Proper initialization implies these buffers are allocated
-            self._sprite_pos_buf.orphan(double=True) # type: ignore
-            self._sprite_size_buf.orphan(double=True) # type: ignore
-            self._sprite_angle_buf.orphan(double=True) # type: ignore
-            self._sprite_color_buf.orphan(double=True) # type: ignore
-            self._sprite_texture_buf.orphan(double=True) # type: ignore
+            self._sprite_pos_buf.orphan(double=True)  # type: ignore
+            self._sprite_size_buf.orphan(double=True)  # type: ignore
+            self._sprite_angle_buf.orphan(double=True)  # type: ignore
+            self._sprite_color_buf.orphan(double=True)  # type: ignore
+            self._sprite_texture_buf.orphan(double=True)  # type: ignore
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
@@ -1164,7 +1164,7 @@ class SpriteList(Generic[SpriteType]):
             return
 
         # Ugly syntax makes type checking pass without perf hit from cast
-        tex_slot: int = self._atlas.add( # type: ignore
+        tex_slot: int = self._atlas.add(  # type: ignore
             sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 
@@ -1183,7 +1183,7 @@ class SpriteList(Generic[SpriteType]):
             return
         atlas = self._atlas
         # Ugly spacing makes type checking work with specificity
-        tex_slot: int = atlas.add( # type: ignore
+        tex_slot: int = atlas.add(  # type: ignore
             sprite._texture)[0]
         slot = self.sprite_slot[sprite]
 

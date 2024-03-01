@@ -66,8 +66,8 @@ def test_text_instance_align_not_left(ctx, align):
 
     assert instance.align == align
 
-    # Should be true whenever align != "left", per logic from draw_text
-    assert instance.multiline
+    # Multiline value should not be influenced by align like in 2.X
+    assert instance.multiline is False
 
 
 def test_text_instance_position_setter(instance):

@@ -10,10 +10,15 @@ Slow but Easy Text Drawing
     :align: center
     :alt: Screenshot of drawing text
 
-This example shows how to draw text. While it is simple to draw using the
-techniques shown here, it is also slow. Using "text objects" can result in
-significant performance improvements. See :ref:`drawing_text_objects`.
+This example shows an easy but very slow way to draw text.
 
+Its main benefit is ease of use. More complicated approaches
+with :py:class:`arcade.Text` objects can run thousands of times
+faster.
+
+* See :ref:`drawing_text_objects` for a medium-performance approach
+* See :ref:`drawing_text_objects_batch` if you want the best performance
+  possible
 
 .. literalinclude:: ../../../arcade/examples/drawing_text.py
     :caption: drawing_text.py

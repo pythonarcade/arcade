@@ -69,32 +69,32 @@ class Sphere3D(arcade.Window):
         self.text_batch = Batch()
         self.text_cull = arcade.Text(
             "F2: Toggle cull face (True)",
-            start_x=10, start_y=10, font_size=15, color=arcade.color.WHITE,
+            x=10, y=10, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
         self.text_depth = arcade.Text(
             "F1: Toggle depth test (True)",
-            start_x=10, start_y=30, font_size=15, color=arcade.color.WHITE,
+            x=10, y=30, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
         self.text_wireframe = arcade.Text(
             "SPACE: Toggle wireframe (False)",
-            start_x=10, start_y=50, font_size=15, color=arcade.color.WHITE,
+            x=10, y=50, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
         self.text_fs = arcade.Text(
             "F: Toggle fullscreen (False)",
-            start_x=10, start_y=70, font_size=15, color=arcade.color.WHITE,
+            x=10, y=70, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
         self.text_vert_count = arcade.Text(
             "Use mouse wheel to add/remove vertices",
-            start_x=10, start_y=90, font_size=15, color=arcade.color.WHITE,
+            x=10, y=90, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
         self.text_rotate = arcade.Text(
             "Drag mouse to rotate object",
-            start_x=10, start_y=110, font_size=15, color=arcade.color.WHITE,
+            x=10, y=110, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
 

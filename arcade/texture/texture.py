@@ -26,11 +26,6 @@ from arcade.texture.transforms import (
     TransverseTransform,
 )
 
-from arcade.types import PointList
-from arcade.color import TRANSPARENT_BLACK
-from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache as _cache
-from arcade import hitbox
 from arcade.types import RGBA255, PointList
 
 if TYPE_CHECKING:
