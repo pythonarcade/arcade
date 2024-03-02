@@ -191,9 +191,7 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = (
-            hit_box_points or self._calculate_hit_box_points()
-        )
+        self._hit_box_points: PointList = hit_box_points or self._calculate_hit_box_points()
 
         # Track what atlases the image is in
         self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
@@ -750,17 +748,7 @@ class Texture:
         hit box algorithm. This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        # Check if we have cached points
-        points = _cache.hit_box_cache.get(self.cache_name)
-        if points:
-            return points
-
-        # Calculate points with the selected algorithm
-        points = self._hit_box_algorithm.calculate(self.image)
-        if self._hit_box_algorithm.cache:
-            _cache.hit_box_cache.put(self.cache_name, points)
-
-        return points
+        return self._hit_box_algorithm.calculate(self.image)
 
     # ----- Drawing functions -----
 
