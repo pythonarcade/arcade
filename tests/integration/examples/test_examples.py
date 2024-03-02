@@ -56,7 +56,7 @@ def test_examples(window_tools, module_path, allow_stdout):
     # * Do we have a main function?
     window_cls = find_class_inheriting_from_window(module)
     main_func = find_main_function(module)
-    print(window_cls, main_func)
+    # print(window_cls, main_func)
 
     if window_cls:
         assert main_func, f"Expected a main function in {module_path}"

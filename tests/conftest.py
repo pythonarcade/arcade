@@ -110,23 +110,27 @@ class WindowTools:
         default_members = None
         try:
             window = create_window()
+            print("Creating window", type(window), id(window))
             arcade.set_window(window)
 
             # The arcade window initializer must not be called
             arcade_init = arcade.Window.__init__
             example_init = window_cls.__init__
             def dummy_arcade_init(self, *args, **kwargs):
+                print("Calling dummy arcade init", type(self), id(self))
                 arcade.set_window(window)
-            def dummy_example_init(self, *args, **kwargs):                
+            def dummy_example_init(self, *args, **kwargs):
+                print("Calling dummy example init", type(self), id(self), args, kwargs)
                 def dummy_func(self, *args, **kwargs):
                     pass
                 window_cls.__init__ = dummy_func
                 example_init(window, *args, **kwargs)
+                # print(window.__dict__)
 
             arcade.Window.__init__ = dummy_arcade_init
             window_cls.__init__ = dummy_example_init
             window.__class__ = window_cls  # Make subclass of the instance
-            default_members = set(window.__dict__.keys())
+            # default_members = set(window.__dict__.keys())
             yield window
         finally:
             arcade.Window.__init__ = arcade_init
@@ -134,11 +138,11 @@ class WindowTools:
             window.__class__ = arcade.Window
 
             # Delete lingering members
-            if default_members:
-                new_members = list(window.__dict__.keys())
-                for member in new_members:
-                    if member not in default_members:
-                        del window.__dict__[member]
+            # if default_members:
+            #     new_members = list(window.__dict__.keys())
+            #     for member in new_members:
+            #         if member not in default_members:
+            #             del window.__dict__[member]
 
 
 
