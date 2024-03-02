@@ -724,15 +724,6 @@ class Texture:
 
     # ----- Utility functions -----
 
-    def remove_from_cache(self, ignore_error: bool = True) -> None:
-        """
-        Remove this texture from the cache.
-
-        :param ignore_error: If True, ignore errors if the texture is not in the cache
-        :return: None
-        """
-        _cache.texture_cache.delete(self)
-
     @staticmethod
     def validate_crop(
         image: PIL.Image.Image, x: int, y: int, width: int, height: int
