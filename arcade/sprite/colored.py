@@ -1,9 +1,11 @@
 from __future__ import annotations
+from typing import Optional
 
 import PIL
 import PIL.Image
 
-from arcade import cache, hitbox
+import arcade
+import arcade.cache
 from arcade.texture import (
     ImageData,
     Texture,
@@ -35,10 +37,7 @@ class SpriteSolidColor(Sprite):
     """
 
     __slots__ = ()
-    _default_image = ImageData(
-        PIL.Image.new("RGBA", size=(32, 32), color=(255, 255, 255, 255)),
-        hash="sprite_solid_color",
-    )
+    _default_image: Optional[ImageData] = None
 
     def __init__(
         self,
@@ -51,7 +50,7 @@ class SpriteSolidColor(Sprite):
         **kwargs,
     ):
         texture = Texture(
-            self._default_image,
+            self._get_default_image(),
             hit_box_points=(
                 (-width / 2, -height / 2),
                 (width / 2, -height / 2),
@@ -67,6 +66,17 @@ class SpriteSolidColor(Sprite):
             angle=angle,
         )
         self.color = Color.from_iterable(color)
+
+    def _get_default_image(self) -> ImageData:
+        """Lazy-load the default image for this sprite type."""
+        im = self.__class__._default_image
+        if im is None:
+            im = ImageData(
+                PIL.Image.new("RGBA", size=(32, 32), color=(255, 255, 255, 255)),
+                hash="sprite_solid_color",
+            )
+            self.__class__._default_image = im
+        return im
 
 
 class SpriteCircle(Sprite):
@@ -91,7 +101,13 @@ class SpriteCircle(Sprite):
                       center to transparent edges.
     """
 
-    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
+    def __init__(
+        self,
+        radius: int,
+        color: RGBA255,
+        soft: bool = False,
+        **kwargs
+    ):
         radius = int(radius)
         diameter = radius * 2
 
@@ -99,23 +115,23 @@ class SpriteCircle(Sprite):
         # is applied in the shader through the sprite's color attribute.
         # determine the texture's cache name.
         if soft:
-            cache_name = cache.crate_str_from_values(
+            cache_name = arcade.cache.crate_str_from_values(
                 "circle_texture_soft", diameter, 255, 255, 255, 255
             )
         else:
-            cache_name = cache.crate_str_from_values(
+            cache_name = arcade.cache.crate_str_from_values(
                 "circle_texture", diameter, 255, 255, 255, 255
             )
 
         # Get existing texture from cache if possible
-        texture = cache.texture_cache.get_with_config(cache_name, hitbox.algo_simple)
+        texture = arcade.texture.default_manager.texture_cache.get_with_config(cache_name, arcade.hitbox.algo_simple)
         if not texture:
             if soft:
                 texture = make_soft_circle_texture(
                     diameter,
                     color=(255, 255, 255, 255),
                     name=cache_name,
-                    hit_box_algorithm=hitbox.algo_simple,
+                    hit_box_algorithm=arcade.hitbox.algo_simple,
                 )
             else:
                 texture = make_circle_texture(
@@ -123,7 +139,7 @@ class SpriteCircle(Sprite):
                     color=(255, 255, 255, 255),
                     name=cache_name,
                 )
-            cache.texture_cache.put(texture)
+            arcade.texture.default_manager.texture_cache.put(texture)
 
         # apply results to the new sprite
         super().__init__(texture)
