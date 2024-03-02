@@ -1,10 +1,7 @@
 .. _pg_spritelists:
 
-Drawing with Sprites and SpriteLists
-------------------------------------
-
 What's a Sprite?
-^^^^^^^^^^^^^^^^
+----------------
 
 Each sprite describes where a game object is & how to draw it. This includes:
 
@@ -19,12 +16,12 @@ sprites to the screen.
 .. _pg_spritelists_why:
 
 Why SpriteLists?
-^^^^^^^^^^^^^^^^
+----------------
 
 .. _pg_spritelists_why_hardware:
 
 They're How Hardware Works
-""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Graphics hardware is designed to draw groups of objects at the same time.
 These groups are called **batches**.
@@ -41,7 +38,7 @@ should avoid trying to draw sprites one at a time.
 .. _pg_spritelists_why_faster_dev:
 
 They Help Develop Games Faster
-""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sprite lists do more than just draw. They also have built-in features which save
 you time & effort, including:
@@ -53,8 +50,8 @@ you time & effort, including:
 
 .. _pg_spritelists_minimal_sprite_drawing:
 
-Using Sprites and SpriteLists
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Drawing with Sprites and SpriteLists
+------------------------------------
 
 Let's get to the example code.
 
