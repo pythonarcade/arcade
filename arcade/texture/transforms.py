@@ -229,10 +229,3 @@ ORIENTATIONS: Dict[Tuple[int, int, int, int], Tuple[int, bool, bool]] = {
     (0, 2, 1, 3): (-90, True, False),  # Transpose
     (3, 1, 2, 0): (90, True, False),  # Transverse
 }
-
-
-def get_orientation(order: Tuple[int, int, int, int]) -> int:
-    """
-    Get orientation info from the vertex order
-    """
-    return 0
