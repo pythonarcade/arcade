@@ -56,7 +56,7 @@ class ImageData:
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
-    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
+    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None, **kwargs):
         self.image = image
         self.hash = hash or self.calculate_hash(image)
 
