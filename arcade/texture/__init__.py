@@ -14,11 +14,13 @@ from .generate import (
     make_soft_square_texture,
 )
 from .tools import (
-    cleanup_texture_cache,
     get_default_texture,
     get_default_image,
 )
-from .manager import TextureManager
+from .manager import TextureCacheManager
+
+default_manager = TextureCacheManager()
+
 
 __all__ = [
     "Texture",
@@ -30,9 +32,9 @@ __all__ = [
     "make_circle_texture",
     "make_soft_circle_texture",
     "make_soft_square_texture",
-    "cleanup_texture_cache",
     "get_default_texture",
     "get_default_image",
-    "TextureManager",
+    "TextureCacheManager",
     "SpriteSheet",
+    "default_manager",
 ]

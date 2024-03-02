@@ -98,7 +98,7 @@ from .application import get_screens
 from .application import open_window
 
 from .texture import Texture
-from .texture import TextureManager
+from .texture import TextureCacheManager
 from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
@@ -107,7 +107,6 @@ from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
-from .texture import cleanup_texture_cache
 from .texture import get_default_image
 from .texture import get_default_texture
 
@@ -275,7 +274,7 @@ __all__ = [
     'SpriteSolidColor',
     'Text',
     'Texture',
-    'TextureManager',
+    'TextureCacheManager',
     'SpriteSheet',
     'TextureAtlas',
     'TileMap',
@@ -365,7 +364,6 @@ __all__ = [
     'timings_enabled',
     'unschedule',
     'schedule_once',
-    'cleanup_texture_cache',
     'get_default_texture',
     'get_default_image',
     'hitbox',

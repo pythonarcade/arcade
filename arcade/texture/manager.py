@@ -12,7 +12,7 @@ from arcade.cache import (
 from . import SpriteSheet
 
 
-class TextureManager:
+class TextureCacheManager:
     """
     This class is used to manage textures. It is used to keep track of
     textures that have been loaded, and to make sure we don't load the
@@ -25,6 +25,18 @@ class TextureManager:
         self._hit_box_cache = HitBoxCache()
         self._image_data_cache = ImageDataCache()
         self._texture_cache = TextureCache()
+
+    @property
+    def hit_box_cache(self) -> HitBoxCache:
+        return self._hit_box_cache
+    
+    @property
+    def image_data_cache(self) -> ImageDataCache:
+        return self._image_data_cache
+
+    @property
+    def texture_cache(self) -> TextureCache:
+        return self._texture_cache
 
     def texture(
         self,
