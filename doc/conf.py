@@ -219,31 +219,24 @@ def source_read(_app, docname, source):
         filename = "../arcade/csscolor/__init__.py"
 
     if filename:
-        # print(f"  XXX Handling color file: {filename}")
-        import re
-        p = re.compile(r"^([A-Z_]+) = (\(.*\))")
 
-        original_text = source[0]
         append_text = "\n\n.. raw:: html\n\n"
         append_text += "    <table class='colorTable'><tbody>\n"
         color_file = open(filename)
 
         for line in color_file:
-            match = p.match(line)
-
-            if match:
-                color_variable_name = match.group(1)
-                color_tuple = tuple(int(num) for num in match.group(2).strip('()').split(','))
-                color_rgb_string = ', '.join(str(i) for i in color_tuple[:3])
+            if '= Color(' in line:
+                color_variable_name = line[:line.index('=')].strip()
+                color_rgba_string = line[line.index('('):].strip()
 
                 append_text += "    <tr>"
                 append_text += f"<td>{color_variable_name}</td>"
-                append_text += f"<td>{color_tuple}</td>"
-                append_text += f"<td style='background-color:rgba({color_rgb_string}, {color_tuple[3] / 255});'><div></div></td>"
+                append_text += f"<td>{color_rgba_string}</td>"
+                append_text += f"<td style='background-color:rgba{color_rgba_string};'><div></div></td>"
                 append_text += "</tr>\n"
 
         append_text += "    </tbody></table>"
-        source[0] = original_text + append_text
+        source[0] += append_text
 
 
 def post_process(_app, _exception):
