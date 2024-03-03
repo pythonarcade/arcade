@@ -1,8 +1,11 @@
-"""
-The main window class that all object-oriented applications should
-derive from.
+"""Clock variants of :py:class:`arcade.Window` and :py:class:`arcade.View`.
 
-THIS IS AN EXPERIMENTAL VERSION OF THE BASE WINDOW
+Unlike the main versions, they add support for using a clock and fixed
+updates. They use the following classes as dependencies:
+
+* :py:class:`arcade.experimental.clock.timer.Timer`
+* :py:class:`arcade.experimental.clock.clock.Clock`
+
 """
 from __future__ import annotations
 
@@ -42,12 +45,12 @@ __all__ = [
 
 
 class Window(pyglet.window.Window):
-    """
-    The Window class forms the basis of most advanced games that use Arcade.
-    It represents a window on the screen, and manages events.
+    """An experimental copy of :py:class:`arcade.Window` with timer features.
 
-    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
-    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+    .. warning:: This experiment has incomplete typing!
+
+    See the original :py:class:`arcade.Window` or the source code of the
+    class for more info.
 
     :param width: Window width
     :param height: Window height
