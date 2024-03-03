@@ -242,9 +242,9 @@ def source_read(_app, docname, source):
                     color_rgba_string = line[line.index('('):].strip()
                     
                     # Generate the alpha for CSS color function
-                    rgba_values = [x for x in color_rgba_string[1:-1].split(',')]
+                    rgba_values = [color_byte for color_byte in color_rgba_string[1:-1].split(',')]
                     alpha = int( rgba_values[-1] ) / 255
-                    css_rgba = f'{(", ").join(rgba_values[:-1])} , {str(alpha)}'
+                    css_rgba = f'{(", ").join(rgba_values[:-1])} , {alpha!s:.4}'
 
                     append_text += "    <tr>"
                     append_text += f"<td>{color_variable_name}</td>"
