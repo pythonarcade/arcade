@@ -98,7 +98,7 @@ def resolve(path: Union[str, Path]) -> Path:
     try:
         path = Path(path.resolve(strict=True))
     except AttributeError:
-        # WARNING: This is due to an issue caused by Nuitka overriding strings into janky path objec
+        # WARNING: This is due to an issue caused by Nuitka overriding strings into janky path object
         path = Path(path.absolute())
 
     # Always return absolute paths
