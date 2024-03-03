@@ -77,6 +77,8 @@ class MyGame(arcade.Window):
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
+        self.enemy_texture_left = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
+        self.enemy_texture_right = self.enemy_texture_left.flip_left_right()
 
         self.background_color = arcade.color.AMAZON
 
@@ -84,7 +86,6 @@ class MyGame(arcade.Window):
 
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
-        self.enemy_textures = arcade.load_texture_pair(":resources:images/enemies/slimeBlue.png")
 
         # Create rows and columns of enemies
         x_count = 7
@@ -98,7 +99,7 @@ class MyGame(arcade.Window):
                 # Create the enemy instance
                 # enemy image from kenney.nl
                 enemy = arcade.Sprite(
-                    self.enemy_textures[1],
+                    self.enemy_texture_right,
                     scale=SPRITE_SCALING_enemy,
                     center_x=x,
                     center_y=y
@@ -185,6 +186,9 @@ class MyGame(arcade.Window):
             arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 55)
             self.set_mouse_visible(True)
 
+    def on_key_press(self, key, modifiers):
+        self.ctx.default_atlas.show(draw_borders=True)
+
     def on_mouse_motion(self, x, y, dx, dy):
         """
         Called whenever the mouse moves.
@@ -206,7 +210,7 @@ class MyGame(arcade.Window):
         if len(self.player_bullet_list) < MAX_PLAYER_BULLETS:
 
             # Gunshot sound
-            arcade.play_sound(self.gun_sound)
+            # arcade.play_sound(self.gun_sound)
 
             # Create a bullet
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
@@ -250,9 +254,9 @@ class MyGame(arcade.Window):
                 enemy.center_y -= ENEMY_MOVE_DOWN_AMOUNT
                 # Flip texture on enemy so it faces the other way
                 if self.enemy_change_x > 0:
-                    enemy.texture = self.enemy_textures[0]
+                    enemy.texture = self.enemy_texture_left
                 else:
-                    enemy.texture = self.enemy_textures[1]
+                    enemy.texture = self.enemy_texture_right
 
     def allow_enemies_to_fire(self):
         """
