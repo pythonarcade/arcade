@@ -32,7 +32,7 @@ class CameraData:
 
 
 def duplicate_camera_data(origin: CameraData):
-    return CameraData(tuple(origin.position), tuple(origin.up), tuple(origin.forward), float(origin.zoom))
+    return CameraData(origin.position, origin.up, origin.forward, float(origin.zoom))
 
 
 @dataclass
