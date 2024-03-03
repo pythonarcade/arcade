@@ -174,3 +174,10 @@ body:not([data-theme="light"]) .highlight .c1 {
 .highlight .c1 {
     color: #007507;
 }
+
+.checkered {
+    background-image: url(../checkered.png);
+    background-repeat: repeat;
+    margin:0px;
+    padding: 0px;
+}

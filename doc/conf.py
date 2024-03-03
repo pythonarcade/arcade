@@ -206,7 +206,8 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
 
 
 def source_read(_app, docname, source):
-
+    """This function Generates the Color tables in the docs for color and csscolor packages"""
+    
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
@@ -223,14 +224,23 @@ def source_read(_app, docname, source):
         color_file = open(filename)
 
         for line in color_file:
+
+            # This matches the line with a Color.  It relies on properly formatted code.
             if '= Color(' in line:
+
+                # Extract the Color Name and RGBA string
                 color_variable_name = line[:line.index('=')].strip()
                 color_rgba_string = line[line.index('('):].strip()
+                
+                # Generate the alpha for CSS color function
+                rgba_values = [x for x in color_rgba_string.strip('()').split(',')]
+                alpha = int( rgba_values[-1] ) / 255
+                css_rgba = (", ").join(rgba_values[:-1]) + f', {str(alpha)}'
 
                 append_text += "    <tr>"
                 append_text += f"<td>{color_variable_name}</td>"
                 append_text += f"<td>{color_rgba_string}</td>"
-                append_text += f"<td style='background-color:rgba{color_rgba_string};'><div></div></td>"
+                append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
                 append_text += "</tr>\n"
 
         append_text += "    </tbody></table>"
