@@ -31,6 +31,10 @@ class CameraData:
     zoom: float = 1.0
 
 
+def duplicate_camera_data(origin: CameraData):
+    return CameraData(tuple(origin.position), tuple(origin.up), tuple(origin.forward), float(origin.zoom))
+
+
 @dataclass
 class OrthographicProjectionData:
     """
