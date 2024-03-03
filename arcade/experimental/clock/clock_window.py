@@ -383,7 +383,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_fixed_update(self, delta_time: float):
+    def on_fixed_update(self, delta_time: float) -> None:
         """
         Perform game logic which needs regular interval updates. Put sprite movement
         collisions, and physics updates here.
@@ -1018,7 +1018,7 @@ class View:
         """To be overridden"""
         pass
 
-    def on_fixed_update(self, delta_time: float):
+    def on_fixed_update(self, delta_time: float) -> None:
         """To be overridden"""
         pass
 
