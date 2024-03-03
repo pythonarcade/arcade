@@ -226,7 +226,7 @@ def source_read(_app, docname, source):
 
         # Will match '=Color(', '= Color(', '=Color (', and '= Color ('
         color_match = re.compile('=.?Color.?\(')
-        
+
         with open(filename) as color_file:
             for line in color_file:
 
