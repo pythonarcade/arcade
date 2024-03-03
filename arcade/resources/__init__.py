@@ -95,6 +95,12 @@ def resolve(path: Union[str, Path]) -> Path:
         else:
             path = Path(path)
 
+    try:
+        path = Path(path.resolve(strict=True))
+    except Exception:
+        print("WARNING: This is due to an issue caused by Nuitka overriding strings into janky path object")
+        path = Path(path.absolute())
+
     # Always return absolute paths
     # Check for the existence of the file and provide useful feedback to
     # avoid deep stack trace into pathlib
