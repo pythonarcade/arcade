@@ -9,6 +9,7 @@ import os
 import sphinx.ext.autodoc
 import sphinx.transforms
 import docutils.nodes
+import re
 
 # --- Pre-processing Tasks
 
@@ -223,25 +224,29 @@ def source_read(_app, docname, source):
         append_text += "    <table class='colorTable'><tbody>\n"
         color_file = open(filename)
 
-        for line in color_file:
+        # Will match '=Color(', '= Color(', '=Color (', and '= Color ('
+        color_match = re.compile('=.?Color.?\(')
+        
+        with open(filename) as color_file:
+            for line in color_file:
 
-            # This matches the line with a Color.  It relies on properly formatted code.
-            if '= Color(' in line:
+                # Check if the line has a Color.
+                if color_match.search(line):
 
-                # Extract the Color Name and RGBA string
-                color_variable_name = line[:line.index('=')].strip()
-                color_rgba_string = line[line.index('('):].strip()
-                
-                # Generate the alpha for CSS color function
-                rgba_values = [x for x in color_rgba_string.strip('()').split(',')]
-                alpha = int( rgba_values[-1] ) / 255
-                css_rgba = (", ").join(rgba_values[:-1]) + f', {str(alpha)}'
+                    # Extract the Color Name and RGBA string
+                    color_variable_name = line[:line.index('=')].strip()
+                    color_rgba_string = line[line.index('('):].strip()
+                    
+                    # Generate the alpha for CSS color function
+                    rgba_values = [x for x in color_rgba_string[1:-1].split(',')]
+                    alpha = int( rgba_values[-1] ) / 255
+                    css_rgba = f'{(", ").join(rgba_values[:-1])} , {str(alpha)}'
 
-                append_text += "    <tr>"
-                append_text += f"<td>{color_variable_name}</td>"
-                append_text += f"<td>{color_rgba_string}</td>"
-                append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
-                append_text += "</tr>\n"
+                    append_text += "    <tr>"
+                    append_text += f"<td>{color_variable_name}</td>"
+                    append_text += f"<td>{color_rgba_string}</td>"
+                    append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
+                    append_text += "</tr>\n"
 
         append_text += "    </tbody></table>"
         source[0] += append_text
