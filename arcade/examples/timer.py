@@ -21,8 +21,8 @@ class MyGame(arcade.Window):
         self.total_time = 0.0
         self.timer_text = arcade.Text(
             text="00:00:00",
-            start_x=SCREEN_WIDTH // 2,
-            start_y=SCREEN_HEIGHT // 2 - 50,
+            x=SCREEN_WIDTH // 2,
+            y=SCREEN_HEIGHT // 2 - 50,
             color=arcade.color.WHITE,
             font_size=100,
             anchor_x="center",

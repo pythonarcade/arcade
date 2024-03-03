@@ -8,18 +8,43 @@ The GUI is structured like a tree; every widget can have other widgets as
 children.
 
 The root of the tree is the :py:class:`~arcade.gui.UIManager`. The
-:class:`UIManager` connects the user interactions with the GUI. Read more about
+:py:class:`UIManager` connects the user interactions with the GUI. Read more about
 :ref:`UIEvent`.
 
 Classes of arcade's GUI code are prefixed with ``UI-`` to make them easy to
 identify and search for in autocompletion.
 
+Classes
+=======
+
+Following classes provide the basic structure of the GUI.
+
+UIManager
+`````````
+
+:py:class:`~arcade.gui.UIManager` is the starting point for the GUI.
+
+To use the GUI, you need to create a :py:class:`~arcade.gui.UIManager` instance and
+call its :py:meth:`~arcade.gui.UIManager.add` method to add widgets to the GUI.
+Each :py:class:`~arcade.View` should have its own :py:class:`~arcade.gui.UIManager`.
+(If you don't use views, you can use a single :py:class:`~arcade.gui.UIManager` for the window.)
+
+The :py:class:`~arcade.gui.UIManager` does not react to any user input initially.
+You have to call :py:meth:`~arcade.gui.UIManager.enable()` within :py:meth:`~arcade.View.on_show_view`.
+And disable it with :py:meth:`~arcade.gui.UIManager.disable()` within :py:meth:`~arcade.View.on_hide_view`.
+
+To draw the GUI, call :py:meth:`~arcade.gui.UIManager.draw` within the :py:meth:`~arcade.View.on_draw` method.
+
+
 UIWidget
-========
+````````
 
 The :py:class:`~arcade.gui.UIWidget` class is the core of arcade's GUI system.
 Widgets specify the behavior and graphical representation of any UI element,
 such as buttons or labels.
+
+User interaction with widgets is processed within :py:meth:`~arcade.gui.UIWidget.on_event`.
+
 
 A :class:`UIWidget` has following properties.
 
@@ -48,21 +73,63 @@ A :class:`UIWidget` has following properties.
 
 ``size_hint_min``
     A tuple of two integers defining the minimum width and height of the
-    widget. Attempting to set a smaller width or height on the widget will fail
-    by defaulting to the minimum values specified here.
+    widget. These values should be taken into account by :class:`UILayout` when
+    a ``size_hint`` is given for the axis.
 
 ``size_hint_max``
     A tuple of two integers defining the maximum width and height of the
-    widget. Attempting to set a larger width or height greater will fail by
-    defaulting to the to the maximum values specified here.
+    widget. These values should be taken into account by :class:`UILayout` when
+    a ``size_hint`` is given for the axis.
 
 .. warning:: Size hints do nothing on their own!
 
     They are hints to :class:`UILayout` instances, which may choose to use or
     ignore them.
 
-Rendering
-`````````
+UILayout
+````````
+
+:py:class:`~arcade.gui.UILayout` are widgets, which reserve the right to move
+or resize children. They might respect special properties of a widget like
+``size_hint``, ``size_hint_min``, or ``size_hint_max``.
+
+The :py:class:`arcade.gui.UILayout` must only resizes a child's dimension (x or y
+axis) if ``size_hint`` provides a value for the axis, which is not ``None`` for
+the dimension.
+
+
+Drawing
+=======
+
+The GUI is optimised to be as performant as possible. This means that the GUI
+splits up the positioning and rendering of each widget and drawing of the result on screen.
+
+Widgets are positioned and then rendered into a framebuffer (something like a window sized image),
+which is only updated if a widget changed and requested rendering
+(via :py:meth:`~arcade.gui.UIWidget.trigger_render` or :py:meth:`~arcade.gui.UIWidget.trigger_full_render`).
+
+During :py:meth:`~arcade.gui.UIManager.draw`, will check if updates are required and
+finally draws on screen.
+
+Layouting and Rendering
+```````````````````````
+
+:py:class:`~arcade.gui.UIManager` triggers layouting and rendering of the GUI before the actual frame draw (if necessary).
+This way, the GUI can adjust to multiple changes only once.
+
+Layouting is a two-step process:
+1. Prepare layout, which prepares children and updates own values
+2. Do layout, which actually sets the position and size of the children
+
+Rendering is not executed during each draw call.
+Changes to following widget properties will trigger rendering:
+
+- rect
+- children
+- background
+- border_width, border_color
+- padding
+- widget-specific properties (like text, texture, ...)
 
 :py:meth:`~arcade.gui.UIWidget.do_render` is called recursively if rendering
 was requested via :py:meth:`~arcade.gui.UIWidget.trigger_render`. In case
@@ -81,20 +148,8 @@ rendering.
 
     Enforced rendering of the whole GUI might be very expensive!
 
-UILayout
-========
-
-:py:class:`~arcade.gui.UILayout` are widgets, which reserve the option to move
-or resize children. They might respect special properties of a widget like
-``size_hint``, ``size_hint_min``, or ``size_hint_max``.
-
-The :py:class:`arcade.gui.UILayout` only resizes a child's dimension (x or y
-axis) if ``size_hint`` provides a value for the axis, which is not ``None`` for
-the dimension.
-
-
-Algorithm
-`````````
+Layout Algorithm by example
+```````````````````````````
 
 :py:class:`arcade.gui.UIManager` triggers the layout and render process right
 before the actual frame draw. This opens the possibility to adjust to multiple
@@ -102,11 +157,12 @@ changes only once.
 
 **Example**: Executed steps within :py:class:`~arcade.gui.UIBoxLayout`:
 
-1. :py:meth:`~arcade.UIBoxLayout.do_layout`
+1. :py:meth:`~arcade.UIBoxLayout.prepare_layout` updates own size_hints
+2. :py:meth:`~arcade.UIBoxLayout.do_layout`
     1. Collect current ``size``, ``size_hint``, ``size_hint_min`` of children
     2. Calculate the new position and sizes
     3. Set position and size of children
-2. Recursively call ``do_layout`` on child layouts (last step in
+3. Recursively call ``do_layout`` on child layouts (last step in
    :py:meth:`~arcade.gui.UIBoxLayout.do_layout`)
 
 .. code-block::
@@ -114,13 +170,24 @@ changes only once.
          ┌─────────┐          ┌────────┐                      ┌────────┐
          │UIManager│          │UILayout│                      │children│
          └────┬────┘          └───┬────┘                      └───┬────┘
-              │   do_layout()    ┌┴┐                              │
+              │ prepare_layout() ┌┴┐                              │
               │─────────────────>│ │                              │
               │                  │ │                              │
+              │     ╔═══════╤════╪═╪══════════════════════════════╪══════════════╗
+              │     ║ LOOP  │  sub layouts                        │              ║
+              │     ╟───────┘    │ │                              │              ║
+              │     ║            │ │       prepare_layout()       │              ║
+              │     ║            │ │ ─────────────────────────────>              ║
+              │     ╚════════════╪═╪══════════════════════════════╪══════════════╝
               │                  │ │                              │
+              │<─ ─ ─ ─ ─ ─ ─ ─ ─│ │                              │
+              │                  │ │                              │
+              │ do_layout()      │ │                              │
+              │─────────────────>│ │                              │
               │     ╔════════════╪═╪════╤═════════════════════════╪══════════════╗
               │     ║ place children    │                         │              ║
-              │     ╟────────────────use size, size_hint, ...     │              ║
+              │     ╟───────────────────┘                         │              ║
+              │     ║            │ │   use size, size_hint, ...   │              ║
               │     ║            │ │ <─────────────────────────────              ║
               │     ║            │ │                              │              ║
               │     ║            │ │       set size and pos       │              ║
@@ -153,7 +220,7 @@ Size hint support
 +--------------------------+------------+----------------+----------------+
 | :class:`UIGridLayout`    | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
-| :class:`UIManager`       | X          | X              |                |
+| :class:`UIManager`       | X          | X              | X              |
 +--------------------------+------------+----------------+----------------+
 
 UIMixin
@@ -162,12 +229,21 @@ UIMixin
 Mixin classes are a base class which can be used to apply some specific
 behaviour. Currently the available Mixins are still under heavy development.
 
-Constructs
-==========
+Available:
 
-Constructs are predefined structures of widgets and layouts like a message box
-or (not yet available) file dialogues.
+- :py:class:`UIDraggableMixin`
+- :py:class:`UIMouseFilterMixin`
+- :py:class:`UIWindowLikeMixin`
 
+UIConstructs
+============
+
+Constructs are predefined structures of widgets and layouts like a message box.
+
+Available:
+
+- :py:class:`UIMessageBox`
+- :py:class:`UIButtonRow`
 
 Available Elements
 ==================
@@ -180,8 +256,8 @@ parameters for their sizing. Buttons specifically have two more parameters -
 ``text`` and ``multiline``.
 
 All button types support styling. And they are text widgets, which means you
-can use the :py:attr:`~arcade.gui.UITextWidget._label` attribute to get the
-label component of the button.
+can use the :py:attr:`~arcade.gui.UITextWidget.ui_label` attribute to get the
+:py:class:`~arcade.gui.UILabel` component of the button.
 
 Flat button
 ^^^^^^^^^^^

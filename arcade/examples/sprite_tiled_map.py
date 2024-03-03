@@ -68,15 +68,15 @@ class MyGame(arcade.Window):
         # Text
         self.fps_text = arcade.Text(
             "",
-            start_x=10,
-            start_y=40,
+            x=10,
+            y=40,
             color=arcade.color.BLACK,
             font_size=14
         )
         self.distance_text = arcade.Text(
             "0.0",
-            start_x=10,
-            start_y=20,
+            x=10,
+            y=20,
             color=arcade.color.BLACK,
             font_size=14,
         )

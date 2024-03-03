@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 
 __all__ = ["Surface", "UIDummy"]
 
+
 class Rect(NamedTuple):
     """
     Representing a rectangle for GUI module.
@@ -58,7 +59,7 @@ class Rect(NamedTuple):
 
     def collide_with_point(self, x, y):
         left, bottom, width, height = self
-        return left < x < left + width and bottom < y < bottom + height
+        return left <= x <= left + width and bottom <= y <= bottom + height
 
     def scale(self, scale: float) -> "Rect":
         """Returns a new rect with scale applied"""
@@ -183,12 +184,7 @@ class Rect(NamedTuple):
         y = min(self.y, rect.y)
         right = max(self.right, rect.right)
         top = max(self.top, rect.top)
-        return Rect(
-            x=x,
-            y=y,
-            width=right - x,
-            height=top - y
-        )
+        return Rect(x=x, y=y, width=right - x, height=top - y)
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -222,6 +218,10 @@ class UIWidget(EventDispatcher, ABC):
     rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
+    size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+
     _children: List[_ChildEntry] = ListProperty()  # type: ignore
     _border_width: int = Property(0)  # type: ignore
     _border_color: Optional[RGBA255] = Property(arcade.color.BLACK)  # type: ignore
@@ -247,7 +247,7 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max=None,  # in pixel
         **kwargs,
     ):
-        self._rendered = False
+        self._requires_render = True
         self.rect = Rect(x, y, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
 
@@ -275,13 +275,6 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "_padding_right", self.trigger_render)
         bind(self, "_padding_bottom", self.trigger_render)
         bind(self, "_padding_left", self.trigger_render)
-
-    def trigger_render(self):
-        """
-        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
-        is not called multiple times.
-        """
-        self._rendered = False
 
     def add(self, child: W, **kwargs) -> W:
         """
@@ -351,12 +344,26 @@ class UIWidget(EventDispatcher, ABC):
         if parent:
             yield parent  # type: ignore
 
+    def trigger_render(self):
+        """
+        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
+        is not called multiple times.
+        """
+        self._requires_render = True
+
     def trigger_full_render(self) -> None:
         """In case a widget uses transparent areas or was moved,
         it might be important to request a full rendering of parents"""
         self.trigger_render()
         for parent in self._walk_parents():
             parent.trigger_render()
+
+    def _prepare_layout(self):
+        """Helper function to trigger :meth:`UILayout.prepare_layout` through the widget tree,
+        should only be used internally!
+        """
+        for child in self.children:
+            child._prepare_layout()
 
     def _do_layout(self):
         """Helper function to trigger :meth:`UIWidget.do_layout` through the widget tree,
@@ -374,12 +381,12 @@ class UIWidget(EventDispatcher, ABC):
         """
         rendered = False
 
-        should_render = force or not self._rendered
+        should_render = force or self._requires_render
         if should_render and self.visible:
             rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
-            self._rendered = True
+            self._requires_render = False
 
         # only render children if self is visible
         if self.visible:
@@ -400,11 +407,7 @@ class UIWidget(EventDispatcher, ABC):
         # draw background texture
         if self._bg_tex:
             surface.draw_texture(
-                x=0,
-                y=0,
-                width=self.width,
-                height=self.height,
-                tex=self._bg_tex
+                x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex
             )
 
         # draw border
@@ -534,7 +537,7 @@ class UIWidget(EventDispatcher, ABC):
     def resize(self, *, width=None, height=None):
         self.rect = self.rect.resize(width=width, height=height)
 
-    def with_border(self, width=2, color=(0, 0, 0)) -> Self:
+    def with_border(self, *, width=2, color=(0, 0, 0)) -> Self:
         """
         Sets border properties
         :param width: border width
@@ -547,11 +550,12 @@ class UIWidget(EventDispatcher, ABC):
 
     def with_padding(
         self,
+        *,
         top: Union["builtins.ellipsis", int] = ...,
         right: Union["builtins.ellipsis", int] = ...,
         bottom: Union["builtins.ellipsis", int] = ...,
         left: Union["builtins.ellipsis", int] = ...,
-        all: Union["builtins.ellipsis", int] = ...
+        all: Union["builtins.ellipsis", int] = ...,
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
@@ -572,10 +576,9 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color: Union["builtins.ellipsis", Color]=...,
+        color: Union["builtins.ellipsis", Color] = ...,
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
-
         """
         Set widgets background.
 
@@ -749,6 +752,7 @@ class UIDummy(UIInteractiveWidget):
 
     def __init__(
         self,
+        *,
         x=0,
         y=0,
         width=100,
@@ -834,7 +838,7 @@ class UISpriteWidget(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            **kwargs
+            **kwargs,
         )
         self._sprite = sprite
 
@@ -866,14 +870,39 @@ class UILayout(UIWidget):
     :param style: not used
     """
 
-    def do_layout(self):
+    @staticmethod
+    def min_size_of(child: UIWidget) -> Tuple[float, float]:
         """
-        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
-        Do layout will be triggered on children afterwards.
+        Resolves the minimum size of a child. If it has a size_hint set for the axis,
+        it will use size_hint_min if set, otherwise the size will be used.
+        """
+        sh_w, sh_h = child.size_hint or (None, None)
+        shmn_w, shmn_h = child.size_hint_min or (None, None)
 
-        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
-        if the position or size of this widget changed.
+        min_w, min_h = child.size
+
+        if sh_w is not None:
+            min_w = shmn_w or 0
+
+        if sh_h is not None:
+            min_h = shmn_h or 0
+
+        return min_w, min_h
+
+    def _prepare_layout(self):
+        """Triggered to prepare layout of this widget and its children.
+        Common example is to update size_hints(min/max)."""
+        super()._prepare_layout()
+        self.prepare_layout()
+
+    def prepare_layout(self):
         """
+        Triggered by the UIManager before layouting,
+        :class:`UILayout` s should prepare themselves based on children.
+
+        Prepare layout is triggered on children first.
+        """
+        pass
 
     def _do_layout(self):
         # rect change will trigger full render automatically
@@ -881,6 +910,15 @@ class UILayout(UIWidget):
 
         # Continue do_layout within subtree
         super()._do_layout()
+
+    def do_layout(self):
+        """
+        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
+        Do layout will be triggered on children afterward.
+
+        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
+        if the position or size of this widget changed.
+        """
 
 
 class UISpace(UIWidget):
@@ -900,6 +938,7 @@ class UISpace(UIWidget):
 
     def __init__(
         self,
+        *,
         x=0,
         y=0,
         width=100,
@@ -908,7 +947,6 @@ class UISpace(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style=None,
         **kwargs,
     ):
         super().__init__(

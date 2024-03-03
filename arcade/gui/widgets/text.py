@@ -35,6 +35,7 @@ class UILabel(UIWidget):
     By default, a label will fit its initial content. If the text is changed use
     :py:meth:`~arcade.gui.UILabel.fit_content` to adjust the size.
 
+    :param text: Text displayed on the label.
     :param x: x position (default anchor is bottom-left).
     :param y: y position (default anchor is bottom-left).
     :param width: Width of the label. Defaults to text width if not
@@ -43,7 +44,6 @@ class UILabel(UIWidget):
     :param height: Height of the label. Defaults to text height if not
                          specified. See
                          :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
-    :param text: Text displayed on the label.
     :param font_name: A list of fonts to use. Arcade will start at the beginning
                       of the tuple and keep trying to load fonts until success.
     :param font_size: Font size of font.
@@ -70,11 +70,12 @@ class UILabel(UIWidget):
 
     def __init__(
         self,
+        text: str = "",
+        *,
         x: float = 0,
         y: float = 0,
         width: Optional[float] = None,
         height: Optional[float] = None,
-        text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
         text_color: RGBOrA255 = (255, 255, 255, 255),
@@ -87,10 +88,18 @@ class UILabel(UIWidget):
         size_hint_max=None,
         **kwargs,
     ):
+        # If multiline is enabled and no width is given, we need to fit the
+        # size to the text. This is done by setting the width to a very
+        # large value and then fitting the size.
+        adaptive_multiline = False
+        if multiline and not width:
+            width = 999999
+            adaptive_multiline = True
+
         # Use Arcade Text wrapper of pyglet.Label for text rendering
         self.label = arcade.Text(
-            start_x=0,
-            start_y=0,
+            x=0,
+            y=0,
             text=text,
             font_name=font_name,
             font_size=font_size,
@@ -99,10 +108,13 @@ class UILabel(UIWidget):
             bold=bold,
             italic=italic,
             align=align,
-            anchor_y="bottom",   # Position text bottom left to fit into scissor
-            multiline=multiline, # area
+            anchor_y="bottom",  # Position text bottom left to fit into scissor area
+            multiline=multiline,
             **kwargs,
         )
+        if adaptive_multiline:
+            # +1 is required to prevent line wrap
+            width = self.label.content_width + 1
 
         super().__init__(
             x=x,
@@ -124,6 +136,7 @@ class UILabel(UIWidget):
             self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
+        self._update_size_hint_min()
 
     def fit_content(self):
         """
@@ -152,6 +165,7 @@ class UILabel(UIWidget):
         if self.label.text != value:
             self.label.text = value
             self._update_layout()
+            self._update_size_hint_min()
             self.trigger_full_render()
 
     def _update_layout(self):
@@ -164,6 +178,9 @@ class UILabel(UIWidget):
             layout.width = int(self.content_width)
             layout.height = int(self.content_height)
 
+    def _update_size_hint_min(self):
+        self.size_hint_min = self.label.content_width, self.label.content_height
+
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
@@ -173,19 +190,18 @@ class UILabel(UIWidget):
 class UITextWidget(UIAnchorLayout):
     """
     Adds the ability to add text to a widget.
+    Use this to create subclass widgets, which have text.
 
     The text can be placed within the widget using
     :py:class:`~arcade.gui.UIAnchorLayout` parameters with
     :py:meth:`~arcade.gui.UITextWidget.place_text`.
     """
 
-    def __init__(self, text: str = "", multiline: bool = False, **kwargs):
+    def __init__(self, *, text: str, multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
 
         self._label = UILabel(
-            text=text,
-            multiline=multiline,
-            width=1000 if multiline else None
+            text=text, multiline=multiline, width=1000 if multiline else None
         )  # width 1000 try to prevent line wrap if multiline is enabled
 
         self.add(self._label)
@@ -193,12 +209,14 @@ class UITextWidget(UIAnchorLayout):
 
         bind(self, "rect", self.ui_label.fit_content)
 
-    def place_text(self,
-                   anchor_x: Optional[str] = None,
-                   align_x: float = 0,
-                   anchor_y: Optional[str] = None,
-                   align_y: float = 0,
-                   **kwargs):
+    def place_text(
+        self,
+        anchor_x: Optional[str] = None,
+        align_x: float = 0,
+        anchor_y: Optional[str] = None,
+        align_y: float = 0,
+        **kwargs,
+    ):
         """
         Place widget's text within the widget using
         :py:class:`~arcade.gui.UIAnchorLayout` parameters.
@@ -210,7 +228,7 @@ class UITextWidget(UIAnchorLayout):
             align_x=align_x,
             anchor_y=anchor_y,
             align_y=align_y,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -236,11 +254,11 @@ class UITextWidget(UIAnchorLayout):
         If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
         instead.
         """
-        return self.label.multiline
+        return self._label.label.multiline
 
     @multiline.setter
     def multiline(self, value):
-        self.label.multiline = value
+        self._label.label.multiline = value
         self.ui_label.fit_content()
         self.trigger_render()
 
@@ -295,6 +313,7 @@ class UIInputText(UIWidget):
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
@@ -342,8 +361,7 @@ class UIInputText(UIWidget):
 
     def _get_caret_blink_state(self):
         """Check whether or not the caret is currently blinking or not."""
-        return self.caret.visible and self._active and \
-               self.caret._blink_visible
+        return self.caret.visible and self._active and self.caret._blink_visible
 
     def on_update(self, dt):
         # Only trigger render if blinking state changed
@@ -386,20 +404,17 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and \
-               self.rect.collide_with_point(
+            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
                 event.x, event.y
             ):
                 x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy,
-                        event.buttons, event.modifiers
+                        x, y, event.dx, event.dy, event.buttons, event.modifiers
                     )
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
-                    self.caret.on_mouse_scroll(
-                        x, y, event.scroll_x, event.scroll_y)
+                    self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
                     self.trigger_full_render()
 
         if super().on_event(event):
@@ -461,6 +476,7 @@ class UITextArea(UIWidget):
 
     def __init__(
         self,
+        *,
         x: float = 0,
         y: float = 0,
         width: float = 400,
@@ -489,10 +505,7 @@ class UITextArea(UIWidget):
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.
         # Measured in pixels per 'click'
-        self.scroll_speed = (
-            scroll_speed if scroll_speed is not None
-            else font_size
-        )
+        self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(
@@ -554,7 +567,7 @@ class UITextArea(UIWidget):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                self.layout.view_y += event.scroll_y * self.scroll_speed   # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
+                self.layout.view_y += event.scroll_y * self.scroll_speed  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
                 self.trigger_full_render()
 
         if super().on_event(event):

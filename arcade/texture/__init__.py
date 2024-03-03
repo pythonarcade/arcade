@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .texture import Texture, ImageData
+from .spritesheet import SpriteSheet
 from .loading import (
     load_texture,
     load_textures,
@@ -17,6 +18,7 @@ from .tools import (
     get_default_texture,
     get_default_image,
 )
+from .manager import TextureManager
 
 __all__ = [
     "Texture",
@@ -31,4 +33,6 @@ __all__ = [
     "cleanup_texture_cache",
     "get_default_texture",
     "get_default_image",
- ]
+    "TextureManager",
+    "SpriteSheet",
+]

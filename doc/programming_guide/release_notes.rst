@@ -48,6 +48,16 @@ API in a way that is not compatible with how it was used in 2.6.
 * The GUI package has been changed significantly.
 * Buffered shapes (shape list items) have been moved to their own sub-module.
 * `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
+* :py:meth:`~arcade.draw_text()` and :py:class:`~arcade.text.Text` arguments have changed. The `start_x` and `start_y` parameters have been
+  removed. The `x` and `y` parameters are now required. `align!=left` does not interfere with `multiline` parameter anymore.
+* GUI
+
+  * Removed :py:class:`~arcade.gui.widgets.UIWrapper` this is now general available in :py:class:`~arcade.gui.widgets.UILayout`
+  * Removed :py:class:`~arcade.gui.widgets.UIBorder` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIPadding` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UITexturePane` this is now general available in :py:class:`~arcade.gui.widgets.UIWidget`
+  * Removed :py:class:`~arcade.gui.widgets.UIAnchorWidget` replaced by :py:class:`~arcade.gui.widgets.UIAnchorLayout`
+
 
 Featured Updates
 ~~~~~~~~~~~~~~~~
@@ -1504,11 +1514,6 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: ../example_code/how_to_examples/bloom_defender.png
-    :width: 30%
-    :class: inline-image
-    :target: examples/bloom_defender.html
-
 .. image:: ../tutorials/pymunk_platformer/title_animated_gif.gif
     :width: 30%
     :class: inline-image
@@ -1536,7 +1541,7 @@ Version 2.4 Major Features
   advanced OpenGL programming. New API in Arcade Open GL.
 
     * Support to render to frame buffer, then re-render.
-    * Use frame buffers to create a 'glow' or 'bloom' effect: :ref:`bloom_defender`.
+    * Use frame buffers to create a 'glow' or 'bloom' effect
     * Use frame-buffers to support lights: :ref:`light_demo`.
 
 * New support for style-able GUI elements.

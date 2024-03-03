@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
         self.sprites.draw()  # Force the list to build
 
         self.sprites.program = self.ctx.sprite_list_program_no_cull
-        print(f"Initialization time: {time.time() -start}")
+        print(f"Initialization time: {time.time() - start}")
 
         self.query = self.ctx.query()
         self.frames = 0

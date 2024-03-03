@@ -7,6 +7,7 @@ from weakref import WeakKeyDictionary, ref
 
 P = TypeVar("P")
 
+
 class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
@@ -73,12 +74,16 @@ class Property(Generic[P]):
         # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
         obs.listeners.add(callback)
 
+    def unbind(self, instance, callback):
+        obs = self._get_obs(instance)
+        obs.listeners.remove(callback)
+
     def __set_name__(self, owner, name):
         self.name = name
 
     def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self # type: ignore
+            return self  # type: ignore
         return self.get(instance)
 
     def __set__(self, instance, value):
@@ -111,6 +116,35 @@ def bind(instance, property: str, callback):
     prop = getattr(t, property)
     if isinstance(prop, Property):
         prop.bind(instance, callback)
+
+
+def unbind(instance, property: str, callback):
+    """
+    Unbinds a function from the change event of the property.
+
+        def log_change():
+            print("Something changed")
+
+        class MyObject:
+            name = Property()
+
+        my_obj = MyObject()
+        bind(my_obj, "name", log_change)
+        unbind(my_obj, "name", log_change)
+
+        my_obj.name = "Hans"
+        # > Something changed
+
+
+    :param instance: Instance owning the property
+    :param property: Name of the property
+    :param callback: Function to unbind
+    :return: None
+    """
+    t = type(instance)
+    prop = getattr(t, property)
+    if isinstance(prop, Property):
+        prop.unbind(instance, callback)
 
 
 class _ObservableDict(dict):

@@ -46,9 +46,14 @@ titles = {
     'texture/texture.py': ['Texture Management', 'texture.rst'],
     'texture/loading.py': ['Texture Management', 'texture.rst'],
     'texture/generate.py': ['Texture Management', 'texture.rst'],
+    'texture/manager.py': ['Texture Management', 'texture.rst'],
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
+    'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
     'math.py': ['Math', 'math.rst'],
     'types.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
@@ -60,9 +65,6 @@ titles = {
     'utils.py': ['Misc Utility Functions', 'utility.rst'],
     'window_commands.py': ['Window and View', 'window.rst'],
     'sections.py': ['Window and View', 'window.rst'],
-    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/helpers.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
@@ -84,6 +86,8 @@ titles = {
     'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
     'gui/style.py': ['GUI Style', 'gui_style.rst'],
+    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
@@ -102,15 +106,21 @@ titles = {
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 excluded_modules = [
-    'version.py'
+    'version.py',
+    'texture_atlas/atlas_array.py',
+    'texture_atlas/atlas_bindless.py',
+    'texture_atlas/helpers.py',
+    'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
     "ImageData",
-    "AtlasRegion",
-    "ImageDataRefCounter",
     "FakeImage",
+    "load_atlas",
+    "save_atlas",
+    "ImageDataRefCounter",
+    "UVData",
 ]
 
 def get_member_list(filepath):
@@ -188,10 +198,11 @@ def process_directory(directory: Path, quick_index_file):
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
-            "texture_atlas": "arcade",
+            "texture_atlas": "arcade.texture_atlas",
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
+            "experimental": "arcade.gui.experimental",
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
@@ -209,6 +220,7 @@ def process_directory(directory: Path, quick_index_file):
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
         path_name = prepend + path.name
+        # print(package, path.name, path_name)
 
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
@@ -326,6 +338,7 @@ def main():
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
+    process_directory(ROOT / "arcade/gui/experimental", text_file)
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()

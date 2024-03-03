@@ -76,6 +76,7 @@ class VideoPlayer:
             height /= video_format.sample_aspect
         return width, height
 
+
 class VideoPlayerView(arcade.View):
     def __init__(self, path: Union[str, Path]) -> None:
         super().__init__()

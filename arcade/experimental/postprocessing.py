@@ -202,6 +202,7 @@ class BloomEffect(PostProcessing):
         # self._cb_luma_program['brightness'] = 0.0
         self._cb_luma_buffer.use()
         self._cb_luma_buffer.clear()
+        source.use(0)
         self._quad_fs.render(self._cb_luma_program)
 
         blurred = self._gaussian_1.render(self._cb_luma_buffer.color_attachments[0])

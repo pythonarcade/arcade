@@ -137,7 +137,6 @@ def _load_or_get_image(
     Load an image, or return a cached version
 
     :param file_path: Path to image
-    :param hit_box_algorithm: The hit box algorithm
     :param hash: Hash of the image
     :return: Tuple of image data and a boolean indicating if the image
              was fetched from cache

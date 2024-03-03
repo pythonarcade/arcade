@@ -140,7 +140,7 @@ class Emitter:
         p.change_y = vel.y
         self._particles.append(p)
 
-    def get_count(self):
+    def get_count(self) -> int:
         return len(self._particles)
 
     def get_pos(self) -> Point:

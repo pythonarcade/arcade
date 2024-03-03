@@ -68,7 +68,7 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
     return triangles
 
 
-def _is_clockwise(polygon: List[Point]):
+def _is_clockwise(polygon: List[Point]) -> bool:
     s = 0.0
     polygon_count = len(polygon)
     for i in range(polygon_count):
@@ -78,17 +78,17 @@ def _is_clockwise(polygon: List[Point]):
     return s > 0
 
 
-def _is_convex(prev: Point, point: Point, next_point: Point):
+def _is_convex(prev: Point, point: Point, next_point: Point) -> bool:
     return _triangle_sum(prev[0], prev[1], point[0], point[1], next_point[0], next_point[1]) < 0
 
 
-def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
+def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
     return _contains_no_points(p1, p2, p3, polygon) and \
         _is_convex(p1, p2, p3) and \
         _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
 
 
-def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
+def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
     for pn in polygon:
         if pn in (p1, p2, p3):
             continue
@@ -97,7 +97,7 @@ def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
     return True
 
 
-def _is_point_inside(p: Point, a: Point, b: Point, c: Point):
+def _is_point_inside(p: Point, a: Point, b: Point, c: Point) -> bool:
     area = _triangle_area(a[0], a[1], b[0], b[1], c[0], c[1])
     area1 = _triangle_area(p[0], p[1], b[0], b[1], c[0], c[1])
     area2 = _triangle_area(p[0], p[1], a[0], a[1], c[0], c[1])

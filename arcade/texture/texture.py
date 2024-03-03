@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 from weakref import WeakSet
 
 import PIL.Image
@@ -25,6 +25,7 @@ from arcade.texture.transforms import (
     TransposeTransform,
     TransverseTransform,
 )
+
 from arcade.types import RGBA255, PointList
 
 if TYPE_CHECKING:
@@ -863,22 +864,22 @@ class Texture:
     # Comparison and hash functions so textures can work with sets
     # A texture's uniqueness is simply based on the name
     # ------------------------------------------------------------
-    def __hash__(self) -> int:
-        return hash(self.cache_name)
+    # def __hash__(self) -> int:
+    #     return hash(self.cache_name)
 
-    def __eq__(self, other) -> bool:
-        if other is None:
-            return False
-        if not isinstance(other, self.__class__):
-            return False
-        return self.cache_name == other.cache_name
+    # def __eq__(self, other) -> bool:
+    #     if other is None:
+    #         return False
+    #     if not isinstance(other, self.__class__):
+    #         return False
+    #     return self.cache_name == other.cache_name
 
-    def __ne__(self, other) -> bool:
-        if other is None:
-            return True
-        if not isinstance(other, self.__class__):
-            return True
-        return self.cache_name != other.cache_name
+    # def __ne__(self, other) -> bool:
+    #     if other is None:
+    #         return True
+    #     if not isinstance(other, self.__class__):
+    #         return True
+    #     return self.cache_name != other.cache_name
 
     def __repr__(self) -> str:
         cache_name = getattr(self, "cache_name", None)

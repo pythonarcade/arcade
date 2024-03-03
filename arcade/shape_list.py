@@ -11,7 +11,6 @@ from array import array
 from collections import OrderedDict
 import itertools
 import math
-from array import array
 from typing import (
     Dict,
     List,
@@ -120,7 +119,7 @@ class Shape:
         if self.geometry is None:
             self._init_geometry()
 
-        self.geometry.render(self.program, mode=self.mode) # pyright: ignore [reportOptionalMemberAccess]
+        self.geometry.render(self.program, mode=self.mode)  # pyright: ignore [reportOptionalMemberAccess]
 
 
 def create_line(

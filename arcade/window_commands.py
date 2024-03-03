@@ -6,7 +6,6 @@ It also has commands for scheduling pauses and scheduling interval functions.
 from __future__ import annotations
 
 import gc
-import time
 import os
 
 import pyglet
@@ -14,7 +13,6 @@ import pyglet
 from typing import (
     Callable,
     Optional,
-    cast,
     Tuple,
     TYPE_CHECKING
 )
@@ -28,7 +26,6 @@ _window: Optional["Window"] = None
 
 __all__ = [
     "get_display_size",
-    "pause",
     "get_window",
     "set_window",
     "set_viewport",
@@ -56,20 +53,6 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     display = pyglet.canvas.Display()
     screen = display.get_screens()[screen_id]
     return screen.width, screen.height
-
-
-def pause(seconds: float) -> None:
-    """
-    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep().
-
-    .. Warning::
-
-        This is mostly used for unit tests and is not likely to be
-        a good solution for pausing an application or game.
-
-    :param seconds: Time interval to pause in seconds.
-    """
-    time.sleep(cast(float, seconds))
 
 
 def get_window() -> "Window":

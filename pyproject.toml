@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "pyglet>=2.0.10,<2.1",
+    "pyglet>=2.0.12,<2.1",
     "pillow~=10.0.0",
     "pymunk~=6.5.1",
     "pytiled-parser~=2.2.3"
@@ -91,11 +91,11 @@ build-backend = "setuptools.build_meta"
 # E731 do not assign a lambda expression, use a def
 # E741 Ambiguous variable name
 # F811: redefinition
-ignore = ["F811", "E731", "E741"]
-show-source = true
 line-length = 120
+output-format = "full"
 exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs", "arcade/examples/platform_tutorial"]
-select = [
+lint.ignore = ["E731", "E741"]
+lint.select = [
     "E",
     "F",
     # Whitespace linting must be re-enabled manually for ruff

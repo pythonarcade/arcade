@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from .base import TextureAtlas
-from .helpers import save_atlas, load_atlas
-
+from .atlas_2d import (
+    TextureAtlas,
+    AtlasRegion,
+)
+from .base import TextureAtlasBase
 
 __all__ = [
     'TextureAtlas',
-    'save_atlas',
-    'load_atlas',
+    'AtlasRegion',
+    'TextureAtlasBase',
 ]

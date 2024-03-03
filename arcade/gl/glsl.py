@@ -113,7 +113,7 @@ class ShaderSource:
                 pass
 
         source = "\n".join(
-            f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
+            f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
         )
 
         raise ShaderException(

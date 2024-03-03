@@ -1,6 +1,6 @@
 from _pytest.python_api import approx
 
-from arcade.gui import UIBoxLayout
+from arcade.gui import UIBoxLayout, UIManager
 from arcade.gui.widgets import UIDummy, Rect
 
 
@@ -110,7 +110,9 @@ def test_do_layout_vertical_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
 
-    group = UIBoxLayout(space_between=10, vertical=True, children=[element_1, element_2])
+    group = UIBoxLayout(
+        space_between=10, vertical=True, children=[element_1, element_2]
+    )
 
     group.rect = Rect(100, 200, *group.size_hint_min)
     group.do_layout()
@@ -243,7 +245,9 @@ def test_do_layout_horizontal_align_bottom(window):
 def test_do_layout_horizontal_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
-    group = UIBoxLayout(space_between=10, vertical=False, children=[element_1, element_2])
+    group = UIBoxLayout(
+        space_between=10, vertical=False, children=[element_1, element_2]
+    )
 
     group.rect = Rect(100, 200, *group.size_hint_min)
     group.do_layout()
@@ -278,7 +282,7 @@ def test_size_hint_min_contains_children_horizontal(window):
 def test_size_hint_contains_border_and_padding(window):
     box = UIBoxLayout()
     box.with_border(width=3)
-    box.with_padding(10, 20, 30, 40)
+    box.with_padding(top=10, right=20, bottom=30, left=40)
     box.add(UIDummy(width=100, height=100))
     box.add(UIDummy(width=100, height=100))
 
@@ -391,5 +395,42 @@ def test_horizontal_fit_content(window):
     box.fit_content()
 
     assert box.size == (120, 100)
+
+
+def test_nested_layouts(window):
+    ui = UIManager()
+    box1 = UIBoxLayout()
+    box2 = UIBoxLayout()
+    box3 = UIBoxLayout()
+    dummy = UIDummy(width=100, height=100)
+
+    ui.add(box1)
+    box1.add(box2)
+    box2.add(box3)
+    box3.add(dummy)
+
+    ui.execute_layout()
+
+    assert box1.size == (100, 100)
+    assert box2.size == (100, 100)
+    assert box3.size == (100, 100)
+    assert dummy.size == (100, 100)
+
+
+def test_children_change_size_hint_min(window):
+    ui = UIManager()
+    box1 = UIBoxLayout()
+    dummy = UIDummy(width=100, height=100, size_hint=(1, 1))
+
+    ui.add(box1)
+    box1.add(dummy)
+
+    dummy.size_hint_min = (150, 150)
+
+    ui.execute_layout()
+
+    assert box1.size == (150, 150)
+    assert dummy.size == (150, 150)
+
 
 # TODO test size hint < 1 (do not take full width)

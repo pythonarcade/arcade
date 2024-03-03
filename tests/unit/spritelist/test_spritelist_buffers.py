@@ -106,7 +106,7 @@ def test_buffer_sizes(ctx: arcade.ArcadeContext):
     expected_angle_data = struct.pack('4f', *angles)
     expected_texture_data = struct.pack(
         '4f',
-        *[ctx.default_atlas.get_texture_id(sprite.texture.atlas_name) for sprite in sprites],
+        *[ctx.default_atlas.get_texture_id(sprite.texture) for sprite in sprites],
     )
 
     # Check the buffers

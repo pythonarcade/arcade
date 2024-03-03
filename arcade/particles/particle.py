@@ -2,6 +2,7 @@
 Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
 """
 from __future__ import annotations
+from typing import Literal
 
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
@@ -64,7 +65,7 @@ class EternalParticle(Particle):
         super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha,
                          mutation_callback)
 
-    def can_reap(self):
+    def can_reap(self) -> Literal[False]:
         """Determine if Particle can be deleted"""
         return False
 
@@ -94,7 +95,7 @@ class LifetimeParticle(Particle):
         super().update()
         self.lifetime_elapsed += 1 / 60
 
-    def can_reap(self):
+    def can_reap(self) -> bool:
         """Determine if Particle can be deleted"""
         return self.lifetime_elapsed >= self.lifetime_original
 

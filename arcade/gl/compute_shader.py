@@ -53,7 +53,7 @@ class ComputeShader:
                     f"---- [compute shader] ---\n"
                 )
                 + "\n".join(
-                    f"{str(i+1).zfill(3)}: {line} "
+                    f"{str(i + 1).zfill(3)}: {line} "
                     for i, line in enumerate(self._source.split("\n"))
                 )
             )

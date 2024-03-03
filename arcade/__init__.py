@@ -33,6 +33,7 @@ def configure_logging(level: Optional[int] = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
 # The following is used to load ffmpeg libraries.
 # Currently Arcade is only shipping binaries for Mac OS
 # as ffmpeg is not needed for support on Windows and Linux.
@@ -75,7 +76,6 @@ from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_window
-from .window_commands import pause
 from .window_commands import schedule
 from .window_commands import run
 from .window_commands import set_background_color
@@ -98,6 +98,8 @@ from .application import get_screens
 from .application import open_window
 
 from .texture import Texture
+from .texture import TextureManager
+from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
 from .texture import load_texture_pair
@@ -156,10 +158,11 @@ from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
-from .sprite import AnimatedTimeBasedSprite
+from .sprite import TextureAnimationSprite
 from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
-from .sprite import AnimationKeyframe
+from .sprite import TextureAnimation
+from .sprite import TextureKeyframe
 from .sprite import PyMunk
 from .sprite import PymunkMixin
 from .sprite import SpriteType
@@ -204,8 +207,6 @@ from .paths import astar_calculate_path
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
-from .texture_atlas import load_atlas
-from .texture_atlas import save_atlas
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
@@ -237,9 +238,10 @@ from .text import (
 
 __all__ = [
     'AStarBarrierList',
-    'AnimatedTimeBasedSprite',
     'AnimatedWalkingSprite',
-    'AnimationKeyframe',
+    'TextureAnimationSprite',
+    'TextureAnimation',
+    'TextureKeyframe',
     'ArcadeContext',
     'Camera',
     'SimpleCamera',
@@ -273,9 +275,9 @@ __all__ = [
     'SpriteSolidColor',
     'Text',
     'Texture',
+    'TextureManager',
+    'SpriteSheet',
     'TextureAtlas',
-    'load_atlas',
-    'save_atlas',
     'TileMap',
     'VERSION',
     'View',
@@ -349,7 +351,6 @@ __all__ = [
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'open_window',
-    'pause',
     'print_timings',
     'play_sound',
     'read_tmx',

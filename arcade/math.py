@@ -27,6 +27,7 @@ __all__ = [
     "get_angle_radians",
 ]
 
+
 def round_fast(value: float, precision: int) -> float:
     """
     A high performance version of python's built-in round() function.

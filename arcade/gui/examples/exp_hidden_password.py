@@ -10,33 +10,12 @@ python -m arcade.gui.examples.hidden_password
 """
 from __future__ import annotations
 
-from typing import Optional
-
 import arcade
-from arcade.gui import UIManager, UIInputText, UIOnClickEvent, UIEvent
-from arcade.gui.events import UITextEvent
-from arcade.gui.surface import Surface
+from arcade.gui import UIManager, UIInputText, UIOnClickEvent
+from arcade.gui.experimental.password_input import UIPasswordInput
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.text import UILabel
-
-
-class UIPasswordInput(UIInputText):
-    def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UITextEvent):
-            event.text = event.text.replace("\n", "")  # remove new lines!
-            event.text = event.text.replace("\r", "")  # remove new lines!
-        return super().on_event(event)
-
-    def do_render(self, surface: Surface):
-        self.layout.begin_update()
-        position = self.caret.position
-        text = self.text
-        self.text = "*" * len(self.text)
-        super().do_render(surface)
-        self.text = text
-        self.caret.position = position
-        self.layout.end_update()
 
 
 class MyView(arcade.View):
@@ -91,7 +70,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

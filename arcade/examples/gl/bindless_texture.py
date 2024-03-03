@@ -149,7 +149,7 @@ class BindlessTexture(arcade.Window):
         resource_cycle = cycle(resources)
 
         # Load enough textures to cover for each point/sprite
-        for i in range(16  * 9):
+        for i in range(16 * 9):
             texture = self.ctx.load_texture(next(resource_cycle))
             texture.wrap_x = self.ctx.CLAMP_TO_EDGE
             texture.wrap_y = self.ctx.CLAMP_TO_EDGE
