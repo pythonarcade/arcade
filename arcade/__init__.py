@@ -102,6 +102,7 @@ from .texture import TextureCacheManager
 from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
+from .texture import load_texture_pair
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
@@ -341,6 +342,7 @@ __all__ = [
     'load_font',
     'load_sound',
     'load_spritesheet',
+    'load_texture_pair',
     'load_texture',
     'make_circle_texture',
     'make_soft_circle_texture',
