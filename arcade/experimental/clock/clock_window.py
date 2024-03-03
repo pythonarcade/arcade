@@ -33,10 +33,17 @@ from arcade.utils import is_raspberry_pi
 
 # NEW IMPORTS
 from arcade.experimental.clock.clock import Clock
+from typing import Union
 
 LOG = logging.getLogger(__name__)
 
-_window: 'Window'
+
+# Kludge to get typechecking to pass. Ideally, these should be
+# a typing.Protocol if inheritance isn't an option. To paraphrase
+# DragonMoffon from a question in Discord call whether avoiding
+# inheriting was intentional: "Yeah, it changes a bunch of things".
+AnyWindow = Union["Window", arcade.Window]
+AnyView = Union["View", arcade.View]
 
 __all__ = [
     "Window",
@@ -751,7 +758,7 @@ class Window(pyglet.window.Window):
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: 'View'):
+    def show_view(self, new_view: AnyView):
         """
         Select the view to show in the next frame.
         This is not a blocking call showing the view.
@@ -962,9 +969,8 @@ class View:
     Support different views/screens in a window.
     """
 
-    def __init__(self,
-                 window: Optional[Window] = None):
-        self.window: Window = arcade.get_window() if window is None else window
+    def __init__(self, window: Optional[AnyWindow] = None):
+        self.window: AnyWindow = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
         self._section_manager: Optional[SectionManager] = None
 
@@ -972,7 +978,7 @@ class View:
     def section_manager(self) -> SectionManager:
         """ lazy instantiation of the section manager """
         if self._section_manager is None:
-            self._section_manager = SectionManager(self)
+            self._section_manager = SectionManager(self) # type: ignore
         return self._section_manager
 
     @property
