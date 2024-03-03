@@ -223,9 +223,12 @@ def source_read(_app, docname, source):
 
         append_text = "\n\n.. raw:: html\n\n"
         append_text += "    <table class='colorTable'><tbody>\n"
-        color_file = open(filename)
 
-        # Will match '=Color(', '= Color(', '=Color (', and '= Color ('
+        # Will match a line containing:
+        #    '=Color('
+        #    '=Color ('
+        #    '= Color('
+        #    '= Color ('
         color_match = re.compile('=.?Color.?\(')
 
         with open(filename) as color_file:
