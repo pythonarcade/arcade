@@ -29,7 +29,7 @@ from arcade import (
     get_window,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
-from arcade.texture.loading import _load_tilemap_texture
+import arcade
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas, Texture
@@ -470,7 +470,7 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = _load_tilemap_texture(
+            texture =  arcade.texture.default_manager.load_texture(
                 image_file,  # type: ignore
                 x=image_x,
                 y=image_y,
@@ -603,7 +603,7 @@ class TileMap:
                     image_file = _get_image_source(frame_tile, map_directory)
 
                     if not frame_tile.tileset.image and image_file:
-                        texture = _load_tilemap_texture(
+                        texture = arcade.texture.default_manager.load_texture(
                             image_file, hit_box_algorithm=hit_box_algorithm
                         )
                     elif image_file:
@@ -615,7 +615,7 @@ class TileMap:
                             height,
                         ) = _get_image_info_from_tileset(frame_tile)
 
-                        texture = _load_tilemap_texture(
+                        texture = arcade.texture.default_manager.load_texture(
                             image_file,
                             x=image_x,
                             y=image_y,
@@ -672,7 +672,7 @@ class TileMap:
                 )
             image_file = try2
 
-        my_texture = _load_tilemap_texture(
+        my_texture = arcade.texture.default_manager.load_texture(
             image_file,
             hit_box_algorithm=hit_box_algorithm,
         )

@@ -4,8 +4,6 @@ from .texture import Texture, ImageData
 from .spritesheet import SpriteSheet
 from .loading import (
     load_texture,
-    load_textures,
-    load_texture_pair,
     load_spritesheet,
 )
 from .generate import (
@@ -26,8 +24,6 @@ __all__ = [
     "Texture",
     "ImageData",
     "load_texture",
-    "load_textures",
-    "load_texture_pair",
     "load_spritesheet",
     "make_circle_texture",
     "make_soft_circle_texture",

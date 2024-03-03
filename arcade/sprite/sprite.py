@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
+import arcade
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
@@ -75,7 +76,7 @@ class Sprite(BasicSprite, PymunkMixin):
             _texture = path_or_texture
             _textures = [_texture]
         elif isinstance(path_or_texture, (str, Path)):
-            _texture = load_texture(path_or_texture)
+            _texture = arcade.texture.default_manager.load_texture(path_or_texture)
             _textures = [_texture]
         else:
             _texture = get_default_texture()
