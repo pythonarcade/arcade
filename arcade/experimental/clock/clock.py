@@ -1,4 +1,4 @@
-from typing import Optional, Set, Callable
+from typing import Optional, Set
 from arcade.experimental.clock.timer import Timer
 
 
@@ -60,23 +60,22 @@ class Clock:
                 timer.kill()
             timer.check()
 
-    def create_new_child(self, *,
-                         tick_speed: float = 1.0,
-                         inherit_elapsed: bool = False,
-                         inherit_count: bool = False,
-                         lifespan: float = 0.0
-                        ) -> "Clock":
-        pass
+    #def create_new_child(self, *,
+    #                     tick_speed: float = 1.0,
+    #                     inherit_elapsed: bool = False,
+    #                     inherit_count: bool = False,
+    #                     lifespan: float = 0.0
+    #                    ) -> "Clock":
+    #    pass
 
-    def create_new_timer(self, duration: float, callback: Callable,
-                         *args,
-                         **kwargs
-                         ) -> Timer:
-        pass
+    #def create_new_timer(self, duration: float, callback: Callable,
+    #                     *args,
+    #                     **kwargs
+    #                     ) -> Timer:
+    #    pass
 
     def add_clock(self, new_child: "Clock"):
         pass
-
 
     def add_timer(self, new_timer: Timer):
         pass
@@ -125,7 +124,6 @@ class Clock:
     def timers(self):
         return tuple(self._timers)
 
-    @property
     def pop_timer(self, timer: Timer):
         """
         Popping a timer allows you to remove a timer from a clock without destroying the timer.

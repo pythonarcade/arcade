@@ -178,6 +178,9 @@ class Window(pyglet.window.Window):
         self._update_clock: Clock = Clock()
         self._fixed_clock: Clock = Clock()
 
+        self._accumulated_time: float = 0.0
+        self._excess_fraction: float = 0.0
+
         # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
         # is initially set in the call to pyglet.app.run() that is done by the run() function.
         # run() will pull this draw rate from the Window and use it. Calls to set_draw_rate only need
@@ -297,12 +300,16 @@ class Window(pyglet.window.Window):
         """
         return self._background_color
 
+    @background_color.setter
+    def background_color(self, value: RGBA255):
+        self._background_color = Color.from_iterable(value)
+
     @property
-    def accumulated_time(self):
+    def accumulated_time(self) -> float:
         return self._accumulated_time
 
     @property
-    def excess_fraction(self):
+    def excess_fraction(self) -> float:
         return self._excess_fraction
 
     # I am unsure we should provide access to the clocks directly.
@@ -315,10 +322,6 @@ class Window(pyglet.window.Window):
     @property
     def fixed_update_clock(self):
         return self._fixed_clock
-
-    @background_color.setter
-    def background_color(self, value: RGBA255):
-        self._background_color = Color.from_iterable(value)
 
     def run(self) -> None:
         """
@@ -958,8 +961,7 @@ class View:
 
     def __init__(self,
                  window: Optional[Window] = None):
-
-        self.window = arcade.get_window() if window is None else window
+        self.window: Window = arcade.get_window() if window is None else window
         self.key: Optional[int] = None
         self._section_manager: Optional[SectionManager] = None
 
