@@ -62,7 +62,7 @@ class VideoPlayerCV2:
         # Configure videoFrame sampler to read from texture channel 0
         self.program["videoFrame"] = 0
 
-        self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve(path)))
 
         # Query video size
         self._width, self._height = (

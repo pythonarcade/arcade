@@ -48,7 +48,7 @@ class TextureCacheManager:
     def _get_real_path(self, path: Union[str, Path]) -> Path:
         """Resolve the path to the file."""
         if isinstance(path, str):
-            return arcade.resources.resolve_resource_path(path)
+            return arcade.resources.resolve(path)
         elif isinstance(path, Path):
             return path
         else:

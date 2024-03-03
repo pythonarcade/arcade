@@ -61,7 +61,7 @@ class CompressedTextures(arcade.Window):
 
     def create_compressed_manual(self):
         """Manually load and compress a texture"""
-        path = arcade.resources.resolve_resource_path(":assets:images/backgrounds/abstract_1.jpg")
+        path = arcade.resources.resolve(":assets:images/backgrounds/abstract_1.jpg")
         image = PIL.Image.open(path)
         components = 3 if image.mode == "RGB" else 4
         if components == 3:
