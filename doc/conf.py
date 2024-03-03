@@ -207,8 +207,6 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
 
 def source_read(_app, docname, source):
 
-    # print(f"  XXX Reading {docname}")
-    import os
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
