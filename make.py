@@ -45,7 +45,7 @@ FULL_BUILD_DIR    = PROJECT_ROOT / FULL_BUILD_PREFIX
 
 # Linting
 RUFF        = "ruff"
-RUFFOPTS    = ["arcade"]
+RUFFOPTS    = ["check", "arcade"]
 MYPY        = "mypy"
 MYPYOPTS    = ["arcade"]
 PYRIGHT     = "pyright"
