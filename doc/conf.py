@@ -3,13 +3,14 @@
 Generate HTML docs
 """
 
-import runpy
-import sys
+import docutils.nodes
 import os
+import re
+import runpy
 import sphinx.ext.autodoc
 import sphinx.transforms
-import docutils.nodes
-import re
+import sys
+
 
 # --- Pre-processing Tasks
 
