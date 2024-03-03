@@ -207,53 +207,55 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
             ))
 
 
-def source_read(_app, docname, source):
+def generate_color_table(filename, source):
     """This function Generates the Color tables in the docs for color and csscolor packages"""
-    
+
+    append_text = "\n\n.. raw:: html\n\n"
+    append_text += "    <table class='colorTable'><tbody>\n"
+
+    # Will match a line containing:
+    #    '=Color('
+    #    '=Color ('
+    #    '= Color('
+    #    '= Color ('
+    color_match = re.compile('=.?Color.?\(')
+
+    with open(filename) as color_file:
+        for line in color_file:
+
+            # Check if the line has a Color.
+            if color_match.search(line):
+
+                # Extract the Color Name and RGBA string
+                color_variable_name = line[:line.index('=')].strip()
+                color_rgba_string = line[line.index('('):].strip()
+                
+                # Generate the alpha for CSS color function
+                rgba_values = [color_byte for color_byte in color_rgba_string[1:-1].split(',')]
+                alpha = int( rgba_values[-1] ) / 255
+                css_rgba = f'{(", ").join(rgba_values[:-1])} , {alpha!s:.4}'
+
+                append_text += "    <tr>"
+                append_text += f"<td>{color_variable_name}</td>"
+                append_text += f"<td>{color_rgba_string}</td>"
+                append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
+                append_text += "</tr>\n"
+
+    append_text += "    </tbody></table>"
+    source[0] += append_text
+
+
+def source_read(_app, docname, source):
+    """Event handler for source-read event"""
+
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
-    filename = None
+    # Transform source for arcade.color and arcade.csscolor
     if docname == "api_docs/arcade.color":
-        filename = "../arcade/color/__init__.py"
+        generate_color_table("../arcade/color/__init__.py", source)
     elif docname == "api_docs/arcade.csscolor":
-        filename = "../arcade/csscolor/__init__.py"
-
-    if filename:
-
-        append_text = "\n\n.. raw:: html\n\n"
-        append_text += "    <table class='colorTable'><tbody>\n"
-
-        # Will match a line containing:
-        #    '=Color('
-        #    '=Color ('
-        #    '= Color('
-        #    '= Color ('
-        color_match = re.compile('=.?Color.?\(')
-
-        with open(filename) as color_file:
-            for line in color_file:
-
-                # Check if the line has a Color.
-                if color_match.search(line):
-
-                    # Extract the Color Name and RGBA string
-                    color_variable_name = line[:line.index('=')].strip()
-                    color_rgba_string = line[line.index('('):].strip()
-                    
-                    # Generate the alpha for CSS color function
-                    rgba_values = [color_byte for color_byte in color_rgba_string[1:-1].split(',')]
-                    alpha = int( rgba_values[-1] ) / 255
-                    css_rgba = f'{(", ").join(rgba_values[:-1])} , {alpha!s:.4}'
-
-                    append_text += "    <tr>"
-                    append_text += f"<td>{color_variable_name}</td>"
-                    append_text += f"<td>{color_rgba_string}</td>"
-                    append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
-                    append_text += "</tr>\n"
-
-        append_text += "    </tbody></table>"
-        source[0] += append_text
+        generate_color_table("../arcade/csscolor/__init__.py", source)
 
 
 def post_process(_app, _exception):
