@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 import traceback
-from typing import Any, Callable, Generic, Optional, Set, TypeVar, cast, Union
+from typing import Any, Callable, Generic, Optional, Set, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
 P = TypeVar("P")
