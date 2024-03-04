@@ -18,31 +18,8 @@ The Python Arcade Library
       Arcade is an easy-to-learn Python library for creating 2D video games. It is
       ideal for people learning to program, or developers that want to code a 2D
       game without learning a complex framework.
-   </p>
+   </p> <br/>
 
-.. |Go| image:: images/woman_sprinter.svg
-   :width: 48
-   :alt: Start Here
-   :target: get_started.html
-
-.. raw:: html
-
-    <table class="main-page-table">
-      <tr>
-        <td>
-           <h2>
-             <a class="reference internal" href="programming_guide/get_started.html">
-               <img alt="Start Here" src="_images/woman_sprinter.svg" width="48">
-               <span class="std std-ref">Start Here</span>
-             </a>
-             <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
-           </h2>
-        </td>
-        <td>
-          <iframe id="github-stars" src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" title="GitHub"></iframe>
-        </td>
-      </tr>
-   </table>
 
 .. image:: images/example_games.svg
    :alt: Get Started icon
