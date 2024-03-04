@@ -25,6 +25,8 @@ class Property(Generic[P]):
     """
     An observable property which triggers observers when changed.
 
+... code-block:: python
+
         def log_change(instance, value):
             print("Something changed")
 
