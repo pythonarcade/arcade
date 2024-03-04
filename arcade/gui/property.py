@@ -18,7 +18,7 @@ class _Obs(Generic[P]):
     def __init__(self, value: P):
         self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners: Set[Callable[[Any, Any], Any]] = set()
+        self.listeners: Set[Callable[[Any, P], Any]] = set()
 
 
 class Property(Generic[P]):
