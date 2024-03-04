@@ -49,7 +49,7 @@ class Property(Generic[P]):
     def __init__(
         self,
         default: Optional[P] = None,
-        default_factory: Union[Callable[[], P], Callable[[Any, Any], P], None] = None,
+        default_factory: Optional[Callable[[Any, Any], P]] = None,
     ):
         if default_factory is None:
             default_factory = lambda prop, instance: cast(P, default)
