@@ -446,28 +446,28 @@ class Text:
         """
         Pixel location of the left content border.
         """
-        return self._label._get_left()
+        return self._label.left
 
     @property
     def right(self) -> int:
         """
         Pixel location of the right content border.
         """
-        return self._label._get_left() + self._label.content_width
+        return self._label.right
 
     @property
     def top(self) -> int:
         """
         Pixel location of the top content border.
         """
-        return self._label._get_top(self._label._get_lines())
+        return self._label.top
 
     @property
     def bottom(self) -> int:
         """
         Pixel location of the bottom content border.
         """
-        return self._label._get_bottom(self._label._get_lines())
+        return self._label.bottom
 
     @property
     def content_size(self) -> Tuple[int, int]:
@@ -583,7 +583,7 @@ def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: Optional[int] = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
