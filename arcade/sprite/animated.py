@@ -160,7 +160,7 @@ class TextureAnimationSprite(Sprite):
             center_y=center_y,
         )
         self._time = 0.0
-        self._animation = None
+        self._animation: Optional[TextureAnimation] = None
         if animation:
             self.animation = animation
         self._current_keyframe_index = 0
