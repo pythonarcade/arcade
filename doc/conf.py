@@ -214,32 +214,34 @@ def generate_color_table(filename, source):
     append_text += "    <table class='colorTable'><tbody>\n"
 
     # Will match a line containing:
-    #    '=Color('
-    #    '=Color ('
-    #    '= Color('
-    #    '= Color ('
-    color_match = re.compile('=.?Color.?\(')
+    #    name    '(?P<name>[a-z_A-Z]*)'
+    #    a Color '(?: *= *Color *\( *)'
+    #    red     '(?P<red>\d*)'
+    #    green   '(?P<green>\d*)'
+    #    blue    '(?P<blue>\d*)'
+    #    alpha   '(?P<alpha>\d*)'
+    color_match = re.compile(r'(?P<name>[a-z_A-Z]*)(?: *= *Color *\( *)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)')
 
     with open(filename) as color_file:
         for line in color_file:
 
             # Check if the line has a Color.
-            if color_match.search(line):
+            matches = color_match.match(line)
+            if not matches:
+                continue
+            
+            color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
+            
+            # Generate the alpha for CSS color function
+            alpha = int( matches.group('alpha') ) / 255
+            css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
 
-                # Extract the Color Name and RGBA string
-                color_variable_name = line[:line.index('=')].strip()
-                color_rgba_string = line[line.index('('):].strip()
-                
-                # Generate the alpha for CSS color function
-                rgba_values = [color_byte for color_byte in color_rgba_string[1:-1].split(',')]
-                alpha = int( rgba_values[-1] ) / 255
-                css_rgba = f'{(", ").join(rgba_values[:-1])} , {alpha!s:.4}'
 
-                append_text += "    <tr>"
-                append_text += f"<td>{color_variable_name}</td>"
-                append_text += f"<td>{color_rgba_string}</td>"
-                append_text += f"<td class='checkered'><div style='background-color:rgba({css_rgba});'>&nbsp</div></td>"
-                append_text += "</tr>\n"
+            append_text += "    <tr>"
+            append_text += f"<td>{matches.group('name')}</td>"
+            append_text += f"<td>{color_rgba}</td>"
+            append_text += f"<td class='checkered'><div style='background-color:rgba{css_rgba};'>&nbsp</div></td>"
+            append_text += "</tr>\n"
 
     append_text += "    </tbody></table>"
     source[0] += append_text
