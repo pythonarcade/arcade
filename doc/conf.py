@@ -214,13 +214,13 @@ def generate_color_table(filename, source):
     append_text += "    <table class='colorTable'><tbody>\n"
 
     # Will match a line containing:
-    #    name    '(?P<name>[a-z_A-Z]*)'
-    #    a Color '(?: *= *Color *\( *)'
-    #    red     '(?P<red>\d*)'
-    #    green   '(?P<green>\d*)'
-    #    blue    '(?P<blue>\d*)'
+    #    name    '(?P<name>[a-z_A-Z]*)' followed by
+    #    a Color '(?: *= *Color *\( *)' followed by
+    #    red     '(?P<red>\d*)' followed by
+    #    green   '(?P<green>\d*)' followed by
+    #    blue    '(?P<blue>\d*)' followed by
     #    alpha   '(?P<alpha>\d*)'
-    color_match = re.compile(r'(?P<name>[a-z_A-Z]*)(?: *= *Color *\( *)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)')
+    color_match = re.compile(r'(?P<name>[a-z_A-Z]*)(?:[ =]*Color[ (]*)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)')
 
     with open(filename) as color_file:
         for line in color_file:
