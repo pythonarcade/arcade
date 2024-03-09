@@ -25,8 +25,24 @@ class SimpleCamera:
     It also implements an update method that allows for an interpolation between two points
 
     Written to be backwards compatible with the old SimpleCamera.
-    """
 
+    Initialize a Simple Camera Instance with either Camera PoDs or individual arguments
+
+    :param window: The Arcade Window to bind the camera to.
+                   Defaults to the currently active window.
+    :param viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
+    :param position: The 2D position of the camera in the XY plane.
+    :param up: The 2D unit vector which defines the +Y-axis of the camera space.
+    :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
+                 i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
+    :param projection: A 4-float tuple which defines the world space
+                       bounds which the camera projects to the viewport.
+    :param near: The near clipping plane of the camera.
+    :param far: The far clipping place of the camera.
+    :param camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
+    :param projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
+                            bottom, far, near planes for an orthographic projection.
+    """
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  viewport: Optional[Tuple[int, int, int, int]] = None,
@@ -39,25 +55,6 @@ class SimpleCamera:
                  camera_data: Optional[CameraData] = None,
                  projection_data: Optional[OrthographicProjectionData] = None
                  ):
-        """
-        Initialize a Simple Camera Instance with either Camera PoDs or individual arguments
-
-        Args:
-            window: The Arcade Window to bind the camera to.
-                    Defaults to the currently active window.
-            viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
-            position: The 2D position of the camera in the XY plane.
-            up: The 2D unit vector which defines the +Y-axis of the camera space.
-            zoom: A scalar value which is inversely proportional to the size of the camera projection.
-                  i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
-            projection: A 4-float tuple which defines the world space
-                        bounds which the camera projects to the viewport.
-            near: The near clipping plane of the camera.
-            far: The far clipping place of the camera.
-            camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
-            projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
-                             bottom, far, near planes for an orthographic projection.
-        """
         warn("arcade.camera.SimpleCamera has been depreciated please use arcade.camera.Camera2D instead",
              DeprecationWarning)
 

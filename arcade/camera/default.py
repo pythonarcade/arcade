@@ -20,16 +20,12 @@ class ViewportProjector:
 
     Does not have a way of moving, rotating, or zooming the camera.
     perfect for something like UI or for mapping to an offscreen framebuffer.
+
+    Args:
+        viewport: The viewport to project to.
+        window: The window to bind the camera to. Defaults to the currently active window.
     """
-
     def __init__(self, viewport: Optional[Tuple[int, int, int, int]] = None, *, window: Optional["Window"] = None):
-        """
-        Initialize a ViewportProjector
-
-        Args:
-            viewport: The viewport to project to.
-            window: The window to bind the camera to. Defaults to the currently active window.
-        """
         self._window = window or get_window()
         self._viewport = viewport or self._window.ctx.viewport
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
@@ -95,16 +91,12 @@ class DefaultProjector(ViewportProjector):
     """
     An extremely limited projector which lacks any kind of control. This is only here to act as the default camera
     used internally by arcade. There should be no instance where a developer would want to use this class.
+
+    :param window: The window to bind the camera to. Defaults to the currently active camera.
     """
     # TODO: ADD PARAMS TO DOC FOR __init__
 
     def __init__(self, *, window: Optional["Window"] = None):
-        """
-        Initialise a ViewportProjector.
-
-        Args:
-            window: The window to bind the camera to. Defaults to the currently active camera.
-        """
         super().__init__(window=window)
 
     def use(self) -> None:

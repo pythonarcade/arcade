@@ -4,8 +4,6 @@ A small group of classes that offer common controller use-cases.
 ScreenShakeController:
     Provides an easy way to cause a camera to shake.
 """
-
-
 from typing import Tuple
 from math import exp, log, pi, sin, floor
 from random import uniform
@@ -37,6 +35,19 @@ class ScreenShakeController:
         shake_frequency: The number of peaks per second. Avoid making it
                          a multiple of half the target frame-rate.
                          (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
+
+    :param camera_data: The CameraData PoD that the controller modifies.
+                        Should not be changed once initialized.
+    :param max_amplitude: The largest possible world space offset.
+    :param falloff_time: The length of time in seconds it takes the shaking
+                        to reach 0 after reaching the maximum. Can be set
+                        to a negative number to disable falloff.
+    :param acceleration_duration: The length of time in seconds it takes the    
+                                shaking to reach max amplitude. Can be set
+                                to 0.0 to start at max amplitude.
+    :param shake_frequency: The number of peaks per second. Avoid making it 
+                            a multiple of half the target frame-rate.
+                            (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
     """
 
     def __init__(self, camera_data: CameraData, *,
@@ -44,23 +55,6 @@ class ScreenShakeController:
                  falloff_time: float = 1.0,
                  acceleration_duration: float = 1.0,
                  shake_frequency: float = 15.0):
-        """
-        Initialise a screen-shake controller.
-
-        Args:
-            camera_data: The CameraData PoD that the controller modifies.
-                         Should not be changed once initialised.
-            max_amplitude: The largest possible world space offset.
-            falloff_time: The length of time in seconds it takes the shaking
-                          to reach 0 after reaching the maximum. Can be set
-                          to a negative number to disable falloff.
-            acceleration_duration: The length of time in seconds it takes the
-                                   shaking to reach max amplitude. Can be set
-                                   to 0.0 to start at max amplitude.
-            shake_frequency: The number of peaks per second. Avoid making it
-                             a multiple of half the target frame-rate.
-                             (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
-        """
         self._data: CameraData = camera_data
 
         self.max_amplitude: float = max_amplitude
@@ -173,8 +167,7 @@ class ScreenShakeController:
         The equation for the growing half of the amplitude equation.
         It uses 1.0001 so that at _t = 1.0 the amplitude equals 1.0.
 
-        Args:
-            _t: The scaled time. Should be between 0.0 and 1.0
+        :param _t: The scaled time. Should be between 0.0 and 1.0
         """
         return 1.0001 - 1.0001*exp(log(0.0001/1.0001) * _t)
 
@@ -183,8 +176,7 @@ class ScreenShakeController:
         The equation for the falloff half of the amplitude equation.
         It is based on the 'smootherstep' function.
 
-        Args:
-            _t: The scaled time. Should be between 0.0 and 1.0
+        :param _t: The scaled time. Should be between 0.0 and 1.0
         """
         return 1 - _t**3 * (_t * (_t * 6.0 - 15.0) + 10.0)
 
@@ -247,8 +239,7 @@ class ScreenShakeController:
         Does not actually set the camera position.
         Should not be called more than once an update cycle.
 
-        Args:
-            delta_time: the length of time in seconds between update calls.
+        :param delta_time: the length of time in seconds between update calls.
                         Generally pass in the delta_time provided by the
                         arcade.Window's on_update method.
         """

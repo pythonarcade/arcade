@@ -35,41 +35,36 @@ class Camera2D:
         - Projection with zoom scaling.
         - Viewport.
 
-    NOTE Once initialised, the CameraData and OrthographicProjectionData SHOULD NOT be changed.
+    NOTE: Once initialized, the CameraData and OrthographicProjectionData SHOULD NOT be changed.
     Only getter properties are provided through data and projection_data respectively.
+
+    :param window: The Arcade Window to bind the camera to.
+            Defaults to the currently active window.
+    :param viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
+    :param position: The 2D position of the camera in the XY plane.
+    :param up: The 2D unit vector which defines the +Y-axis of the camera space.
+    :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
+            i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
+    :param projection: A 4-float tuple which defines the world space
+                bounds which the camera projects to the viewport.
+    :param near: The near clipping plane of the camera.
+    :param far: The far clipping plane of the camera.
+    :param camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
+    :param projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
+                        bottom, far, near planes for an orthographic projection.
     """
-
     def __init__(self, *,
-                 window: Optional["Window"] = None,
-                 viewport: Optional[Tuple[int, int, int, int]] = None,
-                 position: Optional[Tuple[float, float]] = None,
-                 up: Optional[Tuple[float, float]] = None,
-                 zoom: Optional[float] = None,
-                 projection: Optional[Tuple[float, float, float, float]] = None,
-                 near: Optional[float] = None,
-                 far: Optional[float] = None,
-                 camera_data: Optional[CameraData] = None,
-                 projection_data: Optional[OrthographicProjectionData] = None
-                 ):
-        """
-        Initialize a Camera2D instance. Either with camera PoDs or individual arguments.
-
-        Args:
-            window: The Arcade Window to bind the camera to.
-                    Defaults to the currently active window.
-            viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
-            position: The 2D position of the camera in the XY plane.
-            up: The 2D unit vector which defines the +Y-axis of the camera space.
-            zoom: A scalar value which is inversely proportional to the size of the camera projection.
-                  i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
-            projection: A 4-float tuple which defines the world space
-                        bounds which the camera projects to the viewport.
-            near: The near clipping plane of the camera.
-            far: The far clipping plane of the camera.
-            camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
-            projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
-                             bottom, far, near planes for an orthographic projection.
-        """
+        window: Optional["Window"] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
+        position: Optional[Tuple[float, float]] = None,
+        up: Optional[Tuple[float, float]] = None,
+        zoom: Optional[float] = None,
+        projection: Optional[Tuple[float, float, float, float]] = None,
+        near: Optional[float] = None,
+        far: Optional[float] = None,
+        camera_data: Optional[CameraData] = None,
+        projection_data: Optional[OrthographicProjectionData] = None
+    ):
         self._window: "Window" = window or get_window()
 
         assert (
