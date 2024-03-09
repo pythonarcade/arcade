@@ -354,7 +354,7 @@ class UIInputText(UIWidget):
             self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
         )
         self.layout.x += self.LAYOUT_OFFSET
-        self.caret = Caret(self.layout, color=caret_color)
+        self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
         self.caret.visible = False
 
         self._blink_state = self._get_caret_blink_state()
