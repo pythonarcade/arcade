@@ -1,20 +1,23 @@
-"""Dataclasses supporting cameras.
+"""Packets of data and base types supporting cameras.
 
 These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
-from typing import Tuple
-from dataclasses import dataclass
+from __future__ import annotations
+from typing import Protocol, Tuple, Iterator
+from contextlib import contextmanager
 
 
 __all__ = [
     'CameraData',
     'OrthographicProjectionData',
-    'PerspectiveProjectionData'
+    'PerspectiveProjectionData',
+    'Projection',
+    'Projector',
+    'Camera'
 ]
 
 
-@dataclass
 class CameraData:
     """Stores position, orientation, and zoom for a camera.
 
@@ -28,20 +31,28 @@ class CameraData:
               it allows camera controllers access to the zoom functionality
               without interacting with the projection data.
     """
-    # View matrix data
-    position: Tuple[float, float, float] = (0.0, 0.0, 0.0)
-    up: Tuple[float, float, float] = (0.0, 1.0, 0.0)
-    forward: Tuple[float, float, float] = (0.0, 0.0, -1.0)
 
-    # Zoom
-    zoom: float = 1.0
+    __slots__ = ("position", "up", "forward", "zoom")
+
+    def __init__(self,
+                 position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+                 up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
+                 forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
+                 zoom: float = 1.0):
+
+        # View matrix data
+        self.position: Tuple[float, float, float] = position
+        self.up: Tuple[float, float, float] = up
+        self.forward: Tuple[float, float, float] = forward
+
+        # Zoom
+        self.zoom: float = zoom
 
 
 def duplicate_camera_data(origin: CameraData):
     return CameraData(origin.position, origin.up, origin.forward, float(origin.zoom))
 
 
-@dataclass
 class OrthographicProjectionData:
     """Describes an Orthographic projection.
 
@@ -58,17 +69,31 @@ class OrthographicProjectionData:
         far: The 'furthest' value, Which gets mapped to z = 1.0 (anything above this value is not visible).
         viewport: The pixel bounds which will be drawn onto. (left, bottom, width, height)
     """
-    left: float
-    right: float
-    bottom: float
-    top: float
-    near: float
-    far: float
 
-    viewport: Tuple[int, int, int, int]
+    __slots__ = ("left", "right", "bottom", "top", "near", "far", "viewport")
+
+    def __init__(
+            self,
+            left: float,
+            right: float,
+            bottom: float,
+            top: float,
+            near: float,
+            far: float,
+            viewport: Tuple[int, int, int, int]):
+
+        # Data for generating Orthographic Projection matrix
+        self.left: float = left
+        self.right: float = right
+        self.bottom: float = bottom
+        self.top: float = top
+        self.near: float = near
+        self.far: float = far
+
+        # Viewport for setting which pixels to draw to
+        self.viewport: Tuple[int, int, int, int] = viewport
 
 
-@dataclass
 class PerspectiveProjectionData:
     """Describes a perspective projection.
 
@@ -80,9 +105,49 @@ class PerspectiveProjectionData:
         far: The 'furthest' value, Which gets mapped to z = 1.0 (anything above this value is not visible).
         viewport: The pixel bounds which will be drawn onto. (left, bottom, width, height)
     """
-    aspect: float
-    fov: float
+    __slots__ = ("aspect", "fov", "near", "far", "viewport")
+
+    def __init__(self,
+                 aspect: float,
+                 fov: float,
+                 near: float,
+                 far: float,
+
+                 viewport: Tuple[int, int, int, int]):
+        # Data for generating Perspective Projection matrix
+        self.aspect: float = aspect
+        self.fov: float = fov
+        self.near: float = near
+        self.far: float = far
+
+        # Viewport for setting which pixels to draw to
+        self.viewport: Tuple[int, int, int, int] = viewport
+
+
+class Projection(Protocol):
+    viewport: Tuple[int, int, int, int]
     near: float
     far: float
 
-    viewport: Tuple[int, int, int, int]
+
+class Projector(Protocol):
+
+    def use(self) -> None:
+        ...
+
+    @contextmanager
+    def activate(self) -> Iterator[Projector]:
+        ...
+
+    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, ...]:
+        ...
+
+
+class Camera(Protocol):
+
+    def use(self) -> None:
+        ...
+
+    @contextmanager
+    def activate(self) -> Iterator[Projector]:
+        ...
