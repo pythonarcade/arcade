@@ -6,7 +6,6 @@ from arcade.gl import geometry
 def test_create(window: arcade.Window):
     ctx = window.ctx
     SCREEN_WIDTH, SCREEN_HEIGHT = window.get_size()
-    # print(ctx.viewport, ctx.projection_2d)
 
     program = ctx.program(
         vertex_shader="""

@@ -15,7 +15,6 @@ ROOT = Path(__file__).parent.parent.resolve()
 titles = {
     'application.py': ['Window and View', 'window.rst'],
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
-    'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
@@ -51,6 +50,7 @@ titles = {
     'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
@@ -216,6 +216,7 @@ def process_directory(directory: Path, quick_index_file):
             "math.py": "arcade.math",
             "earclip.py": "arcade.earclip",
             "shape_list.py": "arcade.shape_list",
+            "camera": "arcade.camera"
         }
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 

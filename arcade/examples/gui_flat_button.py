@@ -22,7 +22,6 @@ class QuitButton(arcade.gui.widgets.buttons.UIFlatButton):
 class MyView(arcade.View):
     def __init__(self):
         super().__init__()
-
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
         self.ui = arcade.gui.UIManager()

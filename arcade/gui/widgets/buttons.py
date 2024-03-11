@@ -226,7 +226,6 @@ class UITextureButton(
                 self.content_width, self.content_height
             )
 
-
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.

@@ -11,30 +11,21 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union
 
-from arcade.types import Point
+from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
-from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-
 import arcade
-from arcade.gui.events import (
-    UIMouseMovementEvent,
-    UIMousePressEvent,
-    UIMouseReleaseEvent,
-    UIMouseScrollEvent,
-    UITextEvent,
-    UIMouseDragEvent,
-    UITextMotionEvent,
-    UITextMotionSelectEvent,
-    UIKeyPressEvent,
-    UIKeyReleaseEvent,
-    UIOnUpdateEvent,
-)
+from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
+                               UIMouseDragEvent, UIMouseMovementEvent,
+                               UIMousePressEvent, UIMouseReleaseEvent,
+                               UIMouseScrollEvent, UIOnUpdateEvent,
+                               UITextEvent, UITextMotionEvent,
+                               UITextMotionSelectEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import SimpleCamera
+from arcade.gui.widgets import Rect, UIWidget
+from arcade.types import Point
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -94,7 +85,6 @@ class UIManager(EventDispatcher):
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._requires_render = True
         #: Camera used when drawing the UI
-        self.camera = SimpleCamera()
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -310,6 +300,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
+        current_cam = self.window.current_camera
         """
         Will draw all widgets to the window.
 
@@ -330,8 +321,10 @@ class UIManager(EventDispatcher):
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
+        # Correct that the ui changes the currently active camera.
+        current_cam.use()
+
         # Draw layers
-        self.camera.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
@@ -341,17 +334,11 @@ class UIManager(EventDispatcher):
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
-        The implementation should work in most common cases.
 
-        If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
-        or overwrite this method using the camera conversion::
-
-            ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
+        It uses the internal camera's map_coordinate methods, and should work with
+        all transformations possible with the basic orthographic camera.
         """
-        # NOTE: Only support scrolling until cameras support transforming
-        #       mouse coordinates
-        px, py = self.camera.position
-        return x + px, y + py
+        return self.window.current_camera.map_coordinate((x, y))[:2]
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
@@ -370,7 +357,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(
@@ -380,7 +367,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
@@ -406,8 +393,6 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        self.camera.resize(width, height)
-
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
 

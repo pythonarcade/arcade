@@ -3,6 +3,7 @@ Ensure we are emulating PIL's transforms correctly.
 """
 import arcade
 import pytest
+from pyglet.math import Mat4
 from PIL import Image, ImageDraw
 from arcade.texture.transforms import (
     Transform,
@@ -47,7 +48,7 @@ def test_rotate90_transform(ctx: arcade.ArcadeContext, image, transform, pil_tra
     sprite = arcade.Sprite(texture, center_x=image.width // 2, center_y=image.height // 2)
     with fbo.activate():
         fbo.clear()
-        ctx.projection_2d = (0, image.width, 0, image.height)
+        ctx.projection_matrix = Mat4.orthogonal_projection(0, image.width, 0, image.height, -100, 100)
         sprite.draw(pixelated=True)
 
     expected_image = image.transpose(pil_transform)

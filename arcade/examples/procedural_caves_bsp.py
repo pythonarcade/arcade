@@ -270,8 +270,7 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.player_list = None
         self.player_sprite = None
-        self.view_bottom = 0
-        self.view_left = 0
+        self.cam = None
         self.physics_engine = None
 
         self.processing_time = 0
@@ -348,6 +347,8 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                          self.wall_list)
 
+        self.cam = arcade.camera.Camera2D()
+
     def on_draw(self):
         """ Render the screen. """
 
@@ -367,20 +368,20 @@ class MyGame(arcade.Window):
 
         output = f"Sprite Count: {sprite_count}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 20 + self.view_bottom,
+                         self.cam.left + 20,
+                         WINDOW_HEIGHT - 20 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 40 + self.view_bottom,
+                         self.cam.left + 20,
+                         WINDOW_HEIGHT - 40 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 60 + self.view_bottom,
+                         self.cam.left + 20,
+                         WINDOW_HEIGHT - 60 + self.cam.bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -420,34 +421,31 @@ class MyGame(arcade.Window):
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_MARGIN
+        left_bndry = self.cam.left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+            self.cam.left -= left_bndry - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + WINDOW_WIDTH - VIEWPORT_MARGIN
+        right_bndry = self.cam.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+            self.cam.left += self.player_sprite.right - right_bndry
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + WINDOW_HEIGHT - VIEWPORT_MARGIN
+        top_bndry = self.cam.top - VIEWPORT_MARGIN
         if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+            self.cam.bottom += self.player_sprite.top - top_bndry
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
+        bottom_bndry = self.cam.bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+            self.cam.bottom -= bottom_bndry - self.player_sprite.bottom
             changed = True
 
         if changed:
-            arcade.set_viewport(self.view_left,
-                                WINDOW_WIDTH + self.view_left,
-                                self.view_bottom,
-                                WINDOW_HEIGHT + self.view_bottom)
+            self.cam.use()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

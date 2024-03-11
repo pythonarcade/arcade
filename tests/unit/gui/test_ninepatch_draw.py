@@ -2,6 +2,7 @@ import itertools
 from typing import Tuple
 import pytest
 import arcade
+from pyglet.math import Mat4
 from arcade.gui import NinePatchTexture
 from PIL import Image, ImageDraw
 
@@ -67,7 +68,7 @@ def test_draw(ctx, fbo, left, right, bottom, top):
     )
     with fbo.activate():
         fbo.clear()
-        ctx.projection_2d = (0, PATCH_SIZE[0], 0, PATCH_SIZE[1])
+        ctx.projection_matrix = Mat4.orthogonal_projection(0, PATCH_SIZE[0], 0, PATCH_SIZE[1], -100, 100)
         patch.draw_sized(
             size=PATCH_SIZE,
             position=(0, 0),

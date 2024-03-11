@@ -13,6 +13,7 @@ from typing import Tuple
 import arcade
 from arcade.gl import geometry
 from arcade import hitbox
+from pyglet.math import Mat4
 
 
 class ActorMap(arcade.Window):
@@ -27,7 +28,7 @@ class ActorMap(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_2d = 0, self.width, 0, self.height
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
         self.actor.draw(self.time)
 
     def on_update(self, delta_time: float):
@@ -104,7 +105,7 @@ class Map:
         self.fbo = self.ctx.framebuffer(
             color_attachments=[
                 self.ctx.texture(
-                    (self.size),
+                    self.size,
                     components=4,
                     wrap_x=self.ctx.CLAMP_TO_EDGE,
                     wrap_y=self.ctx.CLAMP_TO_EDGE,
@@ -166,7 +167,7 @@ class Map:
         with self.fbo.activate() as fbo:
             fbo.clear()
             # Change projection to match the contents
-            self.ctx.projection_2d = 0, self.width, 0, self.height
+            self.ctx.projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
             self.sprites.draw()
 
 

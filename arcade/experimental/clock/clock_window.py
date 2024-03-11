@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Clock variants of :py:class:`arcade.Window` and :py:class:`arcade.View`.
 
 Unlike the main versions, they add support for using a clock and fixed

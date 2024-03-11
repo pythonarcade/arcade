@@ -36,9 +36,8 @@ class MyGame(arcade.Window):
         # Physics engine
         self.physics_engine = None
 
-        # Used for scrolling
-        self.view_left = 0
-        self.view_bottom = 0
+        # Camera
+        self.cam: arcade.camera.Camera2D = None
 
         # --- Light related ---
         # List of all the lights
@@ -48,6 +47,9 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Create everything """
+
+        # Create camera
+        self.cam = arcade.camera.Camera2D()
 
         # Create sprite lists
         self.background_sprite_list = arcade.SpriteList()
@@ -187,11 +189,6 @@ class MyGame(arcade.Window):
         # Create the physics engine
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
     def on_draw(self):
         """ Draw everything. """
         self.clear()
@@ -211,11 +208,13 @@ class MyGame(arcade.Window):
 
         # Now draw anything that should NOT be affected by lighting.
         arcade.draw_text("Press SPACE to turn character light on/off.",
-                         10 + self.view_left, 10 + self.view_bottom,
+                         10 + int(self.cam.left), 10 + int(self.cam.bottom),
                          arcade.color.WHITE, 20)
 
     def on_resize(self, width, height):
         """ User resizes the screen. """
+
+        self.cam.viewport = 0, 0, width, height
 
         # --- Light related ---
         # We need to resize the light layer to
@@ -252,40 +251,38 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+
     def scroll_screen(self):
         """ Manage Scrolling """
 
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = self.cam.left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+            self.cam.left -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
+        right_boundary = self.cam.right - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
+            self.cam.right += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
+        top_boundary = self.cam.top - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
+            self.cam.top += self.player_sprite.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = self.cam.bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
+            self.cam.bottom -= bottom_boundary - self.player_sprite.bottom
 
         # Make sure our boundaries are integer values. While the viewport does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
+        self.cam.left = int(self.cam.left)
+        self.cam.bottom = int(self.cam.bottom)
 
-        arcade.set_viewport(self.view_left,
-                            self.width + self.view_left,
-                            self.view_bottom,
-                            self.height + self.view_bottom)
+        self.cam.use()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
