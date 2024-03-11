@@ -1,3 +1,8 @@
+"""Dataclasses supporting cameras.
+
+These are placed in their own module to simplify imports due to their
+wide usage throughout Arcade's camera code.
+"""
 from typing import Tuple
 from dataclasses import dataclass
 
@@ -11,8 +16,9 @@ __all__ = [
 
 @dataclass
 class CameraData:
-    """
-    A PoD (Packet of Data) which holds the necessary data for a functional camera excluding the projection data.
+    """Stores position, orientation, and zoom for a camera.
+
+    This is like where a camera is placed in 3D space.
 
     Attributes:
         position: A 3D vector which describes where the camera is located.
@@ -37,8 +43,7 @@ def duplicate_camera_data(origin: CameraData):
 
 @dataclass
 class OrthographicProjectionData:
-    """
-    A PoD (Packet of Data) which holds the necessary data for a functional Orthographic Projection matrix.
+    """Describes an Orthographic projection.
 
     This is by default a Left-handed system. with the X axis going from left to right, The Y axis going from
     bottom to top, and the Z axis going from towards the screen to away from the screen. This can be made
@@ -65,8 +70,7 @@ class OrthographicProjectionData:
 
 @dataclass
 class PerspectiveProjectionData:
-    """
-    A PoD (Packet of Data) which holds the necessary data for a functional Perspective matrix.
+    """Describes a perspective projection.
 
     Attributes:
         aspect: The aspect ratio of the screen (width over height).

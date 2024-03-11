@@ -30,13 +30,17 @@ class Camera2D:
     There are also ease of use methods for matching the viewport and projector to the window size.
 
     Provides 4 sets of left, right, bottom, top:
-        - Positional in world space.
-        - Projection without zoom scaling.
-        - Projection with zoom scaling.
-        - Viewport.
 
-    NOTE: Once initialized, the CameraData and OrthographicProjectionData SHOULD NOT be changed.
-    Only getter properties are provided through data and projection_data respectively.
+    * View Data, or where the camera is in
+    * Projection without zoom scaling.
+    * Projection with zoom scaling.
+    * Viewport in screen pixels
+
+    .. warning:: Do not replace the ``camera_data`` and ``projection_data``
+                 instances after initialization!
+
+    Replacing the camera data and projection data may break controllers. Their
+    contents are exposed via properties rather than directly to prevent this.
 
     :param window: The Arcade Window to bind the camera to.
             Defaults to the currently active window.
@@ -49,9 +53,10 @@ class Camera2D:
                 bounds which the camera projects to the viewport.
     :param near: The near clipping plane of the camera.
     :param far: The far clipping plane of the camera.
-    :param camera_data: A CameraData PoD which describes the viewport, position, up, and zoom
-    :param projection_data: A OrthographicProjectionData PoD which describes the left, right, top,
-                        bottom, far, near planes for an orthographic projection.
+    :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
+        describing the viewport, position, up, and zoom.
+    :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
+        which describes the left, right, top, bottom, far, near planes for an orthographic projection.
     """
     def __init__(self, *,
         window: Optional["Window"] = None,
@@ -65,22 +70,26 @@ class Camera2D:
         camera_data: Optional[CameraData] = None,
         projection_data: Optional[OrthographicProjectionData] = None
     ):
-        self._window: "Window" = window or get_window()
+        window = window or get_window()
+        self._window: "Window" = window
 
         assert (
-            not any((viewport, position, up, zoom)) or not bool(camera_data)
+            not any((viewport, position, up, zoom)) or not camera_data
         ), (
             "Camera2D Warning: Provided both a CameraData object and raw values. Defaulting to CameraData."
         )
 
         assert (
-            not any((projection, near, far)) or not bool(projection_data)
+            not any((projection, near, far)) or not projection_data
         ), (
             "Camera2D Warning: Provided both an OrthographicProjectionData object and raw values."
             "Defaulting to OrthographicProjectionData."
         )
 
-        _pos = position or (self._window.width / 2, self._window.height / 2)
+        half_width = window.width/2
+        half_height = window.height/2
+
+        _pos = position or (half_width, half_height)
         _up = up or (0.0, 1.0)
         self._data = camera_data or CameraData(
             (_pos[0], _pos[1], 0.0),
@@ -89,16 +98,11 @@ class Camera2D:
             zoom or 1.0
         )
 
-        _proj = projection or (
-            -self._window.width/2, self._window.width/2,
-            -self._window.height/2, self._window.height/2
-        )
-        self._projection = projection_data or OrthographicProjectionData(
-            _proj[0], _proj[1],  # Left and Right.
-            _proj[2], _proj[3],  # Bottom and Top.
+        self._projection: OrthographicProjectionData = projection_data or OrthographicProjectionData(
+            -half_width, half_width, # Left and Right.
+            -half_height, half_height, # Bottom and Top.
             near or 0.0, far or 100.0,  # Near and Far.
-
-            viewport or (0, 0, self._window.width, self._window.height)  # Viewport
+            viewport or (0, 0, window.width, window.height)  # Viewport
         )
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
@@ -109,21 +113,27 @@ class Camera2D:
 
     @property
     def view_data(self) -> CameraData:
-        """
-        Return the view data for the camera. This includes the
-        position, forward vector, up direction, and zoom.
+        """The view data for the camera.
 
-        If you use any of the built-in arcade camera-controllers
-        or make your own this is the property to access.
+        This includes:
+
+        * the position
+        * forward vector
+        * up direction
+        * zoom.
+
+        Camera controllers use this property. You will need to access
+        it if you use implement a custom one.
         """
         return self._data
 
     @property
     def projection_data(self) -> OrthographicProjectionData:
-        """
-        Return the projection data for the camera.
+        """The projection data for the camera.
+
         This is an Orthographic projection. with a
         right, left, top, bottom, near, and far value.
+
         An easy way to understand the use of the projection is
         that the right value of the projection tells the
         camera what value will be at the right most
@@ -137,11 +147,7 @@ class Camera2D:
 
     @property
     def position(self) -> Tuple[float, float]:
-        """
-        The 2D position of the camera along
-        the X and Y axis. Arcade has the positive
-        Y direction go towards the top of the screen.
-        """
+        """The 2D world position of the camera along the X and Y axes."""
         return self._data.position[:2]
 
     @position.setter
@@ -150,9 +156,9 @@ class Camera2D:
 
     @property
     def left(self) -> float:
-        """
-        The left side of the camera in world space.
-        Use this to check if a sprite is on screen.
+        """The left side of the camera in world space.
+
+        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
         return self._data.position[0] + self._projection.left/self._data.zoom
 
@@ -162,9 +168,9 @@ class Camera2D:
 
     @property
     def right(self) -> float:
-        """
-        The right side of the camera in world space.
-        Use this to check if a sprite is on screen.
+        """The right edge of the camera in world space.
+
+        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
         return self._data.position[0] + self._projection.right/self._data.zoom
 
@@ -174,9 +180,9 @@ class Camera2D:
 
     @property
     def bottom(self) -> float:
-        """
-        The bottom side of the camera in world space.
-        Use this to check if a sprite is on screen.
+        """The bottom edge of the camera in world space.
+
+        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
         return self._data.position[1] + self._projection.bottom/self._data.zoom
 
@@ -190,9 +196,9 @@ class Camera2D:
 
     @property
     def top(self) -> float:
-        """
-        The top side of the camera in world space.
-        Use this to check if a sprite is on screen.
+        """The top edge of the camera in world space.
+
+        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
         return self._data.position[1] + self._projection.top/self._data.zoom
 
@@ -206,9 +212,10 @@ class Camera2D:
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
-        """
-        The left, right, bottom, top values
-        that maps world space coordinates to pixel positions.
+        """The camera's left, right, bottom, top projection values.
+
+        These control how the camera projects the world onto the pixels
+        of the screen.
         """
         _p = self._projection
         return _p.left, _p.right, _p.bottom, _p.top
