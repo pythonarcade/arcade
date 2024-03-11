@@ -7,16 +7,20 @@ from __future__ import annotations
 
 import gc
 import os
-
-import pyglet
-
 from typing import (
     Callable,
     Optional,
     Tuple,
+    Union,
     TYPE_CHECKING
 )
+from pathlib import Path
+
+from PIL import Image
+import pyglet
+
 from arcade.types import RGBA255, Color
+from arcade.resources import resolve_resource_path
 
 if TYPE_CHECKING:
     from arcade import Window
@@ -70,6 +74,25 @@ def get_window() -> "Window":
         )
 
     return _window
+
+
+def save_screenshot(location: Union[str, Path], *, window: Optional["Window"] = None):
+    """
+    Quickly save the screen or a gl texture to a png image. Is not a fast operation so should be used sparingly.
+    Currently only supports 3 and 4 component 8-bit float gl textures. This should be fine for most use cases.
+
+    :param location: The string path to save the image to.
+    :param window: Optionally supply a specific arcade window. Defaults to the currently active screen.
+    """
+    win: "Window" = window or get_window()
+
+    img = Image.frombytes(
+        "RGBA",
+        win.ctx.screen.size,
+        win.ctx.screen.read(components=4)
+    )
+
+    img.save(location, "PNG")
 
 
 def set_window(window: Optional["Window"]) -> None:
