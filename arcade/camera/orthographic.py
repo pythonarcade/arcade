@@ -3,8 +3,7 @@ from contextlib import contextmanager
 
 from pyglet.math import Mat4, Vec3, Vec4
 
-from arcade.camera.data import CameraData, OrthographicProjectionData
-from arcade.camera.types import Projector
+from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:

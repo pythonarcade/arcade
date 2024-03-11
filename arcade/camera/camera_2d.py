@@ -2,9 +2,8 @@ from typing import TYPE_CHECKING, Optional, Tuple, Iterator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
-from arcade.camera.data import CameraData, OrthographicProjectionData
 from arcade.camera.orthographic import OrthographicProjector
-from arcade.camera.types import Projector
+from arcade.camera.data_types import CameraData, OrthographicProjectionData, Projector
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:

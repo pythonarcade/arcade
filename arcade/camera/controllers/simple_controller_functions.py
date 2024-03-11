@@ -1,7 +1,7 @@
 from typing import Tuple, Callable
 from math import sin, cos, radians
 
-from arcade.camera.data import CameraData
+from arcade.camera.data_types import CameraData
 from arcade.easing import linear
 from pyglet.math import Vec3
 
@@ -71,7 +71,7 @@ def quaternion_rotation(axis: Tuple[float, float, float],
             rotation_point[0] + new_relative_position[0],
             rotation_point[1] + new_relative_position[1]
         )
-        
+
     :param axis: The unit length vector that will be rotated around
     :param vector: The 3-dimensional vector to be rotated
     :param angle: The angle in degrees to rotate the vector clock-wise by
@@ -152,7 +152,7 @@ def simple_follow_3D(speed: float, target: Tuple[float, float, float], data: Cam
     A simple method which moves the camera linearly towards the target point.
 
     :param speed: The percentage the camera should move towards the target (0.0 - 1.0 range)
-    :param target: The 3D position the camera should move towards in world space.   
+    :param target: The 3D position the camera should move towards in world space.
     :param data: The camera data object which stores its position, rotation, and direction.
     """
     data.position = _interpolate_3D(data.position, target, speed)
@@ -181,11 +181,11 @@ def simple_easing_3D(percent: float,
     :param percent: The percentage from 0 to 1 which describes
                     how far between the two points to place the camera.
     :param start: The 3D point which acts as the starting point for the camera motion.
-    :param target: The 3D point which acts as the final destination for the camera. 
-    :param data: The camera data object which stores its position, rotation, and direction. 
+    :param target: The 3D point which acts as the final destination for the camera.
+    :param data: The camera data object which stores its position, rotation, and direction.
     :param func: The easing method to use. It takes in a number between 0-1
                  and returns a new number in the same range but altered so the
-                 speed does not stay constant. See arcade.easing for examples.  
+                 speed does not stay constant. See arcade.easing for examples.
     """
 
     data.position = _interpolate_3D(start, target, func(percent))
@@ -200,11 +200,11 @@ def simple_easing_2D(percent: float,
     It uses an easing function to make the motion smoother. You can use the collection of
     easing methods found in arcade.easing.
 
-    
+
     :param percent: The percentage from 0 to 1 which describes
                     how far between the two points to place the camera.
     :param start: The 2D point which acts as the starting point for the camera motion.
-    :param target: The 2D point which acts as the final destination for the camera. 
+    :param target: The 2D point which acts as the final destination for the camera.
     :param data: The camera data object which stores its position, rotation, and direction.
     :param func: The easing method to use. It takes in a number between 0-1
                  and returns a new number in the same range but altered so the

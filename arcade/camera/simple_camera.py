@@ -5,8 +5,7 @@ from math import atan2, cos, sin, degrees, radians
 
 from pyglet.math import Vec3
 
-from arcade.camera.data import CameraData, OrthographicProjectionData
-from arcade.camera.types import Projector
+from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
 from arcade.camera.orthographic import OrthographicProjector
 
 from arcade.window_commands import get_window

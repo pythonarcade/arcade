@@ -8,7 +8,7 @@ from typing import Tuple
 from math import exp, log, pi, sin, floor
 from random import uniform
 
-from arcade.camera.data import CameraData
+from arcade.camera.data_types import CameraData
 from arcade.camera.controllers import quaternion_rotation
 
 __all__ = [
@@ -42,10 +42,10 @@ class ScreenShakeController:
     :param falloff_time: The length of time in seconds it takes the shaking
                         to reach 0 after reaching the maximum. Can be set
                         to a negative number to disable falloff.
-    :param acceleration_duration: The length of time in seconds it takes the    
+    :param acceleration_duration: The length of time in seconds it takes the
                                 shaking to reach max amplitude. Can be set
                                 to 0.0 to start at max amplitude.
-    :param shake_frequency: The number of peaks per second. Avoid making it 
+    :param shake_frequency: The number of peaks per second. Avoid making it
                             a multiple of half the target frame-rate.
                             (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
     """

@@ -3,8 +3,7 @@ The Cinematic Types, Classes, and Methods of Arcade.
 Providing a multitude of camera's for any need.
 """
 
-from arcade.camera.data import CameraData, OrthographicProjectionData
-from arcade.camera.types import Projection, Projector
+from arcade.camera.data_types import Projection, Projector, CameraData, OrthographicProjectionData
 
 from arcade.camera.orthographic import OrthographicProjector
 
