@@ -576,8 +576,8 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color: Union["builtins.ellipsis", Color] = ...,
-        texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
+        color: Optional[Color] = None,
+        texture: Optional[Union[Texture, NinePatchTexture]] = None,  # type: ignore
     ) -> "UIWidget":
         """
         Set widgets background.
@@ -589,10 +589,10 @@ class UIWidget(EventDispatcher, ABC):
         :param texture: A texture or ninepatch texture used as background
         :return: self
         """
-        if color is not ...:
+        if color is not None:
             self._bg_color = color
 
-        if texture is not ...:
+        if texture is not None:
             self._bg_tex = texture
 
         return self
