@@ -182,7 +182,7 @@ class PymunkPhysicsEngine:
 
         # Set the physics shape to the sprite's hitbox
         poly = sprite.hit_box.points
-        scaled_poly = [[x * sprite.scale for x in z] for z in poly]
+        scaled_poly = [[x * sprite.scale_x for x in z] for z in poly]
         shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
 
         # Set collision type, used in collision callbacks
