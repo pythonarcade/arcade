@@ -228,8 +228,8 @@ class PhysicsEngineSimple:
     started with this engine than more sophisticated engines like PyMunk.
 
     :param player_sprite: The moving sprite
-    :param  Union[SpriteList, Iterable[SpriteList] walls: The sprites it can't move through.
-        This can be one or multiple spritelists.
+    :param walls: The sprites it can't move through. This can be one or
+        more spritelists.
     """
 
     def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
@@ -267,25 +267,48 @@ class PhysicsEngineSimple:
 
 
 class PhysicsEnginePlatformer:
-    """
-    Simplistic physics engine for use in a platformer. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk.
+    """A physics engine for a simple, single-player platformer.
 
-    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the
-    ``platforms`` parameter will have very extreme benefits to performance.
+    This engine has the following advantages:
 
-    **Note:** This engine will automatically move any Sprites sent to the ``platforms``
-    parameter between a ``boundary_top`` and ``boundary_bottom`` or a ``boundary_left``
-    and ``boundary_right`` attribute of the Sprite. You need only set an initial
-    ``change_x`` or ``change_y`` on it.
+    * More features than :py:class:`PhysicsEngineSimple`
+    * Easier than PyMunk or writing your own engine
+    * Supports automatically moving platforms
 
-    :param player_sprite: The moving sprite
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
-        This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
-    :param gravity_constant: Downward acceleration per frame
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
-        This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
+    .. tip:: For best performance, be sure to do the following!
+
+             #. Add non-moving level elements to :py:attr:`walls`
+             #. Add moving platforms to :py:attr:`platforms`
+
+             This speeds up collision with walls through
+             :ref:`spatial_hashing_performance`.
+
+    Every :py:class:`Sprite` added to  :py:attr:`platforms` will be moved
+    if it has the following properties set:
+
+    * Set limits on vertical movement with ``boundary_top`` and ``boundary_bottom``
+    * Set limits on horizontal movement with ``boundary_left`` and ``boundary_right``
+    * Set a value for ``change_x`` or ``change_y`` to finish enabling movement
+      on an axis
+
+    See the following to learn more:
+
+    * :ref:`platformer_tutorial` for a step-by-step guide
+    * :ref:`sprite_moving_platforms` for a quick example
+
+    :attr jumps_since_ground: How many times the player has jumped
+        since they last touched the floor.
+    :attr allow_multi_jump: Whether multi-jump is enabled.
+    :attr jumps_allowed: The max number of jumps for multi-jump.
+    :param player_sprite: The player character's sprite.
+    :param platforms: Moving sprites the player can collide with.
+        Non-moving sprites should be added through the ``walls``
+        parameter.
+    :param gravity_constant: Downward acceleration per frame.
+    :param ladders: Ladders the player can climb on
+    :param walls: Non-moving sprites the player can collide with. This
+        Moving sprites should be added through the ``platforms``
+        parameter.
     """
 
     def __init__(self,
@@ -322,39 +345,39 @@ class PhysicsEnginePlatformer:
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
-    def ladders(self):
+    def ladders(self) -> List[SpriteList]:
         """ The ladder list registered with the physics engine."""
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
         else:
             self._ladders = []
 
     @ladders.deleter
-    def ladders(self):
+    def ladders(self) -> None:
         self._ladders = []
 
     @property
-    def platforms(self):
+    def platforms(self) -> List[SpriteList]:
         """ The moving platform list registered with the physics engine."""
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if platforms:
             self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
         else:
             self._platforms = []
 
     @platforms.deleter
-    def platforms(self):
+    def platforms(self) -> None:
         self._platforms = []
 
     @property
-    def walls(self):
+    def walls(self) -> List[SpriteList]:
         """ The wall list registered with the physics engine."""
         return self._walls
 
@@ -366,11 +389,17 @@ class PhysicsEnginePlatformer:
             self._walls = []
 
     @walls.deleter
-    def walls(self):
+    def walls(self) -> None:
         self._walls = []
 
-    def is_on_ladder(self):
-        """ Return 'true' if the player is in contact with a sprite in the ladder list. """
+    def is_on_ladder(self) -> bool:
+        """Whether the player sprite overlaps with a ladder.
+
+        .. warning: This re-runs collisions every time it is called!
+
+        This returns ``True`` if the :py:attr:`player` sprite is touching
+        any sprite in a `SpriteList` added to the :py:attr:`ladders` list.
+        """
         # Check for touching a ladder
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
@@ -379,31 +408,45 @@ class PhysicsEnginePlatformer:
         return False
 
     def can_jump(self, y_distance: float = 5) -> bool:
-        """
-        Method that looks to see if there is a floor under
-        the player_sprite. If there is a floor, the player can jump
-        and we return a True.
+        """Update jump state and return ``True`` if the player can jump.
 
-        :returns: True if there is a platform below us
+        .. warning:: This method runs collision logic every time it is called!
+
+        This method returns ``True`` if either of these are true:
+
+        #. The player's :py:attr:`~arcade.BasicSprite.center_y` is within ``y_distance`` above a floor
+
+           .. note:: If this happens, :py:attr:`jumps_since_ground` will
+                     be set to ``0``.
+
+        #. The player can use multi-jump:
+
+           * Multi-jump is enabled through :py:attr:`allow_multi_jump`
+           * :py:attr:`jumps_since_ground` is less than :py:attr:`jumps_allowed`
+
+        :returns: ``True`` if the player can jump.
         """
 
-        # Move down to see if we are on a platform
+        # Temporarily move the player down to check for a floor
         self.player_sprite.center_y -= y_distance
-
-        # Check for wall hit
         hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
-
         self.player_sprite.center_y += y_distance
 
+        # Reset the jump counter if there is a floor below the player
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        # Return True immediately if the player is on a floor
+        if len(hit_list) > 0:
+            return True
+
+        # If multi-jump is on and we have jumps left, return True
+        elif self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int) -> None:
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -417,7 +460,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
 
-    def disable_multi_jump(self):
+    def disable_multi_jump(self) -> None:
         """
         Disables multi-jump.
 
@@ -428,19 +471,19 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int):
+    def jump(self, velocity: int) -> None:
         """ Have the character jump. """
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
 
-    def increment_jump_counter(self):
+    def increment_jump_counter(self) -> None:
         """
         Updates the jump counter for multi-jump tracking
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
 
-    def update(self):
+    def update(self) -> List[SpriteType]:
         """
         Move everything and resolve collisions.
 
