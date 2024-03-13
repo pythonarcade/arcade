@@ -365,21 +365,21 @@ class UIManager(EventDispatcher):
     def dispatch_ui_event(self, event):
         return self.dispatch_event("on_event", event)
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(
-        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
     ):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 

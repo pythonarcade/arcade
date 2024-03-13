@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import builtins
 from abc import ABC
 from random import randint
 from typing import (
@@ -551,32 +550,32 @@ class UIWidget(EventDispatcher, ABC):
     def with_padding(
         self,
         *,
-        top: Union["builtins.ellipsis", int] = ...,
-        right: Union["builtins.ellipsis", int] = ...,
-        bottom: Union["builtins.ellipsis", int] = ...,
-        left: Union["builtins.ellipsis", int] = ...,
-        all: Union["builtins.ellipsis", int] = ...,
+        top: Optional[int] = None,
+        right: Optional[int] = None,
+        bottom: Optional[int] = None,
+        left: Optional[int] = None,
+        all: Optional[int] = None,
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
         :return: self
         """
-        if all is not ...:
+        if all is not None:
             self.padding = all
-        if top is not ...:
+        if top is not None:
             self._padding_top = top
-        if right is not ...:
+        if right is not None:
             self._padding_right = right
-        if bottom is not ...:
+        if bottom is not None:
             self._padding_bottom = bottom
-        if left is not ...:
+        if left is not None:
             self._padding_left = left
         return self
 
     def with_background(
         self,
         *,
-        color: Union["builtins.ellipsis", Color] = ...,
+        color: Union[None, Color] = ...,  # type: ignore
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
         """
