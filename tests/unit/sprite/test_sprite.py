@@ -226,12 +226,12 @@ def test_sprite_scale(window):
     assert gold_1.scale == (2.0, 2.0)
     assert gold_1.width, gold_1.height == (128, 128)
 
-    gold_1.scale *= 0.25
+    gold_1.scale = (x * 0.25 for x in gold_1.scale)
     assert gold_1.scale == (0.5, 0.5)
     assert gold_1.width, gold_1.height == (32, 32)
 
     # edge case: negative scale values are supported
-    gold_1.scale *= -1.0
+    gold_1.scale = (x * -1 for x in gold_1.scale)
     assert gold_1.scale == (-0.5, -0.5)
     assert gold_1.width, gold_1.height == (-32, -32)
 
@@ -250,7 +250,7 @@ def test_sprite_scale(window):
         character_list.draw()
 
     def update(delta_time):
-        character_sprite.scale += 0.1
+        character_sprite.scale = (x + 0.1 for x in gold_1.scale)
 
     window.on_draw = on_draw
     window.update = update
