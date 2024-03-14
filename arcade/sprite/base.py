@@ -241,17 +241,21 @@ class BasicSprite:
 
     @scale.setter
     def scale(self, new_value: Union[Point, float, int]):
-        if isinstance(new_value, float) or isinstance(new_value, int):
-            new_value: Point = (new_value, new_value)
+        if isinstance(new_value, (float, int)):
+            new_value_scale: Point = (new_value, new_value)
 
-        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
+        else:  # Treat it as some sort of iterable or sequence
+            x, y, *_ = new_value  # type / length implicit check
+            new_value_scale = x, y
+
+        if new_value_scale == self._scale:
             return
 
-        self._scale = new_value
-        self._hit_box.scale = self._scale
+        self._scale = new_value_scale
+        self._hit_box.scale = new_value_scale
         if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+            self._width = self._texture.width * new_value_scale[0]
+            self._height = self._texture.height * new_value_scale[1]
 
         self.update_spatial_hash()
 
