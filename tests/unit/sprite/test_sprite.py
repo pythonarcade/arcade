@@ -414,7 +414,7 @@ def test_sprite_scale_xy(window):
 
     # edge case: setting scale_xy with x < 0 works correctly
     sprite.scale = -1.0, 1.0
-    assert sprite.scale == (-1.0, -1.0)
+    assert sprite.scale == (-1.0, 1.0)
     assert sprite.width == -20
     assert sprite.height == 20
 
