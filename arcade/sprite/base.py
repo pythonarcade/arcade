@@ -187,7 +187,7 @@ class BasicSprite:
     @property
     def scale_x(self) -> float:
         """
-        Get or set the sprite's x scale value or set both x & y scale to the same value.
+        Get or set the sprite's x scale value.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite.
@@ -212,7 +212,7 @@ class BasicSprite:
     @property
     def scale_y(self) -> float:
         """
-        Get or set the sprite's x scale value or set both x & y scale to the same value.
+        Get or set the sprite's y scale value.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite.
@@ -236,7 +236,10 @@ class BasicSprite:
 
     @property
     def scale(self) -> Point:
-        """Get or set the x & y scale of the sprite as a pair of values."""
+        """Get or set the x & y scale of the sprite as a pair of values.
+
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite."""
         return self._scale
 
     @scale.setter
