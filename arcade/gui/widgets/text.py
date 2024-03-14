@@ -383,7 +383,8 @@ class UIInputText(UIWidget):
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
+                x = int(event.x - self.x - self.LAYOUT_OFFSET)
+                y = int(event.y - self.y)
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
@@ -407,7 +408,8 @@ class UIInputText(UIWidget):
             if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
                 event.x, event.y
             ):
-                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
+                x = int(event.x - self.x - self.LAYOUT_OFFSET)
+                y = int(event.y - self.y)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers
