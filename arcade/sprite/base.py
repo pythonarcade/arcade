@@ -195,7 +195,7 @@ class BasicSprite:
         return self._scale[0]
 
     @scale_x.setter
-    def scale_x(self, new_value: float):
+    def scale_x(self, new_value: Union[float, int]):
         if new_value == self._scale[0]:
             return
 
@@ -220,7 +220,7 @@ class BasicSprite:
         return self._scale[1]
 
     @scale_y.setter
-    def scale_y(self, new_value: float):
+    def scale_y(self, new_value: Union[float, int]):
         if new_value == self._scale[1]:
             return
 
@@ -240,8 +240,8 @@ class BasicSprite:
         return self._scale
 
     @scale.setter
-    def scale(self, new_value: Union[Point, float]):
-        if isinstance(new_value, float):
+    def scale(self, new_value: Union[Point, float, int]):
+        if isinstance(new_value, float) or isinstance(new_value, int):
             new_value: Point = (new_value, new_value)
 
         if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
