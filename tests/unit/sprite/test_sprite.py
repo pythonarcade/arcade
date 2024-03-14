@@ -389,44 +389,46 @@ def test_sprite_scale_xy(window):
 
     # setting vector equivalent of previous scale doesn't change values
     sprite.scale = 1.0
-    sprite.scale_xy = (1.0, 1.0)
-    assert sprite.scale == 1.0
-    assert sprite.scale_xy == (1.0, 1.0)
+    sprite.scale = (1.0, 1.0)
+    assert sprite.scale == (1.0, 1.0)
     assert sprite.width, sprite.height == (20, 20)
 
     # setting scale_xy to identical values in each channel works
-    sprite.scale_xy = 2.0, 2.0
-    assert sprite.scale == 2.0
-    assert sprite.scale_xy == (2.0, 2.0)
+    sprite.scale = 2.0, 2.0
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width, sprite.height == (40, 40)
 
     # setting scale_xy with x < y scale works correctly
-    sprite.scale_xy = 1.0, 4.0
-    assert sprite.scale_xy == (1.0, 4.0)
-    assert sprite.scale == 1.0
+    sprite.scale = 1.0, 4.0
+    assert sprite.scale == (1.0, 4.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale_y == 4.0
     assert sprite.width, sprite.height == (20, 80)
 
     # setting scale_xy with x > y scale works correctly
-    sprite.scale_xy = 5.0, 3.0
-    assert sprite.scale_xy == (5.0, 3.0)
-    assert sprite.scale == 5.0
+    sprite.scale = 5.0, 3.0
+    assert sprite.scale == (5.0, 3.0)
+    assert sprite.scale_x == 5.0
+    assert sprite.scale_y == 3.0
     assert sprite.width, sprite.height == (100, 60)
 
     # edge case: setting scale_xy with x < 0 works correctly
-    sprite.scale_xy = (-1.0, 1.0)
-    assert sprite.scale == -1.0
+    sprite.scale = -1.0, 1.0
+    assert sprite.scale == (-1.0, -1.0)
     assert sprite.width == -20
     assert sprite.height == 20
 
     # edge case: setting scale_xy with y < 0 works correctly
-    sprite.scale_xy = (1.0, -1.0)
-    assert sprite.scale == 1.0
+    sprite.scale = (1.0, -1.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale_y == -1.0
     assert sprite.width == 20
     assert sprite.height == -20
 
     # edge case: setting scale_xy with x < 0, y < 0 works correctly
-    sprite.scale_xy = (-1.0, -1.0)
-    assert sprite.scale == -1.0
+    sprite.scale = (-1.0, -1.0)
+    assert sprite.scale_x == -1.0
+    assert sprite.scale_y == -1.0
     assert sprite.width == -20
     assert sprite.width == -20
 
@@ -435,55 +437,54 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
     sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
     # check if x dimension is properly reset
-    sprite.scale_xy = 3.0, 2.0
+    sprite.scale = 3.0, 2.0
     sprite.scale = 2.0
-    assert sprite.scale == 2.0
-    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # check if y dimension is properly reset
-    sprite.scale_xy = 5.0, 3.0
+    sprite.scale = 5.0, 3.0
     sprite.scale = 5.0
-    assert sprite.scale == 5.0
-    assert sprite.scale_xy == (5.0, 5.0)
+    assert sprite.scale_x == 5.0
+    assert sprite.scale == (5.0, 5.0)
     assert sprite.width == 100
     assert sprite.height == 100
 
     # check if both dimensions properly reset
-    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 0.5, 4.0
     sprite.scale = 1.0
-    assert sprite.scale == 1.0
-    assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale == (1.0, 1.0)
     assert sprite.width == 20
     assert sprite.height == 20
 
     # edge case: setting negative values works
-    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 0.5, 4.0
     sprite.scale = -1.0
-    assert sprite.scale == -1.0
-    assert sprite.scale_xy == (-1.0, -1.0)
+    assert sprite.scale_x == -1.0
+    assert sprite.scale == (-1.0, -1.0)
     assert sprite.width == -20
     assert sprite.height == -20
 
     # edge case: x scale < 0 is reset to positive
-    sprite.scale_xy = -1.0, 1.0
+    sprite.scale = -1.0, 1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: y scale < 0 is reset to positive
-    sprite.scale_xy = 1.0, -1.0
+    sprite.scale = 1.0, -1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: x < 0, y < 0 is reset to positive
-    sprite.scale_xy = -1.0, -1.0
+    sprite.scale = -1.0, -1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == (2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
