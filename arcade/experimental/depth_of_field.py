@@ -136,7 +136,7 @@ class App(Window):
             c = int(255 * (d + 100) / 200)
             s = SpriteSolidColor(
                 randint(100, 200), randint(100, 200),
-                uniform(20, self.width - 20), uniform(20, selfheight - 20),
+                uniform(20, self.width - 20), uniform(20, self.height - 20),
                 (c, c, c, 255),
                 uniform(0, 360)
             )
