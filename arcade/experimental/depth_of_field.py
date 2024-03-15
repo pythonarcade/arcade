@@ -1,10 +1,10 @@
 from typing import Tuple, Optional
 from contextlib import contextmanager
 from math import cos, pi
+from random import uniform, randint
+from arcade import Window, SpriteSolidColor, SpriteList
 
-from PIL import Image
-
-from arcade.gl import geometry, NEAREST, Texture2D
+from arcade.gl import geometry, NEAREST
 from arcade.experimental.postprocessing import GaussianBlur
 from arcade import get_window, draw_text
 
@@ -97,12 +97,12 @@ class DepthOfField:
         self._render_program['depth_0'] = 2
 
     @contextmanager
-    def draw_into(self, color: Optional = None):
+    def draw_into(self):
         self.stale = True
         previous_fbo = self._win.ctx.active_framebuffer
         try:
             self._win.ctx.enable(self._win.ctx.DEPTH_TEST)
-            self._render_target.clear(color or (155.0, 155.0, 155.0, 255.0))
+            self._render_target.clear((155.0, 155.0, 155.0, 255.0))
             self._render_target.use()
             yield self._render_target
         finally:
@@ -125,43 +125,40 @@ class DepthOfField:
         self._geo.render(self._render_program)
 
 
+class App(Window):
+
+    def __init__(self):
+        super().__init__()
+        self.t = 0.0
+        self.l: SpriteList = SpriteList()
+        for _ in range(100):
+            d = uniform(-100, 100)
+            c = int(255 * (d + 100) / 200)
+            s = SpriteSolidColor(
+                randint(100, 200), randint(100, 200),
+                uniform(20, self.width - 20), uniform(20, selfheight - 20),
+                (c, c, c, 255),
+                uniform(0, 360)
+            )
+            s.depth = d
+            self.l.append(s)
+        self.dof = DepthOfField()
+
+    def on_update(self, delta_time: float):
+        self.t += delta_time
+        self.dof._render_program["focus_depth"] = round(16 * (cos(pi * 0.1 * self.t)*0.5 + 0.5)) / 16
+
+    def on_draw(self):
+        self.clear()
+        with self.dof.draw_into():
+            self.l.draw(pixelated=True)
+        self.use()
+
+        self.dof.render()
+        draw_text(str(self.dof._render_program["focus_depth"]), self.width / 2, self.height / 2, (255, 0, 0, 255),
+                  align="center")
+
+
 if __name__ == '__main__':
-    from random import uniform, randint
-    from arcade import Window, SpriteSolidColor, SpriteList
-    win = Window()
-    t = 0.0
-    l = SpriteList()
-    for _ in range(100):
-        d = uniform(-100, 100)
-        c = int(255 * (d+100)/200)
-        s = SpriteSolidColor(
-            randint(100, 200), randint(100, 200),
-            uniform(20, win.width-20), uniform(20, win.height-20),
-            (c, c, c, 255),
-            uniform(0, 360)
-        )
-        s.depth = d
-        l.append(s)
-    dof = DepthOfField()
-
-    def update(delta_time: float):
-        global t
-        t += delta_time
-        dof._render_program["focus_depth"] = round(16 * (cos(pi * 0.1 * t)*0.5 + 0.5)) / 16
-
-    win.on_update = update
-
-    def draw():
-        win.clear()
-        with dof.draw_into():
-            l.draw(pixelated=True)
-        win.use()
-
-        dof.render()
-        draw_text(str(dof._render_program["focus_depth"]), win.width/2, win.height/2, (255, 0, 0, 255), align="center")
-
-
-    win.on_draw = draw
-
-    win.run()
+    App().run()
 
