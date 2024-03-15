@@ -52,7 +52,7 @@ class Player(arcade.Sprite):
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
-            self, bar_list, (self.center_x, self.center_y), scale=1.5,
+            self, bar_list, (self.center_x, self.center_y), scale=(1.5, 1.5),
         )
         self.health: int = PLAYER_HEALTH
 
@@ -98,7 +98,7 @@ class IndicatorBar:
         width: int = 100,
         height: int = 4,
         border_size: int = 4,
-        scale: float = 1.0,
+        scale: Tuple[float, float] = (1.0, 1.0),
     ) -> None:
         # Store the reference to the owner and the sprite list
         self.owner: Player = owner
@@ -110,7 +110,7 @@ class IndicatorBar:
         self._center_x: float = 0.0
         self._center_y: float = 0.0
         self._fullness: float = 0.0
-        self._scale: float = 1.0
+        self._scale: Tuple[float, float] = (1.0, 1.0)
 
         # Create the boxes needed to represent the indicator bar
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
@@ -206,8 +206,8 @@ class IndicatorBar:
         else:
             # Set the full_box to be visible incase it wasn't then update the bar
             self.full_box.visible = True
-            self.full_box.width = self._bar_width * new_fullness * self.scale
-            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale
+            self.full_box.width = self._bar_width * new_fullness * self.scale[0]
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -224,15 +224,15 @@ class IndicatorBar:
             self.full_box.position = new_position
 
             # Make sure full_box is to the left of the bar instead of the middle
-            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
 
     @property
-    def scale(self) -> float:
+    def scale(self) -> Tuple[float, float]:
         """Returns the scale of the bar."""
         return self._scale
 
     @scale.setter
-    def scale(self, value: float) -> None:
+    def scale(self, value: Tuple[float, float]) -> None:
         """Sets the new scale of the bar."""
         # Check if the scale has changed. If so, change the bar's scale
         if value != self.scale:

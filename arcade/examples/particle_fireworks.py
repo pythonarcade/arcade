@@ -359,7 +359,7 @@ def firework_spark_mutator(particle: FadeParticle):
 
 
 def rocket_smoke_mutator(particle: LifetimeParticle):
-    particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
+    particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)  # type: ignore
 
 
 def main():
