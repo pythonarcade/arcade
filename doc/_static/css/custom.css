@@ -7,15 +7,64 @@ body {
     .toctree-wrapper > ul {
         columns: 2;
     }
+    .toc-outside-links {
+        columns: 2;
+    }
+}
+.item-framing-box {
+    align-items: flex-start;
+    display: flex;
+    margin: 10px;
+}
+.item-framing-box .single-col-box {
+    width: 100%;
+}
+.item-framing-box .single-col-box ul {
+    columns: 1;
+}
+.item-framing-box-main {
+    align-items: center;
+    display: flex;
+    margin: 10px;
+}
+.item-framing-box .item-framing-sub-box {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    width: 100%;
+}
+.item-framing-box .item-framing-title {
+    width: 100%;
+}
+.item-framing-title p {
+    font-size: var(--font-size--small);
+    margin-bottom: 0;
+    text-align: initial;
+    text-transform: uppercase;
+}
+.item-framing-sub-box .toc-outside-links {
+    margin-left: 0px;
+    width: 100%;
+}
+.sprinter-box {
+    width: 55px;
+    height: 55px;
+    display: flex;
+}
+.start-here-box {
+    width: 100%;
+    align-items: center;
+    display: flex;
+}
+.toctree-wrapper {
+    width: 100%;
 }
 .toctree-l1 {
     margin-left: 5px;
 }
-.toc-outside-links {
-    margin-left: 35px;
-}
 .toc-outside-links ul {
-    columns: 2;
+    width: fit-content;
+    columns: 1;
 }
 .toc-outside-links li p, .toc-outside-links ul li {
     margin-left: 5px;
@@ -39,15 +88,17 @@ body {
     margin-top: .5rem;
     text-align: initial;
     text-transform: uppercase;
+    width: 100%;
+    display: flex;
 }
 #the-python-arcade-library ul {
     margin-top: 0;
     margin-bottom: 0;
 }
 #github-stars {
-    width: 170px;
+    width: 141px;
     height: 30px;
-    margin-bottom: -18px;
+    margin-bottom: -9px;
 }
 .heading-icon {
     columns: 2;
@@ -104,8 +155,21 @@ img.right-image {
     width: 78px;
     padding-right: 15px;
 }
-.main-page-table {
+.main-page-box {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-page-box .main-page-link {
+    display: flex;
+    width: 100%;
+}
+
+.main-page-box .main-page-box-gh {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
 }
 .vimeo-video {
     border: 0;

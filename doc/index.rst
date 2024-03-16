@@ -20,161 +20,189 @@ The Python Arcade Library
       game without learning a complex framework.
    </p>
 
-.. |Go| image:: images/woman_sprinter.svg
-   :width: 48
-   :alt: Start Here
-   :target: get_started.html
+.. container:: item-framing-box-main
 
-.. raw:: html
+    .. image:: images/woman_sprinter.svg
+        :width: 48
+        :alt: Start Here
+        :class: heading-icon
+        :target: get_started.html
 
-    <table class="main-page-table">
-      <tr>
-        <td>
-           <h2>
-             <a class="reference internal" href="get_started/get_started.html">
-               <img alt="Start Here" src="_images/woman_sprinter.svg" width="48">
-               <span class="std std-ref">Start Here</span>
-             </a>
-             <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
-           </h2>
-        </td>
-        <td>
-          <iframe id="github-stars" src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" title="GitHub"></iframe>
-        </td>
-      </tr>
-   </table>
+    .. raw:: html
 
-.. image:: images/example_games.svg
-   :alt: Get Started icon
-   :class: heading-icon
+        <div class="main-page-box">
+            <div class="main-page-link">
+                <h2 id="the-python-arcade-library">
+                    <a class="reference internal" href="get_started/get_started.html">
+                        <div class="start-here-box">
+                            <span class="std std-ref">Start Here</span>
+                        </div>
+                    </a>
+                    <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
+                </h2>
+            </div>
+            <div class="main-page-box-gh">
+                <iframe id="github-stars" src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" title="GitHub"></iframe>
+            </div>
+        </div>
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Get Started
+.. container:: item-framing-box
 
-   get_started/introduction
-   get_started/get_started
-   get_started/install/index
-   get_started/how_to_get_help
+    .. image:: images/example_games.svg
+       :alt: Get Started icon
+       :class: heading-icon
 
-.. image:: images/example_code.svg
-   :alt: Example Code
-   :class: heading-icon
+    .. toctree::
+       :maxdepth: 1
+       :caption: Get Started
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Examples
+       get_started/introduction
+       get_started/get_started
+       get_started/install/index
+       get_started/how_to_get_help
 
-   example_code/how_to_examples/index
-   example_code/game_jam_2020
-   example_code/sample_games
+.. container:: item-framing-box
 
-.. image:: images/learn.svg
-   :alt: Tutorials
-   :class: heading-icon
+    .. image:: images/example_code.svg
+       :alt: Example Code
+       :class: heading-icon
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Tutorials
+    .. toctree::
+       :maxdepth: 1
+       :caption: Examples
 
-   tutorials/platform_tutorial/index
-   tutorials/pymunk_platformer/index
-   tutorials/views/index
-   tutorials/card_game/index
-   tutorials/lights/index
-   tutorials/bundling_with_pyinstaller/index
-   tutorials/compiling_with_nuitka/index
-   tutorials/shader_tutorials
-   tutorials/menu/index
-   tutorials/framebuffer/index
+       example_code/how_to_examples/index
+       example_code/game_jam_2020
+       example_code/sample_games
 
-.. image:: images/example_games.svg
-   :alt: Programming guide icon
-   :class: heading-icon
+.. container:: item-framing-box
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Guide
+    .. image:: images/learn.svg
+       :alt: Tutorials
+       :class: heading-icon
 
-   programming_guide/sprites/index
-   programming_guide/keyboard
-   programming_guide/sound
-   programming_guide/textures
-   programming_guide/sections
-   programming_guide/gui/index
-   programming_guide/texture_atlas
-   programming_guide/edge_artifacts/index
-   programming_guide/logging
-   programming_guide/opengl_notes
-   programming_guide/performance_tips
-   programming_guide/headless
-   programming_guide/vsync
-   programming_guide/pygame_comparison
+    .. toctree::
+       :maxdepth: 1
+       :caption: Tutorials
 
-.. image:: images/API.svg
-   :alt: API icon
-   :class: heading-icon
+       tutorials/platform_tutorial/index
+       tutorials/pymunk_platformer/index
+       tutorials/views/index
+       tutorials/card_game/index
+       tutorials/lights/index
+       tutorials/bundling_with_pyinstaller/index
+       tutorials/compiling_with_nuitka/index
+       tutorials/shader_tutorials
+       tutorials/menu/index
+       tutorials/framebuffer/index
 
-.. toctree::
-   :maxdepth: 1
-   :caption: API
+.. container:: item-framing-box
 
-   Index<api_docs/api/quick_index>
-   Reference<api_docs/arcade>
-   api_docs/resources
+    .. image:: images/example_games.svg
+       :alt: Programming guide icon
+       :class: heading-icon
 
-.. image:: images/source.svg
-   :alt: Source icon
-   :class: heading-icon
+    .. toctree::
+       :maxdepth: 1
+       :caption: Guide
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Source Code
+       programming_guide/sprites/index
+       programming_guide/keyboard
+       programming_guide/sound
+       programming_guide/textures
+       programming_guide/sections
+       programming_guide/gui/index
+       programming_guide/texture_atlas
+       programming_guide/edge_artifacts/index
+       programming_guide/logging
+       programming_guide/opengl_notes
+       programming_guide/performance_tips
+       programming_guide/headless
+       programming_guide/vsync
+       programming_guide/pygame_comparison
 
-   GitHub <https://github.com/pythonarcade/arcade>
-   programming_guide/release_notes
-   License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
+.. container:: item-framing-box
 
-.. image:: images/source.svg
-   :alt: Source icon
-   :class: heading-icon
+    .. image:: images/API.svg
+       :alt: API icon
+       :class: heading-icon
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contributing
+    .. toctree::
+       :maxdepth: 1
+       :caption: API
 
-   contributing_guide/index
-   contributing_guide/release_checklist
+       Index<api_docs/api/quick_index>
+       Reference<api_docs/arcade>
+       api_docs/resources
 
-.. image:: images/social.svg
-   :alt: Social icon
-   :class: heading-icon
+.. container:: item-framing-box
 
-Social
-------
+    .. image:: images/source.svg
+       :alt: Source icon
+       :class: heading-icon
 
-.. container:: toc-outside-links
+    .. toctree::
+       :maxdepth: 1
+       :caption: Source Code
 
-    * `Discord (most active spot) <https://discord.gg/ZjGDqMp>`_
-    * `Reddit /r/pythonarcade <https://www.reddit.com/r/pythonarcade/>`_
-    * `Twitter @ArcadeLibrary <https://twitter.com/arcadelibrary?lang=en>`_
-    * `Instagram @PythonArcadeLibrary <https://www.instagram.com/PythonArcadeLibrary/>`_
-    * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
-    * :ref:`diversity_statement`
+       GitHub <https://github.com/pythonarcade/arcade>
+       programming_guide/release_notes
+       License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
 
-.. image:: images/performance.svg
-   :alt: Performance icon
-   :class: heading-icon
+.. container:: item-framing-box
 
-Learning Resources
-------------------
+    .. container:: single-col-box
 
-.. container:: toc-outside-links
+        .. image:: images/source.svg
+           :alt: Source icon
+           :class: heading-icon
 
-    * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
-    * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
-    * `US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>`_
-    * `US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>`_
-    * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
-    * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
+        .. toctree::
+           :maxdepth: 1
+           :caption: Contributing
+
+           contributing_guide/index
+           contributing_guide/release_checklist
+
+.. container:: item-framing-box
+
+    .. image:: images/social.svg
+       :alt: Social icon
+       :class: heading-icon
+
+    .. container:: item-framing-sub-box
+
+        .. container:: item-framing-title
+
+            Social
+
+        .. container:: toc-outside-links
+
+            * `Discord (most active spot) <https://discord.gg/ZjGDqMp>`_
+            * `Reddit /r/pythonarcade <https://www.reddit.com/r/pythonarcade/>`_
+            * `Twitter @ArcadeLibrary <https://twitter.com/arcadelibrary?lang=en>`_
+            * `Instagram @PythonArcadeLibrary <https://www.instagram.com/PythonArcadeLibrary/>`_
+            * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
+            * :ref:`diversity_statement`
+
+.. container:: item-framing-box
+
+    .. image:: images/performance.svg
+       :alt: Performance icon
+       :class: heading-icon
+
+    .. container:: item-framing-sub-box
+
+        .. container:: item-framing-title
+
+            Learning Resources
+
+        .. container:: toc-outside-links
+
+            * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
+            * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
+            * `US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>`_
+            * `US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>`_
+            * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
+            * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
 
