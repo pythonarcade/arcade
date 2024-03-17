@@ -20,13 +20,7 @@ The Python Arcade Library
       game without learning a complex framework.
    </p>
 
-.. container:: item-framing-box-main
-
-    .. image:: images/woman_sprinter.svg
-        :width: 48
-        :alt: Start Here
-        :class: heading-icon
-        :target: get_started.html
+.. container:: main-page-item-wrapper-header
 
     .. raw:: html
 
@@ -34,11 +28,14 @@ The Python Arcade Library
             <div class="main-page-link">
                 <h2 id="the-python-arcade-library">
                     <a class="reference internal" href="get_started/get_started.html">
+                        <div class="heading-icon sprinter-box">
+                            <img alt="Start Here" src="_images/woman_sprinter.svg" width="48">
+                        </div>
                         <div class="start-here-box">
                             <span class="std std-ref">Start Here</span>
                         </div>
+                        <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
                     </a>
-                    <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
                 </h2>
             </div>
             <div class="main-page-box-gh">
@@ -46,7 +43,7 @@ The Python Arcade Library
             </div>
         </div>
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/example_games.svg
        :alt: Get Started icon
@@ -61,7 +58,7 @@ The Python Arcade Library
        get_started/install/index
        get_started/how_to_get_help
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/example_code.svg
        :alt: Example Code
@@ -75,7 +72,7 @@ The Python Arcade Library
        example_code/game_jam_2020
        example_code/sample_games
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/learn.svg
        :alt: Tutorials
@@ -96,7 +93,7 @@ The Python Arcade Library
        tutorials/menu/index
        tutorials/framebuffer/index
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/example_games.svg
        :alt: Programming guide icon
@@ -121,7 +118,7 @@ The Python Arcade Library
        programming_guide/vsync
        programming_guide/pygame_comparison
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/API.svg
        :alt: API icon
@@ -135,7 +132,7 @@ The Python Arcade Library
        Reference<api_docs/arcade>
        api_docs/resources
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/source.svg
        :alt: Source icon
@@ -149,7 +146,7 @@ The Python Arcade Library
        programming_guide/release_notes
        License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. container:: single-col-box
 
@@ -164,15 +161,15 @@ The Python Arcade Library
            contributing_guide/index
            contributing_guide/release_checklist
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/social.svg
        :alt: Social icon
        :class: heading-icon
 
-    .. container:: item-framing-sub-box
+    .. container:: main-page-item-sub-wrapper
 
-        .. container:: item-framing-title
+        .. container:: main-page-item-title
 
             Social
 
@@ -185,15 +182,15 @@ The Python Arcade Library
             * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
             * :ref:`diversity_statement`
 
-.. container:: item-framing-box
+.. container:: main-page-item-wrapper
 
     .. image:: images/performance.svg
        :alt: Performance icon
        :class: heading-icon
 
-    .. container:: item-framing-sub-box
+    .. container:: main-page-item-sub-wrapper
 
-        .. container:: item-framing-title
+        .. container:: main-page-item-title
 
             Learning Resources
 
