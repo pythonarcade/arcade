@@ -38,6 +38,7 @@ class BasicSprite:
         "_color",
         "_texture",
         "_hit_box",
+        "_visible",
         "sprite_lists",
         "_angle",
         "__weakref__",
@@ -49,6 +50,7 @@ class BasicSprite:
         scale: float = 1.0,
         center_x: float = 0,
         center_y: float = 0,
+        visible: bool = True,
         **kwargs: Any,
     ) -> None:
         self._position = (center_x, center_y)
@@ -57,6 +59,7 @@ class BasicSprite:
         self._width = texture.width * scale
         self._height = texture.height * scale
         self._scale = scale, scale
+        self._visible = visible
         self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
@@ -306,16 +309,15 @@ class BasicSprite:
             sprite.visible = not sprite.visible
 
         """
-        return self._color[3] > 0
+        return self._visible
 
     @visible.setter
     def visible(self, value: bool):
-        self._color = Color(
-            self._color[0],
-            self._color[1],
-            self._color[2],
-            255 if value else 0,
-        )
+        if self._visible == value:
+            return
+
+        self._visible = value
+
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
@@ -346,26 +348,13 @@ class BasicSprite:
 
     @color.setter
     def color(self, color: RGBA255):
-        if len(color) == 4:
-            if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-                and self._color[3] == color[3]
-            ):
-                return
-            self._color = Color.from_iterable(color)
+        if color == self._color:
+            return
 
-        elif len(color) == 3:
-            if (
-                self._color[0] == color[0]
-                and self._color[1] == color[1]
-                and self._color[2] == color[2]
-            ):
-                return
-            self._color = Color(color[0], color[1], color[2], self._color[3])
-        else:
+        if len(color) != 3 and len(color) != 4:
             raise ValueError("Color must be three or four ints from 0-255")
+
+        self._color = Color(color[0], color[1], color[2], self._color[3] if len(color) != 4 else color[3])
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
