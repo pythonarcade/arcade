@@ -20,7 +20,6 @@ from PIL import Image
 import pyglet
 
 from arcade.types import RGBA255, Color
-from arcade.resources import resolve_resource_path
 
 if TYPE_CHECKING:
     from arcade import Window
