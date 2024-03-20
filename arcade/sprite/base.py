@@ -59,7 +59,7 @@ class BasicSprite:
         self._width = texture.width * scale
         self._height = texture.height * scale
         self._scale = scale, scale
-        self._visible = visible
+        self._visible = bool(visible)
         self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
@@ -313,6 +313,7 @@ class BasicSprite:
 
     @visible.setter
     def visible(self, value: bool):
+        value = bool(value)
         if self._visible == value:
             return
 
@@ -351,10 +352,16 @@ class BasicSprite:
         if color == self._color:
             return
 
-        if len(color) != 3 and len(color) != 4:
-            raise ValueError("Color must be three or four ints from 0-255")
+        r, g, b, *_a = color
 
-        self._color = Color(color[0], color[1], color[2], self._color[3] if len(color) != 4 else color[3])
+        if _a:
+            if len(_a) > 1:
+                raise ValueError(f"iterable must unpack to 3 or 4 values not {len(color)}")
+            a = _a[0]
+        else:
+            a = self._color.a
+
+        self._color = Color(r, g, b, a)
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)

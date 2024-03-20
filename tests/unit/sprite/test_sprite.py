@@ -321,13 +321,19 @@ def test_visible():
     assert sprite.alpha == 255
     assert sprite.visible is True
 
+    # initialise alpha value
+    sprite.alpha = 100
+    assert sprite.alpha == 100
+
     # Make invisible
     sprite.visible = False
     assert sprite.visible is False
+    assert sprite.alpha == 100
 
     # Make visible again
     sprite.visible = True
     assert sprite.visible is True
+    assert sprite.alpha == 100
 
 
 def test_sprite_scale_xy(window):
