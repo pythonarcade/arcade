@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
-from arcade.types import Point, Color, RGBA255, PointList
+from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -348,7 +348,7 @@ class BasicSprite:
         return self._color
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBOrA255):
         if color == self._color:
             return
 
