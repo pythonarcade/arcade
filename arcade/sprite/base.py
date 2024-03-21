@@ -296,17 +296,32 @@ class BasicSprite:
 
     @property
     def visible(self) -> bool:
-        """
-        Get or set the visibility of this sprite.
-        This is a shortcut for changing the alpha value of a sprite
-        to 0 or 255::
+        """Get or set the visibility of this sprite.
+
+        When set to ``False``, each :py:class:`~arcade.SpriteList` and
+        its attached shaders will treat the sprite as if has an
+        :py:attr:`.alpha` of 0. However, the sprite's actual values for
+        :py:attr:`.alpha` and :py:attr:`.color` will not change.
+
+        .. code-block:: python
+
+            # The initial color of the sprite
+            >>> sprite.color
+            Color(255, 255, 255, 255)
 
             # Make the sprite invisible
-            sprite.visible = False
-            # Change back to visible
-            sprite.visible = True
-            # Toggle visible
-            sprite.visible = not sprite.visible
+            >>> sprite.visible = False
+            # The sprite's color value has not changed
+            >>> sprite.color
+            Color(255, 255, 255, 255)
+            # The sprite's alpha value hasn't either
+            >>> sprite.alpha
+            255
+
+            # Restore visibility
+            >>> sprite.visible = True
+            # Shorthand to toggle visible
+            >>> sprite.visible = not sprite.visible
 
         """
         return self._visible
@@ -361,6 +376,8 @@ class BasicSprite:
         else:
             a = self._color.a
 
+        # We don't handle alpha and .visible interactions here
+        # because it's implemented in SpriteList._update_color
         self._color = Color(r, g, b, a)
 
         for sprite_list in self.sprite_lists:
