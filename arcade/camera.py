@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
-from pyglet.math import Mat4, Vec2, Vec3
+from pyglet.math import Mat4, Vec2, Vec3, Vec4
 
 import arcade
 from arcade.types import Point
@@ -551,6 +551,12 @@ class Camera(SimpleCamera):
         self.shake_speed = speed
         self.shake_damping = damping
         self.shaking = True
+
+    def get_map_coordinates(self, camera_vector: Union[Vec2, tuple]) -> Vec2:
+        x, y = camera_vector
+        _x, _y = (x / self.viewport_width) * 2 - 1, (y / self.viewport_height) * 2 - 1
+        world_vector = ~(self._combined_matrix) @ Vec4(_x, _y, 1.0, 1.0)
+        return Vec2(world_vector.x, world_vector.y)
 
     def use(self) -> None:
         """
