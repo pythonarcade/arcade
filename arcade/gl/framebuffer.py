@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Optional, Tuple, List, TYPE_CHECKING, Union
+from typing import Generator, Optional, Tuple, List, TYPE_CHECKING
 import weakref
 
 
@@ -305,7 +305,7 @@ class Framebuffer:
             self._prev_fbo.use()
 
     @contextmanager
-    def activate(self):
+    def activate(self) -> Generator[Framebuffer, None, None]:
         """Context manager for binding the framebuffer.
 
         Unlike the default context manager in this class
@@ -348,10 +348,10 @@ class Framebuffer:
 
     def clear(
         self,
-        color: Union[RGBOrA255, RGBOrANormalized] = (0.0, 0.0, 0.0, 0.0),
         *,
+        color: Optional[RGBOrA255] = None,
+        color_normalized: Optional[RGBOrANormalized] = None,
         depth: float = 1.0,
-        normalized: bool = False,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """
@@ -361,12 +361,13 @@ class Framebuffer:
             fb.clear(color=arcade.color.WHITE)
 
             # Clear framebuffer using the color red in normalized form
-            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
+            fbo.clear(color_normalized=(1.0, 0.0, 0.0, 1.0))
 
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param color: A 3 or 4 component tuple containing the color
+        :param color: A 3 or 4 component tuple containing the color (prioritized over color_normalized)
+        :param color_normalized: A 3 or 4 component tuple containing the color in normalized form
         :param depth: Value to clear the depth buffer (unused)
         :param normalized: If the color values are normalized or not
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
@@ -379,24 +380,26 @@ class Framebuffer:
             else:
                 self.scissor = None
 
-            if normalized:
-                # If the colors are already normalized we can pass them right in
+            clear_color = 0.0, 0.0, 0.0, 0.0
+            if color is not None:
                 if len(color) == 3:
-                    gl.glClearColor(*color, 1.0)
+                    clear_color = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
+                elif len(color) == 4:
+                    clear_color = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
                 else:
-                    gl.glClearColor(*color)
-            else:
-                # OpenGL wants normalized colors (0.0 -> 1.0)
-                if len(color) == 3:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+                    raise ValueError("Color should be a 3 or 4 component tuple")
+            elif color_normalized is not None:
+                if len(color_normalized) == 3:
+                    clear_color = color_normalized[0], color_normalized[1], color_normalized[2], 1.0
+                elif len(color_normalized) == 4:
+                    clear_color = color_normalized
                 else:
-                    # mypy does not understand that color[3] is guaranteed to work in this codepath, pyright does.
-                    # We can remove this type: ignore if we switch to pyright.
-                    gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-                    )
+                    raise ValueError("Color should be a 3 or 4 component tuple")
+
+            gl.glClearColor(*clear_color)
 
             if self.depth_attachment:
+                gl.glClearDepth(depth)
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
