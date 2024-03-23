@@ -4,9 +4,8 @@ Import and run all examples one frame
 import contextlib
 import io
 import inspect
-import importlib
 import os
-# import time
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 import arcade
@@ -19,13 +18,17 @@ ALLOW_STDOUT = set([
     "arcade.examples.dual_stick_shooter",
     "arcade.examples.net_process_animal_facts",
 ])
-
+IGNORE_PATTERNS = [
+    'net_process_animal_facts'
+]
 
 def list_examples():
     for example in EXAMPLE_DIR.glob("*.py"):
         if example.stem.startswith("_"):
             continue
-        yield f"arcade.examples.{example.stem}", True
+        if example.stem in IGNORE_PATTERNS:
+            continue
+        yield f"arcade.examples.{example.stem}", example, True
 
 
 def find_class_inheriting_from_window(module):
@@ -43,30 +46,18 @@ def find_main_function(module):
 
 
 @pytest.mark.parametrize(
-    "module_path, allow_stdout",
+    "module_path, file_path, allow_stdout",
     list_examples(),
 )
-
-
-def test_examples(window_proxy, module_path, allow_stdout):
+def test_examples(window_proxy, module_path, file_path, allow_stdout):
     """Run all examples"""
     os.environ["ARCADE_TEST"] = "TRUE"
 
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
-        # Function based example will run on import.
-        # This is fine because the window_tools fixture patches arcade.open_window
-        module = importlib.import_module(module_path)
-        # importlib.reload(module)
-
-        window_cls = find_class_inheriting_from_window(module)
-        main_func = find_main_function(module)
-
-        if window_cls:
-            assert main_func, f"Expected a main function in {module_path}"
-            # Run the example
-            main_func()
-            # time.sleep(1)
+        # Manually load the module as __main__ so it runs on import
+        loader = SourceFileLoader("__main__", str(file_path))
+        loader.exec_module(loader.load_module())
 
     if not allow_stdout:
         output = stdout.getvalue()

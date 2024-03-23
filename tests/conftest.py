@@ -191,6 +191,12 @@ class WindowProxy:
     def use(self):
         self.window.use()
 
+    def push_handlers(self, *handlers):
+        self.window.push_handlers(*handlers)
+
+    def remove_handlers(self, *handlers):
+        self.window.remove_handlers(*handlers)
+
     def run(self):
         self.window.run()
 
