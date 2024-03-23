@@ -6,7 +6,7 @@ import io
 import inspect
 import importlib
 import os
-import time
+# import time
 from pathlib import Path
 
 import arcade
@@ -57,6 +57,7 @@ def test_examples(window_proxy, module_path, allow_stdout):
         # Function based example will run on import.
         # This is fine because the window_tools fixture patches arcade.open_window
         module = importlib.import_module(module_path)
+        # importlib.reload(module)
 
         window_cls = find_class_inheriting_from_window(module)
         main_func = find_main_function(module)
@@ -65,6 +66,7 @@ def test_examples(window_proxy, module_path, allow_stdout):
             assert main_func, f"Expected a main function in {module_path}"
             # Run the example
             main_func()
+            # time.sleep(1)
 
     if not allow_stdout:
         output = stdout.getvalue()

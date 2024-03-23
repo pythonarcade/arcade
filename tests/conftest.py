@@ -148,6 +148,8 @@ class WindowProxy:
         return self.window.clear(*args, **kwargs)
 
     def flip(self):
+        if self.window.has_exit:
+            return
         return self.window.flip()
 
     def on_draw(self):
