@@ -154,7 +154,7 @@ class LightLayer(RenderTargetTexture):
     def __enter__(self):
         self._prev_target = self.ctx.active_framebuffer
         self._fbo.use()
-        self._fbo.clear(self._background_color)
+        self._fbo.clear(color=self._background_color)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

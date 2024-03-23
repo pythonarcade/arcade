@@ -161,7 +161,7 @@ class Pong(View):
         self.setup()  # prepare a new game
 
     def on_draw(self):
-        self.clear(BEAU_BLUE)  # clear the screen
+        self.clear(color=BEAU_BLUE)  # clear the screen
 
         self.ball.draw()  # draw the ball
 
