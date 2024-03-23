@@ -262,7 +262,7 @@ class Window(pyglet.window.Window):
     def clear(
         self,
         color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBANormalized] = None, 
+        color_normalized: Optional[RGBANormalized] = None,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color

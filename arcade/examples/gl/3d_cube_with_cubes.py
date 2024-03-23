@@ -111,7 +111,7 @@ class MyGame(arcade.Window):
         # Draw the current cube using the last one as a texture
         self.fbo1.use()
         self.fbo1.clear(color_normalized=(1.0, 1.0, 1.0, 1.0))
- 
+
         translate = Mat4.from_translation((0, 0, -1.75))
         rx = Mat4.from_rotation(self.time, (1, 0, 0))
         ry = Mat4.from_rotation(self.time, (0, 1, 0))

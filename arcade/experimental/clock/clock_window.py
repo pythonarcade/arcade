@@ -1005,7 +1005,7 @@ class View:
     def clear(
         self,
         color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBOrANormalized] = None, 
+        color_normalized: Optional[RGBOrANormalized] = None,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
