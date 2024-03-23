@@ -397,17 +397,12 @@ class Framebuffer:
                     raise ValueError("Color should be a 3 or 4 component tuple")
 
             gl.glClearColor(*clear_color)
-            print("Clearing color buffer with color", clear_color)
 
             if self.depth_attachment:
-                # gl.glClearDepth(depth)
+                gl.glClearDepth(depth)
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-                print("Clearing depth buffer")
-                print("viewport", self.viewport)
-                print("scissor", self.scissor)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-                print("Clearing color buffer only")
 
             self.scissor = scissor_values
 
