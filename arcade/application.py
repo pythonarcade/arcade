@@ -297,7 +297,7 @@ class Window(pyglet.window.Window):
             MY_RED = arcade.types.Color(255, 0, 0)
             window.background_color = MY_RED
 
-            # Set the backgrund color directly from an RGBA tuple
+            # Set the background color directly from an RGBA tuple
             window.background_color = 255, 0, 0, 255
 
             # (Discouraged)
@@ -474,7 +474,7 @@ class Window(pyglet.window.Window):
 
         Override this function to respond to scroll events. The scroll
         arguments may be positive or negative to indicate direction, but
-        the units are unstandardized. How many scroll steps you recieve
+        the units are unstandardized. How many scroll steps you receive
         may vary wildly between computers depending a number of factors,
         including system settings and the input devices used (i.e. mouse
         scrollwheel, touchpad, etc).
@@ -559,7 +559,7 @@ class Window(pyglet.window.Window):
 
         Situations that require handling key releases include:
 
-        * Rythm games where a note must be held for a certain
+        * Rhythm games where a note must be held for a certain
           amount of time
         * 'Charging up' actions that change strength depending on
           how long a key was pressed
@@ -738,12 +738,12 @@ class Window(pyglet.window.Window):
         if new_view.window is None:
             new_view.window = self
         elif new_view.window != self:
-            # raise RuntimeError((
-            #     "You are attempting to pass the same view "
-            #     "object between multiple windows. A single "
-            #     "view object can only be used in one window. "
-            #     f"{self} != {new_view.window}"
-            # ))
+            raise RuntimeError((
+                "You are attempting to pass the same view "
+                "object between multiple windows. A single "
+                "view object can only be used in one window. "
+                f"{self} != {new_view.window}"
+            ))
             pass
 
         # remove previously shown view's handlers

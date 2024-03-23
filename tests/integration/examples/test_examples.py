@@ -1,13 +1,15 @@
 """
 Import and run all examples one frame
 """
-import os
-import sys
-import importlib
+import contextlib
+import io
 import inspect
+import importlib
+import os
+import time
 from pathlib import Path
+
 import arcade
-import pyglet
 import pytest
 
 # TODO: Also add platform_tutorial and gl
@@ -22,9 +24,6 @@ ALLOW_STDOUT = set([
 def list_examples():
     for example in EXAMPLE_DIR.glob("*.py"):
         if example.stem.startswith("_"):
-            continue
-        # print(f"Running {example}")
-        if "text_loc" in example.stem:
             continue
         yield f"arcade.examples.{example.stem}", True
 
@@ -51,23 +50,22 @@ def find_main_function(module):
 
 def test_examples(window_proxy, module_path, allow_stdout):
     """Run all examples"""
-    # full_module_path = f"arcade.examples.{module_path}"
-    # sys.modules.pop(full_module_path, None)
-    # assert full_module_path in sys.modules, f"Expected example to not be in sys.modules: {module_path}"
     os.environ["ARCADE_TEST"] = "TRUE"
-    # Function based example will run on import.
-    # This is fine because the window_tools fixture patches arcade.open_window
-    # TODO: Capture stdout from here
-    module = importlib.import_module(module_path)
-    # importlib.reload(module)
-    # Figure out
-    # * Is there a class inheriting from arcade.Window?
-    # * Do we have a main function?
-    window_cls = find_class_inheriting_from_window(module)
-    main_func = find_main_function(module)
-    # print(window_cls, main_func)
 
-    if window_cls:
-        assert main_func, f"Expected a main function in {module_path}"
-        # Run the example
-        main_func()
+    stdout = io.StringIO()
+    with contextlib.redirect_stdout(stdout):
+        # Function based example will run on import.
+        # This is fine because the window_tools fixture patches arcade.open_window
+        module = importlib.import_module(module_path)
+
+        window_cls = find_class_inheriting_from_window(module)
+        main_func = find_main_function(module)
+
+        if window_cls:
+            assert main_func, f"Expected a main function in {module_path}"
+            # Run the example
+            main_func()
+
+    if not allow_stdout:
+        output = stdout.getvalue()
+        assert not output, f"Example {module_path} printed to stdout: {output}"
