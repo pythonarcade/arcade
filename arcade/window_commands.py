@@ -173,7 +173,7 @@ def run():
 
     # Used in some unit test
     if os.environ.get('ARCADE_TEST'):
-        window.on_update(window._update_rate)
+        window.on_update(1.0 / 60.0)
         window.on_draw()
     elif window.headless:
         # We are entering headless more an will emulate an event loop

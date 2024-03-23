@@ -1,4 +1,5 @@
 import os
+import sys
 from contextlib import contextmanager
 from pathlib import Path
 import gc
@@ -14,13 +15,14 @@ import arcade
 PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
 arcade.resources.add_resource_handle("fixtures", FIXTURE_ROOT)
+REAL_WINDOW_CLASS = arcade.Window
 WINDOW = None
 
 
 def create_window(width=800, height=600, caption="Testing", **kwargs):
     global WINDOW
     if not WINDOW:
-        WINDOW = arcade.Window(title="Testing", vsync=False, antialiasing=False)
+        WINDOW = REAL_WINDOW_CLASS(title="Testing", vsync=False, antialiasing=False)
         WINDOW.set_vsync(False)
     return WINDOW
 
@@ -93,70 +95,112 @@ def window():
     return window
 
 
-# These are tools for integration tests were examples are run
-# creating windows and such. The global test window needs to
-# be injected somehow. In addition we need to initialize a
-# window subclass on an existing window instance.
-class WindowTools:
-    """
-    Tools for patching windows in integration tests.
-    Might cause bleeding from the eyes while reading.
-    """
+class WindowProxy:
+    """Fake window extended by integration tests"""
 
-    @contextmanager
-    def patch_window_as_global_window_subclass(self, window_cls):
-        """Hack in the class as the subclass of the global window instance"""
-        # Oh boy here we go .. :O
-        default_members = None
-        try:
-            window = create_window()
-            print("Creating window", type(window), id(window))
-            arcade.set_window(window)
+    def __init__(self, width=800, height=600, caption="Test Window", *args, **kwargs):
+        self.window = create_window()
+        arcade.set_window(self)
+        prepare_window(self.window)
+        if caption:
+            self.window.set_caption(caption)
+        if width and height:
+            self.window.set_size(width, height)
+            self.window.set_viewport(0, width, 0, height)
 
-            # The arcade window initializer must not be called
-            arcade_init = arcade.Window.__init__
-            example_init = window_cls.__init__
-            def dummy_arcade_init(self, *args, **kwargs):
-                print("Calling dummy arcade init", type(self), id(self))
-                arcade.set_window(window)
-            def dummy_example_init(self, *args, **kwargs):
-                print("Calling dummy example init", type(self), id(self), args, kwargs)
-                def dummy_func(self, *args, **kwargs):
-                    pass
-                window_cls.__init__ = dummy_func
-                example_init(window, *args, **kwargs)
-                # print(window.__dict__)
+        self._update_rate = 60
 
-            arcade.Window.__init__ = dummy_arcade_init
-            window_cls.__init__ = dummy_example_init
-            window.__class__ = window_cls  # Make subclass of the instance
-            # default_members = set(window.__dict__.keys())
-            yield window
-        finally:
-            arcade.Window.__init__ = arcade_init
-            window_cls.__init__ = example_init
-            window.__class__ = arcade.Window
+    @property
+    def ctx(self):
+        return self.window.ctx
 
-            # Delete lingering members
-            # if default_members:
-            #     new_members = list(window.__dict__.keys())
-            #     for member in new_members:
-            #         if member not in default_members:
-            #             del window.__dict__[member]
+    @property
+    def width(self):
+        return self.window.width
 
+    @property
+    def height(self):
+        return self.window.height
+
+    @property
+    def size(self):
+        return self.window.size
+
+    @property
+    def aspect_ratio(self):
+        return self.window.aspect_ratio
+
+    def current_view(self):
+        return self.window.current_view
+
+    @property
+    def background_color(self):
+        return self.window.background_color
+
+    @background_color.setter
+    def background_color(self, color):
+        self.window.background_color = color
+
+    def clear(self, *args, **kwargs):
+        return self.window.clear(*args, **kwargs)
+
+    def flip(self):
+        return self.window.flip()
+
+    def on_draw(self):
+        return self.window.on_draw()
+    
+    def on_update(self, dt):
+        return self.window.on_update(dt)
+
+    def show_view(self, view):
+        return self.window.show_view(view)
+
+    def hide_view(self):
+        return self.window.hide_view()
+
+    def get_size(self):
+        return self.window.get_size()
+
+    def set_size(self, width, height):
+        self.window.set_size(width, height)
+
+    def get_pixel_ratio(self):
+        return self.window.get_pixel_ratio()
+
+    def set_mouse_visible(self, visible):
+        self.window.set_mouse_visible(visible)
+
+    def center_window(self):
+        self.window.center_window()
+
+    def set_vsync(self, vsync):
+        self.window.set_vsync(vsync)
+
+    def get_viewport(self):
+        return self.window.get_viewport()
+
+    def set_viewport(self, left, right, bottom, top):
+        self.window.set_viewport(left, right, bottom, top)
+
+    def use(self):
+        self.window.use()
+
+    def run(self):
+        self.window.run()
 
 
 @pytest.fixture(scope="function")
-def window_tools():
+def window_proxy():
     """Monkey patch the open_window function and return a WindowTools instance."""
-    # Monkey patch the open_window function
-    def _create_window(width=800, height=800, caption="Test", **kwargs):
-        window = create_window()
-        arcade.set_window(window)
-        prepare_window(window)
-        window.set_size(width, height)
-        window.set_caption(caption)
-        return window
+    _window = arcade.Window
+    arcade.Window = WindowProxy
 
-    arcade.open_window = _create_window 
-    return WindowTools()
+    _open_window = arcade.open_window
+    def open_window(*args, **kwargs):
+        return create_window(*args, **kwargs)
+    arcade.open_window = open_window
+
+    yield None
+    arcade.Window = _window
+    arcade.open_window = _open_window

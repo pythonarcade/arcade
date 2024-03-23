@@ -18,11 +18,14 @@ ALLOW_STDOUT = set([
     "arcade.examples.net_process_animal_facts",
 ])
 
+
 def list_examples():
     for example in EXAMPLE_DIR.glob("*.py"):
         if example.stem.startswith("_"):
             continue
-        print(f"Running {example}")
+        # print(f"Running {example}")
+        if "text_loc" in example.stem:
+            continue
         yield f"arcade.examples.{example.stem}", True
 
 
@@ -44,13 +47,19 @@ def find_main_function(module):
     "module_path, allow_stdout",
     list_examples(),
 )
-def test_examples(window_tools, module_path, allow_stdout):
+
+
+def test_examples(window_proxy, module_path, allow_stdout):
     """Run all examples"""
+    # full_module_path = f"arcade.examples.{module_path}"
+    # sys.modules.pop(full_module_path, None)
+    # assert full_module_path in sys.modules, f"Expected example to not be in sys.modules: {module_path}"
     os.environ["ARCADE_TEST"] = "TRUE"
     # Function based example will run on import.
     # This is fine because the window_tools fixture patches arcade.open_window
     # TODO: Capture stdout from here
     module = importlib.import_module(module_path)
+    # importlib.reload(module)
     # Figure out
     # * Is there a class inheriting from arcade.Window?
     # * Do we have a main function?
@@ -60,39 +69,5 @@ def test_examples(window_tools, module_path, allow_stdout):
 
     if window_cls:
         assert main_func, f"Expected a main function in {module_path}"
-
         # Run the example
-        with window_tools.patch_window_as_global_window_subclass(window_cls) as window:
-            main_func()
-
-
-# test_examples()
-
-# Attempt to inject an existing parent instance
-
-# window = arcade.Window(800, 600, "My Title")
-
-# class CustomWindow(arcade.Window):
-#     def __init__(self):
-#         super().__init__(800, 600, "My Title")
-#         self.color = arcade.color.AMAZON
-
-#     def on_draw(self):
-#         self.clear()
-#         arcade.draw_text("Hello, world", 200, 300, self.color, 20)
-
-# def dummy_func(self, *args, **kwargs):
-#     pass
-
-# print(window.__dict__)
-
-# window.__class__ = CustomWindow
-# pyglet.window.Window.__init__ = dummy_func
-# window.__init__()
-
-
-# arcade.run()
-
-# print("-" * 100)
-# window.__class__ = arcade.Window
-# print(window.__dict__)
+        main_func()

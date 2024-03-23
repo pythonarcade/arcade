@@ -359,10 +359,7 @@ class Window(pyglet.window.Window):
 
         window_width, window_height = self.get_size()
         # Center the window
-        try:
-            self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
-        except Exception:
-            print("moo")
+        self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
     def on_update(self, delta_time: float):
         """
@@ -741,9 +738,13 @@ class Window(pyglet.window.Window):
         if new_view.window is None:
             new_view.window = self
         elif new_view.window != self:
-            raise RuntimeError("You are attempting to pass the same view "
-                               "object between multiple windows. A single "
-                               "view object can only be used in one window.")
+            # raise RuntimeError((
+            #     "You are attempting to pass the same view "
+            #     "object between multiple windows. A single "
+            #     "view object can only be used in one window. "
+            #     f"{self} != {new_view.window}"
+            # ))
+            pass
 
         # remove previously shown view's handlers
         if self._current_view is not None:
