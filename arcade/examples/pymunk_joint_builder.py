@@ -316,7 +316,7 @@ class MyApplication(arcade.Window):
 
 def main():
     window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.run()
+    window.run()
 
 
 if __name__ == "__main__":

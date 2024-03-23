@@ -341,7 +341,7 @@ class MyGame(arcade.Window):
 
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.run()
+    game.run()
 
 
 if __name__ == "__main__":

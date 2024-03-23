@@ -364,7 +364,7 @@ def rocket_smoke_mutator(particle: LifetimeParticle):
 
 def main():
     app = FireworksApp()
-    arcade.run()
+    app.run()
 
 
 if __name__ == "__main__":

@@ -768,7 +768,7 @@ class MyGame(arcade.Window):
 
 def main():
     game = MyGame()
-    arcade.run()
+    game.run()
 
 
 if __name__ == "__main__":
