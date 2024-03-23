@@ -169,7 +169,7 @@ class MyView(arcade.View):
         # This draws our UI elements
         self.ui_manager.draw()
         arcade.draw_text("Music Demo",
-                         start_x=0, start_y=self.window.height - 55,
+                         x=0, y=self.window.height - 55,
                          width=self.window.width,
                          font_size=40,
                          align="center",
@@ -180,10 +180,10 @@ class MyView(arcade.View):
             minutes = int(seconds // 60)
             seconds = int(seconds % 60)
             arcade.draw_text(f"Time: {minutes}:{seconds:02}",
-                             start_x=10, start_y=10, color=arcade.color.BLACK, font_size=24)
+                             x=10, y=10, color=arcade.color.BLACK, font_size=24)
             volume = self.media_player.volume
             arcade.draw_text(f"Volume: {volume:3.1f}",
-                             start_x=10, start_y=50, color=arcade.color.BLACK, font_size=24)
+                             x=10, y=50, color=arcade.color.BLACK, font_size=24)
 
     def on_show_view(self):
         self.window.background_color = arcade.color.ALMOND

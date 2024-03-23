@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
         self.use_depth: bool = True
         self.text_use_depth = arcade.Text(
             "SPACE: Toggle depth testing (True)",
-            start_x=10, start_y=30, font_size=15, color=arcade.color.WHITE,
+            x=10, y=30, font_size=15, color=arcade.color.WHITE,
             batch=self.text_batch
         )
 

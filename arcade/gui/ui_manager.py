@@ -92,7 +92,7 @@ class UIManager(EventDispatcher):
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
-        self._rendered = False
+        self._requires_render = True
         #: Camera used when drawing the UI
         self.camera = SimpleCamera()
         self.register_event_type("on_event")
@@ -194,9 +194,17 @@ class UIManager(EventDispatcher):
 
     def trigger_render(self):
         """
-        Request rendering of all widgets
+        Request rendering of all widgets before next draw
         """
-        self._rendered = False
+        self._requires_render = True
+
+    def execute_layout(self):
+        """
+        Execute layout process for all widgets.
+
+        This is automatically called during :py:meth:`UIManager.draw()`.
+        """
+        self._do_layout()
 
     def _do_layout(self):
         layers = sorted(self.children.keys())
@@ -207,6 +215,10 @@ class UIManager(EventDispatcher):
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
+                # prepare children, so size_hints are calculated
+                child._prepare_layout()
+
+                # actual layout
                 if child.size_hint:
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
@@ -223,11 +235,12 @@ class UIManager(EventDispatcher):
                         shm_w or child.width, shm_h or child.height
                     )
 
+                # continue layout process down the tree
                 child._do_layout()
 
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
-        force = force or not self._rendered
+        force = force or self._requires_render
         for layer in layers:
             surface = self._get_surface(layer)
 
@@ -241,7 +254,7 @@ class UIManager(EventDispatcher):
                 for child in self.children[layer]:
                     child._do_render(surface, force)
 
-        self._rendered = True
+        self._requires_render = False
 
     def enable(self) -> None:
         """
@@ -297,8 +310,21 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
-        # Request Widgets to prepare for next frame
-        self._do_layout()
+        """
+        Will draw all widgets to the window.
+
+        UIManager caches all rendered widgets into a framebuffer (something like a window sized image)
+        and only updates the framebuffer if a widget requests rendering via trigger_render().
+
+        To ensure that the children are positioned properly,
+        a layout process is executed before rendering, changes might also trigger a re-rendering of all widgets.
+
+        Layouting is a two-step process:
+        1. Prepare layout, which prepares children and updates own values
+        2. Do layout, which actually sets the position and size of the children
+        """
+        # Request widgets to prepare for next frame
+        self.execute_layout()
 
         ctx = self.window.ctx
         with ctx.enabled(ctx.BLEND):
@@ -339,21 +365,21 @@ class UIManager(EventDispatcher):
     def dispatch_ui_event(self, event):
         return self.dispatch_event("on_event", event)
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(
-        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
     ):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 

@@ -1,11 +1,11 @@
+import gc
 import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-import gc
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
-    import arcade_accelerate # pyright: ignore [reportMissingImports]
+    import arcade_accelerate  # pyright: ignore [reportMissingImports]
     arcade_accelerate.bootstrap()
 
 import pytest
@@ -24,6 +24,9 @@ def create_window(width=800, height=600, caption="Testing", **kwargs):
     if not WINDOW:
         WINDOW = REAL_WINDOW_CLASS(title="Testing", vsync=False, antialiasing=False)
         WINDOW.set_vsync(False)
+        # This value is being monkey-patched into the Window class so that tests can identify if we are using
+        # arcade-accelerate easily in case they need to disable something when it is enabled.
+        WINDOW.using_accelerate = os.environ.get("ARCADE_PYTEST_USE_RUST")  # pyright: ignore
     return WINDOW
 
 

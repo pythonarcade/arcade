@@ -181,14 +181,14 @@ class MyGame(arcade.Window):
         # Text fields
         self.text_score = arcade.Text(
             f"Score: {self.score}",
-            start_x=10,
-            start_y=70,
+            x=10,
+            y=70,
             font_size=13,
         )
         self.text_asteroid_count = arcade.Text(
             f"Asteroid Count: {len(self.asteroid_list)}",
-            start_x=10,
-            start_y=50,
+            x=10,
+            y=50,
             font_size=13,
         )
 

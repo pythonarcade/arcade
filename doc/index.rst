@@ -31,7 +31,7 @@ The Python Arcade Library
       <tr>
         <td>
            <h2>
-             <a class="reference internal" href="programming_guide/get_started.html">
+             <a class="reference internal" href="get_started/get_started.html">
                <img alt="Start Here" src="_images/woman_sprinter.svg" width="48">
                <span class="std std-ref">Start Here</span>
              </a>
@@ -143,10 +143,7 @@ The Python Arcade Library
    :maxdepth: 1
    :caption: Contributing
 
-   contributing_guide/how_to_contribute
    contributing_guide/index
-   contributing_guide/directory_structure
-   contributing_guide/how_to_submit_changes
    contributing_guide/release_checklist
 
 .. image:: images/social.svg

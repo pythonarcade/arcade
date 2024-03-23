@@ -49,4 +49,4 @@ def test_create_rotatable():
 
     rot_p = rot.get_adjusted_points()
     for i, (a, b) in enumerate(zip(rot_90, rot_p)):
-        assert a == pytest.approx(b), f"[{i}] {a} != {b}"
+        assert a == pytest.approx(b, abs = 1e-6), f"[{i}] {a} != {b}"

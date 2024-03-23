@@ -86,6 +86,8 @@ titles = {
     'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
     'gui/style.py': ['GUI Style', 'gui_style.rst'],
+    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
@@ -108,6 +110,7 @@ excluded_modules = [
     'texture_atlas/atlas_array.py',
     'texture_atlas/atlas_bindless.py',
     'texture_atlas/helpers.py',
+    'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
 
 # Module and class members to exclude
@@ -199,6 +202,7 @@ def process_directory(directory: Path, quick_index_file):
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
+            "experimental": "arcade.gui.experimental",
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
@@ -334,6 +338,7 @@ def main():
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
+    process_directory(ROOT / "arcade/gui/experimental", text_file)
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()

@@ -62,7 +62,7 @@ class UIScrollArea(UIWidget):
         if not self.visible:
             return False
 
-        should_render = force or not self._rendered
+        should_render = force or self._requires_render
         rendered = False
 
         with self.surface.activate():
@@ -113,7 +113,7 @@ class UIScrollArea(UIWidget):
         child_event = event
         if isinstance(event, UIMouseEvent):
             child_event = type(event)(**event.__dict__)  # type: ignore
-            child_event.x = event.x - self.x + self.scroll_x
-            child_event.y = event.y - self.y + self.scroll_y
+            child_event.x = int(event.x - self.x + self.scroll_x)
+            child_event.y = int(event.y - self.y + self.scroll_y)
 
         return super().on_event(child_event)

@@ -166,3 +166,12 @@ def test_rect_union():
 
     # THEN
     assert new_rect == (0, 0, 20, 10)
+
+
+def test_collide_with_point():
+    rect = Rect(0, 0, 100, 100)
+
+    assert rect.collide_with_point(0, 0)
+    assert rect.collide_with_point(50, 50)
+    assert rect.collide_with_point(100, 100)
+    assert not rect.collide_with_point(150, 150)

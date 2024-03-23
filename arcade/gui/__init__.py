@@ -39,7 +39,7 @@ from arcade.gui.widgets import UISpriteWidget
 from arcade.gui.widgets.buttons import UITextureButton, UITextureButtonStyle, UIFlatButton
 from arcade.gui.widgets.slider import UISlider, UISliderStyle
 from arcade.gui.widgets import UIWidget
-from arcade.gui.property import ListProperty, DictProperty, Property, bind
+from arcade.gui.property import ListProperty, DictProperty, Property, bind, unbind
 from arcade.gui.mixins import UIDraggableMixin
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.mixins import UIWindowLikeMixin
@@ -99,4 +99,5 @@ __all__ = [
     "DictProperty",
     "Property",
     "bind",
+    "unbind",
 ]
