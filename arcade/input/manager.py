@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import Any, Callable, Dict, Set
+from typing import Any, Callable, Dict, Optional, Set
 
 import pyglet
+from pyglet.input.base import Controller
 
 import arcade
 
@@ -14,26 +15,49 @@ class ActionState(Enum):
     RELEASED = 0
 
 
+class InputDevice(Enum):
+    KEYBOARD = 0
+    CONTROLLER = 1
+
+
 class InputManager:
 
-    def __init__(self):
+    def __init__(self, controller: Optional[Controller] = None):
         self.actions: Dict[str, Action] = {}
         self.keys_to_actions: Dict[int, Set[str]] = {}
+        self.controller_buttons_to_actions: Dict[str, Set[str]] = {}
         self.action_subscribers: Dict[str, Set[Callable[[ActionState], Any]]] = {}
         self.axes: Dict[str, Axis] = {}
         self.axes_state: Dict[str, float] = {}
         self.keys_to_axes: Dict[int, Set[str]] = {}
+        self.controller_buttons_to_axes: Dict[str, Set[str]] = {}
+        self.controller_analog_to_axes: Dict[str, Set[str]] = {}
 
-        self.controller_manager = pyglet.input.ControllerManager()
-        self.controller_manager.on_connect = self.on_connect
-        self.controller_manager.on_disconnect = self.on_disconnect
-        self.controllers = self.controller_manager.get_controllers()
+        self.window = arcade.get_window()
+        self.window.push_handlers(self.on_key_press, self.on_key_release)
 
-    def on_connect(self, controller):
-        self.controllers = self.controller_manager.get_controllers()
+        self.active_device = InputDevice.KEYBOARD
 
-    def on_disconnect(self, controller):
-        self.controllers = self.controller_manager.get_controllers()
+        self.controller = None
+        self.controller_deadzone = 0.1
+        if controller:
+            self.controller = controller
+            self.controller.open()
+            self.controller.push_handlers(
+                self.on_button_press, self.on_button_release, self.on_stick_motion
+            )
+            self.active_device = InputDevice.CONTROLLER
+
+    def bind_controller(self, controller: Controller):
+        if self.controller:
+            self.controller.remove_handlers()
+
+        self.controller = controller
+        self.controller.open()
+        self.controller.push_handlers(
+            self.on_button_press, self.on_button_release, self.on_stick_motion
+        )
+        self.active_device = InputDevice.CONTROLLER
 
     def new_action(
         self,
@@ -63,6 +87,10 @@ class InputManager:
             if input.value not in self.keys_to_actions:
                 self.keys_to_actions[input.value] = set()
             self.keys_to_actions[input.value].add(action)
+        elif mapping._input_type == InputType.CONTROLLER_BUTTON:
+            if input.value not in self.controller_buttons_to_actions:
+                self.controller_buttons_to_actions[input.value] = set()
+            self.controller_buttons_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
         self.actions[action]._mappings = set()
@@ -88,6 +116,14 @@ class InputManager:
             if input.value not in self.keys_to_axes:
                 self.keys_to_axes[input.value] = set()
             self.keys_to_axes[input.value].add(axis)
+        elif mapping._input_type == InputType.CONTROLLER_BUTTON:
+            if input.value not in self.controller_buttons_to_axes:
+                self.controller_buttons_to_axes[input.value] = set()
+            self.controller_buttons_to_axes[input.value].add(axis)
+        elif mapping._input_type == InputType.CONTROLLER_AXIS:
+            if input.value not in self.controller_analog_to_axes:
+                self.controller_analog_to_axes[input.value] = set()
+            self.controller_analog_to_axes[input.value].add(axis)
 
     def clear_axis_input(self, axis: str):
         self.axes[axis]._mappings = set()
@@ -101,56 +137,108 @@ class InputManager:
     def axis(self, name: str) -> float:
         return self.axes_state[name]
 
-    def on_key_press(self, key: int, modifiers) -> None:
-        if key not in self.keys_to_actions:
-            # We have no actions registered on this key, do nothing
-            return
+    def dispatch_action(self, action: str, state: ActionState):
+        arcade.get_window().dispatch_event("on_action", action, state)
+        if action in self.action_subscribers:
+            for subscriber in tuple(self.action_subscribers[action]):
+                subscriber(state)
 
-        for action_name in tuple(self.keys_to_actions[key]):
+    def on_key_press(self, key: int, modifiers) -> None:
+        if self.active_device != InputDevice.KEYBOARD:
+            self.active_device = InputDevice.KEYBOARD
+        keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
+        for action_name in keys_to_actions:
             action = self.actions[action_name]
-            for mapping in action._mappings:
-                hit = True
+            hit = True
+            for mapping in tuple(action._mappings):
                 if mapping._modifiers:
                     for mod in mapping._modifiers:
                         if not modifiers & mod:
                             hit = False
 
-                if hit:
-                    arcade.get_window().dispatch_event(
-                        "on_action", action_name, ActionState.PRESSED
-                    )
-                    if action_name in self.action_subscribers:
-                        for subscriber in tuple(self.action_subscribers[action_name]):
-                            subscriber(ActionState.PRESSED)
+            if hit:
+                self.dispatch_action(action_name, ActionState.PRESSED)
 
-        for axis_name in tuple(self.keys_to_axes[key]):
+        # keys_to_axes = tuple(self.keys_to_axes.get(key, set()))
+        # for axis_name in keys_to_axes:
+        #     axis = self.axes[axis_name]
+        #     for mapping in tuple(axis._mappings):
+        #         if mapping._input.value == key:
+        #             self.axes_state[axis_name] = mapping._scale
+        #             break
+
+    def on_key_release(self, key: int, modifiers) -> None:
+        keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
+        for action_name in keys_to_actions:
+            action = self.actions[action_name]
+            hit = True
+            for mapping in tuple(action._mappings):
+                if mapping._modifiers:
+                    for mod in mapping._modifiers:
+                        if not modifiers & mod:
+                            hit = False
+
+            if hit:
+                self.dispatch_action(action_name, ActionState.RELEASED)
+
+        # keys_to_axes = tuple(self.keys_to_axes.get(key, set()))
+        # for axis_name in keys_to_axes:
+        #     self.axes_state[axis_name] = 0
+
+    def on_button_press(self, controller: Controller, button_name: str):
+        if self.active_device != InputDevice.CONTROLLER:
+            self.active_device = InputDevice.CONTROLLER
+        buttons_to_actions = tuple(
+            self.controller_buttons_to_actions.get(button_name, set())
+        )
+        for action_name in buttons_to_actions:
+            self.dispatch_action(action_name, ActionState.PRESSED)
+
+        buttons_to_axes = tuple(self.controller_buttons_to_axes.get(button_name, set()))
+        for axis_name in buttons_to_axes:
             axis = self.axes[axis_name]
-            for mapping in axis._mappings:
+            for mapping in tuple(axis._mappings):
                 scale = mapping._scale
                 self.axes_state[axis_name] = scale
 
-    def on_key_release(self, key: int, modifiers) -> None:
-        if key not in self.keys_to_actions:
-            # We have no actions registered on this key, do nothing
-            return
+    def on_button_release(self, controller: Controller, button_name: str):
+        buttons_to_actions = tuple(
+            self.controller_buttons_to_actions.get(button_name, set())
+        )
+        for action_name in buttons_to_actions:
+            self.dispatch_action(action_name, ActionState.RELEASED)
 
-        for action_name in self.keys_to_actions[key]:
-            action = self.actions[action_name]
-            for mapping in action._mappings:
-                hit = True
-                if mapping._modifiers:
-                    for mod in mapping._modifiers:
-                        if not modifiers & mod:
-                            hit = False
-
-                if hit:
-                    arcade.get_window().dispatch_event(
-                        "on_action", action_name, ActionState.RELEASED
-                    )
-                    if action_name in self.action_subscribers:
-                        for subscriber in tuple(self.action_subscribers[action_name]):
-                            subscriber(ActionState.RELEASED)
-
-        for axis_name in tuple(self.keys_to_axes[key]):
+        buttons_to_axes = tuple(self.controller_buttons_to_axes.get(button_name, set()))
+        for axis_name in buttons_to_axes:
             self.axes_state[axis_name] = 0
-            self.axes_state[axis_name] = 0
+
+    def on_stick_motion(self, controller, name, x_value, y_value):
+        if (
+            x_value > self.controller_deadzone
+            or x_value < -self.controller_deadzone
+            or y_value > self.controller_deadzone
+            or y_value < -self.controller_deadzone
+        ):
+            if self.active_device != InputDevice.CONTROLLER:
+                self.active_device = InputDevice.CONTROLLER
+
+    def update(self):
+        if self.controller and self.active_device == InputDevice.CONTROLLER:
+            for name, axis in self.axes.items():
+                self.axes_state[name] = 0
+                for mapping in tuple(axis._mappings):
+                    if mapping._input_type == InputType.CONTROLLER_AXIS:
+                        scale = mapping._scale
+                        input = getattr(self.controller, mapping._input.value)  # type: ignore
+                        if (
+                            input > self.controller_deadzone
+                            or input < -self.controller_deadzone
+                        ):
+                            self.axes_state[name] = input * scale
+        elif self.active_device == InputDevice.KEYBOARD:
+            for name, axis in self.axes.items():
+                self.axes_state[name] = 0
+                for mapping in tuple(axis._mappings):
+                    if mapping._input_type == InputType.KEYBOARD:
+                        if self.window.keyboard[mapping._input.value]:
+                            self.axes_state[name] = mapping._scale

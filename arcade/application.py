@@ -241,9 +241,6 @@ class Window(pyglet.window.Window):
             self.keyboard = None
             self.mouse = None
 
-        self.action_manager = arcade.ActionManager()
-        self.push_handlers(self.action_manager.on_key_press, self.action_manager.on_key_release)
-
     @property
     def current_view(self) -> Optional["View"]:
         """
@@ -535,7 +532,7 @@ class Window(pyglet.window.Window):
         """
         super().set_mouse_visible(visible)
 
-    def on_action(self, action_name: str, state: str, key: int):
+    def on_action(self, action_name: str, state: arcade.ActionState):
         pass
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -554,7 +551,6 @@ class Window(pyglet.window.Window):
                               See :ref:`keyboard_modifiers`.
         """
         try:
-            self.action_manager.trigger_actions(symbol, "pressed")
             self.key = symbol
         except AttributeError:
             pass
@@ -579,7 +575,6 @@ class Window(pyglet.window.Window):
                               See :ref:`keyboard_modifiers`.
         """
         try:
-            self.action_manager.trigger_actions(symbol, "released")
             self.key = None
         except AttributeError:
             pass

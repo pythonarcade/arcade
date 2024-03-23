@@ -47,6 +47,8 @@ class Mapping:
             self._input_type = inputs.InputType.MOUSE_BUTTON
         elif isinstance(input, inputs.ControllerButtons):
             self._input_type = inputs.InputType.CONTROLLER_BUTTON
+        elif isinstance(input, inputs.ControllerAxes):
+            self._input_type = inputs.InputType.CONTROLLER_AXIS
         elif isinstance(input, inputs.InputEnum):
             self._input_type = inputs.InputType.OTHER
         else:

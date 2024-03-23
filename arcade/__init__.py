@@ -172,6 +172,18 @@ from .sprite import BasicSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
+from .input import InputManager
+from .input import ActionState
+from .input import Action
+from .input import ActionMapping
+from .input import Axis
+from .input import AxisMapping
+from .input import Keys
+from .input import MouseButtons
+from .input import MouseAxes
+from .input import ControllerButtons
+from .input import ControllerAxes
+
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
