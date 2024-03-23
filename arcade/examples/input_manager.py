@@ -24,6 +24,12 @@ class Game(arcade.Window):
         self.input_manager.new_axis("Move")
         self.input_manager.add_axis_input("Move", arcade.Keys.A, -1.0)
         self.input_manager.add_axis_input("Move", arcade.Keys.D, 1.0)
+        self.input_manager.add_axis_input(
+            "Move", arcade.ControllerButtons.DPAD_LEFT, -1.0
+        )
+        self.input_manager.add_axis_input(
+            "Move", arcade.ControllerButtons.DPAD_RIGHT, 1.0
+        )
         self.input_manager.add_axis_input("Move", arcade.ControllerAxes.LEFT_STICK_X)
 
         self.player_sprite = arcade.Sprite(

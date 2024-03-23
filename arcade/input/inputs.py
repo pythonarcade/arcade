@@ -30,6 +30,7 @@ class StrEnum(str, InputEnum):
             raise TypeError(
                 f"Values of StrEnums must be strings: {value!r} is a {type(value)}"
             )
+        return super().__new__(cls, value, *args, **kwargs)
 
     def __str__(self):
         return str(self.value)
@@ -48,10 +49,10 @@ class ControllerAxes(StrEnum):
 
 
 class ControllerButtons(StrEnum):
-    TOP_FACE = "a"
+    TOP_FACE = "y"
     RIGHT_FACE = "b"
     LEFT_FACE = "x"
-    DOWN_FACE = "y"
+    BOTTOM_FACE = "a"
     LEFT_SHOULDER = "leftshoulder"
     RIGHT_SHOULDER = "rightshoulder"
     START = "start"

@@ -44,7 +44,11 @@ class InputManager:
             self.controller = controller
             self.controller.open()
             self.controller.push_handlers(
-                self.on_button_press, self.on_button_release, self.on_stick_motion
+                self.on_button_press,
+                self.on_button_release,
+                self.on_stick_motion,
+                self.on_dpad_motion,
+                self.on_trigger_motion,
             )
             self.active_device = InputDevice.CONTROLLER
 
@@ -55,7 +59,11 @@ class InputManager:
         self.controller = controller
         self.controller.open()
         self.controller.push_handlers(
-            self.on_button_press, self.on_button_release, self.on_stick_motion
+            self.on_button_press,
+            self.on_button_release,
+            self.on_stick_motion,
+            self.on_dpad_motion,
+            self.on_trigger_motion,
         )
         self.active_device = InputDevice.CONTROLLER
 
@@ -144,8 +152,7 @@ class InputManager:
                 subscriber(state)
 
     def on_key_press(self, key: int, modifiers) -> None:
-        if self.active_device != InputDevice.KEYBOARD:
-            self.active_device = InputDevice.KEYBOARD
+        self.active_device = InputDevice.KEYBOARD
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
         for action_name in keys_to_actions:
             action = self.actions[action_name]
@@ -158,14 +165,6 @@ class InputManager:
 
             if hit:
                 self.dispatch_action(action_name, ActionState.PRESSED)
-
-        # keys_to_axes = tuple(self.keys_to_axes.get(key, set()))
-        # for axis_name in keys_to_axes:
-        #     axis = self.axes[axis_name]
-        #     for mapping in tuple(axis._mappings):
-        #         if mapping._input.value == key:
-        #             self.axes_state[axis_name] = mapping._scale
-        #             break
 
     def on_key_release(self, key: int, modifiers) -> None:
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
@@ -181,25 +180,13 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.RELEASED)
 
-        # keys_to_axes = tuple(self.keys_to_axes.get(key, set()))
-        # for axis_name in keys_to_axes:
-        #     self.axes_state[axis_name] = 0
-
     def on_button_press(self, controller: Controller, button_name: str):
-        if self.active_device != InputDevice.CONTROLLER:
-            self.active_device = InputDevice.CONTROLLER
+        self.active_device = InputDevice.CONTROLLER
         buttons_to_actions = tuple(
             self.controller_buttons_to_actions.get(button_name, set())
         )
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.PRESSED)
-
-        buttons_to_axes = tuple(self.controller_buttons_to_axes.get(button_name, set()))
-        for axis_name in buttons_to_axes:
-            axis = self.axes[axis_name]
-            for mapping in tuple(axis._mappings):
-                scale = mapping._scale
-                self.axes_state[axis_name] = scale
 
     def on_button_release(self, controller: Controller, button_name: str):
         buttons_to_actions = tuple(
@@ -208,10 +195,6 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-        buttons_to_axes = tuple(self.controller_buttons_to_axes.get(button_name, set()))
-        for axis_name in buttons_to_axes:
-            self.axes_state[axis_name] = 0
-
     def on_stick_motion(self, controller, name, x_value, y_value):
         if (
             x_value > self.controller_deadzone
@@ -219,8 +202,17 @@ class InputManager:
             or y_value > self.controller_deadzone
             or y_value < -self.controller_deadzone
         ):
-            if self.active_device != InputDevice.CONTROLLER:
-                self.active_device = InputDevice.CONTROLLER
+            self.active_device = InputDevice.CONTROLLER
+
+    def on_dpad_motion(
+        self, controller: Controller, left: bool, right: bool, up: bool, down: bool
+    ):
+        self.active_device = InputDevice.CONTROLLER
+
+    def on_trigger_motion(
+        self, controller: Controller, trigger_name: str, value: float
+    ):
+        self.active_device = InputDevice.CONTROLLER
 
     def update(self):
         if self.controller and self.active_device == InputDevice.CONTROLLER:
@@ -235,6 +227,9 @@ class InputManager:
                             or input < -self.controller_deadzone
                         ):
                             self.axes_state[name] = input * scale
+                    if mapping._input_type == InputType.CONTROLLER_BUTTON:
+                        if getattr(self.controller, mapping._input.value):  # type: ignore
+                            self.axes_state[name] = mapping._scale
         elif self.active_device == InputDevice.KEYBOARD:
             for name, axis in self.axes.items():
                 self.axes_state[name] = 0
