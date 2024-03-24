@@ -362,6 +362,10 @@ def rocket_smoke_mutator(particle: LifetimeParticle):
     particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
 
 
-if __name__ == "__main__":
+def main():
     app = FireworksApp()
-    arcade.run()
+    app.run()
+
+
+if __name__ == "__main__":
+    main()
