@@ -41,6 +41,10 @@ def prepare_window(window: arcade.Window):
     arcade.cleanup_texture_cache()  # Clear the global texture cache
     window.hide_view()  # Disable views if any is active
     window.dispatch_pending_events()
+    try:
+        arcade.disable_timings()
+    except Exception:
+        pass
 
     # Reset context (various states)
     ctx.reset()
@@ -132,6 +136,14 @@ class WindowProxy:
     @property
     def aspect_ratio(self):
         return self.window.aspect_ratio
+
+    @property
+    def mouse(self):
+        return self.window.mouse
+    
+    @property
+    def keyboard(self):
+        return self.window.keyboard
 
     def current_view(self):
         return self.window.current_view

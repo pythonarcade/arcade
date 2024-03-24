@@ -40,6 +40,10 @@ GRAPH_MARGIN = 5
 
 COIN_COUNT = 1500
 
+# Turn on tracking for the number of event handler
+# calls and the average execution time of each type.
+arcade.enable_timings()
+
 
 class Coin(arcade.BasicSprite):
     """ Our coin sprite class """
@@ -182,15 +186,10 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    # Turn on tracking for the number of event handler
-    # calls and the average execution time of each type.
-    arcade.enable_timings()
-
     window = MyGame()
     window.setup()
     arcade.run()
 
-    arcade.disable_timings()
 
 if __name__ == "__main__":
     main()
