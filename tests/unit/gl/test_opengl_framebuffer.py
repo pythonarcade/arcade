@@ -158,7 +158,8 @@ def test_resize(ctx):
     assert fbo.viewport == (0, 0, *fbo.size)
 
 def test_read_screen_framebuffer(window):
-    data = window.ctx.screen.read()
+    components = 3
+    data = window.ctx.screen.read(components=components)
     assert isinstance(data, bytes)
-    byte_size = int(window.width * window.height * 3 * window.get_pixel_ratio())
-    assert len(data) == byte_size
+    w, h = window.get_framebuffer_size()
+    assert len(data) == w * h * components
