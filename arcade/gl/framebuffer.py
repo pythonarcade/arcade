@@ -428,15 +428,23 @@ class Framebuffer:
             raise ValueError(f"Invalid dtype '{dtype}'")
 
         with self.activate():
-            # Configure attachment to read from
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            # Configure attachment to read from. Does not work on default framebuffer.
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+
             if viewport:
                 x, y, width, height = viewport
             else:
-                x, y, width, height = 0, 0, self._width, self._height
+                x, y, width, height = 0, 0, *self.size
+
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
+
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
         return string_at(data, len(data))
 
@@ -570,6 +578,37 @@ class DefaultFrameBuffer(Framebuffer):
 
         # HACK: Signal the default framebuffer having depth buffer
         self._depth_attachment = True  # type: ignore
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        Size as a ``(w, h)`` tuple
+
+        :type: tuple (int, int)
+        """
+        return self._ctx.window.get_framebuffer_size()
+
+    @property
+    def width(self) -> int:
+        """
+        The width of the framebuffer in pixels
+
+        :type: int
+        """
+        return self.size[0]
+
+    @property
+    def height(self) -> int:
+        """
+        The height of the framebuffer in pixels
+
+        :type: int
+        """
+        return self.size[1]
+
+    def _get_framebuffer_size(self) -> Tuple[int, int]:
+        """Get the framebuffer size of the window"""
+        return self._ctx.window.get_framebuffer_size()
 
     def _get_viewport(self) -> Tuple[int, int, int, int]:
         """
