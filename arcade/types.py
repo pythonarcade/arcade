@@ -59,6 +59,7 @@ RGBA255 = RGBA[int]
 RGBANormalized = RGBA[float]
 
 RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
+ColorLike = Union[RGBOrA[int], RGBOrA[float]]
 
 
 __all__ = [
@@ -464,7 +465,6 @@ class Color(RGBA255):
         return tuple(ret)
 
 
-ColorLike = Union[RGB, RGBA255]
 
 # Point = Union[Tuple[float, float], List[float]]
 # Vector = Point
