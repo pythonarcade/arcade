@@ -429,14 +429,18 @@ class Framebuffer:
 
         with self.activate():
             # Configure attachment to read from
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
             if viewport:
                 x, y, width, height = viewport
             else:
                 x, y, width, height = 0, 0, self._width, self._height
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
         return string_at(data, len(data))
 
