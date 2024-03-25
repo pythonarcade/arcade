@@ -590,7 +590,7 @@ class TileMap:
                     cast(List[Point], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
-                    scale=my_sprite.scale_xy,
+                    scale=my_sprite.scale,
                 )
 
         if tile.animation:

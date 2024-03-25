@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
+from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Union
 
 import arcade
 from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
@@ -185,21 +185,21 @@ class BasicSprite:
     #             sprite_list._update_size(self)
 
     @property
-    def scale(self) -> float:
+    def scale_x(self) -> float:
         """
-        Get or set the sprite's x scale value or set both x & y scale to the same value.
+        Get or set the sprite's x scale value.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite.
         """
         return self._scale[0]
 
-    @scale.setter
-    def scale(self, new_value: float):
-        if new_value == self._scale[0] and new_value == self._scale[1]:
+    @scale_x.setter
+    def scale_x(self, new_value: Union[float, int]):
+        if new_value == self._scale[0]:
             return
 
-        self._scale = new_value, new_value
+        self._scale = new_value, self._scale[1]
         self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
@@ -210,20 +210,55 @@ class BasicSprite:
             sprite_list._update_size(self)
 
     @property
-    def scale_xy(self) -> Point:
-        """Get or set the x & y scale of the sprite as a pair of values."""
-        return self._scale
+    def scale_y(self) -> float:
+        """
+        Get or set the sprite's y scale value.
 
-    @scale_xy.setter
-    def scale_xy(self, new_value: Point):
-        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite.
+        """
+        return self._scale[1]
+
+    @scale_y.setter
+    def scale_y(self, new_value: Union[float, int]):
+        if new_value == self._scale[1]:
             return
 
-        self._scale = new_value
+        self._scale = self._scale[0], new_value
         self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
+    @property
+    def scale(self) -> Point:
+        """Get or set the x & y scale of the sprite as a pair of values.
+
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite."""
+        return self._scale
+
+    @scale.setter
+    def scale(self, new_value: Union[Point, float, int]):
+        if isinstance(new_value, (float, int)):
+            new_value_scale: Point = (new_value, new_value)
+
+        else:  # Treat it as some sort of iterable or sequence
+            x, y, *_ = new_value  # type / length implicit check
+            new_value_scale = x, y
+
+        if new_value_scale == self._scale:
+            return
+
+        self._scale = new_value_scale
+        self._hit_box.scale = new_value_scale
+        if self._texture:
+            self._width = self._texture.width * new_value_scale[0]
+            self._height = self._texture.height * new_value_scale[1]
 
         self.update_spatial_hash()
 
@@ -477,7 +512,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale_xy = self._scale[0] * factor, self._scale[1] * factor
+        self.scale = self._scale[0] * factor, self._scale[1] * factor
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -532,7 +567,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale_xy = self._scale[0] * factor_x, self._scale[1] * factor_y
+        self.scale = self._scale[0] * factor_x, self._scale[1] * factor_y
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
