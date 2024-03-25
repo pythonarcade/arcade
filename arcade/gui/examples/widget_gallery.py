@@ -47,15 +47,9 @@ class MyView(arcade.View):
             col_num=0,
             row_num=0,
             child=UITextureButton(
-                texture=load_texture(
-                    ":resources:gui_basic_assets/red_button_normal.png"
-                ),
-                texture_hovered=load_texture(
-                    ":resources:gui_basic_assets/red_button_hover.png"
-                ),
-                texture_pressed=load_texture(
-                    ":resources:gui_basic_assets/red_button_press.png"
-                ),
+                texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
+                texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
+                texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
             ),
         )
 
@@ -69,27 +63,21 @@ class MyView(arcade.View):
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(
-                        ":resources:gui_basic_assets/red_button_normal.png"
-                    ),
+                    texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
                 ),
                 texture_hovered=NinePatchTexture(
                     left=5,
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(
-                        ":resources:gui_basic_assets/red_button_hover.png"
-                    ),
+                    texture=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
                 ),
                 texture_pressed=NinePatchTexture(
                     left=5,
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(
-                        ":resources:gui_basic_assets/red_button_press.png"
-                    ),
+                    texture=load_texture(":resources:gui_basic_assets/red_button_press.png"),
                 ),
             ),
         )
@@ -106,12 +94,8 @@ class MyView(arcade.View):
             col_num=0,
             row_num=3,
             child=UITextureToggle(
-                on_texture=load_texture(
-                    ":resources:gui_basic_assets/toggle/switch_green.png"
-                ),
-                off_texture=load_texture(
-                    ":resources:gui_basic_assets/toggle/switch_red.png"
-                ),
+                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
+                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png"),
             ),
         )
 
@@ -120,10 +104,8 @@ class MyView(arcade.View):
             col_num=0,
             row_num=4,
             child=UITextureSlider(
-                bar=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
-                thumb=arcade.load_texture(
-                    ":resources:gui_basic_assets/slider_thumb.png"
-                ),
+                track=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
+                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
             ),
         )
 
@@ -132,18 +114,14 @@ class MyView(arcade.View):
             col_num=0,
             row_num=5,
             child=UITextureSlider(
-                bar=NinePatchTexture(
-                    texture=arcade.load_texture(
-                        ":resources:gui_basic_assets/slider_bar.png"
-                    ),
+                track=NinePatchTexture(
+                    texture=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
                     left=30,
                     right=33,
                     bottom=18,
                     top=18,
                 ),
-                thumb=arcade.load_texture(
-                    ":resources:gui_basic_assets/slider_thumb.png"
-                ),
+                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
                 height=40,
             ),
         )
@@ -181,7 +159,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()
