@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 import pyglet
 from pyglet.input.base import Controller
@@ -22,10 +24,18 @@ class InputDevice(Enum):
 
 class InputManager:
 
-    def __init__(self, controller: Optional[Controller] = None):
+    def __init__(
+        self,
+        controller: Optional[Controller] = None,
+        allow_keyboard: bool = True,
+        action_handlers: Union[
+            Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]
+        ] = [],
+    ):
         self.actions: Dict[str, Action] = {}
         self.keys_to_actions: Dict[int, Set[str]] = {}
         self.controller_buttons_to_actions: Dict[str, Set[str]] = {}
+        self.on_action_listeners: List[Callable[[str, ActionState], Any]] = []
         self.action_subscribers: Dict[str, Set[Callable[[ActionState], Any]]] = {}
         self.axes: Dict[str, Axis] = {}
         self.axes_state: Dict[str, float] = {}
@@ -34,9 +44,20 @@ class InputManager:
         self.controller_analog_to_axes: Dict[str, Set[str]] = {}
 
         self.window = arcade.get_window()
-        self.window.push_handlers(self.on_key_press, self.on_key_release)
 
-        self.active_device = InputDevice.KEYBOARD
+        if isinstance(action_handlers, list):
+            self.on_action_listeners.extend(action_handlers)
+        else:
+            self.on_action_listeners.append(action_handlers)
+
+        self._allow_keyboard = allow_keyboard
+        if self._allow_keyboard:
+            self.window.push_handlers(self.on_key_press, self.on_key_release)
+
+        self.active_device = None
+
+        if self._allow_keyboard:
+            self.active_device = InputDevice.KEYBOARD
 
         self.controller = None
         self.controller_deadzone = 0.1
@@ -52,6 +73,36 @@ class InputManager:
             )
             self.active_device = InputDevice.CONTROLLER
 
+    def copy_existing(self, existing: InputManager):
+        self.actions = existing.actions.copy()
+        self.keys_to_actions = existing.keys_to_actions.copy()
+        self.controller_buttons_to_actions = (
+            existing.controller_buttons_to_actions.copy()
+        )
+        self.axes = existing.axes.copy()
+        self.axes_state = existing.axes_state.copy()
+        self.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
+        self.controller_analog_to_axes = existing.controller_analog_to_axes.copy()
+
+    @classmethod
+    def from_existing(
+        cls,
+        existing: InputManager,
+        controller: Optional[pyglet.input.Controller] = None,
+    ) -> InputManager:
+        new = cls(allow_keyboard=existing.allow_keyboard, controller=controller)
+        new.actions = existing.actions.copy()
+        new.keys_to_actions = existing.keys_to_actions.copy()
+        new.controller_buttons_to_actions = (
+            existing.controller_buttons_to_actions.copy()
+        )
+        new.axes = existing.axes.copy()
+        new.axes_state = existing.axes_state.copy()
+        new.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
+        new.controller_analog_to_axes = existing.controller_analog_to_axes.copy()
+
+        return new
+
     def bind_controller(self, controller: Controller):
         if self.controller:
             self.controller.remove_handlers()
@@ -66,6 +117,38 @@ class InputManager:
             self.on_trigger_motion,
         )
         self.active_device = InputDevice.CONTROLLER
+
+    def unbind_controller(self):
+        if not self.controller:
+            return
+
+        self.controller.remove_handlers(
+            self.on_button_press,
+            self.on_button_release,
+            self.on_stick_motion,
+            self.on_dpad_motion,
+            self.on_trigger_motion,
+        )
+        self.controller.close()
+        self.controller = None
+
+        if self._allow_keyboard:
+            self.active_device = InputDevice.KEYBOARD
+
+    @property
+    def allow_keyboard(self):
+        return self._allow_keyboard
+
+    @allow_keyboard.setter
+    def allow_keyboard(self, value: bool):
+        if self._allow_keyboard == value:
+            return
+
+        self._allow_keyboard = value
+        if self._allow_keyboard:
+            self.window.push_handlers(self.on_key_press, self.on_key_release)
+        else:
+            self.window.remove_handlers(self)
 
     def new_action(
         self,
@@ -147,11 +230,16 @@ class InputManager:
 
     def dispatch_action(self, action: str, state: ActionState):
         arcade.get_window().dispatch_event("on_action", action, state)
+        for listener in self.on_action_listeners:
+            listener(action, state)
         if action in self.action_subscribers:
             for subscriber in tuple(self.action_subscribers[action]):
                 subscriber(state)
 
     def on_key_press(self, key: int, modifiers) -> None:
+        if not self._allow_keyboard:
+            return
+
         self.active_device = InputDevice.KEYBOARD
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
         for action_name in keys_to_actions:
@@ -189,6 +277,9 @@ class InputManager:
             self.dispatch_action(action_name, ActionState.PRESSED)
 
     def on_button_release(self, controller: Controller, button_name: str):
+        # TODO: This gets called for every button on a controller when the handler is registered
+        # is this a bug in pyglet? is this expected behavior because of system libraries?
+        # how can we make that not trigger actions falsely?
         buttons_to_actions = tuple(
             self.controller_buttons_to_actions.get(button_name, set())
         )
@@ -215,9 +306,11 @@ class InputManager:
         self.active_device = InputDevice.CONTROLLER
 
     def update(self):
+        for name in self.axes.keys():
+            self.axes_state[name] = 0
+
         if self.controller and self.active_device == InputDevice.CONTROLLER:
             for name, axis in self.axes.items():
-                self.axes_state[name] = 0
                 for mapping in tuple(axis._mappings):
                     if mapping._input_type == InputType.CONTROLLER_AXIS:
                         scale = mapping._scale
@@ -230,9 +323,8 @@ class InputManager:
                     if mapping._input_type == InputType.CONTROLLER_BUTTON:
                         if getattr(self.controller, mapping._input.value):  # type: ignore
                             self.axes_state[name] = mapping._scale
-        elif self.active_device == InputDevice.KEYBOARD:
+        elif self.active_device == InputDevice.KEYBOARD and self._allow_keyboard:
             for name, axis in self.axes.items():
-                self.axes_state[name] = 0
                 for mapping in tuple(axis._mappings):
                     if mapping._input_type == InputType.KEYBOARD:
                         if self.window.keyboard[mapping._input.value]:
