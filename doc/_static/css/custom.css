@@ -111,21 +111,8 @@ to align them neatly */
 .toctree-l1 {
     margin-left: 5px;
 }
-.toc-outside-links ul {
-    width: fit-content;
-    columns: 1;
-}
-.toc-outside-links li p, .toc-outside-links ul li {
-    margin-left: 5px;
-}
-.toc-outside-links a {
-    text-decoration: none;
-}
 .toctree-wrapper a {
     text-decoration: none;
-}
-.toc-outside-links a:hover {
-    text-decoration: underline;
 }
 .toctree-wrapper a:hover {
     text-decoration: underline;

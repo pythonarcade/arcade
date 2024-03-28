@@ -145,21 +145,8 @@ The Python Arcade Library
        GitHub <https://github.com/pythonarcade/arcade>
        programming_guide/release_notes
        License <https://github.com/pythonarcade/arcade/blob/development/license.rst>
-
-.. container:: main-page-item-wrapper
-
-    .. container:: single-col-box
-
-        .. image:: images/source.svg
-           :alt: Source icon
-           :class: heading-icon
-
-        .. toctree::
-           :maxdepth: 1
-           :caption: Contributing
-
-           contributing_guide/index
-           contributing_guide/release_checklist
+       contributing_guide/index
+       contributing_guide/release_checklist
 
 .. container:: main-page-item-wrapper
 
@@ -169,18 +156,16 @@ The Python Arcade Library
 
     .. container:: main-page-item-sub-wrapper
 
-        .. container:: main-page-item-title
+        .. toctree::
+           :maxdepth: 1
+           :caption: Social
 
-            Social
-
-        .. container:: toc-outside-links
-
-            * `Discord (most active spot) <https://discord.gg/ZjGDqMp>`_
-            * `Reddit /r/pythonarcade <https://www.reddit.com/r/pythonarcade/>`_
-            * `Twitter @ArcadeLibrary <https://twitter.com/arcadelibrary?lang=en>`_
-            * `Instagram @PythonArcadeLibrary <https://www.instagram.com/PythonArcadeLibrary/>`_
-            * `Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>`_
-            * :ref:`diversity_statement`
+           Discord (most active spot) <https://discord.gg/ZjGDqMp>
+           Reddit /r/pythonarcade <https://www.reddit.com/r/pythonarcade/>
+           Twitter @ArcadeLibrary <https://twitter.com/arcadelibrary?lang=en>
+           Instagram @PythonArcadeLibrary <https://www.instagram.com/PythonArcadeLibrary/>
+           Facebook @ArcadeLibrary <https://www.facebook.com/ArcadeLibrary/>
+           community/diversity
 
 .. container:: main-page-item-wrapper
 
@@ -190,16 +175,14 @@ The Python Arcade Library
 
     .. container:: main-page-item-sub-wrapper
 
-        .. container:: main-page-item-title
+        .. toctree::
+           :maxdepth: 1
+           :caption: Learning Resources
 
-            Learning Resources
-
-        .. container:: toc-outside-links
-
-            * `Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>`_
-            * `Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>`_
-            * `US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>`_
-            * `US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>`_
-            * `Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>`_
-            * `US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>`_
+           Book - Learn to program with Arcade <https://learn.arcade.academy/en/latest/>
+           Peer To Peer Gaming With Arcade and Python Banyan <https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html>
+           US PyCon 2022 Talk <https://youtu.be/JP6EnuQT2wA>
+           US PyCon 2019 Tutorial <https://youtu.be/Djtm1DzWSvo>
+           Aus PyCon 2018 Multiplayer Games <https://youtu.be/2SMkk63k6Ik>
+           US PyCon 2018 Talk <https://youtu.be/DAWHMHMPVHU>
 
