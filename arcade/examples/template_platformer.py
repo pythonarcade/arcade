@@ -181,7 +181,7 @@ class MyGame(arcade.Window):
 
         # Here's our center, move to it
         player_centered = screen_center_x, screen_center_y
-        arcade.camera.controllers.simple_follow_2D(0.1, player_centered, self.camera_sprites.view_data)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, player_centered, 0.1)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

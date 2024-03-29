@@ -237,7 +237,7 @@ class MyGame(arcade.Window):
             screen_center_y = self.height/2
         user_centered = screen_center_x, screen_center_y
 
-        arcade.camera.controllers.simple_follow_2D(panning_fraction, user_centered, self.camera.view_data)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
 
 
 def main():

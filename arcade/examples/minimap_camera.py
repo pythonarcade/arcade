@@ -57,7 +57,9 @@ class MyGame(arcade.Window):
                             MINIMAP_WIDTH, MINIMAP_HEIGHT)
         minimap_projection = (-MAP_PROJECTION_WIDTH/2, MAP_PROJECTION_WIDTH/2,
                               -MAP_PROJECTION_HEIGHT/2, MAP_PROJECTION_HEIGHT/2)
-        self.camera_minimap = arcade.camera.Camera2D(viewport=minimap_viewport, projection=minimap_projection)
+        self.camera_minimap = arcade.camera.Camera2D.from_raw_data(
+            viewport=minimap_viewport, projection=minimap_projection
+        )
 
         # Set up the player
         self.player_sprite = None
@@ -66,8 +68,8 @@ class MyGame(arcade.Window):
 
         # Camera for sprites, and one for our GUI
         viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.camera.Camera2D(viewport=viewport)
-        self.camera_gui = arcade.camera.Camera2D(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera_gui = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
 
         self.selected_camera = self.camera_minimap
 
@@ -178,12 +180,14 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Center the screen to the player
-        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, self.player_sprite.position,
-                                                   self.camera_sprites.view_data)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
         # Center the minimap viewport to the player in the minimap
-        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, self.player_sprite.position,
-                                                   self.camera_minimap.view_data)
+        self.camera_minimap.position = arcade.math.lerp_2d(
+            self.player_sprite.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
     def on_resize(self, width: int, height: int):
         """

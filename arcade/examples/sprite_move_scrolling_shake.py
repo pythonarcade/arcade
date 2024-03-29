@@ -57,11 +57,11 @@ class MyGame(arcade.Window):
         self.camera_sprites = arcade.camera.Camera2D()
         self.camera_gui = arcade.camera.Camera2D()
 
-        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera_sprites.view_data,
-                                                                            max_amplitude=15.0,
-                                                                            acceleration_duration=0.1,
-                                                                            falloff_time=0.5,
-                                                                            shake_frequency=10.0)
+        self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera_sprites.view_data,
+                                                              max_amplitude=15.0,
+                                                              acceleration_duration=0.1,
+                                                              falloff_time=0.5,
+                                                              shake_frequency=10.0)
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
@@ -177,7 +177,7 @@ class MyGame(arcade.Window):
             self.player_sprite.center_x,
             self.player_sprite.center_y
         )
-        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, position, self.camera_sprites.view_data)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """

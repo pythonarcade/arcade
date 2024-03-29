@@ -44,7 +44,7 @@ class MyGame(arcade.Window):
         # This will center the camera on the player.
         target_x = self.player_sprite.center_x
         target_y = self.player_sprite.center_y
-        arcade.camera.controllers.simple_follow_2D(0.5, (target_x, target_y), self.camera.view_data)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.5)
 
     def on_update(self, delta_time: float):
         new_position = (

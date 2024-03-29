@@ -132,14 +132,14 @@ class MyGame(arcade.Window):
         self.scene.add_sprite("Player", self.player_sprite)
 
         viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera = arcade.camera.Camera2D(viewport=viewport)
-        self.gui_camera = arcade.camera.Camera2D(viewport=viewport)
+        self.camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.gui_camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
 
-        self.camera_shake = arcade.camera.controllers.ScreenShakeController(self.camera.view_data,
-                                                                            max_amplitude=12.5,
-                                                                            acceleration_duration=0.05,
-                                                                            falloff_time=0.20,
-                                                                            shake_frequency=15.0)
+        self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
+                                                              max_amplitude=12.5,
+                                                              acceleration_duration=0.05,
+                                                              falloff_time=0.20,
+                                                              shake_frequency=15.0)
 
         # Center camera on user
         self.pan_camera_to_user()
@@ -238,7 +238,7 @@ class MyGame(arcade.Window):
             screen_center_y = self.camera.viewport_height/2
         user_centered = screen_center_x, screen_center_y
 
-        arcade.camera.controllers.simple_follow_2D(panning_fraction, user_centered, self.camera.view_data)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
 
     def on_update(self, delta_time):
         """Movement and game logic"""

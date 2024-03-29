@@ -200,7 +200,7 @@ class MyGame(arcade.Window):
 
         # Scroll to the proper location
         position = _target_x, _target_y
-        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, position, self.camera_sprites.view_data)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """

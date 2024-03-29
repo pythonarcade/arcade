@@ -62,8 +62,8 @@ class MyGame(arcade.Window):
 
         # Camera for sprites, and one for our GUI
         viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.camera.Camera2D(viewport=viewport)
-        self.camera_gui = arcade.camera.Camera2D(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera_gui = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -180,7 +180,7 @@ class MyGame(arcade.Window):
 
         # Scroll to the proper location
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        arcade.camera.controllers.simple_follow_2D(CAMERA_SPEED, position, self.camera_sprites.view_data)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """
