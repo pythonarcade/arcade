@@ -347,18 +347,48 @@ class SimpleCamera:
         the range of the viewport and returns
         the world space coordinates.
 
+        .. deprecated:: 3.0
+           Use :meth:`.map_screen_to_world_coordinate` instead.
+
         Essentially reverses the effects of the projector.
 
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
+            depth: The depth value which is mapped along with the screen coordinates. Because of how
+                   Orthographic perspectives work this does not impact how the screen_coordinates are mapped.
         Returns:
             A 2D vector (Along the XY plane) in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
             of the camera.
         """
 
-        return self._camera.map_coordinate(screen_coordinate, depth)[:2]
+        return self._camera.map_screen_to_world_coordinate(screen_coordinate, depth)[:2]
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: float = 0.0
+    ) -> Tuple[float, float]:
+        """
+        Take in a pixel coordinate from within
+        the range of the window size and returns
+        the world space coordinates.
+
+        Essentially reverses the effects of the projector.
+
+        Args:
+            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
+                               This should ALWAYS be in the range of 0.0 - screen size.
+            depth: The depth value which is mapped along with the screen coordinates. Because of how
+                   Orthographic perspectives work this does not impact how the screen_coordinates are mapped.
+        Returns:
+            A 2D vector (Along the XY plane) in world space (same as sprites).
+            perfect for finding if the mouse overlaps with a sprite or ui element irrespective
+            of the camera.
+        """
+
+        return self._camera.map_screen_to_world_coordinate(screen_coordinate, depth)[:2]
 
     def resize(self, viewport_width: int, viewport_height: int, *,
                resize_projection: bool = True) -> None:
