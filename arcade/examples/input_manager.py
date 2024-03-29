@@ -41,7 +41,11 @@ class Player(arcade.Sprite):
         self.physics_engine.update()
 
     def on_action(self, action: str, state: arcade.ActionState):
-        if action == "Jump" and self.physics_engine.can_jump():
+        if (
+            action == "Jump"
+            and state == arcade.ActionState.PRESSED
+            and self.physics_engine.can_jump()
+        ):
             self.change_y = 20
 
 

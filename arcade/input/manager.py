@@ -439,9 +439,6 @@ class InputManager:
             self.dispatch_action(action_name, ActionState.PRESSED)
 
     def on_button_release(self, controller: Controller, button_name: str):
-        # TODO: This gets called for every button on a controller when the handler is registered
-        # is this a bug in pyglet? is this expected behavior because of system libraries?
-        # how can we make that not trigger actions falsely?
         buttons_to_actions = tuple(
             self.controller_buttons_to_actions.get(button_name, set())
         )
