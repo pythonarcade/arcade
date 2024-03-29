@@ -11,7 +11,7 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union
+from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union, Tuple
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
@@ -329,7 +329,7 @@ class UIManager(EventDispatcher):
             for layer in layers:
                 self._get_surface(layer).draw()
 
-    def adjust_mouse_coordinates(self, x, y):
+    def adjust_mouse_coordinates(self, x: float, y: float) -> Tuple[float, float]:
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
@@ -337,7 +337,8 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        return self.window.current_camera.map_screen_to_world_coordinate((x, y))[:2]
+        x_, y_, *c = self.window.current_camera.map_screen_to_world_coordinate((x, y))
+        return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
@@ -352,27 +353,27 @@ class UIManager(EventDispatcher):
         return self.dispatch_event("on_event", event)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, int(x_), int(y), dx, dy))
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMousePressEvent(self, int(x_), int(y_), button, modifiers))
 
     def on_mouse_drag(
         self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
     ):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseDragEvent(self, int(x_), int(y_), dx, dy, buttons, modifiers))
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseReleaseEvent(self, int(x_), int(y_), button, modifiers))
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
-            UIMouseScrollEvent(self, x, y, scroll_x, scroll_y)
+            UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y)
         )
 
     def on_key_press(self, symbol: int, modifiers: int):
