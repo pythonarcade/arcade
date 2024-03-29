@@ -314,10 +314,6 @@ class MyApplication(arcade.Window):
         self.processing_time = timeit.default_timer() - start_time
 
 
-def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.run()
+window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-
-if __name__ == "__main__":
-    main()
+arcade.run()

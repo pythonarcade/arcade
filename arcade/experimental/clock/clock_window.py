@@ -28,7 +28,7 @@ from arcade import set_window
 from arcade import NoOpenGLException
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBOrA255, RGBOrANormalized
+from arcade.types import Color, RGBA255, RGBA255OrNormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 
@@ -263,8 +263,8 @@ class Window(pyglet.window.Window):
 
     def clear(
             self,
-            color: Optional[RGBOrA255] = None,
-            color_normalized: Optional[RGBOrANormalized] = None,
+            color: Optional[RGBA255OrNormalized] = None,
+            normalized: bool = False,
             viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
@@ -277,14 +277,11 @@ class Window(pyglet.window.Window):
             2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
             3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
 
-        :param color_normalized: (Optional) override the current background color
-            with a 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
-
+        :param normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
-        if color is None and color_normalized is None:
-            color = self.background_color
-        self.ctx.screen.clear(color=color, color_normalized=color_normalized, viewport=viewport)
+        color = color if color is not None else self.background_color
+        self.ctx.screen.clear(color, normalized=normalized, viewport=viewport)
 
     @property
     def background_color(self) -> Color:
@@ -315,7 +312,7 @@ class Window(pyglet.window.Window):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, value: RGBOrA255):
+    def background_color(self, value: RGBA255):
         self._background_color = Color.from_iterable(value)
 
     @property
@@ -1005,26 +1002,24 @@ class View:
 
     def clear(
         self,
-        color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBOrANormalized] = None,
+        color: Optional[RGBA255OrNormalized] = None,
+        normalized: bool = False,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
-        """Clears the window with the configured background color
+        """Clears the View's Window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
         :param color: (Optional) override the current background color
             with one of the following:
 
             1. A :py:class:`~arcade.types.Color` instance
-            2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
+            2. A 4-length RGBA :py:class:`tuple` of byte values (0 to 255)
+            3. A 4-length RGBA :py:class:`tuple` of normalized floats (0.0 to 1.0)
 
-        :param color_normalized: (Optional) override the current background color
-            using normalized values (0.0 to 1.0). For example, (1.0, 0.0, 0.0, 1.0)
-            making the window contents red.
-
+        :param normalized: If the color format is normalized (0.0 -> 1.0) or byte values
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
-        self.window.ctx.screen.clear(color=color, color_normalized=color_normalized, viewport=viewport)
+        self.window.clear(color, normalized, viewport)
 
     def on_update(self, delta_time: float):
         """To be overridden"""

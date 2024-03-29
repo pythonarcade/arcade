@@ -3,14 +3,12 @@
 Generate HTML docs
 """
 
-import docutils.nodes
-import os
-import re
 import runpy
+import sys
+import os
 import sphinx.ext.autodoc
 import sphinx.transforms
-import sys
-
+import docutils.nodes
 
 # --- Pre-processing Tasks
 
@@ -93,7 +91,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Python Arcade Library'
-copyright = '2024, Paul Vincent Craven'
+copyright = '2023, Paul Vincent Craven'
 author = 'Paul Vincent Craven'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -207,57 +205,45 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
             ))
 
 
-def generate_color_table(filename, source):
-    """This function Generates the Color tables in the docs for color and csscolor packages"""
-
-    append_text = "\n\n.. raw:: html\n\n"
-    append_text += "    <table class='colorTable'><tbody>\n"
-
-    # Will match a line containing:
-    #    name    '(?P<name>[a-z_A-Z]*)' followed by
-    #    a Color '(?: *= *Color *\( *)' followed by
-    #    red     '(?P<red>\d*)' followed by
-    #    green   '(?P<green>\d*)' followed by
-    #    blue    '(?P<blue>\d*)' followed by
-    #    alpha   '(?P<alpha>\d*)'
-    color_match = re.compile(r'(?P<name>[a-z_A-Z]*)(?:[ =]*Color[ (]*)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)')
-
-    with open(filename) as color_file:
-        for line in color_file:
-
-            # Check if the line has a Color.
-            matches = color_match.match(line)
-            if not matches:
-                continue
-            
-            color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
-            
-            # Generate the alpha for CSS color function
-            alpha = int( matches.group('alpha') ) / 255
-            css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
-
-
-            append_text += "    <tr>"
-            append_text += f"<td>{matches.group('name')}</td>"
-            append_text += f"<td>{color_rgba}</td>"
-            append_text += f"<td class='checkered'><div style='background-color:rgba{css_rgba};'>&nbsp</div></td>"
-            append_text += "</tr>\n"
-
-    append_text += "    </tbody></table>"
-    source[0] += append_text
-
-
 def source_read(_app, docname, source):
-    """Event handler for source-read event"""
 
+    # print(f"  XXX Reading {docname}")
+    import os
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
-    # Transform source for arcade.color and arcade.csscolor
+    filename = None
     if docname == "api_docs/arcade.color":
-        generate_color_table("../arcade/color/__init__.py", source)
+        filename = "../arcade/color/__init__.py"
     elif docname == "api_docs/arcade.csscolor":
-        generate_color_table("../arcade/csscolor/__init__.py", source)
+        filename = "../arcade/csscolor/__init__.py"
+
+    if filename:
+        # print(f"  XXX Handling color file: {filename}")
+        import re
+        p = re.compile(r"^([A-Z_]+) = (\(.*\))")
+
+        original_text = source[0]
+        append_text = "\n\n.. raw:: html\n\n"
+        append_text += "    <table class='colorTable'><tbody>\n"
+        color_file = open(filename)
+
+        for line in color_file:
+            match = p.match(line)
+
+            if match:
+                color_variable_name = match.group(1)
+                color_tuple = tuple(int(num) for num in match.group(2).strip('()').split(','))
+                color_rgb_string = ', '.join(str(i) for i in color_tuple[:3])
+
+                append_text += "    <tr>"
+                append_text += f"<td>{color_variable_name}</td>"
+                append_text += f"<td>{color_tuple}</td>"
+                append_text += f"<td style='background-color:rgba({color_rgb_string}, {color_tuple[3] / 255});'><div></div></td>"
+                append_text += "</tr>\n"
+
+        append_text += "    </tbody></table>"
+        source[0] = original_text + append_text
 
 
 def post_process(_app, _exception):

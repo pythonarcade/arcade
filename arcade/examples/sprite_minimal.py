@@ -30,10 +30,6 @@ class WhiteSpriteCircleExample(arcade.Window):
         self.sprites.draw()
 
 
-def main():
+if __name__ == "__main__":
     game = WhiteSpriteCircleExample()
     game.run()
-
-
-if __name__ == "__main__":
-    main()

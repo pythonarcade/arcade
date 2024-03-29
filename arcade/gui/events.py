@@ -21,8 +21,8 @@ class UIMouseEvent(UIEvent):
     Covers all mouse event
     """
 
-    x: int
-    y: int
+    x: float
+    y: float
 
     @property
     def pos(self):
@@ -32,8 +32,8 @@ class UIMouseEvent(UIEvent):
 @dataclass
 class UIMouseMovementEvent(UIMouseEvent):
     """Triggered when the mouse is moved."""
-    dx: int
-    dy: int
+    dx: float
+    dy: float
 
 
 @dataclass
@@ -46,8 +46,8 @@ class UIMousePressEvent(UIMouseEvent):
 @dataclass
 class UIMouseDragEvent(UIMouseEvent):
     """Triggered when the mouse moves while one of its buttons being pressed."""
-    dx: int
-    dy: int
+    dx: float
+    dy: float
     buttons: int
     modifiers: int
 

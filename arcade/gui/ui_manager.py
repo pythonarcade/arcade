@@ -84,6 +84,7 @@ class UIManager(EventDispatcher):
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._requires_render = True
+        #: Camera used when drawing the UI
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -351,22 +352,22 @@ class UIManager(EventDispatcher):
     def dispatch_ui_event(self, event):
         return self.dispatch_event("on_event", event)
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(
-        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
+        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
     ):
         x, y = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+        x, y = self.adjust_mouse_coordinates(x, y)[:2]
         return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):

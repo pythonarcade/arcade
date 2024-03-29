@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
-from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
+from arcade.types import Point, Color, RGBA255, PointList
 from arcade.color import BLACK
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -38,7 +38,6 @@ class BasicSprite:
         "_color",
         "_texture",
         "_hit_box",
-        "_visible",
         "sprite_lists",
         "_angle",
         "__weakref__",
@@ -50,7 +49,6 @@ class BasicSprite:
         scale: float = 1.0,
         center_x: float = 0,
         center_y: float = 0,
-        visible: bool = True,
         **kwargs: Any,
     ) -> None:
         self._position = (center_x, center_y)
@@ -59,7 +57,6 @@ class BasicSprite:
         self._width = texture.width * scale
         self._height = texture.height * scale
         self._scale = scale, scale
-        self._visible = bool(visible)
         self._color: Color = Color(255, 255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
@@ -296,44 +293,29 @@ class BasicSprite:
 
     @property
     def visible(self) -> bool:
-        """Get or set the visibility of this sprite.
-
-        When set to ``False``, each :py:class:`~arcade.SpriteList` and
-        its attached shaders will treat the sprite as if has an
-        :py:attr:`.alpha` of 0. However, the sprite's actual values for
-        :py:attr:`.alpha` and :py:attr:`.color` will not change.
-
-        .. code-block:: python
-
-            # The initial color of the sprite
-            >>> sprite.color
-            Color(255, 255, 255, 255)
+        """
+        Get or set the visibility of this sprite.
+        This is a shortcut for changing the alpha value of a sprite
+        to 0 or 255::
 
             # Make the sprite invisible
-            >>> sprite.visible = False
-            # The sprite's color value has not changed
-            >>> sprite.color
-            Color(255, 255, 255, 255)
-            # The sprite's alpha value hasn't either
-            >>> sprite.alpha
-            255
-
-            # Restore visibility
-            >>> sprite.visible = True
-            # Shorthand to toggle visible
-            >>> sprite.visible = not sprite.visible
+            sprite.visible = False
+            # Change back to visible
+            sprite.visible = True
+            # Toggle visible
+            sprite.visible = not sprite.visible
 
         """
-        return self._visible
+        return self._color[3] > 0
 
     @visible.setter
     def visible(self, value: bool):
-        value = bool(value)
-        if self._visible == value:
-            return
-
-        self._visible = value
-
+        self._color = Color(
+            self._color[0],
+            self._color[1],
+            self._color[2],
+            255 if value else 0,
+        )
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
@@ -363,22 +345,27 @@ class BasicSprite:
         return self._color
 
     @color.setter
-    def color(self, color: RGBOrA255):
-        if color == self._color:
-            return
+    def color(self, color: RGBA255):
+        if len(color) == 4:
+            if (
+                self._color[0] == color[0]
+                and self._color[1] == color[1]
+                and self._color[2] == color[2]
+                and self._color[3] == color[3]
+            ):
+                return
+            self._color = Color.from_iterable(color)
 
-        r, g, b, *_a = color
-
-        if _a:
-            if len(_a) > 1:
-                raise ValueError(f"iterable must unpack to 3 or 4 values not {len(color)}")
-            a = _a[0]
+        elif len(color) == 3:
+            if (
+                self._color[0] == color[0]
+                and self._color[1] == color[1]
+                and self._color[2] == color[2]
+            ):
+                return
+            self._color = Color(color[0], color[1], color[2], self._color[3])
         else:
-            a = self._color.a
-
-        # We don't handle alpha and .visible interactions here
-        # because it's implemented in SpriteList._update_color
-        self._color = Color(r, g, b, a)
+            raise ValueError("Color must be three or four ints from 0-255")
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)

@@ -1262,7 +1262,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
         self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
         self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
-        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3] * sprite._visible)
+        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
         self._sprite_color_changed = True
 
     def _update_size(self, sprite: SpriteType) -> None:

@@ -148,9 +148,4 @@ class Perspective(arcade.Window):
         self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
 
 
-def main():
-    Perspective().run()
-
-
-if __name__ == "__main__":
-    main()
+Perspective().run()

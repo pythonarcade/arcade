@@ -23,8 +23,8 @@ class MyWindow(arcade.Window):
         self.fbo_1 = self.ctx.framebuffer(color_attachments=[self.tex_1])
 
         # Fill the textures with solid colours
-        self.fbo_0.clear(color_normalized=(0.0, 0.0, 1.0, 1.0))
-        self.fbo_1.clear(color_normalized=(1.0, 0.0, 0.0, 1.0))
+        self.fbo_0.clear(color=(0.0, 0.0, 1.0, 1.0), normalized=True)
+        self.fbo_1.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
 
         # Create a simple shader program
         self.prog = self.ctx.program(

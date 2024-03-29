@@ -127,7 +127,7 @@ class GameView(arcade.View):
 
     def on_draw(self):
         # clear the screen
-        self.clear(color=arcade.color.BEAU_BLUE)
+        self.clear(arcade.color.BEAU_BLUE)
 
         # draw a line separating each Section
         arcade.draw_line(self.window.width / 2, 0, self.window.width / 2,

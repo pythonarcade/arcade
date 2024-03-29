@@ -201,7 +201,7 @@ class MyGame(arcade.Window):
                 self.stone = new_stone
 
     def on_update(self, dt):
-        """ Update, drop stone if warranted """
+        """ Update, drop stone if warrented """
         self.frame_count += 1
         if self.frame_count % 10 == 0:
             self.drop()

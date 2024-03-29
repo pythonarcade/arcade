@@ -338,11 +338,6 @@ class MyGame(arcade.Window):
                              anchor_y="center")
 
 
-
-def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.run()
-
-
 if __name__ == "__main__":
-    main()
+    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    arcade.run()

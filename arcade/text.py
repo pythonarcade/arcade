@@ -651,7 +651,7 @@ def create_text_sprite(
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
-        fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
+        fbo.clear(background_color or arcade.color.TRANSPARENT_BLACK)
         text_object.draw()
 
     return arcade.Sprite(

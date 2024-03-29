@@ -20,7 +20,7 @@ class MyWindow(arcade.Window):
         self.fbo = self.ctx.framebuffer(color_attachments=[self.tex])
 
         # Put something in the framebuffer to start
-        self.fbo.clear(color=arcade.color.ALMOND)
+        self.fbo.clear(arcade.color.ALMOND)
         with self.fbo:
             arcade.draw_circle_filled(
                 SCREEN_WIDTH / 2, 

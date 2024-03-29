@@ -4,8 +4,7 @@ Shader Toy - Particles
 ======================
 
 .. contents::
-    :class: this-will-duplicate-information-and-it-is-still-useful-here
-    
+
 .. raw:: html
 
     <iframe width="560" height="315" src="https://www.youtube.com/embed/99AAAzf5ndY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

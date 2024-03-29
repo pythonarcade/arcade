@@ -20,7 +20,8 @@ python -m arcade.examples.sections_demo_2
 """
 import random
 
-import  arcade
+from arcade import Window, Section, View, SpriteList, SpriteSolidColor, \
+    SpriteCircle, draw_text, draw_line
 from arcade.color import BLACK, BLUE, RED, BEAU_BLUE, GRAY
 from arcade.key import W, S, UP, DOWN
 
@@ -28,7 +29,7 @@ PLAYER_SECTION_WIDTH = 100
 PLAYER_PADDLE_SPEED = 10
 
 
-class Player(arcade.Section):
+class Player(Section):
     """
     A Section representing the space in the screen where the player
     paddle can move
@@ -43,7 +44,7 @@ class Player(arcade.Section):
         self.key_down: int = key_down
 
         # the player paddle
-        self.paddle: arcade.SpriteSolidColor = arcade.SpriteSolidColor(30, 100, color=BLACK)
+        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, color=BLACK)
 
         # player score
         self.score: int = 0
@@ -64,14 +65,10 @@ class Player(arcade.Section):
         else:
             keys = 'UP and DOWN'
             start_x = self.left - 290
-        arcade.draw_text(
-            f'Player {self.name} (move paddle with: {keys})',
-            start_x, self.top - 20, BLUE, 9,
-        )
-        arcade.draw_text(
-            f'Score: {self.score}', self.left + 20,
-            self.bottom + 20, BLUE,
-        )
+        draw_text(f'Player {self.name} (move paddle with: {keys})',
+                  start_x, self.top - 20, BLUE, 9)
+        draw_text(f'Score: {self.score}', self.left + 20,
+                  self.bottom + 20, BLUE)
 
         # draw the paddle
         self.paddle.draw()
@@ -88,14 +85,14 @@ class Player(arcade.Section):
         self.paddle.stop()
 
 
-class Pong(arcade.View):
+class Pong(View):
 
     def __init__(self):
         super().__init__()
 
         # a sprite list that will hold each player paddle to
         # check for collisions
-        self.paddles: arcade.SpriteList = arcade.SpriteList()
+        self.paddles: SpriteList = SpriteList()
 
         # we store each Section
         self.left_player: Player = Player(
@@ -114,7 +111,7 @@ class Pong(arcade.View):
         self.paddles.append(self.right_player.paddle)
 
         # create the ball
-        self.ball: arcade.SpriteCircle = arcade.SpriteCircle(20, RED)
+        self.ball: SpriteCircle = SpriteCircle(20, RED)
 
     def setup(self):
         # set up a new game
@@ -164,19 +161,19 @@ class Pong(arcade.View):
         self.setup()  # prepare a new game
 
     def on_draw(self):
-        self.clear(color=BEAU_BLUE)  # clear the screen
+        self.clear(BEAU_BLUE)  # clear the screen
 
         self.ball.draw()  # draw the ball
 
         half_window_x = self.window.width / 2  # middle x
 
         # draw a line diving the screen in half
-        arcade.draw_line(half_window_x, 0, half_window_x, self.window.height, GRAY, 2)
+        draw_line(half_window_x, 0, half_window_x, self.window.height, GRAY, 2)
 
 
 def main():
     # create the window
-    window = arcade.Window(title='Two player simple Pong with Sections!')
+    window = Window(title='Two player simple Pong with Sections!')
 
     # create the custom View
     game = Pong()

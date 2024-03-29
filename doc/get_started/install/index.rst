@@ -19,15 +19,3 @@ Select the instructions for your platform:
    pycharm
    obsolete
 
-Advanced
---------
-
-Use the following command to install the latest development build of Arcade:
-
-.. code-block:: bash
-
-    pip install -I https://github.com/pythonarcade/arcade/archive/refs/heads/development.zip
-
-This pre-release build will give you access to the latest features, but it may be unstable.
-
-You can also get pre-release versions from the `Arcade PyPi Release History <https://pypi.org/project/arcade/#history>`_.

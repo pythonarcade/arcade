@@ -8,82 +8,37 @@ class MyObject:
 
 
 class Observer:
-    call_args = None
-    called = False
+    called = None
 
-    def call(self):
-        self.call_args = tuple()
-        self.called = True
+    def call(self, *args, **kwargs):
+        self.called = (args, kwargs)
 
-    def call_with_args(self, instance, value):
-        """Match expected signature of 2 parameters"""
-        self.call_args = (instance, value)
-        self.called = True
-
-    def __call__(self, *args):
-        self.call_args = args
-        self.called = True
+    def __call__(self, *args, **kwargs):
+        self.called = (args, kwargs)
 
 
 def test_bind_callback():
     observer = Observer()
 
     my_obj = MyObject()
-    bind(my_obj, "name", observer.call)
-
-    assert not observer.call_args
-
-    # WHEN
-    my_obj.name = "New Name"
-
-    assert observer.call_args == tuple()
-
-
-def test_bind_callback_with_args():
-    """
-    A bound callback can have 0 or 2 arguments.
-    0 arguments are used for simple callbacks, like `log_change`.
-    2 arguments are used for callbacks that need to know the instance and the new value.
-    """
-    observer = Observer()
-
-    my_obj = MyObject()
-    bind(my_obj, "name", observer.call_with_args)
-
-    assert not observer.call_args
-
-    # WHEN
-    my_obj.name = "New Name"
-
-    assert observer.call_args == (my_obj, "New Name")
-
-    # Remove reference of call_args to my_obj, otherwise it will keep the object alive
-    observer.call_args = None
-
-
-def test_bind_callback_with_star_args():
-    observer = Observer()
-
-    my_obj = MyObject()
     bind(my_obj, "name", observer)
 
+    assert not observer.called
+
     # WHEN
     my_obj.name = "New Name"
 
-    assert observer.call_args == (my_obj, "New Name")
-
-    # Remove reference of call_args to my_obj, otherwise it will keep the object alive
-    observer.call_args = None
+    assert observer.called == (tuple(), {})
 
 
 def test_unbind_callback():
     observer = Observer()
 
     my_obj = MyObject()
-    bind(my_obj, "name", observer.call)
+    bind(my_obj, "name", observer)
 
     # WHEN
-    unbind(my_obj, "name", observer.call)
+    unbind(my_obj, "name", observer)
     my_obj.name = "New Name"
 
     assert not observer.called
@@ -119,7 +74,7 @@ def test_does_not_trigger_if_value_unchanged():
     observer = Observer()
     my_obj = MyObject()
     my_obj.name = "CONSTANT"
-    bind(my_obj, "name", observer.call)
+    bind(my_obj, "name", observer)
 
     assert not observer.called
 
@@ -141,7 +96,7 @@ def test_gc_entries_are_collected():
     del obj
     gc.collect()
 
-    # No leftovers
+    # No left overs
     assert len(MyObject.name.obs) == 0
 
 

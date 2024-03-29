@@ -32,29 +32,3 @@ that uses all three ways.
 .. literalinclude:: ../../../arcade/examples/gui_flat_button.py
     :caption: gui_flat_button.py
     :linenos:
-
-See :class:`arcade.gui.UIBoxLayout` and :class:`arcade.gui.UIAnchorLayout`
-for more information about positioning the buttons.
-For example, this change to line 31:
-
-.. code-block:: python
-
-    self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20, vertical=False);
-
-and to line 60:
-
-.. code-block:: python
-
-    ui_anchor_layout.add(child=self.v_box,
-                         anchor_x="left",
-                         anchor_y="bottom",
-                         align_x=10,
-                         align_y=10);
-
-in the code above will align the buttons horizontally and anchor them to the
-bottom left of the window with 10px margins.
-
-.. image:: ../how_to_examples/gui_flat_button_positioned.png
-    :width: 600px
-    :align: center
-    :alt: Screen shot of flat text buttons in bottom left of window
