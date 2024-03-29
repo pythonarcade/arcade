@@ -27,6 +27,9 @@ class SimpleCamera:
 
     Initialize a Simple Camera Instance with either Camera PoDs or individual arguments
 
+    .. depreciated:: 3.0
+       use :cls:`.Camera2D` instead
+
     :param window: The Arcade Window to bind the camera to.
                    Defaults to the currently active window.
     :param viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.

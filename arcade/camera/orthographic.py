@@ -80,7 +80,7 @@ class OrthographicProjector:
         objects is not affected by depth.
 
         Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-        the pixels uniform in size. Avoid a scale of 0.0.
+        the pixels uniform in size. Avoid a zoom of 0.0.
         """
 
         # Find the center of the projection values (often 0,0 or the center of the screen)
