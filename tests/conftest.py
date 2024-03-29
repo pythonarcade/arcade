@@ -113,7 +113,7 @@ class WindowProxy:
             self.window.set_caption(caption)
         if width and height:
             self.window.set_size(width, height)
-            self.window.set_viewport(0, width, 0, height)
+            self.window.default_camera.use()
 
         self._update_rate = 60
 
@@ -194,11 +194,14 @@ class WindowProxy:
     def set_vsync(self, vsync):
         self.window.set_vsync(vsync)
 
-    def get_viewport(self):
-        return self.window.get_viewport()
-
-    def set_viewport(self, left, right, bottom, top):
-        self.window.set_viewport(left, right, bottom, top)
+    @property
+    def default_camera(self):
+        """
+        Provides a reference to the default arcade camera.
+        Automatically sets projection and view to the size
+        of the screen. Good for resetting the screen.
+        """
+        return self.window.default_camera
 
     def use(self):
         self.window.use()
