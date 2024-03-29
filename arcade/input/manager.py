@@ -293,6 +293,17 @@ class InputManager:
         # TODO: Handle all the input->action mappings(this is just clearing the underlying mapping right now, not the actual link to an action)
         self.actions[action]._mappings = set()
 
+    def register_action_handler(
+        self,
+        handler: Union[
+            Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]
+        ],
+    ):
+        if isinstance(handler, list):
+            self.on_action_listeners.extend(handler)
+        else:
+            self.on_action_listeners.append(handler)
+
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
         old = self.action_subscribers.get(name, set())
         old.add(subscriber)
