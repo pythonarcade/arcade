@@ -40,7 +40,7 @@ class RenderTargetTexture:
 
     def clear(self):
         """Clear the texture with the configured background color"""
-        self._fbo.clear(self._background_color)
+        self._fbo.clear(color=self._background_color)
 
     def set_background_color(self, color: RGBA255):
         """Set the background color for the light layer"""

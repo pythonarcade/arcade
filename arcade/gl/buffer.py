@@ -62,7 +62,7 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
-        if data is not None and len(data) > 0:
+        if data is not None and len(data) > 0:  # type: ignore
             self._size, data = data_to_ctypes(data)
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:

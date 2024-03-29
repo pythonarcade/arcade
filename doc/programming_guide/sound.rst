@@ -279,7 +279,7 @@ fully decompressed albums of music in RAM. Each decompressed minute of CD
 quality audio uses slightly over 10 MB of RAM. This adds up quickly, and
 can slow down or freeze a computer if it fills RAM completely.
 
-For music and long background audio, you should should strongly consider
+For music and long background audio, you should strongly consider
 :ref:`streaming <sound-loading-modes-streaming>` from compressed files
 instead.
 
