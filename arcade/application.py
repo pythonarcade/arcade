@@ -937,6 +937,8 @@ class Window(pyglet.window.Window):
             output_dir = Path().parent.absolute()
         else:
             output_dir = Path(location).absolute()
+            if not os.path.exists(output_dir):
+                raise FileNotFoundError(f'{output_dir} does not exist')
 
         filename = f"{self.caption.lower().replace(' ', '_')}_{time.monotonic_ns()}.png"
         full_file_path = output_dir / filename
