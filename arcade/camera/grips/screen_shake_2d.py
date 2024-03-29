@@ -1,7 +1,5 @@
 """
-A small group of classes that offer common controller use-cases.
-
-ScreenShakeController:
+ScreenShakeController2D:
     Provides an easy way to cause a camera to shake.
 """
 from typing import Tuple
@@ -9,14 +7,15 @@ from math import exp, log, pi, sin, floor
 from random import uniform
 
 from arcade.camera.data_types import CameraData
-from arcade.camera.controllers import quaternion_rotation
-
-__all__ = [
-    'ScreenShakeController'
-]
+from arcade.math import quaternion_rotation
 
 
-class ScreenShakeController:
+__all__ = (
+    "ScreenShake2D",
+)
+
+
+class ScreenShake2D:
     """
     Offsets the camera position in a random direction repeatedly over
     a set length of time to create a screen shake effect.

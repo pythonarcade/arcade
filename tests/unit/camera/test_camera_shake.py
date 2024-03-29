@@ -1,11 +1,11 @@
 from arcade import camera, Window
-from arcade.camera.controllers.simple_controller_classes import ScreenShakeController
+from arcade.camera.grips import ScreenShake2D
 
 
 def test_reset(window: Window):
     # Given
     camera_view = camera.CameraData()
-    screen_shaker = ScreenShakeController(camera_view)
+    screen_shaker = ScreenShake2D(camera_view)
 
     # When
     screen_shaker.start()
@@ -24,7 +24,7 @@ def test_reset(window: Window):
 def test_update(window: Window):
     # Given
     camera_view = camera.CameraData()
-    screen_shaker = ScreenShakeController(camera_view)
+    screen_shaker = ScreenShake2D(camera_view)
 
     # When
     screen_shaker.update(1/60)
@@ -57,7 +57,7 @@ def test_update(window: Window):
 def test_update_camera(window: Window):
     # Given
     camera_view = camera.CameraData()
-    screen_shaker = ScreenShakeController(camera_view)
+    screen_shaker = ScreenShake2D(camera_view)
 
     cam_pos = camera_view.position
 
@@ -79,7 +79,7 @@ def test_update_camera(window: Window):
 
 def test_readjust_camera(window: Window):
     camera_view = camera.CameraData()
-    screen_shaker = ScreenShakeController(camera_view)
+    screen_shaker = ScreenShake2D(camera_view)
 
     cam_pos = camera_view.position
 

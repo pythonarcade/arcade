@@ -10,7 +10,8 @@ from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.simple_camera import SimpleCamera
 from arcade.camera.camera_2d import Camera2D
 
-import arcade.camera.controllers as controllers
+import arcade.camera.grips as grips
+
 
 __all__ = [
     'Projection',
@@ -20,5 +21,5 @@ __all__ = [
     'OrthographicProjector',
     'SimpleCamera',
     'Camera2D',
-    'controllers'
+    'grips'
 ]
