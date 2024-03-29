@@ -7,6 +7,8 @@ from __future__ import annotations
 from typing import Protocol, Tuple, Iterator
 from contextlib import contextmanager
 
+from pyglet.math import Vec3
+
 
 __all__ = [
     'CameraData',
@@ -51,6 +53,26 @@ class CameraData:
 
 def duplicate_camera_data(origin: CameraData):
     return CameraData(origin.position, origin.up, origin.forward, float(origin.zoom))
+
+
+def constrain_camera_data(data: CameraData, forward_priority: bool = False):
+    """
+    Ensure that the camera data forward and up vectors are length one,
+    and are perpendicular
+
+    :param data: the camera data to constrain
+    :param forward_priority: whether up or forward gets constrained
+    """
+    forward_vec = Vec3(*data.forward).normalize()
+    up_vec = Vec3(*data.up).normalize()
+    right_vec = forward_vec.cross(up_vec).normalize()
+    if forward_priority:
+        up_vec = forward_vec.cross(right_vec)
+    else:
+        forward_vec = up_vec.cross(right_vec)
+
+    data.forward = (forward_vec.x, forward_vec.y, forward_vec.z)
+    data.up = (up_vec.x, up_vec.y, up_vec.z)
 
 
 class OrthographicProjectionData:
