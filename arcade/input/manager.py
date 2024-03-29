@@ -5,11 +5,27 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 import pyglet
 from pyglet.input.base import Controller
+from typing_extensions import TypedDict
 
 import arcade
 
-from .inputs import InputEnum, InputType, Keys
-from .mapping import Action, ActionMapping, Axis, AxisMapping
+from . import inputs
+from .inputs import InputEnum, InputType
+from .mapping import (
+    Action,
+    ActionMapping,
+    Axis,
+    AxisMapping,
+    RawAction,
+    RawAxis,
+    serialize_action,
+    serialize_axis,
+)
+
+RawInputManager = TypedDict(
+    "RawInputManager",
+    {"actions": List[RawAction], "axes": List[RawAxis], "controller_deadzone": float},
+)
 
 
 class ActionState(Enum):
@@ -31,12 +47,15 @@ class InputManager:
         action_handlers: Union[
             Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]
         ] = [],
+        controller_deadzone: float = 0.1,
     ):
         self.actions: Dict[str, Action] = {}
         self.keys_to_actions: Dict[int, Set[str]] = {}
         self.controller_buttons_to_actions: Dict[str, Set[str]] = {}
+        self.mouse_buttons_to_actions: Dict[int, Set[str]] = {}
         self.on_action_listeners: List[Callable[[str, ActionState], Any]] = []
         self.action_subscribers: Dict[str, Set[Callable[[ActionState], Any]]] = {}
+
         self.axes: Dict[str, Axis] = {}
         self.axes_state: Dict[str, float] = {}
         self.keys_to_axes: Dict[int, Set[str]] = {}
@@ -52,7 +71,12 @@ class InputManager:
 
         self._allow_keyboard = allow_keyboard
         if self._allow_keyboard:
-            self.window.push_handlers(self.on_key_press, self.on_key_release)
+            self.window.push_handlers(
+                self.on_key_press,
+                self.on_key_release,
+                self.on_mouse_press,
+                self.on_mouse_release,
+            )
 
         self.active_device = None
 
@@ -60,7 +84,7 @@ class InputManager:
             self.active_device = InputDevice.KEYBOARD
 
         self.controller = None
-        self.controller_deadzone = 0.1
+        self.controller_deadzone = controller_deadzone
         if controller:
             self.controller = controller
             self.controller.open()
@@ -73,16 +97,83 @@ class InputManager:
             )
             self.active_device = InputDevice.CONTROLLER
 
+    def serialize(self) -> RawInputManager:
+        raw_actions = []
+        for action in self.actions.values():
+            raw_actions.append(serialize_action(action))
+        raw_axes = []
+        for axis in self.axes.values():
+            raw_axes.append(serialize_axis(axis))
+        return {
+            "actions": raw_actions,
+            "axes": raw_axes,
+            "controller_deadzone": self.controller_deadzone,
+        }
+
+    @classmethod
+    def parse(cls, raw: RawInputManager) -> InputManager:
+        final = cls(controller_deadzone=raw["controller_deadzone"])
+
+        for raw_action in raw["actions"]:
+            name = raw_action["name"]
+            final.new_action(name)
+            for raw_mapping in raw_action["mappings"]:
+                raw_input = raw_mapping["input"]
+                input_type = inputs.InputType(raw_mapping["input_type"])
+                if input_type == inputs.InputType.KEYBOARD:
+                    input = inputs.Keys(raw_input)
+                elif input_type == inputs.InputType.MOUSE_BUTTON:
+                    input = inputs.MouseButtons(raw_input)
+                elif input_type == inputs.InputType.MOUSE_AXIS:
+                    input = inputs.MouseAxes(raw_input)
+                elif input_type == inputs.InputType.CONTROLLER_BUTTON:
+                    input = inputs.ControllerButtons(raw_input)
+                elif input_type == inputs.InputType.CONTROLLER_AXIS:
+                    input = inputs.ControllerAxes(raw_input)
+                else:
+                    raise AttributeError("Tried to parse an unknown input type")
+                final.add_action_input(
+                    name,
+                    input,
+                    raw_mapping["mod_shift"],
+                    raw_mapping["mod_ctrl"],
+                    raw_mapping["mod_alt"],
+                )
+
+        for raw_axis in raw["axes"]:
+            name = raw_axis["name"]
+            final.new_axis(name)
+            for raw_mapping in raw_axis["mappings"]:
+                raw_input = raw_mapping["input"]
+                input_type = inputs.InputType(raw_mapping["input_type"])
+                if input_type == inputs.InputType.KEYBOARD:
+                    input = inputs.Keys(raw_input)
+                elif input_type == inputs.InputType.MOUSE_BUTTON:
+                    input = inputs.MouseButtons(raw_input)
+                elif input_type == inputs.InputType.MOUSE_AXIS:
+                    input = inputs.MouseAxes(raw_input)
+                elif input_type == inputs.InputType.CONTROLLER_BUTTON:
+                    input = inputs.ControllerButtons(raw_input)
+                elif input_type == inputs.InputType.CONTROLLER_AXIS:
+                    input = inputs.ControllerAxes(raw_input)
+                else:
+                    raise AttributeError("Tried to parse an unknown input type")
+                final.add_axis_input(name, input, raw_mapping["scale"])
+
+        return final
+
     def copy_existing(self, existing: InputManager):
         self.actions = existing.actions.copy()
         self.keys_to_actions = existing.keys_to_actions.copy()
         self.controller_buttons_to_actions = (
             existing.controller_buttons_to_actions.copy()
         )
+        self.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
         self.axes = existing.axes.copy()
         self.axes_state = existing.axes_state.copy()
         self.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
         self.controller_analog_to_axes = existing.controller_analog_to_axes.copy()
+        self.controller_deadzone = existing.controller_deadzone
 
     @classmethod
     def from_existing(
@@ -90,12 +181,17 @@ class InputManager:
         existing: InputManager,
         controller: Optional[pyglet.input.Controller] = None,
     ) -> InputManager:
-        new = cls(allow_keyboard=existing.allow_keyboard, controller=controller)
+        new = cls(
+            allow_keyboard=existing.allow_keyboard,
+            controller=controller,
+            controller_deadzone=existing.controller_deadzone,
+        )
         new.actions = existing.actions.copy()
         new.keys_to_actions = existing.keys_to_actions.copy()
         new.controller_buttons_to_actions = (
             existing.controller_buttons_to_actions.copy()
         )
+        new.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
         new.axes = existing.axes.copy()
         new.axes_state = existing.axes_state.copy()
         new.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
@@ -146,7 +242,12 @@ class InputManager:
 
         self._allow_keyboard = value
         if self._allow_keyboard:
-            self.window.push_handlers(self.on_key_press, self.on_key_release)
+            self.window.push_handlers(
+                self.on_key_press,
+                self.on_key_release,
+                self.on_mouse_press,
+                self.on_mouse_release,
+            )
         else:
             self.window.remove_handlers(self)
 
@@ -158,6 +259,7 @@ class InputManager:
         self.actions[name] = action
 
     def remove_action(self, name: str):
+        # TODO: Handle all the input->action mappings
         to_remove = self.actions.get(name, None)
         if to_remove:
             del self.actions[name]
@@ -182,8 +284,13 @@ class InputManager:
             if input.value not in self.controller_buttons_to_actions:
                 self.controller_buttons_to_actions[input.value] = set()
             self.controller_buttons_to_actions[input.value].add(action)
+        elif mapping._input_type == InputType.MOUSE_BUTTON:
+            if input.value not in self.mouse_buttons_to_actions:
+                self.mouse_buttons_to_actions[input.value] = set()
+            self.mouse_buttons_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
+        # TODO: Handle all the input->action mappings(this is just clearing the underlying mapping right now, not the actual link to an action)
         self.actions[action]._mappings = set()
 
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
@@ -217,9 +324,11 @@ class InputManager:
             self.controller_analog_to_axes[input.value].add(axis)
 
     def clear_axis_input(self, axis: str):
+        # TODO: handle the input->axis mappings
         self.axes[axis]._mappings = set()
 
     def remove_axis(self, name: str):
+        # TODO: handle the input->axis mappings
         to_remove = self.axes.get(name, None)
         if to_remove:
             del self.axes[name]
@@ -235,6 +344,26 @@ class InputManager:
         if action in self.action_subscribers:
             for subscriber in tuple(self.action_subscribers[action]):
                 subscriber(state)
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
+        if not self._allow_keyboard:
+            return
+
+        self.active_device = InputDevice.KEYBOARD
+        mouse_buttons_to_actions = tuple(
+            self.mouse_buttons_to_actions.get(button, set())
+        )
+        for action_name in mouse_buttons_to_actions:
+            action = self.actions[action_name]
+            hit = True
+            for mapping in tuple(action._mappings):
+                if mapping._modifiers:
+                    for mod in mapping._modifiers:
+                        if not modifiers & mod:
+                            hit = False
+
+            if hit:
+                self.dispatch_action(action_name, ActionState.PRESSED)
 
     def on_key_press(self, key: int, modifiers) -> None:
         if not self._allow_keyboard:
@@ -254,7 +383,29 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.PRESSED)
 
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> None:
+        if not self._allow_keyboard:
+            return
+
+        mouse_buttons_to_actions = tuple(
+            self.mouse_buttons_to_actions.get(button, set())
+        )
+        for action_name in mouse_buttons_to_actions:
+            action = self.actions[action_name]
+            hit = True
+            for mapping in tuple(action._mappings):
+                if mapping._modifiers:
+                    for mod in mapping._modifiers:
+                        if not modifiers & mod:
+                            hit = False
+
+            if hit:
+                self.dispatch_action(action_name, ActionState.RELEASED)
+
     def on_key_release(self, key: int, modifiers) -> None:
+        if not self._allow_keyboard:
+            return
+
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
         for action_name in keys_to_actions:
             action = self.actions[action_name]
@@ -328,4 +479,12 @@ class InputManager:
                 for mapping in tuple(axis._mappings):
                     if mapping._input_type == InputType.KEYBOARD:
                         if self.window.keyboard[mapping._input.value]:
+                            self.axes_state[name] = mapping._scale
+                    elif mapping._input_type == InputType.MOUSE_AXIS:
+                        self.axes_state[name] = (
+                            self.window.mouse[mapping._input.name.lower()]
+                            * mapping._scale
+                        )
+                    elif mapping._input_type == InputType.MOUSE_BUTTON:
+                        if self.window.mouse[mapping._input.value]:
                             self.axes_state[name] = mapping._scale

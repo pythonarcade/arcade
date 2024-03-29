@@ -17,7 +17,6 @@ class InputType(Enum):
     MOUSE_AXIS = 2
     CONTROLLER_BUTTON = 3
     CONTROLLER_AXIS = 4
-    OTHER = 5
 
 
 class InputEnum(Enum):
