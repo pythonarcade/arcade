@@ -126,7 +126,7 @@ class MyGame(arcade.Window):
 
         # Draw new minimap using the camera
         self.camera_minimap.use()
-        self.clear(MINIMAP_BACKGROUND_COLOR)
+        self.clear(color=MINIMAP_BACKGROUND_COLOR)
         self.wall_list.draw()
         self.player_list.draw()
 

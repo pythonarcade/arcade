@@ -4,33 +4,87 @@ body {
 /* TOC - Main landing page */
 /* Show two columns if screen is wide enough */
 @media screen and (min-width: 700px) {
+    /* For regular items */
     .toctree-wrapper > ul {
         columns: 2;
     }
+    /* For Social and Learning Resources sections */
+    .toc-outside-links {
+        columns: 2;
+    }
 }
-.toctree-l1 {
-    margin-left: 5px;
+
+/* Wrap individual main page items for easier group manipulation
+ of contents and images. See PR #2027 for main page css changes */
+.main-page-item-wrapper {
+    align-items: flex-start;
+    display: flex;
+    margin: 10px;
 }
-.toc-outside-links {
-    margin-left: 35px;
+.main-page-item-wrapper > .toctree-wrapper {
+    width: 100%;
 }
-.toc-outside-links ul {
-    columns: 2;
+
+/* single-col-box for items on main page with 2 bullet points, use if
+ wanting to avoid having 2 columns with 1 item each inside */
+.main-page-item-wrapper > .single-col-box {
+    width: 100%;
 }
-.toc-outside-links li p, .toc-outside-links ul li {
-    margin-left: 5px;
+.main-page-item-wrapper > .single-col-box ul {
+    columns: 1;
 }
-.toc-outside-links a {
-    text-decoration: none;
+
+/* For Social and Learning Resources to make
+title + list appear like other categories */
+.main-page-item-wrapper > .main-page-item-sub-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    width: 100%;
 }
-.toctree-wrapper a {
-    text-decoration: none;
+.main-page-item-wrapper > .main-page-item-title {
+    width: 100%;
 }
-.toc-outside-links a:hover {
-    text-decoration: underline;
+.main-page-item-title > p {
+    font-size: var(--font-size--small);
+    margin-bottom: 0;
+    text-align: initial;
+    text-transform: uppercase;
 }
-.toctree-wrapper a:hover {
-    text-decoration: underline;
+.main-page-item-sub-wrapper > .toc-outside-links {
+    margin-left: 0px;
+    width: 100%;
+}
+
+/* Wrappers and formatting for sprinter, START HERE, github star button
+to align them neatly */
+.main-page-item-wrapper-header {
+    align-items: center;
+    display: flex;
+    margin: 10px;
+}
+.main-page-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-page-box > .main-page-link {
+    display: flex;
+    width: 100%;
+}
+.main-page-box > .main-page-link a {
+    display: flex;
+}
+.sprinter-box {
+    margin-left: 10px;
+    height: 55px;
+    display: flex;
+}
+.start-here-box {
+    align-items: center;
+    display: flex;
+    margin-left: -10px;
 }
 #the-python-arcade-library h2 {
     font-size: var(--font-size--small);
@@ -39,15 +93,33 @@ body {
     margin-top: .5rem;
     text-align: initial;
     text-transform: uppercase;
+    width: 100%;
+    display: flex;
+}
+.main-page-box > .main-page-box-gh {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
+}
+#github-stars {
+    width: 141px;
+    height: 30px;
+    margin-bottom: -9px;
+}
+
+/* Formatting for list items */
+.toctree-l1 {
+    margin-left: 5px;
+}
+.toctree-wrapper a {
+    text-decoration: none;
+}
+.toctree-wrapper a:hover {
+    text-decoration: underline;
 }
 #the-python-arcade-library ul {
     margin-top: 0;
     margin-bottom: 0;
-}
-#github-stars {
-    width: 170px;
-    height: 30px;
-    margin-bottom: -18px;
 }
 .heading-icon {
     columns: 2;
@@ -103,9 +175,6 @@ img.right-image {
 .section-logo {
     width: 78px;
     padding-right: 15px;
-}
-.main-page-table {
-    width: 100%;
 }
 .vimeo-video {
     border: 0;
@@ -173,4 +242,11 @@ body:not([data-theme="light"]) .highlight .c1 {
 }
 .highlight .c1 {
     color: #007507;
+}
+
+.checkered {
+    background-image: url(../checkered.png);
+    background-repeat: repeat;
+    margin:0px;
+    padding: 0px;
 }

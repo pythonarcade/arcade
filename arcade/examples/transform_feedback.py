@@ -147,7 +147,11 @@ class MyGame(arcade.Window):
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
 
 
-if __name__ == "__main__":
+def main():
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.center_window()
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()
