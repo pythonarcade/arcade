@@ -53,15 +53,28 @@ class Camera2D:
         show up. The FrameBuffer's internal viewport is ignored.
     """
     def __init__(self, *,
-                 camera_data: CameraData,
-                 projection_data: OrthographicProjectionData,
+                 camera_data: Optional[CameraData] = None,
+                 projection_data: Optional[OrthographicProjectionData] = None,
                  render_target: Optional[Framebuffer] = None,
                  window: Optional["Window"] = None):
         self._window: "Window" = window or get_window()
         self.render_target: Framebuffer = render_target or self._window.ctx.screen
 
-        self._data = camera_data
-        self._projection: OrthographicProjectionData = projection_data
+        half_width = self._window.width / 2
+        half_height = self._window.height / 2
+
+        self._data = camera_data or CameraData(
+            (half_width, half_height, 0.0),  # position
+            (0.0, 1.0, 0.0),  # up vector
+            (0.0, 0.0, -1.0),  # forward vector
+            1.0  # zoom
+        )
+        self._projection: OrthographicProjectionData = projection_data or OrthographicProjectionData(
+            -half_width, half_width,  # Left and Right.
+            -half_height, half_height,  # Bottom and Top.
+            0.0, 100.0,  # Near and Far.
+            (0, 0, self._window.width, self._window.height)  # Viewport
+        )
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
             window=self._window,
@@ -125,7 +138,7 @@ class Camera2D:
             camera_data=_data,
             projection_data=_projection,
             window=window,
-            render_target= (render_target or window.ctx.screen)
+            render_target=(render_target or window.ctx.screen)
         )
 
     @property
