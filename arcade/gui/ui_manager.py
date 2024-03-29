@@ -338,7 +338,7 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        return self.window.current_camera.map_coordinate((x, y))[:2]
+        return self.window.current_camera.map_screen_to_world_coordinate((x, y))[:2]
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)

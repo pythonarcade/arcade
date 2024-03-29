@@ -75,7 +75,7 @@ class ViewportProjector:
         finally:
             previous.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth = 0.0) -> Tuple[float, float]:
+    def map_screen_to_world_coordinate(self, screen_coordinate: Tuple[float, float], depth=0.0) -> Tuple[float, float]:
         """
         Map the screen pos to screen_coordinates.
 

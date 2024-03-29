@@ -54,9 +54,9 @@ def test_orthographic_projector_map_coordinates(window: Window):
     mouse_pos_c = (230.0, 800.0)
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((100.0, 0.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_c) == pytest.approx((230.0, 800.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((100.0, 0.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_c) == pytest.approx((230.0, 800.0, 0.0))
 
 
 def test_orthographic_projector_map_coordinates_move(window: Window):
@@ -71,8 +71,8 @@ def test_orthographic_projector_map_coordinates_move(window: Window):
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((-300.0, -200.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((-300.0, -200.0, 0.0))
 
     # And
 
@@ -80,8 +80,8 @@ def test_orthographic_projector_map_coordinates_move(window: Window):
     default_view.position = (100.0, 100.0, 0.0)
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((-200.0, -100.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((-200.0, -100.0, 0.0))
 
 
 def test_orthographic_projector_map_coordinates_rotate(window: Window):
@@ -97,8 +97,8 @@ def test_orthographic_projector_map_coordinates_rotate(window: Window):
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((-200.0, 300.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((-200.0, 300.0, 0.0))
 
     # And
 
@@ -107,8 +107,8 @@ def test_orthographic_projector_map_coordinates_rotate(window: Window):
     default_view.position = (100.0, 100.0, 0.0)
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((-253.553390, 170.710678, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((-253.553390, 170.710678, 0.0))
 
 
 def test_orthographic_projector_map_coordinates_zoom(window: Window):
@@ -123,8 +123,8 @@ def test_orthographic_projector_map_coordinates_zoom(window: Window):
     default_view.zoom = 2.0
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((window.width*0.75, window.height*0.75, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((250.0, 200.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((window.width*0.75, window.height*0.75, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((250.0, 200.0, 0.0))
 
     # And
 
@@ -133,5 +133,5 @@ def test_orthographic_projector_map_coordinates_zoom(window: Window):
     default_view.zoom = 0.25
 
     # Then
-    assert ortho_camera.map_coordinate(mouse_pos_a) == pytest.approx((window.width*2.0, window.height*2.0, 0.0))
-    assert ortho_camera.map_coordinate(mouse_pos_b) == pytest.approx((-1200.0, -800.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((window.width*2.0, window.height*2.0, 0.0))
+    assert ortho_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((-1200.0, -800.0, 0.0))

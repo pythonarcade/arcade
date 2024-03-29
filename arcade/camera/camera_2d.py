@@ -716,7 +716,11 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def map_coordinate(self, screen_coordinate: Tuple[float, float], depth: float = 0.0) -> Tuple[float, float]:
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: float = 0.0
+    ) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -735,4 +739,4 @@ class Camera2D:
             of the camera.
         """
 
-        return self._ortho_projector.map_coordinate(screen_coordinate, depth)[:2]
+        return self._ortho_projector.map_screen_to_world_coordinate(screen_coordinate, depth)[:2]
