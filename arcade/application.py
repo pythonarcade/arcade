@@ -10,7 +10,6 @@ import time
 from typing import List, Tuple, Optional
 from pathlib import Path
 import pyglet
-from PIL import Image
 
 import pyglet.gl as gl
 import pyglet.window.mouse
@@ -932,13 +931,13 @@ class Window(pyglet.window.Window):
         pass
 
     def save_screenshot(self, location: Optional[str] = None) -> Path:
-        
+
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
         if not location:
             output_dir = Path().parent.absolute()
         else:
-            output_dir = Path(location)
-        
+            output_dir = Path(location).absolute()
+
         filename = f"{self.caption.lower().replace(' ', '_')}_{time.monotonic_ns()}.png"
         full_file_path = output_dir / filename
         img.save(full_file_path, 'PNG')
