@@ -30,8 +30,7 @@ from arcade import get_window, get_points_for_thick_line
 from arcade.gl import BufferDescription
 from arcade.gl import Program
 from arcade import ArcadeContext
-
-from .math import rotate_point
+from arcade.math import rotate_point
 
 
 __all__ = [

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import math
 import random
+from typing import Tuple, List, Union
+from pyglet.math import Vec2, Vec3
 from arcade.types import Point, Vector
 
 _PRECISION = 2
@@ -11,7 +13,8 @@ __all__ = [
     "round_fast",
     "clamp",
     "lerp",
-    "lerp_vec",
+    "lerp_2d",
+    "lerp_3d",
     "lerp_angle",
     "rand_in_rect",
     "rand_in_circle",
@@ -25,6 +28,7 @@ __all__ = [
     "rotate_point",
     "get_angle_degrees",
     "get_angle_radians",
+    "quaternion_rotation"
 ]
 
 
@@ -64,10 +68,22 @@ def lerp(v1: float, v2: float, u: float) -> float:
     return v1 + ((v2 - v1) * u)
 
 
-def lerp_vec(v1: Vector, v2: Vector, u: float) -> Vector:
+V_2D = Union[Vec2, Tuple[float, float], List[float]]
+V_3D = Union[Vec3, Tuple[float, float, float], List[float]]
+
+
+def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Tuple[float, float]:
     return (
         lerp(v1[0], v2[0], u),
         lerp(v1[1], v2[1], u)
+    )
+
+
+def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> Tuple[float, float, float]:
+    return (
+        lerp(v1[0], v2[0], u),
+        lerp(v1[1], v2[1], u),
+        lerp(v1[2], v2[2], u)
     )
 
 
@@ -160,7 +176,7 @@ def rand_on_line(pos1: Point, pos2: Point) -> Point:
     :return: A random point on the line
     """
     u = random.uniform(0.0, 1.0)
-    return lerp_vec(pos1, pos2, u)
+    return lerp_2d(pos1, pos2, u)
 
 
 def rand_angle_360_deg() -> float:
@@ -354,3 +370,33 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     x_diff = x2 - x1
     y_diff = y2 - y1
     return math.atan2(x_diff, y_diff)
+
+
+def quaternion_rotation(axis: Tuple[float, float, float],
+                        vector: Tuple[float, float, float],
+                        angle: float) -> Tuple[float, float, float]:
+    """
+    Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
+
+    This method of vector rotation is immune to rotation-lock, however it takes a little more effort
+    to find the axis of rotation rather than 3 angles of rotation.
+    Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html.
+
+    :param axis: The unit length vector that will be rotated around
+    :param vector: The 3-dimensional vector to be rotated
+    :param angle: The angle in degrees to rotate the vector clock-wise by
+    :return: A rotated 3-dimension vector with the same length as the argument vector.
+    """
+    _rotation_rads = -math.radians(angle)
+    p1, p2, p3 = vector
+    _c2, _s2 = math.cos(_rotation_rads / 2.0), math.sin(_rotation_rads / 2.0)
+
+    q0, q1, q2, q3 = _c2, _s2 * axis[0], _s2 * axis[1], _s2 * axis[2]
+    q0_2, q1_2, q2_2, q3_2 = q0 ** 2, q1 ** 2, q2 ** 2, q3 ** 2
+    q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
+
+    _x = p1 * (q0_2 + q1_2 - q2_2 - q3_2) + 2.0 * (p2 * (q12 - q03) + p3 * (q02 + q13))
+    _y = p2 * (q0_2 - q1_2 + q2_2 - q3_2) + 2.0 * (p1 * (q03 + q12) + p3 * (q23 - q01))
+    _z = p3 * (q0_2 - q1_2 - q2_2 + q3_2) + 2.0 * (p1 * (q13 - q02) + p2 * (q01 + q23))
+
+    return _x, _y, _z

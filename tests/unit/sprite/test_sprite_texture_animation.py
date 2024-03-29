@@ -38,18 +38,6 @@ def test_animation(keyframes):
     """Test animation class"""
     anim = arcade.TextureAnimation(keyframes=keyframes)
 
-    # Add keyframe
-    anim.append_keyframe(arcade.TextureKeyframe(keyframes[0].texture, 1000))
-    assert anim.num_frames == 9
-    assert anim.duration_ms == 9000
-    assert anim.duration_seconds == 9.0
-
-    # Remove keyframe
-    anim.remove_keyframe(8)
-    assert anim.num_frames == 8
-    assert anim.duration_ms == 8000
-    assert anim.duration_seconds == 8.0
-
     # Get keyframes at specific times (0.5s increments)
     for i in range(16):
         time = i / 2

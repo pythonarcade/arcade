@@ -90,12 +90,12 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.channel0.use()
         # clear_color = 0, 0, 0, 0
-        # self.channel0.clear(clear_color)
+        # self.channel0.clear(color=clear_color)
         self.wall_list.draw()
 
         self.channel1.use()
-        # self.channel1.clear(clear_color)
-        self.channel1.clear(arcade.color.ARMY_GREEN)
+        # self.channel1.clear(color=clear_color)
+        self.channel1.clear(color=arcade.color.ARMY_GREEN)
         self.bomb_list.draw()
 
         self.use()
