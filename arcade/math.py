@@ -382,30 +382,6 @@ def quaternion_rotation(axis: Tuple[float, float, float],
     to find the axis of rotation rather than 3 angles of rotation.
     Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html.
 
-    Example:
-        import arcade
-        from arcade.camera.controllers import quaternion_rotation
-
-
-        # Rotating a sprite around a point
-        sprite = arcade.Sprite(center_x=0.0, center_y=10.0)
-        rotation_point = (0.0, 0.0)
-
-        # Find the relative vector between the sprite and point to rotate. (Must be a 3D vector)
-        relative_position = sprite.center_x - rotation_point[0], sprite.center_y - rotation_point[1], 0.0
-
-        # Because arcade uses the X and Y axis for 2D co-ordinates the Z-axis becomes the rotation axis.
-        rotation_axis = (0.0, 0.0, 1.0)
-
-        # Rotate the vector 45 degrees clockwise.
-        new_relative_position = quaternion_rotation(rotation_axis, relative_position, 45)
-
-
-        sprite.position = (
-            rotation_point[0] + new_relative_position[0],
-            rotation_point[1] + new_relative_position[1]
-        )
-
     :param axis: The unit length vector that will be rotated around
     :param vector: The 3-dimensional vector to be rotated
     :param angle: The angle in degrees to rotate the vector clock-wise by
