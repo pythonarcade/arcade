@@ -1,30 +1,26 @@
 import arcade
-import glob
+import tempfile
 import os
-import pathlib
+from pathlib import Path
 
 
-def test_no_location(window: arcade.Window):
-    filepath = window.save_screenshot()
-    assert filepath
-    os.remove(filepath)
+def test_save_screenshot_window(window: arcade.Window):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        file_1 = f'{temp_dir}/screen.png'
+        file_2 = Path(temp_dir, 'screen2.png')
+        window.save_screenshot(file_1)
+        assert os.path.exists(file_1)
+
+        window.save_screenshot(file_2)
+        assert os.path.exists(file_2)
     
 
-def test_location(window: arcade.Window):
-    path = pathlib.Path().parent.parent.absolute()
-    filepath = window.save_screenshot(str(path))
-    assert filepath
-    os.remove(filepath)
-
-
-def test_command(window: arcade.Window):
-    filepath = arcade.save_screenshot()
-    assert filepath
-    os.remove(filepath)
-
-
 def test_command_with_location(window: arcade.Window):
-    path = pathlib.Path().parent.parent.absolute()
-    filepath = arcade.save_screenshot(str(path))
-    assert filepath
-    os.remove(filepath)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        file_1 = f'{temp_dir}/screen.png'
+        file_2 = Path(temp_dir, 'screen2.png')
+        arcade.save_screenshot(file_1)
+        assert os.path.exists(file_1)
+
+        window.save_screenshot(file_2)
+        assert os.path.exists(file_2)
