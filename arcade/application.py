@@ -7,7 +7,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union
 from pathlib import Path
 import pyglet
 
@@ -930,20 +930,14 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def save_screenshot(self, location: Optional[str] = None) -> Path:
+    def save_screenshot(self, path: Union[Path, str]):
+        """
+        Save a screenshot to a png image
 
+        :param path: The full path and the png image filename to save.
+        """
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
-        if not location:
-            output_dir = Path().parent.absolute()
-        else:
-            output_dir = Path(location).absolute()
-            if not os.path.exists(output_dir):
-                raise FileNotFoundError(f'{output_dir} does not exist')
-
-        filename = f"{self.caption.lower().replace(' ', '_')}_{time.monotonic_ns()}.png"
-        full_file_path = output_dir / filename
-        img.save(full_file_path, 'PNG')
-        return full_file_path
+        img.save(path, 'PNG')
 
 
 def open_window(

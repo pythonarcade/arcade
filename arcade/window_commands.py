@@ -14,7 +14,8 @@ from typing import (
     Callable,
     Optional,
     Tuple,
-    TYPE_CHECKING
+    TYPE_CHECKING,
+    Union
 )
 from arcade.types import RGBA255, Color
 
@@ -365,6 +366,6 @@ def schedule_once(function_pointer: Callable, delay: float):
     pyglet.clock.schedule_once(function_pointer, delay)
 
 
-def save_screenshot(location: Optional[str] = None) -> Path:
+def save_screenshot(path: Union[ Path, str]):
     window = get_window()
-    return window.save_screenshot(location)
+    window.save_screenshot(path)
