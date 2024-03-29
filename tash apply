@@ -1,0 +1,243 @@
+GIT-STASH(1)                                                                    Git Manual                                                                    GIT-STASH(1)
+
+NNAAMMEE
+       git-stash - Stash the changes in a dirty working directory away
+
+SSYYNNOOPPSSIISS
+       _g_i_t _s_t_a_s_h list [<log-options>]
+       _g_i_t _s_t_a_s_h show [-u|--include-untracked|--only-untracked] [<diff-options>] [<stash>]
+       _g_i_t _s_t_a_s_h drop [-q|--quiet] [<stash>]
+       _g_i_t _s_t_a_s_h ( pop | apply ) [--index] [-q|--quiet] [<stash>]
+       _g_i_t _s_t_a_s_h branch <branchname> [<stash>]
+       _g_i_t _s_t_a_s_h [push [-p|--patch] [-k|--[no-]keep-index] [-q|--quiet]
+                    [-u|--include-untracked] [-a|--all] [-m|--message <message>]
+                    [--pathspec-from-file=<file> [--pathspec-file-nul]]
+                    [--] [<pathspec>...]]
+       _g_i_t _s_t_a_s_h clear
+       _g_i_t _s_t_a_s_h create [<message>]
+       _g_i_t _s_t_a_s_h store [-m|--message <message>] [-q|--quiet] <commit>
+
+DDEESSCCRRIIPPTTIIOONN
+       Use ggiitt ssttaasshh when you want to record the current state of the working directory and the index, but want to go back to a clean working directory. The command saves
+       your local modifications away and reverts the working directory to match the HHEEAADD commit.
+
+       The modifications stashed away by this command can be listed with ggiitt ssttaasshh lliisstt, inspected with ggiitt ssttaasshh sshhooww, and restored (potentially on top of a different
+       commit) with ggiitt ssttaasshh aappppllyy. Calling ggiitt ssttaasshh without any arguments is equivalent to ggiitt ssttaasshh ppuusshh. A stash is by default listed as "WIP on _b_r_a_n_c_h_n_a_m_e ...", but
+       you can give a more descriptive message on the command line when you create one.
+
+       The latest stash you created is stored in rreeffss//ssttaasshh; older stashes are found in the reflog of this reference and can be named using the usual reflog syntax (e.g.
+       ssttaasshh@@{{00}} is the most recently created stash, ssttaasshh@@{{11}} is the one before it, ssttaasshh@@{{22..hhoouurrss..aaggoo}} is also possible). Stashes may also be referenced by specifying
+       just the stash index (e.g. the integer nn is equivalent to ssttaasshh@@{{nn}}).
+
+CCOOMMMMAANNDDSS
+       push [-p|--patch] [-k|--[no-]keep-index] [-u|--include-untracked] [-a|--all] [-q|--quiet] [-m|--message <message>] [--pathspec-from-file=<file>
+       [--pathspec-file-nul]] [--] [<pathspec>...]
+           Save your local modifications to a new _s_t_a_s_h _e_n_t_r_y and roll them back to HEAD (in the working tree and in the index). The <message> part is optional and gives
+           the description along with the stashed state.
+
+           For quickly making a snapshot, you can omit "push". In this mode, non-option arguments are not allowed to prevent a misspelled subcommand from making an
+           unwanted stash entry. The two exceptions to this are ssttaasshh --pp which acts as alias for ssttaasshh ppuusshh --pp and pathspec elements, which are allowed after a double
+           hyphen ---- for disambiguation.
+
+       save [-p|--patch] [-k|--[no-]keep-index] [-u|--include-untracked] [-a|--all] [-q|--quiet] [<message>]
+           This option is deprecated in favour of _g_i_t _s_t_a_s_h _p_u_s_h. It differs from "stash push" in that it cannot take pathspec. Instead, all non-option arguments are
+           concatenated to form the stash message.
+
+       list [<log-options>]
+           List the stash entries that you currently have. Each _s_t_a_s_h _e_n_t_r_y is listed with its name (e.g.  ssttaasshh@@{{00}} is the latest entry, ssttaasshh@@{{11}} is the one before,
+           etc.), the name of the branch that was current when the entry was made, and a short description of the commit the entry was based on.
+
+               stash@{0}: WIP on submit: 6ebd0e2... Update git-stash documentation
+               stash@{1}: On master: 9cc0589... Add git-stash
+
+           The command takes options applicable to the _g_i_t _l_o_g command to control what is shown and how. See ggiitt--lloogg(1).
+
+       show [-u|--include-untracked|--only-untracked] [<diff-options>] [<stash>]
+           Show the changes recorded in the stash entry as a diff between the stashed contents and the commit back when the stash entry was first created. By default, the
+           command shows the diffstat, but it will accept any format known to _g_i_t _d_i_f_f (e.g., ggiitt ssttaasshh sshhooww --pp ssttaasshh@@{{11}} to view the second most recent entry in patch
+           form). If no <<ddiiffff--ooppttiioonn>> is provided, the default behavior will be given by the ssttaasshh..sshhoowwSSttaatt, and ssttaasshh..sshhoowwPPaattcchh config variables. You can also use
+           ssttaasshh..sshhoowwIInncclluuddeeUUnnttrraacckkeedd to set whether ----iinncclluuddee--uunnttrraacckkeedd is enabled by default.
+
+       pop [--index] [-q|--quiet] [<stash>]
+           Remove a single stashed state from the stash list and apply it on top of the current working tree state, i.e., do the inverse operation of ggiitt ssttaasshh ppuusshh. The
+           working directory must match the index.
+
+           Applying the state can fail with conflicts; in this case, it is not removed from the stash list. You need to resolve the conflicts by hand and call ggiitt ssttaasshh
+           ddrroopp manually afterwards.
+
+       apply [--index] [-q|--quiet] [<stash>]
+           Like ppoopp, but do not remove the state from the stash list. Unlike ppoopp, <<ssttaasshh>> may be any commit that looks like a commit created by ssttaasshh ppuusshh or ssttaasshh
+           ccrreeaattee.
+
+       branch <branchname> [<stash>]
+           Creates and checks out a new branch named <<bbrraanncchhnnaammee>> starting from the commit at which the <<ssttaasshh>> was originally created, applies the changes recorded in
+           <<ssttaasshh>> to the new working tree and index. If that succeeds, and <<ssttaasshh>> is a reference of the form ssttaasshh@@{{<<rreevviissiioonn>>}}, it then drops the <<ssttaasshh>>.
+
+           This is useful if the branch on which you ran ggiitt ssttaasshh ppuusshh has changed enough that ggiitt ssttaasshh aappppllyy fails due to conflicts. Since the stash entry is applied
+           on top of the commit that was HEAD at the time ggiitt ssttaasshh was run, it restores the originally stashed state with no conflicts.
+
+       clear
+           Remove all the stash entries. Note that those entries will then be subject to pruning, and may be impossible to recover (see _E_x_a_m_p_l_e_s below for a possible
+           strategy).
+
+       drop [-q|--quiet] [<stash>]
+           Remove a single stash entry from the list of stash entries.
+
+       create
+           Create a stash entry (which is a regular commit object) and return its object name, without storing it anywhere in the ref namespace. This is intended to be
+           useful for scripts. It is probably not the command you want to use; see "push" above.
+
+       store
+           Store a given stash created via _g_i_t _s_t_a_s_h _c_r_e_a_t_e (which is a dangling merge commit) in the stash ref, updating the stash reflog. This is intended to be useful
+           for scripts. It is probably not the command you want to use; see "push" above.
+
+OOPPTTIIOONNSS
+       -a, --all
+           This option is only valid for ppuusshh and ssaavvee commands.
+
+           All ignored and untracked files are also stashed and then cleaned up with ggiitt cclleeaann.
+
+       -u, --include-untracked, --no-include-untracked
+           When used with the ppuusshh and ssaavvee commands, all untracked files are also stashed and then cleaned up with ggiitt cclleeaann.
+
+           When used with the sshhooww command, show the untracked files in the stash entry as part of the diff.
+
+       --only-untracked
+           This option is only valid for the sshhooww command.
+
+           Show only the untracked files in the stash entry as part of the diff.
+
+       --index
+           This option is only valid for ppoopp and aappppllyy commands.
+
+           Tries to reinstate not only the working tree’s changes, but also the index’s ones. However, this can fail, when you have conflicts (which are stored in the
+           index, where you therefore can no longer apply the changes as they were originally).
+
+       -k, --keep-index, --no-keep-index
+           This option is only valid for ppuusshh and ssaavvee commands.
+
+           All changes already added to the index are left intact.
+
+       -p, --patch
+           This option is only valid for ppuusshh and ssaavvee commands.
+
+           Interactively select hunks from the diff between HEAD and the working tree to be stashed. The stash entry is constructed such that its index state is the same
+           as the index state of your repository, and its worktree contains only the changes you selected interactively. The selected changes are then rolled back from
+           your worktree. See the “Interactive Mode” section of ggiitt--aadddd(1) to learn how to operate the ----ppaattcchh mode.
+
+           The ----ppaattcchh option implies ----kkeeeepp--iinnddeexx. You can use ----nnoo--kkeeeepp--iinnddeexx to override this.
+
+       --pathspec-from-file=<file>
+           This option is only valid for ppuusshh command.
+
+           Pathspec is passed in <<ffiillee>> instead of commandline args. If <<ffiillee>> is exactly -- then standard input is used. Pathspec elements are separated by LF or CR/LF.
+           Pathspec elements can be quoted as explained for the configuration variable ccoorree..qquuootteePPaatthh (see ggiitt--ccoonnffiigg(1)). See also ----ppaatthhssppeecc--ffiillee--nnuull and global
+           ----lliitteerraall--ppaatthhssppeeccss.
+
+       --pathspec-file-nul
+           This option is only valid for ppuusshh command.
+
+           Only meaningful with ----ppaatthhssppeecc--ffrroomm--ffiillee. Pathspec elements are separated with NUL character and all other characters are taken literally (including newlines
+           and quotes).
+
+       -q, --quiet
+           This option is only valid for aappppllyy, ddrroopp, ppoopp, ppuusshh, ssaavvee, ssttoorree commands.
+
+           Quiet, suppress feedback messages.
+
+       --
+           This option is only valid for ppuusshh command.
+
+           Separates pathspec from options for disambiguation purposes.
+
+       <pathspec>...
+           This option is only valid for ppuusshh command.
+
+           The new stash entry records the modified states only for the files that match the pathspec. The index entries and working tree files are then rolled back to
+           the state in HEAD only for these files, too, leaving files that do not match the pathspec intact.
+
+           For more details, see the _p_a_t_h_s_p_e_c entry in ggiittgglloossssaarryy(7).
+
+       <stash>
+           This option is only valid for aappppllyy, bbrraanncchh, ddrroopp, ppoopp, sshhooww commands.
+
+           A reference of the form ssttaasshh@@{{<<rreevviissiioonn>>}}. When no <<ssttaasshh>> is given, the latest stash is assumed (that is, ssttaasshh@@{{00}}).
+
+DDIISSCCUUSSSSIIOONN
+       A stash entry is represented as a commit whose tree records the state of the working directory, and its first parent is the commit at HHEEAADD when the entry was
+       created. The tree of the second parent records the state of the index when the entry is made, and it is made a child of the HHEEAADD commit. The ancestry graph looks
+       like this:
+
+                  .----W
+                 /    /
+           -----H----I
+
+       where HH is the HHEEAADD commit, II is a commit that records the state of the index, and WW is a commit that records the state of the working tree.
+
+EEXXAAMMPPLLEESS
+       Pulling into a dirty tree
+           When you are in the middle of something, you learn that there are upstream changes that are possibly relevant to what you are doing. When your local changes do
+           not conflict with the changes in the upstream, a simple ggiitt ppuullll will let you move forward.
+
+           However, there are cases in which your local changes do conflict with the upstream changes, and ggiitt ppuullll refuses to overwrite your changes. In such a case, you
+           can stash your changes away, perform a pull, and then unstash, like this:
+
+               $ git pull
+                ...
+               file foobar not up to date, cannot merge.
+               $ git stash
+               $ git pull
+               $ git stash pop
+
+       Interrupted workflow
+           When you are in the middle of something, your boss comes in and demands that you fix something immediately. Traditionally, you would make a commit to a
+           temporary branch to store your changes away, and return to your original branch to make the emergency fix, like this:
+
+               # ... hack hack hack ...
+               $ git switch -c my_wip
+               $ git commit -a -m "WIP"
+               $ git switch master
+               $ edit emergency fix
+               $ git commit -a -m "Fix in a hurry"
+               $ git switch my_wip
+               $ git reset --soft HEAD^
+               # ... continue hacking ...
+
+           You can use _g_i_t _s_t_a_s_h to simplify the above, like this:
+
+               # ... hack hack hack ...
+               $ git stash
+               $ edit emergency fix
+               $ git commit -a -m "Fix in a hurry"
+               $ git stash pop
+               # ... continue hacking ...
+
+       Testing partial commits
+           You can use ggiitt ssttaasshh ppuusshh ----kkeeeepp--iinnddeexx when you want to make two or more commits out of the changes in the work tree, and you want to test each change before
+           committing:
+
+               # ... hack hack hack ...
+               $ git add --patch foo            # add just first part to the index
+               $ git stash push --keep-index    # save all other changes to the stash
+               $ edit/build/test first part
+               $ git commit -m 'First part'     # commit fully tested change
+               $ git stash pop                  # prepare to work on all other changes
+               # ... repeat above five steps until one commit remains ...
+               $ edit/build/test remaining parts
+               $ git commit foo -m 'Remaining parts'
+
+       Recovering stash entries that were cleared/dropped erroneously
+           If you mistakenly drop or clear stash entries, they cannot be recovered through the normal safety mechanisms. However, you can try the following incantation to
+           get a list of stash entries that are still in your repository, but not reachable any more:
+
+               git fsck --unreachable |
+               grep commit | cut -d\  -f3 |
+               xargs git log --merges --no-walk --grep=WIP
+
+SSEEEE AALLSSOO
+       ggiitt--cchheecckkoouutt(1), ggiitt--ccoommmmiitt(1), ggiitt--rreefflloogg(1), ggiitt--rreesseett(1), ggiitt--sswwiittcchh(1)
+
+GGIITT
+       Part of the ggiitt(1) suite
+
+Git 2.34.1                                                                      07/07/2023                                                                    GIT-STASH(1)

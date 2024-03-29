@@ -9,7 +9,7 @@ import gc
 import os
 
 import pyglet
-
+from pathlib import Path
 from typing import (
     Callable,
     Optional,
@@ -37,7 +37,8 @@ __all__ = [
     "set_background_color",
     "schedule",
     "unschedule",
-    "schedule_once"
+    "schedule_once",
+    "save_screenshot"
 ]
 
 
@@ -362,3 +363,8 @@ def schedule_once(function_pointer: Callable, delay: float):
     :param delay: Delay in seconds
     """
     pyglet.clock.schedule_once(function_pointer, delay)
+
+
+def save_screenshot(location: Optional[str] = None) -> Path:
+    window = get_window()
+    return window.save_screenshot(location)

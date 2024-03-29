@@ -84,6 +84,7 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
+from .window_commands import save_screenshot
 
 from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
@@ -356,6 +357,7 @@ __all__ = [
     'read_tmx',
     'load_tilemap',
     'run',
+    'save_screenshot',
     'schedule',
     'set_background_color',
     'set_viewport',
