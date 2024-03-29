@@ -61,3 +61,6 @@ temp/
 *.tiled-session
 
 doc/api_docs/api/*.rst
+
+# Pyenv local
+.python-version

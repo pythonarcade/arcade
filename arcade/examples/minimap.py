@@ -110,7 +110,7 @@ class MyGame(arcade.Window):
     def update_minimap(self):
         proj = 0, MAP_WIDTH, 0, MAP_HEIGHT
         with self.minimap_sprite_list.atlas.render_into(self.minimap_texture, projection=proj) as fbo:
-            fbo.clear(MINIMAP_BACKGROUND_COLOR)
+            fbo.clear(color=MINIMAP_BACKGROUND_COLOR)
             self.wall_list.draw()
             self.player_sprite.draw()
 

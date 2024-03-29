@@ -547,5 +547,5 @@ Property
 ````````
 
 :py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy
-Properties. They are used to detect attribute changes of widgets and trigger
-rendering. They should only be used in arcade internal code.
+like Properties. They are used to detect attribute changes of widgets and trigger
+rendering. They are mostly used within GUI widgets, but are globally available since 3.0.0.
