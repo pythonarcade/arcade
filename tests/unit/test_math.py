@@ -15,11 +15,11 @@ def test_lerp():
     assert lerp(2.0, 4.0, 0.75) == approx(3.5)
 
 
-def test_lerp_vec():
-    vec = lerp_vec((0.0, 2.0), (8.0, 4.0), 0.25)
+def test_lerp_2d():
+    vec = lerp_2d((0.0, 2.0), (8.0, 4.0), 0.25)
     assert vec[0] == approx(2.0)
     assert vec[1] == approx(2.5)
-    vec = lerp_vec((0.0, 2.0), (8.0, 4.0), -0.25)
+    vec = lerp_2d((0.0, 2.0), (8.0, 4.0), -0.25)
     assert vec[0] == approx(-2.0)
     assert vec[1] == approx(1.5)
 
