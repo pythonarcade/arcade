@@ -60,6 +60,8 @@ def test_orthographic_projector_map_coordinates(window: Window):
 
 
 def test_orthographic_projector_map_coordinates_move(window: Window):
+    window.set_size(800, 600)
+
     # Given
     ortho_camera = camera.OrthographicProjector()
     default_view = ortho_camera.view
@@ -85,6 +87,8 @@ def test_orthographic_projector_map_coordinates_move(window: Window):
 
 
 def test_orthographic_projector_map_coordinates_rotate(window: Window):
+    window.set_size(800, 600)
+
     # Given
     ortho_camera = camera.OrthographicProjector()
     default_view = ortho_camera.view
@@ -112,6 +116,8 @@ def test_orthographic_projector_map_coordinates_rotate(window: Window):
 
 
 def test_orthographic_projector_map_coordinates_zoom(window: Window):
+    window.set_size(800, 600)
+
     # Given
     ortho_camera = camera.OrthographicProjector()
     default_view = ortho_camera.view
