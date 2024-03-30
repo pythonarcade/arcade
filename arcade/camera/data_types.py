@@ -50,6 +50,12 @@ class CameraData:
         # Zoom
         self.zoom: float = zoom
 
+    def __str__(self):
+        return f"CameraData<{self.position=}, {self.up=}, {self.forward=}, {self.zoom=}>"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 def duplicate_camera_data(origin: CameraData):
     return CameraData(origin.position, origin.up, origin.forward, float(origin.zoom))
@@ -115,6 +121,12 @@ class OrthographicProjectionData:
         # Viewport for setting which pixels to draw to
         self.viewport: Tuple[int, int, int, int] = viewport
 
+    def __str__(self):
+        return f"OrthographicProjection<LRBT={(self.left, self.right, self.bottom, self.top)}, {self.near=}, {self.far=}, {self.viewport=}>"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class PerspectiveProjectionData:
     """Describes a perspective projection.
@@ -144,6 +156,12 @@ class PerspectiveProjectionData:
 
         # Viewport for setting which pixels to draw to
         self.viewport: Tuple[int, int, int, int] = viewport
+
+    def __str__(self):
+        return f"PerspectiveProjection<{self.aspect=}, {self.fov=}, {self.near=}, {self.far=}, {self.viewport=}>"
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Projection(Protocol):
