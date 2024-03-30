@@ -19,7 +19,7 @@ def test_change_value_on_drag(uimanager):
     assert slider.value == 0
 
     # WHEN
-    cx, cy = slider._cursor_pos()
+    cx, cy = slider._thumb_x, slider.rect.center_y
     uimanager.click_and_hold(cx, cy)
     uimanager.drag(cx + 20, cy)
 
