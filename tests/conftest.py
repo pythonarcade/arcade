@@ -36,6 +36,9 @@ def prepare_window(window: arcade.Window):
         raise RuntimeError("Please do not close the global test window :D")
 
     window.switch_to()
+    if window.get_size() < (800, 600):
+        window.set_size(800, 600)
+
     ctx = window.ctx
     ctx._atlas = None  # Clear the global atlas
     arcade.cleanup_texture_cache()  # Clear the global texture cache
@@ -51,6 +54,7 @@ def prepare_window(window: arcade.Window):
     window.set_vsync(False)
     window.flip()
     window.clear()
+    window.default_camera.use()
     ctx.gc_mode = "context_gc"
     ctx.gc()
     gc.collect()
