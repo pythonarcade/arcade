@@ -122,7 +122,11 @@ class OrthographicProjectionData:
         self.viewport: Tuple[int, int, int, int] = viewport
 
     def __str__(self):
-        return f"OrthographicProjection<LRBT={(self.left, self.right, self.bottom, self.top)}, {self.near=}, {self.far=}, {self.viewport=}>"
+        return (f"OrthographicProjection<"
+                f"LRBT={(self.left, self.right, self.bottom, self.top)}, "
+                f"{self.near=}, "
+                f"{self.far=}, "
+                f"{self.viewport=}>")
 
     def __repr__(self):
         return self.__str__()
