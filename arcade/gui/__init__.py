@@ -39,7 +39,6 @@ from arcade.gui.widgets.buttons import (
     UITextureButtonStyle,
     UIFlatButton,
 )
-from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets.image import UIImage
 from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout, UIGridLayout
 from arcade.gui.widgets.slider import UIBaseSlider, UISlider, UITextureSlider, UISliderStyle
