@@ -19,7 +19,8 @@ from typing import (
     Tuple,
     Union,
     TYPE_CHECKING,
-    TypeVar
+    TypeVar,
+    Protocol
 )
 from typing_extensions import Self
 
@@ -494,6 +495,27 @@ class TiledObject(NamedTuple):
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None
+
+
+class HasStrftime(Protocol):
+    """Marks :ref:`datetime-like <strftime-strptime-behavior>` behavior.
+
+    Ideally, this will be one of the
+    :ref:`improved replacements <debug-better-datettime>` for :py:mod:`datetime`.
+    """
+
+    def strftime(self, format: str) -> str:
+        """Uses a C89 format string to format datetime-like data.
+
+        To learn more, see:
+
+        * :ref:`debug-better-datetime`
+        * The Python documentation's guide to :external:ref:`strftime-strptime-behavior`
+
+        :param format: A valid format string.
+        :return: The object's data as a formatter string.
+        """
+        ...
 
 
 if sys.version_info >= (3, 12):

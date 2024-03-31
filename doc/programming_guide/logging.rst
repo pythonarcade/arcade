@@ -7,6 +7,9 @@ Arcade has a few options to log additional information around timings and how
 things are working internally. The two major ways to do this by turning on
 logging, and by querying the OpenGL context.
 
+To export data as part of debugging rather than logging, you may want to see
+the :ref:`debug-helpers`.
+
 Turn on logging
 ---------------
 

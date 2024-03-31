@@ -9,6 +9,7 @@ from __future__ import annotations
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
+from datetime import datetime
 from typing import Optional
 
 from pathlib import Path
@@ -32,6 +33,42 @@ def configure_logging(level: Optional[int] = None):
         ch.setLevel(level)
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
+
+def get_timestamp(
+        when: Optional[types.HasStrftime] = None,
+        how: str = "%Y%m%d_%H%M_%s_%f"
+) -> str:
+    """Return a timestamp as a formatted string.
+
+    .. tip:: To print text to the console, see :ref:`logging`!
+
+             This function :ref:`helps people who can't <debug-timestamps-who>`
+             use a :ref:`better alternative <debug-better-datetime>`.
+
+    Calling this function without any arguments returns a string
+    with the current system time down to microseconds:
+
+    .. code-block:: python
+
+       # This code assumes the function is called at exactly 3PM
+       # on April 3rd, 2024 in the computer's local time zone.
+       >>> arcade.get_timestamp()
+       `20240403_1500_00_000000'
+
+    See the following to learn more:
+
+    * :ref:`debug-timestamps`
+    * The Python documentation's guide on
+      :ref:`datetime-like behavior <strftime-strptime-behavior>`
+
+    :param when: ``None`` or a :ref:`a datetime-like object <strftime-strptime-behavior>`
+    :param how: A :ref:`valid datetime format string <strtime-strptime-behavior>`
+    :return: A formatted string for either a passed ``when`` or
+        :py:meth:`datetime.now <datetime.datetime.now>`
+
+    """
+    when = when or datetime.now()
+    return when.strftime(how)
 
 
 # The following is used to load ffmpeg libraries.
@@ -334,6 +371,7 @@ __all__ = [
     'get_screens',
     'get_sprites_at_exact_point',
     'get_sprites_at_point',
+    'get_timestamp',
     'SpatialHash',
     'get_timings',
     'create_text_sprite',
