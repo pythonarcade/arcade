@@ -209,7 +209,7 @@ strings:
 If you can't :ref:`use anything better <debug-better-datetime>` for some
 reason, this helps build readable time stamping behavior a little faster:
 
-.. code-block::python
+.. code-block:: python
 
    >>> from datetime import date
    >>> DAY_MONTH_YEAR = '%d-%m-%Y'
