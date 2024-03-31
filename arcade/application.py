@@ -950,8 +950,8 @@ class Window(pyglet.window.Window):
 
         * You can pass a ``format`` to stop Pillow from guessing the
           format from the file name
-        * The pillow documentation provides a list of
-          `supported image formats <https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html>`_
+        * The pillow documentation provides a list of supported
+          :external+PIL:ref:`image-file-formats`
 
         :param path: The full path and the png image filename to save.
         :param format: A :py:mod:`PIL` format name.
