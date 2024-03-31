@@ -7,8 +7,8 @@ Sometimes, you need to export data to separate files
 instead of :ref:`logging with lines of text.<logging>`.
 
 Arcade has a limited set of convience functions to help
-you saving screenshots and other files, with or without
-timestamps.
+you with saving screenshots and other data to files, with
+or without timestamps.
 
 Keep the following in mind:
 
