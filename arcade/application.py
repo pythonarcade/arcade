@@ -159,7 +159,6 @@ class Window(pyglet.window.Window):
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
-
         # If we still don't have a config
         if not config:
             config = pyglet.gl.Config(
@@ -194,7 +193,6 @@ class Window(pyglet.window.Window):
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
-
 
         # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
         # is initially set in the call to pyglet.app.run() that is done by the run() function.
