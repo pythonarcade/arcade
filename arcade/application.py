@@ -930,14 +930,35 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def save_screenshot(self, path: Union[Path, str]):
-        """
-        Save a screenshot to a png image
+    def save_screenshot(
+            self,
+            path: Union[Path, str],
+            format: Optional[str] = None,
+            **kwargs
+    ) -> None:
+        """Save a screenshot to a specified file name.
+
+        .. warning:: This may override existing files!
+
+        .. code-block:: python
+
+           # By default, the image format is detected from the
+           # file extension on the path you pass.
+           window_instance.save_screenshot("screenshot.png")
+
+        You can also use the same arguments as :py:meth:`PIL.Image.save`:
+
+        * You can pass a ``format`` to stop Pillow from guessing the
+          format from the file name
+        * The pillow documentation provides a list of
+          `supported image formats <https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html>`_
 
         :param path: The full path and the png image filename to save.
+        :param format: A :py:mod:`PIL` format name.
+        :param kwargs: Specific to PIL formats.
         """
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
-        img.save(path, 'PNG')
+        img.save(path, format=format, **kwargs)
 
 
 def open_window(
