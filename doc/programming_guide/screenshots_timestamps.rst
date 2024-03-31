@@ -225,8 +225,8 @@ reason, this helps build readable time stamping behavior a little faster:
 Better Date & Time Handling
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are plenty of xcelllent replacements for both
-:py:func:`~arcade.get_timestamp`and Python's :py:mod:`datetime`.
+There are plenty of excellent replacements for both
+:py:func:`arcade.get_timestamp`and Python's :py:mod:`datetime`.
 
 In addition to beautiful syntax, the best of them are
 :ref:`backward compatible <strftime-strptime-behavior>` with
