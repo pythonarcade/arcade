@@ -938,7 +938,7 @@ class Window(pyglet.window.Window):
     ) -> None:
         """Save a screenshot to a specified file name.
 
-        .. warning:: This may override existing files!
+        .. warning:: This may overwrite existing files!
 
         .. code-block:: python
 
