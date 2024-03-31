@@ -386,7 +386,7 @@ def save_screenshot(
 
     :param path: The full path and the png image filename to save.
     :param format: A :py:mod:`PIL` format name.
-    :param kwargs: Specific to PIL formats.
+     :param kwargs: Varies with :external+PIL:ref:`selected format <image-file-formats>`
     """
     window = get_window()
     window.save_screenshot(path, format=format, **kwargs)

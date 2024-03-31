@@ -955,7 +955,7 @@ class Window(pyglet.window.Window):
 
         :param path: The full path and the png image filename to save.
         :param format: A :py:mod:`PIL` format name.
-        :param kwargs: Specific to PIL formats.
+        :param kwargs: Varies with :external+PIL:ref:`selected format <image-file-formats>`
         """
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
         img.save(path, format=format, **kwargs)
