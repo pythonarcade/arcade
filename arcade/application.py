@@ -7,7 +7,6 @@ from __future__ import annotations
 import logging
 import os
 import time
-from datetime import datetime
 from typing import List, Tuple, Optional, Union
 from pathlib import Path
 import pyglet
@@ -98,9 +97,6 @@ class Window(pyglet.window.Window):
                          Usually this is 2, 4, 8 or 16.
     :param enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
                                 attributes available for use.
-    :param timestamp_format: The default screenshot timestamp format.
-    :param timestamp_extension: The default extension to use when calling
-        :py:meth:`.save_timestamped_screenshot`.
     """
 
     def __init__(
@@ -123,8 +119,6 @@ class Window(pyglet.window.Window):
         enable_polling: bool = True,
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
-        timestamp_format: str = '%Y%m%d_%H%M_%s_%f',
-        timestamp_extension: str = 'png'
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -218,8 +212,6 @@ class Window(pyglet.window.Window):
         # self.invalid = False
         set_window(self)
 
-
-
         self._current_view: Optional[View] = None
         self.current_camera: Optional[arcade.SimpleCamera] = None
         self.textbox_time = 0.0
@@ -230,12 +222,6 @@ class Window(pyglet.window.Window):
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = TRANSPARENT_BLACK
-
-        # Timestamped screenshot support
-        self._timestamp_format: str = timestamp_format
-        #: The default file extension used when calling
-        #: :py:meth:`.save_timestamped_screenshot`.
-        self.timestamp_extension: str = timestamp_extension
 
         # See if we should center the window
         if center_window:
@@ -974,78 +960,6 @@ class Window(pyglet.window.Window):
         """
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
         img.save(path, format=format, **kwargs)
-
-    @property
-    def timestamp_format(self) -> str:
-        """The default timestamp format when saving timestamped screenshots.
-
-        Setting an invalid code will raise a :py:class:`ValueError`. To
-        learn more, see the following:
-
-        * Python's guide to :external:ref:`strftime-strptime-behavior`.
-        * calling :py:meth:`.save_timestamped_screenshot`.
-
-        """
-        return self._timestamp_format
-
-    @timestamp_format.setter
-    def timestamp_format(self, timestamp_format: str) -> None:
-        # Inlined since we might be saving a lot of
-        # screenshots in cases when FPS is uncapped.
-        datetime.now().strftime(timestamp_format)
-        self._timestamp_format = timestamp_format
-
-    def save_timestamped_screenshot(
-            self,
-            directory: Optional[Union[Path, str]] = None,
-            timestamp_format: Optional[str] = None,
-            timestamp_extension: Optional[str] = None
-    ) -> None:
-        """Save a timestamped screenshot.
-
-        .. warning:: This method may overwrite existing files!
-
-        If no arguments are provided, the screenshot will be saved to
-        the current directory. For example:
-
-        .. code-block:: python
-
-           # The code below will save to 20240402_1500_00_000000.png
-           # in the current directory if:
-           # 1. It is exactly 3PM on April 3rd, 2024
-           # 1. No screenshot defaults were changed
-           # 2. No overriding values were passed
-           >>> window.save_timestamped_screenshot()
-
-        This works as follows:
-
-        #. Get the current time with :py:meth:`datetime.datetime.now`
-        #. Use a passed format string or default to
-           :py:attr:`self.timestamp_format <Window.timestamp_format>`.
-        #. Prepend the current directory if any
-        #. Format the current time with :py:meth:`datetime.datetime.strftime`
-        #. Append a period and :py:attr:`self.timestamp_extension`
-        #. Try to save to the resulting filename in the current directory.
-
-        :param directory: The directory to save to.
-        :param timestamp_format: Override the window's default
-            :py:attr:`.timestamp_format`.
-        :param timestamp_extension: One of the :external+PIL:ref:`image-file-formats`
-            Pillow can detect.
-        """
-        now = datetime.now()
-
-        # Check for overrides for defaults.
-        # Image.save seems inefficient as of PIL 10.2.0 so there doesn't
-        # seem to be any point in attempting clever speed tricks. Use
-        # real platform screen recording tools to get speed / video.
-        directory = Path(directory) if directory else Path.cwd()
-        format = timestamp_format or self._timestamp_format
-        extension = timestamp_extension or self.timestamp_extension
-
-        # Attempt to save
-        path = directory / f"{now.strftime(format)}.{extension}"
-        self.save_screenshot(path)
 
 
 def open_window(
