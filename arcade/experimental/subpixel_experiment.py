@@ -57,8 +57,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         print("Resize", width, height)
-        arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
-        # arcade.set_viewport(100, 200, 100, 200)
+        self.default_camera.use()
 
 
 if __name__ == "__main__":
