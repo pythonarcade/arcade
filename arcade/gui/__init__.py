@@ -30,6 +30,8 @@ from arcade.gui.widgets import UIDummy, Rect
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets import UILayout
 from arcade.gui.widgets import UISpace
+from arcade.gui.view import UIView
+from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.buttons import (
@@ -37,7 +39,6 @@ from arcade.gui.widgets.buttons import (
     UITextureButtonStyle,
     UIFlatButton,
 )
-from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets.image import UIImage
 from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout, UIGridLayout
 from arcade.gui.widgets.slider import UIBaseSlider, UISlider, UITextureSlider, UISliderStyle
@@ -66,6 +67,7 @@ __all__ = [
     "UIInputText",
     "UILayout",
     "UILabel",
+    "UIView",
     "UIMouseEvent",
     "UIMouseDragEvent",
     "UIMouseMovementEvent",
