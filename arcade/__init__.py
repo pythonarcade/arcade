@@ -36,8 +36,8 @@ def configure_logging(level: Optional[int] = None):
 
 
 def get_timestamp(
-        when: Optional[types.HasStrftime] = None,
-        how: str = "%Y%m%d_%H%M_%s_%f"
+        how: str = "%Y%m%d_%H%M_%S_%f",
+        when: Optional[types.HasStrftime] = None
 ) -> str:
     """Return a timestamp as a formatted string.
 
@@ -62,8 +62,8 @@ def get_timestamp(
     * The Python documentation's guide on
       :ref:`datetime-like behavior <strftime-strptime-behavior>`
 
-    :param when: ``None`` or a :ref:`a datetime-like object <strftime-strptime-behavior>`
     :param how: A :ref:`valid datetime format string <strtime-strptime-behavior>`
+    :param when: ``None`` or a :ref:`a datetime-like object <strftime-strptime-behavior>`
     :return: A formatted string for either a passed ``when`` or
         :py:meth:`datetime.now <datetime.datetime.now>`
 
