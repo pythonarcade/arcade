@@ -34,6 +34,7 @@ def configure_logging(level: Optional[int] = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
 def get_timestamp(
         when: Optional[types.HasStrftime] = None,
         how: str = "%Y%m%d_%H%M_%s_%f"
