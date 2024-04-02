@@ -36,7 +36,7 @@ def configure_logging(level: Optional[int] = None):
 
 
 def get_timestamp(
-        how: str = "%Y%m%d_%H%M_%S_%f",
+        how: str = "%Y_%m_%d_%H%M_%S_%f",
         when: Optional[types.HasStrftime] = None,
         tzinfo: Optional[datetime.tzinfo] = None
 ) -> str:
@@ -55,7 +55,7 @@ def get_timestamp(
        # This code assumes the function is called at exactly 3PM
        # on April 3rd, 2024 in the computer's local time zone.
        >>> arcade.get_timestamp()
-       `20240403_1500_00_000000'
+       `2024_04_03_1500_00_000000'
 
     See the following to learn more:
 

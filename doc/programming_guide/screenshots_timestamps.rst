@@ -149,7 +149,7 @@ current time down six places of microseconds.
 
    # This output happens at exactly 3PM on April 3rd, 2024 in local time
    >>> arcade.get_timestamp()
-   '20240402_1500_00_000000'
+   '2024_04_02_1500_00_000000'
 
 .. _debug-timestamps-who:
 
@@ -205,7 +205,7 @@ strings:
   :ref:`datetime-like <strftime-strptime-behavior>`
   ``strftime`` method
 * ``how`` takes a C89-style format string and defaults to
-  ``"%Y%m%d_%H%M_%s_%f"``
+  ``"%Y_%m_%d_%H%M_%S_%f"``
 
 If you can't :ref:`use anything better <debug-better-datetime>` for some
 reason, this helps build readable time stamping behavior a little faster:
