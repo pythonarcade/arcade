@@ -6,7 +6,7 @@ Screenshots & Timestamps
 Sometimes, you need to export data to separate files
 instead of :ref:`logging with lines of text.<logging>`.
 
-Arcade has a limited set of convience functions to help you save
+Arcade has a limited set of convenience functions to help you save
 screenshots and other data this way.
 
 Keep the following in mind:
@@ -17,8 +17,8 @@ Keep the following in mind:
 * Arcade's timestamp helper is a fallback for when you can't use
   :ref:`much better third-party options <debug-better-datetime>`
 
-Please see :ref:`debug-screenshot-i-need-video` to learn
-about tools better suited for screen recording.
+To learn about better tools for screen recording, please see
+:ref:`debug-screenshot-i-need-video`.
 
 
 .. _debug-screenshots:
