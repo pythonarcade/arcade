@@ -197,18 +197,39 @@ write cleaner data export code a little faster.
 Customizing Output
 ^^^^^^^^^^^^^^^^^^
 
-The ``when`` and ``how`` keyword arguments allow using
+Argument Overview
+"""""""""""""""""
+
+The ``when``, ``how``, and ``tzinfo`` keyword arguments allow using
 :ref:`compatible <strftime-strptime-behavior>` objects and format
 strings:
 
-* ``when`` accepts anything with a
-  :ref:`datetime-like <strftime-strptime-behavior>`
-  ``strftime`` method
-* ``how`` takes a C89-style format string and defaults to
-  ``"%Y_%m_%d_%H%M_%S_%f"``
+.. list-table::
+   :header-rows: 1
 
-If you can't :ref:`use anything better <debug-better-datetime>` for some
-reason, this helps build readable time stamping behavior a little faster:
+   * - Keyword Argument
+     - What it Takes
+     - Default
+
+   * - ``when``
+     - ``None`` or anything with a :ref:`datetime-like <strftime-strptime-behavior>`
+       ``strftime`` method
+     - Calling
+       :py:meth:`datetime.now(tzinfo) <datetime.datetime.now>`
+
+   * - ``how``
+     - A :ref:`C89-stlye date format string <strftime-strptime-behavior>`
+     - ``"%Y_%m_%d_%H%M_%S_%f%Z"``
+
+   * - ``tzinfo``
+     - ``None`` or a valid :py:class:`datetime.tzinfo` instance
+     - ``None``
+
+
+.. _debug-timestamps-example-when-how:
+
+Example of Custom When and How
+""""""""""""""""""""""""""""""
 
 .. code-block:: python
 
@@ -219,6 +240,29 @@ reason, this helps build readable time stamping behavior a little faster:
    datetime.date(2024, 4, 3)
    >>> arcade.get_timestamp(when=today, how=DAY_MONTH_YEAR)
    '03-04-2024'
+
+
+.. _debug-timestamps-example-timezone:
+
+Example of Custom Time Zones
+""""""""""""""""""""""""""""
+
+.. _UTC_Wiki: https://en.wikipedia.org/wiki/Coordinated_Universal_Time
+
+Using `UTC <UTC_Wiki>`_ is a common way to reduce confusion about when
+something happened. On Python 3.8, you can use
+:py:class:`datetime.timezone`'s ``utc`` constant with this function:
+
+.. code-block:: python
+
+   >>> from datetime import timezone
+   >>> arcade.get_timestamp(tzinfo=timezone.utc)
+   '2024_12_11_1009_08_000007UTC`
+
+Starting with Python 3.11, you can use :py:attr:`datetime.UTC` as a
+more readable shortcut. However, the built-in date & time tools can
+still be confusing and incomplete. To learn about the most popular
+alternatives, see the heading below.
 
 
 .. _debug-better-datetime:

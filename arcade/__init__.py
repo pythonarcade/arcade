@@ -36,7 +36,7 @@ def configure_logging(level: Optional[int] = None):
 
 
 def get_timestamp(
-        how: str = "%Y_%m_%d_%H%M_%S_%f",
+        how: str = "%Y_%m_%d_%H%M_%S_%f%Z",
         when: Optional[types.HasStrftime] = None,
         tzinfo: Optional[datetime.tzinfo] = None
 ) -> str:
@@ -57,11 +57,16 @@ def get_timestamp(
        >>> arcade.get_timestamp()
        `2024_04_03_1500_00_000000'
 
+
     See the following to learn more:
 
-    * :ref:`debug-timestamps`
-    * The Python documentation's guide on
+    * For general information, see :ref:`debug-timestamps`
+    * For custom formatting & times, see :ref:`debug-timestamps-example-when-how`
+    * To use time zones such as UTC, see :ref:`debug-timestamps-example-timezone`
+    * The general :py:mod:`datetime` documentation
+    * Python's guide to
       :ref:`datetime-like behavior <strftime-strptime-behavior>`
+
 
     :param how: A :ref:`valid datetime format string <strtime-strptime-behavior>`
     :param tzinfo: A :py:class:`datetime.tzinfo` instance.
