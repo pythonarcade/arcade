@@ -13,14 +13,18 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
-BoxHead
-~~~~~~~
+
+BoxHead Survivor
+~~~~~~~~~~~~~~~~
 
 .. image:: https://img.itch.zone/aW1hZ2UvMjM1MTM4Mi8xMzkyODQ1Ni5qcGc=/original/YI7uLX.jpg
    :width: 560px
 
-- GitHub:  Unchained112/BoxHead2D: A top-down shooter game dev with Python Arcade (github.com)
-- itch io:  BoxHead Survivor by Unchain (itch.io)
+A top-down 2D shooter game.
+
+* Playable builds at `itch.io <https://unchain112.itch.io/boxhead-survivor>`_
+* Source on `GitHub at Unchained112/BoxHead2D <https://github.com/Unchained112/BoxHead2D>`_
+
 
 Temporum
 ~~~~~~~~
