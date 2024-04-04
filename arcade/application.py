@@ -13,7 +13,7 @@ import pyglet
 
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.canvas.base import ScreenMode
+from pyglet.display.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
