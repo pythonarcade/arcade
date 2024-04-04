@@ -230,7 +230,7 @@ Dungeon_, explore a maze picking up arrows and coins.
 Two Worlds
 ~~~~~~~~~~
 
-.. image:: https://camo.githubusercontent.com/bb2fb323ea9ab3f6041d3b72569a2d2360aa46ba07fe4cb3dbcd8248b3e8699d/68747470733a2f2f696d6775722e636f6d2f7356516e4331542e706e67
+.. image:: https://camo.githubusercontent.com/a74f38285980087502aec7795e10bec5869e71c840a35729fa37edf6ad17858d/68747470733a2f2f696d6775722e636f6d2f634372674171712e706e67
    :width: 75%
 
 `Two Worlds`_, a castle adventure with a dungeon and caverns underneath it.
