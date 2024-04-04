@@ -58,6 +58,7 @@ RELEASE = VERSION
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'sphinx.ext.imgconverter',  # Converts .gif for PDF doc build
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
