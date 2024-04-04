@@ -152,7 +152,7 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-                display = pyglet.canvas.get_display()
+                display = pyglet.display.get_display()
                 screen = display.get_default_screen()
                 if screen:
                     config = screen.get_best_config(config)
