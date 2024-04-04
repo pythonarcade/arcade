@@ -22,6 +22,8 @@ from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
+from arcade.types import Rect
+
 
 __all__ = ["ArcadeContext"]
 
@@ -530,6 +532,7 @@ class ArcadeContext(Context):
         fbo: Framebuffer,
         components: int = 4,
         flip: bool = True,
+        viewport: Optional[Rect] = None
     ) -> Image.Image:
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
@@ -537,12 +540,20 @@ class ArcadeContext(Context):
         :param fbo: Framebuffer to get image from
         :param components: Number of components to read
         :param flip: Flip the image upside down
+        :param viewport: x, y, width, height to read
         """
         mode = "RGBA"[:components]
+        if viewport:
+            width = viewport[2] - viewport[0]
+            height = viewport[3] - viewport[1]
+        else:
+            width = fbo.width
+            height = fbo.height
+
         image = Image.frombuffer(
             mode,
-            (fbo.width, fbo.height),
-            fbo.read(components=components),
+            (width, height),
+            fbo.read(viewport=viewport, components=components),
         )
         if flip:
             image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)

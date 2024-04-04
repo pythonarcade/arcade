@@ -24,6 +24,9 @@ from arcade.context import ArcadeContext
 from arcade.types import Color, RGBOrA255, RGBANormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
+from arcade.types import Rect
+from PIL import Image
+
 
 LOG = logging.getLogger(__name__)
 
@@ -959,6 +962,28 @@ class Window(pyglet.window.Window):
         """
         img = self.ctx.get_framebuffer_image(self.ctx.screen)
         img.save(path, format=format, **kwargs)
+
+    def get_image(
+            self,
+            viewport: Rect | None
+        ) -> Image.Image:
+        """Get an image from the window.
+
+        .. code-block:: python
+
+           # Get an image from a portion of the window by specfying the viewport.
+           viewport = Rect(10, 16, 20, 20)
+           image = window_instance.get_image(viewport)
+
+           # Get an image of the whole Window
+           image = window_instance.get_image()
+
+        :param viewport: The area of the screen to get defined by the x, y, width, height values
+        """
+        return self.ctx.get_framebuffer_image(self.ctx.screen, viewport=viewport)
+
+    def get_pixel(self):
+        pass
 
 
 def open_window(
