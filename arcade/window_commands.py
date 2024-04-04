@@ -366,6 +366,27 @@ def schedule_once(function_pointer: Callable, delay: float):
     pyglet.clock.schedule_once(function_pointer, delay)
 
 
-def save_screenshot(path: Union[ Path, str]):
+def save_screenshot(
+    path: Union[ Path, str],
+    format: Optional[str] = None,
+    **kwargs
+) -> None:
+    """Save a screenshot to a specified file name.
+
+    .. warning:: This may overwrite existing files!
+
+    .. code-block:: python
+
+       # By default, the image format is detected from the
+       # file extension on the path you pass.
+       window_instance.save_screenshot("screenshot.png")
+
+    This works identically to
+    :py:meth:`Window.save_screenshot <arcade.Window.save_screenshot>`
+
+    :param path: The full path and the png image filename to save.
+    :param format: A :py:mod:`PIL` format name.
+     :param kwargs: Varies with :external+PIL:ref:`selected format <image-file-formats>`
+    """
     window = get_window()
-    window.save_screenshot(path)
+    window.save_screenshot(path, format=format, **kwargs)

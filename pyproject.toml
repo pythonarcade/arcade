@@ -48,6 +48,8 @@ dev = [
     "coveralls",
     "pytest-mock",
     "pytest-cov",
+    # Can't monkeypatch.setitem datetime.now + freezegun has tz problems
+    "time-machine==2.14.1",
     "pygments==2.17.2",
     "docutils==0.20.1",
     "furo",
@@ -66,6 +68,8 @@ testing_libraries = [
     "pytest-mock",
     "pytest-cov",
     "pyyaml==6.0.1",
+    # Can't monkeypatch.setitem datetime.now + freezegun has tz problems
+    "time-machine==2.14.1"
 ]
 
 [project.scripts]
