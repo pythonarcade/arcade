@@ -9,7 +9,7 @@ from __future__ import annotations
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
-from datetime import datetime
+from datetime import datetime, _TzInfo
 from typing import Optional
 
 from pathlib import Path
@@ -37,8 +37,8 @@ def configure_logging(level: Optional[int] = None):
 
 def get_timestamp(
         how: str = "%Y_%m_%d_%H%M_%S_%f%Z",
-        when: Optional[types.HasStrftime] = None,
-        tzinfo: Optional[datetime.tzinfo] = None
+        when: Optional[types.HasStrftime | datetime] = None,
+        tzinfo: Optional[_TzInfo] = None
 ) -> str:
     """Return a timestamp as a formatted string.
 
