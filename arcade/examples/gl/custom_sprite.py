@@ -25,6 +25,7 @@ python -m arcade.examples.gl.custom_sprite
 from random import randint
 from array import array
 import arcade
+from arcade.camera import Camera2D
 from arcade.gl.types import BufferDescription
 
 
@@ -32,6 +33,7 @@ class GeoSprites(arcade.Window):
 
     def __init__(self):
         super().__init__(800, 600, "Custom Sprites", resizable=True)
+        self.cam = Camera2D()
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -147,6 +149,7 @@ class GeoSprites(arcade.Window):
 
     def on_draw(self):
         self.clear()
+        self.cam.use()
         # Bind our sprite texture to channel 0
         self.texture.use(unit=0)
         # Render the sprite data with our shader
@@ -154,13 +157,7 @@ class GeoSprites(arcade.Window):
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """Make it easier to explore the geometry by scrolling"""
-        proj = self.ctx.projection_2d
-        self.ctx.projection_2d = (
-            proj[0] - dx,
-            proj[1] - dx,
-            proj[2] - dy,
-            proj[3] - dy,
-        )
+        self.cam.pos = self.cam.pos[0] - dx, self.cam.pos[1] - dy
 
     def gen_sprites(self, count: int):
         """Quickly generate some random sprite data"""

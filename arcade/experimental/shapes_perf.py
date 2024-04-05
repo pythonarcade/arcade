@@ -9,6 +9,7 @@ import random
 
 import arcade
 from arcade.types import NamedPoint
+from pyglet.math import Mat4
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -215,7 +216,7 @@ class GameWindow(arcade.Window):
     def on_resize(self, width: float, height: float):
         w, h = self.get_framebuffer_size()
         self.ctx.viewport = 0, 0, w, h
-        self.ctx.projection_2d = 0, 800, 0, 600
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, 800, 0, 600, -100, 100)
 
 
 if __name__ == '__main__':

@@ -28,7 +28,6 @@ __all__ = [
     "get_display_size",
     "get_window",
     "set_window",
-    "set_viewport",
     "close_window",
     "run",
     "exit",
@@ -80,65 +79,6 @@ def set_window(window: Optional["Window"]) -> None:
     """
     global _window
     _window = window
-
-
-def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
-    """
-    This sets what coordinates the window will cover.
-
-    .. tip:: Beginners will want to use :py:class:`~arcade.Camera`.
-             It provides easy to use support for common tasks
-             such as screen shake and movement to a destination.
-
-    If you are making a game with complex control over the viewport,
-    this function can help.
-
-    By default, the lower left coordinate will be ``(0, 0)``, the top y
-    coordinate will be the height of the window in pixels, and the right x
-    coordinate will be the width of the window in pixels.
-
-    .. warning:: Be careful of fractional or non-multiple values!
-
-        It is recommended to only set the viewport to integer values that
-        line up with the pixels on the screen. Otherwise, tiled pixel art
-        may not line up well during render, creating rectangle artifacts.
-
-    .. note:: :py:meth:`Window.on_resize <arcade.Window.on_resize>`
-              calls ``set_viewport`` by default. If you want to set your
-              own custom viewport during the game, you may need to
-              override the
-              :py:meth:`Window.on_resize <arcade.Window.on_resize>`
-              method.
-
-    .. note:: For more advanced users
-
-        This functions sets the orthogonal projection
-        used by shapes and sprites. It also updates the viewport to match the current
-        screen resolution.
-        ``window.ctx.projection_2d`` (:py:meth:`~arcade.ArcadeContext.projection_2d`)
-        and ``window.ctx.viewport`` (:py:meth:`~arcade.gl.Context.viewport`)
-        can be used to set viewport and projection separately.
-
-    :param left: Left-most (smallest) x value.
-    :param right: Right-most (largest) x value.
-    :param bottom: Bottom (smallest) y value.
-    :param top: Top (largest) y value.
-    """
-    window = get_window()
-    # Get the active framebuffer
-    fbo = window.ctx.fbo
-    # If the framebuffer is the default one (aka. window framebuffer)
-    # we can't trust its size and need to get that from the window.
-    # This is because the default framebuffer is only introspected
-    # during context creation and it doesn't update size internally
-    # when the window is resizing.
-    if fbo.is_default:
-        fbo.viewport = 0, 0, window.width, window.height
-    # Otherwise it's an offscreen framebuffer and we can trust the size
-    else:
-        fbo.viewport = 0, 0, *fbo.size
-
-    window.ctx.projection_2d = left, right, bottom, top
 
 
 def close_window() -> None:
