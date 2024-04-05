@@ -38,10 +38,12 @@ class MyGame(arcade.Window):
         # This will get the size of the window, and set the viewport to match.
         # So if the window is 1000x1000, then so will our viewport. If
         # you want something different, then use those coordinates instead.
-        width, height = self.get_size()
-        self.set_viewport(0, width, 0, height)
         self.background_color = arcade.color.AMAZON
         self.example_image = arcade.load_texture(":resources:images/tiles/boxCrate_double.png")
+
+        # The camera used to update the viewport and projection on screen resize.
+        # The position needs to be set to the bottom left corner.
+        self.cam = arcade.camera.Camera2D.from_raw_data(position=(0.0, 0.0))
 
     def on_draw(self):
         """
@@ -51,7 +53,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Get viewport dimensions
-        left, screen_width, bottom, screen_height = self.get_viewport()
+        screen_width, screen_height = int(self.cam.projection_width), int(self.cam.projection_height)
 
         text_size = 18
         # Draw text on the screen so the user has an idea of what is happening
@@ -77,8 +79,9 @@ class MyGame(arcade.Window):
 
             # Get the window coordinates. Match viewport to window coordinates
             # so there is a one-to-one mapping.
-            width, height = self.get_size()
-            self.set_viewport(0, width, 0, height)
+            self.cam.projection = 0, self.width, 0, self.height
+            self.cam.viewport = 0, 0, self.width, self.height
+            self.cam.use()
 
         if key == arcade.key.S:
             # User hits s. Flip between full and not full screen.
@@ -87,7 +90,9 @@ class MyGame(arcade.Window):
             # Instead of a one-to-one mapping, stretch/squash window to match the
             # constants. This does NOT respect aspect ratio. You'd need to
             # do a bit of math for that.
-            self.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+            self.cam.projection = 0, SCREEN_WIDTH, 0, SCREEN_HEIGHT
+            self.cam.viewport = 0, 0, self.width, self.height
+            self.cam.use()
 
 
 def main():

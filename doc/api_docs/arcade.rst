@@ -20,7 +20,6 @@ for the Python Arcade library. See also:
     api/sprites
     api/sprite_list
     api/sprite_scenes
-    api/camera
     api/text
     api/tilemap
     api/texture

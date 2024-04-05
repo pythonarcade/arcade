@@ -8,7 +8,7 @@ python -m arcade.examples.sprite_move_scrolling_shake
 """
 
 import random
-import math
+# import math
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -54,8 +54,14 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.Camera()
-        self.camera_gui = arcade.Camera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
+
+        self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera_sprites.view_data,
+                                                              max_amplitude=15.0,
+                                                              acceleration_duration=0.1,
+                                                              falloff_time=0.5,
+                                                              shake_frequency=10.0)
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
@@ -108,12 +114,16 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Select the camera we'll use to draw all our sprites
+        self.camera_shake.update_camera()
         self.camera_sprites.use()
 
         # Draw all the sprites.
         self.wall_list.draw()
         self.bomb_list.draw()
         self.player_list.draw()
+
+        # Readjust the camera's screen_shake
+        self.camera_shake.readjust_camera()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -141,6 +151,7 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+        self.camera_shake.update(delta_time)
 
         # Scroll the screen to the player
         self.scroll_to_player()
@@ -151,24 +162,7 @@ class MyGame(arcade.Window):
             bomb.remove_from_sprite_lists()
             self.explosion_sound.play()
 
-            # --- Shake the camera ---
-            # Pick a random direction
-            shake_direction = random.random() * 2 * math.pi
-            # How 'far' to shake
-            shake_amplitude = 10
-            # Calculate a vector based on that
-            shake_vector = (
-                math.cos(shake_direction) * shake_amplitude,
-                math.sin(shake_direction) * shake_amplitude
-            )
-            # Frequency of the shake
-            shake_speed = 1.5
-            # How fast to damp the shake
-            shake_damping = 0.9
-            # Do the shake
-            self.camera_sprites.shake(shake_vector,
-                                      speed=shake_speed,
-                                      damping=shake_damping)
+            self.camera_shake.start()
 
     def scroll_to_player(self):
         """
@@ -180,18 +174,19 @@ class MyGame(arcade.Window):
         """
 
         position = (
-            self.player_sprite.center_x - self.width / 2,
-            self.player_sprite.center_y - self.height / 2
+            self.player_sprite.center_x,
+            self.player_sprite.center_y
         )
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
 
 
 def main():
