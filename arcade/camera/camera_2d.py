@@ -59,9 +59,9 @@ class Camera2D:
                  window: Optional["Window"] = None):
         self._window: "Window" = window or get_window()
         self.render_target: Framebuffer = render_target or self._window.ctx.screen
-
-        half_width = self._window.width / 2
-        half_height = self._window.height / 2
+        width, height = self.render_target.size
+        half_width = width / 2
+        half_height = height / 2
 
         self._data = camera_data or CameraData(
             (half_width, half_height, 0.0),  # position
@@ -73,7 +73,7 @@ class Camera2D:
             -half_width, half_width,  # Left and Right.
             -half_height, half_height,  # Bottom and Top.
             0.0, 100.0,  # Near and Far.
-            (0, 0, self._window.width, self._window.height)  # Viewport
+            (0, 0, width, height)  # Viewport
         )
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
