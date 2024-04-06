@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+        self.camera = arcade.camera.Camera2D()
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
@@ -118,7 +118,7 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Center our camera on the player
-        self.camera.center(self.player_sprite.position)
+        self.camera.position = self.player_sprite.position
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""

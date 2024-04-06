@@ -110,7 +110,7 @@ class MyGame(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+        self.camera = arcade.camera.Camera2D()
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
