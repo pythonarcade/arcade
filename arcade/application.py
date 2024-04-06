@@ -915,6 +915,32 @@ class Window(pyglet.window.Window):
         """
         pass
 
+    def absolute(self, normalized_pos: tuple[float, float]) -> tuple[float, float]:
+        """Convert a position in normalized form to pixel-based, absolute form.
+
+        :param normalized_pos: a tuple of two floats, representing a position,
+        where 0.0 -> 1.0 in the x represents the far left and right of the window,
+        and 0.0 -> 1.0 in the y represents the very bottom and the very top.
+
+        Returns a tuple of floats in pixels.
+        """
+
+        w, h = self.size
+        return (normalized_pos[0] * w, normalized_pos[1] * h)
+
+    def relative(self, pos: tuple[float, float]) -> tuple[float, float]:
+        """Convert a position in normalized form to pixel-based, absolute form.
+
+        :param pos: a tuple of two floats, representing a position in pixels.
+
+        Returns a tuple of floats where 0.0 -> 1.0 in the x represents the
+        far left and right of the window, and 0.0 -> 1.0 in the y represents
+        the very bottom and the very top.
+        """
+
+        w, h = self.size
+        return (pos[0] / w, pos[1] / h)
+
 
 def open_window(
     width: int,
