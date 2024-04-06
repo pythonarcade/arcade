@@ -9,6 +9,7 @@ Simply run the program and move draw the sprites around using the mouse.
 from __future__ import annotations
 
 from arcade.sprite import Sprite
+from pyglet.math import Mat4
 import PIL
 import arcade
 
@@ -17,7 +18,7 @@ class GeoCullingTest(arcade.Window):
 
     def __init__(self):
         super().__init__(800, 400, "Cull test", resizable=True)
-        self.proj = self.ctx.projection_2d
+        self.proj = 0, self.width, 0, self.height
         self.texture = arcade.Texture(
             PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)),
             hash="weird_texture",
@@ -37,12 +38,12 @@ class GeoCullingTest(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_2d = self.proj
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(*self.proj, -100, 100)
         self.spritelist.draw()
 
     def on_resize(self, width, height):
         super().on_resize(width, height)
-        self.proj = self.ctx.projection_2d
+        self.proj = 0, width, 0, height
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         self.proj = (

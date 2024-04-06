@@ -55,8 +55,11 @@ class MyGame(arcade.Window):
         minimap_viewport = (DEFAULT_SCREEN_WIDTH - MINIMAP_WIDTH,
                             DEFAULT_SCREEN_HEIGHT - MINIMAP_HEIGHT,
                             MINIMAP_WIDTH, MINIMAP_HEIGHT)
-        minimap_projection = (0, MAP_PROJECTION_WIDTH, 0, MAP_PROJECTION_HEIGHT)
-        self.camera_minimap = arcade.Camera(viewport=minimap_viewport, projection=minimap_projection)
+        minimap_projection = (-MAP_PROJECTION_WIDTH/2, MAP_PROJECTION_WIDTH/2,
+                              -MAP_PROJECTION_HEIGHT/2, MAP_PROJECTION_HEIGHT/2)
+        self.camera_minimap = arcade.camera.Camera2D.from_raw_data(
+            viewport=minimap_viewport, projection=minimap_projection
+        )
 
         # Set up the player
         self.player_sprite = None
@@ -65,9 +68,8 @@ class MyGame(arcade.Window):
 
         # Camera for sprites, and one for our GUI
         viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        projection = (0, DEFAULT_SCREEN_WIDTH, 0, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.Camera(viewport=viewport, projection=projection)
-        self.camera_gui = arcade.SimpleCamera(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera_gui = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
 
         self.selected_camera = self.camera_minimap
 
@@ -178,18 +180,23 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Center the screen to the player
-        self.camera_sprites.center(self.player_sprite.position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
         # Center the minimap viewport to the player in the minimap
-        self.camera_minimap.center(self.player_sprite.position, CAMERA_SPEED)
+        self.camera_minimap.position = arcade.math.lerp_2d(
+            self.player_sprite.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height, resize_projection=False)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen()
+        self.camera_gui.match_screen()
         self.camera_minimap.viewport = (width - self.camera_minimap.viewport_width,
                                         height - self.camera_minimap.viewport_height,
                                         self.camera_minimap.viewport_width,

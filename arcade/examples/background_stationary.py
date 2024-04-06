@@ -22,7 +22,7 @@ PLAYER_SPEED = 300
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.camera = arcade.SimpleCamera()
+        self.camera = arcade.camera.Camera2D()
 
         # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
         # Image from:
@@ -42,21 +42,20 @@ class MyGame(arcade.Window):
 
     def pan_camera_to_player(self):
         # This will center the camera on the player.
-        target_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        target_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
+        target_x = self.player_sprite.center_x
+        target_y = self.player_sprite.center_y
 
         # This ensures the background is always at least partially visible.
-        if -self.camera.viewport_width / 2 > target_x:
-            target_x = -self.camera.viewport_width / 2
-        elif target_x > self.background.size[0] - self.camera.viewport_width / 2:
-            target_x = self.background.size[0] - self.camera.viewport_width / 2
+        if 0.0 > target_x:
+            target_x = 0.0
+        elif target_x > self.background.size[0]:
+            target_x = self.background.size[0]
 
-        if -self.camera.viewport_height / 2 > target_y:
-            target_y = -self.camera.viewport_height / 2
-        elif target_y > self.background.size[1] - self.camera.viewport_height / 2:
-            target_y = self.background.size[1] - self.camera.viewport_height / 2
-
-        self.camera.move_to((target_x, target_y), 0.1)
+        if 0.0 > target_y:
+            target_y = 0.0
+        elif target_y > self.background.size[1]:
+            target_y = self.background.size[1]
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.1)
 
     def on_update(self, delta_time: float):
         new_position = (
@@ -97,7 +96,7 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.resize(width, height)
+        self.camera.match_screen(and_projection=True)
 
 
 def main():
