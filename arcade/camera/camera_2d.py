@@ -114,9 +114,10 @@ class Camera2D:
             Defaults to the currently active window.
         """
         window = window or get_window()
-
-        half_width = window.width / 2
-        half_height = window.height / 2
+        render_target = render_target or window.ctx.screen
+        width, height = render_target.size
+        half_width = width / 2
+        half_height = height / 2
 
         _pos = position or (half_width, half_height)
         _data: CameraData = CameraData(
@@ -131,14 +132,14 @@ class Camera2D:
             left, right,  # Left and Right.
             top, bottom,  # Bottom and Top.
             near or 0.0, far or 100.0,  # Near and Far.
-            viewport or (0, 0, window.width, window.height)  # Viewport
+            viewport or (0, 0, width, height)  # Viewport
         )
 
         return Camera2D(
             camera_data=_data,
             projection_data=_projection,
             window=window,
-            render_target=(render_target or window.ctx.screen)
+            render_target=render_target
         )
 
     @property
