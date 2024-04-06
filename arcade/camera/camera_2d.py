@@ -64,16 +64,16 @@ class Camera2D:
         half_height = height / 2
 
         self._data = camera_data or CameraData(
-            (half_width, half_height, 0.0),  # position
-            (0.0, 1.0, 0.0),  # up vector
-            (0.0, 0.0, -1.0),  # forward vector
-            1.0  # zoom
+            position=(half_width, half_height, 0.0),
+            up=(0.0, 1.0, 0.0),
+            forward=(0.0, 0.0, -1.0),
+            zoom=1.0
         )
         self._projection: OrthographicProjectionData = projection_data or OrthographicProjectionData(
-            -half_width, half_width,  # Left and Right.
-            -half_height, half_height,  # Bottom and Top.
-            0.0, 100.0,  # Near and Far.
-            (0, 0, width, height)  # Viewport
+            left=-half_width, right=half_width,
+            bottom=-half_height, top=half_height,
+            near=0.0, far=100.0,
+            viewport=(0, 0, width, height)
         )
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
