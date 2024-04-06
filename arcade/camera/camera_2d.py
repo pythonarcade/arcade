@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Optional, Tuple, Iterator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
+from typing_extensions import Self
+
 from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import CameraData, OrthographicProjectionData, Projector
 from arcade.gl import Framebuffer
@@ -82,8 +84,9 @@ class Camera2D:
             projection=self._projection
         )
 
-    @staticmethod
+    @classmethod
     def from_raw_data(
+            cls,
             viewport: Optional[Tuple[int, int, int, int]] = None,
             position: Optional[Tuple[float, float]] = None,
             up: Tuple[float, float] = (0.0, 1.0),
@@ -94,7 +97,7 @@ class Camera2D:
             *,
             render_target: Optional[Framebuffer] = None,
             window: Optional["Window"] = None
-    ):
+    ) -> Self:
         """
         Create a Camera2D without first defining CameraData or an OrthographicProjectionData object.
 
@@ -120,7 +123,7 @@ class Camera2D:
         half_height = height / 2
 
         _pos = position or (half_width, half_height)
-        _data: CameraData = CameraData(
+        _data: Self = CameraData(
             position=(_pos[0], _pos[1], 0.0),
             up=(up[0], up[1], 0.0),
             forward=(0.0, 0.0, -1.0),
@@ -135,7 +138,7 @@ class Camera2D:
             viewport=viewport or (0, 0, width, height)
         )
 
-        return Camera2D(
+        return cls(
             camera_data=_data,
             projection_data=_projection,
             window=window,

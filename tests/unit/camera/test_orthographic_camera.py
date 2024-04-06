@@ -45,6 +45,14 @@ def test_orthographic_projector_activate(window: Window):
     window.default_camera.use()
 
 
+def test_camera2d_from_raw_data_inheritance_safety(window: Window):
+    class MyCamera2D(Camera2D):
+        ...
+
+    subclassed = MyCamera2D.from_raw_data(zoom=10.0)
+    assert isinstance(subclassed, MyCamera2D)
+
+
 RENDER_TARGET_SIZES = [
     (800, 600),  # Normal window size
     (1280, 720), # Bigger
