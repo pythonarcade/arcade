@@ -37,7 +37,7 @@ def configure_logging(level: Optional[int] = None):
 
 def get_timestamp(
         how: str = "%Y_%m_%d_%H%M_%S_%f%Z",
-        when: Optional[types.HasStrftime | datetime] = None,
+        when: Optional[types.HasStrftime] = None,
         tzinfo: Optional[tzinfo] = None
 ) -> str:
     """Return a timestamp as a formatted string.
