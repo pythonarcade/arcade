@@ -501,9 +501,11 @@ class Camera2D:
 
     @property
     def viewport(self) -> Tuple[int, int, int, int]:
-        """
-        The pixel area that will be drawn to while the camera is active.
-        (left, right, bottom, top)
+        """Get/set pixels of the ``render_target`` drawn to when active.
+
+        The pixel area is defined as integer pixel coordinates starting
+        from the bottom left of ``self.render_target``. They are ordered
+        as ``(left, bottom, width, height)``.
         """
         return self._projection.viewport
 
