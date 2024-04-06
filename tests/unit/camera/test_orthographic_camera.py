@@ -71,12 +71,11 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
-    # These may be bugged?
-    #assert ortho_camera.viewport == (0, width, 0, height)
-    #assert ortho_camera.viewport_left == 0
-    #assert ortho_camera.viewport_right == width
-    #assert ortho_camera.viewport_bottom == 0
-    #assert ortho_camera.viewport_top == height
+    assert ortho_camera.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport_left == 0
+    assert ortho_camera.viewport_right == width
+    assert ortho_camera.viewport_bottom == 0
+    assert ortho_camera.viewport_top == height
 
 
 @pytest.mark.parametrize("width, height", RENDER_TARGET_SIZES)
@@ -89,6 +88,12 @@ def test_camera2d_from_raw_data_uses_render_target_size(window: Window, width, h
     ortho_camera = Camera2D.from_raw_data(render_target=framebuffer)
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
+
+    assert ortho_camera.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport_left == 0
+    assert ortho_camera.viewport_right == width
+    assert ortho_camera.viewport_bottom == 0
+    assert ortho_camera.viewport_top == height
 
 
 @pytest.mark.parametrize("width, height", [(800, 600), (1280, 720), (500, 500)])
