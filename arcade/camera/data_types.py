@@ -73,9 +73,9 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
     up_vec = Vec3(*data.up).normalize()
     right_vec = forward_vec.cross(up_vec).normalize()
     if forward_priority:
-        up_vec = forward_vec.cross(right_vec)
+        up_vec = right_vec.cross(forward_vec)
     else:
-        forward_vec = up_vec.cross(right_vec)
+        forward_vec = right_vec.cross(up_vec)
 
     data.forward = (forward_vec.x, forward_vec.y, forward_vec.z)
     data.up = (up_vec.x, up_vec.y, up_vec.z)
