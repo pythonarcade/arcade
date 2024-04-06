@@ -96,6 +96,13 @@ class ArcadeContext(Context):
         )
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
+        self.billboard_list_program_no_cull: Program = self.load_program(
+            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+            geometry_shader=":system:shaders/sprites/billboard_list_geometry_no_cull_geo.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+        )
+        self.billboard_list_program_no_cull["sprite_texture"] = 0
+        self.billboard_list_program_no_cull["uv_texture"] = 1
 
         # Shapes
         self.shape_line_program: Program = self.load_program(
