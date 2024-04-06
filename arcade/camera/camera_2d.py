@@ -121,18 +121,18 @@ class Camera2D:
 
         _pos = position or (half_width, half_height)
         _data: CameraData = CameraData(
-            (_pos[0], _pos[1], 0.0),  # position
-            (up[0], up[1], 0.0),  # up vector
-            (0.0, 0.0, -1.0),  # forward vector
-            zoom  # zoom
+            position=(_pos[0], _pos[1], 0.0),
+            up=(up[0], up[1], 0.0),
+            forward=(0.0, 0.0, -1.0),
+            zoom=zoom
         )
 
         left, right, bottom, top = projection or (-half_width, half_width, -half_height, half_height)
         _projection: OrthographicProjectionData = OrthographicProjectionData(
-            left, right,  # Left and Right.
-            top, bottom,  # Bottom and Top.
-            near or 0.0, far or 100.0,  # Near and Far.
-            viewport or (0, 0, width, height)  # Viewport
+            left=left, right=right,
+            top=top, bottom=bottom,
+            near=near or 0.0, far=far or 100.0,
+            viewport=viewport or (0, 0, width, height)
         )
 
         return Camera2D(
