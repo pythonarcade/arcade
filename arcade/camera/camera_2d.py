@@ -123,7 +123,7 @@ class Camera2D:
         half_height = height / 2
 
         _pos = position or (half_width, half_height)
-        _data: Self = CameraData(
+        _data = CameraData(
             position=(_pos[0], _pos[1], 0.0),
             up=(up[0], up[1], 0.0),
             forward=(0.0, 0.0, -1.0),
