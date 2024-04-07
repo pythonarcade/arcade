@@ -24,7 +24,9 @@ class PerspectiveParallax(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Perspective Parallax")
         self.t = 0.0
         self.camera = arcade.camera.PerspectiveProjector()
+
         self.camera_data = self.camera.view
+        self.camera_data.zoom = 2.0
 
         self.camera.projection.far = 1000
 

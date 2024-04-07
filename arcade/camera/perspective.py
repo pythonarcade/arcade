@@ -1,6 +1,7 @@
 from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
 
+from math import tan, radians
 from pyglet.math import Mat4, Vec3, Vec4
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
@@ -112,7 +113,7 @@ class PerspectiveProjector:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: float = None
     ) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
@@ -128,4 +129,19 @@ class PerspectiveProjector:
         Returns:
             A 3D vector in world space.
         """
-        return (screen_coordinate[0], screen_coordinate[1], depth)
+        depth = depth or (0.5 * self._projection.viewport[3] / tan(radians(0.5 * self._projection.fov / self._view.zoom)))
+
+        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
+        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+
+        screen_x *= depth
+        screen_y *= depth
+
+        projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
+
+        _projection = ~self._generate_projection_matrix()
+        view_position = _projection @ projected_position
+        _view = ~self._generate_view_matrix()
+        world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
+
+        return world_position.x, world_position.y, world_position.z

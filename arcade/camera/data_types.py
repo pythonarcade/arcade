@@ -186,7 +186,7 @@ class Projector(Protocol):
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: float
     ) -> Tuple[float, ...]:
         ...
 
