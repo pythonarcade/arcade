@@ -929,7 +929,7 @@ class Window(pyglet.window.Window):
         return (normalized_pos[0] * w, normalized_pos[1] * h)
 
     def relative(self, pos: tuple[float, float]) -> tuple[float, float]:
-        """Convert a position in normalized form to pixel-based, absolute form.
+        """Convert a absolute position to coordinates in screenspace.
 
         :param pos: a tuple of two floats, representing a position in pixels.
 
