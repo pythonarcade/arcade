@@ -154,7 +154,7 @@ class OrthographicProjector:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: Optional[float] = 0.0
     ) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
@@ -170,6 +170,8 @@ class OrthographicProjector:
         Returns:
             A 3D vector in world space.
         """
+        depth = depth or 0.0
+
         # TODO: Integrate z-depth
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1

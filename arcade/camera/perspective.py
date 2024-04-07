@@ -11,9 +11,7 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
-__all__ = (
-    "PerspectiveProjector"
-)
+__all__ = ("PerspectiveProjector",)
 
 
 class PerspectiveProjector:
@@ -113,7 +111,7 @@ class PerspectiveProjector:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = None
+            depth: Optional[float] = None
     ) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
@@ -129,7 +127,8 @@ class PerspectiveProjector:
         Returns:
             A 3D vector in world space.
         """
-        depth = depth or (0.5 * self._projection.viewport[3] / tan(radians(0.5 * self._projection.fov / self._view.zoom)))
+        depth = depth or (0.5 * self._projection.viewport[3] / tan(
+            radians(0.5 * self._projection.fov / self._view.zoom)))
 
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
