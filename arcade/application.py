@@ -915,29 +915,29 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def absolute(self, normalized_pos: tuple[float, float]) -> tuple[float, float]:
+    def absolute(self, fractional_pos: tuple[float, float]) -> tuple[float, float]:
         """Convert a relative fractional pair to absolute screen pixels.
 
         As in the rest of arcade and OpenGL, the default coordinate system
         places the origin at the bottom left.
 
-        :param normalized_pos: A position where the x and y are fractional
+        :param fractional_pos: A position where the x and y are fractional
             values of the window size.
         :returns: A tuple of absolute pixel X and Y relative to bottom left.
         """
-
         w, h = self.size
-        return (normalized_pos[0] * w, normalized_pos[1] * h)
+        frac_x, frac_y = fractional_pos
+        return frac_x * w, frac_y * h
 
-    def relative(self, pos: tuple[float, float]) -> tuple[float, float]:
+    def relative(self, pixel_pos: tuple[float, float]) -> tuple[float, float]:
         """Convert absolute screen pixels to a relative fractional pair.
 
-        :param pos: a tuple of X and Y pixel positions within the window.
+        :param pixel_pos: a tuple of X and Y pixel positions within the window.
         :returns: A tuple of fractional X and Y relative to the bottom left.
         """
-
         w, h = self.size
-        return (pos[0] / w, pos[1] / h)
+        pixel_x, pixel_y = pixel_pos
+        return pixel_x / w, pixel_y / pixel_y
 
 
 def open_window(
