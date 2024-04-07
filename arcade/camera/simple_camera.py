@@ -371,7 +371,7 @@ class SimpleCamera:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: Optional[float] = 0.0
     ) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within

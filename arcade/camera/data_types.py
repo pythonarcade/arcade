@@ -4,7 +4,7 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Iterator
+from typing import Protocol, Tuple, Iterator, Optional
 from contextlib import contextmanager
 
 from pyglet.math import Vec3
@@ -186,7 +186,7 @@ class Projector(Protocol):
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: Optional[float] = None
     ) -> Tuple[float, ...]:
         ...
 
