@@ -15,6 +15,29 @@ __all__ = ("PerspectiveProjector",)
 
 
 class PerspectiveProjector:
+    """
+    The simplest from of a perspective camera.
+    Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
+    it generates the correct projection and view matrices. It also
+    provides methods and a context manager for using the matrices in
+    glsl shaders.
+
+    This class provides no methods for manipulating the PoDs.
+
+    The current implementation will recreate the view and
+    projection matrices every time the camera is used.
+    If used every frame or multiple times per frame this may
+    be inefficient. If you suspect this is causing slowdowns
+    profile before optimizing with a dirty value check.
+
+    Initialize a Projector which produces a perspective projection matrix using
+    a CameraData and PerspectiveProjectionData PoDs.
+
+    :param window: The window to bind the camera to. Defaults to the currently active camera.
+    :param view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
+    :param projection: The PerspectiveProjectionData PoD.
+                contains the field of view, aspect ratio, and then near and far planes.
+    """
 
     def __init__(self, *,
                  window: Optional["Window"] = None,
