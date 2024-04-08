@@ -140,6 +140,10 @@ from .draw_commands import draw_xywh_rectangle_outline
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
+from .camera import CameraData
+from .camera import OrthographicProjectionData
+from .camera import Camera2D
+
 # We don't have joysticks game controllers in headless mode
 if not pyglet.options["headless"]:
     from .joysticks import get_game_controllers
