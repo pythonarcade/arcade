@@ -915,6 +915,18 @@ class Window(pyglet.window.Window):
         """
         pass
 
+    @property
+    def center(self) -> tuple[float, float]:
+        return (self.width / 2, self.height / 2)
+
+    @property
+    def center_x(self) -> float:
+        return self.width / 2
+
+    @property
+    def center_y(self) -> float:
+        return self.height / 2
+
 
 def open_window(
     width: int,
