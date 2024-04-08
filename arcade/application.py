@@ -937,7 +937,7 @@ class Window(pyglet.window.Window):
         """
         w, h = self.size
         pixel_x, pixel_y = pixel_pos
-        return pixel_x / w, pixel_y / pixel_y
+        return pixel_x / w, pixel_y / h
 
 
 def open_window(
