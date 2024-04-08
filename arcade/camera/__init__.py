@@ -14,7 +14,6 @@ from arcade.camera.data_types import (
 from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.perspective import PerspectiveProjector
 
-from arcade.camera.simple_camera import SimpleCamera
 from arcade.camera.camera_2d import Camera2D
 
 import arcade.camera.grips as grips
@@ -28,7 +27,6 @@ __all__ = [
     'OrthographicProjector',
     'PerspectiveProjectionData',
     'PerspectiveProjector',
-    'SimpleCamera',
     'Camera2D',
     'grips'
 ]
