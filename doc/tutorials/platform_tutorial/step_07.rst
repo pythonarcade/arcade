@@ -7,7 +7,7 @@ Now that our player can move and jump around, we need to give them a way to expl
 beyond the original window. If you've ever played a platformer game, you might be familiar with the
 concept of the screen scrolling to reveal more of the map as the player moves.
 
-To achieve this, we can use a Camera. Since we are making a 2D game, `arcade.camera.Camera2D` will
+To achieve this, we can use a Camera. Since we are making a 2D game, ``arcade.camera.Camera2D`` will
 be easiest.
 
 To start with, let's go ahead and add a variable in our ``__init__`` function to hold it:
