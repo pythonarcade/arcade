@@ -33,7 +33,8 @@ def show_info():
     print('version:', window.ctx.gl_version)
     print('python:', sys.version)
     print('platform:', sys.platform)
-    print('pyglet version:', pyglet.__version__)
+    # The next line uses noqa because pyglet's .pyi is out of date
+    print('pyglet version:', pyglet.__version__)  # noqa
     print('PIL version:', PIL.__version__)
 
 
