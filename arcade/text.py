@@ -367,11 +367,11 @@ class Text:
 
         Options : "top", "bottom", "center", or "baseline"
         """
-        return self._label.anchor_y  # type: ignore
+        return self._label.anchor_y
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y
+        self._label.anchor_y = anchor_y  # type: ignore
 
     @property
     def rotation(self) -> float:
