@@ -358,7 +358,7 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x
+        self._label.anchor_x = anchor_x  # type: ignore
 
     @property
     def anchor_y(self) -> str:
@@ -367,7 +367,7 @@ class Text:
 
         Options : "top", "bottom", "center", or "baseline"
         """
-        return self._label.anchor_y
+        return self._label.anchor_y  # type: ignore
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
