@@ -358,7 +358,7 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x
+        self._label.anchor_x = anchor_x  # type: ignore
 
     @property
     def anchor_y(self) -> str:
@@ -371,7 +371,7 @@ class Text:
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y
+        self._label.anchor_y = anchor_y  # type: ignore
 
     @property
     def rotation(self) -> float:
