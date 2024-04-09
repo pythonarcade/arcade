@@ -34,7 +34,7 @@ def show_info():
     print('python:', sys.version)
     print('platform:', sys.platform)
     # The next line uses noqa because pyglet's .pyi is out of date
-    print('pyglet version:', pyglet.__version__)  # noqa
+    print('pyglet version:', pyglet.__version__)  # pyright: ignore  # noqa
     print('PIL version:', PIL.__version__)
 
 
