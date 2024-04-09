@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
 
 import arcade
 from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
-from arcade.color import BLACK
+from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
 
@@ -60,7 +60,7 @@ class BasicSprite:
         self._height = texture.height * scale
         self._scale = scale, scale
         self._visible = bool(visible)
-        self._color: Color = Color(255, 255, 255, 255)
+        self._color: Color = WHITE
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
