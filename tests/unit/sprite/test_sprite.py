@@ -336,11 +336,21 @@ def test_visible():
     assert sprite.alpha == 100
 
 
-def test_sprite_rgb_property():
+def test_sprite_rgb_property_basics():
     sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
 
     # Initial multiply tint is white
     assert sprite.rgb == (255, 255, 255)
+
+    # Values which are too short are not allowed
+    with pytest.raises(ValueError):
+        sprite.rgb = (1,2)
+    with pytest.raises(ValueError):
+        sprite.rgb = (0,)
+
+    # Nor are values which are too long
+    with pytest.raises(ValueError):
+        sprite.rgb = (100,100,100,100,100)
 
     # Test color setting + .rgb report when .visible == True
     sprite.rgb = (1, 3, 5, 7)

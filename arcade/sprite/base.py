@@ -352,17 +352,21 @@ class BasicSprite:
     @rgb.setter
     def rgb(self, color: RGBOrA255):
 
-        # Fast validation by unpacking into channel values + unused
+        # Fast validation of size by unpacking channel values
         try:
-            r, g, b, *_ = color
-        except ValueError as _:
-            raise ValueError(
-                f"{self.__class__.__name__},rgb takes 3 or 4 channels")
+            r, g, b, *_a = color
+            if len(_a) > 1:  # Alpha's only used to validate here
+                raise ValueError()
+
+        except ValueError as _:  # It's always a length issue
+            raise ValueError((
+                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                f" colors, but got {len(color)} channels"))
 
         # Unpack to avoid index / . overhead & prep for repack
-        current_r, current_g, current_g, a = self._color
+        current_r, current_b, current_g, a = self._color
 
-        # Early exit if equivalent
+        # Do nothing if equivalent to current color
         if current_r == r and current_g == g and current_b == b:
             return
 
