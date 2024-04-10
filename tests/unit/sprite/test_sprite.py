@@ -336,6 +336,44 @@ def test_visible():
     assert sprite.alpha == 100
 
 
+def test_sprite_rgb_property():
+    sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+
+    # Initial multiply tint is white
+    assert sprite.rgb == (255, 255, 255)
+
+    # Test color setting + .rgb report when .visible == True
+    sprite.rgb = (1, 3, 5, 7)
+    assert sprite.color.r == 1
+    assert sprite.color.g == 3
+    assert sprite.color.b == 5
+    assert sprite.rgb[0] == 1
+    assert sprite.rgb[1] == 3
+    assert sprite.rgb[2] == 5
+
+    # Test alpha preservation
+    assert sprite.color.a == 255
+    assert sprite.alpha == 255
+
+    # Test .rgb sets rgb chanels when visible == False as with .color,
+    # but also still preserves original alpha values.
+    sprite.visible = False
+    sprite.color = (9, 11, 13, 15)
+    sprite.rgb = (17, 21, 23, 25)
+
+    # Check the color channels
+    assert sprite.color.r == 17
+    assert sprite.color.g == 21
+    assert sprite.color.b == 23
+    assert sprite.rgb[0] == 17
+    assert sprite.rgb[1] == 21
+    assert sprite.rgb[2] == 23
+
+    # Alpha preserved?
+    assert sprite.color.a == 15
+    assert sprite.alpha == 15
+
+
 def test_sprite_scale_xy(window):
     sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
