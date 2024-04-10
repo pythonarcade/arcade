@@ -197,7 +197,7 @@ def test_color_rgb_property():
 
     # Spot check unique colors
     assert colors.COBALT.rgb == (0, 71, 171)
-    assert Color(1,3,5,7) == (1, 3, 5)
+    assert Color(1,3,5,7).rgb == (1, 3, 5)
 
 
 def test_deepcopy_color_values():
