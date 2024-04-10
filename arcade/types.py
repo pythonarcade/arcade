@@ -18,7 +18,8 @@ from typing import (
     Sequence,
     Tuple,
     Union,
-    TYPE_CHECKING, TypeVar
+    TYPE_CHECKING,
+    TypeVar
 )
 from typing_extensions import Self
 
