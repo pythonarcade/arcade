@@ -391,7 +391,7 @@ class BasicSprite:
             >>> sprite.color = 255, 0, 0, 128
 
         """
-        return Color(self.rgb[0], self.rgb[1], self.rgb[2], self.alpha)
+        return self._color
 
     @color.setter
     def color(self, color: RGBOrA255):
