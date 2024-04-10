@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
+from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
 import arcade
-from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList, RGB
+from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -61,7 +61,6 @@ class BasicSprite:
         self._scale = scale, scale
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self._rgb: RGB = RGB(255, 255, 255)
         self.sprite_lists: List["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
@@ -339,21 +338,33 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
-    def rgb(self) -> RGB:
-        """ Gets the sprites RGB. """
-        return self._rgb
+    def rgb(self) -> Tuple[int, int, int]:
+        """Get or set only the RGB components of a color.
+
+        If a 4-color RGBA tuple is passed, the alpha value will be
+        ignored.
+        """
+        return self._color[:3]
 
     @rgb.setter
-    def rgb(self, color: RGB):
-        if (
-                self._rgb[0] == color[0]
-                and self._rgb[1] == color[1]
-                and self._rgb[2] == color[2]
-        ):
+    def rgb(self, color: RGBOrA255):
+
+        # Fast validation by unpacking into channel values + unused
+        try:
+            r, g, b, *_ = color
+        except ValueError as _:
+            raise ValueError(
+                f"{self.__class__.__name__},rgb takes 3 or 4 channels")
+
+        # Unpack to avoid index / . overhead & prep for repack
+        current_r, current_g, current_g, a = self._color
+
+        # Early exit if equivalent
+        if current_r == r and current_g == g and current_b == b:
             return
-        self._rgb = RGB(color[0], color[1], color[2])
-        self._color = Color(self._rgb[0], self._rgb[1], self._rgb[2], self.alpha)
-        
+
+        # Preserve the current alpha value & update sprite lists
+        self._color = Color(r, g, b, a)
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
