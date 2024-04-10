@@ -404,7 +404,6 @@ class BasicSprite:
             if len(_a) > 1:
                 raise ValueError(f"iterable must unpack to 3 or 4 values not {len(color)}")
             a = _a[0]
-
         else:
             a = self._color.a
 
