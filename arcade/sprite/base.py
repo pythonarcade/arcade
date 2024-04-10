@@ -339,10 +339,13 @@ class BasicSprite:
 
     @property
     def rgb(self) -> Tuple[int, int, int]:
-        """Get or set only the RGB components of a color.
+        """Get or set only the sprite's RGB color components.
 
-        If a 4-color RGBA tuple is passed, the alpha value will be
-        ignored.
+        If a 4-color RGBA tuple is passed:
+
+        * The new color's alpha value will be ignored
+        * The old alpha value will be preserved
+
         """
         return self._color[:3]
 
