@@ -3,6 +3,7 @@ Module specifying data custom types used for type hinting.
 """
 from __future__ import annotations
 
+import sys
 from array import array
 import ctypes
 import random
