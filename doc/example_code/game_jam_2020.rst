@@ -30,11 +30,7 @@ Here are the games that made it to the top 10:
 
     2nd Place: `Triple Blocks <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/gamer_gang>`_
 
-.. figure:: /images/image_not_available.png
-    :target: https://github.com/python-discord/game-jam-2020/tree/master/Finalists/monkeys-and-frogs-on-fire
-    :width: 45%
-
-    3nd Place: `Triple Vision <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/monkeys-and-frogs-on-fire>`_
+3rd Place: `Triple Vision <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/monkeys-and-frogs-on-fire>`_
 
 .. figure:: https://raw.githubusercontent.com/python-discord/game-jam-2020/master/Finalists/KTGames/rd_images/OpeningScreen.png
     :target: https://github.com/python-discord/game-jam-2020/tree/master/Finalists/KTGames
