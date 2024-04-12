@@ -65,6 +65,25 @@ class Camera2D:
                  projection_data: Optional[OrthographicProjectionData] = None,
                  render_target: Optional[Framebuffer] = None,
                  window: Optional["Window"] = None):
+
+        if projection_data:
+            left, right  = projection_data.left, projection_data.right
+            if projection_data.left == projection_data.right:
+                raise ZeroProjectionDimension((
+                    f"projection width is 0 due to equal {left=}"
+                    f"and {right=} values"))
+            bottom, top = projection_data.left, projection_data.right
+            if bottom == top:
+                raise ZeroProjectionDimension((
+                    f"projection height is 0 due to equal {bottom=}"
+                    f"and {top=}"))
+            near, far = projection_data.near, projection_data.far
+            if near == far:
+                raise ZeroProjectionDimension(
+                    f"projection depth is 0 due to equal {near=}"
+                    f"and {far=} values"
+                )
+
         self._window: "Window" = window or get_window()
         self.render_target: Framebuffer = render_target or self._window.ctx.screen
         width, height = self.render_target.size
