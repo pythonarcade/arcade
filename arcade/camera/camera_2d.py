@@ -72,7 +72,7 @@ class Camera2D:
                 raise ZeroProjectionDimension((
                     f"projection width is 0 due to equal {left=}"
                     f"and {right=} values"))
-            bottom, top = projection_data.left, projection_data.right
+            bottom, top = projection_data.bottom, projection_data.top
             if bottom == top:
                 raise ZeroProjectionDimension((
                     f"projection height is 0 due to equal {bottom=}"

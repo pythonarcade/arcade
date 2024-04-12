@@ -4,7 +4,7 @@ import pytest as pytest
 
 from arcade import Window
 from arcade.camera import Camera2D
-from arcade.camera.data_types import ZeroProjectionDimension
+from arcade.camera.data_types import ZeroProjectionDimension, OrthographicProjectionData
 
 
 class Camera2DSub1(Camera2D):
@@ -33,8 +33,19 @@ AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
     (5., 5., 5., 5.)
 ]
 
+NEAR_FAR_VALUES = [-50.,0.,50.]
 
-@pytest.mark.parametrize("bad_projection", AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION)
+
+@pytest.fixture(params=AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION)
+def bad_projection(request):
+    return request.param
+
+
+@pytest.fixture(params=NEAR_FAR_VALUES)
+def same_near_far(request):
+    return request.param
+
+
 def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiondimension(
     window: Window,
     bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
@@ -44,18 +55,34 @@ def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiond
         camera_class.from_raw_data(projection=bad_projection)
 
 
+def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
+    window: Window,
+    bad_projection: Tuple[float, float, float, float],
+    camera_class
+):
+    data = OrthographicProjectionData(
+        *bad_projection, -100.0, 100.0,
+        viewport=(0,0, 800, 600)
+    )
+
+    with pytest.raises(ZeroProjectionDimension):
+        _ = Camera2D(projection_data=data)
+
 
 def test_camera2d_from_raw_data_equal_near_far_raises_zeroprojectiondimension(
-        window: Window, camera_class
+        window: Window,
+        same_near_far: float,
+        camera_class
 ):
     with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=-100, far=-100)
+        camera_class.from_raw_data(near=near_far, far=near_far)
 
     with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=0, far=0)
+        camera_class.from_raw_data(near=near_far, far=near_far)
 
     with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=100, far=100)
+        camera_class.from_raw_data(near=near_far, far=near_far)
+
 
 
 @pytest.mark.parametrize("camera_class", CAMERA2D_SUBS)
