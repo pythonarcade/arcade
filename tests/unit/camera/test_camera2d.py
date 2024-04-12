@@ -18,6 +18,11 @@ CAMERA2D_SUBS = [Camera2DSub1, Camera2DSub2]
 ALL_CAMERA2D_TYPES = [Camera2D] + CAMERA2D_SUBS
 
 
+@pytest.fixture(params=ALL_CAMERA2D_TYPES)
+def camera_class(request):
+    return request.param
+
+
 AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
     (-100., -100., -1., 1.),
     (100., 100., -1., 1.),
@@ -30,14 +35,27 @@ AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
 
 
 @pytest.mark.parametrize("bad_projection", AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION)
-@pytest.mark.parametrize("camera_class", ALL_CAMERA2D_TYPES)
-def test_camera2d_from_raw_data_bound_validation(
+def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiondimension(
     window: Window,
     bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
     camera_class
 ):
     with pytest.raises(ZeroProjectionDimension):
         camera_class.from_raw_data(projection=bad_projection)
+
+
+
+def test_camera2d_from_raw_data_equal_near_far_raises_zeroprojectiondimension(
+        window: Window, camera_class
+):
+    with pytest.raises(ZeroProjectionDimension):
+        camera_class.from_raw_data(near=-100, far=-100)
+
+    with pytest.raises(ZeroProjectionDimension):
+        camera_class.from_raw_data(near=0, far=0)
+
+    with pytest.raises(ZeroProjectionDimension):
+        camera_class.from_raw_data(near=100, far=100)
 
 
 @pytest.mark.parametrize("camera_class", CAMERA2D_SUBS)
