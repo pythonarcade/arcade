@@ -5,7 +5,12 @@ from contextlib import contextmanager
 from typing_extensions import Self
 
 from arcade.camera.orthographic import OrthographicProjector
-from arcade.camera.data_types import CameraData, OrthographicProjectionData, Projector
+from arcade.camera.data_types import (
+    CameraData,
+    OrthographicProjectionData,
+    Projector,
+    ZeroProjectionDimension
+)
 from arcade.gl import Framebuffer
 
 from arcade.window_commands import get_window
@@ -127,11 +132,11 @@ class Camera2D:
         left, right, bottom, top = projection or (-half_width, half_width, -half_height, half_height)
         if projection:
             if left == right:
-                raise ZeroDivisionError((
+                raise ZeroProjectionDimension((
                     f"projection width is 0 due to equal {left=}"
                     f"and {right=} values"))
             if bottom == top:
-                raise ZeroDivisionError((
+                raise ZeroProjectionDimension((
                     f"projection height is 0 due to equal {bottom=}"
                     f"and {top=}"))
 
