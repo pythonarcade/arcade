@@ -263,18 +263,44 @@ class Camera2D:
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
-        """The camera's left, right, bottom, top projection values.
+        """Get/set the left, right, bottom, and top projection values.
 
-        These control how the camera projects the world onto the pixels
-        of the screen.
+        These are world space values which control how the camera
+        projects the world onto the pixel space of the current
+        :py:attr:`.viewport` area.
+
+        .. warning:: The axis values cannot be equal!
+
+                     * ``left`` cannot equal ``right``
+                     * ``bottom`` cannot equal ``top``
+
+        This property raises a :py:class:`~arcade.camera.data_types.ZeroProjectionDimension`
+        exception if any axis pairs are equal. You can handle this
+        exception as a :py:class:`ValueError`.
         """
         _p = self._projection
         return _p.left, _p.right, _p.bottom, _p.top
 
     @projection.setter
     def projection(self, value: Tuple[float, float, float, float]) -> None:
+
+        # Unpack and validate
+        left, right, bottom, top = value
+        if left == right:
+            raise ZeroProjectionDimension((
+                f"projection width is 0 due to equal {left=}"
+                f"and {right=} values"))
+        if bottom == top:
+            raise ZeroProjectionDimension((
+                f"projection height is 0 due to equal {bottom=}"
+                f"and {top=}"))
+
+        # Modify the projection data itself.
         _p = self._projection
-        _p.left, _p.right, _p.bottom, _p.top = value
+        _p.left = left
+        _p.right = right
+        _p.bottom = bottom
+        _p.top = top
 
     @property
     def projection_width(self) -> float:
