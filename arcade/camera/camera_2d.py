@@ -139,6 +139,11 @@ class Camera2D:
                 raise ZeroProjectionDimension((
                     f"projection height is 0 due to equal {bottom=}"
                     f"and {top=}"))
+        if near == far:
+            raise ZeroProjectionDimension(
+                f"projection depth is 0 due to equal {near=}"
+                f"and {far=} values"
+            )
 
         _pos = position or (half_width, half_height)
         _data = CameraData(
