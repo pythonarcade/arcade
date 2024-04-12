@@ -123,6 +123,18 @@ class Camera2D:
         half_width = width / 2
         half_height = height / 2
 
+        # Unpack projection, but only validate when it's given directly
+        left, right, bottom, top = projection or (-half_width, half_width, -half_height, half_height)
+        if projection:
+            if left == right:
+                raise ZeroDivisionError((
+                    f"projection width is 0 due to equal {left=}"
+                    f"and {right=} values"))
+            if bottom == top:
+                raise ZeroDivisionError((
+                    f"projection height is 0 due to equal {bottom=}"
+                    f"and {top=}"))
+
         _pos = position or (half_width, half_height)
         _data = CameraData(
             position=(_pos[0], _pos[1], 0.0),
@@ -131,7 +143,6 @@ class Camera2D:
             zoom=zoom
         )
 
-        left, right, bottom, top = projection or (-half_width, half_width, -half_height, half_height)
         _projection: OrthographicProjectionData = OrthographicProjectionData(
             left=left, right=right,
             top=top, bottom=bottom,
