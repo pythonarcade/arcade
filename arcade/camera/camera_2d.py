@@ -71,7 +71,7 @@ class Camera2D:
         half_width = width / 2
         half_height = height / 2
 
-        self._data = camera_data or CameraData(
+        self._camera_data = camera_data or CameraData(
             position=(half_width, half_height, 0.0),
             up=(0.0, 1.0, 0.0),
             forward=(0.0, 0.0, -1.0),
@@ -86,7 +86,7 @@ class Camera2D:
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
             window=self._window,
-            view=self._data,
+            view=self._camera_data,
             projection=self._projection_data
         )
 
@@ -176,7 +176,7 @@ class Camera2D:
         Camera controllers use this property. You will need to access
         it if you use implement a custom one.
         """
-        return self._data
+        return self._camera_data
 
     @property
     def projection_data(self) -> OrthographicProjectionData:
@@ -199,11 +199,11 @@ class Camera2D:
     @property
     def position(self) -> Tuple[float, float]:
         """The 2D world position of the camera along the X and Y axes."""
-        return self._data.position[:2]
+        return self._camera_data.position[:2]
 
     @position.setter
     def position(self, _pos: Tuple[float, float]) -> None:
-        self._data.position = (_pos[0], _pos[1], self._data.position[2])
+        self._camera_data.position = (_pos[0], _pos[1], self._camera_data.position[2])
 
     @property
     def left(self) -> float:
@@ -211,11 +211,11 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._data.position[0] + self._projection_data.left/self._data.zoom
+        return self._camera_data.position[0] + self._projection_data.left/self._camera_data.zoom
 
     @left.setter
     def left(self, _left: float) -> None:
-        self._data.position = (_left - self._projection_data.left / self._data.zoom,) + self._data.position[1:]
+        self._camera_data.position = (_left - self._projection_data.left / self._camera_data.zoom,) + self._camera_data.position[1:]
 
     @property
     def right(self) -> float:
@@ -223,11 +223,11 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._data.position[0] + self._projection_data.right/self._data.zoom
+        return self._camera_data.position[0] + self._projection_data.right/self._camera_data.zoom
 
     @right.setter
     def right(self, _right: float) -> None:
-        self._data.position = (_right - self._projection_data.right / self._data.zoom,) + self._data.position[1:]
+        self._camera_data.position = (_right - self._projection_data.right / self._camera_data.zoom,) + self._camera_data.position[1:]
 
     @property
     def bottom(self) -> float:
@@ -235,14 +235,14 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._data.position[1] + self._projection_data.bottom/self._data.zoom
+        return self._camera_data.position[1] + self._projection_data.bottom/self._camera_data.zoom
 
     @bottom.setter
     def bottom(self, _bottom: float) -> None:
-        self._data.position = (
-            self._data.position[0],
-            _bottom - self._projection_data.bottom / self._data.zoom,
-            self._data.position[2]
+        self._camera_data.position = (
+            self._camera_data.position[0],
+            _bottom - self._projection_data.bottom / self._camera_data.zoom,
+            self._camera_data.position[2]
         )
 
     @property
@@ -251,14 +251,14 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._data.position[1] + self._projection_data.top/self._data.zoom
+        return self._camera_data.position[1] + self._projection_data.top/self._camera_data.zoom
 
     @top.setter
     def top(self, _top: float) -> None:
-        self._data.position = (
-            self._data.position[0],
-            _top - self._projection_data.top / self._data.zoom,
-            self._data.position[2]
+        self._camera_data.position = (
+            self._camera_data.position[0],
+            _top - self._projection_data.top / self._camera_data.zoom,
+            self._camera_data.position[2]
         )
 
     @property
@@ -333,11 +333,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_width instead.
         """
-        return (self._projection_data.right - self._projection_data.left) / self._data.zoom
+        return (self._projection_data.right - self._projection_data.left) / self._camera_data.zoom
 
     @projection_width_scaled.setter
     def projection_width_scaled(self, _width: float) -> None:
-        w = self.projection_width * self._data.zoom
+        w = self.projection_width * self._camera_data.zoom
         l = self.projection_left / w  # Normalised Projection left
         r = self.projection_right / w  # Normalised Projection Right
 
@@ -375,11 +375,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_height instead.
         """
-        return (self._projection_data.top - self._projection_data.bottom) / self._data.zoom
+        return (self._projection_data.top - self._projection_data.bottom) / self._camera_data.zoom
 
     @projection_height_scaled.setter
     def projection_height_scaled(self, _height: float) -> None:
-        h = self.projection_height * self._data.zoom
+        h = self.projection_height * self._camera_data.zoom
         b = self.projection_bottom / h  # Normalised Projection Bottom
         t = self.projection_top / h  # Normalised Projection Top
 
@@ -412,11 +412,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_left instead.
         """
-        return self._projection_data.left / self._data.zoom
+        return self._projection_data.left / self._camera_data.zoom
 
     @projection_left_scaled.setter
     def projection_left_scaled(self, _left: float) -> None:
-        self._projection_data.left = _left * self._data.zoom
+        self._projection_data.left = _left * self._camera_data.zoom
 
     @property
     def projection_right(self) -> float:
@@ -444,11 +444,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_right instead.
         """
-        return self._projection_data.right / self._data.zoom
+        return self._projection_data.right / self._camera_data.zoom
 
     @projection_right_scaled.setter
     def projection_right_scaled(self, _right: float) -> None:
-        self._projection_data.right = _right * self._data.zoom
+        self._projection_data.right = _right * self._camera_data.zoom
 
     @property
     def projection_bottom(self) -> float:
@@ -476,11 +476,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_bottom instead.
         """
-        return self._projection_data.bottom / self._data.zoom
+        return self._projection_data.bottom / self._camera_data.zoom
 
     @projection_bottom_scaled.setter
     def projection_bottom_scaled(self, _bottom: float) -> None:
-        self._projection_data.bottom = _bottom * self._data.zoom
+        self._projection_data.bottom = _bottom * self._camera_data.zoom
 
     @property
     def projection_top(self) -> float:
@@ -508,11 +508,11 @@ class Camera2D:
         If this isn't what you want,
         use projection_top instead.
         """
-        return self._projection_data.top / self._data.zoom
+        return self._projection_data.top / self._camera_data.zoom
 
     @projection_top_scaled.setter
     def projection_top_scaled(self, _top: float) -> None:
-        self._projection_data.top = _top * self._data.zoom
+        self._projection_data.top = _top * self._camera_data.zoom
 
     @property
     def projection_near(self) -> float:
@@ -649,7 +649,7 @@ class Camera2D:
         The base vector is 3D, but the simplified
         camera only provides a 2D view.
         """
-        return self._data.up[:2]
+        return self._camera_data.up[:2]
 
     @up.setter
     def up(self, _up: Tuple[float, float]) -> None:
@@ -662,7 +662,7 @@ class Camera2D:
 
         NOTE that this is assumed to be normalised.
         """
-        self._data.up = (_up[0], _up[1], 0.0)
+        self._camera_data.up = (_up[0], _up[1], 0.0)
 
     @property
     def angle(self) -> float:
@@ -672,7 +672,7 @@ class Camera2D:
         clock-wise.
         """
         # Note that this is flipped as we want 0 degrees to be vert. Normally you have y first and then x.
-        return degrees(atan2(self._data.position[0], self._data.position[1]))
+        return degrees(atan2(self._camera_data.position[0], self._camera_data.position[1]))
 
     @angle.setter
     def angle(self, value: float) -> None:
@@ -683,7 +683,7 @@ class Camera2D:
         """
         _r = radians(value)
         # Note that this is flipped as we want 0 degrees to be vert.
-        self._data.position = (sin(_r), cos(_r), 0.0)
+        self._camera_data.position = (sin(_r), cos(_r), 0.0)
 
     @property
     def zoom(self) -> float:
@@ -696,7 +696,7 @@ class Camera2D:
         to be half its original size.
         This causes sprites to appear 2.0x larger.
         """
-        return self._data.zoom
+        return self._camera_data.zoom
 
     @zoom.setter
     def zoom(self, _zoom: float) -> None:
@@ -709,7 +709,7 @@ class Camera2D:
         to be half its original size.
         This causes sprites to appear 2.0x larger.
         """
-        self._data.zoom = _zoom
+        self._camera_data.zoom = _zoom
 
     def equalise(self) -> None:
         """
