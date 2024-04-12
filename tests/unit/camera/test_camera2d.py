@@ -1,15 +1,52 @@
+from typing import Tuple
+
 import pytest as pytest
 
 from arcade import Window
 from arcade.camera import Camera2D
+from arcade.camera.data_types import ZeroProjectionDimension
 
 
-def test_camera2d_from_raw_data_inheritance_safety(window: Window):
-    class MyCamera2D(Camera2D):
-        ...
+class Camera2DSub1(Camera2D):
+    ...
 
-    subclassed = MyCamera2D.from_raw_data(zoom=10.0)
-    assert isinstance(subclassed, MyCamera2D)
+class Camera2DSub2(Camera2DSub1):
+    ...
+
+
+CAMERA2D_SUBS = [Camera2DSub1, Camera2DSub2]
+ALL_CAMERA2D_TYPES = [Camera2D] + CAMERA2D_SUBS
+
+
+AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
+    (-100., -100., -1., 1.),
+    (100., 100., -1., 1.),
+    (0., 0., 1., 2.),
+    (0., 1., -100., -100.),
+    (-1., 1., 0., 0.),
+    (1., 2., 100., 100.),
+    (5., 5., 5., 5.)
+]
+
+
+@pytest.mark.parametrize("bad_projection", AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION)
+@pytest.mark.parametrize("camera_class", ALL_CAMERA2D_TYPES)
+def test_camera2d_from_raw_data_bound_validation(
+    window: Window,
+    bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
+    camera_class
+):
+    with pytest.raises(ZeroProjectionDimension):
+        camera_class.from_raw_data(projection=bad_projection)
+
+
+@pytest.mark.parametrize("camera_class", CAMERA2D_SUBS)
+def test_camera2d_from_raw_data_inheritance_safety(
+    window: Window,
+    camera_class
+):
+    subclassed = camera_class.from_raw_data(zoom=10.0)
+    assert isinstance(subclassed, Camera2DSub1)
 
 
 RENDER_TARGET_SIZES = [
