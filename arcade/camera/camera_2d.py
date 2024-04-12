@@ -80,7 +80,7 @@ class Camera2D:
         self._projection_data: OrthographicProjectionData = projection_data or OrthographicProjectionData(
             left=-half_width, right=half_width,
             bottom=-half_height, top=half_height,
-            near=0.0, far=100.0,
+            near=-100.0, far=100.0,
             viewport=(0, 0, width, height)
         )
 
@@ -98,8 +98,8 @@ class Camera2D:
             up: Tuple[float, float] = (0.0, 1.0),
             zoom: float = 1.0,
             projection: Optional[Tuple[float, float, float, float]] = None,
-            near: float = -100,
-            far: float = 100,
+            near: float = -100.0,
+            far: float = 100.0,
             *,
             render_target: Optional[Framebuffer] = None,
             window: Optional["Window"] = None
