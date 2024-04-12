@@ -239,7 +239,9 @@ class Camera2D:
 
     @left.setter
     def left(self, _left: float) -> None:
-        self._camera_data.position = (_left - self._projection_data.left / self._camera_data.zoom,) + self._camera_data.position[1:]
+        self._camera_data.position =\
+            (_left - self._projection_data.left / self._camera_data.zoom,)\
+            + self._camera_data.position[1:]
 
     @property
     def right(self) -> float:
@@ -251,7 +253,9 @@ class Camera2D:
 
     @right.setter
     def right(self, _right: float) -> None:
-        self._camera_data.position = (_right - self._projection_data.right / self._camera_data.zoom,) + self._camera_data.position[1:]
+        self._camera_data.position =\
+            (_right - self._projection_data.right / self._camera_data.zoom,)\
+            + self._camera_data.position[1:]
 
     @property
     def bottom(self) -> float:
