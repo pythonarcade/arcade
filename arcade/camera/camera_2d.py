@@ -151,7 +151,7 @@ class Camera2D:
         _projection: OrthographicProjectionData = OrthographicProjectionData(
             left=left, right=right,
             top=top, bottom=bottom,
-            near=near or 0.0, far=far or 100.0,
+            near=near, far=far,
             viewport=viewport or (0, 0, width, height)
         )
 
