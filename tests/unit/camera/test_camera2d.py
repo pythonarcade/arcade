@@ -78,13 +78,6 @@ def test_camera2d_from_raw_data_equal_near_far_raises_zeroprojectiondimension(
     with pytest.raises(ZeroProjectionDimension):
         camera_class.from_raw_data(near=near_far, far=near_far)
 
-    with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=near_far, far=near_far)
-
-    with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=near_far, far=near_far)
-
-
 
 @pytest.mark.parametrize("camera_class", CAMERA2D_SUBS)
 def test_camera2d_from_raw_data_inheritance_safety(
