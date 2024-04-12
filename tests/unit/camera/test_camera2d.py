@@ -74,6 +74,7 @@ def test_camera2d_from_raw_data_equal_near_far_raises_zeroprojectiondimension(
         same_near_far: float,
         camera_class
 ):
+    near_far = same_near_far
     with pytest.raises(ZeroProjectionDimension):
         camera_class.from_raw_data(near=near_far, far=near_far)
 
