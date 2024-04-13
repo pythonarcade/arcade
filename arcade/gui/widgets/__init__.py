@@ -191,7 +191,7 @@ class Rect(NamedTuple):
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: float) -> "Rect":
+    def align_right(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
