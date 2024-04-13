@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
+from math import floor
 from random import randint
 from typing import (
     NamedTuple,
@@ -12,10 +13,11 @@ from typing import (
     Tuple,
     List,
     Dict,
+    Callable
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-from typing_extensions import Self
+from typing_extensions import Self, ParamSpec
 
 import arcade
 from arcade import Sprite, get_window, Texture
@@ -78,16 +80,38 @@ class Rect(NamedTuple):
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(self, scale: float) -> "Rect":
+    def scale(
+            self,
+            scale: float,
+            rounding: Optional[Callable[ParamSpec, float]] = floor
+    ) -> "Rect":
         """Return a new rect scaled relative to the origin.
 
+        By default, the new rect's values are rounded down to whole
+        values. You can alter this by passing a different rounding
+        behavior:
+
+        * Pass ``None`` to skip rounding
+        * Pass a function which takes a number and returns a float
+          to choose rounding behavior.
+
         :param scale: A scale factor.
+        :param rounding: ``None`` or a callable specifying how to
+            round the scaled values.
         """
+        x, y, width, height = self
+        if rounding is not None:
+            return Rect(
+                rounding(x * scale),
+                rounding(y * scale),
+                rounding(width * scale),
+                rounding(height * scale),
+            )
         return Rect(
-            int(self.x * scale),
-            int(self.y * scale),
-            int(self.width * scale),
-            int(self.height * scale),
+            x * scale,
+            y * scale,
+            width * scale,
+            height * scale,
         )
 
     def resize(
