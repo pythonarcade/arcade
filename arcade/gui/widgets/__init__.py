@@ -212,7 +212,11 @@ class Rect(NamedTuple):
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=None, height=None):
+    def min_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Sets the size to at least the given min values.
         """
