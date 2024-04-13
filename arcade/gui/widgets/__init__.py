@@ -227,7 +227,11 @@ class Rect(NamedTuple):
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
+    def max_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Limits the size to the given max values.
         """
