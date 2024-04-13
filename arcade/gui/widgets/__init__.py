@@ -54,7 +54,8 @@ class Rect(NamedTuple):
 
     def move(self, dx: float = 0, dy: float = 0) -> Self:
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        x, y, width, height = self
+        return Rect(x + dx, y + dy, width, height)
 
     def collide_with_point(self, x, y) -> bool:
         left, bottom, width, height = self
