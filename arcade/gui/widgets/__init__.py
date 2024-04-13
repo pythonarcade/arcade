@@ -70,7 +70,11 @@ class Rect(NamedTuple):
             int(self.height * scale),
         )
 
-    def resize(self, width=None, height=None):
+    def resize(
+            self,
+            width: float | None = None,
+            height: float | None = None
+    ) -> "Rect":
         """
         Returns a rect with changed width and height.
         Fix x and y coordinate.
