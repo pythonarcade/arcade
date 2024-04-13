@@ -196,7 +196,7 @@ class Rect(NamedTuple):
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center(self, center_x, center_y):
+    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center x and y"""
         diff_x = center_x - self.center_x
         diff_y = center_y - self.center_y
