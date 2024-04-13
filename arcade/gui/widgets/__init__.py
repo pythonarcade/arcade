@@ -87,6 +87,12 @@ class Rect(NamedTuple):
 
     @property
     def size(self) -> Tuple[float, float]:
+        """Read-only pixel size of the rect.
+
+        Since these rects are immutable, use helper instance methods to
+        get updated rects. For example, :py:meth:`.resize` may be what
+        you're looking for.
+        """
         return self.width, self.height
 
     @property
