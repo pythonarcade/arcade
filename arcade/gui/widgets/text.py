@@ -309,7 +309,7 @@ class UIInputText(UIWidget):
 
     # Move layout one pixel into the scissor box so the caret is also shown at
     # position 0.
-    LAYOUT_OFFSET: float = 1.0
+    LAYOUT_OFFSET = 1
 
     def __init__(
         self,
@@ -351,7 +351,7 @@ class UIInputText(UIWidget):
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
-            self.doc, float(width - self.LAYOUT_OFFSET), float(height), multiline=multiline
+            self.doc, int(width - self.LAYOUT_OFFSET), int(height), multiline=multiline
         )
         self.layout.x += self.LAYOUT_OFFSET
         self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
@@ -431,8 +431,8 @@ class UIInputText(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.width = self.content_width - self.LAYOUT_OFFSET
-            layout.height = self.content_height
+            layout.width = int(self.content_width - self.LAYOUT_OFFSET)
+            layout.height = int(self.content_height)
             layout.end_update()
 
     @property
@@ -522,8 +522,8 @@ class UITextArea(UIWidget):
 
         self.layout = pyglet.text.layout.ScrollableTextLayout(
             self.doc,
-            width=self.content_width,
-            height=self.content_height,
+            width=int(self.content_width),
+            height=int(self.content_height),
             multiline=multiline,
         )
 
