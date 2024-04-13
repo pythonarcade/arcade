@@ -17,7 +17,7 @@ from typing import (
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-from typing_extensions import Self, ParamSpec
+from typing_extensions import Self
 
 import arcade
 from arcade import Sprite, get_window, Texture
