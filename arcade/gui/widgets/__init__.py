@@ -57,7 +57,7 @@ class Rect(NamedTuple):
         x, y, width, height = self
         return Rect(x + dx, y + dy, width, height)
 
-    def collide_with_point(self, x, y) -> bool:
+    def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
