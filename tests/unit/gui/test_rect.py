@@ -192,15 +192,15 @@ def test_rect_scale():
     rect_100 = Rect(100,100,100,100)
     rect_100_scaled = rect_100.scale(0.1234, None)
     assert rect_100_scaled == (12.34, 12.34, 12.34, 12.34)
-    assert rect_100.x == 12.34
-    assert rect_100.y == 12.34
-    assert rect_100.width == 12.34
-    assert rect_100.height == 12.34
+    assert rect_100_scaled.x == 12.34
+    assert rect_100_scaled.y == 12.34
+    assert rect_100_scaled.width == 12.34
+    assert rect_100_scaled.height == 12.34
 
     # Passing in None via rounding keyword applies no rounding
     rect_100_scaled = rect_100.scale(0.1234, rounding=None)
     assert rect_100_scaled == (12.34, 12.34, 12.34, 12.34)
-    assert rect_100.x == 12.34
-    assert rect_100.y == 12.34
-    assert rect_100.width == 12.34
-    assert rect_100.height == 12.34
+    assert rect_100_scaled.x == 12.34
+    assert rect_100_scaled.y == 12.34
+    assert rect_100_scaled.width == 12.34
+    assert rect_100_scaled.height == 12.34
