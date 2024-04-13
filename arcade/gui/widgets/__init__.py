@@ -58,6 +58,23 @@ class Rect(NamedTuple):
         return Rect(x + dx, y + dy, width, height)
 
     def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
+        """Return true if ``x`` and ``y`` are within this rect.
+
+        This check is inclusive. Values on the :py:attr:`.left`,
+        :py:attr:`.right`, :py:attr:`.top`, and :py:attr:`.bottom`
+        edges will be counted as inside the rect.
+
+        .. code-block:: python
+
+           >>> bounds = Rect(0.0, 0.0, 5.0, 5.0)
+           >>> bounds.collide_with_point(0.0, 0.0)
+           True
+           >>> bounds.collide_with_point(5.0, 5.0)
+           True
+
+        :param x: The x value to check as inside the rect.
+        :param y: The y value to check as inside the rect.
+        """
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
