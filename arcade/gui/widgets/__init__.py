@@ -75,9 +75,11 @@ class Rect(NamedTuple):
             width: float | None = None,
             height: float | None = None
     ) -> "Rect":
-        """
-        Returns a rect with changed width and height.
+        """Return a rect with a new width or height but same lower left.
+
         Fix x and y coordinate.
+        :param width: A width for the new rectangle in screen pixels.
+        :param height: A height for the new rectangle in screen pixels.
         """
         width = width if width is not None else self.width
         height = height if height is not None else self.height
