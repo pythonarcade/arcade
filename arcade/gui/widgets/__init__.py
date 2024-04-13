@@ -52,7 +52,7 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: float = 0, dy: float = 0) -> Self:
+    def move(self, dx: float = 0.0, dy: float = 0.0) -> Self:
         """Returns new Rect which is moved by dx and dy"""
         x, y, width, height = self
         return Rect(x + dx, y + dy, width, height)
