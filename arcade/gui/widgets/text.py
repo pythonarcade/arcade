@@ -22,7 +22,7 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255, RGB
+from arcade.types import RGBA255, Color, RGBOrA255
 
 
 class UILabel(UIWidget):
@@ -298,7 +298,8 @@ class UIInputText(UIWidget):
                       :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of
                       True is the same thing as
                       a :py:class:`~arcade.gui.UITextArea`.
-    :param caret_color: RGB color of the caret.
+    :param caret_color: An RGBA or RGB color for the caret with each
+        channel between 0 and 255, inclusive.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
                       space of the parent should be requested.
     :param size_hint_min: Minimum size hint width and height in pixel.
@@ -323,7 +324,7 @@ class UIInputText(UIWidget):
         font_size: float = 12,
         text_color: RGBOrA255 = (0, 0, 0, 255),
         multiline=False,
-        caret_color: RGB = (0, 0, 0),
+        caret_color: RGBOrA255 = (0, 0, 0, 255),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
