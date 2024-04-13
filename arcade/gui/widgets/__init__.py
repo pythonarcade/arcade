@@ -79,7 +79,10 @@ class Rect(NamedTuple):
         return left <= x <= left + width and bottom <= y <= bottom + height
 
     def scale(self, scale: float) -> "Rect":
-        """Returns a new rect with scale applied"""
+        """Return a new rect scaled relative to the origin.
+
+        :param scale: A scale factor.
+        """
         return Rect(
             int(self.x * scale),
             int(self.y * scale),
