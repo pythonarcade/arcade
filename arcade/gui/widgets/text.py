@@ -323,7 +323,7 @@ class UIInputText(UIWidget):
         font_size: float = 12,
         text_color: RGBOrA255 = (0, 0, 0, 255),
         multiline=False,
-        caret_color: RGB = (0, 0, 0),
+        caret_color: RGBOrA255 = (0, 0, 0, 255),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
