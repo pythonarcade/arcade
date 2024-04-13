@@ -47,9 +47,10 @@ class Camera2D:
     :param window: The Arcade Window to bind the camera to.
             Defaults to the currently active window.
     :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
-        describing the viewport, position, up, and zoom.
+        describing the position, up, forward and zoom.
     :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
-        which describes the left, right, top, bottom, far, near planes for an orthographic projection.
+        which describes the left, right, top, bottom, far, near planes and the viewport
+        for an orthographic projection.
     :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
         If the framebuffer is not the default screen nothing drawn after this camera is used will
         show up. The FrameBuffer's internal viewport is ignored.
