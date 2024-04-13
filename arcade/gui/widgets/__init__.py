@@ -31,7 +31,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255, Color, Point
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -80,39 +80,39 @@ class Rect(NamedTuple):
         return Rect(self.x, self.y, width, height)
 
     @property
-    def size(self):
+    def size(self) -> Tuple[float, float]:
         return self.width, self.height
 
     @property
-    def left(self):
+    def left(self) -> float:
         return self.x
 
     @property
-    def right(self):
+    def right(self) -> float:
         return self.x + self.width
 
     @property
-    def bottom(self):
+    def bottom(self) -> float:
         return self.y
 
     @property
-    def top(self):
+    def top(self) -> float:
         return self.y + self.height
 
     @property
-    def center_x(self):
+    def center_x(self) -> float:
         return self.x + self.width / 2
 
     @property
-    def center_y(self):
+    def center_y(self) -> float:
         return self.y + self.height / 2
 
     @property
-    def center(self):
+    def center(self) -> Point:
         return self.center_x, self.center_y
 
     @property
-    def position(self):
+    def position(self) -> Point:
         """Bottom left coordinates"""
         return self.left, self.bottom
 
