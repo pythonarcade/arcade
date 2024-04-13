@@ -552,12 +552,14 @@ class UITextArea(UIWidget):
     def _update_layout(self):
         # Update Pyglet layout size
         layout = self.layout
-        layout_size = layout.width, layout.height
 
-        if layout_size != self.content_size:
+        # Convert from local float coords to ints to avoid jitter
+        # since pyglet imposes int-only coordinates as of pyglet 2.0
+        content_width, content_height = map(int, self.content_size)
+        if content_width != layout.width or content_height != layout.height:
             layout.begin_update()
-            layout.width = self.content_width
-            layout.height = self.content_height
+            layout.width = content_width
+            layout.height = content_height
             layout.end_update()
 
     def do_render(self, surface: Surface):
