@@ -235,13 +235,13 @@ class Rect(NamedTuple):
         """
         Limits the size to the given max values.
         """
-        w, h = self.size
-        if width:
-            w = min(width, self.width)
-        if height:
-            h = min(height, self.height)
+        x, y, w, h = self
+        if width is not None:
+            w = min(width, w)
+        if height is not None:
+            h = min(height, h)
 
-        return Rect(self.x, self.y, w, h)
+        return Rect(x, y, w, h)
 
     def union(self, rect: "Rect"):
         """
