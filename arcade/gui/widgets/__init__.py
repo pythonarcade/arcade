@@ -243,7 +243,7 @@ class Rect(NamedTuple):
 
         return Rect(x, y, w, h)
 
-    def union(self, rect: "Rect"):
+    def union(self, rect: "Rect") -> "Rect":
         """
         Returns a new Rect that is the union of this rect and another.
         The union is the smallest rectangle that contains theses two rectangles.
