@@ -309,7 +309,7 @@ class UIInputText(UIWidget):
 
     # Move layout one pixel into the scissor box so the caret is also shown at
     # position 0.
-    LAYOUT_OFFSET = 1
+    LAYOUT_OFFSET: float = 1.0
 
     def __init__(
         self,
