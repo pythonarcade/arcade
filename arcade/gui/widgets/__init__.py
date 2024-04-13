@@ -97,18 +97,22 @@ class Rect(NamedTuple):
 
     @property
     def left(self) -> float:
+        """The left edge on the X axis."""
         return self.x
 
     @property
     def right(self) -> float:
+        """The right edge on the X axis."""
         return self.x + self.width
 
     @property
     def bottom(self) -> float:
+        """The bottom edge on the Y axis."""
         return self.y
 
     @property
     def top(self) -> float:
+        """The top edge on the Y axis."""
         return self.y + self.height
 
     @property
