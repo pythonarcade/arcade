@@ -298,7 +298,8 @@ class UIInputText(UIWidget):
                       :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of
                       True is the same thing as
                       a :py:class:`~arcade.gui.UITextArea`.
-    :param caret_color: RGB color of the caret.
+    :param caret_color: An RGBA or RGB color for the caret with each
+        channel between 0 and 255, inclusive.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
                       space of the parent should be requested.
     :param size_hint_min: Minimum size hint width and height in pixel.
