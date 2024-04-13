@@ -83,7 +83,7 @@ class Rect(NamedTuple):
     def scale(
             self,
             scale: float,
-            rounding: Optional[Callable[ParamSpec, float]] = floor
+            rounding: Optional[Callable[..., float]] = floor
     ) -> "Rect":
         """Return a new rect scaled relative to the origin.
 
