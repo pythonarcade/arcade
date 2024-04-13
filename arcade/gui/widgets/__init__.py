@@ -31,7 +31,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color, Point
+from arcade.types import RGBA255, Color, Point, AsFloat
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -52,7 +52,7 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: float = 0.0, dy: float = 0.0) -> Self:
+    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Self:
         """Returns new Rect which is moved by dx and dy"""
         x, y, width, height = self
         return Rect(x + dx, y + dy, width, height)
