@@ -352,7 +352,7 @@ class UIInputText(UIWidget):
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
-            self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
+            self.doc, int(width - self.LAYOUT_OFFSET), int(height), multiline=multiline
         )
         self.layout.x += self.LAYOUT_OFFSET
         self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
@@ -432,8 +432,8 @@ class UIInputText(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.width = self.content_width - self.LAYOUT_OFFSET
-            layout.height = self.content_height
+            layout.width = int(self.content_width - self.LAYOUT_OFFSET)
+            layout.height = int(self.content_height)
             layout.end_update()
 
     @property
@@ -523,8 +523,8 @@ class UITextArea(UIWidget):
 
         self.layout = pyglet.text.layout.ScrollableTextLayout(
             self.doc,
-            width=self.content_width,
-            height=self.content_height,
+            width=int(self.content_width),
+            height=int(self.content_height),
             multiline=multiline,
         )
 
@@ -553,12 +553,14 @@ class UITextArea(UIWidget):
     def _update_layout(self):
         # Update Pyglet layout size
         layout = self.layout
-        layout_size = layout.width, layout.height
 
-        if layout_size != self.content_size:
+        # Convert from local float coords to ints to avoid jitter
+        # since pyglet imposes int-only coordinates as of pyglet 2.0
+        content_width, content_height = map(int, self.content_size)
+        if content_width != layout.width or content_height != layout.height:
             layout.begin_update()
-            layout.width = self.content_width
-            layout.height = self.content_height
+            layout.width = content_width
+            layout.height = content_height
             layout.end_update()
 
     def do_render(self, surface: Surface):

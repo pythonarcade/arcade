@@ -442,28 +442,28 @@ class Text:
         return self._label.content_height
 
     @property
-    def left(self) -> int:
+    def left(self) -> float:
         """
         Pixel location of the left content border.
         """
         return self._label.left
 
     @property
-    def right(self) -> int:
+    def right(self) -> float:
         """
         Pixel location of the right content border.
         """
         return self._label.right
 
     @property
-    def top(self) -> int:
+    def top(self) -> float:
         """
         Pixel location of the top content border.
         """
         return self._label.top
 
     @property
-    def bottom(self) -> int:
+    def bottom(self) -> float:
         """
         Pixel location of the bottom content border.
         """
