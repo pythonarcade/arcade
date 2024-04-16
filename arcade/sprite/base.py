@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any
+from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
 import arcade
 from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
@@ -334,6 +334,44 @@ class BasicSprite:
 
         self._visible = value
 
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_color(self)
+
+    @property
+    def rgb(self) -> Tuple[int, int, int]:
+        """Get or set only the sprite's RGB color components.
+
+        If a 4-color RGBA tuple is passed:
+
+        * The new color's alpha value will be ignored
+        * The old alpha value will be preserved
+
+        """
+        return self._color[:3]
+
+    @rgb.setter
+    def rgb(self, color: RGBOrA255):
+
+        # Fast validation of size by unpacking channel values
+        try:
+            r, g, b, *_a = color
+            if len(_a) > 1:  # Alpha's only used to validate here
+                raise ValueError()
+
+        except ValueError as _:  # It's always a length issue
+            raise ValueError((
+                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                f" colors, but got {len(color)} channels"))
+
+        # Unpack to avoid index / . overhead & prep for repack
+        current_r, current_b, current_g, a = self._color
+
+        # Do nothing if equivalent to current color
+        if current_r == r and current_g == g and current_b == b:
+            return
+
+        # Preserve the current alpha value & update sprite lists
+        self._color = Color(r, g, b, a)
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
 
