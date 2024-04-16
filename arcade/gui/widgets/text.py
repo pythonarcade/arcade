@@ -354,7 +354,7 @@ class UIInputText(UIWidget):
         self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
             x=x +  self.LAYOUT_OFFSET, y=y, z=0.0,  # Position
-            width=width - self.LAYOUT_OFFSET, height=height,  # Size
+            width=int(width - self.LAYOUT_OFFSET), height=int(height),  # Size
             multiline=multiline
         )
         self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
