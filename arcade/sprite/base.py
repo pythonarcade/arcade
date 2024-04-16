@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
 import arcade
-from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
+from arcade.types import AsFloat, Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
@@ -195,7 +195,7 @@ class BasicSprite:
         return self._scale[0]
 
     @scale_x.setter
-    def scale_x(self, new_value: Union[float, int]):
+    def scale_x(self, new_value: AsFloat):
         if new_value == self._scale[0]:
             return
 
@@ -220,7 +220,7 @@ class BasicSprite:
         return self._scale[1]
 
     @scale_y.setter
-    def scale_y(self, new_value: Union[float, int]):
+    def scale_y(self, new_value: AsFloat):
         if new_value == self._scale[1]:
             return
 
@@ -243,7 +243,7 @@ class BasicSprite:
         return self._scale
 
     @scale.setter
-    def scale(self, new_value: Union[Point, float, int]):
+    def scale(self, new_value: Point | AsFloat):
         if isinstance(new_value, (float, int)):
             new_value_scale: Point = (new_value, new_value)
 
