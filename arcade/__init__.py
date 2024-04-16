@@ -140,8 +140,6 @@ from .draw_commands import draw_xywh_rectangle_outline
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
-from .camera import CameraData
-from .camera import OrthographicProjectionData
 from .camera import Camera2D
 
 # We don't have joysticks game controllers in headless mode
@@ -246,7 +244,6 @@ __all__ = [
     'TextureAnimation',
     'TextureKeyframe',
     'ArcadeContext',
-    'CameraData',
     'Camera2D',
     'ControllerManager',
     'FACE_DOWN',
@@ -354,7 +351,6 @@ __all__ = [
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'open_window',
-    'OrthographicProjectionData',
     'print_timings',
     'play_sound',
     'read_tmx',
