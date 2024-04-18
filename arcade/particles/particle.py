@@ -74,7 +74,7 @@ class LifetimeParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: PathOrTexture,
+            filename_or_texture: Optional[PathOrTexture],
             change_xy: Velocity,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
