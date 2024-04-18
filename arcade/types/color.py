@@ -24,7 +24,6 @@ from typing import Tuple, Iterable, Optional, Union, TypeVar
 
 from typing_extensions import Self
 
-import arcade
 from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
 
