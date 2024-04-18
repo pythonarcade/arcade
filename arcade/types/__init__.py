@@ -13,6 +13,7 @@ from typing import (
     Tuple,
     Union,
     TYPE_CHECKING,
+    TypeVar
 )
 
 from pytiled_parser import Properties
@@ -34,9 +35,6 @@ else:
     # See: https://peps.python.org/pep-0688/
     BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
 
-
-if TYPE_CHECKING:
-    from arcade.texture import Texture
 
 
 #: 1. Makes pyright happier while also telling readers
@@ -64,6 +62,7 @@ __all__ = [
     "BufferProtocol",
     "Color",
     "IPoint",
+    "PathOr",
     "PathOrTexture",
     "Point",
     "PointList",
@@ -94,7 +93,18 @@ Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
 FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
 
-PathOrTexture = Optional[Union[str, Path, "Texture"]]
+
+# Path handling
+PathLike = Union[str, Path, bytes]
+_POr = TypeVar('_POr') # Allows PathOr[TypeNameHere] syntax
+PathOr = Union[PathLike, _POr]
+
+
+# Specific utility resource aliases with type imports
+if TYPE_CHECKING:
+    from arcade.texture import Texture
+
+PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
