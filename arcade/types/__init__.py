@@ -93,9 +93,9 @@ __all__ = [
 ]
 
 
-# Point = Union[Tuple[float, float], List[float]]
-Point = Tuple[float, float]
-Point3 = Tuple[float, float, float]
+# Point = Union[Tuple[AsFloat, AsFloat], List[AsFloat]]
+Point = Tuple[AsFloat, AsFloat]
+Point3 = Tuple[AsFloat, AsFloat, AsFloat]
 IPoint = Tuple[int, int]
 
 
@@ -108,7 +108,7 @@ EMPTY_POINT_LIST: PointList = tuple()
 
 Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
 RectList = Union[Tuple[Rect, ...], List[Rect]]
-FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
+FloatRect = Union[Tuple[AsFloat, AsFloat, AsFloat, AsFloat], List[AsFloat]]  # x, y, width, height
 
 
 # Path handling
