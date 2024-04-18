@@ -27,6 +27,27 @@ from typing_extensions import Self
 from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
 
+__all__ = (
+    'Color',
+    'RGB',
+    'RGBA',
+    'RGBA255',
+    'RGBANormalized',
+    'RGBOrA',
+    'RGBOrA255',
+    'RGBOrANormalized',
+    'MASK_RGBA_R',
+    'MASK_RGBA_G',
+    'MASK_RGBA_B',
+    'MASK_RGBA_A',
+    'MASK_RGB_R',
+    'MASK_RGB_G',
+    'MASK_RGB_B',
+    'MAX_UINT24',
+    'MAX_UINT32',
+)
+
+
 # Helpful color-related constants for bit masking
 MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
@@ -454,24 +475,3 @@ class Color(RGBA255):
                 raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
         return tuple(ret)
-
-
-__all__ = (
-    'Color',
-    'RGB',
-    'RGBA',
-    'RGBA255',
-    'RGBANormalized',
-    'RGBOrA',
-    'RGBOrA255',
-    'RGBOrANormalized',
-    'MASK_RGBA_R',
-    'MASK_RGBA_G',
-    'MASK_RGBA_B',
-    'MASK_RGBA_A',
-    'MASK_RGB_R',
-    'MASK_RGB_G',
-    'MASK_RGB_B',
-    'MAX_UINT24',
-    'MAX_UINT32',
-)
