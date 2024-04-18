@@ -60,6 +60,7 @@ from arcade.types.color import Color
 
 
 __all__ = [
+    "AsFloat",
     "BufferProtocol",
     "Color",
     "IPoint",
