@@ -65,7 +65,9 @@ from arcade.types.color import RGBA
 from arcade.types.color import RGBOrA
 
 # Specific color aliases
+from arcade.types.color import RGB255
 from arcade.types.color import RGBA255
+from arcade.types.color import RGBNormalized
 from arcade.types.color import RGBANormalized
 from arcade.types.color import RGBOrA255
 from arcade.types.color import RGBOrANormalized
@@ -87,7 +89,11 @@ __all__ = [
     "Rect",
     "RectList",
     "RGB",
+    "RGBOrA",
     "RGBA255",
+    "RGB255",
+    "RGBNormalized",
+    "RGBOrA255",
     "RGBANormalized",
     "TiledObject",
 ]

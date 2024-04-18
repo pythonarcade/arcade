@@ -31,7 +31,9 @@ __all__ = (
     'Color',
     'RGB',
     'RGBA',
+    'RGB255',
     'RGBA255',
+    'RGBNormalized',
     'RGBANormalized',
     'RGBOrA',
     'RGBOrA255',
@@ -69,10 +71,12 @@ RGBA = Tuple[ChannelType, ChannelType, ChannelType, ChannelType]
 RGBOrA = Union[RGB[ChannelType], RGBA[ChannelType]]
 
 # Specific color aliases
+RGB255 = RGB[int]
+RGBA255 = RGBA[int]
+RGBNormalized = RGB[float]
+RGBANormalized = RGBA[float]
 RGBOrA255 = RGBOrA[int]
 RGBOrANormalized = RGBOrA[float]
-RGBA255 = RGBA[int]
-RGBANormalized = RGBA[float]
 
 
 class Color(RGBA255):
