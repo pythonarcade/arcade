@@ -8,7 +8,6 @@ import math
 import random
 
 import arcade
-from arcade.types import NamedPoint
 from pyglet.math import Mat4
 
 SCREEN_WIDTH = 800
@@ -93,12 +92,12 @@ class GameWindow(arcade.Window):
 
         # line strip
         self.line_strip = [
-            NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
             for _ in range(10)
         ]
         # Random list of points
         self.points = [
-            NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
             for _ in range(10_000)
         ]
 

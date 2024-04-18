@@ -4,7 +4,6 @@ Module specifying data custom types used for type hinting.
 from __future__ import annotations
 
 import sys
-from collections import namedtuple
 from pathlib import Path
 from typing import (
     List,
@@ -69,7 +68,6 @@ __all__ = [
     "Point",
     "PointList",
     "EMPTY_POINT_LIST",
-    "NamedPoint",
     "Rect",
     "RectList",
     "RGB",
@@ -87,7 +85,6 @@ Point = Tuple[float, float]
 Point3 = Tuple[float, float, float]
 IPoint = Tuple[int, int]
 Vector = Point
-NamedPoint = namedtuple("NamedPoint", ["x", "y"])
 
 
 PointList = Sequence[Point]
