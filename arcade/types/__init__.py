@@ -21,6 +21,8 @@ they go in the :py:mod:`arcade.types.color` submodule.
 """
 from __future__ import annotations
 
+# Don't lint import order since we have conditional compatibility shims
+# flake8: noqa: E402
 import sys
 from pathlib import Path
 from typing import (
