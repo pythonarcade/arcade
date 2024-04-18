@@ -46,9 +46,6 @@ from arcade.types.color import RGBOrANormalized
 from arcade.types.color import Color
 
 
-RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
-
-
 __all__ = [
     "BufferProtocol",
     "Color",
@@ -64,7 +61,6 @@ __all__ = [
     "RGB",
     "RGBA255",
     "RGBANormalized",
-    "RGBA255OrNormalized",
     "TiledObject",
     "Vector"
 ]
