@@ -62,7 +62,6 @@ from arcade.types.color import Color
 __all__ = [
     "BufferProtocol",
     "Color",
-    "ColorLike",
     "IPoint",
     "PathOrTexture",
     "Point",
@@ -76,7 +75,6 @@ __all__ = [
     "TiledObject",
 ]
 
-ColorLike = Union[RGB, RGBA255]
 
 # Point = Union[Tuple[float, float], List[float]]
 Point = Tuple[float, float]
