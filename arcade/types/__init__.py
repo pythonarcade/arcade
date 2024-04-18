@@ -100,6 +100,7 @@ __all__ = [
     "RGBNormalized",
     "RGBANormalized",
     "RGBOrANormalized",
+    "Size2D",
     "TiledObject",
     "Velocity"
 ]
