@@ -1,3 +1,22 @@
+"""Color-related types, aliases, and constants.
+
+This module does not contain pre-defined color values. For pre-made
+named color values, please see the following:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Module
+     - Contents
+
+   * - :py:mod:`arcade.color`
+     - A set of pre-defined :py:class`.Color` constants.
+
+   * - :py:mod:`arcade.csscolor`
+     - The `CSS named colors <https://developer.mozilla.org/en-US/docs/Web/CSS/named-color>`_
+       as :py:class:`.Color` constants.
+
+"""
 from __future__ import annotations
 
 import random
