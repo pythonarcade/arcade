@@ -94,10 +94,11 @@ __all__ = [
     "RGB",
     "RGBA",
     "RGBOrA",
-    "RGBA255",
     "RGB255",
-    "RGBNormalized",
+    "RGBA255",
     "RGBOrA255",
+    "RGBNormalized",
+    "RGBANormalized",
     "RGBOrANormalized",
     "TiledObject",
     "Velocity"
