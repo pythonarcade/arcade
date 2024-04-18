@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 from typing import Tuple, List, Union
-from arcade.types import Point, Vector
+from arcade.types import Point
 
 _PRECISION = 2
 
@@ -201,7 +201,7 @@ def rand_vec_spread_deg(
     angle: float,
     half_angle_spread: float,
     length: float
-) -> Vector:
+) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
 
@@ -219,7 +219,7 @@ def rand_vec_magnitude(
     angle: float,
     lo_magnitude: float,
     hi_magnitude: float,
-) -> Vector:
+) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
 

@@ -74,17 +74,14 @@ __all__ = [
     "RGBA255",
     "RGBANormalized",
     "TiledObject",
-    "Vector"
 ]
 
 ColorLike = Union[RGB, RGBA255]
 
 # Point = Union[Tuple[float, float], List[float]]
-# Vector = Point
 Point = Tuple[float, float]
 Point3 = Tuple[float, float, float]
 IPoint = Tuple[int, int]
-Vector = Point
 
 
 PointList = Sequence[Point]
