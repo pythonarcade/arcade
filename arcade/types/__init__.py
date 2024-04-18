@@ -36,7 +36,6 @@ else:
     BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
 
 
-
 #: 1. Makes pyright happier while also telling readers
 #: 2. Tells readers we're converting any ints to floats
 AsFloat = Union[float, int]
@@ -112,5 +111,3 @@ class TiledObject(NamedTuple):
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None
-
-
