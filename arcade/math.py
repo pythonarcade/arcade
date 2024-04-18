@@ -3,7 +3,6 @@ from __future__ import annotations
 import math
 import random
 from typing import Tuple, List, Union
-from pyglet.math import Vec2, Vec3
 from arcade.types import Point, Vector
 
 _PRECISION = 2
@@ -63,13 +62,13 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
+V_2D = Union[Tuple[float, float], List[float]]
+V_3D = Union[Tuple[float, float, float], List[float]]
+
+
 def lerp(v1: float, v2: float, u: float) -> float:
     """linearly interpolate between two values"""
     return v1 + ((v2 - v1) * u)
-
-
-V_2D = Union[Vec2, Tuple[float, float], List[float]]
-V_3D = Union[Vec3, Tuple[float, float, float], List[float]]
 
 
 def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Tuple[float, float]:
