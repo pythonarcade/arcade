@@ -1,5 +1,23 @@
-"""
-Module specifying data custom types used for type hinting.
+"""Fundamental aliases, classes, and related constants.
+
+As general rules:
+
+#. Things only go in this module if they serve multiple purposes
+   throughout arcade
+#. Only expose the most important classes at this module's top level
+
+For example, color-related types and related aliases go in
+``arcade.types`` because they're used throughout the codebase. This
+includes all the following areas:
+
+#. :py:class:`~arcade.Sprite`
+#. :py:class:`~arcade.SpriteList`
+#. :py:class:`~arcade.Text`
+#. The :py:mod:`arcade.gui` widgets
+#. Functions in :py:mod:`arcade.drawing_commands`
+
+However, since the color types, aliases, and constants are all related,
+they go in the :py:mod:`arcade.types.color` submodule.
 """
 from __future__ import annotations
 
