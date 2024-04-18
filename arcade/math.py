@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Tuple, List, Union
-from arcade.types import Point
+from typing import Sequence, Tuple, Union
+from arcade.types import AsFloat, Point
+
 
 _PRECISION = 2
 
@@ -62,11 +63,11 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
-V_2D = Union[Tuple[float, float], List[float]]
-V_3D = Union[Tuple[float, float, float], List[float]]
+V_2D = Union[Tuple[AsFloat, AsFloat], Sequence[AsFloat]]
+V_3D = Union[Tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
 
 
-def lerp(v1: float, v2: float, u: float) -> float:
+def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
     """linearly interpolate between two values"""
     return v1 + ((v2 - v1) * u)
 
