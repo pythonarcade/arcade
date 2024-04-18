@@ -92,12 +92,13 @@ __all__ = [
     "Rect",
     "RectList",
     "RGB",
+    "RGBA",
     "RGBOrA",
     "RGBA255",
     "RGB255",
     "RGBNormalized",
     "RGBOrA255",
-    "RGBANormalized",
+    "RGBOrANormalized",
     "TiledObject",
     "Velocity"
 ]
