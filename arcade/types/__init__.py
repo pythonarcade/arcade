@@ -131,7 +131,8 @@ PathOr = Union[PathLike, _POr]
 
 # Specific utility resource aliases with type imports
 if TYPE_CHECKING:
-    from arcade.texture import Texture
+    # The linters are wrong: this is used, so we noqa it
+    from arcade.texture import Texture  # flake8: noqa: F401
 
 PathOrTexture = PathOr["Texture"]
 
