@@ -4,10 +4,7 @@ Module specifying data custom types used for type hinting.
 from __future__ import annotations
 
 import sys
-from array import array
-import ctypes
 from collections import namedtuple
-from collections.abc import ByteString
 from pathlib import Path
 from typing import (
     List,
@@ -17,10 +14,27 @@ from typing import (
     Tuple,
     Union,
     TYPE_CHECKING,
-    TypeVar
 )
 
 from pytiled_parser import Properties
+
+
+# Backward-compatibility for buffer protocol objects
+# To learn more, see https://docs.python.org/3.8/c-api/buffer.html
+if sys.version_info >= (3, 12):
+    from collections.abc import Buffer as BufferProtocol
+else:
+    # The most common built-in buffer protocol objects
+    import ctypes
+    from array import array
+    from collections.abc import ByteString
+
+    # This is used instead of the typing_extensions version since they
+    # use an ABC which registers virtual subclasses. This will not work
+    # with ctypes.Array since virtual subclasses must be concrete.
+    # See: https://peps.python.org/pep-0688/
+    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
+
 
 if TYPE_CHECKING:
     from arcade.texture import Texture
@@ -97,11 +111,3 @@ class TiledObject(NamedTuple):
     type: Optional[str] = None
 
 
-if sys.version_info >= (3, 12):
-    from collections.abc import Buffer as BufferProtocol
-else:
-    # This is used instead of the typing_extensions version since they
-    # use an ABC which registers virtual subclasses. This will not work
-    # with ctypes.Array since virtual subclasses must be concrete.
-    # See: https://peps.python.org/pep-0688/
-    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
