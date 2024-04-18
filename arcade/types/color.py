@@ -22,7 +22,7 @@ from __future__ import annotations
 import random
 from typing import Tuple, Iterable, Optional, Union, TypeVar
 
-from typing_extensions import Self
+from typing_extensions import Self, Final
 
 from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
@@ -51,15 +51,15 @@ __all__ = (
 
 
 # Helpful color-related constants for bit masking
-MAX_UINT24 = 0xFFFFFF
-MAX_UINT32 = 0xFFFFFFFF
-MASK_RGBA_R = 0xFF000000
-MASK_RGBA_G = 0x00FF0000
-MASK_RGBA_B = 0x0000FF00
-MASK_RGBA_A = 0x000000FF
-MASK_RGB_R = 0xFF0000
-MASK_RGB_G = 0x00FF00
-MASK_RGB_B = 0x0000FF
+MAX_UINT24: Final[int] = 0xFFFFFF
+MAX_UINT32: Final[int] = 0xFFFFFFFF
+MASK_RGBA_R: Final[int] = 0xFF000000
+MASK_RGBA_G: Final[int] = 0x00FF0000
+MASK_RGBA_B: Final[int] = 0x0000FF00
+MASK_RGBA_A: Final[int] = 0x000000FF
+MASK_RGB_R: Final[int] = 0xFF0000
+MASK_RGB_G: Final[int] = 0x00FF00
+MASK_RGB_B: Final[int] = 0x0000FF
 
 
 # Color type aliases.
