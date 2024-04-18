@@ -6,7 +6,7 @@ from typing import Literal, Optional, Tuple
 
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
-from arcade.types import Point, PathOrTexture
+from arcade.types import Point, PathOrTexture, Velocity
 
 
 class Particle(Sprite):
@@ -53,7 +53,7 @@ class EternalParticle(Particle):
     def __init__(
             self,
             filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            change_xy: Velocity,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
             change_angle: float = 0,
@@ -75,7 +75,7 @@ class LifetimeParticle(Particle):
     def __init__(
             self,
             filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            change_xy: Velocity,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
@@ -105,7 +105,7 @@ class FadeParticle(LifetimeParticle):
     def __init__(
             self,
             filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            change_xy: Velocity,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,

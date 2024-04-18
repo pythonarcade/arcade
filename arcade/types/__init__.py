@@ -96,6 +96,7 @@ __all__ = [
     "RGBOrA255",
     "RGBANormalized",
     "TiledObject",
+    "Velocity"
 ]
 
 
@@ -104,6 +105,8 @@ Point = Tuple[AsFloat, AsFloat]
 Point3 = Tuple[AsFloat, AsFloat, AsFloat]
 IPoint = Tuple[int, int]
 
+# We won't keep this forever. It's a temp stub for particles we'll replace.
+Velocity = Tuple[AsFloat, AsFloat]
 
 PointList = Sequence[Point]
 # Speed / typing workaround:
