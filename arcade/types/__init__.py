@@ -105,10 +105,32 @@ __all__ = [
 ]
 
 
+_T = TypeVar('_T')
+
+#: ``Size2D`` helps mark int or float sizes. Use it like a
+#: :py:class:`typing.Generic`'s bracket notation as follows:
+#:
+#: .. code-block:: python
+#:
+#:    def example_Function(size: Size2D[int], color: RGBA255) -> Texture:
+#:       """An example of how to use Size2D.
+#:
+#:       Look at signature above, not the missing function body. The
+#:       ``size`` argument is how you can mark texture sizes, while
+#:       you can use ``Size2D[float]`` to denote float regions.
+#:
+#:       :param size: A made-up hypothetical argument.
+#:       :param color: Hypothetical texture-related argument.
+#:       """
+#:       ...  # No function definition
+#:
+Size2D = Tuple[_T, _T]
+
 # Point = Union[Tuple[AsFloat, AsFloat], List[AsFloat]]
 Point = Tuple[AsFloat, AsFloat]
 Point3 = Tuple[AsFloat, AsFloat, AsFloat]
 IPoint = Tuple[int, int]
+
 
 # We won't keep this forever. It's a temp stub for particles we'll replace.
 Velocity = Tuple[AsFloat, AsFloat]
