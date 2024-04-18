@@ -84,6 +84,7 @@ __all__ = [
     "PathOr",
     "PathOrTexture",
     "Point",
+    "Point3",
     "PointList",
     "EMPTY_POINT_LIST",
     "Rect",
