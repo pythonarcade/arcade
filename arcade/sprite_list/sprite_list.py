@@ -294,7 +294,7 @@ class SpriteList(Generic[SpriteType]):
         return self._visible
 
     @visible.setter
-    def visible(self, value: bool):
+    def visible(self, value: bool) -> None:
         self._visible = value
 
     @property
@@ -325,7 +325,7 @@ class SpriteList(Generic[SpriteType]):
         return Color.from_normalized(self._color)
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBA255) -> None:
         self._color = Color.from_iterable(color).normalized
 
     @property
@@ -350,7 +350,7 @@ class SpriteList(Generic[SpriteType]):
         return int(self._color[3] * 255)
 
     @alpha.setter
-    def alpha(self, value: int):
+    def alpha(self, value: int) -> None:
         # value = clamp(value, 0, 255)
         self._color = self._color[0], self._color[1], self._color[2], value / 255
 
@@ -367,7 +367,7 @@ class SpriteList(Generic[SpriteType]):
         return self._color[3]
 
     @alpha_normalized.setter
-    def alpha_normalized(self, value: float):
+    def alpha_normalized(self, value: float) -> None:
         # value = clamp(value, 0.0, 1.0)
         self._color = self._color[0], self._color[1], self._color[2], value
 
