@@ -338,7 +338,15 @@ class SpriteList(Generic[SpriteType]):
 
     @color_normalized.setter
     def color_normalized(self, value: RGBOrANormalized) -> None:
-        self._color = value
+        try:
+            r, g, b, *_a = value
+            assert len(_a) <= 1
+        except (ValueError, AssertionError) as e:
+            raise ValueError(
+                "color_normalized must unpack as 3 or 4 float values"
+            ) from e
+
+        self._color = r, g, b, _a[0] if _a else 1.0
 
     @property
     def alpha(self) -> int:
