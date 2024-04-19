@@ -34,7 +34,7 @@ from arcade import (
     gl,
 )
 from arcade.gl import Texture2D, Program
-from arcade.types import Color, RGBA255, RGBOrANormalized
+from arcade.types import Color, RGBA255, RGBOrANormalized, RGBANormalized
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
@@ -329,7 +329,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = Color.from_iterable(color).normalized
 
     @property
-    def color_normalized(self) -> Tuple[float, float, float, float]:
+    def color_normalized(self) -> RGBANormalized:
         """
         Get or set the spritelist color in normalized form (0.0 -> 1.0 floats).
         This property works the same as :py:attr:`~arcade.SpriteList.color`.
