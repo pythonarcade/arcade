@@ -203,7 +203,6 @@ def test_color():
     sp.alpha = 172
     assert sp.alpha == 172
     assert sp.alpha_normalized == pytest.approx(172/255, rel=0.01)
-    sp.alpha_normalized == 1.0
 
     # Alpha Normalized
     sp.alpha_normalized = 0.5
