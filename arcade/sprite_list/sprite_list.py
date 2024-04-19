@@ -1039,7 +1039,11 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
-    def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1):
+    def draw_hit_boxes(
+            self,
+            color: RGBA255 = (0, 0, 0, 255),
+            line_thickness: float = 1.0
+    ) -> None:
         """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
