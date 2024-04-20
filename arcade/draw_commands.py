@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import array
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import PIL.Image
 import PIL.ImageOps
@@ -18,7 +18,7 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from arcade.types import Color, RGBA255, PointList
+from arcade.types import Color, RGBA255, PointList, Point
 from arcade.earclip import earclip
 from .math import rotate_point
 from arcade import (
@@ -420,7 +420,7 @@ def draw_line_strip(point_list: PointList,
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
     else:
-        triangle_point_list: PointList = []
+        triangle_point_list: List[Point] = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
