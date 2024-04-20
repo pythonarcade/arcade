@@ -171,8 +171,8 @@ class MyGame(arcade.Window):
         """Render the screen."""
         self.clear()
 
-        self.camera.use()
         self.camera_shake.update_camera()
+        self.camera.use()
 
         # Draw our Scene
         self.scene.draw()

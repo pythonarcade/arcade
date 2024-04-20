@@ -190,6 +190,16 @@ def test_color_normalized_property():
     assert colors.GRAY.normalized == (128 / 255, 128 / 255, 128 / 255, 1.0)
 
 
+def test_color_rgb_property():
+    # Try some bounds
+    assert colors.WHITE.rgb == (255, 255, 255)
+    assert colors.BLACK.rgb == (0, 0, 0)
+
+    # Spot check unique colors
+    assert colors.COBALT.rgb == (0, 71, 171)
+    assert Color(1,3,5,7).rgb == (1, 3, 5)
+
+
 def test_deepcopy_color_values():
     expected_color = Color(255, 255, 255, 255)
     assert deepcopy(expected_color) == expected_color
