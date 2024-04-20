@@ -40,6 +40,7 @@ titles = {
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/billboard_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'text.py': ['Text', 'text.rst'],
     'texture/__init__.py': ['Texture Management', 'texture.rst'],
     'texture/texture.py': ['Texture Management', 'texture.rst'],
