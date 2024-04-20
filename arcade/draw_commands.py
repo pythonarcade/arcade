@@ -293,15 +293,18 @@ def draw_ellipse_filled(center_x: float, center_y: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
+    # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
 
-    # We need to normalize the color because we are setting it as a float uniform
-    program['color'] = Color.from_iterable(color).normalized
+    # Normalize the color because this shader takes a float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
+    program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
     buffer.orphan()
@@ -333,15 +336,18 @@ def draw_ellipse_outline(center_x: float, center_y: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
+    # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
     buffer = ctx.shape_ellipse_outline_unbuffered_buffer
 
-    # We need to normalize the color because we are setting it as a float uniform
-    program['color'] = Color.from_iterable(color).normalized
+    # Normalize the color because this shader takes a float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to shader
+    program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
     buffer.orphan()
@@ -368,29 +374,36 @@ def _generic_draw_line_strip(point_list: PointList,
     :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
-    c4 = Color.from_iterable(color)
-    c4e = c4 * len(point_list)
-    a = array.array('B', c4e)
-    vertices = array.array('f', tuple(item for sublist in point_list for item in sublist))
-
     geometry = ctx.generic_draw_line_strip_geometry
+    vertex_buffer = ctx.generic_draw_line_strip_vbo
+    color_buffer = ctx.generic_draw_line_strip_color
     program = ctx.line_vertex_shader
-    geometry.num_vertices = len(point_list)
 
-    # Double buffer sizes if out of space
-    while len(vertices) * 4 > ctx.generic_draw_line_strip_vbo.size:
-        ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo.size * 2)
-        ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color.size * 2)
+    # Validate and alpha-pad color, then expand to multi-vertex form since
+    # this shader normalizes internally as if made to draw multicolor lines.
+    rgba = Color.from_iterable(color)
+    num_vertices = len(point_list)  # Fail if it isn't a sized / sequence object
+
+    # Translate Python objects into types arcade's Buffer objects accept
+    color_array = array.array('B', rgba * num_vertices)
+    vertex_array = array.array('f', tuple(item for sublist in point_list for item in sublist))
+    geometry.num_vertices = num_vertices
+
+    # Double buffer sizes until they can hold all our data
+    goal_vertex_buffer_size = len(vertex_array) * 4
+    while goal_vertex_buffer_size > vertex_buffer.size:
+        vertex_buffer.orphan(color_buffer.size * 2)
+        color_buffer.orphan(color_buffer.size * 2)
     else:
-        ctx.generic_draw_line_strip_vbo.orphan()
-        ctx.generic_draw_line_strip_color.orphan()
+        vertex_buffer.orphan()
+        color_buffer.orphan()
 
-    ctx.generic_draw_line_strip_vbo.write(vertices)
-    ctx.generic_draw_line_strip_color.write(a)
-
+    # Write data & render
+    vertex_buffer.write(vertex_array)
+    color_buffer.write(color_array)
     geometry.render(program, mode=mode)
 
 
@@ -432,18 +445,23 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
+    line_pos_buffer = ctx.shape_line_buffer_pos
 
-    # We need to normalize the color because we are setting it as a float uniform
-    program['color'] = Color.from_iterable(color).normalized
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
+    program['color'] = color_normalized
     program['line_width'] = line_width
-    ctx.shape_line_buffer_pos.orphan()  # Allocate new buffer internally
-    ctx.shape_line_buffer_pos.write(
+    line_pos_buffer.orphan()  # Allocate new buffer internally
+    line_pos_buffer.write(
         data=array.array('f', (start_x, start_y, end_x, end_y)))
+
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
 
@@ -461,23 +479,29 @@ def draw_lines(point_list: PointList,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
+    line_buffer_pos = ctx.shape_line_buffer_pos
 
-    # We need to normalize the color because we are setting it as a float uniform
+    # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
-    while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
+
+    # Grow buffer until large enough to hold all our data
+    goal_buffer_size = len(point_list) * 3 * 4
+    while goal_buffer_size > line_buffer_pos.size:
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
     else:
         ctx.shape_line_buffer_pos.orphan()
 
+    # Pass data to shader
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
         data=array.array('f', tuple(v for point in point_list for v in point)))
+
     geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
 
 
@@ -507,15 +531,16 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
         :py:class:`~arcade.types.Color` instance.
     :param size: Size of the point in pixels.
     """
+    # Fails immediately if we don't have a window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
 
-    # We need to normalize the color because we are setting it as a float uniform
+    # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
+
     # Resize buffer
     data_size = len(point_list) * 8
     # if data_size > buffer.size:
@@ -847,18 +872,22 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
 
-    # We need to normalize the color because we are setting it as a float uniform
-    program['color'] = Color.from_iterable(color).normalized
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
+    program['color'] = color_normalized
     program['shape'] = width, height, tilt_angle
     buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
+
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
 
