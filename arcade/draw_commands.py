@@ -489,20 +489,22 @@ def draw_lines(point_list: PointList,
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
+    line_pos_array = array.array('f', tuple(v for point in point_list for v in point))
+    num_points = len(point_list)
+
     # Grow buffer until large enough to hold all our data
-    goal_buffer_size = len(point_list) * 3 * 4
+    goal_buffer_size = num_points * 3 * 4
     while goal_buffer_size > line_buffer_pos.size:
-        ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
+        ctx.shape_line_buffer_pos.orphan(line_buffer_pos.size * 2)
     else:
         ctx.shape_line_buffer_pos.orphan()
 
     # Pass data to shader
     program['line_width'] = line_width
     program['color'] = color_normalized
-    ctx.shape_line_buffer_pos.write(
-        data=array.array('f', tuple(v for point in point_list for v in point)))
+    line_buffer_pos.write(data=line_pos_array)
 
-    geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
+    geometry.render(program, mode=gl.GL_LINES, vertices=num_points)
 
 
 # --- BEGIN POINT FUNCTIONS # # #
