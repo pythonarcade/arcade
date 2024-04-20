@@ -5,7 +5,6 @@ from arcade import camera, Window
 
 def test_orthographic_projector_use(window: Window):
     # Given
-    from pyglet.math import Mat4
     ortho_camera = camera.OrthographicProjector()
 
     view_matrix = ortho_camera._generate_view_matrix()

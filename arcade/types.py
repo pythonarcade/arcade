@@ -35,6 +35,11 @@ from arcade.utils import (
 if TYPE_CHECKING:
     from arcade.texture import Texture
 
+
+#: 1. Makes pyright happier while also telling readers
+#: 2. Tells readers we're converting any ints to floats
+AsFloat = Union[float, int]
+
 MAX_UINT24 = 0xFFFFFF
 MAX_UINT32 = 0xFFFFFFFF
 
@@ -154,6 +159,26 @@ class Color(RGBA255):
     @property
     def a(self) -> int:
         return self[3]
+
+    @property
+    def rgb(self) -> Tuple[int, int, int]:
+        """Return only a color's RGB components.
+
+        This is syntactic sugar for slice indexing as below:
+
+        .. code-block:: python
+
+            >>> from arcade.color import WHITE
+            >>> WHITE[:3]
+            (255, 255, 255)
+            # Equivalent but slower than the above
+            >>> (WHITE.r, WHITE.g, WHITE.b)
+            (255, 255, 255)
+
+        To reorder the channels as you retrieve them, see
+        :meth:`.swizzle`.
+        """
+        return self[:3]
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:

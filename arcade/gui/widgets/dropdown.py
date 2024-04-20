@@ -176,8 +176,13 @@ class UIDropdown(UILayout):
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets
+        overlay = self._overlay
+        rect = overlay.rect
+        if overlay.size_hint_min is not None:
+            rect = rect.resize(*overlay.size_hint_min)
+
         self._overlay.rect = (
-            self._overlay.rect.resize(*self._overlay.size_hint_min)
+            rect
             .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
         )

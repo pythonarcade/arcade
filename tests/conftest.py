@@ -160,6 +160,14 @@ class WindowProxy:
     def background_color(self, color):
         self.window.background_color = color
 
+    @property
+    def current_camera(self):
+        return self.window.current_camera
+
+    @current_camera.setter
+    def current_camera(self, new_camera):
+        self.window.current_camera = new_camera
+
     def clear(self, *args, **kwargs):
         return self.window.clear(*args, **kwargs)
 

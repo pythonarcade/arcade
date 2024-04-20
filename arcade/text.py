@@ -213,8 +213,9 @@ class Text:
             z=z,
             font_name=adjusted_font,
             font_size=font_size,
-            anchor_x=anchor_x,
-            anchor_y=anchor_y,
+            # use type: ignore since cast is slow & pyglet used Literal
+            anchor_x=anchor_x,  # type: ignore
+            anchor_y=anchor_y,  # type: ignore
             color=Color.from_iterable(color),
             width=width,
             align=align,
@@ -358,7 +359,7 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x
+        self._label.anchor_x = anchor_x  # type: ignore
 
     @property
     def anchor_y(self) -> str:
@@ -371,7 +372,7 @@ class Text:
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y
+        self._label.anchor_y = anchor_y  # type: ignore
 
     @property
     def rotation(self) -> float:
@@ -442,28 +443,28 @@ class Text:
         return self._label.content_height
 
     @property
-    def left(self) -> int:
+    def left(self) -> float:
         """
         Pixel location of the left content border.
         """
         return self._label.left
 
     @property
-    def right(self) -> int:
+    def right(self) -> float:
         """
         Pixel location of the right content border.
         """
         return self._label.right
 
     @property
-    def top(self) -> int:
+    def top(self) -> float:
         """
         Pixel location of the top content border.
         """
         return self._label.top
 
     @property
-    def bottom(self) -> int:
+    def bottom(self) -> float:
         """
         Pixel location of the bottom content border.
         """

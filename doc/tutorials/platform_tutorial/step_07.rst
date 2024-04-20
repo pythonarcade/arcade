@@ -7,9 +7,8 @@ Now that our player can move and jump around, we need to give them a way to expl
 beyond the original window. If you've ever played a platformer game, you might be familiar with the
 concept of the screen scrolling to reveal more of the map as the player moves.
 
-To achieve this, we can use a Camera, Arcade provides :class:`arcade.SimpleCamera` and :class:`arcade.Camera`.
-They both do the same base thing, but Camera has a bit of extra functionality that SimpleCamera doesn't.
-For now, we will just use the SimpleCamera.
+To achieve this, we can use a Camera. Since we are making a 2D game, ``arcade.camera.Camera2D`` will
+be easiest.
 
 To start with, let's go ahead and add a variable in our ``__init__`` function to hold it:
 
@@ -21,16 +20,15 @@ Next we can go to our setup function, and initialize it like so:
 
 .. code-block::
 
-    self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+    self.camera = arcade.camera.Camera2D()
 
-The ``viewport`` parameter here defines the size of the camera. In most circumstances, you will want this
-to be the size of your window. So we specify the bottom and left coordinates of our camera viewport as
-(0, 0), and provide it the width and height of our window.
+Since we're drawing to the entire screen, we can use ``Camera2D``'s default settings.
+In other circumstances, we can create or adjust the camera so it has a different viewport.
 
 In order to use our camera when drawing things to the screen, we only need to add one line to our ``on_draw``
 function. This line should typically come before anything you want to draw with the camera. In later chapters,
 we'll explore using multiple cameras to draw things in different positions. Go ahead and add this line before
-drawing our SpriteLists
+drawing our SpriteLists:
 
 .. code-block::
 
@@ -49,7 +47,7 @@ consideration.
 
 .. code-block::
 
-    self.camera.center(self.player_sprite.position)
+    self.camera.position = self.player_sprite.position
 
 Source Code
 ~~~~~~~~~~~
