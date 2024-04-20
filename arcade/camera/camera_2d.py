@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Optional, Tuple, Iterator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
+from typing_extensions import Self
+
 from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import CameraData, OrthographicProjectionData, Projector
 from arcade.gl import Framebuffer
@@ -45,9 +47,10 @@ class Camera2D:
     :param window: The Arcade Window to bind the camera to.
             Defaults to the currently active window.
     :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
-        describing the viewport, position, up, and zoom.
+        describing the position, up, forward and zoom.
     :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
-        which describes the left, right, top, bottom, far, near planes for an orthographic projection.
+        which describes the left, right, top, bottom, far, near planes and the viewport
+        for an orthographic projection.
     :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
         If the framebuffer is not the default screen nothing drawn after this camera is used will
         show up. The FrameBuffer's internal viewport is ignored.
@@ -59,21 +62,21 @@ class Camera2D:
                  window: Optional["Window"] = None):
         self._window: "Window" = window or get_window()
         self.render_target: Framebuffer = render_target or self._window.ctx.screen
-
-        half_width = self._window.width / 2
-        half_height = self._window.height / 2
+        width, height = self.render_target.size
+        half_width = width / 2
+        half_height = height / 2
 
         self._data = camera_data or CameraData(
-            (half_width, half_height, 0.0),  # position
-            (0.0, 1.0, 0.0),  # up vector
-            (0.0, 0.0, -1.0),  # forward vector
-            1.0  # zoom
+            position=(half_width, half_height, 0.0),
+            up=(0.0, 1.0, 0.0),
+            forward=(0.0, 0.0, -1.0),
+            zoom=1.0
         )
         self._projection: OrthographicProjectionData = projection_data or OrthographicProjectionData(
-            -half_width, half_width,  # Left and Right.
-            -half_height, half_height,  # Bottom and Top.
-            0.0, 100.0,  # Near and Far.
-            (0, 0, self._window.width, self._window.height)  # Viewport
+            left=-half_width, right=half_width,
+            bottom=-half_height, top=half_height,
+            near=0.0, far=100.0,
+            viewport=(0, 0, width, height)
         )
 
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
@@ -82,8 +85,9 @@ class Camera2D:
             projection=self._projection
         )
 
-    @staticmethod
+    @classmethod
     def from_raw_data(
+            cls,
             viewport: Optional[Tuple[int, int, int, int]] = None,
             position: Optional[Tuple[float, float]] = None,
             up: Tuple[float, float] = (0.0, 1.0),
@@ -94,7 +98,7 @@ class Camera2D:
             *,
             render_target: Optional[Framebuffer] = None,
             window: Optional["Window"] = None
-    ):
+    ) -> Self:
         """
         Create a Camera2D without first defining CameraData or an OrthographicProjectionData object.
 
@@ -114,31 +118,32 @@ class Camera2D:
             Defaults to the currently active window.
         """
         window = window or get_window()
-
-        half_width = window.width / 2
-        half_height = window.height / 2
+        render_target = render_target or window.ctx.screen
+        width, height = render_target.size
+        half_width = width / 2
+        half_height = height / 2
 
         _pos = position or (half_width, half_height)
-        _data: CameraData = CameraData(
-            (_pos[0], _pos[1], 0.0),  # position
-            (up[0], up[1], 0.0),  # up vector
-            (0.0, 0.0, -1.0),  # forward vector
-            zoom  # zoom
+        _data = CameraData(
+            position=(_pos[0], _pos[1], 0.0),
+            up=(up[0], up[1], 0.0),
+            forward=(0.0, 0.0, -1.0),
+            zoom=zoom
         )
 
         left, right, bottom, top = projection or (-half_width, half_width, -half_height, half_height)
         _projection: OrthographicProjectionData = OrthographicProjectionData(
-            left, right,  # Left and Right.
-            top, bottom,  # Bottom and Top.
-            near or 0.0, far or 100.0,  # Near and Far.
-            viewport or (0, 0, window.width, window.height)  # Viewport
+            left=left, right=right,
+            top=top, bottom=bottom,
+            near=near or 0.0, far=far or 100.0,
+            viewport=viewport or (0, 0, width, height)
         )
 
-        return Camera2D(
+        return cls(
             camera_data=_data,
             projection_data=_projection,
             window=window,
-            render_target=(render_target or window.ctx.screen)
+            render_target=render_target
         )
 
     @property
@@ -497,9 +502,11 @@ class Camera2D:
 
     @property
     def viewport(self) -> Tuple[int, int, int, int]:
-        """
-        The pixel area that will be drawn to while the camera is active.
-        (left, right, bottom, top)
+        """Get/set pixels of the ``render_target`` drawn to when active.
+
+        The pixel area is defined as integer pixel coordinates starting
+        from the bottom left of ``self.render_target``. They are ordered
+        as ``(left, bottom, width, height)``.
         """
         return self._projection.viewport
 
@@ -719,7 +726,7 @@ class Camera2D:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: float = 0.0
+            depth: Optional[float] = 0.0
     ) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within

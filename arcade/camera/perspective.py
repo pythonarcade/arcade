@@ -1,24 +1,23 @@
 from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
 
+from math import tan, radians
 from pyglet.math import Mat4, Vec3, Vec4
 
-from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
+from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
 
 
-__all__ = [
-    'OrthographicProjector'
-]
+__all__ = ("PerspectiveProjector",)
 
 
-class OrthographicProjector:
+class PerspectiveProjector:
     """
-    The simplest from of an orthographic camera.
-    Using ViewData and OrthographicProjectionData PoDs (Pack of Data)
+    The simplest from of a perspective camera.
+    Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
     it generates the correct projection and view matrices. It also
     provides methods and a context manager for using the matrices in
     glsl shaders.
@@ -31,18 +30,19 @@ class OrthographicProjector:
     be inefficient. If you suspect this is causing slowdowns
     profile before optimizing with a dirty value check.
 
-    Initialize a Projector which produces an orthographic projection matrix using
+    Initialize a Projector which produces a perspective projection matrix using
     a CameraData and PerspectiveProjectionData PoDs.
 
     :param window: The window to bind the camera to. Defaults to the currently active camera.
     :param view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
-    :param projection: The OrthographicProjectionData PoD.
-                contains the left, right, bottom top, near, and far planes.
+    :param projection: The PerspectiveProjectionData PoD.
+                contains the field of view, aspect ratio, and then near and far planes.
     """
+
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  view: Optional[CameraData] = None,
-                 projection: Optional[OrthographicProjectionData] = None):
+                 projection: Optional[PerspectiveProjectionData] = None):
         self._window: "Window" = window or get_window()
 
         self._view = view or CameraData(  # Viewport
@@ -52,11 +52,10 @@ class OrthographicProjector:
             1.0  # Zoom
         )
 
-        self._projection = projection or OrthographicProjectionData(
-            -0.5 * self._window.width, 0.5 * self._window.width,  # Left, Right
-            -0.5 * self._window.height, 0.5 * self._window.height,  # Bottom, Top
-            -100, 100,  # Near, Far
-
+        self._projection = projection or PerspectiveProjectionData(
+            self._window.width / self._window.height,  # Aspect
+            60,  # Field of View,
+            0.01, 100.0,  # near, # far
             (0, 0, self._window.width, self._window.height)  # Viewport
         )
 
@@ -68,7 +67,7 @@ class OrthographicProjector:
         return self._view
 
     @property
-    def projection(self) -> OrthographicProjectionData:
+    def projection(self) -> PerspectiveProjectionData:
         """
         The OrthographicProjectionData. Is a read only property.
         """
@@ -82,28 +81,9 @@ class OrthographicProjector:
         Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
         the pixels uniform in size. Avoid a zoom of 0.0.
         """
+        _proj = self._projection
 
-        # Find the center of the projection values (often 0,0 or the center of the screen)
-        _projection_center = (
-            (self._projection.left + self._projection.right) / 2,
-            (self._projection.bottom + self._projection.top) / 2
-        )
-
-        # Find half the width of the projection
-        _projection_half_size = (
-            (self._projection.right - self._projection.left) / 2,
-            (self._projection.top - self._projection.bottom) / 2
-        )
-
-        # Scale the projection by the zoom value. Both the width and the height
-        # share a zoom value to avoid ugly stretching.
-        _true_projection = (
-            _projection_center[0] - _projection_half_size[0] / self._view.zoom,
-            _projection_center[0] + _projection_half_size[0] / self._view.zoom,
-            _projection_center[1] - _projection_half_size[1] / self._view.zoom,
-            _projection_center[1] + _projection_half_size[1] / self._view.zoom
-        )
-        return Mat4.orthogonal_projection(*_true_projection, self._projection.near, self._projection.far)
+        return Mat4.perspective_projection(_proj.aspect, _proj.near, _proj.far, _proj.fov / self._view.zoom)
 
     def _generate_view_matrix(self) -> Mat4:
         """
@@ -154,7 +134,7 @@ class OrthographicProjector:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = 0.0
+            depth: Optional[float] = None
     ) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
@@ -170,20 +150,20 @@ class OrthographicProjector:
         Returns:
             A 3D vector in world space.
         """
-        depth = depth or 0.0
+        depth = depth or (0.5 * self._projection.viewport[3] / tan(
+            radians(0.5 * self._projection.fov / self._view.zoom)))
 
-        # TODO: Integrate z-depth
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
-        screen_z = 2.0 * (depth - self._projection.near) / (self._projection.far - self._projection.near) - 1
 
-        _view = self._generate_view_matrix()
-        _projection = self._generate_projection_matrix()
+        screen_x *= depth
+        screen_y *= depth
 
-        screen_position = Vec4(screen_x, screen_y, screen_z, 1.0)
+        projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
 
-        _full = ~(_projection @ _view)
+        _projection = ~self._generate_projection_matrix()
+        view_position = _projection @ projected_position
+        _view = ~self._generate_view_matrix()
+        world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
 
-        _mapped_position = _full @ screen_position
-
-        return _mapped_position[0], _mapped_position[1], _mapped_position[2]
+        return world_position.x, world_position.y, world_position.z
