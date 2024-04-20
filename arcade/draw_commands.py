@@ -542,16 +542,17 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
+    num_points = len(point_list)
 
     # Resize buffer
-    data_size = len(point_list) * 8
+    data_size = num_points * 8
     # if data_size > buffer.size:
     buffer.orphan(size=data_size)
 
     program['color'] = color_normalized
     program['shape'] = size, size, 0
     buffer.write(data=array.array('f', tuple(v for point in point_list for v in point)))
-    geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
+    geometry.render(program, mode=ctx.POINTS, vertices=num_points)
 
 
 # --- END POINT FUNCTIONS # # #
