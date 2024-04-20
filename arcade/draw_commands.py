@@ -552,7 +552,9 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
     program['color'] = color_normalized
     program['shape'] = size, size, 0
     buffer.write(data=array.array('f', tuple(v for point in point_list for v in point)))
-    geometry.render(program, mode=ctx.POINTS, vertices=num_points)
+
+    # Only render the # of points we have complete data for
+    geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
 
 
 # --- END POINT FUNCTIONS # # #
