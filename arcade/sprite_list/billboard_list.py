@@ -1,4 +1,8 @@
+from __future__ import annotations
 from arcade.sprite_list import SpriteList
+
+
+__all__ = ("BillboardList",)
 
 
 class BillboardList(SpriteList):
