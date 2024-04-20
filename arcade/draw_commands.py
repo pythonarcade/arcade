@@ -489,7 +489,7 @@ def draw_lines(point_list: PointList,
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
-    line_pos_array = array.array('f', tuple(v for point in point_list for v in point))
+    line_pos_array = array.array('f', (v for point in point_list for v in point))
     num_points = len(point_list)
 
     # Grow buffer until large enough to hold all our data
