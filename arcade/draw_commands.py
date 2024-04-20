@@ -591,22 +591,29 @@ def draw_polygon_outline(point_list: PointList,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Convert to modifiable list & close the loop
     new_point_list = list(point_list)
     new_point_list.append(point_list[0])
 
+    # Create a place to store the triangles we'll use to thicken the line
     triangle_point_list = []
+
     # This needs a lot of improvement
     last_point = None
     for point in new_point_list:
         if last_point is not None:
-            points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            # Calculate triangles, then re-order to link up the quad?
+            points = get_points_for_thick_line(*last_point, *point, line_width)
             reordered_points = points[1], points[0], points[2], points[3]
+
             triangle_point_list.extend(reordered_points)
         last_point = point
 
-    points = get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0],
-                                       new_point_list[1][1], line_width)
+    # Use first two points of new list to close the loop
+    new_start, new_next = new_point_list[:2]
+    points = get_points_for_thick_line(*new_start, *new_next, line_width)
     triangle_point_list.append(points[1])
+
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
