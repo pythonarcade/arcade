@@ -299,15 +299,9 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['color'] = color_normalized
+    # We need to normalize the color because we are setting it as a float uniform
+    program['color'] = Color.from_iterable(color).normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
     buffer.orphan()
@@ -345,15 +339,9 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
     buffer = ctx.shape_ellipse_outline_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['color'] = color_normalized
+    # We need to normalize the color because we are setting it as a float uniform
+    program['color'] = Color.from_iterable(color).normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
     buffer.orphan()
@@ -449,16 +437,10 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # We need to normalize the color because we are setting it as a float uniform
+    program['color'] = Color.from_iterable(color).normalized
     program['line_width'] = line_width
-    program['color'] = color_normalized
     ctx.shape_line_buffer_pos.orphan()  # Allocate new buffer internally
     ctx.shape_line_buffer_pos.write(
         data=array.array('f', (start_x, start_y, end_x, end_y)))
@@ -484,14 +466,9 @@ def draw_lines(point_list: PointList,
 
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # We need to normalize the color because we are setting it as a float uniform
+    color_normalized = Color.from_iterable(color).normalized
     while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
     else:
@@ -536,14 +513,9 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # We need to normalize the color because we are setting it as a float uniform
+    color_normalized = Color.from_iterable(color).normalized
     # Resize buffer
     data_size = len(point_list) * 8
     # if data_size > buffer.size:
@@ -881,15 +853,9 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
-    elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['color'] = color_normalized
+    # We need to normalize the color because we are setting it as a float uniform
+    program['color'] = Color.from_iterable(color).normalized
     program['shape'] = width, height, tilt_angle
     buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
