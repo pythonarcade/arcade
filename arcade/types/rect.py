@@ -146,8 +146,7 @@ class Rect(NamedTuple):
         bottom = self.bottom
         width = max(width or 0.0, self.width)
         height = max(height or 0.0, self.height)
-        rect = LBWH.as_new_attrs(left, bottom, width, height)
-        return Rect(*rect)
+        return LBWH(left, bottom, width, height)
 
     def max_size(
             self,
@@ -161,8 +160,7 @@ class Rect(NamedTuple):
         bottom = self.bottom
         width = min(width or float("inf"), self.width)
         height = min(height or float("inf"), self.height)
-        rect = LBWH.as_new_attrs(left, bottom, width, height)
-        return Rect(*rect)
+        return LBWH(left, bottom, width, height)
 
     def union(self, other: Rect) -> Rect:
         """
@@ -173,8 +171,7 @@ class Rect(NamedTuple):
         right = max(self.right, other.right)
         bottom = min(self.bottom, other.bottom)
         top = max(self.top, other.top)
-        rect = LRBT.as_new_attrs(left, right, bottom, top)
-        return Rect(*rect)
+        return LRBT(left, right, bottom, top)
 
     def __or__(self, other: Rect) -> Rect:
         return self.union(other)
@@ -195,8 +192,7 @@ class Rect(NamedTuple):
         right = min(self.right, other.right)
         bottom = max(self.bottom, other.bottom)
         top = min(self.top, other.top)
-        rect = LRBT.as_new_attrs(left, right, bottom, top)
-        return Rect(*rect)
+        return LRBT(left, right, bottom, top)
 
     def collides(self, other: Rect) -> bool:
         return (self.right >= other.left and other.right >= self.left) and \
@@ -232,6 +228,9 @@ class LRBT(Rect):
         rect = cls.as_new_attrs(left, right, bottom, top)
         return Rect.__new__(cls, *rect)
 
+    def __init__(self, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat):
+        ...
+
     @staticmethod
     def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
         return (rect.left, rect.right, rect.bottom, rect.top)
@@ -249,6 +248,9 @@ class LBWH(Rect):
     def __new__(cls, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat):
         rect = cls.as_new_attrs(left, bottom, width, height)
         return Rect.__new__(cls, *rect)
+
+    def __init__(self, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat):
+        ...
 
     @staticmethod
     def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
@@ -268,6 +270,9 @@ class XYWH(Rect):
         rect = cls.to_rect_attrs(x, y, width, height)
         return Rect.__new__(cls, *rect)
 
+    def __init__(self, x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat):
+        ...
+
     @staticmethod
     def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
         return (rect.x, rect.y, rect.width, rect.height)
@@ -285,6 +290,9 @@ class XYRR(Rect):
     def __new__(cls, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat):
         rect = cls.to_rect_attrs(x, y, half_width * 2, half_height * 2)
         return Rect.__new__(cls, *rect)
+
+    def __init__(self, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat):
+        ...
 
     @staticmethod
     def from_rect(rect: Rect) -> tuple[float, float, float, float]:
