@@ -77,6 +77,9 @@ from arcade.types.color import RGBOrANormalized
 # The Color helper type
 from arcade.types.color import Color
 
+# Rectangle
+from arcade.types.rect import Rect
+
 
 __all__ = [
     "AsFloat",
@@ -89,6 +92,7 @@ __all__ = [
     "Point3",
     "PointList",
     "EMPTY_POINT_LIST",
+    "IntRect",
     "Rect",
     "RectList",
     "RGB",
@@ -143,8 +147,8 @@ PointList = Sequence[Point]
 EMPTY_POINT_LIST: PointList = tuple()
 
 
-Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
-RectList = Union[Tuple[Rect, ...], List[Rect]]
+IntRect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
+RectList = Union[Tuple[IntRect, ...], List[IntRect]]
 FloatRect = Union[Tuple[AsFloat, AsFloat, AsFloat, AsFloat], List[AsFloat]]  # x, y, width, height
 
 
@@ -163,7 +167,7 @@ PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
-    shape: Union[Point, PointList, Rect]
+    shape: Union[Point, PointList, IntRect]
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None
