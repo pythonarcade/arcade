@@ -6,6 +6,7 @@ See the other GUI examples for more information.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.widget_gallery
 """
+
 from __future__ import annotations
 
 from textwrap import dedent
@@ -21,6 +22,7 @@ from arcade.gui import (
     UITextureToggle,
     UITextArea,
     UIInputText,
+    UIBoxLayout,
 )
 from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
@@ -47,9 +49,15 @@ class MyView(arcade.View):
             col_num=0,
             row_num=0,
             child=UITextureButton(
-                texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-                texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-                texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+                texture=load_texture(
+                    ":resources:gui_basic_assets/red_button_normal.png"
+                ),
+                texture_hovered=load_texture(
+                    ":resources:gui_basic_assets/red_button_hover.png"
+                ),
+                texture_pressed=load_texture(
+                    ":resources:gui_basic_assets/red_button_press.png"
+                ),
             ),
         )
 
@@ -63,21 +71,27 @@ class MyView(arcade.View):
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
+                    texture=load_texture(
+                        ":resources:gui_basic_assets/red_button_normal.png"
+                    ),
                 ),
                 texture_hovered=NinePatchTexture(
                     left=5,
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
+                    texture=load_texture(
+                        ":resources:gui_basic_assets/red_button_hover.png"
+                    ),
                 ),
                 texture_pressed=NinePatchTexture(
                     left=5,
                     right=5,
                     bottom=5,
                     top=5,
-                    texture=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+                    texture=load_texture(
+                        ":resources:gui_basic_assets/red_button_press.png"
+                    ),
                 ),
             ),
         )
@@ -90,22 +104,44 @@ class MyView(arcade.View):
         )
 
         # Simple toggle
-        grid.add(
+
+        toggles = grid.add(
+            UIBoxLayout(space_between=10, vertical=False),
             col_num=0,
             row_num=3,
-            child=UITextureToggle(
-                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
-                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png"),
-            ),
         )
+        toggles.add(
+            UITextureToggle(
+                on_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_green.png"
+                ),
+                off_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_red.png"
+                ),
+            )
+        )
+        toggles.add(
+            UITextureToggle(
+                on_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_green.png"
+                ),
+                off_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_red.png"
+                ),
+            )
+        ).disabled = True
 
         # Simple slider
         grid.add(
             col_num=0,
             row_num=4,
             child=UITextureSlider(
-                track=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
-                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
+                track=arcade.load_texture(
+                    ":resources:gui_basic_assets/slider_track.png"
+                ),
+                thumb=arcade.load_texture(
+                    ":resources:gui_basic_assets/slider_thumb.png"
+                ),
             ),
         )
 
@@ -115,13 +151,17 @@ class MyView(arcade.View):
             row_num=5,
             child=UITextureSlider(
                 track=NinePatchTexture(
-                    texture=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
+                    texture=arcade.load_texture(
+                        ":resources:gui_basic_assets/slider_track.png"
+                    ),
                     left=30,
                     right=33,
                     bottom=18,
                     top=18,
                 ),
-                thumb=arcade.load_texture(":resources:gui_basic_assets/slider_thumb.png"),
+                thumb=arcade.load_texture(
+                    ":resources:gui_basic_assets/slider_thumb.png"
+                ),
                 height=40,
             ),
         )
