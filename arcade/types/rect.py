@@ -312,3 +312,20 @@ class XYRR(Rect):
         bottom = y - half_width
         top = y + half_width
         return (left, right, bottom, top, half_width * 2, half_height * 2, x, y)
+
+
+# Make a LRBT
+r = LRBT(10, 20, 10, 20)
+print(type(r))  # <class '__main__.LRBT'>
+assert r.left == 10
+assert r.right == 20
+assert r.bottom == 10
+assert r.top == 20
+assert r.center == Vec2(15, 15)
+assert r.size == Vec2(10, 10)
+
+# Make sure we can construct bare tuples
+assert LRBT.tuple_from_rect(r) == (10, 20, 10, 20)
+
+# remake the bare tuple we made it with?
+assert r.__class__.tuple_from_rect(r) == (10, 20, 10, 20)
