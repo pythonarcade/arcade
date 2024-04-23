@@ -222,6 +222,13 @@ class Rect(NamedTuple):
         """Takes an incomplete signature and returns all attributes needed to create a new Rect."""
         raise NotImplementedError
 
+    def __repr__(self) -> str:
+        return (f"<Rect LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
+                f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
+
+    def __str__(self) -> str:
+        repr(self)
+
 
 class LRBT(Rect):
     def __new__(cls, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat):
