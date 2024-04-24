@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from typing import NamedTuple, Optional
 from pyglet.math import Vec2
-
-AsFloat = float | int
+from arcade.types import AsFloat
 
 
 class Rect(NamedTuple):
