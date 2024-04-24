@@ -148,7 +148,7 @@ class Rect(NamedTuple):
             self,
             width: Optional[AsFloat] = None,
             height: Optional[AsFloat] = None
-    ) -> "Rect":
+    ) -> Rect:
         """
         Limits the size to the given max values.
         """
