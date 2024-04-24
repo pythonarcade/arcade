@@ -227,9 +227,7 @@ class GameWindow(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Moving Sprite
-        self.moving_sprites_list = arcade.tilemap.process_layer(my_map,
-                                                                'Moving Platforms',
-                                                                SPRITE_SCALING_TILES)
+        self.moving_sprites_list = tile_map.sprite_lists['Moving Platforms']
 
         # --- Pymunk Physics Engine Setup ---
 
