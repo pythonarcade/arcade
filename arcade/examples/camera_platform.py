@@ -9,7 +9,6 @@ python -m arcade.examples.camera_platform
 """
 
 import time
-from typing import Optional
 
 import arcade
 
@@ -69,7 +68,7 @@ class MyGame(arcade.Window):
         self.fps_message = None
 
         # Cameras
-        self.camera: Optional[arcade.camera.Camera2D] = None
+        self.camera: arcade.camera.Camera2D = None
         self.gui_camera = None
 
         self.camera_shake = None

@@ -14,9 +14,9 @@ from arcade.camera.data_types import (
 from arcade.gl import Framebuffer
 
 from arcade.window_commands import get_window
+
 if TYPE_CHECKING:
     from arcade.application import Window
-
 
 __all__ = [
     'Camera2D'
@@ -120,13 +120,13 @@ class Camera2D:
         )
 
     @classmethod
-    def from_raw_data(cls, *,
-                      camera_data: Optional[CameraData] = None,
-                      projection_data: Optional[OrthographicProjectionData] = None,
-                      render_target: Optional[Framebuffer] = None,
-                      window: Optional["Window"] = None) -> Self:
+    def from_camera_data(cls, *,
+                         camera_data: Optional[CameraData] = None,
+                         projection_data: Optional[OrthographicProjectionData] = None,
+                         render_target: Optional[Framebuffer] = None,
+                         window: Optional["Window"] = None) -> Self:
         """
-        Create a Camera2D with provided CameraData or/and OrthographicProjectionData object.
+        Create a Camera2D with reusing provided CameraData or/and OrthographicProjectionData object.
 
         :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
             describing the position, up, forward and zoom.
@@ -175,20 +175,17 @@ class Camera2D:
             near=-100.0, far=100.0,
             viewport=(0, 0, width, height)
         )
-        _projection = (_projection_data.left, _projection_data.right,
-                       _projection_data.bottom, _projection_data.top)
 
-        return cls(
-            viewport=_projection_data.viewport,
-            position=_camera_data.position[:2],
-            up=_camera_data.up[:2],
-            zoom=_camera_data.zoom,
-            projection=_projection,
-            near=_projection_data.near,
-            far=_projection_data.far,
-            render_target=_render_target,
-            window=_window
+        # build a new camera with defaults and after reuse provided camera objects
+        new_camera = cls(render_target=_render_target, window=_window)
+        new_camera._camera_data = _camera_data
+        new_camera._projection_data = _camera_data
+        new_camera._ortho_projector = OrthographicProjector(
+            window=_window,
+            view=_camera_data,
+            projection=_projection_data
         )
+        return new_camera
 
     @property
     def view_data(self) -> CameraData:
@@ -239,12 +236,12 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[0] + self._projection_data.left/self._camera_data.zoom
+        return self._camera_data.position[0] + self._projection_data.left / self._camera_data.zoom
 
     @left.setter
     def left(self, _left: float) -> None:
-        self._camera_data.position =\
-            (_left - self._projection_data.left / self._camera_data.zoom,)\
+        self._camera_data.position = \
+            (_left - self._projection_data.left / self._camera_data.zoom,) \
             + self._camera_data.position[1:]
 
     @property
@@ -253,12 +250,12 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[0] + self._projection_data.right/self._camera_data.zoom
+        return self._camera_data.position[0] + self._projection_data.right / self._camera_data.zoom
 
     @right.setter
     def right(self, _right: float) -> None:
-        self._camera_data.position =\
-            (_right - self._projection_data.right / self._camera_data.zoom,)\
+        self._camera_data.position = \
+            (_right - self._projection_data.right / self._camera_data.zoom,) \
             + self._camera_data.position[1:]
 
     @property
@@ -267,7 +264,7 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[1] + self._projection_data.bottom/self._camera_data.zoom
+        return self._camera_data.position[1] + self._projection_data.bottom / self._camera_data.zoom
 
     @bottom.setter
     def bottom(self, _bottom: float) -> None:
@@ -283,7 +280,7 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[1] + self._projection_data.top/self._camera_data.zoom
+        return self._camera_data.position[1] + self._projection_data.top / self._camera_data.zoom
 
     @top.setter
     def top(self, _top: float) -> None:
