@@ -91,8 +91,30 @@ class Rect(NamedTuple):
         return (self.left <= point.x <= self.left + self.width and
                 self.bottom <= point.y <= self.bottom + self.height)
 
-    def resize(self, new_size: Vec2) -> Rect:
-        return XYWH(self.x, self.y, new_size.x, new_size.y)
+    def resize(self, new_size: Vec2, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
+        anchor_x = self.left + anchor.x * self.width
+        anchor_y = self.bottom + anchor.y * self.height
+
+        ratio_x = new_size.x / self.width
+        ratio_y = new_size.y / self.height
+
+        adjusted_left = anchor_x + (self.left - anchor_x) * ratio_x
+        adjusted_right = anchor_x + (self.right - anchor_x) * ratio_x
+        adjusted_top = anchor_y + (self.top - anchor_y) * ratio_y
+        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * ratio_y
+
+        return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
+
+    def scale(self, new_scale: Vec2, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
+        anchor_x = self.left + anchor.x * self.width
+        anchor_y = self.bottom + anchor.y * self.height
+
+        adjusted_left = anchor_x + (self.left - anchor_x) * new_scale.x
+        adjusted_right = anchor_x + (self.right - anchor_x) * new_scale.x
+        adjusted_top = anchor_y + (self.top - anchor_y) * new_scale.y
+        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * new_scale.y
+
+        return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
     def align_top(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the top."""
