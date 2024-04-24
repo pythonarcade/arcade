@@ -79,23 +79,20 @@ class Rect(NamedTuple):
     def size(self) -> Vec2:
         return Vec2(self.width, self.height)
 
+    def at_position(self, position: Vec2) -> Rect:
+        """Returns new Rect which is moved by dx and dy"""
+        return XYWH(position.x, position.y, self.width, self.height)
+
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.left + dx, self.right + dx,
-                    self.bottom + dy, self.top + dy,
-                    self.width, self.height,
-                    self.x + dx, self.y + dy)
+        return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
     def collides_with_point(self, point: Vec2) -> bool:
         return (self.left <= point.x <= self.left + self.width and
                 self.bottom <= point.y <= self.bottom + self.height)
 
     def resize(self, new_size: Vec2) -> Rect:
-        return Rect(self.left, self.right + new_size.x,
-                    self.bottom, self.top + new_size.y,
-                    self.width + new_size.x, self.height + new_size.y,
-                    self.left + (self.right + new_size.x) / 2,
-                    self.bottom + (self.top + new_size.y) / 2)
+        return XYWH(self.x, self.y, new_size.x, new_size.y)
 
     def align_top(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the top."""
