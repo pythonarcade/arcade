@@ -51,8 +51,13 @@ def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiond
     bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
     camera_class
 ):
+    data = OrthographicProjectionData(
+        *bad_projection, -100.0, 100.0,
+        viewport=(0, 0, 800, 600)
+    )
+
     with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(projection=bad_projection)
+        _ = camera_class.from_raw_data(projection_data=data)
 
 
 def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
@@ -60,37 +65,33 @@ def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
     bad_projection: Tuple[float, float, float, float],
     camera_class
 ):
-    data = OrthographicProjectionData(
-        *bad_projection, -100.0, 100.0,
-        viewport=(0,0, 800, 600)
-    )
 
     with pytest.raises(ZeroProjectionDimension):
-        _ = Camera2D(projection_data=data)
+        _ = camera_class(projection=bad_projection)
 
 
-def test_camera2d_from_raw_data_equal_near_far_raises_zeroprojectiondimension(
+def test_camera2d_init_equal_near_far_raises_zeroprojectiondimension(
         window: Window,
         same_near_far: float,
         camera_class
 ):
     near_far = same_near_far
     with pytest.raises(ZeroProjectionDimension):
-        camera_class.from_raw_data(near=near_far, far=near_far)
+        camera_class(near=near_far, far=near_far)
 
 
 @pytest.mark.parametrize("camera_class", CAMERA2D_SUBS)
-def test_camera2d_from_raw_data_inheritance_safety(
+def test_camera2d_init_inheritance_safety(
     window: Window,
     camera_class
 ):
-    subclassed = camera_class.from_raw_data(zoom=10.0)
+    subclassed = camera_class(zoom=10.0)
     assert isinstance(subclassed, Camera2DSub1)
 
 
 RENDER_TARGET_SIZES = [
     (800, 600),  # Normal window size
-    (1280, 720), # Bigger
+    (1280, 720),  # Bigger
     (16, 16)  # Tiny
 ]
 

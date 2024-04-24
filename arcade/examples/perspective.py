@@ -106,7 +106,7 @@ class Perspective(arcade.Window):
                 ) 
         self.time = 0
 
-        self.offscreen_cam = arcade.camera.Camera2D.from_raw_data(
+        self.offscreen_cam = arcade.camera.Camera2D(
             position=(0.0, 0.0),
             viewport=(0, 0, self.fbo.width, self.fbo.height),
             projection=(0, self.fbo.width, 0, self.fbo.height)
