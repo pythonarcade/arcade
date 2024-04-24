@@ -105,14 +105,14 @@ class Rect(NamedTuple):
 
         return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
-    def scale(self, new_scale: Vec2, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
+    def scale(self, new_scale: float, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
-        adjusted_left = anchor_x + (self.left - anchor_x) * new_scale.x
-        adjusted_right = anchor_x + (self.right - anchor_x) * new_scale.x
-        adjusted_top = anchor_y + (self.top - anchor_y) * new_scale.y
-        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * new_scale.y
+        adjusted_left = anchor_x + (self.left - anchor_x) * new_scale
+        adjusted_right = anchor_x + (self.right - anchor_x) * new_scale
+        adjusted_top = anchor_y + (self.top - anchor_y) * new_scale
+        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * new_scale
 
         return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
