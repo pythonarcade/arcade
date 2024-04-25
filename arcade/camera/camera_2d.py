@@ -179,7 +179,7 @@ class Camera2D:
         # build a new camera with defaults and after reuse provided camera objects
         new_camera = cls(render_target=_render_target, window=_window)
         new_camera._camera_data = _camera_data
-        new_camera._projection_data = projection_data
+        new_camera._projection_data = _projection_data
         new_camera._ortho_projector = OrthographicProjector(
             window=_window,
             view=_camera_data,
