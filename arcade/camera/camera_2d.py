@@ -49,7 +49,7 @@ class Camera2D:
     Replacing the camera data and projection data may break controllers. Their
     contents are exposed via properties rather than directly to prevent this.
 
-    :param viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
+    :param viewport: A 4-int tuple which defines the pixel bounds which the camera will project to.
     :param position: The 2D position of the camera in the XY plane.
     :param up: The 2D unit vector which defines the +Y-axis of the camera space.
     :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
