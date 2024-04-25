@@ -157,33 +157,17 @@ class Camera2D:
                     f"and {far=} values"
                 )
 
-        _window = window or get_window()
-        _render_target = render_target or _window.ctx.screen
-        width, height = _render_target.size
-        half_width = width / 2
-        half_height = height / 2
-
-        _camera_data = camera_data or CameraData(
-            position=(half_width, half_height, 0.0),
-            up=(0.0, 1.0, 0.0),
-            forward=(0.0, 0.0, -1.0),
-            zoom=1.0
-        )
-        _projection_data = projection_data or OrthographicProjectionData(
-            left=-half_width, right=half_width,
-            bottom=-half_height, top=half_height,
-            near=-100.0, far=100.0,
-            viewport=(0, 0, width, height)
-        )
-
         # build a new camera with defaults and after reuse provided camera objects
-        new_camera = cls(render_target=_render_target, window=_window)
-        new_camera._camera_data = _camera_data
-        new_camera._projection_data = _projection_data
+        new_camera = cls(render_target=render_target, window=window)
+        if camera_data:
+            new_camera._camera_data = camera_data
+        if projection_data:
+            new_camera._projection_data = projection_data
+
         new_camera._ortho_projector = OrthographicProjector(
-            window=_window,
-            view=_camera_data,
-            projection=_projection_data
+            window=new_camera._window,
+            view=new_camera._camera_data,
+            projection=new_camera._projection_data
         )
         return new_camera
 
