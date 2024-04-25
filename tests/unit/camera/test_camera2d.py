@@ -46,7 +46,7 @@ def same_near_far(request):
     return request.param
 
 
-def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiondimension(
+def test_camera2d_from_camera_data_projection_xy_pairs_equal_raises_zeroprojectiondimension(
     window: Window,
     bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
     camera_class
@@ -57,7 +57,7 @@ def test_camera2d_from_raw_data_projection_xy_pairs_equal_raises_zeroprojectiond
     )
 
     with pytest.raises(ZeroProjectionDimension):
-        _ = camera_class.from_raw_data(projection_data=data)
+        _ = camera_class.from_camera_data(projection_data=data)
 
 
 def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
@@ -115,13 +115,13 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
 
 
 @pytest.mark.parametrize("width, height", RENDER_TARGET_SIZES)
-def test_camera2d_from_raw_data_uses_render_target_size(window: Window, width, height):
+def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width, height):
 
     size = (width, height)
     texture = window.ctx.texture(size, components=4)
     framebuffer = window.ctx.framebuffer(color_attachments=[texture])
 
-    ortho_camera = Camera2D.from_raw_data(render_target=framebuffer)
+    ortho_camera = Camera2D.from_camera_data(render_target=framebuffer)
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
