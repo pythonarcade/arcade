@@ -56,6 +56,7 @@ __all__ = [
     "draw_rectangle_filled",
     "draw_scaled_texture_rectangle",
     "draw_texture_rectangle",
+    "draw_lbwh_rectangle_textured",
     "draw_lrwh_rectangle_textured",
     "get_pixel",
     "get_image"
@@ -961,7 +962,35 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
+@warning(
+    warning_type=ReplacementWarning,
+    new_name="draw_lbwh_rectangle_textured"
+)
 def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+                                 width: float,
+                                 height: float,
+                                 texture: Texture, angle: float = 0,
+                                 alpha: int = 255):
+    """Draw a texture extending from bottom left to top right.
+
+   .. deprecated:: 3.0
+      Use :py:func:`draw_lbwh_rectangle_textured` instead!
+
+    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param width: The width of the rectangle.
+    :param height: The height of the rectangle.
+    :param texture: identifier of texture returned from load_texture() call
+    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
+    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    """
+
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
+    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
+
+
+def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float,
                                  height: float,
                                  texture: Texture, angle: float = 0,
