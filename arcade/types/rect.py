@@ -87,9 +87,7 @@ class Rect(NamedTuple):
         """Returns new Rect which is moved by dx and dy"""
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
-    def collides_with_point(self, point: Vec2) -> bool:
-        return (self.left <= point.x <= self.left + self.width and
-                self.bottom <= point.y <= self.bottom + self.height)
+    def resize(self, new_size: Vec2, anchor: AnchorPoint = AnchorPoint.CENTER) -> Rect:
 
     def resize(self, new_size: Vec2, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
         anchor_x = self.left + anchor.x * self.width
