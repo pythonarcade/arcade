@@ -7,6 +7,18 @@ from pyglet.math import Vec2
 from arcade.types import AsFloat
 
 
+class AnchorPoint:
+    BOTTOM_LEFT = Vec2(0.0, 0.0)
+    BOTTOM_CENTER = Vec2(0.5, 0.0)
+    BOTTOM_RIGHT = Vec2(1.0, 0.0)
+    CENTER_LEFT = Vec2(0.0, 0.5)
+    CENTER = Vec2(0.5, 0.5)
+    CENTER_RIGHT = Vec2(1.0, 0.5)
+    TOP_LEFT = Vec2(0.0, 1.0)
+    TOP_CENTER = Vec2(0.5, 1.0)
+    TOP_RIGHT = Vec2(1.0, 1.0)
+
+
 class Rect(NamedTuple):
     """Rects define a rectangle, with several convenience properties and functions.
 
@@ -14,7 +26,9 @@ class Rect(NamedTuple):
 
     Attempts to implement all Rectangle functions used in the library, with the notable exception
     of `.scale()`, as that function was ill-defined and assumed a bottom-left anchor point, something
-    that should be accounted for if `.scale()` is to be reimplemented."""
+    that should be accounted for if `.scale()` is to be reimplemented.
+
+    Rectangles cannot rotate by design, since this complicates their implmentation a lot."""
     left: float
     right: float
     bottom: float
@@ -87,9 +101,7 @@ class Rect(NamedTuple):
         """Returns new Rect which is moved by dx and dy"""
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
-    def resize(self, new_size: Vec2, anchor: AnchorPoint = AnchorPoint.CENTER) -> Rect:
-
-    def resize(self, new_size: Vec2, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
+    def resize(self, new_size: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -103,7 +115,7 @@ class Rect(NamedTuple):
 
         return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
-    def scale(self, new_scale: float, anchor: Vec2 = Vec2(0.5, 0.5)) -> Rect:
+    def scale(self, new_scale: float, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
