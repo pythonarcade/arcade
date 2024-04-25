@@ -51,7 +51,7 @@ class Camera2D:
 
     :param viewport: A 4-int tuple which defines the pixel bounds which the camera will project to.
     :param position: The 2D position of the camera in the XY plane.
-    :param up: The 2D unit vector which defines the +Y-axis of the camera space.
+    :param up: A 2D vector which describes which direction is up (defines the +Y-axis of the camera space).
     :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
             i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
     :param projection: A 4-float tuple which defines the world space
@@ -126,7 +126,7 @@ class Camera2D:
                          render_target: Optional[Framebuffer] = None,
                          window: Optional["Window"] = None) -> Self:
         """
-        Create a Camera2D with reusing provided CameraData or/and OrthographicProjectionData object.
+        Create a Camera2D from provided CameraData or/and OrthographicProjectionData objects.
 
         :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
             describing the position, up, forward and zoom.
@@ -157,7 +157,7 @@ class Camera2D:
                     f"and {far=} values"
                 )
 
-        # build a new camera with defaults and after reuse provided camera objects
+        # build a new camera with defaults and then apply the provided camera objects.
         new_camera = cls(render_target=render_target, window=window)
         if camera_data:
             new_camera._camera_data = camera_data
