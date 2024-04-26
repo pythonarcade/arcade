@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
-from typing_extensions import Self
-
 import arcade
 from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -17,6 +16,7 @@ if TYPE_CHECKING:
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
 
+@copy_dunders_unimplemented # See https://github.com/pythonarcade/arcade/issues/2074
 class BasicSprite:
     """
     The absolute minimum needed for a sprite.
@@ -71,18 +71,6 @@ class BasicSprite:
         self._hit_box = HitBox(
             self._texture.hit_box_points, self._position, self._scale
         )
-
-    # --- See https://github.com/pythonarcade/arcade/issues/2074 ---
-
-    def __copy__(self) -> Self:
-        raise NotImplementedError(
-            f"{self.__class__.__name__}.__copy__ is not yet implemented,"
-            f" but you can implement it on a custom subclass if you wish.")
-
-    def __deepcopy__(self, memo) -> Self:
-        raise NotImplementedError(
-            f"{self.__class__.__name__}.__deepcopy__ is not yet implemented,"
-            f" but you can implement it on a custom subclass if you wish.")
 
     # --- Core Properties ---
 
