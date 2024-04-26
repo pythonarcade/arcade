@@ -18,6 +18,18 @@ def make_named_sprites(amount):
     return spritelist
 
 
+# Temp fix for  https://github.com/pythonarcade/arcade/issues/2074
+def test_copy_dunder_stubs_raise_notimplementederror():
+    spritelist = arcade.SpriteList()
+    import copy
+
+    with pytest.raises(NotImplementedError):
+       _ = copy.copy(spritelist)
+
+    with pytest.raises(NotImplementedError):
+       _ = copy.deepcopy(spritelist)
+
+
 def test_it_can_extend_a_spritelist_from_a_list():
     spritelist = arcade.SpriteList()
     sprites = []
