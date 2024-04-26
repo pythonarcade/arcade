@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
+from typing_extensions import Self
+
 import arcade
 from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
@@ -69,6 +71,18 @@ class BasicSprite:
         self._hit_box = HitBox(
             self._texture.hit_box_points, self._position, self._scale
         )
+
+    # --- See https://github.com/pythonarcade/arcade/issues/2074 ---
+
+    def __copy__(self) -> Self:
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.__copy__ is not yet implemented,"
+            f" but you can implement it on a custom subclass if you wish.")
+
+    def __deepcopy__(self) -> Self:
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.__deepcopy__ is not yet implemented,"
+            f" but you can implement it on a custom subclass if you wish.")
 
     # --- Core Properties ---
 
