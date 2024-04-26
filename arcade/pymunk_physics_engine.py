@@ -18,6 +18,7 @@ __all__ = [
     "PymunkPhysicsEngine"
 ]
 
+from arcade.utils import copy_dunders_unimplemented
 
 LOG = logging.getLogger(__name__)
 
@@ -36,6 +37,8 @@ class PymunkException(Exception):
     pass
 
 
+# Temp fix for https://github.com/pythonarcade/arcade/issues/2074
+@copy_dunders_unimplemented
 class PymunkPhysicsEngine:
     """
     Pymunk Physics Engine
