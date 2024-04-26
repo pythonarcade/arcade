@@ -1,0 +1,111 @@
+from pyglet.math import Vec2
+from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
+
+
+A_RECT = Rect(10, 20, 10, 20, 10, 10, 15, 15)
+
+
+def test_make_LBWH():
+    r = LBWH(10, 10, 10, 10)
+    assert r.left == 10.0
+    assert r.bottom == 10.0
+    assert r.width == 10.0
+    assert r.height == 10.0
+    assert r.top == 20.0
+    assert r.right == 20.0
+    assert r.x == 15.0
+    assert r.y == 15.0
+
+
+def test_make_LRBT():
+    r = LRBT(10, 20, 10, 20)
+    assert r.left == 10.0
+    assert r.bottom == 10.0
+    assert r.width == 10.0
+    assert r.height == 10.0
+    assert r.top == 20.0
+    assert r.right == 20.0
+    assert r.x == 15.0
+    assert r.y == 15.0
+
+
+def test_make_XYWH():
+    r = XYWH(15, 15, 10, 10)
+    assert r.left == 10.0
+    assert r.bottom == 10.0
+    assert r.width == 10.0
+    assert r.height == 10.0
+    assert r.top == 20.0
+    assert r.right == 20.0
+    assert r.x == 15.0
+    assert r.y == 15.0
+
+
+def test_make_XYRR():
+    r = XYRR(15, 15, 5, 5)
+    assert r.left == 10.0
+    assert r.bottom == 10.0
+    assert r.width == 10.0
+    assert r.height == 10.0
+    assert r.top == 20.0
+    assert r.right == 20.0
+    assert r.x == 15.0
+    assert r.y == 15.0
+
+
+def test_corners():
+    assert A_RECT.bottom_left == Vec2(10, 10)
+    assert A_RECT.bottom_right == Vec2(20, 10)
+    assert A_RECT.top_left == Vec2(10, 20)
+    assert A_RECT.top_right == Vec2(20, 20)
+
+
+def test_centers():
+    assert A_RECT.center == Vec2(15, 15)
+    assert A_RECT.bottom_center == Vec2(15, 10)
+    assert A_RECT.top_center == Vec2(15, 20)
+    assert A_RECT.left_center == Vec2(10, 15)
+    assert A_RECT.right_center == Vec2(20, 15)
+
+
+def test_rect_move():
+    r = A_RECT.move(5, 5)
+    assert r.x == 20
+    assert r.y == 20
+
+
+def test_point_in_rect():
+    p = Vec2(15, 15)
+    assert A_RECT.point_in_rect(p)
+
+
+def test_point_not_in_rect():
+    p = Vec2(25, 25)
+    assert not A_RECT.point_in_rect(p)
+
+
+def test_union():
+    a_rect = LBWH(10, 10, 10, 10)
+    another_rect = LBWH(15, 10, 10, 10)
+    assert a_rect.union(another_rect) == LBWH(10, 10, 15, 10)
+    assert a_rect | another_rect == LBWH(10, 10, 15, 10)
+
+
+def test_overlap():
+    a_rect = LBWH(10, 10, 10, 10)
+    another_rect = LBWH(15, 10, 10, 10)
+    assert a_rect.intersect(another_rect) == LBWH(15, 10, 5, 10)
+    assert a_rect & another_rect == LBWH(15, 10, 5, 10)
+
+
+def test_get_it_back():
+    assert LRBT.from_rect(A_RECT) == (10, 20, 10, 20)
+    assert LBWH.from_rect(A_RECT) == (10, 10, 10, 10)
+    assert XYWH.from_rect(A_RECT) == (15, 15, 10, 10)
+    assert XYRR.from_rect(A_RECT) == (15, 15,  5,  5)
+
+
+def test_get_original_tuple():
+    t = (10, 20, 10, 20)
+    r = LRBT(*t)
+    assert r.to_tuple() == t
