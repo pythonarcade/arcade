@@ -5,6 +5,17 @@ from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
 A_RECT = Rect(10, 20, 10, 20, 10, 10, 15, 15)
 
 
+def test_attributes():
+    assert A_RECT.left == 10.0
+    assert A_RECT.bottom == 10.0
+    assert A_RECT.width == 10.0
+    assert A_RECT.height == 10.0
+    assert A_RECT.top == 20.0
+    assert A_RECT.right == 20.0
+    assert A_RECT.x == 15.0
+    assert A_RECT.y == 15.0
+
+
 def test_make_LBWH():
     r = LBWH(10, 10, 10, 10)
     assert r.left == 10.0
