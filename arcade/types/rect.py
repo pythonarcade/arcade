@@ -39,13 +39,13 @@ class Rect(NamedTuple):
     x: float
     y: float
 
-    @warning(ReplacementWarning, new_name="x")
+    @warning(ReplacementWarning, message=".center_x is deprecated. Please use .x instead.")
     @property
     def center_x(self) -> float:
         """Backwards-compatible alias."""
         return self.x
 
-    @warning(ReplacementWarning, new_name="y")
+    @warning(ReplacementWarning, message=".center_y is deprecated. Please use .y instead.")
     @property
     def center_y(self) -> float:
         """Backwards-compatible alias."""
@@ -59,7 +59,7 @@ class Rect(NamedTuple):
     def bottom_left(self) -> Vec2:
         return Vec2(self.left, self.bottom)
 
-    @warning(ReplacementWarning, new_name="bottom_left")
+    @warning(ReplacementWarning, message=".position is deprecated. Please use .bottom_left instead.")
     @property
     def position(self) -> Vec2:
         """Backwards-compatible alias."""
