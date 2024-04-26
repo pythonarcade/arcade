@@ -11,7 +11,6 @@ import platform
 import sys
 import warnings
 from typing import Tuple, Type, TypeVar
-from typing_extensions import Self
 from pathlib import Path
 
 
@@ -144,14 +143,14 @@ def copy_dunders_unimplemented(decorated_type: Type) -> Type:
 
 
     """
-    def __copy__(self) -> Self:  # noqa  # Self outside classes
+    def __copy__(self):  # noqa
        raise NotImplementedError(
            f"{self.__class__.__name__} does not implement __copy__, but"
            f"you may implement it on a custom subclass."
        )
     decorated_type.__copy__ =  __copy__
 
-    def __deepcopy__(self, memo) -> Self:  # noqa  # Self outside classes
+    def __deepcopy__(self, memo):  # noqa
        raise NotImplementedError(
            f"{self.__class__.__name__} does not implement __deepcopy__,"
            f" but you may implement it on a custom subclass."
