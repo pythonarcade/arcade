@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import NamedTuple, Optional
 from pyglet.math import Vec2
 from arcade.types import AsFloat
+from arcade.utils import ReplacementWarning, warning
 
 
 class AnchorPoint:
@@ -38,11 +39,13 @@ class Rect(NamedTuple):
     x: float
     y: float
 
+    @warning(ReplacementWarning, new_name="x")
     @property
     def center_x(self) -> float:
         """Backwards-compatible alias."""
         return self.x
 
+    @warning(ReplacementWarning, new_name="y")
     @property
     def center_y(self) -> float:
         """Backwards-compatible alias."""
@@ -56,6 +59,7 @@ class Rect(NamedTuple):
     def bottom_left(self) -> Vec2:
         return Vec2(self.left, self.bottom)
 
+    @warning(ReplacementWarning, new_name="bottom_left")
     @property
     def position(self) -> Vec2:
         """Backwards-compatible alias."""
