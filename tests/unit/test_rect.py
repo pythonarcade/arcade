@@ -105,6 +105,18 @@ def test_get_it_back():
     assert XYRR.from_rect(A_RECT) == (15, 15,  5,  5)
 
 
+def test_size():
+    assert A_RECT.size == Vec2(10, 10)
+
+
+def test_at_position():
+    r = A_RECT.at_position(Vec2(20, 20))
+    assert r.left == 15
+    assert r.right == 25
+    assert r.bottom == 15
+    assert r.top == 25
+
+
 def test_get_original_tuple():
     t = (10, 20, 10, 20)
     r = LRBT(*t)
