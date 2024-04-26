@@ -126,7 +126,28 @@ class Camera2D:
                          render_target: Optional[Framebuffer] = None,
                          window: Optional["Window"] = None) -> Self:
         """
-        Create a Camera2D from provided CameraData or/and OrthographicProjectionData objects.
+        Make a ``Camera2D`` directly from data objects.
+
+        This :py:class:`classmethod` allows advanced users to:
+
+        #. skip or replace the default validation
+        #. share ``camera_data`` or ``projection_data`` between cameras
+
+        .. warning:: Be careful when sharing data objects!
+                    **Any** action on a camera which changes a shared
+                    object changes it for **every** camera which uses
+                    the same object.
+
+        .. list-table::
+          :header-rows: 1
+          * - Shared Value
+            - Example Use(s)
+          * - ``camera_data``
+            - Mini-maps, reflection, and ghosting effects.
+          * - ``projection_data``
+            - Simplified rendering configuration
+          * - ``render_target``
+            - Complex rendering setups
 
         :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
             describing the position, up, forward and zoom.
@@ -139,6 +160,7 @@ class Camera2D:
         :param window: The Arcade Window to bind the camera to.
             Defaults to the currently active window.
         """
+
         if projection_data:
             left, right = projection_data.left, projection_data.right
             if projection_data.left == projection_data.right:
