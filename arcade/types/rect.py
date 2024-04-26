@@ -94,11 +94,11 @@ class Rect(NamedTuple):
         return Vec2(self.width, self.height)
 
     def at_position(self, position: Vec2) -> Rect:
-        """Returns new Rect which is moved by dx and dy"""
+        """Returns new Rect which is moved to put `position` at it's center."""
         return XYWH(position.x, position.y, self.width, self.height)
 
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
-        """Returns new Rect which is moved by dx and dy"""
+        """Returns new Rect which is moved by `dx` and `dy`."""
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
     def resize(self, new_size: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
@@ -240,10 +240,15 @@ class Rect(NamedTuple):
             Vec2(self.right, self.bottom)
         )
 
+    def to_tuple(self) -> tuple[float, ...]:
+        """Returns the bare tuple used to create this Rect."""
+        return self.__class__.from_rect(self)
+
     # Subclass-only methods
     @staticmethod
-    def tuple_from_rect(rect: Rect) -> tuple[float, ...]:
-        raise NotImplementedError
+    def from_rect(rect: Rect) -> tuple[float, ...]:
+        return (rect.left, rect.right, rect.top, rect.bottom,
+                rect.width, rect.height, rect.x, rect.y)
 
     @staticmethod
     def as_new_attrs(*args: tuple[AsFloat]) -> tuple[AsFloat, ...]:
@@ -259,7 +264,7 @@ class Rect(NamedTuple):
 
 
 class LRBT(Rect):
-    def __new__(cls, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat):
+    def __new__(cls, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
         rect = cls.as_new_attrs(left, right, bottom, top)
         return Rect.__new__(cls, *rect)
 
@@ -267,7 +272,7 @@ class LRBT(Rect):
         ...
 
     @staticmethod
-    def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
+    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
         return (rect.left, rect.right, rect.bottom, rect.top)
 
     @staticmethod
@@ -280,7 +285,7 @@ class LRBT(Rect):
 
 
 class LBWH(Rect):
-    def __new__(cls, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat):
+    def __new__(cls, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
         rect = cls.as_new_attrs(left, bottom, width, height)
         return Rect.__new__(cls, *rect)
 
@@ -288,7 +293,7 @@ class LBWH(Rect):
         ...
 
     @staticmethod
-    def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
+    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
         return (rect.left, rect.bottom, rect.width, rect.height)
 
     @staticmethod
@@ -301,7 +306,7 @@ class LBWH(Rect):
 
 
 class XYWH(Rect):
-    def __new__(cls, x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat):
+    def __new__(cls, x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
         rect = cls.to_rect_attrs(x, y, width, height)
         return Rect.__new__(cls, *rect)
 
@@ -309,7 +314,7 @@ class XYWH(Rect):
         ...
 
     @staticmethod
-    def tuple_from_rect(rect: Rect) -> tuple[float, float, float, float]:
+    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
         return (rect.x, rect.y, rect.width, rect.height)
 
     @staticmethod
@@ -322,8 +327,8 @@ class XYWH(Rect):
 
 
 class XYRR(Rect):
-    def __new__(cls, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat):
-        rect = cls.to_rect_attrs(x, y, half_width * 2, half_height * 2)
+    def __new__(cls, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
+        rect = cls.to_rect_attrs(x, y, half_width, half_height)
         return Rect.__new__(cls, *rect)
 
     def __init__(self, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat):
@@ -351,7 +356,7 @@ class Viewport(Rect):
         ...
 
     @staticmethod
-    def tuple_from_rect(rect: Rect) -> tuple[int, int, int, int]:
+    def from_rect(rect: Rect) -> tuple[int, int, int, int]:
         return (int(rect.x), int(rect.y), int(rect.width), int(rect.height))
 
     @staticmethod
@@ -365,6 +370,7 @@ class Viewport(Rect):
 
 # Make a LRBT
 r = LRBT(10, 20, 10, 20)
+
 print(type(r))  # <class '__main__.LRBT'>
 assert r.left == 10
 assert r.right == 20
@@ -374,7 +380,8 @@ assert r.center == Vec2(15, 15)
 assert r.size == Vec2(10, 10)
 
 # Make sure we can construct bare tuples
-assert LRBT.tuple_from_rect(r) == (10, 20, 10, 20)
+assert LRBT.from_rect(r) == (10, 20, 10, 20)
 
-# remake the bare tuple we made it with?
-assert r.__class__.tuple_from_rect(r) == (10, 20, 10, 20)
+s = LRBT(10, 15, 10, 15)
+s = s.move(2, 3)
+LRBT.from_rect(s)  # (12, 17, 13, 18)
