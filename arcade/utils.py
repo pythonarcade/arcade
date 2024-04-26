@@ -112,7 +112,9 @@ class NormalizedRangeError(FloatOutsideRangeError):
         super().__init__(var_name, value, 0.0, 1.0)
 
 
-def copy_dunders_unimplemented(decorated_type: Type) -> Type:
+_TType = TypeVar('_TType', bound=Type)
+
+def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
     """Decorator stubs dunders raising :py:class:`NotImplementedError`.
 
     Temp fixes https://github.com/pythonarcade/arcade/issues/2074 by
