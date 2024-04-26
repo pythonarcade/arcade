@@ -182,6 +182,13 @@ Changes
   * :py:func:`~arcade.draw_text` and :py:class:`~arcade.Text` both now accept a ``start_z`` parameter. This will allow advanced usage to set the Z
     position of the underlying Label. This parameter defaults to 0 and does not change any existing usage.
 
+* :py:mod:`arcade.draw_commands`:
+
+  * Added :py:func:`arcade.draw_commands.draw_lbwh_rectangle_textured`
+
+    * Replaces the now-deprecated :py:func:`arcade.draw_commands.draw_lrwh_rectangle_textured`
+    * Usage is exactly the same
+
 * OpenGL
 
   * Support for OpenGL ES 3.1 and 3.2. 3.2 is fully supported, 3.1 is only supported if the ``EXT_geometry_shader`` extension
