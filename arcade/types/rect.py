@@ -342,6 +342,27 @@ class XYRR(Rect):
         return (left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
+class Viewport(Rect):
+    def __new__(cls, x: int, y: int, width: int, height: int):
+        rect = cls.to_rect_attrs(x, y, width, height)
+        return Rect.__new__(cls, *rect)
+
+    def __init__(self, x: int, y: int, width: int, height: int):
+        ...
+
+    @staticmethod
+    def tuple_from_rect(rect: Rect) -> tuple[int, int, int, int]:
+        return (int(rect.x), int(rect.y), int(rect.width), int(rect.height))
+
+    @staticmethod
+    def to_rect_attrs(x: int, y: int, width: int, height: int) -> tuple[AsFloat, ...]:
+        left = x - (width / 2)
+        right = x + (width / 2)
+        bottom = y - (width / 2)
+        top = y + (width / 2)
+        return (left, right, bottom, top, width, height, x, y)
+
+
 # Make a LRBT
 r = LRBT(10, 20, 10, 20)
 print(type(r))  # <class '__main__.LRBT'>
