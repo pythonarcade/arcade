@@ -79,7 +79,7 @@ class BasicSprite:
             f"{self.__class__.__name__}.__copy__ is not yet implemented,"
             f" but you can implement it on a custom subclass if you wish.")
 
-    def __deepcopy__(self) -> Self:
+    def __deepcopy__(self, memo) -> Self:
         raise NotImplementedError(
             f"{self.__class__.__name__}.__deepcopy__ is not yet implemented,"
             f" but you can implement it on a custom subclass if you wish.")
