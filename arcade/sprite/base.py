@@ -7,6 +7,7 @@ from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -15,6 +16,7 @@ if TYPE_CHECKING:
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
 
+@copy_dunders_unimplemented # See https://github.com/pythonarcade/arcade/issues/2074
 class BasicSprite:
     """
     The absolute minimum needed for a sprite.
