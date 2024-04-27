@@ -9,6 +9,7 @@ from arcade.utils import ReplacementWarning, warning
 
 
 class AnchorPoint:
+    """Provides helper aliases for several Vec2s to be used as anchor points in UV space."""
     BOTTOM_LEFT = Vec2(0.0, 0.0)
     BOTTOM_CENTER = Vec2(0.5, 0.0)
     BOTTOM_RIGHT = Vec2(1.0, 0.0)
