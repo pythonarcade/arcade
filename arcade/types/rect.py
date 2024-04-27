@@ -26,9 +26,8 @@ class Rect(NamedTuple):
 
     This object is immutable by design. It provides no setters, and is a NamedTuple subclass.
 
-    Attempts to implement all Rectangle functions used in the library, with the notable exception
-    of `.scale()`, as that function was ill-defined and assumed a bottom-left anchor point, something
-    that should be accounted for if `.scale()` is to be reimplemented.
+    Attempts to implement all Rectangle functions used in the library, and to be a helpful
+    tool for developers storing/maniulating rectangle and rectangle-like constructs.
 
     Rectangles cannot rotate by design, since this complicates their implmentation a lot."""
     left: float
