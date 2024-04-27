@@ -2,12 +2,11 @@
 Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
 """
 from __future__ import annotations
-from typing import Literal
+from typing import Literal, Optional, Tuple
 
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
-from arcade.types import Point, Vector
-from arcade.types import PathOrTexture
+from arcade.types import Point, PathOrTexture, Velocity
 
 
 class Particle(Sprite):
@@ -15,8 +14,8 @@ class Particle(Sprite):
 
     def __init__(
             self,
-            path_or_texture: PathOrTexture,
-            change_xy: Vector,
+            path_or_texture: Optional[PathOrTexture],
+            change_xy: Tuple[float, float],
             center_xy: Point = (0.0, 0.0),
             angle: float = 0.0,
             change_angle: float = 0.0,
@@ -54,7 +53,7 @@ class EternalParticle(Particle):
     def __init__(
             self,
             filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            change_xy: Velocity,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
             change_angle: float = 0,
@@ -75,8 +74,8 @@ class LifetimeParticle(Particle):
 
     def __init__(
             self,
-            filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            filename_or_texture: Optional[PathOrTexture],
+            change_xy: Velocity,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,
@@ -106,7 +105,7 @@ class FadeParticle(LifetimeParticle):
     def __init__(
             self,
             filename_or_texture: PathOrTexture,
-            change_xy: Vector,
+            change_xy: Velocity,
             lifetime: float,
             center_xy: Point = (0.0, 0.0),
             angle: float = 0,

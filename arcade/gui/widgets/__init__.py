@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
+from math import floor
 from random import randint
 from typing import (
     NamedTuple,
@@ -12,6 +13,7 @@ from typing import (
     Tuple,
     List,
     Dict,
+    Callable
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -31,7 +33,8 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -52,66 +55,125 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: float = 0, dy: float = 0):
+    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "Rect":
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        x, y, width, height = self
+        return Rect(x + dx, y + dy, width, height)
 
-    def collide_with_point(self, x, y):
+    def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
+        """Return true if ``x`` and ``y`` are within this rect.
+
+        This check is inclusive. Values on the :py:attr:`.left`,
+        :py:attr:`.right`, :py:attr:`.top`, and :py:attr:`.bottom`
+        edges will be counted as inside the rect.
+
+        .. code-block:: python
+
+           >>> bounds = Rect(0.0, 0.0, 5.0, 5.0)
+           >>> bounds.collide_with_point(0.0, 0.0)
+           True
+           >>> bounds.collide_with_point(5.0, 5.0)
+           True
+
+        :param x: The x value to check as inside the rect.
+        :param y: The y value to check as inside the rect.
+        """
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(self, scale: float) -> "Rect":
-        """Returns a new rect with scale applied"""
+    def scale(
+            self,
+            scale: float,
+            rounding: Optional[Callable[..., float]] = floor
+    ) -> "Rect":
+        """Return a new rect scaled relative to the origin.
+
+        By default, the new rect's values are rounded down to whole
+        values. You can alter this by passing a different rounding
+        behavior:
+
+        * Pass ``None`` to skip rounding
+        * Pass a function which takes a number and returns a float
+          to choose rounding behavior.
+
+        :param scale: A scale factor.
+        :param rounding: ``None`` or a callable specifying how to
+            round the scaled values.
+        """
+        x, y, width, height = self
+        if rounding is not None:
+            return Rect(
+                rounding(x * scale),
+                rounding(y * scale),
+                rounding(width * scale),
+                rounding(height * scale),
+            )
         return Rect(
-            int(self.x * scale),
-            int(self.y * scale),
-            int(self.width * scale),
-            int(self.height * scale),
+            x * scale,
+            y * scale,
+            width * scale,
+            height * scale,
         )
 
-    def resize(self, width=None, height=None):
-        """
-        Returns a rect with changed width and height.
+    def resize(
+            self,
+            width: float | None = None,
+            height: float | None = None
+    ) -> "Rect":
+        """Return a rect with a new width or height but same lower left.
+
         Fix x and y coordinate.
+        :param width: A width for the new rectangle.
+        :param height: A height for the new rectangle.
         """
         width = width if width is not None else self.width
         height = height if height is not None else self.height
         return Rect(self.x, self.y, width, height)
 
     @property
-    def size(self):
+    def size(self) -> Tuple[float, float]:
+        """Read-only pixel size of the rect.
+
+        Since these rects are immutable, use helper instance methods to
+        get updated rects. For example, :py:meth:`.resize` may be what
+        you're looking for.
+        """
         return self.width, self.height
 
     @property
-    def left(self):
+    def left(self) -> float:
+        """The left edge on the X axis."""
         return self.x
 
     @property
-    def right(self):
+    def right(self) -> float:
+        """The right edge on the X axis."""
         return self.x + self.width
 
     @property
-    def bottom(self):
+    def bottom(self) -> float:
+        """The bottom edge on the Y axis."""
         return self.y
 
     @property
-    def top(self):
+    def top(self) -> float:
+        """The top edge on the Y axis."""
         return self.y + self.height
 
     @property
-    def center_x(self):
+    def center_x(self) -> float:
         return self.x + self.width / 2
 
     @property
-    def center_y(self):
+    def center_y(self) -> float:
         return self.y + self.height / 2
 
     @property
-    def center(self):
+    def center(self) -> Point:
         return self.center_x, self.center_y
 
     @property
-    def position(self):
+    def position(self) -> Point:
         """Bottom left coordinates"""
         return self.left, self.bottom
 
@@ -130,28 +192,32 @@ class Rect(NamedTuple):
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: float) -> "Rect":
+    def align_right(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center(self, center_x, center_y):
+    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center x and y"""
         diff_x = center_x - self.center_x
         diff_y = center_y - self.center_y
         return self.move(dx=diff_x, dy=diff_y)
 
-    def align_center_x(self, value: float) -> "Rect":
+    def align_center_x(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: float) -> "Rect":
+    def align_center_y(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=None, height=None):
+    def min_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Sets the size to at least the given min values.
         """
@@ -162,19 +228,23 @@ class Rect(NamedTuple):
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
+    def max_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Limits the size to the given max values.
         """
-        w, h = self.size
-        if width:
-            w = min(width, self.width)
-        if height:
-            h = min(height, self.height)
+        x, y, w, h = self
+        if width is not None:
+            w = min(width, w)
+        if height is not None:
+            h = min(height, h)
 
-        return Rect(self.x, self.y, w, h)
+        return Rect(x, y, w, h)
 
-    def union(self, rect: "Rect"):
+    def union(self, rect: "Rect") -> "Rect":
         """
         Returns a new Rect that is the union of this rect and another.
         The union is the smallest rectangle that contains theses two rectangles.
@@ -194,6 +264,7 @@ class _ChildEntry(NamedTuple):
     data: Dict
 
 
+@copy_dunders_unimplemented
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.

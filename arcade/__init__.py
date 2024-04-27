@@ -79,13 +79,11 @@ from .window_commands import get_window
 from .window_commands import schedule
 from .window_commands import run
 from .window_commands import set_background_color
-from .window_commands import set_viewport
 from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
 
-from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -124,6 +122,7 @@ from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
 from .draw_commands import draw_lrbt_rectangle_outline
+from .draw_commands import draw_lbwh_rectangle_textured
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -221,6 +220,7 @@ from .perf_graph import PerfGraph
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
+from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
 from arcade import types as types
@@ -243,8 +243,6 @@ __all__ = [
     'TextureAnimation',
     'TextureKeyframe',
     'ArcadeContext',
-    'Camera',
-    'SimpleCamera',
     'ControllerManager',
     'FACE_DOWN',
     'FACE_LEFT',
@@ -297,6 +295,7 @@ __all__ = [
     'draw_line',
     'draw_line_strip',
     'draw_lines',
+    'draw_lbwh_rectangle_textured',
     'draw_lrtb_rectangle_filled',
     'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
@@ -358,7 +357,6 @@ __all__ = [
     'run',
     'schedule',
     'set_background_color',
-    'set_viewport',
     'set_window',
     'start_render',
     'stop_sound',

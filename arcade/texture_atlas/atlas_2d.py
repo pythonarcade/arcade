@@ -951,12 +951,19 @@ class TextureAtlas(TextureAtlasBase):
             The tuple values are: (left, right, button, top)
         """
         region = self._texture_regions[texture.atlas_name]
-        proj_prev = self._ctx.projection_2d
+        proj_prev = self._ctx.projection_matrix
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)
         # Flip the top and bottom because we need to render things upside down
         projection = projection[0], projection[1], projection[3], projection[2]
-        self._ctx.projection_2d = projection
+        self._ctx.projection_matrix = Mat4.orthogonal_projection(
+            left=projection[0],
+            right=projection[1],
+            bottom=projection[2],
+            top=projection[3],
+            z_near=-1,
+            z_far=1,
+        )
 
         with self._fbo.activate() as fbo:
             fbo.viewport = region.x, region.y, region.width, region.height
@@ -965,7 +972,7 @@ class TextureAtlas(TextureAtlasBase):
             finally:
                 fbo.viewport = 0, 0, *self._fbo.size
 
-        self._ctx.projection_2d = proj_prev
+        self._ctx.projection_matrix = proj_prev
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":

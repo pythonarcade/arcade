@@ -26,6 +26,8 @@ from typing import (
 import pyglet.gl as gl
 
 from arcade.types import Color, Point, PointList, RGBA255
+
+from arcade.utils import copy_dunders_unimplemented
 from arcade import get_window, get_points_for_thick_line
 from arcade.gl import BufferDescription
 from arcade.gl import Program
@@ -59,6 +61,7 @@ __all__ = [
 ]
 
 
+@copy_dunders_unimplemented  # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
 class Shape:
     """
     A container for arbitrary geometry representing a shape.
@@ -747,6 +750,7 @@ def create_ellipse_filled_with_colors(
 TShape = TypeVar('TShape', bound=Shape)
 
 
+@copy_dunders_unimplemented
 class ShapeElementList(Generic[TShape]):
     """
     A ShapeElementList is a list of shapes that can be drawn together

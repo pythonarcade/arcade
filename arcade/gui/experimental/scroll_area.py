@@ -58,6 +58,10 @@ class UIScrollArea(UIWidget):
         bind(self, "scroll_x", self.trigger_full_render)
         bind(self, "scroll_y", self.trigger_full_render)
 
+    def remove(self, child: "UIWidget"):
+        super().remove(child)
+        self.trigger_full_render()
+
     def _do_render(self, surface: Surface, force=False) -> bool:
         if not self.visible:
             return False

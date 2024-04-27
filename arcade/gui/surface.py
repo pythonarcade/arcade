@@ -6,6 +6,8 @@ from typing import Tuple, Union, Optional
 import arcade
 from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
+from arcade.draw_commands import draw_lbwh_rectangle_textured
+from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, FloatRect, Point
@@ -49,6 +51,16 @@ class Surface:
             vertex_shader=":system:shaders/gui/surface_vs.glsl",
             geometry_shader=":system:shaders/gui/surface_gs.glsl",
             fragment_shader=":system:shaders/gui/surface_fs.glsl",
+        )
+
+        self._cam = OrthographicProjector(
+            view=CameraData(),
+            projection=OrthographicProjectionData(
+                0.0, self.width,
+                0.0, self.height,
+                -100, 100,
+                (0, 0, self.width, self.height)
+            )
         )
 
     @property
@@ -108,7 +120,7 @@ class Surface:
 
             tex.draw_sized(size=(width, height))
         else:
-            arcade.draw_lrwh_rectangle_textured(
+            draw_lbwh_rectangle_textured(
                 bottom_left_x=x,
                 bottom_left_y=y,
                 width=width,
@@ -132,31 +144,36 @@ class Surface:
         Also resets the limit of the surface (viewport).
         """
         # Set viewport and projection
-        proj = self.ctx.projection_2d
         self.limit(0, 0, *self.size)
         # Set blend function
         blend_func = self.ctx.blend_func
-        self.ctx.blend_func = self.blend_func_render_into
 
-        with self.fbo.activate():
-            yield self
-
-        # Restore projection and blend function
-        self.ctx.projection_2d = proj
-        self.ctx.blend_func = blend_func
+        try:
+            self.ctx.blend_func = self.blend_func_render_into
+            with self.fbo.activate():
+                yield self
+        finally:
+            # Restore blend function.
+            self.ctx.blend_func = blend_func
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
-        self.fbo.viewport = (
+
+        viewport = (
             int(x * self._pixel_ratio),
             int(y * self._pixel_ratio),
             int(width * self._pixel_ratio),
             int(height * self._pixel_ratio),
         )
+        self.fbo.viewport = viewport
 
         width = max(width, 1)
         height = max(height, 1)
-        self.ctx.projection_2d = 0, width, 0, height
+        _p = self._cam.projection
+        _p.left, _p.right, _p.bottom, _p.top = 0, width, 0, height
+        self._cam.projection.viewport = viewport
+
+        self._cam.use()
 
     def draw(
         self,
@@ -199,3 +216,4 @@ class Surface:
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
+

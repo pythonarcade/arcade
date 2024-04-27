@@ -70,7 +70,7 @@ class UIDropdown(UILayout):
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 100,
+        height: float = 20,
         default: Optional[str] = None,
         options: Optional[List[Union[str, None]]] = None,
         style=None,
@@ -153,6 +153,7 @@ class UIDropdown(UILayout):
         # search tree for UIManager
         parent = self.parent
         while isinstance(parent, UIWidget):
+            #
             parent = parent.parent
 
         return parent if isinstance(parent, UIManager) else None
@@ -176,8 +177,13 @@ class UIDropdown(UILayout):
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets
+        overlay = self._overlay
+        rect = overlay.rect
+        if overlay.size_hint_min is not None:
+            rect = rect.resize(*overlay.size_hint_min)
+
         self._overlay.rect = (
-            self._overlay.rect.resize(*self._overlay.size_hint_min)
+            rect
             .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
         )

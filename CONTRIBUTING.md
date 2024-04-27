@@ -155,6 +155,37 @@ You can now open http://localhost:8000 in your browser to preview the doc.
 
 Be sure to re-run build & refresh to update after making changes!
 
+#### Building PDFs
+
+It is also possible to build a PDF of Arcade's documentation. This is
+more complicated than the HTML doc because it requires
+[LaTex](https://www.latex-project.org/), a powerful documentation
+language.
+
+##### Installing
+
+On Linux distros based on Debian and Ubuntu, you may need to install
+the following packages to build PDFs:
+
+``console
+sudo apt install latexmk
+sudo apt install texlive-latex-extra 
+``
+To reduce the large (300 MB+) install size of the second package, you
+may be able to use the `--no-install-recommends` flag.
+
+Other platforms may require different install steps.
+
+##### Building
+
+Once you have LaTeX and extra required configs installed,
+run the following:
+
+```console
+./make.py latexpdf
+```
+
+
 ## Optional: Improve Ergonomics on Mac and Linux
 
 ### make.py shorthand

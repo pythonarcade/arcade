@@ -5,7 +5,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Dict, Optional, Tuple, Union, Sequence
+from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
 from contextlib import contextmanager
 
 import pyglet
@@ -57,12 +57,14 @@ class ArcadeContext(Context):
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObject = window.ubo
         self.bind_window_block()
-        self.projection_2d = (
+        self.viewport = (
+            0,
             0,
             self.screen.width,
-            0,
             self.screen.height,
         )
+        self.projection_matrix = Mat4.orthogonal_projection(0, self.screen.width, 0, self.screen.height,
+                                                            -1, 1)
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -135,6 +137,14 @@ class ArcadeContext(Context):
         self.collision_buffer = self.buffer(reserve=1024 * 4)
         self.collision_query = self.query(samples=False, time=False, primitives=True)
 
+        # General Utility
+
+        # renders a quad (without projection) with a single 4-component texture.
+        self.utility_textured_quad_program: Program = self.load_program(
+            vertex_shader=":system:shaders/util/textured_quad_vs.glsl",
+            fragment_shader=":system:shaders/util/textured_quad_fs.glsl",
+        )
+
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea
@@ -203,7 +213,9 @@ class ArcadeContext(Context):
         self.screen.use(force=True)
         self.bind_window_block()
         # self.active_program = None
-        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        self.viewport = 0, 0, self.window.width, self.window.height
+        self.view_matrix = Mat4()
+        self.projection_matrix = Mat4.orthogonal_projection(0, self.window.width, 0, self.window.height, -100, 100)
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0
@@ -243,54 +255,10 @@ class ArcadeContext(Context):
         return self._atlas
 
     @property
-    def projection_2d(self) -> Tuple[float, float, float, float]:
-        """Get or set the global orthogonal projection for arcade.
-
-        This projection is used by sprites and shapes and is represented
-        by four floats: ``(left, right, bottom, top)``
-
-        When reading this property we reconstruct the projection parameters
-        from pyglet's projection matrix. When setting this property
-        we construct an orthogonal projection matrix and set it in pyglet.
-
-        :type: Tuple[float, float, float, float]
-        """
-        mat = self.window.projection
-
-        # Reconstruct the projection values from the matrix
-        # TODO: Take scale into account
-        width = 2.0 / mat[0]
-        height = 2.0 / mat[5]
-        a = width * mat[12]
-        b = height * mat[13]
-        left = -(width + a) / 2
-        right = left + width
-        bottom = -(height + b) / 2
-        top = bottom + height
-
-        return left, right, bottom, top
-
-    @projection_2d.setter
-    def projection_2d(self, value: Tuple[float, float, float, float]):
-        if not isinstance(value, tuple) or len(value) != 4:
-            raise ValueError(
-                f"projection must be a 4-component tuple, not {type(value)}: {value}"
-            )
-
-        # Don't try to set zero projection leading to division by zero
-        width, height = self.window.get_size()
-        if width == 0 or height == 0:
-            return
-
-        self.window.projection = Mat4.orthogonal_projection(
-            value[0], value[1], value[2], value[3], -100, 100,
-        )
-
-    @property
-    def projection_2d_matrix(self) -> Mat4:
+    def projection_matrix(self) -> Mat4:
         """
         Get the current projection matrix.
-        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+        This 4x4 float32 matrix is calculated by cameras.
 
         This property simply gets and sets pyglet's projection matrix.
 
@@ -298,15 +266,15 @@ class ArcadeContext(Context):
         """
         return self.window.projection
 
-    @projection_2d_matrix.setter
-    def projection_2d_matrix(self, value: Mat4):
+    @projection_matrix.setter
+    def projection_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("projection_matrix must be a Mat4 object")
 
         self.window.projection = value
 
     @property
-    def view_matrix_2d(self) -> Mat4:
+    def view_matrix(self) -> Mat4:
         """
         Get the current view matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
@@ -317,13 +285,12 @@ class ArcadeContext(Context):
         """
         return self.window.view
 
-    @view_matrix_2d.setter
-    def view_matrix_2d(self, value: Mat4):
+    @view_matrix.setter
+    def view_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("view_matrix must be a Mat4 object")
 
-        self._view_matrix_2d = value
-        self.window.view = self._view_matrix_2d
+        self.window.view = value
 
     @contextmanager
     def pyglet_rendering(self):

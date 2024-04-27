@@ -36,6 +36,9 @@ def prepare_window(window: arcade.Window):
         raise RuntimeError("Please do not close the global test window :D")
 
     window.switch_to()
+    if window.get_size() < (800, 600):
+        window.set_size(800, 600)
+
     ctx = window.ctx
     ctx._atlas = None  # Clear the global atlas
     arcade.cleanup_texture_cache()  # Clear the global texture cache
@@ -51,6 +54,7 @@ def prepare_window(window: arcade.Window):
     window.set_vsync(False)
     window.flip()
     window.clear()
+    window.default_camera.use()
     ctx.gc_mode = "context_gc"
     ctx.gc()
     gc.collect()
@@ -113,7 +117,7 @@ class WindowProxy:
             self.window.set_caption(caption)
         if width and height:
             self.window.set_size(width, height)
-            self.window.set_viewport(0, width, 0, height)
+            self.window.default_camera.use()
 
         self._update_rate = 60
 
@@ -156,6 +160,14 @@ class WindowProxy:
     def background_color(self, color):
         self.window.background_color = color
 
+    @property
+    def current_camera(self):
+        return self.window.current_camera
+
+    @current_camera.setter
+    def current_camera(self, new_camera):
+        self.window.current_camera = new_camera
+
     def clear(self, *args, **kwargs):
         return self.window.clear(*args, **kwargs)
 
@@ -194,11 +206,14 @@ class WindowProxy:
     def set_vsync(self, vsync):
         self.window.set_vsync(vsync)
 
-    def get_viewport(self):
-        return self.window.get_viewport()
-
-    def set_viewport(self, left, right, bottom, top):
-        self.window.set_viewport(left, right, bottom, top)
+    @property
+    def default_camera(self):
+        """
+        Provides a reference to the default arcade camera.
+        Automatically sets projection and view to the size
+        of the screen. Good for resetting the screen.
+        """
+        return self.window.default_camera
 
     def use(self):
         self.window.use()

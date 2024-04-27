@@ -1,85 +1,82 @@
-"""
-Module specifying data custom types used for type hinting.
+"""Color-related types, aliases, and constants.
+
+This module does not contain pre-defined color values. For pre-made
+named color values, please see the following:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Module
+     - Contents
+
+   * - :py:mod:`arcade.color`
+     - A set of pre-defined :py:class`.Color` constants.
+
+   * - :py:mod:`arcade.csscolor`
+     - The `CSS named colors <https://developer.mozilla.org/en-US/docs/Web/CSS/named-color>`_
+       as :py:class:`.Color` constants.
+
 """
 from __future__ import annotations
 
-import sys
-from array import array
-import ctypes
 import random
-from collections import namedtuple
-from collections.abc import ByteString
-from pathlib import Path
-from typing import (
-    Iterable,
-    List,
-    NamedTuple,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-    TYPE_CHECKING,
-    TypeVar
+from typing import Tuple, Iterable, Optional, Union, TypeVar
+
+from typing_extensions import Self, Final
+
+from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
+
+
+__all__ = (
+    'Color',
+    'RGB',
+    'RGBA',
+    'RGB255',
+    'RGBA255',
+    'RGBNormalized',
+    'RGBANormalized',
+    'RGBOrA',
+    'RGBOrA255',
+    'RGBOrANormalized',
+    'MASK_RGBA_R',
+    'MASK_RGBA_G',
+    'MASK_RGBA_B',
+    'MASK_RGBA_A',
+    'MASK_RGB_R',
+    'MASK_RGB_G',
+    'MASK_RGB_B',
+    'MAX_UINT24',
+    'MAX_UINT32',
 )
-from typing_extensions import Self
 
-from pytiled_parser import Properties
 
-from arcade.utils import (
-    IntOutsideRangeError,
-    ByteRangeError,
-    NormalizedRangeError
-)
+# Helpful color-related constants for bit masking
+MAX_UINT24: Final[int] = 0xFFFFFF
+MAX_UINT32: Final[int] = 0xFFFFFFFF
+MASK_RGBA_R: Final[int] = 0xFF000000
+MASK_RGBA_G: Final[int] = 0x00FF0000
+MASK_RGBA_B: Final[int] = 0x0000FF00
+MASK_RGBA_A: Final[int] = 0x000000FF
+MASK_RGB_R: Final[int] = 0xFF0000
+MASK_RGB_G: Final[int] = 0x00FF00
+MASK_RGB_B: Final[int] = 0x0000FF
 
-if TYPE_CHECKING:
-    from arcade.texture import Texture
 
-MAX_UINT24 = 0xFFFFFF
-MAX_UINT32 = 0xFFFFFFFF
-
-MASK_RGBA_R = 0xFF000000
-MASK_RGBA_G = 0x00FF0000
-MASK_RGBA_B = 0x0000FF00
-MASK_RGBA_A = 0x000000FF
-
-MASK_RGB_R = 0xFF0000
-MASK_RGB_G = 0x00FF00
-MASK_RGB_B = 0x0000FF
-
+# Color type aliases.
 ChannelType = TypeVar('ChannelType')
 
+# Generic color aliases
 RGB = Tuple[ChannelType, ChannelType, ChannelType]
 RGBA = Tuple[ChannelType, ChannelType, ChannelType, ChannelType]
 RGBOrA = Union[RGB[ChannelType], RGBA[ChannelType]]
 
+# Specific color aliases
+RGB255 = RGB[int]
+RGBA255 = RGBA[int]
+RGBNormalized = RGB[float]
+RGBANormalized = RGBA[float]
 RGBOrA255 = RGBOrA[int]
 RGBOrANormalized = RGBOrA[float]
-
-RGBA255 = RGBA[int]
-RGBANormalized = RGBA[float]
-
-RGBA255OrNormalized = Union[RGBA255, RGBANormalized]
-
-
-__all__ = [
-    "BufferProtocol",
-    "Color",
-    "ColorLike",
-    "IPoint",
-    "PathOrTexture",
-    "Point",
-    "PointList",
-    "EMPTY_POINT_LIST",
-    "NamedPoint",
-    "Rect",
-    "RectList",
-    "RGB",
-    "RGBA255",
-    "RGBANormalized",
-    "RGBA255OrNormalized",
-    "TiledObject",
-    "Vector"
-]
 
 
 class Color(RGBA255):
@@ -153,6 +150,26 @@ class Color(RGBA255):
     @property
     def a(self) -> int:
         return self[3]
+
+    @property
+    def rgb(self) -> Tuple[int, int, int]:
+        """Return only a color's RGB components.
+
+        This is syntactic sugar for slice indexing as below:
+
+        .. code-block:: python
+
+            >>> from arcade.color import WHITE
+            >>> WHITE[:3]
+            (255, 255, 255)
+            # Equivalent but slower than the above
+            >>> (WHITE.r, WHITE.g, WHITE.b)
+            (255, 255, 255)
+
+        To reorder the channels as you retrieve them, see
+        :meth:`.swizzle`.
+        """
+        return self[:3]
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:
@@ -462,45 +479,3 @@ class Color(RGBA255):
                 raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
         return tuple(ret)
-
-
-ColorLike = Union[RGB, RGBA255]
-
-# Point = Union[Tuple[float, float], List[float]]
-# Vector = Point
-Point = Tuple[float, float]
-Point3 = Tuple[float, float, float]
-IPoint = Tuple[int, int]
-Vector = Point
-NamedPoint = namedtuple("NamedPoint", ["x", "y"])
-
-
-PointList = Sequence[Point]
-# Speed / typing workaround:
-# 1. Eliminate extra allocations
-# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
-EMPTY_POINT_LIST: PointList = tuple()
-
-
-Rect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
-RectList = Union[Tuple[Rect, ...], List[Rect]]
-FloatRect = Union[Tuple[float, float, float, float], List[float]]  # x, y, width, height
-
-PathOrTexture = Optional[Union[str, Path, "Texture"]]
-
-
-class TiledObject(NamedTuple):
-    shape: Union[Point, PointList, Rect]
-    properties: Optional[Properties] = None
-    name: Optional[str] = None
-    type: Optional[str] = None
-
-
-if sys.version_info >= (3, 12):
-    from collections.abc import Buffer as BufferProtocol
-else:
-    # This is used instead of the typing_extensions version since they
-    # use an ABC which registers virtual subclasses. This will not work
-    # with ctypes.Array since virtual subclasses must be concrete.
-    # See: https://peps.python.org/pep-0688/
-    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]

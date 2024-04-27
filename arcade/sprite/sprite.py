@@ -64,7 +64,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def __init__(
         self,
-        path_or_texture: PathOrTexture = None,
+        path_or_texture: Optional[PathOrTexture] = None,
         scale: float = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,

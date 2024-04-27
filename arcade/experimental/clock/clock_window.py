@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Clock variants of :py:class:`arcade.Window` and :py:class:`arcade.View`.
 
 Unlike the main versions, they add support for using a clock and fixed
@@ -18,7 +19,7 @@ import pyglet
 
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.canvas.base import ScreenMode
+from pyglet.display.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
@@ -69,7 +70,7 @@ class Window(pyglet.window.Window):
     :param antialiasing: Should OpenGL's anti-aliasing be enabled?
     :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
-    :param screen: Pass a pyglet :py:class:`~pyglet.canvas.Screen` to
+    :param screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
         request the window be placed on it. See `pyglet's window size &
         position guide <pyglet_pg_window_size_position_>`_ to learn more.
     :param style: Request a non-default window style, such as borderless.
@@ -96,7 +97,7 @@ class Window(pyglet.window.Window):
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: Tuple[int, int] = (3, 3),
-        screen: Optional[pyglet.canvas.Screen] = None,
+        screen: Optional[pyglet.display.Screen] = None,
         style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,
@@ -140,7 +141,7 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-                display = pyglet.canvas.get_display()
+                display = pyglet.display.get_display()
                 screen = display.get_default_screen()
                 if screen:
                     config = screen.get_best_config(config)
