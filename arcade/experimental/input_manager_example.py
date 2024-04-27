@@ -6,6 +6,7 @@ import pyglet
 import toml
 
 import arcade
+from arcade.experimental import input
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -16,7 +17,7 @@ class Player(arcade.Sprite):
     def __init__(
         self,
         walls: arcade.SpriteList,
-        input_manager_template: arcade.InputManager,
+        input_manager_template: input.InputManager,
         controller: Optional[pyglet.input.Controller] = None,
     ):
         super().__init__(
@@ -25,7 +26,7 @@ class Player(arcade.Sprite):
         self.center_x = random.randint(0, WINDOW_WIDTH)
         self.center_y = 128
 
-        self.input_manager = arcade.InputManager(
+        self.input_manager = input.InputManager(
             controller=controller, action_handlers=self.on_action
         )
         self.input_manager.copy_existing(input_manager_template)
@@ -40,10 +41,10 @@ class Player(arcade.Sprite):
 
         self.physics_engine.update()
 
-    def on_action(self, action: str, state: arcade.ActionState):
+    def on_action(self, action: str, state: input.ActionState):
         if (
             action == "Jump"
-            and state == arcade.ActionState.PRESSED
+            and state == input.ActionState.PRESSED
             and self.physics_engine.can_jump()
         ):
             self.change_y = 20
@@ -63,17 +64,17 @@ class Game(arcade.Window):
         # self.INPUT_TEMPLATE = arcade.InputManager.parse(raw)
         # self.INPUT_TEMPLATE.allow_keyboard = False
 
-        self.INPUT_TEMPLATE = arcade.InputManager(allow_keyboard=False)
+        self.INPUT_TEMPLATE = input.InputManager(allow_keyboard=False)
         self.INPUT_TEMPLATE.new_action("Jump")
-        self.INPUT_TEMPLATE.add_action_input("Jump", arcade.Keys.SPACE)
+        self.INPUT_TEMPLATE.add_action_input("Jump", input.Keys.SPACE)
         self.INPUT_TEMPLATE.add_action_input(
-            "Jump", arcade.ControllerButtons.BOTTOM_FACE
+            "Jump", input.ControllerButtons.BOTTOM_FACE
         )
 
         self.INPUT_TEMPLATE.new_axis("Move")
-        self.INPUT_TEMPLATE.add_axis_input("Move", arcade.Keys.A, -1.0)
-        self.INPUT_TEMPLATE.add_axis_input("Move", arcade.Keys.D, 1.0)
-        self.INPUT_TEMPLATE.add_axis_input("Move", arcade.ControllerAxes.LEFT_STICK_X)
+        self.INPUT_TEMPLATE.add_axis_input("Move", input.Keys.A, -1.0)
+        self.INPUT_TEMPLATE.add_axis_input("Move", input.Keys.D, 1.0)
+        self.INPUT_TEMPLATE.add_axis_input("Move", input.ControllerAxes.LEFT_STICK_X)
 
         # This is an example of how to dump an InputManager to a file. The serialize function
         # returns a dictionary, so anything such as toml, yaml, or json could be used to save
@@ -129,14 +130,14 @@ class Game(arcade.Window):
         self.wall_list.draw()
 
     def on_key_press(self, key, modifiers):
-        key = arcade.Keys(key)
+        key = input.Keys(key)
 
-        if key == arcade.Keys.KEY_1:
+        if key == input.Keys.KEY_1:
             self.players[0].input_manager.allow_keyboard = True
             for index, player in enumerate(self.players):
                 if index != 0:
                     player.input_manager.allow_keyboard = False
-        elif key == arcade.Keys.KEY_2:
+        elif key == input.Keys.KEY_2:
             self.players[1].input_manager.allow_keyboard = True
             for index, player in enumerate(self.players):
                 if index != 1:
