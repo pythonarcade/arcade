@@ -513,7 +513,7 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_stick_motion(self, controller, name, motion: pyglat.math.Vec2):
+    def on_stick_motion(self, controller, name, motion: pyglet.math.Vec2):
         x_value, y_value = motion.x, motion.y
         if name == "leftx":
             self.window.dispatch_event(
