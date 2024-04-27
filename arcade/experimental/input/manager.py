@@ -28,6 +28,11 @@ RawInputManager = TypedDict(
 )
 
 
+def _set_discard(set: Set, element: Any) -> Set:
+    set.discard(element)
+    return set
+
+
 class ActionState(Enum):
     PRESSED = 1
     RELEASED = 0
@@ -52,6 +57,7 @@ class InputManager:
         self.actions: Dict[str, Action] = {}
         self.keys_to_actions: Dict[int, Set[str]] = {}
         self.controller_buttons_to_actions: Dict[str, Set[str]] = {}
+        self.controller_axes_to_actions: Dict[str, Set[str]] = {}
         self.mouse_buttons_to_actions: Dict[int, Set[str]] = {}
         self.on_action_listeners: List[Callable[[str, ActionState], Any]] = []
         self.action_subscribers: Dict[str, Set[Callable[[ActionState], Any]]] = {}
@@ -259,7 +265,8 @@ class InputManager:
         self.actions[name] = action
 
     def remove_action(self, name: str):
-        # TODO: Handle all the input->action mappings
+        self.clear_action_input(name)
+
         to_remove = self.actions.get(name, None)
         if to_remove:
             del self.actions[name]
@@ -288,10 +295,45 @@ class InputManager:
             if input.value not in self.mouse_buttons_to_actions:
                 self.mouse_buttons_to_actions[input.value] = set()
             self.mouse_buttons_to_actions[input.value].add(action)
+        elif mapping._input_type == InputType.CONTROLLER_AXIS:
+            if input.value not in self.controller_axes_to_actions:
+                self.controller_axes_to_actions[input.value] = set()
+            self.controller_axes_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
-        # TODO: Handle all the input->action mappings(this is just clearing the underlying mapping right now, not the actual link to an action)
         self.actions[action]._mappings = set()
+
+        to_discard = []
+        for key, value in self.keys_to_actions.items():
+            new_set = _set_discard(value, action)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.keys_to_actions[key]
+
+        to_discard = []
+        for key, value in self.controller_buttons_to_actions.items():
+            new_set = _set_discard(value, action)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.controller_buttons_to_actions[key]
+
+        to_discard = []
+        for key, value in self.controller_axes_to_actions.items():
+            new_set = _set_discard(value, action)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.controller_axes_to_actions[key]
+
+        to_discard = []
+        for key, value in self.mouse_buttons_to_actions.items():
+            new_set = _set_discard(value, action)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.mouse_buttons_to_actions[key]
 
     def register_action_handler(
         self,
@@ -335,11 +377,35 @@ class InputManager:
             self.controller_analog_to_axes[input.value].add(axis)
 
     def clear_axis_input(self, axis: str):
-        # TODO: handle the input->axis mappings
         self.axes[axis]._mappings = set()
 
+        to_discard = []
+        for key, value in self.keys_to_axes.items():
+            new_set = _set_discard(value, axis)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.keys_to_axes[key]
+
+        to_discard = []
+        for key, value in self.controller_analog_to_axes.items():
+            new_set = _set_discard(value, axis)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.controller_analog_to_axes[key]
+
+        to_discard = []
+        for key, value in self.controller_buttons_to_axes.items():
+            new_set = _set_discard(value, axis)
+            if len(new_set) == 0:
+                to_discard.append(key)
+        for key in to_discard:
+            del self.controller_buttons_to_axes[key]
+
     def remove_axis(self, name: str):
-        # TODO: handle the input->axis mappings
+        self.clear_axis_input(name)
+
         to_remove = self.axes.get(name, None)
         if to_remove:
             del self.axes[name]
@@ -446,6 +512,41 @@ class InputManager:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
     def on_stick_motion(self, controller, name, x_value, y_value):
+        if name == "leftx":
+            self.window.dispatch_event(
+                "on_stick_motion",
+                self.controller,
+                "leftxpositive" if x_value > 0 else "leftxnegative",
+                x_value,
+                y_value,
+            )
+        elif name == "lefty":
+            self.window.dispatch_event(
+                "on_stick_motion",
+                self.controller,
+                "leftypositive" if y_value > 0 else "leftynegative",
+                x_value,
+                y_value,
+            )
+        elif name == "rightx":
+            self.window.dispatch_event(
+                "on_stick_motion",
+                self.controller,
+                "rightxpositive" if x_value > 0 else "rightxpositive",
+                x_value,
+                y_value,
+            )
+        elif name == "righty":
+            self.window.dispatch_event(
+                "on_stick_motion",
+                self.controller,
+                "rightypositive" if y_value > 0 else "rightynegative",
+                x_value,
+                y_value,
+            )
+
+        axes_to_actions = self.controller_axes_to_actions.get(name, set())
+
         if (
             x_value > self.controller_deadzone
             or x_value < -self.controller_deadzone
@@ -453,6 +554,14 @@ class InputManager:
             or y_value < -self.controller_deadzone
         ):
             self.active_device = InputDevice.CONTROLLER
+
+            for action_name in axes_to_actions:
+                self.dispatch_action(action_name, ActionState.PRESSED)
+
+            return
+
+        for action_name in axes_to_actions:
+            self.dispatch_action(action_name, ActionState.RELEASED)
 
     def on_dpad_motion(
         self, controller: Controller, left: bool, right: bool, up: bool, down: bool

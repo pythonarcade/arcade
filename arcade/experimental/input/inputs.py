@@ -40,9 +40,17 @@ class StrEnum(str, InputEnum):
 
 class ControllerAxes(StrEnum):
     LEFT_STICK_X = "leftx"
+    LEFT_STICK_POSITIVE_X = "leftxpositive"
+    LEFT_STICK_NEGATIVE_X = "leftxnegative"
     LEFT_STICK_Y = "lefty"
+    LEFT_STICK_POSITIVE_Y = "leftypositive"
+    LEFT_STICK_NEGATIVE_Y = "leftynegative"
     RIGHT_STICK_X = "rightx"
+    RIGHT_STICK_POSITIVE_X = "rightxpositive"
+    RIGHT_STICK_NEGATIVE_X = "rightxnegative"
     RIGHT_STICK_Y = "righty"
+    RIGHT_STICK_POSITIVE_Y = "rightypositive"
+    RIGHT_STICK_NEGATIVE_Y = "rightynegative"
     LEFT_TRIGGER = "lefttrigger"
     RIGHT_TRIGGER = "righttrigger"
 
