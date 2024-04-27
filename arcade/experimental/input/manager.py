@@ -513,7 +513,8 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_stick_motion(self, controller, name, x_value, y_value):
+    def on_stick_motion(self, controller, name, motion: pyglat.math.Vec2):
+        x_value, y_value = motion.x, motion.y
         if name == "leftx":
             self.window.dispatch_event(
                 "on_stick_motion",
@@ -566,7 +567,7 @@ class InputManager:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
     def on_dpad_motion(
-        self, controller: Controller, left: bool, right: bool, up: bool, down: bool
+        self, controller: Controller, motion: pyglet.math.Vec2
     ):
         self.active_device = InputDevice.CONTROLLER
 
