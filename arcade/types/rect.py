@@ -32,7 +32,9 @@ class Rect(NamedTuple):
     Attempts to implement all Rectangle functions used in the library, and to be a helpful
     tool for developers storing/maniulating rectangle and rectangle-like constructs.
 
-    Rectangles cannot rotate by design, since this complicates their implmentation a lot."""
+    Rectangles cannot rotate by design, since this complicates their implmentation a lot.
+
+    You probably don't want to create one of these directly, and should instead use a helper method."""
     left: float
     right: float
     bottom: float
