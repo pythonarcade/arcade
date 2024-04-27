@@ -25,7 +25,6 @@ from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
-from arcade.experimental.input import ActionState
 
 LOG = logging.getLogger(__name__)
 
@@ -538,7 +537,7 @@ class Window(pyglet.window.Window):
         """
         super().set_mouse_visible(visible)
 
-    def on_action(self, action_name: str, state: ActionState):
+    def on_action(self, action_name: str, state):
         pass
 
     def on_key_press(self, symbol: int, modifiers: int):

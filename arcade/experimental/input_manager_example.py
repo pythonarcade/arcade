@@ -1,3 +1,5 @@
+#  type: ignore
+
 import random
 from typing import List, Optional
 
