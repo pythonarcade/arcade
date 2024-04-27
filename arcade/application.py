@@ -186,6 +186,7 @@ class Window(pyglet.window.Window):
                 style=style,
             )
             self.register_event_type('on_update')
+            self.register_event_type('on_action')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
@@ -535,6 +536,9 @@ class Window(pyglet.window.Window):
         :param visible: Whether to hide the system mouse cursor
         """
         super().set_mouse_visible(visible)
+
+    def on_action(self, action_name: str, state):
+        pass
 
     def on_key_press(self, symbol: int, modifiers: int):
         """
