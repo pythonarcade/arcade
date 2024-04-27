@@ -1,11 +1,12 @@
+#  type: ignore
+
 from __future__ import annotations
 
-from enum import Enum
 from typing import List, Set, Union
 
 from typing_extensions import TypedDict
 
-from arcade.input import inputs
+from arcade.experimental.input import inputs
 
 RawActionMapping = TypedDict(
     "RawActionMapping",

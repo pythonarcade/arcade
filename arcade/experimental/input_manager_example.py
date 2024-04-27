@@ -1,9 +1,7 @@
-import json
 import random
 from typing import List, Optional
 
 import pyglet
-import toml
 
 import arcade
 from arcade.experimental import input
@@ -148,7 +146,7 @@ class Game(arcade.Window):
 
 
 def main():
-    game = Game()
+    Game()
     arcade.run()
 
 
