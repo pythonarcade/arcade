@@ -64,6 +64,10 @@ def test_make_XYRR():
     assert r.y == 15.0
 
 
+def test_equivalency():
+    assert LBWH(10, 10, 10, 10) == LRBT(10, 20, 10, 20) == XYWH(15, 15, 10, 10) == XYRR(15, 15, 5, 5) == A_RECT
+
+
 def test_corners():
     assert A_RECT.bottom_left == Vec2(10, 10)
     assert A_RECT.bottom_right == Vec2(20, 10)
