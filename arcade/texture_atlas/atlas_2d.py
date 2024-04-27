@@ -1,4 +1,5 @@
 import copy
+import gc
 import math
 import time
 import logging
@@ -811,6 +812,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param size: The new size
         """
+        print(f"resize({size})")
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
         # print("Resizing atlas from", self._size, "to", size)
 
@@ -885,7 +887,7 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
-        # print("Rebuilding atlas")
+        print("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
@@ -1153,3 +1155,18 @@ class TextureAtlas(TextureAtlasBase):
                 "Attempting to create or resize an atlas to "
                 f"{size} past its maximum size of {self._max_size}"
             )
+
+    def validate(self) -> None:
+        """
+        Validate the texture atlas.
+
+        This is an expensive operation and should only be used for debugging.
+        Validation will read the pixel data for each texture in the atlas
+        and compare it to the actual texture data in the atlas texture.
+        """
+        # TODO: Validate images instead
+        # TODO: Validate unique textures comparing the region data
+        for texture in self.unique_textures:
+            image = self.read_texture_image_from_atlas(texture)
+            if image.tobytes() != texture.image.tobytes():
+                raise Exception(f"Texture {texture.atlas_name} pixel data mismatch")
