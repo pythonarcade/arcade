@@ -55,7 +55,8 @@ titles = {
     'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
     'math.py': ['Math', 'math.rst'],
-    'types.py': ['Types', 'types.rst'],
+    'types/__init__.py': ['Types', 'types.rst'],
+    'types/color.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
     'earclip.py': ['Earclip', 'earclip.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
@@ -211,7 +212,7 @@ def process_directory(directory: Path, quick_index_file):
             "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
-            "types.py": "arcade.types",
+            "types": "arcade.types",
             "utils.py": "arcade.utils",
             "easing.py": "arcade.easing",
             "math.py": "arcade.math",
@@ -330,6 +331,7 @@ def main():
     text_file.write(table_header_arcade)
 
     process_directory(ROOT / "arcade", text_file)
+    process_directory(ROOT / "arcade/types", text_file)
     process_directory(ROOT / "arcade/sprite_list", text_file)
     process_directory(ROOT / "arcade/geometry", text_file)
     process_directory(ROOT / "arcade/sprite", text_file)

@@ -132,8 +132,8 @@ class MyGame(arcade.Window):
         self.scene.add_sprite("Player", self.player_sprite)
 
         viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
-        self.gui_camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera = arcade.camera.Camera2D(viewport=viewport)
+        self.gui_camera = arcade.camera.Camera2D(viewport=viewport)
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
                                                               max_amplitude=12.5,

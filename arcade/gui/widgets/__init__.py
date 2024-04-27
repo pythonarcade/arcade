@@ -34,6 +34,7 @@ from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
 from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -263,6 +264,7 @@ class _ChildEntry(NamedTuple):
     data: Dict
 
 
+@copy_dunders_unimplemented
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.

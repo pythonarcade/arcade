@@ -25,6 +25,6 @@ python:
         - dev
 
 # Build PDF & ePub
-formats:
-  - epub
-  - pdf
+# formats:
+#  - epub
+#  - pdf

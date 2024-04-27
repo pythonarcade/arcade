@@ -16,8 +16,23 @@ __all__ = [
     'PerspectiveProjectionData',
     'Projection',
     'Projector',
-    'Camera'
+    'Camera',
+    'ZeroProjectionDimension',
 ]
+
+
+class ZeroProjectionDimension(ValueError):
+    """A projection's dimensions were zero along at least one axis.
+
+    This usually happens because code tried to set one of the following:
+
+    * ``left`` equal to ``right``
+    * ``bottom`` equal to ``top``
+
+    You can handle this error as a :py:class:`ValueError`.
+    """
+    ...
+
 
 
 class CameraData:
