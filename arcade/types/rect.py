@@ -7,6 +7,9 @@ from pyglet.math import Vec2
 from arcade.types import AsFloat
 from arcade.utils import ReplacementWarning, warning
 
+RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
+ViewportParams = tuple[int, int, int, int]
+
 
 class AnchorPoint:
     """Provides helper aliases for several Vec2s to be used as anchor points in UV space."""
@@ -244,129 +247,69 @@ class Rect(NamedTuple):
             Vec2(self.right, self.bottom)
         )
 
-    def to_tuple(self) -> tuple[float, ...]:
-        """Returns the bare tuple used to create this Rect."""
-        return self.__class__.from_rect(self)
+    @property
+    def lbwh(self) -> RectParams:
+        return (self.left, self.bottom, self.width, self.height)
 
-    # Subclass-only methods
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[float, ...]:
-        return (rect.left, rect.right, rect.top, rect.bottom,
-                rect.width, rect.height, rect.x, rect.y)
+    @property
+    def lrbt(self) -> RectParams:
+        return (self.left, self.right, self.bottom, self.top)
 
-    @staticmethod
-    def as_new_attrs(*args: tuple[AsFloat]) -> tuple[AsFloat, ...]:
-        """Takes an incomplete signature and returns all attributes needed to create a new Rect."""
-        raise NotImplementedError
+    @property
+    def xywh(self) -> RectParams:
+        return (self.x, self.y, self.width, self.height)
+
+    @property
+    def xyrr(self) -> RectParams:
+        return (self.x, self.y, self.width / 2, self.height / 2)
+
+    @property
+    def viewport(self) -> ViewportParams:
+        return (int(self.x), int(self.y), int(self.width), int(self.height))
 
     def __repr__(self) -> str:
         return (f"<Rect LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
                 f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
 
     def __str__(self) -> str:
-        repr(self)
+        return repr(self)
 
 
-class LRBT(Rect):
-    def __new__(cls, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
-        rect = cls.as_new_attrs(left, right, bottom, top)
-        return Rect.__new__(cls, *rect)
-
-    def __init__(self, left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat):
-        ...
-
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
-        return (rect.left, rect.right, rect.bottom, rect.top)
-
-    @staticmethod
-    def as_new_attrs(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> tuple[AsFloat, ...]:
-        width = right - left
-        height = top - bottom
-        x = left + (width / 2)
-        y = bottom + (height / 2)
-        return (left, right, bottom, top, width, height, x, y)
+def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
+    width = right - left
+    height = top - bottom
+    x = left + (width / 2)
+    y = bottom + (height / 2)
+    return Rect(left, right, bottom, top, width, height, x, y)
 
 
-class LBWH(Rect):
-    def __new__(cls, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
-        rect = cls.as_new_attrs(left, bottom, width, height)
-        return Rect.__new__(cls, *rect)
-
-    def __init__(self, left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat):
-        ...
-
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
-        return (rect.left, rect.bottom, rect.width, rect.height)
-
-    @staticmethod
-    def as_new_attrs(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> tuple[AsFloat, ...]:
-        right = left + width
-        top = bottom + height
-        x = left + (width / 2)
-        y = bottom + (height / 2)
-        return (left, right, bottom, top, width, height, x, y)
+def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
+    right = left + width
+    top = bottom + height
+    x = left + (width / 2)
+    y = bottom + (height / 2)
+    return Rect(left, right, bottom, top, width, height, x, y)
 
 
-class XYWH(Rect):
-    def __new__(cls, x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
-        rect = cls.to_rect_attrs(x, y, width, height)
-        return Rect.__new__(cls, *rect)
-
-    def __init__(self, x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat):
-        ...
-
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
-        return (rect.x, rect.y, rect.width, rect.height)
-
-    @staticmethod
-    def to_rect_attrs(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> tuple[AsFloat, ...]:
-        left = x - (width / 2)
-        right = x + (width / 2)
-        bottom = y - (width / 2)
-        top = y + (width / 2)
-        return (left, right, bottom, top, width, height, x, y)
+def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
+    left = x - (width / 2)
+    right = x + (width / 2)
+    bottom = y - (width / 2)
+    top = y + (width / 2)
+    return Rect(left, right, bottom, top, width, height, x, y)
 
 
-class XYRR(Rect):
-    def __new__(cls, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
-        rect = cls.to_rect_attrs(x, y, half_width, half_height)
-        return Rect.__new__(cls, *rect)
-
-    def __init__(self, x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat):
-        ...
-
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[float, float, float, float]:
-        return (rect.x, rect.y, rect.width / 2, rect.height / 2)
-
-    @staticmethod
-    def to_rect_attrs(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> tuple[AsFloat, ...]:
-        left = x - half_width
-        right = x + half_width
-        bottom = y - half_width
-        top = y + half_width
-        return (left, right, bottom, top, half_width * 2, half_height * 2, x, y)
+def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
+    left = x - half_width
+    right = x + half_width
+    bottom = y - half_width
+    top = y + half_width
+    return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
-class Viewport(Rect):
-    def __new__(cls, x: int, y: int, width: int, height: int):
-        rect = cls.to_rect_attrs(x, y, width, height)
-        return Rect.__new__(cls, *rect)
-
-    def __init__(self, x: int, y: int, width: int, height: int):
-        ...
-
-    @staticmethod
-    def from_rect(rect: Rect) -> tuple[int, int, int, int]:
-        return (int(rect.x), int(rect.y), int(rect.width), int(rect.height))
-
-    @staticmethod
-    def to_rect_attrs(x: int, y: int, width: int, height: int) -> tuple[AsFloat, ...]:
-        left = x - (width / 2)
-        right = x + (width / 2)
-        bottom = y - (width / 2)
-        top = y + (width / 2)
-        return (left, right, bottom, top, width, height, x, y)
+def Viewport(x: int, y: int, width: int, height: int) -> Rect:
+    left = x - (width / 2)
+    right = x + (width / 2)
+    bottom = y - (width / 2)
+    top = y + (width / 2)
+    return Rect(left, right, bottom, top, width, height, x, y)

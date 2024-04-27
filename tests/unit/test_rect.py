@@ -113,13 +113,6 @@ def test_overlap():
     assert a_rect & another_rect == LBWH(15, 10, 5, 10)
 
 
-def test_get_it_back():
-    assert LRBT.from_rect(A_RECT) == (10, 20, 10, 20)
-    assert LBWH.from_rect(A_RECT) == (10, 10, 10, 10)
-    assert XYWH.from_rect(A_RECT) == (15, 15, 10, 10)
-    assert XYRR.from_rect(A_RECT) == (15, 15,  5,  5)
-
-
 def test_size():
     assert A_RECT.size == Vec2(10, 10)
 
@@ -132,7 +125,9 @@ def test_at_position():
     assert r.top == 25
 
 
-def test_get_original_tuple():
-    t = (10, 20, 10, 20)
-    r = LRBT(*t)
-    assert r.to_tuple() == t
+def test_views():
+    assert A_RECT.lrbt == (10, 20, 10, 20)
+    assert A_RECT.lbwh == (10, 10, 10, 10)
+    assert A_RECT.xyrr == (15, 15,  5,  5)
+    assert A_RECT.xywh == (15, 15, 10, 10)
+    assert A_RECT.viewport == (15, 15, 10, 10)
