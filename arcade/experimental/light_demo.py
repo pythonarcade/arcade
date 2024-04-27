@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import arcade
+from arcade.draw_commands import draw_lbwh_rectangle_textured
 from arcade.experimental.lights import Light, LightLayer
 
 # Do the math to figure out our screen dimensions
@@ -57,7 +58,7 @@ class MyGame(arcade.Window):
 
         # Everything that should be affected by lights in here
         with self.light_layer:
-            arcade.draw_lrwh_rectangle_textured(
+            draw_lbwh_rectangle_textured(
                 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
             self.torch_list.draw()
 
