@@ -119,7 +119,7 @@ class OrthographicProjector:
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = 0.0
+            depth: Optional[float] = None
     ) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
@@ -139,13 +139,10 @@ class OrthographicProjector:
         screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
         screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
 
-        _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
-        _view = generate_view_matrix(self._view)
+        _projection = ~generate_orthographic_matrix(self._projection, self._view.zoom)
+        _view = ~generate_view_matrix(self._view)
 
-        screen_position = Vec4(screen_x, screen_y, 0.0, 1.0)
+        _unprojected_position = _projection @ Vec4(screen_x, screen_y, 0.0, 1.0)
+        _world_position = _view @ Vec4(_unprojected_position.x, _unprojected_position.y, depth or 0.0, 1.0)
 
-        _full = ~(_projection @ _view)
-
-        _mapped_position = _full @ screen_position
-
-        return _mapped_position.x, _mapped_position.y, depth
+        return _world_position.x, _world_position.y, _world_position.z

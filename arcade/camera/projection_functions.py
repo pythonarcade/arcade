@@ -45,8 +45,8 @@ def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, z
 
     # Scale the projection by the zoom value. Both the width and the height
     # share a zoom value to avoid ugly stretching.
-    right = projection_x - half_width / zoom
-    left = projection_x + half_width / zoom
+    left = projection_x - half_width / zoom
+    right = projection_x + half_width / zoom
     bottom = projection_y - half_height / zoom
     top = projection_y + half_height / zoom
 
