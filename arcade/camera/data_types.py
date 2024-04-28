@@ -239,7 +239,7 @@ class Projector(Protocol[_TWorldCoord, _TScreenCoord]):
         ...
 
     def project(self, world_coords: _TWorldCoord) -> _TScreenCoord:
-        """Project ``world_coords``into a pixel screenspace.
+        """Project ``world_coords`` into a pixel screenspace.
 
         This is expected to use the internal state of the projector
         without additional arguments.
