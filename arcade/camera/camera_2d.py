@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Tuple, Iterator
+from typing import TYPE_CHECKING, Optional, Tuple, Generator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
@@ -781,7 +781,7 @@ class Camera2D:
         self._ortho_projector.use()
 
     @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def activate(self) -> Generator[Self, None, None]:
         """
         Set internal projector as window projector,
         and set the projection and view matrix.

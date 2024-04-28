@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Iterator, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, Self, TYPE_CHECKING
 from contextlib import contextmanager
 
 from math import tan, radians
@@ -85,6 +85,31 @@ class PerspectiveProjector(Projector):
         alias of arcade.camera.get_view_matrix method
         """
         return generate_view_matrix(self._view)
+
+    @contextmanager
+    def activate(self) -> Generator[Self, None, None]:
+        """Set this camera as the current one, then undo it after.
+
+        This method is a :ref+external:`context manager <context-managers>`
+        you can use inside ``with`` blocks. Using it this way guarantees
+        that the old camera and its settings will be restored, even if an
+        exception occurs:
+
+        .. code-block:: python
+
+           # Despite an Exception, the previous camera and its settings
+           # will be restored at the end of the with block below:
+           with projector_instance.activate():
+                sprite_list.draw()
+                _ = 1 / 0  # Guaranteed ZeroDivisionError
+
+        """
+        previous_projector = self._window.current_camera
+        try:
+            self.use()
+            yield self
+        finally:
+            previous_projector.use()
 
     def use(self) -> None:
         """
