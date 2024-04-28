@@ -353,20 +353,15 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
 
 
 def Kwargtangle(**kwargs: AsFloat) -> Rect:
-    rect_props = ["left", "right", "top", "bottom", "x", "y", "width", "height"]
-    rect_dict = {k: kwargs.get(k, None) for k in rect_props}
     # LRBT
-    if (rect_dict["left"] is not None and rect_dict["right"] is not None
-        and rect_dict["bottom"] is not None and rect_dict["top"] is not None):
-        return LRBT(rect_dict["left"], rect_dict["right"], rect_dict["bottom"], rect_dict["top"])
+    if all(kwargs.get(v, None) is not None for v in ["left", "right", "top", "bottom"]):
+        return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])
     # LBWH
-    elif (rect_dict["left"] is not None and rect_dict["bottom"] is not None
-        and rect_dict["width"] is not None and rect_dict["height"] is not None):
-        return LRBT(rect_dict["left"], rect_dict["bottom"], rect_dict["width"], rect_dict["height"])
+    elif all(kwargs.get(v, None) is not None for v in ["left", "bottom", "width", "height"]):
+        return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])
     # XYWH
-    elif (rect_dict["x"] is not None and rect_dict["y"] is not None
-        and rect_dict["width"] is not None and rect_dict["height"] is not None):
-        return XYWH(rect_dict["x"], rect_dict["y"], rect_dict["width"], rect_dict["height"])
+    elif all(kwargs.get(v, None) is not None for v in ["x", "y", "width", "height"]):
+        return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])
     else:
         raise ValueError("Not enough attributes defined for a valid rectangle!")
 
