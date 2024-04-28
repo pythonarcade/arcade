@@ -12,6 +12,7 @@ from arcade.camera.data_types import (
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
+from arcade.types import AsFloat
 
 from arcade.window_commands import get_window
 
@@ -313,11 +314,10 @@ class Camera2D:
         exception if any axis pairs are equal. You can handle this
         exception as a :py:class:`ValueError`.
         """
-        _p = self._projection_data
-        return _p.left, _p.right, _p.bottom, _p.top
+        return self._projection_data.lrbt
 
     @projection.setter
-    def projection(self, value: Tuple[float, float, float, float]) -> None:
+    def projection(self, value: Tuple[AsFloat, AsFloat, AsFloat, AsFloat]) -> None:
 
         # Unpack and validate
         left, right, bottom, top = value
@@ -331,11 +331,12 @@ class Camera2D:
                 f"and {top=}"))
 
         # Modify the projection data itself.
-        _p = self._projection_data
-        _p.left = left
-        _p.right = right
-        _p.bottom = bottom
-        _p.top = top
+        self._projection_data.lrbt = (
+            float(left),
+            float(right),
+            float(bottom),
+            float(top)
+        )
 
     @property
     def projection_width(self) -> float:
