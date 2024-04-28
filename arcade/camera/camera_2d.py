@@ -8,7 +8,6 @@ from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import (
     CameraData,
     OrthographicProjectionData,
-    Projector,
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
