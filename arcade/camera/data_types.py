@@ -20,6 +20,8 @@ __all__ = [
     'ZeroProjectionDimension',
 ]
 
+from arcade.types import AsFloat
+
 
 class ZeroProjectionDimension(ValueError):
     """A projection's dimensions were zero along at least one axis.
@@ -136,9 +138,26 @@ class OrthographicProjectionData:
         # Viewport for setting which pixels to draw to
         self.viewport: Tuple[int, int, int, int] = viewport
 
+    @property
+    def lrbt(self) -> Tuple[float, float, float, float]:
+        """Get/set a tuple for ``(left, right, bottom, top)``.
+
+        This will be wired into rectangle abstractions in future
+        commits.
+        """
+        return self.left, self.right, self.bottom, self.top
+
+    @lrbt.setter
+    def lrbt(self, new_lrbt: Tuple[AsFloat, AsFloat, AsFloat, AsFloat]) -> None:
+        left, right, bottom, top = new_lrbt
+        self.left = float(left)
+        self.right = float(right)
+        self.top = float(top)
+        self.bottom = float(bottom)
+
     def __str__(self):
         return (f"OrthographicProjection<"
-                f"LRBT={(self.left, self.right, self.bottom, self.top)}, "
+                f"LRBT={self.lrbt}, "
                 f"{self.near=}, "
                 f"{self.far=}, "
                 f"{self.viewport=}>")
