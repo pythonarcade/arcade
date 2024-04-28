@@ -23,8 +23,6 @@ from arcade.context import ArcadeContext
 from arcade.types import Color, RGBOrA255, RGBANormalized
 from arcade import SectionManager
 from arcade.utils import is_raspberry_pi
-from arcade.camera import Projector
-from arcade.camera.default import DefaultProjector
 
 LOG = logging.getLogger(__name__)
 
@@ -217,8 +215,6 @@ class Window(pyglet.window.Window):
         self._background_color: Color = TRANSPARENT_BLACK
 
         self._current_view: Optional[View] = None
-        self._default_camera = DefaultProjector(window=self)
-        self.current_camera: Projector = self._default_camera
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0
@@ -611,8 +607,7 @@ class Window(pyglet.window.Window):
         #       The arcade context is not created at that time
         if hasattr(self, "_ctx"):
             # Retain projection scrolling if applied
-            self._ctx.viewport = (0, 0, width, height)
-            self.default_camera.use()
+            self.viewport = (0, 0, width, height)
 
     def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
@@ -685,9 +680,37 @@ class Window(pyglet.window.Window):
         """
         Provides a reference to the default arcade camera.
         Automatically sets projection and view to the size
-        of the screen. Good for resetting the screen.
+        of the screen.
         """
-        return self._default_camera
+        return self._ctx._default_camera
+
+    @property
+    def current_camera(self):
+        """
+        Get/Set the current camera. This represents the projector
+        currently being used to define the projection and view matrices.
+        """
+        return self._ctx.current_camera
+
+    @current_camera.setter
+    def current_camera(self, next_camera):
+        self._ctx.current_camera = next_camera
+
+    @property
+    def viewport(self) -> tuple[int, int, int, int]:
+        """
+        Get/Set the viewport of the window. This is the viewport used for
+        on-screen rendering. If the screen is in use it will also update the
+        default camera.
+        """
+        return self.screen.viewport
+
+    @viewport.setter
+    def viewport(self, new_viewport: tuple[int, int, int, int]):
+        if self.screen == self._ctx.active_framebuffer:
+            self._ctx.viewport = new_viewport
+        else:
+            self.screen.viewport = new_viewport
 
     def test(self, frames: int = 10):
         """

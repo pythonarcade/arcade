@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Iterator, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, Self, TYPE_CHECKING
 from contextlib import contextmanager
 
 from pyglet.math import Mat4
@@ -6,7 +6,7 @@ from pyglet.math import Mat4
 from arcade.camera.data_types import Projector
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
-    from arcade.application import Window
+    from arcade.context import ArcadeContext
 
 __all__ = [
     'ViewportProjector',
@@ -25,9 +25,10 @@ class ViewportProjector:
         viewport: The viewport to project to.
         window: The window to bind the camera to. Defaults to the currently active window.
     """
-    def __init__(self, viewport: Optional[Tuple[int, int, int, int]] = None, *, window: Optional["Window"] = None):
-        self._window = window or get_window()
-        self._viewport = viewport or self._window.ctx.viewport
+    def __init__(self, viewport: Optional[Tuple[int, int, int, int]] = None, *,
+                 context: Optional["ArcadeContext"] = None):
+        self._ctx = context or get_window().ctx
+        self._viewport = viewport or self._ctx.viewport
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
             0.0, self._viewport[2],
             0.0, self._viewport[3],
@@ -54,21 +55,21 @@ class ViewportProjector:
         Set the window's projection and view matrix.
         Also sets the projector as the windows current camera.
         """
-        self._window.current_camera = self
+        self._ctx.current_camera = self
 
-        self._window.ctx.viewport = self._viewport
+        self._ctx.viewport = self._viewport
 
-        self._window.ctx.view_matrix = Mat4()
-        self._window.ctx.projection_matrix = self._projection_matrix
+        self._ctx.view_matrix = Mat4()
+        self._ctx.projection_matrix = self._projection_matrix
 
     @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def activate(self) -> Generator[Self, None, None]:
         """
         The context manager version of the use method.
 
         usable with the 'with' block. e.g. 'with ViewportProjector.activate() as cam: ...'
         """
-        previous = self._window.current_camera
+        previous = self._ctx.current_camera
         try:
             self.use()
             yield self
@@ -113,8 +114,8 @@ class DefaultProjector(ViewportProjector):
     :param window: The window to bind the camera to. Defaults to the currently active window.
     """
 
-    def __init__(self, *, window: Optional["Window"] = None):
-        super().__init__(window=window)
+    def __init__(self, *, context: Optional["ArcadeContext"] = None):
+        super().__init__(context=context)
 
     def use(self) -> None:
         """
@@ -123,6 +124,10 @@ class DefaultProjector(ViewportProjector):
         cache's the window viewport to determine the projection matrix.
         """
 
-        if self._window.ctx.viewport != self.viewport:
-            self.viewport = self._window.ctx.viewport
-        super().use()
+        if self._ctx.viewport != self.viewport:
+            self.viewport = self._ctx.viewport
+
+        self._ctx.current_camera = self
+
+        self._ctx.view_matrix = Mat4()
+        self._ctx.projection_matrix = self._projection_matrix
