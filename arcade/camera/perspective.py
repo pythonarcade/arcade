@@ -5,6 +5,7 @@ from math import tan, radians
 from pyglet.math import Mat4, Vec3, Vec4
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
+from arcade.camera.projection_functions import generate_view_matrix, generate_perspective_matrix
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
@@ -73,34 +74,17 @@ class PerspectiveProjector:
         """
         return self._projection
 
-    def _generate_projection_matrix(self) -> Mat4:
+    def generate_projection_matrix(self) -> Mat4:
         """
-        Using the OrthographicProjectionData a projection matrix is generated where the size of the
-        objects is not affected by depth.
+        alias of arcade.camera.get_perspective_matrix method
+        """
+        return generate_perspective_matrix(self._projection, self._view.zoom)
 
-        Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-        the pixels uniform in size. Avoid a zoom of 0.0.
+    def generate_view_matrix(self) -> Mat4:
         """
-        _proj = self._projection
-
-        return Mat4.perspective_projection(_proj.aspect, _proj.near, _proj.far, _proj.fov / self._view.zoom)
-
-    def _generate_view_matrix(self) -> Mat4:
+        alias of arcade.camera.get_view_matrix method
         """
-        Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
-        """
-        # Even if forward and up are normalised floating point error means every vector must be normalised.
-        fo = Vec3(*self._view.forward).normalize()  # Forward Vector
-        up = Vec3(*self._view.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
-        ri = fo.cross(up).normalize()  # Right Vector
-        up = ri.cross(fo).normalize()  # Up Vector
-        po = Vec3(*self._view.position)
-        return Mat4((
-            ri.x,  up.x,  -fo.x,  0,
-            ri.y,  up.y,  -fo.y,  0,
-            ri.z,  up.z,  -fo.z,  0,
-            -ri.dot(po), -up.dot(po), fo.dot(po), 1
-        ))
+        return generate_view_matrix(self._view)
 
     def use(self) -> None:
         """
@@ -111,12 +95,13 @@ class PerspectiveProjector:
 
         self._window.current_camera = self
 
-        _projection = self._generate_projection_matrix()
-        _view = self._generate_view_matrix()
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
 
         self._window.ctx.viewport = self._projection.viewport
         self._window.projection = _projection
         self._window.view = _view
+
 
     @contextmanager
     def activate(self) -> Iterator[Projector]:
@@ -161,9 +146,9 @@ class PerspectiveProjector:
 
         projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
 
-        _projection = ~self._generate_projection_matrix()
+        _projection = ~generate_perspective_matrix(self._projection, self._view.zoom)
         view_position = _projection @ projected_position
-        _view = ~self._generate_view_matrix()
+        _view = ~generate_view_matrix(self._view)
         world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
 
         return world_position.x, world_position.y, world_position.z
