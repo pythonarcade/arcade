@@ -808,7 +808,7 @@ class Camera2D:
 
     def unproject(self,
                   screen_coordinate: Tuple[float, float],
-                  depth: Optional[float] = None) -> Tuple[float, float]:
+                  depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -821,19 +821,18 @@ class Camera2D:
                                This should ALWAYS be in the range of 0.0 - screen size.
             depth: The depth of the query
         Returns:
-            A 2D vector (Along the XY plane) in world space (same as sprites).
+            A 3D vector in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
             of the camera.
         """
-        world_coordinate = self._ortho_projector.unproject(screen_coordinate, depth)
 
-        return world_coordinate[0], world_coordinate[1]
+        return self._ortho_projector.unproject(screen_coordinate, depth)
 
     def map_screen_to_world_coordinate(
             self,
             screen_coordinate: Tuple[float, float],
             depth: Optional[float] = None
-    ) -> Tuple[float, float]:
+    ) -> Tuple[float, float, float]:
         """
         Alias to Camera2D.unproject() for typing completion
         """
