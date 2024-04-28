@@ -369,7 +369,9 @@ class Camera2D:
         If this isn't what you want,
         use projection_width instead.
         """
-        return (self._projection_data.right - self._projection_data.left) / self._camera_data.zoom
+        _p = self._projection_data
+        left, right, _, _ = _p.lrbt
+        return (right - left) / self._camera_data.zoom
 
     @projection_width_scaled.setter
     def projection_width_scaled(self, _width: float) -> None:
