@@ -1,4 +1,5 @@
-from typing import Optional, Tuple, Generator, Self, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing_extensions import Self
 from contextlib import contextmanager
 
 from math import tan, radians

@@ -1,5 +1,6 @@
-from typing import Optional, Tuple, Generator, Self, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, TYPE_CHECKING
 from contextlib import contextmanager
+from typing_extensions import Self
 
 from pyglet.math import Mat4, Vec4
 

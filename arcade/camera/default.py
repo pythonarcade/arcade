@@ -1,9 +1,9 @@
-from typing import Optional, Tuple, Generator, Self, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing_extensions import Self
 from contextlib import contextmanager
 
 from pyglet.math import Mat4
 
-from arcade.camera.data_types import Projector
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
