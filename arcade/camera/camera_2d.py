@@ -373,12 +373,14 @@ class Camera2D:
 
     @projection_width_scaled.setter
     def projection_width_scaled(self, _width: float) -> None:
-        w = self.projection_width * self._camera_data.zoom
-        l = self.projection_left / w  # Normalised Projection left
-        r = self.projection_right / w  # Normalised Projection Right
+        _p = self._projection_data
+        left, right, bottom, top =  _p.lrbt
 
-        self.projection_left = l * _width
-        self.projection_right = r * _width
+        width_scaled = (right - left) * self._camera_data.zoom
+        left_scaled = self.projection_left / width_scaled
+        right_scaled = self.projection_right / width_scaled
+
+        _p.lrbt = left_scaled, right_scaled, bottom, top
 
     @property
     def projection_height(self) -> float:
