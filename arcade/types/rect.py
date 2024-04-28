@@ -10,6 +10,7 @@ from array import array
 from arcade.draw_commands import _generic_draw_line_strip
 from arcade.math import rotate_point
 from arcade.types.color import RGBA255, Color
+from arcade.color import WHITE
 import pyglet.gl as gl
 # ###############################################
 
@@ -309,6 +310,8 @@ class Rect(NamedTuple):
         return repr(self)
 
 
+# Convinience constructors
+
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
     width = right - left
     height = top - bottom
@@ -348,6 +351,27 @@ def Viewport(x: int, y: int, width: int, height: int) -> Rect:
     top = y + (width / 2)
     return Rect(left, right, bottom, top, width, height, x, y)
 
+
+def Kwargtangle(**kwargs: AsFloat) -> Rect:
+    rect_props = ["left", "right", "top", "bottom", "x", "y", "width", "height"]
+    rect_dict = {k: kwargs.get(k, None) for k in rect_props}
+    # LRBT
+    if (rect_dict["left"] is not None and rect_dict["right"] is not None
+        and rect_dict["bottom"] is not None and rect_dict["top"] is not None):
+        return LRBT(rect_dict["left"], rect_dict["right"], rect_dict["bottom"], rect_dict["top"])
+    # LBWH
+    elif (rect_dict["left"] is not None and rect_dict["bottom"] is not None
+        and rect_dict["width"] is not None and rect_dict["height"] is not None):
+        return LRBT(rect_dict["left"], rect_dict["bottom"], rect_dict["width"], rect_dict["height"])
+    # XYWH
+    elif (rect_dict["x"] is not None and rect_dict["y"] is not None
+        and rect_dict["width"] is not None and rect_dict["height"] is not None):
+        return XYWH(rect_dict["x"], rect_dict["y"], rect_dict["width"], rect_dict["height"])
+    else:
+        raise ValueError("Not enough attributes defined for a valid rectangle!")
+
+
+# Reference implementations: draw
 
 def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
     """
@@ -411,3 +435,13 @@ def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     buffer.write(data=array('f', (rect.x, rect.y)))
 
     geometry.render(program, mode=ctx.POINTS, vertices=1)
+
+
+def draw_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
+    rect = Kwargtangle(**kwargs)
+    draw_outline(rect, color, border_width, tilt_angle)
+
+
+def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
+    rect = Kwargtangle(**kwargs)
+    draw_filled(rect, color, tilt_angle)
