@@ -2,13 +2,24 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, TypedDict
 from pyglet.math import Vec2
 from arcade.types import AsFloat
 from arcade.utils import ReplacementWarning, warning
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
 ViewportParams = tuple[int, int, int, int]
+
+
+class RectKwargs(TypedDict):
+    left: float
+    right: float
+    bottom: float
+    top: float
+    width: float
+    height: float
+    x: float
+    y: float
 
 
 class AnchorPoint:
@@ -268,6 +279,17 @@ class Rect(NamedTuple):
     @property
     def viewport(self) -> ViewportParams:
         return (int(self.x), int(self.y), int(self.width), int(self.height))
+
+    @property
+    def kwargs(self) -> RectKwargs:
+        return {"left": self.left,
+                "right": self.right,
+                "bottom": self.bottom,
+                "top": self.top,
+                "x": self.x,
+                "y": self.y,
+                "width": self.width,
+                "height": self.height}
 
     def __repr__(self) -> str:
         return (f"<Rect LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
