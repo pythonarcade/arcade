@@ -116,11 +116,33 @@ class OrthographicProjector:
         finally:
             previous_projector.use()
 
-    def map_screen_to_world_coordinate(
-            self,
+    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
+        if len(world_coordinate) > 2:
+            z = world_coordinate[2]
+        else:
+            z = 0.0
+        x, y = world_coordinate[0], world_coordinate[1]
+
+        viewport = self._projection.viewport
+
+        world_position = Vec4(x, y, z, 1.0)
+
+        _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
+
+        projected_position = _projection @ _view @ world_position
+
+        screen_coordinate_x = viewport[0] + (0.5 * projected_position.x + 0.5) * viewport[2]
+        screen_coordinate_y = viewport[1] + (0.5 * projected_position.y + 0.5) * viewport[3]
+
+        return screen_coordinate_x, screen_coordinate_y
+
+    def unproject(self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -146,3 +168,14 @@ class OrthographicProjector:
         _world_position = _view @ Vec4(_unprojected_position.x, _unprojected_position.y, depth or 0.0, 1.0)
 
         return _world_position.x, _world_position.y, _world_position.z
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None
+    ) -> Tuple[float, float, float]:
+        """
+        Alias of OrthographicProjector.unproject() for typing.
+        """
+        return self.unproject(screen_coordinate, depth)
+

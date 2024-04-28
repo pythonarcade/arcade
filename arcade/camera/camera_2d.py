@@ -800,11 +800,15 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = 0.0
-    ) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
+        return self._ortho_projector.project(world_coordinate)
+
+    def unproject(self,
+                  screen_coordinate: Tuple[float, float],
+                  depth: Optional[float] = None) -> Tuple[float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -815,12 +819,23 @@ class Camera2D:
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth value which is mapped along with the screen coordinates. Because of how
-                   Orthographic perspectives work this does not impact how the screen_coordinates are mapped.
+            depth: The depth of the query
         Returns:
             A 2D vector (Along the XY plane) in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
             of the camera.
         """
+        world_coordinate = self._ortho_projector.unproject(screen_coordinate, depth)
 
-        return self._ortho_projector.map_screen_to_world_coordinate(screen_coordinate, depth)[:2]
+        return world_coordinate[0], world_coordinate[1]
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None
+    ) -> Tuple[float, float]:
+        """
+        Alias to Camera2D.unproject() for typing completion
+        """
+        return self.unproject(screen_coordinate, depth)
+

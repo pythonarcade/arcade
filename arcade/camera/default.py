@@ -75,16 +75,31 @@ class ViewportProjector:
         finally:
             previous.use()
 
-    def map_screen_to_world_coordinate(
+    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
+        return world_coordinate[0], world_coordinate[1]
+
+    def unproject(
             self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = 0.0) -> Tuple[float, float]:
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Map the screen pos to screen_coordinates.
 
         Due to the nature of viewport projector this does not do anything.
         """
-        return screen_coordinate
+        return screen_coordinate[0], screen_coordinate[1], depth
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
+        """
+        Alias of ViewportProjector.unproject() for typing.
+        """
+        return self.unproject(screen_coordinate, depth)
 
 
 # As this class is only supposed to be used internally
