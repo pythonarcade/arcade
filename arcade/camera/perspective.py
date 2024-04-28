@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 __all__ = ("PerspectiveProjector",)
 
 
-class PerspectiveProjector:
+class PerspectiveProjector(Projector):
     """
     The simplest from of a perspective camera.
     Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
@@ -101,20 +101,6 @@ class PerspectiveProjector:
         self._window.ctx.viewport = self._projection.viewport
         self._window.projection = _projection
         self._window.view = _view
-
-
-    @contextmanager
-    def activate(self) -> Iterator[Projector]:
-        """
-        A context manager version of OrthographicProjector.use() which allows for the use of
-        `with` blocks. For example, `with camera.activate() as cam: ...`.
-        """
-        previous_projector = self._window.current_camera
-        try:
-            self.use()
-            yield self
-        finally:
-            previous_projector.use()
 
     def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
