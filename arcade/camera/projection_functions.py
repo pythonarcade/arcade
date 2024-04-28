@@ -32,23 +32,23 @@ def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, z
     """
 
     # Find the center of the projection values (often 0,0 or the center of the screen)
-    _projection_center = (
-        (perspective_data.left + perspective_data.right) / 2,
-        (perspective_data.bottom + perspective_data.top) / 2
+    projection_x, projection_y = (
+        (perspective_data.left + perspective_data.right) / 2.0,
+        (perspective_data.bottom + perspective_data.top) / 2.0
     )
 
     # Find half the width of the projection
-    _projection_half_size = (
-        (perspective_data.right - perspective_data.left) / 2,
-        (perspective_data.top - perspective_data.bottom) / 2
+    half_width, half_height = (
+        (perspective_data.right - perspective_data.left) / 2.0,
+        (perspective_data.top - perspective_data.bottom) / 2.0
     )
 
     # Scale the projection by the zoom value. Both the width and the height
     # share a zoom value to avoid ugly stretching.
-    right = _projection_center[0] - _projection_half_size[0] / zoom,
-    left = _projection_center[0] + _projection_half_size[0] / zoom,
-    bottom = _projection_center[1] - _projection_half_size[1] / zoom,
-    top = _projection_center[1] + _projection_half_size[1] / zoom
+    right = projection_x - half_width / zoom
+    left = projection_x + half_width / zoom
+    bottom = projection_y - half_height / zoom
+    top = projection_y + half_height / zoom
 
     z_near, z_far = perspective_data.near, perspective_data.far
 
