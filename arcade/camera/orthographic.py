@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Iterator, TYPE_CHECKING
 from contextlib import contextmanager
 
-from pyglet.math import Mat4, Vec3, Vec4
+from pyglet.math import Mat4, Vec4
 
 from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
 from arcade.camera.projection_functions import generate_view_matrix, generate_orthographic_matrix
@@ -116,7 +116,7 @@ class OrthographicProjector:
         finally:
             previous_projector.use()
 
-    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """

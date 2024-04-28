@@ -75,7 +75,7 @@ class ViewportProjector:
         finally:
             previous.use()
 
-    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
@@ -90,7 +90,7 @@ class ViewportProjector:
 
         Due to the nature of viewport projector this does not do anything.
         """
-        return screen_coordinate[0], screen_coordinate[1], depth
+        return screen_coordinate[0], screen_coordinate[1], depth or 0.0
 
     def map_screen_to_world_coordinate(
             self,

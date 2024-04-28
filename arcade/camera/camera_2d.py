@@ -800,7 +800,7 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def project(self, world_coordinate: Tuple[float, float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
