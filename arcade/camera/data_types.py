@@ -4,8 +4,9 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Iterator, Optional
+from typing import Protocol, Tuple, Iterator, Optional, TypeVar
 from contextlib import contextmanager
+
 
 from pyglet.math import Vec3
 
@@ -20,6 +21,8 @@ __all__ = [
     'ZeroProjectionDimension',
 ]
 
+_TWorldCoord = TypeVar('_TWorldCoord')
+_TScreenCoord = TypeVar('_TScreenCoord')
 
 class ZeroProjectionDimension(ValueError):
     """A projection's dimensions were zero along at least one axis.
@@ -189,8 +192,45 @@ class Projection(Protocol):
     far: float
 
 
-class Projector(Protocol):
+class Projector(Protocol[_TWorldCoord, _TScreenCoord]):
+    """A ``Projector`` projects from world space to screen space.
 
+    You can think of these as the final step in rendering. Every
+    :py:class:`.Camera` is also a kind of projector.
+
+    The two key methods of projectors are:
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Method
+         - Action
+
+       * - :py:meth:`.project`
+         - Turn world coordinates into screen pixel coordinates.
+
+       * - :py:meth:`.unproject`
+         - Convert screen pixel coordinates into world space.
+
+    .. tip:: Specify the type parameters as :py:class:`typing.Tuple`s!
+
+             Although :py:mod:`pyglet.math`'s vector classes are useful,
+             they are all :py:class:`tuple` instances. Therefore, it's
+             best to use :py:class:`typing.Tuple` to specify coordinate
+             types. For example you could use an alias such as:
+
+             .. code-block:: python
+
+                from typing import Tuple
+                from arcade.camera import Projector
+
+                Point2D = Tuple[float, float, float]
+                Point3D = Tuple[float, float, float]
+
+                def my_function(projector: Projector[Point3D, Point2D]) -> None:
+                    ...
+
+    """
     def use(self) -> None:
         ...
 
@@ -198,11 +238,33 @@ class Projector(Protocol):
     def activate(self) -> Iterator[Projector]:
         ...
 
+    def project(self, world_coords: _TWorldCoord) -> _TScreenCoord:
+        """Project ``world_coords``into a pixel screenspace.
+
+        This is expected to use the internal state of the projector
+        without additional arguments.
+
+        For example:
+
+        .. code-block:: python
+
+           Point3D = Tuple[float, float, float]
+           Point2D = Tuple[float, float]
+
+           class Hypothetical3DProjector::
+              def project(world_coords: Poinbt2D) -> Tuple[float, float]:
+                 ...
+
+        :param world_coords: A world coordinate to project.
+        :returns: a Screen coordinate.
+        """
+        ...
+
     def map_screen_to_world_coordinate(
             self,
-            screen_coordinate: Tuple[float, float],
+            screen_coordinate: _TScreenCoord,
             depth: Optional[float] = None
-    ) -> Tuple[float, ...]:
+    ) -> _TWorldCoord:
         ...
 
 
