@@ -289,7 +289,7 @@ class Rect(NamedTuple):
 
     @property
     def viewport(self) -> ViewportParams:
-        return (int(self.x), int(self.y), int(self.width), int(self.height))
+        return (int(self.left), int(self.right), int(self.bottom), int(self.top))
 
     @property
     def kwargs(self) -> RectKwargs:
@@ -344,11 +344,11 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
     return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
-def Viewport(x: int, y: int, width: int, height: int) -> Rect:
-    left = x - (width / 2)
-    right = x + (width / 2)
-    bottom = y - (width / 2)
-    top = y + (width / 2)
+def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
+    right = left + width
+    top = bottom + height
+    x = left + int(width / 2)
+    y = bottom + int(height / 2)
     return Rect(left, right, bottom, top, width, height, x, y)
 
 
