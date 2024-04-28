@@ -251,8 +251,8 @@ class Projector(Protocol[_TWorldCoord, _TScreenCoord]):
            Point3D = Tuple[float, float, float]
            Point2D = Tuple[float, float]
 
-           class Hypothetical3DProjector::
-              def project(world_coords: Poinbt2D) -> Tuple[float, float]:
+           class Hypothetical3DProjector:
+              def project(world_coords: Point2D) -> Tuple[float, float]:
                  ...
 
         :param world_coords: A world coordinate to project.
