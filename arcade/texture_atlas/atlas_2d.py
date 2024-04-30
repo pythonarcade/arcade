@@ -233,7 +233,7 @@ class UVData:
 
     def get_existing_or_free_slot(self, name: str) -> int:
         """
-        Get the slot for a texture by name or a free slot-
+        Get the slot for a texture by name or a free slot.
 
         :param name: The name of the texture
         :return: The slot or a free slot
@@ -514,7 +514,7 @@ class TextureAtlas(TextureAtlasBase):
         # These are any texture instances regardless of content
         if not self.has_texture(texture):
             self._textures.add(texture)
-            texture.add_atlas_ref(self)
+            texture._add_atlas_ref(self)
             self._image_ref_count.inc_ref(texture.image_data)
 
         # Return existing texture if we already have a texture with the same image hash and vertex order
@@ -541,6 +541,7 @@ class TextureAtlas(TextureAtlasBase):
                 removed_image_count = self._image_ref_count.get_total_decref()
                 if removed_image_count > 0:
                     LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
+                    # print(f"[{id(self)}] Rebuilding atlas due to {removed_image_count} lost images")
                     self.rebuild()
                     return self.add(texture)
 
@@ -709,6 +710,12 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
+        if texture._atlas_refs is None:
+            raise Exception("Texture is not in the atlas")
+
+        if self not in texture._atlas_refs:
+            raise Exception("Texture is not in the atlas")
+
         # print("Removing texture", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
@@ -812,7 +819,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param size: The new size
         """
-        print(f"resize({size})")
+        # print(f"resize({size})")
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
         # print("Resizing atlas from", self._size, "to", size)
 
@@ -887,7 +894,7 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
-        print("Rebuilding atlas")
+        # p("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
@@ -1025,7 +1032,23 @@ class TextureAtlas(TextureAtlasBase):
 
         return size, size
 
-    def read_texture_image_from_atlas(self, texture: "Texture") -> Image.Image:
+    def read_image_raw(self, image_data: "ImageData") -> bytes:
+        """
+        Read the raw pixel data for an image directly from the atlas texture on the GPU.
+
+        :param image_data: The image data to get the pixel data for
+        :return: The raw pixel data
+        """
+        region = self.get_image_region_info(image_data.hash)
+        viewport = (
+            region.x,
+            region.y,
+            region.width,
+            region.height,
+        )
+        return self.fbo.read(viewport=viewport, components=4)
+
+    def read_image(self, image_data: "ImageData") -> Image.Image:
         """
         Read the pixel data for a texture directly from the atlas texture on the GPU.
         The contents of this image can be altered by rendering into the atlas and
@@ -1034,7 +1057,7 @@ class TextureAtlas(TextureAtlasBase):
         :param texture: The texture to get the image for
         :return: A pillow image containing the pixel data in the atlas
         """
-        region = self.get_image_region_info(texture.image_data.hash)
+        region = self.get_image_region_info(image_data.hash)
         viewport = (
             region.x,
             region.y,
@@ -1052,7 +1075,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to update
         """
-        texture.image_data.image = self.read_texture_image_from_atlas(texture)
+        texture.image_data.image = self.read_image(texture.image_data)
 
     def to_image(
         self,
@@ -1156,17 +1179,38 @@ class TextureAtlas(TextureAtlasBase):
                 f"{size} past its maximum size of {self._max_size}"
             )
 
-    def validate(self) -> None:
+    def validate(self, raise_for_error: bool = True) -> None:
         """
         Validate the texture atlas.
 
         This is an expensive operation and should only be used for debugging.
         Validation will read the pixel data for each texture in the atlas
         and compare it to the actual texture data in the atlas texture.
+
+        :param raise_for_error: Raise an exception if the validation fails
         """
-        # TODO: Validate images instead
-        # TODO: Validate unique textures comparing the region data
-        for texture in self.unique_textures:
-            image = self.read_texture_image_from_atlas(texture)
-            if image.tobytes() != texture.image.tobytes():
-                raise Exception(f"Texture {texture.atlas_name} pixel data mismatch")
+        valid = True
+        # Basic checks
+        if len(self._images) != len(self._image_regions):
+            valid = False   
+            print(f"ERROR: Image count mismatch {len(self._images)} != {len(self._image_regions)}")
+
+        if self._image_ref_count.count_all_refs() != len(self._textures):
+            valid = False
+            print(f"ERROR: Image ref count mismatch: {self._image_ref_count.count_all_refs()} != {len(self._textures)}")
+
+        # Compare the raw pixel data in the atlas with the image data
+        # NOTE: This doesn't work when the image is manipulated in the atlas
+        for image_data in self._images:
+            pixel_data = self.read_image_raw(image_data)
+            if pixel_data != image_data.image.tobytes():
+                print(f"ERROR: Image {image_data.hash} pixel data mismatch")
+
+        # TODO: unique_textures
+        msg = "Atlas validation failed"
+        if not valid:
+            if raise_for_error:
+                raise Exception(msg)
+            else:
+                print(msg)
+

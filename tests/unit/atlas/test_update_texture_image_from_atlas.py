@@ -23,7 +23,7 @@ def test_update_texture_image_from_atlas():
     atlas.add(tex)
 
     # Check that the original image matches
-    atlas_im = atlas.read_texture_image_from_atlas(tex)
+    atlas_im = atlas.read_image(tex.image_data)
     assert atlas_im.tobytes() == im.tobytes()
 
     # Render new content and verify this content
@@ -31,5 +31,5 @@ def test_update_texture_image_from_atlas():
         area.clear()
         arcade.draw_lrbt_rectangle_filled(1, 5, 1, 5, arcade.color.RED)
 
-    atlas_im = atlas.read_texture_image_from_atlas(tex)
+    atlas_im = atlas.read_image(tex.image_data)
     assert atlas_im.tobytes() == im.tobytes()

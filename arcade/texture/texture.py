@@ -700,14 +700,7 @@ class Texture:
 
     # ------ Atlas functions ------
 
-    def remove_from_atlases(self) -> None:
-        """
-        Remove this texture from all atlases.
-        """
-        for atlas in self._atlas_refs or ():
-            atlas.remove(self)
-
-    def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
+    def _add_atlas_ref(self, atlas: "TextureAtlas") -> None:
         """
         Add a reference to an atlas that this texture is in.
         """
@@ -715,7 +708,7 @@ class Texture:
             self._atlas_refs = WeakSet()
         self._atlas_refs.add(atlas)
 
-    def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
+    def _remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
         """
         Remove a reference to an atlas that this texture is in.
         """
@@ -886,6 +879,6 @@ class Texture:
         return f"<Texture cache_name={cache_name}>"
 
     def __del__(self):
-        if getattr(self, "_atlas_refs", None) is not None:
+        if self._atlas_refs is not None:
             for atlas in self._atlas_refs:
                 atlas.remove(self)
