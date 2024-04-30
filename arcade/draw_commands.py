@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import array
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import PIL.Image
 import PIL.ImageOps
@@ -18,7 +18,7 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from arcade.types import Color, RGBA255, PointList
+from arcade.types import Color, RGBA255, PointList, Point
 from arcade.earclip import earclip
 from .math import rotate_point
 from arcade import (
@@ -56,6 +56,7 @@ __all__ = [
     "draw_rectangle_filled",
     "draw_scaled_texture_rectangle",
     "draw_texture_rectangle",
+    "draw_lbwh_rectangle_textured",
     "draw_lrwh_rectangle_textured",
     "get_pixel",
     "get_image"
@@ -293,20 +294,17 @@ def draw_ellipse_filled(center_x: float, center_y: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
+    # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # Normalize the color because this shader takes a float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
@@ -339,20 +337,17 @@ def draw_ellipse_outline(center_x: float, center_y: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
+    # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
     buffer = ctx.shape_ellipse_outline_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # Normalize the color because this shader takes a float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to shader
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
@@ -380,29 +375,36 @@ def _generic_draw_line_strip(point_list: PointList,
     :param color: A color, specified as an RGBA tuple or a
         :py:class:`~arcade.types.Color` instance.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
-    c4 = Color.from_iterable(color)
-    c4e = c4 * len(point_list)
-    a = array.array('B', c4e)
-    vertices = array.array('f', tuple(item for sublist in point_list for item in sublist))
-
     geometry = ctx.generic_draw_line_strip_geometry
+    vertex_buffer = ctx.generic_draw_line_strip_vbo
+    color_buffer = ctx.generic_draw_line_strip_color
     program = ctx.line_vertex_shader
-    geometry.num_vertices = len(point_list)
 
-    # Double buffer sizes if out of space
-    while len(vertices) * 4 > ctx.generic_draw_line_strip_vbo.size:
-        ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo.size * 2)
-        ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color.size * 2)
+    # Validate and alpha-pad color, then expand to multi-vertex form since
+    # this shader normalizes internally as if made to draw multicolor lines.
+    rgba = Color.from_iterable(color)
+    num_vertices = len(point_list)  # Fail if it isn't a sized / sequence object
+
+    # Translate Python objects into types arcade's Buffer objects accept
+    color_array = array.array('B', rgba * num_vertices)
+    vertex_array = array.array('f', tuple(item for sublist in point_list for item in sublist))
+    geometry.num_vertices = num_vertices
+
+    # Double buffer sizes until they can hold all our data
+    goal_vertex_buffer_size = len(vertex_array) * 4
+    while goal_vertex_buffer_size > vertex_buffer.size:
+        vertex_buffer.orphan(color_buffer.size * 2)
+        color_buffer.orphan(color_buffer.size * 2)
     else:
-        ctx.generic_draw_line_strip_vbo.orphan()
-        ctx.generic_draw_line_strip_color.orphan()
+        vertex_buffer.orphan()
+        color_buffer.orphan()
 
-    ctx.generic_draw_line_strip_vbo.write(vertices)
-    ctx.generic_draw_line_strip_color.write(a)
-
+    # Write data & render
+    vertex_buffer.write(vertex_array)
+    color_buffer.write(color_array)
     geometry.render(program, mode=mode)
 
 
@@ -419,7 +421,7 @@ def draw_line_strip(point_list: PointList,
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
     else:
-        triangle_point_list: PointList = []
+        triangle_point_list: List[Point] = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
@@ -444,24 +446,23 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+    line_pos_buffer = ctx.shape_line_buffer_pos
 
-    program['line_width'] = line_width
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
     program['color'] = color_normalized
-    ctx.shape_line_buffer_pos.orphan()  # Allocate new buffer internally
-    ctx.shape_line_buffer_pos.write(
+    program['line_width'] = line_width
+    line_pos_buffer.orphan()  # Allocate new buffer internally
+    line_pos_buffer.write(
         data=array.array('f', (start_x, start_y, end_x, end_y)))
+
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
 
@@ -479,29 +480,32 @@ def draw_lines(point_list: PointList,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+    line_buffer_pos = ctx.shape_line_buffer_pos
 
-    while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
-        ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    line_pos_array = array.array('f', (v for point in point_list for v in point))
+    num_points = len(point_list)
+
+    # Grow buffer until large enough to hold all our data
+    goal_buffer_size = num_points * 3 * 4
+    while goal_buffer_size > line_buffer_pos.size:
+        ctx.shape_line_buffer_pos.orphan(line_buffer_pos.size * 2)
     else:
         ctx.shape_line_buffer_pos.orphan()
 
+    # Pass data to shader
     program['line_width'] = line_width
     program['color'] = color_normalized
-    ctx.shape_line_buffer_pos.write(
-        data=array.array('f', tuple(v for point in point_list for v in point)))
-    geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
+    line_buffer_pos.write(data=line_pos_array)
+
+    geometry.render(program, mode=gl.GL_LINES, vertices=num_points)
 
 
 # --- BEGIN POINT FUNCTIONS # # #
@@ -530,28 +534,31 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
         :py:class:`~arcade.types.Color` instance.
     :param size: Size of the point in pixels.
     """
+    # Fails immediately if we don't have a window or context
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    elif len(color) == 4:
-        color_normalized = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Get # of points and translate Python tuples to a C-style array
+    num_points = len(point_list)
+    point_array = array.array('f', (v for point in point_list for v in point))
 
     # Resize buffer
-    data_size = len(point_list) * 8
+    data_size = num_points * 8
     # if data_size > buffer.size:
     buffer.orphan(size=data_size)
 
+    # Pass data to shader
     program['color'] = color_normalized
     program['shape'] = size, size, 0
-    buffer.write(data=array.array('f', tuple(v for point in point_list for v in point)))
+    buffer.write(data=point_array)
+
+    # Only render the # of points we have complete data for
     geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
 
 
@@ -585,22 +592,29 @@ def draw_polygon_outline(point_list: PointList,
         :py:class:`~arcade.types.Color` instance.
     :param line_width: Width of the line in pixels.
     """
+    # Convert to modifiable list & close the loop
     new_point_list = list(point_list)
     new_point_list.append(point_list[0])
 
+    # Create a place to store the triangles we'll use to thicken the line
     triangle_point_list = []
+
     # This needs a lot of improvement
     last_point = None
     for point in new_point_list:
         if last_point is not None:
-            points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            # Calculate triangles, then re-order to link up the quad?
+            points = get_points_for_thick_line(*last_point, *point, line_width)
             reordered_points = points[1], points[0], points[2], points[3]
+
             triangle_point_list.extend(reordered_points)
         last_point = point
 
-    points = get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0],
-                                       new_point_list[1][1], line_width)
+    # Use first two points of new list to close the loop
+    new_start, new_next = new_point_list[:2]
+    points = get_points_for_thick_line(*new_start, *new_next, line_width)
     triangle_point_list.append(points[1])
+
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
@@ -875,24 +889,22 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
+    # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-
     program = ctx.shape_rectangle_filled_unbuffered_program
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
     buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-    # We need to normalize the color because we are setting it as a float uniform
-    if len(color) == 3:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
-    elif len(color) == 4:
-        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
-    else:
-        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
     program['color'] = color_normalized
     program['shape'] = width, height, tilt_angle
     buffer.orphan()
     buffer.write(data=array.array('f', (center_x, center_y)))
+
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
 
@@ -950,7 +962,35 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
+@warning(
+    warning_type=ReplacementWarning,
+    new_name="draw_lbwh_rectangle_textured"
+)
 def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+                                 width: float,
+                                 height: float,
+                                 texture: Texture, angle: float = 0,
+                                 alpha: int = 255):
+    """Draw a texture extending from bottom left to top right.
+
+   .. deprecated:: 3.0
+      Use :py:func:`draw_lbwh_rectangle_textured` instead!
+
+    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param width: The width of the rectangle.
+    :param height: The height of the rectangle.
+    :param texture: identifier of texture returned from load_texture() call
+    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
+    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    """
+
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
+    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
+
+
+def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float,
                                  height: float,
                                  texture: Texture, angle: float = 0,

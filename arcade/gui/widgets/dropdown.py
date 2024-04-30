@@ -70,7 +70,7 @@ class UIDropdown(UILayout):
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 100,
+        height: float = 20,
         default: Optional[str] = None,
         options: Optional[List[Union[str, None]]] = None,
         style=None,
@@ -153,6 +153,7 @@ class UIDropdown(UILayout):
         # search tree for UIManager
         parent = self.parent
         while isinstance(parent, UIWidget):
+            #
             parent = parent.parent
 
         return parent if isinstance(parent, UIManager) else None

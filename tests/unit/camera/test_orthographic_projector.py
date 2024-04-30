@@ -7,8 +7,8 @@ def test_orthographic_projector_use(window: Window):
     # Given
     ortho_camera = camera.OrthographicProjector()
 
-    view_matrix = ortho_camera._generate_view_matrix()
-    proj_matrix = ortho_camera._generate_projection_matrix()
+    view_matrix = ortho_camera.generate_view_matrix()
+    proj_matrix = ortho_camera.generate_projection_matrix()
 
     # When
     ortho_camera.use()
@@ -26,8 +26,8 @@ def test_orthographic_projector_activate(window: Window):
     # Given
     ortho_camera: camera.OrthographicProjector = camera.OrthographicProjector()
 
-    view_matrix = ortho_camera._generate_view_matrix()
-    proj_matrix = ortho_camera._generate_projection_matrix()
+    view_matrix = ortho_camera.generate_view_matrix()
+    proj_matrix = ortho_camera.generate_projection_matrix()
 
     # When
     with ortho_camera.activate() as cam:

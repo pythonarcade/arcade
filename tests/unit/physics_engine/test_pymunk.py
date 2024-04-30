@@ -23,6 +23,18 @@ def test_pymunk():
     assert(my_sprite.center_y == -300.0)
 
 
+# Temp fix for https://github.com/pythonarcade/arcade/issues/2074
+def test_pymunk_engine_nocopy():
+    import copy
+    physics_engine = arcade.PymunkPhysicsEngine(
+        damping=1.0, gravity=(0, -100))
+
+    with pytest.raises(NotImplementedError):
+        _ = copy.copy(physics_engine)
+    with pytest.raises(NotImplementedError):
+        _ = copy.deepcopy(physics_engine)
+
+
 @pytest.mark.parametrize("moment_of_inertia_arg_name",
                          (
                              "moment_of_inertia",
