@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import builtins
 from abc import ABC
+from math import floor
 from random import randint
 from typing import (
     NamedTuple,
@@ -13,6 +13,7 @@ from typing import (
     Tuple,
     List,
     Dict,
+    Callable
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -32,7 +33,8 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -53,66 +55,125 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: float = 0, dy: float = 0):
+    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "Rect":
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        x, y, width, height = self
+        return Rect(x + dx, y + dy, width, height)
 
-    def collide_with_point(self, x, y):
+    def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
+        """Return true if ``x`` and ``y`` are within this rect.
+
+        This check is inclusive. Values on the :py:attr:`.left`,
+        :py:attr:`.right`, :py:attr:`.top`, and :py:attr:`.bottom`
+        edges will be counted as inside the rect.
+
+        .. code-block:: python
+
+           >>> bounds = Rect(0.0, 0.0, 5.0, 5.0)
+           >>> bounds.collide_with_point(0.0, 0.0)
+           True
+           >>> bounds.collide_with_point(5.0, 5.0)
+           True
+
+        :param x: The x value to check as inside the rect.
+        :param y: The y value to check as inside the rect.
+        """
         left, bottom, width, height = self
-        return left < x < left + width and bottom < y < bottom + height
+        return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(self, scale: float) -> "Rect":
-        """Returns a new rect with scale applied"""
+    def scale(
+            self,
+            scale: float,
+            rounding: Optional[Callable[..., float]] = floor
+    ) -> "Rect":
+        """Return a new rect scaled relative to the origin.
+
+        By default, the new rect's values are rounded down to whole
+        values. You can alter this by passing a different rounding
+        behavior:
+
+        * Pass ``None`` to skip rounding
+        * Pass a function which takes a number and returns a float
+          to choose rounding behavior.
+
+        :param scale: A scale factor.
+        :param rounding: ``None`` or a callable specifying how to
+            round the scaled values.
+        """
+        x, y, width, height = self
+        if rounding is not None:
+            return Rect(
+                rounding(x * scale),
+                rounding(y * scale),
+                rounding(width * scale),
+                rounding(height * scale),
+            )
         return Rect(
-            int(self.x * scale),
-            int(self.y * scale),
-            int(self.width * scale),
-            int(self.height * scale),
+            x * scale,
+            y * scale,
+            width * scale,
+            height * scale,
         )
 
-    def resize(self, width=None, height=None):
-        """
-        Returns a rect with changed width and height.
+    def resize(
+            self,
+            width: float | None = None,
+            height: float | None = None
+    ) -> "Rect":
+        """Return a rect with a new width or height but same lower left.
+
         Fix x and y coordinate.
+        :param width: A width for the new rectangle.
+        :param height: A height for the new rectangle.
         """
         width = width if width is not None else self.width
         height = height if height is not None else self.height
         return Rect(self.x, self.y, width, height)
 
     @property
-    def size(self):
+    def size(self) -> Tuple[float, float]:
+        """Read-only pixel size of the rect.
+
+        Since these rects are immutable, use helper instance methods to
+        get updated rects. For example, :py:meth:`.resize` may be what
+        you're looking for.
+        """
         return self.width, self.height
 
     @property
-    def left(self):
+    def left(self) -> float:
+        """The left edge on the X axis."""
         return self.x
 
     @property
-    def right(self):
+    def right(self) -> float:
+        """The right edge on the X axis."""
         return self.x + self.width
 
     @property
-    def bottom(self):
+    def bottom(self) -> float:
+        """The bottom edge on the Y axis."""
         return self.y
 
     @property
-    def top(self):
+    def top(self) -> float:
+        """The top edge on the Y axis."""
         return self.y + self.height
 
     @property
-    def center_x(self):
+    def center_x(self) -> float:
         return self.x + self.width / 2
 
     @property
-    def center_y(self):
+    def center_y(self) -> float:
         return self.y + self.height / 2
 
     @property
-    def center(self):
+    def center(self) -> Point:
         return self.center_x, self.center_y
 
     @property
-    def position(self):
+    def position(self) -> Point:
         """Bottom left coordinates"""
         return self.left, self.bottom
 
@@ -131,28 +192,32 @@ class Rect(NamedTuple):
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: float) -> "Rect":
+    def align_right(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center(self, center_x, center_y):
+    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center x and y"""
         diff_x = center_x - self.center_x
         diff_y = center_y - self.center_y
         return self.move(dx=diff_x, dy=diff_y)
 
-    def align_center_x(self, value: float) -> "Rect":
+    def align_center_x(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: float) -> "Rect":
+    def align_center_y(self, value: AsFloat) -> "Rect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=None, height=None):
+    def min_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Sets the size to at least the given min values.
         """
@@ -163,19 +228,23 @@ class Rect(NamedTuple):
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
+    def max_size(
+            self,
+            width: Optional[AsFloat] = None,
+            height: Optional[AsFloat] = None
+    ) -> "Rect":
         """
         Limits the size to the given max values.
         """
-        w, h = self.size
-        if width:
-            w = min(width, self.width)
-        if height:
-            h = min(height, self.height)
+        x, y, w, h = self
+        if width is not None:
+            w = min(width, w)
+        if height is not None:
+            h = min(height, h)
 
-        return Rect(self.x, self.y, w, h)
+        return Rect(x, y, w, h)
 
-    def union(self, rect: "Rect"):
+    def union(self, rect: "Rect") -> "Rect":
         """
         Returns a new Rect that is the union of this rect and another.
         The union is the smallest rectangle that contains theses two rectangles.
@@ -195,6 +264,7 @@ class _ChildEntry(NamedTuple):
     data: Dict
 
 
+@copy_dunders_unimplemented
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
@@ -217,6 +287,10 @@ class UIWidget(EventDispatcher, ABC):
 
     rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
+
+    size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
 
     _children: List[_ChildEntry] = ListProperty()  # type: ignore
     _border_width: int = Property(0)  # type: ignore
@@ -243,7 +317,7 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max=None,  # in pixel
         **kwargs,
     ):
-        self._rendered = False
+        self._requires_render = True
         self.rect = Rect(x, y, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
 
@@ -271,13 +345,6 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "_padding_right", self.trigger_render)
         bind(self, "_padding_bottom", self.trigger_render)
         bind(self, "_padding_left", self.trigger_render)
-
-    def trigger_render(self):
-        """
-        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
-        is not called multiple times.
-        """
-        self._rendered = False
 
     def add(self, child: W, **kwargs) -> W:
         """
@@ -347,12 +414,26 @@ class UIWidget(EventDispatcher, ABC):
         if parent:
             yield parent  # type: ignore
 
+    def trigger_render(self):
+        """
+        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
+        is not called multiple times.
+        """
+        self._requires_render = True
+
     def trigger_full_render(self) -> None:
         """In case a widget uses transparent areas or was moved,
         it might be important to request a full rendering of parents"""
         self.trigger_render()
         for parent in self._walk_parents():
             parent.trigger_render()
+
+    def _prepare_layout(self):
+        """Helper function to trigger :meth:`UILayout.prepare_layout` through the widget tree,
+        should only be used internally!
+        """
+        for child in self.children:
+            child._prepare_layout()
 
     def _do_layout(self):
         """Helper function to trigger :meth:`UIWidget.do_layout` through the widget tree,
@@ -370,12 +451,12 @@ class UIWidget(EventDispatcher, ABC):
         """
         rendered = False
 
-        should_render = force or not self._rendered
+        should_render = force or self._requires_render
         if should_render and self.visible:
             rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
-            self._rendered = True
+            self._requires_render = False
 
         # only render children if self is visible
         if self.visible:
@@ -540,32 +621,32 @@ class UIWidget(EventDispatcher, ABC):
     def with_padding(
         self,
         *,
-        top: Union["builtins.ellipsis", int] = ...,
-        right: Union["builtins.ellipsis", int] = ...,
-        bottom: Union["builtins.ellipsis", int] = ...,
-        left: Union["builtins.ellipsis", int] = ...,
-        all: Union["builtins.ellipsis", int] = ...,
+        top: Optional[int] = None,
+        right: Optional[int] = None,
+        bottom: Optional[int] = None,
+        left: Optional[int] = None,
+        all: Optional[int] = None,
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
         :return: self
         """
-        if all is not ...:
+        if all is not None:
             self.padding = all
-        if top is not ...:
+        if top is not None:
             self._padding_top = top
-        if right is not ...:
+        if right is not None:
             self._padding_right = right
-        if bottom is not ...:
+        if bottom is not None:
             self._padding_bottom = bottom
-        if left is not ...:
+        if left is not None:
             self._padding_left = left
         return self
 
     def with_background(
         self,
         *,
-        color: Union["builtins.ellipsis", Color] = ...,
+        color: Union[None, Color] = ...,  # type: ignore
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
         """
@@ -859,14 +940,39 @@ class UILayout(UIWidget):
     :param style: not used
     """
 
-    def do_layout(self):
+    @staticmethod
+    def min_size_of(child: UIWidget) -> Tuple[float, float]:
         """
-        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
-        Do layout will be triggered on children afterwards.
+        Resolves the minimum size of a child. If it has a size_hint set for the axis,
+        it will use size_hint_min if set, otherwise the size will be used.
+        """
+        sh_w, sh_h = child.size_hint or (None, None)
+        shmn_w, shmn_h = child.size_hint_min or (None, None)
 
-        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
-        if the position or size of this widget changed.
+        min_w, min_h = child.size
+
+        if sh_w is not None:
+            min_w = shmn_w or 0
+
+        if sh_h is not None:
+            min_h = shmn_h or 0
+
+        return min_w, min_h
+
+    def _prepare_layout(self):
+        """Triggered to prepare layout of this widget and its children.
+        Common example is to update size_hints(min/max)."""
+        super()._prepare_layout()
+        self.prepare_layout()
+
+    def prepare_layout(self):
         """
+        Triggered by the UIManager before layouting,
+        :class:`UILayout` s should prepare themselves based on children.
+
+        Prepare layout is triggered on children first.
+        """
+        pass
 
     def _do_layout(self):
         # rect change will trigger full render automatically
@@ -874,6 +980,15 @@ class UILayout(UIWidget):
 
         # Continue do_layout within subtree
         super()._do_layout()
+
+    def do_layout(self):
+        """
+        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
+        Do layout will be triggered on children afterward.
+
+        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
+        if the position or size of this widget changed.
+        """
 
 
 class UISpace(UIWidget):

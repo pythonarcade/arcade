@@ -780,9 +780,17 @@ class Context:
 
     # Various utility methods
 
-    def copy_framebuffer(self, src: Framebuffer, dst: Framebuffer):
+    def copy_framebuffer(
+        self,
+        src: Framebuffer,
+        dst: Framebuffer,
+        src_attachment_index: int = 0,
+        depth: bool = True,
+    ):
         """
         Copies/blits a framebuffer to another one.
+        We can select one color attachment to copy plus
+        an optional depth attachment.
 
         This operation has many restrictions to ensure it works across
         different platforms and drivers:
@@ -794,16 +802,30 @@ class Context:
 
         :param src: The framebuffer to copy from
         :param dst: The framebuffer we copy to
+        :param src_attachment_index: The color attachment to copy from
+        :param depth: Also copy depth attachment if present
         """
+        # Set source and dest framebuffer
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
         gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
+
+        # TODO: We can support blitting multiple layers here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_attachment_index)
+        if dst.is_default:
+            gl.glDrawBuffer(gl.GL_BACK)
+        else:
+            gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0)
+
+        # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, src._glo)
         gl.glBlitFramebuffer(
             0, 0, src.width, src.height,  # Make source and dest size the same
             0, 0, src.width, src.height,
             gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
             gl.GL_NEAREST,
         )
-        self.active_framebuffer.use(force=True)
+
+        # Reset states. We can also apply previous states here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
 
     # --- Resource methods ---
 
@@ -880,8 +902,39 @@ class Context:
         filter: Optional[Tuple[PyGLenum, PyGLenum]] = None,
         samples: int = 0,
         immutable: bool = False,
+        internal_format: Optional[PyGLenum] = None,
+        compressed: bool = False,
+        compressed_data: bool = False,
     ) -> Texture2D:
-        """Create a 2D Texture.
+        """
+        Create a 2D Texture.
+
+        Example::
+
+            # Create a 1024 x 1024 RGBA texture
+            image = PIL.Image.open("my_texture.png")
+            ctx.texture(size=(1024, 1024), components=4, data=image.tobytes())
+
+            # Create and compress a texture. The compression format is set by the internal_format
+            image = PIL.Image.open("my_texture.png")
+            ctx.texture(
+                size=(1024, 1024),
+                components=4,
+                compressed=True,
+                internal_format=gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+                data=image.tobytes(),
+            )
+
+            # Create a compressed texture from raw compressed data. This is an extremely
+            # fast way to load a large number of textures.
+            image_bytes = "<raw compressed data from some source>"
+            ctx.texture(
+                size=(1024, 1024),
+                components=4,
+                internal_format=gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+                compressed_data=True,
+                data=image_bytes,
+            )
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
 
@@ -901,7 +954,15 @@ class Context:
         :param samples: Creates a multisampled texture for values > 0
         :param immutable: Make the storage (not the contents) immutable. This can sometimes be
                                required when using textures with compute shaders.
+        :param internal_format: The internal format of the texture. This can be used to
+                                enable sRGB or texture compression.
+        :param compressed: Set to True if you want the texture to be compressed.
+                           This assumes you have set a internal_format to a compressed format.
+        :param compressed_data: Set to True if you are passing in raw compressed pixel data.
+                                This implies ``compressed=True``.
         """
+        compressed = compressed or compressed_data
+
         return Texture2D(
             self,
             size,
@@ -913,6 +974,9 @@ class Context:
             filter=filter,
             samples=samples,
             immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
+            compressed_data=compressed_data,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:
@@ -1315,10 +1379,10 @@ class Limits:
             warn("Error happened while querying of limits. Moving on ..")
 
     @overload
-    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]:...
+    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]: ...
 
     @overload
-    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]:...
+    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]: ...
 
     def get_int_tuple(self, enum: GLenumLike, length: int):
         """Get an enum as an int tuple"""

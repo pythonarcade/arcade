@@ -48,14 +48,14 @@ class AnimalFacts(arcade.View):
         self.loading = False
         self.text_fact = arcade.Text(
             "",
-            start_x=self.window.width / 2, start_y=self.window.height / 2 + 50,
+            x=self.window.width / 2, y=self.window.height / 2 + 50,
             width=1100, font_size=36, anchor_x="center", anchor_y="center",
             multiline=True,
         )
         self.text_info = arcade.Text(
             "Press SPACE to request new fact",
             font_size=20,
-            start_x=20, start_y=40, color=arcade.color.LIGHT_BLUE,
+            x=20, y=40, color=arcade.color.LIGHT_BLUE,
         )
         self.angle = 0  # Rotation for the spinning loading initicator
         # Keep track of time to auto request new facts
@@ -217,8 +217,10 @@ class AnimaFactsService:
 
 class Facts:
     """Base class for fact providers"""
+
     def get_fact(self) -> str:
         raise NotImplementedError()
+
     def get_image(self) -> arcade.Texture:
         raise NotImplementedError()
 

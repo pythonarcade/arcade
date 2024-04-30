@@ -65,8 +65,8 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Setup the Cameras
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
         arcade.draw_text(score_text,
-                         start_x=10,
-                         start_y=10,
+                         x=10,
+                         y=10,
                          color=arcade.csscolor.WHITE,
                          font_size=18)
 
@@ -170,18 +170,18 @@ class MyGame(arcade.Window):
 
     def center_camera_to_player(self):
         # Find where player is, then calculate lower left corner from that
-        screen_center_x = self.player_sprite.center_x - (self.camera_sprites.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (self.camera_sprites.viewport_height / 2)
+        screen_center_x = self.player_sprite.center_x
+        screen_center_y = self.player_sprite.center_y
 
         # Set some limits on how far we scroll
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        if screen_center_x - self.width/2 < 0:
+            screen_center_x = self.width/2
+        if screen_center_y - self.height/2 < 0:
+            screen_center_y = self.height/2
 
         # Here's our center, move to it
         player_centered = screen_center_x, screen_center_y
-        self.camera_sprites.move_to(player_centered)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, player_centered, 0.1)
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -206,8 +206,9 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         """ Resize window """
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
 
 
 def main():

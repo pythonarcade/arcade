@@ -55,8 +55,8 @@ def test_clear(ctx):
     ctx.window.use()
     fb = create(ctx, 10, 20, components=4)
     fb.clear()
-    fb.clear(color=(0, 0, 0, 0), normalized=True)
-    fb.clear(color=(0, 0, 0), normalized=True)
+    fb.clear(color_normalized=(0, 0, 0, 0))
+    fb.clear(color_normalized=(0, 0, 0))
     fb.clear(color=arcade.csscolor.AZURE)
     fb.clear(color=(0, 0, 0))
     fb.clear(color=(0, 0, 0, 0))
@@ -156,3 +156,10 @@ def test_resize(ctx):
     fbo.resize()
     assert fbo.size == tex.size
     assert fbo.viewport == (0, 0, *fbo.size)
+
+def test_read_screen_framebuffer(window):
+    components = 3
+    data = window.ctx.screen.read(components=components)
+    assert isinstance(data, bytes)
+    w, h = window.get_framebuffer_size()
+    assert len(data) == w * h * components

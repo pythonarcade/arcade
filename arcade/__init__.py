@@ -33,6 +33,7 @@ def configure_logging(level: Optional[int] = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
 # The following is used to load ffmpeg libraries.
 # Currently Arcade is only shipping binaries for Mac OS
 # as ffmpeg is not needed for support on Windows and Linux.
@@ -75,17 +76,14 @@ from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_window
-from .window_commands import pause
 from .window_commands import schedule
 from .window_commands import run
 from .window_commands import set_background_color
-from .window_commands import set_viewport
 from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
 
-from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -124,6 +122,7 @@ from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrbt_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
 from .draw_commands import draw_lrbt_rectangle_outline
+from .draw_commands import draw_lbwh_rectangle_textured
 from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
@@ -158,10 +157,11 @@ from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
-from .sprite import AnimatedTimeBasedSprite
+from .sprite import TextureAnimationSprite
 from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
-from .sprite import AnimationKeyframe
+from .sprite import TextureAnimation
+from .sprite import TextureKeyframe
 from .sprite import PyMunk
 from .sprite import PymunkMixin
 from .sprite import SpriteType
@@ -220,6 +220,7 @@ from .perf_graph import PerfGraph
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
+from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
 from arcade import types as types
@@ -237,12 +238,11 @@ from .text import (
 
 __all__ = [
     'AStarBarrierList',
-    'AnimatedTimeBasedSprite',
     'AnimatedWalkingSprite',
-    'AnimationKeyframe',
+    'TextureAnimationSprite',
+    'TextureAnimation',
+    'TextureKeyframe',
     'ArcadeContext',
-    'Camera',
-    'SimpleCamera',
     'ControllerManager',
     'FACE_DOWN',
     'FACE_LEFT',
@@ -295,6 +295,7 @@ __all__ = [
     'draw_line',
     'draw_line_strip',
     'draw_lines',
+    'draw_lbwh_rectangle_textured',
     'draw_lrtb_rectangle_filled',
     'draw_lrbt_rectangle_filled',
     'draw_lrtb_rectangle_outline',
@@ -349,7 +350,6 @@ __all__ = [
     'make_soft_circle_texture',
     'make_soft_square_texture',
     'open_window',
-    'pause',
     'print_timings',
     'play_sound',
     'read_tmx',
@@ -357,7 +357,6 @@ __all__ = [
     'run',
     'schedule',
     'set_background_color',
-    'set_viewport',
     'set_window',
     'start_render',
     'stop_sound',

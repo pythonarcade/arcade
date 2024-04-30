@@ -11,6 +11,7 @@ from arcade.cache import (
 )
 from . import SpriteSheet
 
+
 class TextureManager:
     """
     This class is used to manage textures. It is used to keep track of

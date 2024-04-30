@@ -190,6 +190,16 @@ def test_color_normalized_property():
     assert colors.GRAY.normalized == (128 / 255, 128 / 255, 128 / 255, 1.0)
 
 
+def test_color_rgb_property():
+    # Try some bounds
+    assert colors.WHITE.rgb == (255, 255, 255)
+    assert colors.BLACK.rgb == (0, 0, 0)
+
+    # Spot check unique colors
+    assert colors.COBALT.rgb == (0, 71, 171)
+    assert Color(1,3,5,7).rgb == (1, 3, 5)
+
+
 def test_deepcopy_color_values():
     expected_color = Color(255, 255, 255, 255)
     assert deepcopy(expected_color) == expected_color
@@ -201,12 +211,42 @@ def test_deepcopy_color_inheritance():
     assert isinstance(deep, ColorSubclass)
 
 
+@pytest.mark.parametrize("klass", [Color, ColorSubclass])
+def test_swizzle(klass):
+    color_instance = klass(1, 2, 3, a=4)
+
+    # Edge case
+    assert color_instance.swizzle("") == tuple()
+
+    assert color_instance.swizzle("r") == (1,)
+    assert color_instance.swizzle("g") == (2,)
+    assert color_instance.swizzle("b") == (3,)
+    assert color_instance.swizzle("a") == (4,)
+    assert color_instance.swizzle("R") == (1,)
+    assert color_instance.swizzle("G") == (2,)
+    assert color_instance.swizzle("B") == (3,)
+    assert color_instance.swizzle("A") == (4,)
+
+    assert color_instance.swizzle("ra") == (1, 4)
+    assert color_instance.swizzle("RA") == (1, 4)
+
+    assert color_instance.swizzle("aabbggrr") == (4, 4, 3, 3, 2, 2, 1, 1)
+    assert color_instance.swizzle("AABBGGRR") == (4, 4, 3, 3, 2, 2, 1, 1)
+
+
 RANDINT_RETURN_RESULT = 128
 
 
 @pytest.fixture
 def randint_is_constant(monkeypatch):
-    monkeypatch.setattr('random.randint', Mock(return_value=RANDINT_RETURN_RESULT))
+    """
+    Replace the randomized color uint32 with a known signal value.
+
+    Since the color randomization masks out channels, we use a known
+    repeated value (128, or 0x80 in hex) to represent a channel fetched
+    from random rather than taken from user input.
+    """
+    monkeypatch.setattr('random.randint', Mock(return_value=0x80808080))
 
 
 def test_color_random(randint_is_constant):

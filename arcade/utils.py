@@ -24,6 +24,7 @@ __all__ = [
     "NormalizedRangeError",
     "PerformanceWarning",
     "ReplacementWarning",
+    "copy_dunders_unimplemented",
     "warning",
     "generate_uuid_from_kwargs",
     "is_raspberry_pi",
@@ -111,6 +112,55 @@ class NormalizedRangeError(FloatOutsideRangeError):
         super().__init__(var_name, value, 0.0, 1.0)
 
 
+_TType = TypeVar('_TType', bound=Type)
+
+def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
+    """Decorator stubs dunders raising :py:class:`NotImplementedError`.
+
+    Temp fixes https://github.com/pythonarcade/arcade/issues/2074 by
+    stubbing the following instance methods:
+
+    * :py:meth:`object.__copy__` (used by :py:func:`copy.copy`)
+    * :py:meth:`object.__deepcopy__` (used by :py:func:`copy.deepcopy`)
+
+    Example usage:
+
+    .. code-block:: python
+
+       import copy
+       from arcade,utils import copy_dunders_unimplemented
+       from arcade.hypothetical_module import HypotheticalNasty
+
+       # Example usage
+       @copy_dunders_unimplemented
+       class CantCopy:
+            def __init__(self, nasty_state: HypotheticalNasty):
+                self.nasty_state = nasty_state
+
+       instance = CantCopy(HypotheticalNasty())
+
+       # These raise NotImplementedError
+       this_line_raises = copy.deepcopy(instance)
+       this_line_also_raises = copy.copy(instance)
+
+
+    """
+    def __copy__(self):  # noqa
+       raise NotImplementedError(
+           f"{self.__class__.__name__} does not implement __copy__, but"
+           f"you may implement it on a custom subclass."
+       )
+    decorated_type.__copy__ =  __copy__
+
+    def __deepcopy__(self, memo):  # noqa
+       raise NotImplementedError(
+           f"{self.__class__.__name__} does not implement __deepcopy__,"
+           f" but you may implement it on a custom subclass."
+       )
+    decorated_type.__deepcopy__ = __deepcopy__
+
+    return decorated_type
+
 class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
     pass
@@ -136,11 +186,12 @@ def warning(warning_type: Type[Warning], message: str = "", **kwargs):
 
 def generate_uuid_from_kwargs(**kwargs) -> str:
     """
-    Given key/pair combos, returns a string in uuid format.
-    Such as `text='hi', size=32` it will return "text-hi-size-32".
-    Called with no parameters, id does NOT return a random unique id.
+    Given key/pair combos, returns a string in "UUID" format.
+    With inputs such as `text='hi', size=32` it will return `"text=hi|size=32"`.
+    This function does NOT return a random unique ID.
+    It must be called with parameters, and will raise an error if passed no keyword arguments.
     """
-    if len(kwargs) == 0:
+    if not kwargs:
         raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
 
     return "|".join(f"{key}={str(value)}" for key, value in kwargs.items())

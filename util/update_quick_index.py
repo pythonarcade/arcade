@@ -15,7 +15,6 @@ ROOT = Path(__file__).parent.parent.resolve()
 titles = {
     'application.py': ['Window and View', 'window.rst'],
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
-    'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
@@ -51,11 +50,13 @@ titles = {
     'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
+    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
     'math.py': ['Math', 'math.rst'],
-    'types.py': ['Types', 'types.rst'],
+    'types/__init__.py': ['Types', 'types.rst'],
+    'types/color.py': ['Types', 'types.rst'],
     'easing.py': ['Easing', 'easing.rst'],
     'earclip.py': ['Earclip', 'earclip.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
@@ -76,6 +77,7 @@ titles = {
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
     'gui/nine_patch.py': ['GUI', 'gui.rst'],
+    'gui/view.py': ['GUI', 'gui.rst'],
     'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
     'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
@@ -86,6 +88,8 @@ titles = {
     'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
     'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
     'gui/style.py': ['GUI Style', 'gui_style.rst'],
+    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
@@ -108,6 +112,7 @@ excluded_modules = [
     'texture_atlas/atlas_array.py',
     'texture_atlas/atlas_bindless.py',
     'texture_atlas/helpers.py',
+    'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
 
 # Module and class members to exclude
@@ -199,6 +204,7 @@ def process_directory(directory: Path, quick_index_file):
             "sprite_list": "arcade",
             "text": "arcade",
             "gui": "arcade.gui",
+            "experimental": "arcade.gui.experimental",
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
@@ -206,12 +212,13 @@ def process_directory(directory: Path, quick_index_file):
             "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
-            "types.py": "arcade.types",
+            "types": "arcade.types",
             "utils.py": "arcade.utils",
             "easing.py": "arcade.easing",
             "math.py": "arcade.math",
             "earclip.py": "arcade.earclip",
             "shape_list.py": "arcade.shape_list",
+            "camera": "arcade.camera"
         }
         package = mapping.get(path.name, None) or mapping.get(directory.name, None)
 
@@ -324,6 +331,7 @@ def main():
     text_file.write(table_header_arcade)
 
     process_directory(ROOT / "arcade", text_file)
+    process_directory(ROOT / "arcade/types", text_file)
     process_directory(ROOT / "arcade/sprite_list", text_file)
     process_directory(ROOT / "arcade/geometry", text_file)
     process_directory(ROOT / "arcade/sprite", text_file)
@@ -334,6 +342,7 @@ def main():
     process_directory(ROOT / "arcade/gui", text_file)
     process_directory(ROOT / "arcade/gui/widgets", text_file)
     process_directory(ROOT / "arcade/gui/property", text_file)
+    process_directory(ROOT / "arcade/gui/experimental", text_file)
     process_directory(ROOT / "arcade/tilemap", text_file)
 
     text_file.close()

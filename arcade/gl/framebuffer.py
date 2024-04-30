@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Optional, Tuple, List, TYPE_CHECKING, Union
+from typing import Generator, Optional, Tuple, List, TYPE_CHECKING
 import weakref
 
 
@@ -305,7 +305,7 @@ class Framebuffer:
             self._prev_fbo.use()
 
     @contextmanager
-    def activate(self):
+    def activate(self) -> Generator[Framebuffer, None, None]:
         """Context manager for binding the framebuffer.
 
         Unlike the default context manager in this class
@@ -348,10 +348,10 @@ class Framebuffer:
 
     def clear(
         self,
-        color: Union[RGBOrA255, RGBOrANormalized] =(0.0, 0.0, 0.0, 0.0),
         *,
+        color: Optional[RGBOrA255] = None,
+        color_normalized: Optional[RGBOrANormalized] = None,
         depth: float = 1.0,
-        normalized: bool = False,
         viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """
@@ -361,12 +361,13 @@ class Framebuffer:
             fb.clear(color=arcade.color.WHITE)
 
             # Clear framebuffer using the color red in normalized form
-            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
+            fbo.clear(color_normalized=(1.0, 0.0, 0.0, 1.0))
 
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param color: A 3 or 4 component tuple containing the color
+        :param color: A 3 or 4 component tuple containing the color (prioritized over color_normalized)
+        :param color_normalized: A 3 or 4 component tuple containing the color in normalized form
         :param depth: Value to clear the depth buffer (unused)
         :param normalized: If the color values are normalized or not
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
@@ -379,24 +380,26 @@ class Framebuffer:
             else:
                 self.scissor = None
 
-            if normalized:
-                # If the colors are already normalized we can pass them right in
+            clear_color = 0.0, 0.0, 0.0, 0.0
+            if color is not None:
                 if len(color) == 3:
-                    gl.glClearColor(*color, 1.0)
+                    clear_color = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
+                elif len(color) == 4:
+                    clear_color = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
                 else:
-                    gl.glClearColor(*color)
-            else:
-                # OpenGL wants normalized colors (0.0 -> 1.0)
-                if len(color) == 3:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+                    raise ValueError("Color should be a 3 or 4 component tuple")
+            elif color_normalized is not None:
+                if len(color_normalized) == 3:
+                    clear_color = color_normalized[0], color_normalized[1], color_normalized[2], 1.0
+                elif len(color_normalized) == 4:
+                    clear_color = color_normalized
                 else:
-                    # mypy does not understand that color[3] is guaranteed to work in this codepath, pyright does.
-                    # We can remove this type: ignore if we switch to pyright.
-                    gl.glClearColor(
-                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255 # type: ignore
-                    )
+                    raise ValueError("Color should be a 3 or 4 component tuple")
+
+            gl.glClearColor(*clear_color)
 
             if self.depth_attachment:
+                gl.glClearDepth(depth)
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
@@ -425,15 +428,23 @@ class Framebuffer:
             raise ValueError(f"Invalid dtype '{dtype}'")
 
         with self.activate():
-            # Configure attachment to read from
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            # Configure attachment to read from. Does not work on default framebuffer.
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+
             if viewport:
                 x, y, width, height = viewport
             else:
-                x, y, width, height = 0, 0, self._width, self._height
+                x, y, width, height = 0, 0, *self.size
+
             data = (gl.GLubyte * (components * component_size * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
-            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
+
+            if not self.is_default:
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
         return string_at(data, len(data))
 
@@ -567,6 +578,37 @@ class DefaultFrameBuffer(Framebuffer):
 
         # HACK: Signal the default framebuffer having depth buffer
         self._depth_attachment = True  # type: ignore
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        Size as a ``(w, h)`` tuple
+
+        :type: tuple (int, int)
+        """
+        return self._ctx.window.get_framebuffer_size()
+
+    @property
+    def width(self) -> int:
+        """
+        The width of the framebuffer in pixels
+
+        :type: int
+        """
+        return self.size[0]
+
+    @property
+    def height(self) -> int:
+        """
+        The height of the framebuffer in pixels
+
+        :type: int
+        """
+        return self.size[1]
+
+    def _get_framebuffer_size(self) -> Tuple[int, int]:
+        """Get the framebuffer size of the window"""
+        return self._ctx.window.get_framebuffer_size()
 
     def _get_viewport(self) -> Tuple[int, int, int, int]:
         """

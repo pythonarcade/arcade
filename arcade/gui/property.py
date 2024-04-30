@@ -7,6 +7,7 @@ from weakref import WeakKeyDictionary, ref
 
 P = TypeVar("P")
 
+
 class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
@@ -17,21 +18,41 @@ class _Obs(Generic[P]):
     def __init__(self, value: P):
         self.value = value
         # This will keep any added listener even if it is not referenced anymore and would be garbage collected
-        self.listeners: Set[Callable[[], Any]] = set()
+        self.listeners: Set[Callable[[Any, P], Any]] = set()
 
 
 class Property(Generic[P]):
     """
     An observable property which triggers observers when changed.
 
+.. code-block:: python
+
+        def log_change(instance, value):
+            print("Something changed")
+
+        class MyObject:
+            name = Property()
+
+        my_obj = MyObject()
+        bind(my_obj, "name", log_change)
+        unbind(my_obj, "name", log_change)
+
+        my_obj.name = "Hans"
+        # > Something changed
+
     :param default: Default value which is returned, if no value set before
     :param default_factory: A callable which returns the default value.
                             Will be called with the property and the instance
     """
+
     __slots__ = ("name", "default_factory", "obs")
     name: str
 
-    def __init__(self, default: Optional[P] = None, default_factory: Optional[Callable[[Any, Any], P]] = None):
+    def __init__(
+        self,
+        default: Optional[P] = None,
+        default_factory: Optional[Callable[[Any, Any], P]] = None,
+    ):
         if default_factory is None:
             default_factory = lambda prop, instance: cast(P, default)
 
@@ -59,7 +80,11 @@ class Property(Generic[P]):
         obs = self._get_obs(instance)
         for listener in obs.listeners:
             try:
-                listener()
+                try:
+                    listener(instance, value)
+                except TypeError:
+                    # If the listener does not accept arguments, we call it without it
+                    listener()  # type: ignore
             except Exception:
                 print(
                     f"Change listener for {instance}.{self.name} = {value} raised an exception!",
@@ -73,12 +98,16 @@ class Property(Generic[P]):
         # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
         obs.listeners.add(callback)
 
+    def unbind(self, instance, callback):
+        obs = self._get_obs(instance)
+        obs.listeners.remove(callback)
+
     def __set_name__(self, owner, name):
         self.name = name
 
     def __get__(self, instance, owner) -> P:
         if instance is None:
-            return self # type: ignore
+            return self  # type: ignore
         return self.get(instance)
 
     def __set__(self, instance, value):
@@ -90,8 +119,8 @@ def bind(instance, property: str, callback):
     Binds a function to the change event of the property. A reference to the function will be kept,
     so that it will be still invoked, even if it would normally have been garbage collected.
 
-        def log_change():
-            print("Something changed")
+        def log_change(instance, value):
+            print(f"Value of {instance} changed to {value}")
 
         class MyObject:
             name = Property()
@@ -100,7 +129,7 @@ def bind(instance, property: str, callback):
         bind(my_obj, "name", log_change)
 
         my_obj.name = "Hans"
-        # > Something changed
+        # > Value of <__main__.MyObject ...> changed to Hans
 
     :param instance: Instance owning the property
     :param property: Name of the property
@@ -113,13 +142,39 @@ def bind(instance, property: str, callback):
         prop.bind(instance, callback)
 
 
+def unbind(instance, property: str, callback):
+    """
+    Unbinds a function from the change event of the property.
+
+        def log_change(instance, value):
+            print("Something changed")
+
+        class MyObject:
+            name = Property()
+
+        my_obj = MyObject()
+        bind(my_obj, "name", log_change)
+        unbind(my_obj, "name", log_change)
+
+        my_obj.name = "Hans"
+        # > Something changed
+
+
+    :param instance: Instance owning the property
+    :param property: Name of the property
+    :param callback: Function to unbind
+    :return: None
+    """
+    t = type(instance)
+    prop = getattr(t, property)
+    if isinstance(prop, Property):
+        prop.unbind(instance, callback)
+
+
 class _ObservableDict(dict):
     """Internal class to observe changes inside a native python dict."""
 
-    __slots__ = (
-        "prop",
-        "obj"
-    )
+    __slots__ = ("prop", "obj")
 
     def __init__(self, prop: Property, instance, *largs):
         self.prop: Property = prop
@@ -177,10 +232,7 @@ class DictProperty(Property):
 class _ObservableList(list):
     """Internal class to observe changes inside a native python list."""
 
-    __slots__ = (
-        "prop",
-        "obj"
-    )
+    __slots__ = ("prop", "obj")
 
     def __init__(self, prop: Property, instance, *largs):
         self.prop: Property = prop

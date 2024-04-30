@@ -19,7 +19,7 @@ from arcade import (
     check_for_collision_with_list,
     get_sprites_at_point
 )
-from arcade.math import get_distance, lerp_vec
+from arcade.math import get_distance, lerp_2d
 from arcade.types import Point
 
 __all__ = [
@@ -289,7 +289,7 @@ class AStarBarrierList:
 def astar_calculate_path(start_point: Point,
                          end_point: Point,
                          astar_barrier_list: AStarBarrierList,
-                         diagonal_movement: bool=True) -> Optional[List[Point]]:
+                         diagonal_movement: bool = True) -> Optional[List[Point]]:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
@@ -360,7 +360,7 @@ def has_line_of_sight(observer: Point,
     for step in range(steps + 1):
         step_distance = step * check_resolution
         u = step_distance / distance
-        midpoint = lerp_vec(observer, target, u)
+        midpoint = lerp_2d(observer, target, u)
         if step_distance > max_distance:
             return False
         sprite_list = get_sprites_at_point(midpoint, walls)

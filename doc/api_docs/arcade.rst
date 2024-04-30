@@ -20,7 +20,6 @@ for the Python Arcade library. See also:
     api/sprites
     api/sprite_list
     api/sprite_scenes
-    api/camera
     api/text
     api/tilemap
     api/texture
@@ -53,6 +52,7 @@ for the Python Arcade library. See also:
     api/gui_events
     api/gui_properties
     api/gui_style
+    api/gui_experimental
 
 .. toctree::
     :maxdepth: 1

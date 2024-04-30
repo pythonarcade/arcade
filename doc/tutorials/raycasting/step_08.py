@@ -39,8 +39,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.generate_sprites()
 
@@ -103,8 +103,6 @@ class MyGame(arcade.Window):
 
         # Start centered on the player
         self.scroll_to_player(1.0)
-        self.camera_sprites.update()
-
 
     def on_draw(self):
         # Use our scrolled camera
@@ -128,8 +126,8 @@ class MyGame(arcade.Window):
 
         # Calculate the light position. We have to subtract the camera position
         # from the player position to get screen-relative coordinates.
-        p = (self.player_sprite.position[0] - self.camera_sprites.position[0],
-             self.player_sprite.position[1] - self.camera_sprites.position[1])
+        p = (self.player_sprite.position[0] - self.camera_sprites.left,
+             self.player_sprite.position[1] - self.camera_sprites.bottom)
 
         # Set the uniform data
         self.shadertoy.program['lightPosition'] = p
@@ -187,14 +185,13 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, speed)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
         self.shadertoy.resize((width, height))
 
 

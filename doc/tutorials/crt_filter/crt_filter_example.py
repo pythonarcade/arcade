@@ -50,19 +50,14 @@ class MyGame(arcade.Window):
         my_sprite.center_x = 800
         my_sprite.center_y = 200
 
-        my_sprite = arcade.AnimatedTimeBasedSprite()
-        texture = arcade.load_texture(
-            "pac_man_sprite_sheet.png", x=4, y=1, width=13, height=15)
-        frame = arcade.AnimationKeyframe(tile_id=0,
-                                         duration=150,
-                                         texture=texture)
-        my_sprite.frames.append(frame)
-        texture = arcade.load_texture(
-            "pac_man_sprite_sheet.png", x=20, y=1, width=13, height=15)
-        frame = arcade.AnimationKeyframe(tile_id=1,
-                                         duration=150,
-                                         texture=texture)
-        my_sprite.frames.append(frame)
+        keyframes = []
+        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=4, y=1, width=13, height=15)
+        frame = arcade.TextureKeyframe(texture, duration=150)
+        keyframes.append(frame)
+        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=20, y=1, width=13, height=15)
+        frame = arcade.TextureKeyframe(texture, duration=150)
+        keyframes.append(frame)
+        my_sprite = arcade.TextureAnimationSprite(animation=arcade.TextureAnimation(keyframes))
 
         my_sprite.change_x = 1
         self.sprite_list.append(my_sprite)

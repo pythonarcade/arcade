@@ -8,7 +8,7 @@ import arcade
 from .particle import Particle
 from typing import Optional, Callable, cast
 from arcade.math import _Vec2
-from arcade.types import Point, Vector
+from arcade.types import Point, Velocity
 
 
 class EmitController:
@@ -110,7 +110,7 @@ class Emitter:
         center_xy: Point,
         emit_controller: EmitController,
         particle_factory: Callable[["Emitter"], Particle],
-        change_xy: Vector = (0.0, 0.0),
+        change_xy: Velocity = (0.0, 0.0),
         emit_done_cb: Optional[Callable[["Emitter"], None]] = None,
         reap_cb: Optional[Callable[[], None]] = None
     ):
@@ -140,7 +140,7 @@ class Emitter:
         p.change_y = vel.y
         self._particles.append(p)
 
-    def get_count(self):
+    def get_count(self) -> int:
         return len(self._particles)
 
     def get_pos(self) -> Point:

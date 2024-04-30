@@ -221,7 +221,7 @@ class HitBox:
         * After properties affecting adjusted position were changed
         """
         if not self._adjusted_cache_dirty:
-            return self._adjusted_points # type: ignore
+            return self._adjusted_points  # type: ignore
 
         def _adjust_point(point) -> Point:
             x, y = point
@@ -233,7 +233,7 @@ class HitBox:
 
         self._adjusted_points = [_adjust_point(point) for point in self.points]
         self._adjusted_cache_dirty = False
-        return self._adjusted_points # type: ignore [return-value]
+        return self._adjusted_points  # type: ignore [return-value]
 
 
 class RotatableHitBox(HitBox):

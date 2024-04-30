@@ -11,30 +11,21 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import List, Dict, TypeVar, Iterable, Optional, Type, Union
+from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union, Tuple
 
-from arcade.types import Point
+from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
-from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
-
 import arcade
-from arcade.gui.events import (
-    UIMouseMovementEvent,
-    UIMousePressEvent,
-    UIMouseReleaseEvent,
-    UIMouseScrollEvent,
-    UITextEvent,
-    UIMouseDragEvent,
-    UITextMotionEvent,
-    UITextMotionSelectEvent,
-    UIKeyPressEvent,
-    UIKeyReleaseEvent,
-    UIOnUpdateEvent,
-)
+from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
+                               UIMouseDragEvent, UIMouseMovementEvent,
+                               UIMousePressEvent, UIMouseReleaseEvent,
+                               UIMouseScrollEvent, UIOnUpdateEvent,
+                               UITextEvent, UITextMotionEvent,
+                               UITextMotionSelectEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, Rect
-from arcade.camera import SimpleCamera
+from arcade.gui.widgets import Rect, UIWidget
+from arcade.types import Point
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -92,9 +83,7 @@ class UIManager(EventDispatcher):
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
         self.children: Dict[int, List[UIWidget]] = defaultdict(list)
-        self._rendered = False
-        #: Camera used when drawing the UI
-        self.camera = SimpleCamera()
+        self._requires_render = True
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -194,9 +183,17 @@ class UIManager(EventDispatcher):
 
     def trigger_render(self):
         """
-        Request rendering of all widgets
+        Request rendering of all widgets before next draw
         """
-        self._rendered = False
+        self._requires_render = True
+
+    def execute_layout(self):
+        """
+        Execute layout process for all widgets.
+
+        This is automatically called during :py:meth:`UIManager.draw()`.
+        """
+        self._do_layout()
 
     def _do_layout(self):
         layers = sorted(self.children.keys())
@@ -207,6 +204,10 @@ class UIManager(EventDispatcher):
             surface_width, surface_height = surface.size
 
             for child in self.children[layer]:
+                # prepare children, so size_hints are calculated
+                child._prepare_layout()
+
+                # actual layout
                 if child.size_hint:
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
@@ -223,11 +224,12 @@ class UIManager(EventDispatcher):
                         shm_w or child.width, shm_h or child.height
                     )
 
+                # continue layout process down the tree
                 child._do_layout()
 
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
-        force = force or not self._rendered
+        force = force or self._requires_render
         for layer in layers:
             surface = self._get_surface(layer)
 
@@ -241,7 +243,7 @@ class UIManager(EventDispatcher):
                 for child in self.children[layer]:
                     child._do_render(surface, force)
 
-        self._rendered = True
+        self._requires_render = False
 
     def enable(self) -> None:
         """
@@ -297,35 +299,46 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
-        # Request Widgets to prepare for next frame
-        self._do_layout()
+        current_cam = self.window.current_camera
+        """
+        Will draw all widgets to the window.
+
+        UIManager caches all rendered widgets into a framebuffer (something like a window sized image)
+        and only updates the framebuffer if a widget requests rendering via trigger_render().
+
+        To ensure that the children are positioned properly,
+        a layout process is executed before rendering, changes might also trigger a re-rendering of all widgets.
+
+        Layouting is a two-step process:
+        1. Prepare layout, which prepares children and updates own values
+        2. Do layout, which actually sets the position and size of the children
+        """
+        # Request widgets to prepare for next frame
+        self.execute_layout()
 
         ctx = self.window.ctx
         with ctx.enabled(ctx.BLEND):
             self._do_render()
 
+        # Correct that the ui changes the currently active camera.
+        current_cam.use()
+
         # Draw layers
-        self.camera.use()
         with ctx.enabled(ctx.BLEND):
             layers = sorted(self.children.keys())
             for layer in layers:
                 self._get_surface(layer).draw()
 
-    def adjust_mouse_coordinates(self, x, y):
+    def adjust_mouse_coordinates(self, x: float, y: float) -> Tuple[float, float]:
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
-        The implementation should work in most common cases.
 
-        If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
-        or overwrite this method using the camera conversion::
-
-            ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
+        It uses the internal camera's map_coordinate methods, and should work with
+        all transformations possible with the basic orthographic camera.
         """
-        # NOTE: Only support scrolling until cameras support transforming
-        #       mouse coordinates
-        px, py = self.camera.position
-        return x + px, y + py
+        x_, y_, *c = self.window.current_camera.map_screen_to_world_coordinate((x, y))
+        return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
         layers = sorted(self.children.keys(), reverse=True)
@@ -339,28 +352,28 @@ class UIManager(EventDispatcher):
     def dispatch_ui_event(self, event):
         return self.dispatch_event("on_event", event)
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, int(x_), int(y), dx, dy))
 
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMousePressEvent(self, int(x_), int(y_), button, modifiers))
 
     def on_mouse_drag(
-        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
     ):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseDragEvent(self, int(x_), int(y_), dx, dy, buttons, modifiers))
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        x, y = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
+        return self.dispatch_ui_event(UIMouseReleaseEvent(self, int(x_), int(y_), button, modifiers))
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        x, y = self.adjust_mouse_coordinates(x, y)
+        x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
-            UIMouseScrollEvent(self, x, y, scroll_x, scroll_y)
+            UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y)
         )
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -380,8 +393,6 @@ class UIManager(EventDispatcher):
 
     def on_resize(self, width, height):
         scale = self.window.get_pixel_ratio()
-        self.camera.resize(width, height)
-
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
 

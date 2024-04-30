@@ -6,6 +6,7 @@ See the other GUI examples for more information.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.widget_gallery
 """
+
 from __future__ import annotations
 
 from textwrap import dedent
@@ -21,6 +22,7 @@ from arcade.gui import (
     UITextureToggle,
     UITextArea,
     UIInputText,
+    UIBoxLayout,
 )
 from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
@@ -102,25 +104,41 @@ class MyView(arcade.View):
         )
 
         # Simple toggle
-        grid.add(
+
+        toggles = grid.add(
+            UIBoxLayout(space_between=10, vertical=False),
             col_num=0,
             row_num=3,
-            child=UITextureToggle(
+        )
+        toggles.add(
+            UITextureToggle(
                 on_texture=load_texture(
                     ":resources:gui_basic_assets/toggle/switch_green.png"
                 ),
                 off_texture=load_texture(
                     ":resources:gui_basic_assets/toggle/switch_red.png"
                 ),
-            ),
+            )
         )
+        toggles.add(
+            UITextureToggle(
+                on_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_green.png"
+                ),
+                off_texture=load_texture(
+                    ":resources:gui_basic_assets/toggle/switch_red.png"
+                ),
+            )
+        ).disabled = True
 
         # Simple slider
         grid.add(
             col_num=0,
             row_num=4,
             child=UITextureSlider(
-                bar=arcade.load_texture(":resources:gui_basic_assets/slider_bar.png"),
+                track=arcade.load_texture(
+                    ":resources:gui_basic_assets/slider_track.png"
+                ),
                 thumb=arcade.load_texture(
                     ":resources:gui_basic_assets/slider_thumb.png"
                 ),
@@ -132,9 +150,9 @@ class MyView(arcade.View):
             col_num=0,
             row_num=5,
             child=UITextureSlider(
-                bar=NinePatchTexture(
+                track=NinePatchTexture(
                     texture=arcade.load_texture(
-                        ":resources:gui_basic_assets/slider_bar.png"
+                        ":resources:gui_basic_assets/slider_track.png"
                     ),
                     left=30,
                     right=33,
@@ -181,7 +199,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()
