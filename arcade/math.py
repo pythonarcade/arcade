@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Tuple, List, Union
-from pyglet.math import Vec2, Vec3
-from arcade.types import Point, Vector
+from typing import Sequence, Tuple, Union
+from arcade.types import AsFloat, Point
+
 
 _PRECISION = 2
 
@@ -63,13 +63,13 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
-def lerp(v1: float, v2: float, u: float) -> float:
+V_2D = Union[Tuple[AsFloat, AsFloat], Sequence[AsFloat]]
+V_3D = Union[Tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
+
+
+def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
     """linearly interpolate between two values"""
     return v1 + ((v2 - v1) * u)
-
-
-V_2D = Union[Vec2, Tuple[float, float], List[float]]
-V_3D = Union[Vec3, Tuple[float, float, float], List[float]]
 
 
 def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Tuple[float, float]:
@@ -202,7 +202,7 @@ def rand_vec_spread_deg(
     angle: float,
     half_angle_spread: float,
     length: float
-) -> Vector:
+) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
 
@@ -220,7 +220,7 @@ def rand_vec_magnitude(
     angle: float,
     lo_magnitude: float,
     hi_magnitude: float,
-) -> Vector:
+) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
 

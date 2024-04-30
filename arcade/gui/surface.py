@@ -6,6 +6,7 @@ from typing import Tuple, Union, Optional
 import arcade
 from arcade import Texture
 from arcade.color import TRANSPARENT_BLACK
+from arcade.draw_commands import draw_lbwh_rectangle_textured
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
@@ -119,7 +120,7 @@ class Surface:
 
             tex.draw_sized(size=(width, height))
         else:
-            arcade.draw_lrwh_rectangle_textured(
+            draw_lbwh_rectangle_textured(
                 bottom_left_x=x,
                 bottom_left_y=y,
                 width=width,

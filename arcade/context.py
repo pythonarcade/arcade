@@ -22,6 +22,8 @@ from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
+from arcade.camera import Projector
+from arcade.camera.default import DefaultProjector
 from arcade.types import Rect
 
 
@@ -59,14 +61,13 @@ class ArcadeContext(Context):
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObject = window.ubo
         self.bind_window_block()
+
+        self._default_camera: DefaultProjector = DefaultProjector(context=self)
+        self.current_camera: Projector = self._default_camera
+
         self.viewport = (
-            0,
-            0,
-            self.screen.width,
-            self.screen.height,
+            0, 0, window.width, window.height
         )
-        self.projection_matrix = Mat4.orthogonal_projection(0, self.screen.width, 0, self.screen.height,
-                                                            -1, 1)
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -255,6 +256,32 @@ class ArcadeContext(Context):
             )
 
         return self._atlas
+
+    @property
+    def viewport(self) -> Tuple[int, int, int, int]:
+        """
+        Get or set the viewport for the currently active framebuffer.
+        The viewport simply describes what pixels of the screen
+        OpenGL should render to. Normally it would be the size of
+        the window's framebuffer::
+
+            # 4:3 screen
+            ctx.viewport = 0, 0, 800, 600
+            # 1080p
+            ctx.viewport = 0, 0, 1920, 1080
+            # Using the current framebuffer size
+            ctx.viewport = 0, 0, *ctx.screen.size
+
+        :type: tuple (x, y, width, height)
+        """
+        return self.active_framebuffer.viewport
+
+    @viewport.setter
+    def viewport(self, value: Tuple[int, int, int, int]):
+        self.active_framebuffer.viewport = value
+        if self._default_camera == self.current_camera:
+            self._default_camera.use()
+
 
     @property
     def projection_matrix(self) -> Mat4:
