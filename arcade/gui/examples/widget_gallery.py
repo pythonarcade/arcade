@@ -23,6 +23,7 @@ from arcade.gui import (
     UITextArea,
     UIInputText,
     UIBoxLayout,
+    UISlider,
 )
 from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
@@ -38,7 +39,7 @@ class MyView(arcade.View):
             UIGridLayout(
                 size_hint=(0.9, 0.9),
                 column_count=2,
-                row_count=6,
+                row_count=7,
                 vertical_spacing=5,
                 horizontal_spacing=5,
             )
@@ -164,6 +165,13 @@ class MyView(arcade.View):
                 ),
                 height=40,
             ),
+        )
+
+        # Simple slider
+        grid.add(
+            col_num=0,
+            row_num=6,
+            child=UISlider(),
         )
 
         # Input text
