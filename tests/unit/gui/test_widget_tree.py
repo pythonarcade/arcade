@@ -14,6 +14,21 @@ def test_widget_add_child():
     assert child in parent.children
 
 
+def test_widget_add_child_at_index_0():
+    # GIVEN
+    parent = UIDummy()
+    child_1 = UIDummy()
+    child_2 = UIDummy()
+
+    # WHEN
+    parent.add(child_1)
+    parent.add(child_2, index=0)
+
+    # THEN
+    children = parent.children
+    assert children[0] == child_2
+    assert children[1] == child_1
+
 def test_widget_remove_child():
     # GIVEN
     parent = UIDummy()

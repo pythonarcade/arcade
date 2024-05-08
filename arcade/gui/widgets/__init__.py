@@ -362,8 +362,10 @@ class UIWidget(EventDispatcher, ABC):
         if index is None:
             self._children.append(_ChildEntry(child, kwargs))
         else:
+            if not 0 <= index <= len(self.children):
+                raise ValueError("Index must be between 0 and the number of children")
             self._children.insert(
-                max(len(self.children), index), _ChildEntry(child, kwargs)
+                index, _ChildEntry(child, kwargs)
             )
 
         return child
@@ -843,10 +845,6 @@ class UIDummy(UIInteractiveWidget):
         )
         self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
-
-        self.bg_color = (
-            get_window().background_color
-        )  # ensures a clean surface to draw on
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
