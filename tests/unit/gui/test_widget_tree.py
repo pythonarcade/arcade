@@ -29,6 +29,7 @@ def test_widget_add_child_at_index_0():
     assert children[0] == child_2
     assert children[1] == child_1
 
+
 def test_widget_remove_child():
     # GIVEN
     parent = UIDummy()
