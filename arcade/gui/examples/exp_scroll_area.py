@@ -29,9 +29,9 @@ class MyWindow(Window):
         self.ui = UIManager()
         self.ui.enable()
         self.background_color = arcade.color.WHITE
-        self.input = self.ui.add(UIInputText(x=450, y=300).with_border())
+        self.input = self.ui.add(UIInputText(left=450, bottom=300).with_border())
 
-        self.scroll_area = UIScrollArea(x=100, y=100).with_border()
+        self.scroll_area = UIScrollArea(left=100, bottom=100).with_border()
         self.ui.add(self.scroll_area)
 
         anchor = self.scroll_area.add(

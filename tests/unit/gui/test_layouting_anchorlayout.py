@@ -1,5 +1,6 @@
 from arcade.gui import UIDummy, UIBoxLayout
 from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.types.rect import LBWH
 
 
 def test_place_widget(window):
@@ -22,7 +23,7 @@ def test_place_widget(window):
 
     subject.do_layout()
 
-    assert subject.rect == (0, 0, 500, 500)
+    assert subject.rect == LBWH(0, 0, 500, 500)
 
     assert dummy.center_x == 260
     assert dummy.top == 480
@@ -50,7 +51,7 @@ def test_place_widget_relative_to_own_content_rect(window):
 
     subject.do_layout()
 
-    assert subject.rect == (0, 0, 500, 500)
+    assert subject.rect == LBWH(0, 0, 500, 500)
 
     assert dummy.left == 62
     assert dummy.top == 378
@@ -67,8 +68,8 @@ def test_place_box_layout(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 500, 500)
-    assert box.rect == (200, 280, 100, 200)
+    assert subject.rect == LBWH(0, 0, 500, 500)
+    assert box.rect == LBWH(200, 280, 100, 200)
 
 
 def test_grow_child_half(window):
@@ -77,8 +78,8 @@ def test_grow_child_half(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
-    assert dummy.rect == (100, 100, 200, 200)
+    assert subject.rect == LBWH(0, 0, 400, 400)
+    assert dummy.rect == LBWH(100, 100, 200, 200)
 
 
 def test_grow_child_full_width(window):
@@ -87,8 +88,8 @@ def test_grow_child_full_width(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
-    assert dummy.rect == (0, 100, 400, 200)
+    assert subject.rect == LBWH(0, 0, 400, 400)
+    assert dummy.rect == LBWH(0, 100, 400, 200)
 
 
 def test_grow_child_full_height(window):
@@ -97,8 +98,8 @@ def test_grow_child_full_height(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
-    assert dummy.rect == (100, 0, 200, 400)
+    assert subject.rect == LBWH(0, 0, 400, 400)
+    assert dummy.rect == LBWH(100, 0, 200, 400)
 
 
 def test_grow_child_to_max_size(window):
@@ -107,7 +108,7 @@ def test_grow_child_to_max_size(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
+    assert subject.rect == LBWH(0, 0, 400, 400)
     assert dummy.size == (200, 150)
 
 
@@ -117,7 +118,7 @@ def test_shrink_child_to_min_size(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
+    assert subject.rect == LBWH(0, 0, 400, 400)
     assert dummy.size == (200, 150)
 
 
@@ -127,7 +128,7 @@ def test_grow_child_within_bounds(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
+    assert subject.rect == LBWH(0, 0, 400, 400)
     assert dummy.size == (400, 400)
 
 
@@ -137,5 +138,5 @@ def test_only_adjust_size_if_size_hint_is_given_for_dimension(window):
 
     subject._do_layout()
 
-    assert subject.rect == (0, 0, 400, 400)
+    assert subject.rect == LBWH(0, 0, 400, 400)
     assert dummy.size == (400, 100)

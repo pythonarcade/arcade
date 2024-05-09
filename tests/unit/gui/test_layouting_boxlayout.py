@@ -1,8 +1,8 @@
 from _pytest.python_api import approx
 
 from arcade.gui import UIBoxLayout, UIManager
-from arcade.gui.widgets import UIDummy, Rect
-
+from arcade.gui.widgets import UIDummy
+from arcade.types.rect import LBWH
 
 # Vertical
 def test_do_layout_vertical_with_initial_children(window):
@@ -11,7 +11,7 @@ def test_do_layout_vertical_with_initial_children(window):
     element_2 = UIDummy()
 
     group = UIBoxLayout(vertical=True, children=[element_1, element_2])
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
 
     group._do_layout()
 
@@ -33,7 +33,7 @@ def test_do_layout_vertical_add_children(window):
     group.add(element_1)
     group.add(element_2)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.top == 400
@@ -54,7 +54,7 @@ def test_do_layout_vertical_add_child_with_initial_children(window):
 
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.top == 500
@@ -76,7 +76,7 @@ def test_do_layout_vertical_align_left(window):
 
     group = UIBoxLayout(align="left", vertical=True, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -94,7 +94,7 @@ def test_do_layout_vertical_align_right(window):
 
     group = UIBoxLayout(align="right", vertical=True, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -114,7 +114,7 @@ def test_do_layout_vertical_space_between(window):
         space_between=10, vertical=True, children=[element_1, element_2]
     )
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -134,7 +134,7 @@ def test_do_layout_horizontal_with_initial_children(window):
 
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -155,7 +155,7 @@ def test_do_layout_horizontal_add_children(window):
     group.add(element_1)
     group.add(element_2)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -175,7 +175,7 @@ def test_do_layout_horizontal_add_child_with_initial_children(window):
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -199,7 +199,7 @@ def test_horizontal_group_keep_left_alignment_while_adding_children(window):
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -213,7 +213,7 @@ def test_do_layout_horizontal_align_top(window):
     element_2 = UIDummy(height=100)
     group = UIBoxLayout(align="top", vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -230,7 +230,7 @@ def test_do_layout_horizontal_align_bottom(window):
     element_2 = UIDummy(height=100)
     group = UIBoxLayout(align="bottom", vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -249,7 +249,7 @@ def test_do_layout_horizontal_space_between(window):
         space_between=10, vertical=False, children=[element_1, element_2]
     )
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100

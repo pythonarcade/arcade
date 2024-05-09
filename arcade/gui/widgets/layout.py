@@ -51,8 +51,8 @@ class UIAnchorLayout(UILayout):
     def __init__(
         self,
         *,
-        x: float = 0,
-        y: float = 0,
+        left: float = 0,
+        bottom: float = 0,
         width: float = 1,
         height: float = 1,
         children: Iterable["UIWidget"] = tuple(),
@@ -62,8 +62,8 @@ class UIAnchorLayout(UILayout):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             children=children,
@@ -195,8 +195,8 @@ class UIBoxLayout(UILayout):
     children) will be distributed to the child widgets based on their
     ``size_hint``.
 
-    :param x: ``x`` coordinate of the bottom left corner.
-    :param y: ``y`` coordinate of the bottom left corner.
+    :param left: ``x`` coordinate of the bottom left corner.
+    :param bottom: ``y`` coordinate of the bottom left corner.
     :param vertical: Layout children vertical (True) or horizontal (False).
     :param align: Align children in orthogonal direction::
                   - ``x``: ``left``, ``center``, and ``right``
@@ -212,8 +212,8 @@ class UIBoxLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
+        left=0,
+        bottom=0,
         width=1,
         height=1,
         vertical=True,
@@ -226,8 +226,8 @@ class UIBoxLayout(UILayout):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             children=children,
@@ -477,8 +477,8 @@ class UIGridLayout(UILayout):
     ``size_hint``s only take effect if a ``size_hint`` is given. ``size_hint_min`` is automatically
     updated based on the minimal required space by children.
 
-    :param x: ``x`` coordinate of bottom left corner.
-    :param y: ``y`` coordinate of bottom left corner.
+    :param left: ``x`` coordinate of bottom left corner.
+    :param bottom: ``y`` coordinate of bottom left corner.
     :param align_horizontal: Align children in orthogonal direction.
                                  Options include ``left``, ``center``, and
                                  ``right``.
@@ -500,8 +500,8 @@ class UIGridLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
+        left=0,
+        bottom=0,
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
@@ -515,8 +515,8 @@ class UIGridLayout(UILayout):
         **kwargs,
     ):
         super(UIGridLayout, self).__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=1,
             height=1,
             children=children,

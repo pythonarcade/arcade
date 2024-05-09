@@ -29,8 +29,8 @@ class UIScrollArea(UIWidget):
     def __init__(
         self,
         *,
-        x: float = 0,
-        y: float = 0,
+        left: float = 0,
+        bottom: float = 0,
         width: float = 300,
         height: float = 300,
         children: Iterable["UIWidget"] = tuple(),
@@ -41,8 +41,8 @@ class UIScrollArea(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             children=children,

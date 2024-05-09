@@ -102,8 +102,8 @@ class Surface:
 
     def draw_texture(
         self,
-        x: float,
-        y: float,
+        left: float,
+        bottom: float,
         width: float,
         height: float,
         tex: Union[Texture, NinePatchTexture],
@@ -120,8 +120,8 @@ class Surface:
             tex.draw_sized(size=(width, height))
         else:
             arcade.draw_lrwh_rectangle_textured(
-                bottom_left_x=x,
-                bottom_left_y=y,
+                bottom_left_x=left,
+                bottom_left_y=bottom,
                 width=width,
                 height=height,
                 texture=tex,
@@ -129,9 +129,9 @@ class Surface:
                 alpha=alpha,
             )
 
-    def draw_sprite(self, x, y, width, height, sprite):
+    def draw_sprite(self, left, bottom, width, height, sprite):
         """Draw a sprite to the surface"""
-        sprite.position = x + width // 2, y + height // 2
+        sprite.position = left + width // 2, bottom + height // 2
         sprite.width = width
         sprite.height = height
         sprite.draw()
@@ -155,12 +155,12 @@ class Surface:
             # Restore blend function.
             self.ctx.blend_func = blend_func
 
-    def limit(self, x, y, width, height):
+    def limit(self, left, bottom, width, height):
         """Reduces the draw area to the given rect"""
 
         viewport = (
-            int(x * self._pixel_ratio),
-            int(y * self._pixel_ratio),
+            int(left * self._pixel_ratio),
+            int(bottom * self._pixel_ratio),
             int(width * self._pixel_ratio),
             int(height * self._pixel_ratio),
         )

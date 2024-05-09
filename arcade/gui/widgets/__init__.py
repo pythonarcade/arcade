@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC
-from math import floor
 from random import randint
 from typing import (
     NamedTuple,
@@ -17,6 +16,7 @@ from typing import (
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.math import Vec2
 from typing_extensions import Self
 
 import arcade
@@ -33,226 +33,13 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.types import RGBA255, Color
+from arcade.types.rect import LBWH
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 __all__ = ["Surface", "UIDummy"]
-
-
-class Rect(NamedTuple):
-    """
-    Representing a rectangle for GUI module.
-    Rect is idempotent.
-
-    Bottom left corner is used as fix point (x, y)
-    """
-
-    x: float
-    y: float
-    width: float
-    height: float
-
-    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "Rect":
-        """Returns new Rect which is moved by dx and dy"""
-        x, y, width, height = self
-        return Rect(x + dx, y + dy, width, height)
-
-    def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
-        """Return true if ``x`` and ``y`` are within this rect.
-
-        This check is inclusive. Values on the :py:attr:`.left`,
-        :py:attr:`.right`, :py:attr:`.top`, and :py:attr:`.bottom`
-        edges will be counted as inside the rect.
-
-        .. code-block:: python
-
-           >>> bounds = Rect(0.0, 0.0, 5.0, 5.0)
-           >>> bounds.collide_with_point(0.0, 0.0)
-           True
-           >>> bounds.collide_with_point(5.0, 5.0)
-           True
-
-        :param x: The x value to check as inside the rect.
-        :param y: The y value to check as inside the rect.
-        """
-        left, bottom, width, height = self
-        return left <= x <= left + width and bottom <= y <= bottom + height
-
-    def scale(
-            self,
-            scale: float,
-            rounding: Optional[Callable[..., float]] = floor
-    ) -> "Rect":
-        """Return a new rect scaled relative to the origin.
-
-        By default, the new rect's values are rounded down to whole
-        values. You can alter this by passing a different rounding
-        behavior:
-
-        * Pass ``None`` to skip rounding
-        * Pass a function which takes a number and returns a float
-          to choose rounding behavior.
-
-        :param scale: A scale factor.
-        :param rounding: ``None`` or a callable specifying how to
-            round the scaled values.
-        """
-        x, y, width, height = self
-        if rounding is not None:
-            return Rect(
-                rounding(x * scale),
-                rounding(y * scale),
-                rounding(width * scale),
-                rounding(height * scale),
-            )
-        return Rect(
-            x * scale,
-            y * scale,
-            width * scale,
-            height * scale,
-        )
-
-    def resize(
-            self,
-            width: float | None = None,
-            height: float | None = None
-    ) -> "Rect":
-        """Return a rect with a new width or height but same lower left.
-
-        Fix x and y coordinate.
-        :param width: A width for the new rectangle.
-        :param height: A height for the new rectangle.
-        """
-        width = width if width is not None else self.width
-        height = height if height is not None else self.height
-        return Rect(self.x, self.y, width, height)
-
-    @property
-    def size(self) -> Tuple[float, float]:
-        """Read-only pixel size of the rect.
-
-        Since these rects are immutable, use helper instance methods to
-        get updated rects. For example, :py:meth:`.resize` may be what
-        you're looking for.
-        """
-        return self.width, self.height
-
-    @property
-    def left(self) -> float:
-        """The left edge on the X axis."""
-        return self.x
-
-    @property
-    def right(self) -> float:
-        """The right edge on the X axis."""
-        return self.x + self.width
-
-    @property
-    def bottom(self) -> float:
-        """The bottom edge on the Y axis."""
-        return self.y
-
-    @property
-    def top(self) -> float:
-        """The top edge on the Y axis."""
-        return self.y + self.height
-
-    @property
-    def center_x(self) -> float:
-        return self.x + self.width / 2
-
-    @property
-    def center_y(self) -> float:
-        return self.y + self.height / 2
-
-    @property
-    def center(self) -> Point:
-        return self.center_x, self.center_y
-
-    @property
-    def position(self) -> Point:
-        """Bottom left coordinates"""
-        return self.left, self.bottom
-
-    def align_top(self, value: float) -> "Rect":
-        """Returns new Rect, which is aligned to the top"""
-        diff_y = value - self.top
-        return self.move(dy=diff_y)
-
-    def align_bottom(self, value: float) -> "Rect":
-        """Returns new Rect, which is aligned to the bottom"""
-        diff_y = value - self.bottom
-        return self.move(dy=diff_y)
-
-    def align_left(self, value: float) -> "Rect":
-        """Returns new Rect, which is aligned to the left"""
-        diff_x = value - self.left
-        return self.move(dx=diff_x)
-
-    def align_right(self, value: AsFloat) -> "Rect":
-        """Returns new Rect, which is aligned to the right"""
-        diff_x = value - self.right
-        return self.move(dx=diff_x)
-
-    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "Rect":
-        """Returns new Rect, which is aligned to the center x and y"""
-        diff_x = center_x - self.center_x
-        diff_y = center_y - self.center_y
-        return self.move(dx=diff_x, dy=diff_y)
-
-    def align_center_x(self, value: AsFloat) -> "Rect":
-        """Returns new Rect, which is aligned to the center_x"""
-        diff_x = value - self.center_x
-        return self.move(dx=diff_x)
-
-    def align_center_y(self, value: AsFloat) -> "Rect":
-        """Returns new Rect, which is aligned to the center_y"""
-        diff_y = value - self.center_y
-        return self.move(dy=diff_y)
-
-    def min_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None
-    ) -> "Rect":
-        """
-        Sets the size to at least the given min values.
-        """
-        return Rect(
-            self.x,
-            self.y,
-            max(width or 0.0, self.width),
-            max(height or 0.0, self.height),
-        )
-
-    def max_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None
-    ) -> "Rect":
-        """
-        Limits the size to the given max values.
-        """
-        x, y, w, h = self
-        if width is not None:
-            w = min(width, w)
-        if height is not None:
-            h = min(height, h)
-
-        return Rect(x, y, w, h)
-
-    def union(self, rect: "Rect") -> "Rect":
-        """
-        Returns a new Rect that is the union of this rect and another.
-        The union is the smallest rectangle that contains theses two rectangles.
-        """
-        x = min(self.x, rect.x)
-        y = min(self.y, rect.y)
-        right = max(self.right, rect.right)
-        top = max(self.top, rect.top)
-        return Rect(x=x, y=y, width=right - x, height=top - y)
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -273,8 +60,8 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param left: x coordinate of bottom left
+    :param bottom: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -283,7 +70,7 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
+    rect: Rect = Property(LBWH(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
     size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
@@ -304,8 +91,8 @@ class UIWidget(EventDispatcher, ABC):
     def __init__(
         self,
         *,
-        x: float = 0,
-        y: float = 0,
+        left: float = 0,
+        bottom: float = 0,
         width: float = 100,
         height: float = 100,
         children: Iterable["UIWidget"] = tuple(),
@@ -316,7 +103,7 @@ class UIWidget(EventDispatcher, ABC):
         **kwargs,
     ):
         self._requires_render = True
-        self.rect = Rect(x, y, width, height)
+        self.rect = LBWH(left, bottom, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
 
         # Size hints are properties that can be used by layouts
@@ -526,34 +313,35 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def x(self):
+        print("Widget using X may need to switch to left")
         return self.rect.x
 
     @property
     def left(self):
-        return self.rect.x
+        return self.rect.left
 
     @property
     def right(self):
-        rect = self.rect
-        return rect.x + rect.width
+        return self.rect.right
 
     @property
     def y(self):
+        print("Widget using Y may need to switch to bottom")
         return self.rect.y
 
     @property
     def bottom(self):
-        return self.rect.y
+        return self.rect.bottom
 
     @property
     def top(self):
-        rect = self.rect
-        return rect.y + rect.height
+        return self.rect.top
 
     @property
     def position(self):
         """Returns bottom left coordinates"""
-        return self.left, self.bottom
+        rect = self.rect
+        return Vec2(rect.left, rect.bottom)
 
     @property
     def center(self):
@@ -562,15 +350,15 @@ class UIWidget(EventDispatcher, ABC):
     @center.setter
     def center(self, value: Tuple[int, int]):
         cx, cy = value
-        self.rect = self.rect.align_center(cx, cy)
+        self.rect = self.rect.align_center(Vec2(cx, cy))
 
     @property
     def center_x(self):
-        return self.rect.center_x
+        return self.rect.x
 
     @property
     def center_y(self):
-        return self.rect.center_y
+        return self.rect.y
 
     @property
     def padding(self):
@@ -603,7 +391,7 @@ class UIWidget(EventDispatcher, ABC):
         return iter(self.children)
 
     def resize(self, *, width=None, height=None):
-        self.rect = self.rect.resize(width=width, height=height)
+        self.rect = self.rect.resize(Vec2(width or self.rect.width, height or self.rect.height), Vec2(0.0, 0.0))
 
     def with_border(self, *, width=2, color=(0, 0, 0)) -> Self:
         """
@@ -689,7 +477,7 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def content_rect(self):
-        return Rect(
+        return LBWH(
             self.left + self._border_width + self._padding_left,
             self.bottom + self._border_width + self._padding_bottom,
             self.content_width,
@@ -712,10 +500,9 @@ class UIWidget(EventDispatcher, ABC):
         """
         Places this widget in the center of the current window.
         """
-        center_x = arcade.get_window().width // 2
-        center_y = arcade.get_window().height // 2
+        center_x, center_y = arcade.get_window().center
 
-        self.rect = self.rect.align_center(center_x, center_y)
+        self.rect = self.rect.align_center(Vec2(center_x, center_y))
         return self
 
 
@@ -741,8 +528,8 @@ class UIInteractiveWidget(UIWidget):
     def __init__(
         self,
         *,
-        x: float = 0,
-        y: float = 0,
+        left: float = 0,
+        bottom: float = 0,
         width: float,
         height: float,
         size_hint=None,
@@ -751,8 +538,8 @@ class UIInteractiveWidget(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             size_hint=size_hint,
@@ -771,17 +558,17 @@ class UIInteractiveWidget(UIWidget):
             return EVENT_HANDLED
 
         if isinstance(event, UIMouseMovementEvent):
-            self.hovered = self.rect.collide_with_point(event.x, event.y)
+            self.hovered = self.rect.point_in_rect(Vec2(event.x, event.y))
 
-        if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-            event.x, event.y
+        if isinstance(event, UIMousePressEvent) and self.rect.point_in_rect(
+            Vec2(event.x, event.y)
         ):
             self.pressed = True
             return EVENT_HANDLED
 
         if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
-            if self.rect.collide_with_point(event.x, event.y):
+            if self.rect.point_in_rect(Vec2(event.x, event.y)):
                 if not self.disabled:
                     # Dispatch new on_click event, source is this widget itself
                     self.dispatch_event(
@@ -821,8 +608,8 @@ class UIDummy(UIInteractiveWidget):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
+        left=0,
+        bottom=0,
         width=100,
         height=100,
         size_hint=None,
@@ -831,8 +618,8 @@ class UIDummy(UIInteractiveWidget):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             size_hint=size_hint,
@@ -888,8 +675,8 @@ class UISpriteWidget(UIWidget):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
+        left=0,
+        bottom=0,
         width=100,
         height=100,
         sprite: Optional[Sprite] = None,
@@ -899,8 +686,8 @@ class UISpriteWidget(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             size_hint=size_hint,
@@ -926,8 +713,8 @@ class UILayout(UIWidget):
     """
     Base class for widgets, which position themselves or their children.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param left: x coordinate of bottom left
+    :param bottom: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param children: Child widgets of this group
@@ -1007,8 +794,8 @@ class UISpace(UIWidget):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
+        left=0,
+        bottom=0,
         width=100,
         height=100,
         color=TRANSPARENT_BLACK,
@@ -1018,8 +805,8 @@ class UISpace(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            x=x,
-            y=y,
+            left=left,
+            bottom=bottom,
             width=width,
             height=height,
             size_hint=size_hint,

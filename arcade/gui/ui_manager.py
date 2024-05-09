@@ -24,8 +24,9 @@ from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
                                UITextEvent, UITextMotionEvent,
                                UITextMotionSelectEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import Rect, UIWidget
+from arcade.gui.widgets import UIWidget
 from arcade.types import Point
+from arcade.types.rect import LBWH, Rect
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -166,7 +167,7 @@ class UIManager(EventDispatcher):
             return isinstance(widget, cls)
 
         for widget in self.walk_widgets(layer=layer):
-            if check_type(widget) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.point_in_rect(pos):
                 yield widget
 
     def _get_surface(self, layer: int) -> Surface:
@@ -400,7 +401,7 @@ class UIManager(EventDispatcher):
 
     @property
     def rect(self) -> Rect:  # type: ignore
-        return Rect(0, 0, *self.window.get_size())
+        return LBWH(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
