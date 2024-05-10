@@ -56,11 +56,8 @@ class Surface:
         self._cam = OrthographicProjector(
             view=CameraData(),
             projection=OrthographicProjectionData(
-                0.0, self.width,
-                0.0, self.height,
-                -100, 100,
-                (0, 0, self.width, self.height)
-            )
+                0.0, self.width, 0.0, self.height, -100, 100, (0, 0, self.width, self.height)
+            ),
         )
 
     @property
@@ -216,4 +213,3 @@ class Surface:
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
-

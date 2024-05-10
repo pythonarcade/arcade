@@ -183,13 +183,13 @@ def test_rect_scale():
     rect = Rect(0, 0, 95, 99)
 
     # Default rounding rounds down
-    assert rect.scale(0.9) == (0,0, 85, 89)
+    assert rect.scale(0.9) == (0, 0, 85, 89)
 
     # Passing in a rounding technique works too
     assert rect.scale(0.9, rounding=ceil) == (0, 0, 86, 90)
 
     # Passing in None applies no rounding
-    rect_100 = Rect(100,100,100,100)
+    rect_100 = Rect(100, 100, 100, 100)
     rect_100_scaled = rect_100.scale(0.1234, None)
     assert rect_100_scaled == (12.34, 12.34, 12.34, 12.34)
     assert rect_100_scaled.x == 12.34
