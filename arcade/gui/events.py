@@ -116,7 +116,7 @@ class UITextMotionSelectEvent(UIEvent):
 
 @dataclass
 class UIOnClickEvent(UIMouseEvent):
-    """Triggered when a button is clicked."""
+    """Triggered when a widget is clicked."""
 
     button: int
     modifiers: int
