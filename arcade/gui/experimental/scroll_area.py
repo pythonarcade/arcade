@@ -93,16 +93,11 @@ class UIScrollArea(UIWidget):
         self.surface.draw((0, 0, width, height))
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(
-            event.x, event.y
-        ):
+        if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(event.x, event.y):
             return EVENT_UNHANDLED
 
         # drag scroll area around with middle mouse button
-        if (
-            isinstance(event, UIMouseDragEvent)
-            and event.buttons & arcade.MOUSE_BUTTON_MIDDLE
-        ):
+        if isinstance(event, UIMouseDragEvent) and event.buttons & arcade.MOUSE_BUTTON_MIDDLE:
             self.scroll_x -= event.dx
             self.scroll_y -= event.dy
             return True

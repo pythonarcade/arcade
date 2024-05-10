@@ -5,12 +5,7 @@ from arcade.gui.widgets.layout import UIAnchorLayout
 def test_place_widget(window):
     dummy = UIDummy(width=100, height=200)
 
-    subject = UIAnchorLayout(
-        x=0,
-        y=0,
-        width=500,
-        height=500
-    )
+    subject = UIAnchorLayout(x=0, y=0, width=500, height=500)
 
     subject.add(
         dummy,
@@ -31,14 +26,7 @@ def test_place_widget(window):
 def test_place_widget_relative_to_own_content_rect(window):
     dummy = UIDummy(width=100, height=200)
 
-    subject = UIAnchorLayout(
-        x=0,
-        y=0,
-        width=500,
-        height=500
-    ).with_border(
-        width=2
-    ).with_padding(left=50, top=100)
+    subject = UIAnchorLayout(x=0, y=0, width=500, height=500).with_border(width=2).with_padding(left=50, top=100)
 
     subject.add(
         dummy,

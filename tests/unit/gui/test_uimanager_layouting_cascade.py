@@ -40,6 +40,3 @@ def test_executes_do_layout_before_draw(window):
     assert mock_layout.prepare_render_call == 0
     assert mock_layout.do_layout_call == 1
     assert mock_layout.render_call == 2
-
-
-
