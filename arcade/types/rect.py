@@ -6,17 +6,17 @@ from typing import NamedTuple, Optional, TypedDict
 from pyglet.math import Vec2
 
 # Only used for the reference draw implementation
-from array import array
-from arcade.draw_commands import _generic_draw_line_strip
-from arcade.math import rotate_point
-from arcade.types.color import RGBA255, Color
-from arcade.color import WHITE
-import pyglet.gl as gl
+# from array import array
+# from arcade.draw_commands import _generic_draw_line_strip
+# from arcade.math import rotate_point
+# from arcade.types.color import RGBA255, Color
+# from arcade.color import WHITE
+# import pyglet.gl as gl
 # ###############################################
 
-from arcade.types import AsFloat, PointList
+from arcade.types import AsFloat
 from arcade.utils import ReplacementWarning, warning
-from arcade.window_commands import get_window
+# from arcade.window_commands import get_window
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
 ViewportParams = tuple[int, int, int, int]
@@ -179,19 +179,15 @@ class Rect(NamedTuple):
 
     def align_center(self, value: Vec2) -> Rect:
         """Returns new Rect, which is aligned to the center x and y."""
-        diff_x = value.x - self.center_x
-        diff_y = value.y - self.center_y
-        return self.move(dx=diff_x, dy=diff_y)
+        return XYWH(value.x, value.y, self.width, self.height)
 
     def align_center_x(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the center_x."""
-        diff_x = value - self.center_x
-        return self.move(dx=diff_x)
+        return XYWH(value, self.y, self.width, self.height)
 
     def align_center_y(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the center_y."""
-        diff_y = value - self.center_y
-        return self.move(dy=diff_y)
+        return XYWH(self.x, value, self.width, self.height)
 
     def min_size(
             self,
@@ -344,6 +340,16 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
     return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
+def AnchorXYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    left = x - anchor.x * width
+    right = left + width
+    bottom = y - anchor.y * height
+    top = bottom + height
+    c_x = left + width / 2.0
+    c_y = bottom + height / 2.0
+    return Rect(left, right, bottom, top, width, height, c_x, c_y)
+
+
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
     right = left + width
     top = bottom + height
@@ -366,77 +372,78 @@ def Kwargtangle(**kwargs: AsFloat) -> Rect:
         raise ValueError("Not enough attributes defined for a valid rectangle!")
 
 
-# Reference implementations: draw
-
-def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
-    """
-    Draw a rectangle outline.
-
-    :param rect: The rectangle to draw.
-        a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle.
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param border_width: width of the lines, in pixels.
-    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
-    """
-
-    HALF_BORDER = border_width / 2
-
-    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y   + HALF_BORDER
-    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y  + HALF_BORDER
-    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y     - HALF_BORDER
-    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y      - HALF_BORDER
-    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y   - HALF_BORDER
-    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y  - HALF_BORDER
-    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y     + HALF_BORDER
-    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y     + HALF_BORDER
-
-    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
-
-    if tilt_angle != 0:
-        point_list_2 = []
-        for point in point_list:
-            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
-            point_list_2.append(new_point)
-        point_list = point_list_2
-
-    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
-
-
-def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
-    """
-    Draw a filled-in rectangle.
-
-    :param rect: The rectangle to draw.
-        a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
-    """
-    # Fail if we don't have a window, context, or right GL abstractions
-    window = get_window()
-    ctx = window.ctx
-    program = ctx.shape_rectangle_filled_unbuffered_program
-    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
-    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-
-    # Validate & normalize to a pass the shader an RGBA float uniform
-    color_normalized = Color.from_iterable(color).normalized
-
-    # Pass data to the shader
-    program['color'] = color_normalized
-    program['shape'] = rect.width, rect.height, tilt_angle
-    buffer.orphan()
-    buffer.write(data=array('f', (rect.x, rect.y)))
-
-    geometry.render(program, mode=ctx.POINTS, vertices=1)
-
-
-def draw_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
-    rect = Kwargtangle(**kwargs)
-    draw_outline(rect, color, border_width, tilt_angle)
-
-
-def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
-    rect = Kwargtangle(**kwargs)
-    draw_filled(rect, color, tilt_angle)
+## Reference implementations: draw
+#
+#def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
+#    """
+#    Draw a rectangle outline.
+#
+#    :param rect: The rectangle to draw.
+#        a :py:class`~arcade.types.Rect` instance.
+#    :param color: The color of the rectangle.
+#        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+#    :param border_width: width of the lines, in pixels.
+#    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
+#    """
+#
+#    HALF_BORDER = border_width / 2
+#
+#    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y   + HALF_BORDER
+#    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y  + HALF_BORDER
+#    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y     - HALF_BORDER
+#    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y      - HALF_BORDER
+#    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y   - HALF_BORDER
+#    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y  - HALF_BORDER
+#    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y     + HALF_BORDER
+#    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y     + HALF_BORDER
+#
+#    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
+#
+#    if tilt_angle != 0:
+#        point_list_2 = []
+#        for point in point_list:
+#            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
+#            point_list_2.append(new_point)
+#        point_list = point_list_2
+#
+#    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+#
+#
+#def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
+#    """
+#    Draw a filled-in rectangle.
+#
+#    :param rect: The rectangle to draw.
+#        a :py:class`~arcade.types.Rect` instance.
+#    :param color: The color of the rectangle as an RGBA
+#        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+#    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
+#    """
+#    # Fail if we don't have a window, context, or right GL abstractions
+#    window = get_window()
+#    ctx = window.ctx
+#    program = ctx.shape_rectangle_filled_unbuffered_program
+#    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
+#    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+#
+#    # Validate & normalize to a pass the shader an RGBA float uniform
+#    color_normalized = Color.from_iterable(color).normalized
+#
+#    # Pass data to the shader
+#    program['color'] = color_normalized
+#    program['shape'] = rect.width, rect.height, tilt_angle
+#    buffer.orphan()
+#    buffer.write(data=array('f', (rect.x, rect.y)))
+#
+#    geometry.render(program, mode=ctx.POINTS, vertices=1)
+#
+#
+#def draw_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
+#    rect = Kwargtangle(**kwargs)
+#    draw_outline(rect, color, border_width, tilt_angle)
+#
+#
+#def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
+#    rect = Kwargtangle(**kwargs)
+#    draw_filled(rect, color, tilt_angle)
+#
