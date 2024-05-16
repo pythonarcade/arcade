@@ -136,8 +136,8 @@ class Rect(NamedTuple):
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
-        ratio_x = new_size.x / self.width
-        ratio_y = new_size.y / self.height
+        ratio_x = new_size.x / (self.width or 1.0)
+        ratio_y = new_size.y / (self.height or 1.0)
 
         adjusted_left = anchor_x + (self.left - anchor_x) * ratio_x
         adjusted_right = anchor_x + (self.right - anchor_x) * ratio_x
