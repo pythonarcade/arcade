@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Iterable, List, TypeVar, Optional, cast
 
-from pyglet.math import Vec2
-
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UIWidget, UILayout
 
@@ -353,7 +351,7 @@ class UIBoxLayout(UILayout):
                     )
                     max_growth_height = self.height * sh_h
                     new_rect = new_rect.resize(
-                        new_size=Vec2(new_rect.width, min(available_growth_height, max_growth_height))
+                        height=min(available_growth_height, max_growth_height)
                     )
 
                     if shmn_h is not None:
@@ -364,7 +362,7 @@ class UIBoxLayout(UILayout):
                 # Apply x-axis
                 if sh_w is not None:
                     new_rect = new_rect.resize(
-                        new_size=Vec2(max(available_width * sh_w, shmn_w or 0), new_rect.height)
+                        width=max(available_width * sh_w, shmn_w or 0)
                     )
 
                     if shmn_w is not None:
