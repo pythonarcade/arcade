@@ -750,6 +750,9 @@ class Window(pyglet.window.Window):
                 f"Window.show_view() takes an arcade.View,"
                 f"but it got a {type(new_view)}.")
 
+        self.screen.use()
+        self.viewport = (0, 0, self.width, self.height)
+
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
             new_view.window = self
