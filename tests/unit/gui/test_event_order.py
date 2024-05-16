@@ -76,7 +76,7 @@ def test_event_consumed_by_widget(window):
         def __init__(self):
             super().__init__()
             self.mng = UIManager()
-            button = UIFlatButton(left=50, bottom=50, width=100, height=50, text="Click ME")
+            button = UIFlatButton(x=50, y=50, width=100, height=50, text="Click ME")
             self.mng.add(button)
 
             @button.event("on_click")

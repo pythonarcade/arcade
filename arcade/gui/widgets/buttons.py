@@ -39,8 +39,8 @@ class UITextureButton(
 
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param left: x coordinate of bottom left
-    :param bottom: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget. Defaults to texture width if not specified.
     :param height: height of widget. Defaults to texture height if not specified.
     :param texture: texture to display for the widget.
@@ -84,8 +84,8 @@ class UITextureButton(
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: Optional[float] = None,
         height: Optional[float] = None,
         texture: Union[None, Texture, NinePatchTexture] = None,
@@ -117,8 +117,8 @@ class UITextureButton(
             height = texture.size[1] * scale
 
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width,
             height=height,
             style=style or self.DEFAULT_STYLE,
@@ -226,15 +226,14 @@ class UITextureButton(
                 self.content_width, self.content_height
             )
 
-
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
     A text button, with support for background color and a border.
 
     There are four states of the UITextureButton i.e normal, hovered, pressed and disabled.
 
-    :param left: x coordinate of bottom left
-    :param bottom: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget. Defaults to texture width if not specified.
     :param height: height of widget. Defaults to texture height if not specified.
     :param text: text to add to the button.
@@ -291,8 +290,8 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: float = 100,
         height: float = 50,
         text="",
@@ -304,8 +303,8 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         **kwargs,
     ):
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width,
             height=height,
             size_hint=size_hint,

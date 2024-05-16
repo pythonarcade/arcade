@@ -26,8 +26,8 @@ class UITextureToggle(UIInteractiveWidget):
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: float = 100,
         height: float = 50,
         on_texture: Optional[Texture] = None,
@@ -78,8 +78,8 @@ class UITextureToggle(UIInteractiveWidget):
         bind(self, "value", self._dispatch_on_change_event)
 
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width,
             height=height,
             size_hint=size_hint,

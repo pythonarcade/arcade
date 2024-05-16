@@ -31,8 +31,8 @@ class UIImage(UIWidget):
         self.prepare_render(surface)
         if self.texture:
             surface.draw_texture(
-                left=0,
-                bottom=0,
+                x=0,
+                y=0,
                 width=self.content_width,
                 height=self.content_height,
                 tex=self.texture,

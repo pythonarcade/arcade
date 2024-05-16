@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Optional
 
 import pyglet
-from pyglet.math import Vec2
 from pyglet.event import EVENT_UNHANDLED, EVENT_HANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
@@ -21,10 +20,9 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget
+from arcade.gui.widgets import UIWidget, Rect
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import RGBA255, Color, RGBOrA255
-from arcade.types.rect import LBWH
 
 
 class UILabel(UIWidget):
@@ -74,8 +72,8 @@ class UILabel(UIWidget):
         self,
         text: str = "",
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: Optional[float] = None,
         height: Optional[float] = None,
         font_name=("Arial",),
@@ -119,8 +117,8 @@ class UILabel(UIWidget):
             width = self.label.content_width + 1
 
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width or self.label.content_width,
             height=height or self.label.content_height,
             size_hint=size_hint,
@@ -148,11 +146,8 @@ class UILabel(UIWidget):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.rect = self.rect.resize(
-            Vec2(
-                self.label.content_width + base_width + 1,
-                self.label.content_height + base_height + 1
-            ),
-            Vec2(0.0, 0.0)
+            self.label.content_width + base_width + 1,
+            self.label.content_height + base_height + 1,
         )
 
     @property
@@ -320,8 +315,8 @@ class UIInputText(UIWidget):
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: float = 100,
         height: float = 24,
         text: str = "",
@@ -336,8 +331,8 @@ class UIInputText(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width,
             height=height,
             size_hint=size_hint,
@@ -358,7 +353,7 @@ class UIInputText(UIWidget):
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
-            x=left +  self.LAYOUT_OFFSET, y=bottom, z=0.0,  # Position
+            x=x +  self.LAYOUT_OFFSET, y=y, z=0.0,  # Position
             width=int(width - self.LAYOUT_OFFSET), height=int(height),  # Size
             multiline=multiline
         )
@@ -465,8 +460,8 @@ class UITextArea(UIWidget):
     A text area that allows users to view large documents of text by scrolling
     the mouse.
 
-    :param left: x position (default anchor is bottom-left).
-    :param bottom: y position (default anchor is bottom-left).
+    :param x: x position (default anchor is bottom-left).
+    :param y: y position (default anchor is bottom-left).
     :param width: Width of the text area.
     :param height: Height of the text area.
     :param text: Initial text displayed.
@@ -487,8 +482,8 @@ class UITextArea(UIWidget):
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: float = 400,
         height: float = 40,
         text: str = "",
@@ -503,8 +498,8 @@ class UITextArea(UIWidget):
         **kwargs,
     ):
         super().__init__(
-            left=left,
-            bottom=bottom,
+            x=x,
+            y=y,
             width=width,
             height=height,
             size_hint=size_hint,
@@ -541,9 +536,9 @@ class UITextArea(UIWidget):
         """
         Set the width and height of the text area to contain the whole text.
         """
-        self.rect = LBWH(
-            self.left,
-            self.bottom,
+        self.rect = Rect(
+            self.x,
+            self.y,
             self.layout.content_width,
             self.layout.content_height,
         )
@@ -578,7 +573,7 @@ class UITextArea(UIWidget):
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
-            if self.rect.point_in_rect(Vec2(event.x, event.y)):
+            if self.rect.collide_with_point(event.x, event.y):
                 self.layout.view_y += event.scroll_y * self.scroll_speed  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
                 self.trigger_full_render()
 

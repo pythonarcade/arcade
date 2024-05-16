@@ -53,8 +53,8 @@ class UIDropdown(UILayout):
         def on_change(event: UIOnChangeEvent):
             print(event.old_value, event.new_value)
 
-    :param left: x coordinate of bottom left
-    :param bottom: y coordinate of bottom left
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: Width of each of the option.
     :param height: Height of each of the option.
     :param default: The default value shown.
@@ -67,8 +67,8 @@ class UIDropdown(UILayout):
     def __init__(
         self,
         *,
-        left: float = 0,
-        bottom: float = 0,
+        x: float = 0,
+        y: float = 0,
         width: float = 100,
         height: float = 20,
         default: Optional[str] = None,
@@ -85,7 +85,7 @@ class UIDropdown(UILayout):
         self._options = options
         self._value = default
 
-        super().__init__(left=left, bottom=bottom, width=width, height=height, style=style, **kwargs)
+        super().__init__(x=x, y=y, width=width, height=height, style=style, **kwargs)
 
         # Setup button showing value
         self._default_button = UIFlatButton(
