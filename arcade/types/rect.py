@@ -144,7 +144,7 @@ class Rect(NamedTuple):
         adjusted_top = anchor_y + (self.top - anchor_y) * ratio_y
         adjusted_bottom = anchor_y + (self.bottom - anchor_y) * ratio_y
 
-        return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
+        return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
     def scale(self, new_scale: float, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         anchor_x = self.left + anchor.x * self.width
@@ -159,19 +159,23 @@ class Rect(NamedTuple):
 
     def align_top(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the top."""
-        return LBWH(self.left, value - self.height, self.width, self.height)
+        diff_y = value - self.top
+        return self.move(dy=diff_y)
 
     def align_bottom(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the bottom."""
-        return LBWH(self.left, value, self.width, self.height)
+        diff_y = value - self.bottom
+        return self.move(dy=diff_y)
 
     def align_left(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the left."""
-        return LBWH(value, self.bottom, self.width, self.height)
+        diff_x = value - self.left
+        return self.move(dx=diff_x)
 
     def align_right(self, value: AsFloat) -> Rect:
         """Returns new Rect, which is aligned to the right."""
-        return LBWH(value-self.width, self.bottom, self.width, self.height)
+        diff_x = value - self.right
+        return self.move(dx=diff_x)
 
     def align_center(self, value: Vec2) -> Rect:
         """Returns new Rect, which is aligned to the center x and y."""
@@ -188,46 +192,30 @@ class Rect(NamedTuple):
     def min_size(
             self,
             width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None,
-            anchor: Vec2 = AnchorPoint.CENTER
+            height: Optional[AsFloat] = None
     ) -> Rect:
         """
         Sets the size to at least the given min values.
         """
+        left = self.left
+        bottom = self.bottom
         width = max(width or 0.0, self.width)
         height = max(height or 0.0, self.height)
-        return self.resize(Vec2(width, height), anchor)
+        return LBWH(left, bottom, width, height)
 
     def max_size(
             self,
             width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None,
-            anchor: Vec2 = AnchorPoint.CENTER
+            height: Optional[AsFloat] = None
     ) -> Rect:
         """
         Limits the size to the given max values.
         """
+        left = self.left
+        bottom = self.bottom
         width = min(width or float("inf"), self.width)
         height = min(height or float("inf"), self.height)
-        return self.resize(Vec2(width, height), anchor)
-
-    def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
-                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
-        return self.resize(Vec2(self.width, height), anchor)
-
-    def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
-                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
-        return self.resize(Vec2(width, self.height), anchor)
-
-    def clamp_size(self,
-                   min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
-                   min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
-                   anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
-        height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
-        return self.resize(Vec2(width, height), anchor)
+        return LBWH(left, bottom, width, height)
 
     def union(self, other: Rect) -> Rect:
         """

@@ -19,6 +19,7 @@ def test_uiboxlayout_bars_with_size_hint(window):
 
     box.rect = LBWH(0, 0, 800, 600)
     box._do_layout()
+    box._do_layout()
 
     assert box.size == (800, 600)
     assert top_bar.rect == LBWH(0, 550, 800, 50)
@@ -43,6 +44,7 @@ def test_uiboxlayout_vertical_bars_with_size_hint(window):
 
     box.rect = LBWH(0, 0, 800, 600)
     box._do_layout()
+    # box._do_layout()
 
     assert box.size == (800, 600)
     assert left_bar.rect == LBWH(0, 0, 50, 600)

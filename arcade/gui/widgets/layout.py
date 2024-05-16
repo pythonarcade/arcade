@@ -323,10 +323,9 @@ class UIBoxLayout(UILayout):
 
         if self.vertical:
             available_width = self.content_width
-            height = self.height
 
             # Determine if some space is available for children to grow
-            available_height = max(0, height - self.size_hint_min[1])
+            available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
                 sum(
                     child.size_hint[1] or 0
@@ -345,7 +344,6 @@ class UIBoxLayout(UILayout):
                 shmx_w, shmx_h = child.size_hint_max or (None, None)
 
                 # Apply y-axis
-                clamped_height = child.height
                 if sh_h is not None:
                     min_height_value = shmn_h or 0
 
@@ -353,18 +351,26 @@ class UIBoxLayout(UILayout):
                     available_growth_height = min_height_value + available_height * (
                         sh_h / total_size_hint_height
                     )
-                    max_growth_height = height * sh_h
+                    max_growth_height = self.height * sh_h
+                    new_rect = new_rect.resize(
+                        new_size=Vec2(new_rect.width, min(available_growth_height, max_growth_height))
+                    )
 
-                    target_height = min(available_growth_height, max_growth_height)
-                    clamped_height = min(shmx_h or float("inf"), max(shmn_h or 0.0, target_height))
+                    if shmn_h is not None:
+                        new_rect = new_rect.min_size(height=shmn_h)
+                    if shmx_h is not None:
+                        new_rect = new_rect.max_size(height=shmx_h)
 
                 # Apply x-axis
-                clamped_width = child.width
                 if sh_w is not None:
-                    target_width = available_width * sh_w
-                    clamped_width = min(shmx_w or float("inf"), max(shmn_w or 0.0, target_width))
+                    new_rect = new_rect.resize(
+                        new_size=Vec2(max(available_width * sh_w, shmn_w or 0), new_rect.height)
+                    )
 
-                new_rect = new_rect.resize(Vec2(clamped_width, clamped_height), Vec2(0.0, 0.0))
+                    if shmn_w is not None:
+                        new_rect = new_rect.min_size(width=shmn_w)
+                    if shmx_w is not None:
+                        new_rect = new_rect.max_size(width=shmx_w)
 
                 # Align the children
                 if self.align == "left":
@@ -372,19 +378,21 @@ class UIBoxLayout(UILayout):
                 elif self.align == "right":
                     new_rect = new_rect.align_right(start_x + self.content_width)
                 else:
-                    new_rect = new_rect.align_center_x(start_x + self.content_width // 2)
+                    center_x = start_x + self.content_width // 2
+                    new_rect = new_rect.align_center_x(center_x)
 
                 new_rect = new_rect.align_top(start_y)
                 child.rect = new_rect
 
-                start_y -= new_rect.height
+                start_y -= child.height
                 start_y -= self._space_between
         else:
+            center_y = start_y - self.content_height // 2
+
             available_height = self.content_height
-            width = self.width
 
             # Calculate if some space is available for children to grow.
-            available_width = max(0, width - self.size_hint_min[0])
+            available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
                 sum(
                     child.size_hint[0] or 0
@@ -410,7 +418,6 @@ class UIBoxLayout(UILayout):
                 shmx_w, shmx_h = child.size_hint_max or (None, None)
 
                 # Apply x-axis
-                clamped_width = new_rect.width
                 if sh_w is not None:
                     min_width_value = shmn_w or 0
 
@@ -418,18 +425,30 @@ class UIBoxLayout(UILayout):
                     available_growth_width = min_width_value + available_width * (
                         sh_w / total_size_hint_width
                     )
-                    max_growth_width = width * sh_w
+                    max_growth_width = self.width * sh_w
+                    new_rect = new_rect.resize(
+                        width=min(
+                            available_growth_width, max_growth_width
+                        )  # This does not enforce the minimum width
+                    )
 
-                    target_width = min(available_growth_width, max_growth_width)
-                    clamped_width = min(shmx_w or float("inf"), max(shmn_w or 0.0, target_width))
+                    if shmn_w is not None:
+                        new_rect = new_rect.min_size(width=shmn_w)
+
+                    if shmx_w is not None:
+                        new_rect = new_rect.max_size(width=shmx_w)
 
                 # Apply vertical axis
-                clamped_height = new_rect.height
                 if sh_h is not None:
-                    target_height = available_height * sh_h
-                    clamped_height = min(shmx_h or float("inf"), max(shmn_h or 0.0, target_height))
+                    new_rect = new_rect.resize(
+                        height=max(available_height * sh_h, shmn_h or 0)
+                    )
 
-                new_rect = new_rect.resize(Vec2(clamped_width, clamped_height), Vec2(0.0, 0.0))
+                    if shmn_h is not None:
+                        new_rect = new_rect.min_size(height=shmn_h)
+
+                    if shmx_h is not None:
+                        new_rect = new_rect.max_size(height=shmx_h)
 
                 # Align all children
                 if self.align == "top":
@@ -437,7 +456,7 @@ class UIBoxLayout(UILayout):
                 elif self.align == "bottom":
                     new_rect = new_rect.align_bottom(start_y - self.content_height)
                 else:
-                    new_rect = new_rect.align_center_y(start_y - self.content_height // 2)
+                    new_rect = new_rect.align_center_y(center_y)
 
                 new_rect = new_rect.align_left(start_x)
                 child.rect = new_rect
