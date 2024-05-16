@@ -703,14 +703,14 @@ class Window(pyglet.window.Window):
         on-screen rendering. If the screen is in use it will also update the
         default camera.
         """
-        return self.screen.viewport
+        return self._ctx.screen.viewport
 
     @viewport.setter
     def viewport(self, new_viewport: tuple[int, int, int, int]):
-        if self.screen == self._ctx.active_framebuffer:
+        if self._ctx.screen == self._ctx.active_framebuffer:
             self._ctx.viewport = new_viewport
         else:
-            self.screen.viewport = new_viewport
+            self._ctx.screen.viewport = new_viewport
 
     def test(self, frames: int = 10):
         """
@@ -750,7 +750,7 @@ class Window(pyglet.window.Window):
                 f"Window.show_view() takes an arcade.View,"
                 f"but it got a {type(new_view)}.")
 
-        self.screen.use()
+        self._ctx.screen.use()
         self.viewport = (0, 0, self.width, self.height)
 
         # Store the Window that is showing the "new_view" View.
