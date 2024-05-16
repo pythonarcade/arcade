@@ -78,7 +78,7 @@ from arcade.types.color import RGBOrANormalized
 from arcade.types.color import Color
 
 # Rectangle
-from arcade.types.rect import Rect
+from arcade.types.rect import Rect, AnchorPoint
 
 
 __all__ = [
@@ -93,6 +93,7 @@ __all__ = [
     "PointList",
     "EMPTY_POINT_LIST",
     "IntRect",
+    "AnchorPoint",
     "Rect",
     "RectList",
     "RGB",

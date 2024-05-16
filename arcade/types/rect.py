@@ -132,12 +132,12 @@ class Rect(NamedTuple):
         """Returns new Rect which is moved by `dx` and `dy`."""
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
-    def resize(self, new_size: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def resize(self, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
-        ratio_x = new_size.x / (self.width or 1.0)
-        ratio_y = new_size.y / (self.height or 1.0)
+        ratio_x = width / (self.width or 1.0)
+        ratio_y = height / (self.height or 1.0)
 
         adjusted_left = anchor_x + (self.left - anchor_x) * ratio_x
         adjusted_right = anchor_x + (self.right - anchor_x) * ratio_x
@@ -196,7 +196,7 @@ class Rect(NamedTuple):
         """
         width = max(width or 0.0, self.width)
         height = max(height or 0.0, self.height)
-        return self.resize(Vec2(width, height), anchor)
+        return self.resize(width, height, anchor)
 
     def max_size(
             self,
@@ -209,17 +209,17 @@ class Rect(NamedTuple):
         """
         width = min(width or float("inf"), self.width)
         height = min(height or float("inf"), self.height)
-        return self.resize(Vec2(width, height), anchor)
+        return self.resize(width, height, anchor)
 
     def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                      anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
-        return self.resize(Vec2(self.width, height), anchor)
+        return self.resize(self.width, height, anchor)
 
     def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
-        return self.resize(Vec2(width, self.height), anchor)
+        return self.resize(width, self.height, anchor)
 
     def clamp_size(self,
                    min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
@@ -227,7 +227,7 @@ class Rect(NamedTuple):
                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
-        return self.resize(Vec2(width, height), anchor)
+        return self.resize(width, height, anchor)
 
     def union(self, other: Rect) -> Rect:
         """
