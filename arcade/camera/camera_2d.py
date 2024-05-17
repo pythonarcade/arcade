@@ -792,7 +792,6 @@ class Camera2D:
         previous_projection = self._window.current_camera
         previous_framebuffer = self._window.ctx.active_framebuffer
         try:
-            self.render_target.use()
             self.use()
             yield self
         finally:
