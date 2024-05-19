@@ -183,8 +183,9 @@ class UILabel(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.label.draw()
+
+        # pyglet rendering automatically applied by arcade.Text
+        self.label.draw()
 
 
 class UITextWidget(UIAnchorLayout):
