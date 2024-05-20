@@ -89,8 +89,19 @@ def test_views():
 class SubclassedRect(Rect):
     ...
 
+@pytest.fixture(params=(Rect, SubclassedRect))
+def rect_type(request):
+    return request.param
 
-@pytest.mark.parametrize("rect_type", (Rect, SubclassedRect))
-def test_repr_inheritance_safety(rect_type):
-     instance = rect_type(*(0 for _ in Rect._fields))
-     assert repr(instance).startswith(f"<{rect_type.__name__}")
+
+@pytest.fixture
+def rect_instance(rect_type):
+    return rect_type(*(0 for _ in Rect._fields))
+
+
+def test_repr_inheritance_safety(rect_type, rect_instance):
+     assert repr(rect_instance).startswith(f"{rect_type.__name__}")
+
+
+def test_str_inheritance_safety(rect_type, rect_instance):
+     assert str(rect_instance).startswith(f"<{rect_type.__name__}")

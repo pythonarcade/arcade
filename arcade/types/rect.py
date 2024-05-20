@@ -306,12 +306,17 @@ class Rect(NamedTuple):
                 "width": self.width,
                 "height": self.height}
 
-    def __repr__(self) -> str:
-        return (f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
-                f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
+    # def __repr__(self) -> str:
+    #     return (
+    #         f"<{self.__class__.__name__} "
+    #         f"left={self.left} right={self.right} "
+    #     )
 
     def __str__(self) -> str:
-        return repr(self)
+        return (
+            f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
+            f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
+
 
 
 # Shorthand creation helpers
