@@ -9,8 +9,9 @@ from pyglet.math import Vec2
 def test_ui_manager_respects_camera_viewport(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
-    camera = arcade.camera.Camera2D(position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height),
-                                    window=window)
+    camera = arcade.camera.Camera2D(
+        position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height), window=window
+    )
 
     # WHEN
     camera.viewport = 0, 0, 400, 200
@@ -27,8 +28,9 @@ def test_ui_manager_respects_camera_viewport(uimanager, window):
 def test_ui_manager_respects_camera_pos(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
-    camera = arcade.camera.Camera2D(position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height),
-                                    window=window)
+    camera = arcade.camera.Camera2D(
+        position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height), window=window
+    )
 
     # WHEN
     camera.position = (100, 100)

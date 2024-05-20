@@ -8,6 +8,7 @@ use the col_span and row_span keyword arguments.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.grid_layout
 """
+
 from __future__ import annotations
 
 import arcade
@@ -23,7 +24,7 @@ class MyView(arcade.View):
 
         dummy1 = UIDummy(width=100, height=100)
         dummy2 = UIDummy(width=50, height=50)
-        dummy3 = UIDummy(width=50, height=50, size_hint=(.5, .5))
+        dummy3 = UIDummy(width=50, height=50, size_hint=(0.5, 0.5))
         dummy4 = UIDummy(width=100, height=100)
         dummy5 = UIDummy(width=200, height=100)
         dummy6 = UIDummy(width=100, height=300)
@@ -32,7 +33,7 @@ class MyView(arcade.View):
             UIGridLayout(
                 column_count=3,
                 row_count=3,
-                size_hint=(.5, .5),
+                size_hint=(0.5, 0.5),
             )
             .with_border()
             .with_padding()
@@ -64,7 +65,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

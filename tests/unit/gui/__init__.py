@@ -15,23 +15,17 @@ class InteractionMixin:
         self.on_mouse_motion(x, y, 0, 0)
 
     def click_and_hold(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
-        self.on_mouse_press(
-            x=x, y=y, button=button, modifiers=0
-        )
+        self.on_mouse_press(x=x, y=y, button=button, modifiers=0)
 
     def drag(self, x: int, y: int, dx=0.0, dy=0.0, buttons=arcade.MOUSE_BUTTON_LEFT, modifiers=0):
-        self.on_mouse_drag(
-            x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers
-        )
+        self.on_mouse_drag(x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers)
 
     def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
-        self.on_mouse_release(
-            x=x, y=y, button=button, modifiers=0
-        )
+        self.on_mouse_release(x=x, y=y, button=button, modifiers=0)
 
-    def click(self, x: int, y: int):
-        self.click_and_hold(x, y)
-        self.release(x, y)
+    def click(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
+        self.click_and_hold(x, y, button=button)
+        self.release(x, y, button=button)
 
     def right_click(self, x: int, y: int):
         self.click_and_hold(x, y, button=arcade.MOUSE_BUTTON_RIGHT)

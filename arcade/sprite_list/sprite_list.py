@@ -38,6 +38,7 @@ from arcade.types import Color, RGBA255, RGBOrANormalized, RGBANormalized
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas
@@ -53,6 +54,7 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 _DEFAULT_CAPACITY = 100
 
 
+@copy_dunders_unimplemented  # Temp fixes https://github.com/pythonarcade/arcade/issues/2074
 class SpriteList(Generic[SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.

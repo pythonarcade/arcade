@@ -125,6 +125,8 @@ Changes
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
     * :py:class:`~arcade.gui.widgets.constructs.UIButtonRow` (`PR1580 <https://github.com/pythonarcade/arcade/pull/1580>`_ and `PR1253 <https://github.com/pythonarcade/arcade/pull/1253>`_)
 
+  * :py:class:`~arcade.gui.UIInteractiveWidget` only reacts to left mouse button events
+
   * Arcade :py:class:`~arcade.gui.property.Property`:
 
     * Properties are observable attributes (supported: primitive, list and dict).
@@ -181,6 +183,13 @@ Changes
     just be ``arcade.text``.
   * :py:func:`~arcade.draw_text` and :py:class:`~arcade.Text` both now accept a ``start_z`` parameter. This will allow advanced usage to set the Z
     position of the underlying Label. This parameter defaults to 0 and does not change any existing usage.
+
+* :py:mod:`arcade.draw_commands`:
+
+  * Added :py:func:`arcade.draw_commands.draw_lbwh_rectangle_textured`
+
+    * Replaces the now-deprecated :py:func:`arcade.draw_commands.draw_lrwh_rectangle_textured`
+    * Usage is exactly the same
 
 * OpenGL
 

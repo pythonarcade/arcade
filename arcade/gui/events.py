@@ -32,6 +32,7 @@ class UIMouseEvent(UIEvent):
 @dataclass
 class UIMouseMovementEvent(UIMouseEvent):
     """Triggered when the mouse is moved."""
+
     dx: int
     dy: int
 
@@ -39,6 +40,7 @@ class UIMouseMovementEvent(UIMouseEvent):
 @dataclass
 class UIMousePressEvent(UIMouseEvent):
     """Triggered when a mouse button(left, right, middle) is pressed."""
+
     button: int
     modifiers: int
 
@@ -46,6 +48,7 @@ class UIMousePressEvent(UIMouseEvent):
 @dataclass
 class UIMouseDragEvent(UIMouseEvent):
     """Triggered when the mouse moves while one of its buttons being pressed."""
+
     dx: int
     dy: int
     buttons: int
@@ -55,6 +58,7 @@ class UIMouseDragEvent(UIMouseEvent):
 @dataclass
 class UIMouseReleaseEvent(UIMouseEvent):
     """Triggered when a mouse button is released."""
+
     button: int
     modifiers: int
 
@@ -62,6 +66,7 @@ class UIMouseReleaseEvent(UIMouseEvent):
 @dataclass
 class UIMouseScrollEvent(UIMouseEvent):
     """Triggered by rotating the scroll wheel on the mouse."""
+
     scroll_x: int
     scroll_y: int
 
@@ -69,6 +74,7 @@ class UIMouseScrollEvent(UIMouseEvent):
 @dataclass
 class UIKeyEvent(UIEvent):
     """Covers all keyboard event."""
+
     symbol: int
     modifiers: int
 
@@ -76,37 +82,44 @@ class UIKeyEvent(UIEvent):
 @dataclass
 class UIKeyPressEvent(UIKeyEvent):
     """Triggered when a key is pressed."""
+
     pass
 
 
 @dataclass
 class UIKeyReleaseEvent(UIKeyEvent):
     """Triggered when a key is released."""
+
     pass
 
 
 @dataclass
 class UITextEvent(UIEvent):
     """Covers all the text cursor event."""
+
     text: str
 
 
 @dataclass
 class UITextMotionEvent(UIEvent):
     """Triggered when text cursor moves."""
+
     motion: Any
 
 
 @dataclass
 class UITextMotionSelectEvent(UIEvent):
     """Triggered when the text cursor moves selecting the text with it."""
+
     selection: Any
 
 
 @dataclass
 class UIOnClickEvent(UIMouseEvent):
-    """Triggered when a button is clicked."""
-    pass
+    """Triggered when a widget is clicked."""
+
+    button: int
+    modifiers: int
 
 
 @dataclass

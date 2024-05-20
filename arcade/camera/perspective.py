@@ -1,10 +1,12 @@
-from typing import Optional, Tuple, Iterator, TYPE_CHECKING
+from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing_extensions import Self
 from contextlib import contextmanager
 
 from math import tan, radians
-from pyglet.math import Mat4, Vec3, Vec4
+from pyglet.math import Mat4, Vec4
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
+from arcade.camera.projection_functions import generate_view_matrix, generate_perspective_matrix
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 __all__ = ("PerspectiveProjector",)
 
 
-class PerspectiveProjector:
+class PerspectiveProjector(Projector):
     """
     The simplest from of a perspective camera.
     Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
@@ -73,34 +75,42 @@ class PerspectiveProjector:
         """
         return self._projection
 
-    def _generate_projection_matrix(self) -> Mat4:
+    def generate_projection_matrix(self) -> Mat4:
         """
-        Using the OrthographicProjectionData a projection matrix is generated where the size of the
-        objects is not affected by depth.
+        alias of arcade.camera.get_perspective_matrix method
+        """
+        return generate_perspective_matrix(self._projection, self._view.zoom)
 
-        Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-        the pixels uniform in size. Avoid a zoom of 0.0.
+    def generate_view_matrix(self) -> Mat4:
         """
-        _proj = self._projection
+        alias of arcade.camera.get_view_matrix method
+        """
+        return generate_view_matrix(self._view)
 
-        return Mat4.perspective_projection(_proj.aspect, _proj.near, _proj.far, _proj.fov / self._view.zoom)
+    @contextmanager
+    def activate(self) -> Generator[Self, None, None]:
+        """Set this camera as the current one, then undo it after.
 
-    def _generate_view_matrix(self) -> Mat4:
+        This method is a :ref+external:`context manager <context-managers>`
+        you can use inside ``with`` blocks. Using it this way guarantees
+        that the old camera and its settings will be restored, even if an
+        exception occurs:
+
+        .. code-block:: python
+
+           # Despite an Exception, the previous camera and its settings
+           # will be restored at the end of the with block below:
+           with projector_instance.activate():
+                sprite_list.draw()
+                _ = 1 / 0  # Guaranteed ZeroDivisionError
+
         """
-        Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
-        """
-        # Even if forward and up are normalised floating point error means every vector must be normalised.
-        fo = Vec3(*self._view.forward).normalize()  # Forward Vector
-        up = Vec3(*self._view.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
-        ri = fo.cross(up).normalize()  # Right Vector
-        up = ri.cross(fo).normalize()  # Up Vector
-        po = Vec3(*self._view.position)
-        return Mat4((
-            ri.x,  up.x,  -fo.x,  0,
-            ri.y,  up.y,  -fo.y,  0,
-            ri.z,  up.z,  -fo.z,  0,
-            -ri.dot(po), -up.dot(po), fo.dot(po), 1
-        ))
+        previous_projector = self._window.current_camera
+        try:
+            self.use()
+            yield self
+        finally:
+            previous_projector.use()
 
     def use(self) -> None:
         """
@@ -111,31 +121,45 @@ class PerspectiveProjector:
 
         self._window.current_camera = self
 
-        _projection = self._generate_projection_matrix()
-        _view = self._generate_view_matrix()
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
 
         self._window.ctx.viewport = self._projection.viewport
         self._window.projection = _projection
         self._window.view = _view
 
-    @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
-        A context manager version of OrthographicProjector.use() which allows for the use of
-        `with` blocks. For example, `with camera.activate() as cam: ...`.
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        previous_projector = self._window.current_camera
-        try:
-            self.use()
-            yield self
-        finally:
-            previous_projector.use()
+        if len(world_coordinate) < 2:
+            z = (0.5 * self._projection.viewport[3] / tan(
+                radians(0.5 * self._projection.fov / self._view.zoom)))
+        else:
+            z = world_coordinate[2]
+        x, y = world_coordinate[0], world_coordinate[1]
 
-    def map_screen_to_world_coordinate(
-            self,
+        viewport = self._projection.viewport
+
+        world_position = Vec4(x, y, z, 1.0)
+
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
+
+        semi_projected_position = _projection @ _view @ world_position
+        div_val = semi_projected_position.w
+
+        projected_x = semi_projected_position.x / div_val
+        projected_y = semi_projected_position.y / div_val
+
+        screen_coordinate_x = viewport[0] + (0.5 * projected_x + 0.5) * viewport[2]
+        screen_coordinate_y = viewport[1] + (0.5 * projected_y + 0.5) * viewport[3]
+
+        return screen_coordinate_x, screen_coordinate_y
+
+    def unproject(self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -161,9 +185,19 @@ class PerspectiveProjector:
 
         projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
 
-        _projection = ~self._generate_projection_matrix()
+        _projection = ~generate_perspective_matrix(self._projection, self._view.zoom)
         view_position = _projection @ projected_position
-        _view = ~self._generate_view_matrix()
+        _view = ~generate_view_matrix(self._view)
         world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
 
         return world_position.x, world_position.y, world_position.z
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
+        """
+        Alias of PerspectiveProjector.unproject() for typing.
+        """
+        return self.unproject(screen_coordinate, depth)
+

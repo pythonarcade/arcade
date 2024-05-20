@@ -155,9 +155,7 @@ def test_fit_content_by_default(window):
 def test_adjust_children_size_relative(window):
     dummy1 = UIDummy(width=100, height=100)
     dummy2 = UIDummy(width=50, height=50, size_hint=(0.75, 0.75))
-    dummy3 = UIDummy(
-        width=100, height=100, size_hint=(0.5, 0.5), size_hint_min=(60, 60)
-    )
+    dummy3 = UIDummy(width=100, height=100, size_hint=(0.5, 0.5), size_hint_min=(60, 60))
     dummy4 = UIDummy(width=100, height=100)
 
     subject = UIGridLayout(

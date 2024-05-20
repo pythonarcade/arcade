@@ -4,9 +4,10 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Iterator, Optional
+from typing import Protocol, Tuple, Iterator, Optional, Generator
 from contextlib import contextmanager
 
+from typing_extensions import Self
 from pyglet.math import Vec3
 
 
@@ -184,18 +185,110 @@ class PerspectiveProjectionData:
 
 
 class Projection(Protocol):
+    """Matches the data universal in Arcade's projection data objects.
+
+    There are multiple types of projections used in games, but all the
+    common ones share key features. This :py:class:`~typing.Protocol`:
+
+    #. Defines those shared elements
+    #. Annotates these in code for both humans and automated type
+       checkers
+
+    The specific implementations which match it are used inside of
+    implementations of Arcade's :py:class:`.Projector` behavior. All
+    of these projectors rely on a ``viewport`` as well as ``near`` and
+    ``far`` values.
+
+    The ``viewport`` is measured in screen pixels. By default, the
+    conventions for this are the same as the rest of Arcade and
+    OpenGL:
+
+    * X is measured rightward from left of the screen
+    * Y is measured up from the bottom of the screen
+
+    Although the ``near`` and ``far`` values are describe the cutoffs
+    for what the camera sees in world space, the exact meaning differs
+    between projection type.
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Common Projection Type
+         - Meaning of ``near`` & ``far``
+
+       * - Simple Orthographic
+         - The Z position in world space
+
+       * - Perspective & Isometric
+         - Where the rear and front clipping planes sit along a
+           camera's :py:attr:`.CameraData.forward` vector.
+
+    """
     viewport: Tuple[int, int, int, int]
     near: float
     far: float
 
 
 class Projector(Protocol):
+    """Projects from world coordinates to viewport pixel coordinates.
+
+    Projectors also support converting in the opposite direction from
+    screen pixel coordinates to world space coordinates.
+
+    The two key spatial methods which do this are:
+
+    .. list-table::
+       :header-rows: 1
+       * - Method
+         - Action
+
+       * - :py:meth:`.project`
+         - Turn world coordinates into pixel coordinates relative
+           to the origin (bottom left by default).
+
+       * - :py:meth:`.unproject`
+         - Convert screen pixel coordinates into world space.
+
+    .. note: Every :py:class:`.Camera` is also a kind of projector.
+
+    The other required methods are for helping manage which camera is
+    currently used to draw.
+
+    """
 
     def use(self) -> None:
+        """Set the GL context to use this projector and its settings.
+
+        .. warning:: You may be looking for:py:meth:`.activate`!
+
+                     This method only sets rendering state for a given
+                     projector. Since it doesn't restore any afterward,
+                     it's easy to misuse in ways which can cause bugs
+                     or temporarily break a game's rendering until
+                     relaunch. For reliable, automatic clean-up see
+                     the :py:meth:`.activate` method instead.
+
+        If you are implementing your own custom projector, this method
+        should only:
+
+        #. Set the Arcade :py:class:`~arcade.Window`'s
+           :py:attr:`~arcade.Window.current_camera` to this object
+        #. Calculate any required view and projection matrices
+        #. Set any resulting values on the current
+           :py:class:`~arcade.context.ArcadeContext`, including the:
+
+           * :py:attr:`~arcade.context.ArcadeContext.viewport`
+           * :py:attr:`~arcade.context.ArcadeContext.view_matrix`
+           * :py:attr:`~arcade.context.ArcadeContext.projection_matrix`
+
+        This method should **never** handle cleanup. That is the
+        responsibility of :py:attr:`.activate`.
+
+        """
         ...
 
     @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def activate(self) -> Generator[Self, None, None]:
         ...
 
     def map_screen_to_world_coordinate(

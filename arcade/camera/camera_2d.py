@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Tuple, Iterator
+from typing import TYPE_CHECKING, Optional, Tuple, Generator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
@@ -8,15 +8,14 @@ from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import (
     CameraData,
     OrthographicProjectionData,
-    Projector,
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
 
 from arcade.window_commands import get_window
+
 if TYPE_CHECKING:
     from arcade.application import Window
-
 
 __all__ = [
     'Camera2D'
@@ -49,101 +48,37 @@ class Camera2D:
     Replacing the camera data and projection data may break controllers. Their
     contents are exposed via properties rather than directly to prevent this.
 
-    :param window: The Arcade Window to bind the camera to.
-            Defaults to the currently active window.
-    :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
-        describing the position, up, forward and zoom.
-    :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
-        which describes the left, right, top, bottom, far, near planes and the viewport
-        for an orthographic projection.
+    :param viewport: A 4-int tuple which defines the pixel bounds which the camera will project to.
+    :param position: The 2D position of the camera in the XY plane.
+    :param up: A 2D vector which describes which direction is up (defines the +Y-axis of the camera space).
+    :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
+            i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
+    :param projection: A 4-float tuple which defines the world space
+                bounds which the camera projects to the viewport.
+    :param near: The near clipping plane of the camera.
+    :param far: The far clipping plane of the camera.
     :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
         If the framebuffer is not the default screen nothing drawn after this camera is used will
         show up. The FrameBuffer's internal viewport is ignored.
+    :param window: The Arcade Window to bind the camera to.
+        Defaults to the currently active window.
     """
-    def __init__(self, *,
-                 camera_data: Optional[CameraData] = None,
-                 projection_data: Optional[OrthographicProjectionData] = None,
+
+    def __init__(self,
+                 viewport: Optional[Tuple[int, int, int, int]] = None,
+                 position: Optional[Tuple[float, float]] = None,
+                 up: Tuple[float, float] = (0.0, 1.0),
+                 zoom: float = 1.0,
+                 projection: Optional[Tuple[float, float, float, float]] = None,
+                 near: float = -100.0,
+                 far: float = 100.0,
+                 *,
                  render_target: Optional[Framebuffer] = None,
                  window: Optional["Window"] = None):
-
-        if projection_data:
-            left, right  = projection_data.left, projection_data.right
-            if projection_data.left == projection_data.right:
-                raise ZeroProjectionDimension((
-                    f"projection width is 0 due to equal {left=}"
-                    f"and {right=} values"))
-            bottom, top = projection_data.bottom, projection_data.top
-            if bottom == top:
-                raise ZeroProjectionDimension((
-                    f"projection height is 0 due to equal {bottom=}"
-                    f"and {top=}"))
-            near, far = projection_data.near, projection_data.far
-            if near == far:
-                raise ZeroProjectionDimension(
-                    f"projection depth is 0 due to equal {near=}"
-                    f"and {far=} values"
-                )
 
         self._window: "Window" = window or get_window()
         self.render_target: Framebuffer = render_target or self._window.ctx.screen
         width, height = self.render_target.size
-        half_width = width / 2
-        half_height = height / 2
-
-        self._camera_data = camera_data or CameraData(
-            position=(half_width, half_height, 0.0),
-            up=(0.0, 1.0, 0.0),
-            forward=(0.0, 0.0, -1.0),
-            zoom=1.0
-        )
-        self._projection_data: OrthographicProjectionData = projection_data or OrthographicProjectionData(
-            left=-half_width, right=half_width,
-            bottom=-half_height, top=half_height,
-            near=-100.0, far=100.0,
-            viewport=(0, 0, width, height)
-        )
-
-        self._ortho_projector: OrthographicProjector = OrthographicProjector(
-            window=self._window,
-            view=self._camera_data,
-            projection=self._projection_data
-        )
-
-    @classmethod
-    def from_raw_data(
-            cls,
-            viewport: Optional[Tuple[int, int, int, int]] = None,
-            position: Optional[Tuple[float, float]] = None,
-            up: Tuple[float, float] = (0.0, 1.0),
-            zoom: float = 1.0,
-            projection: Optional[Tuple[float, float, float, float]] = None,
-            near: float = -100.0,
-            far: float = 100.0,
-            *,
-            render_target: Optional[Framebuffer] = None,
-            window: Optional["Window"] = None
-    ) -> Self:
-        """
-        Create a Camera2D without first defining CameraData or an OrthographicProjectionData object.
-
-        :param viewport: A 4-int tuple which defines the pixel bounds which the camera with project to.
-        :param position: The 2D position of the camera in the XY plane.
-        :param up: The 2D unit vector which defines the +Y-axis of the camera space.
-        :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
-                i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
-        :param projection: A 4-float tuple which defines the world space
-                    bounds which the camera projects to the viewport.
-        :param near: The near clipping plane of the camera.
-        :param far: The far clipping plane of the camera.
-        :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
-            If the framebuffer is not the default screen nothing drawn after this camera is used will
-            show up. The FrameBuffer's internal viewport is ignored.
-        :param window: The Arcade Window to bind the camera to.
-            Defaults to the currently active window.
-        """
-        window = window or get_window()
-        render_target = render_target or window.ctx.screen
-        width, height = render_target.size
         half_width = width / 2
         half_height = height / 2
 
@@ -165,26 +100,97 @@ class Camera2D:
             )
 
         _pos = position or (half_width, half_height)
-        _data = CameraData(
+        self._camera_data = CameraData(
             position=(_pos[0], _pos[1], 0.0),
             up=(up[0], up[1], 0.0),
             forward=(0.0, 0.0, -1.0),
             zoom=zoom
         )
-
-        _projection: OrthographicProjectionData = OrthographicProjectionData(
+        self._projection_data: OrthographicProjectionData = OrthographicProjectionData(
             left=left, right=right,
             top=top, bottom=bottom,
             near=near, far=far,
             viewport=viewport or (0, 0, width, height)
         )
-
-        return cls(
-            camera_data=_data,
-            projection_data=_projection,
-            window=window,
-            render_target=render_target
+        self._ortho_projector: OrthographicProjector = OrthographicProjector(
+            window=self._window,
+            view=self._camera_data,
+            projection=self._projection_data
         )
+
+    @classmethod
+    def from_camera_data(cls, *,
+                         camera_data: Optional[CameraData] = None,
+                         projection_data: Optional[OrthographicProjectionData] = None,
+                         render_target: Optional[Framebuffer] = None,
+                         window: Optional["Window"] = None) -> Self:
+        """
+        Make a ``Camera2D`` directly from data objects.
+
+        This :py:class:`classmethod` allows advanced users to:
+
+        #. skip or replace the default validation
+        #. share ``camera_data`` or ``projection_data`` between cameras
+
+        .. warning:: Be careful when sharing data objects!
+                    **Any** action on a camera which changes a shared
+                    object changes it for **every** camera which uses
+                    the same object.
+
+        .. list-table::
+          :header-rows: 1
+          * - Shared Value
+            - Example Use(s)
+          * - ``camera_data``
+            - Mini-maps, reflection, and ghosting effects.
+          * - ``projection_data``
+            - Simplified rendering configuration
+          * - ``render_target``
+            - Complex rendering setups
+
+        :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
+            describing the position, up, forward and zoom.
+        :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
+            which describes the left, right, top, bottom, far, near planes and the viewport
+            for an orthographic projection.
+        :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
+            If the framebuffer is not the default screen nothing drawn after this camera is used will
+            show up. The FrameBuffer's internal viewport is ignored.
+        :param window: The Arcade Window to bind the camera to.
+            Defaults to the currently active window.
+        """
+
+        if projection_data:
+            left, right = projection_data.left, projection_data.right
+            if projection_data.left == projection_data.right:
+                raise ZeroProjectionDimension((
+                    f"projection width is 0 due to equal {left=}"
+                    f"and {right=} values"))
+            bottom, top = projection_data.bottom, projection_data.top
+            if bottom == top:
+                raise ZeroProjectionDimension((
+                    f"projection height is 0 due to equal {bottom=}"
+                    f"and {top=}"))
+            near, far = projection_data.near, projection_data.far
+            if near == far:
+                raise ZeroProjectionDimension(
+                    f"projection depth is 0 due to equal {near=}"
+                    f"and {far=} values"
+                )
+
+        # build a new camera with defaults and then apply the provided camera objects.
+        new_camera = cls(render_target=render_target, window=window)
+        if camera_data:
+            new_camera._camera_data = camera_data
+        if projection_data:
+            new_camera._projection_data = projection_data
+
+        new_camera._ortho_projector = OrthographicProjector(
+            window=new_camera._window,
+            view=new_camera._camera_data,
+            projection=new_camera._projection_data
+        )
+        return new_camera
 
     @property
     def view_data(self) -> CameraData:
@@ -235,12 +241,12 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[0] + self._projection_data.left/self._camera_data.zoom
+        return self._camera_data.position[0] + self._projection_data.left / self._camera_data.zoom
 
     @left.setter
     def left(self, _left: float) -> None:
-        self._camera_data.position =\
-            (_left - self._projection_data.left / self._camera_data.zoom,)\
+        self._camera_data.position = \
+            (_left - self._projection_data.left / self._camera_data.zoom,) \
             + self._camera_data.position[1:]
 
     @property
@@ -249,12 +255,12 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[0] + self._projection_data.right/self._camera_data.zoom
+        return self._camera_data.position[0] + self._projection_data.right / self._camera_data.zoom
 
     @right.setter
     def right(self, _right: float) -> None:
-        self._camera_data.position =\
-            (_right - self._projection_data.right / self._camera_data.zoom,)\
+        self._camera_data.position = \
+            (_right - self._projection_data.right / self._camera_data.zoom,) \
             + self._camera_data.position[1:]
 
     @property
@@ -263,7 +269,7 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[1] + self._projection_data.bottom/self._camera_data.zoom
+        return self._camera_data.position[1] + self._projection_data.bottom / self._camera_data.zoom
 
     @bottom.setter
     def bottom(self, _bottom: float) -> None:
@@ -279,7 +285,7 @@ class Camera2D:
 
         Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
         """
-        return self._camera_data.position[1] + self._projection_data.top/self._camera_data.zoom
+        return self._camera_data.position[1] + self._projection_data.top / self._camera_data.zoom
 
     @top.setter
     def top(self, _top: float) -> None:
@@ -774,7 +780,7 @@ class Camera2D:
         self._ortho_projector.use()
 
     @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def activate(self) -> Generator[Self, None, None]:
         """
         Set internal projector as window projector,
         and set the projection and view matrix.
@@ -793,11 +799,15 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = 0.0
-    ) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
+        return self._ortho_projector.project(world_coordinate)
+
+    def unproject(self,
+                  screen_coordinate: Tuple[float, float],
+                  depth: Optional[float] = None) -> Tuple[float, float, float]:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -808,12 +818,22 @@ class Camera2D:
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth value which is mapped along with the screen coordinates. Because of how
-                   Orthographic perspectives work this does not impact how the screen_coordinates are mapped.
+            depth: The depth of the query
         Returns:
-            A 2D vector (Along the XY plane) in world space (same as sprites).
+            A 3D vector in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
             of the camera.
         """
 
-        return self._ortho_projector.map_screen_to_world_coordinate(screen_coordinate, depth)[:2]
+        return self._ortho_projector.unproject(screen_coordinate, depth)
+
+    def map_screen_to_world_coordinate(
+            self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None
+    ) -> Tuple[float, float, float]:
+        """
+        Alias to Camera2D.unproject() for typing completion
+        """
+        return self.unproject(screen_coordinate, depth)
+

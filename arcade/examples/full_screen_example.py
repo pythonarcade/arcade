@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
 
         # The camera used to update the viewport and projection on screen resize.
         # The position needs to be set to the bottom left corner.
-        self.cam = arcade.camera.Camera2D.from_raw_data(position=(0.0, 0.0))
+        self.cam = arcade.camera.Camera2D(position=(0.0, 0.0))
 
     def on_draw(self):
         """

@@ -9,8 +9,8 @@ def test_perspective_projector_use(window: Window):
     # Given
     persp_camera = camera.PerspectiveProjector()
 
-    view_matrix = persp_camera._generate_view_matrix()
-    proj_matrix = persp_camera._generate_projection_matrix()
+    view_matrix = persp_camera.generate_view_matrix()
+    proj_matrix = persp_camera.generate_projection_matrix()
 
     # When
     persp_camera.use()
@@ -28,8 +28,8 @@ def test_perspective_projector_activate(window: Window):
     # Given
     persp_camera: camera.PerspectiveProjector = camera.PerspectiveProjector()
 
-    view_matrix = persp_camera._generate_view_matrix()
-    proj_matrix = persp_camera._generate_projection_matrix()
+    view_matrix = persp_camera.generate_view_matrix()
+    proj_matrix = persp_camera.generate_projection_matrix()
 
     # When
     with persp_camera.activate() as cam:

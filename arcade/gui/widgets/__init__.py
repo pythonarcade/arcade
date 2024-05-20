@@ -3,24 +3,13 @@ from __future__ import annotations
 from abc import ABC
 from math import floor
 from random import randint
-from typing import (
-    NamedTuple,
-    Iterable,
-    Optional,
-    Union,
-    TYPE_CHECKING,
-    TypeVar,
-    Tuple,
-    List,
-    Dict,
-    Callable
-)
+from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict, Callable
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import Self
 
 import arcade
-from arcade import Sprite, get_window, Texture
+from arcade import Sprite, Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -34,6 +23,7 @@ from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
 from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -80,11 +70,7 @@ class Rect(NamedTuple):
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(
-            self,
-            scale: float,
-            rounding: Optional[Callable[..., float]] = floor
-    ) -> "Rect":
+    def scale(self, scale: float, rounding: Optional[Callable[..., float]] = floor) -> "Rect":
         """Return a new rect scaled relative to the origin.
 
         By default, the new rect's values are rounded down to whole
@@ -114,11 +100,7 @@ class Rect(NamedTuple):
             height * scale,
         )
 
-    def resize(
-            self,
-            width: float | None = None,
-            height: float | None = None
-    ) -> "Rect":
+    def resize(self, width: float | None = None, height: float | None = None) -> "Rect":
         """Return a rect with a new width or height but same lower left.
 
         Fix x and y coordinate.
@@ -212,11 +194,7 @@ class Rect(NamedTuple):
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None
-    ) -> "Rect":
+    def min_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "Rect":
         """
         Sets the size to at least the given min values.
         """
@@ -227,11 +205,7 @@ class Rect(NamedTuple):
             max(height or 0.0, self.height),
         )
 
-    def max_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None
-    ) -> "Rect":
+    def max_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "Rect":
         """
         Limits the size to the given max values.
         """
@@ -263,6 +237,7 @@ class _ChildEntry(NamedTuple):
     data: Dict
 
 
+@copy_dunders_unimplemented
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
@@ -331,9 +306,7 @@ class UIWidget(EventDispatcher, ABC):
             self.add(child)
 
         bind(self, "rect", self.trigger_full_render)
-        bind(
-            self, "visible", self.trigger_full_render
-        )  # TODO maybe trigger_parent_render would be enough
+        bind(self, "visible", self.trigger_full_render)  # TODO maybe trigger_parent_render would be enough
         bind(self, "_children", self.trigger_render)
         bind(self, "_border_width", self.trigger_render)
         bind(self, "_border_color", self.trigger_render)
@@ -360,9 +333,9 @@ class UIWidget(EventDispatcher, ABC):
         if index is None:
             self._children.append(_ChildEntry(child, kwargs))
         else:
-            self._children.insert(
-                max(len(self.children), index), _ChildEntry(child, kwargs)
-            )
+            if not 0 <= index <= len(self.children):
+                raise ValueError("Index must be between 0 and the number of children")
+            self._children.insert(index, _ChildEntry(child, kwargs))
 
         return child
 
@@ -474,9 +447,7 @@ class UIWidget(EventDispatcher, ABC):
             surface.clear(self._bg_color)
         # draw background texture
         if self._bg_tex:
-            surface.draw_texture(
-                x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex
-            )
+            surface.draw_texture(x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex)
 
         # draw border
         if self._border_width and self._border_color:
@@ -671,21 +642,11 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def content_width(self):
-        return (
-            self.rect.width
-            - 2 * self._border_width
-            - self._padding_left
-            - self._padding_right
-        )
+        return self.rect.width - 2 * self._border_width - self._padding_left - self._padding_right
 
     @property
     def content_height(self):
-        return (
-            self.rect.height
-            - 2 * self._border_width
-            - self._padding_top
-            - self._padding_bottom
-        )
+        return self.rect.height - 2 * self._border_width - self._padding_top - self._padding_bottom
 
     @property
     def content_rect(self):
@@ -773,19 +734,24 @@ class UIInteractiveWidget(UIWidget):
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
-        if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-            event.x, event.y
+        if (
+            isinstance(event, UIMousePressEvent)
+            and self.rect.collide_with_point(event.x, event.y)
+            and event.button == arcade.MOUSE_BUTTON_LEFT
         ):
             self.pressed = True
             return EVENT_HANDLED
 
-        if self.pressed and isinstance(event, UIMouseReleaseEvent):
+        if self.pressed and isinstance(event, UIMouseReleaseEvent) and event.button == arcade.MOUSE_BUTTON_LEFT:
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 if not self.disabled:
                     # Dispatch new on_click event, source is this widget itself
                     self.dispatch_event(
-                        "on_click", UIOnClickEvent(self, event.x, event.y)
+                        "on_click",
+                        UIOnClickEvent(
+                            source=self, x=event.x, y=event.y, button=event.button, modifiers=event.modifiers
+                        ),
                     )
                     # TODO unsure if it makes more sense to mark the event handled if the click event is handled.
                     return EVENT_HANDLED
@@ -841,10 +807,7 @@ class UIDummy(UIInteractiveWidget):
         )
         self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
-
-        self.bg_color = (
-            get_window().background_color
-        )  # ensures a clean surface to draw on
+        self.border_width = 0
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
@@ -852,23 +815,11 @@ class UIDummy(UIInteractiveWidget):
 
     def on_update(self, dt):
         self.border_width = 2 if self.hovered else 0
-        self.border_color = (
-            arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
-        )
+        self.border_color = arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         surface.clear(self.color)
-
-        # if self.hovered:
-        #     arcade.draw_xywh_rectangle_outline(
-        #         0,
-        #         0,
-        #         self.width,
-        #         self.height,
-        #         color=arcade.color.BATTLESHIP_GREY,
-        #         border_width=3,
-        #     )
 
 
 class UISpriteWidget(UIWidget):
