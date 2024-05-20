@@ -1,3 +1,5 @@
+from typing import Callable, Any
+
 import pytest
 from pyglet.math import Vec2
 from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
@@ -89,19 +91,29 @@ def test_views():
 class SubclassedRect(Rect):
     ...
 
-@pytest.fixture(params=(Rect, SubclassedRect))
-def rect_type(request):
-    return request.param
+
+ALL_ZEROES = tuple((0 for _ in Rect._fields))
 
 
-@pytest.fixture
-def rect_instance(rect_type):
-    return rect_type(*(0 for _ in Rect._fields))
+def _formats_correctly(
+        func: Callable[[Any], str],
+        starts_with_format: str,
+        instance: Any
+) -> bool:
+    """True if func(instance) starts w/ its class name as specified."""
+
+    class_name = instance.__class__.__name__
+    return func(instance).startswith(
+        starts_with_format.format(class_name=class_name))
 
 
-def test_repr_inheritance_safety(rect_type, rect_instance):
-     assert repr(rect_instance).startswith(f"{rect_type.__name__}")
+def test_repr():
+    params = (repr, "{class_name}")
+    assert _formats_correctly(*params, Rect(*ALL_ZEROES))
+    assert _formats_correctly(*params, SubclassedRect(*ALL_ZEROES))
 
 
-def test_str_inheritance_safety(rect_type, rect_instance):
-     assert str(rect_instance).startswith(f"<{rect_type.__name__}")
+def test_str_inheritance_safety():
+    params = (str, "<{class_name}")
+    assert _formats_correctly(*params, Rect(*ALL_ZEROES))
+    assert _formats_correctly(*params, SubclassedRect(*ALL_ZEROES))
