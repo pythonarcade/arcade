@@ -16,54 +16,6 @@ def test_attributes():
     assert A_RECT.y == 15.0
 
 
-def test_make_LBWH():
-    r = LBWH(10, 10, 10, 10)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_LRBT():
-    r = LRBT(10, 20, 10, 20)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_XYWH():
-    r = XYWH(15, 15, 10, 10)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_XYRR():
-    r = XYRR(15, 15, 5, 5)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
 def test_equivalency():
     assert LBWH(10, 10, 10, 10) == LRBT(10, 20, 10, 20) == XYWH(15, 15, 10, 10) == XYRR(15, 15, 5, 5) == A_RECT
 
