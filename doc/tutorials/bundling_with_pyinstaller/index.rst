@@ -51,9 +51,9 @@ Create a file called ``main.py`` that contains the following:
 
     import arcade
 
-    arcade.open_window(400, 400, "My Game")
+    window = arcade.open_window(400, 400, "My Game")
 
-    self.clear()
+    window.clear()
     arcade.draw_circle_filled(200, 200, 100, arcade.color.BLUE)
     arcade.finish_render()
 
