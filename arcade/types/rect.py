@@ -314,7 +314,7 @@ class Rect(NamedTuple):
         return repr(self)
 
 
-# Convinience constructors
+# Shorthand creation helpers
 
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
     width = right - left
