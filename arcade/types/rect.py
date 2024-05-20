@@ -368,7 +368,7 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
     return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
-def AnchorXYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+def XYWHAnchored(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
     left = x - anchor.x * width
     right = left + width
     bottom = y - anchor.y * height
