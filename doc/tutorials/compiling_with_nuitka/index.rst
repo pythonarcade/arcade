@@ -93,6 +93,9 @@ To bundle a whole folder:
 
 This will copy the whole folder named ``assets`` at the specified location to the root of the executable.
 
+.. Note::
+
+    If you want to use a custom resource handler and Nuitka's one-file build see: :ref:`resource_handlers_one_file_builds`.
 
 Removing The Console Window
 ---------------------------
@@ -128,7 +131,6 @@ This will set the app icon to icon.png
     python -m nuitka 17_views.py --standalone --windows-icon-from-exe=C:\Users\Hunter\AppData\Local\Programs\Python\Python310/python.exe
 
 This will set the app icon to Python's icon 😉
-
 
 Additional Information
 ----------------------

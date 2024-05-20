@@ -230,6 +230,11 @@ the contents of the folder and make sure all of the files are where you expect t
 to be. The one-file bundle produced by ``--onefile`` is simply a
 self-uncompressing archive of this one-folder bundle.
 
+Specifying Your Own Resource Handler in ``--onefile`` mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See: :ref:`resource_handlers_one_file_builds`.
+
 PyInstaller Not Bundling a Needed Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
