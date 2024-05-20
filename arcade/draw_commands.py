@@ -1090,6 +1090,8 @@ def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
     draw_filled(rect, color, tilt_angle)
 
 
+# Get_ functions
+
 def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """
     Given an x, y, will return a color value of that point.

@@ -5,18 +5,8 @@ from __future__ import annotations
 from typing import NamedTuple, Optional, TypedDict
 from pyglet.math import Vec2
 
-# Only used for the reference draw implementation
-# from array import array
-# from arcade.draw_commands import _generic_draw_line_strip
-# from arcade.math import rotate_point
-# from arcade.types.color import RGBA255, Color
-# from arcade.color import WHITE
-# import pyglet.gl as gl
-# ###############################################
-
 from arcade.types import AsFloat
 from arcade.utils import ReplacementWarning, warning
-# from arcade.window_commands import get_window
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
 ViewportParams = tuple[int, int, int, int]
