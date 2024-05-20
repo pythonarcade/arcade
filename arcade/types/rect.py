@@ -264,11 +264,15 @@ class Rect(NamedTuple):
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
+        left = self.left
+        bottom = self.bottom
+        right = self.right
+        top = self.top
         return (
-            Vec2(self.left, self.bottom),
-            Vec2(self.left, self.top),
-            Vec2(self.right, self.top),
-            Vec2(self.right, self.bottom)
+            Vec2(left, bottom),
+            Vec2(left, top),
+            Vec2(right, top),
+            Vec2(right, bottom)
         )
 
     @property
