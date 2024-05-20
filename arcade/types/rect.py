@@ -307,7 +307,7 @@ class Rect(NamedTuple):
                 "height": self.height}
 
     def __repr__(self) -> str:
-        return (f"<Rect LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
+        return (f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
                 f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
 
     def __str__(self) -> str:

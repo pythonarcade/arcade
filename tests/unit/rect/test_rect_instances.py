@@ -1,3 +1,4 @@
+import pytest
 from pyglet.math import Vec2
 from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
 
@@ -83,3 +84,13 @@ def test_views():
     assert A_RECT.xyrr == (15, 15,  5,  5)
     assert A_RECT.xywh == (15, 15, 10, 10)
     assert A_RECT.viewport == (10, 20, 10, 20)
+
+
+class SubclassedRect(Rect):
+    ...
+
+
+@pytest.mark.parametrize("rect_type", (Rect, SubclassedRect))
+def test_repr_inheritance_safety(rect_type):
+     instance = rect_type(*(0 for _ in Rect._fields))
+     assert repr(instance).startswith(f"<{rect_type.__name__}")
