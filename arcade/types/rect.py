@@ -295,6 +295,26 @@ class Rect(NamedTuple):
     def viewport(self) -> ViewportParams:
         return (int(self.left), int(self.right), int(self.bottom), int(self.top))
 
+    def from_kwargs(self, **kwargs: AsFloat) -> Rect:
+        # Perform iteration only once and store it as a set literal
+        specified: set[str] = {k for k, v in kwargs.items() if v is not None}
+        have_lb = 'left' in specified and 'bottom' in specified
+
+        # LRBT
+        if have_lb and 'top' in specified and 'right' in specified:
+            return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])  # type: ignore
+
+        # LBWH
+        have_wh = 'width' in specified and 'height' in specified
+        if have_wh and have_lb:
+            return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])  # type: ignore
+
+        # XYWH
+        if have_wh and 'x' in specified and 'y' in specified:
+            return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])  # type: ignore
+
+        raise ValueError("Not enough attributes defined for a valid rectangle!")
+
     @property
     def kwargs(self) -> RectKwargs:
         return {"left": self.left,
@@ -312,7 +332,6 @@ class Rect(NamedTuple):
         return (
             f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
             f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
-
 
 
 # Shorthand creation helpers
@@ -365,25 +384,3 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
     x = left + int(width / 2)
     y = bottom + int(height / 2)
     return Rect(left, right, bottom, top, width, height, x, y)
-
-
-def Kwargtangle(**kwargs: AsFloat | None) -> Rect:
-
-    # Perform iteration only once and store it as a set literal
-    specified: set[str] = {k for k, v in kwargs.items() if v is not None}
-    have_lb = 'left' in specified and 'bottom' in specified
-
-    # LRBT
-    if have_lb and 'top' in specified and 'right' in specified:
-        return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])
-
-    # LBWH
-    have_wh = 'width' in specified and 'height' in specified
-    if have_wh and have_lb:
-        return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])
-
-    # XYWH
-    if have_wh and 'x' in specified and 'y' in specified:
-        return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])
-
-    raise ValueError("Not enough attributes defined for a valid rectangle!")
