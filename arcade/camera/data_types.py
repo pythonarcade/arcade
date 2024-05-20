@@ -19,6 +19,8 @@ __all__ = [
     'Projector',
     'Camera',
     'ZeroProjectionDimension',
+    'constrain_camera_data',
+    'duplicate_camera_data'
 ]
 
 
@@ -91,7 +93,7 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
     if forward_priority:
         up_vec = right_vec.cross(forward_vec)
     else:
-        forward_vec = right_vec.cross(up_vec)
+        forward_vec = up_vec.cross(right_vec)
 
     data.forward = (forward_vec.x, forward_vec.y, forward_vec.z)
     data.up = (up_vec.x, up_vec.y, up_vec.z)
