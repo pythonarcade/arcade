@@ -18,8 +18,10 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
+from arcade.color import WHITE
 from arcade.types import Color, RGBA255, PointList, Point
 from arcade.earclip import earclip
+from arcade.types.rect import Kwargtangle, Rect
 from .math import rotate_point
 from arcade import (
     get_points_for_thick_line,
@@ -728,11 +730,11 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
     """
     if left > right:
         raise ValueError("Left coordinate must be less than or equal to "
-                             "the right coordinate")
+                         "the right coordinate")
 
     if bottom > top:
         raise ValueError("Bottom coordinate must be less than or equal to "
-                             "the top coordinate")
+                         "the top coordinate")
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
@@ -1010,6 +1012,82 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
     texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
+
+
+# Reference implementations: drawing of new Rect
+
+def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
+    """
+    Draw a rectangle outline.
+
+    :param rect: The rectangle to draw.
+        a :py:class`~arcade.types.Rect` instance.
+    :param color: The color of the rectangle.
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param border_width: width of the lines, in pixels.
+    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
+    """
+
+    HALF_BORDER = border_width / 2
+
+    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y   + HALF_BORDER
+    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y  + HALF_BORDER
+    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y     - HALF_BORDER
+    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y      - HALF_BORDER
+    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y   - HALF_BORDER
+    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y  - HALF_BORDER
+    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y     + HALF_BORDER
+    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y     + HALF_BORDER
+
+    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
+
+    if tilt_angle != 0:
+        point_list_2 = []
+        for point in point_list:
+            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
+            point_list_2.append(new_point)
+        point_list = point_list_2
+
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+
+
+def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
+    """
+    Draw a filled-in rectangle.
+
+    :param rect: The rectangle to draw.
+        a :py:class`~arcade.types.Rect` instance.
+    :param color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
+    """
+    # Fail if we don't have a window, context, or right GL abstractions
+    window = get_window()
+    ctx = window.ctx
+    program = ctx.shape_rectangle_filled_unbuffered_program
+    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
+    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
+    program['color'] = color_normalized
+    program['shape'] = rect.width, rect.height, tilt_angle
+    buffer.orphan()
+    buffer.write(data=array.array('f', (rect.x, rect.y)))
+
+    geometry.render(program, mode=ctx.POINTS, vertices=1)
+
+
+def draw_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
+    rect = Kwargtangle(**kwargs)
+    draw_outline(rect, color, border_width, tilt_angle)
+
+
+def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
+    rect = Kwargtangle(**kwargs)
+    draw_filled(rect, color, tilt_angle)
 
 
 def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
