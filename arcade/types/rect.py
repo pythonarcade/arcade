@@ -367,14 +367,22 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
 
 
 def Kwargtangle(**kwargs: AsFloat) -> Rect:
+
+    # Perform iteration only once and store it as a set literal
+    specified: set[str] = {k for k, v in kwargs.items() if v is not None}
+    have_lb = 'left' in specified and 'bottom' in specified
+
     # LRBT
-    if all(kwargs.get(v, None) is not None for v in ["left", "right", "top", "bottom"]):
+    if have_lb and 'top' in specified and 'right' in specified:
         return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])
+
     # LBWH
-    elif all(kwargs.get(v, None) is not None for v in ["left", "bottom", "width", "height"]):
+    have_wh = 'width' in specified and 'height' in specified
+    if have_wh and have_lb:
         return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])
+
     # XYWH
-    elif all(kwargs.get(v, None) is not None for v in ["x", "y", "width", "height"]):
+    if have_wh and 'x' in specified and 'y' in specified:
         return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])
-    else:
-        raise ValueError("Not enough attributes defined for a valid rectangle!")
+
+    raise ValueError("Not enough attributes defined for a valid rectangle!")
