@@ -89,6 +89,7 @@ The Python Arcade Library
        tutorials/lights/index
        tutorials/bundling_with_pyinstaller/index
        tutorials/compiling_with_nuitka/index
+       tutorials/resource_handlers/index
        tutorials/shader_tutorials
        tutorials/menu/index
        tutorials/framebuffer/index
