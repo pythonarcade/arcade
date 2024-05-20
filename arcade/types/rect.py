@@ -366,7 +366,7 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
     return Rect(left, right, bottom, top, width, height, x, y)
 
 
-def Kwargtangle(**kwargs: AsFloat) -> Rect:
+def Kwargtangle(**kwargs: AsFloat | None) -> Rect:
 
     # Perform iteration only once and store it as a set literal
     specified: set[str] = {k for k, v in kwargs.items() if v is not None}
