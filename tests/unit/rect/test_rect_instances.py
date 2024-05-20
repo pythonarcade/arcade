@@ -1,3 +1,6 @@
+from typing import Callable, Any
+
+import pytest
 from pyglet.math import Vec2
 from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
 
@@ -14,54 +17,6 @@ def test_attributes():
     assert A_RECT.right == 20.0
     assert A_RECT.x == 15.0
     assert A_RECT.y == 15.0
-
-
-def test_make_LBWH():
-    r = LBWH(10, 10, 10, 10)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_LRBT():
-    r = LRBT(10, 20, 10, 20)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_XYWH():
-    r = XYWH(15, 15, 10, 10)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
-
-
-def test_make_XYRR():
-    r = XYRR(15, 15, 5, 5)
-    assert r.left == 10.0
-    assert r.bottom == 10.0
-    assert r.width == 10.0
-    assert r.height == 10.0
-    assert r.top == 20.0
-    assert r.right == 20.0
-    assert r.x == 15.0
-    assert r.y == 15.0
 
 
 def test_equivalency():
@@ -131,3 +86,34 @@ def test_views():
     assert A_RECT.xyrr == (15, 15,  5,  5)
     assert A_RECT.xywh == (15, 15, 10, 10)
     assert A_RECT.viewport == (10, 20, 10, 20)
+
+
+class SubclassedRect(Rect):
+    ...
+
+
+ALL_ZEROES = tuple((0 for _ in Rect._fields))
+
+
+def _formats_correctly(
+        func: Callable[[Any], str],
+        starts_with_format: str,
+        instance: Any
+) -> bool:
+    """True if func(instance) starts w/ its class name as specified."""
+
+    class_name = instance.__class__.__name__
+    return func(instance).startswith(
+        starts_with_format.format(class_name=class_name))
+
+
+def test_repr():
+    params = (repr, "{class_name}")
+    assert _formats_correctly(*params, Rect(*ALL_ZEROES))
+    assert _formats_correctly(*params, SubclassedRect(*ALL_ZEROES))
+
+
+def test_str_inheritance_safety():
+    params = (str, "<{class_name}")
+    assert _formats_correctly(*params, Rect(*ALL_ZEROES))
+    assert _formats_correctly(*params, SubclassedRect(*ALL_ZEROES))

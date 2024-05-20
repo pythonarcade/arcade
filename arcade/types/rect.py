@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from typing import NamedTuple, Optional, TypedDict
+
+
 from pyglet.math import Vec2
 
-from arcade.types import AsFloat
+from arcade.types.numbers import AsFloat
+from arcade.types.vector_like import AnchorPoint
+
 from arcade.utils import ReplacementWarning, warning
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
@@ -21,19 +25,6 @@ class RectKwargs(TypedDict):
     height: float
     x: float
     y: float
-
-
-class AnchorPoint:
-    """Provides helper aliases for several Vec2s to be used as anchor points in UV space."""
-    BOTTOM_LEFT = Vec2(0.0, 0.0)
-    BOTTOM_CENTER = Vec2(0.5, 0.0)
-    BOTTOM_RIGHT = Vec2(1.0, 0.0)
-    CENTER_LEFT = Vec2(0.0, 0.5)
-    CENTER = Vec2(0.5, 0.5)
-    CENTER_RIGHT = Vec2(1.0, 0.5)
-    TOP_LEFT = Vec2(0.0, 1.0)
-    TOP_CENTER = Vec2(0.5, 1.0)
-    TOP_RIGHT = Vec2(1.0, 1.0)
 
 
 class Rect(NamedTuple):
@@ -273,11 +264,15 @@ class Rect(NamedTuple):
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
+        left = self.left
+        bottom = self.bottom
+        right = self.right
+        top = self.top
         return (
-            Vec2(self.left, self.bottom),
-            Vec2(self.left, self.top),
-            Vec2(self.right, self.top),
-            Vec2(self.right, self.bottom)
+            Vec2(left, bottom),
+            Vec2(left, top),
+            Vec2(right, top),
+            Vec2(right, bottom)
         )
 
     @property
@@ -311,15 +306,16 @@ class Rect(NamedTuple):
                 "width": self.width,
                 "height": self.height}
 
-    def __repr__(self) -> str:
-        return (f"<Rect LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
-                f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
-
+    # Since __repr__ is handled automatically by NamedTuple, we focus on
+    # human-readable spot-check values for __str__ instead.
     def __str__(self) -> str:
-        return repr(self)
+        return (
+            f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
+            f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
 
 
-# Convinience constructors
+
+# Shorthand creation helpers
 
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
     width = right - left
@@ -371,15 +367,23 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
     return Rect(left, right, bottom, top, width, height, x, y)
 
 
-def Kwargtangle(**kwargs: AsFloat) -> Rect:
+def Kwargtangle(**kwargs: AsFloat | None) -> Rect:
+
+    # Perform iteration only once and store it as a set literal
+    specified: set[str] = {k for k, v in kwargs.items() if v is not None}
+    have_lb = 'left' in specified and 'bottom' in specified
+
     # LRBT
-    if all(kwargs.get(v, None) is not None for v in ["left", "right", "top", "bottom"]):
+    if have_lb and 'top' in specified and 'right' in specified:
         return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])
+
     # LBWH
-    elif all(kwargs.get(v, None) is not None for v in ["left", "bottom", "width", "height"]):
+    have_wh = 'width' in specified and 'height' in specified
+    if have_wh and have_lb:
         return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])
+
     # XYWH
-    elif all(kwargs.get(v, None) is not None for v in ["x", "y", "width", "height"]):
+    if have_wh and 'x' in specified and 'y' in specified:
         return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])
-    else:
-        raise ValueError("Not enough attributes defined for a valid rectangle!")
+
+    raise ValueError("Not enough attributes defined for a valid rectangle!")
