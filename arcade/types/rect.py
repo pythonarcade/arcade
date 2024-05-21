@@ -263,14 +263,13 @@ class Rect(NamedTuple):
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
     def point_on_bounds(self, point: Vec2, tolerance: float) -> bool:
-        if tolerance > self.width / 2:
-            return XYWH(self.x, self.y, self.width + tolerance, self.height + tolerance).point_in_rect(point)
+        diff = Vec2(point.x - self.x, point.y - self.y)
+        dx = abs(diff.x) - self.width / 2.0
+        dy = abs(diff.y) - self.height / 2.0
+        d = (max(dx, 0.0)**2 + max(dy, 0.0)**2)**0.5 + min(max(dx, dy), 0.0)
 
-        return (XYWH(self.x, self.top, self.width + tolerance, tolerance).point_in_rect(point) or
-                XYWH(self.x, self.bottom, self.width + tolerance, tolerance).point_in_rect(point) or
-                XYWH(self.left, self.y, tolerance, self.height + tolerance).point_in_rect(point) or
-                XYWH(self.right, self.y, tolerance, self.height + tolerance).point_in_rect(point))
-
+        return abs(d) < tolerance
+    
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Returns a tuple of the four corners of this Rect."""
         left = self.left
