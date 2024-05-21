@@ -57,6 +57,7 @@ In this case, Arcade will search for a requested resources through each of the a
 added first.
 
 .. _resource_handlers_one_file_builds:
+
 Resources Handlers and PyInstaller/Nuitka one-file builds
 ---------------------------------------------------------
 
