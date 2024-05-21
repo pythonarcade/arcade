@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import NamedTuple, Optional, TypedDict
 
-
 from pyglet.math import Vec2
 
 from arcade.types.numbers import AsFloat

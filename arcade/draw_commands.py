@@ -1016,7 +1016,7 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
 # Reference implementations: drawing of new Rect
 
-def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
+def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
     """
     Draw a rectangle outline.
 
@@ -1051,7 +1051,7 @@ def draw_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
+def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     """
     Draw a filled-in rectangle.
 
@@ -1080,14 +1080,14 @@ def draw_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
 
-def draw_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
+def draw_rect_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
     rect = Rect.from_kwargs(**kwargs)
-    draw_outline(rect, color, border_width, tilt_angle)
+    draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
-def draw_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
+def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
     rect = Rect.from_kwargs(**kwargs)
-    draw_filled(rect, color, tilt_angle)
+    draw_rect_filled(rect, color, tilt_angle)
 
 
 # Get_ functions
