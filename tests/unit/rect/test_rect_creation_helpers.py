@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from arcade.types.rect import LBWH, LRBT, XYWH, XYRR, Kwargtangle
+from arcade.types.rect import LBWH, LRBT, XYWH, XYRR, Rect
 
 
 def test_make_LBWH():
@@ -57,86 +57,86 @@ def test_make_XYRR():
 def test_kwargtangle_missing_args():
     # Zero args raises ValueError
     with pytest.raises(ValueError):
-        _ = Kwargtangle()
+        _ = Rect.from_kwargs()
 
     # LRBT
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, right=0, bottom=0)
+        _ = Rect.from_kwargs(left=0, right=0, bottom=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, right=0, top=0)
+        _ = Rect.from_kwargs(left=0, right=0, top=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, top=0, bottom=0)
+        _ = Rect.from_kwargs(left=0, top=0, bottom=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(right=0, top=0, bottom=0)
+        _ = Rect.from_kwargs(right=0, top=0, bottom=0)
 
     # LBWH
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, bottom=0, width=0)
+        _ = Rect.from_kwargs(left=0, bottom=0, width=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, bottom=0, height=0)
+        _ = Rect.from_kwargs(left=0, bottom=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, width=0, height=0)
+        _ = Rect.from_kwargs(left=0, width=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(bottom=0, width=0, height=0)
+        _ = Rect.from_kwargs(bottom=0, width=0, height=0)
 
     # XYWH
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, y=0, width=0)
+        _ = Rect.from_kwargs(x=0, y=0, width=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, y=0, height=0)
+        _ = Rect.from_kwargs(x=0, y=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(y=0, width=0, height=0)
+        _ = Rect.from_kwargs(y=0, width=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, width=0, height=0)
+        _ = Rect.from_kwargs(x=0, width=0, height=0)
 
 
 def test_kwargtangle_none_args():
 
     # LRBT
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, right=0, bottom=0, top=None)
+        _ = Rect.from_kwargs(left=0, right=0, bottom=0, top=None)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, right=0, bottom=None, top=0)
+        _ = Rect.from_kwargs(left=0, right=0, bottom=None, top=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, right=None, top=0, bottom=0)
+        _ = Rect.from_kwargs(left=0, right=None, top=0, bottom=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left = None, right=0, top=0, bottom=0)
+        _ = Rect.from_kwargs(left = None, right=0, top=0, bottom=0)
 
     # LBWH
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, bottom=0, width=0, height=None)
+        _ = Rect.from_kwargs(left=0, bottom=0, width=0, height=None)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, bottom=0, width=None, height=0)
+        _ = Rect.from_kwargs(left=0, bottom=0, width=None, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=0, botto=None, width=0, height=0)
+        _ = Rect.from_kwargs(left=0, botto=None, width=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(left=None, bottom=0, width=0, height=0)
+        _ = Rect.from_kwargs(left=None, bottom=0, width=0, height=0)
 
     # XYWH
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, y=0, width=0, height=None)
+        _ = Rect.from_kwargs(x=0, y=0, width=0, height=None)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, y=0, width=None, height=0)
+        _ = Rect.from_kwargs(x=0, y=0, width=None, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=None, y=0, width=0, height=0)
+        _ = Rect.from_kwargs(x=None, y=0, width=0, height=0)
 
     with pytest.raises(ValueError):
-        _ = Kwargtangle(x=0, y=None, width=0, height=0)
+        _ = Rect.from_kwargs(x=0, y=None, width=0, height=0)
 

@@ -118,26 +118,25 @@ from .draw_commands import draw_ellipse_outline
 from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
-from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrbt_rectangle_filled
-from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrbt_rectangle_filled
+from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lbwh_rectangle_textured
-from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
 from .draw_commands import draw_point
 from .draw_commands import draw_points
 from .draw_commands import draw_polygon_filled
 from .draw_commands import draw_polygon_outline
-from .draw_commands import draw_rectangle_filled
-from .draw_commands import draw_rectangle_outline
+from .draw_commands import draw_rect_filled
+from .draw_commands import draw_rect_outline
 from .draw_commands import draw_scaled_texture_rectangle
 from .draw_commands import draw_texture_rectangle
 from .draw_commands import draw_triangle_filled
 from .draw_commands import draw_triangle_outline
-from .draw_commands import draw_xywh_rectangle_filled
-from .draw_commands import draw_xywh_rectangle_outline
+from .draw_commands import draw_lbwh_rectangle_filled
+from .draw_commands import draw_lbwh_rectangle_outline
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
@@ -228,6 +227,7 @@ from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
 from arcade import experimental as experimental
+from arcade.types import rect
 
 from .text import (
     draw_text,
@@ -296,26 +296,25 @@ __all__ = [
     'draw_line_strip',
     'draw_lines',
     'draw_lbwh_rectangle_textured',
-    'draw_lrtb_rectangle_filled',
     'draw_lrbt_rectangle_filled',
-    'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_filled',
     'draw_lrbt_rectangle_outline',
-    'draw_lrwh_rectangle_textured',
+    'draw_lrbt_rectangle_outline',
     'draw_parabola_filled',
     'draw_parabola_outline',
     'draw_point',
     'draw_points',
     'draw_polygon_filled',
     'draw_polygon_outline',
-    'draw_rectangle_filled',
-    'draw_rectangle_outline',
+    'draw_rect_filled',
+    'draw_rect_outline',
     'draw_scaled_texture_rectangle',
     'draw_text',
     'draw_texture_rectangle',
     'draw_triangle_filled',
     'draw_triangle_outline',
-    'draw_xywh_rectangle_filled',
-    'draw_xywh_rectangle_outline',
+    'draw_lbwh_rectangle_filled',
+    'draw_lbwh_rectangle_outline',
     'enable_timings',
     'exit',
     'finish_render',
@@ -368,6 +367,7 @@ __all__ = [
     'get_default_image',
     'hitbox',
     'experimental',
+    'rect',
     'color',
     'csscolor',
     'key',

@@ -251,7 +251,7 @@ class MyGame(arcade.Window):
                     y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
 
                     # Draw the box
-                    arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                    arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)
 
     def update_board(self):
         """
