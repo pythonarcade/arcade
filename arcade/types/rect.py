@@ -300,7 +300,8 @@ class Rect(NamedTuple):
         """Provides a view into the Rect in the form of a tuple of (left, right, bottom, top), coerced to integers."""
         return (int(self.left), int(self.right), int(self.bottom), int(self.top))
 
-    def from_kwargs(self, **kwargs: AsFloat) -> Rect:
+    @classmethod
+    def from_kwargs(cls, **kwargs: AsFloat) -> Rect:
         """Creates a new Rect from keyword arguments. Throws ValueError if not enough are provided.
 
         Expected forms are:

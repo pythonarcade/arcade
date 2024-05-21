@@ -19,7 +19,7 @@ import PIL.ImageDraw
 import pyglet.gl as gl
 
 from arcade.color import WHITE
-from arcade.types import Color, RGBA255, PointList, Point
+from arcade.types import AsFloat, Color, RGBA255, PointList, Point
 from arcade.earclip import earclip
 from arcade.types.rect import Rect, LBWH, LRBT, XYWH
 from .math import rotate_point
@@ -893,12 +893,12 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
 
-def draw_rect_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs):
+def draw_rect_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat):
     rect = Rect.from_kwargs(**kwargs)
     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
-def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs):
+def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat):
     rect = Rect.from_kwargs(**kwargs)
     draw_rect_filled(rect, color, tilt_angle)
 
