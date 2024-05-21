@@ -263,6 +263,7 @@ class Rect(NamedTuple):
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
+        """Returns a tuple of the four corners of this Rect."""
         left = self.left
         bottom = self.bottom
         right = self.right
@@ -276,25 +277,37 @@ class Rect(NamedTuple):
 
     @property
     def lbwh(self) -> RectParams:
+        """Provides a view into the Rect in the form of a tuple of (left, bottom, width, height)."""
         return (self.left, self.bottom, self.width, self.height)
 
     @property
     def lrbt(self) -> RectParams:
+        """Provides a view into the Rect in the form of a tuple of (left, right, bottom, top)."""
         return (self.left, self.right, self.bottom, self.top)
 
     @property
     def xywh(self) -> RectParams:
+        """Provides a view into the Rect in the form of a tuple of (x, y, width, height)."""
         return (self.x, self.y, self.width, self.height)
 
     @property
     def xyrr(self) -> RectParams:
+        """Provides a view into the Rect in the form of a tuple of (x, y, width / 2, height / 2)."""
         return (self.x, self.y, self.width / 2, self.height / 2)
 
     @property
     def viewport(self) -> ViewportParams:
+        """Provides a view into the Rect in the form of a tuple of (left, right, bottom, top), coerced to integers."""
         return (int(self.left), int(self.right), int(self.bottom), int(self.top))
 
     def from_kwargs(self, **kwargs: AsFloat) -> Rect:
+        """Creates a new Rect from keyword arguments. Throws ValueError if not enough are provided.
+
+        Expected forms are:
+        - LRBT (providing `left`, `right`, `bottom`, and `top`)
+        - LBWH (providing `left`, `bottom`, `width`, and `height`)
+        - XYWH (providing `x`, `y`, `width`, and `height`)
+        """
         # Perform iteration only once and store it as a set literal
         specified: set[str] = {k for k, v in kwargs.items() if v is not None}
         have_lb = 'left' in specified and 'bottom' in specified
@@ -336,6 +349,7 @@ class Rect(NamedTuple):
 # Shorthand creation helpers
 
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
+    """Creates a new Rect from left, right, bottom, and top parameters."""
     width = right - left
     height = top - bottom
     x = left + (width / 2)
@@ -344,6 +358,7 @@ def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
 
 
 def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
+    """Creates a new Rect from left, bottom, width, and height parameters."""
     right = left + width
     top = bottom + height
     x = left + (width / 2)
@@ -352,6 +367,7 @@ def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rec
 
 
 def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
+    """Creates a new Rect from center x, center y, width, and height parameters."""
     left = x - (width / 2)
     right = x + (width / 2)
     bottom = y - (width / 2)
@@ -360,6 +376,7 @@ def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
 
 
 def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
+    """Creates a new Rect from center x, center y, half width, and half height parameters. This is mainly used by OpenGL."""
     left = x - half_width
     right = x + half_width
     bottom = y - half_width
@@ -368,6 +385,7 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
 
 
 def XYWHAnchored(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    """Creates a new Rect from x, y, width, and height parameters, anchored at a relative point."""
     left = x - anchor.x * width
     right = left + width
     bottom = y - anchor.y * height
@@ -378,6 +396,7 @@ def XYWHAnchored(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor
 
 
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
+    """Creates a new Rect from left, bottom, width, and height parameters, restricted to integers."""
     right = left + width
     top = bottom + height
     x = left + int(width / 2)
