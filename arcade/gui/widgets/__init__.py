@@ -691,6 +691,7 @@ class UIInteractiveWidget(UIWidget):
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel:param x: center x of widget
+    :param interaction_buttons: defines, which mouse buttons should trigger the interaction (default: left mouse button)
     :param style: not used
     """
 
@@ -709,6 +710,7 @@ class UIInteractiveWidget(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
+        interaction_buttons=(arcade.MOUSE_BUTTON_LEFT,),
         **kwargs,
     ):
         super().__init__(
@@ -722,6 +724,8 @@ class UIInteractiveWidget(UIWidget):
             **kwargs,
         )
         self.register_event_type("on_click")
+
+        self.interaction_buttons = interaction_buttons
 
         bind(self, "pressed", self.trigger_render)
         bind(self, "hovered", self.trigger_render)
@@ -737,12 +741,12 @@ class UIInteractiveWidget(UIWidget):
         if (
             isinstance(event, UIMousePressEvent)
             and self.rect.collide_with_point(event.x, event.y)
-            and event.button == arcade.MOUSE_BUTTON_LEFT
+                and event.button in self.interaction_buttons
         ):
             self.pressed = True
             return EVENT_HANDLED
 
-        if self.pressed and isinstance(event, UIMouseReleaseEvent) and event.button == arcade.MOUSE_BUTTON_LEFT:
+        if self.pressed and isinstance(event, UIMouseReleaseEvent) and event.button in self.interaction_buttons:
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 if not self.disabled:
