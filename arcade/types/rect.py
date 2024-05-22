@@ -1,8 +1,6 @@
 """Rects all act the same, but take four of the possible eight attributes and calculate the rest."""
-
 from __future__ import annotations
-
-from typing import NamedTuple, Optional, TypedDict
+from typing import NamedTuple, Optional, TypedDict, Tuple
 
 from pyglet.math import Vec2
 
@@ -11,8 +9,8 @@ from arcade.types.vector_like import AnchorPoint
 
 from arcade.utils import ReplacementWarning, warning
 
-RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
-ViewportParams = tuple[int, int, int, int]
+RectParams = Tuple[AsFloat, AsFloat, AsFloat, AsFloat]
+ViewportParams = Tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
@@ -269,7 +267,7 @@ class Rect(NamedTuple):
         d = (max(dx, 0.0)**2 + max(dy, 0.0)**2)**0.5 + min(max(dx, dy), 0.0)
 
         return abs(d) < tolerance
-    
+
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Returns a tuple of the four corners of this Rect."""
         left = self.left
