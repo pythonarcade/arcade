@@ -74,7 +74,7 @@ def test_union():
 def test_overlap():
     a_rect = LBWH(10, 10, 10, 10)
     another_rect = LBWH(15, 10, 10, 10)
-    assert a_rect.intersect(another_rect) == LBWH(15, 10, 5, 10)
+    assert a_rect.intersection(another_rect) == LBWH(15, 10, 5, 10)
     assert a_rect & another_rect == LBWH(15, 10, 5, 10)
 
 

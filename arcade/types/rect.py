@@ -335,10 +335,11 @@ class Rect(NamedTuple):
         """
         Returns True if `other` overlaps with the rect.
         """
+
         return (
-            (other.width + self.width) / 2.0 < abs(self.x - other.x)
+            (other.width + self.width) / 2.0 > abs(self.x - other.x)
             and
-            (other.height + self.height) / 2.0 < abs(self.y - other.y)
+            (other.height + self.height) / 2.0 > abs(self.y - other.y)
         )
 
     def point_in_rect(self, point: Vec2) -> bool:
