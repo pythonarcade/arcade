@@ -56,10 +56,9 @@ else:
     BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
 
 
-#: 1. Makes pyright happier while also telling readers
-#: 2. Tells readers we're converting any ints to floats
-AsFloat = Union[float, int]
-
+# Since it's used everywhere, we'll prevent partial submodule
+# and circular import problems by isolating it in a little box.
+from arcade.types.numbers import AsFloat
 
 # Generic color aliases
 from arcade.types.color import RGB
@@ -77,8 +76,20 @@ from arcade.types.color import RGBOrANormalized
 # The Color helper type
 from arcade.types.color import Color
 
-# Rectangle
-from arcade.types.rect import Rect, AnchorPoint
+# We'll be moving our Vec-like items into this (Points, Sizes, etc)
+from arcade.types.vector_like import AnchorPoint
+
+# Rectangles
+from arcade.types.rect import ViewportParams
+from arcade.types.rect import RectParams
+from arcade.types.rect import RectKwargs
+
+from arcade.types.rect import Rect
+from arcade.types.rect import LRBT
+from arcade.types.rect import XYWH
+from arcade.types.rect import XYRR
+from arcade.types.rect import XYWHAnchored
+from arcade.types.rect import Viewport
 
 
 __all__ = [
@@ -92,8 +103,8 @@ __all__ = [
     "Point3",
     "PointList",
     "EMPTY_POINT_LIST",
-    "IntRect",
     "AnchorPoint",
+    "IntRect",
     "Rect",
     "RectList",
     "RGB",
