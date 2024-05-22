@@ -258,9 +258,20 @@ class Rect(NamedTuple):
 
     def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """
-        Return a :py:class:`~arcade.types.rect.Rect` that is has a width between `min_width` and `max_width`, positioned at
-        the current position and anchored to a point (default center.)
+        """Return a :py:class:`.Rect` constrained to the passed dimension.
+
+        It will be created as follows:
+
+        * Its :py:attr:`.width` will be between any provided ``min_width``
+          and ``max_width``
+        * It will be positioned at the current position using the passed
+          ``anchor``
+
+        :param min_width: An optional minimum width.
+        :param max_width: An optional maximum width.
+        :param anchor: A :py:class:`~pyglet.math.Vec2` of the fractional
+            percentage of the rectangle's total :py:attr:`.size` along
+            both axes. It defaults to the center.
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
