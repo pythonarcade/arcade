@@ -43,25 +43,39 @@ class Rect(NamedTuple):
     You can also use :py:func:`~arcade.types.rect.Rect.from_kwargs` to create a Rect from keyword arguments.
 
     """
+    #: The X position of the rectangle's left edge.
     left: float
+    #: The X position of the rectangle's right edge.
     right: float
+    #: The Y position of the rectangle's bottom edge.
     bottom: float
+    #: The Y position of the rectangle's top edge.
     top: float
+    #: The total width of the rectangle along the X axis.
+    #: To get the rectangle's :py:attr:`.height` well, use
+    #: :py:attr:`.size`
     width: float
+    #: The total height of the rectangle along the Y axis.
+    #: To get the rectangle's :py:attr:`.width` as well, use
+    #: :py:attr:`.size`.
     height: float
+    #: The center of the rectangle along the X axis. To get its
+    #: center :py:attr:`.y` as well, use :py:attr:`.center`.
     x: float
+    #: The center of the rectangle along the Y axis. To get its
+    #: center :py:attr:`.x` as well, use :py:attr:`.center`.
     y: float
 
     @property
     @warning(ReplacementWarning, message=".center_x is deprecated. Please use .x instead.")
     def center_x(self) -> float:
-        """Backwards-compatible alias for `Rect.x`."""
+        """Backwards-compatible alias for :py:attr:`.x`."""
         return self.x
 
     @property
     @warning(ReplacementWarning, message=".center_y is deprecated. Please use .y instead.")
     def center_y(self) -> float:
-        """Backwards-compatible alias for `Rect.y`."""
+        """Backwards-compatible alias for :py:attr:`.y`."""
         return self.y
 
     @property
