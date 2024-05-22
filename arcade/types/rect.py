@@ -34,83 +34,114 @@ class Rect(NamedTuple):
 
     Rectangles cannot rotate by design, since this complicates their implmentation a lot.
 
-    You probably don't want to create one of these directly, and should instead use a helper method."""
+    You probably don't want to create one of these directly, and should instead use a helper method, like
+    :py:func:`~arcade.types.rect.LBWH`, :py:func:`~arcade.types.rect.LRBT`, :py:func:`~arcade.types.rect.XYWH`,
+    :py:func:`~arcade.types.rect.AnchoredXYWH`, or :py:func:`~arcade.types.rect.Viewport`.
+
+    You can also use :py:func:`~arcade.types.rect.Rect.from_kwargs` to create a Rect from keyword arguments.
+
+    """
+    #: The X position of the rectangle's left edge.
     left: float
+    #: The X position of the rectangle's right edge.
     right: float
+    #: The Y position of the rectangle's bottom edge.
     bottom: float
+    #: The Y position of the rectangle's top edge.
     top: float
+    #: The total width of the rectangle along the X axis.
+    #: To get the rectangle's :py:attr:`.height` well, use
+    #: :py:attr:`.size`
     width: float
+    #: The total height of the rectangle along the Y axis.
+    #: To get the rectangle's :py:attr:`.width` as well, use
+    #: :py:attr:`.size`.
     height: float
+    #: The center of the rectangle along the X axis. To get its
+    #: center :py:attr:`.y` as well, use :py:attr:`.center`.
     x: float
+    #: The center of the rectangle along the Y axis. To get its
+    #: center :py:attr:`.x` as well, use :py:attr:`.center`.
     y: float
 
     @property
     @warning(ReplacementWarning, message=".center_x is deprecated. Please use .x instead.")
     def center_x(self) -> float:
-        """Backwards-compatible alias."""
+        """Backwards-compatible alias for :py:attr:`.x`."""
         return self.x
 
     @property
     @warning(ReplacementWarning, message=".center_y is deprecated. Please use .y instead.")
     def center_y(self) -> float:
-        """Backwards-compatible alias."""
+        """Backwards-compatible alias for :py:attr:`.y`."""
         return self.y
 
     @property
     def center(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the center of the rectangle."""
         return Vec2(self.x, self.y)
 
     @property
     def bottom_left(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-left of the rectangle."""
         return Vec2(self.left, self.bottom)
 
     @property
     @warning(ReplacementWarning, message=".position is deprecated. Please use .bottom_left instead.")
     def position(self) -> Vec2:
-        """Backwards-compatible alias."""
+        """Backwards-compatible alias of `Rect.bottom_left`."""
         return self.bottom_left
 
     @property
     def bottom_right(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-right of the rectangle."""
         return Vec2(self.right, self.bottom)
 
     @property
     def top_left(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-left of the rectangle."""
         return Vec2(self.left, self.top)
 
     @property
     def top_right(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-right of the rectangle."""
         return Vec2(self.right, self.top)
 
     @property
     def bottom_center(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-center of the rectangle."""
         return Vec2(self.x, self.bottom)
 
     @property
-    def right_center(self) -> Vec2:
+    def center_right(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the center-right of the rectangle."""
         return Vec2(self.right, self.y)
 
     @property
     def top_center(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-center of the rectangle."""
         return Vec2(self.x, self.top)
 
     @property
-    def left_center(self) -> Vec2:
+    def center_left(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the center-left of the rectangle."""
         return Vec2(self.left, self.y)
 
     @property
     def size(self) -> Vec2:
+        """Returns a :py:class:`~pyglet.math.Vec2` representing the size of the rectangle."""
         return Vec2(self.width, self.height)
 
     def at_position(self, position: Vec2) -> Rect:
-        """Returns new Rect which is moved to put `position` at it's center."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved to put `position` at its center."""
         return XYWH(position.x, position.y, self.width, self.height)
 
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
-        """Returns new Rect which is moved by `dx` and `dy`."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved by `dx` in the x-direction and `dy` in the y-direction."""
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
     def resize(self, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position, but with a new width and height, anchored at a point (default center.)"""
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -125,6 +156,7 @@ class Rect(NamedTuple):
         return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
     def scale(self, new_scale: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale`, anchored at a point (default center.)"""
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -136,6 +168,7 @@ class Rect(NamedTuple):
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
     def scale_axes(self, new_scale: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale.x` in the width and `new_scale.y` in the height, anchored at a point (default center.)"""
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -147,32 +180,42 @@ class Rect(NamedTuple):
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
     def align_top(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the top."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the top at `value`."""
         return LBWH(self.left, value - self.height, self.width, self.height)
 
     def align_bottom(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the bottom."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the bottom at `value`."""
         return LBWH(self.left, value, self.width, self.height)
 
     def align_left(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the left."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the left at `value`."""
         return LBWH(value, self.bottom, self.width, self.height)
 
     def align_right(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the right."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the right at `value`."""
         return LBWH(value - self.width, self.bottom, self.width, self.height)
 
     def align_center(self, value: Vec2) -> Rect:
-        """Returns new Rect, which is aligned to the center x and y."""
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the center x and y at `value`."""
         return XYWH(value.x, value.y, self.width, self.height)
 
-    def align_center_x(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the center_x."""
+    def align_x(self, value: AsFloat) -> Rect:
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the x at `value`."""
         return XYWH(value, self.y, self.width, self.height)
 
-    def align_center_y(self, value: AsFloat) -> Rect:
-        """Returns new Rect, which is aligned to the center_y."""
+    @warning(ReplacementWarning, message=".align_center_x() is deprecated. Please use .align_x() instead.")
+    def align_center_x(self, value: AsFloat) -> Rect:
+        """Backwards-compatible alias for `Rect.x`."""
+        return self.align_x(value)
+
+    def align_y(self, value: AsFloat) -> Rect:
+        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the y at `value`."""
         return XYWH(self.x, value, self.width, self.height)
+
+    @warning(ReplacementWarning, message=".align_center_y() is deprecated. Please use .align_y() instead.")
+    def align_center_y(self, value: AsFloat) -> Rect:
+        """Backwards-compatible alias for `Rect.x`."""
+        return self.align_y(value)
 
     def min_size(
             self,
@@ -181,7 +224,8 @@ class Rect(NamedTuple):
             anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
-        Sets the size to at least the given min values.
+        Return a :py:class:`~arcade.types.rect.Rect` that is at least size `width` by `height`, positioned at
+        the current position and anchored to a point (default center.)
         """
         width = max(width or 0.0, self.width)
         height = max(height or 0.0, self.height)
@@ -194,7 +238,8 @@ class Rect(NamedTuple):
             anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
-        Limits the size to the given max values.
+        Return a :py:class:`~arcade.types.rect.Rect` that is at most size `width` by `height`, positioned at
+        the current position and anchored to a point (default center.)
         """
         width = min(width or float("inf"), self.width)
         height = min(height or float("inf"), self.height)
@@ -202,11 +247,30 @@ class Rect(NamedTuple):
 
     def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                      anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """
+        Return a :py:class:`~arcade.types.rect.Rect` that is has a height between `min_height` and `max_height`, positioned at
+        the current position and anchored to a point (default center.)
+        """
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
         return self.resize(self.width, height, anchor)
 
     def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """Return a :py:class:`.Rect` constrained to the passed dimension.
+
+        It will be created as follows:
+
+        * Its :py:attr:`.width` will be between any provided ``min_width``
+          and ``max_width``
+        * It will be positioned at the current position using the passed
+          ``anchor``
+
+        :param min_width: An optional minimum width.
+        :param max_width: An optional maximum width.
+        :param anchor: A :py:class:`~pyglet.math.Vec2` of the fractional
+            percentage of the rectangle's total :py:attr:`.size` along
+            both axes. It defaults to the center.
+        """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
 
@@ -214,13 +278,17 @@ class Rect(NamedTuple):
                    min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                    min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+        """
+        Return a :py:class:`~arcade.types.rect.Rect` that is has a height between `min_height` and `max_height` and
+        a width between `min_width` and `max_width`, positioned at the current position and anchored to a point (default center.)
+        """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
         return self.resize(width, height, anchor)
 
     def union(self, other: Rect) -> Rect:
         """
-        Returns a new Rect that is the union of this rect and another.
+        Returns a new :py:class:`~arcade.types.rect.Rect` that is the union of this rect and another.
         The union is the smallest rectangle that contains these two rectangles.
         """
         left = min(self.left, other.left)
@@ -232,13 +300,9 @@ class Rect(NamedTuple):
     def __or__(self, other: Rect) -> Rect:
         return self.union(other)
 
-    def overlaps(self, other: Rect) -> bool:
-        u = self | other
-        return u.width > 0 or u.height > 0
-
     def intersect(self, other: Rect) -> Rect | None:
         """
-        Returns a new Rect that is the overlaping portion of this Rect and another.
+        Returns a new :py:class:`~arcade.types.rect.Rect` that is the overlaping portion of this Rect and another.
         This will return None if no such rectangle exists.
         """
         intersecting = self.collides(other)
@@ -250,17 +314,29 @@ class Rect(NamedTuple):
         top = min(self.top, other.top)
         return LRBT(left, right, bottom, top)
 
-    def collides(self, other: Rect) -> bool:
-        return (self.right >= other.left and other.right >= self.left) and \
-            (self.top >= other.bottom and other.top >= self.bottom)
-
     def __and__(self, other: Rect) -> Rect | None:
         return self.intersect(other)
 
+    def collides(self, other: Rect) -> bool:
+        """
+        Returns True if `other` is collides with the current rectangle.
+        """
+        return (self.right >= other.left and other.right >= self.left) and \
+            (self.top >= other.bottom and other.top >= self.bottom)
+
+    def overlaps(self, other: Rect) -> bool:
+        """
+        Returns True if `other` is overlaps the current rectangle.
+        """
+        u = self & other
+        return u.width > 0 or u.height > 0
+
     def point_in_rect(self, point: Vec2) -> bool:
+        """Returns True if the given point is inside this rectangle."""
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
     def point_on_bounds(self, point: Vec2, tolerance: float) -> bool:
+        """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
         diff = Vec2(point.x - self.x, point.y - self.y)
         dx = abs(diff.x) - self.width / 2.0
         dy = abs(diff.y) - self.height / 2.0
@@ -311,9 +387,9 @@ class Rect(NamedTuple):
         """Creates a new Rect from keyword arguments. Throws ValueError if not enough are provided.
 
         Expected forms are:
-        - LRBT (providing `left`, `right`, `bottom`, and `top`)
-        - LBWH (providing `left`, `bottom`, `width`, and `height`)
-        - XYWH (providing `x`, `y`, `width`, and `height`)
+        * LRBT (providing `left`, `right`, `bottom`, and `top`)
+        * LBWH (providing `left`, `bottom`, `width`, and `height`)
+        * XYWH (providing `x`, `y`, `width`, and `height`)
         """
         # Perform iteration only once and store it as a set literal
         specified: set[str] = {k for k, v in kwargs.items() if v is not None}
@@ -409,3 +485,18 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
     x = left + int(width / 2)
     y = bottom + int(height / 2)
     return Rect(left, right, bottom, top, width, height, x, y)
+
+
+__all__ = [
+    'ViewportParams',
+    'RectParams',
+    'RectKwargs',
+    'Rect',
+    'AnchorPoint',
+    'LBWH',
+    'LRBT',
+    'XYWH',
+    'XYRR',
+    'XYWHAnchored',
+    'Viewport'
+]

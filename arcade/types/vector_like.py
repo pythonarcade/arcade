@@ -23,3 +23,8 @@ class AnchorPoint:
     TOP_LEFT = Vec2(0.0, 1.0)
     TOP_CENTER = Vec2(0.5, 1.0)
     TOP_RIGHT = Vec2(1.0, 1.0)
+
+
+__all__ = [
+    'AnchorPoint'
+]

@@ -55,8 +55,13 @@ titles = {
     'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
     'math.py': ['Math', 'math.rst'],
+
     'types/__init__.py': ['Types', 'types.rst'],
+    'types/numbers.py': ['Types', 'types.rst'],
+    'types/vector_like.py' : ['Types', 'types.rst'],
     'types/color.py': ['Types', 'types.rst'],
+    'types/rect.py': ['Types', 'types.rst'],
+
     'easing.py': ['Easing', 'easing.rst'],
     'earclip.py': ['Earclip', 'earclip.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],

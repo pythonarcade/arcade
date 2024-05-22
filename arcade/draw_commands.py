@@ -53,6 +53,8 @@ __all__ = [
     "draw_lrbt_rectangle_filled",
     "draw_lbwh_rectangle_filled",
     "draw_rect_filled",
+    "draw_rect_outline_kwargs",
+    "draw_rect_filled_kwargs",
     "draw_scaled_texture_rectangle",
     "draw_texture_rectangle",
     "draw_lbwh_rectangle_textured",
@@ -742,8 +744,8 @@ def draw_lbwh_rectangle_filled(left: float, bottom: float,
     """
     Draw a filled rectangle extending from bottom left to top right
 
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
     :param color: The color of the rectangles an RGBA
@@ -807,7 +809,7 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+def draw_lbwh_rectangle_textured(left: float, bottom: float,
                                  width: float,
                                  height: float,
                                  texture: Texture, angle: float = 0,
@@ -815,8 +817,8 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a texture extending from bottom left to top right.
 
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
     :param texture: identifier of texture returned from load_texture() call
@@ -824,8 +826,8 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
+    center_x = left + (width / 2)
+    center_y = bottom + (height / 2)
     texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
 
