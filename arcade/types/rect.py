@@ -460,13 +460,15 @@ def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rec
     return Rect(left, right, bottom, top, width, height, x, y)
 
 
-def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
-    """Creates a new Rect from center x, center y, width, and height parameters."""
-    left = x - (width / 2)
-    right = x + (width / 2)
-    bottom = y - (width / 2)
-    top = y + (width / 2)
-    return Rect(left, right, bottom, top, width, height, x, y)
+def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    """Creates a new Rect from x, y, width, and height parameters, anchored at a relative point (default center)."""
+    left = x - anchor.x * width
+    right = left + width
+    bottom = y - anchor.y * height
+    top = bottom + height
+    c_x = left + width / 2.0
+    c_y = bottom + height / 2.0
+    return Rect(left, right, bottom, top, width, height, c_x, c_y)
 
 
 def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
@@ -479,17 +481,6 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
     bottom = y - half_width
     top = y + half_width
     return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
-
-
-def XYWHAnchored(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-    """Creates a new Rect from x, y, width, and height parameters, anchored at a relative point."""
-    left = x - anchor.x * width
-    right = left + width
-    bottom = y - anchor.y * height
-    top = bottom + height
-    c_x = left + width / 2.0
-    c_y = bottom + height / 2.0
-    return Rect(left, right, bottom, top, width, height, c_x, c_y)
 
 
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
@@ -511,6 +502,5 @@ __all__ = [
     'LRBT',
     'XYWH',
     'XYRR',
-    'XYWHAnchored',
     'Viewport'
 ]

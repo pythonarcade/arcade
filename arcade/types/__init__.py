@@ -88,7 +88,6 @@ from arcade.types.rect import Rect
 from arcade.types.rect import LRBT
 from arcade.types.rect import XYWH
 from arcade.types.rect import XYRR
-from arcade.types.rect import XYWHAnchored
 from arcade.types.rect import Viewport
 
 
@@ -109,7 +108,6 @@ __all__ = [
     "LRBT",
     "XYWH",
     "XYRR",
-    "XYWHAnchored",
     "Viewport",
     "ViewportParams",
     "RectParams",
