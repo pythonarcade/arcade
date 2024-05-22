@@ -42,7 +42,6 @@ class _StaticCamera:
             prev.use()
 
 
-@contextmanager
 def static_from_orthographic(
         view: CameraData,
         orthographic: OrthographicProjectionData,
@@ -55,7 +54,7 @@ def static_from_orthographic(
         orthographic.viewport, window
     )
 
-@contextmanager
+
 def static_from_perspective(
         view: CameraData,
         perspective: OrthographicProjectionData,
@@ -69,7 +68,6 @@ def static_from_perspective(
     )
 
 
-@contextmanager
 def static_from_raw_orthographic(
         position: Tuple[float, float, float],
         forward: Tuple[float, float, float],
@@ -91,7 +89,6 @@ def static_from_raw_orthographic(
     return _StaticCamera(view, proj, viewport, window)
 
 
-@contextmanager
 def static_from_raw_perspective(
         position: Tuple[float, float, float],
         forward: Tuple[float, float, float],
@@ -113,7 +110,6 @@ def static_from_raw_perspective(
     return _StaticCamera(view, proj, viewport, window)
 
 
-@contextmanager
 def static_from_matrices(
         view: Mat4, projection: Mat4,
         viewport: Optional[Tuple[int, int, int, int]],
