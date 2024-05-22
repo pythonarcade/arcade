@@ -53,6 +53,8 @@ __all__ = [
     "draw_lrbt_rectangle_filled",
     "draw_lbwh_rectangle_filled",
     "draw_rect_filled",
+    "draw_rect_outline_kwargs",
+    "draw_rect_filled_kwargs",
     "draw_scaled_texture_rectangle",
     "draw_texture_rectangle",
     "draw_lbwh_rectangle_textured",

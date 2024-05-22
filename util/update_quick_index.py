@@ -57,6 +57,8 @@ titles = {
     'math.py': ['Math', 'math.rst'],
 
     'types/__init__.py': ['Types', 'types.rst'],
+    'types/numbers.py': ['Types', 'types.rst'],
+    'types/vector_like.py' : ['Types', 'types.rst'],
     'types/color.py': ['Types', 'types.rst'],
     'types/rect.py': ['Types', 'types.rst'],
 

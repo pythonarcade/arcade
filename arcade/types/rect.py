@@ -419,6 +419,7 @@ __all__ = [
     'RectKwargs',
     'Rect',
     'AnchorPoint',
+    'LBWH',
     'LRBT',
     'XYWH',
     'XYRR',
