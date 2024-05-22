@@ -34,8 +34,8 @@ def test_centers():
     assert A_RECT.center == Vec2(15, 15)
     assert A_RECT.bottom_center == Vec2(15, 10)
     assert A_RECT.top_center == Vec2(15, 20)
-    assert A_RECT.left_center == Vec2(10, 15)
-    assert A_RECT.right_center == Vec2(20, 15)
+    assert A_RECT.center_left == Vec2(10, 15)
+    assert A_RECT.center_right == Vec2(20, 15)
 
 
 def test_rect_move():
