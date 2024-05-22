@@ -79,9 +79,10 @@ class Camera2D:
         self._window: "Window" = window or get_window()
         self.render_target: Optional[Framebuffer] = render_target
 
-        # We don't want to force people to use a render target, but we need to have some form of default size so we use the screen.
+        # We don't want to force people to use a render target,
+        # but we need to have some form of default size so we use the screen.
         render_target = render_target or self._window.ctx.screen
-        width, height = render_target.size if viewport is None else viewport[2], viewport[3]
+        width, height = (render_target.width, render_target.height) if viewport is None else (viewport[2], viewport[3])
         half_width = width / 2
         half_height = height / 2
 

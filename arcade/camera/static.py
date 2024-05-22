@@ -32,7 +32,8 @@ class _StaticCamera:
         self._win.ctx.projection_matrix = self._projection
         self._win.ctx.view_matrix = self._view
 
-    def activate(self) -> Generator[_StaticCamera]:
+    @contextmanager
+    def activate(self) -> Generator[_StaticCamera, None, None]:
         prev = self._win.ctx.current_camera
         try:
             self.use()
@@ -47,18 +48,12 @@ def static_from_orthographic(
         orthographic: OrthographicProjectionData,
         *,
         window: Optional[Window] = None
-) -> Generator[_StaticCamera]:
-    try:
-        static = _StaticCamera(
-            generate_view_matrix(view),
-            generate_orthographic_matrix(orthographic, view.zoom),
-            orthographic.viewport, window
-        )
-        with static.activate():
-            yield static
-    finally:
-        pass
-
+) -> _StaticCamera:
+    return _StaticCamera(
+        generate_view_matrix(view),
+        generate_orthographic_matrix(orthographic, view.zoom),
+        orthographic.viewport, window
+    )
 
 @contextmanager
 def static_from_perspective(
@@ -66,17 +61,12 @@ def static_from_perspective(
         perspective: OrthographicProjectionData,
         *,
         window: Optional[Window] = None
-) -> Generator[_StaticCamera]:
-    try:
-        static = _StaticCamera(
-            generate_view_matrix(view),
-            generate_orthographic_matrix(perspective, view.zoom),
-            perspective.viewport, window
-        )
-        with static.activate():
-            yield static
-    finally:
-        pass
+) -> _StaticCamera:
+    return _StaticCamera(
+        generate_view_matrix(view),
+        generate_orthographic_matrix(perspective, view.zoom),
+        perspective.viewport, window
+    )
 
 
 @contextmanager
@@ -90,19 +80,15 @@ def static_from_raw_orthographic(
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
-) -> Generator[_StaticCamera]:
-    try:
-        view = generate_view_matrix(
-            CameraData(position, forward, up, zoom)
-        )
-        proj = generate_orthographic_matrix(
-            OrthographicProjectionData(*projection, near, far), zoom
-        )
-        static = _StaticCamera(view, proj, viewport, window)
-        with static.activate():
-            yield static
-    finally:
-        pass
+) -> _StaticCamera:
+    view = generate_view_matrix(
+        CameraData(position, forward, up, zoom)
+    )
+    proj = generate_orthographic_matrix(
+        OrthographicProjectionData(
+            projection[0], projection[1], projection[2], projection[3], near, far, viewport or (0, 0, 0, 0)), zoom
+    )
+    return _StaticCamera(view, proj, viewport, window)
 
 
 @contextmanager
@@ -116,20 +102,15 @@ def static_from_raw_perspective(
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
-) -> Generator[_StaticCamera]:
-    try:
-        view = generate_view_matrix(
-            CameraData(position, forward, up, zoom)
-        )
-        proj = generate_perspective_matrix(
-            PerspectiveProjectionData(aspect, fov, near, far, viewport), zoom
-        )
+) -> _StaticCamera:
+    view = generate_view_matrix(
+        CameraData(position, forward, up, zoom)
+    )
+    proj = generate_perspective_matrix(
+        PerspectiveProjectionData(aspect, fov, near, far, viewport or (0, 0, 0, 0)), zoom
+    )
 
-        static = _StaticCamera(view, proj, viewport, window)
-        with static.activate():
-            yield static
-    finally:
-        pass
+    return _StaticCamera(view, proj, viewport, window)
 
 
 @contextmanager
@@ -138,10 +119,5 @@ def static_from_matrices(
         viewport: Optional[Tuple[int, int, int, int]],
         *,
         window: Optional[Window] = None
-) -> Generator[_StaticCamera]:
-    try:
-        static = _StaticCamera(view, projection, viewport, window)
-        with static.activate():
-            yield static
-    finally:
-        pass
+) -> _StaticCamera:
+    return _StaticCamera(view, projection, viewport, window)
