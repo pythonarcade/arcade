@@ -78,7 +78,17 @@ from arcade.types.color import RGBOrANormalized
 from arcade.types.color import Color
 
 # Rectangle
-from arcade.types.rect import Rect, AnchorPoint
+from arcade.types.rect import ViewportParams
+from arcade.types.rect import RectParams
+from arcade.types.rect import RectKwargs
+
+from arcade.types.rect import Rect
+from arcade.types.rect import AnchorPoint
+from arcade.types.rect import LRBT
+from arcade.types.rect import XYWH
+from arcade.types.rect import XYRR
+from arcade.types.rect import XYWHAnchored
+from arcade.types.rect import Viewport
 
 
 __all__ = [
