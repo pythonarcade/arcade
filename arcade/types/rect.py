@@ -43,25 +43,39 @@ class Rect(NamedTuple):
     You can also use :py:func:`~arcade.types.rect.Rect.from_kwargs` to create a Rect from keyword arguments.
 
     """
+    #: The X position of the rectangle's left edge.
     left: float
+    #: The X position of the rectangle's right edge.
     right: float
+    #: The Y position of the rectangle's bottom edge.
     bottom: float
+    #: The Y position of the rectangle's top edge.
     top: float
+    #: The total width of the rectangle along the X axis.
+    #: To get the rectangle's :py:attr:`.height` well, use
+    #: :py:attr:`.size`
     width: float
+    #: The total height of the rectangle along the Y axis.
+    #: To get the rectangle's :py:attr:`.width` as well, use
+    #: :py:attr:`.size`.
     height: float
+    #: The center of the rectangle along the X axis. To get its
+    #: center :py:attr:`.y` as well, use :py:attr:`.center`.
     x: float
+    #: The center of the rectangle along the Y axis. To get its
+    #: center :py:attr:`.x` as well, use :py:attr:`.center`.
     y: float
 
     @property
     @warning(ReplacementWarning, message=".center_x is deprecated. Please use .x instead.")
     def center_x(self) -> float:
-        """Backwards-compatible alias for `Rect.x`."""
+        """Backwards-compatible alias for :py:attr:`.x`."""
         return self.x
 
     @property
     @warning(ReplacementWarning, message=".center_y is deprecated. Please use .y instead.")
     def center_y(self) -> float:
-        """Backwards-compatible alias for `Rect.y`."""
+        """Backwards-compatible alias for :py:attr:`.y`."""
         return self.y
 
     @property
@@ -244,9 +258,20 @@ class Rect(NamedTuple):
 
     def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """
-        Return a :py:class:`~arcade.types.rect.Rect` that is has a width between `min_width` and `max_width`, positioned at
-        the current position and anchored to a point (default center.)
+        """Return a :py:class:`.Rect` constrained to the passed dimension.
+
+        It will be created as follows:
+
+        * Its :py:attr:`.width` will be between any provided ``min_width``
+          and ``max_width``
+        * It will be positioned at the current position using the passed
+          ``anchor``
+
+        :param min_width: An optional minimum width.
+        :param max_width: An optional maximum width.
+        :param anchor: A :py:class:`~pyglet.math.Vec2` of the fractional
+            percentage of the rectangle's total :py:attr:`.size` along
+            both axes. It defaults to the center.
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
