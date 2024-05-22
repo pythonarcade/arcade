@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Generator, Optional
+from typing import Generator, Optional, Tuple
 
 from arcade.camera import (
     CameraData,
@@ -19,9 +19,9 @@ from pyglet.math import Mat4
 class _StaticCamera:
 
     def __init__(self, view_matrix: Mat4, projection_matrix: Mat4,
-                 viewport: Optional[tuple[int, int, int, int]] = None, window: Optional[Window] = None):
+                 viewport: Optional[Tuple[int, int, int, int]] = None, window: Optional[Window] = None):
         self._win: Window = window or get_window()
-        self._viewport: tuple[int, int, int, int] = viewport or self._win.ctx.viewport
+        self._viewport: Tuple[int, int, int, int] = viewport or self._win.ctx.viewport
         self._view = view_matrix
         self._projection = projection_matrix
 
@@ -81,13 +81,13 @@ def static_from_perspective(
 
 @contextmanager
 def static_from_raw_orthographic(
-        position: tuple[float, float, float],
-        forward: tuple[float, float, float],
-        up: tuple[float, float, float],
-        projection: tuple[float, float, float],
+        position: Tuple[float, float, float],
+        forward: Tuple[float, float, float],
+        up: Tuple[float, float, float],
+        projection: Tuple[float, float, float],
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> Generator[_StaticCamera]:
@@ -107,13 +107,13 @@ def static_from_raw_orthographic(
 
 @contextmanager
 def static_from_raw_perspective(
-        position: tuple[float, float, float],
-        forward: tuple[float, float, float],
-        up: tuple[float, float, float],
+        position: Tuple[float, float, float],
+        forward: Tuple[float, float, float],
+        up: Tuple[float, float, float],
         aspect: float, fov: float,
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> Generator[_StaticCamera]:
@@ -135,7 +135,7 @@ def static_from_raw_perspective(
 @contextmanager
 def static_from_matrices(
         view: Mat4, projection: Mat4,
-        viewport: Optional[tuple[int, int, int, int]],
+        viewport: Optional[Tuple[int, int, int, int]],
         *,
         window: Optional[Window] = None
 ) -> Generator[_StaticCamera]:
