@@ -20,7 +20,17 @@ def test_attributes():
 
 
 def test_equivalency():
-    assert LBWH(10, 10, 10, 10) == LRBT(10, 20, 10, 20) == XYWH(15, 15, 10, 10) == XYRR(15, 15, 5, 5) == A_RECT
+    assert (
+            LBWH(10, 10, 10, 10)
+            ==
+            LRBT(10, 20, 10, 20)
+            ==
+            XYWH(15, 15, 10, 10)
+            ==
+            XYRR(15, 15, 5, 5)
+            ==
+            A_RECT
+    )
 
 
 def test_corners():

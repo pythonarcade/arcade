@@ -282,14 +282,14 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
 
         slider_bottom = (self.content_height - slider_height) // 2
 
-        arcade.draw_xywh_rectangle_filled(
+        arcade.draw_lbwh_rectangle_filled(
             slider_left_x - self.content_rect.x,
             slider_bottom,
             slider_right_x - slider_left_x,
             slider_height,
             bg_slider_color,
         )
-        arcade.draw_xywh_rectangle_filled(
+        arcade.draw_lbwh_rectangle_filled(
             slider_left_x - self.content_rect.x,
             slider_bottom,
             cursor_center_x - slider_left_x,
@@ -353,7 +353,7 @@ class UITextureSlider(UISlider):
         slider_bottom = (self.height - slider_height) // 2
 
         # slider
-        arcade.draw_xywh_rectangle_filled(
+        arcade.draw_lbwh_rectangle_filled(
             slider_left_x - self.x,
             slider_bottom,
             cursor_center_x - slider_left_x,

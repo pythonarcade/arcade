@@ -118,8 +118,8 @@ class Surface:
             tex.draw_sized(size=(width, height))
         else:
             draw_lbwh_rectangle_textured(
-                bottom_left_x=x,
-                bottom_left_y=y,
+                left=x,
+                bottom=y,
                 width=width,
                 height=height,
                 texture=tex,

@@ -137,11 +137,17 @@ class Rect(NamedTuple):
         return XYWH(position.x, position.y, self.width, self.height)
 
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved by `dx` in the x-direction and `dy` in the y-direction."""
+        """
+        Returns a new :py:class:`~arcade.types.rect.Rect`
+        which is moved by `dx` in the x-direction and `dy` in the y-direction.
+        """
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
     def resize(self, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position, but with a new width and height, anchored at a point (default center.)"""
+        """
+        Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position,
+        but with a new width and height, anchored at a point (default center.)
+        """
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -156,7 +162,10 @@ class Rect(NamedTuple):
         return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
 
     def scale(self, new_scale: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale`, anchored at a point (default center.)"""
+        """
+        Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale`,
+        anchored at a point (default center.)
+        """
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -168,7 +177,11 @@ class Rect(NamedTuple):
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
     def scale_axes(self, new_scale: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale.x` in the width and `new_scale.y` in the height, anchored at a point (default center.)"""
+        """
+        Returns a new :py:class:`~arcade.types.rect.Rect`
+        scaled by a factor of `new_scale.x` in the width
+        and `new_scale.y` in the height, anchored at a point (default center.)
+        """
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -248,8 +261,8 @@ class Rect(NamedTuple):
     def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                      anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
-        Return a :py:class:`~arcade.types.rect.Rect` that is has a height between `min_height` and `max_height`, positioned at
-        the current position and anchored to a point (default center.)
+        Return a :py:class:`~arcade.types.rect.Rect` that has a height between `min_height` and `max_height`,
+        positioned at the current position and anchored to a point (default center.)
         """
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
         return self.resize(self.width, height, anchor)
@@ -280,7 +293,8 @@ class Rect(NamedTuple):
                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
         Return a :py:class:`~arcade.types.rect.Rect` that is has a height between `min_height` and `max_height` and
-        a width between `min_width` and `max_width`, positioned at the current position and anchored to a point (default center.)
+        a width between `min_width` and `max_width`, positioned at the current position and anchored to a point.
+        (default center)
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
@@ -300,12 +314,12 @@ class Rect(NamedTuple):
     def __or__(self, other: Rect) -> Rect:
         return self.union(other)
 
-    def intersect(self, other: Rect) -> Rect | None:
+    def intersection(self, other: Rect) -> Rect | None:
         """
         Returns a new :py:class:`~arcade.types.rect.Rect` that is the overlaping portion of this Rect and another.
         This will return None if no such rectangle exists.
         """
-        intersecting = self.collides(other)
+        intersecting = self.overlaps(other)
         if not intersecting:
             return None
         left = max(self.left, other.left)
@@ -315,21 +329,17 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __and__(self, other: Rect) -> Rect | None:
-        return self.intersect(other)
-
-    def collides(self, other: Rect) -> bool:
-        """
-        Returns True if `other` is collides with the current rectangle.
-        """
-        return (self.right >= other.left and other.right >= self.left) and \
-            (self.top >= other.bottom and other.top >= self.bottom)
+        return self.intersection(other)
 
     def overlaps(self, other: Rect) -> bool:
         """
-        Returns True if `other` is overlaps the current rectangle.
+        Returns True if `other` overlaps with the rect.
         """
-        u = self & other
-        return u.width > 0 or u.height > 0
+        return (
+            (other.width + self.width) / 2.0 < abs(self.x - other.x)
+            and
+            (other.height + self.height) / 2.0 < abs(self.y - other.y)
+        )
 
     def point_in_rect(self, point: Vec2) -> bool:
         """Returns True if the given point is inside this rectangle."""
@@ -459,7 +469,10 @@ def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
 
 
 def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
-    """Creates a new Rect from center x, center y, half width, and half height parameters. This is mainly used by OpenGL."""
+    """
+    Creates a new Rect from center x, center y, half width, and half height parameters.
+    This is mainly used by OpenGL.
+    """
     left = x - half_width
     right = x + half_width
     bottom = y - half_width

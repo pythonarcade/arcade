@@ -119,8 +119,6 @@ from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrbt_rectangle_filled
-from .draw_commands import draw_lrbt_rectangle_filled
-from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lrbt_rectangle_outline
 from .draw_commands import draw_lbwh_rectangle_textured
 from .draw_commands import draw_parabola_filled

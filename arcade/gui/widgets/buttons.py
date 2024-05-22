@@ -338,7 +338,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
         # render button border (which is not the widgets border)
         if border_color and border_width:
-            arcade.draw_xywh_rectangle_outline(
+            arcade.draw_lbwh_rectangle_outline(
                 border_width,
                 border_width,
                 self.content_width - 2 * border_width,
