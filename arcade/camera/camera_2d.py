@@ -77,7 +77,7 @@ class Camera2D:
                  window: Optional["Window"] = None):
 
         self._window: "Window" = window or get_window()
-        self.render_target: Framebuffer = render_target or self._window.ctx.screen
+        self.render_target: Optional[Framebuffer] = render_target
         width, height = self.render_target.size
         half_width = width / 2
         half_height = height / 2
@@ -776,7 +776,8 @@ class Camera2D:
 
         If you want to use a 'with' block use activate() instead.
         """
-        self.render_target.use()
+        if self.render_target is not None:
+            self.render_target.use()
         self._ortho_projector.use()
 
     @contextmanager
