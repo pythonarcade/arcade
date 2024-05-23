@@ -34,13 +34,13 @@ Then, you can use resources from your handler:
 
     self.texture = arcade.load_texture(":my_resources:images/characters/my_character.png")
 
-Despite needing an absolute path, you can use Python's ``os.path.resolve()`` to resolve a relative path:
+Despite needing an absolute path, you can use Python's ``Path.resolve()`` to resolve a relative path:
 
 .. code-block:: python
 
     from pathlib import Path
     ...
-    arcade.resources.add_resource_handler("my_resources", Path("assets/my_res_folder"))
+    arcade.resources.add_resource_handler("my_resources", Path("assets/my_res_folder").resolve())
 
 Adding Multiple Directories to a Resource Handler
 -------------------------------------------------
@@ -53,8 +53,10 @@ You can also add multiple directories to a single resource handler:
     arcade.resources.add_resource_handler("my_resources", "/home/users/username/my_game/my_first_res_folder/")
     arcade.resources.add_resource_handler("my_resources", "/home/users/username/my_game/my_second_res_folder/")
 
-In this case, Arcade will search for a requested resources through each of the added directories, starting with the last
-added first.
+When multiple directories are added to a single resource handler, Arcade will search through the added directories until
+it locates the requested resource. Here, Arcade will start it's search in the last added directory first, in this case
+``my_second_res_folder``. If the requested resource is not present within ``my_second_res_folder`` it will then move
+onto the directories added before it, in this case, ``my_first_res_dir``.
 
 .. _resource_handlers_one_file_builds:
 
