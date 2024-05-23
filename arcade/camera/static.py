@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Generator, Optional, Tuple
+from typing import Generator, Optional, Tuple, TYPE_CHECKING
 
 from arcade.camera import (
     CameraData,
@@ -11,9 +11,12 @@ from arcade.camera import (
     generate_perspective_matrix,
     generate_orthographic_matrix
 )
-from arcade import get_window, Window
+from arcade.window_commands import get_window
 
 from pyglet.math import Mat4
+
+if TYPE_CHECKING:
+    from arcade.application import Window
 
 
 class _StaticCamera:
@@ -69,18 +72,18 @@ def static_from_perspective(
 
 
 def static_from_raw_orthographic(
-        position: Tuple[float, float, float],
-        forward: Tuple[float, float, float],
-        up: Tuple[float, float, float],
-        projection: Tuple[float, float, float],
+        projection: Tuple[float, float, float, float],
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
+        position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+        up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
+        forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> _StaticCamera:
     view = generate_view_matrix(
-        CameraData(position, forward, up, zoom)
+        CameraData(position, up, forward, zoom)
     )
     proj = generate_orthographic_matrix(
         OrthographicProjectionData(
@@ -90,18 +93,18 @@ def static_from_raw_orthographic(
 
 
 def static_from_raw_perspective(
-        position: Tuple[float, float, float],
-        forward: Tuple[float, float, float],
-        up: Tuple[float, float, float],
         aspect: float, fov: float,
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
+        position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+        up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
+        forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> _StaticCamera:
     view = generate_view_matrix(
-        CameraData(position, forward, up, zoom)
+        CameraData(position, up, forward, zoom)
     )
     proj = generate_perspective_matrix(
         PerspectiveProjectionData(aspect, fov, near, far, viewport or (0, 0, 0, 0)), zoom

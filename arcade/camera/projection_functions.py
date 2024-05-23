@@ -14,11 +14,14 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
     ri = fo.cross(up).normalize()  # Right Vector
     up = ri.cross(fo).normalize()  # Up Vector
     po = Vec3(*camera_data.position)
+
+    print(fo, up, ri)
+
     return Mat4((
-        ri.x, up.x, -fo.x, 0,
-        ri.y, up.y, -fo.y, 0,
-        ri.z, up.z, -fo.z, 0,
-        -ri.dot(po), -up.dot(po), fo.dot(po), 1
+        ri.x, up.x, -fo.x, 0.0,
+        ri.y, up.y, -fo.y, 0.0,
+        ri.z, up.z, -fo.z, 0.0,
+        -ri.dot(po), -up.dot(po), fo.dot(po), 1.0
     ))
 
 
