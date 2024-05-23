@@ -22,7 +22,7 @@ out vec4 gs_color;
 
 void main() {
     // Get center of the sprite
-    vec2 center = gl_in[0].gl_Position.xy;
+    vec3 center = gl_in[0].gl_Position.xyz;
     vec2 hsize = v_size[0] / 2.0;
     float angle = radians(v_angle[0]);
     mat2 rot = mat2(
