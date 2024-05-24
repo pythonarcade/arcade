@@ -35,8 +35,8 @@ class Rect(NamedTuple):
     Rectangles cannot rotate by design, since this complicates their implmentation a lot.
 
     You probably don't want to create one of these directly, and should instead use a helper method, like
-    :py:func:`~arcade.types.rect.LBWH`, :py:func:`~arcade.types.rect.LRBT`, :py:func:`~arcade.types.rect.XYWH`,
-    :py:func:`~arcade.types.rect.AnchoredXYWH`, or :py:func:`~arcade.types.rect.Viewport`.
+    :py:func:`~arcade.types.rect.LBWH`, :py:func:`~arcade.types.rect.LRBT`,
+    :py:func:`~arcade.types.rect.XYWH`, or :py:func:`~arcade.types.rect.Viewport`.
 
     You can also use :py:func:`~arcade.types.rect.Rect.from_kwargs` to create a Rect from keyword arguments.
 
