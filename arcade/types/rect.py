@@ -375,27 +375,27 @@ class Rect(NamedTuple):
 
     @property
     def lbwh(self) -> RectParams:
-        """Provides a view into the Rect in the form of a tuple of (left, bottom, width, height)."""
+        """Provides a tuple in the format of (left, bottom, width, height)."""
         return (self.left, self.bottom, self.width, self.height)
 
     @property
     def lrbt(self) -> RectParams:
-        """Provides a view into the Rect in the form of a tuple of (left, right, bottom, top)."""
+        """Provides a tuple in the format of (left, right, bottom, top)."""
         return (self.left, self.right, self.bottom, self.top)
 
     @property
     def xywh(self) -> RectParams:
-        """Provides a view into the Rect in the form of a tuple of (x, y, width, height)."""
+        """Provides a tuple in the format of (x, y, width, height)."""
         return (self.x, self.y, self.width, self.height)
 
     @property
     def xyrr(self) -> RectParams:
-        """Provides a view into the Rect in the form of a tuple of (x, y, width / 2, height / 2)."""
+        """Provides a tuple in the format of (x, y, width / 2, height / 2)."""
         return (self.x, self.y, self.width / 2, self.height / 2)
 
     @property
     def viewport(self) -> ViewportParams:
-        """Provides a view into the Rect in the form of a tuple of (left, right, bottom, top), coerced to integers."""
+        """Provides a tuple in the format of (left, right, bottom, top), coerced to integers."""
         return (int(self.left), int(self.right), int(self.bottom), int(self.top))
 
     @classmethod
