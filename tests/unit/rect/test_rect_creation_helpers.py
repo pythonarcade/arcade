@@ -43,13 +43,13 @@ def test_make_XYWH():
 
 
 def test_make_XYRR():
-    r = XYRR(15, 15, 5, 5)
-    assert r.left == 10.0
+    r = XYRR(15, 15, 10, 5)
+    assert r.left == 5.0
     assert r.bottom == 10.0
-    assert r.width == 10.0
+    assert r.width == 20.0
     assert r.height == 10.0
     assert r.top == 20.0
-    assert r.right == 20.0
+    assert r.right == 25.0
     assert r.x == 15.0
     assert r.y == 15.0
 

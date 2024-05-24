@@ -483,8 +483,8 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
     """
     left = x - half_width
     right = x + half_width
-    bottom = y - half_width
-    top = y + half_width
+    bottom = y - half_height
+    top = y + half_height
     return Rect(left, right, bottom, top, half_width * 2, half_height * 2, x, y)
 
 
