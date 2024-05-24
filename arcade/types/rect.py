@@ -132,6 +132,11 @@ class Rect(NamedTuple):
         """Returns a :py:class:`~pyglet.math.Vec2` representing the size of the rectangle."""
         return Vec2(self.width, self.height)
 
+    @property
+    def aspect_ratio(self) -> float:
+        """Returns the ratio between the width and the height."""
+        return self.width / self.height
+
     def at_position(self, position: Vec2) -> Rect:
         """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved to put `position` at its center."""
         return XYWH(position.x, position.y, self.width, self.height)
