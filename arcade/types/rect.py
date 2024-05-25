@@ -65,13 +65,11 @@ class Rect(NamedTuple):
     y: float
 
     @property
-    @warning(ReplacementWarning, message=".center_x is deprecated. Please use .x instead.")
     def center_x(self) -> float:
         """Backwards-compatible alias for :py:attr:`.x`."""
         return self.x
 
     @property
-    @warning(ReplacementWarning, message=".center_y is deprecated. Please use .y instead.")
     def center_y(self) -> float:
         """Backwards-compatible alias for :py:attr:`.y`."""
         return self.y
@@ -85,12 +83,6 @@ class Rect(NamedTuple):
     def bottom_left(self) -> Vec2:
         """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-left of the rectangle."""
         return Vec2(self.left, self.bottom)
-
-    @property
-    @warning(ReplacementWarning, message=".position is deprecated. Please use .bottom_left instead.")
-    def position(self) -> Vec2:
-        """Backwards-compatible alias of `Rect.bottom_left`."""
-        return self.bottom_left
 
     @property
     def bottom_right(self) -> Vec2:
