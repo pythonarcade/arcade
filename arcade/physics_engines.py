@@ -458,7 +458,7 @@ class PhysicsEnginePlatformer:
         set to be additive, limited, or a set value. Additive only adds to the player's change_y velocity. Limited
         will add to the players' change_y until the jump_velocity limit. Set always sets the players velocity
         to their air jump speed. """
-        
+
         # Sets air_jump_velocity to the same as ground jumps if no velocity is specified
         if not air_jump_velocity:
             air_jump_velocity = velocity
