@@ -450,7 +450,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int,
+        def jump(self, velocity: int,
              air_jump_velocity: Optional[int] = None,
              air_jump_style: Optional[str] = "set",
              jump_velocity_limit: Optional[int] = None):
@@ -458,27 +458,27 @@ class PhysicsEnginePlatformer:
         set to be additive, limited, or a set value. Additive only adds to the player's change_y velocity. Limited
         will add to the players' change_y until the jump_velocity limit. Set always sets the players velocity
         to their air jump speed. """
+        
+        # Sets air_jump_velocity to the same as ground jumps if no velocity is specified
+        if not air_jump_velocity:
+            air_jump_velocity = velocity
+
         if self.can_jump():
             # Air Jump logic
             if self.jumps_since_ground > 0:
-                # This checks if air_jump_velocity is set. If not it will default to the velocity for all air jumps.
-                if air_jump_velocity:
-                    air_jump = air_jump_velocity
-                else:
-                    air_jump = velocity
                 if air_jump_style == "additive":
-                    self.player_sprite.change_y += air_jump
+                    self.player_sprite.change_y += air_jump_velocity
                 elif air_jump_style == "limited":
                     if not jump_velocity_limit:
-                        jump_velocity_limit = air_jump
+                        jump_velocity_limit = air_jump_velocity
                     if self.player_sprite.change_y < 0:
-                        self.player_sprite.change_y = air_jump
-                    elif self.player_sprite.change_y + air_jump < jump_velocity_limit:
-                        self.player_sprite.change_y += air_jump
+                        self.player_sprite.change_y = air_jump_velocity
+                    elif self.player_sprite.change_y + air_jump_velocity < jump_velocity_limit:
+                        self.player_sprite.change_y += air_jump_velocity
                     else:
                         self.player_sprite.change_y = jump_velocity_limit
                 elif air_jump_style == "set":
-                    self.player_sprite.change_y = air_jump
+                    self.player_sprite.change_y = air_jump_velocity
                 else:
                     raise ValueError("Air jump style set is not valid. Use additive, limited, or set.")
 
