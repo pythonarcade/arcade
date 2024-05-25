@@ -417,7 +417,8 @@ class PhysicsEnginePlatformer:
         :returns: True if there is a platform below us
         """
 
-        if (self.is_on_ground(y_distance) or self.is_on_ladder() or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
+        if (self.is_on_ground(y_distance) or self.is_on_ladder() or self.allow_multi_jump and
+                self.jumps_since_ground < self.allowed_jumps and
                 self.jump_ticks >= self.jump_delay):
             return True
         else:
