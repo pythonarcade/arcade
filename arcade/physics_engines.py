@@ -380,7 +380,8 @@ class PhysicsEnginePlatformer:
         # Check for touching a ladder
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
-            if len(hit_list) > 0:
+            if len(hit_list) > 0 and self.jump_ticks >= self.jump_delay:
+                self.jumps_since_ground = 0
                 return True
         return False
 
@@ -408,10 +409,11 @@ class PhysicsEnginePlatformer:
 
     def can_jump(self, y_distance: float = 5) -> bool:
         """
-        Method that looks to see if there is a floor under the player_sprite or the conditions
-        for multijump are true.
+        Method that looks to see if there is a floor under
+        the player_sprite. If there is a floor, the player can jump
+        and we return a True.
 
-        :returns: True if there is a platform below us or if multijump jump conditions are met.
+        :returns: True if there is a platform below us
         """
 
         if (self.is_on_ground(y_distance) or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
@@ -420,8 +422,7 @@ class PhysicsEnginePlatformer:
         else:
             return False
 
-
-    def enable_multi_jump(self, allowed_jumps: int, jump_delay: int = 0):
+    def enable_multi_jump(self, allowed_jumps: int, jump_delay: int = 10):
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -511,7 +512,6 @@ class PhysicsEnginePlatformer:
             # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
         if self.allow_multi_jump:
             if self.jump_ticks < self.jump_delay:
                 self.jump_ticks += 1
