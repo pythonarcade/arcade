@@ -298,6 +298,7 @@ class PhysicsEnginePlatformer:
                  gravity_constant: float = 0.5,
                  ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+                 jump_delay: int = 0
                  ):
         self._ladders: Optional[List[SpriteList]]
         self._platforms: List[SpriteList]
@@ -322,8 +323,8 @@ class PhysicsEnginePlatformer:
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
-        self.jump_delay: int = 0
-        self.jump_ticks: int = 0
+        self.jump_delay = jump_delay
+        self.jump_ticks = jump_delay
         self.allow_multi_jump: bool = False
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
@@ -416,13 +417,13 @@ class PhysicsEnginePlatformer:
         :returns: True if there is a platform below us
         """
 
-        if (self.is_on_ground(y_distance) or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
+        if (self.is_on_ground(y_distance) or self.is_on_ladder() or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps and
                 self.jump_ticks >= self.jump_delay):
             return True
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int, jump_delay: int = 0):
+    def enable_multi_jump(self, allowed_jumps: int):
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -435,8 +436,6 @@ class PhysicsEnginePlatformer:
         :param jump_delay: Number of ticks before another jump is allowed
         """
         self.allowed_jumps = allowed_jumps
-        self.jump_delay = jump_delay
-        self.jump_ticks = jump_delay
         self.allow_multi_jump = True
 
     def disable_multi_jump(self):
@@ -494,7 +493,7 @@ class PhysicsEnginePlatformer:
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
-            self.jump_ticks = 0
+        self.jump_ticks = 0
 
     def update(self):
         """
@@ -512,9 +511,8 @@ class PhysicsEnginePlatformer:
             # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-        if self.allow_multi_jump:
-            if self.jump_ticks < self.jump_delay:
-                self.jump_ticks += 1
+        if self.jump_ticks < self.jump_delay:
+            self.jump_ticks += 1
 
         for platform_list in self.platforms:
             for platform in platform_list:
