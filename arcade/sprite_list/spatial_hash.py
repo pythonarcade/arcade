@@ -8,7 +8,7 @@ from typing import (
     Generic,
 )
 from arcade.sprite.base import BasicSprite
-from arcade.types import Point, IPoint, Rect
+from arcade.types import Point, IPoint, IntRect
 from arcade.sprite import SpriteType
 
 
@@ -129,7 +129,7 @@ class SpatialHash(Generic[SpriteType]):
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
 
-    def get_sprites_near_rect(self, rect: Rect) -> Set[SpriteType]:
+    def get_sprites_near_rect(self, rect: IntRect) -> Set[SpriteType]:
         """
         Return sprites in the same buckets as the given rectangle.
 

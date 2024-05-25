@@ -108,15 +108,15 @@ def test_draw_primitives(window):
 
     # Draw an rectangle outline
     arcade.draw_text("draw_rect", 243, 3, arcade.color.BLACK, 10)
-    arcade.draw_rectangle_outline(295, 100, 45, 65,
+    arcade.draw_rect_outline(arcade.rect.XYWH(295, 100, 45, 65),
                                     arcade.color.BRITISH_RACING_GREEN)
-    arcade.draw_rectangle_outline(295, 160, 20, 45,
+    arcade.draw_rect_outline(arcade.rect.XYWH(295, 160, 20, 45),
                                     arcade.color.BRITISH_RACING_GREEN, 3, 45)
 
     # Draw a filled in rectangle
     arcade.draw_text("draw_filled_rect", 363, 3, arcade.color.BLACK, 10)
-    arcade.draw_rectangle_filled(420, 100, 45, 65, arcade.color.BLUSH)
-    arcade.draw_rectangle_filled(420, 160, 20, 40, arcade.color.BLUSH, 45)
+    arcade.draw_rect_filled(arcade.rect.XYWH(420, 100, 45, 65), arcade.color.BLUSH)
+    arcade.draw_rect_filled(arcade.rect.XYWH(420, 160, 20, 40), arcade.color.BLUSH, 45)
 
     # Load and draw an image to the screen
     # Image from kenney.nl asset pack #1
@@ -130,8 +130,8 @@ def test_draw_primitives(window):
     #
     # Overlapping, with transparency test
     # Draw
-    arcade.draw_rectangle_filled(650, 100, 50, 50, (255, 0, 0))
-    arcade.draw_rectangle_filled(670, 100, 50, 50, (0, 255, 0, 127))
+    arcade.draw_rect_filled(arcade.rect.XYWH(650, 100, 50, 50), (255, 0, 0))
+    arcade.draw_rect_filled(arcade.rect.XYWH(670, 100, 50, 50), (0, 255, 0, 127))
 
     # Test colors
     color = arcade.get_pixel(635, 100)

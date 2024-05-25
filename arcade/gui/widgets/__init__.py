@@ -451,7 +451,7 @@ class UIWidget(EventDispatcher, ABC):
 
         # draw border
         if self._border_width and self._border_color:
-            arcade.draw_xywh_rectangle_outline(
+            arcade.draw_lbwh_rectangle_outline(
                 0,
                 0,
                 self.width,
