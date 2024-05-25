@@ -381,7 +381,7 @@ class PhysicsEnginePlatformer:
         # Check for touching a ladder
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
-            if len(hit_list) > 0 and self.jump_ticks >= self.jump_delay:
+            if hit_list and self.jump_ticks >= self.jump_delay:
                 self.jumps_since_ground = 0
                 return True
         return False
@@ -402,7 +402,7 @@ class PhysicsEnginePlatformer:
 
         self.player_sprite.center_y += y_distance
 
-        if len(hit_list) > 0:
+        if hit_list:
             self.jumps_since_ground = 0
             return True
         else:
