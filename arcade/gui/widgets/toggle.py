@@ -52,7 +52,7 @@ class UITextureToggle(UIInteractiveWidget):
             name=self.normal_on_tex.cache_name + "_darker",
         )
         self.disabled_on_tex = Texture(
-            self.normal_on_tex.image.convert('LA').convert("RGBA"),
+            self.normal_on_tex.image.convert("LA").convert("RGBA"),
         )
 
         if off_texture is None:
@@ -68,7 +68,7 @@ class UITextureToggle(UIInteractiveWidget):
             name=self.normal_off_tex.cache_name + "_darker",
         )
         self.disabled_off_tex = Texture(
-            self.normal_off_tex.image.convert('LA').convert("RGBA"),
+            self.normal_off_tex.image.convert("LA").convert("RGBA"),
         )
 
         self.value = value
@@ -89,9 +89,7 @@ class UITextureToggle(UIInteractiveWidget):
         )
 
     def _dispatch_on_change_event(self):
-        self.dispatch_event(
-            "on_change", UIOnChangeEvent(self, not self.value, self.value)
-        )
+        self.dispatch_event("on_change", UIOnChangeEvent(self, not self.value, self.value))
 
     def on_click(self, event: UIOnClickEvent):
         self.value = not self.value

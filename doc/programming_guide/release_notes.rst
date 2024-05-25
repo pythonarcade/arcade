@@ -125,6 +125,8 @@ Changes
     * :py:class:`~arcade.gui.widgets.slider.UISlider`
     * :py:class:`~arcade.gui.widgets.constructs.UIButtonRow` (`PR1580 <https://github.com/pythonarcade/arcade/pull/1580>`_ and `PR1253 <https://github.com/pythonarcade/arcade/pull/1253>`_)
 
+  * :py:class:`~arcade.gui.UIInteractiveWidget` only reacts to left mouse button events
+
   * Arcade :py:class:`~arcade.gui.property.Property`:
 
     * Properties are observable attributes (supported: primitive, list and dict).

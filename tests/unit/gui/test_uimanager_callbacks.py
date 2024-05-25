@@ -1,7 +1,13 @@
 import arcade
 from arcade.gui import UIMousePressEvent, UIMouseReleaseEvent, UIKeyReleaseEvent
-from arcade.gui.events import UIMouseScrollEvent, UIMouseMovementEvent, UIKeyPressEvent, UITextEvent, UITextMotionEvent, \
-    UITextMotionSelectEvent
+from arcade.gui.events import (
+    UIMouseScrollEvent,
+    UIMouseMovementEvent,
+    UIKeyPressEvent,
+    UITextEvent,
+    UITextMotionEvent,
+    UITextMotionSelectEvent,
+)
 from arcade.gui.widgets import UIDummy
 from arcade.key import MOTION_UP
 from . import record_ui_events

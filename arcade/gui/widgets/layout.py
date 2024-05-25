@@ -325,12 +325,7 @@ class UIBoxLayout(UILayout):
             # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
-                sum(
-                    child.size_hint[1] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                sum(child.size_hint[1] or 0 for child in self.children if child.size_hint) or 1
             )  # Prevent division by zero
 
             for child in self.children:
@@ -346,13 +341,9 @@ class UIBoxLayout(UILayout):
                     min_height_value = shmn_h or 0
 
                     # Maximal growth to parent.width * shw
-                    available_growth_height = min_height_value + available_height * (
-                        sh_h / total_size_hint_height
-                    )
+                    available_growth_height = min_height_value + available_height * (sh_h / total_size_hint_height)
                     max_growth_height = self.height * sh_h
-                    new_rect = new_rect.resize(
-                        height=min(available_growth_height, max_growth_height)
-                    )
+                    new_rect = new_rect.resize(height=min(available_growth_height, max_growth_height))
 
                     if shmn_h is not None:
                         new_rect = new_rect.min_size(height=shmn_h)
@@ -361,9 +352,7 @@ class UIBoxLayout(UILayout):
 
                 # Apply x-axis
                 if sh_w is not None:
-                    new_rect = new_rect.resize(
-                        width=max(available_width * sh_w, shmn_w or 0)
-                    )
+                    new_rect = new_rect.resize(width=max(available_width * sh_w, shmn_w or 0))
 
                     if shmn_w is not None:
                         new_rect = new_rect.min_size(width=shmn_w)
@@ -392,12 +381,7 @@ class UIBoxLayout(UILayout):
             # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
-                sum(
-                    child.size_hint[0] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                sum(child.size_hint[0] or 0 for child in self.children if child.size_hint) or 1
             )  # Prevent division by zero
 
             # TODO Fix layout algorithm, handle size hints per dimension!
@@ -420,14 +404,10 @@ class UIBoxLayout(UILayout):
                     min_width_value = shmn_w or 0
 
                     # Maximal growth to parent.width * shw
-                    available_growth_width = min_width_value + available_width * (
-                        sh_w / total_size_hint_width
-                    )
+                    available_growth_width = min_width_value + available_width * (sh_w / total_size_hint_width)
                     max_growth_width = self.width * sh_w
                     new_rect = new_rect.resize(
-                        width=min(
-                            available_growth_width, max_growth_width
-                        )  # This does not enforce the minimum width
+                        width=min(available_growth_width, max_growth_width)  # This does not enforce the minimum width
                     )
 
                     if shmn_w is not None:
@@ -438,9 +418,7 @@ class UIBoxLayout(UILayout):
 
                 # Apply vertical axis
                 if sh_h is not None:
-                    new_rect = new_rect.resize(
-                        height=max(available_height * sh_h, shmn_h or 0)
-                    )
+                    new_rect = new_rect.resize(height=max(available_height * sh_h, shmn_h or 0))
 
                     if shmn_h is not None:
                         new_rect = new_rect.min_size(height=shmn_h)
@@ -635,25 +613,16 @@ class UIGridLayout(UILayout):
         principal_height_ratio_list = []
 
         for row in max_height_per_row:
-            principal_height_ratio_list.append(
-                max(height / (span or 1) for height, span in row)
-            )
+            principal_height_ratio_list.append(max(height / (span or 1) for height, span in row))
 
         for col in max_width_per_column:
-            principal_width_ratio_list.append(
-                max(width / (span or 1) for width, span in col)
-            )
+            principal_width_ratio_list.append(max(width / (span or 1) for width, span in col))
 
         base_width = self._padding_left + self._padding_right + 2 * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
-        content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        )
-        content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
-        )
+        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+        content_width = sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
@@ -693,7 +662,8 @@ class UIGridLayout(UILayout):
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
             for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
+                row_num : row_num
+                + row_span  # noqa: E203
             ]:
                 row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
@@ -702,35 +672,22 @@ class UIGridLayout(UILayout):
 
         # Making cell height same for each row.
         for row in max_height_per_row:
-            principal_height_ratio = max(
-                (height + self._vertical_spacing) / (span or 1) for height, span in row
-            )
+            principal_height_ratio = max((height + self._vertical_spacing) / (span or 1) for height, span in row)
             principal_height_ratio_list.append(principal_height_ratio)
             for i, (height, span) in enumerate(row):
-                if (height + self._vertical_spacing) / (
-                    span or 1
-                ) < principal_height_ratio:
+                if (height + self._vertical_spacing) / (span or 1) < principal_height_ratio:
                     row[i] = (principal_height_ratio * span, span)
 
         # Making cell width same for each column.
         for col in max_width_per_column:
-            principal_width_ratio = max(
-                (width + self._horizontal_spacing) / (span or 1) for width, span in col
-            )
+            principal_width_ratio = max((width + self._horizontal_spacing) / (span or 1) for width, span in col)
             principal_width_ratio_list.append(principal_width_ratio)
             for i, (width, span) in enumerate(col):
-                if (width + self._horizontal_spacing) / (
-                    span or 1
-                ) < principal_width_ratio:
+                if (width + self._horizontal_spacing) / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
 
-        content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        )
-        content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
-        )
+        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
+        content_width = sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
 
         def ratio(dimensions: List) -> List:
             """
@@ -743,12 +700,8 @@ class UIGridLayout(UILayout):
         expandable_height_ratio = ratio(principal_width_ratio_list)
         expandable_width_ratio = ratio(principal_height_ratio_list)
 
-        total_available_height = (
-            self.content_rect.top - content_height - self.content_rect.bottom
-        )
-        total_available_width = (
-            self.content_rect.right - content_width - self.content_rect.left
-        )
+        total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
+        total_available_width = self.content_rect.right - content_width - self.content_rect.left
 
         # Row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -758,30 +711,22 @@ class UIGridLayout(UILayout):
             for col_num, child in enumerate(row):
                 constant_height = max_height_per_row[row_num][col_num][0]
                 height_expand_ratio = expandable_height_ratio[col_num]
-                available_height = (
-                    constant_height + total_available_height * height_expand_ratio
-                )
+                available_height = constant_height + total_available_height * height_expand_ratio
 
                 constant_width = max_width_per_column[col_num][row_num][0]
                 width_expand_ratio = expandable_width_ratio[row_num]
-                available_width = (
-                    constant_width + total_available_width * width_expand_ratio
-                )
+                available_width = constant_width + total_available_width * width_expand_ratio
 
                 if child is not None and constant_width != 0 and constant_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
 
                     if child.size_hint:
-                        sh_w, sh_h = (child.size_hint[0] or 0), (
-                            child.size_hint[1] or 0
-                        )
+                        sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
                     shmn_w, shmn_h = child.size_hint_min or (None, None)
                     shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                    new_height = max(
-                        shmn_h or 0, sh_h * available_height or child.height
-                    )
+                    new_height = max(shmn_h or 0, sh_h * available_height or child.height)
                     if shmx_h:
                         new_height = min(shmx_h, new_height)
 

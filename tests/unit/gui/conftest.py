@@ -10,7 +10,6 @@ class InteractionUIManager(UIManager, InteractionMixin):
         self.push_handlers(on_event=self._on_ui_event)
 
 
-
 @fixture
 def uimanager(window) -> InteractionUIManager:
     return InteractionUIManager()

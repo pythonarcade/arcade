@@ -29,33 +29,26 @@ def create_ninepatch(
     # NOTE: Pillow's 0,0 is top left, arcade's is bottom left.
     patch_image = Image.new("RGBA", texture_size, (255, 255, 255, 255))
     draw = ImageDraw.Draw(patch_image)
-    draw.rectangle(
-        (left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1),
-        fill=(255, 0, 0, 255)
-    )
+    draw.rectangle((left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1), fill=(255, 0, 0, 255))
     texture = arcade.Texture(patch_image)
 
     # Create the expected image
     expected_image = Image.new("RGBA", patch_size, (255, 255, 255, 255))
     draw = ImageDraw.Draw(expected_image)
-    draw.rectangle(
-        (left, top, patch_size[0] - right - 1, patch_size[1] - bottom - 1),
-        fill=(255, 0, 0, 255)
-    )
+    draw.rectangle((left, top, patch_size[0] - right - 1, patch_size[1] - bottom - 1), fill=(255, 0, 0, 255))
 
     return NinePatchTexture(
         texture=texture,
-        left=left, right=right, bottom=bottom, top=top,
+        left=left,
+        right=right,
+        bottom=bottom,
+        top=top,
     ), expected_image
 
 
 @pytest.fixture(scope="module")
 def fbo(ctx_static):
-    return ctx_static.framebuffer(
-        color_attachments=[
-            ctx_static.texture(PATCH_SIZE)
-        ]
-    )
+    return ctx_static.framebuffer(color_attachments=[ctx_static.texture(PATCH_SIZE)])
 
 
 @pytest.mark.parametrize("left, right, bottom, top", PATCH_VARIANTS)
@@ -64,7 +57,10 @@ def test_draw(ctx, fbo, left, right, bottom, top):
     patch, expected_image = create_ninepatch(
         texture_size=texture_size,
         patch_size=PATCH_SIZE,
-        left=left, right=right, bottom=bottom, top=top,
+        left=left,
+        right=right,
+        bottom=bottom,
+        top=top,
     )
     with fbo.activate():
         fbo.clear()

@@ -88,9 +88,7 @@ class UIDropdown(UILayout):
         super().__init__(x=x, y=y, width=width, height=height, style=style, **kwargs)
 
         # Setup button showing value
-        self._default_button = UIFlatButton(
-            text=self._value or "", width=self.width, height=self.height
-        )
+        self._default_button = UIFlatButton(text=self._value or "", width=self.width, height=self.height)
 
         self._default_button.on_click = self._on_button_click  # type: ignore
 
@@ -130,11 +128,7 @@ class UIDropdown(UILayout):
 
         for option in self._options:
             if option is None:  # None = UIDropdown.DIVIDER, required by pyright
-                self._overlay.add(
-                    UIWidget(width=self.width, height=2).with_background(
-                        color=arcade.color.GRAY
-                    )
-                )
+                self._overlay.add(UIWidget(width=self.width, height=2).with_background(color=arcade.color.GRAY))
                 continue
             else:
                 button = self._overlay.add(
@@ -142,9 +136,7 @@ class UIDropdown(UILayout):
                         text=option,
                         width=self.width,
                         height=self.height,
-                        style=active_style
-                        if self.value == option
-                        else UIFlatButton.DEFAULT_STYLE,
+                        style=active_style if self.value == option else UIFlatButton.DEFAULT_STYLE,
                     )
                 )
             button.on_click = self._on_option_click
@@ -182,11 +174,7 @@ class UIDropdown(UILayout):
         if overlay.size_hint_min is not None:
             rect = rect.resize(*overlay.size_hint_min)
 
-        self._overlay.rect = (
-            rect
-            .align_top(self.bottom - 2)
-            .align_left(self._default_button.left)
-        )
+        self._overlay.rect = rect.align_top(self.bottom - 2).align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the current selected value is changed to a different option."""

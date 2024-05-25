@@ -14,6 +14,7 @@ It currently needs the following improvements:
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.scroll_area
 """
+
 from __future__ import annotations
 
 import arcade
@@ -34,9 +35,7 @@ class MyWindow(Window):
         self.scroll_area = UIScrollArea(x=100, y=100).with_border()
         self.ui.add(self.scroll_area)
 
-        anchor = self.scroll_area.add(
-            UIBoxLayout(width=300, height=300, space_between=20)
-        )
+        anchor = self.scroll_area.add(UIBoxLayout(width=300, height=300, space_between=20))
         anchor.add(UIDummy(height=50))
         anchor.add(UIFlatButton(text="Hello from scroll area", multiline=True))
         anchor.add(UIInputText().with_border())

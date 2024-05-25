@@ -35,6 +35,9 @@ class UILabel(UIWidget):
     By default, a label will fit its initial content. If the text is changed use
     :py:meth:`~arcade.gui.UILabel.fit_content` to adjust the size.
 
+    If the text changes frequently, ensure to set a background color or texture, which will
+    prevent a full rendering of the whole UI and only render the label itself.
+
     :param text: Text displayed on the label.
     :param x: x position (default anchor is bottom-left).
     :param y: y position (default anchor is bottom-left).
@@ -166,7 +169,11 @@ class UILabel(UIWidget):
             self.label.text = value
             self._update_layout()
             self._update_size_hint_min()
-            self.trigger_full_render()
+
+            if self._bg_color or self._bg_tex:
+                self.trigger_render()
+            else:
+                self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
@@ -183,8 +190,9 @@ class UILabel(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.label.draw()
+
+        # pyglet rendering automatically applied by arcade.Text
+        self.label.draw()
 
 
 class UITextWidget(UIAnchorLayout):
@@ -353,9 +361,12 @@ class UIInputText(UIWidget):
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
-            x=x +  self.LAYOUT_OFFSET, y=y, z=0.0,  # Position
-            width=int(width - self.LAYOUT_OFFSET), height=int(height),  # Size
-            multiline=multiline
+            x=x + self.LAYOUT_OFFSET,
+            y=y,
+            z=0.0,  # Position
+            width=int(width - self.LAYOUT_OFFSET),
+            height=int(height),  # Size
+            multiline=multiline,
         )
         self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
         self.caret.visible = False
@@ -408,15 +419,11 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
-                event.x, event.y
-            ):
+            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
                 x = int(event.x - self.x - self.LAYOUT_OFFSET)
                 y = int(event.y - self.y)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy, event.buttons, event.modifiers
-                    )
+                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
