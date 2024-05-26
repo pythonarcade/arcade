@@ -11,6 +11,7 @@ from arcade.camera.data_types import (
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
+from pyglet.math import Vec2
 
 from arcade.window_commands import get_window
 
@@ -234,71 +235,186 @@ class Camera2D:
     @property
     def position(self) -> Tuple[float, float]:
         """The 2D world position of the camera along the X and Y axes."""
-        return self._camera_data.position[:2]
+        return self._camera_data.position[0], self._camera_data.position[1]
 
     @position.setter
     def position(self, _pos: Tuple[float, float]) -> None:
         self._camera_data.position = (_pos[0], _pos[1], self._camera_data.position[2])
 
+    # top_left
     @property
-    def left(self) -> float:
-        """The left side of the camera in world space.
+    def top_left(self) -> Vec2:
+        """Get the top left most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[0] + self._projection_data.left / self._camera_data.zoom
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
 
-    @left.setter
-    def left(self, _left: float) -> None:
-        self._camera_data.position = \
-            (_left - self._projection_data.left / self._camera_data.zoom,) \
-            + self._camera_data.position[1:]
+        return Vec2(pos[0] + up[0] * h_height - up[1] * h_width, pos[1] + up[1] * h_height + up[0] * h_width)
 
-    @property
-    def right(self) -> float:
-        """The right edge of the camera in world space.
+    @top_left.setter
+    def top_left(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[0] + self._projection_data.right / self._camera_data.zoom
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
 
-    @right.setter
-    def right(self, _right: float) -> None:
-        self._camera_data.position = \
-            (_right - self._projection_data.right / self._camera_data.zoom,) \
-            + self._camera_data.position[1:]
-
-    @property
-    def bottom(self) -> float:
-        """The bottom edge of the camera in world space.
-
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[1] + self._projection_data.bottom / self._camera_data.zoom
-
-    @bottom.setter
-    def bottom(self, _bottom: float) -> None:
-        self._camera_data.position = (
-            self._camera_data.position[0],
-            _bottom - self._projection_data.bottom / self._camera_data.zoom,
-            self._camera_data.position[2]
+        self.position = (
+            new_corner[0] - up[0] * h_height + up[1] * h_width,
+            new_corner[1] - up[0] * h_height - up[0] * h_width
         )
 
+    # top_center
     @property
-    def top(self) -> float:
-        """The top edge of the camera in world space.
+    def top_center(self) -> Vec2:
+        """Get the top most position the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        h_height = self.projection_height_scaled / 2.0
+        return Vec2(pos[0] + up[0] * h_height, pos[1] + up[1] * h_height)
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[1] + self._projection_data.top / self._camera_data.zoom
+    @top_center.setter
+    def top_center(self, new_top: Tuple[float, float]):
+        up = self._camera_data.up
+        h_height = self.projection_height_scaled / 2.0
 
-    @top.setter
-    def top(self, _top: float) -> None:
-        self._camera_data.position = (
-            self._camera_data.position[0],
-            _top - self._projection_data.top / self._camera_data.zoom,
-            self._camera_data.position[2]
+        self.position = new_top[0] - up[0] * h_height, new_top[1] - up[1] * h_height
+
+    # top_right
+    @property
+    def top_right(self) -> Vec2:
+        """Get the top right most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        return Vec2(pos[0] + up[0] * h_height + up[1] * h_width, pos[0] + up[1] * h_height - up[0] * h_width)
+
+    @top_right.setter
+    def top_right(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        self.position = (
+            new_corner[0] - up[0] * h_height - up[1] * h_width,
+            new_corner[1] - up[1] * h_height + up[0] * h_width
         )
+
+    # bottom_right
+    @property
+    def bottom_right(self) -> Vec2:
+        """Get the bottom right most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        return Vec2(pos[0] - up[0] * h_height + up[1] * h_width, pos[0] - up[1] * h_height - up[0] * h_width)
+
+    @bottom_right.setter
+    def bottom_right(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        self.position = (
+            new_corner[0] + up[0] * h_height - up[1] * h_width,
+            new_corner[1] + up[1] * h_height + up[0] * h_width
+        )
+
+    # bottom_center
+    @property
+    def bottom_center(self) -> Vec2:
+        """Get the bottom most position the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        h_height = self.projection_height_scaled / 2.0
+        return Vec2(pos[0] - up[0] * h_height, pos[1] - up[1] * h_height)
+
+    @bottom_center.setter
+    def bottom_center(self, new_bottom: Tuple[float, float]):
+        up = self._camera_data.up
+        h_height = self.projection_height_scaled / 2.0
+
+        self.position = new_bottom[0] + up[0] * h_height, new_bottom[1] + up[0] * h_height
+
+    # bottom_left
+    @property
+    def bottom_left(self) -> Vec2:
+        """Get the bottom left most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        return Vec2(pos[0] - up[0] * h_height - up[1] * h_width, pos[1] - up[1] * h_height + up[0] * h_width)
+
+    @bottom_left.setter
+    def bottom_left(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        h_height = self.projection_height_scaled / 2.0
+        h_width = self.projection_width_scaled / 2.0
+
+        self.position = (
+            new_corner[0] + up[0] * h_height + up[1] * h_width,
+            new_corner[1] + up[1] * h_height - up[0] * h_width
+        )
+
+    # center_right
+    @property
+    def center_right(self) -> Vec2:
+        """ Get the right most point the camera can see """
+        pos = self.position
+        up = self._camera_data.up
+        h_width = self.projection_width_scaled / 2.0
+        return Vec2(pos[0] + up[1] * h_width, pos[1] - up[0] * h_width)
+
+    @center_right.setter
+    def center_right(self, new_right: Tuple[float, float]):
+        up = self._camera_data.up
+        h_width = self.projection_width_scaled / 2.0
+        self.position = new_right[0] - up[1] * h_width, new_right[1] + up[0] * h_width
+
+    # center_left
+    @property
+    def center_left(self) -> Vec2:
+        """ Get the left most point the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        h_width = self.projection_width_scaled / 2.0
+        return Vec2(pos[0] - up[1] * h_width, pos[1] + up[0] * h_width)
+
+    @center_left.setter
+    def center_left(self, new_left: Tuple[float, float]):
+        up = self._camera_data.up
+        h_width = self.projection_width_scaled / 2.0
+        self.position = new_left[0] + up[1] * h_width, new_left[1] - up[0] * h_width
+
+    def point_in_view(self, point: Tuple[float, float]) -> bool:
+        """
+        Take a 2D point in the world, and return whether the point is inside the visible area of the camera.
+        """
+        pos = self.position
+        diff = point[0] - pos[0], point[1] - pos[1]
+
+        up = self._camera_data.up
+
+        h_width = self.projection_width_scaled / 2.0
+        h_height = self.projection_height_scaled / 2.0
+
+        dot_x = up[1] * diff[0] - up[0] * diff[1]
+        dot_y = up[0] * diff[0] + up[1] * diff[1]
+
+        return abs(dot_x) <= h_width and abs(dot_y) <= h_height
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
@@ -688,7 +804,7 @@ class Camera2D:
         The base vector is 3D, but the simplified
         camera only provides a 2D view.
         """
-        return self._camera_data.up[:2]
+        return self._camera_data.up[0], self._camera_data[1]
 
     @up.setter
     def up(self, _up: Tuple[float, float]) -> None:
