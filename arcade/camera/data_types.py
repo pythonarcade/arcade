@@ -292,13 +292,6 @@ class Projector(Protocol):
     def activate(self) -> Generator[Self, None, None]:
         ...
 
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, ...]:
-        ...
-
     def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate

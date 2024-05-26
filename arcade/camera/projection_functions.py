@@ -21,6 +21,7 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
         ri.y, up.y, -fo.y, 0.0,
         ri.z, up.z, -fo.z, 0.0,
         -ri.dot(po), -up.dot(po), fo.dot(po), 1.0
+    ))
 
 
 def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, zoom: float = 1.0):

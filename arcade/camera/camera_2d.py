@@ -804,7 +804,7 @@ class Camera2D:
         The base vector is 3D, but the simplified
         camera only provides a 2D view.
         """
-        return self._camera_data.up[0], self._camera_data[1]
+        return self._camera_data.up[0], self._camera_data.up[1]
 
     @up.setter
     def up(self, _up: Tuple[float, float]) -> None:
