@@ -17,7 +17,6 @@ __all__ = [
     'PerspectiveProjectionData',
     'Projection',
     'Projector',
-    'Camera',
     'ZeroProjectionDimension',
     'constrain_camera_data',
     'duplicate_camera_data'
@@ -300,12 +299,25 @@ class Projector(Protocol):
     ) -> Tuple[float, ...]:
         ...
 
-
-class Camera(Protocol):
-
-    def use(self) -> None:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
         ...
 
-    @contextmanager
-    def activate(self) -> Iterator[Projector]:
+    def unproject(self,
+            screen_coordinate: Tuple[float, float],
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
+        """
+        Take in a pixel coordinate and return the associated world coordinate
+
+        Essentially reverses the effects of the projector.
+
+        Args:
+            screen_coordinate: A 2D position in pixels should generally be inside the range of the active viewport.
+            depth: The depth of the query. This can be though of how far along the forward vector
+                   the final coord will be.
+        Returns:
+            A 3D vector in world space.
+        """
         ...
