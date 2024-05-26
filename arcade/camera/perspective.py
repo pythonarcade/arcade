@@ -3,10 +3,15 @@ from typing_extensions import Self
 from contextlib import contextmanager
 
 from math import tan, radians
-from pyglet.math import Mat4, Vec4
+from pyglet.math import Mat4, Vec3
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
-from arcade.camera.projection_functions import generate_view_matrix, generate_perspective_matrix
+from arcade.camera.projection_functions import (
+    generate_view_matrix,
+    generate_perspective_matrix,
+    project_perspective,
+    unproject_perspective
+)
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
@@ -139,23 +144,16 @@ class PerspectiveProjector(Projector):
             z = world_coordinate[2]
         x, y = world_coordinate[0], world_coordinate[1]
 
-        viewport = self._projection.viewport
-
-        world_position = Vec4(x, y, z, 1.0)
-
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        semi_projected_position = _projection @ _view @ world_position
-        div_val = semi_projected_position.w
+        pos = project_perspective(
+            Vec3(x, y, z),
+            self._projection.viewport,
+            _view, _projection
+        )
 
-        projected_x = semi_projected_position.x / div_val
-        projected_y = semi_projected_position.y / div_val
-
-        screen_coordinate_x = viewport[0] + (0.5 * projected_x + 0.5) * viewport[2]
-        screen_coordinate_y = viewport[1] + (0.5 * projected_y + 0.5) * viewport[3]
-
-        return screen_coordinate_x, screen_coordinate_y
+        return pos.x, pos.y
 
     def unproject(self,
             screen_coordinate: Tuple[float, float],
@@ -177,20 +175,15 @@ class PerspectiveProjector(Projector):
         depth = depth or (0.5 * self._projection.viewport[3] / tan(
             radians(0.5 * self._projection.fov / self._view.zoom)))
 
-        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
-        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
 
-        screen_x *= depth
-        screen_y *= depth
-
-        projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
-
-        _projection = ~generate_perspective_matrix(self._projection, self._view.zoom)
-        view_position = _projection @ projected_position
-        _view = ~generate_view_matrix(self._view)
-        world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
-
-        return world_position.x, world_position.y, world_position.z
+        pos = unproject_perspective(
+            screen_coordinate, self.projection.viewport,
+            _view, _projection,
+            depth
+        )
+        return pos.x, pos.y, pos.z
 
     def map_screen_to_world_coordinate(
             self,
