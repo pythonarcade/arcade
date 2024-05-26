@@ -18,15 +18,16 @@ import PIL.ImageDraw
 
 import pyglet.gl as gl
 
-from arcade.types import Color, RGBA255, PointList, Point
+from arcade.color import WHITE
+from arcade.types import AsFloat, Color, RGBA255, PointList, Point
 from arcade.earclip import earclip
+from arcade.types.rect import Rect, LBWH, LRBT, XYWH
 from .math import rotate_point
 from arcade import (
     get_points_for_thick_line,
     Texture,
     get_window,
 )
-from arcade.utils import warning, ReplacementWarning
 
 __all__ = [
     "draw_arc_filled",
@@ -46,18 +47,17 @@ __all__ = [
     "draw_polygon_outline",
     "draw_triangle_filled",
     "draw_triangle_outline",
-    "draw_lrtb_rectangle_outline",
     "draw_lrbt_rectangle_outline",
-    "draw_xywh_rectangle_outline",
-    "draw_rectangle_outline",
-    "draw_lrtb_rectangle_filled",
+    "draw_lbwh_rectangle_outline",
+    "draw_rect_outline",
     "draw_lrbt_rectangle_filled",
-    "draw_xywh_rectangle_filled",
-    "draw_rectangle_filled",
+    "draw_lbwh_rectangle_filled",
+    "draw_rect_filled",
+    "draw_rect_outline_kwargs",
+    "draw_rect_filled_kwargs",
     "draw_scaled_texture_rectangle",
     "draw_texture_rectangle",
     "draw_lbwh_rectangle_textured",
-    "draw_lrwh_rectangle_textured",
     "get_pixel",
     "get_image"
 ]
@@ -521,7 +521,7 @@ def draw_point(x: float, y: float, color: RGBA255, size: float):
         :py:class:`~arcade.types.Color` instance.
     :param size: Size of the point in pixels.
     """
-    draw_rectangle_filled(x, y, size, size, color)
+    draw_rect_filled(XYWH(x, y, size, size), color)
 
 
 def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
@@ -672,46 +672,6 @@ def draw_triangle_outline(x1: float, y1: float,
 
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
-
-@warning(
-    warning_type=ReplacementWarning,
-    new_name="draw_lrbt_rectangle_outline"
-)
-def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
-                                bottom: float, color: RGBA255,
-                                border_width: float = 1):
-    """
-    Draw a rectangle by specifying left, right, top and bottom edges.
-
-    .. deprecated:: 3.0
-       Use :py:func:`draw_lrbt_rectangle_outline` instead!
-
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param right: The x coordinate of the right edge of the rectangle.
-    :param top: The y coordinate of the top of the rectangle.
-    :param bottom: The y coordinate of the rectangle bottom.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param border_width: The width of the border in pixels. Defaults to one.
-    :Raises AttributeError: Raised if left > right or top < bottom.
-
-    """
-    if left > right:
-        raise AttributeError("Left coordinate must be less than or equal to "
-                             "the right coordinate")
-
-    if bottom > top:
-        raise AttributeError("Bottom coordinate must be less than or equal to "
-                             "the top coordinate")
-
-    center_x = (left + right) / 2
-    center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
-    draw_rectangle_outline(center_x, center_y, width, height, color,
-                           border_width)
-
-
 def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: RGBA255,
                                 border_width: float = 1):
     """
@@ -728,21 +688,17 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
     """
     if left > right:
         raise ValueError("Left coordinate must be less than or equal to "
-                             "the right coordinate")
+                         "the right coordinate")
 
     if bottom > top:
         raise ValueError("Bottom coordinate must be less than or equal to "
-                             "the top coordinate")
+                         "the top coordinate")
 
-    center_x = (left + right) / 2
-    center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
-    draw_rectangle_outline(center_x, center_y, width, height, color,
-                           border_width)
+    draw_rect_outline(LRBT(left, right, bottom, top), color,
+                      border_width)
 
 
-def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
+def draw_lbwh_rectangle_outline(left: float, bottom: float,
                                 width: float, height: float,
                                 color: RGBA255,
                                 border_width: float = 1):
@@ -757,80 +713,9 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     """
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
-    draw_rectangle_outline(center_x, center_y, width, height, color,
-                           border_width)
 
-
-def draw_rectangle_outline(center_x: float, center_y: float, width: float,
-                           height: float, color: RGBA255,
-                           border_width: float = 1, tilt_angle: float = 0):
-    """
-    Draw a rectangle outline.
-
-    :param center_x: x coordinate of top left rectangle point.
-    :param center_y: y coordinate of top left rectangle point.
-    :param width: width of the rectangle.
-    :param height: height of the rectangle.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param border_width: width of the lines, in pixels.
-    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
-    """
-    i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
-    i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
-    i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
-    i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
-
-    o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
-    o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
-    o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
-    o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
-
-    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
-
-    if tilt_angle != 0:
-        point_list_2 = []
-        for point in point_list:
-            new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
-            point_list_2.append(new_point)
-        point_list = point_list_2
-
-    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
-
-
-@warning(
-    warning_type=ReplacementWarning,
-    new_name="draw_lrbt_rectangle_filled"
-)
-def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: RGBA255):
-    """
-    Draw a rectangle by specifying left, right, top and bottom edges.
-
-    .. deprecated:: 3.0
-       Use :py:func:`draw_lrbt_rectangle_filled` instead!
-
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param right: The x coordinate of the right edge of the rectangle.
-    :param top: The y coordinate of the top of the rectangle.
-    :param bottom: The y coordinate of the rectangle bottom.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :Raises AttributeError: Raised if left > right or top < bottom.
-    """
-    if left > right:
-        raise AttributeError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
-
-    if bottom > top:
-        raise AttributeError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
-
-    center_x = (left + right) / 2
-    center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
-    draw_rectangle_filled(center_x, center_y, width, height, color)
+    draw_rect_outline(LBWH(left, bottom, width, height), color,
+                      border_width)
 
 
 def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
@@ -850,62 +735,24 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
     if bottom > top:
         raise ValueError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
 
-    center_x = (left + right) / 2
-    center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
-    draw_rectangle_filled(center_x, center_y, width, height, color)
+    draw_rect_filled(LRBT(left, right, bottom, top), color)
 
 
-def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
+def draw_lbwh_rectangle_filled(left: float, bottom: float,
                                width: float, height: float,
                                color: RGBA255):
     """
     Draw a filled rectangle extending from bottom left to top right
 
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
     :param color: The color of the rectangles an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
-    draw_rectangle_filled(center_x, center_y, width, height, color)
 
-
-def draw_rectangle_filled(center_x: float, center_y: float, width: float,
-                          height: float, color: RGBA255,
-                          tilt_angle: float = 0):
-    """
-    Draw a filled-in rectangle.
-
-    :param center_x: x coordinate of rectangle center.
-    :param center_y: y coordinate of rectangle center.
-    :param width: width of the rectangle.
-    :param height: height of the rectangle.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
-    """
-    # Fail if we don't have a window, context, or right GL abstractions
-    window = get_window()
-    ctx = window.ctx
-    program = ctx.shape_rectangle_filled_unbuffered_program
-    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
-    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
-
-    # Validate & normalize to a pass the shader an RGBA float uniform
-    color_normalized = Color.from_iterable(color).normalized
-
-    # Pass data to the shader
-    program['color'] = color_normalized
-    program['shape'] = width, height, tilt_angle
-    buffer.orphan()
-    buffer.write(data=array.array('f', (center_x, center_y)))
-
-    geometry.render(program, mode=ctx.POINTS, vertices=1)
+    draw_rect_filled(LBWH(left, bottom, width, height), color)
 
 
 def draw_scaled_texture_rectangle(center_x: float, center_y: float,
@@ -962,35 +809,7 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-@warning(
-    warning_type=ReplacementWarning,
-    new_name="draw_lbwh_rectangle_textured"
-)
-def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
-                                 width: float,
-                                 height: float,
-                                 texture: Texture, angle: float = 0,
-                                 alpha: int = 255):
-    """Draw a texture extending from bottom left to top right.
-
-   .. deprecated:: 3.0
-      Use :py:func:`draw_lbwh_rectangle_textured` instead!
-
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param width: The width of the rectangle.
-    :param height: The height of the rectangle.
-    :param texture: identifier of texture returned from load_texture() call
-    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
-    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    """
-
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
-    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
-
-
-def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+def draw_lbwh_rectangle_textured(left: float, bottom: float,
                                  width: float,
                                  height: float,
                                  texture: Texture, angle: float = 0,
@@ -998,8 +817,8 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a texture extending from bottom left to top right.
 
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param left: The x coordinate of the left edge of the rectangle.
+    :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
     :param texture: identifier of texture returned from load_texture() call
@@ -1007,10 +826,88 @@ def draw_lbwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
+    center_x = left + (width / 2)
+    center_y = bottom + (height / 2)
     texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
+
+# Reference implementations: drawing of new Rect
+
+def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
+    """
+    Draw a rectangle outline.
+
+    :param rect: The rectangle to draw.
+        a :py:class`~arcade.types.Rect` instance.
+    :param color: The color of the rectangle.
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param border_width: width of the lines, in pixels.
+    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
+    """
+
+    HALF_BORDER = border_width / 2
+
+    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y   + HALF_BORDER
+    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y  + HALF_BORDER
+    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y     - HALF_BORDER
+    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y      - HALF_BORDER
+    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y   - HALF_BORDER
+    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y  - HALF_BORDER
+    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y     + HALF_BORDER
+    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y     + HALF_BORDER
+
+    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
+
+    if tilt_angle != 0:
+        point_list_2 = []
+        for point in point_list:
+            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
+            point_list_2.append(new_point)
+        point_list = point_list_2
+
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+
+
+def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
+    """
+    Draw a filled-in rectangle.
+
+    :param rect: The rectangle to draw.
+        a :py:class`~arcade.types.Rect` instance.
+    :param color: The color of the rectangle as an RGBA
+        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
+    """
+    # Fail if we don't have a window, context, or right GL abstractions
+    window = get_window()
+    ctx = window.ctx
+    program = ctx.shape_rectangle_filled_unbuffered_program
+    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
+    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+
+    # Validate & normalize to a pass the shader an RGBA float uniform
+    color_normalized = Color.from_iterable(color).normalized
+
+    # Pass data to the shader
+    program['color'] = color_normalized
+    program['shape'] = rect.width, rect.height, tilt_angle
+    buffer.orphan()
+    buffer.write(data=array.array('f', (rect.x, rect.y)))
+
+    geometry.render(program, mode=ctx.POINTS, vertices=1)
+
+
+def draw_rect_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat):
+    rect = Rect.from_kwargs(**kwargs)
+    draw_rect_outline(rect, color, border_width, tilt_angle)
+
+
+def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat):
+    rect = Rect.from_kwargs(**kwargs)
+    draw_rect_filled(rect, color, tilt_angle)
+
+
+# Get_ functions
 
 def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """

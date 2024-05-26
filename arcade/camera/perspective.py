@@ -193,4 +193,3 @@ class PerspectiveProjector(Projector):
         Alias of PerspectiveProjector.unproject() for typing.
         """
         return self.unproject(screen_coordinate, depth)
-

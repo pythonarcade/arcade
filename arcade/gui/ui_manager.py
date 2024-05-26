@@ -8,6 +8,7 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scrolling
 - TextArea with scroll support
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -17,12 +18,19 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
 import arcade
-from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
-                               UIMouseDragEvent, UIMouseMovementEvent,
-                               UIMousePressEvent, UIMouseReleaseEvent,
-                               UIMouseScrollEvent, UIOnUpdateEvent,
-                               UITextEvent, UITextMotionEvent,
-                               UITextMotionSelectEvent)
+from arcade.gui.events import (
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
+    UIMouseDragEvent,
+    UIMouseMovementEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
+    UIMouseScrollEvent,
+    UIOnUpdateEvent,
+    UITextEvent,
+    UITextMotionEvent,
+    UITextMotionSelectEvent,
+)
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import Rect, UIWidget
 from arcade.types import Point
@@ -122,9 +130,7 @@ class UIManager(EventDispatcher):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(
-        self, *, root: Optional[UIWidget] = None, layer=0
-    ) -> Iterable[UIWidget]:
+    def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
         """
         walks through widget tree, in reverse draw order (most top drawn widget first)
 
@@ -150,9 +156,7 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(
-        self, pos: Point, cls: Type[W] = UIWidget, layer=0
-    ) -> Iterable[W]:
+    def get_widgets_at(self, pos: Point, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -220,9 +224,7 @@ class UIManager(EventDispatcher):
 
                 if child.size_hint_max:
                     shm_w, shm_h = child.size_hint_max
-                    child.rect = child.rect.max_size(
-                        shm_w or child.width, shm_h or child.height
-                    )
+                    child.rect = child.rect.max_size(shm_w or child.width, shm_h or child.height)
 
                 # continue layout process down the tree
                 child._do_layout()
@@ -360,9 +362,7 @@ class UIManager(EventDispatcher):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMousePressEvent(self, int(x_), int(y_), button, modifiers))
 
-    def on_mouse_drag(
-        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
-    ):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseDragEvent(self, int(x_), int(y_), dx, dy, buttons, modifiers))
 
@@ -372,9 +372,7 @@ class UIManager(EventDispatcher):
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(
-            UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y)
-        )
+        return self.dispatch_ui_event(UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y))
 
     def on_key_press(self, symbol: int, modifiers: int):
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore

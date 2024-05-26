@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Union, Tuple, Optional, List, TYPE_CHECKING
 
 # from arcade import Texture
-from arcade.types import Rect
+from arcade.types import IntRect
 from .texture import Texture
 
 if TYPE_CHECKING:
@@ -94,7 +94,7 @@ class SpriteSheet:
         self._image = self._image.transpose(Image.FLIP_TOP_BOTTOM)
         self._flip_flags = (self._flip_flags[0], not self._flip_flags[1])
 
-    def crop(self, area: Rect):
+    def crop(self, area: IntRect):
         """
         Crop a texture from the sprite sheet.
 
@@ -102,7 +102,7 @@ class SpriteSheet:
         """
         pass
 
-    def crop_sections(self, sections: List[Rect]):
+    def crop_sections(self, sections: List[IntRect]):
         """
         Crop multiple textures from the sprite sheet by specifying a list of
         areas to crop.
@@ -116,7 +116,7 @@ class SpriteSheet:
         size: Tuple[int, int],
         columns: int,
         count: int,
-        margin: Rect = (0, 0, 0, 0),
+        margin: IntRect = (0, 0, 0, 0),
         hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
     ) -> List[Texture]:
         """

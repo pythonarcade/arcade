@@ -75,7 +75,7 @@ class NinePatchTexture:
         bottom: int,
         top: int,
         texture: arcade.Texture,
-        atlas: Optional[arcade.TextureAtlas] = None
+        atlas: Optional[arcade.TextureAtlas] = None,
     ):
         self._ctx = arcade.get_window().ctx
 
@@ -199,7 +199,7 @@ class NinePatchTexture:
         position: Tuple[float, float] = (0.0, 0.0),
         size: Tuple[float, float],
         pixelated: bool = False,
-        **kwargs
+        **kwargs,
     ):
         """
         Draw the 9-patch texture with a specific size.
@@ -214,9 +214,7 @@ class NinePatchTexture:
         :param size: Size of the 9-patch as width, height in pixels
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
-        self.program.set_uniform_safe(
-            "texture_id", self._atlas.get_texture_id(self._texture)
-        )
+        self.program.set_uniform_safe("texture_id", self._atlas.get_texture_id(self._texture))
         if pixelated:
             self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         else:
@@ -246,8 +244,6 @@ class NinePatchTexture:
 
         # Sanity check texture size
         if self._left + self._right > self._texture.width:
-            raise ValueError(
-                "Left and right border must be smaller than texture width")
+            raise ValueError("Left and right border must be smaller than texture width")
         if self._bottom + self._top > self._texture.height:
-            raise ValueError(
-                "Bottom and top border must be smaller than texture height")
+            raise ValueError("Bottom and top border must be smaller than texture height")

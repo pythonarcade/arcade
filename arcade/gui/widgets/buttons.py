@@ -31,9 +31,7 @@ class UITextureButtonStyle(UIStyleBase):
     border_width: int = 2
 
 
-class UITextureButton(
-    UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget
-):
+class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
     """
     A button with an image for the face of the button.
 
@@ -198,9 +196,7 @@ class UITextureButton(
         current_state = self.get_current_state()
         current_texture = self._textures.get(current_state)
         if current_texture:
-            surface.draw_texture(
-                0, 0, self.content_width, self.content_height, current_texture
-            )
+            surface.draw_texture(0, 0, self.content_width, self.content_height, current_texture)
 
     def _apply_style(self, style: UITextureButtonStyle):
         """
@@ -222,9 +218,8 @@ class UITextureButton(
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(
-                self.content_width, self.content_height
-            )
+            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
+
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     """
@@ -343,7 +338,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
         # render button border (which is not the widgets border)
         if border_color and border_width:
-            arcade.draw_xywh_rectangle_outline(
+            arcade.draw_lbwh_rectangle_outline(
                 border_width,
                 border_width,
                 self.content_width - 2 * border_width,
@@ -372,6 +367,4 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(
-                self.content_width, self.content_height
-            )
+            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
