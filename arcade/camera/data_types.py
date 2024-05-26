@@ -4,7 +4,7 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Iterator, Optional, Generator
+from typing import Protocol, Tuple, Optional, Generator
 from contextlib import contextmanager
 
 from typing_extensions import Self

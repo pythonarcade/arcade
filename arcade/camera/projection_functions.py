@@ -1,5 +1,5 @@
 from math import tan, pi
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 from pyglet.math import Vec2, Vec3, Vec4, Mat4
 from arcade.camera.data_types import CameraData, PerspectiveProjectionData, OrthographicProjectionData
@@ -108,7 +108,7 @@ def generate_perspective_matrix(perspective_data: PerspectiveProjectionData, zoo
 
 
 def project_orthographic(world_coordinate: Vec3,
-                         viewport: tuple[int, int, int, int],
+                         viewport: Tuple[int, int, int, int],
                          view_matrix: Mat4, projection_matrix: Mat4) -> Vec2:
     if len(world_coordinate) > 2:
         z = world_coordinate[2]
@@ -126,18 +126,10 @@ def project_orthographic(world_coordinate: Vec3,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_orthographic(screen_coordinate: Union[Vec2, tuple[float, float]],
+def unproject_orthographic(screen_coordinate: Union[Vec2, Tuple[float, float]],
                            viewport: tuple[int, int, int, int],
                            view_matrix: Mat4, projection_matrix: Mat4,
                            depth: Optional[float] = None) -> Vec3:
-    """
-    Take in a pixel coordinate from within
-    the range of the window size and returns
-    the world space coordinates.
-
-    Effectively reverses the effects of the projector.
-    """
-
     screen_x = 2.0 * (screen_coordinate[0] - viewport[0]) / viewport[2] - 1
     screen_y = 2.0 * (screen_coordinate[1] - viewport[1]) / viewport[3] - 1
 
@@ -151,7 +143,7 @@ def unproject_orthographic(screen_coordinate: Union[Vec2, tuple[float, float]],
 
 
 def project_perspective(world_coordinate: Vec3,
-                        viewport: tuple[int, int, int, int],
+                        viewport: Tuple[int, int, int, int],
                         view_matrix: Mat4, projection_matrix: Mat4) -> Vec2:
     world_position = Vec4(world_coordinate.x, world_coordinate.y, world_coordinate.z, 1.0)
 
@@ -168,10 +160,10 @@ def project_perspective(world_coordinate: Vec3,
 
 
 def unproject_perspective(screen_coordinate: Union[Vec2, tuple[float, float]],
-                          viewport: tuple[int, int, int, int],
+                          viewport: Tuple[int, int, int, int],
                           view_matrix: Mat4, projection_matrix: Mat4,
                           depth: Optional[float] = None) -> Vec3:
-    depth = depth or 0.0
+    depth = depth or 1.0
 
     screen_x = 2.0 * (screen_coordinate[0] - viewport[0]) / viewport[2] - 1
     screen_y = 2.0 * (screen_coordinate[1] - viewport[1]) / viewport[3] - 1
