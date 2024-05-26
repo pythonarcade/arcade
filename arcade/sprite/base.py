@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
 
-@copy_dunders_unimplemented # See https://github.com/pythonarcade/arcade/issues/2074
+@copy_dunders_unimplemented  # See https://github.com/pythonarcade/arcade/issues/2074
 class BasicSprite:
     """
     The absolute minimum needed for a sprite.
@@ -365,7 +365,7 @@ class BasicSprite:
             if len(_a) > 1:  # Alpha's only used to validate here
                 raise ValueError()
 
-        except ValueError as _:  # It's always a length issue
+        except ValueError:  # It's always a length issue
             raise ValueError((
                 f"{self.__class__.__name__},rgb takes 3 or 4 channel"
                 f" colors, but got {len(color)} channels"))
