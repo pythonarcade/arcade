@@ -109,8 +109,8 @@ class MyGame(arcade.Window):
         # Fake an endless world with scrolling terrain
         # Try experimenting with commenting out 1 or both of the 2 lines
         # below to get an intuitive understanding of what each does!
-        bg.offset = self.camera.left, self.camera.bottom  # Fake depth by moving layers
-        bg.pos = self.camera.left, self.camera.bottom  # Follow the car to fake infinity
+        bg.offset = self.camera.bottom_left  # Fake depth by moving layers
+        bg.pos = self.camera.bottom_left  # Follow the car to fake infinity
 
         # Draw the background & the player's car
         bg.draw()

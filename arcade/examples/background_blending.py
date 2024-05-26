@@ -87,8 +87,8 @@ class MyGame(arcade.Window):
         self.camera.use()
 
         # Ensure the background aligns with the camera
-        self.background_1.pos = self.camera.left, self.camera.bottom
-        self.background_2.pos = self.camera.left, self.camera.bottom
+        self.background_1.pos = self.camera.bottom_left
+        self.background_2.pos = self.camera.bottom_left
 
         # Offset the background texture.
         self.background_1.texture.offset = self.camera.position

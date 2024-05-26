@@ -255,21 +255,22 @@ class MyGame(arcade.Window):
         sprite_count = len(self.wall_list)
 
         output = f"Sprite Count: {sprite_count}"
+        left, bottom = self.cam.bottom_left
         arcade.draw_text(output,
-                         self.cam.left + 20,
-                         SCREEN_HEIGHT - 20 + self.cam.bottom,
+                         left + 20,
+                         SCREEN_HEIGHT - 20 + bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
-                         self.cam.left + 20,
-                         SCREEN_HEIGHT - 40 + self.cam.bottom,
+                         left + 20,
+                         SCREEN_HEIGHT - 40 + bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output,
-                         self.cam.left + 20,
-                         SCREEN_HEIGHT - 60 + self.cam.bottom,
+                         left + 20,
+                         SCREEN_HEIGHT - 60 + bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -305,35 +306,42 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Track if we need to change the viewport
-
+        # Keep track of if we changed the boundary. We don't want to
+        # update the camera if we don't need to.
         changed = False
 
-        # Scroll left
-        left_bndry = self.cam.left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.cam.left -= left_bndry - self.player_sprite.left
-            changed = True
+        pos = self.cam.position
 
-        # Scroll right
-        right_bndry = self.cam.right - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.cam.left += self.player_sprite.right - right_bndry
+        top_left = self.cam.top_left
+
+        # Scroll left
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
+        if self.player_sprite.left < left_boundary:
             changed = True
+            pos = pos[0] - left_boundary - self.player_sprite.left, pos[1]
 
         # Scroll up
-        top_bndry = self.cam.top - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_bndry:
-            self.cam.bottom += self.player_sprite.top - top_bndry
+        top_boundary = top_left[0] - VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundary:
             changed = True
+            pos = pos[0], pos[1] + self.player_sprite.top - top_boundary
+
+        bottom_right = self.cam.bottom_right
+
+        # Scroll right
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
+        if self.player_sprite.right > right_boundary:
+            changed = True
+            pos = pos[0] + self.player_sprite.right - right_boundary, pos[1]
 
         # Scroll down
-        bottom_bndry = self.cam.bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_bndry:
-            self.cam.bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
+        if self.player_sprite.bottom < bottom_boundary:
+            pos = pos[0], pos[1] - bottom_boundary - self.player_sprite.bottom
 
+        # If we changed the boundary values, update the view port to match
         if changed:
+            self.cam.position = pos
             self.cam.use()
 
         # Save the time it took to do this.
