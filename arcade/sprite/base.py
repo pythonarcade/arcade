@@ -7,6 +7,7 @@ from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.types.rect import Rect, LRBT
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -295,6 +296,10 @@ class BasicSprite:
         highest = self.top
         diff = highest - amount
         self.center_y -= diff
+
+    @property
+    def rect(self) -> Rect:
+        return LRBT(self.left, self.right, self.bottom, self.top)
 
     @property
     def visible(self) -> bool:
