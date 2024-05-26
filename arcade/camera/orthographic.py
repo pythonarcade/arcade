@@ -182,14 +182,3 @@ class OrthographicProjector(Projector):
         )
 
         return pos.x, pos.y, pos.z
-
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
-        """
-        Alias of OrthographicProjector.unproject() for typing.
-        """
-        return self.unproject(screen_coordinate, depth)
-

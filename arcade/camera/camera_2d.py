@@ -831,14 +831,3 @@ class Camera2D:
         """
 
         return self._ortho_projector.unproject(screen_coordinate, depth)
-
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
-        """
-        Alias to Camera2D.unproject() for typing completion
-        """
-        return self.unproject(screen_coordinate, depth)
-
