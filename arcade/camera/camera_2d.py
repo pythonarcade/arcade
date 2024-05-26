@@ -248,21 +248,21 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        top = self.projection_top_scaled
+        left = self.projection_left_scaled
 
-        return Vec2(pos[0] + up[0] * h_height - up[1] * h_width, pos[1] + up[1] * h_height + up[0] * h_width)
+        return Vec2(pos[0] + up[0] * top + up[1] * left, pos[1] + up[1] * top - up[0] * left)
 
     @top_left.setter
     def top_left(self, new_corner: Tuple[float, float]):
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        top = self.projection_top_scaled
+        left = self.projection_left_scaled
 
         self.position = (
-            new_corner[0] - up[0] * h_height + up[1] * h_width,
-            new_corner[1] - up[0] * h_height - up[0] * h_width
+            new_corner[0] - up[0] * top - up[1] * left,
+            new_corner[1] - up[0] * top + up[0] * left
         )
 
     # top_center
@@ -271,15 +271,15 @@ class Camera2D:
         """Get the top most position the camera can see"""
         pos = self.position
         up = self._camera_data.up
-        h_height = self.projection_height_scaled / 2.0
-        return Vec2(pos[0] + up[0] * h_height, pos[1] + up[1] * h_height)
+        top = self.projection_top_scaled
+        return Vec2(pos[0] + up[0] * top, pos[1] + up[1] * top)
 
     @top_center.setter
     def top_center(self, new_top: Tuple[float, float]):
         up = self._camera_data.up
-        h_height = self.projection_height_scaled / 2.0
+        top = self.projection_top_scaled
 
-        self.position = new_top[0] - up[0] * h_height, new_top[1] - up[1] * h_height
+        self.position = new_top[0] - up[0] * top, new_top[1] - up[1] * top
 
     # top_right
     @property
@@ -288,21 +288,21 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        top = self.projection_top_scaled
+        right = self.projection_right_scaled
 
-        return Vec2(pos[0] + up[0] * h_height + up[1] * h_width, pos[0] + up[1] * h_height - up[0] * h_width)
+        return Vec2(pos[0] + up[0] * top + up[1] * right, pos[0] + up[1] * top - up[0] * right)
 
     @top_right.setter
     def top_right(self, new_corner: Tuple[float, float]):
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        top = self.projection_top_scaled
+        right = self.projection_right_scaled
 
         self.position = (
-            new_corner[0] - up[0] * h_height - up[1] * h_width,
-            new_corner[1] - up[1] * h_height + up[0] * h_width
+            new_corner[0] - up[0] * top - up[1] * right,
+            new_corner[1] - up[1] * top + up[0] * right
         )
 
     # bottom_right
@@ -312,21 +312,21 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        bottom = self.projection_bottom_scaled
+        right = self.projection_right_scaled
 
-        return Vec2(pos[0] - up[0] * h_height + up[1] * h_width, pos[0] - up[1] * h_height - up[0] * h_width)
+        return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[0] + up[1] * bottom - up[0] * right)
 
     @bottom_right.setter
     def bottom_right(self, new_corner: Tuple[float, float]):
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        bottom = self.projection_bottom_scaled
+        right = self.projection_right_scaled
 
         self.position = (
-            new_corner[0] + up[0] * h_height - up[1] * h_width,
-            new_corner[1] + up[1] * h_height + up[0] * h_width
+            new_corner[0] - up[0] * bottom - up[1] * right,
+            new_corner[1] - up[1] * bottom + up[0] * right
         )
 
     # bottom_center
@@ -335,15 +335,16 @@ class Camera2D:
         """Get the bottom most position the camera can see"""
         pos = self.position
         up = self._camera_data.up
-        h_height = self.projection_height_scaled / 2.0
-        return Vec2(pos[0] - up[0] * h_height, pos[1] - up[1] * h_height)
+        bottom = self.projection_bottom_scaled
+
+        return Vec2(pos[0] - up[0] * bottom, pos[1] - up[1] * bottom)
 
     @bottom_center.setter
     def bottom_center(self, new_bottom: Tuple[float, float]):
         up = self._camera_data.up
-        h_height = self.projection_height_scaled / 2.0
+        bottom = self.projection_bottom_scaled
 
-        self.position = new_bottom[0] + up[0] * h_height, new_bottom[1] + up[0] * h_height
+        self.position = new_bottom[0] - up[0] * bottom, new_bottom[1] - up[0] * bottom
 
     # bottom_left
     @property
@@ -352,21 +353,21 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        bottom = self.projection_bottom_scaled
+        left = self.projection_left_scaled
 
-        return Vec2(pos[0] - up[0] * h_height - up[1] * h_width, pos[1] - up[1] * h_height + up[0] * h_width)
+        return Vec2(pos[0] + up[0] * bottom + up[1] * left, pos[1] + up[1] * bottom - up[0] * left)
 
     @bottom_left.setter
     def bottom_left(self, new_corner: Tuple[float, float]):
         up = self._camera_data.up
 
-        h_height = self.projection_height_scaled / 2.0
-        h_width = self.projection_width_scaled / 2.0
+        bottom = self.projection_bottom_scaled
+        left = self.projection_left_scaled
 
         self.position = (
-            new_corner[0] + up[0] * h_height + up[1] * h_width,
-            new_corner[1] + up[1] * h_height - up[0] * h_width
+            new_corner[0] - up[0] * bottom - up[1] * left,
+            new_corner[1] - up[1] * bottom + up[0] * left
         )
 
     # center_right
@@ -375,14 +376,14 @@ class Camera2D:
         """ Get the right most point the camera can see """
         pos = self.position
         up = self._camera_data.up
-        h_width = self.projection_width_scaled / 2.0
-        return Vec2(pos[0] + up[1] * h_width, pos[1] - up[0] * h_width)
+        right = self.projection_right_scaled
+        return Vec2(pos[0] + up[1] * right, pos[1] - up[0] * right)
 
     @center_right.setter
     def center_right(self, new_right: Tuple[float, float]):
         up = self._camera_data.up
-        h_width = self.projection_width_scaled / 2.0
-        self.position = new_right[0] - up[1] * h_width, new_right[1] + up[0] * h_width
+        right = self.projection_right_scaled
+        self.position = new_right[0] - up[1] * right, new_right[1] + up[0] * right
 
     # center_left
     @property
@@ -390,14 +391,14 @@ class Camera2D:
         """ Get the left most point the camera can see"""
         pos = self.position
         up = self._camera_data.up
-        h_width = self.projection_width_scaled / 2.0
-        return Vec2(pos[0] - up[1] * h_width, pos[1] + up[0] * h_width)
+        left = self.projection_left_scaled
+        return Vec2(pos[0] + up[1] * left, pos[1] - up[0] * left)
 
     @center_left.setter
     def center_left(self, new_left: Tuple[float, float]):
         up = self._camera_data.up
-        h_width = self.projection_width_scaled / 2.0
-        self.position = new_left[0] + up[1] * h_width, new_left[1] - up[0] * h_width
+        left = self.projection_left_scaled
+        self.position = new_left[0] - up[1] * left, new_left[1] - up[0] * left
 
     def point_in_view(self, point: Tuple[float, float]) -> bool:
         """

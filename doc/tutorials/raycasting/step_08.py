@@ -126,8 +126,9 @@ class MyGame(arcade.Window):
 
         # Calculate the light position. We have to subtract the camera position
         # from the player position to get screen-relative coordinates.
-        p = (self.player_sprite.position[0] - self.camera_sprites.left,
-             self.player_sprite.position[1] - self.camera_sprites.bottom)
+        left, bottom = self.camera_sprites.bottom_left
+        p = (self.player_sprite.position[0] - left,
+             self.player_sprite.position[1] - bottom)
 
         # Set the uniform data
         self.shadertoy.program['lightPosition'] = p
