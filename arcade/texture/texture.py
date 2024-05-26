@@ -27,6 +27,7 @@ from arcade.texture.transforms import (
 )
 
 from arcade.types import RGBA255, PointList
+from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -859,6 +860,19 @@ class Texture:
         spritelist.append(sprite)
         spritelist.draw()
         spritelist.remove(sprite)
+
+    def draw_rect(self, rect: Rect, alpha: int = 255):
+        """
+        Draw the texture.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
+
+        :param rect: A Rect to draw this texture to.
+        :param alpha: The transparency of the texture `(0-255)`.
+        """
+        self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
 
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets
