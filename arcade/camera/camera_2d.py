@@ -83,7 +83,7 @@ class Camera2D:
         # We don't want to force people to use a render target,
         # but we need to have some form of default size so we use the screen.
         render_target = render_target or self._window.ctx.screen
-        viewport = viewport or render_target.viewport
+        viewport = render_target.viewport if viewport is None else viewport
         width, height = (render_target.width, render_target.height) if viewport is None else (viewport[2], viewport[3])
         half_width = width / 2
         half_height = height / 2
@@ -116,7 +116,7 @@ class Camera2D:
             left=left, right=right,
             top=top, bottom=bottom,
             near=near, far=far,
-            viewport=viewport
+            viewport=(viewport[0], viewport[1], viewport[2], viewport[3])
         )
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
             window=self._window,

@@ -127,7 +127,7 @@ def project_orthographic(world_coordinate: Vec3,
 
 
 def unproject_orthographic(screen_coordinate: Union[Vec2, Tuple[float, float]],
-                           viewport: tuple[int, int, int, int],
+                           viewport: Tuple[int, int, int, int],
                            view_matrix: Mat4, projection_matrix: Mat4,
                            depth: Optional[float] = None) -> Vec3:
     screen_x = 2.0 * (screen_coordinate[0] - viewport[0]) / viewport[2] - 1
@@ -159,7 +159,7 @@ def project_perspective(world_coordinate: Vec3,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_perspective(screen_coordinate: Union[Vec2, tuple[float, float]],
+def unproject_perspective(screen_coordinate: Union[Vec2, Tuple[float, float]],
                           viewport: Tuple[int, int, int, int],
                           view_matrix: Mat4, projection_matrix: Mat4,
                           depth: Optional[float] = None) -> Vec3:

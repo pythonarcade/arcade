@@ -63,7 +63,11 @@ class _StaticCamera:
         if self._project_method is None:
             raise ValueError("This Static Camera was not provided a project method at creation")
 
-        return self._project_method(world_coordinate, self._viewport, self._view, self._projection)
+        pos = self._project_method(
+            Vec3(world_coordinate[0], world_coordinate[1], world_coordinate[2]),
+            self._viewport, self._view, self._projection
+        )
+        return pos.x, pos.y
 
     def unproject(self,
             screen_coordinate: Tuple[float, float],
@@ -85,8 +89,11 @@ class _StaticCamera:
         if self._unproject_method is None:
             raise ValueError("This Static Camera was not provided an unproject method at creation")
 
-        return self._unproject_method(screen_coordinate, self._viewport, self._view, self._projection, depth)
-
+        pos = self._unproject_method(
+            Vec2(screen_coordinate[0], screen_coordinate[1]),
+            self._viewport, self._view, self._projection, depth
+        )
+        return pos.x, pos.y, pos.z
 
 def static_from_orthographic(
         view: CameraData,
