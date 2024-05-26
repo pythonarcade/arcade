@@ -343,14 +343,17 @@ class Rect(NamedTuple):
         """Returns True if the given point is inside this rectangle."""
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
 
-    def point_on_bounds(self, point: Vec2, tolerance: float) -> bool:
-        """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
+    def distance_from_bounds(self, point: Vec2) -> float:
+        """Returns the point's distance from the boundary of this rectangle."""
         diff = Vec2(point.x - self.x, point.y - self.y)
         dx = abs(diff.x) - self.width / 2.0
         dy = abs(diff.y) - self.height / 2.0
         d = (max(dx, 0.0)**2 + max(dy, 0.0)**2)**0.5 + min(max(dx, dy), 0.0)
+        return d
 
-        return abs(d) < tolerance
+    def point_on_bounds(self, point: Vec2, tolerance: float) -> bool:
+        """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
+        return abs(self.distance_from_bounds(point)) < tolerance
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Returns a tuple of the four corners of this Rect."""
