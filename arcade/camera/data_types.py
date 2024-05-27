@@ -240,6 +240,7 @@ class Projector(Protocol):
 
     .. list-table::
        :header-rows: 1
+
        * - Method
          - Action
 

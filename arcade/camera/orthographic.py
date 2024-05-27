@@ -113,7 +113,7 @@ class OrthographicProjector(Projector):
     def activate(self) -> Generator[Self, None, None]:
         """Set this camera as the current one, then undo it after.
 
-        This method is a :ref+external:`context manager <context-managers>`
+        This method is a :external:ref:`context manager <context-managers>`
         you can use inside ``with`` blocks. Using it this way guarantees
         that the old camera and its settings will be restored, even if an
         exception occurs:
