@@ -145,6 +145,7 @@ class Camera2D:
 
         .. list-table::
           :header-rows: 1
+
           * - Shared Value
             - Example Use(s)
           * - ``camera_data``
