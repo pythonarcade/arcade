@@ -291,7 +291,7 @@ class Camera2D:
         top = self.projection_top_scaled
         right = self.projection_right_scaled
 
-        return Vec2(pos[0] + up[0] * top + up[1] * right, pos[0] + up[1] * top - up[0] * right)
+        return Vec2(pos[0] + up[0] * top + up[1] * right, pos[1] + up[1] * top - up[0] * right)
 
     @top_right.setter
     def top_right(self, new_corner: Tuple[float, float]):
@@ -314,8 +314,7 @@ class Camera2D:
 
         bottom = self.projection_bottom_scaled
         right = self.projection_right_scaled
-
-        return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[0] + up[1] * bottom - up[0] * right)
+        return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[1] + up[1] * bottom - up[0] * right)
 
     @bottom_right.setter
     def bottom_right(self, new_corner: Tuple[float, float]):

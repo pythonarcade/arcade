@@ -26,31 +26,19 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
 
 def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, zoom: float = 1.0):
     """
-    Using the OrthographicProjectionData a projection matrix is generated where the size of the
-    objects is not affected by depth.
+    Using the OrthographicProjectionData a projection matrix is generated where the size of an
+    object is not affected by depth.
 
     Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
     the pixels uniform in size. Avoid a zoom of 0.0.
     """
 
-    # Find the center of the projection values (often 0,0 or the center of the screen)
-    projection_x, projection_y = (
-        (perspective_data.left + perspective_data.right) / 2.0,
-        (perspective_data.bottom + perspective_data.top) / 2.0
-    )
-
-    # Find half the width of the projection
-    half_width, half_height = (
-        (perspective_data.right - perspective_data.left) / 2.0,
-        (perspective_data.top - perspective_data.bottom) / 2.0
-    )
-
     # Scale the projection by the zoom value. Both the width and the height
     # share a zoom value to avoid ugly stretching.
-    left = projection_x - half_width / zoom
-    right = projection_x + half_width / zoom
-    bottom = projection_y - half_height / zoom
-    top = projection_y + half_height / zoom
+    left = perspective_data.left / zoom
+    right = perspective_data.right / zoom
+    bottom = perspective_data.bottom / zoom
+    top = perspective_data.top / zoom
 
     z_near, z_far = perspective_data.near, perspective_data.far
 
@@ -67,10 +55,10 @@ def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, z
     tz = -(z_far + z_near) / depth
 
     return Mat4((
-         sx, 0.0, 0.0, 0.0,
+        sx, 0.0, 0.0, 0.0,
         0.0,  sy, 0.0, 0.0,
         0.0, 0.0,  sz, 0.0,
-         tx,  ty,  tz, 1.0
+        tx,  ty,  tz, 1.0
     ))
 
 

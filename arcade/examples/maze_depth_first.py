@@ -260,20 +260,19 @@ class MyGame(arcade.Window):
         pos = self.cam.position
 
         top_left = self.cam.top_left
+        bottom_right = self.cam.bottom_right
 
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             changed = True
-            pos = pos[0] - (left_boundary - self.player_sprite.left), pos[1]
+            pos = pos[0] + (self.player_sprite.left - left_boundary), pos[1]
 
         # Scroll up
-        top_boundary = top_left[0] - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
             changed = True
             pos = pos[0], pos[1] + (self.player_sprite.top - top_boundary)
-
-        bottom_right = self.cam.bottom_right
 
         # Scroll right
         right_boundary = bottom_right[0] - VIEWPORT_MARGIN
@@ -284,18 +283,12 @@ class MyGame(arcade.Window):
         # Scroll down
         bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            pos = pos[0], pos[1] - (bottom_boundary - self.player_sprite.bottom)
+            changed = True
+            pos = pos[0], pos[1] + (self.player_sprite.bottom - bottom_boundary)
 
         # If we changed the boundary values, update the view port to match
         if changed:
             self.cam.position = pos
-            # Make sure our boundaries are integer values. While the view port does
-            # support floating point numbers, for this application we want every pixel
-            # in the view port to map directly onto a pixel on the screen. We don't want
-            # any rounding errors.
-            bottom_left = self.cam.bottom_left
-            self.cam.bottom_left = int(bottom_left[0]), int(bottom_left[1])
-
             self.cam.use()
 
         # Save the time it took to do this.

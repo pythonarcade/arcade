@@ -212,10 +212,10 @@ class MyGame(arcade.Window):
             left_boundary = top_left[0] + VIEWPORT_MARGIN_LEFT
             if self.player_sprite.left < left_boundary:
                 changed = True
-                pos = pos[0] - (left_boundary - self.player_sprite.left), pos[1]
+                pos = pos[0] + (self.player_sprite.left - left_boundary), pos[1]
 
             # Scroll up
-            top_boundary = top_left[0] - VIEWPORT_MARGIN_TOP
+            top_boundary = top_left[1] - VIEWPORT_MARGIN_TOP
             if self.player_sprite.top > top_boundary:
                 changed = True
                 pos = pos[0], pos[1] + (self.player_sprite.top - top_boundary)
@@ -231,7 +231,7 @@ class MyGame(arcade.Window):
             # Scroll down
             bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN_BOTTOM
             if self.player_sprite.bottom < bottom_boundary:
-                pos = pos[0], pos[1] - (bottom_boundary - self.player_sprite.bottom)
+                pos = pos[0], pos[1] + (self.player_sprite.bottom - bottom_boundary)
 
             # If we changed the boundary values, update the view port to match
             if changed:

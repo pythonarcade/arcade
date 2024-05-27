@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            position = position[0] - (left_boundary - self.player_sprite.left), position[1]
+            position = position[0] + (self.player_sprite.left - left_boundary), position[1]
 
         # Scroll right
         right_boundary = bottom_right[0] - VIEWPORT_MARGIN
@@ -106,7 +106,7 @@ class MyGame(arcade.Window):
         # Scroll down
         bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            position = position[0], position[1] - (bottom_boundary - self.player_sprite.bottom)
+            position = position[0], position[1] + (self.player_sprite.bottom - bottom_boundary)
 
         self.camera.position = position
 
