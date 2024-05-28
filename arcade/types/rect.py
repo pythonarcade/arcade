@@ -25,7 +25,7 @@ class RectKwargs(TypedDict):
 
 
 class Rect(NamedTuple):
-    """Rects define a rectangle, with several convenience properties and functions.
+    """``Rect``s define a rectangle, with several convenience properties and functions.
 
     This object is immutable by design. It provides no setters, and is a NamedTuple subclass.
 
@@ -35,10 +35,9 @@ class Rect(NamedTuple):
     Rectangles cannot rotate by design, since this complicates their implmentation a lot.
 
     You probably don't want to create one of these directly, and should instead use a helper method, like
-    :py:func:`~arcade.types.rect.LBWH`, :py:func:`~arcade.types.rect.LRBT`,
-    :py:func:`~arcade.types.rect.XYWH`, or :py:func:`~arcade.types.rect.Viewport`.
+    :py:func:`LBWH`, :py:func:`LRBT`, :py:func:`XYWH`, or :py:func:`Viewport`.
 
-    You can also use :py:func:`~arcade.types.rect.Rect.from_kwargs` to create a Rect from keyword arguments.
+    You can also use :py:meth:`.from_kwargs` to create a Rect from keyword arguments.
 
     """
     #: The X position of the rectangle's left edge.
@@ -309,6 +308,7 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __or__(self, other: Rect) -> Rect:
+        """Returns the result of :py:meth:`union` with ``other``."""
         return self.union(other)
 
     def intersection(self, other: Rect) -> Rect | None:
@@ -326,6 +326,7 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __and__(self, other: Rect) -> Rect | None:
+        """Returns the result of :py:meth:`intersection` with ``other``."""
         return self.intersection(other)
 
     def overlaps(self, other: Rect) -> bool:
@@ -398,9 +399,10 @@ class Rect(NamedTuple):
         """Creates a new Rect from keyword arguments. Throws ValueError if not enough are provided.
 
         Expected forms are:
-        * LRBT (providing `left`, `right`, `bottom`, and `top`)
-        * LBWH (providing `left`, `bottom`, `width`, and `height`)
-        * XYWH (providing `x`, `y`, `width`, and `height`)
+
+        * LRBT (providing ``left``, ``right``, ``bottom``, and ``top``)
+        * LBWH (providing ``left``, ``bottom``, ``width``, and ``height``)
+        * XYWH (providing ``x``, ``y``, ``width``, and ``height``)
         """
         # Perform iteration only once and store it as a set literal
         specified: set[str] = {k for k, v in kwargs.items() if v is not None}

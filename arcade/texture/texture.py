@@ -843,7 +843,7 @@ class Texture:
         :param center_y: Y location of where to draw the texture.
         :param scale: Scale to draw rectangle. Defaults to 1.
         :param angle: Angle to rotate the texture by.
-        :param alpha: The transparency of the texture `(0-255)`.
+        :param alpha: The transparency of the texture ``(0-255)``.
         """
         from arcade import Sprite
 
@@ -870,7 +870,7 @@ class Texture:
                      creates a sprite internally and draws it.
 
         :param rect: A Rect to draw this texture to.
-        :param alpha: The transparency of the texture `(0-255)`.
+        :param alpha: The transparency of the texture ``(0-255)``.
         """
         self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
 
