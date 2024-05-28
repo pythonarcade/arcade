@@ -11,6 +11,7 @@ from arcade.camera.data_types import (
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
+from pyglet.math import Vec2
 
 from arcade.window_commands import get_window
 
@@ -77,8 +78,13 @@ class Camera2D:
                  window: Optional["Window"] = None):
 
         self._window: "Window" = window or get_window()
-        self.render_target: Framebuffer = render_target or self._window.ctx.screen
-        width, height = self.render_target.size
+        self.render_target: Optional[Framebuffer] = render_target
+
+        # We don't want to force people to use a render target,
+        # but we need to have some form of default size so we use the screen.
+        render_target = render_target or self._window.ctx.screen
+        viewport = render_target.viewport if viewport is None else viewport
+        width, height = (render_target.width, render_target.height) if viewport is None else (viewport[2], viewport[3])
         half_width = width / 2
         half_height = height / 2
 
@@ -110,7 +116,7 @@ class Camera2D:
             left=left, right=right,
             top=top, bottom=bottom,
             near=near, far=far,
-            viewport=viewport or (0, 0, width, height)
+            viewport=(viewport[0], viewport[1], viewport[2], viewport[3])
         )
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
             window=self._window,
@@ -139,6 +145,7 @@ class Camera2D:
 
         .. list-table::
           :header-rows: 1
+
           * - Shared Value
             - Example Use(s)
           * - ``camera_data``
@@ -229,71 +236,186 @@ class Camera2D:
     @property
     def position(self) -> Tuple[float, float]:
         """The 2D world position of the camera along the X and Y axes."""
-        return self._camera_data.position[:2]
+        return self._camera_data.position[0], self._camera_data.position[1]
 
     @position.setter
     def position(self, _pos: Tuple[float, float]) -> None:
         self._camera_data.position = (_pos[0], _pos[1], self._camera_data.position[2])
 
+    # top_left
     @property
-    def left(self) -> float:
-        """The left side of the camera in world space.
+    def top_left(self) -> Vec2:
+        """Get the top left most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[0] + self._projection_data.left / self._camera_data.zoom
+        top = self.top
+        left = self.left
 
-    @left.setter
-    def left(self, _left: float) -> None:
-        self._camera_data.position = \
-            (_left - self._projection_data.left / self._camera_data.zoom,) \
-            + self._camera_data.position[1:]
+        return Vec2(pos[0] + up[0] * top + up[1] * left, pos[1] + up[1] * top - up[0] * left)
 
-    @property
-    def right(self) -> float:
-        """The right edge of the camera in world space.
+    @top_left.setter
+    def top_left(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[0] + self._projection_data.right / self._camera_data.zoom
+        top = self.top
+        left = self.left
 
-    @right.setter
-    def right(self, _right: float) -> None:
-        self._camera_data.position = \
-            (_right - self._projection_data.right / self._camera_data.zoom,) \
-            + self._camera_data.position[1:]
-
-    @property
-    def bottom(self) -> float:
-        """The bottom edge of the camera in world space.
-
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[1] + self._projection_data.bottom / self._camera_data.zoom
-
-    @bottom.setter
-    def bottom(self, _bottom: float) -> None:
-        self._camera_data.position = (
-            self._camera_data.position[0],
-            _bottom - self._projection_data.bottom / self._camera_data.zoom,
-            self._camera_data.position[2]
+        self.position = (
+            new_corner[0] - up[0] * top - up[1] * left,
+            new_corner[1] - up[0] * top + up[0] * left
         )
 
+    # top_center
     @property
-    def top(self) -> float:
-        """The top edge of the camera in world space.
+    def top_center(self) -> Vec2:
+        """Get the top most position the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        top = self.top
+        return Vec2(pos[0] + up[0] * top, pos[1] + up[1] * top)
 
-        Useful for checking if a :py:class:`~arcade.Sprite` is on screen.
-        """
-        return self._camera_data.position[1] + self._projection_data.top / self._camera_data.zoom
+    @top_center.setter
+    def top_center(self, new_top: Tuple[float, float]):
+        up = self._camera_data.up
+        top = self.top
 
-    @top.setter
-    def top(self, _top: float) -> None:
-        self._camera_data.position = (
-            self._camera_data.position[0],
-            _top - self._projection_data.top / self._camera_data.zoom,
-            self._camera_data.position[2]
+        self.position = new_top[0] - up[0] * top, new_top[1] - up[1] * top
+
+    # top_right
+    @property
+    def top_right(self) -> Vec2:
+        """Get the top right most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        top = self.top
+        right = self.right
+
+        return Vec2(pos[0] + up[0] * top + up[1] * right, pos[1] + up[1] * top - up[0] * right)
+
+    @top_right.setter
+    def top_right(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        top = self.top
+        right = self.right
+
+        self.position = (
+            new_corner[0] - up[0] * top - up[1] * right,
+            new_corner[1] - up[1] * top + up[0] * right
         )
+
+    # bottom_right
+    @property
+    def bottom_right(self) -> Vec2:
+        """Get the bottom right most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        bottom = self.bottom
+        right = self.right
+        return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[1] + up[1] * bottom - up[0] * right)
+
+    @bottom_right.setter
+    def bottom_right(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        bottom = self.bottom
+        right = self.right
+
+        self.position = (
+            new_corner[0] - up[0] * bottom - up[1] * right,
+            new_corner[1] - up[1] * bottom + up[0] * right
+        )
+
+    # bottom_center
+    @property
+    def bottom_center(self) -> Vec2:
+        """Get the bottom most position the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        bottom = self.bottom
+
+        return Vec2(pos[0] - up[0] * bottom, pos[1] - up[1] * bottom)
+
+    @bottom_center.setter
+    def bottom_center(self, new_bottom: Tuple[float, float]):
+        up = self._camera_data.up
+        bottom = self.bottom
+
+        self.position = new_bottom[0] - up[0] * bottom, new_bottom[1] - up[0] * bottom
+
+    # bottom_left
+    @property
+    def bottom_left(self) -> Vec2:
+        """Get the bottom left most corner the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+
+        bottom = self.bottom
+        left = self.left
+
+        return Vec2(pos[0] + up[0] * bottom + up[1] * left, pos[1] + up[1] * bottom - up[0] * left)
+
+    @bottom_left.setter
+    def bottom_left(self, new_corner: Tuple[float, float]):
+        up = self._camera_data.up
+
+        bottom = self.bottom
+        left = self.left
+
+        self.position = (
+            new_corner[0] - up[0] * bottom - up[1] * left,
+            new_corner[1] - up[1] * bottom + up[0] * left
+        )
+
+    # center_right
+    @property
+    def center_right(self) -> Vec2:
+        """ Get the right most point the camera can see """
+        pos = self.position
+        up = self._camera_data.up
+        right = self.right
+        return Vec2(pos[0] + up[1] * right, pos[1] - up[0] * right)
+
+    @center_right.setter
+    def center_right(self, new_right: Tuple[float, float]):
+        up = self._camera_data.up
+        right = self.right
+        self.position = new_right[0] - up[1] * right, new_right[1] + up[0] * right
+
+    # center_left
+    @property
+    def center_left(self) -> Vec2:
+        """ Get the left most point the camera can see"""
+        pos = self.position
+        up = self._camera_data.up
+        left = self.left
+        return Vec2(pos[0] + up[1] * left, pos[1] - up[0] * left)
+
+    @center_left.setter
+    def center_left(self, new_left: Tuple[float, float]):
+        up = self._camera_data.up
+        left = self.left
+        self.position = new_left[0] - up[1] * left, new_left[1] - up[0] * left
+
+    def point_in_view(self, point: Tuple[float, float]) -> bool:
+        """
+        Take a 2D point in the world, and return whether the point is inside the visible area of the camera.
+        """
+        pos = self.position
+        diff = point[0] - pos[0], point[1] - pos[1]
+
+        up = self._camera_data.up
+
+        h_width = self.width / 2.0
+        h_height = self.height / 2.0
+
+        dot_x = up[1] * diff[0] - up[0] * diff[1]
+        dot_y = up[0] * diff[0] + up[1] * diff[1]
+
+        return abs(dot_x) <= h_width and abs(dot_y) <= h_height
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
@@ -313,7 +435,8 @@ class Camera2D:
         exception as a :py:class:`ValueError`.
         """
         _p = self._projection_data
-        return _p.left, _p.right, _p.bottom, _p.top
+        _z = self._camera_data.zoom
+        return _p.left / _z, _p.right / _z, _p.bottom / _z, _p.top / _z
 
     @projection.setter
     def projection(self, value: Tuple[float, float, float, float]) -> None:
@@ -329,223 +452,119 @@ class Camera2D:
                 f"projection height is 0 due to equal {bottom=}"
                 f"and {top=}"))
 
+        _z = self._camera_data.zoom
+
         # Modify the projection data itself.
         _p = self._projection_data
-        _p.left = left
-        _p.right = right
-        _p.bottom = bottom
-        _p.top = top
+        _p.left = left * _z
+        _p.right = right * _z
+        _p.bottom = bottom * _z
+        _p.top = top * _z
 
     @property
-    def projection_width(self) -> float:
-        """
-        The width of the projection from left to right.
-        This is in world space coordinates not pixel coordinates.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_width_scaled instead.
-        """
-        return self._projection_data.right - self._projection_data.left
-
-    @projection_width.setter
-    def projection_width(self, _width: float) -> None:
-        w = self.projection_width
-        l = self.projection_left / w  # Normalised Projection left
-        r = self.projection_right / w  # Normalised Projection Right
-
-        self.projection_left = l * _width
-        self.projection_right = r * _width
-
-    @property
-    def projection_width_scaled(self) -> float:
+    def width(self) -> float:
         """
         The width of the projection from left to right.
         This is in world space coordinates not pixel coordinates.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_width instead.
+        you have to calculate the value manually from projection_data
         """
         return (self._projection_data.right - self._projection_data.left) / self._camera_data.zoom
 
-    @projection_width_scaled.setter
-    def projection_width_scaled(self, _width: float) -> None:
-        w = self.projection_width * self._camera_data.zoom
-        l = self.projection_left / w  # Normalised Projection left
-        r = self.projection_right / w  # Normalised Projection Right
+    @width.setter
+    def width(self, _width: float) -> None:
+        w = self.width
+        l = self.left / w  # Normalised Projection left
+        r = self.right / w  # Normalised Projection Right
 
-        self.projection_left = l * _width
-        self.projection_right = r * _width
-
-    @property
-    def projection_height(self) -> float:
-        """
-        The height of the projection from bottom to top.
-        This is in world space coordinates not pixel coordinates.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_height_scaled instead.
-        """
-        return self._projection_data.top - self._projection_data.bottom
-
-    @projection_height.setter
-    def projection_height(self, _height: float) -> None:
-        h = self.projection_height
-        b = self.projection_bottom / h  # Normalised Projection Bottom
-        t = self.projection_top / h  # Normalised Projection Top
-
-        self.projection_bottom = b * _height
-        self.projection_top = t * _height
+        self.left = l * _width
+        self.right = r * _width
 
     @property
-    def projection_height_scaled(self) -> float:
+    def height(self) -> float:
         """
         The height of the projection from bottom to top.
         This is in world space coordinates not pixel coordinates.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_height instead.
+        you have to calculate the value manually from projection_data
         """
         return (self._projection_data.top - self._projection_data.bottom) / self._camera_data.zoom
 
-    @projection_height_scaled.setter
-    def projection_height_scaled(self, _height: float) -> None:
-        h = self.projection_height * self._camera_data.zoom
-        b = self.projection_bottom / h  # Normalised Projection Bottom
-        t = self.projection_top / h  # Normalised Projection Top
+    @height.setter
+    def height(self, _height: float) -> None:
+        h = self.projection_height
+        b = self.bottom / h  # Normalised Projection Bottom
+        t = self.top / h  # Normalised Projection Top
 
-        self.projection_bottom = b * _height
-        self.projection_top = t * _height
-
-    @property
-    def projection_left(self) -> float:
-        """
-        The left edge of the projection in world space.
-        This is not adjusted with the camera position.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_left_scaled instead.
-        """
-        return self._projection_data.left
-
-    @projection_left.setter
-    def projection_left(self, _left: float) -> None:
-        self._projection_data.left = _left
+        self.bottom = b * _height
+        self.top = t * _height
 
     @property
-    def projection_left_scaled(self) -> float:
+    def left(self) -> float:
         """
         The left edge of the projection in world space.
         This is not adjusted with the camera position.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_left instead.
+        use projection_data.left instead.
         """
         return self._projection_data.left / self._camera_data.zoom
 
-    @projection_left_scaled.setter
-    def projection_left_scaled(self, _left: float) -> None:
+    @left.setter
+    def left(self, _left: float) -> None:
         self._projection_data.left = _left * self._camera_data.zoom
 
     @property
-    def projection_right(self) -> float:
-        """
-        The right edge of the projection in world space.
-        This is not adjusted with the camera position.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_right_scaled instead.
-        """
-        return self._projection_data.right
-
-    @projection_right.setter
-    def projection_right(self, _right: float) -> None:
-        self._projection_data.right = _right
-
-    @property
-    def projection_right_scaled(self) -> float:
+    def right(self) -> float:
         """
         The right edge of the projection in world space.
         This is not adjusted with the camera position.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_right instead.
+        use projection_data.right instead.
         """
         return self._projection_data.right / self._camera_data.zoom
 
-    @projection_right_scaled.setter
-    def projection_right_scaled(self, _right: float) -> None:
+    @right.setter
+    def right(self, _right: float) -> None:
         self._projection_data.right = _right * self._camera_data.zoom
 
     @property
-    def projection_bottom(self) -> float:
-        """
-        The bottom edge of the projection in world space.
-        This is not adjusted with the camera position.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_bottom_scaled instead.
-        """
-        return self._projection_data.bottom
-
-    @projection_bottom.setter
-    def projection_bottom(self, _bottom: float) -> None:
-        self._projection_data.bottom = _bottom
-
-    @property
-    def projection_bottom_scaled(self) -> float:
+    def bottom(self) -> float:
         """
         The bottom edge of the projection in world space.
         This is not adjusted with the camera position.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_bottom instead.
+        use projection_data.bottom instead.
         """
         return self._projection_data.bottom / self._camera_data.zoom
 
-    @projection_bottom_scaled.setter
-    def projection_bottom_scaled(self, _bottom: float) -> None:
+    @bottom.setter
+    def bottom(self, _bottom: float) -> None:
         self._projection_data.bottom = _bottom * self._camera_data.zoom
 
     @property
-    def projection_top(self) -> float:
-        """
-        The top edge of the projection in world space.
-        This is not adjusted with the camera position.
-
-        NOTE this IS NOT scaled by zoom.
-        If this isn't what you want,
-        use projection_top_scaled instead.
-        """
-        return self._projection_data.top
-
-    @projection_top.setter
-    def projection_top(self, _top: float) -> None:
-        self._projection_data.top = _top
-
-    @property
-    def projection_top_scaled(self) -> float:
+    def top(self) -> float:
         """
         The top edge of the projection in world space.
         This is not adjusted with the camera position.
 
         NOTE this IS scaled by zoom.
         If this isn't what you want,
-        use projection_top instead.
+        use projection_data.top instead.
         """
         return self._projection_data.top / self._camera_data.zoom
 
-    @projection_top_scaled.setter
-    def projection_top_scaled(self, _top: float) -> None:
+    @top.setter
+    def top(self, _top: float) -> None:
         self._projection_data.top = _top * self._camera_data.zoom
 
     @property
@@ -683,7 +702,7 @@ class Camera2D:
         The base vector is 3D, but the simplified
         camera only provides a 2D view.
         """
-        return self._camera_data.up[:2]
+        return self._camera_data.up[0], self._camera_data.up[1]
 
     @up.setter
     def up(self, _up: Tuple[float, float]) -> None:
@@ -776,7 +795,8 @@ class Camera2D:
 
         If you want to use a 'with' block use activate() instead.
         """
-        self.render_target.use()
+        if self.render_target is not None:
+            self.render_target.use()
         self._ortho_projector.use()
 
     @contextmanager
@@ -792,7 +812,6 @@ class Camera2D:
         previous_projection = self._window.current_camera
         previous_framebuffer = self._window.ctx.active_framebuffer
         try:
-            self.render_target.use()
             self.use()
             yield self
         finally:
@@ -826,14 +845,3 @@ class Camera2D:
         """
 
         return self._ortho_projector.unproject(screen_coordinate, depth)
-
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
-        """
-        Alias to Camera2D.unproject() for typing completion
-        """
-        return self.unproject(screen_coordinate, depth)
-

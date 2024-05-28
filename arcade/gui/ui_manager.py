@@ -339,7 +339,7 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        x_, y_, *c = self.window.current_camera.map_screen_to_world_coordinate((x, y))
+        x_, y_, *c = self.window.current_camera.unproject((x, y))
         return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:

@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Get viewport dimensions
-        screen_width, screen_height = int(self.cam.projection_width), int(self.cam.projection_height)
+        screen_width, screen_height = int(self.cam.width), int(self.cam.height)
 
         text_size = 18
         # Draw text on the screen so the user has an idea of what is happening

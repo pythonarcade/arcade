@@ -18,7 +18,7 @@ SCREEN_TITLE = "Line of Sight"
 
 MOVEMENT_SPEED = 5
 
-VIEWPORT_MARGIN = 300
+VIEWPORT_MARGIN = 250
 
 
 class MyGame(arcade.Window):
@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
         spacing = 200
         for column in range(10):
             for row in range(10):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=0.5)
+                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -150,39 +150,38 @@ class MyGame(arcade.Window):
         # update the camera if we don't need to.
         changed = False
 
-        # Scroll left
-        left_boundary = self.cam.left + VIEWPORT_MARGIN
-        if self.player.left < left_boundary:
-            self.cam.left -= left_boundary - self.player.left
-            changed = True
+        pos = self.cam.position
 
-        # Scroll right
-        right_boundary = self.cam.right - VIEWPORT_MARGIN
-        if self.player.right > right_boundary:
-            self.cam.right += self.player.right - right_boundary
+        top_left = self.cam.top_left
+        bottom_right = self.cam.bottom_right
+
+        # Scroll left
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
+        if self.player.left < left_boundary:
             changed = True
+            pos = pos[0] + (self.player.left - left_boundary), pos[1]
 
         # Scroll up
-        top_boundary = self.cam.top - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player.top > top_boundary:
-            self.cam.top += self.player.top - top_boundary
             changed = True
+            pos = pos[0], pos[1] + (self.player.top - top_boundary)
+
+        # Scroll right
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
+        if self.player.right > right_boundary:
+            changed = True
+            pos = pos[0] + (self.player.right - right_boundary), pos[1]
 
         # Scroll down
-        bottom_boundary = self.cam.bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player.bottom < bottom_boundary:
-            self.cam.bottom -= bottom_boundary - self.player.bottom
             changed = True
+            pos = pos[0], pos[1] + (self.player.bottom - bottom_boundary)
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            # Make sure our boundaries are integer values. While the view port does
-            # support floating point numbers, for this application we want every pixel
-            # in the view port to map directly onto a pixel on the screen. We don't want
-            # any rounding errors.
-            self.cam.left = int(self.cam.left)
-            self.cam.bottom = int(self.cam.bottom)
-
+            self.cam.position = pos
             self.cam.use()
 
     def on_key_press(self, key, modifiers):

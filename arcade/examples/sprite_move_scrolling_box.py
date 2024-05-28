@@ -178,23 +178,26 @@ class MyGame(arcade.Window):
 
         _target_x, _target_y = self.camera_sprites.position
 
+        top_left = self.camera_sprites.top_left
+        bottom_right = self.camera_sprites.bottom_right
+
         # Scroll left
-        left_boundary = self.camera_sprites.left + VIEWPORT_MARGIN
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             _target_x -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.camera_sprites.right - VIEWPORT_MARGIN
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
             _target_x += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.camera_sprites.top - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
             _target_y += self.player_sprite.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.camera_sprites.bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
             _target_y -= bottom_boundary - self.player_sprite.bottom
 

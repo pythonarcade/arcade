@@ -216,6 +216,8 @@ from .perf_info import disable_timings
 
 from .perf_graph import PerfGraph
 
+from .camera import Camera2D
+
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
@@ -377,6 +379,7 @@ __all__ = [
     'types',
     'math',
     'shape_list',
+    'Camera2D'
 ]
 
 __version__ = VERSION

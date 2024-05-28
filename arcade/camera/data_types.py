@@ -4,7 +4,7 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Iterator, Optional, Generator
+from typing import Protocol, Tuple, Optional, Generator
 from contextlib import contextmanager
 
 from typing_extensions import Self
@@ -17,8 +17,9 @@ __all__ = [
     'PerspectiveProjectionData',
     'Projection',
     'Projector',
-    'Camera',
     'ZeroProjectionDimension',
+    'constrain_camera_data',
+    'duplicate_camera_data'
 ]
 
 
@@ -91,7 +92,7 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
     if forward_priority:
         up_vec = right_vec.cross(forward_vec)
     else:
-        forward_vec = right_vec.cross(up_vec)
+        forward_vec = up_vec.cross(right_vec)
 
     data.forward = (forward_vec.x, forward_vec.y, forward_vec.z)
     data.up = (up_vec.x, up_vec.y, up_vec.z)
@@ -239,6 +240,7 @@ class Projector(Protocol):
 
     .. list-table::
        :header-rows: 1
+
        * - Method
          - Action
 
@@ -291,19 +293,25 @@ class Projector(Protocol):
     def activate(self) -> Generator[Self, None, None]:
         ...
 
-    def map_screen_to_world_coordinate(
-            self,
+    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+        """
+        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """
+        ...
+
+    def unproject(self,
             screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, ...]:
-        ...
+            depth: Optional[float] = None) -> Tuple[float, float, float]:
+        """
+        Take in a pixel coordinate and return the associated world coordinate
 
+        Essentially reverses the effects of the projector.
 
-class Camera(Protocol):
-
-    def use(self) -> None:
-        ...
-
-    @contextmanager
-    def activate(self) -> Iterator[Projector]:
+        Args:
+            screen_coordinate: A 2D position in pixels should generally be inside the range of the active viewport.
+            depth: The depth of the query. This can be though of how far along the forward vector
+                   the final coord will be.
+        Returns:
+            A 3D vector in world space.
+        """
         ...

@@ -1,5 +1,5 @@
 """
-The Cinematic Types, Classes, and Methods of Arcade.
+The Camera Types, Classes, and Methods of Arcade.
 Providing a multitude of camera's for any need.
 """
 
@@ -14,7 +14,11 @@ from arcade.camera.data_types import (
 from arcade.camera.projection_functions import (
     generate_view_matrix,
     generate_orthographic_matrix,
-    generate_perspective_matrix
+    generate_perspective_matrix,
+    project_orthographic,
+    project_perspective,
+    unproject_orthographic,
+    unproject_perspective
 )
 
 from arcade.camera.orthographic import OrthographicProjector
@@ -32,9 +36,13 @@ __all__ = [
     'generate_view_matrix',
     'OrthographicProjectionData',
     'generate_orthographic_matrix',
+    'project_orthographic',
+    'unproject_orthographic',
     'OrthographicProjector',
     'PerspectiveProjectionData',
     'generate_perspective_matrix',
+    'project_perspective',
+    'unproject_perspective',
     'PerspectiveProjector',
     'Camera2D',
     'grips'

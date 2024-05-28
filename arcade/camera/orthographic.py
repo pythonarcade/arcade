@@ -2,10 +2,15 @@ from typing import Optional, Tuple, Generator, TYPE_CHECKING
 from contextlib import contextmanager
 from typing_extensions import Self
 
-from pyglet.math import Mat4, Vec4
+from pyglet.math import Mat4, Vec3
 
 from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
-from arcade.camera.projection_functions import generate_view_matrix, generate_orthographic_matrix
+from arcade.camera.projection_functions import (
+    generate_view_matrix,
+    generate_orthographic_matrix,
+    project_orthographic,
+    unproject_orthographic
+)
 
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
@@ -108,7 +113,7 @@ class OrthographicProjector(Projector):
     def activate(self) -> Generator[Self, None, None]:
         """Set this camera as the current one, then undo it after.
 
-        This method is a :ref+external:`context manager <context-managers>`
+        This method is a :external:ref:`context manager <context-managers>`
         you can use inside ``with`` blocks. Using it this way guarantees
         that the old camera and its settings will be restored, even if an
         exception occurs:
@@ -139,19 +144,15 @@ class OrthographicProjector(Projector):
             z = 0.0
         x, y = world_coordinate[0], world_coordinate[1]
 
-        viewport = self._projection.viewport
-
-        world_position = Vec4(x, y, z, 1.0)
-
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        projected_position = _projection @ _view @ world_position
+        pos = project_orthographic(
+            Vec3(x, y, z), self.projection.viewport,
+            _view, _projection,
+        )
 
-        screen_coordinate_x = viewport[0] + (0.5 * projected_position.x + 0.5) * viewport[2]
-        screen_coordinate_y = viewport[1] + (0.5 * projected_position.y + 0.5) * viewport[3]
-
-        return screen_coordinate_x, screen_coordinate_y
+        return pos.x, pos.y
 
     def unproject(self,
             screen_coordinate: Tuple[float, float],
@@ -170,25 +171,14 @@ class OrthographicProjector(Projector):
         Returns:
             A 3D vector in world space.
         """
+        _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
 
-        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
-        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+        pos = unproject_orthographic(
+            screen_coordinate,
+            self.projection.viewport,
+            _view, _projection,
+            depth or 0.0
+        )
 
-        _projection = ~generate_orthographic_matrix(self._projection, self._view.zoom)
-        _view = ~generate_view_matrix(self._view)
-
-        _unprojected_position = _projection @ Vec4(screen_x, screen_y, 0.0, 1.0)
-        _world_position = _view @ Vec4(_unprojected_position.x, _unprojected_position.y, depth or 0.0, 1.0)
-
-        return _world_position.x, _world_position.y, _world_position.z
-
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
-        """
-        Alias of OrthographicProjector.unproject() for typing.
-        """
-        return self.unproject(screen_coordinate, depth)
-
+        return pos.x, pos.y, pos.z

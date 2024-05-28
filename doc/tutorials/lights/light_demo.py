@@ -206,8 +206,9 @@ class MyGame(arcade.Window):
         self.light_layer.draw(ambient_color=AMBIENT_COLOR)
 
         # Now draw anything that should NOT be affected by lighting.
+        left, bottom = self.camera.bottom_left
         arcade.draw_text("Press SPACE to turn character light on/off.",
-                         10 + self.camera.left, 10 + self.camera.bottom,
+                         10 + left, 10 + bottom,
                          arcade.color.WHITE, 20)
 
     def on_resize(self, width, height):
@@ -250,33 +251,39 @@ class MyGame(arcade.Window):
 
     def scroll_screen(self):
         """ Manage Scrolling """
+        position = self.camera.position
+
+        top_left = self.camera.top_left
+        bottom_right = self.camera.bottom_right
 
         # Scroll left
-        left_boundary = self.camera.left + VIEWPORT_MARGIN
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.camera.left -= left_boundary - self.player_sprite.left
+            position = position[0] + (self.player_sprite.left - left_boundary), position[1]
 
         # Scroll right
-        right_boundary = self.camera.right - VIEWPORT_MARGIN
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.camera.right += self.player_sprite.right - right_boundary
+            position = position[0] + (self.player_sprite.right - right_boundary), position[1]
 
         # Scroll up
-        top_boundary = self.camera.top - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.camera.top += self.player_sprite.top - top_boundary
+            position = position[0], position[1] + (self.player_sprite.top - top_boundary)
 
         # Scroll down
-        bottom_boundary = self.camera.bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            self.camera.bottom -= bottom_boundary - self.player_sprite.bottom
+            position = position[0], position[1] + (self.player_sprite.bottom - bottom_boundary)
+
+        self.camera.position = position
 
         # Make sure our boundaries are integer values. While the viewport does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
-        self.camera.left = int(self.camera.left)
-        self.camera.bottom = int(self.camera.bottom)
+        bottom_left = self.camera.bottom_left
+        self.camera.bottom_left = int(bottom_left[0]), int(bottom_left[1])
 
         self.camera.use()
 
