@@ -25,7 +25,7 @@ class RectKwargs(TypedDict):
 
 
 class Rect(NamedTuple):
-    """``Rect``s define a rectangle, with several convenience properties and functions.
+    """A rectangle, with several convenience properties and functions.
 
     This object is immutable by design. It provides no setters, and is a NamedTuple subclass.
 
