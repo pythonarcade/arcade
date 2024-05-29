@@ -14,6 +14,11 @@ ViewportParams = Tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
+    """A dictionary of the eight canon properties of a rectangle.
+
+    ``left``, ``right``, ``bottom``, ``top``,
+    ``width``, ``height``, ``x``, and ``y`` are all :py:`float`s.
+    """
     left: float
     right: float
     bottom: float
@@ -35,7 +40,7 @@ class Rect(NamedTuple):
     Rectangles cannot rotate by design, since this complicates their implmentation a lot.
 
     You probably don't want to create one of these directly, and should instead use a helper method, like
-    :py:func:`LBWH`, :py:func:`LRBT`, :py:func:`XYWH`, or :py:func:`Viewport`.
+    :py:func:`.LBWH`, :py:func:`.LRBT`, :py:func:`.XYWH`, or :py:func:`.Viewport`.
 
     You can also use :py:meth:`.from_kwargs` to create a Rect from keyword arguments.
 
@@ -343,6 +348,10 @@ class Rect(NamedTuple):
     def point_in_rect(self, point: Vec2) -> bool:
         """Returns True if the given point is inside this rectangle."""
         return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
+
+    def __contains__(self, point: Vec2) -> bool:
+        """Returns the result of :py:meth:`point_in_rect` with a provided point."""
+        return self.point_in_rect(point)
 
     def distance_from_bounds(self, point: Vec2) -> float:
         """Returns the point's distance from the boundary of this rectangle."""
