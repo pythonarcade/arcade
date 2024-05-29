@@ -13,7 +13,7 @@ from arcade.camera.data_types import (
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import Point, Rect, LRBT, LBWH
+from arcade.types import Point, Rect, LBWH
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -624,7 +624,7 @@ class Camera2D:
         self._ortho_projector.viewport = viewport
 
     @property
-    def scissor(self) -> Rect:
+    def scissor(self) -> Optional[Rect]:
         return self._ortho_projector.scissor
 
     @scissor.setter
@@ -800,7 +800,7 @@ class Camera2D:
         Args:
             and_projection: Flag whether to also equalise the projection to the viewport.
         """
-        self.viewport = (0, 0, self._window.width, self._window.height)
+        self.viewport = LBWH(0, 0, self._window.width, self._window.height)
 
         if and_projection:
             self.equalise()

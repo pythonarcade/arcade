@@ -19,7 +19,7 @@ import PIL.ImageDraw
 import pyglet.gl as gl
 
 from arcade.color import WHITE
-from arcade.types import AsFloat, Color, RGBA255, PointList, Point, Point2List, Point2
+from arcade.types import AsFloat, Color, RGBA255, PointList, Point, Point2List
 from arcade.earclip import earclip
 from arcade.types.rect import Rect, LBWH, LRBT, XYWH
 from .math import rotate_point

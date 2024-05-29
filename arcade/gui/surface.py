@@ -11,7 +11,7 @@ from arcade.camera import OrthographicProjector, OrthographicProjectionData, Cam
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, Point
-from arcade.types.rect import Rect, LBWH, LRBT
+from arcade.types.rect import Rect, LBWH
 
 
 class Surface:

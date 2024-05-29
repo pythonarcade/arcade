@@ -12,7 +12,6 @@ from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
 from arcade import cache as _cache
 from arcade import hitbox
-from arcade.types.numbers import AsFloat
 from .texture import Texture, ImageData
 
 LOG = logging.getLogger(__name__)

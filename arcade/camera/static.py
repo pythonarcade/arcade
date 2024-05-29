@@ -14,8 +14,7 @@ from arcade.camera.projection_functions import (
     unproject_perspective
 )
 
-from arcade.types import Point
-from arcade.types.vector_like import Point3
+from arcade.types import Point, Point3
 from arcade.window_commands import get_window
 
 from pyglet.math import Mat4, Vec3, Vec2
@@ -95,13 +94,14 @@ class _StaticCamera:
 def static_from_orthographic(
         view: CameraData,
         orthographic: OrthographicProjectionData,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> _StaticCamera:
     return _StaticCamera(
         generate_view_matrix(view),
         generate_orthographic_matrix(orthographic, view.zoom),
-        orthographic.viewport, window=window,
+        viewport, window=window,
         project_method=project_orthographic,
         unproject_method=unproject_orthographic
     )
@@ -110,13 +110,14 @@ def static_from_orthographic(
 def static_from_perspective(
         view: CameraData,
         perspective: OrthographicProjectionData,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
 ) -> _StaticCamera:
     return _StaticCamera(
         generate_view_matrix(view),
         generate_orthographic_matrix(perspective, view.zoom),
-        perspective.viewport, window=window,
+        viewport, window=window,
         project_method=project_perspective,
         unproject_method=unproject_perspective
     )
@@ -160,7 +161,7 @@ def static_from_raw_perspective(
         CameraData(position, up, forward, zoom)
     )
     proj = generate_perspective_matrix(
-        PerspectiveProjectionData(aspect, fov, near, far, viewport or (0, 0, 0, 0)), zoom
+        PerspectiveProjectionData(aspect, fov, near, far), zoom
     )
 
     return _StaticCamera(view, proj, viewport, window=window,

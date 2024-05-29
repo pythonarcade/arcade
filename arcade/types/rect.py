@@ -213,7 +213,7 @@ class Rect(NamedTuple):
         return Rect(self.left * scale, self.right * scale, self.bottom * scale, self.top * scale,
                     self.width * scale,  self.height * scale, self.x * scale, self.y * scale)
 
-    def __div__(self, scale: AsFloat) -> Rect:
+    def __truediv__(self, scale: AsFloat) -> Rect:
         """Scale the Rect by 1/``scale`` relative to ``(0, 0)``."""
         return Rect(self.left / scale, self.right / scale, self.bottom / scale, self.top / scale,
                     self.width / scale,  self.height / scale, self.x / scale, self.y / scale)

@@ -10,7 +10,7 @@ import pyglet
 
 import arcade
 from arcade.resources import resolve
-from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
+from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
 __all__ = [
