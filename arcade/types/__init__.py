@@ -77,7 +77,7 @@ from arcade.types.color import RGBOrANormalized
 from arcade.types.color import Color
 
 # We'll be moving our Vec-like items into this (Points, Sizes, etc)
-from arcade.types.vector_like import AnchorPoint
+from arcade.types.vector_like import AnchorPoint, Point2, Point3
 
 # Rectangles
 from arcade.types.rect import ViewportParams
@@ -98,7 +98,7 @@ __all__ = [
     "IPoint",
     "PathOr",
     "PathOrTexture",
-    "Point",
+    "Point2",
     "Point3",
     "PointList",
     "EMPTY_POINT_LIST",
