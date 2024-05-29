@@ -13,5 +13,6 @@
 - Added `Texture.draw_rect()`
 - Added `BasicSprite.rect`
 - Added `Section.rect`
+- Added `SpriteSolidColor.from_rect()`
 - Remove `IntRect`, `FloatRect`, `RectList`
 - Rename the old `Rect` to `GUIRect`
