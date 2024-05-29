@@ -203,7 +203,7 @@ class BasicSprite:
         if new_value == self._scale[0] and new_value == self._scale[1]:
             return
 
-        self._scale = new_value, new_value
+        self._scale = Vec2(new_value, new_value)
         self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
