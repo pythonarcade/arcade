@@ -168,12 +168,22 @@ class Camera2D:
 
         :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
             describing the position, up, forward and zoom.
-        :param projection_data: A :py:class:`~arcade.camera.data.OrthographicProjectionData`
-            which describes the left, right, top, bottom, far, near planes and the viewport
-            for an orthographic projection.
-        :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
-            If the framebuffer is not the default screen nothing drawn after this camera is used will
-            show up. The FrameBuffer's internal viewport is ignored.
+        :param projection_data:
+            A :py:class:`~arcade.camera.data.OrthographicProjectionData`
+            which describes the left, right, top, bottom, far, near
+            planes and the viewport for an orthographic projection.
+        :param render_target: A non-screen
+            :py:class:`~arcade.gl.framebuffer.Framebuffer` for this
+            camera to draw into. When specified,
+
+            * nothing will draw directly to the screen
+            * the buffer's internal viewport will be ignored
+
+        :param viewport:
+            A viewport as a :py:class:`~arcade.types.rect.Rect`.
+            This overrides any viewport the ``render_target`` may have.
+        :param scissor:
+            The OpenGL scissor box to use when drawing.
         :param window: The Arcade Window to bind the camera to.
             Defaults to the currently active window.
         """
