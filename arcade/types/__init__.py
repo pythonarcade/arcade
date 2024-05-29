@@ -98,6 +98,7 @@ __all__ = [
     "IPoint",
     "PathOr",
     "PathOrTexture",
+    "Point",
     "Point2",
     "Point3",
     "PointList",
@@ -148,11 +149,8 @@ _T = TypeVar('_T')
 #:       ...  # No function definition
 #:
 Size2D = Tuple[_T, _T]
-
-# Point = Union[Tuple[AsFloat, AsFloat], List[AsFloat]]
-Point = Tuple[AsFloat, AsFloat]
-Point3 = Tuple[AsFloat, AsFloat, AsFloat]
 IPoint = Tuple[int, int]
+Point = Union[Point2, Point3]
 
 
 # We won't keep this forever. It's a temp stub for particles we'll replace.
