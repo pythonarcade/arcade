@@ -154,8 +154,7 @@ class Rect(NamedTuple):
     def resize(self,
                width: Optional[AsFloat] = None,
                height: Optional[AsFloat] = None,
-               anchor: Vec2 = AnchorPoint.CENTER
-        ) -> Rect:
+               anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
         Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position,
         but with a new width and height, anchored at a point (default center.)
@@ -392,6 +391,22 @@ class Rect(NamedTuple):
     def point_on_bounds(self, point: Point2, tolerance: float) -> bool:
         """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
         return abs(self.distance_from_bounds(point)) < tolerance
+
+    def position_to_uv(self, point: Point2) -> Vec2:
+        """Take an absolute point and translate it to it's relative position in UV-space (percentage across this rectangle.)"""
+        x, y = point
+        return Vec2(
+            (x - self.left) / self.width,
+            (y - self.bottom) / self.height,
+        )
+
+    def uv_to_position(self, uv: Point2) -> Vec2:
+        """Take a point in UV-space (percentage across this rectangle) and translate it to it's absolute position."""
+        x, y = uv
+        return Vec2(
+            self.left + x * self.width,
+            self.bottom + y * self.height
+        )
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Returns a tuple of the four corners of this Rect."""
