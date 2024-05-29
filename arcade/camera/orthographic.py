@@ -1,8 +1,8 @@
-from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing import Optional, Generator, TYPE_CHECKING
 from contextlib import contextmanager
 from typing_extensions import Self
 
-from pyglet.math import Mat4, Vec3
+from pyglet.math import Mat4, Vec3, Vec2
 
 from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
 from arcade.camera.projection_functions import (
@@ -12,6 +12,8 @@ from arcade.camera.projection_functions import (
     unproject_orthographic
 )
 
+from arcade.types import Point
+from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -134,7 +136,7 @@ class OrthographicProjector(Projector):
         finally:
             previous_projector.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
@@ -152,11 +154,11 @@ class OrthographicProjector(Projector):
             _view, _projection,
         )
 
-        return pos.x, pos.y
+        return pos
 
     def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+                  screen_coordinate: Point2,
+                  depth: Optional[float] = None) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -181,4 +183,4 @@ class OrthographicProjector(Projector):
             depth or 0.0
         )
 
-        return pos.x, pos.y, pos.z
+        return pos

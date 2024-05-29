@@ -8,7 +8,10 @@ from typing import Protocol, Tuple, Optional, Generator
 from contextlib import contextmanager
 
 from typing_extensions import Self
-from pyglet.math import Vec3
+from pyglet.math import Vec2, Vec3
+
+from arcade.types import Point
+from arcade.types.vector_like import Point2, Point3
 
 
 __all__ = [
@@ -54,9 +57,9 @@ class CameraData:
     __slots__ = ("position", "up", "forward", "zoom")
 
     def __init__(self,
-                 position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
-                 up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
-                 forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
+                 position: Point3 = (0.0, 0.0, 0.0),
+                 up: Point3 = (0.0, 1.0, 0.0),
+                 forward: Point3 = (0.0, 0.0, -1.0),
                  zoom: float = 1.0):
 
         # View matrix data
@@ -293,15 +296,15 @@ class Projector(Protocol):
     def activate(self) -> Generator[Self, None, None]:
         ...
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         ...
 
     def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+                  screen_coordinate: Point2,
+                  depth: Optional[float] = None) -> Vec3:
         """
         Take in a pixel coordinate and return the associated world coordinate
 

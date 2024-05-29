@@ -2,8 +2,10 @@ from typing import Optional, Tuple, Generator, TYPE_CHECKING
 from typing_extensions import Self
 from contextlib import contextmanager
 
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec2, Vec3
 
+from arcade.types import Point
+from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
@@ -76,27 +78,27 @@ class ViewportProjector:
         finally:
             previous.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        return world_coordinate[0], world_coordinate[1]
+        return Vec2(world_coordinate[0], world_coordinate[1])
 
     def unproject(
             self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+            screen_coordinate: Point2,
+            depth: Optional[float] = None) -> Vec3:
         """
         Map the screen pos to screen_coordinates.
 
         Due to the nature of viewport projector this does not do anything.
         """
-        return screen_coordinate[0], screen_coordinate[1], depth or 0.0
+        return Vec3(screen_coordinate[0], screen_coordinate[1], depth or 0.0)
 
     def map_screen_to_world_coordinate(
             self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+            screen_coordinate: Point2,
+            depth: Optional[float] = None) -> Vec3:
         """
         Alias of ViewportProjector.unproject() for typing.
         """

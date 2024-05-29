@@ -14,6 +14,8 @@ from arcade.camera.projection_functions import (
     unproject_perspective
 )
 
+from arcade.types import Point
+from arcade.types.vector_like import Point2, Point3
 from arcade.window_commands import get_window
 
 from pyglet.math import Mat4, Vec3, Vec2
@@ -56,7 +58,7 @@ class _StaticCamera:
         finally:
             prev.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
@@ -67,11 +69,11 @@ class _StaticCamera:
             Vec3(world_coordinate[0], world_coordinate[1], world_coordinate[2]),
             self._viewport, self._view, self._projection
         )
-        return pos.x, pos.y
+        return pos
 
     def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+            screen_coordinate: Point2,
+            depth: Optional[float] = None) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -93,7 +95,8 @@ class _StaticCamera:
             Vec2(screen_coordinate[0], screen_coordinate[1]),
             self._viewport, self._view, self._projection, depth
         )
-        return pos.x, pos.y, pos.z
+        return pos
+
 
 def static_from_orthographic(
         view: CameraData,
@@ -129,9 +132,9 @@ def static_from_raw_orthographic(
         projection: Tuple[float, float, float, float],
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
-        position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
-        up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
-        forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
+        position: Point3 = (0.0, 0.0, 0.0),
+        up: Point3 = (0.0, 1.0, 0.0),
+        forward: Point3 = (0.0, 0.0, -1.0),
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
@@ -152,9 +155,9 @@ def static_from_raw_perspective(
         aspect: float, fov: float,
         near: float = -100.0, far: float = 100.0,
         zoom: float = 1.0,
-        position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
-        up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
-        forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
+        position: Point3 = (0.0, 0.0, 0.0),
+        up: Point3 = (0.0, 1.0, 0.0),
+        forward: Point3 = (0.0, 0.0, -1.0),
         viewport: Optional[Tuple[int, int, int, int]] = None,
         *,
         window: Optional[Window] = None
@@ -175,9 +178,9 @@ def static_from_matrices(
         view: Mat4, projection: Mat4,
         viewport: Optional[Tuple[int, int, int, int]],
         *,
-        window: Optional[Window]=None,
-        project_method: Optional[Callable[[Vec3, Tuple[int, int, int, int], Mat4, Mat4], Vec2]]=None,
-        unproject_method: Optional[Callable[[Vec2, Tuple[int, int, int, int], Mat4, Mat4, Optional[float]], Vec3]]=None
+        window: Optional[Window] = None,
+        project_method: Optional[Callable[[Vec3, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
+        unproject_method: Optional[Callable[[Vec2, Tuple[int, int, int, int], Mat4, Mat4, Optional[float]], Vec3]] = None
 ) -> _StaticCamera:
     return _StaticCamera(view, projection, viewport, window=window,
                          project_method=project_method, unproject_method=unproject_method)

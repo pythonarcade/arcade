@@ -3,6 +3,7 @@ from typing import Optional, Union, Tuple
 
 from pyglet.math import Vec2, Vec3, Vec4, Mat4
 from arcade.camera.data_types import CameraData, PerspectiveProjectionData, OrthographicProjectionData
+from arcade.types.vector_like import Point2
 
 
 def generate_view_matrix(camera_data: CameraData) -> Mat4:
@@ -114,7 +115,7 @@ def project_orthographic(world_coordinate: Vec3,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_orthographic(screen_coordinate: Union[Vec2, Tuple[float, float]],
+def unproject_orthographic(screen_coordinate: Point2,
                            viewport: Tuple[int, int, int, int],
                            view_matrix: Mat4, projection_matrix: Mat4,
                            depth: Optional[float] = None) -> Vec3:
@@ -147,7 +148,7 @@ def project_perspective(world_coordinate: Vec3,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_perspective(screen_coordinate: Union[Vec2, Tuple[float, float]],
+def unproject_perspective(screen_coordinate: Point2,
                           viewport: Tuple[int, int, int, int],
                           view_matrix: Mat4, projection_matrix: Mat4,
                           depth: Optional[float] = None) -> Vec3:

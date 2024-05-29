@@ -13,6 +13,7 @@ from arcade.camera.data_types import (
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2
 
+from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
@@ -234,12 +235,12 @@ class Camera2D:
         return self._projection_data
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> Vec2:
         """The 2D world position of the camera along the X and Y axes."""
-        return self._camera_data.position[0], self._camera_data.position[1]
+        return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
     @position.setter
-    def position(self, _pos: Tuple[float, float]) -> None:
+    def position(self, _pos: Point2) -> None:
         self._camera_data.position = (_pos[0], _pos[1], self._camera_data.position[2])
 
     # top_left
@@ -255,7 +256,7 @@ class Camera2D:
         return Vec2(pos[0] + up[0] * top + up[1] * left, pos[1] + up[1] * top - up[0] * left)
 
     @top_left.setter
-    def top_left(self, new_corner: Tuple[float, float]):
+    def top_left(self, new_corner: Point2):
         up = self._camera_data.up
 
         top = self.top
@@ -276,7 +277,7 @@ class Camera2D:
         return Vec2(pos[0] + up[0] * top, pos[1] + up[1] * top)
 
     @top_center.setter
-    def top_center(self, new_top: Tuple[float, float]):
+    def top_center(self, new_top: Point2):
         up = self._camera_data.up
         top = self.top
 
@@ -295,7 +296,7 @@ class Camera2D:
         return Vec2(pos[0] + up[0] * top + up[1] * right, pos[1] + up[1] * top - up[0] * right)
 
     @top_right.setter
-    def top_right(self, new_corner: Tuple[float, float]):
+    def top_right(self, new_corner: Point2):
         up = self._camera_data.up
 
         top = self.top
@@ -318,7 +319,7 @@ class Camera2D:
         return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[1] + up[1] * bottom - up[0] * right)
 
     @bottom_right.setter
-    def bottom_right(self, new_corner: Tuple[float, float]):
+    def bottom_right(self, new_corner: Point2):
         up = self._camera_data.up
 
         bottom = self.bottom
@@ -340,7 +341,7 @@ class Camera2D:
         return Vec2(pos[0] - up[0] * bottom, pos[1] - up[1] * bottom)
 
     @bottom_center.setter
-    def bottom_center(self, new_bottom: Tuple[float, float]):
+    def bottom_center(self, new_bottom: Point2):
         up = self._camera_data.up
         bottom = self.bottom
 
@@ -359,7 +360,7 @@ class Camera2D:
         return Vec2(pos[0] + up[0] * bottom + up[1] * left, pos[1] + up[1] * bottom - up[0] * left)
 
     @bottom_left.setter
-    def bottom_left(self, new_corner: Tuple[float, float]):
+    def bottom_left(self, new_corner: Point2):
         up = self._camera_data.up
 
         bottom = self.bottom
@@ -380,7 +381,7 @@ class Camera2D:
         return Vec2(pos[0] + up[1] * right, pos[1] - up[0] * right)
 
     @center_right.setter
-    def center_right(self, new_right: Tuple[float, float]):
+    def center_right(self, new_right: Point2):
         up = self._camera_data.up
         right = self.right
         self.position = new_right[0] - up[1] * right, new_right[1] + up[0] * right
@@ -395,12 +396,12 @@ class Camera2D:
         return Vec2(pos[0] + up[1] * left, pos[1] - up[0] * left)
 
     @center_left.setter
-    def center_left(self, new_left: Tuple[float, float]):
+    def center_left(self, new_left: Point2):
         up = self._camera_data.up
         left = self.left
         self.position = new_left[0] - up[1] * left, new_left[1] - up[0] * left
 
-    def point_in_view(self, point: Tuple[float, float]) -> bool:
+    def point_in_view(self, point: Point2) -> bool:
         """
         Take a 2D point in the world, and return whether the point is inside the visible area of the camera.
         """
@@ -694,7 +695,7 @@ class Camera2D:
                                           self._projection_data.viewport[2], self._projection_data.viewport[3])
 
     @property
-    def up(self) -> Tuple[float, float]:
+    def up(self) -> Vec2:
         """
         A 2D vector which describes what is mapped
         to the +Y direction on screen.
@@ -702,10 +703,10 @@ class Camera2D:
         The base vector is 3D, but the simplified
         camera only provides a 2D view.
         """
-        return self._camera_data.up[0], self._camera_data.up[1]
+        return Vec2(self._camera_data.up[0], self._camera_data.up[1])
 
     @up.setter
-    def up(self, _up: Tuple[float, float]) -> None:
+    def up(self, _up: Point2) -> None:
         """
         Set the 2D vector which describes what is
         mapped to the +Y direction on screen.
@@ -818,7 +819,7 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Tuple[float, ...]) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """

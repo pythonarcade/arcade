@@ -13,6 +13,8 @@ from arcade.camera.projection_functions import (
     unproject_perspective
 )
 
+from arcade.types import Point
+from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -133,7 +135,7 @@ class PerspectiveProjector(Projector):
         self._window.projection = _projection
         self._window.view = _view
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
@@ -153,11 +155,11 @@ class PerspectiveProjector(Projector):
             _view, _projection
         )
 
-        return pos.x, pos.y
+        return pos
 
     def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+                  screen_coordinate: Point2,
+                  depth: Optional[float] = None) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -183,12 +185,12 @@ class PerspectiveProjector(Projector):
             _view, _projection,
             depth
         )
-        return pos.x, pos.y, pos.z
+        return pos
 
     def map_screen_to_world_coordinate(
             self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+            screen_coordinate: Point2,
+            depth: Optional[float] = None) -> Vec3:
         """
         Alias of PerspectiveProjector.unproject() for typing.
         """
