@@ -1,6 +1,7 @@
 import pytest as pytest
 
 import arcade
+from pyglet.math import Vec2
 
 frame_counter = 0
 
@@ -391,7 +392,7 @@ def test_sprite_scale_xy(window):
     sprite.scale = 1.0
     sprite.scale_xy = (1.0, 1.0)
     assert sprite.scale == 1.0
-    assert sprite.scale_xy == (1.0, 1.0)
+    assert sprite.scale_xy == Vec2(1.0, 1.0)
     assert sprite.width, sprite.height == (20, 20)
 
     # setting scale_xy to identical values in each channel works

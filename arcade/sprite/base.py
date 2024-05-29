@@ -9,6 +9,8 @@ from arcade.hitbox import HitBox
 from arcade.texture import Texture
 from arcade.utils import copy_dunders_unimplemented
 
+from pyglet.math import Vec2
+
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
 
@@ -60,7 +62,7 @@ class BasicSprite:
         self._texture = texture
         self._width = texture.width * scale
         self._height = texture.height * scale
-        self._scale = scale, scale
+        self._scale = Vec2(scale, scale)
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: List["SpriteList"] = []
