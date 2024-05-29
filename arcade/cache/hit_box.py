@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Optional, Union, TYPE_CHECKING
 from collections import OrderedDict
 
-from arcade.types import PointList
+from arcade.types import Point2List
 from arcade.resources import resolve
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class HitBoxCache:
     VERSION = 1
 
     def __init__(self):
-        self._entries: OrderedDict[str, PointList] = OrderedDict()
+        self._entries: OrderedDict[str, Point2List] = OrderedDict()
 
     def __len__(self) -> int:
         return len(self._entries)
@@ -44,7 +44,7 @@ class HitBoxCache:
     def __iter__(self):
         return iter(self._entries)
 
-    def get(self, name_or_texture: Union[str, "Texture"]) -> Optional[PointList]:
+    def get(self, name_or_texture: Union[str, "Texture"]) -> Optional[Point2List]:
         """
         Get the hit box points for a texture with a given hash
         and hit box algorithm.
@@ -68,7 +68,7 @@ class HitBoxCache:
         else:
             raise TypeError(f"Expected str or Texture: {name_or_texture}")
 
-    def put(self, name_or_texture: Union[str, "Texture"], points: PointList) -> None:
+    def put(self, name_or_texture: Union[str, "Texture"], points: Point2List) -> None:
         """
         Store hit box points for a texture.
 

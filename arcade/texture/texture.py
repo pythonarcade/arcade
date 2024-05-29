@@ -26,7 +26,7 @@ from arcade.texture.transforms import (
     TransverseTransform,
 )
 
-from arcade.types import RGBA255, PointList
+from arcade.types import RGBA255, Point2List
 from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
@@ -155,7 +155,7 @@ class Texture:
         image: Union[PIL.Image.Image, ImageData],
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box_points: Optional[PointList] = None,
+        hit_box_points: Optional[Point2List] = None,
         hash: Optional[str] = None,
         **kwargs,
     ):
@@ -192,7 +192,7 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = (
+        self._hit_box_points: Point2List = (
             hit_box_points or self._calculate_hit_box_points()
         )
 
@@ -393,7 +393,7 @@ class Texture:
         self._size = value
 
     @property
-    def hit_box_points(self) -> PointList:
+    def hit_box_points(self) -> Point2List:
         """
         Get the hit box points for this texture.
 
@@ -754,7 +754,7 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def _calculate_hit_box_points(self) -> PointList:
+    def _calculate_hit_box_points(self) -> Point2List:
         """
         Calculate the hit box points for this texture based on the configured
         hit box algorithm. This is usually done on texture creation

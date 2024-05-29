@@ -163,7 +163,7 @@ Point3List = Sequence[Point3]
 # Speed / typing workaround:
 # 1. Eliminate extra allocations
 # 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
-EMPTY_POINT_LIST: PointList = tuple()
+EMPTY_POINT_LIST: Point2List = tuple()
 
 # Path handling
 PathLike = Union[str, Path, bytes]

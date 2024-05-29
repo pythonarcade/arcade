@@ -38,7 +38,7 @@ from pyglet.math import Vec2
 
 from arcade.math import rotate_point
 from arcade.resources import resolve
-from arcade.types import Point, TiledObject
+from arcade.types import Point2, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -510,7 +510,7 @@ class TileMap:
                     print("Warning, only one hit box supported for tile.")
 
             for hitbox in tile.objects.tiled_objects:
-                points: List[Point] = []
+                points: List[Point2] = []
                 if isinstance(hitbox, pytiled_parser.tiled_object.Rectangle):
                     if hitbox.size is None:
                         print(
@@ -587,7 +587,7 @@ class TileMap:
                     points = [(point[1], point[0]) for point in points]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    cast(List[Point], points),
+                    cast(List[Point2], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
@@ -831,7 +831,7 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
-        shape: Union[List[Point], Tuple[int, int, int, int], Point, None] = None
+        shape: Union[List[Point2], Tuple[int, int, int, int], Point2, None] = None
 
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
@@ -965,7 +965,7 @@ class TileMap:
             elif isinstance(
                 cur_object, pytiled_parser.tiled_object.Polygon
             ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
-                points: List[Point] = []
+                points: List[Point2] = []
                 shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
