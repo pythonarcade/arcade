@@ -3,12 +3,12 @@ from __future__ import annotations
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import Any, Sequence, Tuple
+from typing import Any, Tuple
 from typing_extensions import Self
 
 from PIL.Image import Image
 
-from arcade.types import Point, Point2, Point2List, EMPTY_POINT_LIST
+from arcade.types import Point2, Point2List, EMPTY_POINT_LIST
 
 __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
 

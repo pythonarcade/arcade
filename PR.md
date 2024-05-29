@@ -14,6 +14,9 @@
 - Added type aliases `Point2` and `Point3`
 - Camera
     - All camera functions now take `Point`, `Point2`, or `Point3` where points are expected
+    - All camera functions return `Vec2` or `Vec3` as expected
+    - Viewport has been removed from the ProjectionData Protocol
+    - Projectors now accept a viewport Rect, and a Scissor Rect
 - Added `Rect` and it's constructors, `Vec2`, and `Vec3` to top-level module
 - Added `Texture.draw_rect()`
 - Added `BasicSprite.rect`
