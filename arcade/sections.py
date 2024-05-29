@@ -7,6 +7,7 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
 from arcade import get_window
 from arcade.camera.default import DefaultProjector
+from arcade.types.rect import LRBT, Rect
 
 if TYPE_CHECKING:
     from arcade.camera import Projector
@@ -230,6 +231,10 @@ class Section:
         self._bottom = value - self._height
         self._ec_top = self.window.height if self._modal else value
         self._ec_bottom = 0 if self._modal else self._bottom
+
+    @property
+    def rect(self) -> Rect:
+        return LRBT(self.left, self.right, self.bottom, self.top)
 
     @property
     def window(self):
