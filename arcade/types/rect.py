@@ -5,7 +5,7 @@ from typing import NamedTuple, Optional, TypedDict, Tuple
 from pyglet.math import Vec2
 
 from arcade.types.numbers import AsFloat
-from arcade.types.vector_like import AnchorPoint
+from arcade.types.vector_like import AnchorPoint, Point2
 
 from arcade.utils import ReplacementWarning, warning
 
@@ -133,9 +133,10 @@ class Rect(NamedTuple):
         """Returns the ratio between the width and the height."""
         return self.width / self.height
 
-    def at_position(self, position: Vec2) -> Rect:
+    def at_position(self, position: Point2) -> Rect:
         """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved to put `position` at its center."""
-        return XYWH(position.x, position.y, self.width, self.height)
+        x, y = position
+        return XYWH(x, y, self.width, self.height)
 
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
         """
@@ -177,7 +178,7 @@ class Rect(NamedTuple):
 
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
-    def scale_axes(self, new_scale: Vec2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def scale_axes(self, new_scale: Point2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
         Returns a new :py:class:`~arcade.types.rect.Rect`
         scaled by a factor of `new_scale.x` in the width
@@ -186,10 +187,11 @@ class Rect(NamedTuple):
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
-        adjusted_left = anchor_x + (self.left - anchor_x) * new_scale.x
-        adjusted_right = anchor_x + (self.right - anchor_x) * new_scale.x
-        adjusted_top = anchor_y + (self.top - anchor_y) * new_scale.y
-        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * new_scale.y
+        nsx, nsy = new_scale
+        adjusted_left = anchor_x + (self.left - anchor_x) * nsx
+        adjusted_right = anchor_x + (self.right - anchor_x) * nsx
+        adjusted_top = anchor_y + (self.top - anchor_y) * nsy
+        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * nsy
 
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
@@ -209,9 +211,10 @@ class Rect(NamedTuple):
         """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the right at `value`."""
         return LBWH(value - self.width, self.bottom, self.width, self.height)
 
-    def align_center(self, value: Vec2) -> Rect:
+    def align_center(self, value: Point2) -> Rect:
         """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the center x and y at `value`."""
-        return XYWH(value.x, value.y, self.width, self.height)
+        cx, cy = value
+        return XYWH(cx, cy, self.width, self.height)
 
     def align_x(self, value: AsFloat) -> Rect:
         """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the x at `value`."""
@@ -345,23 +348,25 @@ class Rect(NamedTuple):
             (other.height + self.height) / 2.0 > abs(self.y - other.y)
         )
 
-    def point_in_rect(self, point: Vec2) -> bool:
+    def point_in_rect(self, point: Point2) -> bool:
         """Returns True if the given point is inside this rectangle."""
-        return (self.left < point.x < self.right) and (self.bottom < point.y < self.top)
+        px, py = point
+        return (self.left < px < self.right) and (self.bottom < py < self.top)
 
-    def __contains__(self, point: Vec2) -> bool:
+    def __contains__(self, point: Point2) -> bool:
         """Returns the result of :py:meth:`point_in_rect` with a provided point."""
         return self.point_in_rect(point)
 
-    def distance_from_bounds(self, point: Vec2) -> float:
+    def distance_from_bounds(self, point: Point2) -> float:
         """Returns the point's distance from the boundary of this rectangle."""
-        diff = Vec2(point.x - self.x, point.y - self.y)
+        px, py = point
+        diff = Vec2(px - self.x, py - self.y)
         dx = abs(diff.x) - self.width / 2.0
         dy = abs(diff.y) - self.height / 2.0
         d = (max(dx, 0.0)**2 + max(dy, 0.0)**2)**0.5 + min(max(dx, dy), 0.0)
         return d
 
-    def point_on_bounds(self, point: Vec2, tolerance: float) -> bool:
+    def point_on_bounds(self, point: Point2, tolerance: float) -> bool:
         """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
         return abs(self.distance_from_bounds(point)) < tolerance
 
