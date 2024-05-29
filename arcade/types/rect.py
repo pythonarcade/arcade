@@ -1,5 +1,6 @@
 """Rects all act the same, but take four of the possible eight attributes and calculate the rest."""
 from __future__ import annotations
+import math
 from typing import NamedTuple, Optional, TypedDict, Tuple
 
 from pyglet.math import Vec2
@@ -127,6 +128,11 @@ class Rect(NamedTuple):
     def size(self) -> Vec2:
         """Returns a :py:class:`~pyglet.math.Vec2` representing the size of the rectangle."""
         return Vec2(self.width, self.height)
+
+    @property
+    def area(self) -> float:
+        """The area of the rectangle in square pixels."""
+        return self.width * self.height
 
     @property
     def aspect_ratio(self) -> float:
@@ -415,8 +421,8 @@ class Rect(NamedTuple):
 
     @property
     def viewport(self) -> ViewportParams:
-        """Provides a tuple in the format of (left, right, bottom, top), coerced to integers."""
-        return (int(self.left), int(self.right), int(self.bottom), int(self.top))
+        """Provides a tuple in the format of (left, right, width, height), coerced to integers."""
+        return (int(self.left), int(self.right), int(self.width), int(self.height))
 
     @classmethod
     def from_kwargs(cls, **kwargs: AsFloat) -> Rect:
@@ -464,6 +470,37 @@ class Rect(NamedTuple):
         return (
             f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
             f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
+
+    def __bool__(self) -> bool:
+        """Returns True if area is not 0, else False."""
+        return self.width != 0 or self.height != 0
+
+    def __round__(self, n: int) -> Rect:
+        """Rounds the left, right, bottom, and top to `n` decimals."""
+        return LRBT(
+            round(self.left, n),
+            round(self.right, n),
+            round(self.bottom, n),
+            round(self.top, n)
+        )
+
+    def __floor__(self) -> Rect:
+        """Floors the left, right, bottom, and top."""
+        return LRBT(
+            math.floor(self.left),
+            math.floor(self.right),
+            math.floor(self.bottom),
+            math.floor(self.top)
+        )
+
+    def __ceil__(self) -> Rect:
+        """Floors the left, right, bottom, and top."""
+        return LRBT(
+            math.ceil(self.left),
+            math.ceil(self.right),
+            math.ceil(self.bottom),
+            math.ceil(self.top)
+        )
 
 
 # Shorthand creation helpers
