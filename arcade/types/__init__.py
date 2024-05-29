@@ -104,7 +104,6 @@ __all__ = [
     "PointList",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
-    "IntRect",
     "Rect",
     "LRBT",
     "XYWH",
@@ -113,7 +112,6 @@ __all__ = [
     "ViewportParams",
     "RectParams",
     "RectKwargs",
-    "RectList",
     "RGB",
     "RGBA",
     "RGBOrA",
@@ -162,12 +160,6 @@ PointList = Sequence[Point]
 # 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
 EMPTY_POINT_LIST: PointList = tuple()
 
-
-IntRect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
-RectList = Union[Tuple[IntRect, ...], List[IntRect]]
-FloatRect = Union[Tuple[AsFloat, AsFloat, AsFloat, AsFloat], List[AsFloat]]  # x, y, width, height
-
-
 # Path handling
 PathLike = Union[str, Path, bytes]
 _POr = TypeVar('_POr') # Allows PathOr[TypeNameHere] syntax
@@ -183,7 +175,7 @@ PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
-    shape: Union[Point, PointList, IntRect]
+    shape: Union[Point, PointList, Tuple[int, int, int, int]]
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None

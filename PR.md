@@ -8,3 +8,4 @@
 - Added `Rect` and it's constructors, `Vec2`, and `Vec3` to top-level module
 - Added `Texture.draw_rect()`
 - Added `BasicSprite.rect`
+- Remove `IntRect`, `FloatRect`, `RectList`

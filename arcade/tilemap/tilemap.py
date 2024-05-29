@@ -38,7 +38,7 @@ from pyglet.math import Vec2
 
 from arcade.math import rotate_point
 from arcade.resources import resolve
-from arcade.types import Point, IntRect, TiledObject
+from arcade.types import Point, TiledObject
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -831,7 +831,7 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
-        shape: Union[List[Point], IntRect, Point, None] = None
+        shape: Union[List[Point], Tuple[int, int, int, int], Point, None] = None
 
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None

@@ -17,7 +17,8 @@ from arcade.geometry import (
 )
 from arcade.math import get_distance
 from arcade.sprite import BasicSprite, SpriteType
-from arcade.types import Point, IntRect
+from arcade.types import Point
+from arcade.types.rect import Rect
 
 from .sprite_list import SpriteList
 
@@ -324,7 +325,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]
     return [s for s in sprites_to_check if s.position == point]
 
 
-def get_sprites_in_rect(rect: IntRect, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
+def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
     Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
     the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,
@@ -343,12 +344,7 @@ def get_sprites_in_rect(rect: IntRect, sprite_list: SpriteList[SpriteType]) -> L
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    rect_points = (
-        (rect[0], rect[3]),
-        (rect[1], rect[3]),
-        (rect[1], rect[2]),
-        (rect[0], rect[2]),
-    )
+    rect_points = rect.to_points()
     sprites_to_check: Iterable[SpriteType]
 
     if sprite_list.spatial_hash is not None:

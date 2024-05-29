@@ -10,7 +10,8 @@ from arcade.draw_commands import draw_lbwh_rectangle_textured
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import RGBA255, FloatRect, Point
+from arcade.types import RGBA255, Point
+from arcade.types.rect import Rect
 
 
 class Surface:
@@ -174,7 +175,7 @@ class Surface:
 
     def draw(
         self,
-        area: Optional[FloatRect] = None,
+        area: Optional[Rect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
@@ -182,7 +183,7 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param area: Limit the area in the surface we're drawing (x, y, w, h)
+        :param area: Limit the area in the surface we're drawing (l, b, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -191,7 +192,7 @@ class Surface:
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._program["area"] = area or (0, 0, *self._size)
+        self._program["area"] = area.lbwh or (0, 0, *self._size)
         self._geometry.render(self._program, vertices=1)
 
         # Restore blend function

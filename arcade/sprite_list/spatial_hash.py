@@ -8,8 +8,9 @@ from typing import (
     Generic,
 )
 from arcade.sprite.base import BasicSprite
-from arcade.types import Point, IPoint, IntRect
+from arcade.types import Point, IPoint
 from arcade.sprite import SpriteType
+from arcade.types.rect import Rect
 
 
 class SpatialHash(Generic[SpriteType]):
@@ -129,14 +130,14 @@ class SpatialHash(Generic[SpriteType]):
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
 
-    def get_sprites_near_rect(self, rect: IntRect) -> Set[SpriteType]:
+    def get_sprites_near_rect(self, rect: Rect) -> Set[SpriteType]:
         """
         Return sprites in the same buckets as the given rectangle.
 
         :param rect: The rectangle to check (left, right, bottom, top)
         :return: A set of sprites in the rectangle
         """
-        left, right, bottom, top = rect
+        left, right, bottom, top = rect.lrbt
         min_point = trunc(left), trunc(bottom)
         max_point = trunc(right), trunc(top)
 

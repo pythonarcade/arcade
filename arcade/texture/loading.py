@@ -8,11 +8,11 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade.types import RectList
 from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
 from arcade import cache as _cache
 from arcade import hitbox
+from arcade.types.numbers import AsFloat
 from .texture import Texture, ImageData
 
 LOG = logging.getLogger(__name__)
@@ -178,7 +178,7 @@ def load_texture_pair(
 
 def load_textures(
     file_name: Union[str, Path],
-    image_location_list: RectList,
+    image_location_list: List[Tuple[AsFloat, AsFloat, AsFloat, AsFloat]],
     mirrored: bool = False,
     flipped: bool = False,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
