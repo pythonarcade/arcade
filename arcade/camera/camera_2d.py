@@ -266,7 +266,7 @@ class Camera2D:
         top = self.top
         left = self.left
 
-        return Vec2(pos[0] + up[0] * top + up[1] * left, pos[1] + up[1] * top - up[0] * left)
+        return Vec2(pos.x + up[0] * top + up[1] * left, pos.y + up[1] * top - up[0] * left)
 
     @top_left.setter
     def top_left(self, new_corner: Point2):
@@ -288,7 +288,7 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
         top = self.top
-        return Vec2(pos[0] + up[0] * top, pos[1] + up[1] * top)
+        return Vec2(pos.x + up[0] * top, pos.y + up[1] * top)
 
     @top_center.setter
     def top_center(self, new_top: Point2):
@@ -308,7 +308,7 @@ class Camera2D:
         top = self.top
         right = self.right
 
-        return Vec2(pos[0] + up[0] * top + up[1] * right, pos[1] + up[1] * top - up[0] * right)
+        return Vec2(pos.x + up[0] * top + up[1] * right, pos.y + up[1] * top - up[0] * right)
 
     @top_right.setter
     def top_right(self, new_corner: Point2):
@@ -332,7 +332,7 @@ class Camera2D:
 
         bottom = self.bottom
         right = self.right
-        return Vec2(pos[0] + up[0] * bottom + up[1] * right, pos[1] + up[1] * bottom - up[0] * right)
+        return Vec2(pos.x + up[0] * bottom + up[1] * right, pos.y + up[1] * bottom - up[0] * right)
 
     @bottom_right.setter
     def bottom_right(self, new_corner: Point2):
@@ -355,7 +355,7 @@ class Camera2D:
         up = self._camera_data.up
         bottom = self.bottom
 
-        return Vec2(pos[0] - up[0] * bottom, pos[1] - up[1] * bottom)
+        return Vec2(pos.x - up[0] * bottom, pos.y - up[1] * bottom)
 
     @bottom_center.setter
     def bottom_center(self, new_bottom: Point2):
@@ -375,7 +375,7 @@ class Camera2D:
         bottom = self.bottom
         left = self.left
 
-        return Vec2(pos[0] + up[0] * bottom + up[1] * left, pos[1] + up[1] * bottom - up[0] * left)
+        return Vec2(pos.x + up[0] * bottom + up[1] * left, pos.y + up[1] * bottom - up[0] * left)
 
     @bottom_left.setter
     def bottom_left(self, new_corner: Point2):
@@ -397,7 +397,7 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
         right = self.right
-        return Vec2(pos[0] + up[1] * right, pos[1] - up[0] * right)
+        return Vec2(pos.x + up[1] * right, pos.y - up[0] * right)
 
     @center_right.setter
     def center_right(self, new_right: Point2):
@@ -414,7 +414,7 @@ class Camera2D:
         pos = self.position
         up = self._camera_data.up
         left = self.left
-        return Vec2(pos[0] + up[1] * left, pos[1] - up[0] * left)
+        return Vec2(pos.x + up[1] * left, pos.y - up[0] * left)
 
     @center_left.setter
     def center_left(self, new_left: Point2):
