@@ -32,7 +32,7 @@ from arcade.gui.events import (
     UITextMotionSelectEvent,
 )
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import Rect, UIWidget
+from arcade.gui.widgets import GUIRect, UIWidget
 from arcade.types import Point
 
 W = TypeVar("W", bound=UIWidget)
@@ -397,8 +397,8 @@ class UIManager(EventDispatcher):
         self.trigger_render()
 
     @property
-    def rect(self) -> Rect:  # type: ignore
-        return Rect(0, 0, *self.window.get_size())
+    def rect(self) -> GUIRect:  # type: ignore
+        return GUIRect(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
