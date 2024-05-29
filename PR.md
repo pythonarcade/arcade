@@ -4,6 +4,7 @@
 - `Rect`
     - Added `Rect.distance_from_bounds()`
     - Added `point in rect` support for `Rect`
+    - Added `*` and `/` support for scaling relative to `(0, 0)`.
     - Functions expecting `Vec2` now accept `Tuple[AsFloat, AsFloat]`
     - Improved docstrings
 - Added type aliases `Point2` and `Point3`
@@ -14,5 +15,6 @@
 - Added `BasicSprite.rect`
 - Added `Section.rect`
 - Added `SpriteSolidColor.from_rect()`
+- Added `NinePatchTexture.from_rect()`
 - Remove `IntRect`, `FloatRect`, `RectList`
 - Rename the old `Rect` to `GUIRect`

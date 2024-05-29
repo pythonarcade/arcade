@@ -195,6 +195,16 @@ class Rect(NamedTuple):
 
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
+    def __mul__(self, scale: AsFloat) -> Rect:
+        """Scale the Rect by ``scale`` relative to ``(0, 0)``."""
+        return Rect(self.left * scale, self.right * scale, self.bottom * scale, self.top * scale,
+                    self.width * scale,  self.height * scale, self.x * scale, self.y * scale)
+
+    def __div__(self, scale: AsFloat) -> Rect:
+        """Scale the Rect by 1/``scale`` relative to ``(0, 0)``."""
+        return Rect(self.left / scale, self.right / scale, self.bottom / scale, self.top / scale,
+                    self.width / scale,  self.height / scale, self.x / scale, self.y / scale)
+
     def align_top(self, value: AsFloat) -> Rect:
         """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the top at `value`."""
         return LBWH(self.left, value - self.height, self.width, self.height)
