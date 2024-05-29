@@ -17,7 +17,7 @@ class RectKwargs(TypedDict):
     """A dictionary of the eight canon properties of a rectangle.
 
     ``left``, ``right``, ``bottom``, ``top``,
-    ``width``, ``height``, ``x``, and ``y`` are all :py:`float`s.
+    ``width``, ``height``, ``x``, and ``y`` are all :py:class:`float`s.
     """
     left: float
     right: float
@@ -454,7 +454,7 @@ class Rect(NamedTuple):
 # Shorthand creation helpers
 
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
-    """Creates a new Rect from left, right, bottom, and top parameters."""
+    """Creates a new :py:class:`.Rect` from left, right, bottom, and top parameters."""
     width = right - left
     height = top - bottom
     x = left + (width / 2)
@@ -463,7 +463,7 @@ def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
 
 
 def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rect:
-    """Creates a new Rect from left, bottom, width, and height parameters."""
+    """Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters."""
     right = left + width
     top = bottom + height
     x = left + (width / 2)
@@ -472,7 +472,7 @@ def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rec
 
 
 def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-    """Creates a new Rect from x, y, width, and height parameters, anchored at a relative point (default center)."""
+    """Creates a new :py:class:`.Rect` from x, y, width, and height parameters, anchored at a relative point (default center)."""
     left = x - anchor.x * width
     right = left + width
     bottom = y - anchor.y * height
@@ -484,7 +484,7 @@ def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 =
 
 def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> Rect:
     """
-    Creates a new Rect from center x, center y, half width, and half height parameters.
+    Creates a new :py:class:`.Rect` from center x, center y, half width, and half height parameters.
     This is mainly used by OpenGL.
     """
     left = x - half_width
@@ -495,7 +495,7 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
 
 
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
-    """Creates a new Rect from left, bottom, width, and height parameters, restricted to integers."""
+    """Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters, restricted to integers."""
     right = left + width
     top = bottom + height
     x = left + int(width / 2)
