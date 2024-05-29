@@ -7,14 +7,14 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 
 """
 from __future__ import annotations
-from typing import Union
+from typing import Union, Tuple
 
 from pyglet.math import Vec2, Vec3
 
 from arcade.types.numbers import AsFloat
 
-Point2 = Union[tuple[AsFloat, AsFloat], Vec2]
-Point3 = Union[tuple[AsFloat, AsFloat, AsFloat], Vec3]
+Point2 = Union[Tuple[AsFloat, AsFloat], Vec2]
+Point3 = Union[Tuple[AsFloat, AsFloat, AsFloat], Vec3]
 
 
 class AnchorPoint:
