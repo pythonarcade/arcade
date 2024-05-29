@@ -579,7 +579,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale_xy = self._scale[0] * factor_x, self._scale[1] * factor_y
+        self.scale_xy = Vec2(self._scale[0] * factor_x, self._scale[1] * factor_y)
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
