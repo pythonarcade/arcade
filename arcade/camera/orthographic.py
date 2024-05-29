@@ -12,7 +12,7 @@ from arcade.camera.projection_functions import (
     unproject_orthographic
 )
 
-from arcade.types import Point
+from arcade.types import Point, Rect, LBWH
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -50,8 +50,14 @@ class OrthographicProjector(Projector):
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  view: Optional[CameraData] = None,
-                 projection: Optional[OrthographicProjectionData] = None):
+                 projection: Optional[OrthographicProjectionData] = None,
+                 viewport: Optional[Rect] = None,
+                 scissor: Optional[Rect] = None
+                 ):
         self._window: "Window" = window or get_window()
+
+        self.viewport: Rect = viewport or LBWH(0, 0, self._window.width, self._window.height)
+        self.scissor: Optional[Rect] = scissor
 
         self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
@@ -64,8 +70,6 @@ class OrthographicProjector(Projector):
             -0.5 * self._window.width, 0.5 * self._window.width,  # Left, Right
             -0.5 * self._window.height, 0.5 * self._window.height,  # Bottom, Top
             -100, 100,  # Near, Far
-
-            (0, 0, self._window.width, self._window.height)  # Viewport
         )
 
     @property
@@ -106,7 +110,8 @@ class OrthographicProjector(Projector):
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        self._window.ctx.viewport = self._projection.viewport
+        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
         self._window.projection = _projection
         self._window.view = _view
 
@@ -143,7 +148,7 @@ class OrthographicProjector(Projector):
         _view = generate_view_matrix(self._view)
 
         return project_orthographic(
-            world_coordinate, self.projection.viewport,
+            world_coordinate, self.viewport.viewport,
             _view, _projection,
         )
 
@@ -165,9 +170,8 @@ class OrthographicProjector(Projector):
 
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
-
         return unproject_orthographic(
             screen_coordinate,
-            self.projection.viewport,
+            self.viewport.viewport,
             _view, _projection
         )

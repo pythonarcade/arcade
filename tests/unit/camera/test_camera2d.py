@@ -2,7 +2,7 @@ from typing import Tuple
 
 import pytest as pytest
 
-from arcade import Window
+from arcade import Window, LRBT
 from arcade.camera import Camera2D
 from arcade.camera.data_types import ZeroProjectionDimension, OrthographicProjectionData
 
@@ -52,8 +52,7 @@ def test_camera2d_from_camera_data_projection_xy_pairs_equal_raises_zeroprojecti
     camera_class
 ):
     data = OrthographicProjectionData(
-        *bad_projection, -100.0, 100.0,
-        viewport=(0, 0, 800, 600)
+        *bad_projection, -100.0, 100.0
     )
 
     with pytest.raises(ZeroProjectionDimension):
@@ -67,7 +66,7 @@ def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
 ):
 
     with pytest.raises(ZeroProjectionDimension):
-        _ = camera_class(projection=bad_projection)
+        _ = camera_class(projection=LRBT(*bad_projection))
 
 
 def test_camera2d_init_equal_near_far_raises_zeroprojectiondimension(
@@ -107,7 +106,7 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
-    assert ortho_camera.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport.viewport == (0, 0, width, height)
     assert ortho_camera.viewport_left == 0
     assert ortho_camera.viewport_right == width
     assert ortho_camera.viewport_bottom == 0
@@ -125,7 +124,7 @@ def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
-    assert ortho_camera.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport.viewport == (0, 0, width, height)
     assert ortho_camera.viewport_left == 0
     assert ortho_camera.viewport_right == width
     assert ortho_camera.viewport_bottom == 0

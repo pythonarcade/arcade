@@ -138,7 +138,7 @@ def static_from_raw_orthographic(
     )
     proj = generate_orthographic_matrix(
         OrthographicProjectionData(
-            projection[0], projection[1], projection[2], projection[3], near, far, viewport or (0, 0, 0, 0)), zoom
+            projection[0], projection[1], projection[2], projection[3], near, far), zoom
     )
     return _StaticCamera(view, proj, viewport, window=window,
                          project_method=project_orthographic,

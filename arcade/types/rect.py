@@ -151,11 +151,18 @@ class Rect(NamedTuple):
         """
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
-    def resize(self, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def resize(self,
+               width: Optional[AsFloat] = None,
+               height: Optional[AsFloat] = None,
+               anchor: Vec2 = AnchorPoint.CENTER
+        ) -> Rect:
         """
         Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position,
         but with a new width and height, anchored at a point (default center.)
         """
+        width = width or self.width
+        height = height or self.height
+
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
@@ -421,8 +428,8 @@ class Rect(NamedTuple):
 
     @property
     def viewport(self) -> ViewportParams:
-        """Provides a tuple in the format of (left, right, width, height), coerced to integers."""
-        return (int(self.left), int(self.right), int(self.width), int(self.height))
+        """Provides a tuple in the format of (left, bottom, width, height), coerced to integers."""
+        return (int(self.left), int(self.bottom), int(self.width), int(self.height))
 
     @classmethod
     def from_kwargs(cls, **kwargs: AsFloat) -> Rect:

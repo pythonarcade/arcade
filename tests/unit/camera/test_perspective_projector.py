@@ -51,7 +51,7 @@ def test_perspective_projector_map_coordinates(window: Window, width, height):
     window.set_size(width, height)
     persp_camera = camera.PerspectiveProjector()
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     # When
     mouse_pos_a = (100.0, 100.0)
@@ -71,7 +71,7 @@ def test_perspective_projector_map_coordinates_move(window: Window, width, heigh
     persp_camera = camera.PerspectiveProjector()
     default_view = persp_camera.view
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     half_width, half_height = window.width//2, window.height//2
 
@@ -110,7 +110,7 @@ def test_perspective_projector_map_coordinates_rotate(window: Window, width, hei
     persp_camera = camera.PerspectiveProjector()
     default_view = persp_camera.view
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     half_width, half_height = window.width//2, window.height//2
 

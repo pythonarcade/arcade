@@ -13,7 +13,7 @@ from arcade.camera.projection_functions import (
     unproject_perspective
 )
 
-from arcade.types import Point
+from arcade.types import Point, Rect, LBWH
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -50,8 +50,13 @@ class PerspectiveProjector(Projector):
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  view: Optional[CameraData] = None,
-                 projection: Optional[PerspectiveProjectionData] = None):
+                 projection: Optional[PerspectiveProjectionData] = None,
+                 viewport: Optional[Rect] = None,
+                 scissor: Optional[Rect] = None):
         self._window: "Window" = window or get_window()
+
+        self.viewport: Rect = viewport or LBWH(0, 0, self._window.width, self._window.height)
+        self.scissor: Optional[Rect] = scissor
 
         self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
@@ -63,8 +68,7 @@ class PerspectiveProjector(Projector):
         self._projection = projection or PerspectiveProjectionData(
             self._window.width / self._window.height,  # Aspect
             60,  # Field of View,
-            0.01, 100.0,  # near, # far
-            (0, 0, self._window.width, self._window.height)  # Viewport
+            0.01, 100.0  # near, # far
         )
 
     @property
@@ -130,7 +134,8 @@ class PerspectiveProjector(Projector):
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        self._window.ctx.viewport = self._projection.viewport
+        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
         self._window.projection = _projection
         self._window.view = _view
 
@@ -139,7 +144,7 @@ class PerspectiveProjector(Projector):
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         x, y, *z = world_coordinate
-        z = (0.5 * self._projection.viewport[3] / tan(
+        z = (0.5 * self.viewport.height / tan(
                 radians(0.5 * self._projection.fov / self._view.zoom))) if not z else z[0]
 
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
@@ -147,7 +152,7 @@ class PerspectiveProjector(Projector):
 
         pos = project_perspective(
             Vec3(x, y, z),
-            self._projection.viewport,
+            self.viewport.viewport,
             _view, _projection
         )
 
@@ -169,14 +174,14 @@ class PerspectiveProjector(Projector):
             A 3D vector in world space.
         """
         x, y, *z = screen_coordinate
-        z = (0.5 * self._projection.viewport[3] / tan(
+        z = (0.5 * self.viewport.height / tan(
             radians(0.5 * self._projection.fov / self._view.zoom))) if not z else z[0]
 
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
         pos = unproject_perspective(
-            Vec3(x, y, z), self.projection.viewport,
+            Vec3(x, y, z), self.viewport.viewport,
             _view, _projection
         )
         return pos

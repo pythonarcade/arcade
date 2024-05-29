@@ -11,7 +11,7 @@ from arcade.camera import OrthographicProjector, OrthographicProjectionData, Cam
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, Point
-from arcade.types.rect import Rect
+from arcade.types.rect import Rect, LBWH, LRBT
 
 
 class Surface:
@@ -57,8 +57,9 @@ class Surface:
         self._cam = OrthographicProjector(
             view=CameraData(),
             projection=OrthographicProjectionData(
-                0.0, self.width, 0.0, self.height, -100, 100, (0, 0, self.width, self.height)
+                0.0, self.width, 0.0, self.height, -100, 100
             ),
+            viewport=LBWH(0, 0, self.width, self.height)
         )
 
     @property
@@ -167,9 +168,8 @@ class Surface:
 
         width = max(width, 1)
         height = max(height, 1)
-        _p = self._cam.projection
-        _p.left, _p.right, _p.bottom, _p.top = 0, width, 0, height
-        self._cam.projection.viewport = viewport
+        self._cam.projection.lrbt = 0, width, 0, height
+        self._cam.viewport = LBWH(*viewport)
 
         self._cam.use()
 

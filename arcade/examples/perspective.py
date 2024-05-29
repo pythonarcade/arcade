@@ -108,8 +108,8 @@ class Perspective(arcade.Window):
 
         self.offscreen_cam = arcade.camera.Camera2D(
             position=(0.0, 0.0),
-            viewport=(0, 0, self.fbo.width, self.fbo.height),
-            projection=(0, self.fbo.width, 0, self.fbo.height)
+            viewport=arcade.LBWH(0, 0, self.fbo.width, self.fbo.height),
+            projection=arcade.LRBT(0, self.fbo.width, 0, self.fbo.height)
         )
 
     def on_draw(self):

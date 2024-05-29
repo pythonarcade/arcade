@@ -10,11 +10,11 @@ def test_ui_manager_respects_camera_viewport(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
     camera = arcade.camera.Camera2D(
-        position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height), window=window
+        position=(0.0, 0.0), projection=arcade.LRBT(0.0, window.width, 0.0, window.height), window=window
     )
 
     # WHEN
-    camera.viewport = 0, 0, 400, 200
+    camera.viewport = arcade.LBWH(0, 0, 400, 200)
     camera.use()
 
     uimanager.click(100, 100)
@@ -29,7 +29,7 @@ def test_ui_manager_respects_camera_pos(uimanager, window):
     # GIVEN
     uimanager.use_super_mouse_adjustment = True
     camera = arcade.camera.Camera2D(
-        position=(0.0, 0.0), projection=(0.0, window.width, 0.0, window.height), window=window
+        position=(0.0, 0.0), projection=arcade.LRBT(0.0, window.width, 0.0, window.height), window=window
     )
 
     # WHEN

@@ -17,7 +17,6 @@ from collections import deque
 from contextlib import contextmanager
 from weakref import WeakSet, WeakValueDictionary
 
-import PIL
 import PIL.Image
 from PIL import Image, ImageDraw
 from pyglet.image.atlas import (
@@ -961,16 +960,14 @@ class TextureAtlas(TextureAtlasBase):
 
         static_camera = static_from_raw_orthographic(
             projection,
-            -1, 1, # near, far planes
+            -1, 1,  # near, far planes
             1.0,  # zoom
-            viewport=(region.x, region.y, region.width, region.height)  # viewport
         )
 
         with self._fbo.activate() as fbo:
-            fbo.viewport = region.x, region.y, region.width, region.height
             try:
                 static_camera.use()
-                print(self.ctx.view_matrix)
+                fbo.viewport = region.x, region.y, region.width, region.height
                 yield fbo
             finally:
                 fbo.viewport = 0, 0, *self._fbo.size

@@ -95,7 +95,7 @@ def test_views():
     assert A_RECT.lbwh == (10, 10, 10, 10)
     assert A_RECT.xyrr == (15, 15,  5,  5)
     assert A_RECT.xywh == (15, 15, 10, 10)
-    assert A_RECT.viewport == (10, 20, 10, 20)
+    assert A_RECT.viewport == (10, 10, 10, 10)
 
 
 class SubclassedRect(Rect):

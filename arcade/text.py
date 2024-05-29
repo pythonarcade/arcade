@@ -574,7 +574,7 @@ class Text:
     @position.setter
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        x, y, *z = Point
+        x, y, *z = point
 
         if z:
             self._label.position = x, y, z[0]

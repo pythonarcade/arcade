@@ -356,23 +356,23 @@ class UIManager(EventDispatcher):
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseMovementEvent(self, int(x_), int(y), dx, dy))
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, round(x_), round(y), dx, dy))
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMousePressEvent(self, int(x_), int(y_), button, modifiers))
+        return self.dispatch_ui_event(UIMousePressEvent(self, round(x_), round(y_), button, modifiers))
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseDragEvent(self, int(x_), int(y_), dx, dy, buttons, modifiers))
+        return self.dispatch_ui_event(UIMouseDragEvent(self, round(x_), round(y_), dx, dy, buttons, modifiers))
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseReleaseEvent(self, int(x_), int(y_), button, modifiers))
+        return self.dispatch_ui_event(UIMouseReleaseEvent(self, round(x_), round(y_), button, modifiers))
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y))
+        return self.dispatch_ui_event(UIMouseScrollEvent(self, round(x_), round(y_), scroll_x, scroll_y))
 
     def on_key_press(self, symbol: int, modifiers: int):
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
