@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 
 import arcade
 import arcade.gl as gl
+from arcade.types.rect import Rect
 
 
 class NinePatchTexture:
@@ -69,12 +70,12 @@ class NinePatchTexture:
 
     def __init__(
         self,
-        *,
         left: int,
         right: int,
         bottom: int,
         top: int,
         texture: arcade.Texture,
+        *,
         atlas: Optional[arcade.TextureAtlas] = None,
     ):
         self._ctx = arcade.get_window().ctx
@@ -104,6 +105,11 @@ class NinePatchTexture:
         self._top = top
 
         self._check_sizes()
+
+    @classmethod
+    def from_rect(cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.TextureAtlas] = None) -> NinePatchTexture:
+        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
+        return cls(*rect.viewport, texture, atlas=atlas)
 
     @property
     def ctx(self) -> arcade.ArcadeContext:

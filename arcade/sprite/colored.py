@@ -69,9 +69,10 @@ class SpriteSolidColor(Sprite):
         )
         self.color = Color.from_iterable(color)
 
-    def from_rect(self, rect: Rect, color: Color, angle: float = 0.0) -> SpriteSolidColor:
+    @classmethod
+    def from_rect(cls, rect: Rect, color: Color, angle: float = 0.0) -> SpriteSolidColor:
         """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
-        return SpriteSolidColor(int(rect.width), int(rect.height), rect.x, rect.y, color, angle)
+        return cls(int(rect.width), int(rect.height), rect.x, rect.y, color, angle)
 
 
 class SpriteCircle(Sprite):
