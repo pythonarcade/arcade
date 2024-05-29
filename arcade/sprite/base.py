@@ -3,11 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
 
 import arcade
-from arcade.types import Point, Color, RGBA255, RGBOrA255, PointList
+from arcade.types import Point, Point2, Color, RGBA255, RGBOrA255, PointList, Rect, LRBT
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types.rect import Rect, LRBT
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -76,7 +75,7 @@ class BasicSprite:
     # --- Core Properties ---
 
     @property
-    def position(self) -> Point:
+    def position(self) -> Point2:
         """
         Get or set the center x and y position of the sprite.
 
@@ -86,7 +85,7 @@ class BasicSprite:
         return self._position
 
     @position.setter
-    def position(self, new_value: Point):
+    def position(self, new_value: Point2):
         if new_value == self._position:
             return
 
@@ -213,12 +212,12 @@ class BasicSprite:
             sprite_list._update_size(self)
 
     @property
-    def scale_xy(self) -> Point:
+    def scale_xy(self) -> Point2:
         """Get or set the x & y scale of the sprite as a pair of values."""
         return self._scale
 
     @scale_xy.setter
-    def scale_xy(self, new_value: Point):
+    def scale_xy(self, new_value: Point2):
         if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
             return
 
@@ -651,7 +650,7 @@ class BasicSprite:
         """
         self.remove_from_sprite_lists()
 
-    def collides_with_point(self, point: Point) -> bool:
+    def collides_with_point(self, point: Point2) -> bool:
         """
         Check if point is within the current sprite.
 

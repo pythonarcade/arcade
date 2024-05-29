@@ -8,7 +8,7 @@ from typing_extensions import Self
 
 from PIL.Image import Image
 
-from arcade.types import Point, PointList, EMPTY_POINT_LIST
+from arcade.types import Point, Point2, PointList, EMPTY_POINT_LIST
 
 __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
 
@@ -103,7 +103,7 @@ class HitBox:
     def __init__(
         self,
         points: PointList,
-        position: Point = (0.0, 0.0),
+        position: Point2 = (0.0, 0.0),
         scale: Tuple[float, float] = (1.0, 1.0),
     ):
         self._points = points

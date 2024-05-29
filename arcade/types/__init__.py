@@ -26,7 +26,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from typing import (
-    List,
     NamedTuple,
     Optional,
     Sequence,
@@ -86,6 +85,7 @@ from arcade.types.rect import RectKwargs
 
 from arcade.types.rect import Rect
 from arcade.types.rect import LRBT
+from arcade.types.rect import LBWH
 from arcade.types.rect import XYWH
 from arcade.types.rect import XYRR
 from arcade.types.rect import Viewport
@@ -102,10 +102,13 @@ __all__ = [
     "Point2",
     "Point3",
     "PointList",
+    "Point2List",
+    "Point3List",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
     "Rect",
     "LRBT",
+    "LBWH",
     "XYWH",
     "XYRR",
     "Viewport",
@@ -155,6 +158,8 @@ Point = Union[Point2, Point3]
 Velocity = Tuple[AsFloat, AsFloat]
 
 PointList = Sequence[Point]
+Point2List = Sequence[Point2]
+Point3List = Sequence[Point3]
 # Speed / typing workaround:
 # 1. Eliminate extra allocations
 # 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses

@@ -1,9 +1,9 @@
-from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing import Optional, Generator, TYPE_CHECKING
 from typing_extensions import Self
 from contextlib import contextmanager
 
 from math import tan, radians
-from pyglet.math import Mat4, Vec3
+from pyglet.math import Mat4, Vec3, Vec2
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
 from arcade.camera.projection_functions import (
@@ -14,7 +14,6 @@ from arcade.camera.projection_functions import (
 )
 
 from arcade.types import Point
-from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -139,12 +138,9 @@ class PerspectiveProjector(Projector):
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        if len(world_coordinate) < 2:
-            z = (0.5 * self._projection.viewport[3] / tan(
-                radians(0.5 * self._projection.fov / self._view.zoom)))
-        else:
-            z = world_coordinate[2]
-        x, y = world_coordinate[0], world_coordinate[1]
+        x, y, *z = world_coordinate
+        z = (0.5 * self._projection.viewport[3] / tan(
+                radians(0.5 * self._projection.fov / self._view.zoom))) if not z else z[0]
 
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
@@ -157,9 +153,7 @@ class PerspectiveProjector(Projector):
 
         return pos
 
-    def unproject(self,
-                  screen_coordinate: Point2,
-                  depth: Optional[float] = None) -> Vec3:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -167,31 +161,22 @@ class PerspectiveProjector(Projector):
 
         Essentially reverses the effects of the projector.
 
+        # TODO: UPDATE
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query
         Returns:
             A 3D vector in world space.
         """
-        depth = depth or (0.5 * self._projection.viewport[3] / tan(
-            radians(0.5 * self._projection.fov / self._view.zoom)))
+        x, y, *z = screen_coordinate
+        z = (0.5 * self._projection.viewport[3] / tan(
+            radians(0.5 * self._projection.fov / self._view.zoom))) if not z else z[0]
 
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
         pos = unproject_perspective(
-            screen_coordinate, self.projection.viewport,
-            _view, _projection,
-            depth
+            Vec3(x, y, z), self.projection.viewport,
+            _view, _projection
         )
         return pos
-
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Point2,
-            depth: Optional[float] = None) -> Vec3:
-        """
-        Alias of PerspectiveProjector.unproject() for typing.
-        """
-        return self.unproject(screen_coordinate, depth)

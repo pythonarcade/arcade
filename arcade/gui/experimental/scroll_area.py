@@ -15,6 +15,7 @@ from arcade.gui import (
     UIMouseScrollEvent,
     UIMouseEvent,
 )
+from arcade.types import LBWH
 
 
 class UIScrollArea(UIWidget):
@@ -90,7 +91,7 @@ class UIScrollArea(UIWidget):
         # draw the whole surface, the scissor box, will limit the visible area on screen
         width, height = self.surface.size
         self.surface.position = (-self.scroll_x, -self.scroll_y)
-        self.surface.draw((0, 0, width, height))
+        self.surface.draw(LBWH(0, 0, width, height))
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(event.x, event.y):

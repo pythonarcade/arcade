@@ -13,7 +13,6 @@ from arcade.camera.projection_functions import (
 )
 
 from arcade.types import Point
-from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -140,25 +139,15 @@ class OrthographicProjector(Projector):
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        if len(world_coordinate) > 2:
-            z = world_coordinate[2]
-        else:
-            z = 0.0
-        x, y = world_coordinate[0], world_coordinate[1]
-
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        pos = project_orthographic(
-            Vec3(x, y, z), self.projection.viewport,
+        return project_orthographic(
+            world_coordinate, self.projection.viewport,
             _view, _projection,
         )
 
-        return pos
-
-    def unproject(self,
-                  screen_coordinate: Point2,
-                  depth: Optional[float] = None) -> Vec3:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -173,14 +162,12 @@ class OrthographicProjector(Projector):
         Returns:
             A 3D vector in world space.
         """
+
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        pos = unproject_orthographic(
+        return unproject_orthographic(
             screen_coordinate,
             self.projection.viewport,
-            _view, _projection,
-            depth or 0.0
+            _view, _projection
         )
-
-        return pos

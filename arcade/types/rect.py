@@ -477,7 +477,10 @@ def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rec
 
 
 def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-    """Creates a new :py:class:`.Rect` from x, y, width, and height parameters, anchored at a relative point (default center)."""
+    """
+    Creates a new :py:class:`.Rect` from x, y, width, and height parameters,
+    anchored at a relative point (default center).
+    """
     left = x - anchor.x * width
     right = left + width
     bottom = y - anchor.y * height

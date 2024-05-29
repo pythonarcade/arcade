@@ -192,7 +192,7 @@ class Surface:
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._program["area"] = area.lbwh or (0, 0, *self._size)
+        self._program["area"] = (0, 0, *self._size) if not area else area.lbwh
         self._geometry.render(self._program, vertices=1)
 
         # Restore blend function

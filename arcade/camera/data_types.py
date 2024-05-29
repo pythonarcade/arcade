@@ -4,14 +4,14 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Optional, Generator
+from typing import Protocol, Tuple, Generator
 from contextlib import contextmanager
 
 from typing_extensions import Self
 from pyglet.math import Vec2, Vec3
 
 from arcade.types import Point
-from arcade.types.vector_like import Point2, Point3
+from arcade.types.vector_like import Point3
 
 
 __all__ = [
@@ -302,9 +302,7 @@ class Projector(Protocol):
         """
         ...
 
-    def unproject(self,
-                  screen_coordinate: Point2,
-                  depth: Optional[float] = None) -> Vec3:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate and return the associated world coordinate
 

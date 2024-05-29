@@ -572,12 +572,14 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Union[Point, Point3]):
+    def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(point) == 3:
-            self._label.position = point
+        x, y, *z = Point
+
+        if z:
+            self._label.position = x, y, z[0]
         else:
-            self._label.position = *point, self._label.z
+            self._label.position = x, y, self._label.z
 
 
 def create_text_sprite(

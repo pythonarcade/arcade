@@ -11,8 +11,9 @@ from arcade.camera.data_types import (
     ZeroProjectionDimension
 )
 from arcade.gl import Framebuffer
-from pyglet.math import Vec2
+from pyglet.math import Vec2, Vec3
 
+from arcade.types import Point
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -241,7 +242,9 @@ class Camera2D:
 
     @position.setter
     def position(self, _pos: Point2) -> None:
-        self._camera_data.position = (_pos[0], _pos[1], self._camera_data.position[2])
+
+        x, y = _pos
+        self._camera_data.position = (x, y, self._camera_data.position[2])
 
     # top_left
     @property
@@ -262,9 +265,10 @@ class Camera2D:
         top = self.top
         left = self.left
 
+        x, y = new_corner
         self.position = (
-            new_corner[0] - up[0] * top - up[1] * left,
-            new_corner[1] - up[0] * top + up[0] * left
+            x - up[0] * top - up[1] * left,
+            y - up[0] * top + up[0] * left
         )
 
     # top_center
@@ -281,7 +285,8 @@ class Camera2D:
         up = self._camera_data.up
         top = self.top
 
-        self.position = new_top[0] - up[0] * top, new_top[1] - up[1] * top
+        x, y = new_top
+        self.position = x - up[0] * top, y - up[1] * top
 
     # top_right
     @property
@@ -302,9 +307,10 @@ class Camera2D:
         top = self.top
         right = self.right
 
+        x, y = new_corner
         self.position = (
-            new_corner[0] - up[0] * top - up[1] * right,
-            new_corner[1] - up[1] * top + up[0] * right
+            x - up[0] * top - up[1] * right,
+            y - up[1] * top + up[0] * right
         )
 
     # bottom_right
@@ -325,9 +331,10 @@ class Camera2D:
         bottom = self.bottom
         right = self.right
 
+        x, y = new_corner
         self.position = (
-            new_corner[0] - up[0] * bottom - up[1] * right,
-            new_corner[1] - up[1] * bottom + up[0] * right
+            x - up[0] * bottom - up[1] * right,
+            y - up[1] * bottom + up[0] * right
         )
 
     # bottom_center
@@ -345,7 +352,8 @@ class Camera2D:
         up = self._camera_data.up
         bottom = self.bottom
 
-        self.position = new_bottom[0] - up[0] * bottom, new_bottom[1] - up[0] * bottom
+        x, y = new_bottom
+        self.position = x - up[0] * bottom, y - up[0] * bottom
 
     # bottom_left
     @property
@@ -366,9 +374,10 @@ class Camera2D:
         bottom = self.bottom
         left = self.left
 
+        x, y = new_corner
         self.position = (
-            new_corner[0] - up[0] * bottom - up[1] * left,
-            new_corner[1] - up[1] * bottom + up[0] * left
+            x - up[0] * bottom - up[1] * left,
+            y - up[1] * bottom + up[0] * left
         )
 
     # center_right
@@ -384,7 +393,9 @@ class Camera2D:
     def center_right(self, new_right: Point2):
         up = self._camera_data.up
         right = self.right
-        self.position = new_right[0] - up[1] * right, new_right[1] + up[0] * right
+
+        x, y = new_right
+        self.position = x - up[1] * right, y + up[0] * right
 
     # center_left
     @property
@@ -399,7 +410,9 @@ class Camera2D:
     def center_left(self, new_left: Point2):
         up = self._camera_data.up
         left = self.left
-        self.position = new_left[0] - up[1] * left, new_left[1] - up[0] * left
+
+        x, y = new_left
+        self.position = x - up[1] * left, y - up[0] * left
 
     def point_in_view(self, point: Point2) -> bool:
         """
@@ -819,15 +832,13 @@ class Camera2D:
             previous_framebuffer.use()
             previous_projection.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Vec2:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         return self._ortho_projector.project(world_coordinate)
 
-    def unproject(self,
-                  screen_coordinate: Tuple[float, float],
-                  depth: Optional[float] = None) -> Tuple[float, float, float]:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -845,4 +856,4 @@ class Camera2D:
             of the camera.
         """
 
-        return self._ortho_projector.unproject(screen_coordinate, depth)
+        return self._ortho_projector.unproject(screen_coordinate)

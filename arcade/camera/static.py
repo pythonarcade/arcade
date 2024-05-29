@@ -15,7 +15,7 @@ from arcade.camera.projection_functions import (
 )
 
 from arcade.types import Point
-from arcade.types.vector_like import Point2, Point3
+from arcade.types.vector_like import Point3
 from arcade.window_commands import get_window
 
 from pyglet.math import Mat4, Vec3, Vec2
@@ -29,18 +29,16 @@ class _StaticCamera:
     def __init__(self, view_matrix: Mat4, projection_matrix: Mat4,
                  viewport: Optional[Tuple[int, int, int, int]] = None,
                  *,
-                 project_method: Optional[Callable[[Vec3, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
-                 unproject_method: Optional[Callable[[Vec2,
-                                                      Tuple[int, int, int, int],
-                                                      Mat4, Mat4, Optional[float]], Vec3]] = None,
+                 project_method: Optional[Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
+                 unproject_method: Optional[Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec3]] = None,
                  window: Optional[Window] = None):
         self._win: Window = window or get_window()
         self._viewport: Tuple[int, int, int, int] = viewport or self._win.ctx.viewport
         self._view = view_matrix
         self._projection = projection_matrix
 
-        self._project_method: Optional[Callable[[Vec3, Tuple, Mat4, Mat4], Vec2]] = project_method
-        self._unproject_method: Optional[Callable[[Vec2, Tuple, Mat4, Mat4, Optional[float]], Vec3]] = unproject_method
+        self._project_method: Optional[Callable[[Point, Tuple, Mat4, Mat4], Vec2]] = project_method
+        self._unproject_method: Optional[Callable[[Point, Tuple, Mat4, Mat4], Vec3]] = unproject_method
 
     def use(self):
         self._win.current_camera = self
@@ -66,14 +64,12 @@ class _StaticCamera:
             raise ValueError("This Static Camera was not provided a project method at creation")
 
         pos = self._project_method(
-            Vec3(world_coordinate[0], world_coordinate[1], world_coordinate[2]),
+            world_coordinate,
             self._viewport, self._view, self._projection
         )
         return pos
 
-    def unproject(self,
-            screen_coordinate: Point2,
-            depth: Optional[float] = None) -> Vec3:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -84,18 +80,16 @@ class _StaticCamera:
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query
         Returns:
             A 3D vector in world space.
         """
         if self._unproject_method is None:
             raise ValueError("This Static Camera was not provided an unproject method at creation")
 
-        pos = self._unproject_method(
-            Vec2(screen_coordinate[0], screen_coordinate[1]),
-            self._viewport, self._view, self._projection, depth
+        return self._unproject_method(
+            screen_coordinate,
+            self._viewport, self._view, self._projection
         )
-        return pos
 
 
 def static_from_orthographic(
@@ -180,7 +174,7 @@ def static_from_matrices(
         *,
         window: Optional[Window] = None,
         project_method: Optional[Callable[[Vec3, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
-        unproject_method: Optional[Callable[[Vec2, Tuple[int, int, int, int], Mat4, Mat4, Optional[float]], Vec3]] = None
+        unproject_method: Optional[Callable[[Vec2, Tuple[int, int, int, int], Mat4, Mat4], Vec3]] = None
 ) -> _StaticCamera:
     return _StaticCamera(view, projection, viewport, window=window,
                          project_method=project_method, unproject_method=unproject_method)
