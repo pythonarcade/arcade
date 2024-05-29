@@ -1,4 +1,5 @@
 # The Rect, Part II
+## The Rect-oning and the Vec-oning
 
 - Added type aliases `Point2` and `Point3`
 - `Rect`
@@ -9,3 +10,4 @@
 - Added `Texture.draw_rect()`
 - Added `BasicSprite.rect`
 - Remove `IntRect`, `FloatRect`, `RectList`
+- Rename the old `Rect` to `GUIRect`
