@@ -312,14 +312,14 @@ class Window(pyglet.window.Window):
         """
         return self._background_color
 
+    @background_color.setter
+    def background_color(self, value: RGBOrA255):
+        self._background_color = Color.from_iterable(value)
+
     @property
     def rect(self) -> Rect:
         """Return a Rect describing the size of the window."""
         return LBWH(0, 0, self.width, self.height)
-
-    @background_color.setter
-    def background_color(self, value: RGBOrA255):
-        self._background_color = Color.from_iterable(value)
 
     def run(self) -> None:
         """
