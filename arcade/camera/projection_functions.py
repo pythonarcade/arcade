@@ -3,7 +3,7 @@ from typing import Tuple
 
 from pyglet.math import Vec2, Vec3, Vec4, Mat4
 from arcade.camera.data_types import CameraData, PerspectiveProjectionData, OrthographicProjectionData
-from arcade.types import Point, Point3
+from arcade.types import Point
 
 
 def generate_view_matrix(camera_data: CameraData) -> Mat4:
