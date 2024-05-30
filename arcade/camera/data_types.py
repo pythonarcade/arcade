@@ -4,13 +4,14 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Generator, TypeVar
 from contextlib import contextmanager
+from typing import Protocol, Tuple, Generator, TypeVar
 
 from typing_extensions import Self
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import Point, Point3, Rect, LRBT, AsFloat, Point2
+from arcade.types import AsFloat, Point2, Point3, Rect, LRBT
+
 
 __all__ = [
     'CameraData',
