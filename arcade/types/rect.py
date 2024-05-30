@@ -401,7 +401,9 @@ class Rect(NamedTuple):
         return abs(self.distance_from_bounds(point)) < tolerance
 
     def position_to_uv(self, point: Point2) -> Vec2:
-        """Take an absolute point and translate it to it's relative position in UV-space (percentage across this rectangle.)"""
+        """Take an absolute point and translate it to it's relative position in UV-space
+        (percentage across this rectangle.)
+        """
         x, y = point
         return Vec2(
             (x - self.left) / self.width,
@@ -409,7 +411,9 @@ class Rect(NamedTuple):
         )
 
     def uv_to_position(self, uv: Point2) -> Vec2:
-        """Take a point in UV-space (percentage across this rectangle) and translate it to it's absolute position."""
+        """Take a point in UV-space (percentage across this rectangle) and translate it
+        to it's absolute position.
+        """
         x, y = uv
         return Vec2(
             self.left + x * self.width,
