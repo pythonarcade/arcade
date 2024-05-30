@@ -15,10 +15,18 @@ ViewportParams = Tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
-    """A dictionary of the eight canon properties of a rectangle.
+    """Annotates an ordinary :py:class:`dict` of :py:class:`Rect` arguments.
 
-    ``left``, ``right``, ``bottom``, ``top``,
-    ``width``, ``height``, ``x``, and ``y`` are all :py:class:`float`s.
+    This is only meaningful as a type annotation during type checking.
+    For example, the :py:meth:`Rect.kwargs <arcade.types.Rect.kwargs>`
+    property returns an ordinary will actually be a :py:class:`dict`
+    of :py:class:`Rect` field names to :py:class:`float` values.
+
+    To learn more, please see:
+
+    * :py:class:`.Rect`
+    * :py:class:`typing.TypedDict`
+
     """
     left: float
     right: float
@@ -477,6 +485,43 @@ class Rect(NamedTuple):
 
     @property
     def kwargs(self) -> RectKwargs:
+        """Get this rectangle as a :py:class:`dict` of field names to values.
+
+        .. _tomli: https://github.com/hukkin/tomli
+
+        Many data formats have corresponding Python modules with write
+        support. Such modules often one or more functions which convert
+        a passed :py:class:`dict` to a :py:class:`str` or write the result
+        of such a conversion to a file.
+
+        For example, the built-in :py:mod:`json` module offers the
+        following functions on all Python versions currently supported
+        by Arcade:
+
+        .. list-table::
+           :header-rows: 1
+
+           * - Function
+             - Summary
+             - Useful For
+
+           * - :py:func:`json.dump`
+             - Write a :py:class:`dict` to a file
+             - Saving game progress or edited levels
+
+           * - :py:func:`json.dumps`
+             - Get a :py:class:`dict` as a :py:class:`str` of JSON
+             - Calls to a Web API
+
+        .. note::
+
+           The return value is an ordinary :py:class:`dict`.
+
+           Although the return type is annotated as a
+           :py:class:`.RectKwargs`, it is only meaningful when type
+           checking. See :py:class:`typing.TypedDict` to learn more.
+
+        """
         return {"left": self.left,
                 "right": self.right,
                 "bottom": self.bottom,
