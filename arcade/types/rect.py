@@ -215,7 +215,7 @@ class Rect(NamedTuple):
 
         return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
-    def __mul__(self, scale: AsFloat) -> Rect:
+    def __mul__(self, scale: AsFloat) -> Rect:  # type: ignore[override]
         """Scale the Rect by ``scale`` relative to ``(0, 0)``."""
         return Rect(self.left * scale, self.right * scale, self.bottom * scale, self.top * scale,
                     self.width * scale,  self.height * scale, self.x * scale, self.y * scale)
