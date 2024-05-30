@@ -4,14 +4,13 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Generator
+from typing import Protocol, Tuple, Generator, TypeVar
 from contextlib import contextmanager
 
 from typing_extensions import Self
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import Point, Point3, Rect, LRBT, AsFloat
-
+from arcade.types import Point, Point3, Rect, LRBT, AsFloat, Point2
 
 __all__ = [
     'CameraData',
@@ -312,8 +311,11 @@ class Projection(Protocol):
     near: float
     far: float
 
+_P = TypeVar('_P')
 
-class Projector(Protocol):
+
+class Projector(Protocol[_P]):
+
     """Projects from world coordinates to viewport pixel coordinates.
 
     Projectors also support converting in the opposite direction from
@@ -376,13 +378,13 @@ class Projector(Protocol):
     def activate(self) -> Generator[Self, None, None]:
         ...
 
-    def project(self, world_coordinate: Point) -> Vec2:
+    def project(self, world_coordinate: _P) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         ...
 
-    def unproject(self, screen_coordinate: Point) -> Vec3:
+    def unproject(self, screen_coordinate: Point2) -> _P:
         """
         Take in a pixel coordinate and return the associated world coordinate
 
