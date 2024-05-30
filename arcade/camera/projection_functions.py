@@ -131,10 +131,11 @@ def unproject_orthographic(screen_coordinate: Point,
     return Vec3(_world_position.x, _world_position.y, _world_position.z)
 
 
-def project_perspective(world_coordinate: Point3,
+def project_perspective(world_coordinate: Point,
                         viewport: Tuple[int, int, int, int],
                         view_matrix: Mat4, projection_matrix: Mat4) -> Vec2:
-    x, y, z = world_coordinate
+    x, y, *z = world_coordinate
+    z = 1.0 if not z else z[0]
 
     world_position = Vec4(x, y, z, 1.0)
 

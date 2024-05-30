@@ -174,8 +174,8 @@ def static_from_matrices(
         viewport: Optional[Tuple[int, int, int, int]],
         *,
         window: Optional[Window] = None,
-        project_method: Optional[Callable[[Vec3, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
-        unproject_method: Optional[Callable[[Vec2, Tuple[int, int, int, int], Mat4, Mat4], Vec3]] = None
+        project_method: Optional[Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
+        unproject_method: Optional[Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec3]] = None
 ) -> _StaticCamera:
     return _StaticCamera(view, projection, viewport, window=window,
                          project_method=project_method, unproject_method=unproject_method)
