@@ -224,7 +224,7 @@ class Color(RGBA255):
         """
         Return this color as a tuple of 4 normalized floats.
 
-        Examples::
+        .. code-block:: python
 
             >>> arcade.color.WHITE.normalized
             (1.0, 1.0, 1.0, 1.0)
