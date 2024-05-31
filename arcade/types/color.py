@@ -189,13 +189,14 @@ class Color(RGBA255):
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:
-        """Create a color from an iterable of 3-4 :py:class:`int` values.
+        """Create a :py:class:`Color` from an ``iterable`` of 3 or 4 channel values.
 
-        If the passed iterable is already a Color instance, it will be
-        returned unchanged. If the iterable has less than 3 or more than
-        4 elements, a ValueError will be raised.
+        If an ``iterable`` is already a :py:class:`Color` instance,
+        it will be returned unchanged. Otherwise, it must unpack as
+        3 or 4 :py:class:`int` values between ``0`` and ``255``.
 
-        Otherwise, the function will attempt to create a new Color
+        If an ``iterable`` does no less than 3 or more than 4 elements,
+        this method raises a :py:class:`ValueError`. The function will attempt to create a new Color
         instance. The usual rules apply, ie all values must be between
         0 and 255, inclusive.
 
