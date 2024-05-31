@@ -239,10 +239,9 @@ class Color(RGBA255):
 
     @classmethod
     def from_gray(cls, brightness: int, a: int = 255) -> Self:
-        """
-        Return a shade of gray of the given brightness.
+        """Return a gray :py:class:`Color` of the given ``brightness``.
 
-        Example::
+        .. code-block:: python
 
             >>> custom_white = Color.from_gray(255)
             >>> print(custom_white)
@@ -252,7 +251,7 @@ class Color(RGBA255):
             >>> print(half_opacity_gray)
             Color(r=128, g=128, b=128, a=128)
 
-        :param brightness: How bright the shade should be
+        :param brightness: How bright the new gray should be
         :param a: a transparency value, fully opaque by default
         :return:
         """
