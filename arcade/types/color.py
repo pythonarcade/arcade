@@ -311,7 +311,8 @@ class Color(RGBA255):
         To convert from an RGBA value as a 32-bit integer, see
         :py:meth:`.from_uint32`.
 
-        :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
+        :param color: a 3-byte :py:class:`int` between ``0`` and
+            ``16777215`` (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
         """
 
@@ -346,7 +347,8 @@ class Color(RGBA255):
         To convert from an RGB value as a 24-bit integer, see
         :py:meth:`.from_uint24`.
 
-        :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        :param color: An :py:class:`int` between ``0`` and ``4294967295``
+            (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
