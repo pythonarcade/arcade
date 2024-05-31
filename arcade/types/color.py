@@ -173,8 +173,7 @@ class Color(RGBA255):
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:
-        """
-        Create a color from an :py:class:`Iterable` with 3-4 elements
+        """Create a color from an iterable of 3-4 :py:class:`int` values.
 
         If the passed iterable is already a Color instance, it will be
         returned unchanged. If the iterable has less than 3 or more than
