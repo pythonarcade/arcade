@@ -265,7 +265,7 @@ class Color(RGBA255):
 
     @classmethod
     def from_gray(cls, brightness: int, a: int = 255) -> Self:
-        """Return a gray :py:class:`Color` of the given ``brightness``.
+        """Create a gray :py:class:`Color` of the given ``brightness``.
 
         .. code-block:: python
 
