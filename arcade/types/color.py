@@ -308,7 +308,8 @@ class Color(RGBA255):
             >>> Color.from_uint24(16777215)
             Color(r=255, g=255, b=255, a=255)
 
-        For 32-bit integers, see :py:meth:`.from_uint32`.
+        To convert from an RGBA value as a 32-bit integer, see
+        :py:meth:`.from_uint32`.
 
         :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
@@ -341,6 +342,9 @@ class Color(RGBA255):
             # The maximum value as a decimal integer
             >>> Color.from_uint32(4294967295)
             Color(r=255, g=255, b=255, a=255)
+
+        To convert from an RGB value as a 24-bit integer, see
+        :py:class:`.from_uint24`.
 
         :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
