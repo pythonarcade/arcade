@@ -221,8 +221,7 @@ class Color(RGBA255):
 
     @property
     def normalized(self) -> RGBANormalized:
-        """
-        Return this color as a tuple of 4 normalized floats.
+        """Convert the :py:class:`Color` to a tuple of 4 normalized floats.
 
         .. code-block:: python
 
