@@ -504,8 +504,7 @@ class Color(RGBA255):
         return cls(r, g, b, a)
 
     def swizzle(self, swizzle_string: str) -> Tuple[int, ...]:
-        """
-        Get a tuple of channel values in the same order as the passed string.
+        """Get a :py:class:`tuple` of channel values in the order of ``swizzle_string``.
 
         This imitates swizzling `as implemented in GLSL <https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling>`_
 
@@ -516,16 +515,15 @@ class Color(RGBA255):
            >>> color.swizzle("abgr")
            (255, 0, 90, 180)
 
-        You can also use any length of swizzle string and use capital
-        letters. Any capitals will be treated as lower case equivalents.
+        The letters are case-insensitive. Repeating a letter
+        currently repeats a value.
 
         .. code-block: python
 
            >>> from arcade.types import Color
            >>> color = Color(180, 90, 0, 255)
-           >>> color.swizzle("ABGR")
-           (255, 0, 90, 180)
-
+           >>> color.swizzle("ABGRA")
+           (255, 0, 90, 180, 255)
 
         :param swizzle_string:
             A string of channel names as letters in ``"RGBArgba"``.
