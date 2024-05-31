@@ -488,8 +488,8 @@ class Color(RGBA255):
 
         :param r: Specify a value for the red channel
         :param g: Specify a value for the green channel
-        :param b: Specify a value for blue channel
-        :param a: Specify a value for alpha channel
+        :param b: Specify a value for the blue channel
+        :param a: Specify a value for the alpha channel
         """
         rand = random.randint(0, MAX_UINT32)
         if r is None:
