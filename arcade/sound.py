@@ -96,10 +96,11 @@ class Sound:
         media.Source._players.append(player)
 
         def _on_player_eos():
-            media.Source._players.remove(player)
+            if player in media.Source._players:
+                media.Source._players.remove(player)
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
-            player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
+            player.on_player_eos = None # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
 
         player.on_player_eos = _on_player_eos
         return player
