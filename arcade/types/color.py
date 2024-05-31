@@ -292,18 +292,23 @@ class Color(RGBA255):
 
     @classmethod
     def from_uint24(cls, color: int, a: int = 255) -> Self:
-        """
-        Return a Color from an unsigned 3-byte (24 bit) integer.
+        """Convert an unsigned 24-bit integer to a :py:class:`Color`.
 
-        These ints may be between 0 and 16777215 (``0xFFFFFF``), inclusive.
+        .. code-block:: python
 
-        Example::
+            # The alpha channel is assumed to be 255
+            >>> Color.from_uint24(0x010203)
+            Color(r=1, g=2, b=3, a=255)
 
+            # Specify alpha via the a keyword argument
+            >>> Color.from_uint24(0x010203, a=127)
+            Color(r=1, g=2, b=3, a=127)
+
+            # The maximum value as decimal
             >>> Color.from_uint24(16777215)
             Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_uint24(0xFF0000)
-            Color(r=255, g=0, b=0, a=255)
+        For 32-bit integers, see :py:meth:`.from_uint32`.
 
         :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
