@@ -58,7 +58,7 @@ class AnchorPoint:
     * an absolute screen positions in pixels
 
     Advanced users may also find them useful when working with
-    :ref:`tutorials_shaders`.
+    shaders.
     """
 
 
