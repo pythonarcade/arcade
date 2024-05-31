@@ -150,20 +150,31 @@ _T = TypeVar('_T')
 #:       ...  # No function definition
 #:
 Size2D = Tuple[_T, _T]
+
+#: Used in :py:class:`~arcade.sprite_list.spatial_hash.SpatialHash`.
 IPoint = Tuple[int, int]
+
+#: Matches any 2D or 3D point, including:
+#:
+#: * :py:class:`pyglet.math.Vec2`
+#: * :py:class:`pyglet.math.Vec3`
+#: * An ordinary :py:class:`tuple` of 2 or 3 :py:class:`float` values
+#:
+#: This works the same way that :py:attr:`arcade.types.RGBA255` matches
+#: either a :py:class:`tuple` or a :py:class:`Color`.
 Point = Union[Point2, Point3]
-
-
-# We won't keep this forever. It's a temp stub for particles we'll replace.
-Velocity = Tuple[AsFloat, AsFloat]
 
 PointList = Sequence[Point]
 Point2List = Sequence[Point2]
 Point3List = Sequence[Point3]
+
 # Speed / typing workaround:
 # 1. Eliminate extra allocations
 # 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
 EMPTY_POINT_LIST: Point2List = tuple()
+
+# We won't keep this forever. It's a temp stub for particles we'll replace.
+Velocity = Tuple[AsFloat, AsFloat]
 
 # Path handling
 PathLike = Union[str, Path, bytes]
