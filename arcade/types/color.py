@@ -80,25 +80,38 @@ RGBOrANormalized = RGBOrA[float]
 
 
 class Color(RGBA255):
-    """
-    A :py:class:`tuple` subclass representing an RGBA Color.
+    """An RGBA color as a :py:class:`tuple` subclass.
 
-    This class provides helpful utility methods and properties. When
-    performance or brevity matters, arcade will usually allow you to
-    use an ordinary :py:class:`tuple` of RGBA values instead.
+    .. code-block:: python
 
-    All channels are byte values from 0 to 255, inclusive. If any are
-    outside this range, a :py:class:`~arcade.utils.ByteRangeError` will
-    be raised, which can be handled as a :py:class:`ValueError`.
-
-    Examples::
-
+        # The alpha channel value defaults to 255
         >>> from arcade.types import Color
         >>> Color(255, 0, 0)
-        Color(r=255, g=0, b=0, a=0)
+        Color(r=255, g=0, b=0, a=255)
 
-        >>> Color(*rgb_green_tuple, 127)
-        Color(r=0, g=255, b=0, a=127)
+    If you prefer specifying color with another format, the class also
+    provides number of helper methods for the most common RGB and RGBA
+    formats:
+
+    * :py:meth:`.from_hex_string`
+    * :py:meth:`.from_normalized`
+    * :py:meth:`.from_uint24`
+    * :py:meth:`.from_uint32`
+    * :py:meth:`.from_iterable`
+
+    Regardless of the source format, all color channels must be between
+    0 and 255, inclusive. If any channel is outside this range, creation
+    will fail with a :py:class:`~arcade.utils.ByteRangeError` you can
+    handle as a :py:class:`ValueError`.
+
+    .. _colour: https://pypi.org/project/colour/
+
+    .. note:: This class does not currently support HSV or other color spaces.
+
+              If you need these, you may want to try the following:
+
+              * Python's built-in :py:mod:`colorsys` module
+              * The `colour`_ package
 
     :param r: the red channel of the color, between 0 and 255
     :param g: the green channel of the color, between 0 and 255
@@ -199,6 +212,18 @@ class Color(RGBA255):
         this method raises a :py:class:`ValueError`. The function will attempt to create a new Color
         instance. The usual rules apply, ie all values must be between
         0 and 255, inclusive.
+
+        .. note:: This is a more readable alternative to ``*`` unpacking.
+
+                  If you are an advanced user who needs brevity or
+                  higher performance, you can unpack directly into
+                  :py:class:`Color`:
+
+                  .. code-block:: python
+
+                     >>> rgb_green_tuple = (0, 255, 0)
+                     >>> Color(*rgb_green_tuple, 127)
+                     Color(r=0, g=255, b=0, a=127)
 
         :param iterable: An iterable which unpacks to 3 or 4 elements,
             each between 0 and 255, inclusive.
