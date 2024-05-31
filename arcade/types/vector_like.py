@@ -7,6 +7,7 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 
 """
 from __future__ import annotations
+
 from typing import Union, Tuple
 
 from pyglet.math import Vec2, Vec3
@@ -18,7 +19,21 @@ Point3 = Union[Tuple[AsFloat, AsFloat, AsFloat], Vec3]
 
 
 class AnchorPoint:
-    """Provides helper aliases for several Vec2s to be used as anchor points in UV space."""
+    """Common anchor points as constants in UV space.
+
+    Each is a :py:class:`~pyglet.math.Vec2` with axis values between
+    ``0.0`` and ``1.0``. They can be used as arguments to
+    :py:meth:`Rect.uv_to_position <arcade.types.Rect.uv_to_position>`
+    to help calculate:
+
+    * a pixel offset inside a :py:class:`~arcade.types.Rect`
+    * an absolute screen positions in pixels
+
+    Advanced users may also find them useful when working with
+    :ref:`tutorials_shaders`.
+    """
+
+
     BOTTOM_LEFT = Vec2(0.0, 0.0)
     BOTTOM_CENTER = Vec2(0.5, 0.0)
     BOTTOM_RIGHT = Vec2(1.0, 0.0)
