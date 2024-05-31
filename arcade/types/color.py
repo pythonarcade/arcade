@@ -505,10 +505,12 @@ class Color(RGBA255):
 
         return cls(r, g, b, a)
 
-    def swizzle(self, swizzle_string: str) -> Tuple[int, ...]:
-        """Get a :py:class:`tuple` of channel values in the order of ``swizzle_string``.
+    def swizzle(self, order: str) -> Tuple[int, ...]:
+        """Get a :py:class:`tuple` of channel values in the given ``order``.
 
-        This imitates swizzling `as implemented in GLSL <https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling>`_
+        .. _GLSL's swizzling: https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling
+
+        This imitates `GLSL's swizzling`_, a way to reorder vector values:
 
         .. code-block:: python
 
@@ -517,23 +519,30 @@ class Color(RGBA255):
            >>> color.swizzle("abgr")
            (255, 0, 90, 180)
 
-        The letters are case-insensitive. Repeating a letter
-        currently repeats a value.
+        Unlike GLSL, this function allows repeats and upper case.
 
-        .. code-block: python
+        .. code-block:: python
 
            >>> from arcade.types import Color
            >>> color = Color(180, 90, 0, 255)
-           >>> color.swizzle("ABGRA")
+           # You can repeat channels and use upper case
+           >>> color.swizzle("ABGRa")
            (255, 0, 90, 180, 255)
 
-        :param swizzle_string:
-            A string of channel names as letters in ``"RGBArgba"``.
+        .. note:: The ``order`` is case-insensitive.
+
+                  If you were hoping ``order`` would also specify how to
+                  convert data, you may instead be looking for Python's
+                  built-in :py:mod:`struct` and :py:mod:`array` modules.
+
+        :param order:
+            A string of channel names as letters in ``"RGBArgba"``
+            with repeats allowed.
         :return:
-            A tuple in the same order as the input string.
+            A tuple of channel values in the given ``order``.
         """
         ret = []
-        for c in swizzle_string.lower():
+        for c in order.lower():
             if c not in 'rgba':
                 raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
