@@ -15,7 +15,7 @@ ViewportParams = Tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
-    """Annotates an ordinary :py:class:`dict` of :py:class:`Rect` arguments.
+    """Annotates a plain :py:class:`dict` of :py:class:`Rect` arguments.
 
     This is only meaningful as a type annotation during type checking.
     For example, the :py:meth:`Rect.kwargs <arcade.types.Rect.kwargs>`
