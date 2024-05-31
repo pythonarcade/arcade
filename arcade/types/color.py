@@ -344,7 +344,7 @@ class Color(RGBA255):
             Color(r=255, g=255, b=255, a=255)
 
         To convert from an RGB value as a 24-bit integer, see
-        :py:class:`.from_uint24`.
+        :py:meth:`.from_uint24`.
 
         :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
