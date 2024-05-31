@@ -325,13 +325,12 @@ class Color(RGBA255):
 
     @classmethod
     def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
-        """
-        Convert normalized (0.0 to 1.0) channels into an RGBA Color
+        """Convert normalized float RGBA to an RGBA :py:class:`Color`.
 
-        If the input channels aren't normalized, a
-        :py:class:`arcade.utils.NormalizedRangeError` will be raised.
-        This is a subclass of :py:class`ValueError` and can be handled
-        as such.
+        If any input channels aren't normalized (between ``0.0`` and
+        ``0.0``), this method will raise a
+        :py:class:`~arcade.utils.NormalizedRangeError` you can handle as
+        a :py:class:`ValueError`.
 
         Examples::
 
@@ -342,8 +341,7 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
-        :return:
+        :param color_normalized: A tuple of 4 normalized (``0.0`` to ``1.0``) RGBA values.
         """
         r, g, b, *_a = color_normalized
 
