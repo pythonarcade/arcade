@@ -1,4 +1,4 @@
-"""This will hold point, size, and other similar aliases.
+"""Points, sizes, and other similar aliases.
 
 This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 
@@ -8,14 +8,42 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 """
 from __future__ import annotations
 
-from typing import Union, Tuple
+from typing import Union, Tuple, Sequence
 
 from pyglet.math import Vec2, Vec3
 
 from arcade.types.numbers import AsFloat
 
+#: Matches both :py:class:`~pyglet.math.Vec2` and tuples of two numbers.
 Point2 = Union[Tuple[AsFloat, AsFloat], Vec2]
+
+#: Matches both :py:class:`~pyglet.math.Vec3` and tuples of three numbers.
 Point3 = Union[Tuple[AsFloat, AsFloat, AsFloat], Vec3]
+
+
+#: Matches any 2D or 3D point, including:
+#:
+#: * :py:class:`pyglet.math.Vec2`
+#: * :py:class:`pyglet.math.Vec3`
+#: * An ordinary :py:class:`tuple` of 2 or 3 values, either:
+#:
+#:   * :py:class:`int`
+#    * :py:class:`float`
+#:
+#: This works the same way as :py:attr:`arcade.types.RGBOrA255` to
+#: annotate RGB tuples, RGBA tuples, and :py:class:`tuple` or a
+#: :py:class:`Color` instances.
+Point = Union[Point2, Point3]
+
+PointList = Sequence[Point]
+Point2List = Sequence[Point2]
+Point3List = Sequence[Point3]
+
+
+# Speed / typing workaround:
+# 1. Eliminate extra allocations
+# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
+EMPTY_POINT_LIST: Point2List = tuple()
 
 
 class AnchorPoint:
@@ -46,7 +74,12 @@ class AnchorPoint:
 
 
 __all__ = [
-    'AnchorPoint',
     'Point2',
-    'Point3'
+    'Point3',
+    'Point',
+    'Point2List',
+    'Point3List',
+    'PointList',
+    'AnchorPoint',
+    'EMPTY_POINT_LIST'
 ]
