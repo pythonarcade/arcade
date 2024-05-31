@@ -137,18 +137,34 @@ class Color(RGBA255):
 
     @property
     def r(self) -> int:
+        """Get the red value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``.
+        """
         return self[0]
 
     @property
     def g(self) -> int:
+        """Get the green value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``.
+        """
         return self[1]
 
     @property
     def b(self) -> int:
+        """Get the blue value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``.
+        """
         return self[2]
 
     @property
     def a(self) -> int:
+        """Get the alpha value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``.
+        """
         return self[3]
 
     @property
