@@ -471,27 +471,25 @@ class Color(RGBA255):
         b: Optional[int] = None,
         a: Optional[int] = None,
     ) -> Self:
-        """
-        Return a random color.
+        """Create a :py:class:`Color` by randomizing all unspecified channels.
 
-        The parameters are optional and can be used to fix the value of
-        a particular channel. If a channel is not fixed, it will be
-        randomly generated.
+        All arguments are optional. If you specify a channel's value, it
+        will be used in the new color instead of randomizing:
 
-        Examples::
+        .. code-block:: python
 
             # Randomize all channels
             >>> Color.random()
             Color(r=35, g=145, b=4, a=200)
 
-            # Random color with fixed alpha
+            # Create a random opaque color
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param r: Fixed value for red channel
-        :param g: Fixed value for green channel
-        :param b: Fixed value for blue channel
-        :param a: Fixed value for alpha channel
+        :param r: Specify a value for the red channel
+        :param g: Specify a value for the green channel
+        :param b: Specify a value for blue channel
+        :param a: Specify a value for alpha channel
         """
         rand = random.randint(0, MAX_UINT32)
         if r is None:
