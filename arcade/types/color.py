@@ -324,18 +324,18 @@ class Color(RGBA255):
 
     @classmethod
     def from_uint32(cls, color: int) -> Self:
-        """
-        Return a Color tuple for a given unsigned 4-byte (32-bit) integer
+        """Convert an unsigned 32-bit integer to a :py:class:`Color`.
 
-        The bytes are interpreted as R, G, B, A.
+        The four bytes are interpreted as R, G, B, A:
 
-        Examples::
+        .. code-block:: python
 
+            >>> Color.from_uint32(0x01020304)
+            Color(r=1, g=2, b=3, a=4)
+
+            # The maximum value as a decimal integer
             >>> Color.from_uint32(4294967295)
             Color(r=255, g=255, b=255, a=255)
-
-            >>> Color.from_uint32(0xFF0000FF)
-            Color(r=255, g=0, b=0, a=255)
 
         :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
         """
