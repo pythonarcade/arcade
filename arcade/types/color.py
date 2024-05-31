@@ -370,34 +370,49 @@ class Color(RGBA255):
 
     @classmethod
     def from_hex_string(cls, code: str) -> Self:
-        """
-        Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
+        """Create a :py:class:`Color` from a hex code of 3, 4, 6, or 8 digits.
 
-        Prefixing it with a pound sign (``#`` / hash symbol) is
-        optional. It will be ignored if present.
+        .. code-block:: python
 
-        The capitalization of the hex digits (``'f'`` vs ``'F'``)
-        does not matter.
-
-        3 and 6 digit hex codes will be treated as if they have an opacity of
-        255.
-
-        3 and 4 digit hex codes will be expanded.
-
-        Examples::
-
-            >>> Color.from_hex_string("#ff00ff")
+            # RGB color codes are assumed to have an alpha value of 255
+            >>> Color.from_hex_string("#FF00FF")
             Color(r=255, g=0, b=255, a=255)
 
-            >>> Color.from_hex_string("#ff00ff00")
-            Color(r=255, g=0, b=255, a=0)
+            # You can use eight-digit RGBA codes to specify alpha
+            >>> Color.from_hex_string("#FF007F")
+            Color(r=255, g=0, b=255, a=127)
 
-            >>> Color.from_hex_string("#FFF")
+            # For brevity, you can omit the # and use RGB shorthand
+            >>> Color.from_hex_string("FFF")
             Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_hex_string("FF0A")
+            # Lower case and four-digit RGBA shorthand are also allowed
+            >>> Color.from_hex_string("ff0a")
             Color(r=255, g=255, b=0, a=170)
 
+        Aside from the optional leading ``#``, the ``code`` must otherwise
+        be a valid CSS hexadecimal color code. It will be processed as
+        follows:
+
+        * Any leading ``'#'`` characters will be stripped
+        * 3 and 4 digit shorthands are expanded by multiplying each
+          digit's value by 16
+        * 6 digit RGB hex codes assume 255 as their alpha values
+        * 8 digit RGBA hex codes are converted to byte values
+          and passed directly to a new :py:class:`Color`
+        * All other lengths will raise a :py:class:`ValueError`
+
+        .. _CSS hex color: https://www.w3.org/TR/css-color-4/#hex-notation
+        .. _Simple Wiki's Hexadecimal Page: https://simple.wikipedia.org/wiki/Hexadecimal
+
+        To learn more, please see:
+
+        * Python's :py:func:`hex` function and :py:class:`int` type
+        * `Simple Wiki's Hexadecimal Page`_
+        * The `CSS hex color`_ specification
+
+        :param code: A `CSS hex color`_ string which may omit
+            the leading ``#`` character.
         """
         code = code.lstrip("#")
 
