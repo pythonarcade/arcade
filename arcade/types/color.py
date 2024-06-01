@@ -80,31 +80,44 @@ RGBOrANormalized = RGBOrA[float]
 
 
 class Color(RGBA255):
-    """
-    A :py:class:`tuple` subclass representing an RGBA Color.
+    """An RGBA color as a :py:class:`tuple` subclass.
 
-    This class provides helpful utility methods and properties. When
-    performance or brevity matters, arcade will usually allow you to
-    use an ordinary :py:class:`tuple` of RGBA values instead.
+    .. code-block:: python
 
-    All channels are byte values from 0 to 255, inclusive. If any are
-    outside this range, a :py:class:`~arcade.utils.ByteRangeError` will
-    be raised, which can be handled as a :py:class:`ValueError`.
-
-    Examples::
-
+        # The alpha channel value defaults to 255
         >>> from arcade.types import Color
         >>> Color(255, 0, 0)
-        Color(r=255, g=0, b=0, a=0)
+        Color(r=255, g=0, b=0, a=255)
 
-        >>> Color(*rgb_green_tuple, 127)
-        Color(r=0, g=255, b=0, a=127)
+    If you prefer specifying color with another format, the class also
+    provides number of helper methods for the most common RGB and RGBA
+    formats:
 
-    :param r: the red channel of the color, between 0 and 255
-    :param g: the green channel of the color, between 0 and 255
-    :param b: the blue channel of the color, between 0 and 255
+    * :py:meth:`.from_hex_string`
+    * :py:meth:`.from_normalized`
+    * :py:meth:`.from_uint24`
+    * :py:meth:`.from_uint32`
+    * :py:meth:`.from_iterable`
+
+    Regardless of the source format, all color channels must be between
+    0 and 255, inclusive. If any channel is outside this range, creation
+    will fail with a :py:class:`~arcade.utils.ByteRangeError`, which is a
+    type of :py:class:`ValueError`.
+
+    .. _colour: https://pypi.org/project/colour/
+
+    .. note:: This class does not currently support HSV or other color spaces.
+
+              If you need these, you may want to try the following:
+
+              * Python's built-in :py:mod:`colorsys` module
+              * The `colour`_ package
+
+    :param r: the red channel of the color, between 0 and 255, inclusive
+    :param g: the green channel of the color, between 0 and 255, inclusive
+    :param b: the blue channel of the color, between 0 and 255, inclusive
     :param a: the alpha or transparency channel of the color, between
-        0 and 255
+        0 and 255, inclusive
     """
 
     __slots__ = ()
@@ -137,18 +150,34 @@ class Color(RGBA255):
 
     @property
     def r(self) -> int:
+        """Get the red value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``, inclusive.
+        """
         return self[0]
 
     @property
     def g(self) -> int:
+        """Get the green value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``, inclusive.
+        """
         return self[1]
 
     @property
     def b(self) -> int:
+        """Get the blue value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``, inclusive.
+        """
         return self[2]
 
     @property
     def a(self) -> int:
+        """Get the alpha value of the :py:class:`Color`.
+
+        It will be between ``0`` and ``255``, inclusive.
+        """
         return self[3]
 
     @property
@@ -173,16 +202,28 @@ class Color(RGBA255):
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:
-        """
-        Create a color from an :py:class`Iterable` with 3-4 elements
+        """Create a :py:class:`Color` from an iterable of 3 or 4 channel values.
 
-        If the passed iterable is already a Color instance, it will be
-        returned unchanged. If the iterable has less than 3 or more than
-        4 elements, a ValueError will be raised.
+        If an iterable is already a :py:class:`Color` instance,
+        it will be returned unchanged. Otherwise, it must unpack as
+        3 or 4 :py:class:`int` values between ``0`` and ``255``, inclusive.
 
-        Otherwise, the function will attempt to create a new Color
-        instance. The usual rules apply, ie all values must be between
-        0 and 255, inclusive.
+        If an iterable has no less than 3 or more than 4 elements,
+        this method raises a :py:class:`ValueError`. The function will
+        attempt to create a new Color instance. The usual rules apply,
+        i.e.: all values must be between 0 and 255, inclusive.
+
+        .. note:: This is a more readable alternative to ``*`` unpacking.
+
+                  If you are an advanced user who needs brevity or
+                  higher performance, you can unpack directly into
+                  :py:class:`Color`:
+
+                  .. code-block:: python
+
+                     >>> rgb_green_tuple = (0, 255, 0)
+                     >>> Color(*rgb_green_tuple, 127)
+                     Color(r=0, g=255, b=0, a=127)
 
         :param iterable: An iterable which unpacks to 3 or 4 elements,
             each between 0 and 255, inclusive.
@@ -206,10 +247,9 @@ class Color(RGBA255):
 
     @property
     def normalized(self) -> RGBANormalized:
-        """
-        Return this color as a tuple of 4 normalized floats.
+        """Convert the :py:class:`Color` to a tuple of 4 normalized floats.
 
-        Examples::
+        .. code-block:: python
 
             >>> arcade.color.WHITE.normalized
             (1.0, 1.0, 1.0, 1.0)
@@ -225,20 +265,19 @@ class Color(RGBA255):
 
     @classmethod
     def from_gray(cls, brightness: int, a: int = 255) -> Self:
-        """
-        Return a shade of gray of the given brightness.
+        """Create a gray :py:class:`Color` of the given ``brightness``.
 
-        Example::
+        .. code-block:: python
 
-            >>> custom_white = Color.from_gray(255)
-            >>> print(custom_white)
-            Color(r=255, g=255, b=255, a=255)
+            >>> off_white = Color.from_gray(220)
+            >>> print(off_white)
+            Color(r=220, g=220, b=220, a=255)
 
             >>> half_opacity_gray = Color.from_gray(128, 128)
             >>> print(half_opacity_gray)
             Color(r=128, g=128, b=128, a=128)
 
-        :param brightness: How bright the shade should be
+        :param brightness: How bright the new gray should be
         :param a: a transparency value, fully opaque by default
         :return:
         """
@@ -253,20 +292,27 @@ class Color(RGBA255):
 
     @classmethod
     def from_uint24(cls, color: int, a: int = 255) -> Self:
-        """
-        Return a Color from an unsigned 3-byte (24 bit) integer.
+        """Convert an unsigned 24-bit integer to a :py:class:`Color`.
 
-        These ints may be between 0 and 16777215 (``0xFFFFFF``), inclusive.
+        .. code-block:: python
 
-        Example::
+            # The alpha channel is assumed to be 255
+            >>> Color.from_uint24(0x010203)
+            Color(r=1, g=2, b=3, a=255)
 
+            # Specify alpha via the a keyword argument
+            >>> Color.from_uint24(0x010203, a=127)
+            Color(r=1, g=2, b=3, a=127)
+
+            # The maximum value as decimal
             >>> Color.from_uint24(16777215)
             Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_uint24(0xFF0000)
-            Color(r=255, g=0, b=0, a=255)
+        To convert from an RGBA value as a 32-bit integer, see
+        :py:meth:`.from_uint32`.
 
-        :param color: a 3-byte int between 0 and 16777215 (``0xFFFFFF``)
+        :param color: a 3-byte :py:class:`int` between ``0`` and
+            ``16777215`` (``0xFFFFFF``)
         :param a: an alpha value to use between 0 and 255, inclusive.
         """
 
@@ -285,20 +331,24 @@ class Color(RGBA255):
 
     @classmethod
     def from_uint32(cls, color: int) -> Self:
-        """
-        Return a Color tuple for a given unsigned 4-byte (32-bit) integer
+        """Convert an unsigned 32-bit integer to a :py:class:`Color`.
 
-        The bytes are interpreted as R, G, B, A.
+        The four bytes are interpreted as R, G, B, A:
 
-        Examples::
+        .. code-block:: python
 
+            >>> Color.from_uint32(0x01020304)
+            Color(r=1, g=2, b=3, a=4)
+
+            # The maximum value as a decimal integer
             >>> Color.from_uint32(4294967295)
             Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_uint32(0xFF0000FF)
-            Color(r=255, g=0, b=0, a=255)
+        To convert from an RGB value as a 24-bit integer, see
+        :py:meth:`.from_uint24`.
 
-        :param color: An int between 0 and 4294967295 (``0xFFFFFFFF``)
+        :param color: An :py:class:`int` between ``0`` and ``4294967295``
+            (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
@@ -312,13 +362,12 @@ class Color(RGBA255):
 
     @classmethod
     def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
-        """
-        Convert normalized (0.0 to 1.0) channels into an RGBA Color
+        """Convert normalized float RGBA to an RGBA :py:class:`Color`.
 
-        If the input channels aren't normalized, a
-        :py:class:`arcade.utils.NormalizedRangeError` will be raised.
-        This is a subclass of :py:class`ValueError` and can be handled
-        as such.
+        If any input channels aren't normalized (between ``0.0`` and
+        ``1.0``), this method will raise a
+        :py:class:`~arcade.utils.NormalizedRangeError` you can handle as
+        a :py:class:`ValueError`.
 
         Examples::
 
@@ -329,8 +378,7 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param color_normalized: The color as normalized (0.0 to 1.0) RGBA values.
-        :return:
+        :param color_normalized: A tuple of 4 normalized (``0.0`` to ``1.0``) RGBA values.
         """
         r, g, b, *_a = color_normalized
 
@@ -358,34 +406,49 @@ class Color(RGBA255):
 
     @classmethod
     def from_hex_string(cls, code: str) -> Self:
-        """
-        Make a color from a hex code that is 3, 4, 6, or 8 hex digits long
+        """Create a :py:class:`Color` from a hex code of 3, 4, 6, or 8 digits.
 
-        Prefixing it with a pound sign (``#`` / hash symbol) is
-        optional. It will be ignored if present.
+        .. code-block:: python
 
-        The capitalization of the hex digits (``'f'`` vs ``'F'``)
-        does not matter.
-
-        3 and 6 digit hex codes will be treated as if they have an opacity of
-        255.
-
-        3 and 4 digit hex codes will be expanded.
-
-        Examples::
-
-            >>> Color.from_hex_string("#ff00ff")
+            # RGB color codes are assumed to have an alpha value of 255
+            >>> Color.from_hex_string("#FF00FF")
             Color(r=255, g=0, b=255, a=255)
 
-            >>> Color.from_hex_string("#ff00ff00")
-            Color(r=255, g=0, b=255, a=0)
+            # You can use eight-digit RGBA codes to specify alpha
+            >>> Color.from_hex_string("#FF007F")
+            Color(r=255, g=0, b=255, a=127)
 
-            >>> Color.from_hex_string("#FFF")
+            # For brevity, you can omit the # and use RGB shorthand
+            >>> Color.from_hex_string("FFF")
             Color(r=255, g=255, b=255, a=255)
 
-            >>> Color.from_hex_string("FF0A")
+            # Lower case and four-digit RGBA shorthand are also allowed
+            >>> Color.from_hex_string("ff0a")
             Color(r=255, g=255, b=0, a=170)
 
+        Aside from the optional leading ``#``, the ``code`` must otherwise
+        be a valid CSS hexadecimal color code. It will be processed as
+        follows:
+
+        * Any leading ``'#'`` characters will be stripped
+        * 3 and 4 digit shorthands are expanded by multiplying each
+          digit's value by 16
+        * 6 digit RGB hex codes assume 255 as their alpha values
+        * 8 digit RGBA hex codes are converted to byte values
+          and passed directly to a new :py:class:`Color`
+        * All other lengths will raise a :py:class:`ValueError`
+
+        .. _CSS hex color: https://www.w3.org/TR/css-color-4/#hex-notation
+        .. _Simple Wiki's Hexadecimal Page: https://simple.wikipedia.org/wiki/Hexadecimal
+
+        To learn more, please see:
+
+        * Python's :py:func:`hex` function and :py:class:`int` type
+        * `Simple Wiki's Hexadecimal Page`_
+        * The `CSS hex color`_ specification
+
+        :param code: A `CSS hex color`_ string which may omit
+            the leading ``#`` character.
         """
         code = code.lstrip("#")
 
@@ -410,27 +473,25 @@ class Color(RGBA255):
         b: Optional[int] = None,
         a: Optional[int] = None,
     ) -> Self:
-        """
-        Return a random color.
+        """Create a :py:class:`Color` by randomizing all unspecified channels.
 
-        The parameters are optional and can be used to fix the value of
-        a particular channel. If a channel is not fixed, it will be
-        randomly generated.
+        All arguments are optional. If you specify a channel's value, it
+        will be used in the new color instead of randomizing:
 
-        Examples::
+        .. code-block:: python
 
             # Randomize all channels
             >>> Color.random()
             Color(r=35, g=145, b=4, a=200)
 
-            # Random color with fixed alpha
+            # Create a random opaque color
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param r: Fixed value for red channel
-        :param g: Fixed value for green channel
-        :param b: Fixed value for blue channel
-        :param a: Fixed value for alpha channel
+        :param r: Specify a value for the red channel
+        :param g: Specify a value for the green channel
+        :param b: Specify a value for the blue channel
+        :param a: Specify a value for the alpha channel
         """
         rand = random.randint(0, MAX_UINT32)
         if r is None:
@@ -444,11 +505,12 @@ class Color(RGBA255):
 
         return cls(r, g, b, a)
 
-    def swizzle(self, swizzle_string: str) -> Tuple[int, ...]:
-        """
-        Get a tuple of channel values in the same order as the passed string.
+    def swizzle(self, order: str) -> Tuple[int, ...]:
+        """Get a :py:class:`tuple` of channel values in the given ``order``.
 
-        This imitates swizzling `as implemented in GLSL <https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling>`_
+        .. _GLSL's swizzling: https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling
+
+        This imitates `GLSL's swizzling`_, a way to reorder vector values:
 
         .. code-block:: python
 
@@ -457,24 +519,30 @@ class Color(RGBA255):
            >>> color.swizzle("abgr")
            (255, 0, 90, 180)
 
-        You can also use any length of swizzle string and use capital
-        letters. Any capitals will be treated as lower case equivalents.
+        Unlike GLSL, this function allows upper case.
 
-        .. code-block: python
+        .. code-block:: python
 
            >>> from arcade.types import Color
            >>> color = Color(180, 90, 0, 255)
-           >>> color.swizzle("ABGR")
-           (255, 0, 90, 180)
+           # You can repeat channels and use upper case
+           >>> color.swizzle("ABGRa")
+           (255, 0, 90, 180, 255)
 
+        .. note:: The ``order`` is case-insensitive.
 
-        :param swizzle_string:
-            A string of channel names as letters in ``"RGBArgba"``.
+                  If you were hoping ``order`` would also specify how to
+                  convert data, you may instead be looking for Python's
+                  built-in :py:mod:`struct` and :py:mod:`array` modules.
+
+        :param order:
+            A string of channel names as letters in ``"RGBArgba"``
+            with repeats allowed.
         :return:
-            A tuple in the same order as the input string.
+            A tuple of channel values in the given ``order``.
         """
         ret = []
-        for c in swizzle_string.lower():
+        for c in order.lower():
             if c not in 'rgba':
                 raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
