@@ -1,5 +1,5 @@
 from arcade.gui import UIDummy, UIManager, UIBoxLayout, UIAnchorLayout
-from arcade.gui.widgets import Rect
+from arcade.gui.widgets import GUIRect
 from arcade.gui.widgets.layout import UIGridLayout
 
 
@@ -16,7 +16,7 @@ def test_place_widget(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
@@ -35,7 +35,7 @@ def test_can_handle_empty_cells(window):
 
     subject.add(dummy1, 0, 0)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
@@ -57,7 +57,7 @@ def test_place_widget_with_different_sizes(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert subject.rect == (0, 0, 200, 200)
@@ -77,7 +77,7 @@ def test_place_widget_within_content_rect(window):
 
     assert subject.size_hint_min == (110, 120)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert dummy1.position == (10, 20)
@@ -103,7 +103,7 @@ def test_place_widgets_with_col_row_span(window):
     subject.add(dummy5, 0, 2, col_span=2)
     subject.add(dummy6, 2, 0, row_span=3)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert dummy1.position == (0, 200)
@@ -133,7 +133,7 @@ def test_place_widgets_with_col_row_span_and_spacing(window):
     subject.add(dummy4, 1, 1)
     subject.add(dummy5, 0, 2, col_span=2)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert dummy1.position == (10, 200)
@@ -168,7 +168,7 @@ def test_adjust_children_size_relative(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
@@ -196,7 +196,7 @@ def test_does_not_adjust_children_without_size_hint(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
@@ -220,7 +220,7 @@ def test_size_hint_and_spacing(window):
 
     subject.add(dummy1, 0, 0)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert dummy1.size == (100, 100)
@@ -239,7 +239,7 @@ def test_empty_cells(window):
 
     subject.add(dummy1, 2, 2)
 
-    subject.rect = Rect(0, 0, *subject.size_hint_min)
+    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     assert dummy1.position == (0, 0)

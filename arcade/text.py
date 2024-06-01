@@ -10,7 +10,7 @@ import pyglet
 
 import arcade
 from arcade.resources import resolve
-from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
+from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
 __all__ = [
@@ -572,12 +572,14 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Union[Point, Point3]):
+    def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(point) == 3:
-            self._label.position = point
+        x, y, *z = point
+
+        if z:
+            self._label.position = x, y, z[0]
         else:
-            self._label.position = *point, self._label.z
+            self._label.position = x, y, self._label.z
 
 
 def create_text_sprite(

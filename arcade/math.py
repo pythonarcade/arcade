@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 from typing import Sequence, Tuple, Union
-from arcade.types import AsFloat, Point
+from arcade.types import AsFloat, Point, Point2
 
 
 _PRECISION = 2
@@ -109,7 +109,7 @@ def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
     return lerp(start_angle, end_angle, u) % 360
 
 
-def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
+def rand_in_rect(bottom_left: Point2, width: float, height: float) -> Point:
     """
     Calculate a random point in a rectangle.
 
@@ -124,7 +124,7 @@ def rand_in_rect(bottom_left: Point, width: float, height: float) -> Point:
     )
 
 
-def rand_in_circle(center: Point, radius: float) -> Point:
+def rand_in_circle(center: Point2, radius: float) -> Point2:
     """
     Generate a point in a circle, or can think of it as a vector pointing
     a random direction with a random magnitude <= radius.
@@ -149,7 +149,7 @@ def rand_in_circle(center: Point, radius: float) -> Point:
     )
 
 
-def rand_on_circle(center: Point, radius: float) -> Point:
+def rand_on_circle(center: Point2, radius: float) -> Point2:
     """
     Generate a point on a circle.
 
@@ -167,7 +167,7 @@ def rand_on_circle(center: Point, radius: float) -> Point:
     )
 
 
-def rand_on_line(pos1: Point, pos2: Point) -> Point:
+def rand_on_line(pos1: Point2, pos2: Point2) -> Point:
     """
     Given two points defining a line, return a random point on that line.
 
@@ -293,7 +293,7 @@ class _Vec2:
             (self.y * cosine) + (self.x * sine)
         )
 
-    def as_tuple(self) -> Point:
+    def as_tuple(self) -> Point2:
         return self.x, self.y
 
 
@@ -316,7 +316,7 @@ def rotate_point(
     cx: float,
     cy: float,
     angle_degrees: float,
-) -> Point:
+) -> Point2:
     """
     Rotate a point around a center.
 

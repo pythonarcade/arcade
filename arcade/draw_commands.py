@@ -19,7 +19,7 @@ import PIL.ImageDraw
 import pyglet.gl as gl
 
 from arcade.color import WHITE
-from arcade.types import AsFloat, Color, RGBA255, PointList, Point
+from arcade.types import AsFloat, Color, RGBA255, PointList, Point, Point2List
 from arcade.earclip import earclip
 from arcade.types.rect import Rect, LBWH, LRBT, XYWH
 from .math import rotate_point
@@ -567,7 +567,7 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: PointList,
+def draw_polygon_filled(point_list: Point2List,
                         color: RGBA255):
     """
     Draw a polygon that is filled in.
@@ -581,7 +581,7 @@ def draw_polygon_filled(point_list: PointList,
     _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
 
-def draw_polygon_outline(point_list: PointList,
+def draw_polygon_outline(point_list: Point2List,
                          color: RGBA255, line_width: float = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
@@ -612,7 +612,9 @@ def draw_polygon_outline(point_list: PointList,
 
     # Use first two points of new list to close the loop
     new_start, new_next = new_point_list[:2]
-    points = get_points_for_thick_line(*new_start, *new_next, line_width)
+    s_x, s_y = new_start
+    n_x, n_y = new_next
+    points = get_points_for_thick_line(s_x, s_y, n_x, n_y, line_width)
     triangle_point_list.append(points[1])
 
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)

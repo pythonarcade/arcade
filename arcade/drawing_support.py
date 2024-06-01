@@ -7,13 +7,15 @@ from __future__ import annotations
 import math
 from typing import Tuple
 
+from arcade.types import Point2
+
 __all__ = ["get_points_for_thick_line"]
 
 
 def get_points_for_thick_line(start_x: float, start_y: float,
                               end_x: float, end_y: float,
-                              line_width: float) -> Tuple[Tuple[float, float], Tuple[float, float],
-                                                          Tuple[float, float], Tuple[float, float]]:
+                              line_width: float) -> Tuple[Point2, Point2,
+                                                          Point2, Point2]:
     """
     Function used internally for Arcade. OpenGL draws triangles only, so a thick
     line must be two triangles that make up a rectangle. This calculates and returns

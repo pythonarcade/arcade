@@ -51,7 +51,7 @@ def test_perspective_projector_map_coordinates(window: Window, width, height):
     window.set_size(width, height)
     persp_camera = camera.PerspectiveProjector()
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     # When
     mouse_pos_a = (100.0, 100.0)
@@ -59,9 +59,9 @@ def test_perspective_projector_map_coordinates(window: Window, width, height):
     mouse_pos_c = (230.0, 800.0)
 
     # Then
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, depth))
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_b) == pytest.approx((100.0, 0.0, depth))
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_c) == pytest.approx((230.0, 800.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_b)) == pytest.approx((100.0, 0.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_c)) == pytest.approx((230.0, 800.0, depth))
 
 
 @pytest.mark.parametrize("width, height", [(800, 600), (1280, 720), (500, 500)])
@@ -71,7 +71,7 @@ def test_perspective_projector_map_coordinates_move(window: Window, width, heigh
     persp_camera = camera.PerspectiveProjector()
     default_view = persp_camera.view
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     half_width, half_height = window.width//2, window.height//2
 
@@ -82,9 +82,9 @@ def test_perspective_projector_map_coordinates_move(window: Window, width, heigh
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_a)) == pytest.approx((0.0, 0.0, depth))
     assert (
-            persp_camera.map_screen_to_world_coordinate(mouse_pos_b)
+            tuple(persp_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_width+100.0, -half_height+100, depth))
     )
@@ -95,9 +95,9 @@ def test_perspective_projector_map_coordinates_move(window: Window, width, heigh
     default_view.position = (100.0, 100.0, 0.0)
 
     # Then
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, depth))
     assert (
-            persp_camera.map_screen_to_world_coordinate(mouse_pos_b)
+            tuple(persp_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_width+200.0, -half_height+200.0, depth))
     )
@@ -110,7 +110,7 @@ def test_perspective_projector_map_coordinates_rotate(window: Window, width, hei
     persp_camera = camera.PerspectiveProjector()
     default_view = persp_camera.view
 
-    depth = (0.5 * persp_camera._projection.viewport[3] / tan(radians(0.5 * persp_camera._projection.fov)))
+    depth = (0.5 * persp_camera.viewport.height / tan(radians(0.5 * persp_camera._projection.fov)))
 
     half_width, half_height = window.width//2, window.height//2
 
@@ -122,9 +122,9 @@ def test_perspective_projector_map_coordinates_rotate(window: Window, width, hei
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((0.0, 0.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_a)) == pytest.approx((0.0, 0.0, depth))
     assert (
-            persp_camera.map_screen_to_world_coordinate(mouse_pos_b)
+            tuple(persp_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_height+100.0, half_width-100.0, depth))
     )
@@ -140,9 +140,9 @@ def test_perspective_projector_map_coordinates_rotate(window: Window, width, hei
     b_rotated_x = b_shift_x / (2.0**0.5) + b_shift_y / (2.0**0.5) + 100
     b_rotated_y = -b_shift_x / (2.0**0.5) + b_shift_y / (2.0**0.5) + 100
     # Then
-    assert persp_camera.map_screen_to_world_coordinate(mouse_pos_a) == pytest.approx((100.0, 100.0, depth))
+    assert tuple(persp_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, depth))
     assert (
-            persp_camera.map_screen_to_world_coordinate(mouse_pos_b)
+            tuple(persp_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((b_rotated_x, b_rotated_y, depth))
     )

@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Dict, Tuple
 from enum import Enum
 from arcade.math import rotate_point
-from arcade.types import PointList
+from arcade.types import Point2List
 
 
 class VertexOrder(Enum):
@@ -42,8 +42,8 @@ class Transform:
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         """Transforms hit box points."""
         return points
 
@@ -99,8 +99,8 @@ class Rotate90Transform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         return tuple(rotate_point(point[0], point[1], 0, 0, 90) for point in points)
 
 
@@ -117,8 +117,8 @@ class Rotate180Transform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         return tuple(rotate_point(point[0], point[1], 0, 0, 180) for point in points)
 
 
@@ -134,8 +134,8 @@ class Rotate270Transform(Transform):
     )
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         return tuple(rotate_point(point[0], point[1], 0, 0, 270) for point in points)
 
 
@@ -152,8 +152,8 @@ class FlipLeftRightTransform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         return tuple((-point[0], point[1]) for point in points)
 
 
@@ -170,8 +170,8 @@ class FlipTopBottomTransform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         return tuple((point[0], -point[1]) for point in points)
 
 
@@ -188,8 +188,8 @@ class TransposeTransform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate270Transform.transform_hit_box_points(points)
         return points
@@ -208,8 +208,8 @@ class TransverseTransform(Transform):
 
     @staticmethod
     def transform_hit_box_points(
-        points: PointList,
-    ) -> PointList:
+        points: Point2List,
+    ) -> Point2List:
         points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate90Transform.transform_hit_box_points(points)
         return points

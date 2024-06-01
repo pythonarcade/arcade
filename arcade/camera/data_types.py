@@ -4,12 +4,13 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 from __future__ import annotations
-from typing import Protocol, Tuple, Optional, Generator
 from contextlib import contextmanager
+from typing import Protocol, Tuple, Generator
 
 from typing_extensions import Self
-from pyglet.math import Vec3
+from pyglet.math import Vec2, Vec3
 
+from arcade.types import AsFloat, Point, Point3, Rect, LRBT
 
 __all__ = [
     'CameraData',
@@ -36,7 +37,6 @@ class ZeroProjectionDimension(ValueError):
     ...
 
 
-
 class CameraData:
     """Stores position, orientation, and zoom for a camera.
 
@@ -54,9 +54,9 @@ class CameraData:
     __slots__ = ("position", "up", "forward", "zoom")
 
     def __init__(self,
-                 position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
-                 up: Tuple[float, float, float] = (0.0, 1.0, 0.0),
-                 forward: Tuple[float, float, float] = (0.0, 0.0, -1.0),
+                 position: Point3 = (0.0, 0.0, 0.0),
+                 up: Point3 = (0.0, 1.0, 0.0),
+                 forward: Point3 = (0.0, 0.0, -1.0),
                  zoom: float = 1.0):
 
         # View matrix data
@@ -115,7 +115,7 @@ class OrthographicProjectionData:
         viewport: The pixel bounds which will be drawn onto. (left, bottom, width, height)
     """
 
-    __slots__ = ("left", "right", "bottom", "top", "near", "far", "viewport")
+    __slots__ = ("rect", "near", "far")
 
     def __init__(
             self,
@@ -124,29 +124,117 @@ class OrthographicProjectionData:
             bottom: float,
             top: float,
             near: float,
-            far: float,
-            viewport: Tuple[int, int, int, int]):
+            far: float
+    ):
 
         # Data for generating Orthographic Projection matrix
-        self.left: float = left
-        self.right: float = right
-        self.bottom: float = bottom
-        self.top: float = top
+        self.rect: Rect = LRBT(left, right, bottom, top)
         self.near: float = near
         self.far: float = far
 
-        # Viewport for setting which pixels to draw to
-        self.viewport: Tuple[int, int, int, int] = viewport
+    @property
+    def left(self) -> float:
+        return self.rect.left
+
+    @left.setter
+    def left(self, new_left: AsFloat):
+        r = self.rect
+        dl = new_left - r.left
+        self.rect = Rect(
+            new_left,
+            r.right,
+            r.bottom,
+            r.top,
+            r.width + dl,
+            r.height,
+            r.x + dl / 2.0,
+            r.y
+        )
+
+    @property
+    def right(self) -> float:
+        return self.rect.right
+
+    @right.setter
+    def right(self, new_right: AsFloat):
+        r = self.rect
+        dr = new_right - r.right
+        self.rect = Rect(
+            r.left,
+            new_right,
+            r.bottom,
+            r.top,
+            r.width + dr,
+            r.height,
+            r.x + dr / 2.0,
+            r.y
+        )
+
+    @property
+    def bottom(self) -> float:
+        return self.rect.bottom
+
+    @bottom.setter
+    def bottom(self, new_bottom: AsFloat):
+        r = self.rect
+        db = new_bottom - r.bottom
+        self.rect = Rect(
+            r.left,
+            r.right,
+            new_bottom,
+            r.top,
+            r.width,
+            r.height + db,
+            r.x,
+            r.y + db / 2.0
+        )
+
+    @property
+    def top(self) -> float:
+        return self.rect.top
+
+    @top.setter
+    def top(self, new_top: AsFloat):
+        r = self.rect
+        dt = new_top - r.top
+        self.rect = Rect(
+            r.left,
+            r.right,
+            r.bottom,
+            new_top,
+            r.width,
+            r.height + dt,
+            r.x,
+            r.y + dt / 2.0
+        )
+
+    @property
+    def lrbt(self) -> tuple[float, float, float, float]:
+        return self.rect.lrbt
+
+    @lrbt.setter
+    def lrbt(self, new_lrbt: tuple[float, float, float, float]):
+        self.rect = LRBT(*new_lrbt)
 
     def __str__(self):
         return (f"OrthographicProjection<"
-                f"LRBT={(self.left, self.right, self.bottom, self.top)}, "
+                f"LRBT={self.rect.lrbt}, "
                 f"{self.near=}, "
-                f"{self.far=}, "
-                f"{self.viewport=}>")
+                f"{self.far=}")
 
     def __repr__(self):
         return self.__str__()
+
+
+def orthographic_from_rect(rect: Rect, near: float, far: float) -> OrthographicProjectionData:
+    return OrthographicProjectionData(
+        rect.left,
+        rect.right,
+        rect.bottom,
+        rect.top,
+        near,
+        far
+    )
 
 
 class PerspectiveProjectionData:
@@ -160,26 +248,21 @@ class PerspectiveProjectionData:
         far: The 'furthest' value, Which gets mapped to z = 1.0 (anything above this value is not visible).
         viewport: The pixel bounds which will be drawn onto. (left, bottom, width, height)
     """
-    __slots__ = ("aspect", "fov", "near", "far", "viewport")
+    __slots__ = ("aspect", "fov", "near", "far")
 
     def __init__(self,
                  aspect: float,
                  fov: float,
                  near: float,
-                 far: float,
-
-                 viewport: Tuple[int, int, int, int]):
+                 far: float):
         # Data for generating Perspective Projection matrix
         self.aspect: float = aspect
         self.fov: float = fov
         self.near: float = near
         self.far: float = far
 
-        # Viewport for setting which pixels to draw to
-        self.viewport: Tuple[int, int, int, int] = viewport
-
     def __str__(self):
-        return f"PerspectiveProjection<{self.aspect=}, {self.fov=}, {self.near=}, {self.far=}, {self.viewport=}>"
+        return f"PerspectiveProjection<{self.aspect=}, {self.fov=}, {self.near=}, {self.far=}>"
 
     def __repr__(self):
         return self.__str__()
@@ -225,12 +308,13 @@ class Projection(Protocol):
            camera's :py:attr:`.CameraData.forward` vector.
 
     """
-    viewport: Tuple[int, int, int, int]
     near: float
     far: float
 
 
+
 class Projector(Protocol):
+
     """Projects from world coordinates to viewport pixel coordinates.
 
     Projectors also support converting in the opposite direction from
@@ -293,15 +377,13 @@ class Projector(Protocol):
     def activate(self) -> Generator[Self, None, None]:
         ...
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         ...
 
-    def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate and return the associated world coordinate
 

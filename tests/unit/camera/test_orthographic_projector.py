@@ -1,5 +1,7 @@
 import pytest as pytest
 
+from pyglet.math import Vec3
+
 from arcade import camera, Window
 
 
@@ -55,9 +57,9 @@ def test_orthographic_projector_map_coordinates(window: Window, width, height):
     mouse_pos_c = (230.0, 800.0)
 
     # Then
-    assert ortho_camera.unproject(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
-    assert ortho_camera.unproject(mouse_pos_b) == pytest.approx((100.0, 0.0, 0.0))
-    assert ortho_camera.unproject(mouse_pos_c) == pytest.approx((230.0, 800.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_b)) == pytest.approx((100.0, 0.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_c)) == pytest.approx((230.0, 800.0, 0.0))
 
 
 @pytest.mark.parametrize("width, height", [(800, 600), (1280, 720), (500, 500)])
@@ -76,9 +78,9 @@ def test_orthographic_projector_map_coordinates_move(window: Window, width, heig
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert ortho_camera.unproject(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_a)) == pytest.approx((0.0, 0.0, 0.0))
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_width+100.0, -half_height+100, 0.0))
     )
@@ -89,9 +91,9 @@ def test_orthographic_projector_map_coordinates_move(window: Window, width, heig
     default_view.position = (100.0, 100.0, 0.0)
 
     # Then
-    assert ortho_camera.unproject(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, 0.0))
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_width+200.0, -half_height+200.0, 0.0))
     )
@@ -114,9 +116,9 @@ def test_orthographic_projector_map_coordinates_rotate(window: Window, width, he
     default_view.position = (0.0, 0.0, 0.0)
 
     # Then
-    assert ortho_camera.unproject(mouse_pos_a) == pytest.approx((0.0, 0.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_a)) == pytest.approx((0.0, 0.0, 0.0))
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((-half_height+100.0, half_width-100.0, 0.0))
     )
@@ -132,9 +134,9 @@ def test_orthographic_projector_map_coordinates_rotate(window: Window, width, he
     b_rotated_x = b_shift_x / (2.0**0.5) + b_shift_y / (2.0**0.5) + 100
     b_rotated_y = -b_shift_x / (2.0**0.5) + b_shift_y / (2.0**0.5) + 100
     # Then
-    assert ortho_camera.unproject(mouse_pos_a) == pytest.approx((100.0, 100.0, 0.0))
+    assert tuple(ortho_camera.unproject(mouse_pos_a)) == pytest.approx((100.0, 100.0, 0.0))
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((b_rotated_x, b_rotated_y, 0.0))
     )
@@ -157,12 +159,12 @@ def test_orthographic_projector_map_coordinates_zoom(window: Window, width, heig
 
     # Then
     assert (
-            ortho_camera.unproject(mouse_pos_a)
+            tuple(ortho_camera.unproject(mouse_pos_a))
             ==
-            pytest.approx((window.width*0.75, window.height*0.75, 0.0))
+            pytest.approx(Vec3(window.width*0.75, window.height*0.75, 0.0))
     )
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx((half_width + (100 - half_width)*0.5, half_height + (100 - half_height)*0.5, 0.0))
     )
@@ -175,12 +177,12 @@ def test_orthographic_projector_map_coordinates_zoom(window: Window, width, heig
 
     # Then
     assert (
-            ortho_camera.unproject(mouse_pos_a)
+            tuple(ortho_camera.unproject(mouse_pos_a))
             ==
             pytest.approx((window.width*2.0, window.height*2.0, 0.0))
     )
     assert (
-            ortho_camera.unproject(mouse_pos_b)
+            tuple(ortho_camera.unproject(mouse_pos_b))
             ==
             pytest.approx(((100 - half_width)*4.0, (100 - half_height)*4.0, 0.0))
     )

@@ -10,7 +10,8 @@ from arcade.draw_commands import draw_lbwh_rectangle_textured
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import RGBA255, FloatRect, Point
+from arcade.types import RGBA255, Point
+from arcade.types.rect import Rect, LBWH
 
 
 class Surface:
@@ -56,8 +57,9 @@ class Surface:
         self._cam = OrthographicProjector(
             view=CameraData(),
             projection=OrthographicProjectionData(
-                0.0, self.width, 0.0, self.height, -100, 100, (0, 0, self.width, self.height)
+                0.0, self.width, 0.0, self.height, -100, 100
             ),
+            viewport=LBWH(0, 0, self.width, self.height)
         )
 
     @property
@@ -166,15 +168,14 @@ class Surface:
 
         width = max(width, 1)
         height = max(height, 1)
-        _p = self._cam.projection
-        _p.left, _p.right, _p.bottom, _p.top = 0, width, 0, height
-        self._cam.projection.viewport = viewport
+        self._cam.projection.lrbt = 0, width, 0, height
+        self._cam.viewport = LBWH(*viewport)
 
         self._cam.use()
 
     def draw(
         self,
-        area: Optional[FloatRect] = None,
+        area: Optional[Rect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
@@ -182,7 +183,7 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param area: Limit the area in the surface we're drawing (x, y, w, h)
+        :param area: Limit the area in the surface we're drawing (l, b, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -191,7 +192,7 @@ class Surface:
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._program["area"] = area or (0, 0, *self._size)
+        self._program["area"] = (0, 0, *self._size) if not area else area.lbwh
         self._geometry.render(self._program, vertices=1)
 
         # Restore blend function

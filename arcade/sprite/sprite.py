@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from arcade import Texture, load_texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
-from arcade.types import PathOrTexture, Point
+from arcade.types import PathOrTexture, Point2
 from arcade.gl.types import OpenGlFilter, BlendFunction
 
 from .base import BasicSprite
@@ -160,7 +160,7 @@ class Sprite(BasicSprite, PymunkMixin):
         self.angle = new_value * 180.0 / math.pi
 
     @property
-    def velocity(self) -> Point:
+    def velocity(self) -> Point2:
         """
         Get or set the velocity of the sprite.
 
@@ -177,7 +177,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._velocity
 
     @velocity.setter
-    def velocity(self, new_value: Point):
+    def velocity(self, new_value: Point2):
         self._velocity = new_value
 
     @property

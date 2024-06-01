@@ -22,6 +22,7 @@ from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.types import Color, RGBOrA255, RGBANormalized
 from arcade import SectionManager
+from arcade.types.rect import LBWH, Rect
 from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
@@ -314,6 +315,11 @@ class Window(pyglet.window.Window):
     @background_color.setter
     def background_color(self, value: RGBOrA255):
         self._background_color = Color.from_iterable(value)
+
+    @property
+    def rect(self) -> Rect:
+        """Return a Rect describing the size of the window."""
+        return LBWH(0, 0, self.width, self.height)
 
     def run(self) -> None:
         """

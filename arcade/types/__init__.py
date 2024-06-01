@@ -26,10 +26,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from typing import (
-    List,
     NamedTuple,
     Optional,
-    Sequence,
     Tuple,
     Union,
     TYPE_CHECKING,
@@ -76,7 +74,14 @@ from arcade.types.color import RGBOrANormalized
 # The Color helper type
 from arcade.types.color import Color
 
-# We'll be moving our Vec-like items into this (Points, Sizes, etc)
+# Vector-like items and collections
+from arcade.types.vector_like import Point2
+from arcade.types.vector_like import Point3
+from arcade.types.vector_like import Point
+from arcade.types.vector_like import Point2List
+from arcade.types.vector_like import Point3List
+from arcade.types.vector_like import PointList
+from arcade.types.vector_like import EMPTY_POINT_LIST
 from arcade.types.vector_like import AnchorPoint
 
 # Rectangles
@@ -86,6 +91,7 @@ from arcade.types.rect import RectKwargs
 
 from arcade.types.rect import Rect
 from arcade.types.rect import LRBT
+from arcade.types.rect import LBWH
 from arcade.types.rect import XYWH
 from arcade.types.rect import XYRR
 from arcade.types.rect import Viewport
@@ -99,20 +105,22 @@ __all__ = [
     "PathOr",
     "PathOrTexture",
     "Point",
+    "Point2",
     "Point3",
     "PointList",
+    "Point2List",
+    "Point3List",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
-    "IntRect",
     "Rect",
     "LRBT",
+    "LBWH",
     "XYWH",
     "XYRR",
     "Viewport",
     "ViewportParams",
     "RectParams",
     "RectKwargs",
-    "RectList",
     "RGB",
     "RGBA",
     "RGBOrA",
@@ -129,6 +137,8 @@ __all__ = [
 
 
 _T = TypeVar('_T')
+
+# --- Begin potentially obsolete annotations ---
 
 #: ``Size2D`` helps mark int or float sizes. Use it like a
 #: :py:class:`typing.Generic`'s bracket notation as follows:
@@ -149,25 +159,14 @@ _T = TypeVar('_T')
 #:
 Size2D = Tuple[_T, _T]
 
-# Point = Union[Tuple[AsFloat, AsFloat], List[AsFloat]]
-Point = Tuple[AsFloat, AsFloat]
-Point3 = Tuple[AsFloat, AsFloat, AsFloat]
+#: Used in :py:class:`~arcade.sprite_list.spatial_hash.SpatialHash`.
 IPoint = Tuple[int, int]
 
 
 # We won't keep this forever. It's a temp stub for particles we'll replace.
 Velocity = Tuple[AsFloat, AsFloat]
 
-PointList = Sequence[Point]
-# Speed / typing workaround:
-# 1. Eliminate extra allocations
-# 2. Allows type annotation to be cleaner, primarily for HitBox & subclasses
-EMPTY_POINT_LIST: PointList = tuple()
-
-
-IntRect = Union[Tuple[int, int, int, int], List[int]]  # x, y, width, height
-RectList = Union[Tuple[IntRect, ...], List[IntRect]]
-FloatRect = Union[Tuple[AsFloat, AsFloat, AsFloat, AsFloat], List[AsFloat]]  # x, y, width, height
+# --- End potentially obsolete annotations ---
 
 
 # Path handling
@@ -185,7 +184,7 @@ PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
-    shape: Union[Point, PointList, IntRect]
+    shape: Union[Point, PointList, Tuple[int, int, int, int]]
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None

@@ -8,7 +8,6 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from arcade.types import RectList
 from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
 from arcade import cache as _cache
@@ -178,7 +177,7 @@ def load_texture_pair(
 
 def load_textures(
     file_name: Union[str, Path],
-    image_location_list: RectList,
+    image_location_list: List[Tuple[int, int, int, int]],
     mirrored: bool = False,
     flipped: bool = False,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,

@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 __all__ = ["Surface", "UIDummy"]
 
 
-class Rect(NamedTuple):
+class GUIRect(NamedTuple):
     """
     Representing a rectangle for GUI module.
     Rect is idempotent.
@@ -44,10 +44,10 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "Rect":
+    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "GUIRect":
         """Returns new Rect which is moved by dx and dy"""
         x, y, width, height = self
-        return Rect(x + dx, y + dy, width, height)
+        return GUIRect(x + dx, y + dy, width, height)
 
     def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
         """Return true if ``x`` and ``y`` are within this rect.
@@ -70,7 +70,7 @@ class Rect(NamedTuple):
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(self, scale: float, rounding: Optional[Callable[..., float]] = floor) -> "Rect":
+    def scale(self, scale: float, rounding: Optional[Callable[..., float]] = floor) -> "GUIRect":
         """Return a new rect scaled relative to the origin.
 
         By default, the new rect's values are rounded down to whole
@@ -87,20 +87,20 @@ class Rect(NamedTuple):
         """
         x, y, width, height = self
         if rounding is not None:
-            return Rect(
+            return GUIRect(
                 rounding(x * scale),
                 rounding(y * scale),
                 rounding(width * scale),
                 rounding(height * scale),
             )
-        return Rect(
+        return GUIRect(
             x * scale,
             y * scale,
             width * scale,
             height * scale,
         )
 
-    def resize(self, width: float | None = None, height: float | None = None) -> "Rect":
+    def resize(self, width: float | None = None, height: float | None = None) -> "GUIRect":
         """Return a rect with a new width or height but same lower left.
 
         Fix x and y coordinate.
@@ -109,7 +109,7 @@ class Rect(NamedTuple):
         """
         width = width if width is not None else self.width
         height = height if height is not None else self.height
-        return Rect(self.x, self.y, width, height)
+        return GUIRect(self.x, self.y, width, height)
 
     @property
     def size(self) -> Tuple[float, float]:
@@ -158,54 +158,54 @@ class Rect(NamedTuple):
         """Bottom left coordinates"""
         return self.left, self.bottom
 
-    def align_top(self, value: float) -> "Rect":
+    def align_top(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the top"""
         diff_y = value - self.top
         return self.move(dy=diff_y)
 
-    def align_bottom(self, value: float) -> "Rect":
+    def align_bottom(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the bottom"""
         diff_y = value - self.bottom
         return self.move(dy=diff_y)
 
-    def align_left(self, value: float) -> "Rect":
+    def align_left(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the left"""
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: AsFloat) -> "Rect":
+    def align_right(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "Rect":
+    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center x and y"""
         diff_x = center_x - self.center_x
         diff_y = center_y - self.center_y
         return self.move(dx=diff_x, dy=diff_y)
 
-    def align_center_x(self, value: AsFloat) -> "Rect":
+    def align_center_x(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: AsFloat) -> "Rect":
+    def align_center_y(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "Rect":
+    def min_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "GUIRect":
         """
         Sets the size to at least the given min values.
         """
-        return Rect(
+        return GUIRect(
             self.x,
             self.y,
             max(width or 0.0, self.width),
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "Rect":
+    def max_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "GUIRect":
         """
         Limits the size to the given max values.
         """
@@ -215,9 +215,9 @@ class Rect(NamedTuple):
         if height is not None:
             h = min(height, h)
 
-        return Rect(x, y, w, h)
+        return GUIRect(x, y, w, h)
 
-    def union(self, rect: "Rect") -> "Rect":
+    def union(self, rect: "GUIRect") -> "GUIRect":
         """
         Returns a new Rect that is the union of this rect and another.
         The union is the smallest rectangle that contains theses two rectangles.
@@ -226,7 +226,7 @@ class Rect(NamedTuple):
         y = min(self.y, rect.y)
         right = max(self.right, rect.right)
         top = max(self.top, rect.top)
-        return Rect(x=x, y=y, width=right - x, height=top - y)
+        return GUIRect(x=x, y=y, width=right - x, height=top - y)
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -258,7 +258,7 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
+    rect: GUIRect = Property(GUIRect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
     size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
@@ -291,7 +291,7 @@ class UIWidget(EventDispatcher, ABC):
         **kwargs,
     ):
         self._requires_render = True
-        self.rect = Rect(x, y, width, height)
+        self.rect = GUIRect(x, y, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
 
         # Size hints are properties that can be used by layouts
@@ -650,7 +650,7 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def content_rect(self):
-        return Rect(
+        return GUIRect(
             self.left + self._border_width + self._padding_left,
             self.bottom + self._border_width + self._padding_bottom,
             self.content_width,

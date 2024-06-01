@@ -20,7 +20,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, Rect
+from arcade.gui.widgets import UIWidget, GUIRect
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import RGBA255, Color, RGBOrA255
 
@@ -543,7 +543,7 @@ class UITextArea(UIWidget):
         """
         Set the width and height of the text area to contain the whole text.
         """
-        self.rect = Rect(
+        self.rect = GUIRect(
             self.x,
             self.y,
             self.layout.content_width,

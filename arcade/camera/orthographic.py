@@ -1,8 +1,8 @@
-from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from typing import Optional, Generator, TYPE_CHECKING
 from contextlib import contextmanager
 from typing_extensions import Self
 
-from pyglet.math import Mat4, Vec3
+from pyglet.math import Mat4, Vec3, Vec2
 
 from arcade.camera.data_types import Projector, CameraData, OrthographicProjectionData
 from arcade.camera.projection_functions import (
@@ -12,6 +12,7 @@ from arcade.camera.projection_functions import (
     unproject_orthographic
 )
 
+from arcade.types import Point, Rect, LBWH
 from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade import Window
@@ -49,8 +50,14 @@ class OrthographicProjector(Projector):
     def __init__(self, *,
                  window: Optional["Window"] = None,
                  view: Optional[CameraData] = None,
-                 projection: Optional[OrthographicProjectionData] = None):
+                 projection: Optional[OrthographicProjectionData] = None,
+                 viewport: Optional[Rect] = None,
+                 scissor: Optional[Rect] = None
+                 ):
         self._window: "Window" = window or get_window()
+
+        self.viewport: Rect = viewport or LBWH(0, 0, self._window.width, self._window.height)
+        self.scissor: Optional[Rect] = scissor
 
         self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
@@ -63,8 +70,6 @@ class OrthographicProjector(Projector):
             -0.5 * self._window.width, 0.5 * self._window.width,  # Left, Right
             -0.5 * self._window.height, 0.5 * self._window.height,  # Bottom, Top
             -100, 100,  # Near, Far
-
-            (0, 0, self._window.width, self._window.height)  # Viewport
         )
 
     @property
@@ -105,7 +110,8 @@ class OrthographicProjector(Projector):
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        self._window.ctx.viewport = self._projection.viewport
+        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
         self._window.projection = _projection
         self._window.view = _view
 
@@ -134,29 +140,19 @@ class OrthographicProjector(Projector):
         finally:
             previous_projector.use()
 
-    def project(self, world_coordinate: Tuple[float, ...]) -> Tuple[float, float]:
+    def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        if len(world_coordinate) > 2:
-            z = world_coordinate[2]
-        else:
-            z = 0.0
-        x, y = world_coordinate[0], world_coordinate[1]
-
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        pos = project_orthographic(
-            Vec3(x, y, z), self.projection.viewport,
+        return project_orthographic(
+            world_coordinate, self.viewport.viewport,
             _view, _projection,
         )
 
-        return pos.x, pos.y
-
-    def unproject(self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None) -> Tuple[float, float, float]:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Take in a pixel coordinate from within
         the range of the window size and returns
@@ -171,14 +167,11 @@ class OrthographicProjector(Projector):
         Returns:
             A 3D vector in world space.
         """
+
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
-
-        pos = unproject_orthographic(
+        return unproject_orthographic(
             screen_coordinate,
-            self.projection.viewport,
-            _view, _projection,
-            depth or 0.0
+            self.viewport.viewport,
+            _view, _projection
         )
-
-        return pos.x, pos.y, pos.z

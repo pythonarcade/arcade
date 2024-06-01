@@ -1,4 +1,4 @@
-from arcade.gui import UIBoxLayout, UIDummy, Rect
+from arcade.gui import UIBoxLayout, UIDummy, GUIRect
 
 
 def test_uiboxlayout_bars_with_size_hint(window):
@@ -16,14 +16,14 @@ def test_uiboxlayout_bars_with_size_hint(window):
     bottom_bar = UIDummy(height=100, size_hint=(1, 0), size_hint_min=(None, 100))
     box.add(bottom_bar)
 
-    box.rect = Rect(0, 0, 800, 600)
+    box.rect = GUIRect(0, 0, 800, 600)
     box._do_layout()
     box._do_layout()
 
     assert box.size == (800, 600)
-    assert top_bar.rect == Rect(0, 550, 800, 50)
-    assert center_area.rect == Rect(0, 100, 800, 450)
-    assert bottom_bar.rect == Rect(0, 0, 800, 100)
+    assert top_bar.rect == GUIRect(0, 550, 800, 50)
+    assert center_area.rect == GUIRect(0, 100, 800, 450)
+    assert bottom_bar.rect == GUIRect(0, 0, 800, 100)
 
 
 def test_uiboxlayout_vertical_bars_with_size_hint(window):
@@ -41,11 +41,11 @@ def test_uiboxlayout_vertical_bars_with_size_hint(window):
     right_bar = UIDummy(size_hint=(0, 1), size_hint_min=(100, None))
     box.add(right_bar)
 
-    box.rect = Rect(0, 0, 800, 600)
+    box.rect = GUIRect(0, 0, 800, 600)
     box._do_layout()
     # box._do_layout()
 
     assert box.size == (800, 600)
-    assert left_bar.rect == Rect(0, 0, 50, 600)
-    assert center_area.rect == Rect(50, 0, 650, 600)
-    assert right_bar.rect == Rect(700, 0, 100, 600)
+    assert left_bar.rect == GUIRect(0, 0, 50, 600)
+    assert center_area.rect == GUIRect(50, 0, 650, 600)
+    assert right_bar.rect == GUIRect(700, 0, 100, 600)

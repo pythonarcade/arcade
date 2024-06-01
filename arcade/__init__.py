@@ -218,6 +218,8 @@ from .perf_graph import PerfGraph
 
 from .camera import Camera2D
 
+from .types.rect import Rect, LRBT, LBWH, XYWH
+
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
@@ -230,6 +232,9 @@ from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
 from arcade import experimental as experimental
 from arcade.types import rect
+
+# For ease of access for beginners
+from pyglet.math import Vec2, Vec3, Vec4
 
 from .text import (
     draw_text,
@@ -261,6 +266,10 @@ __all__ = [
     'PymunkException',
     'PymunkPhysicsEngine',
     'PymunkPhysicsObject',
+    'Rect',
+    'LBWH',
+    'LRBT',
+    'XYWH',
     'Section',
     'SectionManager',
     'Scene',
@@ -280,6 +289,9 @@ __all__ = [
     'TextureAtlas',
     'TileMap',
     'VERSION',
+    'Vec2',
+    'Vec3',
+    'Vec4',
     'View',
     'Window',
     'astar_calculate_path',

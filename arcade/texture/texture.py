@@ -26,7 +26,8 @@ from arcade.texture.transforms import (
     TransverseTransform,
 )
 
-from arcade.types import RGBA255, PointList
+from arcade.types import RGBA255, Point2List
+from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -154,7 +155,7 @@ class Texture:
         image: Union[PIL.Image.Image, ImageData],
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box_points: Optional[PointList] = None,
+        hit_box_points: Optional[Point2List] = None,
         hash: Optional[str] = None,
         **kwargs,
     ):
@@ -191,7 +192,7 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = (
+        self._hit_box_points: Point2List = (
             hit_box_points or self._calculate_hit_box_points()
         )
 
@@ -392,7 +393,7 @@ class Texture:
         self._size = value
 
     @property
-    def hit_box_points(self) -> PointList:
+    def hit_box_points(self) -> Point2List:
         """
         Get the hit box points for this texture.
 
@@ -753,7 +754,7 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def _calculate_hit_box_points(self) -> PointList:
+    def _calculate_hit_box_points(self) -> Point2List:
         """
         Calculate the hit box points for this texture based on the configured
         hit box algorithm. This is usually done on texture creation
@@ -842,7 +843,7 @@ class Texture:
         :param center_y: Y location of where to draw the texture.
         :param scale: Scale to draw rectangle. Defaults to 1.
         :param angle: Angle to rotate the texture by.
-        :param alpha: The transparency of the texture `(0-255)`.
+        :param alpha: The transparency of the texture ``(0-255)``.
         """
         from arcade import Sprite
 
@@ -859,6 +860,19 @@ class Texture:
         spritelist.append(sprite)
         spritelist.draw()
         spritelist.remove(sprite)
+
+    def draw_rect(self, rect: Rect, alpha: int = 255):
+        """
+        Draw the texture.
+
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
+
+        :param rect: A Rect to draw this texture to.
+        :param alpha: The transparency of the texture ``(0-255)``.
+        """
+        self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
 
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets

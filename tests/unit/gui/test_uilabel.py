@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from arcade.gui import UILabel, Rect
+from arcade.gui import UILabel, GUIRect
 from arcade.types import Color
 
 
@@ -15,17 +15,17 @@ def test_uilabel_inits_with_text_size(window):
 
 def test_uilabel_uses_size_parameter(window):
     label = UILabel(text="Example", width=100, height=50)
-    assert label.rect == Rect(0, 0, 100, 50)
+    assert label.rect == GUIRect(0, 0, 100, 50)
 
 
 def test_uilabel_uses_smaller_size_parameter(window):
     label = UILabel(text="Example", width=20, height=50)
-    assert label.rect == Rect(0, 0, 20, 50)
+    assert label.rect == GUIRect(0, 0, 20, 50)
 
 
 def test_uilabel_allow_multiline_and_uses_text_height(window):
     label = UILabel(text="E x a m p l e", width=10, multiline=True)
-    assert label.rect == Rect(0, 0, 10, pytest.approx(133, abs=8))
+    assert label.rect == GUIRect(0, 0, 10, pytest.approx(133, abs=8))
 
 
 def test_uilabel_with_border_keeps_previous_size(window):
