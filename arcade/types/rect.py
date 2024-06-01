@@ -15,7 +15,7 @@ ViewportParams = Tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
-    """Annotates an ordinary :py:class:`dict` of :py:class:`Rect` arguments.
+    """Annotates a plain :py:class:`dict` of :py:class:`Rect` arguments.
 
     This is only meaningful as a type annotation during type checking.
     For example, the :py:meth:`Rect.kwargs <arcade.types.Rect.kwargs>`
@@ -164,7 +164,7 @@ class Rect(NamedTuple):
                height: Optional[AsFloat] = None,
                anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
-        Returns a new :py:class:`~arcade.types.rect.Rect` at the current Rect's position,
+        Returns a new :py:class:`Rect` at the current Rect's position,
         but with a new width and height, anchored at a point (default center.)
         """
         width = width or self.width
@@ -185,7 +185,7 @@ class Rect(NamedTuple):
 
     def scale(self, new_scale: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
-        Returns a new :py:class:`~arcade.types.rect.Rect` scaled by a factor of `new_scale`,
+        Returns a new :py:class:`Rect` scaled by a factor of ``new_scale``,
         anchored at a point (default center.)
         """
         anchor_x = self.left + anchor.x * self.width
@@ -200,7 +200,7 @@ class Rect(NamedTuple):
 
     def scale_axes(self, new_scale: Point2, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
-        Returns a new :py:class:`~arcade.types.rect.Rect`
+        Return a new :py:class:`Rect`
         scaled by a factor of `new_scale.x` in the width
         and `new_scale.y` in the height, anchored at a point (default center.)
         """
@@ -221,33 +221,33 @@ class Rect(NamedTuple):
                     self.width * scale,  self.height * scale, self.x * scale, self.y * scale)
 
     def __truediv__(self, scale: AsFloat) -> Rect:
-        """Scale the Rect by 1/``scale`` relative to ``(0, 0)``."""
+        """Scale the rectangle by 1/``scale`` relative to ``(0, 0)``."""
         return Rect(self.left / scale, self.right / scale, self.bottom / scale, self.top / scale,
                     self.width / scale,  self.height / scale, self.x / scale, self.y / scale)
 
     def align_top(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the top at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the top at `value`."""
         return LBWH(self.left, value - self.height, self.width, self.height)
 
     def align_bottom(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the bottom at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the bottom at `value`."""
         return LBWH(self.left, value, self.width, self.height)
 
     def align_left(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the left at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the left at `value`."""
         return LBWH(value, self.bottom, self.width, self.height)
 
     def align_right(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the right at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the right at `value`."""
         return LBWH(value - self.width, self.bottom, self.width, self.height)
 
     def align_center(self, value: Point2) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the center x and y at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the center x and y at `value`."""
         cx, cy = value
         return XYWH(cx, cy, self.width, self.height)
 
     def align_x(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the x at `value`."""
+        """Returns a new :py:class:`Rect`, which is aligned to the x at `value`."""
         return XYWH(value, self.y, self.width, self.height)
 
     @warning(ReplacementWarning, message=".align_center_x() is deprecated. Please use .align_x() instead.")
@@ -256,7 +256,7 @@ class Rect(NamedTuple):
         return self.align_x(value)
 
     def align_y(self, value: AsFloat) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect`, which is aligned to the y at `value`."""
+        """Get a new :py:class:`Rect`, which is aligned to the y at `value`."""
         return XYWH(self.x, value, self.width, self.height)
 
     @warning(ReplacementWarning, message=".align_center_y() is deprecated. Please use .align_y() instead.")
@@ -325,20 +325,17 @@ class Rect(NamedTuple):
                    min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
                    min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
-        """
-        Return a :py:class:`~arcade.types.rect.Rect` that is has a height between `min_height` and `max_height` and
-        a width between `min_width` and `max_width`, positioned at the current position and anchored to a point.
-        (default center)
+        """Get a new clamped-size rectangle at the same position and anchored at ``anchor_point``.
+
+        This combines the effects of :py:meth:`clamp_width` and :py:meth:`clamp_height` into
+        one call.
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
         return self.resize(width, height, anchor)
 
     def union(self, other: Rect) -> Rect:
-        """
-        Returns a new :py:class:`~arcade.types.rect.Rect` that is the union of this rect and another.
-        The union is the smallest rectangle that contains these two rectangles.
-        """
+        """Get the smallest rectangle covering both this one and ``other``."""
         left = min(self.left, other.left)
         right = max(self.right, other.right)
         bottom = min(self.bottom, other.bottom)
@@ -346,13 +343,19 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __or__(self, other: Rect) -> Rect:
-        """Returns the result of :py:meth:`union` with ``other``."""
+        """Shorthand for :py:meth:`rect.union(other) <union>`.
+
+        :param other: Another :py:class:`Rect` instance.
+        """
         return self.union(other)
 
     def intersection(self, other: Rect) -> Rect | None:
-        """
-        Returns a new :py:class:`~arcade.types.rect.Rect` that is the overlaping portion of this Rect and another.
-        This will return None if no such rectangle exists.
+        """Return a :py:class:`Rect` of the overlap if any exists.
+
+        If the two :py:class:`Rect` instances do not intersect, this
+        method will return ``None`` instead.
+
+        :param other: Another :py:class:`Rect` instance.
         """
         intersecting = self.overlaps(other)
         if not intersecting:
@@ -364,12 +367,16 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __and__(self, other: Rect) -> Rect | None:
-        """Returns the result of :py:meth:`intersection` with ``other``."""
+        """Shorthand for :py:meth:`rect.intersection(other) <interesection>`.
+
+        :param other: Another :py:class:`Rect` instance.
+        """
         return self.intersection(other)
 
     def overlaps(self, other: Rect) -> bool:
-        """
-        Returns True if `other` overlaps with the rect.
+        """Returns ``True`` if `other` overlaps with ``self``.
+
+        :param other: Another :py:class:`Rect` instance.
         """
 
         return (
@@ -379,12 +386,18 @@ class Rect(NamedTuple):
         )
 
     def point_in_rect(self, point: Point2) -> bool:
-        """Returns True if the given point is inside this rectangle."""
+        """Returns ``True`` if ``point`` is inside this rectangle.
+
+        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        """
         px, py = point
         return (self.left < px < self.right) and (self.bottom < py < self.top)
 
     def __contains__(self, point: Point2) -> bool:
-        """Returns the result of :py:meth:`point_in_rect` with a provided point."""
+        """Shorthand for :py:meth:`rect.point_in_rect(point) <point_in_rect>`.
+
+        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        """
         return self.point_in_rect(point)
 
     def distance_from_bounds(self, point: Point2) -> float:
@@ -397,12 +410,62 @@ class Rect(NamedTuple):
         return d
 
     def point_on_bounds(self, point: Point2, tolerance: float) -> bool:
-        """Returns True if the given point is on the bounds of this rectangle within some tolerance."""
+        """Returns ``True`` if ``point`` is within ``tolerance`` of the bounds.
+
+        The ``point``'s distance from the bounds is computed by through
+        :py:meth:`distance_from_bounds`.
+
+        :param point:
+        """
         return abs(self.distance_from_bounds(point)) < tolerance
 
     def position_to_uv(self, point: Point2) -> Vec2:
-        """Take an absolute point and translate it to it's relative position in UV-space
-        (percentage across this rectangle.)
+        """Convert a point to UV space values inside the rectangle.
+
+        This is like a pair of ratios which measure how far the ``point``
+        is from the rectangle's :py:meth:`bottom_left` up toward its
+        :py:meth:`top_right` along each axis.
+
+        .. warning:: This method does not clamp output!
+
+                     Since ``point`` is absolute pixels, one or both axes
+                     of the returned :py:class:`~pyglet.math.Vec2` can be:
+
+                     * less than ``0.0``
+                     * greater than ``1.0``
+
+
+        Each axis of the return value measures how far into
+        the rectangle's ``size`` the ``point`` is relative
+        to the :py:meth:`bottom_left`:
+
+        .. code-block:: python
+
+           # consult the diagram below
+           Vec2(
+             (point.x - rect.left)   / rect.width,
+             (point.y - rect.bottom) / rect.height
+           )
+
+        .. code-block::
+
+              |------- rect.width ------|
+
+                     The rectangle      (rect.top_right)
+              +-------------------------T    ---
+              |                         |     |
+           - - - - - - - P  (Point x, y)|     |
+           |  |                         | rect.height
+           |  |          |              |     |
+           y  |                         |     |
+           |  B----------|--------------+    ---
+           |  (rect.bottom_right)
+           |
+           O----- x -----|
+
+        :param point: A point relative to the rectangle's
+            :py:meth:`bottom_left` corner.
+
         """
         x, y = point
         return Vec2(
@@ -411,8 +474,29 @@ class Rect(NamedTuple):
         )
 
     def uv_to_position(self, uv: Point2) -> Vec2:
-        """Take a point in UV-space (percentage across this rectangle) and translate it
-        to it's absolute position.
+        """Convert a point in UV-space to a point within the rectangle.
+
+        The ``uv`` is a pair of ratios which describe how far a point
+        extends across the rectangle's :py:attr:`width` and
+        :py:attr:`height` from the :py:attr:`bottom_left` toward its
+        :py:attr:`top_right`.
+
+        .. warning:: This method does not clamp output!
+
+                     Since one or both of ``uv``'s components can be
+                     less than ``0.0`` or greater than ``1.0``, the
+                     returned point can fall outside the rectangle.
+
+        The following can be used as arguments to this function:
+
+        #. Values in :py:class:`~arcade.types.AnchorPoint`
+        #. Returned values from :py:meth:`position_to_uv`
+        #. Rescaled input data from controllers
+
+        :param uv: A pair of ratio values describing how far a
+            a point falls from a rectangle's :py:attr:`bottom_left`
+            toward its :py:attr:`top_right`.
+
         """
         x, y = uv
         return Vec2(
@@ -421,7 +505,16 @@ class Rect(NamedTuple):
         )
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
-        """Returns a tuple of the four corners of this Rect."""
+        """Return a new :py:class:`tuple` of this rectangle's corner points.
+
+        The points will be ordered as follows:
+
+        #. :py:meth:`bottom_left`
+        #. :py:meth:`top_left`
+        #. :py:meth:`top_right`
+        #. :py:meth:`bottom_right`
+
+        """
         left = self.left
         bottom = self.bottom
         right = self.right
