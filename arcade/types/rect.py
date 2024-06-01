@@ -148,14 +148,14 @@ class Rect(NamedTuple):
         return self.width / self.height
 
     def at_position(self, position: Point2) -> Rect:
-        """Returns a new :py:class:`~arcade.types.rect.Rect` which is moved to put `position` at its center."""
+        """Returns a new :py:class:`Rect` which is moved to put `position` at its center."""
         x, y = position
         return XYWH(x, y, self.width, self.height)
 
     def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> Rect:
         """
-        Returns a new :py:class:`~arcade.types.rect.Rect`
-        which is moved by `dx` in the x-direction and `dy` in the y-direction.
+        Returns a new :py:class:`Rect` which is moved by `dx` in the
+        x-direction and `dy` in the y-direction.
         """
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
@@ -271,7 +271,7 @@ class Rect(NamedTuple):
             anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
-        Return a :py:class:`~arcade.types.rect.Rect` that is at least size `width` by `height`, positioned at
+        Return a :py:class:`Rect` that is at least size `width` by `height`, positioned at
         the current position and anchored to a point (default center.)
         """
         width = max(width or 0.0, self.width)
@@ -285,7 +285,7 @@ class Rect(NamedTuple):
             anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
-        Return a :py:class:`~arcade.types.rect.Rect` that is at most size `width` by `height`, positioned at
+        Return a :py:class:`Rect` that is at most size `width` by `height`, positioned at
         the current position and anchored to a point (default center.)
         """
         width = min(width or float("inf"), self.width)
@@ -295,7 +295,7 @@ class Rect(NamedTuple):
     def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
                      anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
-        Return a :py:class:`~arcade.types.rect.Rect` that has a height between `min_height` and `max_height`,
+        Return a :py:class:`Rect` that has a height between `min_height` and `max_height`,
         positioned at the current position and anchored to a point (default center.)
         """
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
