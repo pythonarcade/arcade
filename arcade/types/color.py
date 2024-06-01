@@ -101,8 +101,8 @@ class Color(RGBA255):
 
     Regardless of the source format, all color channels must be between
     0 and 255, inclusive. If any channel is outside this range, creation
-    will fail with a :py:class:`~arcade.utils.ByteRangeError` you can
-    handle as a :py:class:`ValueError`.
+    will fail with a :py:class:`~arcade.utils.ByteRangeError`, which is a
+    type of :py:class:`ValueError`.
 
     .. _colour: https://pypi.org/project/colour/
 
@@ -113,11 +113,11 @@ class Color(RGBA255):
               * Python's built-in :py:mod:`colorsys` module
               * The `colour`_ package
 
-    :param r: the red channel of the color, between 0 and 255
-    :param g: the green channel of the color, between 0 and 255
-    :param b: the blue channel of the color, between 0 and 255
+    :param r: the red channel of the color, between 0 and 255, inclusive
+    :param g: the green channel of the color, between 0 and 255, inclusive
+    :param b: the blue channel of the color, between 0 and 255, inclusive
     :param a: the alpha or transparency channel of the color, between
-        0 and 255
+        0 and 255, inclusive
     """
 
     __slots__ = ()
@@ -152,7 +152,7 @@ class Color(RGBA255):
     def r(self) -> int:
         """Get the red value of the :py:class:`Color`.
 
-        It will be between ``0`` and ``255``.
+        It will be between ``0`` and ``255``, inclusive.
         """
         return self[0]
 
@@ -160,7 +160,7 @@ class Color(RGBA255):
     def g(self) -> int:
         """Get the green value of the :py:class:`Color`.
 
-        It will be between ``0`` and ``255``.
+        It will be between ``0`` and ``255``, inclusive.
         """
         return self[1]
 
@@ -168,7 +168,7 @@ class Color(RGBA255):
     def b(self) -> int:
         """Get the blue value of the :py:class:`Color`.
 
-        It will be between ``0`` and ``255``.
+        It will be between ``0`` and ``255``, inclusive.
         """
         return self[2]
 
@@ -176,7 +176,7 @@ class Color(RGBA255):
     def a(self) -> int:
         """Get the alpha value of the :py:class:`Color`.
 
-        It will be between ``0`` and ``255``.
+        It will be between ``0`` and ``255``, inclusive.
         """
         return self[3]
 
@@ -202,16 +202,16 @@ class Color(RGBA255):
 
     @classmethod
     def from_iterable(cls, iterable: Iterable[int]) -> Self:
-        """Create a :py:class:`Color` from an ``iterable`` of 3 or 4 channel values.
+        """Create a :py:class:`Color` from an iterable of 3 or 4 channel values.
 
-        If an ``iterable`` is already a :py:class:`Color` instance,
+        If an iterable is already a :py:class:`Color` instance,
         it will be returned unchanged. Otherwise, it must unpack as
-        3 or 4 :py:class:`int` values between ``0`` and ``255``.
+        3 or 4 :py:class:`int` values between ``0`` and ``255``, inclusive.
 
-        If an ``iterable`` does no less than 3 or more than 4 elements,
-        this method raises a :py:class:`ValueError`. The function will attempt to create a new Color
-        instance. The usual rules apply, ie all values must be between
-        0 and 255, inclusive.
+        If an iterable has no less than 3 or more than 4 elements,
+        this method raises a :py:class:`ValueError`. The function will
+        attempt to create a new Color instance. The usual rules apply,
+        i.e.: all values must be between 0 and 255, inclusive.
 
         .. note:: This is a more readable alternative to ``*`` unpacking.
 
@@ -269,9 +269,9 @@ class Color(RGBA255):
 
         .. code-block:: python
 
-            >>> custom_white = Color.from_gray(255)
-            >>> print(custom_white)
-            Color(r=255, g=255, b=255, a=255)
+            >>> off_white = Color.from_gray(220)
+            >>> print(off_white)
+            Color(r=220, g=220, b=220, a=255)
 
             >>> half_opacity_gray = Color.from_gray(128, 128)
             >>> print(half_opacity_gray)
@@ -365,7 +365,7 @@ class Color(RGBA255):
         """Convert normalized float RGBA to an RGBA :py:class:`Color`.
 
         If any input channels aren't normalized (between ``0.0`` and
-        ``0.0``), this method will raise a
+        ``1.0``), this method will raise a
         :py:class:`~arcade.utils.NormalizedRangeError` you can handle as
         a :py:class:`ValueError`.
 
@@ -519,7 +519,7 @@ class Color(RGBA255):
            >>> color.swizzle("abgr")
            (255, 0, 90, 180)
 
-        Unlike GLSL, this function allows repeats and upper case.
+        Unlike GLSL, this function allows upper case.
 
         .. code-block:: python
 
