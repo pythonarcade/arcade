@@ -181,7 +181,7 @@ class Rect(NamedTuple):
         adjusted_top = anchor_y + (self.top - anchor_y) * ratio_y
         adjusted_bottom = anchor_y + (self.bottom - anchor_y) * ratio_y
 
-        return LRBT(adjusted_left, adjusted_right, adjusted_top, adjusted_bottom)
+        return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
 
     def scale(self, new_scale: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
