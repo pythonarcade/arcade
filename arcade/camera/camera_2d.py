@@ -13,7 +13,7 @@ from arcade.camera.data_types import (
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import Point, Rect, LBWH
+from arcade.types import Point, Rect, LBWH, LRBT
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -433,6 +433,12 @@ class Camera2D:
 
         x, y = new_left
         self.position = x - up[1] * left, y - up[0] * left
+
+    def position_rect(self) -> Rect:
+        """ Get the LRBT rect of the camera position """
+        bx, by = self.bottom_left
+        tx, ty = self.top_right
+        return LRBT(left=bx, right=tx, bottom=by, top=ty)
 
     def point_in_view(self, point: Point2) -> bool:
         """
