@@ -13,6 +13,25 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
+Space Station Builder
+~~~~~~~~~~~~~~~~~~~~~
+
+Build your own space station!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjY5NTk3NC8xNjA3MTA2Ni5naWY=/794x1000/ONUlqh.gif
+   :width: 500px
+
+Download at [Kosmolonia on itch.io](https://aliskda.itch.io/kosmolonia).
+
+Notepad Doodles
+~~~~~~~~~~~~~~~
+
+Survive waves of monsters!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjYxOTIxOS8xNjE5MTMxMi5wbmc=/original/dGbRh5.png
+   :width: 400px
+
+Download at [Notepad Doodles on itch.io](https://arkturdev.itch.io/notepad-doodles).
 
 BoxHead Survivor
 ~~~~~~~~~~~~~~~~
