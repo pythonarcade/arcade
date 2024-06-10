@@ -589,17 +589,17 @@ class SpriteList(Generic[SpriteType]):
             self._init_deferred()
 
     def pop(self, index: int = -1) -> SpriteType:
-        """Attempt to pop a sprite from the list, defaulting to the last.
+        """Attempt to pop a sprite from the list.
 
-        This works like :py:meth:`list.pop`:
+        This works like :external:ref:`popping from <tut-morelists>` a
+        standard Python :py:class:`list`:
 
-        * If no `index` is specified, this function attempts to pop the
-          last :py:class:`Sprite` in the list
-        * If the list is empty, this function raises an
-          :py:class:`IndexError`
+        #. If the list is empty, raise an :py:class:`IndexError`
+        #. If no ``index`` is passed, try to pop the last
+           :py:class:`Sprite` in the list
 
         :param index: Index of sprite to remove (defaults to ``-1`` for
-            the last item.
+            the last item)
         """
         if len(self.sprite_list) == 0:
             raise IndexError("pop from empty list")
