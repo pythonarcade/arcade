@@ -8,8 +8,12 @@ import sys
 
 from vfs import Vfs
 
-sys.path.insert(0, str(Path(__file__).parent.resolve()))
-ROOT = Path(__file__).parent.parent.resolve()
+HERE = Path(__file__).parent.resolve()
+sys.path.insert(0, str(HERE))
+
+REPO_ROOT = HERE.parent.resolve()
+ARCADE_ROOT = REPO_ROOT / "arcade"
+API_DOC_DIR = REPO_ROOT / "doc/api_docs/api"
 
 
 titles = {
@@ -243,7 +247,7 @@ def process_directory(directory: Path, quick_index_file):
         else:
             continue
 
-        full_api_file_name = ROOT / "doc/api_docs/api/" / api_file_name
+        full_api_file_name = API_DOC_DIR / api_file_name
 
         # print(package, title, api_file_name, full_api_file_name)
 
@@ -301,7 +305,7 @@ def process_directory(directory: Path, quick_index_file):
 
 
 def include_template(text_file):
-    with open(ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
+    with open(REPO_ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
         quick_index_content = content_file.read()
 
     text_file.write(quick_index_content)
@@ -322,15 +326,14 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    directory = ROOT / "doc/api_docs/api"
-    vfs.delete_glob(str(directory), '*.rst')
+    vfs.delete_glob(str(API_DOC_DIR), '*.rst')
 
 vfs = Vfs()
 
 def main():
     clear_api_directory()
 
-    text_file = vfs.open(ROOT / "doc/api_docs/api/quick_index.rst", "w")
+    text_file = vfs.open(API_DOC_DIR / "quick_index.rst", "w")
     include_template(text_file)
 
     text_file.write("The arcade module\n")
@@ -338,20 +341,20 @@ def main():
 
     text_file.write(table_header_arcade)
 
-    process_directory(ROOT / "arcade", text_file)
-    process_directory(ROOT / "arcade/types", text_file)
-    process_directory(ROOT / "arcade/sprite_list", text_file)
-    process_directory(ROOT / "arcade/geometry", text_file)
-    process_directory(ROOT / "arcade/sprite", text_file)
-    process_directory(ROOT / "arcade/texture", text_file)
-    process_directory(ROOT / "arcade/texture_atlas", text_file)
-    process_directory(ROOT / "arcade/text", text_file)
-    # process_directory(Path("../arcade/gl"), text_file)
-    process_directory(ROOT / "arcade/gui", text_file)
-    process_directory(ROOT / "arcade/gui/widgets", text_file)
-    process_directory(ROOT / "arcade/gui/property", text_file)
-    process_directory(ROOT / "arcade/gui/experimental", text_file)
-    process_directory(ROOT / "arcade/tilemap", text_file)
+    process_directory(ARCADE_ROOT, text_file)
+    process_directory(ARCADE_ROOT / "types", text_file)
+    process_directory(ARCADE_ROOT / "sprite_list", text_file)
+    process_directory(ARCADE_ROOT / "geometry", text_file)
+    process_directory(ARCADE_ROOT / "sprite", text_file)
+    process_directory(ARCADE_ROOT / "texture", text_file)
+    process_directory(ARCADE_ROOT / "texture_atlas", text_file)
+    # process_directory(ARCADE_ROOT / "gl", text_file)
+    process_directory(ARCADE_ROOT / "text", text_file)
+    process_directory(ARCADE_ROOT / "gui", text_file)
+    process_directory(ARCADE_ROOT / "gui/widgets", text_file)
+    process_directory(ARCADE_ROOT / "gui/property", text_file)
+    process_directory(ARCADE_ROOT / "gui/experimental", text_file)
+    process_directory(ARCADE_ROOT / "tilemap", text_file)
 
     text_file.close()
 
