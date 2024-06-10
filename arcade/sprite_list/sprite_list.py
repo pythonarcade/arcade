@@ -589,10 +589,17 @@ class SpriteList(Generic[SpriteType]):
             self._init_deferred()
 
     def pop(self, index: int = -1) -> SpriteType:
-        """
-        Pop off the last sprite, or the given index, from the list
+        """Attempt to pop a sprite from the list, defaulting to the last.
 
-        :param index: Index of sprite to remove, defaults to -1 for the last item.
+        This works like :py:method:`list.pop`:
+
+        * If no `index` is specified, this function attempts to pop the
+          last :py:class:`Sprite` in the list
+        * If the list is empty, this function raises an
+          :py:class:`IndexError`
+
+        :param index: Index of sprite to remove (defaults to ``-1`` for
+            the last item.
         """
         if len(self.sprite_list) == 0:
             raise IndexError("pop from empty list")
