@@ -595,7 +595,7 @@ class SpriteList(Generic[SpriteType]):
         :param index: Index of sprite to remove, defaults to -1 for the last item.
         """
         if len(self.sprite_list) == 0:
-            raise (ValueError("pop from empty list"))
+            raise IndexError("pop from empty list")
 
         sprite = self.sprite_list[index]
         self.remove(sprite)
