@@ -25,7 +25,7 @@ class Vfs:
         this build would emit an identical file.
         """
         path = Path(str(directory))
-        for p in path.glob('*.rst'):
+        for p in path.glob(glob):
             self.files_to_delete.add(p)
 
     def write(self):
