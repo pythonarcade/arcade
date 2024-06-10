@@ -29,6 +29,7 @@ unchanged.
 """
 import os
 from contextlib import suppress
+from io import StringIO
 from pathlib import Path
 from typing import Union
 
@@ -104,10 +105,10 @@ class VirtualFile:
 
     def __init__(self, path: str):
         self.path = path
-        self.content = ''
+        self._content = StringIO()
 
     def write(self, str: str):
-        self.content += str
+        return self._content.write(str)
 
     def close(self):
         pass
@@ -118,7 +119,8 @@ class VirtualFile:
             with open(self.path, "r") as f:
                 before = f.read()
 
-        if before != self.content:
+        content = self._content.getvalue()
+        if before != content:
             print(f"Writing {self.path}")
             with open(self.path, "w") as f:
-                f.write(self.content)
+                f.write(content)
