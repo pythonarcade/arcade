@@ -1,4 +1,5 @@
 import os
+from contextlib import suppress
 from pathlib import Path
 from typing import Union
 
@@ -70,11 +71,10 @@ class VirtualFile:
 
     def _write_to_disk(self):
         before = None
-        try:
+        with suppress(Exception):
             with open(self.path, "r") as f:
                 before = f.read()
-        except:
-            pass
+
         if before != self.content:
             print(f"Writing {self.path}")
             with open(self.path, "w") as f:
