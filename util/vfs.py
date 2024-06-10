@@ -61,11 +61,12 @@ class Vfs:
         self.files: dict[str, VirtualFile] = dict()
         self.files_to_delete: set[Path] = set()
 
-    def delete_glob(self, directory: Union[str, Path], glob: str):
-        """
-        Glob for all files on disk that were created by the previous build.
-        These files should be deleted if this build does not emit them.
-        Deletion will not be attempted until this Vfs is synced to disk.
+    def request_culling_unwritten(self, directory: str | Path, glob: str):
+        """Schedule a culling for any files in directory matching glob.
+
+        The check will occur when Vfs.write() is called to sync its data
+        to disk. Any paths in files_to_delete which weren't written to
+        will then be deleted.
 
         Doing it this way allows us to leave the files untouched on disk if
         this build would emit an identical file.
@@ -84,7 +85,7 @@ class Vfs:
            1. Read the file's current contents
            2. Abort write if the data inside would not change
 
-        2. Delete old files
+        2. Delete any unwritten files which were scheduled
         """
         file_paths = [file.path for file in self.files.values()]
         for file in self.files.values():

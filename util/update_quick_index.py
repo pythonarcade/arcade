@@ -319,7 +319,7 @@ def clear_api_directory():
     """
     Delete the API files and make new ones
     """
-    vfs.delete_glob(str(API_DOC_DIR), '*.rst')
+    vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
 
 vfs = Vfs()
 
