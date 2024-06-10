@@ -28,10 +28,10 @@ by reading each file before write and aborting if its contents would be
 unchanged.
 """
 import os
-from contextlib import suppress
+from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path
-from typing import Union
+from typing import Union, Generator
 
 
 class Vfs:
@@ -99,6 +99,13 @@ class Vfs:
             return self.files[path]
         self.files[path] = file = VirtualFile(path)
         return file
+
+    # This is less nasty than dynamically generating a subclass
+    # which then attaches instances to a specific Vfs on creation
+    # and assigns itself as the .open value for that Vfs
+    @contextmanager
+    def open_ctx(self, path: Union[str, Path], mode: str) -> Generator["VirtualFile", None, None]:
+        yield self.open(path, mode)
 
 
 class VirtualFile:
