@@ -6,14 +6,14 @@ import re
 from pathlib import Path
 import sys
 
-from vfs import Vfs
+# Ensure we get funnily named utility modules first in imports
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
-HERE = Path(__file__).parent.resolve()
-sys.path.insert(0, str(HERE))
+from vfs import Vfs, SharedPaths
 
-REPO_ROOT = HERE.parent.resolve()
-ARCADE_ROOT = REPO_ROOT / "arcade"
-API_DOC_DIR = REPO_ROOT / "doc/api_docs/api"
+REPO_ROOT = SharedPaths.REPO_ROOT
+ARCADE_ROOT = SharedPaths.ARCADE_ROOT
+API_DOC_DIR = SharedPaths.API_DOC_ROOT
 
 
 titles = {

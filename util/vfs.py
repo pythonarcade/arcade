@@ -35,6 +35,14 @@ from pathlib import Path
 from typing import Union, Generator
 
 
+class SharedPaths:
+    """These are often used to set up a Vfs and open files."""
+    REPO_UTILS_DIR = Path(__file__).parent.resolve()
+    REPO_ROOT = REPO_UTILS_DIR.parent
+    ARCADE_ROOT = REPO_ROOT / "arcade"
+    API_DOC_ROOT = REPO_ROOT / "doc/api_docs/api"
+
+
 class Vfs:
     """In-memory file system with sync support.
 

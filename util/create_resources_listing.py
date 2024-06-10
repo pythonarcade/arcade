@@ -7,16 +7,18 @@ import sys
 from pathlib import Path
 from typing import List
 
+# Ensure we get funnily named utility modules first in imports
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
-import arcade
-from vfs import Vfs
 
-MODULE_DIR = Path(__file__).parent.resolve()
-ARCADE_ROOT = MODULE_DIR.parent
-RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
-OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
+import arcade
+from vfs import Vfs, SharedPaths
+
+ARCADE_ROOT = SharedPaths.ARCADE_ROOT
+RESOURCE_DIR = ARCADE_ROOT /  "resources"
+OUT_FILE = SharedPaths.API_DOC_ROOT / "resources.rst"
 RESOURCE_URL = "https://github.com/pythonarcade/arcade/blob/development/arcade/{}?raw=true"
+
 
 COLUMNS = 3
 skip_extensions = arcade.resources._resource_list_skip_extensions
