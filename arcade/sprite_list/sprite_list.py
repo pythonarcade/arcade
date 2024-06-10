@@ -591,7 +591,7 @@ class SpriteList(Generic[SpriteType]):
     def pop(self, index: int = -1) -> SpriteType:
         """Attempt to pop a sprite from the list, defaulting to the last.
 
-        This works like :py:method:`list.pop`:
+        This works like :py:meth:`list.pop`:
 
         * If no `index` is specified, this function attempts to pop the
           last :py:class:`Sprite` in the list
