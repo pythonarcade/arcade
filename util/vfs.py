@@ -57,13 +57,17 @@ class Vfs:
 
 
 class VirtualFile:
+
     def __init__(self, path: str):
         self.path = path
         self.content = ''
+
     def write(self, str: str):
         self.content += str
+
     def close(self):
         pass
+
     def _write_to_disk(self):
         before = None
         try:
