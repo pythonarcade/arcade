@@ -32,7 +32,7 @@ import os
 from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path
-from typing import Union, Generator
+from typing import Generator
 
 
 class SharedPaths:
@@ -95,10 +95,10 @@ class Vfs:
                 print(f"Deleting {path}")
                 os.remove(path)
 
-    def exists(self, path: Union[str, Path]):
+    def exists(self, path: str | Path):
         return str(path) in self.files
 
-    def open(self, path: Union[str, Path], mode: str):
+    def open(self, path: str | Path, mode: str):
         path = str(path)
         modes = set(mode)
         if "b" in modes:
@@ -114,7 +114,7 @@ class Vfs:
     # which then attaches instances to a specific Vfs on creation
     # and assigns itself as the .open value for that Vfs
     @contextmanager
-    def open_ctx(self, path: Union[str, Path], mode: str) -> Generator["VirtualFile", None, None]:
+    def open_ctx(self, path: str | Path, mode: str) -> Generator["VirtualFile", None, None]:
         yield self.open(path, mode)
 
 
