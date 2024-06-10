@@ -6,11 +6,11 @@ import re
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path(__file__).parent.resolve()))
 from vfs import Vfs
 
-# The project root
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
 ROOT = Path(__file__).parent.parent.resolve()
+
 
 titles = {
     'application.py': ['Window and View', 'window.rst'],
@@ -200,7 +200,8 @@ def process_directory(directory: Path, quick_index_file):
 
         type_list, class_list, function_list = get_member_list(path)
 
-        mapping = {
+        # Map directory names to their package
+        dir_mapping = {
             "arcade": "arcade",
             "sprite": "arcade",
             "texture": "arcade",
@@ -212,22 +213,25 @@ def process_directory(directory: Path, quick_index_file):
             "property": "arcade.gui.property",
             "widgets": "arcade.gui",
             "tilemap": "arcade.tilemap",
+            "camera": "arcade.camera",
+            "types": "arcade.types",
+        }
+        # Map file names to their package
+        file_mapping = {
             "geometry.py": "arcade.geometry",
             "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
             "particles": "arcade.particles",
-            "types": "arcade.types",
             "utils.py": "arcade.utils",
             "easing.py": "arcade.easing",
             "math.py": "arcade.math",
             "earclip.py": "arcade.earclip",
-            "shape_list.py": "arcade.shape_list",
-            "camera": "arcade.camera"
+            "shape_list.py": "arcade.shape_list"
         }
-        package = mapping.get(path.name, None) or mapping.get(directory.name, None)
+        package = file_mapping.get(path.name, None) or dir_mapping.get(directory.name, None)
 
         path_name = prepend + path.name
-        # print(package, path.name, path_name)
+        # print(f"    {package=!r}, {path.name=!r}, {path_name=!r}")
 
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
