@@ -27,6 +27,7 @@ We can prevent this loop by limiting writes. This module achieves this
 by reading each file before write and aborting if its contents would be
 unchanged.
 """
+from __future__ import annotations
 import os
 from contextlib import suppress, contextmanager
 from io import StringIO
@@ -113,6 +114,11 @@ class VirtualFile:
     def __init__(self, path: str):
         self.path = path
         self._content = StringIO()
+
+    def include_file(self, path: Path | str) -> int:
+        """Copy the path's contents into this file."""
+        contents = Path(path).read_text()
+        return self.write(contents)
 
     def write(self, str: str):
         return self._content.write(str)

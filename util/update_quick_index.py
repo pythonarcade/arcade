@@ -304,13 +304,6 @@ def process_directory(directory: Path, quick_index_file):
         api_file.close()
 
 
-def include_template(text_file):
-    with open(REPO_ROOT / 'util' / 'template_quick_index.rst', 'r') as content_file:
-        quick_index_content = content_file.read()
-
-    text_file.write(quick_index_content)
-
-
 table_header_arcade = """
 .. list-table::
    :widths: 50 50
@@ -334,7 +327,8 @@ def main():
     clear_api_directory()
 
     with vfs.open_ctx(API_DOC_DIR / "quick_index.rst", "w") as text_file:
-        include_template(text_file)
+        text_file.include_file(
+            REPO_ROOT /  'util' / 'template_quick_index.rst')
 
         text_file.write("The arcade module\n")
         text_file.write("-----------------\n\n")
