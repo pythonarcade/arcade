@@ -62,7 +62,7 @@ PAPER_SIZE_OPTS[None] = []
 PAPER_SIZE_OPTS['a4'] = ['-D', 'latex_paper_size=a4']
 PAPER_SIZE_OPTS['letter'] = ['-D', 'latex_paper_size=letter']
 ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
-SPHINXAUTOBUILDOPTS = ['--watch', './arcade']
+SPHINXAUTOBUILDOPTS = ['--watch', '../arcade', '--ignore', './example_code/how_to_examples/thumbs']
 
 # Important: the i18n builder cannot share the environment and doctrees with the others
 # This allows for internationalization / localization of doc.
