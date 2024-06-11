@@ -9,6 +9,8 @@
 The Python Arcade Library
 =========================
 
+.. |Go| image:: images/woman_sprinter.svg
+
 ..
    Wrapped in raw html to avoid repeating twice in the PDF, since this blurb is
    repeated in `get_started/introduction.rst`
