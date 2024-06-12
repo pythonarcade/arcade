@@ -16,7 +16,6 @@ titles = {
     'application.py': ['Window and View', 'window.rst'],
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
-    'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
     'geometry.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],

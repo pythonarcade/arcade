@@ -16,7 +16,6 @@ for the Python Arcade library. See also:
     api/types
     api/drawing_primitives
     api/drawing_batch
-    api/drawing_utilities
     api/sprites
     api/sprite_list
     api/sprite_scenes
