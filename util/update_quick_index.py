@@ -16,7 +16,11 @@ ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_DIR = SharedPaths.API_DOC_ROOT
 
 
-# Used to load immediate members defined in a file to a page.
+# Tries to be clever but stops half-way, leaving everything awful.
+# Understandable since this was made very early on when the library
+# was much smaller.
+# arcade gets prepended to anything that isn't currrently in the arcade
+# source root dir for convenience.
 titles = {
 
     # Core arcade items
@@ -145,10 +149,8 @@ titles = {
 
     'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
     'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
-
-
-
 }
+
 excluded_modules = [
     'version.py',
     'texture_atlas/atlas_array.py',
@@ -214,6 +216,10 @@ def process_directory(directory: Path, quick_index_file):
     """
     Take a directory and process all immediate children in it
 
+    This is definitely rushed code. Instead of using inspect, ast, or any
+    3rd party module like griffe... it's badly reassembling the module name
+    from a collection of tables and unnamed sequences.
+
     :param directory: A directory to process
     :param quick_index_file: The destination for a file
     """
@@ -228,7 +234,7 @@ def process_directory(directory: Path, quick_index_file):
 
     quick_index_file.write("\n")
 
-    # Reassemble file path? What?
+    # Part of reassembling a full file path for the table above
     if directory.name == "arcade":
         prepend = ""
     else:
@@ -246,7 +252,7 @@ def process_directory(directory: Path, quick_index_file):
 
         type_list, class_list, function_list = get_member_list(path)
 
-        # Map directory names to their package
+        # -- Reconstruct package name --
         dir_mapping = {
             "arcade": "arcade",
             "sprite": "arcade",
@@ -276,9 +282,11 @@ def process_directory(directory: Path, quick_index_file):
         }
         package = file_mapping.get(path.name, None) or dir_mapping.get(directory.name, None)
 
+        # Reconstruct on-disk path for the package name
         path_name = prepend + path.name
         # print(f"    {package=!r}, {path.name=!r}, {path_name=!r}")
 
+        # If
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
