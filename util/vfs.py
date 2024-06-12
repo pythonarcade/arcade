@@ -32,7 +32,7 @@ import os
 from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Type, TypeVar, Generic
 
 
 class SharedPaths:
@@ -43,7 +43,45 @@ class SharedPaths:
     API_DOC_ROOT = REPO_ROOT / "doc/api_docs/api"
 
 
-class Vfs:
+
+
+class VirtualFile:
+    """Subclass these to add some magic.
+
+    """
+
+    def __init__(self, path: str):
+        self.path = path
+        self._content = StringIO()
+
+    def include_file(self, path: Path | str) -> int:
+        """Copy the path's contents into this file."""
+        contents = Path(path).read_text()
+        return self.write(contents)
+
+    def write(self, str: str):
+        return self._content.write(str)
+
+    def close(self):
+        pass
+
+    def _write_to_disk(self):
+        before = None
+        with suppress(Exception):
+            with open(self.path, "r") as f:
+                before = f.read()
+
+        content = self._content.getvalue()
+        if before != content:
+            print(f"Writing {self.path}")
+            with open(self.path, "w") as f:
+                f.write(content)
+
+
+F = TypeVar('F', bound=VirtualFile)
+
+
+class Vfs(Generic[F]):
     """In-memory file system with sync support.
 
     Intended use is as follows:
@@ -57,7 +95,8 @@ class Vfs:
     3. Once done, call vfs_instance.write() to sync to disk
     """
 
-    def __init__(self):
+    def __init__(self, file_type: Type[F] = VirtualFile):
+        self.file_type: Type[F] = file_type
         self.files: dict[str, VirtualFile] = dict()
         self.files_to_delete: set[Path] = set()
 
@@ -98,7 +137,7 @@ class Vfs:
     def exists(self, path: str | Path):
         return str(path) in self.files
 
-    def open(self, path: str | Path, mode: str):
+    def open(self, path: str | Path, mode: str) -> F:
         path = str(path)
         modes = set(mode)
         if "b" in modes:
@@ -107,7 +146,7 @@ class Vfs:
             raise Exception("Reading from VFS not supported.")
         if "a" in modes and path in self.files:
             return self.files[path]
-        self.files[path] = file = VirtualFile(path)
+        self.files[path] = file = self.file_type(path)
         return file
 
     # This is less nasty than dynamically generating a subclass
@@ -118,31 +157,3 @@ class Vfs:
         yield self.open(path, mode)
 
 
-class VirtualFile:
-
-    def __init__(self, path: str):
-        self.path = path
-        self._content = StringIO()
-
-    def include_file(self, path: Path | str) -> int:
-        """Copy the path's contents into this file."""
-        contents = Path(path).read_text()
-        return self.write(contents)
-
-    def write(self, str: str):
-        return self._content.write(str)
-
-    def close(self):
-        pass
-
-    def _write_to_disk(self):
-        before = None
-        with suppress(Exception):
-            with open(self.path, "r") as f:
-                before = f.read()
-
-        content = self._content.getvalue()
-        if before != content:
-            print(f"Writing {self.path}")
-            with open(self.path, "w") as f:
-                f.write(content)
