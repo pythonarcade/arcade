@@ -68,7 +68,6 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
-from .drawing_support import get_points_for_thick_line
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -109,6 +108,7 @@ from .texture import cleanup_texture_cache
 from .texture import get_default_image
 from .texture import get_default_texture
 
+from .draw_commands import get_points_for_thick_line
 from .draw_commands import draw_arc_filled
 from .draw_commands import draw_arc_outline
 from .draw_commands import draw_circle_filled
