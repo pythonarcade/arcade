@@ -220,10 +220,15 @@ def process_directory(directory: Path, quick_index_file):
     # print()
     # print(f"Processing directory {directory}")
 
-    file_list = directory.glob('*.py')
+    file_list = tuple(directory.glob('*.py'))
+
+    print("Processing directory: ", f"{directory=}", f"{quick_index_file=}")
+    for dir_member in  file_list:
+        print(f"  {dir_member}")
 
     quick_index_file.write("\n")
 
+    # Reassemble file path? What?
     if directory.name == "arcade":
         prepend = ""
     else:
