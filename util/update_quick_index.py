@@ -261,13 +261,13 @@ def process_directory(directory: Path, quick_index_file):
             "tilemap": "arcade.tilemap",
             "camera": "arcade.camera",
             "types": "arcade.types",
+            "particles": "arcade.particles",
         }
         # Map file names to their package
         file_mapping = {
             "geometry.py": "arcade.geometry",
             "transforms.py": "arcade.texture.transforms",
             "isometric.py": "arcade.isometric",
-            "particles": "arcade.particles",
             "utils.py": "arcade.utils",
             "easing.py": "arcade.easing",
             "math.py": "arcade.math",
