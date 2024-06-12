@@ -84,14 +84,19 @@ def get_points_for_thick_line(start_x: float, start_y: float,
         normal_x = perpendicular_x / length
         normal_y = perpendicular_y / length
 
-    r1_x = start_x + normal_x * line_width / 2
-    r1_y = start_y + normal_y * line_width / 2
-    r2_x = start_x - normal_x * line_width / 2
-    r2_y = start_y - normal_y * line_width / 2
-    r3_x = end_x + normal_x * line_width / 2
-    r3_y = end_y + normal_y * line_width / 2
-    r4_x = end_x - normal_x * line_width / 2
-    r4_y = end_y - normal_y * line_width / 2
+    half_width = line_width / 2
+    shift_x = normal_x * half_width
+    shift_y = normal_y * half_width
+
+    r1_x = start_x + shift_x
+    r1_y = start_y + shift_y
+    r2_x = start_x - shift_x
+    r2_y = start_y - shift_y
+    r3_x = end_x + shift_x
+    r3_y = end_y + shift_y
+    r4_x = end_x - shift_x
+    r4_y = end_y - shift_y
+
     return (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
 
 
