@@ -120,8 +120,8 @@ class Window(pyglet.window.Window):
             gl_version = 3, 1
             gl_api = "gles"
 
-        #: bool: If this is a headless window
-        self.headless = pyglet.options.get("headless") is True
+        #: Whether this is a headless window
+        self.headless: bool = pyglet.options.get("headless") is True
 
         config = None
         # Attempt to make window with antialiasing
