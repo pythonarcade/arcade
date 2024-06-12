@@ -13,6 +13,25 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
+Brazier
+~~~~~~~
+
+.. image:: https://img.itch.zone/aW1nLzE2NDkzMDIyLnBuZw==/315x250%23c/2l4Uej.png
+   :width: 400px
+
+- [Itch page](https://dragonmoffon.itch.io/brazier)
+- [GitHub page](https://github.com/DragonMoffon/MiniJam160-Light)
+
+PhotoShip
+~~~~~~~~~
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjc2NDUxOC8xNjQ5MjYwOC5wbmc=/794x1000/aPyjik.png
+   :width: 400px
+
+- [Itch page](https://clodon.itch.io/photoship)
+- [GitHub page](https://github.com/clodon2/PhotoShip)
+
+
 Space Station Builder
 ~~~~~~~~~~~~~~~~~~~~~
 
