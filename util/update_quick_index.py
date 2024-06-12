@@ -185,10 +185,8 @@ def get_member_list(filepath):
     function_list = []
     type_list = []
 
-    line_no = 0
     try:
-        for line in file_pointer:
-            line_no += 1
+        for line_no, line in enumerate(file_pointer, start=1):
 
             class_names = class_re.findall(line)
             for class_name in class_names:
