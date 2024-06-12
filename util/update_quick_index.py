@@ -215,9 +215,7 @@ def process_directory(directory: Path, quick_index_file):
     Take a directory and process all immediate children in it
 
     :param directory: A directory to process
-
     :param quick_index_file: The destination for a file
-
     """
     # print()
     # print(f"Processing directory {directory}")
