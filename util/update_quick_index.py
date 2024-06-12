@@ -16,21 +16,20 @@ ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_DIR = SharedPaths.API_DOC_ROOT
 
 
+# Used to load immediate members defined in a file to a page.
 titles = {
-    'application.py': ['Window and View', 'window.rst'],
-    'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
-    'context.py': ['OpenGL Context', 'open_gl.rst'],
+
+    # Core arcade items
+    'types/__init__.py': ['Types', 'types.rst'],
+    'types/numbers.py': ['Types', 'types.rst'],
+    'types/vector_like.py': ['Types', 'types.rst'],
+    'types/color.py': ['Types', 'types.rst'],
+    'types/rect.py': ['Types', 'types.rst'],
+
+    'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-    'geometry.py': ['Geometry Support', 'geometry.rst'],
-    'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
-    'controller.py': ['Game Controller Support', 'game_controller.rst'],
-    'joysticks.py': ['Joystick Support', 'joysticks.rst'],
-    'paths.py': ['Pathfinding', 'path_finding.rst'],
-    'perf_info.py': ['Performance Information', 'perf_info.rst'],
-    'perf_graph.py': ['Performance Information', 'perf_info.rst'],
-    'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
-    'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
-    'sound.py': ['Sound', 'sound.rst'],
+
+    # arcade.sprite.* - > Sprites, sprites.rst
     'sprite/__init__.py': ['Sprites', 'sprites.rst'],
     'sprite/base.py': ['Sprites', 'sprites.rst'],
     'sprite/sprite.py': ['Sprites', 'sprites.rst'],
@@ -39,11 +38,19 @@ titles = {
     'sprite/mixins.py': ['Sprites', 'sprites.rst'],
     'sprite/animated.py': ['Sprites', 'sprites.rst'],
     'sprite/enums.py': ['Sprites', 'sprites.rst'],
+
     'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
     'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
+
     'text.py': ['Text', 'text.rst'],
+    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
+
+    'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
+
+    'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
+
     'texture/__init__.py': ['Texture Management', 'texture.rst'],
     'texture/texture.py': ['Texture Management', 'texture.rst'],
     'texture/loading.py': ['Texture Management', 'texture.rst'],
@@ -52,54 +59,31 @@ titles = {
     'texture/solid_color.py': ['Texture Management', 'texture.rst'],
     'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
     'texture/tools.py': ['Texture Management', 'texture.rst'],
+
     'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
-    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
     'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
     'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'math.py': ['Math', 'math.rst'],
 
-    'types/__init__.py': ['Types', 'types.rst'],
-    'types/numbers.py': ['Types', 'types.rst'],
-    'types/vector_like.py' : ['Types', 'types.rst'],
-    'types/color.py': ['Types', 'types.rst'],
-    'types/rect.py': ['Types', 'types.rst'],
+    'perf_info.py': ['Performance Information', 'perf_info.rst'],
+    'perf_graph.py': ['Performance Information', 'perf_info.rst'],
 
+    'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
+    'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
+
+    'geometry.py': ['Geometry Support', 'geometry.rst'],
+    'controller.py': ['Game Controller Support', 'game_controller.rst'],
+    'joysticks.py': ['Joystick Support', 'joysticks.rst'],
+
+    'application.py': ['Window and View', 'window.rst'],
+    'sound.py': ['Sound', 'sound.rst'],
+    'paths.py': ['Pathfinding', 'path_finding.rst'],
+    'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'easing.py': ['Easing', 'easing.rst'],
-    'earclip.py': ['Earclip', 'earclip.rst'],
-    'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
-    'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
-    '__init__.py': ['Misc Utility Functions', 'utility.rst'],
-    '__main__.py': ['Misc Utility Functions', 'utility.rst'],
-    'utils.py': ['Misc Utility Functions', 'utility.rst'],
-    'window_commands.py': ['Window and View', 'window.rst'],
-    'sections.py': ['Window and View', 'window.rst'],
-    'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
-    'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
+    # GL
 
-    'gui/__init__.py': ['GUI', 'gui.rst'],
-    'gui/constructs.py': ['GUI', 'gui.rst'],
-    'gui/events.py': ['GUI Events', 'gui_events.rst'],
-    'gui/mixins.py': ['GUI', 'gui.rst'],
-    'gui/surface.py': ['GUI', 'gui.rst'],
-    'gui/ui_manager.py': ['GUI', 'gui.rst'],
-    'gui/nine_patch.py': ['GUI', 'gui.rst'],
-    'gui/view.py': ['GUI', 'gui.rst'],
-    'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/layout.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
-    'gui/style.py': ['GUI Style', 'gui_style.rst'],
-    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
-    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
-
-    'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    # "OpenGL Context"
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
     'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
     'gl/enums.py': ['OpenGL Enums', 'open_gl.rst'],
@@ -114,6 +98,56 @@ titles = {
     'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
     'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
+
+    # "OpenGL" / arcade.gl is not generated, but documented manually.
+    # Find it at docs/api_docs/gl/*
+
+    # ## Utility
+
+    '__init__.py': ['Misc Utility Functions', 'utility.rst'],
+    '__main__.py': ['Misc Utility Functions', 'utility.rst'],
+
+    'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
+    'context.py': ['OpenGL Context', 'open_gl.rst'],
+
+    'math.py': ['Math', 'math.rst'],
+
+    'earclip.py': ['Earclip', 'earclip.rst'],
+    'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
+    'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
+
+    'utils.py': ['Misc Utility Functions', 'utility.rst'],
+    'window_commands.py': ['Window and View', 'window.rst'],
+    'sections.py': ['Window and View', 'window.rst'],
+
+    'gui/__init__.py': ['GUI', 'gui.rst'],
+    'gui/constructs.py': ['GUI', 'gui.rst'],
+    'gui/mixins.py': ['GUI', 'gui.rst'],
+    'gui/surface.py': ['GUI', 'gui.rst'],
+    'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/nine_patch.py': ['GUI', 'gui.rst'],
+    'gui/view.py': ['GUI', 'gui.rst'],
+
+    'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/layout.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
+    'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
+
+    'gui/events.py': ['GUI Events', 'gui_events.rst'],
+    'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
+    'gui/style.py': ['GUI Style', 'gui_style.rst'],
+
+    'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
+
+    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+
+
+
 }
 excluded_modules = [
     'version.py',
@@ -178,7 +212,12 @@ def get_member_list(filepath):
 
 def process_directory(directory: Path, quick_index_file):
     """
-    Take a directory and process all the files in it.
+    Take a directory and process all immediate children in it
+
+    :param directory: A directory to process
+
+    :param quick_index_file: The destination for a file
+
     """
     # print()
     # print(f"Processing directory {directory}")
