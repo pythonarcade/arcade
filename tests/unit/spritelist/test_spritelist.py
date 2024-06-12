@@ -113,6 +113,22 @@ def test_it_can_pop_at_a_given_index():
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
 
 
+def test_it_raises_indexerror_when_popping_from_empty_spritelist():
+    spritelist = make_named_sprites(0)
+
+    # With default index
+    with pytest.raises(IndexError):
+        spritelist.pop()
+
+    # With positional argument
+    with pytest.raises(IndexError):
+        spritelist.pop(0)
+
+    # With keyword argument
+    with pytest.raises(IndexError):
+        spritelist.pop(index=1)
+
+
 def test_setitem(ctx):
     """Testing __setitem__"""
     num_sprites = 10
