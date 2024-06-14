@@ -180,6 +180,11 @@ CLASS_SPECIAL_RULES = {
 }
 
 
+CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
+FUNCTION_RE = re.compile("^def ([a-z][a-z0-9_]*)")
+TYPE_RE = re.compile("^([A-Za-z][A-Za-z0-9_]*) = ")
+
+
 def get_member_list(filepath):
     """
     Take a file, and return all the classes, functions, and data declarations in it
@@ -188,25 +193,21 @@ def get_member_list(filepath):
     print("Processing: ", filepath)
     filename = filepath.name
 
-    class_re = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
-    function_re = re.compile("^def ([a-z][a-z0-9_]*)")
-    type_re = re.compile("^([A-Za-z][A-Za-z0-9_]*) = ")
-
     class_list = []
     function_list = []
     type_list = []
 
     for line_no, line in enumerate(file_pointer, start=1):
         try:
-            class_names = class_re.findall(line)
+            class_names = CLASS_RE.findall(line)
             for class_name in class_names:
                 class_list.append(class_name)
 
-            function_names = function_re.findall(line)
+            function_names = FUNCTION_RE.findall(line)
             for method_name in function_names:
                 function_list.append(method_name)
 
-            type_names = type_re.findall(line)
+            type_names = TYPE_RE.findall(line)
             for type_name in type_names:
                 if type_name not in ['LOG']:
                     type_list.append(type_name)
