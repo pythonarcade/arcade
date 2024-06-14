@@ -300,8 +300,7 @@ def process_directory(directory: Path, quick_index_file):
 
         # If it's a known file and we have members
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
-            title = titles[path_name][0]
-            api_file_name = titles[path_name][1]
+            title, api_file_name = titles[path_name]
 
         # If it's not a known file
         elif path_name not in titles and path_name not in excluded_modules:
