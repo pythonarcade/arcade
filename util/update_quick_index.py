@@ -159,6 +159,13 @@ excluded_modules = [
     'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
 
+CLASS_SPECIAL_RULES = {
+    "arcade.Context" : [
+        ':show-inheritance:',
+        ":inherited-members:"
+    ]
+}
+
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
     "ImageData",
@@ -319,17 +326,18 @@ def process_directory(directory: Path, quick_index_file):
                 if item in EXCLUDED_MEMBERS:
                     continue
                 full_class_name = f"{package}.{item}"
+
                 quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
                 quick_index_file.write(f"     - {title}\n")
 
+                # Write the entry to the file
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write("    :members:\n")
                 # api_file.write(f"    :member-order: groupwise\n")
 
-                # Include inherited members
-                if full_class_name in ("arcade.ArcadeContext",):
-                    api_file.write("    :show-inheritance:\n")
-                    api_file.write("    :inherited-members:\n")
+                # Apply special per-class addenda
+                for rule in CLASS_SPECIAL_RULES.get(full_class_name, []):
+                    api_file.write(f"   {rule}\n")
 
                 api_file.write("\n")
 
