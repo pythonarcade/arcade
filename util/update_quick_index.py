@@ -6,6 +6,7 @@ from __future__ import annotations
 import os
 import re
 import sys
+from collections.abc import Mapping
 
 from pathlib import Path
 from textwrap import dedent
@@ -181,60 +182,45 @@ CLASS_SPECIAL_RULES = {
     "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
 }
 
-
-# Parsing expressions need named groups to assign to dicts
-_NAMED_GROUP = re.compile(r"\(\?P<([A-Za-z0-9_-]+)>")
-
-
-CLASS_RE = re.compile(r"^class (?P<class>[A-Za-z0-9]+[^\(:]*)")
-FUNCTION_RE = re.compile("^def (?P<function>[a-z][a-z0-9_]*)")
-TYPE_RE = re.compile("^(?!LOG =)(?P<type>[A-Za-z][A-Za-z0-9_]*) =")
+CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
+FUNCTION_RE = re.compile("^def ([a-z][a-z0-9_]*)")
+TYPE_RE = re.compile("^(?!LOG =)([A-Za-z][A-Za-z0-9_]*) =")
 
 
 def get_member_list(
         filepath: Path,
-        member_expressions: Iterable[re.Pattern] = (
-            CLASS_RE,
-            FUNCTION_RE,
-            TYPE_RE
-        )
+        member_expressions: Mapping[str, re.Pattern] = {
+            'class': CLASS_RE,
+            'function': FUNCTION_RE,
+            'type': TYPE_RE
+        }
 ) -> dict[str, list[str]]:
     """Use regex to do a quick and dirty parse of a file.
 
     This is very limited. Don't expect anything fancy. It uses the
-    passed named groups to detect values, and it cannot span multiple
-    lines.
+    passed mapping of kinds and corresponding expressions to immediate
+    module declarations. Expressions are applied on a per-line basis,
+    so don't bother with multi-line expressions.
 
     :param filepath: A path to search.
-    :param member_expressions: An iterable of re.Pattern objects, each
-        containing a named group, e.g. r'^(?P<constant>[A-Z][A_Z_]+) ='
-        or similar.
+    :param member_expressions: An mapping of kind names to the
+        re.Pattern objects to parse each.
     """
 
     print("Parsing: ", filepath)
     filename = filepath.name
 
-    # Freeze and validate passed expressions. Note that passing a tuple
-    # to tuple() is idempotent, i.e. returns the same tuple object.
-    name_to_re = {}
+    # Set up our return value dict
     parsed_values = dict(all=[])
-
-    for e in member_expressions:
-        exp_named_groups = _NAMED_GROUP.findall(e.pattern)
-        if not exp_named_groups or len(exp_named_groups) != 1:
-            raise ValueError(
-                f"{exp!r} does not have exactly 1 named group.")
-
-        group_name = exp_named_groups[0]
+    for kind_name, exp in member_expressions.items():
         # print(f"  ...with {group_name} expression {e.pattern!r}")
-        name_to_re[group_name] = e
-        parsed_values[group_name] = []
+        parsed_values[kind_name] = []
 
 
     with open(filepath, encoding="utf8") as file_pointer:
         for line_no, line in enumerate(file_pointer, start=1):
             try:
-                for kind, exp in name_to_re.items():
+                for kind, exp in member_expressions.items():
                     parsed_raw = exp.findall(line)
                     parsed_values[kind].extend(parsed_raw)
 
