@@ -192,9 +192,8 @@ def get_member_list(filepath):
     function_list = []
     type_list = []
 
-    try:
-        for line_no, line in enumerate(file_pointer, start=1):
-
+    for line_no, line in enumerate(file_pointer, start=1):
+        try:
             class_names = class_re.findall(line)
             for class_name in class_names:
                 class_list.append(class_name)
@@ -208,8 +207,9 @@ def get_member_list(filepath):
                 if type_name not in ['LOG']:
                     type_list.append(type_name)
 
-    except Exception as e:
-        print(f"Exception processing {filename} on line {line_no}: {e}")
+        except Exception as e:
+            print(f"Exception processing {filename} on line {line_no}: {e}")
+            break
 
     class_list.sort()
     function_list.sort()
