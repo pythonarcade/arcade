@@ -97,7 +97,7 @@ class Vfs(Generic[F]):
 
     def __init__(self, file_type: Type[F] = VirtualFile):
         self.file_type: Type[F] = file_type
-        self.files: dict[str, VirtualFile] = dict()
+        self.files: dict[str, F] = dict()
         self.files_to_delete: set[Path] = set()
 
     def request_culling_unwritten(self, directory: str | Path, glob: str):
