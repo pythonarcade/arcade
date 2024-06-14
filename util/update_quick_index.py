@@ -180,9 +180,9 @@ CLASS_SPECIAL_RULES = {
 }
 
 
-CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
-FUNCTION_RE = re.compile("^def ([a-z][a-z0-9_]*)")
-TYPE_RE = re.compile("^([A-Za-z][A-Za-z0-9_]*) = ")
+CLASS_RE = re.compile(r"^class (?P<class>[A-Za-z0-9]+[^\(:]*)")
+FUNCTION_RE = re.compile("^def (?P<function>[a-z][a-z0-9_]*)")
+TYPE_RE = re.compile("^(?!LOG =)(?P<type>[A-Za-z][A-Za-z0-9_]*) =")
 
 
 def get_member_list(filepath):
@@ -209,8 +209,7 @@ def get_member_list(filepath):
 
             type_names = TYPE_RE.findall(line)
             for type_name in type_names:
-                if type_name not in ['LOG']:
-                    type_list.append(type_name)
+                type_list.append(type_name)
 
         except Exception as e:
             print(f"Exception processing {filename} on line {line_no}: {e}")
