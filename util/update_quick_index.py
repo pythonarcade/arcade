@@ -217,6 +217,37 @@ def get_member_list(filepath):
     return type_list, class_list, function_list
 
 
+# Map dirs to their effective display package file
+DIR_MAPPING = {
+    "arcade": "arcade",
+    "sprite": "arcade",
+    "texture": "arcade",
+    "texture_atlas": "arcade.texture_atlas",
+    "sprite_list": "arcade",
+    "text": "arcade",
+    "gui": "arcade.gui",
+    "experimental": "arcade.gui.experimental",
+    "property": "arcade.gui.property",
+    "widgets": "arcade.gui",
+    "tilemap": "arcade.tilemap",
+    "camera": "arcade.camera",
+    "types": "arcade.types",
+    "particles": "arcade.particles",
+}
+
+# Map file names to their package
+FILE_MAPPING = {
+    "geometry.py": "arcade.geometry",
+    "transforms.py": "arcade.texture.transforms",
+    "isometric.py": "arcade.isometric",
+    "utils.py": "arcade.utils",
+    "easing.py": "arcade.easing",
+    "math.py": "arcade.math",
+    "earclip.py": "arcade.earclip",
+    "shape_list.py": "arcade.shape_list"
+}
+
+
 def process_directory(directory: Path, quick_index_file):
     """
     Take a directory and process all immediate children in it
@@ -258,34 +289,8 @@ def process_directory(directory: Path, quick_index_file):
         type_list, class_list, function_list = get_member_list(path)
 
         # -- Reconstruct package name --
-        dir_mapping = {
-            "arcade": "arcade",
-            "sprite": "arcade",
-            "texture": "arcade",
-            "texture_atlas": "arcade.texture_atlas",
-            "sprite_list": "arcade",
-            "text": "arcade",
-            "gui": "arcade.gui",
-            "experimental": "arcade.gui.experimental",
-            "property": "arcade.gui.property",
-            "widgets": "arcade.gui",
-            "tilemap": "arcade.tilemap",
-            "camera": "arcade.camera",
-            "types": "arcade.types",
-            "particles": "arcade.particles",
-        }
-        # Map file names to their package
-        file_mapping = {
-            "geometry.py": "arcade.geometry",
-            "transforms.py": "arcade.texture.transforms",
-            "isometric.py": "arcade.isometric",
-            "utils.py": "arcade.utils",
-            "easing.py": "arcade.easing",
-            "math.py": "arcade.math",
-            "earclip.py": "arcade.earclip",
-            "shape_list.py": "arcade.shape_list"
-        }
-        package = file_mapping.get(path.name, None) or dir_mapping.get(directory.name, None)
+
+        package = FILE_MAPPING.get(path.name, None) or DIR_MAPPING.get(directory.name, None)
 
         # Reconstruct on-disk path for the package name
         path_name = prepend + path.name
