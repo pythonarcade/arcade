@@ -284,10 +284,12 @@ def process_directory(directory: Path, quick_index_file):
         path_name = prepend + path.name
         # print(f"    {package=!r}, {path.name=!r}, {path_name=!r}")
 
-        # If
+        # If it's a known file and we have members
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title = titles[path_name][0]
             api_file_name = titles[path_name][1]
+
+        # If it's not a known file
         elif path_name not in titles and path_name not in excluded_modules:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
@@ -295,14 +297,15 @@ def process_directory(directory: Path, quick_index_file):
         else:
             continue
 
+        # Where will this API file go, and is it new?
         full_api_file_name = API_DOC_DIR / api_file_name
-
+        new_api_file = not vfs.exists(full_api_file_name)
         # print(package, title, api_file_name, full_api_file_name)
 
-        new_api_file = not vfs.exists(full_api_file_name)
-
+        # Start writing it
         api_file = vfs.open(full_api_file_name, "a")
 
+        # Write the title if it's a new file
         if new_api_file:
             api_file.write(f".. _{api_file_name[:-4]}_api:")
             api_file.write(f"\n\n")
