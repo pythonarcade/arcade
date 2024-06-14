@@ -134,7 +134,8 @@ class Vfs(Generic[F]):
                 print(f"Deleting {path}")
                 os.remove(path)
 
-    def exists(self, path: str | Path):
+    def exists(self, path: str | Path) -> bool:
+        """Return True if the file has been opened in this Vfs."""
         return str(path) in self.files
 
     def open(self, path: str | Path, mode: str) -> F:
