@@ -86,6 +86,7 @@ titles = {
     'easing.py': ['Easing', 'easing.rst'],
 
     # GL
+    "context.py": ['OpenGL Context', 'open_gl.rst'],
 
     # "OpenGL" / arcade.gl is not generated, but documented manually.
     # Find it at docs/api_docs/gl/*
@@ -112,7 +113,6 @@ titles = {
     '__main__.py': ['Misc Utility Functions', 'utility.rst'],
 
     'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
-    'context.py': ['OpenGL Context', 'open_gl.rst'],
 
     'math.py': ['Math', 'math.rst'],
 
@@ -159,12 +159,13 @@ excluded_modules = [
     'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
 
+
+SHOW_INHERITANCE = (':show-inheritance:',)
+INHERITED_MEMBERS = (':inherited-members:',)
 CLASS_SPECIAL_RULES = {
-    "arcade.Context" : [
-        ':show-inheritance:',
-        ":inherited-members:"
-    ]
+    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
 }
+
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
@@ -175,6 +176,7 @@ EXCLUDED_MEMBERS = [
     "ImageDataRefCounter",
     "UVData",
 ]
+
 
 def get_member_list(filepath):
     """
@@ -342,7 +344,7 @@ def process_directory(directory: Path, quick_index_file):
 
                 # Apply special per-class addenda
                 for rule in CLASS_SPECIAL_RULES.get(full_class_name, []):
-                    api_file.write(f"   {rule}\n")
+                    api_file.write(f"    {rule}\n")
 
                 api_file.write("\n")
 
