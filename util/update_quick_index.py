@@ -254,7 +254,7 @@ FILE_MAPPING = {
 }
 
 
-def process_directory(directory: Path):
+def process_directory(directory: Path, vfs: Vfs):
     """
     Take a directory and process all immediate children in it
 
@@ -263,7 +263,7 @@ def process_directory(directory: Path):
     from a collection of tables and unnamed sequences.
 
     :param directory: A directory to process
-    :param quick_index_file: The destination for a file
+    :param vfs: The vfs object to use
     """
     # print()
     # print(f"Processing directory {directory}")
@@ -375,10 +375,11 @@ def process_directory(directory: Path):
 
 
 
-vfs = Vfs()
 
 
 def main():
+    vfs = Vfs()
+
     # Delete the API directory files
     vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
 
@@ -403,24 +404,25 @@ def main():
             """
         ))
 
-    process_directory(ARCADE_ROOT)
-    process_directory(ARCADE_ROOT / "types")
-    process_directory(ARCADE_ROOT / "sprite_list")
-    process_directory(ARCADE_ROOT / "geometry")
-    process_directory(ARCADE_ROOT / "sprite")
-    process_directory(ARCADE_ROOT / "texture")
-    process_directory(ARCADE_ROOT / "texture_atlas")
-    # process_directory(ARCADE_ROOT / "gl")
-    process_directory(ARCADE_ROOT / "text")
-    process_directory(ARCADE_ROOT / "gui")
-    process_directory(ARCADE_ROOT / "gui/widgets")
-    process_directory(ARCADE_ROOT / "gui/property")
-    process_directory(ARCADE_ROOT / "gui/experimental")
-    process_directory(ARCADE_ROOT / "tilemap")
+    process_directory(ARCADE_ROOT, vfs)
+    process_directory(ARCADE_ROOT / "types", vfs)
+    process_directory(ARCADE_ROOT / "sprite_list", vfs)
+    process_directory(ARCADE_ROOT / "geometry", vfs)
+    process_directory(ARCADE_ROOT / "sprite", vfs)
+    process_directory(ARCADE_ROOT / "texture", vfs)
+    process_directory(ARCADE_ROOT / "texture_atlas", vfs)
+    # process_directory(ARCADE_ROOT / "gl", vfs)
+    process_directory(ARCADE_ROOT / "text", vfs)
+    process_directory(ARCADE_ROOT / "gui", vfs)
+    process_directory(ARCADE_ROOT / "gui/widgets", vfs)
+    process_directory(ARCADE_ROOT / "gui/property", vfs)
+    process_directory(ARCADE_ROOT / "gui/experimental", vfs)
+    process_directory(ARCADE_ROOT / "tilemap", vfs)
 
     vfs.write()
 
     print("Done creating quick_index.rst")
 
 
-main()
+if __name__ == "__main__":
+    main()
