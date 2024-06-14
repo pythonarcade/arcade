@@ -153,7 +153,7 @@ class Vfs(Generic[F]):
             raise ValueError("Invalid file mode: choose only one of 'a' or 'w'")
         elif "a" in modes and path in self.files:
             return self.files[path]
-        elif "w" in modes:
+        elif "w" in modes or "a" in modes:
             self.files[path] = file = self.file_type(path)
             return file
 
