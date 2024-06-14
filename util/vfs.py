@@ -141,14 +141,24 @@ class Vfs(Generic[F]):
     def open(self, path: str | Path, mode: str) -> F:
         path = str(path)
         modes = set(mode)
+
+        # Modes which are blatantly unsupported
         if "b" in modes:
-            raise Exception("Binary mode not supported")
+            raise ValueError("Binary mode not supported")
         if "r" in modes:
-            raise Exception("Reading from VFS not supported.")
-        if "a" in modes and path in self.files:
+            raise ValueError("Reading from VFS not supported.")
+
+        # Differentiate between 'a' and 'w'
+        if "a" in modes and "w" in modes:
+            raise ValueError("Invalid file mode: choose only one of 'a' or 'w'")
+        elif "a" in modes and path in self.files:
             return self.files[path]
-        self.files[path] = file = self.file_type(path)
-        return file
+        elif "w" in modes:
+            self.files[path] = file = self.file_type(path)
+            return file
+
+        raise ValueError(f"Unsupported mode {mode!r}")
+
 
     # This is less nasty than dynamically generating a subclass
     # which then attaches instances to a specific Vfs on creation
