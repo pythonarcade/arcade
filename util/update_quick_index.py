@@ -209,13 +209,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.earclip"
         ]
     },
-    "tiled.rst": {
-        "title": "Loading TMX (Tiled Map Editor) Maps",
-        "use_declarations_in": [
-            "arcade.tilemap",
-            "arcade.tilemap"
-        ]
-    },
     "gui.rst": {
         "title": "GUI",
         "use_declarations_in": [
@@ -259,13 +252,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.gui.style"
         ]
     },
-    # This seems to be outdated and duplicated?
-    # "gui_utility.rst": {
-    #     "title": "GUI Utility Functions",
-    #     "use_declarations_in": [
-    #         "arcade.gui.events"
-    #     ]
-    # },
     "gui_experimental.rst": {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
@@ -300,19 +286,19 @@ EXCLUDED_MEMBERS = [
 member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
 
 
-
 SHOW_INHERITANCE = (':show-inheritance:',)
 INHERITED_MEMBERS = (':inherited-members:',)
 CLASS_SPECIAL_RULES = {
     "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
 }
 
+# "Parsing" declaration names via regex
+DeclarationsDict = dict[str, list[str]]
+
+# Patterns + default config dict
 CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
 FUNCTION_RE = re.compile("^def ([a-z][a-z0-9_]*)")
 TYPE_RE = re.compile("^(?!LOG =)([A-Za-z][A-Za-z0-9_]*) =")
-
-
-MemberValues = dict[str, list[str]]
 DEFAULT_EXPRESSIONS =  {
     'class': CLASS_RE,
     'function': FUNCTION_RE,
@@ -323,7 +309,7 @@ DEFAULT_EXPRESSIONS =  {
 def get_file_declarations(
         filepath: Path,
         kind_to_regex: Mapping[str, re.Pattern] = DEFAULT_EXPRESSIONS
-) -> MemberValues:
+) -> DeclarationsDict:
     """Use a mapping of kind names to regex to get declarations.
 
     The returned dict will have a list for each name in kind_to_regex,
