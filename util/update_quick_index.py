@@ -7,6 +7,7 @@ import sys
 from functools import wraps
 
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, Callable, TypeVar, Iterable
 
 # Ensure we get funnily named utility modules first in imports
@@ -369,16 +370,6 @@ def process_directory(directory: Path, quick_index_file):
         api_file.close()
 
 
-table_header_arcade = """
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapi
-   :class: display
-
-   * - Name
-     - Group"""
-
 
 vfs = Vfs()
 
@@ -394,7 +385,18 @@ def main():
         text_file.write("The arcade module\n")
         text_file.write("-----------------\n\n")
 
-        text_file.write(table_header_arcade)
+        text_file.write(dedent(
+            """
+            .. list-table::
+               :widths: 50 50
+               :header-rows: 1
+               :name: quickapi
+               :class: display
+
+               * - Name
+                 - Group
+            """
+        ))
 
         process_directory(ARCADE_ROOT, text_file)
         process_directory(ARCADE_ROOT / "types", text_file)
