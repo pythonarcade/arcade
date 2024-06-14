@@ -379,16 +379,12 @@ table_header_arcade = """
      - Group"""
 
 
-def clear_api_directory():
-    """
-    Delete the API files and make new ones
-    """
-    vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
-
 vfs = Vfs()
 
+
 def main():
-    clear_api_directory()
+    # Delete the API directory files
+    vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
 
     with vfs.open_ctx(API_DOC_DIR / "quick_index.rst", "w") as text_file:
         text_file.include_file(
