@@ -254,7 +254,7 @@ FILE_MAPPING = {
 }
 
 
-def process_directory(directory: Path, quick_index_file):
+def process_directory(directory: Path):
     """
     Take a directory and process all immediate children in it
 
@@ -269,6 +269,9 @@ def process_directory(directory: Path, quick_index_file):
     # print(f"Processing directory {directory}")
 
     file_list = tuple(directory.glob('*.py'))
+
+    # Open in "a" mode to append
+    quick_index_file = vfs.open(QUICK_INDEX_FILE_PATH, "a")
 
     print("Processing directory: ", f"{directory=}", f"{quick_index_file=}")
     for dir_member in  file_list:
@@ -379,6 +382,7 @@ def main():
     # Delete the API directory files
     vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
 
+    # Open in "w" mode to clear
     with vfs.open_ctx(QUICK_INDEX_FILE_PATH, "w") as text_file:
         text_file.include_file(
             REPO_ROOT /  'util' / 'template_quick_index.rst')
@@ -399,20 +403,20 @@ def main():
             """
         ))
 
-        process_directory(ARCADE_ROOT, text_file)
-        process_directory(ARCADE_ROOT / "types", text_file)
-        process_directory(ARCADE_ROOT / "sprite_list", text_file)
-        process_directory(ARCADE_ROOT / "geometry", text_file)
-        process_directory(ARCADE_ROOT / "sprite", text_file)
-        process_directory(ARCADE_ROOT / "texture", text_file)
-        process_directory(ARCADE_ROOT / "texture_atlas", text_file)
-        # process_directory(ARCADE_ROOT / "gl", text_file)
-        process_directory(ARCADE_ROOT / "text", text_file)
-        process_directory(ARCADE_ROOT / "gui", text_file)
-        process_directory(ARCADE_ROOT / "gui/widgets", text_file)
-        process_directory(ARCADE_ROOT / "gui/property", text_file)
-        process_directory(ARCADE_ROOT / "gui/experimental", text_file)
-        process_directory(ARCADE_ROOT / "tilemap", text_file)
+    process_directory(ARCADE_ROOT)
+    process_directory(ARCADE_ROOT / "types")
+    process_directory(ARCADE_ROOT / "sprite_list")
+    process_directory(ARCADE_ROOT / "geometry")
+    process_directory(ARCADE_ROOT / "sprite")
+    process_directory(ARCADE_ROOT / "texture")
+    process_directory(ARCADE_ROOT / "texture_atlas")
+    # process_directory(ARCADE_ROOT / "gl")
+    process_directory(ARCADE_ROOT / "text")
+    process_directory(ARCADE_ROOT / "gui")
+    process_directory(ARCADE_ROOT / "gui/widgets")
+    process_directory(ARCADE_ROOT / "gui/property")
+    process_directory(ARCADE_ROOT / "gui/experimental")
+    process_directory(ARCADE_ROOT / "tilemap")
 
     vfs.write()
 
