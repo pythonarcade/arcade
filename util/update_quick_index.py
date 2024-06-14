@@ -3,8 +3,11 @@ Script used to create the quick index
 """
 import os
 import re
-from pathlib import Path
 import sys
+from functools import wraps
+
+from pathlib import Path
+from typing import Any, Callable, TypeVar, Iterable
 
 # Ensure we get funnily named utility modules first in imports
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
@@ -135,20 +138,24 @@ titles = {
     'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
 }
 
-excluded_modules = [
+
+class NotExcludedBy:
+
+    def __init__(self, collection: Iterable):
+        self.items = set(collection)
+
+    def __call__(self, item) -> bool:
+        return item not in self.items
+
+
+EXCLUDED_MODULES = [
     'version.py',
     'texture_atlas/atlas_array.py',
     'texture_atlas/atlas_bindless.py',
     'texture_atlas/helpers.py',
     'experimental/__init__.py' # Ugly fix for experimental gui features
 ]
-
-
-SHOW_INHERITANCE = (':show-inheritance:',)
-INHERITED_MEMBERS = (':inherited-members:',)
-CLASS_SPECIAL_RULES = {
-    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
-}
+module_not_excluded = NotExcludedBy(EXCLUDED_MODULES)
 
 
 # Module and class members to exclude
@@ -160,6 +167,14 @@ EXCLUDED_MEMBERS = [
     "ImageDataRefCounter",
     "UVData",
 ]
+member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
+
+
+SHOW_INHERITANCE = (':show-inheritance:',)
+INHERITED_MEMBERS = (':inherited-members:',)
+CLASS_SPECIAL_RULES = {
+    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
+}
 
 
 def get_member_list(filepath):
@@ -288,7 +303,7 @@ def process_directory(directory: Path, quick_index_file):
             title, api_file_name = titles[path_name]
 
         # If it's not a known file (this is would be gone if we invert structuring)
-        elif path_name not in titles and path_name not in excluded_modules:
+        elif path_name not in titles and path_name not in EXCLUDED_MODULES:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
             print(f"No title for '{path_name}'.")
@@ -313,44 +328,38 @@ def process_directory(directory: Path, quick_index_file):
             api_file.write(f"{underline}\n\n")
 
         # Classes
-        if len(class_list) > 0:
-            for item in class_list:
-                if item in EXCLUDED_MEMBERS:
-                    continue
-                full_class_name = f"{package}.{item}"
+        for item in filter(member_not_excluded, class_list):
+            full_class_name = f"{package}.{item}"
 
-                quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
-                quick_index_file.write(f"     - {title}\n")
+            quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
+            quick_index_file.write(f"     - {title}\n")
 
-                # Write the entry to the file
-                api_file.write(f".. autoclass:: {full_class_name}\n")
-                api_file.write("    :members:\n")
-                # api_file.write(f"    :member-order: groupwise\n")
+            # Write the entry to the file
+            api_file.write(f".. autoclass:: {full_class_name}\n")
+            api_file.write("    :members:\n")
+            # api_file.write(f"    :member-order: groupwise\n")
 
-                # Apply special per-class addenda
-                for rule in CLASS_SPECIAL_RULES.get(full_class_name, []):
-                    api_file.write(f"    {rule}\n")
+            # Apply special per-class addenda
+            for rule in CLASS_SPECIAL_RULES.get(full_class_name, []):
+                api_file.write(f"    {rule}\n")
 
-                api_file.write("\n")
+            api_file.write("\n")
 
-                # print(f"  Class {item}")
-                # text_file.write(f"     - Class\n")
-                # text_file.write(f"     - {path_name}\n")
+            # print(f"  Class {item}")
+            # text_file.write(f"     - Class\n")
+            # text_file.write(f"     - {path_name}\n")
 
         # Functions
-        if len(function_list) > 0:
-            for item in function_list:
-                if item in EXCLUDED_MEMBERS:
-                    continue
-                full_class_name = f"{package}.{item}"
-                quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
-                quick_index_file.write(f"     - {title}\n")
+        for item in filter(member_not_excluded, function_list):
+            full_class_name = f"{package}.{item}"
+            quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
+            quick_index_file.write(f"     - {title}\n")
 
-                api_file.write(f".. autofunction:: {full_class_name}\n\n")
+            api_file.write(f".. autofunction:: {full_class_name}\n\n")
 
-                # print(f"  Function {item}")
-                # text_file.write(f"     - Func\n")
-                # text_file.write(f"     - {path_name}\n")
+            # print(f"  Function {item}")
+            # text_file.write(f"     - Func\n")
+            # text_file.write(f"     - {path_name}\n")
 
         api_file.close()
 
