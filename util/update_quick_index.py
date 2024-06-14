@@ -34,7 +34,6 @@ titles = {
     'types/color.py': ['Types', 'types.rst'],
     'types/rect.py': ['Types', 'types.rst'],
 
-    'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
 
     # arcade.sprite.* - > Sprites, sprites.rst
