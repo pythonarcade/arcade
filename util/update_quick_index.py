@@ -19,7 +19,7 @@ API_DOC_DIR = SharedPaths.API_DOC_ROOT
 # Tries to be clever but stops half-way, leaving everything awful.
 # Understandable since this was made very early on when the library
 # was much smaller.
-# arcade gets prepended to anything that isn't currrently in the arcade
+# arcade gets prepended to anything that isn't currently in the arcade
 # source root dir for convenience.
 titles = {
 
