@@ -18,6 +18,7 @@ from vfs import Vfs, SharedPaths
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_DIR = SharedPaths.API_DOC_ROOT
+QUICK_INDEX_FILE_PATH = API_DOC_DIR / "quick_index.rst"
 
 
 # Tries to be clever but stops half-way, leaving everything awful.
@@ -378,7 +379,7 @@ def main():
     # Delete the API directory files
     vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
 
-    with vfs.open_ctx(API_DOC_DIR / "quick_index.rst", "w") as text_file:
+    with vfs.open_ctx(QUICK_INDEX_FILE_PATH, "w") as text_file:
         text_file.include_file(
             REPO_ROOT /  'util' / 'template_quick_index.rst')
 
