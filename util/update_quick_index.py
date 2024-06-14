@@ -321,9 +321,10 @@ def get_file_declarations(
 
     This is intentional. It's an incremental change which focuses on
     being more readable and configurable without adding external
-    dependencies. The core behavior hasn't changed much aside form the
-    return value being a dict instead of a tuple. Expressions are applied
-    in the same order as in kind_to_regex.
+    dependencies. The core behavior hasn't changed much aside from the
+    return value being a dict with a '*' key instead of a tuple.
+    re.Pattern instances are applied in the same order as passed
+    in kind_to_regex.
 
     :param filepath: A file path to read.
     :param kind_to_regex: An mapping of kind names to the re.Pattern
