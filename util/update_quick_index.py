@@ -87,24 +87,24 @@ titles = {
 
     # GL
 
-    # "OpenGL Context"
-    'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
-    'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
-    'gl/enums.py': ['OpenGL Enums', 'open_gl.rst'],
-    'gl/exceptions.py': ['OpenGL Exceptions', 'open_gl.rst'],
-    'gl/framebuffer.py': ['OpenGL FrameBuffer', 'open_gl.rst'],
-    'gl/geometry.py': ['OpenGL Geometry', 'open_gl.rst'],
-    'gl/program.py': ['OpenGL Program', 'open_gl.rst'],
-    'gl/glsl.py': ['OpenGL GLSL', 'open_gl.rst'],
-    'gl/types.py': ['OpenGL Types', 'open_gl.rst'],
-    'gl/uniform.py': ['OpenGL Uniform Data', 'open_gl.rst'],
-    'gl/utils.py': ['OpenGL Utils', 'open_gl.rst'],
-    'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
-    'gl/texture.py': ['Texture Management', 'open_gl.rst'],
-    'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
-
     # "OpenGL" / arcade.gl is not generated, but documented manually.
     # Find it at docs/api_docs/gl/*
+
+    # "OpenGL Context"
+    # 'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
+    # 'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
+    # 'gl/enums.py': ['OpenGL Enums', 'open_gl.rst'],
+    # 'gl/exceptions.py': ['OpenGL Exceptions', 'open_gl.rst'],
+    # 'gl/framebuffer.py': ['OpenGL FrameBuffer', 'open_gl.rst'],
+    # 'gl/geometry.py': ['OpenGL Geometry', 'open_gl.rst'],
+    # 'gl/program.py': ['OpenGL Program', 'open_gl.rst'],
+    # 'gl/glsl.py': ['OpenGL GLSL', 'open_gl.rst'],
+    # 'gl/types.py': ['OpenGL Types', 'open_gl.rst'],
+    # 'gl/uniform.py': ['OpenGL Uniform Data', 'open_gl.rst'],
+    # 'gl/utils.py': ['OpenGL Utils', 'open_gl.rst'],
+    # 'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
+    # 'gl/texture.py': ['Texture Management', 'open_gl.rst'],
+    # 'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 
     # ## Utility
 
