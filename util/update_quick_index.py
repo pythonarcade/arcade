@@ -279,6 +279,7 @@ def process_directory(directory: Path, quick_index_file):
         prepend = directory.name + "/"
 
     for path in file_list:
+        # Did we ever have tests in the path name? What?
         if "test" in path.name:
             continue
 
@@ -302,12 +303,13 @@ def process_directory(directory: Path, quick_index_file):
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
             title, api_file_name = titles[path_name]
 
-        # If it's not a known file
+        # If it's not a known file (this is would be gone if we invert structuring)
         elif path_name not in titles and path_name not in excluded_modules:
             title = f"ERR: `{path_name}`"
             api_file_name = "zzz.rst"
             print(f"No title for '{path_name}'.")
         else:
+            # Could be an early return?
             continue
 
         # Where will this API file go, and is it new?
