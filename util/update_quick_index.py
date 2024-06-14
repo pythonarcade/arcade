@@ -12,6 +12,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Iterable
 
+
 # Ensure we get funnily named utility modules first in imports
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
@@ -23,122 +24,255 @@ API_DOC_DIR = SharedPaths.API_DOC_ROOT
 QUICK_INDEX_FILE_PATH = API_DOC_DIR / "quick_index.rst"
 
 
-# Tries to be clever but stops half-way, leaving everything awful.
-# Understandable since this was made very early on when the library
-# was much smaller.
-# arcade gets prepended to anything that isn't currently in the arcade
-# source root dir for convenience.
-titles = {
-
-    # Core arcade items
-    'types/__init__.py': ['Types', 'types.rst'],
-    'types/numbers.py': ['Types', 'types.rst'],
-    'types/vector_like.py': ['Types', 'types.rst'],
-    'types/color.py': ['Types', 'types.rst'],
-    'types/rect.py': ['Types', 'types.rst'],
-
-    'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
-
-    # arcade.sprite.* - > Sprites, sprites.rst
-    'sprite/__init__.py': ['Sprites', 'sprites.rst'],
-    'sprite/base.py': ['Sprites', 'sprites.rst'],
-    'sprite/sprite.py': ['Sprites', 'sprites.rst'],
-    'sprite/simple.py': ['Sprites', 'sprites.rst'],
-    'sprite/colored.py': ['Sprites', 'sprites.rst'],
-    'sprite/mixins.py': ['Sprites', 'sprites.rst'],
-    'sprite/animated.py': ['Sprites', 'sprites.rst'],
-    'sprite/enums.py': ['Sprites', 'sprites.rst'],
-
-    'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
-    'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
-    'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
-    'sprite_list/collision.py': ['Sprite Lists', 'sprite_list.rst'],
-
-    'text.py': ['Text', 'text.rst'],
-    'camera/camera_2d.py': ['Camera 2D', 'camera_2d.rst'],
-
-    'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
-
-    'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
-
-    'texture/__init__.py': ['Texture Management', 'texture.rst'],
-    'texture/texture.py': ['Texture Management', 'texture.rst'],
-    'texture/loading.py': ['Texture Management', 'texture.rst'],
-    'texture/generate.py': ['Texture Management', 'texture.rst'],
-    'texture/manager.py': ['Texture Management', 'texture.rst'],
-    'texture/solid_color.py': ['Texture Management', 'texture.rst'],
-    'texture/spritesheet.py': ['Texture Management', 'texture.rst'],
-    'texture/tools.py': ['Texture Management', 'texture.rst'],
-
-    'texture/transforms.py': ['Texture Transforms', 'texture_transforms.rst'],
-    'texture_atlas/__init__.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/base.py': ['Texture Atlas', 'texture_atlas.rst'],
-    'texture_atlas/atlas_2d.py': ['Texture Atlas', 'texture_atlas.rst'],
-
-    'perf_info.py': ['Performance Information', 'perf_info.rst'],
-    'perf_graph.py': ['Performance Information', 'perf_info.rst'],
-
-    'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
-    'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
-
-    'geometry.py': ['Geometry Support', 'geometry.rst'],
-    'controller.py': ['Game Controller Support', 'game_controller.rst'],
-    'joysticks.py': ['Joystick Support', 'joysticks.rst'],
-
-    'application.py': ['Window and View', 'window.rst'],
-    'sound.py': ['Sound', 'sound.rst'],
-    'paths.py': ['Pathfinding', 'path_finding.rst'],
-    'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
-    'easing.py': ['Easing', 'easing.rst'],
-
-    # GL
-    "context.py": ['OpenGL Context', 'open_gl.rst'],
-
-    # "OpenGL" / arcade.gl is not generated, but documented manually.
-    # Find it at docs/api_docs/gl/*
-
-    # ## Utility
-
-    '__init__.py': ['Misc Utility Functions', 'utility.rst'],
-    '__main__.py': ['Misc Utility Functions', 'utility.rst'],
-
-    'shape_list.py': ['Shape Lists', 'drawing_batch.rst'],
-
-    'math.py': ['Math', 'math.rst'],
-
-    'earclip.py': ['Earclip', 'earclip.rst'],
-    'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
-    'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
-
-    'utils.py': ['Misc Utility Functions', 'utility.rst'],
-    'window_commands.py': ['Window and View', 'window.rst'],
-    'sections.py': ['Window and View', 'window.rst'],
-
-    'gui/__init__.py': ['GUI', 'gui.rst'],
-    'gui/constructs.py': ['GUI', 'gui.rst'],
-    'gui/mixins.py': ['GUI', 'gui.rst'],
-    'gui/surface.py': ['GUI', 'gui.rst'],
-    'gui/ui_manager.py': ['GUI', 'gui.rst'],
-    'gui/nine_patch.py': ['GUI', 'gui.rst'],
-    'gui/view.py': ['GUI', 'gui.rst'],
-
-    'widgets/__init__.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/buttons.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/dropdown.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/layout.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/slider.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/text.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/toggle.py': ['GUI Widgets', 'gui_widgets.rst'],
-    'widgets/image.py': ['GUI Widgets', 'gui_widgets.rst'],
-
-    'gui/events.py': ['GUI Events', 'gui_events.rst'],
-    'gui/property.py': ['GUI Properties', 'gui_properties.rst'],
-    'gui/style.py': ['GUI Style', 'gui_style.rst'],
-
-    'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
-
-    'experimental/password_input.py': ['GUI Experimental Features', 'gui_experimental.rst'],
-    'experimental/scroll_area.py': ['GUI Experimental Features', 'gui_experimental.rst'],
+API_FILE_TO_TITLE_AND_MODULES = {
+    "types.rst": {
+        "title": "Types",
+        "use_declarations_in": [
+            "arcade.types",
+            "arcade.types.numbers",
+            "arcade.types.vector_like",
+            "arcade.types.color",
+            "arcade.types.rect"
+        ]
+    },
+    "drawing_primitives.rst": {
+        "title": "Drawing - Primitives",
+        "use_declarations_in": [
+            "arcade.draw_commands"
+        ]
+    },
+    "sprites.rst": {
+        "title": "Sprites",
+        "use_declarations_in": [
+            "arcade.sprite",
+            "arcade.sprite.base",
+            "arcade.sprite.sprite",
+            "arcade.sprite.simple",
+            "arcade.sprite.colored",
+            "arcade.sprite.mixins",
+            "arcade.sprite.animated",
+            "arcade.sprite.enums"
+        ]
+    },
+    "sprite_list.rst": {
+        "title": "Sprite Lists",
+        "use_declarations_in": [
+            "arcade.sprite_list",
+            "arcade.sprite_list.sprite_list",
+            "arcade.sprite_list.spatial_hash",
+            "arcade.sprite_list.collision"
+        ]
+    },
+    "text.rst": {
+        "title": "Text",
+        "use_declarations_in": [
+            "arcade.text"
+        ]
+    },
+    "camera_2d.rst": {
+        "title": "Camera 2D",
+        "use_declarations_in": [
+            "arcade.camera.camera_2d"
+        ]
+    },
+    "sprite_scenes.rst": {
+        "title": "Sprite Scenes",
+        "use_declarations_in": [
+            "arcade.scene"
+        ]
+    },
+    "tilemap.rst": {
+        "title": "Tiled Map Reader",
+        "use_declarations_in": [
+            "arcade.tilemap.tilemap"
+        ]
+    },
+    "texture.rst": {
+        "title": "Texture Management",
+        "use_declarations_in": [
+            "arcade.texture",
+            "arcade.texture.texture",
+            "arcade.texture.loading",
+            "arcade.texture.generate",
+            "arcade.texture.manager",
+            "arcade.texture.spritesheet",
+            "arcade.texture.tools"
+        ]
+    },
+    "texture_transforms.rst": {
+        "title": "Texture Transforms",
+        "use_declarations_in": [
+            "arcade.texture.transforms"
+        ]
+    },
+    "texture_atlas.rst": {
+        "title": "Texture Atlas",
+        "use_declarations_in": [
+            "arcade.texture_atlas",
+            "arcade.texture_atlas.base",
+            "arcade.texture_atlas.atlas_2d"
+        ]
+    },
+    "perf_info.rst": {
+        "title": "Performance Information",
+        "use_declarations_in": [
+            "arcade.perf_info",
+            "arcade.perf_graph"
+        ]
+    },
+    "physics_engines.rst": {
+        "title": "Physics Engines",
+        "use_declarations_in": [
+            "arcade.physics_engines",
+            "arcade.pymunk_physics_engine"
+        ]
+    },
+    "geometry.rst": {
+        "title": "Geometry Support",
+        "use_declarations_in": [
+            "arcade.geometry"
+        ]
+    },
+    "game_controller.rst": {
+        "title": "Game Controller Support",
+        "use_declarations_in": [
+            "arcade.controller"
+        ]
+    },
+    "joysticks.rst": {
+        "title": "Joystick Support",
+        "use_declarations_in": [
+            "arcade.joysticks"
+        ]
+    },
+    "window.rst": {
+        "title": "Window and View",
+        "use_declarations_in": [
+            "arcade.application",
+            "arcade.window_commands",
+            "arcade.sections"
+        ]
+    },
+    "sound.rst": {
+        "title": "Sound",
+        "use_declarations_in": [
+            "arcade.sound"
+        ]
+    },
+    "path_finding.rst": {
+        "title": "Pathfinding",
+        "use_declarations_in": [
+            "arcade.paths"
+        ]
+    },
+    "isometric.rst": {
+        "title": "Isometric Map Support (incomplete)",
+        "use_declarations_in": [
+            "arcade.isometric"
+        ]
+    },
+    "easing.rst": {
+        "title": "Easing",
+        "use_declarations_in": [
+            "arcade.easing"
+        ]
+    },
+    "utility.rst": {
+        "title": "Misc Utility Functions",
+        "use_declarations_in": [
+            "arcade",
+            "arcade.__main__",
+            "arcade.utils"
+        ]
+    },
+    "drawing_batch.rst": {
+        "title": "Shape Lists",
+        "use_declarations_in": [
+            "arcade.shape_list"
+        ]
+    },
+    "open_gl.rst": {
+        "title": "OpenGL Context",
+        "use_declarations_in": [
+            "arcade.context"
+        ]
+    },
+    "math.rst": {
+        "title": "Math",
+        "use_declarations_in": [
+            "arcade.math"
+        ]
+    },
+    "earclip.rst": {
+        "title": "Earclip",
+        "use_declarations_in": [
+            "arcade.earclip"
+        ]
+    },
+    "tiled.rst": {
+        "title": "Loading TMX (Tiled Map Editor) Maps",
+        "use_declarations_in": [
+            "arcade.tilemap",
+            "arcade.tilemap"
+        ]
+    },
+    "gui.rst": {
+        "title": "GUI",
+        "use_declarations_in": [
+            "arcade.gui",
+            "arcade.gui.constructs",
+            "arcade.gui.mixins",
+            "arcade.gui.surface",
+            "arcade.gui.ui_manager",
+            "arcade.gui.nine_patch",
+            "arcade.gui.view"
+        ]
+    },
+    "gui_widgets.rst": {
+        "title": "GUI Widgets",
+        "use_declarations_in": [
+            "arcade.gui.widgets",
+            "arcade.gui.widgets.buttons",
+            "arcade.gui.widgets.dropdown",
+            "arcade.gui.widgets.layout",
+            "arcade.gui.widgets.slider",
+            "arcade.gui.widgets.text",
+            "arcade.gui.widgets.toggle",
+            "arcade.gui.widgets.image"
+        ]
+    },
+    "gui_events.rst": {
+        "title": "GUI Events",
+        "use_declarations_in": [
+            "arcade.gui.events"
+        ]
+    },
+    "gui_properties.rst": {
+        "title": "GUI Properties",
+        "use_declarations_in": [
+            "arcade.gui.property"
+        ]
+    },
+    "gui_style.rst": {
+        "title": "GUI Style",
+        "use_declarations_in": [
+            "arcade.gui.style"
+        ]
+    },
+    # This seems to be outdated and duplicated?
+    # "gui_utility.rst": {
+    #     "title": "GUI Utility Functions",
+    #     "use_declarations_in": [
+    #         "arcade.gui.events"
+    #     ]
+    # },
+    "gui_experimental.rst": {
+        "title": "GUI Experimental Features",
+        "use_declarations_in": [
+            "arcade.gui.experimental.password_input",
+            "arcade.gui.experimental.scroll_area"
+        ]
+    }
 }
 
 
@@ -154,16 +288,6 @@ class NotExcludedBy:
         return item not in self.items
 
 
-EXCLUDED_MODULES = [
-    'version.py',
-    'texture_atlas/atlas_array.py',
-    'texture_atlas/atlas_bindless.py',
-    'texture_atlas/helpers.py',
-    'experimental/__init__.py' # Ugly fix for experimental gui features
-]
-module_not_excluded = NotExcludedBy(EXCLUDED_MODULES)
-
-
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
     "ImageData",
@@ -174,6 +298,7 @@ EXCLUDED_MEMBERS = [
     "UVData",
 ]
 member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
+
 
 
 SHOW_INHERITANCE = (':show-inheritance:',)
@@ -187,82 +312,110 @@ FUNCTION_RE = re.compile("^def ([a-z][a-z0-9_]*)")
 TYPE_RE = re.compile("^(?!LOG =)([A-Za-z][A-Za-z0-9_]*) =")
 
 
-def get_member_list(
+MemberValues = dict[str, list[str]]
+DEFAULT_EXPRESSIONS =  {
+    'class': CLASS_RE,
+    'function': FUNCTION_RE,
+    # 'type': TYPE_RE
+}
+
+
+def get_file_declarations(
         filepath: Path,
-        member_expressions: Mapping[str, re.Pattern] = {
-            'class': CLASS_RE,
-            'function': FUNCTION_RE,
-            'type': TYPE_RE
-        }
-) -> dict[str, list[str]]:
-    """Use regex to do a quick and dirty parse of a file.
+        kind_to_regex: Mapping[str, re.Pattern] = DEFAULT_EXPRESSIONS
+) -> MemberValues:
+    """Use a mapping of kind names to regex to get declarations.
 
-    This is very limited. Don't expect anything fancy. It uses the
-    passed mapping of kinds and corresponding expressions to immediate
-    module declarations. Expressions are applied on a per-line basis,
-    so don't bother with multi-line expressions.
+    The returned dict will have a list for each name in kind_to_regex,
+    plus a '*' key which retains all values in their original ordering.
 
-    :param filepath: A path to search.
-    :param member_expressions: An mapping of kind names to the
-        re.Pattern objects to parse each.
+    For module names, see the get_module_declarations function below.
+
+    IMPORTANT: Parsing behavior is still limited to single lines!
+
+    This is intentional. It's an incremental change which focuses on
+    being more readable and configurable without adding external
+    dependencies. The core behavior hasn't changed much aside form the
+    return value being a dict instead of a tuple. Expressions are applied
+    in the same order as in kind_to_regex.
+
+    :param filepath: A file path to read.
+    :param kind_to_regex: An mapping of kind names to the re.Pattern
+        instances used to parse each.
     """
 
     print("Parsing: ", filepath)
     filename = filepath.name
 
     # Set up our return value dict
-    parsed_values = dict(all=[])
-    for kind_name, exp in member_expressions.items():
+    parsed_values = {'*':[]}
+    for kind_name, exp in kind_to_regex.items():
         # print(f"  ...with {group_name} expression {e.pattern!r}")
         parsed_values[kind_name] = []
 
+    try:
+        with open(filepath, encoding="utf8") as file_pointer:
+            for line_no, line in enumerate(file_pointer, start=1):
+                try:
+                    for kind, exp in kind_to_regex.items():
+                        parsed_raw = exp.findall(line)
+                        parsed_values[kind].extend(parsed_raw)
+                        parsed_values['*'].extend(parsed_raw)
 
-    with open(filepath, encoding="utf8") as file_pointer:
-        for line_no, line in enumerate(file_pointer, start=1):
-            try:
-                for kind, exp in member_expressions.items():
-                    parsed_raw = exp.findall(line)
-                    parsed_values[kind].extend(parsed_raw)
-
-            except Exception as e:
-                print(f"Exception processing {filename} on line {line_no}: {e}")
-                break
+                except Exception as e:
+                    print(f"Exception processing {filename} on line {line_no}: {e}")
+                    break
+    except Exception as e:
+        print(f"Failed to open {filepath}: {e}")
 
     return parsed_values
 
 
-# Map dirs to their effective display package file
-DIR_MAPPING = {
-    "arcade": "arcade",
-    "sprite": "arcade",
-    "texture": "arcade",
-    "texture_atlas": "arcade.texture_atlas",
-    "sprite_list": "arcade",
-    "text": "arcade",
-    "gui": "arcade.gui",
-    "experimental": "arcade.gui.experimental",
-    "property": "arcade.gui.property",
-    "widgets": "arcade.gui",
-    "tilemap": "arcade.tilemap",
-    "camera": "arcade.camera",
-    "types": "arcade.types",
-    "particles": "arcade.particles",
-}
-
-# Map file names to their package
-FILE_MAPPING = {
-    "geometry.py": "arcade.geometry",
-    "transforms.py": "arcade.texture.transforms",
-    "isometric.py": "arcade.isometric",
-    "utils.py": "arcade.utils",
-    "easing.py": "arcade.easing",
-    "math.py": "arcade.math",
-    "earclip.py": "arcade.earclip",
-    "shape_list.py": "arcade.shape_list"
-}
+_VALID_MODULE_SEGMENT = re.compile(r"[_a-zA-Z][_a-z0-9]*")
 
 
-def process_directory(directory: Path, vfs: Vfs):
+def get_module_path(module: str) -> Path:
+    """Quick-n-dirty module path estimation relative to the repo root.
+
+    :param module: A module path in the project.
+    :raises ValueError: When a can't be computed.
+    :return: A
+    """
+    # Convert module.name.here to module/name/here
+    current = REPO_ROOT
+    for index, part in enumerate(module.split('.')):
+        if not _VALID_MODULE_SEGMENT.fullmatch(part):
+            raise ValueError(
+                f'Invalid module segment at index {index}: {part!r}')
+        # else:
+        #   print(current, part)
+        current /= part
+
+    # Account for the two kinds of modules:
+    # 1. arcade/module.py
+    # 2. arcade/module/__init__.py
+    as_package = current / "__init__.py"
+    have_package = as_package.is_file()
+    as_file = current.with_suffix('.py')
+    have_file = as_file.is_file()
+
+    # TODO: When 3.10 becomes our min Python, make this a match-case?
+    if have_package and have_file:
+        raise ValueError(
+            f"Module conflict between {as_package} and {as_file}")
+    elif have_package:
+        current = as_package
+    elif have_file:
+        current = as_file
+    else:
+        raise ValueError(
+            f"No folder package or file module detected for "
+            f"{module}")
+
+    return current
+
+
+def generate_api_file(api_file_name: str, vfs: Vfs):
     """
     Take a directory and process all immediate children in it
 
@@ -270,89 +423,65 @@ def process_directory(directory: Path, vfs: Vfs):
     3rd party module like griffe... it's badly reassembling the module name
     from a collection of tables and unnamed sequences.
 
-    :param directory: A directory to process
+    :param api_file_name: The name of the file in the API directory
     :param vfs: The vfs object to use
     """
-    # print()
-    # print(f"Processing directory {directory}")
+    page_config = API_FILE_TO_TITLE_AND_MODULES.get(api_file_name, None)
 
-    file_list = tuple(directory.glob('*.py'))
+    if not page_config:
+        print(f"ERROR: No config defined for API file {api_file_name!r}")
+        return
+
+    try:
+        full_api_file_name = API_DOC_DIR / api_file_name
+        title = page_config.get('title')
+        use_declarations_in = page_config.get('use_declarations_in', [])
+        print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
+
+    except Exception as e:
+        print(f"ERROR: Unintelligible config data for {api_file_name!r}: {e}")
+        return
 
     # Open in "a" mode to append
     quick_index_file = vfs.open(QUICK_INDEX_FILE_PATH, "a")
-
-    print("Processing directory: ", f"{directory=}", f"{quick_index_file=}")
-    for dir_member in  file_list:
-        print(f"  {dir_member}")
-
     quick_index_file.write("\n")
 
-    # Part of reassembling a full file path for the table above
-    if directory.name == "arcade":
-        prepend = ""
-    else:
-        prepend = directory.name + "/"
+    print(f"Generating API ref file {str(full_api_file_name)!r} titled {title!r}")
+    underline = "-" * len(title)
 
-    for path in file_list:
+    api_file = vfs.open(full_api_file_name, "w")
+    api_file.write(f".. _{api_file_name[:-4]}_api:")
+    api_file.write(f"\n\n")
+    api_file.write(f"{title}\n")
+    api_file.write(f"{underline}\n\n")
+
+
+    for module_name in use_declarations_in:
         # Did we ever have tests in the path name? What?
-        if "test" in path.name:
+        if "test" in module_name:
+            print(
+                f"WARNING: {module_name!r} appears to contain tests."
+                f"Those belong in the 'tests/' directory!")
             continue
 
-        if not path.exists():
-            print(f"Error, can't find file: '{path.name}'")
-            continue
-        # else:
-        #     print(f"Processing: {path.name}")
+        module_path = get_module_path(module_name)
+        member_lists = get_file_declarations(module_path)
 
-        member_lists = get_member_list(path)
-        # type_list, class_list, function_list = member_lists
-        type_list = member_lists.get('type')
+        # TODO: Figure out how to reliably parse & render types?
+        # type_list = member_lists.get('type')
         class_list = member_lists.get('class')
         function_list = member_lists.get('function')
 
-        file_has_members = bool(sum(map(
-            len, member_lists.values())))
-
-        # -- Reconstruct package name --
-
-        package = FILE_MAPPING.get(path.name, None) or DIR_MAPPING.get(directory.name, None)
-
-        # Reconstruct on-disk path for the package name
-        path_name = prepend + path.name
-        # print(f"    {package=!r}, {path.name=!r}, {path_name=!r}")
-
-        # If it's a known file and we have members
-        if path_name in titles and file_has_members:
-            title, api_file_name = titles[path_name]
-
-        # If it's not a known file (this is would be gone if we invert structuring)
-        elif path_name not in titles and path_name not in EXCLUDED_MODULES:
-            title = f"ERR: `{path_name}`"
-            api_file_name = "zzz.rst"
-            print(f"No title for '{path_name}'.")
-        else:
-            # Could be an early return?
+        if not len(member_lists['*']):
+            print(
+                f"WARNING: No members parsed for {module_name!r} with"
+                f" inferred path {module_path!r}. Check & update your"
+                f"config?")
             continue
-
-        # Where will this API file go, and is it new?
-        full_api_file_name = API_DOC_DIR / api_file_name
-        new_api_file = not vfs.exists(full_api_file_name)
-        # print(package, title, api_file_name, full_api_file_name)
-
-        # Start writing it
-        api_file = vfs.open(full_api_file_name, "a")
-
-        # Write the title if it's a new file
-        if new_api_file:
-            api_file.write(f".. _{api_file_name[:-4]}_api:")
-            api_file.write(f"\n\n")
-            api_file.write(f"{title}\n")
-            underline = "-" * len(title)
-            api_file.write(f"{underline}\n\n")
 
         # Classes
         for item in filter(member_not_excluded, class_list):
-            full_class_name = f"{package}.{item}"
+            full_class_name = f"{module_name}.{item}"
 
             quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
             quick_index_file.write(f"     - {title}\n")
@@ -374,7 +503,7 @@ def process_directory(directory: Path, vfs: Vfs):
 
         # Functions
         for item in filter(member_not_excluded, function_list):
-            full_class_name = f"{package}.{item}"
+            full_class_name = f"{module_name}.{item}"
             quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
@@ -385,9 +514,6 @@ def process_directory(directory: Path, vfs: Vfs):
             # text_file.write(f"     - {path_name}\n")
 
         api_file.close()
-
-
-
 
 
 def main():
@@ -417,20 +543,8 @@ def main():
             """
         ))
 
-    process_directory(ARCADE_ROOT, vfs)
-    process_directory(ARCADE_ROOT / "types", vfs)
-    process_directory(ARCADE_ROOT / "sprite_list", vfs)
-    process_directory(ARCADE_ROOT / "geometry", vfs)
-    process_directory(ARCADE_ROOT / "sprite", vfs)
-    process_directory(ARCADE_ROOT / "texture", vfs)
-    process_directory(ARCADE_ROOT / "texture_atlas", vfs)
-    # process_directory(ARCADE_ROOT / "gl", vfs)
-    process_directory(ARCADE_ROOT / "text", vfs)
-    process_directory(ARCADE_ROOT / "gui", vfs)
-    process_directory(ARCADE_ROOT / "gui/widgets", vfs)
-    process_directory(ARCADE_ROOT / "gui/property", vfs)
-    process_directory(ARCADE_ROOT / "gui/experimental", vfs)
-    process_directory(ARCADE_ROOT / "tilemap", vfs)
+    for filename in API_FILE_TO_TITLE_AND_MODULES.keys():
+        generate_api_file(filename, vfs)
 
     vfs.write()
 
