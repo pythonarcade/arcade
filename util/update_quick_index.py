@@ -288,7 +288,9 @@ def process_directory(directory: Path, quick_index_file):
         # else:
         #     print(f"Processing: {path.name}")
 
-        type_list, class_list, function_list = get_member_list(path)
+        member_lists = get_member_list(path)
+        type_list, class_list, function_list = member_lists
+        file_has_members = bool(sum(map(len, member_lists)))
 
         # -- Reconstruct package name --
 
@@ -299,7 +301,7 @@ def process_directory(directory: Path, quick_index_file):
         # print(f"    {package=!r}, {path.name=!r}, {path_name=!r}")
 
         # If it's a known file and we have members
-        if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
+        if path_name in titles and file_has_members:
             title, api_file_name = titles[path_name]
 
         # If it's not a known file (this is would be gone if we invert structuring)
