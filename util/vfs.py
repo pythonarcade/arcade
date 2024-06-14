@@ -40,9 +40,8 @@ class SharedPaths:
     REPO_UTILS_DIR = Path(__file__).parent.resolve()
     REPO_ROOT = REPO_UTILS_DIR.parent
     ARCADE_ROOT = REPO_ROOT / "arcade"
-    API_DOC_ROOT = REPO_ROOT / "doc/api_docs/api"
-
-
+    DOC_ROOT = REPO_ROOT / "doc"
+    API_DOC_ROOT = DOC_ROOT / "api_docs"
 
 
 class VirtualFile:
@@ -166,5 +165,3 @@ class Vfs(Generic[F]):
     @contextmanager
     def open_ctx(self, path: str | Path, mode: str) -> Generator["VirtualFile", None, None]:
         yield self.open(path, mode)
-
-

@@ -13,15 +13,15 @@ from textwrap import dedent
 from typing import Iterable
 
 
-# Ensure we get funnily named utility modules first in imports
+# Ensure we get utility & arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
 from vfs import Vfs, SharedPaths
 
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
-API_DOC_DIR = SharedPaths.API_DOC_ROOT
-QUICK_INDEX_FILE_PATH = API_DOC_DIR / "quick_index.rst"
+API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
+QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
 
 
 API_FILE_TO_TITLE_AND_MODULES = {
@@ -419,7 +419,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         return
 
     try:
-        full_api_file_name = API_DOC_DIR / api_file_name
+        full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
         title = page_config.get('title')
         use_declarations_in = page_config.get('use_declarations_in', [])
         print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
@@ -506,7 +506,7 @@ def main():
     vfs = Vfs()
 
     # Delete the API directory files
-    vfs.request_culling_unwritten(API_DOC_DIR, '*.rst')
+    vfs.request_culling_unwritten(API_DOC_GENERATION_DIR, '*.rst')
 
     # Open in "w" mode to clear
     with vfs.open_ctx(QUICK_INDEX_FILE_PATH, "w") as text_file:
