@@ -1,6 +1,8 @@
 """
 Script used to create the quick index
 """
+from __future__ import annotations
+
 import os
 import re
 import sys
@@ -180,45 +182,67 @@ CLASS_SPECIAL_RULES = {
 }
 
 
+# Parsing expressions need named groups to assign to dicts
+_NAMED_GROUP = re.compile(r"\(\?P<([A-Za-z0-9_-]+)>")
+
+
 CLASS_RE = re.compile(r"^class (?P<class>[A-Za-z0-9]+[^\(:]*)")
 FUNCTION_RE = re.compile("^def (?P<function>[a-z][a-z0-9_]*)")
 TYPE_RE = re.compile("^(?!LOG =)(?P<type>[A-Za-z][A-Za-z0-9_]*) =")
 
 
-def get_member_list(filepath):
+def get_member_list(
+        filepath: Path,
+        member_expressions: Iterable[re.Pattern] = (
+            CLASS_RE,
+            FUNCTION_RE,
+            TYPE_RE
+        )
+) -> dict[str, list[str]]:
+    """Use regex to do a quick and dirty parse of a file.
+
+    This is very limited. Don't expect anything fancy. It uses the
+    passed named groups to detect values, and it cannot span multiple
+    lines.
+
+    :param filepath: A path to search.
+    :param member_expressions: An iterable of re.Pattern objects, each
+        containing a named group, e.g. r'^(?P<constant>[A-Z][A_Z_]+) ='
+        or similar.
     """
-    Take a file, and return all the classes, functions, and data declarations in it
-    """
-    file_pointer = open(filepath, encoding="utf8")
-    print("Processing: ", filepath)
+
+    print("Parsing: ", filepath)
     filename = filepath.name
 
-    class_list = []
-    function_list = []
-    type_list = []
+    # Freeze and validate passed expressions. Note that passing a tuple
+    # to tuple() is idempotent, i.e. returns the same tuple object.
+    name_to_re = {}
+    parsed_values = dict(all=[])
 
-    for line_no, line in enumerate(file_pointer, start=1):
-        try:
-            class_names = CLASS_RE.findall(line)
-            for class_name in class_names:
-                class_list.append(class_name)
+    for e in member_expressions:
+        exp_named_groups = _NAMED_GROUP.findall(e.pattern)
+        if not exp_named_groups or len(exp_named_groups) != 1:
+            raise ValueError(
+                f"{exp!r} does not have exactly 1 named group.")
 
-            function_names = FUNCTION_RE.findall(line)
-            for method_name in function_names:
-                function_list.append(method_name)
+        group_name = exp_named_groups[0]
+        # print(f"  ...with {group_name} expression {e.pattern!r}")
+        name_to_re[group_name] = e
+        parsed_values[group_name] = []
 
-            type_names = TYPE_RE.findall(line)
-            for type_name in type_names:
-                type_list.append(type_name)
 
-        except Exception as e:
-            print(f"Exception processing {filename} on line {line_no}: {e}")
-            break
+    with open(filepath, encoding="utf8") as file_pointer:
+        for line_no, line in enumerate(file_pointer, start=1):
+            try:
+                for kind, exp in name_to_re.items():
+                    parsed_raw = exp.findall(line)
+                    parsed_values[kind].extend(parsed_raw)
 
-    class_list.sort()
-    function_list.sort()
-    type_list.sort()
-    return type_list, class_list, function_list
+            except Exception as e:
+                print(f"Exception processing {filename} on line {line_no}: {e}")
+                break
+
+    return parsed_values
 
 
 # Map dirs to their effective display package file
@@ -295,8 +319,13 @@ def process_directory(directory: Path, vfs: Vfs):
         #     print(f"Processing: {path.name}")
 
         member_lists = get_member_list(path)
-        type_list, class_list, function_list = member_lists
-        file_has_members = bool(sum(map(len, member_lists)))
+        # type_list, class_list, function_list = member_lists
+        type_list = member_lists.get('type')
+        class_list = member_lists.get('class')
+        function_list = member_lists.get('function')
+
+        file_has_members = bool(sum(map(
+            len, member_lists.values())))
 
         # -- Reconstruct package name --
 
