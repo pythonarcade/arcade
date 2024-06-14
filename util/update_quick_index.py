@@ -4,11 +4,10 @@ Script used to create the quick index
 import os
 import re
 import sys
-from functools import wraps
 
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, TypeVar, Iterable
+from typing import Iterable
 
 # Ensure we get funnily named utility modules first in imports
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
