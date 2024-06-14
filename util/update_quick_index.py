@@ -139,6 +139,9 @@ titles = {
 }
 
 
+EMPTY_TUPLE = tuple()
+
+
 class NotExcludedBy:
 
     def __init__(self, collection: Iterable):
@@ -342,7 +345,7 @@ def process_directory(directory: Path, quick_index_file):
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda
-            for rule in CLASS_SPECIAL_RULES.get(full_class_name, []):
+            for rule in CLASS_SPECIAL_RULES.get(full_class_name, EMPTY_TUPLE):
                 api_file.write(f"    {rule}\n")
 
             api_file.write("\n")
