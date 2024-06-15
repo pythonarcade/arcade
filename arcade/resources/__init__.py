@@ -95,6 +95,12 @@ def resolve(path: Union[str, Path]) -> Path:
         else:
             path = Path(path)
 
+    try:
+        path = Path(path.resolve(strict=True))
+    except AttributeError:
+        # WARNING: This is due to an issue caused by Nuitka overriding strings into janky path object
+        path = Path(path.absolute())
+
     # Always return absolute paths
     # Check for the existence of the file and provide useful feedback to
     # avoid deep stack trace into pathlib
@@ -761,7 +767,7 @@ gui_sword_gold = ':system:gui_basic_assets/items/sword_gold.png'
 gui_red_button_hover = ':system:gui_basic_assets/red_button_hover.png'
 gui_red_button_normal = ':system:gui_basic_assets/red_button_normal.png'
 gui_red_button_press = ':system:gui_basic_assets/red_button_press.png'
-gui_slider_bar = ':system:gui_basic_assets/slider_bar.png'
+gui_slider_track = ':system:gui_basic_assets/slider_track.png'
 gui_slider_thumb = ':system:gui_basic_assets/slider_thumb.png'
 gui_circle_switch_off = ':system:gui_basic_assets/toggle/circle_switch_off.png'
 gui_circle_switch_on = ':system:gui_basic_assets/toggle/circle_switch_on.png'

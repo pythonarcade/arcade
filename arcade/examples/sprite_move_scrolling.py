@@ -9,7 +9,6 @@ python -m arcade.examples.sprite_move_scrolling
 
 import random
 import arcade
-from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -55,8 +54,8 @@ class MyGame(arcade.Window):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -104,11 +103,8 @@ class MyGame(arcade.Window):
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2,
-                                     20,
-                                     self.width,
-                                     40,
-                                     arcade.color.ALMOND)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
+                                arcade.color.ALMOND)
         text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, " \
                f"{self.camera_sprites.position[1]:5.1f})"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
@@ -169,17 +165,17 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
 
 
 def main():

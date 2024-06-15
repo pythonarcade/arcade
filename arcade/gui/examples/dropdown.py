@@ -7,6 +7,7 @@ by changing the text displayed on screen to reflect it.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.dropdown
 """
+
 from __future__ import annotations
 
 import arcade
@@ -34,9 +35,7 @@ class MyView(arcade.View):
         @self.dropdown.event()
         def on_change(event: UIOnChangeEvent):
             print(f"Value changed from '{event.old_value}' to '{event.new_value}'")
-            self.label.text = (
-                f"Value changed from '{event.old_value}' to '{event.new_value}'"
-            )
+            self.label.text = f"Value changed from '{event.old_value}' to '{event.new_value}'"
             self.label.fit_content()
 
             # place label above dropdown
@@ -56,7 +55,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

@@ -22,6 +22,7 @@ class TextureKeyframe:
     :param duration: Duration in milliseconds to display this keyframe.
     :param tile_id: Tile ID for this keyframe (only used for tiled maps)
     """
+    __slots__ = ("texture", "duration", "tile_id")
     def __init__(
         self,
         texture: Texture,
@@ -46,10 +47,12 @@ class TextureAnimation:
     :param keyframes: List of keyframes for the animation.
     :param loop: If the animation should loop.
     """
-    def __init__(self, keyframes: Optional[List[TextureKeyframe]] = None):
-        self._keyframes = keyframes or []
+    __slots__ = ("_keyframes", "_duration_ms", "_timeline")
+
+    def __init__(self, keyframes: List[TextureKeyframe]):
+        self._keyframes = keyframes
         self._duration_ms = 0
-        self._timeline: List[int] = self._create_timeline(self._keyframes) if self._keyframes else []
+        self._timeline: List[int] = self._create_timeline(self._keyframes)
 
     @property
     def keyframes(self) -> Tuple[TextureKeyframe, ...]:
@@ -93,25 +96,6 @@ class TextureAnimation:
 
         self._duration_ms = current_time_ms
         return timeline
-
-    def append_keyframe(self, keyframe: TextureKeyframe) -> None:
-        """
-        Add a keyframe to the animation.
-
-        :param keyframe: Keyframe to add.
-        """
-        self._keyframes.append(keyframe)
-        self._timeline.append(self._duration_ms)
-        self._timeline = self._create_timeline(self._keyframes)
-
-    def remove_keyframe(self, index: int) -> None:
-        """
-        Remove a keyframe from the animation.
-
-        :param index: Index of the keyframe to remove.
-        """
-        del self._keyframes[index]
-        self._timeline = self._create_timeline(self._keyframes)
 
     def get_keyframe(self, time: float, loop: bool = True) -> Tuple[int, TextureKeyframe]:
         """
@@ -160,7 +144,7 @@ class TextureAnimationSprite(Sprite):
             center_y=center_y,
         )
         self._time = 0.0
-        self._animation = None
+        self._animation: Optional[TextureAnimation] = None
         if animation:
             self.animation = animation
         self._current_keyframe_index = 0

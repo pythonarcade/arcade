@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 
 import arcade
 import arcade.gl as gl
+from arcade.types.rect import Rect
 
 
 class NinePatchTexture:
@@ -69,13 +70,13 @@ class NinePatchTexture:
 
     def __init__(
         self,
-        *,
         left: int,
         right: int,
         bottom: int,
         top: int,
         texture: arcade.Texture,
-        atlas: Optional[arcade.TextureAtlas] = None
+        *,
+        atlas: Optional[arcade.TextureAtlas] = None,
     ):
         self._ctx = arcade.get_window().ctx
 
@@ -104,6 +105,15 @@ class NinePatchTexture:
         self._top = top
 
         self._check_sizes()
+
+    @classmethod
+    def from_rect(cls,
+                  rect: Rect,
+                  texture: arcade.Texture,
+                  atlas: Optional[arcade.TextureAtlas] = None
+                  ) -> NinePatchTexture:
+        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
+        return cls(int(rect.left), int(rect.right), int(rect.bottom), int(rect.top), texture, atlas=atlas)
 
     @property
     def ctx(self) -> arcade.ArcadeContext:
@@ -199,7 +209,7 @@ class NinePatchTexture:
         position: Tuple[float, float] = (0.0, 0.0),
         size: Tuple[float, float],
         pixelated: bool = False,
-        **kwargs
+        **kwargs,
     ):
         """
         Draw the 9-patch texture with a specific size.
@@ -214,9 +224,7 @@ class NinePatchTexture:
         :param size: Size of the 9-patch as width, height in pixels
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
-        self.program.set_uniform_safe(
-            "texture_id", self._atlas.get_texture_id(self._texture)
-        )
+        self.program.set_uniform_safe("texture_id", self._atlas.get_texture_id(self._texture))
         if pixelated:
             self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         else:
@@ -246,8 +254,6 @@ class NinePatchTexture:
 
         # Sanity check texture size
         if self._left + self._right > self._texture.width:
-            raise ValueError(
-                "Left and right border must be smaller than texture width")
+            raise ValueError("Left and right border must be smaller than texture width")
         if self._bottom + self._top > self._texture.height:
-            raise ValueError(
-                "Bottom and top border must be smaller than texture height")
+            raise ValueError("Bottom and top border must be smaller than texture height")

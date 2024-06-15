@@ -292,7 +292,7 @@ class PerfGraph(arcade.Sprite):
                 self.minimap_texture, projection=self.proj) as fbo:
 
             # Set the background color
-            fbo.clear(self.background_color)
+            fbo.clear(color=self.background_color)
 
             # Draw lines & their labels
             for text in self._all_text_objects:

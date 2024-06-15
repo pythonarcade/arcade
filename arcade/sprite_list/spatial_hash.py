@@ -8,8 +8,9 @@ from typing import (
     Generic,
 )
 from arcade.sprite.base import BasicSprite
-from arcade.types import Point, IPoint, Rect
+from arcade.types import Point, IPoint
 from arcade.sprite import SpriteType
+from arcade.types.rect import Rect
 
 
 class SpatialHash(Generic[SpriteType]):
@@ -136,7 +137,7 @@ class SpatialHash(Generic[SpriteType]):
         :param rect: The rectangle to check (left, right, bottom, top)
         :return: A set of sprites in the rectangle
         """
-        left, right, bottom, top = rect
+        left, right, bottom, top = rect.lrbt
         min_point = trunc(left), trunc(bottom)
         max_point = trunc(right), trunc(top)
 

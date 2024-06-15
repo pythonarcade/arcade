@@ -303,9 +303,9 @@ def test_get_sprites_in_rect(use_spatial_hash):
     sp.extend((a, b, c, d))
 
     with pytest.raises(TypeError):
-        arcade.get_sprites_in_rect((0, 0, 10, 10), "moo")
+        arcade.get_sprites_in_rect(arcade.LRBT(0, 0, 10, 10), "moo")
 
-    assert set(arcade.get_sprites_in_rect((-50, 50, -50, 50), sp)) == set([a, b, c, d])
-    assert set(arcade.get_sprites_in_rect((100, 200, 100, 200), sp)) == set()
-    assert set(arcade.get_sprites_in_rect((-100, 0, -100, 0), sp)) == set([b, d])
-    assert set(arcade.get_sprites_in_rect((100, 0, 100, 0), sp)) == set([a, c])
+    assert set(arcade.get_sprites_in_rect(arcade.LRBT(-50, 50, -50, 50), sp)) == {a, b, c, d}
+    assert set(arcade.get_sprites_in_rect(arcade.LRBT(100, 200, 100, 200), sp)) == set()
+    assert set(arcade.get_sprites_in_rect(arcade.LRBT(-100, 0, -100, 0), sp)) == {b, d}
+    assert set(arcade.get_sprites_in_rect(arcade.LRBT(100, 0, 100, 0), sp)) == {a, c}

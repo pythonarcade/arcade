@@ -8,6 +8,7 @@ arrange buttons.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.button_with_text
 """
+
 from __future__ import annotations
 
 import arcade
@@ -102,12 +103,8 @@ class MyView(arcade.View):
             text="UITextureButton",
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(
-                ":resources:gui_basic_assets/red_button_hover.png"
-            ),
-            texture_pressed=load_texture(
-                ":resources:gui_basic_assets/red_button_press.png"
-            ),
+            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
+            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
         )
         grid.add(texture_button, row_num=0, col_num=2)
 
@@ -116,12 +113,8 @@ class MyView(arcade.View):
             text="UITextureButton",
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(
-                ":resources:gui_basic_assets/red_button_hover.png"
-            ),
-            texture_pressed=load_texture(
-                ":resources:gui_basic_assets/red_button_press.png"
-            ),
+            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
+            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
         )
         texture_button_with_icon_left.add(
             child=UIImage(
@@ -140,12 +133,8 @@ class MyView(arcade.View):
             multiline=True,
             width=200,
             texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(
-                ":resources:gui_basic_assets/red_button_hover.png"
-            ),
-            texture_pressed=load_texture(
-                ":resources:gui_basic_assets/red_button_press.png"
-            ),
+            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
+            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
         )
         texture_button_with_icon_left.place_text(anchor_x="left", align_x=45)
         texture_button_with_icon_left.add(
@@ -176,12 +165,8 @@ class MyView(arcade.View):
         )
         toggle = texture_button_with_toggle.add(
             child=UITextureToggle(
-                on_texture=load_texture(
-                    ":resources:gui_basic_assets/toggle/switch_red.png"
-                ),
-                off_texture=load_texture(
-                    ":resources:gui_basic_assets/toggle/switch_green.png"
-                ),
+                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png"),
+                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
                 width=60,
                 height=30,
             ),
@@ -209,7 +194,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

@@ -10,9 +10,8 @@ def test_surface_draw_texture_raises_not_implemented_error_on_unsupported_values
         right=5,
         top=5,
         bottom=5,
-        texture=load_texture(
-            ":resources:gui_basic_assets/window/dark_blue_gray_panel.png"
-    ))
+        texture=load_texture(":resources:gui_basic_assets/window/dark_blue_gray_panel.png"),
+    )
     surface = Surface(size=(100, 100))
 
     def keywords_only(**kwargs):
@@ -26,8 +25,3 @@ def test_surface_draw_texture_raises_not_implemented_error_on_unsupported_values
 
     with pytest.raises(NotImplementedError):
         keywords_only(alpha=10, angle=30.0)
-
-
-
-
-

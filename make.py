@@ -8,7 +8,7 @@ Build script to simplify running:
 
 For help, see the following:
 
-* CONTRIBUTING.rst
+* CONTRIBUTING.md
 * The output of python make.py --help
 """
 import os
@@ -45,7 +45,7 @@ FULL_BUILD_DIR    = PROJECT_ROOT / FULL_BUILD_PREFIX
 
 # Linting
 RUFF        = "ruff"
-RUFFOPTS    = ["arcade"]
+RUFFOPTS    = ["check", "arcade"]
 MYPY        = "mypy"
 MYPYOPTS    = ["arcade"]
 PYRIGHT     = "pyright"
@@ -62,7 +62,7 @@ PAPER_SIZE_OPTS[None] = []
 PAPER_SIZE_OPTS['a4'] = ['-D', 'latex_paper_size=a4']
 PAPER_SIZE_OPTS['letter'] = ['-D', 'latex_paper_size=letter']
 ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
-SPHINXAUTOBUILDOPTS = ['--watch', './arcade']
+SPHINXAUTOBUILDOPTS = ['--watch', '../arcade', '--ignore', './example_code/how_to_examples/thumbs']
 
 # Important: the i18n builder cannot share the environment and doctrees with the others
 # This allows for internationalization / localization of doc.
@@ -76,7 +76,7 @@ for binary in binaries:
     not_found = [binary for binary in binaries if which(binary) is None]
     if not_found:
         print("Command-line tools not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.rst file for instructions.")
+        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
         exit(1)
 for library in libraries:
     def find(library):
@@ -87,7 +87,7 @@ for library in libraries:
     not_found = [library for library in libraries if not find(library)]
     if not_found:
         print("Python dependencies not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.rst file for instructions.")
+        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
         exit(1)
 
 
@@ -484,7 +484,7 @@ def whichshell():
 
     if shell_name in SHELLS_WITH_AUTOCOMPLETE:
         print("This shell is known to support tab-completion!")
-        print("See CONTRIBUTING.rst for more information on how to enable it.")
+        print("See CONTRIBUTING.md for more information on how to enable it.")
 
 
 if __name__ == "__main__":

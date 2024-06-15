@@ -8,6 +8,7 @@ python -m arcade.examples.astar_pathfinding
 """
 
 import arcade
+from arcade import camera
 import random
 
 SPRITE_IMAGE_SIZE = 128
@@ -58,12 +59,11 @@ class MyGame(arcade.Window):
         # List of points we checked to see if there is a barrier there
         self.barrier_list = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Set the window background color
         self.background_color = arcade.color.AMAZON
+
+        # Camera
+        self.cam = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -140,10 +140,14 @@ class MyGame(arcade.Window):
                                                     playing_field_bottom_boundary,
                                                     playing_field_top_boundary)
 
+        self.cam = camera.Camera2D()
+
     def on_draw(self):
         """
         Render the screen.
         """
+        self.cam.use()
+
         # This command has to happen before we start drawing
         self.clear()
 
@@ -185,48 +189,32 @@ class MyGame(arcade.Window):
         # print(self.path,"->", self.player.position)
 
         # --- Manage Scrolling ---
+        pos = self.cam.position
 
-        # Keep track of if we changed the boundary. We don't want to call the
-        # set_viewport command if we didn't change the view port.
-        changed = False
+        top_left = self.cam.top_left
+        bottom_right = self.cam.bottom_right
 
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player.left < left_boundary:
-            self.view_left -= left_boundary - self.player.left
-            changed = True
-
-        # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-        if self.player.right > right_boundary:
-            self.view_left += self.player.right - right_boundary
-            changed = True
+            pos = pos[0] + (self.player.left - left_boundary), pos[1]
 
         # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player.top > top_boundary:
-            self.view_bottom += self.player.top - top_boundary
-            changed = True
+            pos = pos[0], pos[1] + (self.player.top - top_boundary)
+
+        # Scroll right
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
+        if self.player.right > right_boundary:
+            pos = pos[0] + (self.player.right - right_boundary), pos[1]
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player.bottom
-            changed = True
+            pos = pos[0], pos[1] + (self.player.bottom - bottom_boundary)
 
-        # Make sure our boundaries are integer values. While the view port does
-        # support floating point numbers, for this application we want every pixel
-        # in the view port to map directly onto a pixel on the screen. We don't want
-        # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        self.cam.position = pos
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -13,6 +13,7 @@ from arcade.texture import (
     make_soft_circle_texture,
 )
 from arcade.types import Color, RGBA255
+from arcade.types.rect import Rect
 
 from .sprite import Sprite
 
@@ -66,6 +67,11 @@ class SpriteSolidColor(Sprite):
             angle=angle,
         )
         self.color = Color.from_iterable(color)
+
+    @classmethod
+    def from_rect(cls, rect: Rect, color: Color, angle: float = 0.0) -> SpriteSolidColor:
+        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
+        return cls(int(rect.width), int(rect.height), rect.x, rect.y, color, angle)
 
     def _get_default_image(self) -> ImageData:
         """Lazy-load the default image for this sprite type."""

@@ -5,9 +5,12 @@ import math
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
-from arcade import SimpleCamera, get_window
+from arcade import get_window
+from arcade.camera.default import DefaultProjector
+from arcade.types.rect import LRBT, Rect
 
 if TYPE_CHECKING:
+    from arcade.camera import Projector
     from arcade import View
 
 __all__ = [
@@ -101,7 +104,7 @@ class Section:
         self._ec_top: int = self.window.height if self._modal else self._top
 
         # optional section camera
-        self.camera: Optional[SimpleCamera] = None
+        self.camera: Optional[Projector] = None
 
     def __repr__(self):
         name = f'Section {self.name}' if self.name else 'Section'
@@ -230,6 +233,10 @@ class Section:
         self._ec_bottom = 0 if self._modal else self._bottom
 
     @property
+    def rect(self) -> Rect:
+        return LRBT(self.left, self.right, self.bottom, self.top)
+
+    @property
     def window(self):
         """ The view window """
         if getattr(self, '_view', None) is None or self._view is None:
@@ -327,9 +334,7 @@ class SectionManager:
 
         # generic camera to reset after a custom camera is use
         # this camera is set to the whole viewport
-        self.camera: SimpleCamera = SimpleCamera(viewport=(0, 0,
-                                                           self.view.window.width,
-                                                           self.view.window.height))
+        self.camera: DefaultProjector = DefaultProjector()
 
         # Holds the section the mouse is currently on top
         self.mouse_over_sections: List[Section] = []
@@ -504,7 +509,7 @@ class SectionManager:
         :param width: the new width of the screen
         :param height: the new height of the screen
         """
-        self.camera.resize(width, height)  # resize the default camera
+        # The Default camera auto-resizes.
         if self.view_resize_first is True:
             self.view.on_resize(width, height)  # call resize on the view
         for section in self.sections:

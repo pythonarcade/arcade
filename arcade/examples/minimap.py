@@ -11,7 +11,6 @@ import random
 from uuid import uuid4
 
 import arcade
-from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -62,9 +61,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.SimpleCamera(viewport=viewport)
-        self.camera_gui = arcade.SimpleCamera(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -111,7 +109,7 @@ class MyGame(arcade.Window):
     def update_minimap(self):
         proj = 0, MAP_WIDTH, 0, MAP_HEIGHT
         with self.minimap_sprite_list.atlas.render_into(self.minimap_texture, projection=proj) as fbo:
-            fbo.clear(MINIMAP_BACKGROUND_COLOR)
+            fbo.clear(color=MINIMAP_BACKGROUND_COLOR)
             self.wall_list.draw()
             self.player_sprite.draw()
 
@@ -140,7 +138,7 @@ class MyGame(arcade.Window):
         self.minimap_sprite_list.draw()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
         text = f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
@@ -180,17 +178,17 @@ class MyGame(arcade.Window):
         """
 
         # Scroll to the proper location
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
 
 
 def main():

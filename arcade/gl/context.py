@@ -407,7 +407,7 @@ class Context:
         """
         cls.active = ctx
 
-    def enable(self, *flags):
+    def enable(self, *flags: int):
         """
         Enables one or more context flags::
 
@@ -421,7 +421,7 @@ class Context:
         for flag in flags:
             gl.glEnable(flag)
 
-    def enable_only(self, *args):
+    def enable_only(self, *args: int):
         """
         Enable only some flags. This will disable all other flags.
         This is a simple way to ensure that context flag states

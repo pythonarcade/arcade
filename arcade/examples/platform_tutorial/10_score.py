@@ -119,10 +119,10 @@ class MyGame(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+        self.camera = arcade.camera.Camera2D()
 
         # Initialize our gui camera, initial settings are the same as our world camera.
-        self.gui_camera = arcade.SimpleCamera(viewport=(0, 0, self.width, self.height))
+        self.gui_camera = arcade.camera.Camera2D()
 
         # Reset our score to 0
         self.score = 0
@@ -172,7 +172,7 @@ class MyGame(arcade.Window):
             self.score_text.text = f"Score: {self.score}"
 
         # Center our camera on the player
-        self.camera.center(self.player_sprite.position)
+        self.camera.position = self.player_sprite.position
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""

@@ -17,7 +17,6 @@ from collections import deque
 from contextlib import contextmanager
 from weakref import WeakSet, WeakValueDictionary
 
-import PIL
 import PIL.Image
 from PIL import Image, ImageDraw
 from pyglet.image.atlas import (
@@ -28,6 +27,7 @@ from pyglet.math import Mat4
 
 from arcade.gl.framebuffer import Framebuffer
 from arcade.texture.transforms import Transform
+from arcade.camera.static import static_from_raw_orthographic
 
 from .base import (
     TextureAtlasBase,
@@ -951,21 +951,27 @@ class TextureAtlas(TextureAtlasBase):
             The tuple values are: (left, right, button, top)
         """
         region = self._texture_regions[texture.atlas_name]
-        proj_prev = self._ctx.projection_2d
+        prev_camera = self.ctx.current_camera
+
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)
         # Flip the top and bottom because we need to render things upside down
         projection = projection[0], projection[1], projection[3], projection[2]
-        self._ctx.projection_2d = projection
+
+        static_camera = static_from_raw_orthographic(
+            projection,
+            -1, 1,  # near, far planes
+            1.0,  # zoom
+        )
 
         with self._fbo.activate() as fbo:
-            fbo.viewport = region.x, region.y, region.width, region.height
             try:
+                static_camera.use()
+                fbo.viewport = region.x, region.y, region.width, region.height
                 yield fbo
             finally:
                 fbo.viewport = 0, 0, *self._fbo.size
-
-        self._ctx.projection_2d = proj_prev
+        prev_camera.use()
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":

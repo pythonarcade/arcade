@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
             print(e)
 
     def on_resize(self, width, height):
-        arcade.set_viewport(0, width, 0, height)
+        self.default_camera.use()
         self.light_layer.resize(width, height)
 
 

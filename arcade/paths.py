@@ -19,8 +19,8 @@ from arcade import (
     check_for_collision_with_list,
     get_sprites_at_point
 )
-from arcade.math import get_distance, lerp_vec
-from arcade.types import Point
+from arcade.math import get_distance, lerp_2d
+from arcade.types import Point, Point2
 
 __all__ = [
     "AStarBarrierList",
@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-def _spot_is_blocked(position: Point,
+def _spot_is_blocked(position: Point2,
                      moving_sprite: Sprite,
                      blocking_sprites: SpriteList) -> bool:
     """
@@ -140,7 +140,7 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[Point]]:
+def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[List[Point2]]:
     """
     Returns a path from start to end using the AStarSearch Algorithm
 
@@ -151,15 +151,15 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph) -> Optional[List[
 
     :return: The path from start to end. Returns None if is path is not found
     """
-    G: Dict[Point, float] = {}  # Actual movement cost to each position from the start position
-    F: Dict[Point, float] = {}  # Estimated movement cost of start to end going via this position
+    G: Dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
+    F: Dict[Point2, float] = dict()  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
     F[start] = _heuristic(start, end)
 
     closed_vertices = set()
-    open_vertices = {start}
+    open_vertices = {start}  # type: ignore
     came_from = {}  # type: ignore
 
     count = 0
@@ -360,7 +360,7 @@ def has_line_of_sight(observer: Point,
     for step in range(steps + 1):
         step_distance = step * check_resolution
         u = step_distance / distance
-        midpoint = lerp_vec(observer, target, u)
+        midpoint = lerp_2d(observer, target, u)
         if step_distance > max_distance:
             return False
         sprite_list = get_sprites_at_point(midpoint, walls)

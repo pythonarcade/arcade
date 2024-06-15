@@ -21,6 +21,8 @@ __all__ = [
     "PhysicsEnginePlatformer"
 ]
 
+from arcade.utils import copy_dunders_unimplemented
+
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
     """
@@ -221,6 +223,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
     return complete_hit_list
 
 
+@copy_dunders_unimplemented
 class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down
@@ -266,6 +269,7 @@ class PhysicsEngineSimple:
         return _move_sprite(self.player_sprite, self.walls, ramp_up=False)
 
 
+@copy_dunders_unimplemented
 class PhysicsEnginePlatformer:
     """
     Simplistic physics engine for use in a platformer. It is easier to get

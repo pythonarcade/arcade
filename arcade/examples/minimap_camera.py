@@ -52,11 +52,14 @@ class MyGame(arcade.Window):
         self.wall_list = None
 
         # Mini-map related
-        minimap_viewport = (DEFAULT_SCREEN_WIDTH - MINIMAP_WIDTH,
-                            DEFAULT_SCREEN_HEIGHT - MINIMAP_HEIGHT,
-                            MINIMAP_WIDTH, MINIMAP_HEIGHT)
-        minimap_projection = (0, MAP_PROJECTION_WIDTH, 0, MAP_PROJECTION_HEIGHT)
-        self.camera_minimap = arcade.Camera(viewport=minimap_viewport, projection=minimap_projection)
+        minimap_viewport = arcade.LBWH(DEFAULT_SCREEN_WIDTH - MINIMAP_WIDTH,
+                                       DEFAULT_SCREEN_HEIGHT - MINIMAP_HEIGHT,
+                                       MINIMAP_WIDTH, MINIMAP_HEIGHT)
+        minimap_projection = arcade.LRBT(-MAP_PROJECTION_WIDTH/2, MAP_PROJECTION_WIDTH/2,
+                                         -MAP_PROJECTION_HEIGHT/2, MAP_PROJECTION_HEIGHT/2)
+        self.camera_minimap = arcade.camera.Camera2D(
+            viewport=minimap_viewport, projection=minimap_projection
+        )
 
         # Set up the player
         self.player_sprite = None
@@ -64,10 +67,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        projection = (0, DEFAULT_SCREEN_WIDTH, 0, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.Camera(viewport=viewport, projection=projection)
-        self.camera_gui = arcade.SimpleCamera(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.selected_camera = self.camera_minimap
 
@@ -124,7 +125,7 @@ class MyGame(arcade.Window):
 
         # Draw new minimap using the camera
         self.camera_minimap.use()
-        self.clear(MINIMAP_BACKGROUND_COLOR)
+        self.clear(color=MINIMAP_BACKGROUND_COLOR)
         self.wall_list.draw()
         self.player_list.draw()
 
@@ -132,7 +133,7 @@ class MyGame(arcade.Window):
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
         self.instructions.draw()
 
     def on_key_press(self, key, modifiers):
@@ -178,18 +179,23 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Center the screen to the player
-        self.camera_sprites.center(self.player_sprite.position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
         # Center the minimap viewport to the player in the minimap
-        self.camera_minimap.center(self.player_sprite.position, CAMERA_SPEED)
+        self.camera_minimap.position = arcade.math.lerp_2d(
+            self.player_sprite.position, self.player_sprite.position, CAMERA_SPEED
+        )
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height, resize_projection=False)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen()
+        self.camera_gui.match_screen()
         self.camera_minimap.viewport = (width - self.camera_minimap.viewport_width,
                                         height - self.camera_minimap.viewport_height,
                                         self.camera_minimap.viewport_width,

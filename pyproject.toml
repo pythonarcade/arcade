@@ -1,7 +1,7 @@
 [project]
 name = "arcade"
 description = "Arcade Game Development Library"
-readme = "README.rst"
+readme = "README.md"
 authors = [
     {name="Paul Vincent Craven", email="paul@cravenfamily.com"}
 ]
@@ -17,13 +17,14 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "pyglet>=2.0.12,<2.1",
-    "pillow~=10.0.0",
-    "pymunk~=6.5.1",
+    "pyglet == 2.1dev2",
+    "pillow~=10.2.0",
+    "pymunk~=6.6.0",
     "pytiled-parser~=2.2.3"
 ]
 dynamic = ["version"]
@@ -47,16 +48,16 @@ dev = [
     "coveralls",
     "pytest-mock",
     "pytest-cov",
-    "pygments==2.16.1",
+    "pygments==2.17.2",
     "docutils==0.20.1",
     "furo",
-    "pyright==1.1.337",
+    "pyright==1.1.355",
     "pyyaml==6.0.1",
-    "sphinx==7.2.2",
-    "sphinx-autobuild==2021.3.14",
+    "sphinx==7.2.6",
+    "sphinx-autobuild==2024.2.4",
     "sphinx-copybutton==0.5.2",
     "sphinx-sitemap==2.5.1",
-    "typer[all]==0.7.0",
+    "typer[all]==0.11.0",
     "wheel",
 ]
 # Testing only
@@ -65,7 +66,6 @@ testing_libraries = [
     "pytest-mock",
     "pytest-cov",
     "pyyaml==6.0.1",
-    "typer[all]==0.7.0",
 ]
 
 [project.scripts]

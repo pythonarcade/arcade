@@ -201,7 +201,7 @@ class MyGame(arcade.Window):
                 self.stone = new_stone
 
     def on_update(self, dt):
-        """ Update, drop stone if warrented """
+        """ Update, drop stone if warranted """
         self.frame_count += 1
         if self.frame_count % 10 == 0:
             self.drop()
@@ -251,7 +251,7 @@ class MyGame(arcade.Window):
                     y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
 
                     # Draw the box
-                    arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                    arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)
 
     def update_board(self):
         """

@@ -9,6 +9,7 @@ This example displays numerical stats with labels by using the following:
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.stats_topleft
 """
+
 from __future__ import annotations
 
 import arcade
@@ -68,9 +69,7 @@ class MyView(arcade.View):
 
         # Use a UIAnchorWidget to place the UILabels in the top left corner
         anchor = self.ui.add(UIAnchorLayout())
-        anchor.add(
-            align_x=10, anchor_x="left", align_y=-10, anchor_y="top", child=self.columns
-        )
+        anchor.add(align_x=10, anchor_x="left", align_y=-10, anchor_y="top", child=self.columns)
 
     def on_update(self, delta_time: float):
         self.timer.value += delta_time

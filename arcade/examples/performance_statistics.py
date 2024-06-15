@@ -40,7 +40,6 @@ GRAPH_MARGIN = 5
 
 COIN_COUNT = 1500
 
-
 # Turn on tracking for the number of event handler
 # calls and the average execution time of each type.
 arcade.enable_timings()

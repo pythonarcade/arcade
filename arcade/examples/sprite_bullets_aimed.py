@@ -128,13 +128,13 @@ class MyGame(arcade.Window):
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
 
-        # Angle the bullet sprite so it doesn't look like it is flying
-        # sideways.
-        bullet.angle = math.degrees(angle)
+        # Rotate the sprite clockwise to align it with its travel path
+        bullet.angle = - math.degrees(angle)
         print(f"Bullet angle: {bullet.angle:.2f}")
 
-        # Taking into account the angle, calculate our change_x
-        # and change_y. Velocity is how fast the bullet travels.
+        # Use the angle to calculate the velocity's change_x and
+        # change_y from speed. Speed is a directionless value, but
+        # the idea of velocity also includes direction.
         bullet.change_x = math.cos(angle) * BULLET_SPEED
         bullet.change_y = math.sin(angle) * BULLET_SPEED
 

@@ -1,25 +1,15 @@
 from __future__ import annotations
 
-import builtins
 from abc import ABC
+from math import floor
 from random import randint
-from typing import (
-    NamedTuple,
-    Iterable,
-    Optional,
-    Union,
-    TYPE_CHECKING,
-    TypeVar,
-    Tuple,
-    List,
-    Dict,
-)
+from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict, Callable
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import Self
 
 import arcade
-from arcade import Sprite, get_window, Texture
+from arcade import Sprite, Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -32,7 +22,8 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255, Color, Point, AsFloat
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
@@ -40,7 +31,7 @@ if TYPE_CHECKING:
 __all__ = ["Surface", "UIDummy"]
 
 
-class Rect(NamedTuple):
+class GUIRect(NamedTuple):
     """
     Representing a rectangle for GUI module.
     Rect is idempotent.
@@ -53,129 +44,180 @@ class Rect(NamedTuple):
     width: float
     height: float
 
-    def move(self, dx: float = 0, dy: float = 0):
+    def move(self, dx: AsFloat = 0.0, dy: AsFloat = 0.0) -> "GUIRect":
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        x, y, width, height = self
+        return GUIRect(x + dx, y + dy, width, height)
 
-    def collide_with_point(self, x, y):
+    def collide_with_point(self, x: AsFloat, y: AsFloat) -> bool:
+        """Return true if ``x`` and ``y`` are within this rect.
+
+        This check is inclusive. Values on the :py:attr:`.left`,
+        :py:attr:`.right`, :py:attr:`.top`, and :py:attr:`.bottom`
+        edges will be counted as inside the rect.
+
+        .. code-block:: python
+
+           >>> bounds = Rect(0.0, 0.0, 5.0, 5.0)
+           >>> bounds.collide_with_point(0.0, 0.0)
+           True
+           >>> bounds.collide_with_point(5.0, 5.0)
+           True
+
+        :param x: The x value to check as inside the rect.
+        :param y: The y value to check as inside the rect.
+        """
         left, bottom, width, height = self
         return left <= x <= left + width and bottom <= y <= bottom + height
 
-    def scale(self, scale: float) -> "Rect":
-        """Returns a new rect with scale applied"""
-        return Rect(
-            int(self.x * scale),
-            int(self.y * scale),
-            int(self.width * scale),
-            int(self.height * scale),
+    def scale(self, scale: float, rounding: Optional[Callable[..., float]] = floor) -> "GUIRect":
+        """Return a new rect scaled relative to the origin.
+
+        By default, the new rect's values are rounded down to whole
+        values. You can alter this by passing a different rounding
+        behavior:
+
+        * Pass ``None`` to skip rounding
+        * Pass a function which takes a number and returns a float
+          to choose rounding behavior.
+
+        :param scale: A scale factor.
+        :param rounding: ``None`` or a callable specifying how to
+            round the scaled values.
+        """
+        x, y, width, height = self
+        if rounding is not None:
+            return GUIRect(
+                rounding(x * scale),
+                rounding(y * scale),
+                rounding(width * scale),
+                rounding(height * scale),
+            )
+        return GUIRect(
+            x * scale,
+            y * scale,
+            width * scale,
+            height * scale,
         )
 
-    def resize(self, width=None, height=None):
-        """
-        Returns a rect with changed width and height.
+    def resize(self, width: float | None = None, height: float | None = None) -> "GUIRect":
+        """Return a rect with a new width or height but same lower left.
+
         Fix x and y coordinate.
+        :param width: A width for the new rectangle.
+        :param height: A height for the new rectangle.
         """
         width = width if width is not None else self.width
         height = height if height is not None else self.height
-        return Rect(self.x, self.y, width, height)
+        return GUIRect(self.x, self.y, width, height)
 
     @property
-    def size(self):
+    def size(self) -> Tuple[float, float]:
+        """Read-only pixel size of the rect.
+
+        Since these rects are immutable, use helper instance methods to
+        get updated rects. For example, :py:meth:`.resize` may be what
+        you're looking for.
+        """
         return self.width, self.height
 
     @property
-    def left(self):
+    def left(self) -> float:
+        """The left edge on the X axis."""
         return self.x
 
     @property
-    def right(self):
+    def right(self) -> float:
+        """The right edge on the X axis."""
         return self.x + self.width
 
     @property
-    def bottom(self):
+    def bottom(self) -> float:
+        """The bottom edge on the Y axis."""
         return self.y
 
     @property
-    def top(self):
+    def top(self) -> float:
+        """The top edge on the Y axis."""
         return self.y + self.height
 
     @property
-    def center_x(self):
+    def center_x(self) -> float:
         return self.x + self.width / 2
 
     @property
-    def center_y(self):
+    def center_y(self) -> float:
         return self.y + self.height / 2
 
     @property
-    def center(self):
+    def center(self) -> Point:
         return self.center_x, self.center_y
 
     @property
-    def position(self):
+    def position(self) -> Point:
         """Bottom left coordinates"""
         return self.left, self.bottom
 
-    def align_top(self, value: float) -> "Rect":
+    def align_top(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the top"""
         diff_y = value - self.top
         return self.move(dy=diff_y)
 
-    def align_bottom(self, value: float) -> "Rect":
+    def align_bottom(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the bottom"""
         diff_y = value - self.bottom
         return self.move(dy=diff_y)
 
-    def align_left(self, value: float) -> "Rect":
+    def align_left(self, value: float) -> "GUIRect":
         """Returns new Rect, which is aligned to the left"""
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: float) -> "Rect":
+    def align_right(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center(self, center_x, center_y):
+    def align_center(self, center_x: AsFloat, center_y: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center x and y"""
         diff_x = center_x - self.center_x
         diff_y = center_y - self.center_y
         return self.move(dx=diff_x, dy=diff_y)
 
-    def align_center_x(self, value: float) -> "Rect":
+    def align_center_x(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: float) -> "Rect":
+    def align_center_y(self, value: AsFloat) -> "GUIRect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
 
-    def min_size(self, width=None, height=None):
+    def min_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "GUIRect":
         """
         Sets the size to at least the given min values.
         """
-        return Rect(
+        return GUIRect(
             self.x,
             self.y,
             max(width or 0.0, self.width),
             max(height or 0.0, self.height),
         )
 
-    def max_size(self, width: Optional[float] = None, height: Optional[float] = None):
+    def max_size(self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None) -> "GUIRect":
         """
         Limits the size to the given max values.
         """
-        w, h = self.size
-        if width:
-            w = min(width, self.width)
-        if height:
-            h = min(height, self.height)
+        x, y, w, h = self
+        if width is not None:
+            w = min(width, w)
+        if height is not None:
+            h = min(height, h)
 
-        return Rect(self.x, self.y, w, h)
+        return GUIRect(x, y, w, h)
 
-    def union(self, rect: "Rect"):
+    def union(self, rect: "GUIRect") -> "GUIRect":
         """
         Returns a new Rect that is the union of this rect and another.
         The union is the smallest rectangle that contains theses two rectangles.
@@ -184,7 +226,7 @@ class Rect(NamedTuple):
         y = min(self.y, rect.y)
         right = max(self.right, rect.right)
         top = max(self.top, rect.top)
-        return Rect(x=x, y=y, width=right - x, height=top - y)
+        return GUIRect(x=x, y=y, width=right - x, height=top - y)
 
 
 W = TypeVar("W", bound="UIWidget")
@@ -195,6 +237,7 @@ class _ChildEntry(NamedTuple):
     data: Dict
 
 
+@copy_dunders_unimplemented
 class UIWidget(EventDispatcher, ABC):
     """
     The :class:`UIWidget` class is the base class required for creating widgets.
@@ -215,7 +258,7 @@ class UIWidget(EventDispatcher, ABC):
     :param style: not used
     """
 
-    rect: Rect = Property(Rect(0, 0, 1, 1))  # type: ignore
+    rect: GUIRect = Property(GUIRect(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
     size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
@@ -248,7 +291,7 @@ class UIWidget(EventDispatcher, ABC):
         **kwargs,
     ):
         self._requires_render = True
-        self.rect = Rect(x, y, width, height)
+        self.rect = GUIRect(x, y, width, height)
         self.parent: Optional[Union[UIManager, UIWidget]] = None
 
         # Size hints are properties that can be used by layouts
@@ -263,9 +306,7 @@ class UIWidget(EventDispatcher, ABC):
             self.add(child)
 
         bind(self, "rect", self.trigger_full_render)
-        bind(
-            self, "visible", self.trigger_full_render
-        )  # TODO maybe trigger_parent_render would be enough
+        bind(self, "visible", self.trigger_full_render)  # TODO maybe trigger_parent_render would be enough
         bind(self, "_children", self.trigger_render)
         bind(self, "_border_width", self.trigger_render)
         bind(self, "_border_color", self.trigger_render)
@@ -292,9 +333,9 @@ class UIWidget(EventDispatcher, ABC):
         if index is None:
             self._children.append(_ChildEntry(child, kwargs))
         else:
-            self._children.insert(
-                max(len(self.children), index), _ChildEntry(child, kwargs)
-            )
+            if not 0 <= index <= len(self.children):
+                raise ValueError("Index must be between 0 and the number of children")
+            self._children.insert(index, _ChildEntry(child, kwargs))
 
         return child
 
@@ -406,13 +447,11 @@ class UIWidget(EventDispatcher, ABC):
             surface.clear(self._bg_color)
         # draw background texture
         if self._bg_tex:
-            surface.draw_texture(
-                x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex
-            )
+            surface.draw_texture(x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex)
 
         # draw border
         if self._border_width and self._border_color:
-            arcade.draw_xywh_rectangle_outline(
+            arcade.draw_lbwh_rectangle_outline(
                 0,
                 0,
                 self.width,
@@ -551,32 +590,32 @@ class UIWidget(EventDispatcher, ABC):
     def with_padding(
         self,
         *,
-        top: Union["builtins.ellipsis", int] = ...,
-        right: Union["builtins.ellipsis", int] = ...,
-        bottom: Union["builtins.ellipsis", int] = ...,
-        left: Union["builtins.ellipsis", int] = ...,
-        all: Union["builtins.ellipsis", int] = ...,
+        top: Optional[int] = None,
+        right: Optional[int] = None,
+        bottom: Optional[int] = None,
+        left: Optional[int] = None,
+        all: Optional[int] = None,
     ) -> "UIWidget":
         """
         Changes the padding to the given values if set. Returns itself
         :return: self
         """
-        if all is not ...:
+        if all is not None:
             self.padding = all
-        if top is not ...:
+        if top is not None:
             self._padding_top = top
-        if right is not ...:
+        if right is not None:
             self._padding_right = right
-        if bottom is not ...:
+        if bottom is not None:
             self._padding_bottom = bottom
-        if left is not ...:
+        if left is not None:
             self._padding_left = left
         return self
 
     def with_background(
         self,
         *,
-        color: Union["builtins.ellipsis", Color] = ...,
+        color: Union[None, Color] = ...,  # type: ignore
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
     ) -> "UIWidget":
         """
@@ -603,25 +642,15 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def content_width(self):
-        return (
-            self.rect.width
-            - 2 * self._border_width
-            - self._padding_left
-            - self._padding_right
-        )
+        return self.rect.width - 2 * self._border_width - self._padding_left - self._padding_right
 
     @property
     def content_height(self):
-        return (
-            self.rect.height
-            - 2 * self._border_width
-            - self._padding_top
-            - self._padding_bottom
-        )
+        return self.rect.height - 2 * self._border_width - self._padding_top - self._padding_bottom
 
     @property
     def content_rect(self):
-        return Rect(
+        return GUIRect(
             self.left + self._border_width + self._padding_left,
             self.bottom + self._border_width + self._padding_bottom,
             self.content_width,
@@ -662,6 +691,7 @@ class UIInteractiveWidget(UIWidget):
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel:param x: center x of widget
+    :param interaction_buttons: defines, which mouse buttons should trigger the interaction (default: left mouse button)
     :param style: not used
     """
 
@@ -680,6 +710,7 @@ class UIInteractiveWidget(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
+        interaction_buttons=(arcade.MOUSE_BUTTON_LEFT,),
         **kwargs,
     ):
         super().__init__(
@@ -694,6 +725,8 @@ class UIInteractiveWidget(UIWidget):
         )
         self.register_event_type("on_click")
 
+        self.interaction_buttons = interaction_buttons
+
         bind(self, "pressed", self.trigger_render)
         bind(self, "hovered", self.trigger_render)
         bind(self, "disabled", self.trigger_render)
@@ -705,19 +738,24 @@ class UIInteractiveWidget(UIWidget):
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
-        if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
-            event.x, event.y
+        if (
+            isinstance(event, UIMousePressEvent)
+            and self.rect.collide_with_point(event.x, event.y)
+                and event.button in self.interaction_buttons
         ):
             self.pressed = True
             return EVENT_HANDLED
 
-        if self.pressed and isinstance(event, UIMouseReleaseEvent):
+        if self.pressed and isinstance(event, UIMouseReleaseEvent) and event.button in self.interaction_buttons:
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 if not self.disabled:
                     # Dispatch new on_click event, source is this widget itself
                     self.dispatch_event(
-                        "on_click", UIOnClickEvent(self, event.x, event.y)
+                        "on_click",
+                        UIOnClickEvent(
+                            source=self, x=event.x, y=event.y, button=event.button, modifiers=event.modifiers
+                        ),
                     )
                     # TODO unsure if it makes more sense to mark the event handled if the click event is handled.
                     return EVENT_HANDLED
@@ -773,10 +811,7 @@ class UIDummy(UIInteractiveWidget):
         )
         self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
         self.border_color = arcade.color.BATTLESHIP_GREY
-
-        self.bg_color = (
-            get_window().background_color
-        )  # ensures a clean surface to draw on
+        self.border_width = 0
 
     def on_click(self, event: UIOnClickEvent):
         print("UIDummy.rect:", self.rect)
@@ -784,23 +819,11 @@ class UIDummy(UIInteractiveWidget):
 
     def on_update(self, dt):
         self.border_width = 2 if self.hovered else 0
-        self.border_color = (
-            arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
-        )
+        self.border_color = arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         surface.clear(self.color)
-
-        # if self.hovered:
-        #     arcade.draw_xywh_rectangle_outline(
-        #         0,
-        #         0,
-        #         self.width,
-        #         self.height,
-        #         color=arcade.color.BATTLESHIP_GREY,
-        #         border_width=3,
-        #     )
 
 
 class UISpriteWidget(UIWidget):

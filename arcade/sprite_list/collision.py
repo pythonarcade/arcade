@@ -17,7 +17,8 @@ from arcade.geometry import (
 )
 from arcade.math import get_distance
 from arcade.sprite import BasicSprite, SpriteType
-from arcade.types import Point, Rect
+from arcade.types import Point
+from arcade.types.rect import Rect
 
 from .sprite_list import SpriteList
 
@@ -343,12 +344,7 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List
                 f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
             )
 
-    rect_points = (
-        (rect[0], rect[3]),
-        (rect[1], rect[3]),
-        (rect[1], rect[2]),
-        (rect[0], rect[2]),
-    )
+    rect_points = rect.to_points()
     sprites_to_check: Iterable[SpriteType]
 
     if sprite_list.spatial_hash is not None:

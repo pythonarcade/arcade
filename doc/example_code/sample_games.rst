@@ -13,14 +13,56 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
-BoxHead
+Brazier
 ~~~~~~~
+
+.. image:: https://img.itch.zone/aW1nLzE2NDkzMDIyLnBuZw==/315x250%23c/2l4Uej.png
+   :width: 400px
+
+- [Itch page](https://dragonmoffon.itch.io/brazier)
+- [GitHub page](https://github.com/DragonMoffon/MiniJam160-Light)
+
+PhotoShip
+~~~~~~~~~
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjc2NDUxOC8xNjQ5MjYwOC5wbmc=/794x1000/aPyjik.png
+   :width: 400px
+
+- [Itch page](https://clodon.itch.io/photoship)
+- [GitHub page](https://github.com/clodon2/PhotoShip)
+
+
+Space Station Builder
+~~~~~~~~~~~~~~~~~~~~~
+
+Build your own space station!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjY5NTk3NC8xNjA3MTA2Ni5naWY=/794x1000/ONUlqh.gif
+   :width: 500px
+
+Download at [Kosmolonia on itch.io](https://aliskda.itch.io/kosmolonia).
+
+Notepad Doodles
+~~~~~~~~~~~~~~~
+
+Survive waves of monsters!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjYxOTIxOS8xNjE5MTMxMi5wbmc=/original/dGbRh5.png
+   :width: 400px
+
+Download at [Notepad Doodles on itch.io](https://arkturdev.itch.io/notepad-doodles).
+
+BoxHead Survivor
+~~~~~~~~~~~~~~~~
 
 .. image:: https://img.itch.zone/aW1hZ2UvMjM1MTM4Mi8xMzkyODQ1Ni5qcGc=/original/YI7uLX.jpg
    :width: 560px
 
-- GitHub:  Unchained112/BoxHead2D: A top-down shooter game dev with Python Arcade (github.com)
-- itch io:  BoxHead Survivor by Unchain (itch.io)
+A top-down 2D shooter game.
+
+* Playable builds at `itch.io <https://unchain112.itch.io/boxhead-survivor>`_
+* Source on `GitHub at Unchained112/BoxHead2D <https://github.com/Unchained112/BoxHead2D>`_
+
 
 Temporum
 ~~~~~~~~
@@ -197,7 +239,7 @@ Space Typer
 FlapPy Bird
 ~~~~~~~~~~~
 
-.. image:: https://camo.githubusercontent.com/f0e9f79d083289e7385a9af79231ba9cc07a10dd/68747470733a2f2f692e706f7374696d672e63632f665678394b736b672f53637265656e5f53686f745f323031382d30392d32375f61745f31322e31312e31395f414d2e706e67
+.. image:: https://camo.githubusercontent.com/b373859d570155b72030f36ae7ece8b9575bda6d45eb0695f5a060d3dfa27dab/68747470733a2f2f692e706f7374696d672e63632f665678394b736b672f53637265656e5f53686f745f323031382d30392d32375f61745f31322e31312e31395f414d2e706e67
 
 `FlapPy-Bird`_ - A bird-game clone.
 
@@ -230,7 +272,7 @@ Dungeon_, explore a maze picking up arrows and coins.
 Two Worlds
 ~~~~~~~~~~
 
-.. image:: https://camo.githubusercontent.com/bb2fb323ea9ab3f6041d3b72569a2d2360aa46ba07fe4cb3dbcd8248b3e8699d/68747470733a2f2f696d6775722e636f6d2f7356516e4331542e706e67
+.. image:: https://camo.githubusercontent.com/a74f38285980087502aec7795e10bec5869e71c840a35729fa37edf6ad17858d/68747470733a2f2f696d6775722e636f6d2f634372674171712e706e67
    :width: 75%
 
 `Two Worlds`_, a castle adventure with a dungeon and caverns underneath it.

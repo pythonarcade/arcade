@@ -15,6 +15,7 @@ from arcade.gui import (
     UIMouseScrollEvent,
     UIMouseEvent,
 )
+from arcade.types import LBWH
 
 
 class UIScrollArea(UIWidget):
@@ -58,6 +59,10 @@ class UIScrollArea(UIWidget):
         bind(self, "scroll_x", self.trigger_full_render)
         bind(self, "scroll_y", self.trigger_full_render)
 
+    def remove(self, child: "UIWidget"):
+        super().remove(child)
+        self.trigger_full_render()
+
     def _do_render(self, surface: Surface, force=False) -> bool:
         if not self.visible:
             return False
@@ -86,19 +91,14 @@ class UIScrollArea(UIWidget):
         # draw the whole surface, the scissor box, will limit the visible area on screen
         width, height = self.surface.size
         self.surface.position = (-self.scroll_x, -self.scroll_y)
-        self.surface.draw((0, 0, width, height))
+        self.surface.draw(LBWH(0, 0, width, height))
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(
-            event.x, event.y
-        ):
+        if isinstance(event, UIMouseDragEvent) and not self.rect.collide_with_point(event.x, event.y):
             return EVENT_UNHANDLED
 
         # drag scroll area around with middle mouse button
-        if (
-            isinstance(event, UIMouseDragEvent)
-            and event.buttons & arcade.MOUSE_BUTTON_MIDDLE
-        ):
+        if isinstance(event, UIMouseDragEvent) and event.buttons & arcade.MOUSE_BUTTON_MIDDLE:
             self.scroll_x -= event.dx
             self.scroll_y -= event.dy
             return True
@@ -113,7 +113,7 @@ class UIScrollArea(UIWidget):
         child_event = event
         if isinstance(event, UIMouseEvent):
             child_event = type(event)(**event.__dict__)  # type: ignore
-            child_event.x = event.x - self.x + self.scroll_x
-            child_event.y = event.y - self.y + self.scroll_y
+            child_event.x = int(event.x - self.x + self.scroll_x)
+            child_event.y = int(event.y - self.y + self.scroll_y)
 
         return super().on_event(child_event)

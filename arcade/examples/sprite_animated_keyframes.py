@@ -39,5 +39,10 @@ class Animated(arcade.Window):
         self.sprite.update_animation(delta_time)
 
 
-if __name__ == "__main__":
+def main():
     Animated().run()
+
+
+if __name__ == "__main__":
+    main()
+

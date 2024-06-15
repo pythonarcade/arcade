@@ -45,18 +45,14 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Track the current state of what key is pressed
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
 
-        self.camera_sprites = arcade.SimpleCamera()
-        self.camera_gui = arcade.SimpleCamera()
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -87,11 +83,6 @@ class MyGame(arcade.Window):
         # Set the background color
         self.background_color = arcade.color.AMAZON
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
     def on_draw(self):
         """
         Render the screen.
@@ -111,7 +102,7 @@ class MyGame(arcade.Window):
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
         text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
@@ -185,37 +176,43 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
+        _target_x, _target_y = self.camera_sprites.position
+
+        top_left = self.camera_sprites.top_left
+        bottom_right = self.camera_sprites.bottom_right
+
         # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+            _target_x -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
+            _target_x += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
+            _target_y += self.player_sprite.top - top_boundary
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
+            _target_y -= bottom_boundary - self.player_sprite.bottom
 
         # Scroll to the proper location
-        position = self.view_left, self.view_bottom
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
+        position = _target_x, _target_y
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
     def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        super().on_resize(width, height)
+        self.camera_sprites.match_screen(and_projection=True)
+        self.camera_gui.match_screen(and_projection=True)
 
 
 def main():

@@ -18,7 +18,7 @@ SCREEN_TITLE = "Line of Sight"
 
 MOVEMENT_SPEED = 5
 
-VIEWPORT_MARGIN = 300
+VIEWPORT_MARGIN = 250
 
 
 class MyGame(arcade.Window):
@@ -50,15 +50,17 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
+        # Camera for scrolling
+        self.cam = None
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
+
+        # Camera
+        self.cam = arcade.camera.Camera2D()
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -81,7 +83,7 @@ class MyGame(arcade.Window):
         spacing = 200
         for column in range(10):
             for row in range(10):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=0.5)
+                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -144,47 +146,43 @@ class MyGame(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Keep track of if we changed the boundary. We don't want to call the
-        # set_viewport command if we didn't change the view port.
+        # Keep track of if we changed the boundary. We don't want to
+        # update the camera if we don't need to.
         changed = False
 
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player.left < left_boundary:
-            self.view_left -= left_boundary - self.player.left
-            changed = True
+        pos = self.cam.position
 
-        # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-        if self.player.right > right_boundary:
-            self.view_left += self.player.right - right_boundary
+        top_left = self.cam.top_left
+        bottom_right = self.cam.bottom_right
+
+        # Scroll left
+        left_boundary = top_left[0] + VIEWPORT_MARGIN
+        if self.player.left < left_boundary:
             changed = True
+            pos = pos[0] + (self.player.left - left_boundary), pos[1]
 
         # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        top_boundary = top_left[1] - VIEWPORT_MARGIN
         if self.player.top > top_boundary:
-            self.view_bottom += self.player.top - top_boundary
             changed = True
+            pos = pos[0], pos[1] + (self.player.top - top_boundary)
+
+        # Scroll right
+        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
+        if self.player.right > right_boundary:
+            changed = True
+            pos = pos[0] + (self.player.right - right_boundary), pos[1]
 
         # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
         if self.player.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player.bottom
             changed = True
-
-        # Make sure our boundaries are integer values. While the view port does
-        # support floating point numbers, for this application we want every pixel
-        # in the view port to map directly onto a pixel on the screen. We don't want
-        # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
+            pos = pos[0], pos[1] + (self.player.bottom - bottom_boundary)
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            self.cam.position = pos
+            self.cam.use()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -57,8 +57,8 @@ class Ellipse(Shape):
 class Rectangle(Shape):
 
     def draw(self):
-        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
-                                     self.color, self.angle)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.x, self.y, self.width, self.height),
+                                self.color, self.angle)
 
 
 class Line(Shape):

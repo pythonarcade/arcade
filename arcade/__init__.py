@@ -68,7 +68,6 @@ if sys.platform == "darwin" or os.environ.get('ARCADE_HEADLESS') or utils.is_ras
 # pyglet.options['win32_gdi_font'] = True
 
 # Imports from modules that don't do anything circular
-from .drawing_support import get_points_for_thick_line
 
 # Complex imports with potential circularity
 from .window_commands import close_window
@@ -79,13 +78,11 @@ from .window_commands import get_window
 from .window_commands import schedule
 from .window_commands import run
 from .window_commands import set_background_color
-from .window_commands import set_viewport
 from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
 
-from .camera import SimpleCamera, Camera
 from .sections import Section, SectionManager
 
 from .application import MOUSE_BUTTON_LEFT
@@ -109,6 +106,7 @@ from .texture import make_soft_square_texture
 from .texture import get_default_image
 from .texture import get_default_texture
 
+from .draw_commands import get_points_for_thick_line
 from .draw_commands import draw_arc_filled
 from .draw_commands import draw_arc_outline
 from .draw_commands import draw_circle_filled
@@ -118,25 +116,25 @@ from .draw_commands import draw_ellipse_outline
 from .draw_commands import draw_line
 from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
-from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrbt_rectangle_filled
-from .draw_commands import draw_lrtb_rectangle_outline
 from .draw_commands import draw_lrbt_rectangle_outline
-from .draw_commands import draw_lrwh_rectangle_textured
+from .draw_commands import draw_lbwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
 from .draw_commands import draw_point
 from .draw_commands import draw_points
 from .draw_commands import draw_polygon_filled
 from .draw_commands import draw_polygon_outline
-from .draw_commands import draw_rectangle_filled
-from .draw_commands import draw_rectangle_outline
+from .draw_commands import draw_rect_filled
+from .draw_commands import draw_rect_outline
 from .draw_commands import draw_scaled_texture_rectangle
 from .draw_commands import draw_texture_rectangle
 from .draw_commands import draw_triangle_filled
 from .draw_commands import draw_triangle_outline
-from .draw_commands import draw_xywh_rectangle_filled
-from .draw_commands import draw_xywh_rectangle_outline
+from .draw_commands import draw_lbwh_rectangle_filled
+from .draw_commands import draw_lbwh_rectangle_outline
+from .draw_commands import draw_rect_filled_kwargs
+from .draw_commands import draw_rect_outline_kwargs
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
@@ -216,9 +214,14 @@ from .perf_info import disable_timings
 
 from .perf_graph import PerfGraph
 
+from .camera import Camera2D
+
+from .types.rect import Rect, LRBT, LBWH, XYWH
+
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
+from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
 from arcade import types as types
@@ -226,6 +229,10 @@ from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
 from arcade import experimental as experimental
+from arcade.types import rect
+
+# For ease of access for beginners
+from pyglet.math import Vec2, Vec3, Vec4
 
 from .text import (
     draw_text,
@@ -241,8 +248,6 @@ __all__ = [
     'TextureAnimation',
     'TextureKeyframe',
     'ArcadeContext',
-    'Camera',
-    'SimpleCamera',
     'ControllerManager',
     'FACE_DOWN',
     'FACE_LEFT',
@@ -259,6 +264,10 @@ __all__ = [
     'PymunkException',
     'PymunkPhysicsEngine',
     'PymunkPhysicsObject',
+    'Rect',
+    'LBWH',
+    'LRBT',
+    'XYWH',
     'Section',
     'SectionManager',
     'Scene',
@@ -278,6 +287,9 @@ __all__ = [
     'TextureAtlas',
     'TileMap',
     'VERSION',
+    'Vec2',
+    'Vec3',
+    'Vec4',
     'View',
     'Window',
     'astar_calculate_path',
@@ -295,26 +307,28 @@ __all__ = [
     'draw_line',
     'draw_line_strip',
     'draw_lines',
-    'draw_lrtb_rectangle_filled',
+    'draw_lbwh_rectangle_textured',
     'draw_lrbt_rectangle_filled',
-    'draw_lrtb_rectangle_outline',
+    'draw_lrbt_rectangle_filled',
     'draw_lrbt_rectangle_outline',
-    'draw_lrwh_rectangle_textured',
+    'draw_lrbt_rectangle_outline',
     'draw_parabola_filled',
     'draw_parabola_outline',
     'draw_point',
     'draw_points',
     'draw_polygon_filled',
     'draw_polygon_outline',
-    'draw_rectangle_filled',
-    'draw_rectangle_outline',
+    'draw_rect_filled',
+    'draw_rect_outline',
     'draw_scaled_texture_rectangle',
     'draw_text',
     'draw_texture_rectangle',
     'draw_triangle_filled',
     'draw_triangle_outline',
-    'draw_xywh_rectangle_filled',
-    'draw_xywh_rectangle_outline',
+    'draw_lbwh_rectangle_filled',
+    'draw_lbwh_rectangle_outline',
+    'draw_rect_outline_kwargs',
+    'draw_rect_filled_kwargs',
     'enable_timings',
     'exit',
     'finish_render',
@@ -355,7 +369,6 @@ __all__ = [
     'run',
     'schedule',
     'set_background_color',
-    'set_viewport',
     'set_window',
     'start_render',
     'stop_sound',
@@ -366,6 +379,7 @@ __all__ = [
     'get_default_image',
     'hitbox',
     'experimental',
+    'rect',
     'color',
     'csscolor',
     'key',
@@ -373,6 +387,7 @@ __all__ = [
     'types',
     'math',
     'shape_list',
+    'Camera2D'
 ]
 
 __version__ = VERSION

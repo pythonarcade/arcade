@@ -9,7 +9,7 @@ from pymunk.autogeometry import (
     simplify_curves,
 )
 from pymunk import Vec2d
-from arcade.types import Point, PointList
+from arcade.types import Point2, Point2List
 from .base import HitBoxAlgorithm
 
 
@@ -33,7 +33,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         """Create a new instance with new default values"""
         return PymunkHitBoxAlgorithm(detail=detail or self.detail)
 
-    def calculate(self, image: Image, detail: Optional[float] = None, **kwargs) -> PointList:
+    def calculate(self, image: Image, detail: Optional[float] = None, **kwargs) -> Point2List:
         """
         Given an RGBA image, this returns points that make up a hit box around it.
 
@@ -62,7 +62,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
 
         return self.to_points_list(image, line_set)
 
-    def to_points_list(self, image: Image, line_set: List[Vec2d]) -> PointList:
+    def to_points_list(self, image: Image, line_set: List[Vec2d]) -> Point2List:
         """
         Convert a line set to a list of points.
 
@@ -100,7 +100,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         :param image: Image to trace.
         :return: Line sets
         """
-        def sample_func(sample_point: Point) -> int:
+        def sample_func(sample_point: Point2) -> int:
             """ Method used to sample image. """
             if sample_point[0] < 0 \
                     or sample_point[1] < 0 \

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 import arcade
 import arcade.cache
 from .texture import ImageData, Texture
-from arcade.types import IPoint
+from arcade.types import Size2D
 
 _DEFAULT_TEXTURE = None
 _DEFAULT_IMAGE_SIZE = (128, 128)
@@ -18,7 +18,7 @@ def cleanup_texture_cache():
     arcade.texture.default_texture_cache.flush()
 
 
-def get_default_texture(size: IPoint = _DEFAULT_IMAGE_SIZE) -> Texture:
+def get_default_texture(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> Texture:
     """
     Creates and returns a default texture and caches it internally for future use.
 
@@ -36,7 +36,7 @@ def get_default_texture(size: IPoint = _DEFAULT_IMAGE_SIZE) -> Texture:
     return _DEFAULT_TEXTURE
 
 
-def get_default_image(size: IPoint = _DEFAULT_IMAGE_SIZE) -> ImageData:
+def get_default_image(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> ImageData:
     """
     Generates and returns a default image and caches it internally for future use.
 

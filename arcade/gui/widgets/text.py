@@ -20,9 +20,9 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, Rect
+from arcade.gui.widgets import UIWidget, GUIRect
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255, RGB
+from arcade.types import RGBA255, Color, RGBOrA255
 
 
 class UILabel(UIWidget):
@@ -34,6 +34,9 @@ class UILabel(UIWidget):
 
     By default, a label will fit its initial content. If the text is changed use
     :py:meth:`~arcade.gui.UILabel.fit_content` to adjust the size.
+
+    If the text changes frequently, ensure to set a background color or texture, which will
+    prevent a full rendering of the whole UI and only render the label itself.
 
     :param text: Text displayed on the label.
     :param x: x position (default anchor is bottom-left).
@@ -166,7 +169,11 @@ class UILabel(UIWidget):
             self.label.text = value
             self._update_layout()
             self._update_size_hint_min()
-            self.trigger_full_render()
+
+            if self._bg_color or self._bg_tex:
+                self.trigger_render()
+            else:
+                self.trigger_full_render()
 
     def _update_layout(self):
         # Update Pyglet layout size
@@ -183,8 +190,9 @@ class UILabel(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.label.draw()
+
+        # pyglet rendering automatically applied by arcade.Text
+        self.label.draw()
 
 
 class UITextWidget(UIAnchorLayout):
@@ -298,7 +306,8 @@ class UIInputText(UIWidget):
                       :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of
                       True is the same thing as
                       a :py:class:`~arcade.gui.UITextArea`.
-    :param caret_color: RGB color of the caret.
+    :param caret_color: An RGBA or RGB color for the caret with each
+        channel between 0 and 255, inclusive.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
                       space of the parent should be requested.
     :param size_hint_min: Minimum size hint width and height in pixel.
@@ -323,7 +332,7 @@ class UIInputText(UIWidget):
         font_size: float = 12,
         text_color: RGBOrA255 = (0, 0, 0, 255),
         multiline=False,
-        caret_color: RGB = (0, 0, 0),
+        caret_color: RGBOrA255 = (0, 0, 0, 255),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -351,10 +360,15 @@ class UIInputText(UIWidget):
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
-            self.doc, width - self.LAYOUT_OFFSET, height, multiline=multiline
+            self.doc,
+            x=x + self.LAYOUT_OFFSET,
+            y=y,
+            z=0.0,  # Position
+            width=int(width - self.LAYOUT_OFFSET),
+            height=int(height),  # Size
+            multiline=multiline,
         )
-        self.layout.x += self.LAYOUT_OFFSET
-        self.caret = Caret(self.layout, color=caret_color)
+        self.caret = Caret(self.layout, color=Color.from_iterable(caret_color))
         self.caret.visible = False
 
         self._blink_state = self._get_caret_blink_state()
@@ -383,7 +397,8 @@ class UIInputText(UIWidget):
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
-                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
+                x = int(event.x - self.x - self.LAYOUT_OFFSET)
+                y = int(event.y - self.y)
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
@@ -404,14 +419,11 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(
-                event.x, event.y
-            ):
-                x, y = event.x - self.x - self.LAYOUT_OFFSET, event.y - self.y
+            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
+                x = int(event.x - self.x - self.LAYOUT_OFFSET)
+                y = int(event.y - self.y)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy, event.buttons, event.modifiers
-                    )
+                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
@@ -429,8 +441,8 @@ class UIInputText(UIWidget):
 
         if layout_size != self.content_size:
             layout.begin_update()
-            layout.width = self.content_width - self.LAYOUT_OFFSET
-            layout.height = self.content_height
+            layout.width = int(self.content_width - self.LAYOUT_OFFSET)
+            layout.height = int(self.content_height)
             layout.end_update()
 
     @property
@@ -520,8 +532,8 @@ class UITextArea(UIWidget):
 
         self.layout = pyglet.text.layout.ScrollableTextLayout(
             self.doc,
-            width=self.content_width,
-            height=self.content_height,
+            width=int(self.content_width),
+            height=int(self.content_height),
             multiline=multiline,
         )
 
@@ -531,7 +543,7 @@ class UITextArea(UIWidget):
         """
         Set the width and height of the text area to contain the whole text.
         """
-        self.rect = Rect(
+        self.rect = GUIRect(
             self.x,
             self.y,
             self.layout.content_width,
@@ -550,12 +562,14 @@ class UITextArea(UIWidget):
     def _update_layout(self):
         # Update Pyglet layout size
         layout = self.layout
-        layout_size = layout.width, layout.height
 
-        if layout_size != self.content_size:
+        # Convert from local float coords to ints to avoid jitter
+        # since pyglet imposes int-only coordinates as of pyglet 2.0
+        content_width, content_height = map(int, self.content_size)
+        if content_width != layout.width or content_height != layout.height:
             layout.begin_update()
-            layout.width = self.content_width
-            layout.height = self.content_height
+            layout.width = content_width
+            layout.height = content_height
             layout.end_update()
 
     def do_render(self, surface: Surface):

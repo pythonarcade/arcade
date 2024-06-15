@@ -76,7 +76,6 @@ def is_point_in_box(p: Point, q: Point, r: Point) -> bool:
     )
 
 
-# NOTE: Should be named are_point_in_box
 def get_triangle_orientation(p: Point, q: Point, r: Point) -> int:
     """
     Find the orientation of a triangle defined by (p, q, r)

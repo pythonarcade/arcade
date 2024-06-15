@@ -9,6 +9,7 @@ same, like a window.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.ninepatch
 """
+
 from __future__ import annotations
 
 import arcade
@@ -25,9 +26,7 @@ class MyView(arcade.View):
         self.nine_patch_widget = UIWidget(size_hint=(0.5, 0.5))
         self.nine_patch_widget.with_background(
             texture=NinePatchTexture(
-                texture=load_texture(
-                    ":resources:gui_basic_assets/window/grey_panel.png"
-                ),
+                texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
                 left=7,
                 right=7,
                 bottom=7,
@@ -50,7 +49,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

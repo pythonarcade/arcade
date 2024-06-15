@@ -10,7 +10,7 @@ import pyglet
 
 import arcade
 from arcade.resources import resolve
-from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
+from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
 __all__ = [
@@ -213,8 +213,9 @@ class Text:
             z=z,
             font_name=adjusted_font,
             font_size=font_size,
-            anchor_x=anchor_x,
-            anchor_y=anchor_y,
+            # use type: ignore since cast is slow & pyglet used Literal
+            anchor_x=anchor_x,  # type: ignore
+            anchor_y=anchor_y,  # type: ignore
             color=Color.from_iterable(color),
             width=width,
             align=align,
@@ -358,7 +359,7 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x
+        self._label.anchor_x = anchor_x  # type: ignore
 
     @property
     def anchor_y(self) -> str:
@@ -371,7 +372,7 @@ class Text:
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y
+        self._label.anchor_y = anchor_y  # type: ignore
 
     @property
     def rotation(self) -> float:
@@ -442,28 +443,28 @@ class Text:
         return self._label.content_height
 
     @property
-    def left(self) -> int:
+    def left(self) -> float:
         """
         Pixel location of the left content border.
         """
         return self._label.left
 
     @property
-    def right(self) -> int:
+    def right(self) -> float:
         """
         Pixel location of the right content border.
         """
         return self._label.right
 
     @property
-    def top(self) -> int:
+    def top(self) -> float:
         """
         Pixel location of the top content border.
         """
         return self._label.top
 
     @property
-    def bottom(self) -> int:
+    def bottom(self) -> float:
         """
         Pixel location of the bottom content border.
         """
@@ -571,12 +572,14 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Union[Point, Point3]):
+    def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(point) == 3:
-            self._label.position = point
+        x, y, *z = point
+
+        if z:
+            self._label.position = x, y, z[0]
         else:
-            self._label.position = *point, self._label.z
+            self._label.position = x, y, self._label.z
 
 
 def create_text_sprite(
@@ -651,7 +654,7 @@ def create_text_sprite(
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
     with texture_atlas.render_into(texture) as fbo:
-        fbo.clear(background_color or arcade.color.TRANSPARENT_BLACK)
+        fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
         text_object.draw()
 
     return arcade.Sprite(

@@ -7,13 +7,14 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.particle_fireworks
 """
 import random
+from typing import Optional
+
 import pyglet
 from pyglet.math import Vec2
 
 import arcade
-from arcade.types import Point
+from arcade.types import Point, PathOrTexture
 from arcade.math import rand_in_rect, clamp, lerp, rand_in_circle, rand_on_circle
-from arcade.types import PathOrTexture
 from arcade.particles import (
     Emitter,
     LifetimeParticle,
@@ -127,7 +128,7 @@ class AnimatedAlphaParticle(LifetimeParticle):
 
     def __init__(
             self,
-            filename_or_texture: PathOrTexture,
+            filename_or_texture: Optional[PathOrTexture],
             change_xy: Vec2,
             start_alpha: int = 0,
             duration1: float = 1.0,
@@ -362,6 +363,10 @@ def rocket_smoke_mutator(particle: LifetimeParticle):
     particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
 
 
-if __name__ == "__main__":
+def main():
     app = FireworksApp()
-    arcade.run()
+    app.run()
+
+
+if __name__ == "__main__":
+    main()

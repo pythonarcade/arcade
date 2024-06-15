@@ -34,10 +34,11 @@ from arcade import (
     gl,
 )
 from arcade.gl import Texture2D, Program
-from arcade.types import Color, RGBA255
+from arcade.types import Color, RGBA255, RGBOrANormalized, RGBANormalized
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas
@@ -53,6 +54,7 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 _DEFAULT_CAPACITY = 100
 
 
+@copy_dunders_unimplemented  # Temp fixes https://github.com/pythonarcade/arcade/issues/2074
 class SpriteList(Generic[SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.
@@ -252,7 +254,7 @@ class SpriteList(Generic[SpriteType]):
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i: int) -> SpriteType:
         return self.sprite_list[i]
 
     def __setitem__(self, index: int, sprite: SpriteType) -> None:
@@ -294,7 +296,7 @@ class SpriteList(Generic[SpriteType]):
         return self._visible
 
     @visible.setter
-    def visible(self, value: bool):
+    def visible(self, value: bool) -> None:
         self._visible = value
 
     @property
@@ -325,11 +327,11 @@ class SpriteList(Generic[SpriteType]):
         return Color.from_normalized(self._color)
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBA255) -> None:
         self._color = Color.from_iterable(color).normalized
 
     @property
-    def color_normalized(self) -> Tuple[float, float, float, float]:
+    def color_normalized(self) -> RGBANormalized:
         """
         Get or set the spritelist color in normalized form (0.0 -> 1.0 floats).
         This property works the same as :py:attr:`~arcade.SpriteList.color`.
@@ -337,8 +339,16 @@ class SpriteList(Generic[SpriteType]):
         return self._color
 
     @color_normalized.setter
-    def color_normalized(self, value):
-        self._color = value
+    def color_normalized(self, value: RGBOrANormalized) -> None:
+        try:
+            r, g, b, *_a = value
+            assert len(_a) <= 1
+        except (ValueError, AssertionError) as e:
+            raise ValueError(
+                "color_normalized must unpack as 3 or 4 float values"
+            ) from e
+
+        self._color = r, g, b, _a[0] if _a else 1.0
 
     @property
     def alpha(self) -> int:
@@ -350,7 +360,7 @@ class SpriteList(Generic[SpriteType]):
         return int(self._color[3] * 255)
 
     @alpha.setter
-    def alpha(self, value: int):
+    def alpha(self, value: int) -> None:
         # value = clamp(value, 0, 255)
         self._color = self._color[0], self._color[1], self._color[2], value / 255
 
@@ -367,7 +377,7 @@ class SpriteList(Generic[SpriteType]):
         return self._color[3]
 
     @alpha_normalized.setter
-    def alpha_normalized(self, value: float):
+    def alpha_normalized(self, value: float) -> None:
         # value = clamp(value, 0.0, 1.0)
         self._color = self._color[0], self._color[1], self._color[2], value
 
@@ -579,13 +589,20 @@ class SpriteList(Generic[SpriteType]):
             self._init_deferred()
 
     def pop(self, index: int = -1) -> SpriteType:
-        """
-        Pop off the last sprite, or the given index, from the list
+        """Attempt to pop a sprite from the list.
 
-        :param index: Index of sprite to remove, defaults to -1 for the last item.
+        This works like :external:ref:`popping from <tut-morelists>` a
+        standard Python :py:class:`list`:
+
+        #. If the list is empty, raise an :py:class:`IndexError`
+        #. If no ``index`` is passed, try to pop the last
+           :py:class:`Sprite` in the list
+
+        :param index: Index of sprite to remove (defaults to ``-1`` for
+            the last item)
         """
         if len(self.sprite_list) == 0:
-            raise (ValueError("pop from empty list"))
+            raise IndexError("pop from empty list")
 
         sprite = self.sprite_list[index]
         self.remove(sprite)
@@ -1039,7 +1056,11 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
-    def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1):
+    def draw_hit_boxes(
+            self,
+            color: RGBA255 = (0, 0, 0, 255),
+            line_thickness: float = 1.0
+    ) -> None:
         """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
@@ -1262,7 +1283,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
         self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
         self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
-        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3])
+        self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3] * sprite._visible)
         self._sprite_color_changed = True
 
     def _update_size(self, sprite: SpriteType) -> None:
