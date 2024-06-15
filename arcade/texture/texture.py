@@ -121,7 +121,6 @@ class Texture:
     """
     An arcade.Texture is simply a wrapper for image data as a Pillow image
     and the hit box data for this image used in collision detection.
-    Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
     :param image: The image or ImageData for this texture
     :param hit_box_algorithm: The algorithm to use for calculating the hit box.
