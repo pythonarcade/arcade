@@ -844,7 +844,7 @@ class Texture:
     def draw_rect(self, rect: Rect, alpha: int = 255):
         """
         Draw the texture.
- 
+
         .. warning:: This is a very slow method of drawing a texture,
                      and should be used sparingly. The method simply
                      creates a sprite internally and draws it.

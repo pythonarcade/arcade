@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple
 from pathlib import Path
 
 import PIL.Image
