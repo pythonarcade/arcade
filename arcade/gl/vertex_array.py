@@ -138,7 +138,7 @@ class VertexArray:
         ctx.stats.decr("vertex_array")
 
     def _build(
-        self, program: Program, content: Sequence[BufferDescription], index_buffer
+        self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]
     ):
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
