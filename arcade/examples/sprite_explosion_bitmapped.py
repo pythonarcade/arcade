@@ -80,7 +80,12 @@ class MyGame(arcade.Window):
         file_name = ":resources:images/spritesheets/explosion.png"
 
         # Load the explosions from a sprite sheet
-        self.explosion_texture_list = arcade.load_spritesheet(file_name, sprite_width, sprite_height, columns, count)
+        spritesheet = arcade.load_spritesheet(file_name)
+        self.explosion_texture_list = spritesheet.get_texture_grid(
+            size=(sprite_width, sprite_height),
+            columns=columns,
+            count=count,
+        )
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")

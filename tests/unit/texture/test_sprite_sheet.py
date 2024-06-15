@@ -2,13 +2,32 @@ import pytest
 from PIL import Image
 import arcade
 
+# 32x8 grid of 8x16 sprites
 SPRITE_SHEET_RESOURCE = ":resources:images/spritesheets/codepage_437.png"
 SPRITE_SHEET_PATH = arcade.resources.resolve(SPRITE_SHEET_RESOURCE)
 
 
-@pytest.fixture
+def get_dollar_sign(sprite_sheet: arcade.SpriteSheet):
+    """
+    Crop out the dollar sign from the sprite sheet.
+    """
+    # left, upper, right, and lower
+    return sprite_sheet.image.crop((
+        9 * 4,  # left: 4th column
+        16,  # upper: second row
+        9 * 4 + 8,  # right: 8 pixels wide
+        16 + 16  # lower: 16 pixels tall
+    ))
+
+
+@pytest.fixture(scope="module")
 def image():
     return Image.new("RGBA", (10, 10))
+
+
+@pytest.fixture(scope="module")
+def sprite_sheet():
+    return arcade.SpriteSheet(SPRITE_SHEET_RESOURCE)
 
 
 def test_create_from_path():
@@ -49,16 +68,67 @@ def test_flip():
     assert ss.flip_flags == (False, False)
 
 
-def test_crop():
-    pass
+def test_get_image(sprite_sheet):
+    """Get an image from the sprite sheet."""
+    dollar_sign = get_dollar_sign(sprite_sheet)
+
+    # Crop out the dollar sign using upper left origin
+    im = sprite_sheet.get_image(
+        x=9 * 4,  # 4th column
+        y=16,  # second row
+        width=8,
+        height=16,
+        origin="upper_left",
+    )
+    assert isinstance(im, Image.Image)
+    assert im.size == (8, 16)
+    assert im.tobytes() == dollar_sign.tobytes()
+
+    # Crop out the dollar sign using lower left origin
+    im = sprite_sheet.get_image(
+        x=9 * 4,  # 4th column
+        y=16 * 6,  # 6th row
+        width=8,
+        height=16,
+        origin="lower_left",
+    )
+    assert isinstance(im, Image.Image)
+    assert im.size == (8, 16)
+    assert im.tobytes() == dollar_sign.tobytes()
 
 
-def test_crop_grid():
-    ss = arcade.SpriteSheet(SPRITE_SHEET_RESOURCE)
-    textures = ss.crop_grid(
+def test_get_texture(sprite_sheet):
+    """Get a texture from the sprite sheet."""
+    texture = sprite_sheet.get_texture(0, 0, 8, 16)
+    assert isinstance(texture, arcade.Texture)
+    assert texture.image.size == (8, 16)
+
+
+def test_image_grid(sprite_sheet):
+    """Get a grid of images from the sprite sheet."""
+    images = sprite_sheet.get_image_grid(
+        size=(8, 16),
+        margin=(0, 1, 0, 0),
+        columns=32,
+        count=255,
+    )
+    assert len(images) == 255
+    for im in images:
+        assert im.size == (8, 16)
+
+    assert images[36].tobytes() == get_dollar_sign(sprite_sheet).tobytes()
+
+
+def test_get_texture_grid(sprite_sheet):
+    """Get a grid of textures from the sprite sheet."""
+    textures = sprite_sheet.get_texture_grid(
         size=(8, 16),
         margin=(0, 1, 0, 0),
         columns=32,
         count=255,
     )
     assert len(textures) == 255
+    for texture in textures:
+        assert texture.image.size == (8, 16)
+    
+    assert textures[36].image.tobytes() == get_dollar_sign(sprite_sheet).tobytes()

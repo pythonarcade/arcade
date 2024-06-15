@@ -1,21 +1,24 @@
 from PIL import Image
 from pathlib import Path
-from typing import Union, Tuple, Optional, List, TYPE_CHECKING
+from typing import Union, Tuple, Optional, List, Literal, TYPE_CHECKING
 
 # from arcade import Texture
-from .texture import Texture
+from arcade.texture import Texture
 
 if TYPE_CHECKING:
     from arcade.hitbox import HitBoxAlgorithm
 
+OriginChoices = Literal["upper_left", "lower_left"]
+
 
 class SpriteSheet:
     """
-    Class to hold a sprite sheet. A sprite sheet is a single image that contains
-    multiple textures. Textures can be created from the sprite sheet by cropping
-    out sections of the image.
+    A sprite sheet is a single image containing multiple smaller images, or
+    frames. The class is used to load the image providing methods to slice out
+    parts of the image as separate images or textures.
 
-    This is only a utility class. It does not have any special functionality
+    Note that the default coordinate system used for slicing is using image coordinates
+    (0, 0) in the upper left corner. This matches the coordinate system used by PIL.
 
     :param path: Path to the file to load.
     :param image: PIL image to use.
@@ -38,7 +41,7 @@ class SpriteSheet:
         self._flip_flags = (False, False)
 
     @classmethod
-    def from_image(cls, image: Image.Image):
+    def from_image(cls, image: Image.Image) -> "SpriteSheet":
         """
         Create a sprite sheet from a PIL image.
 
@@ -81,19 +84,83 @@ class SpriteSheet:
 
     def flip_left_right(self) -> None:
         """
-        Flip the sprite sheet left/right.
+        Flips the internal image left to right.
         """
         self._image = self._image.transpose(Image.FLIP_LEFT_RIGHT)
         self._flip_flags = (not self._flip_flags[0], self._flip_flags[1])
 
-    def flip_top_bottom(self):
+    def flip_top_bottom(self) -> None:
         """
-        Flip the sprite sheet up/down.
+        Flip the internal image top to bottom.
         """
         self._image = self._image.transpose(Image.FLIP_TOP_BOTTOM)
         self._flip_flags = (self._flip_flags[0], not self._flip_flags[1])
 
-    def crop_grid(
+    def get_image(self, x: int, y: int, width: int, height: int, origin: OriginChoices = "upper_left") -> Image.Image:
+        """
+        Slice out an image from the sprite sheet.
+
+        :param x: X position of the image (lower left corner)
+        :param y: Y position of the image (lower left corner)
+        :param width: Width of the image.
+        :param height: Height of the image.
+        :param origin: Origin of the image. Default is "upper_left". Options are "upper_left" or "lower_left".
+        """
+        # PIL box is a 4-tuple: left, upper, right, and lower
+        if origin == "upper_left":
+            return self.image.crop((x, y, x + width, y + height))
+        elif origin == "lower_left":
+            return self.image.crop((x, self.image.height - y - height, x + width, self.image.height - y))
+        else:
+            raise ValueError("Invalid value for origin. Must be 'upper_left' or 'lower_left'.")
+
+    # slice an image out of the sprite sheet
+    def get_texture(self, x: int, y: int, width: int, height: int, origin: OriginChoices = "upper_left") -> Texture:
+        """
+        Slice out texture from the sprite sheet.
+
+        :param x: X position of the texture (lower left corner).
+        :param y: Y position of the texture (lower left corner).
+        :param width: Width of the texture.
+        :param height: Height of the texture.
+        """
+        im = self.get_image(x, y, width, height, origin=origin)
+        texture = Texture(im)
+        texture.file_path = self._path
+        texture.crop_values = x, y, width, height
+        return texture
+
+    def get_image_grid(
+        self,
+        size: Tuple[int, int],
+        columns: int,
+        count: int,
+        margin: Tuple[int, int, int, int] = (0, 0, 0, 0),
+    ) -> List[Image.Image]:
+        """
+        Slice a grid of textures from the sprite sheet.
+
+        :param size: Size of each texture ``(width, height)``
+        :param columns: Number of columns in the grid
+        :param count: Number of textures to crop
+        :param margin: The margin around each texture ``(left, right, bottom, top)``
+        """
+        images = []
+        width, height = size
+        left, right, bottom, top = margin
+
+        for sprite_no in range(count):
+            row = sprite_no // columns
+            column = sprite_no % columns
+
+            x = (width + left + right) * column
+            y = (height + top + bottom) * row
+            im = self.image.crop((x, y, x + width, y + height))
+            images.append(im)
+
+        return images
+
+    def get_texture_grid(
         self,
         size: Tuple[int, int],
         columns: int,
@@ -102,7 +169,7 @@ class SpriteSheet:
         hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
     ) -> List[Texture]:
         """
-        Crop a grid of textures from the sprite sheet.
+        Slice a grid of textures from the sprite sheet.
 
         :param size: Size of each texture ``(width, height)``
         :param columns: Number of columns in the grid

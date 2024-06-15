@@ -12,7 +12,7 @@ SCREEN_TITLE = "ShaderToy Demo"
 class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+        super().__init__(width, height, title, resizable=False)
 
         # Create the crt filter
         self.crt_filter = CRTFilter(width, height,
@@ -28,43 +28,43 @@ class MyGame(arcade.Window):
         # Create some stuff to draw on the screen
         self.sprite_list = arcade.SpriteList()
 
-        full = arcade.Sprite("Pac-man.png")
-        full.center_x = width / 2
-        full.center_y = height / 2
-        full.scale = width / full.width
-        self.sprite_list.append(full)
+        # Load the pac-man map image and scale it up to the window size
+        map = arcade.Sprite("Pac-man.png", center_x=width / 2, center_y=height / 2)
+        map.scale = width / map.width
+        self.sprite_list.append(map)
 
-        my_sprite = arcade.Sprite(
-            "pac_man_sprite_sheet.png",
-            scale=5, image_x=4, image_y=65, image_width=13, image_height=15)
-        my_sprite.change_x = 1
-        self.sprite_list.append(my_sprite)
-        my_sprite.center_x = 100
-        my_sprite.center_y = 300
+        # Slice out some textures from the sprite sheet
+        spritesheet = arcade.load_spritesheet("pac_man_sprite_sheet.png")
+        ghost_red = spritesheet.get_texture(x=4, y=65, width=13, height=15)
+        pink_ghost = spritesheet.get_texture(x=4, y=81, width=13, height=15)
+        pacman_1 = spritesheet.get_texture(x=4, y=1, width=13, height=15)
+        pacman_2 = spritesheet.get_texture(x=20, y=1, width=13, height=15)
+        pacman_3 = spritesheet.get_texture(x=36, y=1, width=13, height=15)
 
-        my_sprite = arcade.Sprite(
-            "pac_man_sprite_sheet.png",
-            scale=5, image_x=4, image_y=81, image_width=13, image_height=15)
-        my_sprite.change_x = -1
-        self.sprite_list.append(my_sprite)
-        my_sprite.center_x = 800
-        my_sprite.center_y = 200
+        # Create sprite for the red ghost with some movement and add it to the sprite list
+        sprite = arcade.Sprite(ghost_red, center_x=100, center_y=300, scale=5.0)
+        sprite.change_x = 1
+        self.sprite_list.append(sprite)
 
-        keyframes = []
-        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=4, y=1, width=13, height=15)
-        frame = arcade.TextureKeyframe(texture, duration=150)
-        keyframes.append(frame)
-        texture = arcade.load_texture("pac_man_sprite_sheet.png", x=20, y=1, width=13, height=15)
-        frame = arcade.TextureKeyframe(texture, duration=150)
-        keyframes.append(frame)
-        my_sprite = arcade.TextureAnimationSprite(animation=arcade.TextureAnimation(keyframes))
+        # Create sprite for the pink ghost with some movement and add it to the sprite list
+        sprite = arcade.Sprite(pink_ghost, center_x=800, center_y=200, scale=5.0)
+        sprite.change_x = -1
+        self.sprite_list.append(sprite)
 
-        my_sprite.change_x = 1
-        self.sprite_list.append(my_sprite)
-        my_sprite.center_x = 0
-        my_sprite.center_y = 300
-        my_sprite.texture = texture
-        my_sprite.scale = 5.0
+        # Create an animated pacman sprite and add it to the sprite list
+        keyframes = [
+            arcade.TextureKeyframe(pacman_1, duration=100),
+            arcade.TextureKeyframe(pacman_2, duration=100),
+            arcade.TextureKeyframe(pacman_3, duration=100),
+        ]
+        sprite = arcade.TextureAnimationSprite(
+            center_x=0,
+            center_y=300,
+            scale=5.0,
+            animation=arcade.TextureAnimation(keyframes)
+        )
+        sprite.change_x = 1
+        self.sprite_list.append(sprite)
 
     def on_draw(self):
         if self.filter_on:
