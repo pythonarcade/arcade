@@ -38,6 +38,27 @@ def load_texture(
     return Texture(im_data, hit_box_algorithm=hit_box_algorithm)
 
 
+def load_image(
+    file_path: Union[str, Path],
+    *,
+    mode: str = "RGBA",
+) -> PIL.Image.Image:
+    """
+    Load an image from disk (no caching).
+
+    :param file_path: Path to the image file
+    :param mode: The desired mode for the image (default: "RGBA")
+    """
+    LOG.info("load_image: %s ", file_path)
+    if isinstance(file_path, str):
+        file_path = resolve(file_path)
+
+    im = PIL.Image.open(file_path)
+    if im.mode != mode:
+        im = im.convert(mode)
+    return im
+
+
 def load_spritesheet(file_name: Union[str, Path]) -> SpriteSheet:
     """
     Loads an image from disk returning a sprite sheet that can
