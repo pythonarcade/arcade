@@ -124,7 +124,9 @@ class SpriteCircle(Sprite):
             )
 
         # Get existing texture from cache if possible
-        texture = arcade.texture.default_manager.texture_cache.get_with_config(cache_name, arcade.hitbox.algo_simple)
+        texture = arcade.texture.default_texture_cache.texture_cache.get_with_config(
+            cache_name, arcade.hitbox.algo_simple
+        )
         if not texture:
             if soft:
                 texture = make_soft_circle_texture(
@@ -139,7 +141,7 @@ class SpriteCircle(Sprite):
                     color=(255, 255, 255, 255),
                     name=cache_name,
                 )
-            arcade.texture.default_manager.texture_cache.put(texture)
+            arcade.texture.default_texture_cache.texture_cache.put(texture)
 
         # apply results to the new sprite
         super().__init__(texture)

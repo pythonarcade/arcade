@@ -10,7 +10,6 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
 
-from arcade import cache as _cache
 from arcade import hitbox
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox.base import HitBoxAlgorithm

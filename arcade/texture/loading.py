@@ -42,7 +42,7 @@ def load_spritesheet(file_name: Union[str, Path]) -> SpriteSheet:
     """
     Loads an image from disk returning a sprite sheet that can
     further be used to crop out smaller images.
-    
+
     :param file_name: Path to the image file
     """
     LOG.info("load_spritesheet: %s ", file_name)

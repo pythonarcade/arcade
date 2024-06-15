@@ -15,7 +15,7 @@ def cleanup_texture_cache():
     This cleans up the cache of textures. Useful when running unit tests so that
     the next test starts clean.
     """
-    arcade.texture.default_manager.flush()
+    arcade.texture.default_texture_cache.flush()
 
 
 def get_default_texture(size: IPoint = _DEFAULT_IMAGE_SIZE) -> Texture:
@@ -44,7 +44,7 @@ def get_default_image(size: IPoint = _DEFAULT_IMAGE_SIZE) -> ImageData:
     :return: The default image.
     """
     name = f"arcade-default-texture|{size}"
-    image_data = arcade.texture.default_manager.image_data_cache.get(name)
+    image_data = arcade.texture.default_texture_cache.image_data_cache.get(name)
     if image_data:
         return image_data
 
@@ -55,9 +55,5 @@ def get_default_image(size: IPoint = _DEFAULT_IMAGE_SIZE) -> ImageData:
     draw.rectangle(((w // 2, h // 2), (w, h)), arcade.color.MAGENTA)  # Lower right
 
     image_data = ImageData(im, hash=name)
-    arcade.texture.default_manager.image_data_cache.put(name, image_data)
+    arcade.texture.default_texture_cache.image_data_cache.put(name, image_data)
     return image_data
-
-
-if __name__ == "__main__":
-    get_default_texture().image.show()

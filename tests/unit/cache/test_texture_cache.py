@@ -1,7 +1,6 @@
 import pytest
 from PIL import Image
 import arcade
-from arcade.cache import texture_cache
 from arcade.cache import TextureCache
 
 path = ":resources:images/test_textures/test_texture.png"

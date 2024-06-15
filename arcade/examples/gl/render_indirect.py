@@ -235,7 +235,7 @@ class RenderIndirect(arcade.Window):
                 f"[{method}] "
                 f"Pixels written = {self.query.samples_passed // 4}, "
                 f"Primitives Generated = {self.query.primitives_generated}, "
-                f"time = {self.query.time_elapsed / 1_000_000_000 }s"
+                f"time = {self.query.time_elapsed / 1_000_000_000}s"
             )
         )
 

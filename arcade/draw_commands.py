@@ -713,12 +713,14 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
 
     """
     if left > right:
-        raise ValueError("Left coordinate must be less than or equal to "
-                             "the right coordinate")
+        raise ValueError(
+            "Left coordinate must be less than or equal to the right coordinate"
+        )
 
     if bottom > top:
-        raise ValueError("Bottom coordinate must be less than or equal to "
-                             "the top coordinate")
+        raise ValueError(
+            "Bottom coordinate must be less than or equal to the top coordinate"
+        )
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2

@@ -13,6 +13,7 @@ import arcade
 import arcade.gl
 from pyglet import gl
 
+
 class CompressedTextures(arcade.Window):
 
     def __init__(self):

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 import arcade
-from arcade import Texture, load_texture
+from arcade import Texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point
@@ -76,7 +76,7 @@ class Sprite(BasicSprite, PymunkMixin):
             _texture = path_or_texture
             _textures = [_texture]
         elif isinstance(path_or_texture, (str, Path)):
-            _texture = arcade.texture.default_manager.load_texture(path_or_texture)
+            _texture = arcade.texture.default_texture_cache.load_texture(path_or_texture)
             _textures = [_texture]
         else:
             _texture = get_default_texture()
@@ -208,7 +208,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @hit_box.setter
     def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]):
-        if type(hit_box) == HitBox:
+        if type(hit_box) is HitBox:
             self._hit_box = hit_box.create_rotatable(self.angle)
         else:
             # Mypy doesn't seem to understand the type check above

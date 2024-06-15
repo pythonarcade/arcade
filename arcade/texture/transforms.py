@@ -132,6 +132,7 @@ class Rotate270Transform(Transform):
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_LEFT.value,
     )
+
     @staticmethod
     def transform_hit_box_points(
         points: PointList,

@@ -18,7 +18,7 @@ from .tools import (
 )
 from .manager import TextureCacheManager
 
-default_manager = TextureCacheManager()
+default_texture_cache = TextureCacheManager()
 
 
 __all__ = [
@@ -34,5 +34,5 @@ __all__ = [
     "get_default_image",
     "TextureCacheManager",
     "SpriteSheet",
-    "default_manager",
+    "default_texture_cache",
 ]

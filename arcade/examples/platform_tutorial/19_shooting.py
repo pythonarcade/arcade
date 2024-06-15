@@ -81,7 +81,7 @@ class PlayerCharacter(Character):
         if self.climbing:
             self.texture = self.climbing_textures[self.cur_texture // 4]
             return
-        
+
         # Handling jumping animations
         if self.change_y > 0 and not self.climbing:
             self.texture = self.jump_texture_pair[self.facing_direction]
@@ -94,7 +94,7 @@ class PlayerCharacter(Character):
         if self.change_x == 0:
             self.texture = self.idle_texture_pair[self.facing_direction]
             return
-        
+
         # Handle walking
         if self.should_update_walk == 3:
             self.cur_texture += 1
@@ -103,9 +103,9 @@ class PlayerCharacter(Character):
             self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
             self.should_update_walk = 0
             return
-    
+
         self.should_update_walk += 1
-        
+
 
 class Enemy(Character):
     def __init__(self, name_folder, name_file):
@@ -124,7 +124,7 @@ class Enemy(Character):
         if self.change_x == 0:
             self.texture = self.idle_texture_pair[self.facing_direction]
             return
-        
+
         # Handle walking
         if self.should_update_walk == 3:
             self.cur_texture += 1
@@ -133,7 +133,7 @@ class Enemy(Character):
             self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
             self.should_update_walk = 0
             return
-    
+
         self.should_update_walk += 1
 
 
@@ -222,7 +222,7 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -256,7 +256,7 @@ class MyGame(arcade.Window):
                 enemy.boundary_right = enemy_marker.properties["boundary_right"]
             if "change_x" in enemy_marker.properties:
                 enemy.change_x = enemy_marker.properties["change_x"]
-            
+
             self.scene.add_sprite("Enemies", enemy)
 
         # Create a Platformer Physics Engine, this will handle moving our
@@ -333,7 +333,7 @@ class MyGame(arcade.Window):
         if self.can_shoot:
             if self.shoot_pressed:
                 arcade.play_sound(self.shoot_sound)
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scaling = 0.8)
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scaling=0.8)
                 if self.player_sprite.facing_direction == RIGHT_FACING:
                     bullet.change_x = 12
                 else:
@@ -394,9 +394,9 @@ class MyGame(arcade.Window):
                             self.score += 150
 
                         arcade.play_sound(self.hit_sound)
-                
+
                 return
-            
+
             if (bullet.right < 0) or (bullet.left > (self.tile_map.width * self.tile_map.tile_width) * TILE_SCALING):
                 bullet.remove_from_sprite_lists()
 
