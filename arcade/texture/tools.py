@@ -10,14 +10,6 @@ _DEFAULT_TEXTURE = None
 _DEFAULT_IMAGE_SIZE = (128, 128)
 
 
-def cleanup_texture_cache():
-    """
-    This cleans up the cache of textures. Useful when running unit tests so that
-    the next test starts clean.
-    """
-    arcade.texture.default_texture_cache.flush()
-
-
 def get_default_texture(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> Texture:
     """
     Creates and returns a default texture and caches it internally for future use.
