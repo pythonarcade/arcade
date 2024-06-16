@@ -258,6 +258,17 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.gui.experimental.password_input",
             "arcade.gui.experimental.scroll_area"
         ]
+    },
+    "advanced_cameras.rst": {
+       "title": "Advanced Camera Features",
+       "use_declarations_in": [
+           "arcade.camera.data_types",
+           "arcade.camera.projection_functions",
+           "arcade.camera.orthographic",
+           "arcade.camera.perspective",
+           "arcade.camera.default",
+           "arcade.camera.static"
+       ]
     }
 }
 
