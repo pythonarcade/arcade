@@ -1,5 +1,15 @@
-"""
-Script used to create the quick index
+"""Generate the API doc and quick index.
+
+It's divided into the following sections:
+
+1. Special rules & excludes
+2. Doc structure
+3. "Parsing" declaration names via regex
+4. API File generation
+
+Each of these sections has heading with the same name, but prefixed with
+a # --- so you can skip between them in diffs or your favorite editor
+via hotkeys.
 """
 from __future__ import annotations
 
@@ -17,11 +27,42 @@ sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
 from vfs import Vfs, SharedPaths
 
+EMPTY_TUPLE = tuple()
+
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
 QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
 
+# --- 1. Special rules & excludes ---
+
+SHOW_INHERITANCE = (':show-inheritance:',)
+INHERITED_MEMBERS = (':inherited-members:',)
+MEMBER_SPECIAL_RULES = {
+    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
+}
+
+class NotExcludedBy:
+
+    def __init__(self, collection: Iterable):
+        self.items = set(collection)
+
+    def __call__(self, item) -> bool:
+        return item not in self.items
+
+
+# Module and class members to exclude
+EXCLUDED_MEMBERS = [
+    "ImageData",
+    "FakeImage",
+    "load_atlas",
+    "save_atlas",
+    "ImageDataRefCounter",
+    "UVData",
+]
+member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
+
+# --- 2. Doc structure ---
 
 API_FILE_TO_TITLE_AND_MODULES = {
     "types.rst": {
@@ -272,38 +313,13 @@ API_FILE_TO_TITLE_AND_MODULES = {
 }
 
 
-EMPTY_TUPLE = tuple()
+# --- 3. "Parsing" declaration names via regex ---
 
-
-class NotExcludedBy:
-
-    def __init__(self, collection: Iterable):
-        self.items = set(collection)
-
-    def __call__(self, item) -> bool:
-        return item not in self.items
-
-
-# Module and class members to exclude
-EXCLUDED_MEMBERS = [
-    "ImageData",
-    "FakeImage",
-    "load_atlas",
-    "save_atlas",
-    "ImageDataRefCounter",
-    "UVData",
+# Return structure of parsing looks like this
+DeclarationsDict = dict[
+    str,  # "kind" name or "*"
+    list[str]  # A list of member names
 ]
-member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
-
-
-SHOW_INHERITANCE = (':show-inheritance:',)
-INHERITED_MEMBERS = (':inherited-members:',)
-MEMBER_SPECIAL_RULES = {
-    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
-}
-
-# "Parsing" declaration names via regex
-DeclarationsDict = dict[str, list[str]]
 
 # Patterns + default config dict
 CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
@@ -411,7 +427,7 @@ def get_module_path(module: str) -> Path:
 
     return current
 
-
+# --- 4. API file generation ---
 def generate_api_file(api_file_name: str, vfs: Vfs):
     """
     Take a directory and process all immediate children in it
