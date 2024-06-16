@@ -43,7 +43,11 @@ MEMBER_SPECIAL_RULES = {
 }
 
 class NotExcludedBy:
+    """Helper predicate for exclusion.
 
+    This is here because we may eventually define excludes at per-module
+    level in our config below instead of a single list.
+    """
     def __init__(self, collection: Iterable):
         self.items = set(collection)
 
