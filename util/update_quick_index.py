@@ -42,10 +42,11 @@ QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
 
 # --- 1. Special rules & excludes ---
 
-SHOW_INHERITANCE = (':show-inheritance:',)
-INHERITED_MEMBERS = (':inherited-members:',)
+RULE_SHOW_INHERITANCE = (':show-inheritance:',)
+RULE_INHERITED_MEMBERS = (':inherited-members:',)
+
 MEMBER_SPECIAL_RULES = {
-    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
+    "arcade.ArcadeContext" : RULE_SHOW_INHERITANCE + RULE_INHERITED_MEMBERS
 }
 
 
