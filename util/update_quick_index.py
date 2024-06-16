@@ -10,8 +10,7 @@ from collections.abc import Mapping
 
 from pathlib import Path
 from textwrap import dedent
-from typing import Iterable
-
+from typing import Iterable, Generator
 
 # Ensure we get utility & arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
@@ -299,7 +298,7 @@ member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
 
 SHOW_INHERITANCE = (':show-inheritance:',)
 INHERITED_MEMBERS = (':inherited-members:',)
-CLASS_SPECIAL_RULES = {
+MEMBER_SPECIAL_RULES = {
     "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
 }
 
@@ -453,7 +452,6 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
 
-
     for module_name in use_declarations_in:
         # Did we ever have tests in the path name? What?
         if "test" in module_name:
@@ -477,20 +475,25 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
                 f"config?")
             continue
 
-        # Classes
-        for item in filter(member_not_excluded, class_list):
-            full_class_name = f"{module_name}.{item}"
+        def iter_declarations(
+                kind: str
+        ) -> Generator[tuple[str, str], None, None]:
+            kind_list = member_lists[kind]
+            for name in filter(member_not_excluded, kind_list):
+                yield name, f"{module_name}.{name}"
 
-            quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
+        # Classes
+        for name, full_name in iter_declarations('class'):
+            quick_index_file.write(f"   * - :py:class:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
             # Write the entry to the file
-            api_file.write(f".. autoclass:: {full_class_name}\n")
+            api_file.write(f".. autoclass:: {full_name}\n")
             api_file.write("    :members:\n")
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda
-            for rule in CLASS_SPECIAL_RULES.get(full_class_name, EMPTY_TUPLE):
+            for rule in MEMBER_SPECIAL_RULES.get(full_name, EMPTY_TUPLE):
                 api_file.write(f"    {rule}\n")
 
             api_file.write("\n")
@@ -500,12 +503,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
             # text_file.write(f"     - {path_name}\n")
 
         # Functions
-        for item in filter(member_not_excluded, function_list):
-            full_class_name = f"{module_name}.{item}"
-            quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
+        for name, full_name in iter_declarations('function'):
+            quick_index_file.write(f"   * - :py:func:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
-            api_file.write(f".. autofunction:: {full_class_name}\n\n")
+            api_file.write(f".. autofunction:: {full_name}\n\n")
 
             # print(f"  Function {item}")
             # text_file.write(f"     - Func\n")
