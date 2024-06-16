@@ -33,6 +33,7 @@ for the Python Arcade library. See also:
     api/joysticks
     api/window
     api/sound
+    api/advanced_cameras
     api/path_finding
     api/isometric
     api/earclip
