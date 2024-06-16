@@ -25,7 +25,9 @@ from typing import Iterable, Generator
 # Ensure we get utility & arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
-from vfs import Vfs, SharedPaths
+from doc_helpers.vfs import Vfs
+from doc_helpers import SharedPaths
+
 
 EMPTY_TUPLE = tuple()
 

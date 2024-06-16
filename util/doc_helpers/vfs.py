@@ -35,15 +35,6 @@ from pathlib import Path
 from typing import Generator, Type, TypeVar, Generic
 
 
-class SharedPaths:
-    """These are often used to set up a Vfs and open files."""
-    REPO_UTILS_DIR = Path(__file__).parent.resolve()
-    REPO_ROOT = REPO_UTILS_DIR.parent
-    ARCADE_ROOT = REPO_ROOT / "arcade"
-    DOC_ROOT = REPO_ROOT / "doc"
-    API_DOC_ROOT = DOC_ROOT / "api_docs"
-
-
 class VirtualFile:
     """Subclass these to add some magic.
 
