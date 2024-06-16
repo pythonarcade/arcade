@@ -489,7 +489,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
 
             # Write the entry to the file
             api_file.write(f".. autoclass:: {full_name}\n")
-            api_file.write("    :members:\n")
+            api_file.write(f"   :members:\n")
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda
