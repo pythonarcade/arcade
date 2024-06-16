@@ -17,6 +17,7 @@ for the Python Arcade library. See also:
     api/drawing_primitives
     api/drawing_batch
     api/sprites
+    api/camera_2d
     api/sprite_list
     api/sprite_scenes
     api/text
@@ -32,6 +33,7 @@ for the Python Arcade library. See also:
     api/joysticks
     api/window
     api/sound
+    api/advanced_cameras
     api/path_finding
     api/isometric
     api/earclip

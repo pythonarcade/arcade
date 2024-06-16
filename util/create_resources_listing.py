@@ -7,8 +7,10 @@ import sys
 from pathlib import Path
 from typing import List
 
+# Ensure we get utility and arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
+
 import arcade
 from vfs import Vfs
 

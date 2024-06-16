@@ -73,27 +73,34 @@ class PerspectiveProjector(Projector):
 
     @property
     def view(self) -> CameraData:
-        """
+        """Get the internal :py:class:`~arcade.camera.data_types.CameraData`.
+
+        This is a read-only property.
         The CameraData. Is a read only property.
         """
         return self._view
 
     @property
     def projection(self) -> PerspectiveProjectionData:
-        """
-        The OrthographicProjectionData. Is a read only property.
+        """Get the :py:class:`~arcade.camera.data_types.PerspectiveProjectionData`.
+
+        This is a read-only property.
         """
         return self._projection
 
     def generate_projection_matrix(self) -> Mat4:
-        """
-        alias of arcade.camera.get_perspective_matrix method
+        """Generates a projection matrix.
+
+        This is an alias of
+        :py:class:`arcade.camera.get_perspective_matrix`.
         """
         return generate_perspective_matrix(self._projection, self._view.zoom)
 
     def generate_view_matrix(self) -> Mat4:
-        """
-        alias of arcade.camera.get_view_matrix method
+        """Generates a view matrix.
+
+        This is an alias of=
+        :py:class:`arcade.camera.get_view_matrix`.
         """
         return generate_view_matrix(self._view)
 
@@ -123,10 +130,15 @@ class PerspectiveProjector(Projector):
             previous_projector.use()
 
     def use(self) -> None:
-        """
-        Sets the active camera to this object.
-        Then generates the view and projection matrices.
-        Finally, the gl context viewport is set, as well as the projection and view matrices.
+        """Set the active camera to this object and apply other config.
+
+        This includes the following steps:
+
+        #. Set the window's current camera to this one
+        #. Generate appropriate view and projection matrices
+        #. Set the GL context's viewport and scissorbox values
+        #. Apply the relevant matrices to Arcade's
+           :py:class:`~arcade.Window` object
         """
 
         self._window.current_camera = self
@@ -140,8 +152,19 @@ class PerspectiveProjector(Projector):
         self._window.view = _view
 
     def project(self, world_coordinate: Point) -> Vec2:
-        """
-        Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
+        """Convert world coordinates to pixel screen coordinates.
+
+        If a 2D :py:class:`Vec2` is provided instead of a 3D
+        :py:class:`Vec3`, then one will be calculated to the best of the
+        method's ability.
+
+        Args:
+            world_coordinate:
+                A :py:class:`Vec2` or :py:class:`Vec3` as world
+                coordinates.
+
+        Returns:
+            A 2D screen pixel coordinate.
         """
         x, y, *z = world_coordinate
         z = (0.5 * self.viewport.height / tan(
@@ -158,20 +181,19 @@ class PerspectiveProjector(Projector):
 
         return pos
 
+    # TODO: update args
     def unproject(self, screen_coordinate: Point) -> Vec3:
-        """
-        Take in a pixel coordinate from within
-        the range of the window size and returns
-        the world space coordinates.
+        """Convert a pixel coordinate into world space.
 
-        Essentially reverses the effects of the projector.
+        This reverses the effects of :py:meth:`.project`.
 
-        # TODO: UPDATE
         Args:
-            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
-                               This should ALWAYS be in the range of 0.0 - screen size.
-        Returns:
-            A 3D vector in world space.
+            screen_coordinate:
+                A 2D position in pixels from the bottom left of the screen.
+                This should ALWAYS be in the range of 0.0 - screen size.
+
+        Returns: A 3D vector in world space.
+
         """
         x, y, *z = screen_coordinate
         z = (0.5 * self.viewport.height / tan(
