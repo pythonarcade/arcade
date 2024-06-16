@@ -20,16 +20,20 @@ from collections.abc import Mapping
 
 from pathlib import Path
 from textwrap import dedent
-from typing import Iterable, Generator
+from typing import Generator
 
 # Ensure we get utility & arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
-from doc_helpers.vfs import Vfs
-from doc_helpers import SharedPaths
 
+from doc_helpers import (
+    SharedPaths,
+    EMPTY_TUPLE,
+    get_module_path,
+    NotExcludedBy,
+    Vfs
+)
 
-EMPTY_TUPLE = tuple()
 
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
@@ -44,18 +48,6 @@ MEMBER_SPECIAL_RULES = {
     "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
 }
 
-class NotExcludedBy:
-    """Helper predicate for exclusion.
-
-    This is here because we may eventually define excludes at per-module
-    level in our config below instead of a single list.
-    """
-    def __init__(self, collection: Iterable):
-        self.items = set(collection)
-
-    def __call__(self, item) -> bool:
-        return item not in self.items
-
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
@@ -66,7 +58,9 @@ EXCLUDED_MEMBERS = [
     "ImageDataRefCounter",
     "UVData",
 ]
+# Helper callable which returns a bool. Use it with filter
 member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
+
 
 # --- 2. Doc structure ---
 
@@ -390,48 +384,6 @@ def get_file_declarations(
     return parsed_values
 
 
-_VALID_MODULE_SEGMENT = re.compile(r"[_a-zA-Z][_a-z0-9]*")
-
-
-def get_module_path(module: str) -> Path:
-    """Quick-n-dirty module path estimation relative to the repo root.
-
-    :param module: A module path in the project.
-    :raises ValueError: When a can't be computed.
-    :return: A
-    """
-    # Convert module.name.here to module/name/here
-    current = REPO_ROOT
-    for index, part in enumerate(module.split('.')):
-        if not _VALID_MODULE_SEGMENT.fullmatch(part):
-            raise ValueError(
-                f'Invalid module segment at index {index}: {part!r}')
-        # else:
-        #   print(current, part)
-        current /= part
-
-    # Account for the two kinds of modules:
-    # 1. arcade/module.py
-    # 2. arcade/module/__init__.py
-    as_package = current / "__init__.py"
-    have_package = as_package.is_file()
-    as_file = current.with_suffix('.py')
-    have_file = as_file.is_file()
-
-    # TODO: When 3.10 becomes our min Python, make this a match-case?
-    if have_package and have_file:
-        raise ValueError(
-            f"Module conflict between {as_package} and {as_file}")
-    elif have_package:
-        current = as_package
-    elif have_file:
-        current = as_file
-    else:
-        raise ValueError(
-            f"No folder package or file module detected for "
-            f"{module}")
-
-    return current
 
 # --- 4. API file generation ---
 def generate_api_file(api_file_name: str, vfs: Vfs):
