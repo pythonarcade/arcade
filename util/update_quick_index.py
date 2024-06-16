@@ -476,14 +476,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
                 f"Those belong in the 'tests/' directory!")
             continue
 
+        # TODO: Figure out how to reliably parse & render types?
         module_path = get_module_path(module_name)
         member_lists = get_file_declarations(module_path)
 
-        # TODO: Figure out how to reliably parse & render types?
-        # type_list = member_lists.get('type')
-        class_list = member_lists.get('class')
-        function_list = member_lists.get('function')
-
+        # Skip a file if we got no imports
         if not len(member_lists['*']):
             print(
                 f"WARNING: No members parsed for {module_name!r} with"
