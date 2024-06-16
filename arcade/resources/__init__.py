@@ -71,7 +71,11 @@ def resolve(path: Union[str, Path]) -> Path:
         # If the path starts with a colon, it's a resource handle
         if path.startswith(':'):
             path = path[1:]
-            handle, resource = path.split(":")
+            try:
+                handle, resource = path.split(":")
+            except ValueError:
+                raise ValueError(f"Invalid resource handle '{path}'")
+            
             while resource.startswith('/') or resource.startswith('\\'):
                 resource = resource[1:]
 
