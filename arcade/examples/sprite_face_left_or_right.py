@@ -27,10 +27,9 @@ TEXTURE_RIGHT = 1
 
 class Player(arcade.Sprite):
 
-    def __init__(self):
-        left, right = arcade.load_texture_pair(":resources:images/enemies/bee.png")
-        super().__init__(left, scale=SPRITE_SCALING)
-        self.textures.append(right)
+    def __init__(self, left_texture, right_texture):
+        super().__init__(left_texture, scale=SPRITE_SCALING)
+        self.textures.append(right_texture)
 
     def update(self):
         self.center_x += self.change_x
@@ -65,6 +64,10 @@ class MyGame(arcade.Window):
         # Set the background color
         self.background_color = arcade.color.AMAZON
 
+        # Textures for left and right facing sprites
+        self.left_texture = arcade.load_texture(":resources:images/enemies/bee.png")
+        self.right_texture = self.left_texture.flip_left_right()
+
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -72,7 +75,7 @@ class MyGame(arcade.Window):
         self.player_sprite_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player()
+        self.player_sprite = Player(self.left_texture, self.right_texture)
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.player_sprite_list.append(self.player_sprite)
@@ -82,7 +85,7 @@ class MyGame(arcade.Window):
         Render the screen.
         """
 
-        # This command has to happen before we start drawing
+        # Clear the screen with the configured background color
         self.clear()
 
         # Draw all the sprites.
@@ -98,21 +101,23 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.player_sprite.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.ESCAPE:
+            arcade.close_window()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in (arcade.key.UP, arcade.key.DOWN, arcade.key.W, arcade.key.S):
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in (arcade.key.LEFT, arcade.key.RIGHT, arcade.key.A, arcade.key.D):
             self.player_sprite.change_x = 0
 
 

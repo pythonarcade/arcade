@@ -6,7 +6,6 @@ from .loading import (
     load_texture,
     load_image,
     load_spritesheet,
-    load_texture_pair,
 )
 from .generate import (
     make_circle_texture,
@@ -28,7 +27,6 @@ __all__ = [
     "load_texture",
     "load_image",
     "load_spritesheet",
-    "load_texture_pair",
     "make_circle_texture",
     "make_soft_circle_texture",
     "make_soft_square_texture",

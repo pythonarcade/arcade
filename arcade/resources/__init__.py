@@ -75,7 +75,7 @@ def resolve(path: Union[str, Path]) -> Path:
                 handle, resource = path.split(":")
             except ValueError:
                 raise ValueError(f"Invalid resource handle '{path}'")
-            
+
             while resource.startswith('/') or resource.startswith('\\'):
                 resource = resource[1:]
 
