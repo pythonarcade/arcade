@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.resolve()))
 sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
 import arcade
-from vfs import Vfs
+from doc_helpers.vfs import Vfs
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent

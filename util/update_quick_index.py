@@ -1,5 +1,15 @@
-"""
-Script used to create the quick index
+"""Generate the API doc and quick index.
+
+It's divided into the following sections:
+
+1. Special rules & excludes
+2. Doc structure
+3. "Parsing" declaration names via regex
+4. API File generation
+
+Each of these sections has heading with the same name, but prefixed with
+a # --- so you can skip between them in diffs or your favorite editor
+via hotkeys.
 """
 from __future__ import annotations
 
@@ -10,19 +20,50 @@ from collections.abc import Mapping
 
 from pathlib import Path
 from textwrap import dedent
-from typing import Iterable
-
+from typing import Generator
 
 # Ensure we get utility & arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
-from vfs import Vfs, SharedPaths
+
+from doc_helpers import (
+    SharedPaths,
+    EMPTY_TUPLE,
+    get_module_path,
+    NotExcludedBy,
+    Vfs
+)
+
 
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
 QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
 
+# --- 1. Special rules & excludes ---
+
+RULE_SHOW_INHERITANCE = (':show-inheritance:',)
+RULE_INHERITED_MEMBERS = (':inherited-members:',)
+
+MEMBER_SPECIAL_RULES = {
+    "arcade.ArcadeContext" : RULE_SHOW_INHERITANCE + RULE_INHERITED_MEMBERS
+}
+
+
+# Module and class members to exclude
+EXCLUDED_MEMBERS = [
+    "ImageData",
+    "FakeImage",
+    "load_atlas",
+    "save_atlas",
+    "ImageDataRefCounter",
+    "UVData",
+]
+# Helper callable which returns a bool. Use it with filter
+member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
+
+
+# --- 2. Doc structure ---
 
 API_FILE_TO_TITLE_AND_MODULES = {
     "types.rst": {
@@ -273,38 +314,13 @@ API_FILE_TO_TITLE_AND_MODULES = {
 }
 
 
-EMPTY_TUPLE = tuple()
+# --- 3. "Parsing" declaration names via regex ---
 
-
-class NotExcludedBy:
-
-    def __init__(self, collection: Iterable):
-        self.items = set(collection)
-
-    def __call__(self, item) -> bool:
-        return item not in self.items
-
-
-# Module and class members to exclude
-EXCLUDED_MEMBERS = [
-    "ImageData",
-    "FakeImage",
-    "load_atlas",
-    "save_atlas",
-    "ImageDataRefCounter",
-    "UVData",
+# Return structure of parsing looks like this
+DeclarationsDict = dict[
+    str,  # "kind" name or "*"
+    list[str]  # A list of member names
 ]
-member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
-
-
-SHOW_INHERITANCE = (':show-inheritance:',)
-INHERITED_MEMBERS = (':inherited-members:',)
-CLASS_SPECIAL_RULES = {
-    "arcade.ArcadeContext" : SHOW_INHERITANCE + INHERITED_MEMBERS
-}
-
-# "Parsing" declaration names via regex
-DeclarationsDict = dict[str, list[str]]
 
 # Patterns + default config dict
 CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
@@ -369,50 +385,8 @@ def get_file_declarations(
     return parsed_values
 
 
-_VALID_MODULE_SEGMENT = re.compile(r"[_a-zA-Z][_a-z0-9]*")
 
-
-def get_module_path(module: str) -> Path:
-    """Quick-n-dirty module path estimation relative to the repo root.
-
-    :param module: A module path in the project.
-    :raises ValueError: When a can't be computed.
-    :return: A
-    """
-    # Convert module.name.here to module/name/here
-    current = REPO_ROOT
-    for index, part in enumerate(module.split('.')):
-        if not _VALID_MODULE_SEGMENT.fullmatch(part):
-            raise ValueError(
-                f'Invalid module segment at index {index}: {part!r}')
-        # else:
-        #   print(current, part)
-        current /= part
-
-    # Account for the two kinds of modules:
-    # 1. arcade/module.py
-    # 2. arcade/module/__init__.py
-    as_package = current / "__init__.py"
-    have_package = as_package.is_file()
-    as_file = current.with_suffix('.py')
-    have_file = as_file.is_file()
-
-    # TODO: When 3.10 becomes our min Python, make this a match-case?
-    if have_package and have_file:
-        raise ValueError(
-            f"Module conflict between {as_package} and {as_file}")
-    elif have_package:
-        current = as_package
-    elif have_file:
-        current = as_file
-    else:
-        raise ValueError(
-            f"No folder package or file module detected for "
-            f"{module}")
-
-    return current
-
-
+# --- 4. API file generation ---
 def generate_api_file(api_file_name: str, vfs: Vfs):
     """
     Take a directory and process all immediate children in it
@@ -433,7 +407,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     try:
         full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
         title = page_config.get('title')
-        use_declarations_in = page_config.get('use_declarations_in', [])
+        use_declarations_in = page_config.get('use_declarations_in', EMPTY_TUPLE)
         print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
 
     except Exception as e:
@@ -448,11 +422,10 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     underline = "-" * len(title)
 
     api_file = vfs.open(full_api_file_name, "w")
-    api_file.write(f".. _{api_file_name[:-4]}_api:")
-    api_file.write(f"\n\n")
+    api_file.write(f".. _{api_file_name[:-4]}_api:\n")
+    api_file.write(f"\n")
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
-
 
     for module_name in use_declarations_in:
         # Did we ever have tests in the path name? What?
@@ -462,14 +435,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
                 f"Those belong in the 'tests/' directory!")
             continue
 
+        # TODO: Figure out how to reliably parse & render types?
         module_path = get_module_path(module_name)
         member_lists = get_file_declarations(module_path)
 
-        # TODO: Figure out how to reliably parse & render types?
-        # type_list = member_lists.get('type')
-        class_list = member_lists.get('class')
-        function_list = member_lists.get('function')
-
+        # Skip a file if we got no imports
         if not len(member_lists['*']):
             print(
                 f"WARNING: No members parsed for {module_name!r} with"
@@ -477,20 +447,25 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
                 f"config?")
             continue
 
-        # Classes
-        for item in filter(member_not_excluded, class_list):
-            full_class_name = f"{module_name}.{item}"
+        def iter_declarations(
+                kind: str
+        ) -> Generator[tuple[str, str], None, None]:
+            kind_list = member_lists[kind]
+            for name in filter(member_not_excluded, kind_list):
+                yield name, f"{module_name}.{name}"
 
-            quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
+        # Classes
+        for name, full_name in iter_declarations('class'):
+            quick_index_file.write(f"   * - :py:class:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
             # Write the entry to the file
-            api_file.write(f".. autoclass:: {full_class_name}\n")
-            api_file.write("    :members:\n")
+            api_file.write(f".. autoclass:: {full_name}\n")
+            api_file.write(f"   :members:\n")
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda
-            for rule in CLASS_SPECIAL_RULES.get(full_class_name, EMPTY_TUPLE):
+            for rule in MEMBER_SPECIAL_RULES.get(full_name, EMPTY_TUPLE):
                 api_file.write(f"    {rule}\n")
 
             api_file.write("\n")
@@ -500,12 +475,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
             # text_file.write(f"     - {path_name}\n")
 
         # Functions
-        for item in filter(member_not_excluded, function_list):
-            full_class_name = f"{module_name}.{item}"
-            quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
+        for name, full_name in iter_declarations('function'):
+            quick_index_file.write(f"   * - :py:func:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
-            api_file.write(f".. autofunction:: {full_class_name}\n\n")
+            api_file.write(f".. autofunction:: {full_name}\n\n")
 
             # print(f"  Function {item}")
             # text_file.write(f"     - Func\n")

@@ -35,22 +35,20 @@ from pathlib import Path
 from typing import Generator, Type, TypeVar, Generic
 
 
-class SharedPaths:
-    """These are often used to set up a Vfs and open files."""
-    REPO_UTILS_DIR = Path(__file__).parent.resolve()
-    REPO_ROOT = REPO_UTILS_DIR.parent
-    ARCADE_ROOT = REPO_ROOT / "arcade"
-    DOC_ROOT = REPO_ROOT / "doc"
-    API_DOC_ROOT = DOC_ROOT / "api_docs"
-
-
 class VirtualFile:
-    """Subclass these to add some magic.
+    """An abstraction over an in-memory stream.
 
+    This might later change to be an abstraction to over a StringIO
+    inside the Vfs class to better reflect file system behavior. What
+    don't change is the write method, which means you can safely do the
+    following:
+
+    1. Subclass this to add helper functions
+    2. Pass it to a Vfs at creation
     """
 
-    def __init__(self, path: str):
-        self.path = path
+    def __init__(self, path: Path | str):
+        self.path = Path(path)
         self._content = StringIO()
 
     def include_file(self, path: Path | str) -> int:
@@ -58,7 +56,7 @@ class VirtualFile:
         contents = Path(path).read_text()
         return self.write(contents)
 
-    def write(self, str: str):
+    def write(self, str: str) -> int:
         return self._content.write(str)
 
     def close(self):
@@ -96,7 +94,7 @@ class Vfs(Generic[F]):
 
     def __init__(self, file_type: Type[F] = VirtualFile):
         self.file_type: Type[F] = file_type
-        self.files: dict[str, F] = dict()
+        self.files: dict[Path, F] = dict()
         self.files_to_delete: set[Path] = set()
 
     def request_culling_unwritten(self, directory: str | Path, glob: str):
@@ -109,11 +107,11 @@ class Vfs(Generic[F]):
         Doing it this way allows us to leave the files untouched on disk if
         this build would emit an identical file.
         """
-        path = Path(str(directory))
+        path = Path(directory)
         for p in path.glob(glob):
             self.files_to_delete.add(p)
 
-    def write(self):
+    def write(self) -> None:
         """Sync all files of this Vfs to the real filesystem.
 
         This performs the following actions:
@@ -129,16 +127,16 @@ class Vfs(Generic[F]):
         for file in self.files.values():
             file._write_to_disk()
         for path in self.files_to_delete:
-            if not str(path) in file_paths:
+            if not path in file_paths:
                 print(f"Deleting {path}")
-                os.remove(path)
+                path.unlink()
 
     def exists(self, path: str | Path) -> bool:
         """Return True if the file has been opened in this Vfs."""
         return str(path) in self.files
 
     def open(self, path: str | Path, mode: str) -> F:
-        path = str(path)
+        path = Path(path).resolve()
         modes = set(mode)
 
         # Modes which are blatantly unsupported
@@ -157,7 +155,6 @@ class Vfs(Generic[F]):
             return file
 
         raise ValueError(f"Unsupported mode {mode!r}")
-
 
     # This is less nasty than dynamically generating a subclass
     # which then attaches instances to a specific Vfs on creation
