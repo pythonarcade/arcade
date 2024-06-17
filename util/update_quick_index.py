@@ -407,7 +407,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     try:
         full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
         title = page_config.get('title')
-        use_declarations_in = page_config.get('use_declarations_in', [])
+        use_declarations_in = page_config.get('use_declarations_in', EMPTY_TUPLE)
         print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
 
     except Exception as e:
