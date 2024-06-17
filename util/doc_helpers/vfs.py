@@ -36,8 +36,15 @@ from typing import Generator, Type, TypeVar, Generic
 
 
 class VirtualFile:
-    """Subclass these to add some magic.
+    """An abstraction over an in-memory stream.
 
+    This might later change to be an abstraction to over a StringIO
+    inside the Vfs class to better reflect file system behavior. What
+    don't change is the write method, which means you can safely do the
+    following:
+
+    1. Subclass this to add helper functions
+    2. Pass it to a Vfs at creation
     """
 
     def __init__(self, path: str):
