@@ -56,7 +56,7 @@ class VirtualFile:
         contents = Path(path).read_text()
         return self.write(contents)
 
-    def write(self, str: str):
+    def write(self, str: str) -> int:
         return self._content.write(str)
 
     def close(self):
