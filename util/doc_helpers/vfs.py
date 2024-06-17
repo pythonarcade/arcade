@@ -156,7 +156,6 @@ class Vfs(Generic[F]):
 
         raise ValueError(f"Unsupported mode {mode!r}")
 
-
     # This is less nasty than dynamically generating a subclass
     # which then attaches instances to a specific Vfs on creation
     # and assigns itself as the .open value for that Vfs
