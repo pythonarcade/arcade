@@ -111,7 +111,7 @@ class Vfs(Generic[F]):
         for p in path.glob(glob):
             self.files_to_delete.add(p)
 
-    def write(self):
+    def write(self) -> None:
         """Sync all files of this Vfs to the real filesystem.
 
         This performs the following actions:
