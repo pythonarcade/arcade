@@ -13,7 +13,7 @@ from arcade.camera.data_types import (
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import Point, Rect, LBWH
+from arcade.types import Point, Rect, LBWH, LRBT
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -433,6 +433,22 @@ class Camera2D:
 
         x, y = new_left
         self.position = x - up[1] * left, y - up[0] * left
+
+    def aabb(self) -> Rect:
+        """
+        Retrieve the axis-aligned bounds box of the camera's view area.
+        If the camera isn't rotated , this will be precisely the view area,
+        but it will cover a larger area when it is rotated.
+        """
+        tr_x, tr_y = self.top_right
+        tl_x, tl_y = self.top_left
+        br_x, br_y = self.bottom_right
+        bl_x, bl_y = self.bottom_left
+        left = min(tl_x, tr_x, bl_x, br_x)
+        right = max(tl_x, tr_x, bl_x, br_x)
+        bottom = min(tl_y, tr_y, bl_y, br_y)
+        top = max(tl_y, tr_y, bl_y, br_y)
+        return LRBT(left=left, right=right, bottom=bottom, top=top)
 
     def point_in_view(self, point: Point2) -> bool:
         """
