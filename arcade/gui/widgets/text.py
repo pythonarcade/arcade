@@ -8,6 +8,7 @@ from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
+from arcade import LBWH
 from arcade.gui.events import (
     UIEvent,
     UIMousePressEvent,
@@ -20,7 +21,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.property import bind
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, GUIRect
+from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import RGBA255, Color, RGBOrA255
 
@@ -361,8 +362,8 @@ class UIInputText(UIWidget):
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
-            x=x + self.LAYOUT_OFFSET,
-            y=y,
+            x=0 + self.LAYOUT_OFFSET,
+            y=0,
             z=0.0,  # Position
             width=int(width - self.LAYOUT_OFFSET),
             height=int(height),  # Size
@@ -387,7 +388,7 @@ class UIInputText(UIWidget):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         # If not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.collide_with_point(event.x, event.y):
+            if self.rect.point_in_rect(event.pos):
                 self._active = True
                 self.trigger_full_render()
                 self.caret.on_activate()
@@ -396,9 +397,9 @@ class UIInputText(UIWidget):
 
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.collide_with_point(event.x, event.y):
-                x = int(event.x - self.x - self.LAYOUT_OFFSET)
-                y = int(event.y - self.y)
+            if self.rect.point_in_rect(event.pos):
+                x = int(event.x - self.left - self.LAYOUT_OFFSET)
+                y = int(event.y - self.bottom)
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
@@ -419,9 +420,9 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
-                x = int(event.x - self.x - self.LAYOUT_OFFSET)
-                y = int(event.y - self.y)
+            if isinstance(event, UIMouseEvent) and self.rect.point_in_rect(event.pos):
+                x = int(event.x - self.left - self.LAYOUT_OFFSET)
+                y = int(event.y - self.bottom)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
                     self.trigger_full_render()
@@ -443,6 +444,10 @@ class UIInputText(UIWidget):
             layout.begin_update()
             layout.width = int(self.content_width - self.LAYOUT_OFFSET)
             layout.height = int(self.content_height)
+
+            # should not be required, but the caret does not show up on first click without text
+            layout.x = self.LAYOUT_OFFSET
+            layout.y = 0
             layout.end_update()
 
     @property
@@ -543,9 +548,9 @@ class UITextArea(UIWidget):
         """
         Set the width and height of the text area to contain the whole text.
         """
-        self.rect = GUIRect(
-            self.x,
-            self.y,
+        self.rect = LBWH(
+            self.left,
+            self.bottom,
             self.layout.content_width,
             self.layout.content_height,
         )
@@ -580,7 +585,7 @@ class UITextArea(UIWidget):
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
-            if self.rect.collide_with_point(event.x, event.y):
+            if self.rect.point_in_rect(event.pos):
                 self.layout.view_y += event.scroll_y * self.scroll_speed  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
                 self.trigger_full_render()
 

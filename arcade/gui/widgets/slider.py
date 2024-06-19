@@ -81,7 +81,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
     def _x_for_value(self, value: float):
         """Provides the x coordinate for the given value."""
 
-        x = self.content_rect.x
+        x = self.content_rect.left
         val = (value - self.min_value) / self.max_value
         return x + self._cursor_width + val * (self.content_width - 2 * self._cursor_width)
 
@@ -105,11 +105,11 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         """Set thumb x coordinate and update the value."""
         rect = self.content_rect
 
-        x = min(rect.right - self._cursor_width, max(nx, rect.x + self._cursor_width))
+        x = min(rect.right - self._cursor_width, max(nx, rect.left + self._cursor_width))
         if self.width == 0:
             self.norm_value = 0
         else:
-            self.norm_value = (x - rect.x - self._cursor_width) / float(self.content_width - 2 * self._cursor_width)
+            self.norm_value = (x - rect.left - self._cursor_width) / float(self.content_width - 2 * self._cursor_width)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
@@ -283,14 +283,14 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         slider_bottom = (self.content_height - slider_height) // 2
 
         arcade.draw_lbwh_rectangle_filled(
-            slider_left_x - self.content_rect.x,
+            slider_left_x - self.content_rect.left,
             slider_bottom,
             slider_right_x - slider_left_x,
             slider_height,
             bg_slider_color,
         )
         arcade.draw_lbwh_rectangle_filled(
-            slider_left_x - self.content_rect.x,
+            slider_left_x - self.content_rect.left,
             slider_bottom,
             cursor_center_x - slider_left_x,
             slider_height,
@@ -309,7 +309,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         cursor_center_x = self._thumb_x
         slider_center_y = self.content_height // 2
 
-        rel_cursor_x = cursor_center_x - self.content_rect.x
+        rel_cursor_x = cursor_center_x - self.content_rect.left
         arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius, cursor_color)
         arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius // 4, cursor_outline_color)
         arcade.draw_circle_outline(
@@ -354,7 +354,7 @@ class UITextureSlider(UISlider):
 
         # slider
         arcade.draw_lbwh_rectangle_filled(
-            slider_left_x - self.x,
+            slider_left_x - self.left,
             slider_bottom,
             cursor_center_x - slider_left_x,
             slider_height,
@@ -363,7 +363,7 @@ class UITextureSlider(UISlider):
 
     def _render_thumb(self, surface: Surface):
         cursor_center_x = self._thumb_x
-        rel_cursor_x = cursor_center_x - self.x
+        rel_cursor_x = cursor_center_x - self.left
         surface.draw_texture(
             x=rel_cursor_x - self._thumb.width // 4 + 2,
             y=0,

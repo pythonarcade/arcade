@@ -1,6 +1,7 @@
 """
 Removing and re-adding sprite to spatial hash vs moving it in the spatial hash
 """
+
 import timeit
 import arcade
 

@@ -18,7 +18,7 @@ from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.text import UILabel
 
-
+# FIXME
 class MyView(arcade.View):
     def __init__(self):
         super().__init__()

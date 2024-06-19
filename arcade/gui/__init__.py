@@ -26,7 +26,7 @@ from arcade.gui.property import ListProperty, DictProperty, Property, bind, unbi
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
-from arcade.gui.widgets import UIDummy, GUIRect
+from arcade.gui.widgets import UIDummy
 from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets import UILayout
 from arcade.gui.widgets import UISpace
@@ -96,7 +96,6 @@ __all__ = [
     "UITextWidget",
     "UIWidget",
     "Surface",
-    "GUIRect",
     "NinePatchTexture",
     # Property classes
     "ListProperty",

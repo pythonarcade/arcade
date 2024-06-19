@@ -1,8 +1,10 @@
 from unittest.mock import Mock
 
 import pytest
+from pyglet.math import Vec2
 
-from arcade.gui import UILabel, GUIRect
+from arcade import LBWH
+from arcade.gui import UILabel
 from arcade.types import Color
 
 
@@ -15,17 +17,17 @@ def test_uilabel_inits_with_text_size(window):
 
 def test_uilabel_uses_size_parameter(window):
     label = UILabel(text="Example", width=100, height=50)
-    assert label.rect == GUIRect(0, 0, 100, 50)
+    assert label.rect == LBWH(0, 0, 100, 50)
 
 
 def test_uilabel_uses_smaller_size_parameter(window):
     label = UILabel(text="Example", width=20, height=50)
-    assert label.rect == GUIRect(0, 0, 20, 50)
+    assert label.rect == LBWH(0, 0, 20, 50)
 
 
 def test_uilabel_allow_multiline_and_uses_text_height(window):
     label = UILabel(text="E x a m p l e", width=10, multiline=True)
-    assert label.rect == GUIRect(0, 0, 10, pytest.approx(133, abs=8))
+    assert label.rect == LBWH(0, 0, 10, 133)
 
 
 def test_uilabel_with_border_keeps_previous_size(window):
@@ -51,11 +53,11 @@ def test_uilabel_with_padding_keeps_previous_size(window):
 def test_uilabel_fixes_internal_text_to_pos_0_0(window):
     label = UILabel(text="Example")
     assert label.label.position == (0, 0)
-    assert label.position == (0, 0)
+    assert label.position == Vec2(0, 0)
 
     label = UILabel(text="Example", x=10, y=10)
     assert label.label.position == (0, 0)
-    assert label.position == (10, 10)
+    assert label.position == Vec2(10, 10)
 
 
 def test_adaptive_width_support_for_multiline_text(window):

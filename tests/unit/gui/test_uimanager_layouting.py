@@ -1,5 +1,7 @@
 from contextlib import contextmanager
 
+from pyglet.math import Vec2
+
 from arcade.gui import UIManager, UIDummy
 
 
@@ -30,9 +32,9 @@ def test_supports_size_hint(window):
     with sized(window, 200, 300):
         manager.draw()
 
-    assert widget1.size == (200, 300)
-    assert widget2.size == (100, 75)
-    assert widget3.size == (200, 100)
+    assert widget1.size == Vec2(200, 300)
+    assert widget2.size == Vec2(100, 75)
+    assert widget3.size == Vec2(200, 100)
 
 
 def test_supports_size_hint_min(window):
@@ -45,7 +47,7 @@ def test_supports_size_hint_min(window):
 
     manager.draw()
 
-    assert widget1.size == (120, 200)
+    assert widget1.size == Vec2(120, 200)
 
 
 def test_supports_size_hint_max(window):
@@ -58,4 +60,4 @@ def test_supports_size_hint_max(window):
 
     manager.draw()
 
-    assert widget1.size == (50, 60)
+    assert widget1.size == Vec2(50, 60)

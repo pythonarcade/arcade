@@ -1,6 +1,7 @@
+from arcade import LBWH
 from arcade.gui import UIDummy, UIManager, UIBoxLayout, UIAnchorLayout
-from arcade.gui.widgets import GUIRect
 from arcade.gui.widgets.layout import UIGridLayout
+from pyglet.math import Vec2
 
 
 def test_place_widget(window):
@@ -16,16 +17,16 @@ def test_place_widget(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
-    assert subject.rect == (0, 0, 200, 200)
+    assert subject.rect == LBWH(0, 0, 200, 200)
 
-    assert dummy1.position == (0, 100)
-    assert dummy2.position == (0, 0)
-    assert dummy3.position == (100, 100)
-    assert dummy4.position == (100, 0)
+    assert dummy1.position == Vec2(0, 100)
+    assert dummy2.position == Vec2(0, 0)
+    assert dummy3.position == Vec2(100, 100)
+    assert dummy4.position == Vec2(100, 0)
 
 
 def test_can_handle_empty_cells(window):
@@ -35,13 +36,13 @@ def test_can_handle_empty_cells(window):
 
     subject.add(dummy1, 0, 0)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
-    assert subject.rect == (0, 0, 100, 100)
+    assert subject.rect == LBWH(0, 0, 100, 100)
 
-    assert dummy1.position == (0, 0)
+    assert dummy1.position == Vec2(0, 0)
 
 
 def test_place_widget_with_different_sizes(window):
@@ -57,15 +58,15 @@ def test_place_widget_with_different_sizes(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert subject.rect == (0, 0, 200, 200)
+    assert subject.rect == LBWH(0, 0, 200, 200)
 
-    assert dummy1.position == (25, 100)
-    assert dummy2.position == (0, 0)
-    assert dummy3.position == (100, 125)
-    assert dummy4.position == (125, 25)
+    assert dummy1.position == Vec2(25, 100)
+    assert dummy2.position == Vec2(0, 0)
+    assert dummy3.position == Vec2(100, 125)
+    assert dummy4.position == Vec2(125, 25)
 
 
 def test_place_widget_within_content_rect(window):
@@ -77,10 +78,10 @@ def test_place_widget_within_content_rect(window):
 
     assert subject.size_hint_min == (110, 120)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert dummy1.position == (10, 20)
+    assert dummy1.position == Vec2(10, 20)
 
 
 def test_place_widgets_with_col_row_span(window):
@@ -103,15 +104,15 @@ def test_place_widgets_with_col_row_span(window):
     subject.add(dummy5, 0, 2, col_span=2)
     subject.add(dummy6, 2, 0, row_span=3)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert dummy1.position == (0, 200)
-    assert dummy2.position == (0, 100)
-    assert dummy3.position == (100, 200)
-    assert dummy4.position == (100, 100)
-    assert dummy5.position == (0, 0)
-    assert dummy6.position == (200, 50)
+    assert dummy1.position == Vec2(0, 200)
+    assert dummy2.position == Vec2(0, 100)
+    assert dummy3.position == Vec2(100, 200)
+    assert dummy4.position == Vec2(100, 100)
+    assert dummy5.position == Vec2(0, 0)
+    assert dummy6.position == Vec2(200, 50)
 
 
 def test_place_widgets_with_col_row_span_and_spacing(window):
@@ -133,14 +134,14 @@ def test_place_widgets_with_col_row_span_and_spacing(window):
     subject.add(dummy4, 1, 1)
     subject.add(dummy5, 0, 2, col_span=2)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert dummy1.position == (10, 200)
-    assert dummy2.position == (10, 100)
-    assert dummy3.position == (130, 200)
-    assert dummy4.position == (130, 100)
-    assert dummy5.position == (10, 0)
+    assert dummy1.position == Vec2(10, 200)
+    assert dummy2.position == Vec2(10, 100)
+    assert dummy3.position == Vec2(130, 200)
+    assert dummy4.position == Vec2(130, 100)
+    assert dummy5.position == Vec2(10, 0)
 
 
 def test_fit_content_by_default(window):
@@ -168,16 +169,16 @@ def test_adjust_children_size_relative(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
-    assert subject.rect == (0, 0, 200, 200)
+    assert subject.rect == LBWH(0, 0, 200, 200)
 
-    assert dummy1.size == (100, 100)
-    assert dummy2.size == (75, 75)
-    assert dummy3.size == (60, 60)
-    assert dummy4.size == (100, 100)
+    assert dummy1.size == Vec2(100, 100)
+    assert dummy2.size == Vec2(75, 75)
+    assert dummy3.size == Vec2(60, 60)
+    assert dummy4.size == Vec2(100, 100)
 
 
 def test_does_not_adjust_children_without_size_hint(window):
@@ -196,16 +197,16 @@ def test_does_not_adjust_children_without_size_hint(window):
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
     # check that do_layout doesn't manipulate the rect
-    assert subject.rect == (0, 0, 200, 200)
+    assert subject.rect == LBWH(0, 0, 200, 200)
 
-    assert dummy1.size == (100, 100)
-    assert dummy2.size == (75, 50)
-    assert dummy3.size == (50, 75)
-    assert dummy4.size == (100, 100)
+    assert dummy1.size == Vec2(100, 100)
+    assert dummy2.size == Vec2(75, 50)
+    assert dummy3.size == Vec2(50, 75)
+    assert dummy4.size == Vec2(100, 100)
 
 
 def test_size_hint_and_spacing(window):
@@ -220,13 +221,13 @@ def test_size_hint_and_spacing(window):
 
     subject.add(dummy1, 0, 0)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert dummy1.size == (100, 100)
+    assert dummy1.size == Vec2(100, 100)
 
     subject.do_layout()
-    assert dummy1.size == (100, 100)
+    assert dummy1.size == Vec2(100, 100)
 
 
 def test_empty_cells(window):
@@ -239,10 +240,10 @@ def test_empty_cells(window):
 
     subject.add(dummy1, 2, 2)
 
-    subject.rect = GUIRect(0, 0, *subject.size_hint_min)
+    subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()
 
-    assert dummy1.position == (0, 0)
+    assert dummy1.position == Vec2(0, 0)
 
 
 def test_nested_grid_layouts(window):
@@ -256,8 +257,8 @@ def test_nested_grid_layouts(window):
 
     ui.execute_layout()
 
-    assert inner.rect.size == (100, 100)
-    assert outer.rect.size == (100, 100)
+    assert inner.rect.size == Vec2(100, 100)
+    assert outer.rect.size == Vec2(100, 100)
 
 
 def test_nested_box_layouts(window):
@@ -271,8 +272,8 @@ def test_nested_box_layouts(window):
 
     ui.execute_layout()
 
-    assert inner.rect.size == (100, 100)
-    assert outer.rect.size == (100, 100)
+    assert inner.rect.size == Vec2(100, 100)
+    assert outer.rect.size == Vec2(100, 100)
 
 
 def test_nested_anchor_layouts(window):
@@ -285,8 +286,8 @@ def test_nested_anchor_layouts(window):
 
     ui.execute_layout()
 
-    assert inner.rect.size == (100, 100)
-    assert outer.rect.size == (100, 100)
+    assert inner.rect.size == Vec2(100, 100)
+    assert outer.rect.size == Vec2(100, 100)
 
 
 def test_update_size_hint_min_on_child_size_change(window):
@@ -300,5 +301,5 @@ def test_update_size_hint_min_on_child_size_change(window):
     dummy.size_hint_min = (200, 200)
     ui.execute_layout()
 
-    assert dummy.rect.size == (200, 200)
-    assert grid.rect.size == (200, 200)
+    assert dummy.rect.size == Vec2(200, 200)
+    assert grid.rect.size == Vec2(200, 200)
