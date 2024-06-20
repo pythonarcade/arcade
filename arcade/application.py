@@ -7,8 +7,8 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import List, Tuple, Optional
-
+from typing import List, Tuple, Optional, Union
+from pathlib import Path
 import pyglet
 
 import pyglet.gl as gl
@@ -24,6 +24,9 @@ from arcade.types import Color, RGBOrA255, RGBANormalized
 from arcade import SectionManager
 from arcade.types.rect import LBWH, Rect
 from arcade.utils import is_raspberry_pi
+from arcade.types import Rect
+from PIL import Image
+
 
 LOG = logging.getLogger(__name__)
 
@@ -965,6 +968,58 @@ class Window(pyglet.window.Window):
     def center_y(self) -> float:
         """Returns the Y-coordinate of the center of the window."""
         return self.height / 2
+
+    def save_screenshot(
+            self,
+            path: Union[Path, str],
+            format: Optional[str] = None,
+            **kwargs
+    ) -> None:
+        """Save a screenshot to a specified file name.
+
+        .. warning:: This may overwrite existing files!
+
+        .. code-block:: python
+
+           # By default, the image format is detected from the
+           # file extension on the path you pass.
+           window_instance.save_screenshot("screenshot.png")
+
+        You can also use the same arguments as :py:meth:`PIL.Image.save`:
+
+        * You can pass a ``format`` to stop Pillow from guessing the
+          format from the file name
+        * The pillow documentation provides a list of supported
+          :external+PIL:ref:`image-file-formats`
+
+        :param path: The full path and the png image filename to save.
+        :param format: A :py:mod:`PIL` format name.
+        :param kwargs: Varies with :external+PIL:ref:`selected format <image-file-formats>`
+        """
+        img = self.ctx.get_framebuffer_image(self.ctx.screen)
+        img.save(path, format=format, **kwargs)
+
+    def get_image(
+            self,
+            viewport: Rect | None
+        ) -> Image.Image:
+        """Get an image from the window.
+
+        .. code-block:: python
+
+           # Get an image from a portion of the window by specfying the viewport.
+           viewport = Rect(10, 16, 20, 20)
+           image = window_instance.get_image(viewport)
+
+           # Get an image of the whole Window
+           image = window_instance.get_image()
+
+        :param viewport: The area of the screen to get defined by the x, y, width, height values
+        """
+        return self.ctx.get_framebuffer_image(self.ctx.screen, viewport=viewport)
+
+    def get_pixel(self):
+        pass
 
 
 def open_window(
