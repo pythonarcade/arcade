@@ -58,7 +58,6 @@ class TextureCacheManager:
         self,
         path: Union[str, Path],
         hash: Optional[str] = None,
-        cache: bool = True,
         mode="RGBA",
     ) -> ImageData:
         """
@@ -71,18 +70,14 @@ class TextureCacheManager:
         :param mode: The mode to use for the image. Default is "RGBA".
         """
         real_path = self._get_real_path(path)
-        if cache:
-            name = Texture.create_image_cache_name(str(real_path))
-            im_data = self._image_data_cache.get(name)
-            if im_data:
-                return im_data
-            image = PIL.Image.open(real_path).convert(mode)
-            im_data = ImageData(image, hash=hash)
-            self._image_data_cache.put(name, im_data)
+        name = Texture.create_image_cache_name(str(real_path))
+        im_data = self._image_data_cache.get(name)
+        if im_data:
             return im_data
-
         image = PIL.Image.open(real_path).convert(mode)
-        return ImageData(image, hash=hash)
+        im_data = ImageData(image, hash=hash)
+        self._image_data_cache.put(name, im_data)
+        return im_data
 
     def flush(
         self,
@@ -102,11 +97,11 @@ class TextureCacheManager:
         if sprite_sheets:
             self._sprite_sheets.clear()
         if textures:
-            self._texture_cache.clear()
+            self._texture_cache.flush()
         if image_data:
-            self._image_data_cache.clear()
+            self._image_data_cache.flush()
         if hit_boxes:
-            self._hit_box_cache.clear()
+            self._hit_box_cache.flush()
 
     def load_texture(
         self,
@@ -131,8 +126,6 @@ class TextureCacheManager:
         :param width: Width of the texture in the image.
         :param height: Height of the texture in the image.
         :param hit_box_algorithm:
-        :returns: New :class:`Texture` object.
-        :raises: ValueError
         """
         LOG.info("load_texture: %s ", file_path)
         real_path = self._get_real_path(file_path)

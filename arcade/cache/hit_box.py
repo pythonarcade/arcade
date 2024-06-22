@@ -140,7 +140,7 @@ class HitBoxCache:
         with open(path, mode="wb") as fd:
             fd.write(data)
 
-    def clear(self) -> None:
+    def flush(self) -> None:
         """
         Clear the cache.
         """
