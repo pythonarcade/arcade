@@ -76,7 +76,7 @@ class Sprite(BasicSprite, PymunkMixin):
             _texture = path_or_texture
             _textures = [_texture]
         elif isinstance(path_or_texture, (str, Path)):
-            _texture = arcade.texture.default_texture_cache.load_texture(path_or_texture)
+            _texture = arcade.texture.default_texture_cache.load_or_get_texture(path_or_texture)
             _textures = [_texture]
         else:
             _texture = get_default_texture()

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Dict, Optional, TYPE_CHECKING
-from weakref import WeakValueDictionary
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData

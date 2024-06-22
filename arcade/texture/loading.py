@@ -28,8 +28,6 @@ def load_texture(
     point hit box. This can be overridden by passing a different hit box or
     the global default can be set in the hitbox module.
 
-    The ``hash`` parameter is an advanced option that allows you to 
-
     Examples::
 
         # We can load a texture using resource handles, string path or Path object

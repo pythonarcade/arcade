@@ -138,7 +138,7 @@ class TileMap:
     :param texture_atlas: A default texture atlas to use for the
             SpriteLists created by this map. If not supplied the global default atlas will be used.
     :param lazy: SpriteLists will be created lazily.
-
+    :param texture_cache_manager: The texture cache manager to use for loading textures.
 
     The `layer_options` parameter can be used to specify per layer arguments.
 
@@ -213,6 +213,7 @@ class TileMap:
         offset: Vec2 = Vec2(0, 0),
         texture_atlas: Optional["TextureAtlas"] = None,
         lazy: bool = False,
+        texture_cache_manager: Optional[arcade.TextureCacheManager] = None,
     ) -> None:
         if not map_file and not tiled_map:
             raise AttributeError(
@@ -241,6 +242,7 @@ class TileMap:
                 pass
 
         self._lazy = lazy
+        self.texture_cache_manager = texture_cache_manager or arcade.texture.default_texture_cache
 
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width
@@ -470,7 +472,7 @@ class TileMap:
 
             # Can image_file be None?
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            texture = arcade.texture.default_texture_cache.load_texture(
+            texture = self.texture_cache_manager.load_or_get_texture(
                 image_file,  # type: ignore
                 x=image_x,
                 y=image_y,
@@ -603,7 +605,7 @@ class TileMap:
                     image_file = _get_image_source(frame_tile, map_directory)
 
                     if not frame_tile.tileset.image and image_file:
-                        texture = arcade.texture.default_texture_cache.load_texture(
+                        texture = self.texture_cache_manager.load_or_get_texture(
                             image_file, hit_box_algorithm=hit_box_algorithm
                         )
                     elif image_file:
@@ -615,7 +617,7 @@ class TileMap:
                             height,
                         ) = _get_image_info_from_tileset(frame_tile)
 
-                        texture = arcade.texture.default_texture_cache.load_texture(
+                        texture = self.texture_cache_manager.load_or_get_texture(
                             image_file,
                             x=image_x,
                             y=image_y,
@@ -672,7 +674,7 @@ class TileMap:
                 )
             image_file = try2
 
-        my_texture = arcade.texture.default_texture_cache.load_texture(
+        my_texture = self.texture_cache_manager.load_or_get_texture(
             image_file,
             hit_box_algorithm=hit_box_algorithm,
         )

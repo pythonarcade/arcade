@@ -45,40 +45,6 @@ class TextureCacheManager:
         """Cache for textures."""
         return self._texture_cache
 
-    def _get_real_path(self, path: Union[str, Path]) -> Path:
-        """Resolve the path to the file."""
-        if isinstance(path, str):
-            return arcade.resources.resolve(path)
-        elif isinstance(path, Path):
-            return path
-        else:
-            raise TypeError(f"Invalid path type: {type(path)} for {path}")
-
-    def load_image(
-        self,
-        path: Union[str, Path],
-        hash: Optional[str] = None,
-        mode="RGBA",
-    ) -> ImageData:
-        """
-        Loads a complete image from disk.
-
-        :param path: Path of the file to load.
-        :param hash: Optional override for image hash
-        :param cache: If ``True``, the image will be cached. If ``False``, the
-            image will not be cached or returned from the cache.
-        :param mode: The mode to use for the image. Default is "RGBA".
-        """
-        real_path = self._get_real_path(path)
-        name = Texture.create_image_cache_name(str(real_path))
-        im_data = self._image_data_cache.get(name)
-        if im_data:
-            return im_data
-        image = PIL.Image.open(real_path).convert(mode)
-        im_data = ImageData(image, hash=hash)
-        self._image_data_cache.put(name, im_data)
-        return im_data
-
     def flush(
         self,
         sprite_sheets: bool = True,
@@ -103,7 +69,41 @@ class TextureCacheManager:
         if hit_boxes:
             self._hit_box_cache.flush()
 
-    def load_texture(
+    def _get_real_path(self, path: Union[str, Path]) -> Path:
+        """Resolve the path to the file."""
+        if isinstance(path, str):
+            return arcade.resources.resolve(path)
+        elif isinstance(path, Path):
+            return path
+        else:
+            raise TypeError(f"Invalid path type: {type(path)} for {path}")
+
+    def load_or_get_image(
+        self,
+        path: Union[str, Path],
+        hash: Optional[str] = None,
+        mode="RGBA",
+    ) -> ImageData:
+        """
+        Loads a complete image from disk.
+
+        :param path: Path of the file to load.
+        :param hash: Optional override for image hash
+        :param cache: If ``True``, the image will be cached. If ``False``, the
+            image will not be cached or returned from the cache.
+        :param mode: The mode to use for the image. Default is "RGBA".
+        """
+        real_path = self._get_real_path(path)
+        name = Texture.create_image_cache_name(real_path)
+        im_data = self._image_data_cache.get(name)
+        if im_data:
+            return im_data
+        image = PIL.Image.open(real_path).convert(mode)
+        im_data = ImageData(image, hash=hash)
+        self._image_data_cache.put(name, im_data)
+        return im_data
+
+    def load_or_get_texture(
         self,
         file_path: Union[str, Path],
         *,
@@ -132,39 +132,6 @@ class TextureCacheManager:
         crop = (x, y, width, height)
         return self._load_or_get_texture(
             real_path,
-            hit_box_algorithm=hit_box_algorithm,
-            crop=crop,
-        )
-
-    def _load_tilemap_texture(
-        self,
-        file_path: Path,
-        *,
-        x: int = 0,
-        y: int = 0,
-        width: int = 0,
-        height: int = 0,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
-    ) -> Texture:
-        """
-        Load an image from disk and create a texture.
-
-        The ``x``, ``y``, ``width``, and ``height`` parameters are used to
-        specify a sub-rectangle of the image to load. If not specified, the
-        entire image is loaded.
-
-        :param file_name: Name of the file to that holds the texture.
-        :param x: X coordinate of the texture in the image.
-        :param y: Y coordinate of the texture in the image.
-        :param width: Width of the texture in the image.
-        :param height: Height of the texture in the image.
-        :param hit_box_algorithm:
-        :returns: New :class:`Texture` object.
-        :raises: ValueError
-        """
-        crop = (x, y, width, height)
-        return self._load_or_get_texture(
-            file_path,
             hit_box_algorithm=hit_box_algorithm,
             crop=crop,
         )
