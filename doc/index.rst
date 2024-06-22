@@ -91,7 +91,6 @@ The Python Arcade Library
        tutorials/lights/index
        tutorials/bundling_with_pyinstaller/index
        tutorials/compiling_with_nuitka/index
-       tutorials/resource_handlers/index
        tutorials/shader_tutorials
        tutorials/menu/index
        tutorials/framebuffer/index
@@ -114,6 +113,7 @@ The Python Arcade Library
        programming_guide/gui/index
        programming_guide/texture_atlas
        programming_guide/edge_artifacts/index
+       programming_guide/resource_handlers
        programming_guide/logging
        programming_guide/opengl_notes
        programming_guide/performance_tips
