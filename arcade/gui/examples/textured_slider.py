@@ -12,7 +12,6 @@ import arcade
 from arcade.gui import UIManager, UIAnchorLayout
 from arcade.gui.widgets.slider import UITextureSlider
 
-
 class MyView(arcade.View):
     def __init__(self):
         super().__init__()

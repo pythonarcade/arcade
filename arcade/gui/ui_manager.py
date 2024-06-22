@@ -18,6 +18,7 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
 import arcade
+from arcade import LBWH, Rect
 from arcade.gui.events import (
     UIKeyPressEvent,
     UIKeyReleaseEvent,
@@ -32,8 +33,8 @@ from arcade.gui.events import (
     UITextMotionSelectEvent,
 )
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import GUIRect, UIWidget
-from arcade.types import Point
+from arcade.gui.widgets import UIWidget
+from arcade.types import AnchorPoint, Point2
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -156,7 +157,7 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos: Point, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
+    def get_widgets_at(self, pos: Point2, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -170,7 +171,7 @@ class UIManager(EventDispatcher):
             return isinstance(widget, cls)
 
         for widget in self.walk_widgets(layer=layer):
-            if check_type(widget) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.point_in_rect(pos):
                 yield widget
 
     def _get_surface(self, layer: int) -> Surface:
@@ -216,15 +217,17 @@ class UIManager(EventDispatcher):
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
                     nh = surface_height * sh_y if sh_y else None
-                    child.rect = child.rect.resize(nw, nh)
+                    child.rect = child.rect.resize(nw, nh, anchor=AnchorPoint.BOTTOM_LEFT)
 
                 if child.size_hint_min:
                     shm_w, shm_h = child.size_hint_min
-                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0)
+                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0, anchor=AnchorPoint.BOTTOM_LEFT)
 
                 if child.size_hint_max:
                     shm_w, shm_h = child.size_hint_max
-                    child.rect = child.rect.max_size(shm_w or child.width, shm_h or child.height)
+                    child.rect = child.rect.max_size(
+                        shm_w or child.width, shm_h or child.height, anchor=AnchorPoint.BOTTOM_LEFT
+                    )
 
                 # continue layout process down the tree
                 child._do_layout()
@@ -397,8 +400,8 @@ class UIManager(EventDispatcher):
         self.trigger_render()
 
     @property
-    def rect(self) -> GUIRect:  # type: ignore
-        return GUIRect(0, 0, *self.window.get_size())
+    def rect(self) -> Rect:  # type: ignore
+        return LBWH(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""

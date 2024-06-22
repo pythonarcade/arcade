@@ -5,9 +5,9 @@ from typing import Tuple, Union, Optional
 
 import arcade
 from arcade import Texture
+from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.color import TRANSPARENT_BLACK
 from arcade.draw_commands import draw_lbwh_rectangle_textured
-from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, Point
@@ -56,10 +56,8 @@ class Surface:
 
         self._cam = OrthographicProjector(
             view=CameraData(),
-            projection=OrthographicProjectionData(
-                0.0, self.width, 0.0, self.height, -100, 100
-            ),
-            viewport=LBWH(0, 0, self.width, self.height)
+            projection=OrthographicProjectionData(0.0, self.width, 0.0, self.height, -100, 100),
+            viewport=LBWH(0, 0, self.width, self.height),
         )
 
     @property
@@ -143,7 +141,7 @@ class Surface:
         Also resets the limit of the surface (viewport).
         """
         # Set viewport and projection
-        self.limit(0, 0, *self.size)
+        self.limit(LBWH(0, 0, *self.size))
         # Set blend function
         blend_func = self.ctx.blend_func
 
@@ -155,21 +153,23 @@ class Surface:
             # Restore blend function.
             self.ctx.blend_func = blend_func
 
-    def limit(self, x, y, width, height):
+    def limit(self, rect: Rect):  # TODO track limit usage
         """Reduces the draw area to the given rect"""
 
-        viewport = (
-            int(x * self._pixel_ratio),
-            int(y * self._pixel_ratio),
-            int(width * self._pixel_ratio),
-            int(height * self._pixel_ratio),
-        )
-        self.fbo.viewport = viewport
+        l, b, w, h = rect.lbwh
+        w = max(w, 1)
+        h = max(h, 1)
 
-        width = max(width, 1)
-        height = max(height, 1)
-        self._cam.projection.lrbt = 0, width, 0, height
-        self._cam.viewport = LBWH(*viewport)
+        viewport_rect = LBWH(
+            int(l * self._pixel_ratio),
+            int(b * self._pixel_ratio),
+            int(w * self._pixel_ratio),
+            int(h * self._pixel_ratio),
+        )
+        self.fbo.viewport = viewport_rect.viewport
+
+        self._cam.projection.rect = LBWH(0, 0, w, h)
+        self._cam.viewport = viewport_rect
 
         self._cam.use()
 

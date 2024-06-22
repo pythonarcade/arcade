@@ -22,3 +22,7 @@ class UIView(View):
 
     def on_hide_view(self):
         self.ui.disable()
+
+    def on_draw(self):
+        """In case of subclassing super().on_draw() should be called last."""
+        self.ui.draw()

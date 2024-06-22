@@ -10,8 +10,8 @@ WALL_DIM_MIN = 10
 WALL_DIM_MAX = 200
 WALLS_COUNT = 10
 
-BULLET_VELOCITY_MIN = 1/60
-BULLET_VELOCITY_MAX = 10/60
+BULLET_VELOCITY_MIN = 1 / 60
+BULLET_VELOCITY_MAX = 10 / 60
 BULLET_COUNT = 1000
 
 SIMULATE_MINUTES = 1
@@ -29,7 +29,9 @@ window = arcade.Window()
 # like something I might create in a game.
 rng.seed(2)
 for i in range(0, WALLS_COUNT):
-    wall = arcade.SpriteSolidColor(rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), arcade.color.BLACK)
+    wall = arcade.SpriteSolidColor(
+        rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), arcade.color.BLACK
+    )
     wall.position = rng.randint(0, SCREEN_WIDTH), rng.randint(0, SCREEN_HEIGHT)
     walls.append(wall)
 
@@ -65,7 +67,7 @@ for i in range(0, int(SIMULATE_MINUTES * 60 * SIMULATE_FPS)):
         # bullets.remove(bullet)
         bullet.position = (rng.randint(0, SCREEN_WIDTH), rng.randint(0, SCREEN_HEIGHT))
 
-    window.dispatch_event('on_draw')
+    window.dispatch_event("on_draw")
 
     window.clear(color=arcade.color.WHITE)
     walls.draw()

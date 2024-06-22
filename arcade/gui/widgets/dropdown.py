@@ -33,7 +33,7 @@ class _UIDropdownOverlay(UIBoxLayout):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMousePressEvent):
             # Click outside of dropdown options
-            if not self.rect.collide_with_point(event.x, event.y):
+            if not self.rect.point_in_rect((event.x, event.y)):
                 self.hide()
                 return EVENT_HANDLED
         return super().on_event(event)

@@ -28,7 +28,7 @@ class UIDraggableMixin(UILayout):
         self.rect = self.rect.align_top(rect.top).align_left(rect.left)
 
     def on_event(self, event) -> Optional[bool]:
-        if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):
+        if isinstance(event, UIMouseDragEvent) and self.rect.point_in_rect(event.pos):
             self.rect = self.rect.move(event.dx, event.dy)
             self.trigger_full_render()
 
@@ -51,7 +51,7 @@ class UIMouseFilterMixin(UIWidget):
 
         if isinstance(event, UIMouseEvent):
             # Catch all mouse events, that are inside this widget, to act like a window
-            if self.rect.collide_with_point(*event.pos):
+            if self.rect.point_in_rect(event.pos):
                 return EVENT_HANDLED
 
         return EVENT_UNHANDLED

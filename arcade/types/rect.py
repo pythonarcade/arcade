@@ -167,21 +167,20 @@ class Rect(NamedTuple):
         Returns a new :py:class:`Rect` at the current Rect's position,
         but with a new width and height, anchored at a point (default center.)
         """
-        width = width or self.width
-        height = height or self.height
+        width = width if width is not None else self.width
+        height = height if height is not None else self.height
 
         anchor_x = self.left + anchor.x * self.width
         anchor_y = self.bottom + anchor.y * self.height
 
-        ratio_x = width / (self.width or 1.0)
-        ratio_y = height / (self.height or 1.0)
+        # ratio_x = width / (self.width or 1.0)
+        # ratio_y = height / (self.height or 1.0)
 
-        adjusted_left = anchor_x + (self.left - anchor_x) * ratio_x
-        adjusted_right = anchor_x + (self.right - anchor_x) * ratio_x
-        adjusted_top = anchor_y + (self.top - anchor_y) * ratio_y
-        adjusted_bottom = anchor_y + (self.bottom - anchor_y) * ratio_y
+        # adjusted_left = anchor_x - (self.left - anchor_x) * ratio_x
+        # adjusted_bottom = anchor_y + (self.bottom - anchor_y) * ratio_y
+        # return LBWH(adjusted_left, adjusted_bottom, width, height)
 
-        return LRBT(adjusted_left, adjusted_right, adjusted_bottom, adjusted_top)
+        return XYWH(anchor_x, anchor_y, width, height, anchor)
 
     def scale(self, new_scale: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
         """
@@ -387,6 +386,14 @@ class Rect(NamedTuple):
 
     def point_in_rect(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle.
+
+        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        """
+        px, py = point
+        return (self.left <= px <= self.right) and (self.bottom <= py <= self.top)
+
+    def point_in_bounce(self, point: Point2) -> bool:
+        """Returns ``True`` if ``point`` is inside this rectangle excluding the boundaries.
 
         :param point: A tuple of :py:class:`int` or :py:class:`float` values.
         """

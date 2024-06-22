@@ -366,7 +366,7 @@ class UIBoxLayout(UILayout):
                     new_rect = new_rect.align_right(start_x + self.content_width)
                 else:
                     center_x = start_x + self.content_width // 2
-                    new_rect = new_rect.align_center_x(center_x)
+                    new_rect = new_rect.align_x(center_x)
 
                 new_rect = new_rect.align_top(start_y)
                 child.rect = new_rect
@@ -384,7 +384,6 @@ class UIBoxLayout(UILayout):
                 sum(child.size_hint[0] or 0 for child in self.children if child.size_hint) or 1
             )  # Prevent division by zero
 
-            # TODO Fix layout algorithm, handle size hints per dimension!
             # 0. check if any hint given, if not, continue with step 4.
             #   1. change size to minimal
             #   2. grow using size_hint
@@ -432,7 +431,7 @@ class UIBoxLayout(UILayout):
                 elif self.align == "bottom":
                     new_rect = new_rect.align_bottom(start_y - self.content_height)
                 else:
-                    new_rect = new_rect.align_center_y(center_y)
+                    new_rect = new_rect.align_y(center_y)
 
                 new_rect = new_rect.align_left(start_x)
                 child.rect = new_rect
@@ -749,14 +748,14 @@ class UIGridLayout(UILayout):
                     elif self.align_vertical == "bottom":
                         new_rect = new_rect.align_bottom(start_y - cell_height)
                     else:
-                        new_rect = new_rect.align_center_y(center_y)
+                        new_rect = new_rect.align_y(center_y)
 
                     if self.align_horizontal == "left":
                         new_rect = new_rect.align_left(start_x - cell_width)
                     elif self.align_horizontal == "right":
                         new_rect = new_rect.align_right(start_x)
                     else:
-                        new_rect = new_rect.align_center_x(center_x)
+                        new_rect = new_rect.align_x(center_x)
 
                     child.rect = new_rect
 

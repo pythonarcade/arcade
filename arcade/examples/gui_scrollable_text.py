@@ -54,7 +54,7 @@ class MyView(arcade.View):
         )
 
         self.ui.add(
-            UIInputText(x=340, y=110, width=200, height=50, text="").with_border(),
+            UIInputText(x=340, y=110, width=200, height=50, text="", multiline=True).with_border(),
         )
 
     def on_show_view(self):
