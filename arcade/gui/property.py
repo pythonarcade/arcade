@@ -22,7 +22,8 @@ class _Obs(Generic[P]):
 
 
 class Property(Generic[P]):
-    """An observable property which triggers observers when changed.
+    """
+    An observable property which triggers observers when changed.
 
     .. code-block:: python
 
