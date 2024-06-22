@@ -753,7 +753,7 @@ class UISpace(UIWidget):
         y=0,
         width=100,
         height=100,
-        color=TRANSPARENT_BLACK,
+        color=None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -781,4 +781,5 @@ class UISpace(UIWidget):
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
-        surface.clear(self._color)
+        if self._color:
+            surface.clear(self._color)

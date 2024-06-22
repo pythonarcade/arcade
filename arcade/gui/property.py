@@ -22,23 +22,22 @@ class _Obs(Generic[P]):
 
 
 class Property(Generic[P]):
-    """
-        An observable property which triggers observers when changed.
+    """An observable property which triggers observers when changed.
 
     .. code-block:: python
 
-            def log_change(instance, value):
-                print("Something changed")
+        def log_change(instance, value):
+            print("Something changed")
 
-            class MyObject:
-                name = Property()
+        class MyObject:
+            name = Property()
 
-            my_obj = MyObject()
-            bind(my_obj, "name", log_change)
-            unbind(my_obj, "name", log_change)
+        my_obj = MyObject()
+        bind(my_obj, "name", log_change)
+        unbind(my_obj, "name", log_change)
 
-            my_obj.name = "Hans"
-            # > Something changed
+        my_obj.name = "Hans"
+        # > Something changed
 
         :param default: Default value which is returned, if no value set before
         :param default_factory: A callable which returns the default value.
