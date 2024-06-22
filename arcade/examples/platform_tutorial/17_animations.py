@@ -32,17 +32,20 @@ class Character(arcade.Sprite):
         self.cur_texture = 0
 
         main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
+        def load_texture_pair(filename):
+            texture = arcade.load_texture(filename)
+            return texture, texture.flip_left_right()
 
         # This function from Arcade loads a single texture into two different ones. One is
         # the original texture unchanged, and the second is a horizontally flipped version.
         # This will be used to draw the textures based on the direction the character is facing.
-        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
+        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
+        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
+        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
 
         self.walk_textures = []
         for i in range(8):
-            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
+            texture = load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
 
         self.climbing_textures = (
@@ -165,7 +168,7 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)

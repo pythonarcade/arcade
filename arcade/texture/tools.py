@@ -5,19 +5,9 @@ import arcade
 import arcade.cache
 from .texture import ImageData, Texture
 from arcade.types import Size2D
-from arcade import cache
 
 _DEFAULT_TEXTURE = None
 _DEFAULT_IMAGE_SIZE = (128, 128)
-
-
-def cleanup_texture_cache():
-    """
-    This cleans up the cache of textures. Useful when running unit tests so that
-    the next test starts clean.
-    """
-    cache.texture_cache.clear()
-    arcade.cache.image_data_cache.clear()
 
 
 def get_default_texture(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> Texture:
@@ -46,7 +36,7 @@ def get_default_image(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> ImageData:
     :return: The default image.
     """
     name = f"arcade-default-texture|{size}"
-    image_data = cache.image_data_cache.get(name)
+    image_data = arcade.texture.default_texture_cache.image_data_cache.get(name)
     if image_data:
         return image_data
 
@@ -57,9 +47,5 @@ def get_default_image(size: Size2D[int] = _DEFAULT_IMAGE_SIZE) -> ImageData:
     draw.rectangle(((w // 2, h // 2), (w, h)), arcade.color.MAGENTA)  # Lower right
 
     image_data = ImageData(im, hash=name)
-    cache.image_data_cache.put(name, image_data)
+    arcade.texture.default_texture_cache.image_data_cache.put(name, image_data)
     return image_data
-
-
-if __name__ == "__main__":
-    get_default_texture().image.show()

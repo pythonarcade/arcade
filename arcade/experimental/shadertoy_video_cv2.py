@@ -43,7 +43,7 @@ class ShadertoyVideo(arcade.View):
                 }
             """,
         )
-        self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve(path)))
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),

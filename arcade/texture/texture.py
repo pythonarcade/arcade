@@ -10,7 +10,6 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
 
-from arcade import cache as _cache
 from arcade import hitbox
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox.base import HitBoxAlgorithm
@@ -57,7 +56,7 @@ class ImageData:
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
-    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
+    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None, **kwargs):
         self.image = image
         self.hash = hash or self.calculate_hash(image)
 
@@ -122,7 +121,6 @@ class Texture:
     """
     An arcade.Texture is simply a wrapper for image data as a Pillow image
     and the hit box data for this image used in collision detection.
-    Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
     :param image: The image or ImageData for this texture
     :param hit_box_algorithm: The algorithm to use for calculating the hit box.
@@ -725,15 +723,6 @@ class Texture:
 
     # ----- Utility functions -----
 
-    def remove_from_cache(self, ignore_error: bool = True) -> None:
-        """
-        Remove this texture from the cache.
-
-        :param ignore_error: If True, ignore errors if the texture is not in the cache
-        :return: None
-        """
-        _cache.texture_cache.delete(self)
-
     @staticmethod
     def validate_crop(
         image: PIL.Image.Image, x: int, y: int, width: int, height: int
@@ -760,17 +749,7 @@ class Texture:
         hit box algorithm. This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        # Check if we have cached points
-        points = _cache.hit_box_cache.get(self.cache_name)
-        if points:
-            return points
-
-        # Calculate points with the selected algorithm
-        points = self._hit_box_algorithm.calculate(self.image)
-        if self._hit_box_algorithm.cache:
-            _cache.hit_box_cache.put(self.cache_name, points)
-
-        return points
+        return self._hit_box_algorithm.calculate(self.image)
 
     # ----- Drawing functions -----
 

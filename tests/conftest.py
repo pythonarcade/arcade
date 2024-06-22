@@ -13,6 +13,7 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
 import pytest
 
 import arcade
+from arcade.texture import default_texture_cache
 
 PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
@@ -43,7 +44,7 @@ def prepare_window(window: arcade.Window):
 
     ctx = window.ctx
     ctx._atlas = None  # Clear the global atlas
-    arcade.cleanup_texture_cache()  # Clear the global texture cache
+    default_texture_cache.flush()  # Clear the global/default texture cache
     window.hide_view()  # Disable views if any is active
     window.dispatch_pending_events()
     try:

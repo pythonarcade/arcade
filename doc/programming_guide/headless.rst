@@ -80,16 +80,6 @@ created through the :py:class:`~arcade.ArcadeContext` if needed.
     In Arcade we normally do garbage collection of OpenGL objects
     once per frame by calling :py:meth:`~arcade.ArcadeContext.gc`.
 
-.. Warning::
-
-    If you are loading an increasing amount of textures you
-    might need to clean up the texture cache. This only
-    caches :py:class:`arcade.Texture` objects. See
-    :py:func:`~arcade.cleanup_texture_cache`.
-    This might also
-    involve removing them from the global texture atlas
-    if you are using these textures on sprites.
-
 Examples
 --------
 
