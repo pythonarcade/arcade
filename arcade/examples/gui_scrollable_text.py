@@ -4,8 +4,11 @@ python -m arcade.examples.gui_scrollable_text
 """
 import arcade
 from arcade import load_texture
+
 from arcade.gui import UIManager, UIInputText, UITextArea
 from arcade.gui.nine_patch import NinePatchTexture
+
+TEX_GREY_PANEL = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
 LOREM_IPSUM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. "
@@ -35,7 +38,7 @@ class MyView(arcade.View):
             right=5,
             top=5,
             bottom=5,
-            texture=load_texture(":resources:gui_basic_assets/window/grey_panel.png"))
+            texture=TEX_GREY_PANEL)
         text_area = UITextArea(
             x=100,
             y=200,
