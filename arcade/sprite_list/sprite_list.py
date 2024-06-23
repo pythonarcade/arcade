@@ -650,19 +650,21 @@ class SpriteList(Generic[SpriteType]):
         :param index_1: Item index to swap
         :param index_2: Item index to swap
         """
-        # Swap order in spritelist
+        # Swap order in python spritelist
         sprite_1 = self.sprite_list[index_1]
         sprite_2 = self.sprite_list[index_2]
         self.sprite_list[index_1] = sprite_2
         self.sprite_list[index_2] = sprite_1
 
-        # Swap order in index buffer
+        # Swap order in index buffer to change rendering order
         slot_1 = self.sprite_slot[sprite_1]
         slot_2 = self.sprite_slot[sprite_2]
         i1 = self._sprite_index_data.index(slot_1)
         i2 = self._sprite_index_data.index(slot_2)
         self._sprite_index_data[i1] = slot_2
         self._sprite_index_data[i2] = slot_1
+
+        self._sprite_index_changed = True
 
     def remove(self, sprite: SpriteType) -> None:
         """

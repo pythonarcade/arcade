@@ -258,3 +258,28 @@ def test_color():
     # sp.alpha_normalized = -1000
     # assert sp.alpha == 0
     # assert sp.alpha_normalized == 0.0
+
+
+def test_swap(window):
+    """Test swapping sprites including drawing order"""
+    window.clear()
+
+    sprites = [
+        arcade.SpriteSolidColor(10, 10, color=arcade.color.RED),
+        arcade.SpriteSolidColor(10, 10, color=arcade.color.GREEN)
+    ]
+    sl = arcade.SpriteList()
+    sl.extend(sprites)
+
+    # Green sprite is last in list and drawn last
+    sl.draw()
+    assert arcade.get_pixel(x=0, y=0, components=4) == arcade.color.GREEN
+    assert sl.sprite_list == sprites
+
+    # Swap the order
+    sl.swap(0, 1)
+
+    # Red sprite is last in list and drawn last
+    sl.draw()
+    assert arcade.get_pixel(x=0, y=0, components=4) == arcade.color.RED
+    assert sl.sprite_list == sprites[::-1]
