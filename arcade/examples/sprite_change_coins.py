@@ -43,6 +43,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = None
+        self.bumper_texture = arcade.load_texture(":resources:images/pinball/bumper.png")
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -117,8 +118,7 @@ class MyGame(arcade.Window):
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
-                coin.set_texture(1)
+                coin.texture = self.bumper_texture
                 coin.changed = True
                 coin.width = 30
                 coin.height = 30

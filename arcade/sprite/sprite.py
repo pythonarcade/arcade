@@ -317,11 +317,11 @@ class Sprite(BasicSprite, PymunkMixin):
     # ---- Draw Methods ----
 
     def draw(
-            self,
-            *,
-            filter: Optional[OpenGlFilter] = None,
-            pixelated: Optional[bool] = None,
-            blend_function: Optional[BlendFunction] = None
+        self,
+        *,
+        filter: Optional[OpenGlFilter] = None,
+        pixelated: Optional[bool] = None,
+        blend_function: Optional[BlendFunction] = None
     ) -> None:
         """
         A debug method which draws the sprite into the current OpenGL context.

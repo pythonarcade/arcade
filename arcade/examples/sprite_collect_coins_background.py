@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         # Set up the player info
         self.player_sprite = None
         self.score = 0
-        self.score_text = None
+        self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
 
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
@@ -48,13 +48,14 @@ class MyGame(arcade.Window):
         # Set the background color
         self.background_color = arcade.color.AMAZON
 
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         # Image from:
         # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
+
+    def setup(self):
+        """ Set up the game and initialize the variables. """
+
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -97,8 +98,9 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
         self.player_list.draw()
 
-        # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
+        # Update the score text and draw it
+        self.score_text.text = f"Score: {self.score}"
+        self.score_text.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -126,7 +128,7 @@ class MyGame(arcade.Window):
 def main():
     """ Main function """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    window.setup()  
     arcade.run()
 
 

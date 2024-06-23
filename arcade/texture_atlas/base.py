@@ -109,6 +109,12 @@ class ImageDataRefCounter:
         self._data.clear()
         self._num_decref = 0
 
+    def debug_print(self) -> None:
+        """Debug print the reference counter."""
+        print("ImageDataRefCounter:")
+        for key, val in self._data.items():
+            print(f"  {key}: {val}")
+
     def __len__(self) -> int:
         return len(self._data)
 

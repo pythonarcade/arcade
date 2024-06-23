@@ -47,7 +47,9 @@ RESIZE_STEP = 128
 # texture anyway, so more rows can be added.
 UV_TEXTURE_WIDTH = 4096
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("atlas")
+LOG.handlers = [logging.StreamHandler()]
+LOG.setLevel(logging.INFO)
 
 # Texture coordinates for a texture (4 x vec2)
 TexCoords = Tuple[float, float, float, float, float, float, float, float]
@@ -509,20 +511,23 @@ class TextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
+        # LOG.info("Adding texture[%s]: %s", texture.file_path, texture.atlas_name)
         # Store a reference to the texture instance if we don't already have it
         # These are any texture instances regardless of content
         if not self.has_texture(texture):
             self._textures.add(texture)
             texture.add_atlas_ref(self)
             self._image_ref_count.inc_ref(texture.image_data)
+            # LOG.info("Added texture to _textures[%s]: %s", texture.file_path, texture.atlas_name)
 
         # Return existing texture if we already have a texture with the same image hash and vertex order
         if self.has_unique_texture(texture):
             slot = self._texture_uvs.get_slot_or_raise(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
+            # LOG.info("Returning exiting unique texture[%s]: %s", texture.file_path, texture.atlas_name)
             return slot, region
 
-        LOG.info("Attempting to add texture: %s", texture.atlas_name)
+        LOG.info("Attempting to add texture[%s]: %s", texture.file_path, texture.atlas_name)
 
         # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
@@ -711,10 +716,10 @@ class TextureAtlas(TextureAtlasBase):
         # print("Removing texture", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
-        try:
-            self._textures.remove(texture)
-        except KeyError:
-            pass
+        # try:
+        self._textures.remove(texture)
+        # except KeyError:
+        #     pass
 
         # Remove the unique texture if it's there
         if self.has_unique_texture(texture):

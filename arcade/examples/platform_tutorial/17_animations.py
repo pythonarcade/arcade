@@ -32,21 +32,20 @@ class Character(arcade.Sprite):
         self.cur_texture = 0
 
         main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
-        def load_texture_pair(filename):
-            texture = arcade.load_texture(filename)
-            return texture, texture.flip_left_right()
+        # Load textures for idle, jump, and fall states
+        idle_texture = arcade.load_texture(f"{main_path}_idle.png")
+        jump_texture = arcade.load_texture(f"{main_path}_jump.png")
+        fall_texture = arcade.load_texture(f"{main_path}_fall.png")
+        # Make pairs with left and right facing textures
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+        self.jump_texture_pair = jump_texture, jump_texture.flip_left_right()
+        self.fall_texture_pair = fall_texture, fall_texture.flip_left_right()
 
-        # This function from Arcade loads a single texture into two different ones. One is
-        # the original texture unchanged, and the second is a horizontally flipped version.
-        # This will be used to draw the textures based on the direction the character is facing.
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
-
+        # Load textures for walking with left and right facing textures
         self.walk_textures = []
         for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
+            texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+            self.walk_textures.append((texture, texture.flip_left_right()))
 
         self.climbing_textures = (
             arcade.load_texture(f"{main_path}_climb0.png"),

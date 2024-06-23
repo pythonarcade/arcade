@@ -18,19 +18,22 @@ SCREEN_TITLE = "Sprite Rooms Example"
 
 MOVEMENT_SPEED = 5
 
+BACKGROUND_1 = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
+BACKGROUND_2 = arcade.load_texture(":resources:images/backgrounds/abstract_2.jpg")
+
 
 class Room:
     """
     This class holds all the information about the
     different rooms.
     """
-    def __init__(self):
+    def __init__(self, background):
         # You may want many lists. Lists for coins, monsters, etc.
-        self.wall_list = None
+        self.wall_list = arcade.SpriteList()
 
         # This holds the background images. If you don't want changing
         # background images, you can delete this part.
-        self.background = None
+        self.background = background
 
 
 def setup_room_1():
@@ -39,12 +42,9 @@ def setup_room_1():
     If your program gets large, you may want to separate this into different
     files.
     """
-    room = Room()
+    room = Room(BACKGROUND_1)
 
     """ Set up the game and initialize the variables. """
-    # Sprite lists
-    room.wall_list = arcade.SpriteList()
-
     # -- Set up the walls
     # Create bottom and top row of boxes
     # This y loops a list of two, the coordinate 0, and just under the top of window
@@ -77,10 +77,6 @@ def setup_room_1():
 
     # If you want coins or monsters in a level, then add that code here.
 
-    # Load the background image for this level.
-    room.background = arcade.load_texture(":resources:images/backgrounds/"
-                                          "abstract_1.jpg")
-
     return room
 
 
@@ -88,11 +84,7 @@ def setup_room_2():
     """
     Create and return room 2.
     """
-    room = Room()
-
-    """ Set up the game and initialize the variables. """
-    # Sprite lists
-    room.wall_list = arcade.SpriteList()
+    room = Room(BACKGROUND_2)
 
     # -- Set up the walls
     # Create bottom and top row of boxes
@@ -120,7 +112,6 @@ def setup_room_2():
     wall.left = 5 * SPRITE_SIZE
     wall.bottom = 6 * SPRITE_SIZE
     room.wall_list.append(wall)
-    room.background = arcade.load_texture(":resources:images/backgrounds/abstract_2.jpg")
 
     return room
 

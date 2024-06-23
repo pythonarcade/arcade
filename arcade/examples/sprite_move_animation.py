@@ -80,6 +80,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
+        self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
         self.player = None
 
         # --- Load Textures for the player ---
@@ -119,8 +120,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
-            coin = arcade.Sprite(":resources:images/items/gold_1.png",
-                                 scale=0.5)
+            coin = arcade.Sprite(":resources:images/items/gold_1.png", scale=0.5)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
@@ -142,8 +142,8 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        self.score_text.text = f"Score: {self.score}"
+        self.score_text.draw()
 
     def on_key_press(self, key, modifiers):
         """
