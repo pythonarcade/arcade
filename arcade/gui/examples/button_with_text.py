@@ -19,6 +19,16 @@ from arcade.gui.widgets.buttons import UIFlatButton, UITextureButton
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.toggle import UITextureToggle
 
+# Preload textures, because they are mostly used multiple times, so they are not loaded multiple times
+ICON_SMALLER = load_texture(":resources:gui_basic_assets/icons/smaller.png")
+ICON_LARGER = load_texture(":resources:gui_basic_assets/icons/larger.png")
+
+TEX_SWITCH_GREEN = load_texture(":resources:gui_basic_assets/toggle/switch_green.png")
+TEX_SWITCH_RED = load_texture(":resources:gui_basic_assets/toggle/switch_red.png")
+TEX_RED_BUTTON_NORMAL = load_texture(":resources:gui_basic_assets/red_button_normal.png")
+TEX_RED_BUTTON_HOVER = load_texture(":resources:gui_basic_assets/red_button_hover.png")
+TEX_RED_BUTTON_PRESS = load_texture(":resources:gui_basic_assets/red_button_press.png")
+
 
 class MyView(arcade.View):
     def __init__(self):
@@ -53,7 +63,7 @@ class MyView(arcade.View):
         flat_with_icon_left.place_text(align_x=+20)
         flat_with_icon_left.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/larger.png"),
+                texture=ICON_LARGER,
                 width=30,
                 height=30,
             ),
@@ -67,7 +77,7 @@ class MyView(arcade.View):
         flat_with_icon_right.place_text(align_x=-20)
         flat_with_icon_right.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=30,
                 height=30,
             ),
@@ -80,7 +90,7 @@ class MyView(arcade.View):
         flat_with_icon_right = UIFlatButton(text="UIFlatButton", width=200)
         flat_with_icon_right.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=30,
                 height=30,
             ),
@@ -89,7 +99,7 @@ class MyView(arcade.View):
         )
         flat_with_icon_right.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=30,
                 height=30,
             ),
@@ -102,9 +112,9 @@ class MyView(arcade.View):
         texture_button = UITextureButton(
             text="UITextureButton",
             width=200,
-            texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture=TEX_RED_BUTTON_NORMAL,
+            texture_hovered=TEX_RED_BUTTON_HOVER,
+            texture_pressed=TEX_RED_BUTTON_PRESS,
         )
         grid.add(texture_button, row_num=0, col_num=2)
 
@@ -112,13 +122,13 @@ class MyView(arcade.View):
         texture_button_with_icon_left = UITextureButton(
             text="UITextureButton",
             width=200,
-            texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture=TEX_RED_BUTTON_NORMAL,
+            texture_hovered=TEX_RED_BUTTON_HOVER,
+            texture_pressed=TEX_RED_BUTTON_PRESS,
         )
         texture_button_with_icon_left.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=25,
                 height=25,
             ),
@@ -132,14 +142,14 @@ class MyView(arcade.View):
             text="UITextureButton\nwith a second line",
             multiline=True,
             width=200,
-            texture=load_texture(":resources:gui_basic_assets/red_button_normal.png"),
-            texture_hovered=load_texture(":resources:gui_basic_assets/red_button_hover.png"),
-            texture_pressed=load_texture(":resources:gui_basic_assets/red_button_press.png"),
+            texture=TEX_RED_BUTTON_NORMAL,
+            texture_hovered=TEX_RED_BUTTON_HOVER,
+            texture_pressed=TEX_RED_BUTTON_PRESS,
         )
         texture_button_with_icon_left.place_text(anchor_x="left", align_x=45)
         texture_button_with_icon_left.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=25,
                 height=25,
             ),
@@ -156,7 +166,7 @@ class MyView(arcade.View):
         texture_button_with_toggle.place_text(anchor_x="left", align_x=45)
         texture_button_with_toggle.add(
             child=UIImage(
-                texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+                texture=ICON_SMALLER,
                 width=25,
                 height=25,
             ),
@@ -165,8 +175,8 @@ class MyView(arcade.View):
         )
         toggle = texture_button_with_toggle.add(
             child=UITextureToggle(
-                on_texture=load_texture(":resources:gui_basic_assets/toggle/switch_red.png"),
-                off_texture=load_texture(":resources:gui_basic_assets/toggle/switch_green.png"),
+                on_texture=TEX_SWITCH_RED,
+                off_texture=TEX_SWITCH_GREEN,
                 width=60,
                 height=30,
             ),

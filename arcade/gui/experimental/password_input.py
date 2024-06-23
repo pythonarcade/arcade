@@ -10,8 +10,7 @@ class UIPasswordInput(UIInputText):
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UITextEvent):
-            event.text = event.text.replace("\n", "")  # remove new lines!
-            event.text = event.text.replace("\r", "")  # remove new lines!
+            event.text = event.text.replace("\n", "").replace("\r", "")  # remove new lines!
         return super().on_event(event)
 
     def do_render(self, surface: Surface):
