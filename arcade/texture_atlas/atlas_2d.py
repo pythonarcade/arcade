@@ -32,6 +32,7 @@ from arcade.camera.static import static_from_raw_orthographic
 from .base import (
     TextureAtlasBase,
     ImageDataRefCounter,
+    UniqueTextureRefCounter,
 )
 
 if TYPE_CHECKING:
@@ -374,6 +375,9 @@ class TextureAtlas(TextureAtlasBase):
         # when to remove an image from the atlas. We only ever track images
         # using their sha256 hash to avoid writing the same image multiple times.
         self._image_ref_count = ImageDataRefCounter()
+        # Tracks how many instances of a unique texture we have in the atlas.
+        # This basically means textures with the same image and vertex order (atlas_name)
+        self._unique_texture_ref_count = UniqueTextureRefCounter()
 
         # A list of all the images this atlas contains.
         # Unique by: Internal hash property
@@ -517,6 +521,7 @@ class TextureAtlas(TextureAtlasBase):
         if not self.has_texture(texture):
             self._textures.add(texture)
             texture.add_atlas_ref(self)
+            self._unique_texture_ref_count.inc_ref(texture)
             self._image_ref_count.inc_ref(texture.image_data)
             # LOG.info("Added texture to _textures[%s]: %s", texture.file_path, texture.atlas_name)
 
@@ -713,24 +718,30 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        # print("Removing texture", texture.atlas_name)
+        LOG.info("Removing texture: %s", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
-        # try:
-        self._textures.remove(texture)
-        # except KeyError:
-        #     pass
+        try:
+            self._textures.remove(texture)
+        except KeyError:
+            pass
 
         # Remove the unique texture if it's there
-        if self.has_unique_texture(texture):
-            del self._unique_textures[texture.atlas_name]
+        if self._unique_texture_ref_count.dec_ref(texture) == 0:
+            # We need to remove the texture if manually removed from the atlas.
+            # Otherwise it will be removed by GC and trigger KeyError
+            try:
+                del self._unique_textures[texture.atlas_name]
+            except KeyError:
+                pass
             # Reclaim the texture uv slot
             del self._texture_regions[texture.atlas_name]
             self._texture_uvs.free_slot_by_name(texture.atlas_name)
 
         # Reclaim the image in the atlas if it's not used by any other texture
         if self._image_ref_count.dec_ref(texture.image_data) == 0:
-            # Image might be GCed already
+            # We need to remove the image if manually removed from the atlas.
+            # Otherwise it will be removed by GC and trigger KeyError
             try:
                 self._images.remove(texture.image_data)
             except KeyError:
@@ -890,11 +901,13 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
-        # print("Rebuilding atlas")
+        LOG.info("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
+
         self._image_ref_count.clear()
+        self._unique_texture_ref_count.clear()
 
         # Clear the atlas but keep the uv slot mapping
         self._fbo.clear()
