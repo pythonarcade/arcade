@@ -190,12 +190,6 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             self.close()
-        else:
-            # DEBUG: Output some info about the texture atlas
-            # self.ctx.default_atlas.show(draw_borders=True)
-            print("Textures", len(self.ctx.default_atlas.textures))
-            # print(self.ctx.default_atlas.unique_textures)
-            self.ctx.default_atlas._image_ref_count.debug_print()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -291,12 +285,11 @@ class MyGame(arcade.Window):
                 bullet.top = enemy.bottom
 
                 # Add the bullet to the appropriate list
-                # self.enemy_bullet_list.append(bullet)
+                self.enemy_bullet_list.append(bullet)
 
             # Ok, this column has had a chance to fire. Add to list so we don't
             # try it again this frame.
             x_spawn.append(enemy.center_x)
-        self.shield_list.pop()
 
     def process_enemy_bullets(self):
 

@@ -49,8 +49,8 @@ RESIZE_STEP = 128
 UV_TEXTURE_WIDTH = 4096
 
 LOG = logging.getLogger("atlas")
-LOG.handlers = [logging.StreamHandler()]
-LOG.setLevel(logging.INFO)
+# LOG.handlers = [logging.StreamHandler()]
+# LOG.setLevel(logging.INFO)
 
 # Texture coordinates for a texture (4 x vec2)
 TexCoords = Tuple[float, float, float, float, float, float, float, float]
