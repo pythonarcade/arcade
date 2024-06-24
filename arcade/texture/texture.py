@@ -698,6 +698,7 @@ class Texture:
         return texture
 
     # ------ Atlas functions ------
+    # TODO: Use weakref.finalize
 
     def remove_from_atlases(self) -> None:
         """

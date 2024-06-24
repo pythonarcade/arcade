@@ -109,11 +109,93 @@ class ImageDataRefCounter:
         self._data.clear()
         self._num_decref = 0
 
+    def debug_print(self) -> None:
+        """Debug print the reference counter."""
+        print(f"{self.__class__.__name__}:")
+        for key, val in self._data.items():
+            print(f"  {key}: {val}")
+
     def __len__(self) -> int:
         return len(self._data)
 
     def __repr__(self) -> str:
-        return f"<ImageDataRefCounter ref_count={self.count_all_refs()} data={self._data}>"
+        return f"<{self.__class__.__name__} ref_count={self.count_all_refs()} data={self._data}>"
+
+
+class UniqueTextureRefCounter:
+    """
+    Helper class to keep track of how many times a unique texture is used.
+    A "unique texture" is based on the ``atlas_name`` of the texture meaning
+    a texture using the same image and the same vertex order.
+    """
+    def __init__(self) -> None:
+        self._data: Dict[str, int] = {}
+        self._num_decref = 0
+
+    def inc_ref(self, image_data: "Texture") -> None:
+        """Increment the reference count for an image."""
+        self._data[image_data.atlas_name] = self._data.get(image_data.atlas_name, 0) + 1
+
+    def dec_ref(self, image_data: "Texture") -> int:
+        """
+        Decrement the reference count for an image returning the new value.
+        """
+        if image_data.atlas_name not in self._data:
+            raise RuntimeError(f"Image {image_data.atlas_name} not in ref counter")
+
+        val = self._data[image_data.atlas_name] - 1
+        self._data[image_data.atlas_name] = val
+
+        if val < 0:
+            raise RuntimeError(f"Image {image_data.atlas_name} ref count went below zero")
+        if val == 0:
+            del self._data[image_data.atlas_name]
+
+        self._num_decref += 1
+
+        return val
+
+    def get_ref_count(self, image_data: "ImageData") -> int:
+        """
+        Get the reference count for an image.
+
+        Args:
+            image_data (ImageData): The image to get the reference count for
+        """
+        return self._data.get(image_data.hash, 0)
+
+    def count_all_refs(self) -> int:
+        """Helper function to count the total number of references."""
+        return sum(self._data.values())
+
+    def get_total_decref(self, reset=True) -> int:
+        """
+        Get the total number of decrefs.
+
+        Args:
+            reset (bool): Reset the counter after getting the value
+        """
+        num_decref = self._num_decref
+        if reset:
+            self._num_decref = 0
+        return num_decref
+
+    def clear(self) -> None:
+        """Clear the reference counter."""
+        self._data.clear()
+        self._num_decref = 0
+
+    def debug_print(self) -> None:
+        """Debug print the reference counter."""
+        print(f"{self.__class__.__name__}:")
+        for key, val in self._data.items():
+            print(f"  {key}: {val}")
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} ref_count={self.count_all_refs()} data={self._data}>"
 
 
 class TextureAtlasBase(abc.ABC):
