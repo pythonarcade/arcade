@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Tuple
+from weakref import WeakValueDictionary
 
 import PIL
 import PIL.Image
@@ -23,9 +24,12 @@ class SpriteSolidColor(Sprite):
     A rectangular sprite of the given ``width``, ``height``, and ``color``.
 
     The texture is automatically generated instead of loaded from a
-    file. Internally only a single global texture is used for this
-    sprite type, so concerns about memory usage non-existent regardless
+    file. Internally only a single global image is used for this
+    sprite type so concerns about memory usage non-existent regardless
     of size or number of sprite variations.
+
+    Different texture configurations (width, height) are weakly cached internally
+    to avoid creating multiple textures with the same configuration.
 
     :param width: Width of the sprite in pixels
     :param height: Height of the sprite in pixels
@@ -39,6 +43,11 @@ class SpriteSolidColor(Sprite):
 
     __slots__ = ()
     _default_image: Optional[ImageData] = None
+    # To avoid making lots of texture instances with the same configuration
+    # we cache them here weakly. Making a 100 x 100 grid of white sprites
+    # only create 1 texture instead of 1000. This saves memory and processing
+    # time for the default texture atlas.
+    _texture_cache: WeakValueDictionary[Tuple[int, int], Texture] = WeakValueDictionary()
 
     def __init__(
         self,
@@ -50,16 +59,20 @@ class SpriteSolidColor(Sprite):
         angle: float = 0,
         **kwargs,
     ):
-        texture = Texture(
-            self._get_default_image(),
-            hit_box_points=(
-                (-width / 2, -height / 2),
-                (width / 2, -height / 2),
-                (width / 2, height / 2),
-                (-width / 2, height / 2),
-            ),
-        )
-        texture.size = width, height
+        texture = self.__class__._texture_cache.get((width, height))
+        if texture is None:
+            texture = Texture(
+                self._get_default_image(),
+                hit_box_points=(
+                    (-width / 2, -height / 2),
+                    (width / 2, -height / 2),
+                    (width / 2, height / 2),
+                    (-width / 2, height / 2),
+                ),
+            )
+            texture.size = width, height
+            self.__class__._texture_cache[(width, height)] = texture
+
         super().__init__(
             texture,
             center_x=center_x,
@@ -106,6 +119,8 @@ class SpriteCircle(Sprite):
     :param soft: If ``True``, the circle will fade from an opaque
                       center to transparent edges.
     """
+    # Local weak cache for textures to avoid creating multiple instances with the same configuration
+    _texture_cache: WeakValueDictionary[Tuple[int, RGBA255, bool], Texture] = WeakValueDictionary()
 
     def __init__(
         self,
@@ -117,39 +132,25 @@ class SpriteCircle(Sprite):
         radius = int(radius)
         diameter = radius * 2
 
-        # We are only creating white textures. The actual color is
-        # is applied in the shader through the sprite's color attribute.
-        # determine the texture's cache name.
-        if soft:
-            cache_name = arcade.cache.crate_str_from_values(
-                "circle_texture_soft", diameter, 255, 255, 255, 255
-            )
-        else:
-            cache_name = arcade.cache.crate_str_from_values(
-                "circle_texture", diameter, 255, 255, 255, 255
-            )
-
+        cache_key = diameter, color, soft
         # Get existing texture from cache if possible
-        texture = arcade.texture.default_texture_cache.texture_cache.get_with_config(
-            cache_name, arcade.hitbox.algo_simple
-        )
+        texture = self.__class__._texture_cache.get(cache_key)
+
         if not texture:
             if soft:
                 texture = make_soft_circle_texture(
                     diameter,
                     color=(255, 255, 255, 255),
-                    name=cache_name,
                     hit_box_algorithm=arcade.hitbox.algo_simple,
                 )
             else:
                 texture = make_circle_texture(
                     diameter,
                     color=(255, 255, 255, 255),
-                    name=cache_name,
                 )
-            arcade.texture.default_texture_cache.texture_cache.put(texture)
+
+            self.__class__._texture_cache[cache_key] = texture
 
         # apply results to the new sprite
         super().__init__(texture)
         self.color = Color.from_iterable(color)
-        self._points = self.texture.hit_box_points
