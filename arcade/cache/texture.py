@@ -66,24 +66,19 @@ class TextureCache:
     def put(
         self,
         texture: "Texture",
-        *,
-        file_path: Optional[Union[str, Path]] = None,
     ) -> None:
         """
-        Add a texture to the cache.
+        Add a texture to the cache. It's important that the crop values
+        and file path are correctly set on the texture before adding it to
+        the cache.
 
         :param texture: The texture to add
-        :param file_path: The path to the file the texture was loaded from
-        :param strong: If True the cache will keep the texture alive
         """
-        # TODO: Consider using Texture.origin instead of file_path
-        #       Consider also caching origin that is not a file name
-        file_path = file_path or texture.file_path
-        path_str = str(file_path) if file_path else None
-
         self._entries.put(texture.cache_name, texture)
-        if path_str:
-            self._file_entries.put(path_str, texture)
+
+        # Only cache by file path if it's the whole texture and not a crop
+        if texture.file_path and texture.crop_values in [None, (0, 0, 0, 0)]:
+            self._file_entries.put(str(texture.file_path), texture)
 
     def get(self, name: str) -> Optional["Texture"]:
         """
