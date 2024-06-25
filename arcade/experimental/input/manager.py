@@ -461,7 +461,7 @@ class InputManager:
     def on_key_release(self, key: int, modifiers) -> None:
         if not self._allow_keyboard:
             return
-
+        # What, why are we doing any of this repeat tuple conversion in here?
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
         for action_name in keys_to_actions:
             action = self.actions[action_name]
