@@ -125,23 +125,10 @@ def serialize_action(action: Action) -> RawAction:
 def parse_raw_axis(raw_axis: RawAxis) -> Axis:
     axis = Axis(raw_axis["name"])
     for raw_mapping in raw_axis["mappings"]:
-        raw_input = raw_mapping["input"]
-        input_type = inputs.InputType(raw_mapping["input_type"])
-        if input_type == inputs.InputType.KEYBOARD:
-            input = inputs.Keys(raw_input)
-        elif input_type == inputs.InputType.MOUSE_BUTTON:
-            input = inputs.MouseButtons(raw_input)
-        elif input_type == inputs.InputType.MOUSE_AXIS:
-            input = inputs.MouseAxes(raw_input)
-        elif input_type == inputs.InputType.CONTROLLER_BUTTON:
-            input = inputs.ControllerButtons(raw_input)
-        elif input_type == inputs.InputType.CONTROLLER_AXIS:
-            input = inputs.ControllerAxes(raw_input)
-        else:
-            raise AttributeError("Tried to parse an unknown input type")
+        instance = inputs.parse_instance(raw_mapping)
         axis.add_mapping(
             AxisMapping(
-                input,
+                instance,
                 raw_mapping["scale"],
             )
         )
