@@ -1,5 +1,4 @@
-#  type: ignore
-
+# type: ignore
 from __future__ import annotations
 
 from enum import Enum
@@ -24,10 +23,12 @@ from .mapping import (
     serialize_axis,
 )
 
-RawInputManager = TypedDict(
-    "RawInputManager",
-    {"actions": List[RawAction], "axes": List[RawAxis], "controller_deadzone": float},
-)
+
+
+class RawInputManager(TypedDict):
+    actions: List[RawAction]
+    axes: List[RawAxis]
+    controller_deadzone: float
 
 
 def _set_discard(set: Set, element: Any) -> Set:
@@ -125,24 +126,13 @@ class InputManager:
         for raw_action in raw["actions"]:
             name = raw_action["name"]
             final.new_action(name)
+
             for raw_mapping in raw_action["mappings"]:
-                raw_input = raw_mapping["input"]
-                input_type = inputs.InputType(raw_mapping["input_type"])
-                if input_type == inputs.InputType.KEYBOARD:
-                    input = inputs.Keys(raw_input)
-                elif input_type == inputs.InputType.MOUSE_BUTTON:
-                    input = inputs.MouseButtons(raw_input)
-                elif input_type == inputs.InputType.MOUSE_AXIS:
-                    input = inputs.MouseAxes(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_BUTTON:
-                    input = inputs.ControllerButtons(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_AXIS:
-                    input = inputs.ControllerAxes(raw_input)
-                else:
-                    raise AttributeError("Tried to parse an unknown input type")
+                input_instance = inputs.parse_instance(raw_mapping)
+
                 final.add_action_input(
                     name,
-                    input,
+                    input_instance,
                     raw_mapping["mod_shift"],
                     raw_mapping["mod_ctrl"],
                     raw_mapping["mod_alt"],
@@ -152,21 +142,9 @@ class InputManager:
             name = raw_axis["name"]
             final.new_axis(name)
             for raw_mapping in raw_axis["mappings"]:
-                raw_input = raw_mapping["input"]
-                input_type = inputs.InputType(raw_mapping["input_type"])
-                if input_type == inputs.InputType.KEYBOARD:
-                    input = inputs.Keys(raw_input)
-                elif input_type == inputs.InputType.MOUSE_BUTTON:
-                    input = inputs.MouseButtons(raw_input)
-                elif input_type == inputs.InputType.MOUSE_AXIS:
-                    input = inputs.MouseAxes(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_BUTTON:
-                    input = inputs.ControllerButtons(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_AXIS:
-                    input = inputs.ControllerAxes(raw_input)
-                else:
-                    raise AttributeError("Tried to parse an unknown input type")
-                final.add_axis_input(name, input, raw_mapping["scale"])
+                input_instance = inputs.parse_instance(raw_mapping)
+
+                final.add_axis_input(name, input_instance, raw_mapping["scale"])
 
         return final
 
@@ -484,7 +462,7 @@ class InputManager:
     def on_key_release(self, key: int, modifiers) -> None:
         if not self._allow_keyboard:
             return
-
+        # What, why are we doing any of this repeat tuple conversion in here?
         keys_to_actions = tuple(self.keys_to_actions.get(key, set()))
         for action_name in keys_to_actions:
             action = self.actions[action_name]

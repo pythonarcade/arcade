@@ -8,22 +8,29 @@ from typing_extensions import TypedDict
 
 from arcade.experimental.input import inputs
 
-RawActionMapping = TypedDict(
-    "RawActionMapping",
-    {
-        "input_type": int,
-        "input": Union[str, int],
-        "mod_shift": bool,
-        "mod_ctrl": bool,
-        "mod_alt": bool,
-    },
-)
-RawAxisMapping = TypedDict(
-    "RawAxisMapping", {"input_type": int, "input": Union[str, int], "scale": float}
-)
 
-RawAction = TypedDict("RawAction", {"name": str, "mappings": List[RawActionMapping]})
-RawAxis = TypedDict("RawAxis", {"name": str, "mappings": List[RawAxisMapping]})
+class RawActionMapping(TypedDict):
+    input_type: int
+    input: Union[str, int]
+    mod_shift: bool
+    mod_ctrl: bool
+    mod_alt: bool
+
+
+class RawAxisMapping(TypedDict):
+    input_type: int
+    input: Union[str, int]
+    scale: float
+
+
+class RawAction(TypedDict):
+    name: str
+    mappings: List[RawActionMapping]
+
+
+class RawAxis(TypedDict):
+    name: str
+    mappings: List[RawAxisMapping]
 
 
 class Action:
@@ -61,21 +68,12 @@ class Axis:
 class Mapping:
 
     def __init__(self, input: inputs.InputEnum):
-        if isinstance(input, inputs.Keys):
-            self._input_type = inputs.InputType.KEYBOARD
-        elif isinstance(input, inputs.MouseButtons):
-            self._input_type = inputs.InputType.MOUSE_BUTTON
-        elif isinstance(input, inputs.MouseAxes):
-            self._input_type = inputs.InputType.MOUSE_AXIS
-        elif isinstance(input, inputs.ControllerButtons):
-            self._input_type = inputs.InputType.CONTROLLER_BUTTON
-        elif isinstance(input, inputs.ControllerAxes):
-            self._input_type = inputs.InputType.CONTROLLER_AXIS
-        else:
+        try:
+            self._input_type = inputs.CLASS_TO_INPUT_TYPE[input]
+        except KeyError:
             raise TypeError(
                 "Input specified for ActionMapping must inherit from InputEnum"
             )
-
         self._input = input
 
 
@@ -127,23 +125,10 @@ def serialize_action(action: Action) -> RawAction:
 def parse_raw_axis(raw_axis: RawAxis) -> Axis:
     axis = Axis(raw_axis["name"])
     for raw_mapping in raw_axis["mappings"]:
-        raw_input = raw_mapping["input"]
-        input_type = inputs.InputType(raw_mapping["input_type"])
-        if input_type == inputs.InputType.KEYBOARD:
-            input = inputs.Keys(raw_input)
-        elif input_type == inputs.InputType.MOUSE_BUTTON:
-            input = inputs.MouseButtons(raw_input)
-        elif input_type == inputs.InputType.MOUSE_AXIS:
-            input = inputs.MouseAxes(raw_input)
-        elif input_type == inputs.InputType.CONTROLLER_BUTTON:
-            input = inputs.ControllerButtons(raw_input)
-        elif input_type == inputs.InputType.CONTROLLER_AXIS:
-            input = inputs.ControllerAxes(raw_input)
-        else:
-            raise AttributeError("Tried to parse an unknown input type")
+        instance = inputs.parse_instance(raw_mapping)
         axis.add_mapping(
             AxisMapping(
-                input,
+                instance,
                 raw_mapping["scale"],
             )
         )

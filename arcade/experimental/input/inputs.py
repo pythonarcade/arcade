@@ -1,5 +1,4 @@
-#  type: ignore
-
+#type: ignore
 """
 Enums used to map different input types to their common counterparts.
 
@@ -90,9 +89,7 @@ class Keys(InputEnum):
     MOD_SCROLLLOCK = 256
 
     # Platform-specific base hotkey modifier
-    MOD_ACCEL = MOD_CTRL
-    if platform == "darwin":
-        MOD_ACCEL = MOD_COMMAND
+    MOD_ACCEL = MOD_COMMAND if platform == "darwin" else MOD_CTRL
 
     # Keys
     BACKSPACE = 65288
@@ -319,3 +316,37 @@ class MouseButtons(InputEnum):
 
     MOUSE_4 = 1 << 3
     MOUSE_5 = 1 << 4
+
+
+#.This is safe since:
+# 1. Enum types with members are final
+#.2. Types are hashable
+# Hoever, we can probably make this much cleaner to set up since
+# we have repeated if ladders elsewhere which can be replaced with
+# smaller dicts.
+CLASS_TO_INPUT_TYPE = {
+    Keys: InputType.KEYBOARD,
+    MouseButtons: InputType.MOUSE_BUTTON,
+    MouseAxes: InputType.MOUSE_AXIS,
+    ControllerButtons: InputType.CONTROLLER_BUTTON,
+    ControllerAxes: InputType.CONTROLLER_AXIS,
+}
+
+INPUT_TYPE_TO_CLASS = {
+    InputType.KEYBOARD: Keys,
+    InputType.MOUSE_BUTTON: MouseButtons,
+    InputType.MOUSE_AXIS: MouseAxes,
+    InputType.CONTROLLER_BUTTON: ControllerButtons,
+    InputType.CONTROLLER_AXIS: ControllerAxes,
+}
+
+
+# WIP cleanup, will be documented and named better and actually annotated later
+def parse_instance(_mapping):
+    _raw_input = _mapping['input']
+    _input_type = InputType(_mapping["input_type"])
+
+    if not (_input_class := INPUT_TYPE_TO_CLASS.get(_input_type, None)):
+        raise AttributeError("Tried to parse an unknown input type")
+    return _input_class(_raw_input)
+
