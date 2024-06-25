@@ -175,7 +175,7 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.player_bullet_list.draw()
         self.enemy_bullet_list.draw()
-        self.shield_list.draw()
+        self.shield_list.draw(pixelated=True)
         self.player_list.draw()
 
         # Update and draw the score
