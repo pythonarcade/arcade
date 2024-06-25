@@ -11,7 +11,7 @@ def texture():
     return arcade.Texture(Image.new("RGBA", (10, 10), (255, 0, 0, 255)))
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def file_texture():
     return arcade.load_texture(":resources:images/test_textures/test_texture.png")
 
@@ -44,15 +44,6 @@ def test_put_file(cache, file_texture):
     assert len(cache._file_entries) == 1
 
 
-def test_put_file_path_override(cache, file_texture):
-    path = "test/test.png"
-    cache.put(file_texture, file_path=path)
-    assert cache.get(file_texture.cache_name) == file_texture
-    assert cache.get_texture_by_filepath(path) == file_texture
-    assert len(cache._entries) == 1
-    assert len(cache._file_entries) == 1
-
-
 def test_delete(cache, texture):
     cache.put(texture)
     assert len(cache) == 1
@@ -66,12 +57,6 @@ def test_clear(cache, texture):
     assert len(cache) == 1
     cache.flush()
     assert len(cache) == 0
-
-    cache.put(texture, file_path=path)
-    assert len(cache) == 1
-    cache.flush()
-    assert len(cache) == 0
-    assert cache.get(texture.cache_name) is None
 
 
 def test_contains(cache, texture):

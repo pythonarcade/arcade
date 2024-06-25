@@ -221,6 +221,20 @@ class Texture:
         """
         return self._cache_name
 
+    @property
+    def image_cache_name(self) -> Optional[str]:
+        """
+        Get the image cache name for this texture.
+        Returns None if file_path is not set.
+        """
+        if self.file_path is None:
+            return None
+
+        return self.create_image_cache_name(
+            self.file_path,
+            self.crop_values or (0, 0, 0, 0),
+        )
+
     @classmethod
     def create_cache_name(
         cls,
