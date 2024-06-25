@@ -15,7 +15,7 @@ from typing import (
 from array import array
 from collections import deque
 from contextlib import contextmanager
-from weakref import WeakSet, WeakValueDictionary
+from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
 from PIL import Image, ImageDraw
@@ -515,12 +515,14 @@ class TextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
-        # LOG.info("Adding texture[%s]: %s", texture.file_path, texture.atlas_name)
         # Store a reference to the texture instance if we don't already have it
         # These are any texture instances regardless of content
         if not self.has_texture(texture):
             self._textures.add(texture)
-            texture.add_atlas_ref(self)
+            # Set up finalizer to remove the texture when it's GCed
+            ref = finalize(texture, self.remove, texture)
+            # ref.atexit = False  # Don't bother removing texture on program exit
+
             self._unique_texture_ref_count.inc_ref(texture)
             self._image_ref_count.inc_ref(texture.image_data)
             # LOG.info("Added texture to _textures[%s]: %s", texture.file_path, texture.atlas_name)
@@ -718,6 +720,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
+        print("REMOVING TEXTURE", texture)
         LOG.info("Removing texture: %s", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
