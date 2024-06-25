@@ -1,3 +1,4 @@
+i#type: ignore
 """
 Enums used to map different input types to their common counterparts.
 
