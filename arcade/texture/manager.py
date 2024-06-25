@@ -226,7 +226,7 @@ class TextureCacheManager:
                     texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
                     texture.file_path = file_path
                     texture.crop_values = crop
-                    self._texture_cache.put(texture, file_path=file_path)
+                    self._texture_cache.put(texture)
 
         return texture
 
