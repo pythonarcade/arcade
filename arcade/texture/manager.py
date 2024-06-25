@@ -98,10 +98,10 @@ class TextureCacheManager:
     def load_or_get_spritesheet_texture(
         self,
         path: Union[str, Path],
-        x=0,
-        y=0,
-        width=0,
-        height=0,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
         hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
     ) -> Texture:
         """
@@ -111,13 +111,7 @@ class TextureCacheManager:
         * If the sliced texture is already cached, it will be returned instead.
         """
         real_path = self._get_real_path(path)
-
-        # check if texture is cached and return if that is the case
-        texture = self._load_or_get_texture(
-            real_path,
-            hit_box_algorithm=hit_box_algorithm,
-            crop=(x, y, width, height),
-        )
+        texture = self._texture_cache.get_texture_by_filepath(real_path, crop=(x, y, width, height))
         if texture:
             return texture
 
@@ -126,7 +120,7 @@ class TextureCacheManager:
 
         # slice out the texture and cache + return
         texture = sprite_sheet.get_texture(x, y, width, height)
-        self._texture_cache.put(texture, file_path=real_path)
+        self._texture_cache.put(texture)
         return texture
 
     def load_or_get_image(

@@ -221,6 +221,24 @@ class Texture:
         """
         return self._cache_name
 
+    @property
+    def file_cache_name(self) -> Optional[str]:
+        """
+        The name of the texture used for caching by file path (read only).
+
+        Returns None if the texture is not associated with a file meaning
+        the file_path is None.
+
+        :return: str
+        """
+        if self._file_path is None:
+            return None
+
+        return self.create_file_cache_name(
+            path=self._file_path,
+            crop=self._crop_values or (0, 0, 0, 0),
+        )
+
     @classmethod
     def create_cache_name(
         cls,
@@ -244,6 +262,18 @@ class Texture:
             raise TypeError(f"Expected HitBoxAlgorithm, got {type(hit_box_algorithm)}")
 
         return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
+
+    @classmethod
+    def create_file_cache_name(
+        cls,
+        path: Union[str, Path],
+        crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
+    ) -> str:
+        """
+        Cache name for a texture with a crop value.
+        Zero crop values means the entire image.
+        """
+        return f"{str(path)}|{crop}"
 
     @classmethod
     def create_atlas_name(
