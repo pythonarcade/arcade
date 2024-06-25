@@ -10,7 +10,7 @@ from typing_extensions import TypedDict
 import arcade
 
 from . import inputs
-from .inputs import InputEnum, InputType
+from .inputs import InputEnum, InputType, INPUT_TYPE_TO_CLASS
 from .mapping import (
     Action,
     ActionMapping,
@@ -22,13 +22,7 @@ from .mapping import (
     serialize_axis,
 )
 
-INPUT_TYPE_TO_CLASS = {
-    inputs.InputType.KEYBOARD: inputs.Keys,
-    inputs.InputType.MOUSE_BUTTON: inputs.MouseButtons,
-    inputs.InputType.MOUSE_AXIS: inputs.MouseAxes,
-    inputs.InputType.CONTROLLER_BUTTON: inputs.ControllerButtons,
-    inputs.InputType.CONTROLLER_AXIS: inputs.ControllerAxes,
-}
+
 
 class RawInputManager(TypedDict):
     actions: List[RawAction]
@@ -139,10 +133,10 @@ class InputManager:
                 if not (input_class := INPUT_TYPE_TO_CLASS.get(input_type, None)):
                     raise AttributeError("Tried to parse an unknown input type")
 
-                input = input_class(raw_input)
+                input_instance = input_class(raw_input)
                 final.add_action_input(
                     name,
-                    input,
+                    input_instance,
                     raw_mapping["mod_shift"],
                     raw_mapping["mod_ctrl"],
                     raw_mapping["mod_alt"],
