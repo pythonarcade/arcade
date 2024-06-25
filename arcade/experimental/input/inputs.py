@@ -318,6 +318,12 @@ class MouseButtons(InputEnum):
     MOUSE_5 = 1 << 4
 
 
+#.This is safe since:
+# 1. Enum types with members are final
+#.2. Types are hashable
+# Hoever, we can probably make this much cleaner to set up since
+# we have repeated if ladders elsewhere which can be replaced with
+# smaller dicts.
 CLASS_TO_INPUT_TYPE = {
     Keys: InputType.KEYBOARD,
     MouseButtons: InputType.MOUSE_BUTTON,
@@ -335,6 +341,7 @@ INPUT_TYPE_TO_CLASS = {
 }
 
 
+# WIP cleanup, will be documented and named better and actually annotated later
 def parse_instance(_mapping):
     _raw_input = _mapping['input']
     _input_type = InputType(_mapping["input_type"])
