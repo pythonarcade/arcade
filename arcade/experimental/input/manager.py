@@ -10,7 +10,7 @@ from typing_extensions import TypedDict
 import arcade
 
 from . import inputs
-from .inputs import InputEnum, InputType, INPUT_TYPE_TO_CLASS
+from .inputs import InputEnum, InputType
 from .mapping import (
     Action,
     ActionMapping,
