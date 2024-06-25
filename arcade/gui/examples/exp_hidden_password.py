@@ -6,7 +6,7 @@ which hides the contents behind a custom character, as often
 required for login screens
 
 If arcade and Python are properly installed, you can run this example with:
-python -m arcade.gui.examples.hidden_password
+python -m arcade.gui.examples.exp_hidden_password
 """
 
 from __future__ import annotations

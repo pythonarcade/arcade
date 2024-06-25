@@ -12,7 +12,7 @@ It currently needs the following improvements:
 * UIScrollBars
 
 If arcade and Python are properly installed, you can run this example with:
-python -m arcade.gui.examples.scroll_area
+python -m arcade.gui.examples.exp_scroll_area
 """
 
 from __future__ import annotations
