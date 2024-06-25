@@ -68,21 +68,12 @@ class Axis:
 class Mapping:
 
     def __init__(self, input: inputs.InputEnum):
-        if isinstance(input, inputs.Keys):
-            self._input_type = inputs.InputType.KEYBOARD
-        elif isinstance(input, inputs.MouseButtons):
-            self._input_type = inputs.InputType.MOUSE_BUTTON
-        elif isinstance(input, inputs.MouseAxes):
-            self._input_type = inputs.InputType.MOUSE_AXIS
-        elif isinstance(input, inputs.ControllerButtons):
-            self._input_type = inputs.InputType.CONTROLLER_BUTTON
-        elif isinstance(input, inputs.ControllerAxes):
-            self._input_type = inputs.InputType.CONTROLLER_AXIS
-        else:
+        try:
+            self._input_type = inputs.CLASS_TO_INPUT_TYPE[input]
+        except KeyError:
             raise TypeError(
                 "Input specified for ActionMapping must inherit from InputEnum"
             )
-
         self._input = input
 
 

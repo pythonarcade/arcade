@@ -317,6 +317,14 @@ class MouseButtons(InputEnum):
     MOUSE_5 = 1 << 4
 
 
+CLASS_TO_INPUT_TYPE = {
+    Keys: InputType.KEYBOARD,
+    MouseButtons: InputType.MOUSE_BUTTON,
+    MouseAxes: InputType.MOUSE_AXIS,
+    ControllerButtons: InputType.CONTROLLER_BUTTON,
+    ControllerAxes: InputType.CONTROLLER_AXIS,
+}
+
 INPUT_TYPE_TO_CLASS = {
     InputType.KEYBOARD: Keys,
     InputType.MOUSE_BUTTON: MouseButtons,
