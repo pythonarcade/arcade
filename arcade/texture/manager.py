@@ -119,8 +119,16 @@ class TextureCacheManager:
         sprite_sheet = self.load_or_get_spritesheet(real_path)
 
         # slice out the texture and cache + return
-        texture = sprite_sheet.get_texture(x, y, width, height)
+        texture = sprite_sheet.get_texture(x, y, width, height, hit_box_algorithm=hit_box_algorithm)
         self._texture_cache.put(texture)
+        if texture.image_cache_name:
+            self._image_data_cache.put(texture.image_cache_name, texture.image_data)
+
+        # Add to image data cache
+        self._image_data_cache.put(
+            Texture.create_image_cache_name(real_path, (x, y, width, height)), texture.image_data,
+        )
+
         return texture
 
     def load_or_get_image(

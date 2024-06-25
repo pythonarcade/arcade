@@ -76,9 +76,9 @@ class TextureCache:
         # Only cache by file path if it's the whole texture and not a crop
         # if texture.file_path and texture.crop_values in [None, (0, 0, 0, 0)]:
         #     self._file_entries.put(str(texture.file_path), texture)
-        file_cache_name = texture.file_cache_name
-        if file_cache_name:
-            self._file_entries.put(file_cache_name, texture)
+        image_cache_name = texture.image_cache_name
+        if image_cache_name:
+            self._file_entries.put(image_cache_name, texture)
 
     def get(self, name: str) -> Optional["Texture"]:
         """
@@ -117,7 +117,7 @@ class TextureCache:
         :param file_path: The path to the file the texture was loaded from
         """
         from arcade import Texture
-        file_cache_name = Texture.create_file_cache_name(file_path, crop)
+        file_cache_name = Texture.create_image_cache_name(file_path, crop)
         return self._file_entries.get(file_cache_name)
 
     def delete(self, texture_or_name: Union["Texture", str], raise_if_not_exist: bool = False) -> None:

@@ -2,6 +2,7 @@
 import arcade
 
 SPRITESHEET_PATH = ":assets:images/spritesheets/codepage_437.png"
+TEST_TEXTURE = ":assets:images/test_textures/test_texture.png"
 
 def test_create():
     arcade.texture.TextureCacheManager()
@@ -13,6 +14,10 @@ def test_load_spritesheet():
     spritesheet = manager.load_or_get_spritesheet(SPRITESHEET_PATH)
     assert spritesheet
     assert manager.load_or_get_spritesheet(SPRITESHEET_PATH) == spritesheet
+    assert len(manager._sprite_sheets) == 1
+
+    manager.flush()
+    assert len(manager._sprite_sheets) == 0
 
 
 def test_load_spritesheet_texture():
@@ -35,3 +40,25 @@ def test_load_spritesheet_texture():
     # We loaded the texture 10 times with different crop values
     assert len(manager.texture_cache._file_entries) == 10
     assert len(manager.texture_cache._entries) == 10
+    assert len(manager.image_data_cache) == 10
+
+    # Flush the cache
+    manager.flush()
+    assert len(manager._sprite_sheets) == 0
+    assert len(manager.texture_cache._file_entries) == 0
+    assert len(manager.texture_cache._entries) == 0 
+    assert len(manager.image_data_cache) == 0
+
+
+def test_load_or_get_texture():
+    """Load a texture and test caching"""
+    manager = arcade.texture.TextureCacheManager()
+    texture = manager.load_or_get_texture(TEST_TEXTURE)
+    assert texture
+    assert manager.load_or_get_texture(TEST_TEXTURE) == texture
+    assert len(manager.texture_cache._file_entries) == 1
+    assert len(manager.texture_cache._entries) == 1
+
+    manager.flush()
+    assert len(manager.texture_cache._file_entries) == 0
+    assert len(manager.texture_cache._entries) == 0
