@@ -24,10 +24,10 @@ from .mapping import (
     serialize_axis,
 )
 
-RawInputManager = TypedDict(
-    "RawInputManager",
-    {"actions": List[RawAction], "axes": List[RawAxis], "controller_deadzone": float},
-)
+class RawInputManager(TypedDict):
+    actions: List[RawAction]
+    axes: List[RawAxis]
+    controller_deadzone: float
 
 
 def _set_discard(set: Set, element: Any) -> Set:
