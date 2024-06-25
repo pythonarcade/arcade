@@ -122,17 +122,20 @@ class InputManager:
     def parse(cls, raw: RawInputManager) -> InputManager:
         final = cls(controller_deadzone=raw["controller_deadzone"])
 
+        def parse_instance(_mapping):
+            _raw_input = _mapping['input']
+            _input_type = inputs.InputType(_mapping["input_type"])
+
+            if not (_input_class := INPUT_TYPE_TO_CLASS.get(_input_type, None)):
+                raise AttributeError("Tried to parse an unknown input type")
+            return _input_class(_raw_input)
+
         for raw_action in raw["actions"]:
             name = raw_action["name"]
             final.new_action(name)
 
             for raw_mapping in raw_action["mappings"]:
-                raw_input = raw_mapping["input"]
-                input_type = inputs.InputType(raw_mapping["input_type"])
-
-                if not (input_class := INPUT_TYPE_TO_CLASS.get(input_type, None)):
-                    raise AttributeError("Tried to parse an unknown input type")
-                input_instance = input_class(raw_input)
+                input_instance = parse_instance(raw_mapping)
 
                 final.add_action_input(
                     name,
@@ -146,12 +149,7 @@ class InputManager:
             name = raw_axis["name"]
             final.new_axis(name)
             for raw_mapping in raw_axis["mappings"]:
-                raw_input = raw_mapping["input"]
-                input_type = inputs.InputType(raw_mapping["input_type"])
-
-                if not (input_class := INPUT_TYPE_TO_CLASS.get(input_type, None)):
-                    raise AttributeError("Tried to parse an unknown input type")
-                input_instance = input_class(raw_input)
+                input_instance = parse_instance(raw_mapping)
 
                 final.add_axis_input(name, input_instance, raw_mapping["scale"])
 
