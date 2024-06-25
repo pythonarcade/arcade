@@ -332,3 +332,12 @@ INPUT_TYPE_TO_CLASS = {
     InputType.CONTROLLER_BUTTON: ControllerButtons,
     InputType.CONTROLLER_AXIS: ControllerAxes,
 }
+
+
+def parse_instance(_mapping):
+    _raw_input = _mapping['input']
+    _input_type = InputType(_mapping["input_type"])
+
+    if not (_input_class := INPUT_TYPE_TO_CLASS.get(_input_type, None)):
+        raise AttributeError("Tried to parse an unknown input type")
+    return _input_class(_raw_input)
