@@ -1,5 +1,3 @@
-#  type: ignore
-
 """
 Enums used to map different input types to their common counterparts.
 
@@ -90,9 +88,7 @@ class Keys(InputEnum):
     MOD_SCROLLLOCK = 256
 
     # Platform-specific base hotkey modifier
-    MOD_ACCEL = MOD_CTRL
-    if platform == "darwin":
-        MOD_ACCEL = MOD_COMMAND
+    MOD_ACCEL = MOD_COMMAND if platform == "darwin" else MOD_CTRL
 
     # Keys
     BACKSPACE = 65288
