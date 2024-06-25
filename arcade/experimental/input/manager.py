@@ -132,8 +132,8 @@ class InputManager:
 
                 if not (input_class := INPUT_TYPE_TO_CLASS.get(input_type, None)):
                     raise AttributeError("Tried to parse an unknown input type")
-
                 input_instance = input_class(raw_input)
+
                 final.add_action_input(
                     name,
                     input_instance,
@@ -148,19 +148,12 @@ class InputManager:
             for raw_mapping in raw_axis["mappings"]:
                 raw_input = raw_mapping["input"]
                 input_type = inputs.InputType(raw_mapping["input_type"])
-                if input_type == inputs.InputType.KEYBOARD:
-                    input = inputs.Keys(raw_input)
-                elif input_type == inputs.InputType.MOUSE_BUTTON:
-                    input = inputs.MouseButtons(raw_input)
-                elif input_type == inputs.InputType.MOUSE_AXIS:
-                    input = inputs.MouseAxes(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_BUTTON:
-                    input = inputs.ControllerButtons(raw_input)
-                elif input_type == inputs.InputType.CONTROLLER_AXIS:
-                    input = inputs.ControllerAxes(raw_input)
-                else:
+
+                if not (input_class := INPUT_TYPE_TO_CLASS.get(input_type, None)):
                     raise AttributeError("Tried to parse an unknown input type")
-                final.add_axis_input(name, input, raw_mapping["scale"])
+                input_instance = input_class(raw_input)
+
+                final.add_axis_input(name, input_instance, raw_mapping["scale"])
 
         return final
 
