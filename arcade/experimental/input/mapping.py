@@ -8,22 +8,29 @@ from typing_extensions import TypedDict
 
 from arcade.experimental.input import inputs
 
-RawActionMapping = TypedDict(
-    "RawActionMapping",
-    {
-        "input_type": int,
-        "input": Union[str, int],
-        "mod_shift": bool,
-        "mod_ctrl": bool,
-        "mod_alt": bool,
-    },
-)
-RawAxisMapping = TypedDict(
-    "RawAxisMapping", {"input_type": int, "input": Union[str, int], "scale": float}
-)
 
-RawAction = TypedDict("RawAction", {"name": str, "mappings": List[RawActionMapping]})
-RawAxis = TypedDict("RawAxis", {"name": str, "mappings": List[RawAxisMapping]})
+class RawActionMapping(TypedDict):
+    input_type: int
+    input: Union[str, int]
+    mod_shift: bool
+    mod_ctrl: bool
+    mod_alt: bool
+
+
+class RawAxisMapping(TypedDict):
+    input_type: int
+    input: Union[str, int]
+    scale: float
+
+
+class RawAction(TypedDict):
+    name: str
+    mappings: List[RawActionMapping]
+
+
+class RawAxis(TypedDict):
+    name: str
+    mappings: List[RawAxisMapping]
 
 
 class Action:
