@@ -52,7 +52,9 @@ class PymunkPhysicsEngine:
     KINEMATIC = pymunk.Body.KINEMATIC
     MOMENT_INF = float("inf")
 
-    def __init__(self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
+    def __init__(
+        self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708
+    ):
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
@@ -104,7 +106,9 @@ class PymunkPhysicsEngine:
             sprite.pymunk.gravity = gravity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_velocity is not None:
-            sprite.pymunk.max_velocity = max_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
+            sprite.pymunk.max_velocity = (
+                max_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
+            )
 
         if max_vertical_velocity is not None:
             sprite.pymunk.max_vertical_velocity = max_vertical_velocity  # pyright: ignore
@@ -137,7 +141,9 @@ class PymunkPhysicsEngine:
         body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
-        def velocity_callback(my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float):
+        def velocity_callback(
+            my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float
+        ):
             """Used for custom damping, gravity, and max_velocity."""
 
             # Custom damping
@@ -251,7 +257,9 @@ class PymunkPhysicsEngine:
                 return sprite
         return None
 
-    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Optional[Sprite], Optional[Sprite]]:
+    def get_sprites_from_arbiter(
+        self, arbiter: pymunk.Arbiter
+    ) -> Tuple[Optional[Sprite], Optional[Sprite]]:
         """Given a collision arbiter, return the sprites associated with the collision."""
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)
@@ -267,27 +275,35 @@ class PymunkPhysicsEngine:
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
-            raise PymunkException("Tried to apply an impulse, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to apply an impulse, but this physics object has no 'body' set."
+            )
         physics_object.body.apply_impulse_at_local_point(impulse)
 
     def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, Tuple[float, float]]):
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
-            raise PymunkException("Tried to set a position, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to set a position, but this physics object has no 'body' set."
+            )
         physics_object.body.position = position
 
     def set_rotation(self, sprite: Sprite, rotation: float):
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
-            raise PymunkException("Tried to set a rotation, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to set a rotation, but this physics object has no 'body' set."
+            )
         physics_object.body.angle = math.radians(rotation)
 
     def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
-            raise PymunkException("Tried to set a velocity, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to set a velocity, but this physics object has no 'body' set."
+            )
         physics_object.body.velocity = velocity
 
     def add_collision_handler(
@@ -407,14 +423,18 @@ class PymunkPhysicsEngine:
         """Apply force to a Sprite."""
         physics_object = self.sprites[sprite]
         if physics_object.body is None:
-            raise PymunkException("Tried to apply a force, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to apply a force, but this physics object has no 'body' set."
+            )
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
     def set_horizontal_velocity(self, sprite: Sprite, velocity: float):
         """Set a sprite's velocity"""
         physics_object = self.sprites[sprite]
         if physics_object.body is None:
-            raise PymunkException("Tried to set a velocity, but this physics object has no 'body' set.")
+            raise PymunkException(
+                "Tried to set a velocity, but this physics object has no 'body' set."
+            )
         cv = physics_object.body.velocity
         new_cv = (velocity, cv[1])
         physics_object.body.velocity = new_cv
@@ -423,7 +443,9 @@ class PymunkPhysicsEngine:
         """Apply force to a Sprite."""
         physics_object = self.sprites[sprite]
         if physics_object.shape is None:
-            raise PymunkException("Tried to set friction, but this physics object has no 'shape' set.")
+            raise PymunkException(
+                "Tried to set friction, but this physics object has no 'shape' set."
+            )
         physics_object.shape.friction = friction
 
     def apply_opposite_running_force(self, sprite: Sprite):

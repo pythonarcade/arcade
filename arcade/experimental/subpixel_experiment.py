@@ -25,7 +25,9 @@ class MyGame(arcade.Window):
 
         # Just grab all the image resources we can find
         resources = [
-            getattr(arcade.resources, resource) for resource in dir(arcade.resources) if resource.startswith("image_")
+            getattr(arcade.resources, resource)
+            for resource in dir(arcade.resources)
+            if resource.startswith("image_")
         ]
         resource_cycle = cycle(resources)
         # We only care about sprites of this size

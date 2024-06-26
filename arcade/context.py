@@ -49,7 +49,9 @@ class ArcadeContext(Context):
 
     atlas_size: Tuple[int, int] = 512, 512
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
+    def __init__(
+        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+    ):
 
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
@@ -207,7 +209,9 @@ class ArcadeContext(Context):
         # self.active_program = None
         self.viewport = 0, 0, self.window.width, self.window.height
         self.view_matrix = Mat4()
-        self.projection_matrix = Mat4.orthogonal_projection(0, self.window.width, 0, self.window.height, -100, 100)
+        self.projection_matrix = Mat4.orthogonal_projection(
+            0, self.window.width, 0, self.window.height, -100, 100
+        )
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0
@@ -408,7 +412,9 @@ class ArcadeContext(Context):
             varyings_capture_mode=varyings_capture_mode,
         )
 
-    def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
+    def load_compute_shader(
+        self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()
+    ) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
         resource handles.

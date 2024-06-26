@@ -163,7 +163,10 @@ class Rect(NamedTuple):
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
     def resize(
-        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
+        self,
+        width: Optional[AsFloat] = None,
+        height: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
         Returns a new :py:class:`Rect` at the current Rect's position,
@@ -267,7 +270,10 @@ class Rect(NamedTuple):
         """Returns a new :py:class:`Rect`, which is aligned to the x at `value`."""
         return XYWH(value, self.y, self.width, self.height)
 
-    @warning(ReplacementWarning, message=".align_center_x() is deprecated. Please use .align_x() instead.")
+    @warning(
+        ReplacementWarning,
+        message=".align_center_x() is deprecated. Please use .align_x() instead.",
+    )
     def align_center_x(self, value: AsFloat) -> Rect:
         """Backwards-compatible alias for `Rect.x`."""
         return self.align_x(value)
@@ -276,13 +282,19 @@ class Rect(NamedTuple):
         """Get a new :py:class:`Rect`, which is aligned to the y at `value`."""
         return XYWH(self.x, value, self.width, self.height)
 
-    @warning(ReplacementWarning, message=".align_center_y() is deprecated. Please use .align_y() instead.")
+    @warning(
+        ReplacementWarning,
+        message=".align_center_y() is deprecated. Please use .align_y() instead.",
+    )
     def align_center_y(self, value: AsFloat) -> Rect:
         """Backwards-compatible alias for `Rect.x`."""
         return self.align_y(value)
 
     def min_size(
-        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
+        self,
+        width: Optional[AsFloat] = None,
+        height: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
         Return a :py:class:`Rect` that is at least size `width` by `height`, positioned at
@@ -293,7 +305,10 @@ class Rect(NamedTuple):
         return self.resize(width, height, anchor)
 
     def max_size(
-        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
+        self,
+        width: Optional[AsFloat] = None,
+        height: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
         Return a :py:class:`Rect` that is at most size `width` by `height`, positioned at
@@ -402,9 +417,9 @@ class Rect(NamedTuple):
         :param other: Another :py:class:`Rect` instance.
         """
 
-        return (other.width + self.width) / 2.0 > abs(self.x - other.x) and (other.height + self.height) / 2.0 > abs(
-            self.y - other.y
-        )
+        return (other.width + self.width) / 2.0 > abs(self.x - other.x) and (
+            other.height + self.height
+        ) / 2.0 > abs(self.y - other.y)
 
     def point_in_rect(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle.
@@ -665,15 +680,24 @@ class Rect(NamedTuple):
 
     def __round__(self, n: int) -> Rect:
         """Rounds the left, right, bottom, and top to `n` decimals."""
-        return LRBT(round(self.left, n), round(self.right, n), round(self.bottom, n), round(self.top, n))
+        return LRBT(
+            round(self.left, n), round(self.right, n), round(self.bottom, n), round(self.top, n)
+        )
 
     def __floor__(self) -> Rect:
         """Floors the left, right, bottom, and top."""
-        return LRBT(math.floor(self.left), math.floor(self.right), math.floor(self.bottom), math.floor(self.top))
+        return LRBT(
+            math.floor(self.left),
+            math.floor(self.right),
+            math.floor(self.bottom),
+            math.floor(self.top),
+        )
 
     def __ceil__(self) -> Rect:
         """Floors the left, right, bottom, and top."""
-        return LRBT(math.ceil(self.left), math.ceil(self.right), math.ceil(self.bottom), math.ceil(self.top))
+        return LRBT(
+            math.ceil(self.left), math.ceil(self.right), math.ceil(self.bottom), math.ceil(self.top)
+        )
 
 
 # Shorthand creation helpers
@@ -697,7 +721,9 @@ def LBWH(left: AsFloat, bottom: AsFloat, width: AsFloat, height: AsFloat) -> Rec
     return Rect(left, right, bottom, top, width, height, x, y)
 
 
-def XYWH(x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+def XYWH(
+    x: AsFloat, y: AsFloat, width: AsFloat, height: AsFloat, anchor: Vec2 = AnchorPoint.CENTER
+) -> Rect:
     """
     Creates a new :py:class:`.Rect` from x, y, width, and height parameters,
     anchored at a relative point (default center).

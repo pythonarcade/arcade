@@ -6,11 +6,7 @@ from arcade.math import quaternion_rotation
 from arcade.camera.data_types import CameraData
 
 
-__all__ = (
-    "rotate_around_forward",
-    "rotate_around_up",
-    "rotate_around_right"
-)
+__all__ = ("rotate_around_forward", "rotate_around_up", "rotate_around_right")
 
 
 def rotate_around_forward(data: CameraData, angle: float) -> Tuple[float, float, float]:
@@ -39,8 +35,8 @@ def rotate_around_up(data: CameraData, angle: float) -> Tuple[float, float, floa
 
 
 def rotate_around_right(
-        data: CameraData,
-        angle: float) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
+    data: CameraData, angle: float
+) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
     """
     Rotate both the CameraData's forward vector and up vector around a calculated right vector.
     Generally only useful in 3D games.
@@ -56,4 +52,3 @@ def rotate_around_right(
     new_forward = quaternion_rotation(_right, data.forward, angle)
     new_up = quaternion_rotation(_right, data.up, angle)
     return new_up, new_forward
-

@@ -352,7 +352,11 @@ class Program:
         ptr = cast(c_array, POINTER(POINTER(c_char)))
 
         # Are we capturing in interlaved or separate buffers?
-        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" else gl.GL_SEPARATE_ATTRIBS
+        mode = (
+            gl.GL_INTERLEAVED_ATTRIBS
+            if self._varyings_capture_mode == "interleaved"
+            else gl.GL_SEPARATE_ATTRIBS
+        )
 
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
@@ -401,7 +405,9 @@ class Program:
             )
 
         # The attribute key is used to cache VertexArrays
-        self.attribute_key = ":".join(f"{attr.name}[{attr.gl_type}/{attr.components}]" for attr in self._attributes)
+        self.attribute_key = ":".join(
+            f"{attr.name}[{attr.gl_type}/{attr.components}]" for attr in self._attributes
+        )
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""
@@ -422,7 +428,9 @@ class Program:
                 continue
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
-            self._uniforms[u_name] = Uniform(self._ctx, self._glo, u_location, u_name, u_type, u_size)
+            self._uniforms[u_name] = Uniform(
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
+            )
 
     def _introspect_uniform_blocks(self):
         active_uniform_blocks = gl.GLint(0)
@@ -504,7 +512,9 @@ class Program:
                     f"({result.value}): {msg.value.decode('utf-8')}\n"
                     f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
                 )
-                + "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(source.split("\n")))
+                + "\n".join(
+                    f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(source.split("\n"))
+                )
             )
         return shader
 

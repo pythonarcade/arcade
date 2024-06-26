@@ -367,7 +367,10 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (f"{self.__class__.__name__},rgb takes 3 or 4 channel" f" colors, but got {len(color)} channels")
+                (
+                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                    f" colors, but got {len(color)} channels"
+                )
             )
 
         # Unpack to avoid index / . overhead & prep for repack

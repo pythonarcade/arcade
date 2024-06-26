@@ -90,7 +90,9 @@ class TextureCache:
         """
         return self._entries.get(name)
 
-    def get_with_config(self, hash: str, hit_box_algorithm: "HitBoxAlgorithm") -> Optional["Texture"]:
+    def get_with_config(
+        self, hash: str, hit_box_algorithm: "HitBoxAlgorithm"
+    ) -> Optional["Texture"]:
         """
         Attempts to find a texture with a specific configuration.
 
@@ -121,7 +123,9 @@ class TextureCache:
         file_cache_name = Texture.create_image_cache_name(file_path, crop)
         return self._file_entries.get(file_cache_name)
 
-    def delete(self, texture_or_name: Union["Texture", str], raise_if_not_exist: bool = False) -> None:
+    def delete(
+        self, texture_or_name: Union["Texture", str], raise_if_not_exist: bool = False
+    ) -> None:
         """
         Delete a texture from the cache by cache name.
 

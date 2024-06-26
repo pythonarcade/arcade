@@ -185,7 +185,9 @@ def rand_angle_spread_deg(angle: float, half_angle_spread: float) -> float:
     return angle + s
 
 
-def rand_vec_spread_deg(angle: float, half_angle_spread: float, length: float) -> tuple[float, float]:
+def rand_vec_spread_deg(
+    angle: float, half_angle_spread: float, length: float
+) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
 

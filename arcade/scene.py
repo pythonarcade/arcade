@@ -196,7 +196,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         self._sprite_lists.append(sprite_list)
 
@@ -228,7 +230,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         before_list = self._name_mapping[before]
         index = self._sprite_lists.index(before_list)
@@ -288,7 +292,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         after_list = self._name_mapping[after]
         index = self._sprite_lists.index(after_list) + 1
@@ -355,7 +361,9 @@ class Scene:
         :param sprite_list: The sprite list to remove.
         """
         self._sprite_lists.remove(sprite_list)
-        self._name_mapping = {key: val for key, val in self._name_mapping.items() if val != sprite_list}
+        self._name_mapping = {
+            key: val for key, val in self._name_mapping.items() if val != sprite_list
+        }
 
     def update(self, names: Optional[Iterable[str]] = None) -> None:
         """
@@ -468,7 +476,9 @@ class Scene:
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function, **kwargs)
+            sprite_list.draw(
+                filter=filter, pixelated=pixelated, blend_function=blend_function, **kwargs
+            )
 
     def draw_hit_boxes(
         self,

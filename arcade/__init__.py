@@ -32,7 +32,9 @@ def configure_logging(level: Optional[int] = None):
         LOG.setLevel(level)
         ch = logging.StreamHandler()
         ch.setLevel(level)
-        ch.setFormatter(logging.Formatter("%(relativeCreated)s %(name)s %(levelname)s - %(message)s"))
+        ch.setFormatter(
+            logging.Formatter("%(relativeCreated)s %(name)s %(levelname)s - %(message)s")
+        )
         LOG.addHandler(ch)
 
 

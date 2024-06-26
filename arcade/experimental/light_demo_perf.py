@@ -32,7 +32,11 @@ class MyGame(arcade.Window):
                     random.randrange(0, SCREEN_HEIGHT),
                     radius=50,
                     mode="soft",
-                    color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+                    color=(
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                    ),
                 ),
             )
 

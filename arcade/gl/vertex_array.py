@@ -138,7 +138,9 @@ class VertexArray:
 
         ctx.stats.decr("vertex_array")
 
-    def _build(self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]):
+    def _build(
+        self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]
+    ):
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
@@ -258,7 +260,11 @@ class VertexArray:
             # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
-                mode, vertices, self._index_element_type, first * self._index_element_size, instances
+                mode,
+                vertices,
+                self._index_element_type,
+                first * self._index_element_size,
+                instances,
             )
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
@@ -297,7 +303,9 @@ class VertexArray:
         gl.glBindVertexArray(self.glo)
         gl.glBindBuffer(gl.GL_DRAW_INDIRECT_BUFFER, buffer._glo)
         if self._ibo:
-            gl.glMultiDrawElementsIndirect(mode, self._index_element_type, first * stride, count, stride)
+            gl.glMultiDrawElementsIndirect(
+                mode, self._index_element_type, first * stride, count, stride
+            )
         else:
             gl.glMultiDrawArraysIndirect(mode, first * stride, count, stride)
 
@@ -567,13 +575,26 @@ class Geometry:
             if program.geometry_input == self._ctx.POINTS:
                 mode = program.geometry_input
             if program.geometry_input == self._ctx.LINES:
-                if mode not in [self._ctx.LINES, self._ctx.LINE_STRIP, self._ctx.LINE_LOOP, self._ctx.LINES_ADJACENCY]:
-                    raise ValueError("Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input")
+                if mode not in [
+                    self._ctx.LINES,
+                    self._ctx.LINE_STRIP,
+                    self._ctx.LINE_LOOP,
+                    self._ctx.LINES_ADJACENCY,
+                ]:
+                    raise ValueError(
+                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.LINES_ADJACENCY:
                 if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
-                    raise ValueError("Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
+                    raise ValueError(
+                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.TRIANGLES:
-                if mode not in [self._ctx.TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                if mode not in [
+                    self._ctx.TRIANGLES,
+                    self._ctx.TRIANGLE_STRIP,
+                    self._ctx.TRIANGLE_FAN,
+                ]:
                     raise ValueError(
                         "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input"
                     )

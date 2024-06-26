@@ -44,7 +44,13 @@ class Buffer:
         "stream": gl.GL_STREAM_DRAW,
     }
 
-    def __init__(self, ctx: "Context", data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"):
+    def __init__(
+        self,
+        ctx: "Context",
+        data: Optional[BufferProtocol] = None,
+        reserve: int = 0,
+        usage: str = "static",
+    ):
 
         self._ctx = ctx
         self._glo = glo = gl.GLuint()

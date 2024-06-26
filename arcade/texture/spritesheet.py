@@ -98,7 +98,9 @@ class SpriteSheet:
         self._image = self._image.transpose(Image.FLIP_TOP_BOTTOM)
         self._flip_flags = (self._flip_flags[0], not self._flip_flags[1])
 
-    def get_image(self, x: int, y: int, width: int, height: int, origin: OriginChoices = "upper_left") -> Image.Image:
+    def get_image(
+        self, x: int, y: int, width: int, height: int, origin: OriginChoices = "upper_left"
+    ) -> Image.Image:
         """
         Slice out an image from the sprite sheet.
 
@@ -112,7 +114,9 @@ class SpriteSheet:
         if origin == "upper_left":
             return self.image.crop((x, y, x + width, y + height))
         elif origin == "lower_left":
-            return self.image.crop((x, self.image.height - y - height, x + width, self.image.height - y))
+            return self.image.crop(
+                (x, self.image.height - y - height, x + width, self.image.height - y)
+            )
         else:
             raise ValueError("Invalid value for origin. Must be 'upper_left' or 'lower_left'.")
 

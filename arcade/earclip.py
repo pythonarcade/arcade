@@ -9,7 +9,9 @@ from arcade.types import Point, PointList
 from typing import List, Tuple
 
 
-def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+def earclip(
+    polygon: PointList,
+) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -48,7 +50,9 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
 
         polygon.remove(ear)
         point_count -= 1
-        triangles.append(((prev_point[0], prev_point[1]), (ear[0], ear[1]), (next_point[0], next_point[1])))
+        triangles.append(
+            ((prev_point[0], prev_point[1]), (ear[0], ear[1]), (next_point[0], next_point[1]))
+        )
         if point_count > 3:
             prev_prev_point = polygon[prev_index - 1]
             next_next_index = (i + 1) % point_count

@@ -101,7 +101,11 @@ class ParallaxGroup:
     The depth does not affect the positioning of layers at all.
     """
 
-    def __init__(self, backgrounds: Optional[List[Background]] = None, depths: Optional[List[float]] = None):
+    def __init__(
+        self,
+        backgrounds: Optional[List[Background]] = None,
+        depths: Optional[List[float]] = None,
+    ):
         self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
         self._depths: List[float] = [] if depths is None else depths
 

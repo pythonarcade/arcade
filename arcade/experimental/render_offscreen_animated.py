@@ -52,7 +52,9 @@ def make_skyline(
     shape_list = arcade.ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = arcade.create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
+    shape = arcade.create_rectangle_filled(
+        width / 2, skyline_height / 2, width, skyline_height, skyline_color
+    )
     shape_list.append(shape)
 
     building_center_x = 0
@@ -109,7 +111,9 @@ def make_skyline(
 
             # Based on that, how big should they be?
             window_height = (building_height - window_margin * 2) / window_rows
-            window_width = (building_width - window_margin * 2 - window_gap * (window_columns - 1)) / window_columns
+            window_width = (
+                building_width - window_margin * 2 - window_gap * (window_columns - 1)
+            ) / window_columns
 
             # Find the bottom left of the building so we can start adding widows
             building_base_y = building_center_y - building_height / 2
@@ -120,7 +124,12 @@ def make_skyline(
                 for column in range(window_columns):
                     if random.random() < light_on_chance:
                         x1 = building_left_x + column * (window_width + window_gap) + window_margin
-                        x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
+                        x2 = (
+                            building_left_x
+                            + column * (window_width + window_gap)
+                            + window_width
+                            + window_margin
+                        )
                         y1 = building_base_y + row * window_height
                         y2 = building_base_y + row * window_height + window_height * 0.8
 

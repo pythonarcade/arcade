@@ -24,14 +24,30 @@ class MyGame(arcade.Window):
         self.torch_list = arcade.SpriteList()
         self.torch_list.extend(
             [
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=100, center_y=150),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=300, center_y=150),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=500, center_y=150),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=700, center_y=150),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=100, center_y=450),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=300, center_y=450),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=500, center_y=450),
-                arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=700, center_y=450),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=100, center_y=150
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=300, center_y=150
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=500, center_y=150
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=700, center_y=150
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=100, center_y=450
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=300, center_y=450
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=500, center_y=450
+                ),
+                arcade.Sprite(
+                    ":resources:images/tiles/torch1.png", scale=0.4, center_x=700, center_y=450
+                ),
             ]
         )
 
@@ -70,7 +86,10 @@ class MyGame(arcade.Window):
     def on_update(self, dt):
         # Keep track of elapsed time
         self.time += dt
-        self.moving_light.position = (400 + math.sin(self.time) * 300, 300 + math.cos(self.time) * 50)
+        self.moving_light.position = (
+            400 + math.sin(self.time) * 300,
+            300 + math.cos(self.time) * 50,
+        )
         self.moving_light.radius = 300 + math.sin(self.time * 2.34) * 150
 
     def on_resize(self, width, height):

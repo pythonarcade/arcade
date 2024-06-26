@@ -758,7 +758,9 @@ class Window(pyglet.window.Window):
         :param new_view: View to show
         """
         if not isinstance(new_view, View):
-            raise TypeError(f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}.")
+            raise TypeError(
+                f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}."
+            )
 
         self._ctx.screen.use()
         self.viewport = (0, 0, self.width, self.height)
@@ -1024,7 +1026,9 @@ class View:
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(
+        self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None
+    ) -> None:
         """
         Adds a section to the view Section Manager.
 

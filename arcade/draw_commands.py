@@ -144,7 +144,9 @@ def draw_arc_filled(
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
     else:
-        uncentered_point_list = [rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list]
+        uncentered_point_list = [
+            rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list
+        ]
 
     point_list = [(point[0] + center_x, point[1] + center_y) for point in uncentered_point_list]
 
@@ -204,7 +206,9 @@ def draw_arc_outline(
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
     else:
-        uncentered_point_list = [rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list]
+        uncentered_point_list = [
+            rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list
+        ]
 
     point_list = [(point[0] + center_x, point[1] + center_y) for point in uncentered_point_list]
 
@@ -218,7 +222,12 @@ def draw_arc_outline(
 
 
 def draw_parabola_filled(
-    start_x: float, start_y: float, end_x: float, height: float, color: RGBA255, tilt_angle: float = 0
+    start_x: float,
+    start_y: float,
+    end_x: float,
+    height: float,
+    color: RGBA255,
+    tilt_angle: float = 0,
 ):
     """
     Draws a filled in parabola.
@@ -265,7 +274,17 @@ def draw_parabola_outline(
     start_angle = 0
     end_angle = 180
     width = start_x - end_x
-    draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
+    draw_arc_outline(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        start_angle,
+        end_angle,
+        border_width,
+        tilt_angle,
+    )
 
 
 # --- END PARABOLA FUNCTIONS # # #
@@ -275,7 +294,12 @@ def draw_parabola_outline(
 
 
 def draw_circle_filled(
-    center_x: float, center_y: float, radius: float, color: RGBA255, tilt_angle: float = 0, num_segments: int = -1
+    center_x: float,
+    center_y: float,
+    radius: float,
+    color: RGBA255,
+    tilt_angle: float = 0,
+    num_segments: int = -1,
 ):
     """
     Draw a filled-in circle.
@@ -292,7 +316,13 @@ def draw_circle_filled(
          amount of segments based on the size of the circle.
     """
     draw_ellipse_filled(
-        center_x, center_y, radius * 2, radius * 2, color, tilt_angle=tilt_angle, num_segments=num_segments
+        center_x,
+        center_y,
+        radius * 2,
+        radius * 2,
+        color,
+        tilt_angle=tilt_angle,
+        num_segments=num_segments,
     )
 
 
@@ -499,14 +529,23 @@ def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1
         last_point = None
         for point in point_list:
             if last_point is not None:
-                points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+                points = get_points_for_thick_line(
+                    last_point[0], last_point[1], point[0], point[1], line_width
+                )
                 reordered_points = points[1], points[0], points[2], points[3]
                 triangle_point_list.extend(reordered_points)
             last_point = point
         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_line(start_x: float, start_y: float, end_x: float, end_y: float, color: RGBA255, line_width: float = 1):
+def draw_line(
+    start_x: float,
+    start_y: float,
+    end_x: float,
+    end_y: float,
+    color: RGBA255,
+    line_width: float = 1,
+):
     """
     Draw a line.
 
@@ -687,7 +726,9 @@ def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: flo
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_triangle_filled(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255):
+def draw_triangle_filled(
+    x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255
+):
     """
     Draw a filled in triangle.
 
@@ -709,7 +750,14 @@ def draw_triangle_filled(x1: float, y1: float, x2: float, y2: float, x3: float, 
 
 
 def draw_triangle_outline(
-    x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255, border_width: float = 1
+    x1: float,
+    y1: float,
+    x2: float,
+    y2: float,
+    x3: float,
+    y3: float,
+    color: RGBA255,
+    border_width: float = 1,
 ):
     """
     Draw a the outline of a triangle.
@@ -739,7 +787,12 @@ def draw_triangle_outline(
 
 
 def draw_lrbt_rectangle_outline(
-    left: float, right: float, bottom: float, top: float, color: RGBA255, border_width: float = 1
+    left: float,
+    right: float,
+    bottom: float,
+    top: float,
+    color: RGBA255,
+    border_width: float = 1,
 ):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
@@ -763,7 +816,12 @@ def draw_lrbt_rectangle_outline(
 
 
 def draw_lbwh_rectangle_outline(
-    left: float, bottom: float, width: float, height: float, color: RGBA255, border_width: float = 1
+    left: float,
+    bottom: float,
+    width: float,
+    height: float,
+    color: RGBA255,
+    border_width: float = 1,
 ):
     """
     Draw a rectangle extending from bottom left to top right
@@ -780,7 +838,9 @@ def draw_lbwh_rectangle_outline(
     draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
 
 
-def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
+def draw_lrbt_rectangle_filled(
+    left: float, right: float, bottom: float, top: float, color: RGBA255
+):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -792,15 +852,21 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
     :Raises ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
-        raise ValueError(f"Left coordinate {left} must be less than or equal to the right coordinate {right}")
+        raise ValueError(
+            f"Left coordinate {left} must be less than or equal to the right coordinate {right}"
+        )
 
     if bottom > top:
-        raise ValueError(f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}")
+        raise ValueError(
+            f"Bottom coordinate {bottom} must be less than or equal to the top coordinate {top}"
+        )
 
     draw_rect_filled(LRBT(left, right, bottom, top), color)
 
 
-def draw_lbwh_rectangle_filled(left: float, bottom: float, width: float, height: float, color: RGBA255):
+def draw_lbwh_rectangle_filled(
+    left: float, bottom: float, width: float, height: float, color: RGBA255
+):
     """
     Draw a filled rectangle extending from bottom left to top right
 
@@ -816,7 +882,12 @@ def draw_lbwh_rectangle_filled(left: float, bottom: float, width: float, height:
 
 
 def draw_scaled_texture_rectangle(
-    center_x: float, center_y: float, texture: Texture, scale: float = 1.0, angle: float = 0, alpha: int = 255
+    center_x: float,
+    center_y: float,
+    texture: Texture,
+    scale: float = 1.0,
+    angle: float = 0,
+    alpha: int = 255,
 ):
     """
     Draw a textured rectangle on-screen.
@@ -848,7 +919,13 @@ def draw_scaled_texture_rectangle(
 
 
 def draw_texture_rectangle(
-    center_x: float, center_y: float, width: float, height: float, texture: Texture, angle: float = 0, alpha: int = 255
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    texture: Texture,
+    angle: float = 0,
+    alpha: int = 255,
 ):
     """
     Draw a textured rectangle on-screen.
@@ -865,7 +942,13 @@ def draw_texture_rectangle(
 
 
 def draw_lbwh_rectangle_textured(
-    left: float, bottom: float, width: float, height: float, texture: Texture, angle: float = 0, alpha: int = 255
+    left: float,
+    bottom: float,
+    width: float,
+    height: float,
+    texture: Texture,
+    angle: float = 0,
+    alpha: int = 255,
 ):
     """
     Draw a texture extending from bottom left to top right.
@@ -901,14 +984,16 @@ def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_
 
     HALF_BORDER = border_width / 2
 
-    i_lb = rect.bottom_left.x + HALF_BORDER, rect.bottom_left.y + HALF_BORDER
+    # fmt: off
+    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y  + HALF_BORDER
     i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y + HALF_BORDER
-    i_rt = rect.top_right.x - HALF_BORDER, rect.top_right.y - HALF_BORDER
-    i_lt = rect.top_left.x + HALF_BORDER, rect.top_left.y - HALF_BORDER
-    o_lb = rect.bottom_left.x - HALF_BORDER, rect.bottom_left.y - HALF_BORDER
+    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y    - HALF_BORDER
+    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y     - HALF_BORDER
+    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y  - HALF_BORDER
     o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y - HALF_BORDER
-    o_rt = rect.top_right.x + HALF_BORDER, rect.top_right.y + HALF_BORDER
-    o_lt = rect.top_left.x - HALF_BORDER, rect.top_right.y + HALF_BORDER
+    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y    + HALF_BORDER
+    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y    + HALF_BORDER
+    # fmt: on
 
     point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
 
@@ -951,7 +1036,9 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
 
-def draw_rect_outline_kwargs(color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat):
+def draw_rect_outline_kwargs(
+    color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
+):
     rect = Rect.from_kwargs(**kwargs)
     draw_rect_outline(rect, color, border_width, tilt_angle)
 
@@ -989,7 +1076,9 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     return tuple(int(i) for i in a[:components])
 
 
-def get_image(x: int = 0, y: int = 0, width: Optional[int] = None, height: Optional[int] = None) -> PIL.Image.Image:
+def get_image(
+    x: int = 0, y: int = 0, width: Optional[int] = None, height: Optional[int] = None
+) -> PIL.Image.Image:
     """
     Get an image from the screen.
 

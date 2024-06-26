@@ -160,7 +160,9 @@ class Texture2D:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
         if data and self._samples > 0:
-            raise ValueError("Multisampled textures are not writable (cannot be initialized with data)")
+            raise ValueError(
+                "Multisampled textures are not writable (cannot be initialized with data)"
+            )
 
         self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
 
@@ -211,7 +213,9 @@ class Texture2D:
         try:
             format_info = pixel_formats[self._dtype]
         except KeyError:
-            raise ValueError(f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}")
+            raise ValueError(
+                f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
+            )
         _format, _internal_format, self._type, self._component_size = format_info
         if data is not None:
             byte_length, data = data_to_ctypes(data)
@@ -641,7 +645,9 @@ class Texture2D:
         if value is None:
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_NONE)
         else:
-            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
+            gl.glTexParameteri(
+                self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE
+            )
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
 
     def read(self, level: int = 0, alignment: int = 1) -> bytes:
@@ -659,7 +665,9 @@ class Texture2D:
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
-            buffer = (gl.GLubyte * (self.width * self.height * self._component_size * self._components))()
+            buffer = (
+                gl.GLubyte * (self.width * self.height * self._component_size * self._components)
+            )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
         elif self._ctx.gl_api == "gles":
@@ -738,9 +746,13 @@ class Texture2D:
 
         expected_size = width * height * self._component_size * self._components
         if byte_size != expected_size:
-            raise ValueError(f"Data size {len(byte_data)} does not match expected size {expected_size}")
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match expected size {expected_size}"
+            )
         if len(byte_data) != byte_size:
-            raise ValueError(f"Data size {len(byte_data)} does not match reported size {expected_size}")
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match reported size {expected_size}"
+            )
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
         """Generate mipmaps for this texture.

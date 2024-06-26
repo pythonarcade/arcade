@@ -5,8 +5,20 @@ import weakref
 from collections import deque
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import (Any, Deque, Dict, Iterable, List, Optional, Sequence, Set, Tuple,
-                    Union, overload, Literal)
+from typing import (
+    Any,
+    Deque,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+    overload,
+    Literal,
+)
 
 import pyglet
 import pyglet.gl.lib
@@ -163,9 +175,11 @@ class Context:
         gl.GL_STACK_UNDERFLOW: "GL_STACK_UNDERFLOW",
         gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
-    _valid_apis = ('gl', 'gles')
+    _valid_apis = ("gl", "gles")
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
+    def __init__(
+        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+    ):
         self._window_ref = weakref.ref(window)
         if gl_api not in self._valid_apis:
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
@@ -818,8 +832,14 @@ class Context:
 
         # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, src._glo)
         gl.glBlitFramebuffer(
-            0, 0, src.width, src.height,  # Make source and dest size the same
-            0, 0, src.width, src.height,
+            0,
+            0,
+            src.width,
+            src.height,  # Make source and dest size the same
+            0,
+            0,
+            src.width,
+            src.height,
             gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
             gl.GL_NEAREST,
         )
@@ -879,7 +899,7 @@ class Context:
         self,
         *,
         color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
-        depth_attachment: Optional[Texture2D] = None
+        depth_attachment: Optional[Texture2D] = None,
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -979,7 +999,9 @@ class Context:
             compressed_data=compressed_data,
         )
 
-    def depth_texture(self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None) -> Texture2D:
+    def depth_texture(
+        self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None
+    ) -> Texture2D:
         """
         Create a 2D depth texture. Can be used as a depth attachment
         in a :py:class:`~arcade.gl.Framebuffer`.
@@ -1141,18 +1163,10 @@ class Context:
         return Program(
             self,
             vertex_shader=source_vs.get_source(defines=defines),
-            fragment_shader=source_fs.get_source(defines=defines)
-            if source_fs
-            else None,
-            geometry_shader=source_geo.get_source(defines=defines)
-            if source_geo
-            else None,
-            tess_control_shader=source_tc.get_source(defines=defines)
-            if source_tc
-            else None,
-            tess_evaluation_shader=source_te.get_source(defines=defines)
-            if source_te
-            else None,
+            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
+            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
+            tess_control_shader=source_tc.get_source(defines=defines) if source_tc else None,
+            tess_evaluation_shader=source_te.get_source(defines=defines) if source_te else None,
             varyings=out_attributes,
             varyings_capture_mode=varyings_capture_mode,
         )
@@ -1183,6 +1197,7 @@ class ContextStats:
     """
     Runtime allocation statistics of OpenGL objects.
     """
+
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
         #: Textures (created, freed)
@@ -1249,9 +1264,7 @@ class Limits:
         #: that are used to position rasterized geometry in window coordinates
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
         #: Minimum required alignment for uniform buffer sizes and offset
-        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
-            gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
-        )
+        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT)
         #: Value indicates the maximum number of layers allowed in an array texture, and must be at least 256
         self.MAX_ARRAY_TEXTURE_LAYERS = self.get(gl.GL_MAX_ARRAY_TEXTURE_LAYERS)
         #: A rough estimate of the largest 3D texture that the GL can handle. The value must be at least 64
@@ -1269,9 +1282,7 @@ class Limits:
             gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
         )
         #: Maximum supported texture image units that can be used to access texture maps from the vertex shader
-        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(
-            gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-        )
+        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
         #: Maximum number of uniform blocks per program
         self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(gl.GL_MAX_COMBINED_UNIFORM_BLOCKS)
         #: Number of words for vertex shader uniform variables in all uniform blocks
@@ -1289,38 +1300,26 @@ class Limits:
         #: Recommended maximum number of vertex array vertices
         self.MAX_ELEMENTS_VERTICES = self.get(gl.GL_MAX_ELEMENTS_VERTICES)
         #: Maximum number of components of the inputs read by the fragment shader
-        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(
-            gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS
-        )
+        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS)
         #: Maximum number of individual floating-point, integer, or boolean values that can be
         #: held in uniform variable storage for a fragment shader
-        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS
-        )
+        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)
         #: maximum number of individual 4-vectors of floating-point, integer,
         #: or boolean values that can be held in uniform variable storage for a fragment shader
         self.MAX_FRAGMENT_UNIFORM_VECTORS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_VECTORS)
         #: Maximum number of uniform blocks per fragment shader.
         self.MAX_FRAGMENT_UNIFORM_BLOCKS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_BLOCKS)
         #: Maximum number of components of inputs read by a geometry shader
-        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(
-            gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS
-        )
+        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
         #: Maximum number of components of outputs written by a geometry shader
-        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(
-            gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS
-        )
+        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
         #: Maximum supported texture image units that can be used to access texture maps from the geometry shader
-        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(
-            gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS
-        )
+        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
         #: Maximum number of uniform blocks per geometry shader
         self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
         #: Maximum number of individual floating-point, integer, or boolean values that can
         #: be held in uniform variable storage for a geometry shader
-        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS
-        )
+        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS)
         #: Maximum number of samples supported in integer format multisample buffers
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
         #: Maximum samples for a framebuffer
@@ -1344,14 +1343,10 @@ class Limits:
         #: Maximum number of 4-component generic vertex attributes accessible to a vertex shader.
         self.MAX_VERTEX_ATTRIBS = self.get(gl.GL_MAX_VERTEX_ATTRIBS)
         #: Maximum supported texture image units that can be used to access texture maps from the vertex shader.
-        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(
-            gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
-        )
+        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS)
         #: Maximum number of individual floating-point, integer, or boolean values that
         #: can be held in uniform variable storage for a vertex shader
-        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS
-        )
+        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS)
         #: Maximum number of 4-vectors that may be held in uniform variable storage for the vertex shader
         self.MAX_VERTEX_UNIFORM_VECTORS = self.get(gl.GL_MAX_VERTEX_UNIFORM_VECTORS)
         #: Maximum number of components of output written by a vertex shader
@@ -1368,7 +1363,9 @@ class Limits:
         self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
         #: How many buffers we can have as output when doing a transform(feedback).
         #: This is usually 4
-        self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+        self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(
+            gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS
+        )
         #: The minimum and maximum point size
         self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
 

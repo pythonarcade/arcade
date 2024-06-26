@@ -251,16 +251,36 @@ class AnimatedWalkingSprite(Sprite):
         texture_list: List[Texture] = []
 
         change_direction = False
-        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT and len(self.walk_right_textures) > 0:
+        if (
+            self.change_x > 0
+            and self.change_y == 0
+            and self.state != FACE_RIGHT
+            and len(self.walk_right_textures) > 0
+        ):
             self.state = FACE_RIGHT
             change_direction = True
-        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT and len(self.walk_left_textures) > 0:
+        elif (
+            self.change_x < 0
+            and self.change_y == 0
+            and self.state != FACE_LEFT
+            and len(self.walk_left_textures) > 0
+        ):
             self.state = FACE_LEFT
             change_direction = True
-        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and len(self.walk_down_textures) > 0:
+        elif (
+            self.change_y < 0
+            and self.change_x == 0
+            and self.state != FACE_DOWN
+            and len(self.walk_down_textures) > 0
+        ):
             self.state = FACE_DOWN
             change_direction = True
-        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and len(self.walk_up_textures) > 0:
+        elif (
+            self.change_y > 0
+            and self.change_x == 0
+            and self.state != FACE_UP
+            and len(self.walk_up_textures) > 0
+        ):
             self.state = FACE_UP
             change_direction = True
 
@@ -282,19 +302,22 @@ class AnimatedWalkingSprite(Sprite):
                 texture_list = self.walk_left_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a " "list of walk left textures."
+                        "update_animation was called on a sprite that doesn't have a "
+                        "list of walk left textures."
                     )
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a list of " "walk right textures."
+                        "update_animation was called on a sprite that doesn't have a list of "
+                        "walk right textures."
                     )
             elif self.state == FACE_UP:
                 texture_list = self.walk_up_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a list of " "walk up textures."
+                        "update_animation was called on a sprite that doesn't have a list of "
+                        "walk up textures."
                     )
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures

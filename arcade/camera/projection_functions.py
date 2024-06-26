@@ -2,7 +2,11 @@ from math import tan, pi
 from typing import Tuple
 
 from pyglet.math import Vec2, Vec3, Vec4, Mat4
-from arcade.camera.data_types import CameraData, PerspectiveProjectionData, OrthographicProjectionData
+from arcade.camera.data_types import (
+    CameraData,
+    PerspectiveProjectionData,
+    OrthographicProjectionData,
+)
 from arcade.types import Point
 
 
@@ -12,20 +16,26 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
     """
     # Even if forward and up are normalised floating point error means every vector must be normalised.
     fo = Vec3(*camera_data.forward).normalize()  # Forward Vector
-    up = Vec3(*camera_data.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
+    up = Vec3(
+        *camera_data.up
+    )  # Initial Up Vector (Not necessarily perpendicular to forward vector)
     ri = fo.cross(up).normalize()  # Right Vector
     up = ri.cross(fo).normalize()  # Up Vector
     po = Vec3(*camera_data.position)
 
+    # fmt: off
     return Mat4((
         ri.x, up.x, -fo.x, 0.0,
         ri.y, up.y, -fo.y, 0.0,
         ri.z, up.z, -fo.z, 0.0,
         -ri.dot(po), -up.dot(po), fo.dot(po), 1.0
     ))
+    # fmt: on
 
 
-def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, zoom: float = 1.0) -> Mat4:
+def generate_orthographic_matrix(
+    perspective_data: OrthographicProjectionData, zoom: float = 1.0
+) -> Mat4:
     """
     Using the OrthographicProjectionData a projection matrix is generated where the size of an
     object is not affected by depth.
@@ -55,15 +65,19 @@ def generate_orthographic_matrix(perspective_data: OrthographicProjectionData, z
     ty = -(top + bottom) / height
     tz = -(z_far + z_near) / depth
 
+    # fmt: off
     return Mat4((
         sx, 0.0, 0.0, 0.0,
         0.0,  sy, 0.0, 0.0,
         0.0, 0.0,  sz, 0.0,
         tx,  ty,  tz, 1.0
     ))
+    # fmt: on
 
 
-def generate_perspective_matrix(perspective_data: PerspectiveProjectionData, zoom: float = 1.0) -> Mat4:
+def generate_perspective_matrix(
+    perspective_data: PerspectiveProjectionData, zoom: float = 1.0
+) -> Mat4:
     """
     Using the OrthographicProjectionData a projection matrix is generated where the size of the
     objects is not affected by depth.
@@ -72,7 +86,11 @@ def generate_perspective_matrix(perspective_data: PerspectiveProjectionData, zoo
     the pixels uniform in size. Avoid a zoom of 0.0.
     """
     fov = perspective_data.fov / zoom
-    z_near, z_far, aspect = perspective_data.near, perspective_data.far, perspective_data.aspect
+    z_near, z_far, aspect = (
+        perspective_data.near,
+        perspective_data.far,
+        perspective_data.aspect,
+    )
 
     xy_max = z_near * tan(fov * pi / 360)
     y_min = -xy_max
@@ -88,17 +106,22 @@ def generate_perspective_matrix(perspective_data: PerspectiveProjectionData, zoo
     w = w / aspect
     h = 2 * z_near / height
 
+    # fmt: off
     return Mat4((
         w, 0, 0, 0,
         0, h, 0, 0,
         0, 0, q, -1,
         0, 0, qn, 0
     ))
+    # fmt: on
 
 
-def project_orthographic(world_coordinate: Point,
-                         viewport: Tuple[int, int, int, int],
-                         view_matrix: Mat4, projection_matrix: Mat4) -> Vec2:
+def project_orthographic(
+    world_coordinate: Point,
+    viewport: Tuple[int, int, int, int],
+    view_matrix: Mat4,
+    projection_matrix: Mat4,
+) -> Vec2:
     x, y, *z = world_coordinate
     z = 0.0 if not z else z[0]
 
@@ -112,10 +135,12 @@ def project_orthographic(world_coordinate: Point,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_orthographic(screen_coordinate: Point,
-                           viewport: Tuple[int, int, int, int],
-                           view_matrix: Mat4, projection_matrix: Mat4
-                           ) -> Vec3:
+def unproject_orthographic(
+    screen_coordinate: Point,
+    viewport: Tuple[int, int, int, int],
+    view_matrix: Mat4,
+    projection_matrix: Mat4,
+) -> Vec3:
     x, y, *z = screen_coordinate
     z = 0.0 if not z else z[0]
 
@@ -131,9 +156,12 @@ def unproject_orthographic(screen_coordinate: Point,
     return Vec3(_world_position.x, _world_position.y, _world_position.z)
 
 
-def project_perspective(world_coordinate: Point,
-                        viewport: Tuple[int, int, int, int],
-                        view_matrix: Mat4, projection_matrix: Mat4) -> Vec2:
+def project_perspective(
+    world_coordinate: Point,
+    viewport: Tuple[int, int, int, int],
+    view_matrix: Mat4,
+    projection_matrix: Mat4,
+) -> Vec2:
     x, y, *z = world_coordinate
     z = 1.0 if not z else z[0]
 
@@ -151,10 +179,12 @@ def project_perspective(world_coordinate: Point,
     return Vec2(screen_coordinate_x, screen_coordinate_y)
 
 
-def unproject_perspective(screen_coordinate: Point,
-                          viewport: Tuple[int, int, int, int],
-                          view_matrix: Mat4, projection_matrix: Mat4
-                          ) -> Vec3:
+def unproject_perspective(
+    screen_coordinate: Point,
+    viewport: Tuple[int, int, int, int],
+    view_matrix: Mat4,
+    projection_matrix: Mat4,
+) -> Vec3:
     x, y, *z = screen_coordinate
     z = 1.0 if not z else z[0]
 

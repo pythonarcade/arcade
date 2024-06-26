@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Tuple, Union
-from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
+from ctypes import (
+    c_char,
+    cast,
+    byref,
+    POINTER,
+    c_char_p,
+    pointer,
+    c_int,
+    create_string_buffer,
+    c_buffer,
+)
 import weakref
 
 from pyglet import gl
@@ -52,7 +62,10 @@ class ComputeShader:
                     f"({result.value}): {msg.value.decode('utf-8')}\n"
                     f"---- [compute shader] ---\n"
                 )
-                + "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._source.split("\n")))
+                + "\n".join(
+                    f"{str(i + 1).zfill(3)}: {line} "
+                    for i, line in enumerate(self._source.split("\n"))
+                )
             )
 
         # Attach and link shader
@@ -190,7 +203,9 @@ class ComputeShader:
                 continue
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
-            self._uniforms[u_name] = Uniform(self._ctx, self._glo, u_location, u_name, u_type, u_size)
+            self._uniforms[u_name] = Uniform(
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
+            )
 
     def _introspect_uniform_blocks(self):
         """Finds uniform blocks and maps the to python objectss"""

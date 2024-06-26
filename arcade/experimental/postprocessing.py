@@ -109,10 +109,15 @@ class GaussianBlurVertical(GaussianBlurPass):
     """Blur the buffer vertically."""
 
     def __init__(self, size: Tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
-        super().__init__(size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
+        super().__init__(
+            size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step
+        )
         self._fbo = self.ctx.framebuffer(
             color_attachments=self.ctx.texture(
-                size, components=3, wrap_x=self.ctx.CLAMP_TO_EDGE, wrap_y=self.ctx.CLAMP_TO_EDGE
+                size,
+                components=3,
+                wrap_x=self.ctx.CLAMP_TO_EDGE,
+                wrap_y=self.ctx.CLAMP_TO_EDGE,
             )
         )
         self._program = self.ctx.load_program(
@@ -152,7 +157,15 @@ class GaussianBlur(PostProcessing):
 class BloomEffect(PostProcessing):
     """Post processing to create a bloom/glow effect."""
 
-    def __init__(self, size, kernel_size=5, sigma: float = 2, mu: float = 0, multiplier: float = 5, step: int = 1):
+    def __init__(
+        self,
+        size,
+        kernel_size=5,
+        sigma: float = 2,
+        mu: float = 0,
+        multiplier: float = 5,
+        step: int = 1,
+    ):
         super().__init__(size, kernel_size=kernel_size)
 
         self._gaussian_1 = GaussianBlur(

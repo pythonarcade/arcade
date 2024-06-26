@@ -73,4 +73,13 @@ class AnchorPoint:
     TOP_RIGHT = Vec2(1.0, 1.0)
 
 
-__all__ = ["Point2", "Point3", "Point", "Point2List", "Point3List", "PointList", "AnchorPoint", "EMPTY_POINT_LIST"]
+__all__ = [
+    "Point2",
+    "Point3",
+    "Point",
+    "Point2List",
+    "Point3List",
+    "PointList",
+    "AnchorPoint",
+    "EMPTY_POINT_LIST",
+]

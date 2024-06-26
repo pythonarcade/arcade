@@ -123,7 +123,9 @@ class Shape:
         if self.geometry is None:
             self._init_geometry()
 
-        self.geometry.render(self.program, mode=self.mode)  # pyright: ignore [reportOptionalMemberAccess]
+        self.geometry.render(
+            self.program, mode=self.mode
+        )  # pyright: ignore [reportOptionalMemberAccess]
 
 
 def create_line(
@@ -308,7 +310,9 @@ def create_polygon(point_list: PointList, color: RGBA255) -> Shape:
     # alternating with vertices to the left and vertices to the right of the
     # initial vertex.
     half = len(point_list) // 2
-    interleaved = itertools.chain.from_iterable(itertools.zip_longest(point_list[:half], reversed(point_list[half:])))
+    interleaved = itertools.chain.from_iterable(
+        itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
+    )
     point_list = [p for p in interleaved if p is not None]
     return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP)
 
@@ -457,21 +461,47 @@ def create_rectangle(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     :param filled: If True, the rectangle is filled. If False, it is an outline.
     """
-    data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
+    data: List[Point] = cast(
+        List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    )
 
     if filled:
         data[-2:] = reversed(data[-2:])
     else:
 
-        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
-        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
-        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
-        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
+        i_lb = (
+            center_x - width / 2 + border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rb = (
+            center_x + width / 2 - border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rt = (
+            center_x + width / 2 - border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
+        i_lt = (
+            center_x - width / 2 + border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
 
-        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
-        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
-        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
-        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
+        o_lb = (
+            center_x - width / 2 - border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rb = (
+            center_x + width / 2 + border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rt = (
+            center_x + width / 2 + border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
+        o_lt = (
+            center_x - width / 2 - border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
 
         data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
@@ -609,7 +639,17 @@ def create_ellipse_filled(
     as one.
     """
     border_width = 1
-    return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, filled=True)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=True,
+    )
 
 
 def create_ellipse_outline(
@@ -634,7 +674,15 @@ def create_ellipse_outline(
     as one.
     """
     return create_ellipse(
-        center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, filled=False
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=False,
     )
 
 

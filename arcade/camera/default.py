@@ -6,13 +6,11 @@ from pyglet.math import Mat4, Vec2, Vec3
 
 from arcade.types import Point
 from arcade.window_commands import get_window
+
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
 
-__all__ = [
-    'ViewportProjector',
-    'DefaultProjector'
-]
+__all__ = ["ViewportProjector", "DefaultProjector"]
 
 
 class ViewportProjector:
@@ -26,14 +24,17 @@ class ViewportProjector:
         viewport: The viewport to project to.
         window: The window to bind the camera to. Defaults to the currently active window.
     """
-    def __init__(self, viewport: Optional[Tuple[int, int, int, int]] = None, *,
-                 context: Optional["ArcadeContext"] = None):
+
+    def __init__(
+        self,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
+        *,
+        context: Optional["ArcadeContext"] = None,
+    ):
         self._ctx = context or get_window().ctx
         self._viewport = viewport or self._ctx.viewport
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
-            0.0, self._viewport[2],
-            0.0, self._viewport[3],
-            -100, 100
+            0.0, self._viewport[2], 0.0, self._viewport[3], -100, 100
         )
 
     @property
@@ -47,9 +48,8 @@ class ViewportProjector:
     def viewport(self, viewport: Tuple[int, int, int, int]) -> None:
         self._viewport = viewport
         self._projection_matrix = Mat4.orthogonal_projection(
-            0, viewport[2],
-            0, viewport[3],
-            -100, 100)
+            0, viewport[2], 0, viewport[3], -100, 100
+        )
 
     def use(self) -> None:
         """
@@ -84,9 +84,7 @@ class ViewportProjector:
         x, y, *z = world_coordinate
         return Vec2(x, y)
 
-    def unproject(
-            self,
-            screen_coordinate: Point) -> Vec3:
+    def unproject(self, screen_coordinate: Point) -> Vec3:
         """
         Map the screen pos to screen_coordinates.
 

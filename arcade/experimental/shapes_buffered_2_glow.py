@@ -48,7 +48,11 @@ class MyGame(arcade.Window):
             (0, 50),
         )
         # fmt: on
-        colors = [getattr(arcade.color, color) for color in dir(arcade.color) if not color.startswith("__")]
+        colors = [
+            getattr(arcade.color, color)
+            for color in dir(arcade.color)
+            if not color.startswith("__")
+        ]
         for i in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
@@ -70,7 +74,9 @@ class MyGame(arcade.Window):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
-            triangle_filled = arcade.shape_list.create_triangles_filled_with_colors(points, random.sample(colors, 3))
+            triangle_filled = arcade.shape_list.create_triangles_filled_with_colors(
+                points, random.sample(colors, 3)
+            )
             self.shape_list.append(triangle_filled)
 
         # fmt: off
@@ -86,7 +92,9 @@ class MyGame(arcade.Window):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
-            rect_filled = arcade.shape_list.create_rectangle_filled_with_colors(points, random.sample(colors, 4))
+            rect_filled = arcade.shape_list.create_rectangle_filled_with_colors(
+                points, random.sample(colors, 4)
+            )
             self.shape_list.append(rect_filled)
 
         # fmt: off
@@ -109,7 +117,9 @@ class MyGame(arcade.Window):
 
         self.offscreen = self.ctx.framebuffer(
             color_attachments=self.ctx.texture(
-                (SCREEN_WIDTH, SCREEN_HEIGHT), wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE
+                (SCREEN_WIDTH, SCREEN_HEIGHT),
+                wrap_x=gl.GL_CLAMP_TO_EDGE,
+                wrap_y=gl.GL_CLAMP_TO_EDGE,
             )
         )
         self.glow = postprocessing.BloomEffect((SCREEN_WIDTH, SCREEN_HEIGHT))

@@ -349,7 +349,12 @@ class Color(RGBA255):
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
 
-        return cls((color & 0xFF000000) >> 24, (color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, a=(color & 0xFF))
+        return cls(
+            (color & 0xFF000000) >> 24,
+            (color & 0xFF0000) >> 16,
+            (color & 0xFF00) >> 8,
+            a=(color & 0xFF),
+        )
 
     @classmethod
     def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
@@ -452,7 +457,9 @@ class Color(RGBA255):
             # full opacity if no alpha specified
             return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255)
         elif len(code) == 8:
-            return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
+            return cls(
+                int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
+            )
 
         raise ValueError(f"Improperly formatted color: '{code}'")
 
@@ -535,6 +542,8 @@ class Color(RGBA255):
         ret = []
         for c in order.lower():
             if c not in "rgba":
-                raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
+                raise ValueError(
+                    f"Swizzle string must only contain characters in [RGBArgba], not {c}."
+                )
             ret.append(getattr(self, c))
         return tuple(ret)

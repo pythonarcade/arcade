@@ -7,7 +7,7 @@ from .atlas_2d import (
 from .base import TextureAtlasBase
 
 __all__ = [
-    'TextureAtlas',
-    'AtlasRegion',
-    'TextureAtlasBase',
+    "TextureAtlas",
+    "AtlasRegion",
+    "TextureAtlasBase",
 ]

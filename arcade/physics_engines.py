@@ -8,7 +8,13 @@ from __future__ import annotations
 import math
 from typing import Iterable, List, Optional, Union
 
-from arcade import Sprite, SpriteList, SpriteType, check_for_collision, check_for_collision_with_lists
+from arcade import (
+    Sprite,
+    SpriteList,
+    SpriteType,
+    check_for_collision,
+    check_for_collision_with_lists,
+)
 from arcade.math import get_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
@@ -50,7 +56,9 @@ def _circular_check(player: Sprite, walls: List[SpriteList]):
         vary *= 2
 
 
-def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool) -> List[SpriteType]:
+def _move_sprite(
+    moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool
+) -> List[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
@@ -76,7 +84,10 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
 
             # Resolve any collisions by this weird kludge
             _circular_check(moving_sprite, walls)
-            if get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y) > max_distance:
+            if (
+                get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
+                > max_distance
+            ):
                 # Ok, glitched trying to rotate. Reset.
                 moving_sprite.center_x = original_x
                 moving_sprite.center_y = original_y
@@ -198,7 +209,9 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
                     exit_loop = True
                 else:
                     # print(f"No @ {cur_x_change}")
-                    cur_x_change = (upper_bound + lower_bound) // 2 + (upper_bound + lower_bound) % 2
+                    cur_x_change = (upper_bound + lower_bound) // 2 + (
+                        upper_bound + lower_bound
+                    ) % 2
 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
@@ -228,7 +241,11 @@ class PhysicsEngineSimple:
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def __init__(
+        self,
+        player_sprite: Sprite,
+        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+    ):
         self.player_sprite: Sprite = player_sprite
         self._walls: List[SpriteList]
 
@@ -396,7 +413,11 @@ class PhysicsEnginePlatformer:
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        if (
+            len(hit_list) > 0
+            or self.allow_multi_jump
+            and self.jumps_since_ground < self.allowed_jumps
+        ):
             return True
         else:
             return False
@@ -478,14 +499,19 @@ class PhysicsEnginePlatformer:
                         if platform.change_y > 0:
                             platform.change_y *= -1
 
-                    if platform.boundary_bottom is not None and platform.bottom <= platform.boundary_bottom:
+                    if (
+                        platform.boundary_bottom is not None
+                        and platform.bottom <= platform.boundary_bottom
+                    ):
                         platform.bottom = platform.boundary_bottom
                         if platform.change_y < 0:
                             platform.change_y *= -1
 
                     platform.center_y += platform.change_y
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
+        complete_hit_list = _move_sprite(
+            self.player_sprite, self.walls + self.platforms, ramp_up=True
+        )
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites

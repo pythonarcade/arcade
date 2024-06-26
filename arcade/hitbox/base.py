@@ -205,7 +205,9 @@ class HitBox:
         :param angle: The angle to rotate points by (0 by default)
         :return:
         """
-        return RotatableHitBox(self._points, position=self._position, scale=self._scale, angle=angle)
+        return RotatableHitBox(
+            self._points, position=self._position, scale=self._scale, angle=angle
+        )
 
     def get_adjusted_points(self) -> Point2List:
         """

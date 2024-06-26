@@ -1,4 +1,4 @@
-#type: ignore
+# type: ignore
 """
 Enums used to map different input types to their common counterparts.
 
@@ -27,9 +27,7 @@ class InputEnum(Enum):
 class StrEnum(str, InputEnum):
     def __new__(cls, value, *args, **kwargs):
         if not isinstance(value, (str, auto)):
-            raise TypeError(
-                f"Values of StrEnums must be strings: {value!r} is a {type(value)}"
-            )
+            raise TypeError(f"Values of StrEnums must be strings: {value!r} is a {type(value)}")
         return super().__new__(cls, value, *args, **kwargs)
 
     def __str__(self):
@@ -318,9 +316,9 @@ class MouseButtons(InputEnum):
     MOUSE_5 = 1 << 4
 
 
-#.This is safe since:
+# .This is safe since:
 # 1. Enum types with members are final
-#.2. Types are hashable
+# .2. Types are hashable
 # Hoever, we can probably make this much cleaner to set up since
 # we have repeated if ladders elsewhere which can be replaced with
 # smaller dicts.
@@ -343,10 +341,9 @@ INPUT_TYPE_TO_CLASS = {
 
 # WIP cleanup, will be documented and named better and actually annotated later
 def parse_instance(_mapping):
-    _raw_input = _mapping['input']
+    _raw_input = _mapping["input"]
     _input_type = InputType(_mapping["input_type"])
 
     if not (_input_class := INPUT_TYPE_TO_CLASS.get(_input_type, None)):
         raise AttributeError("Tried to parse an unknown input type")
     return _input_class(_raw_input)
-

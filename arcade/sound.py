@@ -13,7 +13,9 @@ from arcade.resources import resolve
 import pyglet
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options["audio"] = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
+    pyglet.options["audio"] = tuple(
+        v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
+    )
 else:
     pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
@@ -33,12 +35,18 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
+        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
+            self.file_name, streaming=streaming
+        )
 
         if self.source.duration is None:
-            raise ValueError("Audio duration must be known when loaded, but this audio source returned `None`")
+            raise ValueError(
+                "Audio duration must be known when loaded, but this audio source returned `None`"
+            )
 
-        self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
+        self.min_distance = (
+            100000000  # setting the players to this allows for 2D panning with 3D audio
+        )
 
     def play(
         self,
@@ -171,7 +179,9 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     try:
         return Sound(file_name, streaming)
     except Exception as ex:
-        raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}') from ex
+        raise FileNotFoundError(
+            f'Unable to load sound file: "{file_name}". Exception: {ex}'
+        ) from ex
 
 
 def play_sound(

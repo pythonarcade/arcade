@@ -217,12 +217,16 @@ class TextureCacheManager:
 
         # If we have crop values we need to dig deeper looking for cached versions
         if crop != (0, 0, 0, 0):
-            image_data = self._image_data_cache.get(Texture.create_image_cache_name(file_path, crop))
+            image_data = self._image_data_cache.get(
+                Texture.create_image_cache_name(file_path, crop)
+            )
             # If we don't have and cached image data we can crop from the base texture
             if image_data is None:
                 texture = texture.crop(*crop)
                 self._texture_cache.put(texture)
-                self._image_data_cache.put(Texture.create_image_cache_name(file_path, crop), texture.image_data)
+                self._image_data_cache.put(
+                    Texture.create_image_cache_name(file_path, crop), texture.image_data
+                )
             else:
                 # We might have a texture for this image data
                 texture = self._texture_cache.get_with_config(image_data.hash, hit_box_algorithm)

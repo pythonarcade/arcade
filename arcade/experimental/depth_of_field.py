@@ -43,7 +43,11 @@ class DepthOfField:
     :param clear_color: The color which will be used as the background.
     """
 
-    def __init__(self, size: Optional[Tuple[int, int]] = None, clear_color: RGBA255 = (155, 155, 155, 255)):
+    def __init__(
+        self,
+        size: Optional[Tuple[int, int]] = None,
+        clear_color: RGBA255 = (155, 155, 155, 255),
+    ):
         self._geo = geometry.quad_2d_fs()
         self._win: Window = get_window()
 
@@ -172,7 +176,12 @@ class App(Window):
         between the ``-focus_range`` and ``focus_range``.
     """
 
-    def __init__(self, text_color: RGBA255 = RED, focus_range: float = 16.0, focus_change_speed: float = 0.1):
+    def __init__(
+        self,
+        text_color: RGBA255 = RED,
+        focus_range: float = 16.0,
+        focus_change_speed: float = 0.1,
+    ):
         super().__init__()
         self.time: float = 0.0
         self.sprites: SpriteList = SpriteList()

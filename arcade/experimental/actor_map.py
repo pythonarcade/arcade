@@ -29,7 +29,9 @@ class ActorMap(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(
+            0, self.width, 0, self.height, -100, 100
+        )
         self.actor.draw(self.time)
 
     def on_update(self, delta_time: float):
@@ -130,7 +132,8 @@ class Map:
             ":resources:images/tiles/dirtCenter.png",
         ]
         self.textures = [
-            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box) for path in texture_paths
+            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box)
+            for path in texture_paths
         ]
 
         tex_size = 128
@@ -168,7 +171,9 @@ class Map:
         with self.fbo.activate() as fbo:
             fbo.clear()
             # Change projection to match the contents
-            self.ctx.projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+            self.ctx.projection = Mat4.orthogonal_projection(
+                0, self.width, 0, self.height, -100, 100
+            )
             self.sprites.draw()
 
 

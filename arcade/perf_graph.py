@@ -104,17 +104,33 @@ class PerfGraph(arcade.Sprite):
 
         # Create the bottom label text object
         self._bottom_label = arcade.Text(
-            graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width)
+            graph_data,
+            0,
+            2,
+            self._font_color,
+            self._font_size,
+            align="center",
+            width=int(width),
         )
         self._all_text_objects.append(self._bottom_label)
 
         # Create the axes
         self._x_axis = Line(
-            self._left_x, self._bottom_y, self._left_x, height, batch=self._pyglet_batch, color=self._axis_color
+            self._left_x,
+            self._bottom_y,
+            self._left_x,
+            height,
+            batch=self._pyglet_batch,
+            color=self._axis_color,
         )
 
         self._y_axis = Line(
-            self._left_x, self._bottom_y, width, self._bottom_y, batch=self._pyglet_batch, color=self._axis_color
+            self._left_x,
+            self._bottom_y,
+            width,
+            self._bottom_y,
+            batch=self._pyglet_batch,
+            color=self._axis_color,
         )
 
         # Create the Y scale text objects & lines
@@ -132,7 +148,14 @@ class PerfGraph(arcade.Sprite):
                 )
             )
             self._grid_lines.append(
-                Line(self._left_x, y_level, width, y_level, batch=self._pyglet_batch, color=self._grid_color)
+                Line(
+                    self._left_x,
+                    y_level,
+                    width,
+                    y_level,
+                    batch=self._pyglet_batch,
+                    color=self._grid_color,
+                )
             )
 
         self._all_text_objects.extend(self._vertical_axis_text_objects)

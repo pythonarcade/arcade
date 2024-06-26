@@ -8,7 +8,7 @@ from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import (
     CameraData,
     OrthographicProjectionData,
-    ZeroProjectionDimension
+    ZeroProjectionDimension,
 )
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2, Vec3
@@ -20,9 +20,7 @@ from arcade.window_commands import get_window
 if TYPE_CHECKING:
     from arcade.application import Window
 
-__all__ = [
-    'Camera2D'
-]
+__all__ = ["Camera2D"]
 
 
 class Camera2D:
@@ -67,18 +65,20 @@ class Camera2D:
         Defaults to the currently active window.
     """
 
-    def __init__(self,
-                 viewport: Optional[Rect] = None,
-                 position: Optional[Point2] = None,
-                 up: Tuple[float, float] = (0.0, 1.0),
-                 zoom: float = 1.0,
-                 projection: Optional[Rect] = None,
-                 near: float = -100.0,
-                 far: float = 100.0,
-                 *,
-                 scissor: Optional[Rect] = None,
-                 render_target: Optional[Framebuffer] = None,
-                 window: Optional["Window"] = None):
+    def __init__(
+        self,
+        viewport: Optional[Rect] = None,
+        position: Optional[Point2] = None,
+        up: Tuple[float, float] = (0.0, 1.0),
+        zoom: float = 1.0,
+        projection: Optional[Rect] = None,
+        near: float = -100.0,
+        far: float = 100.0,
+        *,
+        scissor: Optional[Rect] = None,
+        render_target: Optional[Framebuffer] = None,
+        window: Optional["Window"] = None,
+    ):
 
         self._window: "Window" = window or get_window()
         self.render_target: Optional[Framebuffer] = render_target
@@ -94,23 +94,22 @@ class Camera2D:
         # Unpack projection, but only validate when it's given directly
         left, right, bottom, top = (
             (-half_width, half_width, -half_height, half_height)
-            if projection is None else
-            projection.lrbt
+            if projection is None
+            else projection.lrbt
         )
 
         if projection is not None:
             if left == right:
-                raise ZeroProjectionDimension((
-                    f"projection width is 0 due to equal {left=}"
-                    f"and {right=} values"))
+                raise ZeroProjectionDimension(
+                    (f"projection width is 0 due to equal {left=}" f"and {right=} values")
+                )
             if bottom == top:
-                raise ZeroProjectionDimension((
-                    f"projection height is 0 due to equal {bottom=}"
-                    f"and {top=}"))
+                raise ZeroProjectionDimension(
+                    (f"projection height is 0 due to equal {bottom=}" f"and {top=}")
+                )
         if near == far:
             raise ZeroProjectionDimension(
-                f"projection depth is 0 due to equal {near=}"
-                f"and {far=} values"
+                f"projection depth is 0 due to equal {near=}" f"and {far=} values"
             )
 
         _pos = position or (half_width, half_height)
@@ -118,29 +117,30 @@ class Camera2D:
             position=(_pos[0], _pos[1], 0.0),
             up=(up[0], up[1], 0.0),
             forward=(0.0, 0.0, -1.0),
-            zoom=zoom
+            zoom=zoom,
         )
         self._projection_data: OrthographicProjectionData = OrthographicProjectionData(
-            left=left, right=right,
-            top=top, bottom=bottom,
-            near=near, far=far
+            left=left, right=right, top=top, bottom=bottom, near=near, far=far
         )
         self._ortho_projector: OrthographicProjector = OrthographicProjector(
             window=self._window,
             view=self._camera_data,
             projection=self._projection_data,
             viewport=viewport,
-            scissor=scissor
+            scissor=scissor,
         )
 
     @classmethod
-    def from_camera_data(cls, *,
-                         camera_data: Optional[CameraData] = None,
-                         projection_data: Optional[OrthographicProjectionData] = None,
-                         render_target: Optional[Framebuffer] = None,
-                         viewport: Optional[Rect] = None,
-                         scissor: Optional[Rect] = None,
-                         window: Optional["Window"] = None) -> Self:
+    def from_camera_data(
+        cls,
+        *,
+        camera_data: Optional[CameraData] = None,
+        projection_data: Optional[OrthographicProjectionData] = None,
+        render_target: Optional[Framebuffer] = None,
+        viewport: Optional[Rect] = None,
+        scissor: Optional[Rect] = None,
+        window: Optional["Window"] = None,
+    ) -> Self:
         """
         Make a ``Camera2D`` directly from data objects.
 
@@ -191,23 +191,24 @@ class Camera2D:
         if projection_data:
             left, right = projection_data.left, projection_data.right
             if projection_data.left == projection_data.right:
-                raise ZeroProjectionDimension((
-                    f"projection width is 0 due to equal {left=}"
-                    f"and {right=} values"))
+                raise ZeroProjectionDimension(
+                    (f"projection width is 0 due to equal {left=}" f"and {right=} values")
+                )
             bottom, top = projection_data.bottom, projection_data.top
             if bottom == top:
-                raise ZeroProjectionDimension((
-                    f"projection height is 0 due to equal {bottom=}"
-                    f"and {top=}"))
+                raise ZeroProjectionDimension(
+                    (f"projection height is 0 due to equal {bottom=}" f"and {top=}")
+                )
             near, far = projection_data.near, projection_data.far
             if near == far:
                 raise ZeroProjectionDimension(
-                    f"projection depth is 0 due to equal {near=}"
-                    f"and {far=} values"
+                    f"projection depth is 0 due to equal {near=}" f"and {far=} values"
                 )
 
         # build a new camera with defaults and then apply the provided camera objects.
-        new_camera = cls(render_target=render_target, window=window, viewport=viewport, scissor=scissor)
+        new_camera = cls(
+            render_target=render_target, window=window, viewport=viewport, scissor=scissor
+        )
         if camera_data:
             new_camera._camera_data = camera_data
         if projection_data:
@@ -218,7 +219,7 @@ class Camera2D:
             view=new_camera._camera_data,
             projection=new_camera._projection_data,
             viewport=new_camera.viewport,
-            scissor=new_camera.scissor
+            scissor=new_camera.scissor,
         )
         return new_camera
 
@@ -286,10 +287,7 @@ class Camera2D:
         left = self.left
 
         x, y = new_corner
-        self.position = (
-            x - up[0] * top - up[1] * left,
-            y - up[0] * top + up[0] * left
-        )
+        self.position = (x - up[0] * top - up[1] * left, y - up[0] * top + up[0] * left)
 
     # top_center
     @property
@@ -328,10 +326,7 @@ class Camera2D:
         right = self.right
 
         x, y = new_corner
-        self.position = (
-            x - up[0] * top - up[1] * right,
-            y - up[1] * top + up[0] * right
-        )
+        self.position = (x - up[0] * top - up[1] * right, y - up[1] * top + up[0] * right)
 
     # bottom_right
     @property
@@ -342,7 +337,9 @@ class Camera2D:
 
         bottom = self.bottom
         right = self.right
-        return Vec2(pos.x + up[0] * bottom + up[1] * right, pos.y + up[1] * bottom - up[0] * right)
+        return Vec2(
+            pos.x + up[0] * bottom + up[1] * right, pos.y + up[1] * bottom - up[0] * right
+        )
 
     @bottom_right.setter
     def bottom_right(self, new_corner: Point2):
@@ -354,7 +351,7 @@ class Camera2D:
         x, y = new_corner
         self.position = (
             x - up[0] * bottom - up[1] * right,
-            y - up[1] * bottom + up[0] * right
+            y - up[1] * bottom + up[0] * right,
         )
 
     # bottom_center
@@ -385,7 +382,9 @@ class Camera2D:
         bottom = self.bottom
         left = self.left
 
-        return Vec2(pos.x + up[0] * bottom + up[1] * left, pos.y + up[1] * bottom - up[0] * left)
+        return Vec2(
+            pos.x + up[0] * bottom + up[1] * left, pos.y + up[1] * bottom - up[0] * left
+        )
 
     @bottom_left.setter
     def bottom_left(self, new_corner: Point2):
@@ -395,15 +394,12 @@ class Camera2D:
         left = self.left
 
         x, y = new_corner
-        self.position = (
-            x - up[0] * bottom - up[1] * left,
-            y - up[1] * bottom + up[0] * left
-        )
+        self.position = (x - up[0] * bottom - up[1] * left, y - up[1] * bottom + up[0] * left)
 
     # center_right
     @property
     def center_right(self) -> Vec2:
-        """ Get the right most point the camera can see """
+        """Get the right most point the camera can see"""
         pos = self.position
         up = self._camera_data.up
         right = self.right
@@ -420,7 +416,7 @@ class Camera2D:
     # center_left
     @property
     def center_left(self) -> Vec2:
-        """ Get the left most point the camera can see"""
+        """Get the left most point the camera can see"""
         pos = self.position
         up = self._camera_data.up
         left = self.left
@@ -492,9 +488,7 @@ class Camera2D:
 
         # Unpack and validate
         if not value:
-            raise ZeroProjectionDimension((
-                f"Projection area is 0, {value.lrbt}"
-            ))
+            raise ZeroProjectionDimension((f"Projection area is 0, {value.lrbt}"))
 
         _z = self._camera_data.zoom
 
@@ -511,7 +505,9 @@ class Camera2D:
         If this isn't what you want,
         you have to calculate the value manually from projection_data
         """
-        return (self._projection_data.right - self._projection_data.left) / self._camera_data.zoom
+        return (
+            self._projection_data.right - self._projection_data.left
+        ) / self._camera_data.zoom
 
     @width.setter
     def width(self, new_width: float) -> None:
@@ -532,7 +528,9 @@ class Camera2D:
         If this isn't what you want,
         you have to calculate the value manually from projection_data
         """
-        return (self._projection_data.top - self._projection_data.bottom) / self._camera_data.zoom
+        return (
+            self._projection_data.top - self._projection_data.bottom
+        ) / self._camera_data.zoom
 
     @height.setter
     def height(self, new_height: float) -> None:
@@ -719,7 +717,9 @@ class Camera2D:
         """
         Set the bottom most pixel drawn to on the Y axis.
         """
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_bottom(new_bottom)
+        self._ortho_projector.viewport = self._ortho_projector.viewport.align_bottom(
+            new_bottom
+        )
 
     @property
     def viewport_top(self) -> int:

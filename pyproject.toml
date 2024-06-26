@@ -160,7 +160,7 @@ omit = [
 ]
 
 [tool.black]
-line-length = 120
+line-length = 100
 force-exclude = '''
 (
   doc

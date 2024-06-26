@@ -56,7 +56,9 @@ def get_window() -> "Window":
     :return: Handle to the current window.
     """
     if _window is None:
-        raise RuntimeError(("No window is active. " "It has not been created yet, or it was closed."))
+        raise RuntimeError(
+            ("No window is active. " "It has not been created yet, or it was closed.")
+        )
 
     return _window
 

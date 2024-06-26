@@ -205,7 +205,9 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
         self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
         # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)  # 32 bit unsigned integers
+        self._sprite_index_buf = self.ctx.buffer(
+            reserve=self._idx_capacity * 4
+        )  # 32 bit unsigned integers
 
         contents = [
             gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),

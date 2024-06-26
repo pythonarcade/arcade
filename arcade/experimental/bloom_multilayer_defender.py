@@ -186,7 +186,9 @@ class MyGame(arcade.Window):
 
         # Make stars glow dimly
         self.slight_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.slight_bloom_screen = self.ctx.framebuffer(color_attachments=[self.slight_bloom_color_attachment])
+        self.slight_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.slight_bloom_color_attachment]
+        )
 
         # --- Bloom Related ---
         # Down-sampling helps improve the blur.
@@ -202,11 +204,15 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 1.5
         step = 1
-        self.slight_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.slight_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
         # Make lasers and particles glow bright
         self.intense_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.intense_bloom_screen = self.ctx.framebuffer(color_attachments=[self.intense_bloom_color_attachment])
+        self.intense_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.intense_bloom_color_attachment]
+        )
 
         size = (SCREEN_WIDTH // DOWN_SAMPLING, SCREEN_HEIGHT // DOWN_SAMPLING)
         kernel_size = 21
@@ -214,7 +220,9 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 5
         step = 1
-        self.intense_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.intense_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
     def setup(self):
         """Set up the game and initialize the variables."""

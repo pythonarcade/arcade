@@ -34,7 +34,9 @@ class Light:
         :param mode: 'hard' or 'soft' light
         """
         if not (isinstance(color, tuple) or isinstance(color, list)):
-            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
+            raise ValueError(
+                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+            )
 
         if not isinstance(mode, str) or not (mode == "soft" or mode == "hard"):
             raise ValueError("Mode must be set to either 'soft' or 'hard'.")
@@ -47,7 +49,9 @@ class Light:
         self._light_layer: Optional[LightLayer] = None
 
         if len(self._color) != 3:
-            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
+            raise ValueError(
+                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+            )
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -108,7 +112,9 @@ class LightLayer(RenderTargetTexture):
             fragment_shader=":system:shaders/lights/combine_fs.glsl",
         )
         # NOTE: Diffuse buffer created in parent
-        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+        self._light_buffer = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture((width, height), components=3)
+        )
 
     @property
     def diffuse_texture(self):
@@ -120,7 +126,9 @@ class LightLayer(RenderTargetTexture):
 
     def resize(self, width, height):
         super().resize(width, height)
-        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+        self._light_buffer = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture((width, height), components=3)
+        )
 
     def clear(self):
         super().clear()
@@ -162,7 +170,12 @@ class LightLayer(RenderTargetTexture):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_target.use()
 
-    def draw(self, position: Tuple[float, float] = (0, 0), target=None, ambient_color: RGBOrA255 = (64, 64, 64)):
+    def draw(
+        self,
+        position: Tuple[float, float] = (0, 0),
+        target=None,
+        ambient_color: RGBOrA255 = (64, 64, 64),
+    ):
         """Draw the lights
         :param Tuple[float, float] position: Position offset (scrolling)
         :param target: The window or framebuffer we want to render to (default is window)

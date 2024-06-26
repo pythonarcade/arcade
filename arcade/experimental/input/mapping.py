@@ -71,9 +71,7 @@ class Mapping:
         try:
             self._input_type = inputs.CLASS_TO_INPUT_TYPE[input]
         except KeyError:
-            raise TypeError(
-                "Input specified for ActionMapping must inherit from InputEnum"
-            )
+            raise TypeError("Input specified for ActionMapping must inherit from InputEnum")
         self._input = input
 
 

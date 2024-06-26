@@ -162,7 +162,9 @@ class Texture:
         elif isinstance(image, ImageData):
             self._image_data = image
         else:
-            raise TypeError("image must be an instance of PIL.Image.Image or ImageData, " f"not {type(image)}")
+            raise TypeError(
+                "image must be an instance of PIL.Image.Image or ImageData, " f"not {type(image)}"
+            )
 
         # Set the size of the texture since this is immutable
         self._size = image.width, image.height
@@ -267,7 +269,9 @@ class Texture:
         )
 
     @classmethod
-    def create_image_cache_name(cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)):
+    def create_image_cache_name(
+        cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+    ):
         return f"{str(path)}|{crop}"
 
     @property

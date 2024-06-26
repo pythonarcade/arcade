@@ -36,8 +36,12 @@ class MyGame(arcade.Window):
             """,
         )
         # Add two OpenGL textures to different channels
-        self.shadertoy.channel_0 = self.ctx.load_texture(":resources:images/backgrounds/abstract_1.jpg")
-        self.shadertoy.channel_1 = self.ctx.load_texture(":resources:images/backgrounds/abstract_2.jpg")
+        self.shadertoy.channel_0 = self.ctx.load_texture(
+            ":resources:images/backgrounds/abstract_1.jpg"
+        )
+        self.shadertoy.channel_1 = self.ctx.load_texture(
+            ":resources:images/backgrounds/abstract_2.jpg"
+        )
 
     def on_draw(self):
         self.clear()

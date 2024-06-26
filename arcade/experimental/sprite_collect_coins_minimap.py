@@ -82,7 +82,8 @@ class MyGame(arcade.Window):
         # Set up the player
         # Character image from kenney.nl
         self.player_sprite = arcade.Sprite(
-            ":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=SPRITE_SCALING_PLAYER
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
         )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
@@ -110,14 +111,23 @@ class MyGame(arcade.Window):
         self.offscreen.clear(color=arcade.color.AMAZON)
 
         arcade.draw_rectangle_outline(
-            SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.WHITE, 10
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            arcade.color.WHITE,
+            10,
         )
         self.coin_list.draw()
         self.player_list.draw()
 
         self.use()
         arcade.draw_rectangle_filled(
-            SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.AMAZON
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            arcade.color.AMAZON,
         )
 
         self.color_attachment.use(0)

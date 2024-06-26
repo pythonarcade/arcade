@@ -63,7 +63,14 @@ class EternalParticle(Particle):
         mutation_callback=None,
     ):
         super().__init__(
-            filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback
+            filename_or_texture,
+            change_xy,
+            center_xy,
+            angle,
+            change_angle,
+            scale,
+            alpha,
+            mutation_callback,
         )
 
     def can_reap(self) -> Literal[False]:
@@ -87,7 +94,14 @@ class LifetimeParticle(Particle):
         mutation_callback=None,
     ):
         super().__init__(
-            filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback
+            filename_or_texture,
+            change_xy,
+            center_xy,
+            angle,
+            change_angle,
+            scale,
+            alpha,
+            mutation_callback,
         )
         self.lifetime_original = lifetime
         self.lifetime_elapsed = 0.0

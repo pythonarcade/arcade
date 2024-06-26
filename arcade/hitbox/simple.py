@@ -35,7 +35,9 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
         right_border -= 1
         bottom_border -= 1
 
-        def _check_corner_offset(start_x: int, start_y: int, x_direction: int, y_direction: int) -> int:
+        def _check_corner_offset(
+            start_x: int, start_y: int, x_direction: int, y_direction: int
+        ) -> int:
             bad = False
             offset = 0
             while not bad:

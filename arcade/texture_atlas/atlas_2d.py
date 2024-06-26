@@ -252,7 +252,9 @@ class UVData:
             self._slots[name] = slot
             return slot
         except IndexError:
-            raise Exception(("No more free slots in the UV texture. " f"Max number of slots: {self._num_slots}"))
+            raise Exception(
+                ("No more free slots in the UV texture. " f"Max number of slots: {self._num_slots}")
+            )
 
     def free_slot_by_name(self, name: str) -> None:
         """
@@ -1024,7 +1026,9 @@ class TextureAtlas(TextureAtlasBase):
         prev_camera.use()
 
     @classmethod
-    def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":
+    def create_from_texture_sequence(
+        cls, textures: Sequence["Texture"], border: int = 1
+    ) -> "TextureAtlas":
         """
         Create a texture atlas of a reasonable size from a sequence of textures.
 
@@ -1199,5 +1203,6 @@ class TextureAtlas(TextureAtlasBase):
         """Check it the atlas exceeds the hardware limitations"""
         if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
             raise Exception(
-                "Attempting to create or resize an atlas to " f"{size} past its maximum size of {self._max_size}"
+                "Attempting to create or resize an atlas to "
+                f"{size} past its maximum size of {self._max_size}"
             )

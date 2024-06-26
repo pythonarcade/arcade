@@ -24,13 +24,15 @@ class Clock:
     same time will die on the same frame in the future.
     """
 
-    def __init__(self, *,
-                 tick_speed: float = 1.0,
-                 initial_elapsed_time: float = 0.0,
-                 initial_tick_count: int = 0,
-                 frozen: bool = False,
-                 parent: Optional["Clock"] = None
-                 ):
+    def __init__(
+        self,
+        *,
+        tick_speed: float = 1.0,
+        initial_elapsed_time: float = 0.0,
+        initial_tick_count: int = 0,
+        frozen: bool = False,
+        parent: Optional["Clock"] = None,
+    ):
         self.tick_speed: float = tick_speed
         self._frozen: bool = frozen
 
@@ -60,7 +62,7 @@ class Clock:
                 timer.kill()
             timer.check()
 
-    #def create_new_child(self, *,
+    # def create_new_child(self, *,
     #                     tick_speed: float = 1.0,
     #                     inherit_elapsed: bool = False,
     #                     inherit_count: bool = False,
@@ -68,7 +70,7 @@ class Clock:
     #                    ) -> "Clock":
     #    pass
 
-    #def create_new_timer(self, duration: float, callback: Callable,
+    # def create_new_timer(self, duration: float, callback: Callable,
     #                     *args,
     #                     **kwargs
     #                     ) -> Timer:

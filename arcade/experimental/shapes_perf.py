@@ -81,19 +81,29 @@ class GameWindow(arcade.Window):
         self.set_vsync(False)
 
         # Single lines
-        self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
+        self.single_lines_calls = [
+            (*random_pos(), *random_pos(), random_color()) for _ in range(600)
+        ]
         # Line list
         self.line_list = [
-            (random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)
+            (random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT))
+            for _ in range(2 * 10000)
         ]
 
         # Single circle draw calls
-        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+        self.single_circle_calls = [
+            (*random_pos(), random_radius(), random_color()) for _ in range(200)
+        ]
 
         # line strip
-        self.line_strip = [(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)) for _ in range(10)]
+        self.line_strip = [
+            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)) for _ in range(10)
+        ]
         # Random list of points
-        self.points = [(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)) for _ in range(10_000)]
+        self.points = [
+            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            for _ in range(10_000)
+        ]
 
         self.frames = 0
         self.elapsed = 0
@@ -151,7 +161,9 @@ class GameWindow(arcade.Window):
     def do_draw_rectangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 20):
-                arcade.draw_rectangle_outline(x, y, 10, 10, arcade.color.AERO_BLUE, 5, self.elapsed * 100)
+                arcade.draw_rectangle_outline(
+                    x, y, 10, 10, arcade.color.AERO_BLUE, 5, self.elapsed * 100
+                )
 
     def do_draw_xywh_rectangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
@@ -161,7 +173,9 @@ class GameWindow(arcade.Window):
     def do_draw_triangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 20):
-                arcade.draw_triangle_outline(x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE, 2)
+                arcade.draw_triangle_outline(
+                    x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE, 2
+                )
 
     def do_draw_triangle_filled(self):
         for x in range(0, SCREEN_WIDTH, 20):

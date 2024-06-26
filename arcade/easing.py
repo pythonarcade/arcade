@@ -145,13 +145,18 @@ def easing(percent: float, easing_data: EasingData) -> float:
     """
     Function for calculating return value for easing, given percent and easing data.
     """
-    return easing_data.start_value + (easing_data.end_value - easing_data.start_value) * easing_data.ease_function(
-        percent
-    )
+    return easing_data.start_value + (
+        easing_data.end_value - easing_data.start_value
+    ) * easing_data.ease_function(percent)
 
 
 def ease_angle(
-    start_angle: float, end_angle: float, *, time=None, rate=None, ease_function: Callable = linear
+    start_angle: float,
+    end_angle: float,
+    *,
+    time=None,
+    rate=None,
+    ease_function: Callable = linear,
 ) -> Optional[EasingData]:
     """
     Set up easing for angles.
@@ -237,8 +242,12 @@ def ease_position(start_position, end_position, *, time=None, rate=None, ease_fu
     if rate is not None:
         time = distance / rate
 
-    easing_data_x = ease_value(start_position[0], end_position[0], time=time, ease_function=ease_function)
-    easing_data_y = ease_value(start_position[1], end_position[1], time=time, ease_function=ease_function)
+    easing_data_x = ease_value(
+        start_position[0], end_position[0], time=time, ease_function=ease_function
+    )
+    easing_data_y = ease_value(
+        start_position[1], end_position[1], time=time, ease_function=ease_function
+    )
 
     return easing_data_x, easing_data_y
 
