@@ -116,9 +116,7 @@ class Sprite(BasicSprite, PymunkMixin):
         # Debug properties
         self.guid: Optional[str] = None
 
-        self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(
-            angle=self._angle
-        )
+        self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 
         self._width = self._texture.width * scale
         self._height = self._texture.height * scale
@@ -321,7 +319,7 @@ class Sprite(BasicSprite, PymunkMixin):
         *,
         filter: Optional[OpenGlFilter] = None,
         pixelated: Optional[bool] = None,
-        blend_function: Optional[BlendFunction] = None
+        blend_function: Optional[BlendFunction] = None,
     ) -> None:
         """
         A debug method which draws the sprite into the current OpenGL context.
@@ -346,9 +344,7 @@ class Sprite(BasicSprite, PymunkMixin):
             self._sprite_list = SpriteList(capacity=1)
 
         self._sprite_list.append(self)
-        self._sprite_list.draw(
-            filter=filter, pixelated=pixelated, blend_function=blend_function
-        )
+        self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
         self._sprite_list.remove(self)
 
     # ----Update Methods ----

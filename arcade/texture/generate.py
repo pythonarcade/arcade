@@ -33,9 +33,7 @@ def make_circle_texture(
 
     :returns: New :class:`Texture` object.
     """
-    name = name or cache.crate_str_from_values(
-        "circle_texture", diameter, color[0], color[1], color[2]
-    )
+    name = name or cache.crate_str_from_values("circle_texture", diameter, color[0], color[1], color[2])
     bg_color = TRANSPARENT_BLACK  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -116,9 +114,7 @@ def make_soft_square_texture(
     :returns: New :class:`Texture` object.
     """
     # Build name used for caching
-    name = name or cache.crate_str_from_values(
-        "gradient-square", size, color, center_alpha, outer_alpha
-    )
+    name = name or cache.crate_str_from_values("gradient-square", size, color, center_alpha, outer_alpha)
 
     # Generate the soft square image
     bg_color = TRANSPARENT_BLACK
@@ -129,8 +125,6 @@ def make_soft_square_texture(
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
-        draw.rectangle(
-            (cur_size, cur_size, size - cur_size, size - cur_size), clr, None
-        )
+        draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
 
     return Texture(img, name=name)

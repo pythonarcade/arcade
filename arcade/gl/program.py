@@ -352,14 +352,11 @@ class Program:
         ptr = cast(c_array, POINTER(POINTER(c_char)))
 
         # Are we capturing in interlaved or separate buffers?
-        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" \
-            else gl.GL_SEPARATE_ATTRIBS
+        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" else gl.GL_SEPARATE_ATTRIBS
 
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
-            len(
-                self._varyings
-            ),  # number of varying variables used for transform feedback
+            len(self._varyings),  # number of varying variables used for transform feedback
             ptr,  # zero-terminated strings specifying the names of the varying variables
             mode,
         )
@@ -404,10 +401,7 @@ class Program:
             )
 
         # The attribute key is used to cache VertexArrays
-        self.attribute_key = ":".join(
-            f"{attr.name}[{attr.gl_type}/{attr.components}]"
-            for attr in self._attributes
-        )
+        self.attribute_key = ":".join(f"{attr.name}[{attr.gl_type}/{attr.components}]" for attr in self._attributes)
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""
@@ -428,15 +422,11 @@ class Program:
                 continue
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
-            self._uniforms[u_name] = Uniform(
-                self._ctx, self._glo, u_location, u_name, u_type, u_size
-            )
+            self._uniforms[u_name] = Uniform(self._ctx, self._glo, u_location, u_name, u_type, u_size)
 
     def _introspect_uniform_blocks(self):
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(
-            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
-        )
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -483,9 +473,7 @@ class Program:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
-        )
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
@@ -516,10 +504,7 @@ class Program:
                     f"({result.value}): {msg.value.decode('utf-8')}\n"
                     f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
                 )
-                + "\n".join(
-                    f"{str(i + 1).zfill(3)}: {line} "
-                    for i, line in enumerate(source.split("\n"))
-                )
+                + "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(source.split("\n")))
             )
         return shader
 

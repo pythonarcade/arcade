@@ -13,6 +13,7 @@ colliding with something.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los
 """
+
 import random
 import arcade
 
@@ -150,7 +151,7 @@ class SpriteListInteraction(arcade.Window):
                 // All the pixels in the line should just be white
                 fragColor = vec4(1.0, 1.0, 1.0, 1.0);
             }
-            """
+            """,
         )
         # Configure program with maximum distance
         self.program_visualize_dist["maxDistance"] = INTERACTION_RADIUS
@@ -158,9 +159,7 @@ class SpriteListInteraction(arcade.Window):
         # Lookup texture/framebuffer for walls so we can trace pixels in the shader.
         # It contains a texture attachment with the same size as the window.
         # We draw only the walls into this one as a line of sight lookup
-        self.walls_fbo = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))]
-        )
+        self.walls_fbo = self.ctx.framebuffer(color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))])
         # Draw the walls into the framebuffer
         with self.walls_fbo.activate() as fbo:
             fbo.clear()

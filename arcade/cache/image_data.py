@@ -21,6 +21,7 @@ class ImageDataCache:
     PIL.Image object is to avoid re-calculating the hash in addition
     to eliminating the need to load it and convert the pixel format.
     """
+
     def __init__(self):
         self._entries: Dict[str, "ImageData"] = {}
 
@@ -35,6 +36,7 @@ class ImageDataCache:
         :param image: ImageData object
         """
         from arcade.texture import ImageData
+
         if not isinstance(image, ImageData):
             raise TypeError("image must be an instance of ImageData")
 

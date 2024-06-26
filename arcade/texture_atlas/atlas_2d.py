@@ -142,12 +142,14 @@ class AtlasRegion:
         at any point causing an atlas update to fail.
         """
         if image_data.size != (self.width, self.height):
-            raise ValueError((
-                f"ImageData '{image_data.hash}' change their internal image "
-                f"size from {self.width}x{self.height} to "
-                f"{image_data.width}x{image_data.height}. "
-                "It's not possible to fit this into the old allocated area in the atlas. "
-            ))
+            raise ValueError(
+                (
+                    f"ImageData '{image_data.hash}' change their internal image "
+                    f"size from {self.width}x{self.height} to "
+                    f"{image_data.width}x{image_data.height}. "
+                    "It's not possible to fit this into the old allocated area in the atlas. "
+                )
+            )
 
     def __repr__(self) -> str:
         return (
@@ -175,6 +177,7 @@ class UVData:
     :param capacity: The number of textures the atlas keeps track of.
                      This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
     """
+
     def __init__(self, ctx: "ArcadeContext", capacity: int):
         self._ctx = ctx
         self._capacity = capacity
@@ -249,10 +252,7 @@ class UVData:
             self._slots[name] = slot
             return slot
         except IndexError:
-            raise Exception((
-                "No more free slots in the UV texture. "
-                f"Max number of slots: {self._num_slots}"
-            ))
+            raise Exception(("No more free slots in the UV texture. " f"Max number of slots: {self._num_slots}"))
 
     def free_slot_by_name(self, name: str) -> None:
         """
@@ -273,7 +273,7 @@ class UVData:
         :param slot: The slot to update
         :param data: The texture coordinates
         """
-        self._data[slot * 8:slot * 8 + 8] = array("f", data)
+        self._data[slot * 8 : slot * 8 + 8] = array("f", data)
         self._dirty = True
 
     def write_to_texture(self) -> None:
@@ -316,6 +316,7 @@ class TextureAtlas(TextureAtlasBase):
                      This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
                      This value can affect the performance of the atlas.
     """
+
     def __init__(
         self,
         size: Tuple[int, int],
@@ -681,11 +682,8 @@ class TextureAtlas(TextureAtlasBase):
         if self._border > 0:
             # Make new image with room for borders
             tmp = Image.new(
-                'RGBA',
-                size=(
-                    image.width + self._border * 2,
-                    image.height + self._border * 2
-                ),
+                "RGBA",
+                size=(image.width + self._border * 2, image.height + self._border * 2),
                 color=(0, 0, 0, 0),
             )
             # Paste the image into the center of the new image
@@ -904,7 +902,12 @@ class TextureAtlas(TextureAtlasBase):
         self._image_uvs.texture.use(3)
         self._ctx.atlas_resize_program["border"] = float(self._border)
         self._ctx.atlas_resize_program["projection"] = Mat4.orthogonal_projection(
-            0, self.width, self.height, 0, -100, 100,
+            0,
+            self.width,
+            self.height,
+            0,
+            -100,
+            100,
         )
 
         # Render the old atlas into the new one. This means we actually move
@@ -939,12 +942,12 @@ class TextureAtlas(TextureAtlasBase):
         # Clear the atlas but keep the uv slot mapping
         self._fbo.clear()
 
-        self._textures = WeakSet()
-        self._unique_textures = WeakValueDictionary()
-        self._images = WeakValueDictionary()
+        self._textures.clear()
+        self._unique_textures.clear()
+        self._images.clear()
 
-        self._image_regions = dict()
-        self._texture_regions = dict()
+        self._image_regions.clear()
+        self._texture_regions.clear()
         self._allocator = Allocator(*self._size)
 
         # Add textures back sorted by height to potentially make more room
@@ -969,7 +972,8 @@ class TextureAtlas(TextureAtlasBase):
 
     @contextmanager
     def render_into(
-        self, texture: "Texture",
+        self,
+        texture: "Texture",
         projection: Optional[Tuple[float, float, float, float]] = None,
     ):
         """
@@ -1005,7 +1009,8 @@ class TextureAtlas(TextureAtlasBase):
 
         static_camera = static_from_raw_orthographic(
             projection,
-            -1, 1,  # near, far planes
+            -1,
+            1,  # near, far planes
             1.0,  # zoom
         )
 
@@ -1194,6 +1199,5 @@ class TextureAtlas(TextureAtlasBase):
         """Check it the atlas exceeds the hardware limitations"""
         if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
             raise Exception(
-                "Attempting to create or resize an atlas to "
-                f"{size} past its maximum size of {self._max_size}"
+                "Attempting to create or resize an atlas to " f"{size} past its maximum size of {self._max_size}"
             )

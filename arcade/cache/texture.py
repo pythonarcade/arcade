@@ -12,6 +12,7 @@ class TextureBucket:
     """
     A simple dict based cache for textures.
     """
+
     def __init__(self):
         self._entries: Dict[str, "Texture"] = {}
 
@@ -87,9 +88,7 @@ class TextureCache:
         :param name: The cache name of the texture
         :return: The texture if found, otherwise None
         """
-        return (
-            self._entries.get(name)
-        )
+        return self._entries.get(name)
 
     def get_with_config(self, hash: str, hit_box_algorithm: "HitBoxAlgorithm") -> Optional["Texture"]:
         """
@@ -100,6 +99,7 @@ class TextureCache:
         :return: The texture if found, otherwise None
         """
         from arcade import Texture
+
         name = Texture.create_cache_name(
             hash=hash,
             hit_box_algorithm=hit_box_algorithm,
@@ -117,6 +117,7 @@ class TextureCache:
         :param file_path: The path to the file the texture was loaded from
         """
         from arcade import Texture
+
         file_cache_name = Texture.create_image_cache_name(file_path, crop)
         return self._file_entries.get(file_cache_name)
 

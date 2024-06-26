@@ -7,6 +7,7 @@ This example was created on a Raspberry PI 4.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_emit
 """
+
 # import struct
 import random
 from array import array
@@ -44,7 +45,7 @@ class TransformEmit(arcade.Window):
                 void main() {
                     fragColor = vec4(color, 1.0);
                 }
-            """
+            """,
         )
 
         # Program to emit points into a buffer
@@ -129,7 +130,7 @@ class TransformEmit(arcade.Window):
         self.buffer_pos_2 = self.ctx.buffer(reserve=self.num_points * 8)
         self.buffer_vel_2 = self.ctx.buffer(reserve=self.num_points * 8)
 
-        self.buffer_colors = self.ctx.buffer(data=array('f', [random.random() for _ in range(self.num_points * 3)]))
+        self.buffer_colors = self.ctx.buffer(data=array("f", [random.random() for _ in range(self.num_points * 3)]))
 
         # Geometry definition for drawing the two sets of positions
         self.draw_geometry_1 = self.ctx.geometry(
@@ -151,14 +152,14 @@ class TransformEmit(arcade.Window):
         self.move_geometry_1 = self.ctx.geometry(
             [
                 BufferDescription(self.buffer_pos_1, "2f", ("in_pos",)),
-                BufferDescription(self.buffer_vel_1, "2f", ("in_vel",))
+                BufferDescription(self.buffer_vel_1, "2f", ("in_vel",)),
             ],
             mode=self.ctx.POINTS,
         )
         self.move_geometry_2 = self.ctx.geometry(
             [
                 BufferDescription(self.buffer_pos_2, "2f", ("in_pos",)),
-                BufferDescription(self.buffer_vel_2, "2f", ("in_vel",))
+                BufferDescription(self.buffer_vel_2, "2f", ("in_vel",)),
             ],
             mode=self.ctx.POINTS,
         )

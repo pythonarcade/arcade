@@ -24,6 +24,7 @@ class TextureCacheManager:
     A simple manager wrapping texture, image data and hit box caches
     with convenience methods for loading textures and sprite sheets.
     """
+
     def __init__(self):
         self._sprite_sheets: Dict[str, SpriteSheet] = {}
         self._hit_box_cache = HitBoxCache()
@@ -126,7 +127,8 @@ class TextureCacheManager:
 
         # Add to image data cache
         self._image_data_cache.put(
-            Texture.create_image_cache_name(real_path, (x, y, width, height)), texture.image_data,
+            Texture.create_image_cache_name(real_path, (x, y, width, height)),
+            texture.image_data,
         )
 
         return texture
@@ -251,9 +253,7 @@ class TextureCacheManager:
         cached = True
 
         # Do we have cached image data for this file?
-        image_data = self._image_data_cache.get(
-            Texture.create_image_cache_name(file_path_str)
-        )
+        image_data = self._image_data_cache.get(Texture.create_image_cache_name(file_path_str))
         if not image_data:
             cached = False
             im = PIL.Image.open(file_path).convert(mode)

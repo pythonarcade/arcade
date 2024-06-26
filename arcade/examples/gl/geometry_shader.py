@@ -8,6 +8,7 @@ We generate two triangles on the fly displaying a quad.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.geometry_shader
 """
+
 import random
 from array import array
 import arcade
@@ -93,19 +94,24 @@ class MyGame(arcade.Window):
             """,
         )
         num_points = 1000
-        self.points = self.ctx.geometry([BufferDescription(
-            self.ctx.buffer(data=array('f', [random.uniform(-1.0, 1.0) for _ in range(num_points * 2)])),
-            '2f',
-            ['in_vert'],
-        )])
+        self.points = self.ctx.geometry(
+            [
+                BufferDescription(
+                    self.ctx.buffer(data=array("f", [random.uniform(-1.0, 1.0) for _ in range(num_points * 2)])),
+                    "2f",
+                    ["in_vert"],
+                )
+            ]
+        )
 
     def on_draw(self):
         self.clear()
         try:
-            self.program['time'] = self.time
+            self.program["time"] = self.time
             self.points.render(self.program, mode=self.ctx.POINTS)
         except Exception:
             import traceback
+
             traceback.print_exc()
             exit(1)
 

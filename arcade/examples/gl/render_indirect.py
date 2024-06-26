@@ -19,6 +19,7 @@ or without index buffer.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.render_indirect
 """
+
 from random import (
     randint,
     random,
@@ -58,10 +59,10 @@ class RenderIndirect(arcade.Window):
         geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(self.num_objects)
 
         # Crate OpenGL buffers of the data
-        self.draw_command_array_buffer = self.ctx.buffer(data=array('I', array_draw_commands))
-        self.draw_command_indexed_buffer = self.ctx.buffer(data=array('I', indexed_draw_commands))
-        self.vbo = self.ctx.buffer(data=array('f', geometry))
-        self.ibo = self.ctx.buffer(data=array('i', indices))
+        self.draw_command_array_buffer = self.ctx.buffer(data=array("I", array_draw_commands))
+        self.draw_command_indexed_buffer = self.ctx.buffer(data=array("I", indexed_draw_commands))
+        self.vbo = self.ctx.buffer(data=array("f", geometry))
+        self.ibo = self.ctx.buffer(data=array("i", indices))
 
         # Our geometry without index buffer
         self.geometry_array = self.ctx.geometry(
@@ -104,7 +105,7 @@ class RenderIndirect(arcade.Window):
             void main() {
                 fragColor = vec4(color);
             }
-            """
+            """,
         )
 
     def gen_data(self, count):
@@ -117,7 +118,7 @@ class RenderIndirect(arcade.Window):
             # Second triangle
             (0.5, 0.5),  # Top right
             (-0.5, -0.5),  # Bottom left
-            (0.5, -0.5)  # Bottom right
+            (0.5, -0.5),  # Bottom right
         )
 
         geometry = []

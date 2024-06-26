@@ -1,10 +1,9 @@
-
-
 from __future__ import annotations
 
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
+
     __slots__ = (
         "damping",
         "gravity",

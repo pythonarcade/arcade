@@ -52,10 +52,7 @@ class ComputeShader:
                     f"({result.value}): {msg.value.decode('utf-8')}\n"
                     f"---- [compute shader] ---\n"
                 )
-                + "\n".join(
-                    f"{str(i + 1).zfill(3)}: {line} "
-                    for i, line in enumerate(self._source.split("\n"))
-                )
+                + "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._source.split("\n")))
             )
 
         # Attach and link shader
@@ -193,16 +190,12 @@ class ComputeShader:
                 continue
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
-            self._uniforms[u_name] = Uniform(
-                self._ctx, self._glo, u_location, u_name, u_type, u_size
-            )
+            self._uniforms[u_name] = Uniform(self._ctx, self._glo, u_location, u_name, u_type, u_size)
 
     def _introspect_uniform_blocks(self):
         """Finds uniform blocks and maps the to python objectss"""
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(
-            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
-        )
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -249,7 +242,5 @@ class ComputeShader:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
-        )
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
         return index, b_size.value, u_name.value.decode()

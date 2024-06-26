@@ -1,6 +1,7 @@
 """
 THIS IS WORK IN PROGRESS. DO NOT USE.
 """
+
 from typing import (
     Tuple,
     TYPE_CHECKING,
@@ -23,9 +24,7 @@ class TextureArrayAtlas(TextureAtlasBase):
         layers (int): The number of layers (number of textures to store)
     """
 
-    def __init__(
-        self, ctx: Optional[ArcadeContext], size: Tuple[int, int], layers: int
-    ):
+    def __init__(self, ctx: Optional[ArcadeContext], size: Tuple[int, int], layers: int):
         super().__init__(ctx)
         self._size = size
         self._layers = layers

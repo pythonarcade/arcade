@@ -12,6 +12,7 @@ get very obvious artifacts all along the axis that not used.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.random_shader_simple
 """
+
 from time import time
 from array import array
 from random import random
@@ -35,7 +36,8 @@ class App(Window):
         self._program = self.ctx.program(
             # We're passing the shader source to ctx.shader_inc() so that we can use the #include directive.
             # This is not needed when using load_program() as it will automatically look for the file.
-            vertex_shader=self.ctx.shader_inc("""
+            vertex_shader=self.ctx.shader_inc(
+                """
             #version 330
 
             in vec2 in_pos;
@@ -53,7 +55,7 @@ class App(Window):
             }
 
             """,
-            fragment_shader="""
+                fragment_shader="""
             #version 330
 
             #include :resources:/shaders/lib/random.glsl
@@ -81,21 +83,20 @@ class App(Window):
                 frag_colour = vec4(red, green, blue, 1.0);
             }
 
-            """),
+            """,
+            ),
         )
-        self._program['time_seed'] = self._time_seed
+        self._program["time_seed"] = self._time_seed
 
         self._geometry = self.ctx.geometry(
             [
                 BufferDescription(
-                    self.ctx.buffer(
-                        data=array('f', generate_points(self._point_count))
-                    ),
-                    '2f',
-                    ['in_pos'],
+                    self.ctx.buffer(data=array("f", generate_points(self._point_count))),
+                    "2f",
+                    ["in_pos"],
                 )
             ],
-            mode=self.ctx.POINTS
+            mode=self.ctx.POINTS,
         )
 
     def on_draw(self):

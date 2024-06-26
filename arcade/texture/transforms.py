@@ -5,6 +5,7 @@ such as rotation, translation, flipping etc.
 We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
+
 from __future__ import annotations
 
 from typing import Dict, Tuple
@@ -17,6 +18,7 @@ class VertexOrder(Enum):
     """
     Order for texture coordinates.
     """
+
     UPPER_LEFT = 0
     UPPER_RIGHT = 1
     LOWER_LEFT = 2
@@ -30,6 +32,7 @@ class Transform:
     Transforms are responsible for transforming the texture
     coordinates and hit box points.
     """
+
     #: How texture coordinates order should be changed
     #: for this transform.
     #: upper_left, upper_right, lower_left, lower_right
@@ -90,6 +93,7 @@ class Rotate90Transform(Transform):
     """
     Rotate 90 degrees clockwise.
     """
+
     order = (
         VertexOrder.LOWER_LEFT.value,
         VertexOrder.UPPER_LEFT.value,
@@ -108,6 +112,7 @@ class Rotate180Transform(Transform):
     """
     Rotate 180 degrees clockwise.
     """
+
     order = (
         VertexOrder.LOWER_RIGHT.value,
         VertexOrder.LOWER_LEFT.value,
@@ -126,6 +131,7 @@ class Rotate270Transform(Transform):
     """
     Rotate 270 degrees clockwise.
     """
+
     order = (
         VertexOrder.UPPER_RIGHT.value,
         VertexOrder.LOWER_RIGHT.value,
@@ -144,6 +150,7 @@ class FlipLeftRightTransform(Transform):
     """
     Flip texture horizontally / left to right.
     """
+
     order = (
         VertexOrder.UPPER_RIGHT.value,
         VertexOrder.UPPER_LEFT.value,
@@ -162,6 +169,7 @@ class FlipTopBottomTransform(Transform):
     """
     Flip texture vertically / top to bottom.
     """
+
     order = (
         VertexOrder.LOWER_LEFT.value,
         VertexOrder.LOWER_RIGHT.value,
@@ -180,6 +188,7 @@ class TransposeTransform(Transform):
     """
     Transpose texture.
     """
+
     order = (
         VertexOrder.UPPER_LEFT.value,
         VertexOrder.LOWER_LEFT.value,
@@ -200,6 +209,7 @@ class TransverseTransform(Transform):
     """
     Transverse texture.
     """
+
     order = (
         VertexOrder.LOWER_RIGHT.value,
         VertexOrder.UPPER_RIGHT.value,

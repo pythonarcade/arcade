@@ -22,14 +22,10 @@ class TextureKeyframe:
     :param duration: Duration in milliseconds to display this keyframe.
     :param tile_id: Tile ID for this keyframe (only used for tiled maps)
     """
+
     __slots__ = ("texture", "duration", "tile_id")
-    def __init__(
-        self,
-        texture: Texture,
-        duration: int = 100,
-        tile_id: Optional[int] = 0,
-        **kwargs
-    ):
+
+    def __init__(self, texture: Texture, duration: int = 100, tile_id: Optional[int] = 0, **kwargs):
         #: The texture to display for this keyframe.
         self.texture = texture
         #: Duration in milliseconds to display this keyframe.
@@ -47,6 +43,7 @@ class TextureAnimation:
     :param keyframes: List of keyframes for the animation.
     :param loop: If the animation should loop.
     """
+
     __slots__ = ("_keyframes", "_duration_ms", "_timeline")
 
     def __init__(self, keyframes: List[TextureKeyframe]):
@@ -130,6 +127,7 @@ class TextureAnimationSprite(Sprite):
     :param center_y: Initial y position of the sprite.
     :param scale: Initial scale of the sprite.
     """
+
     def __init__(
         self,
         center_x: float = 0.0,
@@ -213,6 +211,7 @@ class AnimatedWalkingSprite(Sprite):
     :param center_x: Initial x position of the sprite.
     :param center_y: Initial y position of the sprite.
     """
+
     def __init__(
         self,
         scale: float = 1.0,
@@ -252,36 +251,16 @@ class AnimatedWalkingSprite(Sprite):
         texture_list: List[Texture] = []
 
         change_direction = False
-        if (
-            self.change_x > 0
-            and self.change_y == 0
-            and self.state != FACE_RIGHT
-            and len(self.walk_right_textures) > 0
-        ):
+        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT and len(self.walk_right_textures) > 0:
             self.state = FACE_RIGHT
             change_direction = True
-        elif (
-            self.change_x < 0
-            and self.change_y == 0
-            and self.state != FACE_LEFT
-            and len(self.walk_left_textures) > 0
-        ):
+        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT and len(self.walk_left_textures) > 0:
             self.state = FACE_LEFT
             change_direction = True
-        elif (
-            self.change_y < 0
-            and self.change_x == 0
-            and self.state != FACE_DOWN
-            and len(self.walk_down_textures) > 0
-        ):
+        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and len(self.walk_down_textures) > 0:
             self.state = FACE_DOWN
             change_direction = True
-        elif (
-            self.change_y > 0
-            and self.change_x == 0
-            and self.state != FACE_UP
-            and len(self.walk_up_textures) > 0
-        ):
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and len(self.walk_up_textures) > 0:
             self.state = FACE_UP
             change_direction = True
 
@@ -303,22 +282,19 @@ class AnimatedWalkingSprite(Sprite):
                 texture_list = self.walk_left_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a "
-                        "list of walk left textures."
+                        "update_animation was called on a sprite that doesn't have a " "list of walk left textures."
                     )
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a list of "
-                        "walk right textures."
+                        "update_animation was called on a sprite that doesn't have a list of " "walk right textures."
                     )
             elif self.state == FACE_UP:
                 texture_list = self.walk_up_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a list of "
-                        "walk up textures."
+                        "update_animation was called on a sprite that doesn't have a list of " "walk up textures."
                     )
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures

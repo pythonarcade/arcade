@@ -4,6 +4,7 @@ Simple 3D Example
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.3d_cube
 """
+
 from pyglet.math import Mat4
 import arcade
 from arcade.gl import geometry
@@ -64,7 +65,7 @@ class MyGame(arcade.Window):
         rx = Mat4.from_rotation(self.time, (1, 0, 0))
         ry = Mat4.from_rotation(self.time * 0.77, (0, 1, 0))
         modelview = translate @ rx @ ry
-        self.program['modelview'] = modelview
+        self.program["modelview"] = modelview
 
         self.cube.render(self.program)
 
@@ -74,7 +75,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """Set up viewport and projection"""
         self.ctx.viewport = 0, 0, width, height
-        self.program['projection'] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
+        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
 
 
 if __name__ == "__main__":

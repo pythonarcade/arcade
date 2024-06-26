@@ -34,10 +34,7 @@ def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> fl
     return get_distance(*sprite1._position, *sprite2._position)
 
 
-def get_closest_sprite(
-    sprite: SpriteType,
-    sprite_list: SpriteList
-) -> Optional[Tuple[SpriteType, float]]:
+def get_closest_sprite(sprite: SpriteType, sprite_list: SpriteList) -> Optional[Tuple[SpriteType, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 
@@ -101,9 +98,8 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     sprite2_width = sprite2._width
     sprite2_height = sprite2._height
 
-    radius_sum = (
-        (sprite1_width if sprite1_width > sprite1_height else sprite1_height)
-        + (sprite2_width if sprite2_width > sprite2_height else sprite2_height)
+    radius_sum = (sprite1_width if sprite1_width > sprite1_height else sprite1_height) + (
+        sprite2_width if sprite2_width > sprite2_height else sprite2_height
     )
 
     # Multiply by half of the theoretical max diagonal length for an estimation of distance
@@ -124,9 +120,7 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     if distance > radius_sum_sq:
         return False
 
-    return are_polygons_intersecting(
-        sprite1.hit_box.get_adjusted_points(), sprite2.hit_box.get_adjusted_points()
-    )
+    return are_polygons_intersecting(sprite1.hit_box.get_adjusted_points(), sprite2.hit_box.get_adjusted_points())
 
 
 def _get_nearby_sprites(sprite: BasicSprite, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
@@ -170,10 +164,7 @@ def _get_nearby_sprites(sprite: BasicSprite, sprite_list: SpriteList[SpriteType]
     # print("data", struct.unpack(f'{emit_count}i', data))
 
     # .. otherwise build and return a list of the sprites selected by the transform
-    return [
-        sprite_list[i]
-        for i in struct.unpack(f'{emit_count}i', buffer.read(size=emit_count * 4))
-    ]
+    return [sprite_list[i] for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
 
 
 def check_for_collision_with_list(
@@ -195,13 +186,9 @@ def check_for_collision_with_list(
     """
     if __debug__:
         if not isinstance(sprite, BasicSprite):
-            raise TypeError(
-                f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
-            )
+            raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
         if not isinstance(sprite_list, SpriteList):
-            raise TypeError(
-                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-            )
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     sprites_to_check: Iterable[SpriteType]
     # Spatial
@@ -213,11 +200,7 @@ def check_for_collision_with_list(
         # GPU transform
         sprites_to_check = _get_nearby_sprites(sprite, sprite_list)
 
-    return [
-        sprite2
-        for sprite2 in sprites_to_check
-        if sprite is not sprite2 and _check_for_collision(sprite, sprite2)
-    ]
+    return [sprite2 for sprite2 in sprites_to_check if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
 
     # collision_list = []
     # for sprite2 in sprite_list_to_check:
@@ -279,9 +262,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
-            raise TypeError(
-                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-            )
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     sprites_to_check: Iterable[SpriteType]
 
@@ -290,11 +271,7 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList[SpriteType]) -> L
     else:
         sprites_to_check = sprite_list
 
-    return [
-        s
-        for s in sprites_to_check
-        if is_point_in_polygon(point[0], point[1], s.hit_box.get_adjusted_points())
-    ]
+    return [s for s in sprites_to_check if is_point_in_polygon(point[0], point[1], s.hit_box.get_adjusted_points())]
 
 
 def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
@@ -309,9 +286,7 @@ def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList[SpriteType]
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
-            raise TypeError(
-                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-            )
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     sprites_to_check: Iterable[SpriteType]
 
@@ -340,9 +315,7 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List
     """
     if __debug__:
         if not isinstance(sprite_list, SpriteList):
-            raise TypeError(
-                f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
-            )
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     rect_points = rect.to_points()
     sprites_to_check: Iterable[SpriteType]
@@ -352,8 +325,4 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List
     else:
         sprites_to_check = sprite_list
 
-    return [
-        s
-        for s in sprites_to_check
-        if are_polygons_intersecting(rect_points, s.hit_box.get_adjusted_points())
-    ]
+    return [s for s in sprites_to_check if are_polygons_intersecting(rect_points, s.hit_box.get_adjusted_points())]

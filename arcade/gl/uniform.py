@@ -96,7 +96,6 @@ class Uniform:
         gl.GL_IMAGE_2D_MULTISAMPLE: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
         gl.GL_IMAGE_2D_MULTISAMPLE_ARRAY: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
         gl.GL_IMAGE_BUFFER: (gl.GLint, gl.glProgramUniform1iv, gl.glUniform1iv, 1, 1),
-
         # TODO: test/implement these:
         # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
         # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
@@ -179,24 +178,37 @@ class Uniform:
 
         # Create custom dedicated getters and setters for each uniform:
         self.getter = Uniform._create_getter_func(
-            self._program_id, self._location, gl_getter, c_array, length,
+            self._program_id,
+            self._location,
+            gl_getter,
+            c_array,
+            length,
         )
         self.setter = Uniform._create_setter_func(
-            self._ctx, self._program_id, self._location, gl_program_setter, gl_setter,
-            c_array, length, self._array_length, count, ptr, is_matrix,
+            self._ctx,
+            self._program_id,
+            self._location,
+            gl_program_setter,
+            gl_setter,
+            c_array,
+            length,
+            self._array_length,
+            count,
+            ptr,
+            is_matrix,
         )
 
     @staticmethod
     def _create_getter_func(program_id, location, gl_getter, c_array, length):
-        """ Create a function for getting/setting OpenGL data. """
+        """Create a function for getting/setting OpenGL data."""
 
         def getter_func1():
-            """ Get single-element OpenGL uniform data. """
+            """Get single-element OpenGL uniform data."""
             gl_getter(program_id, location, c_array)
             return c_array[0]
 
         def getter_func2():
-            """ Get list of OpenGL uniform data. """
+            """Get list of OpenGL uniform data."""
             gl_getter(program_id, location, c_array)
             return tuple(c_array)
 
@@ -209,45 +221,55 @@ class Uniform:
     def _create_setter_func(
         ctx, program_id, location, gl_program_setter, gl_setter, c_array, length, array_length, count, ptr, is_matrix
     ):
-        """ Create setters for OpenGL data. """
+        """Create setters for OpenGL data."""
         if is_matrix:
             if ctx._ext_separate_shader_objects_enabled:
+
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-                    """ Set OpenGL matrix uniform data. """
+                    """Set OpenGL matrix uniform data."""
                     c_array[:] = value
                     gl_program_setter(program_id, location, array_length, gl.GL_FALSE, ptr)
+
             else:
+
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-                    """ Set OpenGL matrix uniform data. """
+                    """Set OpenGL matrix uniform data."""
                     c_array[:] = value
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, gl.GL_FALSE, ptr)
 
         elif length == 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
+
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-                    """ Set OpenGL uniform data value. """
+                    """Set OpenGL uniform data value."""
                     c_array[0] = value
                     gl_program_setter(program_id, location, array_length, ptr)
+
             else:
+
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-                    """ Set OpenGL uniform data value. """
+                    """Set OpenGL uniform data value."""
                     c_array[0] = value
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, ptr)
 
         elif length > 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
+
                 def setter_func(values):  # type: ignore #conditional function variants must have identical signature
-                    """ Set list of OpenGL uniform data. """
+                    """Set list of OpenGL uniform data."""
                     c_array[:] = values
                     gl_program_setter(program_id, location, array_length, ptr)
+
             else:
+
                 def setter_func(values):  # type: ignore #conditional function variants must have identical signature
-                    """ Set list of OpenGL uniform data. """
+                    """Set list of OpenGL uniform data."""
                     c_array[:] = values
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, ptr)
+
         else:
             raise NotImplementedError("Uniform type not yet supported.")
 
@@ -261,6 +283,7 @@ class UniformBlock:
     """
     Wrapper for a uniform block in shaders.
     """
+
     __slots__ = ("glo", "index", "size", "name")
 
     def __init__(self, glo: int, index: int, size: int, name: str):
@@ -277,9 +300,7 @@ class UniformBlock:
     def binding(self) -> int:
         """Get or set the binding index for this uniform block"""
         binding = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self.glo, self.index, gl.GL_UNIFORM_BLOCK_BINDING, binding
-        )
+        gl.glGetActiveUniformBlockiv(self.glo, self.index, gl.GL_UNIFORM_BLOCK_BINDING, binding)
         return binding.value
 
     @binding.setter

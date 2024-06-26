@@ -95,20 +95,20 @@ class Texture2D:
     }
     # Swizzle conversion lookup
     _swizzle_enum_to_str = {
-        gl.GL_RED: 'R',
-        gl.GL_GREEN: 'G',
-        gl.GL_BLUE: 'B',
-        gl.GL_ALPHA: 'A',
-        gl.GL_ZERO: '0',
-        gl.GL_ONE: '1',
+        gl.GL_RED: "R",
+        gl.GL_GREEN: "G",
+        gl.GL_BLUE: "B",
+        gl.GL_ALPHA: "A",
+        gl.GL_ZERO: "0",
+        gl.GL_ONE: "1",
     }
     _swizzle_str_to_enum = {
-        'R': gl.GL_RED,
-        'G': gl.GL_GREEN,
-        'B': gl.GL_BLUE,
-        'A': gl.GL_ALPHA,
-        '0': gl.GL_ZERO,
-        '1': gl.GL_ONE,
+        "R": gl.GL_RED,
+        "G": gl.GL_GREEN,
+        "B": gl.GL_BLUE,
+        "A": gl.GL_ALPHA,
+        "0": gl.GL_ZERO,
+        "1": gl.GL_ONE,
     }
 
     def __init__(
@@ -168,9 +168,7 @@ class Texture2D:
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
-            raise RuntimeError(
-                "Cannot create Texture. OpenGL failed to generate a texture id"
-            )
+            raise RuntimeError("Cannot create Texture. OpenGL failed to generate a texture id")
 
         gl.glBindTexture(self._target, self._glo)
 
@@ -213,9 +211,7 @@ class Texture2D:
         try:
             format_info = pixel_formats[self._dtype]
         except KeyError:
-            raise ValueError(
-                f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
-            )
+            raise ValueError(f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}")
         _format, _internal_format, self._type, self._component_size = format_info
         if data is not None:
             byte_length, data = data_to_ctypes(data)
@@ -630,9 +626,7 @@ class Texture2D:
     @compare_func.setter
     def compare_func(self, value: Union[str, None]):
         if not self._depth:
-            raise ValueError(
-                "Depth comparison function can only be set on depth textures"
-            )
+            raise ValueError("Depth comparison function can only be set on depth textures")
 
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
@@ -647,9 +641,7 @@ class Texture2D:
         if value is None:
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_NONE)
         else:
-            gl.glTexParameteri(
-                self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE
-            )
+            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
 
     def read(self, level: int = 0, alignment: int = 1) -> bytes:
@@ -667,10 +659,7 @@ class Texture2D:
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
-            buffer = (
-                gl.GLubyte
-                * (self.width * self.height * self._component_size * self._components)
-            )()
+            buffer = (gl.GLubyte * (self.width * self.height * self._component_size * self._components))()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
         elif self._ctx.gl_api == "gles":
@@ -718,9 +707,7 @@ class Texture2D:
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage2D(
-                self._target, level, x, y, w, h, self._format, self._type, 0
-            )
+            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)
@@ -751,13 +738,9 @@ class Texture2D:
 
         expected_size = width * height * self._component_size * self._components
         if byte_size != expected_size:
-            raise ValueError(
-                f"Data size {len(byte_data)} does not match expected size {expected_size}"
-            )
+            raise ValueError(f"Data size {len(byte_data)} does not match expected size {expected_size}")
         if len(byte_data) != byte_size:
-            raise ValueError(
-                f"Data size {len(byte_data)} does not match reported size {expected_size}"
-            )
+            raise ValueError(f"Data size {len(byte_data)} does not match reported size {expected_size}")
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
         """Generate mipmaps for this texture.
