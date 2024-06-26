@@ -1,20 +1,21 @@
 import logging
 from pathlib import Path
-from typing import Union, Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageDraw
+import PIL.ImageOps
 
 import arcade
 from arcade import hitbox
-from arcade.texture import ImageData
-from .texture import Texture
 from arcade.cache import (
-    TextureCache,
-    ImageDataCache,
     HitBoxCache,
+    ImageDataCache,
+    TextureCache,
 )
+from arcade.texture import ImageData
+
+from .texture import Texture
 
 LOG = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class TextureCacheManager:
     A simple manager wrapping texture, image data and hit box caches
     with convenience methods for loading textures and sprite sheets.
     """
+
     def __init__(self):
         self._sprite_sheets = {}
         self._hit_box_cache = HitBoxCache()
@@ -127,7 +129,7 @@ class TextureCacheManager:
         :param height: Height of the texture in the image.
         :param hit_box_algorithm:
         """
-        LOG.info("load_texture: %s ", file_path)
+        LOG.debug("load_texture: %s ", file_path)
         real_path = self._get_real_path(file_path)
         crop = (x, y, width, height)
         return self._load_or_get_texture(
@@ -152,7 +154,9 @@ class TextureCacheManager:
         image_data, cached = self._load_or_get_image(file_path, hash=hash)
         # If the image was fetched from cache we might have cached texture
         if cached:
-            texture = self._texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
+            texture = self._texture_cache.get_with_config(
+                image_data.hash, hit_box_algorithm
+            )
         # If we still don't have a texture, create it
         if texture is None:
             texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
@@ -162,15 +166,21 @@ class TextureCacheManager:
 
         # If we have crop values we need to dig deeper looking for cached versions
         if crop != (0, 0, 0, 0):
-            image_data = self._image_data_cache.get(Texture.create_image_cache_name(file_path, crop))
+            image_data = self._image_data_cache.get(
+                Texture.create_image_cache_name(file_path, crop)
+            )
             # If we don't have and cached image data we can crop from the base texture
             if image_data is None:
                 texture = texture.crop(*crop)
                 self._texture_cache.put(texture)
-                self._image_data_cache.put(Texture.create_image_cache_name(file_path, crop), texture.image_data)
+                self._image_data_cache.put(
+                    Texture.create_image_cache_name(file_path, crop), texture.image_data
+                )
             else:
                 # We might have a texture for this image data
-                texture = self._texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
+                texture = self._texture_cache.get_with_config(
+                    image_data.hash, hit_box_algorithm
+                )
                 if texture is None:
                     texture = Texture(image_data, hit_box_algorithm=hit_box_algorithm)
                     texture.file_path = file_path

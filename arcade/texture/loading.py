@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional, Union
 from pathlib import Path
+from typing import Optional, Union
 
 import PIL.Image
 
-from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
-from .texture import Texture, ImageData
+from arcade.resources import resolve
+
 from .spritesheet import SpriteSheet
+from .texture import ImageData, Texture
 
 LOG = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ def load_texture(
     :param hit_box_algorithm: The hit box algorithm to use for this texture
     :param hash: (advanced) Optional custom hash for the loaded image
     """
-    LOG.info("load_texture: %s ", file_path)
+    LOG.debug("load_texture: %s ", file_path)
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
@@ -77,7 +78,7 @@ def load_image(
     :param file_path: Path to the image file
     :param mode: The desired mode for the image (default: "RGBA")
     """
-    LOG.info("load_image: %s ", file_path)
+    LOG.debug("load_image: %s ", file_path)
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
@@ -94,7 +95,7 @@ def load_spritesheet(file_name: Union[str, Path]) -> SpriteSheet:
 
     :param file_name: Path to the image file
     """
-    LOG.info("load_spritesheet: %s ", file_name)
+    LOG.debug("load_spritesheet: %s ", file_name)
     if isinstance(file_name, str):
         file_name = resolve(file_name)
 
