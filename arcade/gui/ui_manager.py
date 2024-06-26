@@ -221,7 +221,9 @@ class UIManager(EventDispatcher):
 
                 if child.size_hint_min:
                     shm_w, shm_h = child.size_hint_min
-                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0, anchor=AnchorPoint.BOTTOM_LEFT)
+                    child.rect = child.rect.min_size(
+                        shm_w or 0, shm_h or 0, anchor=AnchorPoint.BOTTOM_LEFT
+                    )
 
                 if child.size_hint_max:
                     shm_w, shm_h = child.size_hint_max
@@ -363,19 +365,27 @@ class UIManager(EventDispatcher):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMousePressEvent(self, round(x_), round(y_), button, modifiers))
+        return self.dispatch_ui_event(
+            UIMousePressEvent(self, round(x_), round(y_), button, modifiers)
+        )
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseDragEvent(self, round(x_), round(y_), dx, dy, buttons, modifiers))
+        return self.dispatch_ui_event(
+            UIMouseDragEvent(self, round(x_), round(y_), dx, dy, buttons, modifiers)
+        )
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseReleaseEvent(self, round(x_), round(y_), button, modifiers))
+        return self.dispatch_ui_event(
+            UIMouseReleaseEvent(self, round(x_), round(y_), button, modifiers)
+        )
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseScrollEvent(self, round(x_), round(y_), scroll_x, scroll_y))
+        return self.dispatch_ui_event(
+            UIMouseScrollEvent(self, round(x_), round(y_), scroll_x, scroll_y)
+        )
 
     def on_key_press(self, symbol: int, modifiers: int):
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore

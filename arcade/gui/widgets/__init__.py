@@ -106,7 +106,9 @@ class UIWidget(EventDispatcher, ABC):
             self.add(child)
 
         bind(self, "rect", self.trigger_full_render)
-        bind(self, "visible", self.trigger_full_render)  # TODO maybe trigger_parent_render would be enough
+        bind(
+            self, "visible", self.trigger_full_render
+        )  # TODO maybe trigger_parent_render would be enough
         bind(self, "_children", self.trigger_render)
         bind(self, "_border_width", self.trigger_render)
         bind(self, "_border_color", self.trigger_render)
@@ -534,7 +536,11 @@ class UIInteractiveWidget(UIWidget):
             self.pressed = True
             return EVENT_HANDLED
 
-        if self.pressed and isinstance(event, UIMouseReleaseEvent) and event.button in self.interaction_buttons:
+        if (
+            self.pressed
+            and isinstance(event, UIMouseReleaseEvent)
+            and event.button in self.interaction_buttons
+        ):
             self.pressed = False
             if self.rect.point_in_rect(event.pos):
                 if not self.disabled:
@@ -542,7 +548,11 @@ class UIInteractiveWidget(UIWidget):
                     self.dispatch_event(
                         "on_click",
                         UIOnClickEvent(
-                            source=self, x=event.x, y=event.y, button=event.button, modifiers=event.modifiers
+                            source=self,
+                            x=event.x,
+                            y=event.y,
+                            button=event.button,
+                            modifiers=event.modifiers,
                         ),
                     )
                     return EVENT_HANDLED

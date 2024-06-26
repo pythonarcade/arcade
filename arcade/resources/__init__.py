@@ -173,7 +173,10 @@ _resource_list_skip_extensions = [
     ".ttf",
     ".pyc",
 ]
-_resource_list_ignore_paths = {RESOURCE_DIR / "assets" / "cache", RESOURCE_DIR / "assets" / "onscreen_controls"}
+_resource_list_ignore_paths = {
+    RESOURCE_DIR / "assets" / "cache",
+    RESOURCE_DIR / "assets" / "onscreen_controls",
+}
 
 # RESOURCE LIST : (Truncate file from here if auto generating resource list)
 image_alien_blue_climb1 = ":assets:images/alien/alienBlue_climb1.png"
@@ -182,45 +185,117 @@ image_alien_blue_front = ":assets:images/alien/alienBlue_front.png"
 image_alien_blue_jump = ":assets:images/alien/alienBlue_jump.png"
 image_alien_blue_walk1 = ":assets:images/alien/alienBlue_walk1.png"
 image_alien_blue_walk2 = ":assets:images/alien/alienBlue_walk2.png"
-image_female_adventurer_climb0 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_climb0.png"
-image_female_adventurer_climb1 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_climb1.png"
-image_female_adventurer_fall = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_fall.png"
-image_female_adventurer_idle = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-image_female_adventurer_jump = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_jump.png"
-image_female_adventurer_walk0 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk0.png"
-image_female_adventurer_walk1 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk1.png"
-image_female_adventurer_walk2 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk2.png"
-image_female_adventurer_walk3 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk3.png"
-image_female_adventurer_walk4 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk4.png"
-image_female_adventurer_walk5 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk5.png"
-image_female_adventurer_walk6 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk6.png"
-image_female_adventurer_walk7 = ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk7.png"
-image_female_person_climb0 = ":assets:images/animated_characters/female_person/femalePerson_climb0.png"
-image_female_person_climb1 = ":assets:images/animated_characters/female_person/femalePerson_climb1.png"
+image_female_adventurer_climb0 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_climb0.png"
+)
+image_female_adventurer_climb1 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_climb1.png"
+)
+image_female_adventurer_fall = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_fall.png"
+)
+image_female_adventurer_idle = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+)
+image_female_adventurer_jump = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_jump.png"
+)
+image_female_adventurer_walk0 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk0.png"
+)
+image_female_adventurer_walk1 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk1.png"
+)
+image_female_adventurer_walk2 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk2.png"
+)
+image_female_adventurer_walk3 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk3.png"
+)
+image_female_adventurer_walk4 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk4.png"
+)
+image_female_adventurer_walk5 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk5.png"
+)
+image_female_adventurer_walk6 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk6.png"
+)
+image_female_adventurer_walk7 = (
+    ":assets:images/animated_characters/female_adventurer/femaleAdventurer_walk7.png"
+)
+image_female_person_climb0 = (
+    ":assets:images/animated_characters/female_person/femalePerson_climb0.png"
+)
+image_female_person_climb1 = (
+    ":assets:images/animated_characters/female_person/femalePerson_climb1.png"
+)
 image_female_person_fall = ":assets:images/animated_characters/female_person/femalePerson_fall.png"
 image_female_person_idle = ":assets:images/animated_characters/female_person/femalePerson_idle.png"
 image_female_person_jump = ":assets:images/animated_characters/female_person/femalePerson_jump.png"
-image_female_person_walk0 = ":assets:images/animated_characters/female_person/femalePerson_walk0.png"
-image_female_person_walk1 = ":assets:images/animated_characters/female_person/femalePerson_walk1.png"
-image_female_person_walk2 = ":assets:images/animated_characters/female_person/femalePerson_walk2.png"
-image_female_person_walk3 = ":assets:images/animated_characters/female_person/femalePerson_walk3.png"
-image_female_person_walk4 = ":assets:images/animated_characters/female_person/femalePerson_walk4.png"
-image_female_person_walk5 = ":assets:images/animated_characters/female_person/femalePerson_walk5.png"
-image_female_person_walk6 = ":assets:images/animated_characters/female_person/femalePerson_walk6.png"
-image_female_person_walk7 = ":assets:images/animated_characters/female_person/femalePerson_walk7.png"
-image_male_adventurer_climb0 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_climb0.png"
-image_male_adventurer_climb1 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_climb1.png"
-image_male_adventurer_fall = ":assets:images/animated_characters/male_adventurer/maleAdventurer_fall.png"
-image_male_adventurer_idle = ":assets:images/animated_characters/male_adventurer/maleAdventurer_idle.png"
-image_male_adventurer_jump = ":assets:images/animated_characters/male_adventurer/maleAdventurer_jump.png"
-image_male_adventurer_walk0 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk0.png"
-image_male_adventurer_walk1 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk1.png"
-image_male_adventurer_walk2 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk2.png"
-image_male_adventurer_walk3 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk3.png"
-image_male_adventurer_walk4 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk4.png"
-image_male_adventurer_walk5 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk5.png"
-image_male_adventurer_walk6 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk6.png"
-image_male_adventurer_walk7 = ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk7.png"
+image_female_person_walk0 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk0.png"
+)
+image_female_person_walk1 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk1.png"
+)
+image_female_person_walk2 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk2.png"
+)
+image_female_person_walk3 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk3.png"
+)
+image_female_person_walk4 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk4.png"
+)
+image_female_person_walk5 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk5.png"
+)
+image_female_person_walk6 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk6.png"
+)
+image_female_person_walk7 = (
+    ":assets:images/animated_characters/female_person/femalePerson_walk7.png"
+)
+image_male_adventurer_climb0 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_climb0.png"
+)
+image_male_adventurer_climb1 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_climb1.png"
+)
+image_male_adventurer_fall = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_fall.png"
+)
+image_male_adventurer_idle = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_idle.png"
+)
+image_male_adventurer_jump = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_jump.png"
+)
+image_male_adventurer_walk0 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk0.png"
+)
+image_male_adventurer_walk1 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk1.png"
+)
+image_male_adventurer_walk2 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk2.png"
+)
+image_male_adventurer_walk3 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk3.png"
+)
+image_male_adventurer_walk4 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk4.png"
+)
+image_male_adventurer_walk5 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk5.png"
+)
+image_male_adventurer_walk6 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk6.png"
+)
+image_male_adventurer_walk7 = (
+    ":assets:images/animated_characters/male_adventurer/maleAdventurer_walk7.png"
+)
 image_male_person_climb0 = ":assets:images/animated_characters/male_person/malePerson_climb0.png"
 image_male_person_climb1 = ":assets:images/animated_characters/male_person/malePerson_climb1.png"
 image_male_person_fall = ":assets:images/animated_characters/male_person/malePerson_fall.png"
@@ -636,7 +711,9 @@ image_tile_grass_road_corner_l_r = ":assets:images/topdown_tanks/tileGrass_roadC
 image_tile_grass_road_corner_u_l = ":assets:images/topdown_tanks/tileGrass_roadCornerUL.png"
 image_tile_grass_road_corner_u_r = ":assets:images/topdown_tanks/tileGrass_roadCornerUR.png"
 image_tile_grass_road_crossing = ":assets:images/topdown_tanks/tileGrass_roadCrossing.png"
-image_tile_grass_road_crossing_round = ":assets:images/topdown_tanks/tileGrass_roadCrossingRound.png"
+image_tile_grass_road_crossing_round = (
+    ":assets:images/topdown_tanks/tileGrass_roadCrossingRound.png"
+)
 image_tile_grass_road_east = ":assets:images/topdown_tanks/tileGrass_roadEast.png"
 image_tile_grass_road_north = ":assets:images/topdown_tanks/tileGrass_roadNorth.png"
 image_tile_grass_road_split_e = ":assets:images/topdown_tanks/tileGrass_roadSplitE.png"
@@ -644,13 +721,21 @@ image_tile_grass_road_split_n = ":assets:images/topdown_tanks/tileGrass_roadSpli
 image_tile_grass_road_split_s = ":assets:images/topdown_tanks/tileGrass_roadSplitS.png"
 image_tile_grass_road_split_w = ":assets:images/topdown_tanks/tileGrass_roadSplitW.png"
 image_tile_grass_road_transition_e = ":assets:images/topdown_tanks/tileGrass_roadTransitionE.png"
-image_tile_grass_road_transition_e_dirt = ":assets:images/topdown_tanks/tileGrass_roadTransitionE_dirt.png"
+image_tile_grass_road_transition_e_dirt = (
+    ":assets:images/topdown_tanks/tileGrass_roadTransitionE_dirt.png"
+)
 image_tile_grass_road_transition_n = ":assets:images/topdown_tanks/tileGrass_roadTransitionN.png"
-image_tile_grass_road_transition_n_dirt = ":assets:images/topdown_tanks/tileGrass_roadTransitionN_dirt.png"
+image_tile_grass_road_transition_n_dirt = (
+    ":assets:images/topdown_tanks/tileGrass_roadTransitionN_dirt.png"
+)
 image_tile_grass_road_transition_s = ":assets:images/topdown_tanks/tileGrass_roadTransitionS.png"
-image_tile_grass_road_transition_s_dirt = ":assets:images/topdown_tanks/tileGrass_roadTransitionS_dirt.png"
+image_tile_grass_road_transition_s_dirt = (
+    ":assets:images/topdown_tanks/tileGrass_roadTransitionS_dirt.png"
+)
 image_tile_grass_road_transition_w = ":assets:images/topdown_tanks/tileGrass_roadTransitionW.png"
-image_tile_grass_road_transition_w_dirt = ":assets:images/topdown_tanks/tileGrass_roadTransitionW_dirt.png"
+image_tile_grass_road_transition_w_dirt = (
+    ":assets:images/topdown_tanks/tileGrass_roadTransitionW_dirt.png"
+)
 image_tile_grass_transition_e = ":assets:images/topdown_tanks/tileGrass_transitionE.png"
 image_tile_grass_transition_n = ":assets:images/topdown_tanks/tileGrass_transitionN.png"
 image_tile_grass_transition_s = ":assets:images/topdown_tanks/tileGrass_transitionS.png"

@@ -341,9 +341,13 @@ class UIBoxLayout(UILayout):
                     min_height_value = shmn_h or 0
 
                     # Maximal growth to parent.width * shw
-                    available_growth_height = min_height_value + available_height * (sh_h / total_size_hint_height)
+                    available_growth_height = min_height_value + available_height * (
+                        sh_h / total_size_hint_height
+                    )
                     max_growth_height = self.height * sh_h
-                    new_rect = new_rect.resize(height=min(available_growth_height, max_growth_height))
+                    new_rect = new_rect.resize(
+                        height=min(available_growth_height, max_growth_height)
+                    )
 
                     if shmn_h is not None:
                         new_rect = new_rect.min_size(height=shmn_h)
@@ -403,10 +407,14 @@ class UIBoxLayout(UILayout):
                     min_width_value = shmn_w or 0
 
                     # Maximal growth to parent.width * shw
-                    available_growth_width = min_width_value + available_width * (sh_w / total_size_hint_width)
+                    available_growth_width = min_width_value + available_width * (
+                        sh_w / total_size_hint_width
+                    )
                     max_growth_width = self.width * sh_w
                     new_rect = new_rect.resize(
-                        width=min(available_growth_width, max_growth_width)  # This does not enforce the minimum width
+                        width=min(
+                            available_growth_width, max_growth_width
+                        )  # This does not enforce the minimum width
                     )
 
                     if shmn_w is not None:
@@ -621,7 +629,9 @@ class UIGridLayout(UILayout):
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
         content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        content_width = sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+        content_width = (
+            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+        )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
@@ -660,10 +670,7 @@ class UIGridLayout(UILayout):
 
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
-            for row in child_sorted_row_wise[
-                row_num : row_num
-                + row_span  # noqa: E203
-            ]:
+            for row in child_sorted_row_wise[row_num : row_num + row_span]:  # noqa: E203
                 row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_height_ratio_list = []
@@ -671,7 +678,9 @@ class UIGridLayout(UILayout):
 
         # Making cell height same for each row.
         for row in max_height_per_row:
-            principal_height_ratio = max((height + self._vertical_spacing) / (span or 1) for height, span in row)
+            principal_height_ratio = max(
+                (height + self._vertical_spacing) / (span or 1) for height, span in row
+            )
             principal_height_ratio_list.append(principal_height_ratio)
             for i, (height, span) in enumerate(row):
                 if (height + self._vertical_spacing) / (span or 1) < principal_height_ratio:
@@ -679,14 +688,18 @@ class UIGridLayout(UILayout):
 
         # Making cell width same for each column.
         for col in max_width_per_column:
-            principal_width_ratio = max((width + self._horizontal_spacing) / (span or 1) for width, span in col)
+            principal_width_ratio = max(
+                (width + self._horizontal_spacing) / (span or 1) for width, span in col
+            )
             principal_width_ratio_list.append(principal_width_ratio)
             for i, (width, span) in enumerate(col):
                 if (width + self._horizontal_spacing) / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
 
         content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        content_width = sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+        content_width = (
+            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
+        )
 
         def ratio(dimensions: List) -> List:
             """

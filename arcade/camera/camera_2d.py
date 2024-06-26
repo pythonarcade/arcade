@@ -337,9 +337,7 @@ class Camera2D:
 
         bottom = self.bottom
         right = self.right
-        return Vec2(
-            pos.x + up[0] * bottom + up[1] * right, pos.y + up[1] * bottom - up[0] * right
-        )
+        return Vec2(pos.x + up[0] * bottom + up[1] * right, pos.y + up[1] * bottom - up[0] * right)
 
     @bottom_right.setter
     def bottom_right(self, new_corner: Point2):
@@ -382,9 +380,7 @@ class Camera2D:
         bottom = self.bottom
         left = self.left
 
-        return Vec2(
-            pos.x + up[0] * bottom + up[1] * left, pos.y + up[1] * bottom - up[0] * left
-        )
+        return Vec2(pos.x + up[0] * bottom + up[1] * left, pos.y + up[1] * bottom - up[0] * left)
 
     @bottom_left.setter
     def bottom_left(self, new_corner: Point2):
@@ -505,9 +501,7 @@ class Camera2D:
         If this isn't what you want,
         you have to calculate the value manually from projection_data
         """
-        return (
-            self._projection_data.right - self._projection_data.left
-        ) / self._camera_data.zoom
+        return (self._projection_data.right - self._projection_data.left) / self._camera_data.zoom
 
     @width.setter
     def width(self, new_width: float) -> None:
@@ -528,9 +522,7 @@ class Camera2D:
         If this isn't what you want,
         you have to calculate the value manually from projection_data
         """
-        return (
-            self._projection_data.top - self._projection_data.bottom
-        ) / self._camera_data.zoom
+        return (self._projection_data.top - self._projection_data.bottom) / self._camera_data.zoom
 
     @height.setter
     def height(self, new_height: float) -> None:
@@ -717,9 +709,7 @@ class Camera2D:
         """
         Set the bottom most pixel drawn to on the Y axis.
         """
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_bottom(
-            new_bottom
-        )
+        self._ortho_projector.viewport = self._ortho_projector.viewport.align_bottom(new_bottom)
 
     @property
     def viewport_top(self) -> int:

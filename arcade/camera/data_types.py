@@ -201,10 +201,7 @@ class OrthographicProjectionData:
 
     def __str__(self):
         return (
-            f"OrthographicProjection<"
-            f"LRBT={self.rect.lrbt}, "
-            f"{self.near=}, "
-            f"{self.far=}"
+            f"OrthographicProjection<" f"LRBT={self.rect.lrbt}, " f"{self.near=}, " f"{self.far=}"
         )
 
     def __repr__(self):

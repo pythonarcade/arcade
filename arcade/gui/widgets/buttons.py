@@ -218,7 +218,9 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
+            self.ui_label.rect = self.ui_label.rect.max_size(
+                self.content_width, self.content_height
+            )
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -367,4 +369,6 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
 
             # make label fit its content, but limit size to button size
             self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
+            self.ui_label.rect = self.ui_label.rect.max_size(
+                self.content_width, self.content_height
+            )

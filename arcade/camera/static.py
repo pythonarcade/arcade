@@ -48,9 +48,7 @@ class _StaticCamera:
         self._view = view_matrix
         self._projection = projection_matrix
 
-        self._project_method: Optional[Callable[[Point, Tuple, Mat4, Mat4], Vec2]] = (
-            project_method
-        )
+        self._project_method: Optional[Callable[[Point, Tuple, Mat4, Mat4], Vec2]] = project_method
         self._unproject_method: Optional[Callable[[Point, Tuple, Mat4, Mat4], Vec3]] = (
             unproject_method
         )
@@ -76,13 +74,9 @@ class _StaticCamera:
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
         if self._project_method is None:
-            raise ValueError(
-                "This Static Camera was not provided a project method at creation"
-            )
+            raise ValueError("This Static Camera was not provided a project method at creation")
 
-        pos = self._project_method(
-            world_coordinate, self._viewport, self._view, self._projection
-        )
+        pos = self._project_method(world_coordinate, self._viewport, self._view, self._projection)
         return pos
 
     def unproject(self, screen_coordinate: Point) -> Vec3:
@@ -100,9 +94,7 @@ class _StaticCamera:
             A 3D vector in world space.
         """
         if self._unproject_method is None:
-            raise ValueError(
-                "This Static Camera was not provided an unproject method at creation"
-            )
+            raise ValueError("This Static Camera was not provided an unproject method at creation")
 
         return self._unproject_method(
             screen_coordinate, self._viewport, self._view, self._projection
@@ -204,9 +196,7 @@ def static_from_matrices(
     viewport: Optional[Tuple[int, int, int, int]],
     *,
     window: Optional[Window] = None,
-    project_method: Optional[
-        Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec2]
-    ] = None,
+    project_method: Optional[Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
     unproject_method: Optional[
         Callable[[Point, Tuple[int, int, int, int], Mat4, Mat4], Vec3]
     ] = None,

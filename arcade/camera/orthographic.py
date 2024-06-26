@@ -177,6 +177,4 @@ class OrthographicProjector(Projector):
 
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
-        return unproject_orthographic(
-            screen_coordinate, self.viewport.viewport, _view, _projection
-        )
+        return unproject_orthographic(screen_coordinate, self.viewport.viewport, _view, _projection)
