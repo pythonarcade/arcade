@@ -4,7 +4,6 @@ import hashlib
 import logging
 from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from weakref import WeakSet
 
 import PIL.Image
 import PIL.ImageDraw
@@ -29,7 +28,6 @@ from arcade.types import RGBA255, Point2List
 from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
     from arcade.sprite_list import SpriteList
 
 __all__ = ["ImageData", "Texture"]
