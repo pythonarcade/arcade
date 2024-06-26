@@ -166,6 +166,7 @@ force-exclude = '''
 (
   doc
   | arcade/examples
+  | arcade/gui/examples
   | tests
   | util
   | benchmarks
