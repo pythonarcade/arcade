@@ -96,7 +96,12 @@ class Sound:
         media.Source._players.append(player)
 
         def _on_player_eos():
-            media.Source._players.remove(player)
+            # Some race condition within Pyglet can cause the player to be removed from this list before
+            # we get to it, so we try and catch the ValueError raised by the removal if it's already been removed.
+            try:
+                media.Source._players.remove(player)
+            except ValueError:
+                pass
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
             player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
