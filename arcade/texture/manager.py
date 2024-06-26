@@ -180,7 +180,7 @@ class TextureCacheManager:
         :param height: Height of the texture in the image.
         :param hit_box_algorithm:
         """
-        LOG.info("load_texture: %s ", file_path)
+        # LOG.info("load_texture: %s ", file_path)
         real_path = self._get_real_path(file_path)
 
         return self._load_or_get_texture(

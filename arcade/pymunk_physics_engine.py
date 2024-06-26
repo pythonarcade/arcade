@@ -121,7 +121,7 @@ class PymunkPhysicsEngine:
 
         # Keep track of collision types
         if collision_type not in self.collision_types:
-            LOG.debug(f"Adding new collision type of {collision_type}.")
+            # LOG.debug(f"Adding new collision type of {collision_type}.")
             self.collision_types.append(collision_type)  # type: ignore
 
         # Get a number associated with the string of collision_type
@@ -299,12 +299,12 @@ class PymunkPhysicsEngine:
         """ Add code to handle collisions between objects. """
 
         if first_type not in self.collision_types:
-            LOG.debug(f"Adding new collision type of {first_type}.")
+            # LOG.debug(f"Adding new collision type of {first_type}.")
             self.collision_types.append(first_type)
         first_type_id = self.collision_types.index(first_type)
 
         if second_type not in self.collision_types:
-            LOG.debug(f"Adding new collision type of {second_type}.")
+            # LOG.debug(f"Adding new collision type of {second_type}.")
             self.collision_types.append(second_type)
         second_type_id = self.collision_types.index(second_type)
 
