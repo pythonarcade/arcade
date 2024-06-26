@@ -19,8 +19,6 @@ import subprocess
 from pathlib import Path
 from typing import Union, List, Generator, Optional
 
-from typing_extensions import Annotated
-
 PathLike = Union[Path, str, bytes]
 
 
@@ -54,7 +52,7 @@ MYPYOPTS = ["arcade"]
 PYRIGHT = "pyright"
 PYRIGHTOPTS = []
 BLACK = "black"
-BLACKOPTS = ["arcade", "--check"]
+BLACKOPTS = ["arcade"]
 
 # Testing
 PYTEST = "pytest"
@@ -487,22 +485,14 @@ def pyright():
 
 
 @app.command(rich_help_panel="Code Quality")
-def format(
-    check: Annotated[
-        bool, typer.Option(prompt="Do not perform formatting, only check if it would happen")
-    ] = False
-):
+def format(check: bool = False):
     "Format code using black"
     black(check)
     print("Formatting Complete.")
 
 
 @app.command(rich_help_panel="Code Quality")
-def black(
-    check: Annotated[
-        bool, typer.Option(prompt="Do not perform formatting, only check if it would happen.")
-    ] = False
-):
+def black(check: bool = False):
     "Format code using black"
     if check:
         BLACKOPTS.append("--check")
