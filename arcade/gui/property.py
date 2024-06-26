@@ -81,6 +81,7 @@ class Property(Generic[P]):
         for listener in obs.listeners:
             try:
                 try:
+                    #FIXME if listener() raises an error, the invalid call will be also shown as an exception
                     listener(instance, value)
                 except TypeError:
                     # If the listener does not accept arguments, we call it without it
