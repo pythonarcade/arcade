@@ -169,12 +169,12 @@ class SpriteList(Generic[SpriteType]):
 
         self.properties: Optional[Dict[str, Any]] = None
 
-        LOG.debug(
-            "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
-            id(self),
-            use_spatial_hash,
-            self._buf_capacity,
-        )
+        # LOG.debug(
+        #     "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
+        #     id(self),
+        #     use_spatial_hash,
+        #     self._buf_capacity,
+        # )
 
         # Check if the window/context is available
         try:
@@ -824,12 +824,12 @@ class SpriteList(Generic[SpriteType]):
     def enable_spatial_hashing(self, spatial_hash_cell_size: int = 128) -> None:
         """Turn on spatial hashing."""
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
-            LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
+            # LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
             from .spatial_hash import SpatialHash
             self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
             self._recalculate_spatial_hashes()
-        else:
-            LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
+        # else:
+        #     LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
 
     def _recalculate_spatial_hashes(self) -> None:
         if self.spatial_hash is None:
@@ -925,16 +925,16 @@ class SpriteList(Generic[SpriteType]):
         self._write_sprite_buffers_to_gpu()
 
     def _write_sprite_buffers_to_gpu(self) -> None:
-        LOG.debug(
-            "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
-            id(self),
-            self._sprite_pos_changed,
-            self._sprite_size_changed,
-            self._sprite_angle_changed,
-            self._sprite_color_changed,
-            self._sprite_texture_changed,
-            self._sprite_index_changed,
-        )
+        # LOG.debug(
+        #     "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
+        #     id(self),
+        #     self._sprite_pos_changed,
+        #     self._sprite_size_changed,
+        #     self._sprite_angle_changed,
+        #     self._sprite_color_changed,
+        #     self._sprite_texture_changed,
+        #     self._sprite_index_changed,
+        # )
 
         if self._sprite_pos_changed and self._sprite_pos_buf:
             self._sprite_pos_buf.orphan()
@@ -1097,12 +1097,12 @@ class SpriteList(Generic[SpriteType]):
         extend_by = self._buf_capacity
         self._buf_capacity = self._buf_capacity * 2
 
-        LOG.debug(
-            "(%s) Increasing buffer capacity from %s to %s",
-            self._sprite_buffer_slots,
-            extend_by,
-            self._buf_capacity,
-        )
+        # LOG.debug(
+        #     "(%s) Increasing buffer capacity from %s to %s",
+        #     self._sprite_buffer_slots,
+        #     extend_by,
+        #     self._buf_capacity,
+        # )
 
         # Extend the buffers so we don't lose the old data
         self._sprite_pos_data.extend([0] * extend_by * 3)
@@ -1133,19 +1133,19 @@ class SpriteList(Generic[SpriteType]):
         extend_by = self._idx_capacity
         self._idx_capacity = self._idx_capacity * 2
 
-        LOG.debug(
-            "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
-            self._sprite_index_slots,
-            self._sprite_buffer_slots,
-            self._sprite_index_slots / self._sprite_buffer_slots,
-        )
+        # LOG.debug(
+        #     "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
+        #     self._sprite_index_slots,
+        #     self._sprite_buffer_slots,
+        #     self._sprite_index_slots / self._sprite_buffer_slots,
+        # )
 
-        LOG.debug(
-            "(%s) Increasing index capacity from %s to %s",
-            self._sprite_index_slots,
-            extend_by,
-            self._idx_capacity,
-        )
+        # LOG.debug(
+        #     "(%s) Increasing index capacity from %s to %s",
+        #     self._sprite_index_slots,
+        #     extend_by,
+        #     self._idx_capacity,
+        # )
 
         self._sprite_index_data.extend([0] * extend_by)
         if self._initialized and self._sprite_index_buf:

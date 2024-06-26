@@ -540,7 +540,7 @@ class TextureAtlas(TextureAtlasBase):
             # LOG.info("Returning exiting unique texture[%s]: %s", texture.file_path, texture.atlas_name)
             return slot, region
 
-        LOG.info("Attempting to add texture[%s]: %s", texture.file_path, texture.atlas_name)
+        # LOG.info("Attempting to add texture[%s]: %s", texture.file_path, texture.atlas_name)
 
         # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
@@ -550,14 +550,14 @@ class TextureAtlas(TextureAtlasBase):
                 # Write the pixel data to the atlas texture
                 self.write_image(texture.image_data.image, x, y)
             except AllocatorException:
-                LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
+                # LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
                 if not self._auto_resize:
                     raise
 
                 # If we have lost regions/images we can try to rebuild the atlas
                 removed_image_count = self._image_ref_count.get_total_decref()
                 if removed_image_count > 0:
-                    LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
+                    # LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
                     self.rebuild()
                     return self.add(texture)
 
@@ -626,7 +626,7 @@ class TextureAtlas(TextureAtlasBase):
                 f"Max size: {self._max_size}"
             )
 
-        LOG.debug("Allocated new space for image %s : %s %s", image_data.hash, x, y)
+        # LOG.debug("Allocated new space for image %s : %s %s", image_data.hash, x, y)
 
         # Store a texture region for this allocation
         # The xy position must be offset by the border size
@@ -726,7 +726,7 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        LOG.info("Removing texture: %s", texture.atlas_name)
+        # LOG.info("Removing texture: %s", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
         try:
@@ -742,7 +742,7 @@ class TextureAtlas(TextureAtlasBase):
         This is for example called by the finalizer when the texture is GCed.
         """
         # print("FINALIZE REMOVER", atlas_name, hash)
-        LOG.info("Removing texture: %s", atlas_name)
+        # LOG.info("Removing texture: %s", atlas_name)
 
         # Remove the unique texture if it's there
         if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
@@ -928,7 +928,7 @@ class TextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list don't need to be rebuilt.
         """
-        LOG.info("Rebuilding atlas")
+        # LOG.info("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
