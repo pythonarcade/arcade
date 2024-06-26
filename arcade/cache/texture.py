@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Set, TYPE_CHECKING, Union
+from typing import Dict, Optional, Set, TYPE_CHECKING, Union, Tuple
 from pathlib import Path
 
 if TYPE_CHECKING:
@@ -63,27 +63,22 @@ class TextureCache:
         self._entries = TextureBucket()
         self._file_entries = TextureBucket()
 
-    def put(
-        self,
-        texture: "Texture",
-        *,
-        file_path: Optional[Union[str, Path]] = None,
-    ) -> None:
+    def put(self, texture: "Texture") -> None:
         """
-        Add a texture to the cache.
+        Add a texture to the cache. It's important that the crop values
+        and file path are correctly set on the texture before adding it to
+        the cache.
 
         :param texture: The texture to add
-        :param file_path: The path to the file the texture was loaded from
-        :param strong: If True the cache will keep the texture alive
         """
-        # TODO: Consider using Texture.origin instead of file_path
-        #       Consider also caching origin that is not a file name
-        file_path = file_path or texture.file_path
-        path_str = str(file_path) if file_path else None
-
         self._entries.put(texture.cache_name, texture)
-        if path_str:
-            self._file_entries.put(path_str, texture)
+
+        # Only cache by file path if it's the whole texture and not a crop
+        # if texture.file_path and texture.crop_values in [None, (0, 0, 0, 0)]:
+        #     self._file_entries.put(str(texture.file_path), texture)
+        image_cache_name = texture.image_cache_name
+        if image_cache_name:
+            self._file_entries.put(image_cache_name, texture)
 
     def get(self, name: str) -> Optional["Texture"]:
         """
@@ -100,7 +95,7 @@ class TextureCache:
         """
         Attempts to find a texture with a specific configuration.
 
-        :param image_data: The image data to search for
+        :param hash: The image hash
         :param hit_box_algorithm: The hit box algorithm to search for
         :return: The texture if found, otherwise None
         """
@@ -111,13 +106,19 @@ class TextureCache:
         )
         return self.get(name)
 
-    def get_texture_by_filepath(self, file_path: Union[str, Path]) -> Optional["Texture"]:
+    def get_texture_by_filepath(
+        self,
+        file_path: Union[str, Path],
+        crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
+    ) -> Optional["Texture"]:
         """
-        Get a texture from the cache by file path.
+        Get a texture from the cache by file path and crop values.
 
         :param file_path: The path to the file the texture was loaded from
         """
-        return self._file_entries.get(str(file_path))
+        from arcade import Texture
+        file_cache_name = Texture.create_image_cache_name(file_path, crop)
+        return self._file_entries.get(file_cache_name)
 
     def delete(self, texture_or_name: Union["Texture", str], raise_if_not_exist: bool = False) -> None:
         """

@@ -4,7 +4,6 @@ import hashlib
 import logging
 from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from weakref import WeakSet
 
 import PIL.Image
 import PIL.ImageDraw
@@ -29,7 +28,6 @@ from arcade.types import RGBA255, Point2List
 from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
     from arcade.sprite_list import SpriteList
 
 __all__ = ["ImageData", "Texture"]
@@ -144,7 +142,6 @@ class Texture:
         "_file_path",
         "_crop_values",
         "_properties",
-        "_atlas_refs",
         "__weakref__",
     )
 
@@ -194,9 +191,6 @@ class Texture:
             hit_box_points or self._calculate_hit_box_points()
         )
 
-        # Track what atlases the image is in
-        self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
-
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
         self._crop_values: Optional[Tuple[int, int, int, int]] = None
@@ -220,6 +214,20 @@ class Texture:
         :return: str
         """
         return self._cache_name
+
+    @property
+    def image_cache_name(self) -> Optional[str]:
+        """
+        Get the image cache name for this texture.
+        Returns None if file_path is not set.
+        """
+        if self.file_path is None:
+            return None
+
+        return self.create_image_cache_name(
+            self.file_path,
+            self.crop_values or (0, 0, 0, 0),
+        )
 
     @classmethod
     def create_cache_name(
@@ -697,31 +705,6 @@ class Texture:
         texture.crop_values = (x, y, width, height)
         return texture
 
-    # ------ Atlas functions ------
-    # TODO: Use weakref.finalize
-
-    def remove_from_atlases(self) -> None:
-        """
-        Remove this texture from all atlases.
-        """
-        for atlas in self._atlas_refs or ():
-            atlas.remove(self)
-
-    def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
-        """
-        Add a reference to an atlas that this texture is in.
-        """
-        if self._atlas_refs is None:
-            self._atlas_refs = WeakSet()
-        self._atlas_refs.add(atlas)
-
-    def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
-        """
-        Remove a reference to an atlas that this texture is in.
-        """
-        if self._atlas_refs is not None:
-            self._atlas_refs.remove(atlas)
-
     # ----- Utility functions -----
 
     @staticmethod
@@ -854,32 +837,6 @@ class Texture:
         """
         self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
 
-    # ------------------------------------------------------------
-    # Comparison and hash functions so textures can work with sets
-    # A texture's uniqueness is simply based on the name
-    # ------------------------------------------------------------
-    # def __hash__(self) -> int:
-    #     return hash(self.cache_name)
-
-    # def __eq__(self, other) -> bool:
-    #     if other is None:
-    #         return False
-    #     if not isinstance(other, self.__class__):
-    #         return False
-    #     return self.cache_name == other.cache_name
-
-    # def __ne__(self, other) -> bool:
-    #     if other is None:
-    #         return True
-    #     if not isinstance(other, self.__class__):
-    #         return True
-    #     return self.cache_name != other.cache_name
-
     def __repr__(self) -> str:
         cache_name = getattr(self, "cache_name", None)
         return f"<Texture cache_name={cache_name}>"
-
-    def __del__(self):
-        if getattr(self, "_atlas_refs", None) is not None:
-            for atlas in self._atlas_refs:
-                atlas.remove(self)

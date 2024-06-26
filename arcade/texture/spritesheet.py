@@ -115,7 +115,15 @@ class SpriteSheet:
             raise ValueError("Invalid value for origin. Must be 'upper_left' or 'lower_left'.")
 
     # slice an image out of the sprite sheet
-    def get_texture(self, x: int, y: int, width: int, height: int, origin: OriginChoices = "upper_left") -> Texture:
+    def get_texture(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
+        origin: OriginChoices = "upper_left",
+    ) -> Texture:
         """
         Slice out texture from the sprite sheet.
 
@@ -125,7 +133,7 @@ class SpriteSheet:
         :param height: Height of the texture.
         """
         im = self.get_image(x, y, width, height, origin=origin)
-        texture = Texture(im)
+        texture = Texture(im, hit_box_algorithm=hit_box_algorithm)
         texture.file_path = self._path
         texture.crop_values = x, y, width, height
         return texture

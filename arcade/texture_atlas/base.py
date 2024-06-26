@@ -64,16 +64,22 @@ class ImageDataRefCounter:
         """
         Decrement the reference count for an image returning the new value.
         """
-        if image_data.hash not in self._data:
-            raise RuntimeError(f"Image {image_data.hash} not in ref counter")
+        return self.dec_ref_by_hash(image_data.hash)
 
-        val = self._data[image_data.hash] - 1
-        self._data[image_data.hash] = val
+    def dec_ref_by_hash(self, hash: str) -> int:
+        """
+        Decrement the reference count for an image by hash returning the new value.
+        """
+        if hash not in self._data:
+            raise RuntimeError(f"Image {hash} not in ref counter")
+
+        val = self._data[hash] - 1
+        self._data[hash] = val
 
         if val < 0:
-            raise RuntimeError(f"Image {image_data.hash} ref count went below zero")
+            raise RuntimeError(f"Image {hash} ref count went below zero")
         if val == 0:
-            del self._data[image_data.hash]
+            del self._data[hash]
 
         self._num_decref += 1
 
@@ -140,16 +146,22 @@ class UniqueTextureRefCounter:
         """
         Decrement the reference count for an image returning the new value.
         """
-        if image_data.atlas_name not in self._data:
-            raise RuntimeError(f"Image {image_data.atlas_name} not in ref counter")
+        return self.dec_ref_by_atlas_name(image_data.atlas_name)
 
-        val = self._data[image_data.atlas_name] - 1
-        self._data[image_data.atlas_name] = val
+    def dec_ref_by_atlas_name(self, atlas_name: str) -> int:
+        """
+        Decrement the reference count for an image by name returning the new value.
+        """
+        if atlas_name not in self._data:
+            raise RuntimeError(f"Image {atlas_name} not in ref counter")
+
+        val = self._data[atlas_name] - 1
+        self._data[atlas_name] = val
 
         if val < 0:
-            raise RuntimeError(f"Image {image_data.atlas_name} ref count went below zero")
+            raise RuntimeError(f"Image {atlas_name} ref count went below zero")
         if val == 0:
-            del self._data[image_data.atlas_name]
+            del self._data[atlas_name]
 
         self._num_decref += 1
 

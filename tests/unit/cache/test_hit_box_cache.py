@@ -1,6 +1,5 @@
 import pytest
-import arcade.cache
-from arcade import Texture, load_texture
+from arcade import load_texture
 from arcade.cache import HitBoxCache
 from arcade import hitbox
 
@@ -24,6 +23,17 @@ def test_put_get(cache):
     assert cache.get("a|simple") == (1, 2, 3, 4)
     assert cache.get("b|simple") == (5, 6, 7, 8)
     assert cache.get("c|simple") == (9, 10, 11, 12)
+
+    texture = load_texture(":resources:images/test_textures/test_texture.png")
+    cache.put(texture, texture.hit_box_points)
+    assert cache.get(texture) == texture.hit_box_points
+
+
+def test_get_put_wrong_type(cache):
+    with pytest.raises(TypeError):
+        cache.get(0)
+    with pytest.raises(TypeError):
+        cache.put(0, [1, 2, 3, 4])
 
 
 def test_put_get_different_algorithms(cache):
