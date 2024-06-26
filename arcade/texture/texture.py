@@ -163,8 +163,7 @@ class Texture:
             self._image_data = image
         else:
             raise TypeError(
-                "image must be an instance of PIL.Image.Image or ImageData, "
-                f"not {type(image)}"
+                "image must be an instance of PIL.Image.Image or ImageData, " f"not {type(image)}"
             )
 
         # Set the size of the texture since this is immutable
@@ -187,9 +186,7 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: Point2List = (
-            hit_box_points or self._calculate_hit_box_points()
-        )
+        self._hit_box_points: Point2List = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
@@ -254,9 +251,7 @@ class Texture:
         return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
 
     @classmethod
-    def create_atlas_name(
-        cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)
-    ):
+    def create_atlas_name(cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)):
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -681,12 +676,7 @@ class Texture:
         :return: Texture
         """
         # Return self if the crop is the same size as the original image
-        if (
-            width == self.image.width
-            and height == self.image.height
-            and x == 0
-            and y == 0
-        ):
+        if width == self.image.width and height == self.image.height and x == 0 and y == 0:
             return self
 
         # Return self width and height is 0
@@ -708,16 +698,12 @@ class Texture:
     # ----- Utility functions -----
 
     @staticmethod
-    def validate_crop(
-        image: PIL.Image.Image, x: int, y: int, width: int, height: int
-    ) -> None:
+    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
         """
         Validate the crop values for a given image.
         """
         if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(
-                f"crop values must be positive: {x}, {y}, {width}, {height}"
-            )
+            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
         if x >= image.width:
             raise ValueError(f"x position is outside of texture: {x}")
         if y >= image.height:

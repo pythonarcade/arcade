@@ -48,40 +48,41 @@ BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
 
 class Player(arcade.SpriteSolidColor):
-    """ Player ship """
+    """Player ship"""
+
     def __init__(self):
-        """ Set up player """
+        """Set up player"""
         super().__init__(40, 10, color=arcade.color.SLATE_GRAY)
         self.face_right = True
 
     def accelerate_up(self):
-        """ Accelerate player up """
+        """Accelerate player up"""
         self.change_y += VERTICAL_ACCELERATION
         if self.change_y > MAX_VERTICAL_MOVEMENT_SPEED:
             self.change_y = MAX_VERTICAL_MOVEMENT_SPEED
 
     def accelerate_down(self):
-        """ Accelerate player down """
+        """Accelerate player down"""
         self.change_y -= VERTICAL_ACCELERATION
         if self.change_y < -MAX_VERTICAL_MOVEMENT_SPEED:
             self.change_y = -MAX_VERTICAL_MOVEMENT_SPEED
 
     def accelerate_right(self):
-        """ Accelerate player right """
+        """Accelerate player right"""
         self.face_right = True
         self.change_x += HORIZONTAL_ACCELERATION
         if self.change_x > MAX_HORIZONTAL_MOVEMENT_SPEED:
             self.change_x = MAX_HORIZONTAL_MOVEMENT_SPEED
 
     def accelerate_left(self):
-        """ Accelerate player left """
+        """Accelerate player left"""
         self.face_right = False
         self.change_x -= HORIZONTAL_ACCELERATION
         if self.change_x < -MAX_HORIZONTAL_MOVEMENT_SPEED:
             self.change_x = -MAX_HORIZONTAL_MOVEMENT_SPEED
 
     def update(self):
-        """ Move the player """
+        """Move the player"""
         # Move
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -114,14 +115,14 @@ class Player(arcade.SpriteSolidColor):
 
 
 class Bullet(arcade.SpriteSolidColor):
-    """ Bullet """
+    """Bullet"""
 
     def __init__(self, width, height, color):
         super().__init__(width, height, color)
         self.distance = 0
 
     def update(self):
-        """ Move the particle, and fade out """
+        """Move the particle, and fade out"""
         # Move
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -131,9 +132,10 @@ class Bullet(arcade.SpriteSolidColor):
 
 
 class Particle(arcade.SpriteSolidColor):
-    """ Particle from explosion """
+    """Particle from explosion"""
+
     def update(self):
-        """ Move the particle, and fade out """
+        """Move the particle, and fade out"""
         # Move
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -144,10 +146,10 @@ class Particle(arcade.SpriteSolidColor):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Initializer """
+        """Initializer"""
 
         # Call the parent class initializer
         super().__init__(width, height, title)
@@ -184,7 +186,9 @@ class MyGame(arcade.Window):
 
         # Make stars glow dimly
         self.slight_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.slight_bloom_screen = self.ctx.framebuffer(color_attachments=[self.slight_bloom_color_attachment])
+        self.slight_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.slight_bloom_color_attachment]
+        )
 
         # --- Bloom Related ---
         # Down-sampling helps improve the blur.
@@ -200,11 +204,15 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 1.5
         step = 1
-        self.slight_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.slight_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
         # Make lasers and particles glow bright
         self.intense_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.intense_bloom_screen = self.ctx.framebuffer(color_attachments=[self.intense_bloom_color_attachment])
+        self.intense_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.intense_bloom_color_attachment]
+        )
 
         size = (SCREEN_WIDTH // DOWN_SAMPLING, SCREEN_HEIGHT // DOWN_SAMPLING)
         kernel_size = 21
@@ -212,10 +220,12 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 5
         step = 1
-        self.intense_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.intense_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -246,7 +256,7 @@ class MyGame(arcade.Window):
         self.cam = arcade.camera.Camera2D()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # This command has to happen before we start drawing
         self.clear()
 
@@ -291,7 +301,7 @@ class MyGame(arcade.Window):
         arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         if self.up_pressed and not self.down_pressed:
@@ -341,7 +351,7 @@ class MyGame(arcade.Window):
         self.cam.bottom = int(self.cam.bottom)
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -364,7 +374,7 @@ class MyGame(arcade.Window):
             self.bullet_sprite_list.append(bullet)
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -377,7 +387,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

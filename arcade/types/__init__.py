@@ -19,20 +19,14 @@ includes all the following areas:
 However, since the color types, aliases, and constants are all related,
 they go in the :py:mod:`arcade.types.color` submodule.
 """
+
 from __future__ import annotations
 
 # Don't lint import order since we have conditional compatibility shims
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import (
-    NamedTuple,
-    Optional,
-    Tuple,
-    Union,
-    TYPE_CHECKING,
-    TypeVar
-)
+from typing import NamedTuple, Optional, Tuple, Union, TYPE_CHECKING, TypeVar
 
 from pytiled_parser import Properties
 
@@ -132,11 +126,11 @@ __all__ = [
     "RGBOrANormalized",
     "Size2D",
     "TiledObject",
-    "Velocity"
+    "Velocity",
 ]
 
 
-_T = TypeVar('_T')
+_T = TypeVar("_T")
 
 # --- Begin potentially obsolete annotations ---
 
@@ -171,7 +165,7 @@ Velocity = Tuple[AsFloat, AsFloat]
 
 # Path handling
 PathLike = Union[str, Path, bytes]
-_POr = TypeVar('_POr') # Allows PathOr[TypeNameHere] syntax
+_POr = TypeVar("_POr")  # Allows PathOr[TypeNameHere] syntax
 PathOr = Union[PathLike, _POr]
 
 

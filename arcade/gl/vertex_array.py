@@ -19,7 +19,7 @@ index_types = [
     gl.GL_UNSIGNED_BYTE,  # 1 ubyte8
     gl.GL_UNSIGNED_SHORT,  # 2 ubyte16
     None,  # 3 (not supported)
-    gl.GL_UNSIGNED_INT  # 4 ubyte32
+    gl.GL_UNSIGNED_INT,  # 4 ubyte32
 ]
 
 
@@ -32,6 +32,7 @@ class VertexArray:
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
     """
+
     __slots__ = (
         "_ctx",
         "glo",
@@ -148,9 +149,7 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
         # Lookup dict for BufferDescription attrib names
-        descr_attribs = {
-            attr.name: (descr, attr) for descr in content for attr in descr.formats
-        }
+        descr_attribs = {attr.name: (descr, attr) for descr in content for attr in descr.formats}
 
         # Build the vao according to the shader's attribute specifications
         for _, prog_attr in enumerate(program.attributes):
@@ -180,17 +179,18 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
             # TODO: Detect normalization
-            normalized = (
-                gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
-            )
+            normalized = gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
 
             # Map attributes groups
             float_types = (gl.GL_FLOAT, gl.GL_HALF_FLOAT)
             double_types = (gl.GL_DOUBLE,)
             int_types = (
-                gl.GL_INT, gl.GL_UNSIGNED_INT,
-                gl.GL_SHORT, gl.GL_UNSIGNED_SHORT,
-                gl.GL_BYTE, gl.GL_UNSIGNED_BYTE,
+                gl.GL_INT,
+                gl.GL_UNSIGNED_INT,
+                gl.GL_SHORT,
+                gl.GL_UNSIGNED_SHORT,
+                gl.GL_BYTE,
+                gl.GL_UNSIGNED_BYTE,
             )
             attrib_type = attr_descr.gl_type
             # Normalized integers must be mapped as floats
@@ -247,9 +247,7 @@ class VertexArray:
             if buff_descr.instanced:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
-    def render(
-        self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
-    ):
+    def render(self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1):
         """Render the VertexArray to the currently active framebuffer.
 
         :param mode: Primitive type to render. TRIANGLES, LINES etc.
@@ -262,8 +260,11 @@ class VertexArray:
             # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
-                mode, vertices, self._index_element_type,
-                first * self._index_element_size, instances
+                mode,
+                vertices,
+                self._index_element_type,
+                first * self._index_element_size,
+                instances,
             )
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
@@ -302,7 +303,9 @@ class VertexArray:
         gl.glBindVertexArray(self.glo)
         gl.glBindBuffer(gl.GL_DRAW_INDIRECT_BUFFER, buffer._glo)
         if self._ibo:
-            gl.glMultiDrawElementsIndirect(mode, self._index_element_type, first * stride, count, stride)
+            gl.glMultiDrawElementsIndirect(
+                mode, self._index_element_type, first * stride, count, stride
+            )
         else:
             gl.glMultiDrawArraysIndirect(mode, first * stride, count, stride)
 
@@ -344,9 +347,7 @@ class VertexArray:
                 buffer.size - buffer_offset,
             )
         else:
-            gl.glBindBufferBase(
-                gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo
-            )
+            gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo)
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -404,9 +405,7 @@ class VertexArray:
                 )
         else:
             for index, buffer in enumerate(buffers):
-                gl.glBindBufferBase(
-                    gl.GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.glo
-                )
+                gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.glo)
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -528,8 +527,10 @@ class Geometry:
         """
         for other_descr in self._content:
             if other_descr == descr:
-                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
-                                 f"Found a conflict in {descr} and {other_descr}")
+                raise ValueError(
+                    f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                    f"Found a conflict in {descr} and {other_descr}"
+                )
         self._content.append(descr)
 
     def instance(self, program: Program) -> VertexArray:
@@ -574,21 +575,34 @@ class Geometry:
             if program.geometry_input == self._ctx.POINTS:
                 mode = program.geometry_input
             if program.geometry_input == self._ctx.LINES:
-                if mode not in [self._ctx.LINES, self._ctx.LINE_STRIP, self._ctx.LINE_LOOP, self._ctx.LINES_ADJACENCY]:
+                if mode not in [
+                    self._ctx.LINES,
+                    self._ctx.LINE_STRIP,
+                    self._ctx.LINE_LOOP,
+                    self._ctx.LINES_ADJACENCY,
+                ]:
                     raise ValueError(
-                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input")
+                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.LINES_ADJACENCY:
                 if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
                     raise ValueError(
-                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
+                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.TRIANGLES:
-                if mode not in [self._ctx.TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                if mode not in [
+                    self._ctx.TRIANGLES,
+                    self._ctx.TRIANGLE_STRIP,
+                    self._ctx.TRIANGLE_FAN,
+                ]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input")
+                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input"
+                    )
             if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
                 if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input")
+                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input"
+                    )
 
         vao.render(
             mode=mode,

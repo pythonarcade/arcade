@@ -2,10 +2,8 @@
 name = "arcade"
 description = "Arcade Game Development Library"
 readme = "README.md"
-authors = [
-    {name="Paul Vincent Craven", email="paul@cravenfamily.com"}
-]
-license = {file = "license.rst"}
+authors = [{ name = "Paul Vincent Craven", email = "paul@cravenfamily.com" }]
+license = { file = "license.rst" }
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -19,13 +17,13 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
     "pyglet == 2.1dev2",
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
-    "pytiled-parser~=2.2.3"
+    "pytiled-parser~=2.2.3",
 ]
 dynamic = ["version"]
 
@@ -41,6 +39,7 @@ Book = "https://learn.arcade.academy"
 # Note: this actually requires Python 3.9 due to sphinx==7.2.2
 # Used for dev work
 dev = [
+    "black",
     "pytest",
     "mypy",
     "ruff",
@@ -61,12 +60,7 @@ dev = [
     "wheel",
 ]
 # Testing only
-testing_libraries = [
-    "pytest",
-    "pytest-mock",
-    "pytest-cov",
-    "pyyaml==6.0.1",
-]
+testing_libraries = ["pytest", "pytest-mock", "pytest-cov", "pyyaml==6.0.1"]
 
 [project.scripts]
 arcade = "arcade.management:execute_from_command_line"
@@ -78,7 +72,7 @@ hook-dirs = "arcade.__pyinstaller:get_hook_dirs"
 include = ["arcade", "arcade.*"]
 
 [tool.setuptools.dynamic]
-version = {attr = "arcade.version.VERSION"}
+version = { attr = "arcade.version.VERSION" }
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -93,14 +87,26 @@ build-backend = "setuptools.build_meta"
 # F811: redefinition
 line-length = 120
 output-format = "full"
-exclude = ["venv", ".venv*", "tests", "build", "doc", "util", ".mypy_cache", ".pytest_cache", "temp", "bugs", "arcade/examples/platform_tutorial"]
+exclude = [
+    "venv",
+    ".venv*",
+    "tests",
+    "build",
+    "doc",
+    "util",
+    ".mypy_cache",
+    ".pytest_cache",
+    "temp",
+    "bugs",
+    "arcade/examples/platform_tutorial",
+]
 lint.ignore = ["E731", "E741"]
 lint.select = [
     "E",
     "F",
     # Whitespace linting must be re-enabled manually for ruff
     # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
-    "W"
+    "W",
 ]
 
 
@@ -108,7 +114,16 @@ lint.select = [
 disable_error_code = "annotation-unchecked"
 
 [tool.pytest.ini_options]
-norecursedirs = ["doc", "holding", "arcade/examples", "build", ".venv", "env", "dist", "tempt"]
+norecursedirs = [
+    "doc",
+    "holding",
+    "arcade/examples",
+    "build",
+    ".venv",
+    "env",
+    "dist",
+    "tempt",
+]
 
 [tool.pyright]
 include = ["arcade"]
@@ -119,7 +134,7 @@ exclude = [
     "arcade/experimental",
     "tests",
     "doc",
-    "make.py"
+    "make.py",
 ]
 typeCheckingMode = "basic"
 # Use type info from pytiled_parser and pyglet, which do not ship `py.typed` file
@@ -135,7 +150,28 @@ reportOptionalSubscript = "none"
 
 [tool.coverage.run]
 source = ["arcade"]
-omit = ["./arcade/examples/*", "./arcade/gui/examples/*", "./arcade/experimental/*", "./env/*", "./tests/*", "./doc/*", "./Win*/*"]
+omit = [
+    "./arcade/examples/*",
+    "./arcade/gui/examples/*",
+    "./arcade/experimental/*",
+    "./env/*",
+    "./tests/*",
+    "./doc/*",
+    "./Win*/*",
+]
+
+[tool.black]
+line-length = 100
+force-exclude = '''
+(
+  doc
+  | arcade/examples
+  | arcade/gui/examples
+  | tests
+  | util
+  | benchmarks
+)
+'''
 
 [[tool.mypy.overrides]]
 module = "pyglet.*"

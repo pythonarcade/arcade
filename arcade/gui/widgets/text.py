@@ -424,7 +424,9 @@ class UIInputText(UIWidget):
                 x = int(event.x - self.left - self.LAYOUT_OFFSET)
                 y = int(event.y - self.bottom)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
+                    self.caret.on_mouse_drag(
+                        x, y, event.dx, event.dy, event.buttons, event.modifiers
+                    )
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)

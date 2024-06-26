@@ -24,6 +24,7 @@ class TextureCacheManager:
     A simple manager wrapping texture, image data and hit box caches
     with convenience methods for loading textures and sprite sheets.
     """
+
     def __init__(self):
         self._sprite_sheets: Dict[str, SpriteSheet] = {}
         self._hit_box_cache = HitBoxCache()
@@ -126,7 +127,8 @@ class TextureCacheManager:
 
         # Add to image data cache
         self._image_data_cache.put(
-            Texture.create_image_cache_name(real_path, (x, y, width, height)), texture.image_data,
+            Texture.create_image_cache_name(real_path, (x, y, width, height)),
+            texture.image_data,
         )
 
         return texture
@@ -215,12 +217,16 @@ class TextureCacheManager:
 
         # If we have crop values we need to dig deeper looking for cached versions
         if crop != (0, 0, 0, 0):
-            image_data = self._image_data_cache.get(Texture.create_image_cache_name(file_path, crop))
+            image_data = self._image_data_cache.get(
+                Texture.create_image_cache_name(file_path, crop)
+            )
             # If we don't have and cached image data we can crop from the base texture
             if image_data is None:
                 texture = texture.crop(*crop)
                 self._texture_cache.put(texture)
-                self._image_data_cache.put(Texture.create_image_cache_name(file_path, crop), texture.image_data)
+                self._image_data_cache.put(
+                    Texture.create_image_cache_name(file_path, crop), texture.image_data
+                )
             else:
                 # We might have a texture for this image data
                 texture = self._texture_cache.get_with_config(image_data.hash, hit_box_algorithm)
@@ -251,9 +257,7 @@ class TextureCacheManager:
         cached = True
 
         # Do we have cached image data for this file?
-        image_data = self._image_data_cache.get(
-            Texture.create_image_cache_name(file_path_str)
-        )
+        image_data = self._image_data_cache.get(Texture.create_image_cache_name(file_path_str))
         if not image_data:
             cached = False
             im = PIL.Image.open(file_path).convert(mode)

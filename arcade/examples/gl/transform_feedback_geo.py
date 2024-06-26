@@ -21,6 +21,7 @@ There are no predetermined paths and they system just lives on its own.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_feedback_geo
 """
+
 from array import array
 import time
 import random
@@ -136,16 +137,16 @@ class MyGame(arcade.Window):
         )
         N = 10_000
         # Make two buffers we transform between so we can work on the previous result
-        self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
+        self.buffer_1 = self.ctx.buffer(data=array("f", self.gen_initial_data(N)))
         self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
 
         # We also need to be able to visualize both versions (draw to the screen)
-        self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
-        self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
+        self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, "2f 2x4", ["in_pos"])])
+        self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2x4", ["in_pos"])])
 
         # We need to be able to transform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
-        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
+        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])])
+        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])])
 
         # Set up blending states
         self.ctx.enable_only(self.ctx.BLEND)
@@ -170,9 +171,9 @@ class MyGame(arcade.Window):
         self.time = t
 
         # Set uniforms in the program
-        self.gravity_program['dt'] = frame_time
-        self.gravity_program['force'] = 10.0
-        self.gravity_program['gravity_pos'] = self.mouse_pos
+        self.gravity_program["dt"] = frame_time
+        self.gravity_program["force"] = 10.0
+        self.gravity_program["gravity_pos"] = self.mouse_pos
 
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)

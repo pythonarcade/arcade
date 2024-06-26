@@ -8,6 +8,7 @@ Simple formats to test:
 Running this example:
 python -m arcade.examples.gl.texture_compression
 """
+
 import PIL.Image
 import arcade
 import arcade.gl
@@ -49,7 +50,7 @@ class CompressedTextures(arcade.Window):
             void main() {
                 fragColor = texture(tex, uv);
             }
-            """
+            """,
         )
 
     def create_simple(self):

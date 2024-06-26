@@ -95,20 +95,20 @@ class Texture2D:
     }
     # Swizzle conversion lookup
     _swizzle_enum_to_str = {
-        gl.GL_RED: 'R',
-        gl.GL_GREEN: 'G',
-        gl.GL_BLUE: 'B',
-        gl.GL_ALPHA: 'A',
-        gl.GL_ZERO: '0',
-        gl.GL_ONE: '1',
+        gl.GL_RED: "R",
+        gl.GL_GREEN: "G",
+        gl.GL_BLUE: "B",
+        gl.GL_ALPHA: "A",
+        gl.GL_ZERO: "0",
+        gl.GL_ONE: "1",
     }
     _swizzle_str_to_enum = {
-        'R': gl.GL_RED,
-        'G': gl.GL_GREEN,
-        'B': gl.GL_BLUE,
-        'A': gl.GL_ALPHA,
-        '0': gl.GL_ZERO,
-        '1': gl.GL_ONE,
+        "R": gl.GL_RED,
+        "G": gl.GL_GREEN,
+        "B": gl.GL_BLUE,
+        "A": gl.GL_ALPHA,
+        "0": gl.GL_ZERO,
+        "1": gl.GL_ONE,
     }
 
     def __init__(
@@ -160,7 +160,9 @@ class Texture2D:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
         if data and self._samples > 0:
-            raise ValueError("Multisampled textures are not writable (cannot be initialized with data)")
+            raise ValueError(
+                "Multisampled textures are not writable (cannot be initialized with data)"
+            )
 
         self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
 
@@ -168,9 +170,7 @@ class Texture2D:
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
-            raise RuntimeError(
-                "Cannot create Texture. OpenGL failed to generate a texture id"
-            )
+            raise RuntimeError("Cannot create Texture. OpenGL failed to generate a texture id")
 
         gl.glBindTexture(self._target, self._glo)
 
@@ -630,9 +630,7 @@ class Texture2D:
     @compare_func.setter
     def compare_func(self, value: Union[str, None]):
         if not self._depth:
-            raise ValueError(
-                "Depth comparison function can only be set on depth textures"
-            )
+            raise ValueError("Depth comparison function can only be set on depth textures")
 
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
@@ -668,8 +666,7 @@ class Texture2D:
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
             buffer = (
-                gl.GLubyte
-                * (self.width * self.height * self._component_size * self._components)
+                gl.GLubyte * (self.width * self.height * self._component_size * self._components)
             )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
@@ -718,9 +715,7 @@ class Texture2D:
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage2D(
-                self._target, level, x, y, w, h, self._format, self._type, 0
-            )
+            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)

@@ -6,6 +6,7 @@ Using a perspective projector and sprites at different depths you can cheaply ge
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.perspective_parallax
 """
+
 import math
 
 import arcade

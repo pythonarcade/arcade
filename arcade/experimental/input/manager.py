@@ -24,7 +24,6 @@ from .mapping import (
 )
 
 
-
 class RawInputManager(TypedDict):
     actions: List[RawAction]
     axes: List[RawAxis]
@@ -151,9 +150,7 @@ class InputManager:
     def copy_existing(self, existing: InputManager):
         self.actions = existing.actions.copy()
         self.keys_to_actions = existing.keys_to_actions.copy()
-        self.controller_buttons_to_actions = (
-            existing.controller_buttons_to_actions.copy()
-        )
+        self.controller_buttons_to_actions = existing.controller_buttons_to_actions.copy()
         self.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
         self.axes = existing.axes.copy()
         self.axes_state = existing.axes_state.copy()
@@ -174,9 +171,7 @@ class InputManager:
         )
         new.actions = existing.actions.copy()
         new.keys_to_actions = existing.keys_to_actions.copy()
-        new.controller_buttons_to_actions = (
-            existing.controller_buttons_to_actions.copy()
-        )
+        new.controller_buttons_to_actions = existing.controller_buttons_to_actions.copy()
         new.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
         new.axes = existing.axes.copy()
         new.axes_state = existing.axes_state.copy()
@@ -317,9 +312,7 @@ class InputManager:
 
     def register_action_handler(
         self,
-        handler: Union[
-            Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]
-        ],
+        handler: Union[Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]],
     ):
         if isinstance(handler, list):
             self.on_action_listeners.extend(handler)
@@ -407,9 +400,7 @@ class InputManager:
             return
 
         self.active_device = InputDevice.KEYBOARD
-        mouse_buttons_to_actions = tuple(
-            self.mouse_buttons_to_actions.get(button, set())
-        )
+        mouse_buttons_to_actions = tuple(self.mouse_buttons_to_actions.get(button, set()))
         for action_name in mouse_buttons_to_actions:
             action = self.actions[action_name]
             hit = True
@@ -444,9 +435,7 @@ class InputManager:
         if not self._allow_keyboard:
             return
 
-        mouse_buttons_to_actions = tuple(
-            self.mouse_buttons_to_actions.get(button, set())
-        )
+        mouse_buttons_to_actions = tuple(self.mouse_buttons_to_actions.get(button, set()))
         for action_name in mouse_buttons_to_actions:
             action = self.actions[action_name]
             hit = True
@@ -478,16 +467,12 @@ class InputManager:
 
     def on_button_press(self, controller: Controller, button_name: str):
         self.active_device = InputDevice.CONTROLLER
-        buttons_to_actions = tuple(
-            self.controller_buttons_to_actions.get(button_name, set())
-        )
+        buttons_to_actions = tuple(self.controller_buttons_to_actions.get(button_name, set()))
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.PRESSED)
 
     def on_button_release(self, controller: Controller, button_name: str):
-        buttons_to_actions = tuple(
-            self.controller_buttons_to_actions.get(button_name, set())
-        )
+        buttons_to_actions = tuple(self.controller_buttons_to_actions.get(button_name, set()))
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
@@ -544,14 +529,10 @@ class InputManager:
         for action_name in axes_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_dpad_motion(
-        self, controller: Controller, motion: pyglet.math.Vec2
-    ):
+    def on_dpad_motion(self, controller: Controller, motion: pyglet.math.Vec2):
         self.active_device = InputDevice.CONTROLLER
 
-    def on_trigger_motion(
-        self, controller: Controller, trigger_name: str, value: float
-    ):
+    def on_trigger_motion(self, controller: Controller, trigger_name: str, value: float):
         self.active_device = InputDevice.CONTROLLER
 
     def update(self):
@@ -564,10 +545,7 @@ class InputManager:
                     if mapping._input_type == InputType.CONTROLLER_AXIS:
                         scale = mapping._scale
                         input = getattr(self.controller, mapping._input.value)  # type: ignore
-                        if (
-                            input > self.controller_deadzone
-                            or input < -self.controller_deadzone
-                        ):
+                        if input > self.controller_deadzone or input < -self.controller_deadzone:
                             self.axes_state[name] = input * scale
                     if mapping._input_type == InputType.CONTROLLER_BUTTON:
                         if getattr(self.controller, mapping._input.value):  # type: ignore
@@ -580,8 +558,7 @@ class InputManager:
                             self.axes_state[name] = mapping._scale
                     elif mapping._input_type == InputType.MOUSE_AXIS:
                         self.axes_state[name] = (
-                            self.window.mouse[mapping._input.name.lower()]
-                            * mapping._scale
+                            self.window.mouse[mapping._input.name.lower()] * mapping._scale
                         )
                     elif mapping._input_type == InputType.MOUSE_BUTTON:
                         if self.window.mouse[mapping._input.value]:

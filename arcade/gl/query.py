@@ -159,7 +159,7 @@ class Query:
                 self._glo_samples_passed,
                 self._glo_time_elapsed,
                 self._glo_primitives_generated,
-            ]
+            ],
         )
 
     @staticmethod

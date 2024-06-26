@@ -14,6 +14,7 @@ uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
+
 from __future__ import annotations
 
 import string
@@ -53,6 +54,7 @@ class ShadertoyBase:
     :param size: screen/area size
     :param source: The mainImage shader source
     """
+
     def __init__(self, size: Tuple[int, int], source: str):
         self._ctx = get_window().ctx
         self._size = size
@@ -300,15 +302,15 @@ class ShadertoyBase:
 
     def _set_uniforms(self):
         """Attempt to set all supported uniforms"""
-        self._program.set_uniform_safe('iTime', self._time)
-        self._program.set_uniform_array_safe('iChannelTime', self._channel_time)
-        self._program.set_uniform_safe('iTimeDelta', self._time_delta)
-        self._program.set_uniform_safe('iMouse', (*self._mouse_pos, *self._mouse_buttons))
-        self._program.set_uniform_safe('iResolution', (*self._size, 1.0))
-        self._program.set_uniform_array_safe('iChannelResolution', self._channel_resolution)
-        self._program.set_uniform_safe('iFrame', self._frame)
-        self._program.set_uniform_safe('iFrameRate', self._frame_rate)
-        self._program.set_uniform_safe('iDate', self._get_date())
+        self._program.set_uniform_safe("iTime", self._time)
+        self._program.set_uniform_array_safe("iChannelTime", self._channel_time)
+        self._program.set_uniform_safe("iTimeDelta", self._time_delta)
+        self._program.set_uniform_safe("iMouse", (*self._mouse_pos, *self._mouse_buttons))
+        self._program.set_uniform_safe("iResolution", (*self._size, 1.0))
+        self._program.set_uniform_array_safe("iChannelResolution", self._channel_resolution)
+        self._program.set_uniform_safe("iFrame", self._frame)
+        self._program.set_uniform_safe("iFrameRate", self._frame_rate)
+        self._program.set_uniform_safe("iDate", self._get_date())
 
     def _get_date(self) -> Tuple[float, float, float, float]:
         """Create year, month, day, seconds data for iDate"""
@@ -352,6 +354,7 @@ class ShadertoyBuffer(ShadertoyBase):
     :param source: mainImage shader source
     :param repeat: Repeat/wrap mode for the underlying texture
     """
+
     def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
         self._texture = self.ctx.texture(self._size, components=4)
@@ -426,6 +429,7 @@ class Shadertoy(ShadertoyBase):
             fragColor = vec4(fragCoord, 0.0, 1.0);
         }
     """
+
     def __init__(self, size: Tuple[int, int], main_source: str):
         """
         :param [int, int] size: pixel size if the output

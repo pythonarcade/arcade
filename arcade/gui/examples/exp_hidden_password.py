@@ -18,6 +18,7 @@ from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.text import UILabel
 
+
 # FIXME
 class MyView(arcade.View):
     def __init__(self):
@@ -36,7 +37,9 @@ class MyView(arcade.View):
         self.username_input = grid.add(UIInputText(height=25), col_num=1, row_num=0).with_border()
 
         grid.add(UILabel(text="Password:"), col_num=0, row_num=1)
-        self.password_input = grid.add(UIPasswordInput(height=25), col_num=1, row_num=1).with_border()
+        self.password_input = grid.add(
+            UIPasswordInput(height=25), col_num=1, row_num=1
+        ).with_border()
 
         self.login_button = grid.add(UIFlatButton(text="Login"), col_num=0, row_num=2, col_span=2)
         self.login_button.on_click = self.on_login

@@ -10,12 +10,7 @@ import os
 
 import pyglet
 
-from typing import (
-    Callable,
-    Optional,
-    Tuple,
-    TYPE_CHECKING
-)
+from typing import Callable, Optional, Tuple, TYPE_CHECKING
 from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
@@ -36,7 +31,7 @@ __all__ = [
     "set_background_color",
     "schedule",
     "unschedule",
-    "schedule_once"
+    "schedule_once",
 ]
 
 
@@ -62,10 +57,7 @@ def get_window() -> "Window":
     """
     if _window is None:
         raise RuntimeError(
-            (
-                "No window is active. "
-                "It has not been created yet, or it was closed."
-            )
+            ("No window is active. " "It has not been created yet, or it was closed.")
         )
 
     return _window
@@ -112,7 +104,7 @@ def run():
     window = get_window()
 
     # Used in some unit test
-    if os.environ.get('ARCADE_TEST'):
+    if os.environ.get("ARCADE_TEST"):
         window.on_update(1.0 / 60.0)
         window.on_draw()
     elif window.headless:
@@ -141,7 +133,8 @@ def run():
             delta_time, last_time = now - last_time, now
     else:
         import sys
-        if sys.platform != 'win32':
+
+        if sys.platform != "win32":
             # For non windows platforms, just do pyglet run
             pyglet.app.run(window._draw_rate)
         else:
@@ -152,15 +145,14 @@ def run():
             import ctypes
             from ctypes import wintypes
 
-            winmm = ctypes.WinDLL('winmm')
+            winmm = ctypes.WinDLL("winmm")
 
             class TIMECAPS(ctypes.Structure):
-                _fields_ = (('wPeriodMin', wintypes.UINT),
-                            ('wPeriodMax', wintypes.UINT))
+                _fields_ = (("wPeriodMin", wintypes.UINT), ("wPeriodMax", wintypes.UINT))
 
             def _check_time_err(err, func, args):
                 if err:
-                    raise WindowsError('%s error %d' % (func.__name__, err))
+                    raise WindowsError("%s error %d" % (func.__name__, err))
                 return args
 
             winmm.timeGetDevCaps.errcheck = _check_time_err

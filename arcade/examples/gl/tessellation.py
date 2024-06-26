@@ -5,6 +5,7 @@ This example is ported from moderngl : https://github.com/moderngl/moderngl/blob
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.tessellation
 """
+
 from array import array
 
 import arcade
@@ -80,12 +81,13 @@ class MyGame(arcade.Window):
             void main() {
                 frag_color = vec4(1.0);
             }
-            """
+            """,
         )
 
         # We are processing patches of 4 vertices
         self.ctx.patch_vertices = 4
 
+        # fmt: off
         vertices = array(
             "f",
             # x, y
@@ -96,13 +98,9 @@ class MyGame(arcade.Window):
                 1.0, 0.0,
             ]
         )
-        self.geometry = self.ctx.geometry([
-            BufferDescription(
-                self.ctx.buffer(data=vertices),
-                "2f",
-                ["in_vert"]
-            )
-        ])
+        # fmt: on
+
+        self.geometry = self.ctx.geometry([BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])])
 
     def on_draw(self):
         self.clear()

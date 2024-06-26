@@ -111,7 +111,9 @@ class NinePatchTexture:
         cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.TextureAtlas] = None
     ) -> NinePatchTexture:
         """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
-        return cls(int(rect.left), int(rect.right), int(rect.bottom), int(rect.top), texture, atlas=atlas)
+        return cls(
+            int(rect.left), int(rect.right), int(rect.bottom), int(rect.top), texture, atlas=atlas
+        )
 
     @property
     def ctx(self) -> arcade.ArcadeContext:

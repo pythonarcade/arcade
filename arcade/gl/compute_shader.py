@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Tuple, Union
-from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
+from ctypes import (
+    c_char,
+    cast,
+    byref,
+    POINTER,
+    c_char_p,
+    pointer,
+    c_int,
+    create_string_buffer,
+    c_buffer,
+)
 import weakref
 
 from pyglet import gl
@@ -200,9 +210,7 @@ class ComputeShader:
     def _introspect_uniform_blocks(self):
         """Finds uniform blocks and maps the to python objectss"""
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(
-            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
-        )
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -249,7 +257,5 @@ class ComputeShader:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
-        )
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
         return index, b_size.value, u_name.value.decode()

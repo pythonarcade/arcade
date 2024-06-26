@@ -24,7 +24,8 @@ from typing import (
     Union,
     Generic,
     Callable,
-    cast, Sized,
+    cast,
+    Sized,
 )
 
 from arcade import (
@@ -204,7 +205,9 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
         self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
         # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)  # 32 bit unsigned integers
+        self._sprite_index_buf = self.ctx.buffer(
+            reserve=self._idx_capacity * 4
+        )  # 32 bit unsigned integers
 
         contents = [
             gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),
@@ -212,7 +215,9 @@ class SpriteList(Generic[SpriteType]):
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
             gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
             gl.BufferDescription(
-                self._sprite_color_buf, "4f1", ["in_color"],
+                self._sprite_color_buf,
+                "4f1",
+                ["in_color"],
             ),
         ]
         self._geometry = self.ctx.geometry(
@@ -344,9 +349,7 @@ class SpriteList(Generic[SpriteType]):
             r, g, b, *_a = value
             assert len(_a) <= 1
         except (ValueError, AssertionError) as e:
-            raise ValueError(
-                "color_normalized must unpack as 3 or 4 float values"
-            ) from e
+            raise ValueError("color_normalized must unpack as 3 or 4 float values") from e
 
         self._color = r, g, b, _a[0] if _a else 1.0
 
@@ -748,9 +751,9 @@ class SpriteList(Generic[SpriteType]):
         # Reverse the sprites and index buffer
         self.sprite_list.reverse()
         # This seems to be the reasonable way to reverse a subset of an array
-        reverse_data = self._sprite_index_data[0:len(self.sprite_list)]
+        reverse_data = self._sprite_index_data[0 : len(self.sprite_list)]
         reverse_data.reverse()
-        self._sprite_index_data[0:len(self.sprite_list)] = reverse_data
+        self._sprite_index_data[0 : len(self.sprite_list)] = reverse_data
 
         self._sprite_index_changed = True
 
@@ -826,6 +829,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
             # LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
             from .spatial_hash import SpatialHash
+
             self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
             self._recalculate_spatial_hashes()
         # else:
@@ -834,6 +838,7 @@ class SpriteList(Generic[SpriteType]):
     def _recalculate_spatial_hashes(self) -> None:
         if self.spatial_hash is None:
             from .spatial_hash import SpatialHash
+
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.spatial_hash.reset()
@@ -864,12 +869,8 @@ class SpriteList(Generic[SpriteType]):
 
     def _get_center(self) -> Tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""
-        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(
-            self.sprite_list
-        )
-        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(
-            self.sprite_list
-        )
+        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
+        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
         return x, y
 
     center = property(_get_center)
@@ -904,8 +905,7 @@ class SpriteList(Generic[SpriteType]):
 
         for texture in texture_list:
             # Ugly spacing is a fast workaround for None type checking issues
-            self._atlas.add(  # type: ignore
-                texture)
+            self._atlas.add(texture)  # type: ignore
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
@@ -983,11 +983,11 @@ class SpriteList(Generic[SpriteType]):
         self._init_deferred()
 
     def draw(
-            self,
-            *,
-            filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
-            pixelated: Optional[bool] = None,
-            blend_function: Optional[BlendFunction] = None
+        self,
+        *,
+        filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
+        pixelated: Optional[bool] = None,
+        blend_function: Optional[BlendFunction] = None,
     ) -> None:
         """
         Draw this list of sprites.
@@ -1028,7 +1028,10 @@ class SpriteList(Generic[SpriteType]):
 
         # Set custom filter or reset to default
         if filter:
-            if hasattr(filter, '__len__', ):  # assume it's a collection
+            if hasattr(
+                filter,
+                "__len__",
+            ):  # assume it's a collection
                 if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
                 atlas_texture.filter = tuple(filter)  # type: ignore
@@ -1058,11 +1061,7 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
-    def draw_hit_boxes(
-            self,
-            color: RGBA255 = (0, 0, 0, 255),
-            line_thickness: float = 1.0
-    ) -> None:
+    def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
@@ -1187,8 +1186,7 @@ class SpriteList(Generic[SpriteType]):
             return
 
         # Ugly syntax makes type checking pass without perf hit from cast
-        tex_slot: int = self._atlas.add(  # type: ignore
-            sprite._texture)[0]
+        tex_slot: int = self._atlas.add(sprite._texture)[0]  # type: ignore
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -1206,8 +1204,7 @@ class SpriteList(Generic[SpriteType]):
             return
         atlas = self._atlas
         # Ugly spacing makes type checking work with specificity
-        tex_slot: int = atlas.add(  # type: ignore
-            sprite._texture)[0]
+        tex_slot: int = atlas.add(sprite._texture)[0]  # type: ignore
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot

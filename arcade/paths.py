@@ -1,37 +1,20 @@
 """
 Classic A-star algorithm for path finding.
 """
+
 from __future__ import annotations
 
 import math
-from typing import (
-    cast,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-    Dict
-)
+from typing import cast, List, Optional, Set, Tuple, Union, Dict
 
-from arcade import (
-    Sprite, SpriteList,
-    check_for_collision_with_list,
-    get_sprites_at_point
-)
+from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d
 from arcade.types import Point, Point2
 
-__all__ = [
-    "AStarBarrierList",
-    "astar_calculate_path",
-    "has_line_of_sight"
-]
+__all__ = ["AStarBarrierList", "astar_calculate_path", "has_line_of_sight"]
 
 
-def _spot_is_blocked(position: Point2,
-                     moving_sprite: Sprite,
-                     blocking_sprites: SpriteList) -> bool:
+def _spot_is_blocked(position: Point2, moving_sprite: Sprite, blocking_sprites: SpriteList) -> bool:
     """
     Return if position is blocked
 
@@ -76,12 +59,16 @@ class _AStarGraph(object):
     :param bottom: Far bottom side y value
     :param top: Far top side y value
     """
-    def __init__(self, barriers: Union[List, Tuple, Set],
-                 left: int,
-                 right: int,
-                 bottom: int,
-                 top: int,
-                 diagonal_movement: bool):
+
+    def __init__(
+        self,
+        barriers: Union[List, Tuple, Set],
+        left: int,
+        right: int,
+        bottom: int,
+        top: int,
+        diagonal_movement: bool,
+    ):
         self.barriers = barriers if barriers is set else set(barriers)
         self.left = left
         self.right = right
@@ -90,10 +77,14 @@ class _AStarGraph(object):
 
         if diagonal_movement:
             self.movement_directions = (  # type: ignore
-                (1, 0), (-1, 0),
-                (0, 1), (0, -1),
-                (1, 1), (-1, 1),
-                (1, -1), (-1, -1)
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (-1, 1),
+                (1, -1),
+                (-1, -1),
             )
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)  # type: ignore
@@ -132,7 +123,7 @@ class _AStarGraph(object):
         :return: The move cost of moving between of the 2 points
         """
         if b in self.barriers:
-            return float('inf')  # Infitely high cost to enter barrier squares
+            return float("inf")  # Infitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1  # Normal movement cost
@@ -152,7 +143,9 @@ def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[Lis
     :return: The path from start to end. Returns None if is path is not found
     """
     G: Dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
-    F: Dict[Point2, float] = dict()  # Estimated movement cost of start to end going via this position
+    F: Dict[Point2, float] = (
+        dict()
+    )  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
@@ -238,14 +231,17 @@ class AStarBarrierList:
     :param top: Top of playing field
     :param barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
-    def __init__(self,
-                 moving_sprite: Sprite,
-                 blocking_sprites: SpriteList,
-                 grid_size: int,
-                 left: int,
-                 right: int,
-                 bottom: int,
-                 top: int):
+
+    def __init__(
+        self,
+        moving_sprite: Sprite,
+        blocking_sprites: SpriteList,
+        grid_size: int,
+        left: int,
+        right: int,
+        bottom: int,
+        top: int,
+    ):
 
         self.grid_size = grid_size
         self.bottom = int(bottom // grid_size)
@@ -278,7 +274,10 @@ class AStarBarrierList:
 
                 # See if we'll have a collision if our sprite is at this location
                 self.moving_sprite.position = pos
-                if len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites)) > 0:
+                if (
+                    len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites))
+                    > 0
+                ):
                     self.barrier_list.add(cpos)
 
         # Restore original location
@@ -286,10 +285,12 @@ class AStarBarrierList:
         self.barrier_list = sorted(self.barrier_list)
 
 
-def astar_calculate_path(start_point: Point,
-                         end_point: Point,
-                         astar_barrier_list: AStarBarrierList,
-                         diagonal_movement: bool = True) -> Optional[List[Point]]:
+def astar_calculate_path(
+    start_point: Point,
+    end_point: Point,
+    astar_barrier_list: AStarBarrierList,
+    diagonal_movement: bool = True,
+) -> Optional[List[Point]]:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
@@ -325,11 +326,13 @@ def astar_calculate_path(start_point: Point,
     return cast(List[Point], revised_result)
 
 
-def has_line_of_sight(observer: Point,
-                      target: Point,
-                      walls: SpriteList,
-                      max_distance: float = float("inf"),
-                      check_resolution: int = 2) -> bool:
+def has_line_of_sight(
+    observer: Point,
+    target: Point,
+    walls: SpriteList,
+    max_distance: float = float("inf"),
+    check_resolution: int = 2,
+) -> bool:
     """
     Determine if we have line of sight between two points.
 
@@ -351,8 +354,7 @@ def has_line_of_sight(observer: Point,
     if check_resolution <= 0:
         raise ValueError("check_resolution must be greater than zero")
 
-    distance = get_distance(observer[0], observer[1],
-                            target[0], target[1])
+    distance = get_distance(observer[0], observer[1], target[0], target[1])
     if distance == 0:
         return True
 

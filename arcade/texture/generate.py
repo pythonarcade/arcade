@@ -129,8 +129,6 @@ def make_soft_square_texture(
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
-        draw.rectangle(
-            (cur_size, cur_size, size - cur_size, size - cur_size), clr, None
-        )
+        draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
 
     return Texture(img, name=name)

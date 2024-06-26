@@ -1,6 +1,7 @@
 """
 This is for testing geometry shader shapes. Please keep.
 """
+
 from __future__ import annotations
 
 import time
@@ -80,7 +81,9 @@ class GameWindow(arcade.Window):
         self.set_vsync(False)
 
         # Single lines
-        self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
+        self.single_lines_calls = [
+            (*random_pos(), *random_pos(), random_color()) for _ in range(600)
+        ]
         # Line list
         self.line_list = [
             (random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT))
@@ -88,12 +91,13 @@ class GameWindow(arcade.Window):
         ]
 
         # Single circle draw calls
-        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+        self.single_circle_calls = [
+            (*random_pos(), random_radius(), random_color()) for _ in range(200)
+        ]
 
         # line strip
         self.line_strip = [
-            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
-            for _ in range(10)
+            (random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)) for _ in range(10)
         ]
         # Random list of points
         self.points = [
@@ -136,10 +140,14 @@ class GameWindow(arcade.Window):
 
     def do_draw_arc_filled(self):
         arcade.draw_arc_filled(
-            400, 300, 200, 200,
+            400,
+            300,
+            200,
+            200,
             arcade.color.AZURE,
             30.0 - math.sin(self.elapsed) * 20.0,
-            340.0 + math.sin(self.elapsed) * 20.0, 0,
+            340.0 + math.sin(self.elapsed) * 20.0,
+            0,
         )
 
     def do_draw_point(self):
@@ -153,7 +161,9 @@ class GameWindow(arcade.Window):
     def do_draw_rectangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 20):
-                arcade.draw_rectangle_outline(x, y, 10, 10, arcade.color.AERO_BLUE, 5, self.elapsed * 100)
+                arcade.draw_rectangle_outline(
+                    x, y, 10, 10, arcade.color.AERO_BLUE, 5, self.elapsed * 100
+                )
 
     def do_draw_xywh_rectangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
@@ -163,7 +173,9 @@ class GameWindow(arcade.Window):
     def do_draw_triangle_outline(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 20):
-                arcade.draw_triangle_outline(x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE, 2)
+                arcade.draw_triangle_outline(
+                    x, y, x + 10, y, x + 5, y + 10, arcade.color.AERO_BLUE, 2
+                )
 
     def do_draw_triangle_filled(self):
         for x in range(0, SCREEN_WIDTH, 20):
@@ -201,11 +213,13 @@ class GameWindow(arcade.Window):
         self.frames += 1
 
         if self.execution_time > 1.0 and self.frames > 0:
-            print((
-                f"frames {self.frames}, "
-                f"execution time {round(self.execution_time, 3)}, "
-                f"frame time {round(self.execution_time / self.frames, 3)}"
-            ))
+            print(
+                (
+                    f"frames {self.frames}, "
+                    f"execution time {round(self.execution_time, 3)}, "
+                    f"frame time {round(self.execution_time / self.frames, 3)}"
+                )
+            )
             self.execution_time = 0
             self.frames = 0
 
@@ -218,6 +232,6 @@ class GameWindow(arcade.Window):
         self.ctx.projection_matrix = Mat4.orthogonal_projection(0, 800, 0, 600, -100, 100)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
     arcade.run()

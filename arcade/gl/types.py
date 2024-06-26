@@ -20,8 +20,7 @@ PyGLuint = int
 
 OpenGlFilter: TypeAlias = Tuple[PyGLenum, PyGLenum]
 BlendFunction: TypeAlias = Union[
-    Tuple[PyGLenum, PyGLenum],
-    Tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
+    Tuple[PyGLenum, PyGLenum], Tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
 ]
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
@@ -124,7 +123,7 @@ def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
 
 
 class AttribFormat:
-    """"
+    """ "
     Represents a vertex attribute in a BufferDescription / Program.
     This is attribute metadata used when attempting to map vertex
     shader inputs.
@@ -146,8 +145,13 @@ class AttribFormat:
     )
 
     def __init__(
-        self, name: Optional[str], gl_type: Optional[PyGLenum], components: int, bytes_per_component: int, offset=0,
-        location=0
+        self,
+        name: Optional[str],
+        gl_type: Optional[PyGLenum],
+        components: int,
+        bytes_per_component: int,
+        offset=0,
+        location=0,
     ):
         self.name = name
         self.gl_type = gl_type
@@ -300,17 +304,9 @@ class BufferDescription:
             if attr_name is not None and "f1" in attr_fmt:
                 self.normalized.add(attr_name)
             try:
-                components_str, data_type_str, data_size_str = re.split(
-                    r"([fiux])", attr_fmt
-                )
-                data_type = (
-                    f"{data_type_str}{data_size_str}"
-                    if data_size_str
-                    else data_type_str
-                )
-                components = (
-                    int(components_str) if components_str else 1
-                )  # 1 component is default
+                components_str, data_type_str, data_size_str = re.split(r"([fiux])", attr_fmt)
+                data_type = f"{data_type_str}{data_size_str}" if data_size_str else data_type_str
+                components = int(components_str) if components_str else 1  # 1 component is default
                 data_size = (
                     int(data_size_str) if data_size_str else 4
                 )  # 4 byte float and integer types are default
@@ -318,15 +314,11 @@ class BufferDescription:
                 if components > 4 and data_size is not None:
                     raise ValueError("Number of components must be 1, 2, 3 or 4")
             except Exception as ex:
-                raise ValueError(
-                    f"Could not parse attribute format: '{attr_fmt} : {ex}'"
-                )
+                raise ValueError(f"Could not parse attribute format: '{attr_fmt} : {ex}'")
 
             gl_type, byte_size = self._formats[data_type]
             self.formats.append(
-                AttribFormat(
-                    attr_name, gl_type, components, byte_size, offset=self.stride
-                )
+                AttribFormat(attr_name, gl_type, components, byte_size, offset=self.stride)
             )
 
             self.stride += byte_size * components
@@ -345,8 +337,10 @@ class BufferDescription:
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, BufferDescription):
-            raise ValueError(f"The only logical comparison to a BufferDescription"
-                             f"is a BufferDescription not {type(other)}")
+            raise ValueError(
+                f"The only logical comparison to a BufferDescription"
+                f"is a BufferDescription not {type(other)}"
+            )
 
         # Equal if we share the same attribute
         return len(set(self.attributes) & set(other.attributes)) > 0
@@ -362,9 +356,12 @@ class TypeInfo:
     :param gl_size: byte size if the gl_type
     :param components: Number of components for this enum
     """
+
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int):
+    def __init__(
+        self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int
+    ):
         self.name = name
         self.enum = enum
         self.gl_type = gl_type
@@ -391,29 +388,18 @@ class GLTypes:
     that to the types in the `BufferDescription`.
     These an also be used for uniform introspection.
     """
+
     types = {
         # Floats
         gl.GL_FLOAT: TypeInfo("GL_FLOAT", gl.GL_FLOAT, gl.GL_FLOAT, 4, 1),
-        gl.GL_FLOAT_VEC2: TypeInfo(
-            "GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2
-        ),
-        gl.GL_FLOAT_VEC3: TypeInfo(
-            "GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3
-        ),
-        gl.GL_FLOAT_VEC4: TypeInfo(
-            "GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4
-        ),
+        gl.GL_FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2),
+        gl.GL_FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3),
+        gl.GL_FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4),
         # Doubles
         gl.GL_DOUBLE: TypeInfo("GL_DOUBLE", gl.GL_DOUBLE, gl.GL_DOUBLE, 8, 1),
-        gl.GL_DOUBLE_VEC2: TypeInfo(
-            "GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2
-        ),
-        gl.GL_DOUBLE_VEC3: TypeInfo(
-            "GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3
-        ),
-        gl.GL_DOUBLE_VEC4: TypeInfo(
-            "GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4
-        ),
+        gl.GL_DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2),
+        gl.GL_DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3),
+        gl.GL_DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4),
         # Booleans (ubyte)
         gl.GL_BOOL: TypeInfo("GL_BOOL", gl.GL_BOOL, gl.GL_BOOL, 1, 1),
         gl.GL_BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", gl.GL_BOOL_VEC2, gl.GL_BOOL, 1, 2),

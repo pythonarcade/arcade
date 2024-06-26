@@ -1,5 +1,5 @@
 import weakref
-from typing import Callable,List, Dict, Any, Optional, TYPE_CHECKING
+from typing import Callable, List, Dict, Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.experimental.clock.clock import Clock
@@ -36,11 +36,16 @@ class Timer:
     accepts any you want to use as a kwarg.
     """
 
-    def __init__(self, duration: float, parent: "Clock", callback: Callable, *args,
-                 delay: float = 0.0,
-                 reusable: bool = False,
-                 **kwargs
-                 ):
+    def __init__(
+        self,
+        duration: float,
+        parent: "Clock",
+        callback: Callable,
+        *args,
+        delay: float = 0.0,
+        reusable: bool = False,
+        **kwargs,
+    ):
         self._parent: "Clock" = parent
 
         self._duration: float = duration
@@ -82,11 +87,12 @@ class Timer:
         if auto_kill:
             self.kill()
 
-    def reuse(self,
-              new_parent: "Clock",
-              new_duration: Optional[float] = None,
-              new_delay: Optional[float] = None,
-              ):
+    def reuse(
+        self,
+        new_parent: "Clock",
+        new_duration: Optional[float] = None,
+        new_delay: Optional[float] = None,
+    ):
         new_parent.add_timer(self)
 
         self._duration = new_duration or self._duration
@@ -113,20 +119,20 @@ class Timer:
         if not self._callback:
             return
 
-        if 'duration' == self._kwargs and self._kwargs['duration'] is None:
-            self._kwargs['duration'] = self._duration
-        if 'timer' == self._kwargs and self._kwargs['timer'] is None:
-            self._kwargs['timer'] = self
+        if "duration" == self._kwargs and self._kwargs["duration"] is None:
+            self._kwargs["duration"] = self._duration
+        if "timer" == self._kwargs and self._kwargs["timer"] is None:
+            self._kwargs["timer"] = self
 
         if self._parent:
-            if 'elapsed' in self._kwargs and self._kwargs['elapsed'] is None:
-                self._kwargs['elapsed'] = self._parent.elapsed
-            if 'tick_count' in self._kwargs and self._kwargs['tick_count'] is None:
-                self._kwargs['tick_count'] = self._parent.tick_count
-            if 'tick_speed' in self._kwargs and self._kwargs['tick_speed'] is None:
-                self._kwargs['tick_speed'] = self._parent.tick_speed
-            if 'clock' in self._kwargs and self._kwargs['clock'] is None:
-                self._kwargs['clock'] = self._parent
+            if "elapsed" in self._kwargs and self._kwargs["elapsed"] is None:
+                self._kwargs["elapsed"] = self._parent.elapsed
+            if "tick_count" in self._kwargs and self._kwargs["tick_count"] is None:
+                self._kwargs["tick_count"] = self._parent.tick_count
+            if "tick_speed" in self._kwargs and self._kwargs["tick_speed"] is None:
+                self._kwargs["tick_speed"] = self._parent.tick_speed
+            if "clock" in self._kwargs and self._kwargs["clock"] is None:
+                self._kwargs["clock"] = self._parent
 
         self._callback(*self._args, **self._kwargs)
 

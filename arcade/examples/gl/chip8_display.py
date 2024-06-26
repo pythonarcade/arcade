@@ -13,6 +13,7 @@ https://github.com/JohnEarnest/Octo
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.chip8_display
 """
+
 from array import array
 
 import arcade
@@ -63,14 +64,15 @@ class MyGame(arcade.Window):
                 // Write the pixel value. Values above 1 will be clamped to 1.
                 out_color = vec4(vec3(frag & flag), 1.0);
             }
-            """
+            """,
         )
         # 8 x 4
-        self.program['projection'] = self.projection
-        self.program['screen'] = 0
+        self.program["projection"] = self.projection
+        self.program["screen"] = 0
         b = 0  # border to test scale
         self.quad = geometry.screen_rectangle(b, b, SCREEN_WIDTH - b * 2, SCREEN_HEIGHT - b * 2)
-        self.texture = self.ctx.texture((8, 32), components=1, dtype='i1')
+        self.texture = self.ctx.texture((8, 32), components=1, dtype="i1")
+        # fmt: off
         self.texture.write(array(
             'B',
             [
@@ -112,6 +114,7 @@ class MyGame(arcade.Window):
                 0x55, 0x55, 0xCC, 0x99, 0xbd, 0x63, 0x00, 0x01,
             ]
         ))
+        # fmt: on
 
     def on_draw(self):
         self.clear()

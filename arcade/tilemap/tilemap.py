@@ -44,11 +44,7 @@ _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
-__all__ = [
-    "TileMap",
-    "load_tilemap",
-    "read_tmx"
-]
+__all__ = ["TileMap", "load_tilemap", "read_tmx"]
 
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
@@ -286,9 +282,7 @@ class TileMap:
         global_options: Dict[str, Any],
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
-        processed: Union[
-            SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
-        ]
+        processed: Union[SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]]
 
         options = global_options
 
@@ -505,9 +499,7 @@ class TileMap:
 
             if len(tile.objects.tiled_objects) > 1:
                 if tile.image:
-                    print(
-                        f"Warning, only one hit box supported for tile with image {tile.image}."
-                    )
+                    print(f"Warning, only one hit box supported for tile with image {tile.image}.")
                 else:
                     print("Warning, only one hit box supported for tile.")
 
@@ -533,20 +525,12 @@ class TileMap:
                     )
 
                     points = [(sx, sy), (ex, sy), (ex, ey), (sx, ey)]
-                elif isinstance(
-                    hitbox, pytiled_parser.tiled_object.Polygon
-                ) or isinstance(hitbox, pytiled_parser.tiled_object.Polyline):
+                elif isinstance(hitbox, pytiled_parser.tiled_object.Polygon) or isinstance(
+                    hitbox, pytiled_parser.tiled_object.Polyline
+                ):
                     for point in hitbox.points:
-                        adj_x = (
-                            point.x
-                            + hitbox.coordinates.x
-                            - my_sprite.width / (scaling * 2)
-                        )
-                        adj_y = -(
-                            point.y
-                            + hitbox.coordinates.y
-                            - my_sprite.height / (scaling * 2)
-                        )
+                        adj_x = point.x + hitbox.coordinates.x - my_sprite.width / (scaling * 2)
+                        adj_y = -(point.y + hitbox.coordinates.y - my_sprite.height / (scaling * 2))
                         adj_point = adj_x, adj_y
                         points.append(adj_point)
 
@@ -569,9 +553,7 @@ class TileMap:
                     acy = cy - (my_sprite.height / (scaling * 2))
 
                     total_steps = 8
-                    angles = [
-                        step / total_steps * 2 * math.pi for step in range(total_steps)
-                    ]
+                    angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                     for angle in angles:
                         x = hw * math.cos(angle) + acx
                         y = -(hh * math.sin(angle) + acy)
@@ -598,9 +580,7 @@ class TileMap:
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
-                frame_tile = self._get_tile_by_gid(
-                    tile.tileset.firstgid + frame.tile_id
-                )
+                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)
                 if frame_tile:
                     image_file = _get_image_source(frame_tile, map_directory)
 
@@ -669,9 +649,7 @@ class TileMap:
         if not os.path.exists(image_file) and (map_directory):
             try2 = Path(map_directory, image_file)
             if not os.path.exists(try2):
-                print(
-                    f"Warning, can't find image {image_file} for Image Layer {layer.name}"
-                )
+                print(f"Warning, can't find image {image_file} for Image Layer {layer.name}")
             image_file = try2
 
         my_texture = self.texture_cache_manager.load_or_get_texture(
@@ -685,11 +663,7 @@ class TileMap:
             target = layer.transparent_color
             new_data = []
             for item in data:
-                if (
-                    item[0] == target[0]
-                    and item[1] == target[1]
-                    and item[2] == target[2]
-                ):
+                if item[0] == target[0] and item[1] == target[1] and item[2] == target[2]:
                     new_data.append((255, 255, 255, 0))
                 else:
                     new_data.append(item)
@@ -727,12 +701,10 @@ class TileMap:
         if layer.opacity:
             my_sprite.alpha = int(layer.opacity * 255)
 
-        my_sprite.center_x = (
-            (layer.offset[0] * scaling) + my_sprite.width / 2
-        ) + offset[0]
+        my_sprite.center_x = ((layer.offset[0] * scaling) + my_sprite.width / 2) + offset[0]
         my_sprite.top = (
-            self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-            - layer.offset[1]) * scaling + offset[1]
+            self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - layer.offset[1]
+        ) * scaling + offset[1]
 
         sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
@@ -790,8 +762,7 @@ class TileMap:
                     )
                 else:
                     my_sprite.center_x = (
-                        column_index * (self.tiled_map.tile_size[0] * scaling)
-                        + my_sprite.width / 2
+                        column_index * (self.tiled_map.tile_size[0] * scaling) + my_sprite.width / 2
                     ) + offset[0]
                     my_sprite.center_y = (
                         (self.tiled_map.map_size.height - row_index - 1)
@@ -901,14 +872,10 @@ class TileMap:
                     )
 
                 if cur_object.properties and "boundary_top" in cur_object.properties:
-                    my_sprite.boundary_top = prop_to_float(
-                        cur_object.properties["boundary_top"]
-                    )
+                    my_sprite.boundary_top = prop_to_float(cur_object.properties["boundary_top"])
 
                 if cur_object.properties and "boundary_left" in cur_object.properties:
-                    my_sprite.boundary_left = prop_to_float(
-                        cur_object.properties["boundary_left"]
-                    )
+                    my_sprite.boundary_left = prop_to_float(cur_object.properties["boundary_left"])
 
                 if cur_object.properties and "boundary_right" in cur_object.properties:
                     my_sprite.boundary_right = prop_to_float(
@@ -964,16 +931,14 @@ class TileMap:
                     p4 = (sx, ey)
 
                     shape = [p1, p2, p3, p4]
-            elif isinstance(
-                cur_object, pytiled_parser.tiled_object.Polygon
-            ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
+            elif isinstance(cur_object, pytiled_parser.tiled_object.Polygon) or isinstance(
+                cur_object, pytiled_parser.tiled_object.Polyline
+            ):
                 points: List[Point2] = []
                 shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
-                    y = (self.height * self.tile_height) - (
-                        point.y + cur_object.coordinates.y
-                    )
+                    y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
                     point = (x + offset[0], y + offset[1])
                     points.append(point)
 
@@ -987,9 +952,7 @@ class TileMap:
                 cy = cur_object.coordinates.y + hh
 
                 total_steps = 8
-                angles = [
-                    step / total_steps * 2 * math.pi for step in range(total_steps)
-                ]
+                angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                 points = []
                 shape = points
                 for angle in angles:
@@ -1065,6 +1028,4 @@ def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
 
     Exists to provide info for outdated code bases.
     """
-    raise DeprecationWarning(
-        "The read_tmx function has been replaced by the new TileMap class."
-    )
+    raise DeprecationWarning("The read_tmx function has been replaced by the new TileMap class.")

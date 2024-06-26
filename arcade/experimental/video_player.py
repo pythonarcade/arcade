@@ -4,6 +4,7 @@ Experimental video player using pyglet.
 This requires that you have ffmpeg installed
 and you might need to tell pyglet where it's located.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -87,7 +88,7 @@ class VideoPlayerView(arcade.View):
         self.video_player.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "Video Player")
     window.show_view(VideoPlayerView(":resources:video/earth.mp4"))
     window.run()

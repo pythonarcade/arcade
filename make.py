@@ -11,6 +11,7 @@ For help, see the following:
 * CONTRIBUTING.md
 * The output of python make.py --help
 """
+
 import os
 from contextlib import contextmanager
 from shutil import which, rmtree
@@ -25,73 +26,83 @@ def _resolve(p: PathLike, strict: bool = False) -> Path:
     return Path(p).expanduser().resolve(strict=strict)
 
 
-PROJECT_ROOT      = _resolve(Path(__file__).parent, strict=True)
+PROJECT_ROOT = _resolve(Path(__file__).parent, strict=True)
 
 
 # General sphinx state / options
-SPHINXOPTS        = []
-SPHINXBUILD       = "sphinx-build"
-SPHINXAUTOBUILD   = "sphinx-autobuild"
-PAPER_SIZE        = None
-DOCDIR            = "doc"
-BUILDDIR          = "build"
+SPHINXOPTS = []
+SPHINXBUILD = "sphinx-build"
+SPHINXAUTOBUILD = "sphinx-autobuild"
+PAPER_SIZE = None
+DOCDIR = "doc"
+BUILDDIR = "build"
 
 
 # Used for user output; relative to project root
-FULL_DOC_DIR      = PROJECT_ROOT / DOCDIR
+FULL_DOC_DIR = PROJECT_ROOT / DOCDIR
 FULL_BUILD_PREFIX = f"{DOCDIR}/{BUILDDIR}"
-FULL_BUILD_DIR    = PROJECT_ROOT / FULL_BUILD_PREFIX
+FULL_BUILD_DIR = PROJECT_ROOT / FULL_BUILD_PREFIX
 
 
 # Linting
-RUFF        = "ruff"
-RUFFOPTS    = ["check", "arcade"]
-MYPY        = "mypy"
-MYPYOPTS    = ["arcade"]
-PYRIGHT     = "pyright"
+RUFF = "ruff"
+RUFFOPTS = ["check", "arcade"]
+MYPY = "mypy"
+MYPYOPTS = ["arcade"]
+PYRIGHT = "pyright"
 PYRIGHTOPTS = []
+BLACK = "black"
+BLACKOPTS = ["arcade"]
 
 # Testing
-PYTEST  = "pytest"
+PYTEST = "pytest"
 TESTDIR = "tests"
 UNITTESTS = TESTDIR + "/unit"
 
 # Internal variables.
 PAPER_SIZE_OPTS = {}
 PAPER_SIZE_OPTS[None] = []
-PAPER_SIZE_OPTS['a4'] = ['-D', 'latex_paper_size=a4']
-PAPER_SIZE_OPTS['letter'] = ['-D', 'latex_paper_size=letter']
-ALLSPHINXOPTS       = ['-d', f'{BUILDDIR}/doctrees', *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
-SPHINXAUTOBUILDOPTS = ['--watch', '../arcade', '--ignore', './example_code/how_to_examples/thumbs']
+PAPER_SIZE_OPTS["a4"] = ["-D", "latex_paper_size=a4"]
+PAPER_SIZE_OPTS["letter"] = ["-D", "latex_paper_size=letter"]
+ALLSPHINXOPTS = ["-d", f"{BUILDDIR}/doctrees", *PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, "."]
+SPHINXAUTOBUILDOPTS = ["--watch", "../arcade", "--ignore", "./example_code/how_to_examples/thumbs"]
 
 # Important: the i18n builder cannot share the environment and doctrees with the others
 # This allows for internationalization / localization of doc.
-I18NSPHINXOPTS      = [*PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, '.']
+I18NSPHINXOPTS = [*PAPER_SIZE_OPTS[PAPER_SIZE], *SPHINXOPTS, "."]
 
 
 # User-friendly check for dependencies and binaries
-binaries = ['sphinx-build', 'sphinx-autobuild']
-libraries = ['typer']
+binaries = ["sphinx-build", "sphinx-autobuild"]
+libraries = ["typer"]
 for binary in binaries:
     not_found = [binary for binary in binaries if which(binary) is None]
     if not_found:
-        print("Command-line tools not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
+        print("Command-line tools not found: " + ", ".join(not_found))
+        print(
+            "Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions."
+        )
         exit(1)
 for library in libraries:
+
     def find(library):
         try:
             __import__(library)
             return True
-        except: pass
+        except:
+            pass
+
     not_found = [library for library in libraries if not find(library)]
     if not_found:
-        print("Python dependencies not found: " + ', '.join(not_found))
-        print("Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions.")
+        print("Python dependencies not found: " + ", ".join(not_found))
+        print(
+            "Did you forget to install them with `pip`?  See CONTRIBUTING.md file for instructions."
+        )
         exit(1)
 
 
 import typer
+
 app = typer.Typer()
 
 
@@ -157,7 +168,7 @@ def clean():
     Delete built website files.
     """
     if os.path.exists(FULL_BUILD_DIR):
-        for item in Path(FULL_BUILD_DIR).glob('*'):
+        for item in Path(FULL_BUILD_DIR).glob("*"):
             os.remove(item) if os.path.isfile(item) else rmtree(item)
 
 
@@ -176,7 +187,9 @@ def serve():
     """
     Build and serve standalone HTML files, with automatic rebuilds and live reload.
     """
-    run_doc([SPHINXAUTOBUILD, *SPHINXAUTOBUILDOPTS, '-b', 'html', *ALLSPHINXOPTS, f'{BUILDDIR}/html'])
+    run_doc(
+        [SPHINXAUTOBUILD, *SPHINXAUTOBUILDOPTS, "-b", "html", *ALLSPHINXOPTS, f"{BUILDDIR}/html"]
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -226,8 +239,10 @@ def htmlhelp():
     """
     run_doc([SPHINXBUILD, "-b", "htmlhelp", *ALLSPHINXOPTS, f"{BUILDDIR}/htmlhelp"])
     print()
-    print("Build finished; now you can run HTML Help Workshop with the" +
-          f".hhp project file in {FULL_BUILD_PREFIX}/htmlhelp.")
+    print(
+        "Build finished; now you can run HTML Help Workshop with the"
+        + f".hhp project file in {FULL_BUILD_PREFIX}/htmlhelp."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -237,8 +252,10 @@ def qthelp():
     """
     run_doc([SPHINXBUILD, "-b", "qthelp", *ALLSPHINXOPTS, f"{BUILDDIR}/qthelp"])
     print()
-    print('Build finished; now you can run "qcollectiongenerator" with the' +
-          f".qhcp project file in {FULL_BUILD_PREFIX}/qthelp, like this:")
+    print(
+        'Build finished; now you can run "qcollectiongenerator" with the'
+        + f".qhcp project file in {FULL_BUILD_PREFIX}/qthelp, like this:"
+    )
     print(f"# qcollectiongenerator {FULL_BUILD_PREFIX}/qthelp/Arcade.qhcp")
     print("To view the help file:")
     print(f"# assistant -collectionFile {FULL_BUILD_PREFIX}/qthelp/Arcade.qhc")
@@ -252,9 +269,11 @@ def applehelp():
     run_doc([SPHINXBUILD, "-b", "applehelp", *ALLSPHINXOPTS, f"{BUILDDIR}/applehelp"])
     print()
     print(f"Build finished. The help book is in {FULL_BUILD_PREFIX}/applehelp.")
-    print("N.B. You won't be able to view it unless you put it in" +
-          "~/Library/Documentation/Help or install it in your application" +
-          "bundle.")
+    print(
+        "N.B. You won't be able to view it unless you put it in"
+        + "~/Library/Documentation/Help or install it in your application"
+        + "bundle."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -290,8 +309,10 @@ def latex():
     run_doc([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print()
     print(f"Build finished; the LaTeX files are in {FULL_BUILD_PREFIX}/latex.")
-    print("Run `make' in that directory to run these through (pdf)latex" +
-          "(use `make latexpdf' here to do that automatically).")
+    print(
+        "Run `make' in that directory to run these through (pdf)latex"
+        + "(use `make latexpdf' here to do that automatically)."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -301,7 +322,7 @@ def latexpdf():
     """
     run_doc([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print("Running LaTeX files through pdflatex...")
-    run_doc(['make', '-C', f'{BUILDDIR}/latex', 'all-pdf'])
+    run_doc(["make", "-C", f"{BUILDDIR}/latex", "all-pdf"])
     print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
@@ -312,7 +333,7 @@ def latexpdfja():
     """
     run_doc([SPHINXBUILD, "-b", "latex", *ALLSPHINXOPTS, f"{BUILDDIR}/latex"])
     print("Running LaTeX files through platex and dvipdfmx...")
-    run_doc(['make', '-C', f'{BUILDDIR}/latex', 'all-pdf-ja'])
+    run_doc(["make", "-C", f"{BUILDDIR}/latex", "all-pdf-ja"])
     print(f"pdflatex finished; the PDF files are in {FULL_BUILD_PREFIX}/latex.")
 
 
@@ -344,8 +365,10 @@ def texinfo():
     run_doc([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print()
     print(f"Build finished. The Texinfo files are in {FULL_BUILD_PREFIX}/texinfo.")
-    print("Run `make' in that directory to run these through makeinfo" +
-          "(use `make info' here to do that automatically).")
+    print(
+        "Run `make' in that directory to run these through makeinfo"
+        + "(use `make info' here to do that automatically)."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -355,7 +378,7 @@ def info():
     """
     run_doc([SPHINXBUILD, "-b", "texinfo", *ALLSPHINXOPTS, f"{BUILDDIR}/texinfo"])
     print("Running Texinfo files through makeinfo...")
-    run_doc(['make', '-C', f'{BUILDDIR}/texinfo', 'info'])
+    run_doc(["make", "-C", f"{BUILDDIR}/texinfo", "info"])
     print(f"makeinfo finished; the Info files are in {FULL_BUILD_PREFIX}/texinfo.")
 
 
@@ -386,8 +409,10 @@ def linkcheck():
     """
     run_doc([SPHINXBUILD, "-b", "linkcheck", *ALLSPHINXOPTS, f"{BUILDDIR}/linkcheck"])
     print()
-    print("Link check complete; look for any errors in the above output " +
-          f"or in {FULL_BUILD_PREFIX}/linkcheck/output.txt.")
+    print(
+        "Link check complete; look for any errors in the above output "
+        + f"or in {FULL_BUILD_PREFIX}/linkcheck/output.txt."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -396,8 +421,10 @@ def doctest():
     to run all doctests embedded in the documentation (if enabled)
     """
     run_doc([SPHINXBUILD, "-b", "doctest", *ALLSPHINXOPTS, f"{BUILDDIR}/doctest"])
-    print("Testing of doctests in the sources finished, look at the " +
-          f"results in {FULL_BUILD_PREFIX}/doctest/output.txt.")
+    print(
+        "Testing of doctests in the sources finished, look at the "
+        + f"results in {FULL_BUILD_PREFIX}/doctest/output.txt."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -406,8 +433,10 @@ def coverage():
     to run coverage check of the documentation (if enabled)
     """
     run_doc([SPHINXBUILD, "-b", "coverage", *ALLSPHINXOPTS, f"{BUILDDIR}/coverage"])
-    print("Testing of coverage in the sources finished, look at the " +
-          f"results in {FULL_BUILD_PREFIX}/coverage/python.txt.")
+    print(
+        "Testing of coverage in the sources finished, look at the "
+        + f"results in {FULL_BUILD_PREFIX}/coverage/python.txt."
+    )
 
 
 @app.command(rich_help_panel="Additional Doc Formats")
@@ -456,6 +485,22 @@ def pyright():
 
 
 @app.command(rich_help_panel="Code Quality")
+def format(check: bool = False):
+    "Format code using black"
+    black(check)
+    print("Formatting Complete.")
+
+
+@app.command(rich_help_panel="Code Quality")
+def black(check: bool = False):
+    "Format code using black"
+    if check:
+        BLACKOPTS.append("--check")
+    run([BLACK, *BLACKOPTS])
+    print("Black Finished.")
+
+
+@app.command(rich_help_panel="Code Quality")
 def test_full():
     run([PYTEST, TESTDIR])
 
@@ -466,20 +511,14 @@ def test():
     run([PYTEST, UNITTESTS])
 
 
-SHELLS_WITH_AUTOCOMPLETE = (
-    'bash',
-    'zsh',
-    'fish',
-    'powershell',
-    'powersh'
-)
+SHELLS_WITH_AUTOCOMPLETE = ("bash", "zsh", "fish", "powershell", "powersh")
 
 
 @app.command(rich_help_panel="Shell Completion")
 def whichshell():
     """to find out which shell your system seems to be running"""
 
-    shell_name = Path(os.environ.get('SHELL')).stem
+    shell_name = Path(os.environ.get("SHELL")).stem
     print(f"Your default shell appears to be: {shell_name}")
 
     if shell_name in SHELLS_WITH_AUTOCOMPLETE:

@@ -19,7 +19,7 @@ class Light:
         center_y: float,
         radius: float = 50.0,
         color: RGBOrA255 = WHITE,
-        mode: str = 'hard',
+        mode: str = "hard",
     ):
         """
         Create a Light.
@@ -34,20 +34,24 @@ class Light:
         :param mode: 'hard' or 'soft' light
         """
         if not (isinstance(color, tuple) or isinstance(color, list)):
-            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
+            raise ValueError(
+                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+            )
 
-        if not isinstance(mode, str) or not (mode == 'soft' or mode == 'hard'):
+        if not isinstance(mode, str) or not (mode == "soft" or mode == "hard"):
             raise ValueError("Mode must be set to either 'soft' or 'hard'.")
 
         self._center_x = center_x
         self._center_y = center_y
         self._radius = radius
-        self._attenuation = Light.HARD if mode == 'hard' else Light.SOFT
+        self._attenuation = Light.HARD if mode == "hard" else Light.SOFT
         self._color = color[:3]
         self._light_layer: Optional[LightLayer] = None
 
         if len(self._color) != 3:
-            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
+            raise ValueError(
+                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+            )
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -89,13 +93,15 @@ class LightLayer(RenderTargetTexture):
         self._rebuild = False
         self._stride = 28
         self._buffer = self.ctx.buffer(reserve=self._stride * 100)
-        self._vao = self.ctx.geometry([
-            gl.BufferDescription(
-                self._buffer,
-                '2f 1f 1f 3f',
-                ['in_vert', 'in_radius', 'in_attenuation', 'in_color'],
-            ),
-        ])
+        self._vao = self.ctx.geometry(
+            [
+                gl.BufferDescription(
+                    self._buffer,
+                    "2f 1f 1f 3f",
+                    ["in_vert", "in_radius", "in_attenuation", "in_color"],
+                ),
+            ]
+        )
         self._light_program = self.ctx.load_program(
             vertex_shader=":system:shaders/lights/point_lights_vs.glsl",
             geometry_shader=":system:shaders/lights/point_lights_geo.glsl",
@@ -106,7 +112,9 @@ class LightLayer(RenderTargetTexture):
             fragment_shader=":system:shaders/lights/combine_fs.glsl",
         )
         # NOTE: Diffuse buffer created in parent
-        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+        self._light_buffer = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture((width, height), components=3)
+        )
 
     @property
     def diffuse_texture(self):
@@ -118,7 +126,9 @@ class LightLayer(RenderTargetTexture):
 
     def resize(self, width, height):
         super().resize(width, height)
-        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+        self._light_buffer = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture((width, height), components=3)
+        )
 
     def clear(self):
         super().clear()
@@ -160,7 +170,12 @@ class LightLayer(RenderTargetTexture):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_target.use()
 
-    def draw(self, position: Tuple[float, float] = (0, 0), target=None, ambient_color: RGBOrA255 = (64, 64, 64)):
+    def draw(
+        self,
+        position: Tuple[float, float] = (0, 0),
+        target=None,
+        ambient_color: RGBOrA255 = (64, 64, 64),
+    ):
         """Draw the lights
         :param Tuple[float, float] position: Position offset (scrolling)
         :param target: The window or framebuffer we want to render to (default is window)
@@ -181,14 +196,14 @@ class LightLayer(RenderTargetTexture):
             while self._buffer.size < len(data) * self._stride:
                 self._buffer.orphan(double=True)
 
-            self._buffer.write(data=array('f', data))
+            self._buffer.write(data=array("f", data))
             self._rebuild = False
 
         # Render to light buffer
         self._light_buffer.use()
         self._light_buffer.clear()
         if len(self._lights) > 0:
-            self._light_program['position'] = position
+            self._light_program["position"] = position
             self.ctx.enable(self.ctx.BLEND)
             self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
             self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
@@ -196,9 +211,9 @@ class LightLayer(RenderTargetTexture):
 
         # Combine pass
         target.use()
-        self._combine_program['diffuse_buffer'] = 0
-        self._combine_program['light_buffer'] = 1
-        self._combine_program['ambient'] = ambient_color[:3]
+        self._combine_program["diffuse_buffer"] = 0
+        self._combine_program["light_buffer"] = 1
+        self._combine_program["ambient"] = ambient_color[:3]
         self._fbo.color_attachments[0].use(0)
         self._light_buffer.color_attachments[0].use(1)
 

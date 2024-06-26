@@ -70,9 +70,7 @@ class BasicSprite:
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
-        self._hit_box = HitBox(
-            self._texture.hit_box_points, self._position, self._scale
-        )
+        self._hit_box = HitBox(self._texture.hit_box_points, self._position, self._scale)
 
     # --- Core Properties ---
 
@@ -368,9 +366,12 @@ class BasicSprite:
                 raise ValueError()
 
         except ValueError:  # It's always a length issue
-            raise ValueError((
-                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                f" colors, but got {len(color)} channels"))
+            raise ValueError(
+                (
+                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                    f" colors, but got {len(color)} channels"
+                )
+            )
 
         # Unpack to avoid index / . overhead & prep for repack
         current_r, current_b, current_g, a = self._color
@@ -546,9 +547,7 @@ class BasicSprite:
             if position_changed:
                 sprite_list._update_position(self)
 
-    def rescale_xy_relative_to_point(
-        self, point: Point, factors_xy: Iterable[float]
-    ) -> None:
+    def rescale_xy_relative_to_point(self, point: Point, factors_xy: Iterable[float]) -> None:
         """
         Rescale the sprite and its distance from the passed point.
 
@@ -675,9 +674,7 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(
-        self: SpriteType, sprite_list: "SpriteList"
-    ) -> List[SpriteType]:
+    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> List[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param sprite_list: SpriteList to check against

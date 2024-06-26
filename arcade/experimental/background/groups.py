@@ -74,7 +74,7 @@ class BackgroundGroup:
         color: Optional[Tuple[int, int, int]] = None,
         color_norm: Optional[Tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None
+        geometry: Optional[gl.Geometry] = None,
     ):
         background = Background.from_file(
             tex_src,
@@ -102,15 +102,15 @@ class ParallaxGroup:
     """
 
     def __init__(
-        self, backgrounds: Optional[List[Background]] = None, depths: Optional[List[float]] = None
+        self,
+        backgrounds: Optional[List[Background]] = None,
+        depths: Optional[List[float]] = None,
     ):
         self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
         self._depths: List[float] = [] if depths is None else depths
 
         if len(self._backgrounds) != len(self._depths):
-            raise ValueError(
-                "The number of backgrounds does not equal the number of depth values"
-            )
+            raise ValueError("The number of backgrounds does not equal the number of depth values")
 
         self._pos = (0.0, 0.0)
         self._offset = (0.0, 0.0)
@@ -180,7 +180,7 @@ class ParallaxGroup:
         color: Optional[Tuple[int, int, int]] = None,
         color_norm: Optional[Tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None
+        geometry: Optional[gl.Geometry] = None,
     ):
         background = Background.from_file(
             tex_src,

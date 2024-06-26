@@ -22,6 +22,7 @@ Hold and drag the mouse to scroll around.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.custom_sprite
 """
+
 from random import randint
 from array import array
 import arcade
@@ -139,12 +140,10 @@ class GeoSprites(arcade.Window):
 
         self.num_sprites = 1000
         # Make an interleaved buffer with positions and sizes
-        self.vertex_buffer = self.ctx.buffer(data=array('f', self.gen_sprites(self.num_sprites)))
+        self.vertex_buffer = self.ctx.buffer(data=array("f", self.gen_sprites(self.num_sprites)))
         # Mage a geometry object describing the buffer contents for our shader
         self.geometry = self.ctx.geometry(
-            content=[
-                BufferDescription(self.vertex_buffer, "2f 2f", ["in_position", "in_size"])
-            ]
+            content=[BufferDescription(self.vertex_buffer, "2f 2f", ["in_position", "in_size"])]
         )
 
     def on_draw(self):

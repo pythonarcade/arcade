@@ -13,6 +13,7 @@ cosine wave. Afterward, the following is drawn:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.sprite_depth_cosine
 """
+
 from __future__ import annotations
 
 import math
@@ -43,8 +44,11 @@ class MyGame(arcade.Window):
         self.use_depth: bool = True
         self.text_use_depth = arcade.Text(
             "SPACE: Toggle depth testing (True)",
-            x=10, y=30, font_size=15, color=arcade.color.WHITE,
-            batch=self.text_batch
+            x=10,
+            y=30,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
 
         self.sprite_list = arcade.SpriteList()
@@ -52,9 +56,7 @@ class MyGame(arcade.Window):
 
         for i in range(NUM_SPRITES):
             sprite = arcade.Sprite(
-                texture,
-                center_x=SPRITE_X_START + SPRITE_X_STEP * i,
-                center_y=SPRITE_Y
+                texture, center_x=SPRITE_X_START + SPRITE_X_STEP * i, center_y=SPRITE_Y
             )
             self.sprite_list.append(sprite)
 
@@ -71,8 +73,10 @@ class MyGame(arcade.Window):
         # Draw wave visualization markers over each sprite
         for i, sprite in enumerate(self.sprite_list):
             arcade.draw_point(
-                SPRITE_X_START + SPRITE_X_STEP * i, SPRITE_Y + sprite.depth,
-                arcade.color.WHITE, DOT_SIZE
+                SPRITE_X_START + SPRITE_X_STEP * i,
+                SPRITE_Y + sprite.depth,
+                arcade.color.WHITE,
+                DOT_SIZE,
             )
 
         self.text_batch.draw()

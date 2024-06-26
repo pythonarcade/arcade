@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
 import re
 
 from pyglet import gl
+
 if TYPE_CHECKING:
     from .context import Context as ArcadeGlContext
 
@@ -30,9 +31,10 @@ class ShaderSource:
     :param source_type: The shader type
     :param depth_attachment: A depth attachment (optional)
     """
+
     def __init__(
         self,
-        ctx: 'ArcadeGlContext',
+        ctx: "ArcadeGlContext",
         source: str,
         common: Optional[Iterable[str]],
         source_type: PyGLenum,
@@ -112,9 +114,7 @@ class ShaderSource:
             except Exception:
                 pass
 
-        source = "\n".join(
-            f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
-        )
+        source = "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
 
         raise ShaderException(
             (
@@ -150,8 +150,6 @@ class ShaderSource:
     def _parse_out_attributes(self):
         """Locates out attributes so we don't have to manually supply them"""
         for line in self._lines:
-            res = re.match(
-                r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
-            )
+            res = re.match(r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip())
             if res:
                 self._out_attributes.append(res.groups()[-1])

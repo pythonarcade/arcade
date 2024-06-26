@@ -22,14 +22,10 @@ class TextureKeyframe:
     :param duration: Duration in milliseconds to display this keyframe.
     :param tile_id: Tile ID for this keyframe (only used for tiled maps)
     """
+
     __slots__ = ("texture", "duration", "tile_id")
-    def __init__(
-        self,
-        texture: Texture,
-        duration: int = 100,
-        tile_id: Optional[int] = 0,
-        **kwargs
-    ):
+
+    def __init__(self, texture: Texture, duration: int = 100, tile_id: Optional[int] = 0, **kwargs):
         #: The texture to display for this keyframe.
         self.texture = texture
         #: Duration in milliseconds to display this keyframe.
@@ -47,6 +43,7 @@ class TextureAnimation:
     :param keyframes: List of keyframes for the animation.
     :param loop: If the animation should loop.
     """
+
     __slots__ = ("_keyframes", "_duration_ms", "_timeline")
 
     def __init__(self, keyframes: List[TextureKeyframe]):
@@ -130,6 +127,7 @@ class TextureAnimationSprite(Sprite):
     :param center_y: Initial y position of the sprite.
     :param scale: Initial scale of the sprite.
     """
+
     def __init__(
         self,
         center_x: float = 0.0,
@@ -213,6 +211,7 @@ class AnimatedWalkingSprite(Sprite):
     :param center_x: Initial x position of the sprite.
     :param center_y: Initial y position of the sprite.
     """
+
     def __init__(
         self,
         scale: float = 1.0,

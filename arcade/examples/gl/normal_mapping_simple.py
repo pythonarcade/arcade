@@ -15,6 +15,7 @@ Controls:
 Run this example from the command line with:
 python -m arcade.examples.gl.normal_mapping_simple
 """
+
 import arcade
 from arcade.gl import geometry
 

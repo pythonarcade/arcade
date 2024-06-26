@@ -4,10 +4,7 @@ import pyglet.input
 from typing import List
 from pyglet.input import Joystick
 
-__all__ = [
-    "get_joysticks",
-    "get_game_controllers"
-]
+__all__ = ["get_joysticks", "get_game_controllers"]
 
 
 def get_joysticks() -> List[Joystick]:

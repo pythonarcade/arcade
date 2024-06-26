@@ -42,7 +42,7 @@ def load_animated_gif(resource_name) -> TextureAnimationSprite:
     keyframes = []
     for frame in range(image_object.n_frames):
         image_object.seek(frame)
-        frame_duration = image_object.info['duration']
+        frame_duration = image_object.info["duration"]
         image = image_object.convert("RGBA")
         texture = Texture(image)
         texture.file_path = file_name
@@ -70,5 +70,5 @@ __all__ = [
     "FACE_RIGHT",
     "FACE_UP",
     "FACE_DOWN",
-    "PymunkMixin"
+    "PymunkMixin",
 ]

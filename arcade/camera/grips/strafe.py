@@ -18,8 +18,10 @@ def strafe(data: CameraData, direction: Tuple[float, float]) -> Tuple[float, flo
     _pos = data.position
 
     offset = _right * direction[0] + _up * direction[1]
+    # fmt: off
     return (
-        _pos[0] + offset[0],
-        _pos[1] + offset[1],
-        _pos[2] + offset[2]
-    )
+            _pos[0] + offset[0],
+            _pos[1] + offset[1],
+            _pos[2] + offset[2]
+        )
+    # fmt: on

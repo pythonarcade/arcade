@@ -68,9 +68,7 @@ class Background:
             )
 
         self._color = (
-            color
-            if sum(color) <= 3.0
-            else (color[0] / 255, color[1] / 255, color[2] / 255)
+            color if sum(color) <= 3.0 else (color[0] / 255, color[1] / 255, color[2] / 255)
         )
         try:
             self.shader["color"] = self._color
@@ -92,7 +90,7 @@ class Background:
         color: Optional[Tuple[int, int, int]] = None,
         color_norm: Optional[Tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None
+        geometry: Optional[gl.Geometry] = None,
     ):
         """
         This will generate a Background from an input image source. The generated texture is not stored in the
@@ -111,9 +109,7 @@ class Background:
         :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
         :return: The generated Background.
         """
-        background_texture = BackgroundTexture.from_file(
-            tex_src, offset, scale, angle, filters
-        )
+        background_texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
         if size is None:
             size = background_texture.texture.size
 

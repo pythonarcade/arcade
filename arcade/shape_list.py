@@ -5,6 +5,7 @@ This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
+
 from __future__ import annotations
 
 from array import array
@@ -74,6 +75,7 @@ class Shape:
     :param mode: The OpenGL drawing mode. Defaults to GL_TRIANGLES.
     :param program: The program to use when drawing this shape (Shape.draw() only)
     """
+
     def __init__(
         self,
         points: PointList,
@@ -121,7 +123,9 @@ class Shape:
         if self.geometry is None:
             self._init_geometry()
 
-        self.geometry.render(self.program, mode=self.mode)  # pyright: ignore [reportOptionalMemberAccess]
+        self.geometry.render(
+            self.program, mode=self.mode
+        )  # pyright: ignore [reportOptionalMemberAccess]
 
 
 def create_line(
@@ -188,11 +192,7 @@ def create_line_generic(
     return create_line_generic_with_colors(point_list, colors, shape_mode)
 
 
-def create_line_strip(
-    point_list: PointList,
-    color: RGBA255,
-    line_width: float = 1
-) -> Shape:
+def create_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1) -> Shape:
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -321,7 +321,8 @@ def create_rectangle_filled(
     center_x: float,
     center_y: float,
     width: float,
-    height: float, color: RGBA255,
+    height: float,
+    color: RGBA255,
     tilt_angle: float = 0,
 ) -> Shape:
     """
@@ -343,8 +344,10 @@ def create_rectangle_filled(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     """
     return create_rectangle(
-        center_x, center_y,
-        width, height,
+        center_x,
+        center_y,
+        width,
+        height,
         color,
         tilt_angle=tilt_angle,
     )
@@ -379,8 +382,10 @@ def create_rectangle_outline(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     """
     return create_rectangle(
-        center_x, center_y,
-        width, height,
+        center_x,
+        center_y,
+        width,
+        height,
         color,
         border_width,
         tilt_angle,
@@ -456,21 +461,47 @@ def create_rectangle(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     :param filled: If True, the rectangle is filled. If False, it is an outline.
     """
-    data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
+    data: List[Point] = cast(
+        List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    )
 
     if filled:
         data[-2:] = reversed(data[-2:])
     else:
 
-        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
-        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
-        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
-        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
+        i_lb = (
+            center_x - width / 2 + border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rb = (
+            center_x + width / 2 - border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rt = (
+            center_x + width / 2 - border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
+        i_lt = (
+            center_x - width / 2 + border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
 
-        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
-        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
-        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
-        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
+        o_lb = (
+            center_x - width / 2 - border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rb = (
+            center_x + width / 2 + border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rt = (
+            center_x + width / 2 + border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
+        o_lt = (
+            center_x - width / 2 - border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
 
         data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
@@ -608,8 +639,17 @@ def create_ellipse_filled(
     as one.
     """
     border_width = 1
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=True)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=True,
+    )
 
 
 def create_ellipse_outline(
@@ -633,8 +673,17 @@ def create_ellipse_outline(
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
     """
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=False)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=False,
+    )
 
 
 def create_ellipse(
@@ -747,7 +796,7 @@ def create_ellipse_filled_with_colors(
     return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
-TShape = TypeVar('TShape', bound=Shape)
+TShape = TypeVar("TShape", bound=Shape)
 
 
 @copy_dunders_unimplemented
@@ -760,6 +809,7 @@ class ShapeElementList(Generic[TShape]):
 
     Adding new shapes is fast, but removing them is slow.
     """
+
     def __init__(self):
         # The context this shape list belongs to
         self.ctx = get_window().ctx
@@ -817,8 +867,8 @@ class ShapeElementList(Generic[TShape]):
         """
         Draw all the shapes.
         """
-        self.program['Position'] = self._center_x, self._center_y
-        self.program['Angle'] = -self._angle
+        self.program["Position"] = self._center_x, self._center_y
+        self.program["Angle"] = -self._angle
 
         self.update()
 
@@ -895,11 +945,11 @@ class ShapeElementList(Generic[TShape]):
         self._angle = value
 
     def __len__(self) -> int:
-        """ Return the length of the sprite list. """
+        """Return the length of the sprite list."""
         return len(self.shape_list)
 
     def __iter__(self) -> Iterable[TShape]:
-        """ Return an iterable object of sprites. """
+        """Return an iterable object of sprites."""
         return iter(self.shape_list)
 
     def __getitem__(self, i):
@@ -912,12 +962,13 @@ class _Batch(Generic[TShape]):
 
     The group uniqueness is based on the primitive mode
     """
+
     # Flags for keeping track of changes
     ADD = 1
     REMOVE = 3
     # The byte size of a vertex
     VERTEX_SIZE = 4 * 6  # 24 bytes (2 floats for position, 4 floats for color)
-    RESET_IDX = 2 ** 32 - 1
+    RESET_IDX = 2**32 - 1
 
     def __init__(
         self,
@@ -936,8 +987,8 @@ class _Batch(Generic[TShape]):
             content=[
                 BufferDescription(
                     self.vbo,
-                    '2f 4f',
-                    ('in_vert', 'in_color'),
+                    "2f 4f",
+                    ("in_vert", "in_color"),
                 )
             ],
             index_buffer=self.ibo,
@@ -971,8 +1022,8 @@ class _Batch(Generic[TShape]):
 
         # If only add flag is set we simply copy in the new data
         if self.FLAGS == self.ADD:
-            new_data = array('f')
-            new_ibo = array('I')
+            new_data = array("f")
+            new_ibo = array("I")
             counter = itertools.count(self.vertices)
             new_vertices = 0
 
@@ -1030,8 +1081,8 @@ class _Batch(Generic[TShape]):
             self.items.extend(self.new_items)
             self.new_items.clear()
 
-            data = array('f')
-            ibo = array('I')
+            data = array("f")
+            ibo = array("I")
             counter = itertools.count()
             self.vertices = 0
             self.elements = 0

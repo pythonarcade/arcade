@@ -9,7 +9,9 @@ from arcade.types import Point, PointList
 from typing import List, Tuple
 
 
-def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+def earclip(
+    polygon: PointList,
+) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -48,7 +50,9 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
 
         polygon.remove(ear)
         point_count -= 1
-        triangles.append(((prev_point[0], prev_point[1]), (ear[0], ear[1]), (next_point[0], next_point[1])))
+        triangles.append(
+            ((prev_point[0], prev_point[1]), (ear[0], ear[1]), (next_point[0], next_point[1]))
+        )
         if point_count > 3:
             prev_prev_point = polygon[prev_index - 1]
             next_next_index = (i + 1) % point_count
@@ -56,7 +60,7 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
 
             groups = [
                 (prev_prev_point, prev_point, next_point, polygon),
-                (prev_point, next_point, next_next_point, polygon)
+                (prev_point, next_point, next_next_point, polygon),
             ]
             for group in groups:
                 p = group[1]
@@ -83,9 +87,11 @@ def _is_convex(prev: Point, point: Point, next_point: Point) -> bool:
 
 
 def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
-    return _contains_no_points(p1, p2, p3, polygon) and \
-        _is_convex(p1, p2, p3) and \
-        _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
+    return (
+        _contains_no_points(p1, p2, p3, polygon)
+        and _is_convex(p1, p2, p3)
+        and _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
+    )
 
 
 def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:

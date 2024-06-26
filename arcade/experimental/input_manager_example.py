@@ -31,9 +31,7 @@ class Player(arcade.Sprite):
         )
         self.input_manager.copy_existing(input_manager_template)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self, walls=walls, gravity_constant=1
-        )
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self, walls=walls, gravity_constant=1)
 
     def on_update(self, delta_time: float):
         self.input_manager.update()
@@ -67,9 +65,7 @@ class Game(arcade.Window):
         self.INPUT_TEMPLATE = input.InputManager(allow_keyboard=False)
         self.INPUT_TEMPLATE.new_action("Jump")
         self.INPUT_TEMPLATE.add_action_input("Jump", input.Keys.SPACE)
-        self.INPUT_TEMPLATE.add_action_input(
-            "Jump", input.ControllerButtons.BOTTOM_FACE
-        )
+        self.INPUT_TEMPLATE.add_action_input("Jump", input.ControllerButtons.BOTTOM_FACE)
 
         self.INPUT_TEMPLATE.new_axis("Move")
         self.INPUT_TEMPLATE.add_axis_input("Move", input.Keys.A, -1.0)

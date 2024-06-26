@@ -20,6 +20,7 @@ use a Query to count how many results the shader gave us.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.spritelist_interaction_visualize_dist_los_trans
 """
+
 import random
 import struct
 import arcade
@@ -160,9 +161,7 @@ class SpriteListInteraction(arcade.Window):
         # Lookup texture/framebuffer for walls so we can trace pixels in the shader.
         # It contains a texture attachment with the same size as the window.
         # We draw only the walls into this one as a line of sight lookup
-        self.walls_fbo = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))]
-        )
+        self.walls_fbo = self.ctx.framebuffer(color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))])
         # Draw the walls into the framebuffer
         with self.walls_fbo.activate() as fbo:
             fbo.clear()

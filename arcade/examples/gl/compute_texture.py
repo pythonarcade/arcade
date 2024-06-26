@@ -4,6 +4,7 @@ Rendering to texture with a compute shader
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.compute_texture
 """
+
 import arcade
 from arcade.gl import geometry
 
@@ -22,7 +23,7 @@ layout (local_size_x = 16, local_size_y = 16) in;
 // Important: The binding needs to match the unit
 // Parameter in Texture.bind_to_image.
 // Each image needs a different binding unit starting from 0
-layout(rgba8, binding=0) uniform writeonly image2D destTex;
+layout(rgba8, binding=0) uniform write-only image2D destTex;
 
 uniform float time;
 

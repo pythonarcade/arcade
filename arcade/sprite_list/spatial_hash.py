@@ -21,6 +21,7 @@ class SpatialHash(Generic[SpriteType]):
 
     :param cell_size: Size (width and height) of the cells in the spatial hash
     """
+
     def __init__(self, cell_size: int) -> None:
         # Sanity check the cell size
         if cell_size <= 0:

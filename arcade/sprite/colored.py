@@ -119,16 +119,11 @@ class SpriteCircle(Sprite):
     :param soft: If ``True``, the circle will fade from an opaque
                       center to transparent edges.
     """
+
     # Local weak cache for textures to avoid creating multiple instances with the same configuration
     _texture_cache: WeakValueDictionary[Tuple[int, RGBA255, bool], Texture] = WeakValueDictionary()
 
-    def __init__(
-        self,
-        radius: int,
-        color: RGBA255,
-        soft: bool = False,
-        **kwargs
-    ):
+    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
         radius = int(radius)
         diameter = radius * 2
 

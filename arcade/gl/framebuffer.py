@@ -63,7 +63,11 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture2D] = None
+        self,
+        ctx: "Context",
+        *,
+        color_attachments=None,
+        depth_attachment: Optional[Texture2D] = None,
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,9 +75,7 @@ class Framebuffer:
             raise ValueError("Framebuffer must at least have one color attachment")
 
         self._color_attachments = (
-            color_attachments
-            if isinstance(color_attachments, list)
-            else [color_attachments]
+            color_attachments if isinstance(color_attachments, list) else [color_attachments]
         )
         self._depth_attachment: Optional[Texture2D] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
@@ -117,9 +119,7 @@ class Framebuffer:
 
         # Set up draw buffers. This is simply a prepared list of attachments enums
         # we use in the use() method to activate the different color attachment layers
-        layers = [
-            gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)
-        ]
+        layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
         # pyglet wants this as a ctypes thingy, so let's prepare it
         self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
@@ -406,9 +406,7 @@ class Framebuffer:
 
             self.scissor = scissor_values
 
-    def read(
-        self, *, viewport=None, components=3, attachment=0, dtype="f1"
-    ) -> bytes:
+    def read(self, *, viewport=None, components=3, attachment=0, dtype="f1") -> bytes:
         """
         Read framebuffer pixels
 
@@ -481,15 +479,11 @@ class Framebuffer:
     def _detect_size(self) -> Tuple[int, int]:
         """Detect the size of the framebuffer based on the attachments"""
         expected_size = (
-            self._color_attachments[0]
-            if self._color_attachments
-            else self._depth_attachment
+            self._color_attachments[0] if self._color_attachments else self._depth_attachment
         ).size
         for layer in [*self._color_attachments, self._depth_attachment]:
             if layer and layer.size != expected_size:
-                raise ValueError(
-                    "All framebuffer attachments should have the same size"
-                )
+                raise ValueError("All framebuffer attachments should have the same size")
         return expected_size
 
     @staticmethod
@@ -513,9 +507,7 @@ class Framebuffer:
         status = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
         if status != gl.GL_FRAMEBUFFER_COMPLETE:
             raise ValueError(
-                "Framebuffer is incomplete. {}".format(
-                    states.get(status, "Unknown error")
-                )
+                "Framebuffer is incomplete. {}".format(states.get(status, "Unknown error"))
             )
 
     def __repr__(self):

@@ -14,6 +14,7 @@ import arcade
 
 SAMPLES = 8
 
+
 class MultisampleFramebuffer(arcade.Window):
 
     def __init__(self, width, height):

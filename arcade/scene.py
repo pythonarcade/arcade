@@ -196,7 +196,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         self._sprite_lists.append(sprite_list)
 
@@ -228,7 +230,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         before_list = self._name_mapping[before]
         index = self._sprite_lists.index(before_list)
@@ -288,7 +292,9 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
-            warn(f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist")
+            warn(
+                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+            )
         self._name_mapping[name] = sprite_list
         after_list = self._name_mapping[after]
         index = self._sprite_lists.index(after_list) + 1
@@ -321,10 +327,7 @@ class Scene:
         old_index = self._sprite_lists.index(name_list)
         self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
-    def remove_sprite_list_by_index(
-        self,
-        index: int
-    ) -> None:
+    def remove_sprite_list_by_index(self, index: int) -> None:
         """
         Remove a layer from the scene by its index in the draw order.
 
@@ -407,9 +410,7 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.on_update(delta_time)
 
-    def update_animation(
-        self, delta_time: float, names: Optional[Iterable[str]] = None
-    ) -> None:
+    def update_animation(self, delta_time: float, names: Optional[Iterable[str]] = None) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update_animation` on the scene's sprite lists.
 
@@ -438,7 +439,7 @@ class Scene:
         filter: Optional[OpenGlFilter] = None,
         pixelated: bool = False,
         blend_function: Optional[BlendFunction] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.draw` on the scene's sprite lists.
@@ -470,19 +471,13 @@ class Scene:
         if names:
             for name in names:
                 self._name_mapping[name].draw(
-                    filter=filter,
-                    pixelated=pixelated,
-                    blend_function=blend_function,
-                    **kwargs
+                    filter=filter, pixelated=pixelated, blend_function=blend_function, **kwargs
                 )
             return
 
         for sprite_list in self._sprite_lists:
             sprite_list.draw(
-                filter=filter,
-                pixelated=pixelated,
-                blend_function=blend_function,
-                **kwargs
+                filter=filter, pixelated=pixelated, blend_function=blend_function, **kwargs
             )
 
     def draw_hit_boxes(

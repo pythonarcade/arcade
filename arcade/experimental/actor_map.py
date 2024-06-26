@@ -5,6 +5,7 @@ then view that map form different actor viewpoints.
 This example is using the lower level rendering API
 in arcade.
 """
+
 from __future__ import annotations
 
 import random
@@ -28,7 +29,9 @@ class ActorMap(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(
+            0, self.width, 0, self.height, -100, 100
+        )
         self.actor.draw(self.time)
 
     def on_update(self, delta_time: float):
@@ -42,6 +45,7 @@ class Actor:
     It should support translation and rotations
     and possibly zoom.
     """
+
     def __init__(
         self,
         map,
@@ -167,7 +171,9 @@ class Map:
         with self.fbo.activate() as fbo:
             fbo.clear()
             # Change projection to match the contents
-            self.ctx.projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+            self.ctx.projection = Mat4.orthogonal_projection(
+                0, self.width, 0, self.height, -100, 100
+            )
             self.sprites.draw()
 
 
@@ -176,6 +182,7 @@ class Shaders:
     Quick and dirty contains for all the shaders we're using.
     We don't want to compile a program/shader multiple times.
     """
+
     def __init__(self, ctx):
         self.ctx = ctx
         self.actor_view = self.ctx.program(

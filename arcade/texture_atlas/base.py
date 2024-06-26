@@ -22,6 +22,7 @@ the number of lost regions to use as an indicator later. When an
 atlas is full we can first rebuild it if there are lost regions
 instead of increasing the size.
 """
+
 from __future__ import annotations
 
 import abc
@@ -33,6 +34,7 @@ from typing import (
 )
 
 import arcade
+
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.texture import ImageData
@@ -52,6 +54,7 @@ class ImageDataRefCounter:
     Multiple Texture instances can and will use the same ImageData
     instance.
     """
+
     def __init__(self) -> None:
         self._data: Dict[str, int] = {}
         self._num_decref = 0
@@ -134,6 +137,7 @@ class UniqueTextureRefCounter:
     A "unique texture" is based on the ``atlas_name`` of the texture meaning
     a texture using the same image and the same vertex order.
     """
+
     def __init__(self) -> None:
         self._data: Dict[str, int] = {}
         self._num_decref = 0

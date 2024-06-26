@@ -25,16 +25,20 @@ class GeoCullingTest(arcade.Window):
         )
 
         self.spritelist = arcade.SpriteList()
-        self.spritelist.append(Sprite(
-            ":resources:images/tiles/boxCrate_double.png",
-            center_x=400, center_y=300, scale=6)
+        self.spritelist.append(
+            Sprite(
+                ":resources:images/tiles/boxCrate_double.png",
+                center_x=400,
+                center_y=300,
+                scale=6,
+            )
         )
         for i in range(0, 360, 36):
-            self.spritelist.append(
-                arcade.Sprite(self.texture, center_x=400, center_y=300, angle=i)
-            )
+            self.spritelist.append(arcade.Sprite(self.texture, center_x=400, center_y=300, angle=i))
 
-        self.spritelist.append(Sprite(":resources:images/items/gold_1.png", center_x=400, center_y=300))
+        self.spritelist.append(
+            Sprite(":resources:images/items/gold_1.png", center_x=400, center_y=300)
+        )
 
     def on_draw(self):
         self.clear()

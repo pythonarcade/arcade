@@ -6,6 +6,7 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 * Partially initialized modules
 
 """
+
 from __future__ import annotations
 
 from typing import Union, Tuple, Sequence
@@ -61,7 +62,6 @@ class AnchorPoint:
     shaders.
     """
 
-
     BOTTOM_LEFT = Vec2(0.0, 0.0)
     BOTTOM_CENTER = Vec2(0.5, 0.0)
     BOTTOM_RIGHT = Vec2(1.0, 0.0)
@@ -74,12 +74,12 @@ class AnchorPoint:
 
 
 __all__ = [
-    'Point2',
-    'Point3',
-    'Point',
-    'Point2List',
-    'Point3List',
-    'PointList',
-    'AnchorPoint',
-    'EMPTY_POINT_LIST'
+    "Point2",
+    "Point3",
+    "Point",
+    "Point2List",
+    "Point3List",
+    "PointList",
+    "AnchorPoint",
+    "EMPTY_POINT_LIST",
 ]

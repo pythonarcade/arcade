@@ -9,6 +9,7 @@ Note: See setup.cfg for entry points that enable this hook file to be found
 For a walk through of building an Arcade application with pyinstaller see:
 https://api.arcade.academy/en/latest/tutorials/bundling_with_pyinstaller/index.html
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,7 +29,7 @@ datas = [
     (
         arcade_path / "VERSION",
         "./arcade/VERSION",
-    )
+    ),
 ]
 
 if is_win:

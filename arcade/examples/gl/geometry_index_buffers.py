@@ -7,6 +7,7 @@ In most cases we can get away with unsigned 32 bit integers.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.geometry_index_buffers
 """
+
 from array import array
 
 import arcade
@@ -40,10 +41,11 @@ class IndexBufferExample(arcade.Window):
             void main() {
                 out_color = vec4(v_color, 1.0);
             }
-            """
+            """,
         )
 
         # Vertices
+        # fmt: off
         self.vertex_buffer = self.ctx.buffer(data=array(
             'f',
             [
@@ -55,9 +57,11 @@ class IndexBufferExample(arcade.Window):
                 0, 0, 0, 0, 0,  # dummy data for testing
             ]
         ))
-        self.ibo_8 = self.ctx.buffer(data=array('B', [3, 0, 2, 1]))
-        self.ibo_16 = self.ctx.buffer(data=array('H', [3, 0, 2, 1]))
-        self.ibo_32 = self.ctx.buffer(data=array('I', [3, 0, 2, 1]))
+        # fmt: on
+
+        self.ibo_8 = self.ctx.buffer(data=array("B", [3, 0, 2, 1]))
+        self.ibo_16 = self.ctx.buffer(data=array("H", [3, 0, 2, 1]))
+        self.ibo_32 = self.ctx.buffer(data=array("I", [3, 0, 2, 1]))
 
         self.vao_32 = self.ctx.geometry(
             [
@@ -65,7 +69,7 @@ class IndexBufferExample(arcade.Window):
             ],
             index_buffer=self.ibo_32,
             index_element_size=4,
-            mode=self.ctx.TRIANGLE_STRIP
+            mode=self.ctx.TRIANGLE_STRIP,
         )
         self.vao_16 = self.ctx.geometry(
             [
@@ -73,7 +77,7 @@ class IndexBufferExample(arcade.Window):
             ],
             index_buffer=self.ibo_16,
             index_element_size=2,
-            mode=self.ctx.TRIANGLE_STRIP
+            mode=self.ctx.TRIANGLE_STRIP,
         )
         self.vao_8 = self.ctx.geometry(
             [
@@ -81,7 +85,7 @@ class IndexBufferExample(arcade.Window):
             ],
             index_buffer=self.ibo_16,
             index_element_size=2,
-            mode=self.ctx.TRIANGLE_STRIP
+            mode=self.ctx.TRIANGLE_STRIP,
         )
         self.frames = 0
 

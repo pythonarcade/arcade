@@ -8,6 +8,7 @@ To make things a bit more interesting we also rotate the triangle.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.instancing
 """
+
 import random
 from array import array
 
@@ -64,17 +65,19 @@ class MyGame(arcade.Window):
             void main() {
                 out_color = v_color;
             }
-            """
+            """,
         )
 
         self.instances = 1_000
         # Create triangle
+        # fmt: off
         vertices = array("f", [
             # x, y
             0.0, 0.8,
             -0.8, -0.8,
             0.8, -0.8,
         ])
+        # fmt: on
 
         # Generate per instance data. We'll create a generator function for this (less messy)
         def gen_instance_data(instances):
@@ -96,18 +99,18 @@ class MyGame(arcade.Window):
                 # Base geometry
                 BufferDescription(
                     self.ctx.buffer(data=vertices),
-                    '2f',
-                    ['in_vert'],
+                    "2f",
+                    ["in_vert"],
                 ),
                 # Per instance buffer
                 BufferDescription(
                     self.ctx.buffer(data=per_instance),
-                    '2f 4f',
-                    ['in_offset', 'in_color'],
+                    "2f 4f",
+                    ["in_offset", "in_color"],
                     instanced=True,
                 ),
             ],
-            mode=self.ctx.TRIANGLES
+            mode=self.ctx.TRIANGLES,
         )
 
     def on_draw(self):

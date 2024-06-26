@@ -28,7 +28,7 @@ __all__ = [
     "rotate_point",
     "get_angle_degrees",
     "get_angle_radians",
-    "quaternion_rotation"
+    "quaternion_rotation",
 ]
 
 
@@ -54,12 +54,12 @@ def round_fast(value: float, precision: int) -> float:
     :param precision: The number of decimal places to round to
     :return: The rounded value
     """
-    precision = 10 ** precision
+    precision = 10**precision
     return math.trunc(value * precision) / precision
 
 
 def clamp(a, low: float, high: float) -> float:
-    """ Clamp a number between a range. """
+    """Clamp a number between a range."""
     return high if a > high else max(a, low)
 
 
@@ -73,18 +73,11 @@ def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
 
 
 def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Tuple[float, float]:
-    return (
-        lerp(v1[0], v2[0], u),
-        lerp(v1[1], v2[1], u)
-    )
+    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
 def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> Tuple[float, float, float]:
-    return (
-        lerp(v1[0], v2[0], u),
-        lerp(v1[1], v2[1], u),
-        lerp(v1[2], v2[2], u)
-    )
+    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
@@ -120,7 +113,7 @@ def rand_in_rect(bottom_left: Point2, width: float, height: float) -> Point:
     """
     return (
         random.uniform(bottom_left[0], bottom_left[0] + width),
-        random.uniform(bottom_left[1], bottom_left[1] + height)
+        random.uniform(bottom_left[1], bottom_left[1] + height),
     )
 
 
@@ -143,10 +136,7 @@ def rand_in_circle(center: Point2, radius: float) -> Point2:
     # random radius
     r = radius * random.random()
     # calculating coordinates
-    return (
-        r * math.cos(angle) + center[0],
-        r * math.sin(angle) + center[1]
-    )
+    return (r * math.cos(angle) + center[0], r * math.sin(angle) + center[1])
 
 
 def rand_on_circle(center: Point2, radius: float) -> Point2:
@@ -161,10 +151,7 @@ def rand_on_circle(center: Point2, radius: float) -> Point2:
     :return: A random point on the circle
     """
     angle = 2 * math.pi * random.random()
-    return (
-        radius * math.cos(angle) + center[0],
-        radius * math.sin(angle) + center[1]
-    )
+    return (radius * math.cos(angle) + center[0], radius * math.sin(angle) + center[1])
 
 
 def rand_on_line(pos1: Point2, pos2: Point2) -> Point:
@@ -199,9 +186,7 @@ def rand_angle_spread_deg(angle: float, half_angle_spread: float) -> float:
 
 
 def rand_vec_spread_deg(
-    angle: float,
-    half_angle_spread: float,
-    length: float
+    angle: float, half_angle_spread: float, length: float
 ) -> tuple[float, float]:
     """
     Returns a random vector, within a spread of the given angle.
@@ -242,7 +227,8 @@ class _Vec2:
     Should not be part of public interfaces
     (ex: function parameters or return values).
     """
-    __slots__ = ['x', 'y']
+
+    __slots__ = ["x", "y"]
 
     def __init__(self, x: float, y: float):
         # see if first argument is an iterable with two items
@@ -288,10 +274,7 @@ class _Vec2:
         rads = math.radians(angle)
         cosine = math.cos(rads)
         sine = math.sin(rads)
-        return _Vec2(
-            (self.x * cosine) - (self.y * sine),
-            (self.y * cosine) + (self.x * sine)
-        )
+        return _Vec2((self.x * cosine) - (self.y * sine), (self.y * cosine) + (self.x * sine))
 
     def as_tuple(self) -> Point2:
         return self.x, self.y
@@ -372,9 +355,9 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     return math.atan2(x_diff, y_diff)
 
 
-def quaternion_rotation(axis: Tuple[float, float, float],
-                        vector: Tuple[float, float, float],
-                        angle: float) -> Tuple[float, float, float]:
+def quaternion_rotation(
+    axis: Tuple[float, float, float], vector: Tuple[float, float, float], angle: float
+) -> Tuple[float, float, float]:
     """
     Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
 
@@ -392,7 +375,7 @@ def quaternion_rotation(axis: Tuple[float, float, float],
     _c2, _s2 = math.cos(_rotation_rads / 2.0), math.sin(_rotation_rads / 2.0)
 
     q0, q1, q2, q3 = _c2, _s2 * axis[0], _s2 * axis[1], _s2 * axis[2]
-    q0_2, q1_2, q2_2, q3_2 = q0 ** 2, q1 ** 2, q2 ** 2, q3 ** 2
+    q0_2, q1_2, q2_2, q3_2 = q0**2, q1**2, q2**2, q3**2
     q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
 
     _x = p1 * (q0_2 + q1_2 - q2_2 - q3_2) + 2.0 * (p2 * (q12 - q03) + p3 * (q02 + q13))

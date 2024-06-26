@@ -3,6 +3,7 @@
 These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
+
 from __future__ import annotations
 from contextlib import contextmanager
 from typing import Protocol, Tuple, Generator
@@ -13,14 +14,14 @@ from pyglet.math import Vec2, Vec3
 from arcade.types import AsFloat, Point, Point3, Rect, LRBT
 
 __all__ = [
-    'CameraData',
-    'OrthographicProjectionData',
-    'PerspectiveProjectionData',
-    'Projection',
-    'Projector',
-    'ZeroProjectionDimension',
-    'constrain_camera_data',
-    'duplicate_camera_data'
+    "CameraData",
+    "OrthographicProjectionData",
+    "PerspectiveProjectionData",
+    "Projection",
+    "Projector",
+    "ZeroProjectionDimension",
+    "constrain_camera_data",
+    "duplicate_camera_data",
 ]
 
 
@@ -34,6 +35,7 @@ class ZeroProjectionDimension(ValueError):
 
     You can handle this error as a :py:class:`ValueError`.
     """
+
     ...
 
 
@@ -45,11 +47,13 @@ class CameraData:
 
     __slots__ = ("position", "up", "forward", "zoom")
 
-    def __init__(self,
-                 position: Point3 = (0.0, 0.0, 0.0),
-                 up: Point3 = (0.0, 1.0, 0.0),
-                 forward: Point3 = (0.0, 0.0, -1.0),
-                 zoom: float = 1.0):
+    def __init__(
+        self,
+        position: Point3 = (0.0, 0.0, 0.0),
+        up: Point3 = (0.0, 1.0, 0.0),
+        forward: Point3 = (0.0, 0.0, -1.0),
+        zoom: float = 1.0,
+    ):
 
         #: A 3D vector which describes where the camera is located.
         self.position: Tuple[float, float, float] = position
@@ -107,13 +111,7 @@ class OrthographicProjectionData:
     __slots__ = ("rect", "near", "far")
 
     def __init__(
-            self,
-            left: float,
-            right: float,
-            bottom: float,
-            top: float,
-            near: float,
-            far: float
+        self, left: float, right: float, bottom: float, top: float, near: float, far: float
     ):
 
         # Data for generating Orthographic Projection matrix
@@ -131,7 +129,7 @@ class OrthographicProjectionData:
 
     @property
     def left(self) -> float:
-        """"The left-side cutoff value, which gets mapped to x = -1.0.
+        """ "The left-side cutoff value, which gets mapped to x = -1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -142,19 +140,12 @@ class OrthographicProjectionData:
         r = self.rect
         dl = new_left - r.left
         self.rect = Rect(
-            new_left,
-            r.right,
-            r.bottom,
-            r.top,
-            r.width + dl,
-            r.height,
-            r.x + dl / 2.0,
-            r.y
+            new_left, r.right, r.bottom, r.top, r.width + dl, r.height, r.x + dl / 2.0, r.y
         )
 
     @property
     def right(self) -> float:
-        """"The right-side cutoff value, which gets mapped to x = 1.0.
+        """ "The right-side cutoff value, which gets mapped to x = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -165,19 +156,12 @@ class OrthographicProjectionData:
         r = self.rect
         dr = new_right - r.right
         self.rect = Rect(
-            r.left,
-            new_right,
-            r.bottom,
-            r.top,
-            r.width + dr,
-            r.height,
-            r.x + dr / 2.0,
-            r.y
+            r.left, new_right, r.bottom, r.top, r.width + dr, r.height, r.x + dr / 2.0, r.y
         )
 
     @property
     def bottom(self) -> float:
-        """"The bottom-side cutoff value, which gets mapped to -y = 1.0.
+        """ "The bottom-side cutoff value, which gets mapped to -y = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -188,19 +172,12 @@ class OrthographicProjectionData:
         r = self.rect
         db = new_bottom - r.bottom
         self.rect = Rect(
-            r.left,
-            r.right,
-            new_bottom,
-            r.top,
-            r.width,
-            r.height + db,
-            r.x,
-            r.y + db / 2.0
+            r.left, r.right, new_bottom, r.top, r.width, r.height + db, r.x, r.y + db / 2.0
         )
 
     @property
     def top(self) -> float:
-        """"The top-side cutoff value, which gets mapped to y = 1.0.
+        """ "The top-side cutoff value, which gets mapped to y = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -211,14 +188,7 @@ class OrthographicProjectionData:
         r = self.rect
         dt = new_top - r.top
         self.rect = Rect(
-            r.left,
-            r.right,
-            r.bottom,
-            new_top,
-            r.width,
-            r.height + dt,
-            r.x,
-            r.y + dt / 2.0
+            r.left, r.right, r.bottom, new_top, r.width, r.height + dt, r.x, r.y + dt / 2.0
         )
 
     @property
@@ -230,37 +200,26 @@ class OrthographicProjectionData:
         self.rect = LRBT(*new_lrbt)
 
     def __str__(self):
-        return (f"OrthographicProjection<"
-                f"LRBT={self.rect.lrbt}, "
-                f"{self.near=}, "
-                f"{self.far=}")
+        return (
+            f"OrthographicProjection<" f"LRBT={self.rect.lrbt}, " f"{self.near=}, " f"{self.far=}"
+        )
 
     def __repr__(self):
         return self.__str__()
 
 
 def orthographic_from_rect(rect: Rect, near: float, far: float) -> OrthographicProjectionData:
-    return OrthographicProjectionData(
-        rect.left,
-        rect.right,
-        rect.bottom,
-        rect.top,
-        near,
-        far
-    )
+    return OrthographicProjectionData(rect.left, rect.right, rect.bottom, rect.top, near, far)
 
 
 class PerspectiveProjectionData:
     """Describes a perspective projection.
-)
+    )
     """
+
     __slots__ = ("aspect", "fov", "near", "far")
 
-    def __init__(self,
-                 aspect: float,
-                 fov: float,
-                 near: float,
-                 far: float):
+    def __init__(self, aspect: float, fov: float, near: float, far: float):
         #: The aspect ratio of the screen (width over height).
         self.aspect: float = aspect
         #: The field of view in degrees.
@@ -326,13 +285,12 @@ class Projection(Protocol):
            camera's :py:attr:`.CameraData.forward` vector.
 
     """
+
     near: float
     far: float
 
 
-
 class Projector(Protocol):
-
     """Projects from world coordinates to viewport pixel coordinates.
 
     Projectors also support converting in the opposite direction from
@@ -392,8 +350,7 @@ class Projector(Protocol):
         ...
 
     @contextmanager
-    def activate(self) -> Generator[Self, None, None]:
-        ...
+    def activate(self) -> Generator[Self, None, None]: ...
 
     def project(self, world_coordinate: Point) -> Vec2:
         """

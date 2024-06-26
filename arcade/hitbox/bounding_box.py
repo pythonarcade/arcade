@@ -9,6 +9,7 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
     """
     A simple hit box algorithm that returns a hit box around the entire image.
     """
+
     cache = False
 
     def calculate(self, image: Image, **kwargs) -> Point2List:

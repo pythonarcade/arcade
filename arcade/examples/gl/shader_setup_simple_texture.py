@@ -4,6 +4,7 @@ A very simple example rendering a textured fullscreen rectangle.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.shader_setup_simple_texture
 """
+
 import arcade
 from arcade.gl import geometry
 
@@ -62,7 +63,7 @@ class ShaderSetup(arcade.Window):
                 // Read a pixel from current texture coordinate and write that to the screen.
                 out_color = texture(background, v_uv);
             }
-            """
+            """,
         )
         # Configure the sampler to read from texture channel 0.
         # Sampler uniforms are simply integers containing what

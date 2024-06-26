@@ -5,6 +5,7 @@ with a texture doing some simple pixel manipulations.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.shader_setup
 """
+
 import arcade
 from arcade.gl import geometry
 
@@ -72,7 +73,7 @@ class ShaderSetup(arcade.Window):
                 // Read a pixel using the distorted texture coordinates and write to screen
                 out_color = texture(background, uv);
             }
-            """
+            """,
         )
         # Configure the sampler to read from texture channel 0.
         # Sampler uniforms are simply integers containing what

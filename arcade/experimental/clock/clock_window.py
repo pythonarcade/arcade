@@ -46,10 +46,7 @@ LOG = logging.getLogger(__name__)
 AnyWindow = Union["Window", arcade.Window]
 AnyView = Union["View", arcade.View]
 
-__all__ = [
-    "Window",
-    "View"
-]
+__all__ = ["Window", "View"]
 
 
 class Window(pyglet.window.Window):
@@ -91,7 +88,7 @@ class Window(pyglet.window.Window):
         self,
         width: int = 800,
         height: int = 600,
-        title: Optional[str] = 'Arcade Window',
+        title: Optional[str] = "Arcade Window",
         fullscreen: bool = False,
         resizable: bool = False,
         update_rate: float = 1 / 60,
@@ -107,8 +104,8 @@ class Window(pyglet.window.Window):
         enable_polling: bool = True,
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
-        fixed_update_rate: float = 1/60,
-        max_update_count: int = 10
+        fixed_update_rate: float = 1 / 60,
+        max_update_count: int = 10,
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -174,11 +171,13 @@ class Window(pyglet.window.Window):
                 visible=visible,
                 style=style,
             )
-            self.register_event_type('on_update')
-            self.register_event_type('on_fixed_update')
+            self.register_event_type("on_update")
+            self.register_event_type("on_fixed_update")
         except pyglet.window.NoSuchConfigException:
-            raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
-                                    "Check to make sure your system supports OpenGL 3.3 or higher.")
+            raise NoOpenGLException(
+                "Unable to create an OpenGL 3.3+ context. "
+                "Check to make sure your system supports OpenGL 3.3 or higher."
+            )
         if antialiasing:
             try:
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
@@ -262,10 +261,10 @@ class Window(pyglet.window.Window):
         return self._ctx
 
     def clear(
-            self,
-            color: Optional[RGBOrA255] = None,
-            color_normalized: Optional[RGBOrANormalized] = None,
-            viewport: Optional[Tuple[int, int, int, int]] = None,
+        self,
+        color: Optional[RGBOrA255] = None,
+        color_normalized: Optional[RGBOrANormalized] = None,
+        viewport: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -347,18 +346,20 @@ class Window(pyglet.window.Window):
         arcade.run()
 
     def close(self):
-        """ Close the Window. """
+        """Close the Window."""
         super().close()
         # Make sure we don't reference the window anymore
         set_window(None)
         pyglet.clock.unschedule(self._dispatch_updates)
 
-    def set_fullscreen(self,
-                       fullscreen: bool = True,
-                       screen: Optional['Window'] = None,
-                       mode: Optional[ScreenMode] = None,
-                       width: Optional[float] = None,
-                       height: Optional[float] = None):
+    def set_fullscreen(
+        self,
+        fullscreen: bool = True,
+        screen: Optional["Window"] = None,
+        mode: Optional[ScreenMode] = None,
+        width: Optional[float] = None,
+        height: Optional[float] = None,
+    ):
         """
         Set if we are full screen or not.
 
@@ -418,16 +419,18 @@ class Window(pyglet.window.Window):
         # accumulate time, but cap it to protect against death spirals. This will cause the game to run slower,
         # but it's worth it for stability. If you are seeing slowdowns either decrease the fixed update rate or
         # optimise you physics.
-        self._accumulated_time = min(self._accumulated_time + delta_time,
-                                     self._fixed_update_rate * self._max_update_count)
+        self._accumulated_time = min(
+            self._accumulated_time + delta_time,
+            self._fixed_update_rate * self._max_update_count,
+        )
         while self._accumulated_time >= self._fixed_update_rate:
             self._fixed_clock.tick(self._fixed_update_rate)
-            self.dispatch_event('on_fixed_update', self._fixed_update_rate)
+            self.dispatch_event("on_fixed_update", self._fixed_update_rate)
             self._accumulated_time -= self._fixed_update_rate
         self._excess_fraction = self._accumulated_time / self._fixed_update_rate
 
         self._update_clock.tick(delta_time)
-        self.dispatch_event('on_update', delta_time)
+        self.dispatch_event("on_update", delta_time)
 
     def set_update_rate(self, rate: float):
         """
@@ -653,11 +656,11 @@ class Window(pyglet.window.Window):
                 original_viewport[0],
                 original_viewport[0] + width,
                 original_viewport[2],
-                original_viewport[2] + height
+                original_viewport[2] + height,
             )
 
     def set_min_size(self, width: int, height: int):
-        """ Wrap the Pyglet window call to set minimum size
+        """Wrap the Pyglet window call to set minimum size
 
         :param width: width in pixels.
         :param height: height in pixels.
@@ -666,10 +669,10 @@ class Window(pyglet.window.Window):
         if self._resizable:
             super().set_minimum_size(width, height)
         else:
-            raise ValueError('Cannot set min size on non-resizable window')
+            raise ValueError("Cannot set min size on non-resizable window")
 
     def set_max_size(self, width: int, height: int):
-        """ Wrap the Pyglet window call to set maximum size
+        """Wrap the Pyglet window call to set maximum size
 
         :param width: width in pixels.
         :param height: height in pixels.
@@ -680,7 +683,7 @@ class Window(pyglet.window.Window):
         if self._resizable:
             super().set_maximum_size(width, height)
         else:
-            raise ValueError('Cannot set max size on non-resizable window')
+            raise ValueError("Cannot set max size on non-resizable window")
 
     def set_size(self, width: int, height: int):
         """
@@ -735,7 +738,7 @@ class Window(pyglet.window.Window):
 
     # noinspection PyMethodMayBeStatic
     def get_viewport(self) -> Tuple[float, float, float, float]:
-        """ Get the viewport. (What coordinates we can see.) """
+        """Get the viewport. (What coordinates we can see.)"""
         return self.ctx.projection_2d
 
     def use(self):
@@ -752,13 +755,13 @@ class Window(pyglet.window.Window):
         for _ in range(frames):
             self.switch_to()
             self.dispatch_events()
-            self.dispatch_event('on_draw')
+            self.dispatch_event("on_draw")
             self.flip()
             current_time = time.time()
             elapsed_time = current_time - start_time
             start_time = current_time
-            if elapsed_time < 1. / 60.:
-                sleep_time = (1. / 60.) - elapsed_time
+            if elapsed_time < 1.0 / 60.0:
+                sleep_time = (1.0 / 60.0) - elapsed_time
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
@@ -777,16 +780,18 @@ class Window(pyglet.window.Window):
         """
         if not isinstance(new_view, View):
             raise TypeError(
-                f"Window.show_view() takes an arcade.View,"
-                f"but it got a {type(new_view)}.")
+                f"Window.show_view() takes an arcade.View, but it got a {type(new_view)}."
+            )
 
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
             new_view.window = self
         elif new_view.window != self:
-            raise RuntimeError("You are attempting to pass the same view "
-                               "object between multiple windows. A single "
-                               "view object can only be used in one window.")
+            raise RuntimeError(
+                "You are attempting to pass the same view "
+                "object between multiple windows. A single "
+                "view object can only be used in one window."
+            )
 
         # remove previously shown view's handlers
         if self._current_view is not None:
@@ -799,12 +804,12 @@ class Window(pyglet.window.Window):
         self._current_view = new_view
         if new_view.has_sections:
             section_manager_managed_events = new_view.section_manager.managed_events
-            section_handlers = {event_type: getattr(new_view.section_manager, event_type, None) for event_type in
-                                section_manager_managed_events}
+            section_handlers = {
+                event_type: getattr(new_view.section_manager, event_type, None)
+                for event_type in section_manager_managed_events
+            }
             if section_handlers:
-                self.push_handlers(
-                    **section_handlers
-                )
+                self.push_handlers(**section_handlers)
         else:
             section_manager_managed_events = set()
 
@@ -813,13 +818,12 @@ class Window(pyglet.window.Window):
         view_handlers = {
             event_type: getattr(new_view, event_type, None)
             for event_type in self.event_types
-            if event_type != 'on_show' and event_type not in section_manager_managed_events and hasattr(new_view,
-                                                                                                        event_type)
+            if event_type != "on_show"
+            and event_type not in section_manager_managed_events
+            and hasattr(new_view, event_type)
         }
         if view_handlers:
-            self.push_handlers(
-                **view_handlers
-            )
+            self.push_handlers(**view_handlers)
         self._current_view.on_show_view()
         if self._current_view.has_sections:
             self._current_view.section_manager.on_show_view()
@@ -876,39 +880,39 @@ class Window(pyglet.window.Window):
         super().flip()
 
     def switch_to(self):
-        """ Switch to this window. """
+        """Switch to this window."""
         super().switch_to()
 
     def set_caption(self, caption):
-        """ Set the caption for the window. """
+        """Set the caption for the window."""
         super().set_caption(caption)
 
     def set_minimum_size(self, width: int, height: int):
-        """ Set smallest window size. """
+        """Set smallest window size."""
         super().set_minimum_size(width, height)
 
     def set_maximum_size(self, width, height):
-        """ Set largest window size. """
+        """Set largest window size."""
         super().set_maximum_size(width, height)
 
     def set_location(self, x, y):
-        """ Set location of the window. """
+        """Set location of the window."""
         super().set_location(x, y)
 
     def activate(self):
-        """ Activate this window. """
+        """Activate this window."""
         super().activate()
 
     def minimize(self):
-        """ Minimize the window. """
+        """Minimize the window."""
         super().minimize()
 
     def maximize(self):
-        """ Maximize  the window. """
+        """Maximize  the window."""
         super().maximize()
 
     def set_vsync(self, vsync: bool):
-        """ Set if we sync our draws to the monitors vertical sync rate. """
+        """Set if we sync our draws to the monitors vertical sync rate."""
         super().set_vsync(vsync)
 
     def set_mouse_platform_visible(self, platform_visible=None):
@@ -927,19 +931,19 @@ class Window(pyglet.window.Window):
         super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
-        """ Capture the mouse. """
+        """Capture the mouse."""
         super().set_exclusive_mouse(exclusive)
 
     def set_exclusive_keyboard(self, exclusive=True):
-        """ Capture all keyboard input. """
+        """Capture all keyboard input."""
         super().set_exclusive_keyboard(exclusive)
 
     def get_system_mouse_cursor(self, name):
-        """ Get the system mouse cursor """
+        """Get the system mouse cursor"""
         return super().get_system_mouse_cursor(name)
 
     def dispatch_events(self):
-        """ Dispatch events """
+        """Dispatch events"""
         super().dispatch_events()
 
     def on_mouse_enter(self, x: int, y: int):
@@ -980,20 +984,22 @@ class View:
 
     @property
     def section_manager(self) -> SectionManager:
-        """ lazy instantiation of the section manager """
+        """lazy instantiation of the section manager"""
         if self._section_manager is None:
-            self._section_manager = SectionManager(self) # type: ignore
+            self._section_manager = SectionManager(self)  # type: ignore
         return self._section_manager
 
     @property
     def has_sections(self) -> bool:
-        """ Return if the View has sections """
+        """Return if the View has sections"""
         if self._section_manager is None:
             return False
         else:
             return self.section_manager.has_sections
 
-    def add_section(self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None) -> None:
+    def add_section(
+        self, section, at_index: Optional[int] = None, at_draw_order: Optional[int] = None
+    ) -> None:
         """
         Adds a section to the view Section Manager.
 
@@ -1024,7 +1030,9 @@ class View:
 
         :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
-        self.window.ctx.screen.clear(color=color, color_normalized=color_normalized, viewport=viewport)
+        self.window.ctx.screen.clear(
+            color=color, color_normalized=color_normalized, viewport=viewport
+        )
 
     def on_update(self, delta_time: float):
         """To be overridden"""
