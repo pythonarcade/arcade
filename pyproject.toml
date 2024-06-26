@@ -39,6 +39,7 @@ Book = "https://learn.arcade.academy"
 # Note: this actually requires Python 3.9 due to sphinx==7.2.2
 # Used for dev work
 dev = [
+    "black",
     "pytest",
     "mypy",
     "ruff",

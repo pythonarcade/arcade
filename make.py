@@ -11,12 +11,15 @@ For help, see the following:
 * CONTRIBUTING.md
 * The output of python make.py --help
 """
+
 import os
 from contextlib import contextmanager
 from shutil import which, rmtree
 import subprocess
 from pathlib import Path
 from typing import Union, List, Generator, Optional
+
+from typing_extensions import Annotated
 
 PathLike = Union[Path, str, bytes]
 
@@ -50,6 +53,8 @@ MYPY = "mypy"
 MYPYOPTS = ["arcade"]
 PYRIGHT = "pyright"
 PYRIGHTOPTS = []
+BLACK = "black"
+BLACKOPTS = ["arcade", "--check"]
 
 # Testing
 PYTEST = "pytest"
@@ -479,6 +484,30 @@ def pyright():
     "Typecheck using pyright"
     run([PYRIGHT, *PYRIGHTOPTS])
     print("Pyright Finished.")
+
+
+@app.command(rich_help_panel="Code Quality")
+def format(
+    check: Annotated[
+        bool, typer.Option(prompt="Do not perform formatting, only check if it would happen")
+    ] = False
+):
+    "Format code using black"
+    black(check)
+    print("Formatting Complete.")
+
+
+@app.command(rich_help_panel="Code Quality")
+def black(
+    check: Annotated[
+        bool, typer.Option(prompt="Do not perform formatting, only check if it would happen.")
+    ] = False
+):
+    "Format code using black"
+    if check:
+        BLACKOPTS.append("--check")
+    run([BLACK, *BLACKOPTS])
+    print("Black Finished.")
 
 
 @app.command(rich_help_panel="Code Quality")
