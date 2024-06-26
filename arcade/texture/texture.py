@@ -144,7 +144,6 @@ class Texture:
         "_file_path",
         "_crop_values",
         "_properties",
-        "_atlas_refs",
         "__weakref__",
     )
 
