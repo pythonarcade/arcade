@@ -106,8 +106,8 @@ class PymunkPhysicsEngine:
             sprite.pymunk.gravity = gravity  # pyright: ignore [reportGeneralTypeIssues=false]
 
         if max_velocity is not None:
-            sprite.pymunk.max_velocity = (
-                max_velocity  # pyright: ignore [reportGeneralTypeIssues=false]
+            sprite.pymunk.max_velocity = (  # pyright: ignore [reportGeneralTypeIssues=false]
+                max_velocity
             )
 
         if max_vertical_velocity is not None:
