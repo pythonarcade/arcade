@@ -1,6 +1,7 @@
 """
 Drawing text with pyglet label
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,12 +14,7 @@ from arcade.resources import resolve
 from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
-__all__ = [
-    "load_font",
-    "Text",
-    "create_text_sprite",
-    "draw_text"
-]
+__all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -194,7 +190,7 @@ class Text:
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
         group: Optional[pyglet.graphics.Group] = None,
-        z: int = 0
+        z: int = 0,
     ):
         # Raises a RuntimeError if no window for better user feedback
         arcade.get_window()
@@ -224,7 +220,7 @@ class Text:
             multiline=multiline,
             rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
-            group=group
+            group=group,
         )
 
     def __enter__(self):
@@ -683,7 +679,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    z: int = 0
+    z: int = 0,
 ):
     """
     A simple way for beginners to draw text.
@@ -873,7 +869,7 @@ def draw_text(
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation
+            rotation=rotation,
         )
         ctx.label_cache[key] = label
 

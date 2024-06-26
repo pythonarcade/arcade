@@ -56,7 +56,7 @@ def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, 
 
             groups = [
                 (prev_prev_point, prev_point, next_point, polygon),
-                (prev_point, next_point, next_next_point, polygon)
+                (prev_point, next_point, next_next_point, polygon),
             ]
             for group in groups:
                 p = group[1]
@@ -83,9 +83,11 @@ def _is_convex(prev: Point, point: Point, next_point: Point) -> bool:
 
 
 def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
-    return _contains_no_points(p1, p2, p3, polygon) and \
-        _is_convex(p1, p2, p3) and \
-        _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
+    return (
+        _contains_no_points(p1, p2, p3, polygon)
+        and _is_convex(p1, p2, p3)
+        and _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
+    )
 
 
 def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:

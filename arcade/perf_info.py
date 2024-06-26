@@ -1,6 +1,7 @@
 """
 Utility functions to keep performance information
 """
+
 from __future__ import annotations
 
 import collections
@@ -22,7 +23,7 @@ __all__ = [
     "enable_timings",
     "disable_timings",
     "get_fps",
-    "timings_enabled"
+    "timings_enabled",
 ]
 
 
@@ -35,7 +36,7 @@ def _dispatch_event(self, *args):
 
     # Start the clock, and keep the time if this is on_draw for FPS calcs.
     start_time = time.perf_counter()
-    if name == 'on_draw':
+    if name == "on_draw":
         _frame_times.append(start_time)
 
     # Call Pyglet's dispatch event function

@@ -17,6 +17,7 @@ named color values, please see the following:
        as :py:class:`.Color` constants.
 
 """
+
 from __future__ import annotations
 
 import random
@@ -28,25 +29,25 @@ from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeEr
 
 
 __all__ = (
-    'Color',
-    'RGB',
-    'RGBA',
-    'RGB255',
-    'RGBA255',
-    'RGBNormalized',
-    'RGBANormalized',
-    'RGBOrA',
-    'RGBOrA255',
-    'RGBOrANormalized',
-    'MASK_RGBA_R',
-    'MASK_RGBA_G',
-    'MASK_RGBA_B',
-    'MASK_RGBA_A',
-    'MASK_RGB_R',
-    'MASK_RGB_G',
-    'MASK_RGB_B',
-    'MAX_UINT24',
-    'MAX_UINT32',
+    "Color",
+    "RGB",
+    "RGBA",
+    "RGB255",
+    "RGBA255",
+    "RGBNormalized",
+    "RGBANormalized",
+    "RGBOrA",
+    "RGBOrA255",
+    "RGBOrANormalized",
+    "MASK_RGBA_R",
+    "MASK_RGBA_G",
+    "MASK_RGBA_B",
+    "MASK_RGBA_A",
+    "MASK_RGB_R",
+    "MASK_RGB_G",
+    "MASK_RGB_B",
+    "MAX_UINT24",
+    "MAX_UINT32",
 )
 
 
@@ -63,7 +64,7 @@ MASK_RGB_B: Final[int] = 0x0000FF
 
 
 # Color type aliases.
-ChannelType = TypeVar('ChannelType')
+ChannelType = TypeVar("ChannelType")
 
 # Generic color aliases
 RGB = Tuple[ChannelType, ChannelType, ChannelType]
@@ -322,12 +323,7 @@ class Color(RGBA255):
         if not 0 <= a <= 255:
             raise ByteRangeError("a", a)
 
-        return cls(
-            (color & 0xFF0000) >> 16,
-            (color & 0xFF00) >> 8,
-            color & 0xFF,
-            a=a
-        )
+        return cls((color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, color & 0xFF, a=a)
 
     @classmethod
     def from_uint32(cls, color: int) -> Self:
@@ -353,12 +349,7 @@ class Color(RGBA255):
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
 
-        return cls(
-            (color & 0xFF000000) >> 24,
-            (color & 0xFF0000) >> 16,
-            (color & 0xFF00) >> 8,
-            a=(color & 0xFF)
-        )
+        return cls((color & 0xFF000000) >> 24, (color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, a=(color & 0xFF))
 
     @classmethod
     def from_normalized(cls, color_normalized: RGBANormalized) -> Self:
@@ -501,7 +492,7 @@ class Color(RGBA255):
         if b is None:
             b = (rand & MASK_RGBA_B) >> 8
         if a is None:
-            a = (rand & MASK_RGBA_A)
+            a = rand & MASK_RGBA_A
 
         return cls(r, g, b, a)
 
@@ -543,7 +534,7 @@ class Color(RGBA255):
         """
         ret = []
         for c in order.lower():
-            if c not in 'rgba':
+            if c not in "rgba":
                 raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
         return tuple(ret)

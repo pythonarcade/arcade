@@ -1,6 +1,7 @@
 """
 Functions used to support easing
 """
+
 from __future__ import annotations
 
 from math import pi, sin, cos
@@ -14,6 +15,7 @@ class EasingData:
     """
     Data class for holding information about easing.
     """
+
     start_period: float
     cur_period: float
     end_period: float
@@ -62,7 +64,7 @@ def ease_in_out(percent: float) -> float:
     Function for quadratic easing in and out.
     """
 
-    return 2 * percent**2 if percent < 0.5 else 1 - (-2 * percent + 2)**2 / 2
+    return 2 * percent**2 if percent < 0.5 else 1 - (-2 * percent + 2) ** 2 / 2
 
 
 def ease_out_elastic(percent: float) -> float:
@@ -143,12 +145,14 @@ def easing(percent: float, easing_data: EasingData) -> float:
     """
     Function for calculating return value for easing, given percent and easing data.
     """
-    return easing_data.start_value + (easing_data.end_value - easing_data.start_value) * \
-        easing_data.ease_function(percent)
+    return easing_data.start_value + (easing_data.end_value - easing_data.start_value) * easing_data.ease_function(
+        percent
+    )
 
 
-def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None,
-               ease_function: Callable = linear) -> Optional[EasingData]:
+def ease_angle(
+    start_angle: float, end_angle: float, *, time=None, rate=None, ease_function: Callable = linear
+) -> Optional[EasingData]:
     """
     Set up easing for angles.
     """
@@ -168,12 +172,14 @@ def ease_angle(start_angle: float, end_angle: float, *, time=None, rate=None,
     if time is None:
         raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
 
-    easing_data = EasingData(start_value=start_angle,
-                             end_value=end_angle,
-                             start_period=0,
-                             cur_period=0,
-                             end_period=time,
-                             ease_function=ease_function)
+    easing_data = EasingData(
+        start_value=start_angle,
+        end_value=end_angle,
+        start_period=0,
+        cur_period=0,
+        end_period=time,
+        ease_function=ease_function,
+    )
     return easing_data
 
 
@@ -211,12 +217,14 @@ def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ea
     if time is None:
         raise ValueError("Either the 'time' or the 'rate' parameter needs to be set.")
 
-    easing_data = EasingData(start_value=start_value,
-                             end_value=end_value,
-                             start_period=0,
-                             cur_period=0,
-                             end_period=time,
-                             ease_function=ease_function)
+    easing_data = EasingData(
+        start_value=start_value,
+        end_value=end_value,
+        start_period=0,
+        cur_period=0,
+        end_period=time,
+        ease_function=ease_function,
+    )
     return easing_data
 
 
@@ -224,10 +232,7 @@ def ease_position(start_position, end_position, *, time=None, rate=None, ease_fu
     """
     Get an easing position
     """
-    distance = get_distance(start_position[0],
-                            start_position[1],
-                            end_position[0],
-                            end_position[1])
+    distance = get_distance(start_position[0], start_position[1], end_position[0], end_position[1])
 
     if rate is not None:
         time = distance / rate

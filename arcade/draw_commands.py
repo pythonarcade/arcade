@@ -6,6 +6,7 @@ Many of these commands are slow, because they load everything to the
 graphics card each time a shape is drawn. For faster drawing, see the
 Buffered Draw Commands.
 """
+
 from __future__ import annotations
 
 import array
@@ -59,14 +60,13 @@ __all__ = [
     "draw_lbwh_rectangle_textured",
     "get_points_for_thick_line",
     "get_pixel",
-    "get_image"
+    "get_image",
 ]
 
 
-def get_points_for_thick_line(start_x: float, start_y: float,
-                              end_x: float, end_y: float,
-                              line_width: float) -> Tuple[Point2, Point2,
-                                                          Point2, Point2]:
+def get_points_for_thick_line(
+    start_x: float, start_y: float, end_x: float, end_y: float, line_width: float
+) -> Tuple[Point2, Point2, Point2, Point2]:
     """
     Function used internally for Arcade. OpenGL draws triangles only, so a thick
     line must be two triangles that make up a rectangle. This calculates and returns
@@ -103,12 +103,17 @@ def get_points_for_thick_line(start_x: float, start_y: float,
 # --- BEGIN ARC FUNCTIONS # # #
 
 
-def draw_arc_filled(center_x: float, center_y: float,
-                    width: float, height: float,
-                    color: RGBA255,
-                    start_angle: float, end_angle: float,
-                    tilt_angle: float = 0,
-                    num_segments: int = 128):
+def draw_arc_filled(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: RGBA255,
+    start_angle: float,
+    end_angle: float,
+    tilt_angle: float = 0,
+    num_segments: int = 128,
+):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -146,11 +151,18 @@ def draw_arc_filled(center_x: float, center_y: float,
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
 
 
-def draw_arc_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: RGBA255,
-                     start_angle: float, end_angle: float,
-                     border_width: float = 1, tilt_angle: float = 0,
-                     num_segments: int = 128):
+def draw_arc_outline(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: RGBA255,
+    start_angle: float,
+    end_angle: float,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    num_segments: int = 128,
+):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -204,9 +216,10 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
-def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
-                         height: float, color: RGBA255,
-                         tilt_angle: float = 0):
+
+def draw_parabola_filled(
+    start_x: float, start_y: float, end_x: float, height: float, color: RGBA255, tilt_angle: float = 0
+):
     """
     Draws a filled in parabola.
 
@@ -223,13 +236,18 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     start_angle = 0
     end_angle = 180
     width = start_x - end_x
-    draw_arc_filled(center_x, center_y, width, height, color,
-                    start_angle, end_angle, tilt_angle)
+    draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
 
 
-def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
-                          height: float, color: RGBA255,
-                          border_width: float = 1, tilt_angle: float = 0):
+def draw_parabola_outline(
+    start_x: float,
+    start_y: float,
+    end_x: float,
+    height: float,
+    color: RGBA255,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+):
     """
     Draws the outline of a parabola.
 
@@ -247,8 +265,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     start_angle = 0
     end_angle = 180
     width = start_x - end_x
-    draw_arc_outline(center_x, center_y, width, height, color,
-                     start_angle, end_angle, border_width, tilt_angle)
+    draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
 
 # --- END PARABOLA FUNCTIONS # # #
@@ -256,10 +273,10 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
-def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: RGBA255,
-                       tilt_angle: float = 0,
-                       num_segments: int = -1):
+
+def draw_circle_filled(
+    center_x: float, center_y: float, radius: float, color: RGBA255, tilt_angle: float = 0, num_segments: int = -1
+):
     """
     Draw a filled-in circle.
 
@@ -274,15 +291,20 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
-    draw_ellipse_filled(center_x, center_y, radius * 2, radius * 2, color,
-                        tilt_angle=tilt_angle,
-                        num_segments=num_segments)
+    draw_ellipse_filled(
+        center_x, center_y, radius * 2, radius * 2, color, tilt_angle=tilt_angle, num_segments=num_segments
+    )
 
 
-def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: RGBA255, border_width: float = 1,
-                        tilt_angle: float = 0,
-                        num_segments: int = -1):
+def draw_circle_outline(
+    center_x: float,
+    center_y: float,
+    radius: float,
+    color: RGBA255,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    num_segments: int = -1,
+):
     """
     Draw the outline of a circle.
 
@@ -299,21 +321,33 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
-    draw_ellipse_outline(center_x=center_x, center_y=center_y,
-                         width=radius * 2, height=radius * 2,
-                         color=color,
-                         border_width=border_width,
-                         tilt_angle=tilt_angle,
-                         num_segments=num_segments)
+    draw_ellipse_outline(
+        center_x=center_x,
+        center_y=center_y,
+        width=radius * 2,
+        height=radius * 2,
+        color=color,
+        border_width=border_width,
+        tilt_angle=tilt_angle,
+        num_segments=num_segments,
+    )
+
 
 # --- END CIRCLE FUNCTIONS # # #
 
 
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
-def draw_ellipse_filled(center_x: float, center_y: float,
-                        width: float, height: float, color: RGBA255,
-                        tilt_angle: float = 0, num_segments: int = -1):
+
+def draw_ellipse_filled(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: RGBA255,
+    tilt_angle: float = 0,
+    num_segments: int = -1,
+):
     """
     Draw a filled in ellipse.
 
@@ -343,21 +377,25 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     color_normalized = Color.from_iterable(color).normalized
 
     # Pass data to the shader
-    program['color'] = color_normalized
-    program['shape'] = width / 2, height / 2, tilt_angle
-    program['segments'] = num_segments
+    program["color"] = color_normalized
+    program["shape"] = width / 2, height / 2, tilt_angle
+    program["segments"] = num_segments
     buffer.orphan()
-    buffer.write(data=array.array('f', (center_x, center_y)))
+    buffer.write(data=array.array("f", (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
 
-def draw_ellipse_outline(center_x: float, center_y: float,
-                         width: float,
-                         height: float, color: RGBA255,
-                         border_width: float = 1,
-                         tilt_angle: float = 0,
-                         num_segments: int = -1):
+def draw_ellipse_outline(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: RGBA255,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    num_segments: int = -1,
+):
     """
     Draw the outline of an ellipse.
 
@@ -386,11 +424,11 @@ def draw_ellipse_outline(center_x: float, center_y: float,
     color_normalized = Color.from_iterable(color).normalized
 
     # Pass data to shader
-    program['color'] = color_normalized
-    program['shape'] = width / 2, height / 2, tilt_angle, border_width
-    program['segments'] = num_segments
+    program["color"] = color_normalized
+    program["shape"] = width / 2, height / 2, tilt_angle, border_width
+    program["segments"] = num_segments
     buffer.orphan()
-    buffer.write(data=array.array('f', (center_x, center_y)))
+    buffer.write(data=array.array("f", (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
@@ -401,9 +439,7 @@ def draw_ellipse_outline(center_x: float, center_y: float,
 # --- BEGIN LINE FUNCTIONS # # #
 
 
-def _generic_draw_line_strip(point_list: PointList,
-                             color: RGBA255,
-                             mode: int = gl.GL_LINE_STRIP):
+def _generic_draw_line_strip(point_list: PointList, color: RGBA255, mode: int = gl.GL_LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -427,8 +463,8 @@ def _generic_draw_line_strip(point_list: PointList,
     num_vertices = len(point_list)  # Fail if it isn't a sized / sequence object
 
     # Translate Python objects into types arcade's Buffer objects accept
-    color_array = array.array('B', rgba * num_vertices)
-    vertex_array = array.array('f', tuple(item for sublist in point_list for item in sublist))
+    color_array = array.array("B", rgba * num_vertices)
+    vertex_array = array.array("f", tuple(item for sublist in point_list for item in sublist))
     geometry.num_vertices = num_vertices
 
     # Double buffer sizes until they can hold all our data
@@ -446,8 +482,7 @@ def _generic_draw_line_strip(point_list: PointList,
     geometry.render(program, mode=mode)
 
 
-def draw_line_strip(point_list: PointList,
-                    color: RGBA255, line_width: float = 1):
+def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1):
     """
     Draw a multi-point line.
 
@@ -471,8 +506,7 @@ def draw_line_strip(point_list: PointList,
         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: RGBA255, line_width: float = 1):
+def draw_line(start_x: float, start_y: float, end_x: float, end_y: float, color: RGBA255, line_width: float = 1):
     """
     Draw a line.
 
@@ -495,18 +529,15 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     color_normalized = Color.from_iterable(color).normalized
 
     # Pass data to the shader
-    program['color'] = color_normalized
-    program['line_width'] = line_width
+    program["color"] = color_normalized
+    program["line_width"] = line_width
     line_pos_buffer.orphan()  # Allocate new buffer internally
-    line_pos_buffer.write(
-        data=array.array('f', (start_x, start_y, end_x, end_y)))
+    line_pos_buffer.write(data=array.array("f", (start_x, start_y, end_x, end_y)))
 
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
 
-def draw_lines(point_list: PointList,
-               color: RGBA255,
-               line_width: float = 1):
+def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1):
     """
     Draw a set of lines.
 
@@ -528,7 +559,7 @@ def draw_lines(point_list: PointList,
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
-    line_pos_array = array.array('f', (v for point in point_list for v in point))
+    line_pos_array = array.array("f", (v for point in point_list for v in point))
     num_points = len(point_list)
 
     # Grow buffer until large enough to hold all our data
@@ -539,8 +570,8 @@ def draw_lines(point_list: PointList,
         ctx.shape_line_buffer_pos.orphan()
 
     # Pass data to shader
-    program['line_width'] = line_width
-    program['color'] = color_normalized
+    program["line_width"] = line_width
+    program["color"] = color_normalized
     line_buffer_pos.write(data=line_pos_array)
 
     geometry.render(program, mode=gl.GL_LINES, vertices=num_points)
@@ -584,7 +615,7 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 
     # Get # of points and translate Python tuples to a C-style array
     num_points = len(point_list)
-    point_array = array.array('f', (v for point in point_list for v in point))
+    point_array = array.array("f", (v for point in point_list for v in point))
 
     # Resize buffer
     data_size = num_points * 8
@@ -592,8 +623,8 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
     buffer.orphan(size=data_size)
 
     # Pass data to shader
-    program['color'] = color_normalized
-    program['shape'] = size, size, 0
+    program["color"] = color_normalized
+    program["shape"] = size, size, 0
     buffer.write(data=point_array)
 
     # Only render the # of points we have complete data for
@@ -605,8 +636,7 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: Point2List,
-                        color: RGBA255):
+def draw_polygon_filled(point_list: Point2List, color: RGBA255):
     """
     Draw a polygon that is filled in.
 
@@ -619,8 +649,7 @@ def draw_polygon_filled(point_list: Point2List,
     _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
 
-def draw_polygon_outline(point_list: Point2List,
-                         color: RGBA255, line_width: float = 1):
+def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: float = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -658,9 +687,7 @@ def draw_polygon_outline(point_list: Point2List,
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_triangle_filled(x1: float, y1: float,
-                         x2: float, y2: float,
-                         x3: float, y3: float, color: RGBA255):
+def draw_triangle_filled(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255):
     """
     Draw a filled in triangle.
 
@@ -681,11 +708,9 @@ def draw_triangle_filled(x1: float, y1: float,
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLES)
 
 
-def draw_triangle_outline(x1: float, y1: float,
-                          x2: float, y2: float,
-                          x3: float, y3: float,
-                          color: RGBA255,
-                          border_width: float = 1):
+def draw_triangle_outline(
+    x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255, border_width: float = 1
+):
     """
     Draw a the outline of a triangle.
 
@@ -712,8 +737,10 @@ def draw_triangle_outline(x1: float, y1: float,
 
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
-def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: float, color: RGBA255,
-                                border_width: float = 1):
+
+def draw_lrbt_rectangle_outline(
+    left: float, right: float, bottom: float, top: float, color: RGBA255, border_width: float = 1
+):
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -727,21 +754,17 @@ def draw_lrbt_rectangle_outline(left: float, right: float, bottom: float, top: f
 
     """
     if left > right:
-        raise ValueError("Left coordinate must be less than or equal to "
-                         "the right coordinate")
+        raise ValueError("Left coordinate must be less than or equal to " "the right coordinate")
 
     if bottom > top:
-        raise ValueError("Bottom coordinate must be less than or equal to "
-                         "the top coordinate")
+        raise ValueError("Bottom coordinate must be less than or equal to " "the top coordinate")
 
-    draw_rect_outline(LRBT(left, right, bottom, top), color,
-                      border_width)
+    draw_rect_outline(LRBT(left, right, bottom, top), color, border_width)
 
 
-def draw_lbwh_rectangle_outline(left: float, bottom: float,
-                                width: float, height: float,
-                                color: RGBA255,
-                                border_width: float = 1):
+def draw_lbwh_rectangle_outline(
+    left: float, bottom: float, width: float, height: float, color: RGBA255, border_width: float = 1
+):
     """
     Draw a rectangle extending from bottom left to top right
 
@@ -754,8 +777,7 @@ def draw_lbwh_rectangle_outline(left: float, bottom: float,
     :param border_width: The width of the border in pixels. Defaults to one.
     """
 
-    draw_rect_outline(LBWH(left, bottom, width, height), color,
-                      border_width)
+    draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
 
 
 def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: float, color: RGBA255):
@@ -778,9 +800,7 @@ def draw_lrbt_rectangle_filled(left: float, right: float, bottom: float, top: fl
     draw_rect_filled(LRBT(left, right, bottom, top), color)
 
 
-def draw_lbwh_rectangle_filled(left: float, bottom: float,
-                               width: float, height: float,
-                               color: RGBA255):
+def draw_lbwh_rectangle_filled(left: float, bottom: float, width: float, height: float, color: RGBA255):
     """
     Draw a filled rectangle extending from bottom left to top right
 
@@ -795,11 +815,9 @@ def draw_lbwh_rectangle_filled(left: float, bottom: float,
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
 
-def draw_scaled_texture_rectangle(center_x: float, center_y: float,
-                                  texture: Texture,
-                                  scale: float = 1.0,
-                                  angle: float = 0,
-                                  alpha: int = 255):
+def draw_scaled_texture_rectangle(
+    center_x: float, center_y: float, texture: Texture, scale: float = 1.0, angle: float = 0, alpha: int = 255
+):
     """
     Draw a textured rectangle on-screen.
 
@@ -829,12 +847,9 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
     texture.draw_scaled(center_x, center_y, scale, angle, alpha)
 
 
-def draw_texture_rectangle(center_x: float, center_y: float,
-                           width: float,
-                           height: float,
-                           texture: Texture,
-                           angle: float = 0,
-                           alpha: int = 255):
+def draw_texture_rectangle(
+    center_x: float, center_y: float, width: float, height: float, texture: Texture, angle: float = 0, alpha: int = 255
+):
     """
     Draw a textured rectangle on-screen.
 
@@ -849,11 +864,9 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-def draw_lbwh_rectangle_textured(left: float, bottom: float,
-                                 width: float,
-                                 height: float,
-                                 texture: Texture, angle: float = 0,
-                                 alpha: int = 255):
+def draw_lbwh_rectangle_textured(
+    left: float, bottom: float, width: float, height: float, texture: Texture, angle: float = 0, alpha: int = 255
+):
     """
     Draw a texture extending from bottom left to top right.
 
@@ -873,6 +886,7 @@ def draw_lbwh_rectangle_textured(left: float, bottom: float,
 
 # Reference implementations: drawing of new Rect
 
+
 def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
     """
     Draw a rectangle outline.
@@ -887,14 +901,14 @@ def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_
 
     HALF_BORDER = border_width / 2
 
-    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y   + HALF_BORDER
-    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y  + HALF_BORDER
-    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y     - HALF_BORDER
-    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y      - HALF_BORDER
-    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y   - HALF_BORDER
-    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y  - HALF_BORDER
-    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y     + HALF_BORDER
-    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y     + HALF_BORDER
+    i_lb = rect.bottom_left.x + HALF_BORDER, rect.bottom_left.y + HALF_BORDER
+    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y + HALF_BORDER
+    i_rt = rect.top_right.x - HALF_BORDER, rect.top_right.y - HALF_BORDER
+    i_lt = rect.top_left.x + HALF_BORDER, rect.top_left.y - HALF_BORDER
+    o_lb = rect.bottom_left.x - HALF_BORDER, rect.bottom_left.y - HALF_BORDER
+    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y - HALF_BORDER
+    o_rt = rect.top_right.x + HALF_BORDER, rect.top_right.y + HALF_BORDER
+    o_lt = rect.top_left.x - HALF_BORDER, rect.top_right.y + HALF_BORDER
 
     point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
 
@@ -929,10 +943,10 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
     color_normalized = Color.from_iterable(color).normalized
 
     # Pass data to the shader
-    program['color'] = color_normalized
-    program['shape'] = rect.width, rect.height, tilt_angle
+    program["color"] = color_normalized
+    program["shape"] = rect.width, rect.height, tilt_angle
     buffer.orphan()
-    buffer.write(data=array.array('f', (rect.x, rect.y)))
+    buffer.write(data=array.array("f", (rect.x, rect.y)))
 
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
@@ -948,6 +962,7 @@ def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwa
 
 
 # Get_ functions
+
 
 def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """

@@ -2,6 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -63,9 +64,7 @@ class ArcadeContext(Context):
         self._default_camera: DefaultProjector = DefaultProjector(context=self)
         self.current_camera: Projector = self._default_camera
 
-        self.viewport = (
-            0, 0, window.width, window.height
-        )
+        self.viewport = (0, 0, window.width, window.height)
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -181,20 +180,12 @@ class ArcadeContext(Context):
         # ellipse/circle outline
         self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_ellipse_outline_unbuffered_geometry: Geometry = self.geometry(
-            [
-                BufferDescription(
-                    self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"]
-                )
-            ]
+            [BufferDescription(self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"])]
         )
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_rectangle_filled_unbuffered_geometry: Geometry = self.geometry(
-            [
-                BufferDescription(
-                    self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"]
-                )
-            ]
+            [BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"])]
         )
         self.atlas_geometry: Geometry = self.geometry()
 
@@ -250,7 +241,10 @@ class ArcadeContext(Context):
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
             self._atlas = TextureAtlas(
-                self.atlas_size, border=2, auto_resize=True, ctx=self,
+                self.atlas_size,
+                border=2,
+                auto_resize=True,
+                ctx=self,
             )
 
         return self._atlas
@@ -279,7 +273,6 @@ class ArcadeContext(Context):
         self.active_framebuffer.viewport = value
         if self._default_camera == self.current_camera:
             self._default_camera.use()
-
 
     @property
     def projection_matrix(self) -> Mat4:
@@ -399,9 +392,7 @@ class ArcadeContext(Context):
 
         if tess_control_shader and tess_evaluation_shader:
             tess_control_src = resolve(tess_control_shader).read_text()
-            tess_evaluation_src = resolve(
-                tess_evaluation_shader
-            ).read_text()
+            tess_evaluation_src = resolve(tess_evaluation_shader).read_text()
             tess_control_src = self.shader_inc(tess_control_src)
             tess_evaluation_src = self.shader_inc(tess_evaluation_src)
 
@@ -414,7 +405,7 @@ class ArcadeContext(Context):
             common=common_src,
             defines=defines,
             varyings=varyings,
-            varyings_capture_mode=varyings_capture_mode
+            varyings_capture_mode=varyings_capture_mode,
         )
 
     def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
@@ -430,6 +421,7 @@ class ArcadeContext(Context):
         :param common: Common source injected into compute shader
         """
         from arcade.resources import resolve
+
         path = resolve(path)
         common_src = [resolve(c).read_text() for c in common]
         return self.compute_shader(
@@ -511,6 +503,7 @@ class ArcadeContext(Context):
         :param source: Shader
         """
         from arcade.resources import resolve
+
         lines = source.splitlines()
         for i, line in enumerate(lines):
             line = line.strip()

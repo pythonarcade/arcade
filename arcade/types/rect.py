@@ -1,4 +1,5 @@
 """Rects all act the same, but take four of the possible eight attributes and calculate the rest."""
+
 from __future__ import annotations
 import math
 from typing import NamedTuple, Optional, TypedDict, Tuple
@@ -28,6 +29,7 @@ class RectKwargs(TypedDict):
     * :py:class:`typing.TypedDict`
 
     """
+
     left: float
     right: float
     bottom: float
@@ -54,6 +56,7 @@ class Rect(NamedTuple):
     You can also use :py:meth:`.from_kwargs` to create a Rect from keyword arguments.
 
     """
+
     #: The X position of the rectangle's left edge.
     left: float
     #: The X position of the rectangle's right edge.
@@ -159,10 +162,9 @@ class Rect(NamedTuple):
         """
         return XYWH(self.x + dx, self.y + dy, self.width, self.height)
 
-    def resize(self,
-               width: Optional[AsFloat] = None,
-               height: Optional[AsFloat] = None,
-               anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def resize(
+        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
+    ) -> Rect:
         """
         Returns a new :py:class:`Rect` at the current Rect's position,
         but with a new width and height, anchored at a point (default center.)
@@ -216,13 +218,29 @@ class Rect(NamedTuple):
 
     def __mul__(self, scale: AsFloat) -> Rect:  # type: ignore[override]
         """Scale the Rect by ``scale`` relative to ``(0, 0)``."""
-        return Rect(self.left * scale, self.right * scale, self.bottom * scale, self.top * scale,
-                    self.width * scale,  self.height * scale, self.x * scale, self.y * scale)
+        return Rect(
+            self.left * scale,
+            self.right * scale,
+            self.bottom * scale,
+            self.top * scale,
+            self.width * scale,
+            self.height * scale,
+            self.x * scale,
+            self.y * scale,
+        )
 
     def __truediv__(self, scale: AsFloat) -> Rect:
         """Scale the rectangle by 1/``scale`` relative to ``(0, 0)``."""
-        return Rect(self.left / scale, self.right / scale, self.bottom / scale, self.top / scale,
-                    self.width / scale,  self.height / scale, self.x / scale, self.y / scale)
+        return Rect(
+            self.left / scale,
+            self.right / scale,
+            self.bottom / scale,
+            self.top / scale,
+            self.width / scale,
+            self.height / scale,
+            self.x / scale,
+            self.y / scale,
+        )
 
     def align_top(self, value: AsFloat) -> Rect:
         """Returns a new :py:class:`Rect`, which is aligned to the top at `value`."""
@@ -264,10 +282,7 @@ class Rect(NamedTuple):
         return self.align_y(value)
 
     def min_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None,
-            anchor: Vec2 = AnchorPoint.CENTER
+        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
         Return a :py:class:`Rect` that is at least size `width` by `height`, positioned at
@@ -278,10 +293,7 @@ class Rect(NamedTuple):
         return self.resize(width, height, anchor)
 
     def max_size(
-            self,
-            width: Optional[AsFloat] = None,
-            height: Optional[AsFloat] = None,
-            anchor: Vec2 = AnchorPoint.CENTER
+        self, width: Optional[AsFloat] = None, height: Optional[AsFloat] = None, anchor: Vec2 = AnchorPoint.CENTER
     ) -> Rect:
         """
         Return a :py:class:`Rect` that is at most size `width` by `height`, positioned at
@@ -291,8 +303,12 @@ class Rect(NamedTuple):
         height = min(height or float("inf"), self.height)
         return self.resize(width, height, anchor)
 
-    def clamp_height(self, min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
-                     anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def clamp_height(
+        self,
+        min_height: Optional[AsFloat] = None,
+        max_height: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
+    ) -> Rect:
         """
         Return a :py:class:`Rect` that has a height between `min_height` and `max_height`,
         positioned at the current position and anchored to a point (default center.)
@@ -300,8 +316,12 @@ class Rect(NamedTuple):
         height = min(max_height or float("inf"), max(min_height or 0.0, self.height))
         return self.resize(self.width, height, anchor)
 
-    def clamp_width(self, min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
-                    anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def clamp_width(
+        self,
+        min_width: Optional[AsFloat] = None,
+        max_width: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
+    ) -> Rect:
         """Return a :py:class:`.Rect` constrained to the passed dimension.
 
         It will be created as follows:
@@ -320,10 +340,14 @@ class Rect(NamedTuple):
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
 
-    def clamp_size(self,
-                   min_width: Optional[AsFloat] = None, max_width: Optional[AsFloat] = None,
-                   min_height: Optional[AsFloat] = None, max_height: Optional[AsFloat] = None,
-                   anchor: Vec2 = AnchorPoint.CENTER) -> Rect:
+    def clamp_size(
+        self,
+        min_width: Optional[AsFloat] = None,
+        max_width: Optional[AsFloat] = None,
+        min_height: Optional[AsFloat] = None,
+        max_height: Optional[AsFloat] = None,
+        anchor: Vec2 = AnchorPoint.CENTER,
+    ) -> Rect:
         """Get a new clamped-size rectangle at the same position and anchored at ``anchor_point``.
 
         This combines the effects of :py:meth:`clamp_width` and :py:meth:`clamp_height` into
@@ -378,10 +402,8 @@ class Rect(NamedTuple):
         :param other: Another :py:class:`Rect` instance.
         """
 
-        return (
-            (other.width + self.width) / 2.0 > abs(self.x - other.x)
-            and
-            (other.height + self.height) / 2.0 > abs(self.y - other.y)
+        return (other.width + self.width) / 2.0 > abs(self.x - other.x) and (other.height + self.height) / 2.0 > abs(
+            self.y - other.y
         )
 
     def point_in_rect(self, point: Point2) -> bool:
@@ -413,7 +435,7 @@ class Rect(NamedTuple):
         diff = Vec2(px - self.x, py - self.y)
         dx = abs(diff.x) - self.width / 2.0
         dy = abs(diff.y) - self.height / 2.0
-        d = (max(dx, 0.0)**2 + max(dy, 0.0)**2)**0.5 + min(max(dx, dy), 0.0)
+        d = (max(dx, 0.0) ** 2 + max(dy, 0.0) ** 2) ** 0.5 + min(max(dx, dy), 0.0)
         return d
 
     def point_on_bounds(self, point: Point2, tolerance: float) -> bool:
@@ -506,10 +528,7 @@ class Rect(NamedTuple):
 
         """
         x, y = uv
-        return Vec2(
-            self.left + x * self.width,
-            self.bottom + y * self.height
-        )
+        return Vec2(self.left + x * self.width, self.bottom + y * self.height)
 
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Return a new :py:class:`tuple` of this rectangle's corner points.
@@ -526,12 +545,7 @@ class Rect(NamedTuple):
         bottom = self.bottom
         right = self.right
         top = self.top
-        return (
-            Vec2(left, bottom),
-            Vec2(left, top),
-            Vec2(right, top),
-            Vec2(right, bottom)
-        )
+        return (Vec2(left, bottom), Vec2(left, top), Vec2(right, top), Vec2(right, bottom))
 
     @property
     def lbwh(self) -> RectParams:
@@ -570,19 +584,19 @@ class Rect(NamedTuple):
         """
         # Perform iteration only once and store it as a set literal
         specified: set[str] = {k for k, v in kwargs.items() if v is not None}
-        have_lb = 'left' in specified and 'bottom' in specified
+        have_lb = "left" in specified and "bottom" in specified
 
         # LRBT
-        if have_lb and 'top' in specified and 'right' in specified:
+        if have_lb and "top" in specified and "right" in specified:
             return LRBT(kwargs["left"], kwargs["right"], kwargs["bottom"], kwargs["top"])  # type: ignore
 
         # LBWH
-        have_wh = 'width' in specified and 'height' in specified
+        have_wh = "width" in specified and "height" in specified
         if have_wh and have_lb:
             return LBWH(kwargs["left"], kwargs["bottom"], kwargs["width"], kwargs["height"])  # type: ignore
 
         # XYWH
-        if have_wh and 'x' in specified and 'y' in specified:
+        if have_wh and "x" in specified and "y" in specified:
             return XYWH(kwargs["x"], kwargs["y"], kwargs["width"], kwargs["height"])  # type: ignore
 
         raise ValueError("Not enough attributes defined for a valid rectangle!")
@@ -626,21 +640,24 @@ class Rect(NamedTuple):
            checking. See :py:class:`typing.TypedDict` to learn more.
 
         """
-        return {"left": self.left,
-                "right": self.right,
-                "bottom": self.bottom,
-                "top": self.top,
-                "x": self.x,
-                "y": self.y,
-                "width": self.width,
-                "height": self.height}
+        return {
+            "left": self.left,
+            "right": self.right,
+            "bottom": self.bottom,
+            "top": self.top,
+            "x": self.x,
+            "y": self.y,
+            "width": self.width,
+            "height": self.height,
+        }
 
     # Since __repr__ is handled automatically by NamedTuple, we focus on
     # human-readable spot-check values for __str__ instead.
     def __str__(self) -> str:
         return (
             f"<{self.__class__.__name__} LRBT({self.left}, {self.right}, {self.bottom}, {self.top})"
-            f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>")
+            f" XYWH({self.x}, {self.y}, {self.width}, {self.height})>"
+        )
 
     def __bool__(self) -> bool:
         """Returns True if area is not 0, else False."""
@@ -648,33 +665,19 @@ class Rect(NamedTuple):
 
     def __round__(self, n: int) -> Rect:
         """Rounds the left, right, bottom, and top to `n` decimals."""
-        return LRBT(
-            round(self.left, n),
-            round(self.right, n),
-            round(self.bottom, n),
-            round(self.top, n)
-        )
+        return LRBT(round(self.left, n), round(self.right, n), round(self.bottom, n), round(self.top, n))
 
     def __floor__(self) -> Rect:
         """Floors the left, right, bottom, and top."""
-        return LRBT(
-            math.floor(self.left),
-            math.floor(self.right),
-            math.floor(self.bottom),
-            math.floor(self.top)
-        )
+        return LRBT(math.floor(self.left), math.floor(self.right), math.floor(self.bottom), math.floor(self.top))
 
     def __ceil__(self) -> Rect:
         """Floors the left, right, bottom, and top."""
-        return LRBT(
-            math.ceil(self.left),
-            math.ceil(self.right),
-            math.ceil(self.bottom),
-            math.ceil(self.top)
-        )
+        return LRBT(math.ceil(self.left), math.ceil(self.right), math.ceil(self.bottom), math.ceil(self.top))
 
 
 # Shorthand creation helpers
+
 
 def LRBT(left: AsFloat, right: AsFloat, bottom: AsFloat, top: AsFloat) -> Rect:
     """Creates a new :py:class:`.Rect` from left, right, bottom, and top parameters."""
@@ -730,14 +733,14 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
 
 
 __all__ = [
-    'ViewportParams',
-    'RectParams',
-    'RectKwargs',
-    'Rect',
-    'AnchorPoint',
-    'LBWH',
-    'LRBT',
-    'XYWH',
-    'XYRR',
-    'Viewport'
+    "ViewportParams",
+    "RectParams",
+    "RectKwargs",
+    "Rect",
+    "AnchorPoint",
+    "LBWH",
+    "LRBT",
+    "XYWH",
+    "XYRR",
+    "Viewport",
 ]

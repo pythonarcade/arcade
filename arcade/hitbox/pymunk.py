@@ -100,12 +100,15 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         :param image: Image to trace.
         :return: Line sets
         """
+
         def sample_func(sample_point: Point2) -> int:
-            """ Method used to sample image. """
-            if sample_point[0] < 0 \
-                    or sample_point[1] < 0 \
-                    or sample_point[0] >= image.width \
-                    or sample_point[1] >= image.height:
+            """Method used to sample image."""
+            if (
+                sample_point[0] < 0
+                or sample_point[1] < 0
+                or sample_point[0] >= image.width
+                or sample_point[1] >= image.height
+            ):
                 return 0
 
             point_tuple = int(sample_point[0]), int(sample_point[1])
@@ -143,11 +146,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         # Get back one or more sets of lines covering stuff.
         # We want the one that covers the most of the sprite
         # or the line set might just be a hole in the sprite.
-        return march_soft(
-            logo_bb,
-            horizontal_samples, vertical_samples,
-            99,
-            sample_func)
+        return march_soft(logo_bb, horizontal_samples, vertical_samples, 99, sample_func)
 
     def select_largest_line_set(self, line_sets: PolylineSet) -> List[Vec2d]:
         """

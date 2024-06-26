@@ -21,7 +21,7 @@ MOD_SCROLLLOCK = 256
 
 # Platform-specific base hotkey modifier
 MOD_ACCEL = MOD_CTRL
-if platform == 'darwin':
+if platform == "darwin":
     MOD_ACCEL = MOD_COMMAND
 
 # Keys

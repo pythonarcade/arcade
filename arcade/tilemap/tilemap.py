@@ -44,11 +44,7 @@ _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
-__all__ = [
-    "TileMap",
-    "load_tilemap",
-    "read_tmx"
-]
+__all__ = ["TileMap", "load_tilemap", "read_tmx"]
 
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
@@ -87,9 +83,7 @@ def _get_image_source(
         image_file = tile.tileset.image
 
     if not image_file:
-        print(
-            f"Warning for tile {tile.id}, no image source listed either for individual tile, or as a tileset."
-        )
+        print(f"Warning for tile {tile.id}, no image source listed either for individual tile, or as a tileset.")
         return None
 
     if os.path.exists(image_file):
@@ -216,9 +210,7 @@ class TileMap:
         texture_cache_manager: Optional[arcade.TextureCacheManager] = None,
     ) -> None:
         if not map_file and not tiled_map:
-            raise AttributeError(
-                "Initialized TileMap with an empty map_file or no map_object argument"
-            )
+            raise AttributeError("Initialized TileMap with an empty map_file or no map_object argument")
 
         if tiled_map:
             self.tiled_map = tiled_map
@@ -286,18 +278,13 @@ class TileMap:
         global_options: Dict[str, Any],
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
-        processed: Union[
-            SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
-        ]
+        processed: Union[SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]]
 
         options = global_options
 
         if layer_options:
             if layer.name in layer_options:
-                new_options = {
-                    key: layer_options[layer.name].get(key, global_options[key])
-                    for key in global_options
-                }
+                new_options = {key: layer_options[layer.name].get(key, global_options[key]) for key in global_options}
                 options = new_options
 
         if isinstance(layer, pytiled_parser.TileLayer):
@@ -383,10 +370,7 @@ class TileMap:
 
             # No specific tile info, but there is a tile sheet
             # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")  # noqa
-            if (
-                tileset.image is not None
-                and tileset_key <= tile_gid < tileset_key + tileset.tile_count
-            ):
+            if tileset.image is not None and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
                 tile_id = tile_gid - tileset_key
                 existing_ref = None
                 if tileset.tiles is not None:
@@ -418,9 +402,7 @@ class TileMap:
         print(f"Returning NO tile for {tile_gid}.")
         return None
 
-    def _get_tile_by_id(
-        self, tileset: pytiled_parser.Tileset, tile_id: int
-    ) -> Optional[pytiled_parser.Tile]:
+    def _get_tile_by_id(self, tileset: pytiled_parser.Tileset, tile_id: int) -> Optional[pytiled_parser.Tile]:
         for tileset_key, cur_tileset in self.tiled_map.tilesets.items():
             if cur_tileset is tileset:
                 for tile_key, tile in cur_tileset.tiles.items():
@@ -505,9 +487,7 @@ class TileMap:
 
             if len(tile.objects.tiled_objects) > 1:
                 if tile.image:
-                    print(
-                        f"Warning, only one hit box supported for tile with image {tile.image}."
-                    )
+                    print(f"Warning, only one hit box supported for tile with image {tile.image}.")
                 else:
                     print("Warning, only one hit box supported for tile.")
 
@@ -515,38 +495,23 @@ class TileMap:
                 points: List[Point2] = []
                 if isinstance(hitbox, pytiled_parser.tiled_object.Rectangle):
                     if hitbox.size is None:
-                        print(
-                            "Warning: Rectangle hitbox created for without a "
-                            "height or width Ignoring."
-                        )
+                        print("Warning: Rectangle hitbox created for without a " "height or width Ignoring.")
                         continue
 
                     sx = hitbox.coordinates.x - (my_sprite.width / (scaling * 2))
                     sy = -(hitbox.coordinates.y - (my_sprite.height / (scaling * 2)))
-                    ex = (hitbox.coordinates.x + hitbox.size.width) - (
-                        my_sprite.width / (scaling * 2)
-                    )
+                    ex = (hitbox.coordinates.x + hitbox.size.width) - (my_sprite.width / (scaling * 2))
                     # issue #1068
                     # fixed size of rectangular hitbox
-                    ey = -(hitbox.coordinates.y + hitbox.size.height) + (
-                        my_sprite.height / (scaling * 2)
-                    )
+                    ey = -(hitbox.coordinates.y + hitbox.size.height) + (my_sprite.height / (scaling * 2))
 
                     points = [(sx, sy), (ex, sy), (ex, ey), (sx, ey)]
-                elif isinstance(
-                    hitbox, pytiled_parser.tiled_object.Polygon
-                ) or isinstance(hitbox, pytiled_parser.tiled_object.Polyline):
+                elif isinstance(hitbox, pytiled_parser.tiled_object.Polygon) or isinstance(
+                    hitbox, pytiled_parser.tiled_object.Polyline
+                ):
                     for point in hitbox.points:
-                        adj_x = (
-                            point.x
-                            + hitbox.coordinates.x
-                            - my_sprite.width / (scaling * 2)
-                        )
-                        adj_y = -(
-                            point.y
-                            + hitbox.coordinates.y
-                            - my_sprite.height / (scaling * 2)
-                        )
+                        adj_x = point.x + hitbox.coordinates.x - my_sprite.width / (scaling * 2)
+                        adj_y = -(point.y + hitbox.coordinates.y - my_sprite.height / (scaling * 2))
                         adj_point = adj_x, adj_y
                         points.append(adj_point)
 
@@ -569,9 +534,7 @@ class TileMap:
                     acy = cy - (my_sprite.height / (scaling * 2))
 
                     total_steps = 8
-                    angles = [
-                        step / total_steps * 2 * math.pi for step in range(total_steps)
-                    ]
+                    angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                     for angle in angles:
                         x = hw * math.cos(angle) + acx
                         y = -(hh * math.sin(angle) + acy)
@@ -598,9 +561,7 @@ class TileMap:
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
-                frame_tile = self._get_tile_by_gid(
-                    tile.tileset.firstgid + frame.tile_id
-                )
+                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)
                 if frame_tile:
                     image_file = _get_image_source(frame_tile, map_directory)
 
@@ -669,9 +630,7 @@ class TileMap:
         if not os.path.exists(image_file) and (map_directory):
             try2 = Path(map_directory, image_file)
             if not os.path.exists(try2):
-                print(
-                    f"Warning, can't find image {image_file} for Image Layer {layer.name}"
-                )
+                print(f"Warning, can't find image {image_file} for Image Layer {layer.name}")
             image_file = try2
 
         my_texture = self.texture_cache_manager.load_or_get_texture(
@@ -685,11 +644,7 @@ class TileMap:
             target = layer.transparent_color
             new_data = []
             for item in data:
-                if (
-                    item[0] == target[0]
-                    and item[1] == target[1]
-                    and item[2] == target[2]
-                ):
+                if item[0] == target[0] and item[1] == target[1] and item[2] == target[2]:
                     new_data.append((255, 255, 255, 0))
                 else:
                     new_data.append(item)
@@ -727,12 +682,10 @@ class TileMap:
         if layer.opacity:
             my_sprite.alpha = int(layer.opacity * 255)
 
-        my_sprite.center_x = (
-            (layer.offset[0] * scaling) + my_sprite.width / 2
-        ) + offset[0]
+        my_sprite.center_x = ((layer.offset[0] * scaling) + my_sprite.width / 2) + offset[0]
         my_sprite.top = (
-            self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-            - layer.offset[1]) * scaling + offset[1]
+            self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - layer.offset[1]
+        ) * scaling + offset[1]
 
         sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
@@ -785,17 +738,13 @@ class TileMap:
                 )
 
                 if my_sprite is None:
-                    print(
-                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}"
-                    )
+                    print(f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}")
                 else:
                     my_sprite.center_x = (
-                        column_index * (self.tiled_map.tile_size[0] * scaling)
-                        + my_sprite.width / 2
+                        column_index * (self.tiled_map.tile_size[0] * scaling) + my_sprite.width / 2
                     ) + offset[0]
                     my_sprite.center_y = (
-                        (self.tiled_map.map_size.height - row_index - 1)
-                        * (self.tiled_map.tile_size[1] * scaling)
+                        (self.tiled_map.map_size.height - row_index - 1) * (self.tiled_map.tile_size[1] * scaling)
                         + my_sprite.height / 2
                     ) + offset[1]
 
@@ -858,11 +807,7 @@ class TileMap:
 
                 x = (cur_object.coordinates.x * scaling) + offset[0]
                 y = (
-                    (
-                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-                        - cur_object.coordinates.y
-                    )
-                    * scaling
+                    (self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - cur_object.coordinates.y) * scaling
                 ) + offset[1]
 
                 my_sprite.width = width = cur_object.size[0] * scaling
@@ -875,9 +820,7 @@ class TileMap:
                     rotation = 0
 
                 angle_degrees = math.degrees(rotation)
-                rotated_center_x, rotated_center_y = rotate_point(
-                    width / 2, height / 2, 0, 0, angle_degrees
-                )
+                rotated_center_x, rotated_center_y = rotate_point(width / 2, height / 2, 0, 0, angle_degrees)
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
                 my_sprite.angle = angle_degrees
@@ -896,24 +839,16 @@ class TileMap:
                     my_sprite.change_y = prop_to_float(cur_object.properties["change_y"])
 
                 if cur_object.properties and "boundary_bottom" in cur_object.properties:
-                    my_sprite.boundary_bottom = prop_to_float(
-                        cur_object.properties["boundary_bottom"]
-                    )
+                    my_sprite.boundary_bottom = prop_to_float(cur_object.properties["boundary_bottom"])
 
                 if cur_object.properties and "boundary_top" in cur_object.properties:
-                    my_sprite.boundary_top = prop_to_float(
-                        cur_object.properties["boundary_top"]
-                    )
+                    my_sprite.boundary_top = prop_to_float(cur_object.properties["boundary_top"])
 
                 if cur_object.properties and "boundary_left" in cur_object.properties:
-                    my_sprite.boundary_left = prop_to_float(
-                        cur_object.properties["boundary_left"]
-                    )
+                    my_sprite.boundary_left = prop_to_float(cur_object.properties["boundary_left"])
 
                 if cur_object.properties and "boundary_right" in cur_object.properties:
-                    my_sprite.boundary_right = prop_to_float(
-                        cur_object.properties["boundary_right"]
-                    )
+                    my_sprite.boundary_right = prop_to_float(cur_object.properties["boundary_right"])
 
                 if cur_object.properties:
                     my_sprite.properties.update(cur_object.properties)
@@ -929,10 +864,7 @@ class TileMap:
                 continue
             elif isinstance(cur_object, pytiled_parser.tiled_object.Point):
                 x = cur_object.coordinates.x * scaling
-                y = (
-                    self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-                    - cur_object.coordinates.y
-                ) * scaling
+                y = (self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - cur_object.coordinates.y) * scaling
 
                 shape = (x + offset[0], y + offset[1])
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
@@ -943,16 +875,14 @@ class TileMap:
                     )
                     x = cur_object.coordinates.x * scaling
                     y = (
-                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-                        - cur_object.coordinates.y
+                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - cur_object.coordinates.y
                     ) * scaling
 
                     shape = (x + offset[0], y + offset[1])
                 else:
                     sx = cur_object.coordinates.x * scaling + offset[0]
                     sy = (
-                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-                        - cur_object.coordinates.y
+                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1] - cur_object.coordinates.y
                     ) * scaling + offset[1]
 
                     ex = sx + cur_object.size.width * scaling
@@ -964,16 +894,14 @@ class TileMap:
                     p4 = (sx, ey)
 
                     shape = [p1, p2, p3, p4]
-            elif isinstance(
-                cur_object, pytiled_parser.tiled_object.Polygon
-            ) or isinstance(cur_object, pytiled_parser.tiled_object.Polyline):
+            elif isinstance(cur_object, pytiled_parser.tiled_object.Polygon) or isinstance(
+                cur_object, pytiled_parser.tiled_object.Polyline
+            ):
                 points: List[Point2] = []
                 shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
-                    y = (self.height * self.tile_height) - (
-                        point.y + cur_object.coordinates.y
-                    )
+                    y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
                     point = (x + offset[0], y + offset[1])
                     points.append(point)
 
@@ -987,9 +915,7 @@ class TileMap:
                 cy = cur_object.coordinates.y + hh
 
                 total_steps = 8
-                angles = [
-                    step / total_steps * 2 * math.pi for step in range(total_steps)
-                ]
+                angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                 points = []
                 shape = points
                 for angle in angles:
@@ -1003,9 +929,7 @@ class TileMap:
                 continue
 
             if shape:
-                tiled_object = TiledObject(
-                    shape, cur_object.properties, cur_object.name, cur_object.class_
-                )
+                tiled_object = TiledObject(shape, cur_object.properties, cur_object.name, cur_object.class_)
 
                 if not objects_list:
                     objects_list = []
@@ -1065,6 +989,4 @@ def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
 
     Exists to provide info for outdated code bases.
     """
-    raise DeprecationWarning(
-        "The read_tmx function has been replaced by the new TileMap class."
-    )
+    raise DeprecationWarning("The read_tmx function has been replaced by the new TileMap class.")

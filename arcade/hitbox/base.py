@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from __future__ import annotations
-
 from math import cos, radians, sin
 from typing import Any, Tuple
 from typing_extensions import Self
@@ -100,6 +98,7 @@ class HitBox:
     :param scale: The X and Y scaling factors to use when offsetting the
         points
     """
+
     def __init__(
         self,
         points: Point2List,
@@ -206,9 +205,7 @@ class HitBox:
         :param angle: The angle to rotate points by (0 by default)
         :return:
         """
-        return RotatableHitBox(
-            self._points, position=self._position, scale=self._scale, angle=angle
-        )
+        return RotatableHitBox(self._points, position=self._position, scale=self._scale, angle=angle)
 
     def get_adjusted_points(self) -> Point2List:
         """
@@ -243,6 +240,7 @@ class RotatableHitBox(HitBox):
     Rotation is separated from the basic hitbox because it is much
     slower than offsetting and scaling.
     """
+
     def __init__(
         self,
         points: Point2List,

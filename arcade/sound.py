@@ -13,20 +13,13 @@ from arcade.resources import resolve
 import pyglet
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options["audio"] = tuple(
-        v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
-    )
+    pyglet.options["audio"] = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
 else:
     pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
 import pyglet.media as media
 
-__all__ = [
-    "Sound",
-    "load_sound",
-    "play_sound",
-    "stop_sound"
-]
+__all__ = ["Sound", "load_sound", "play_sound", "stop_sound"]
 
 
 class Sound:
@@ -37,21 +30,15 @@ class Sound:
         file_name = resolve(file_name)
 
         if not Path(file_name).is_file():
-            raise FileNotFoundError(
-                f"The sound file '{file_name}' is not a file or can't be read."
-            )
+            raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
-            self.file_name, streaming=streaming
-        )
+        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
 
         if self.source.duration is None:
             raise ValueError("Audio duration must be known when loaded, but this audio source returned `None`")
 
-        self.min_distance = (
-            100000000  # setting the players to this allows for 2D panning with 3D audio
-        )
+        self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
 
     def play(
         self,
@@ -68,10 +55,7 @@ class Sound:
         :param loop: Loop, false to play once, true to loop continuously
         :param speed: Change the speed of the sound which also changes pitch, default 1.0
         """
-        if (
-            isinstance(self.source, media.StreamingSource)
-            and self.source.is_player_source
-        ):
+        if isinstance(self.source, media.StreamingSource) and self.source.is_player_source:
             raise RuntimeError(
                 "Tried to play a streaming source more than once."
                 " Streaming sources should only be played in one instance."
@@ -187,9 +171,7 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     try:
         return Sound(file_name, streaming)
     except Exception as ex:
-        raise FileNotFoundError(
-            f'Unable to load sound file: "{file_name}". Exception: {ex}'
-        ) from ex
+        raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}') from ex
 
 
 def play_sound(
@@ -215,8 +197,9 @@ def play_sound(
     elif not isinstance(sound, Sound):
         raise TypeError(
             f"Error, got {sound!r} instead of an arcade.Sound."
-            if not isinstance(sound, (str, Path, bytes)) else\
-            " Make sure to use load_sound first, then play the result with play_sound.")
+            if not isinstance(sound, (str, Path, bytes))
+            else " Make sure to use load_sound first, then play the result with play_sound."
+        )
 
     try:
         return sound.play(volume, pan, loop, speed)
@@ -235,7 +218,10 @@ def stop_sound(player: media.Player):
     if not isinstance(player, media.Player):
         raise TypeError(
             "stop_sound takes a media player object returned from the play_sound() command, not a "
-            "loaded Sound object." if isinstance(player, Sound) else f"{player!r}")
+            "loaded Sound object."
+            if isinstance(player, Sound)
+            else f"{player!r}"
+        )
 
     player.pause()
     player.delete()

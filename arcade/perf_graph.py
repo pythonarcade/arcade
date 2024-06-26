@@ -50,18 +50,19 @@ class PerfGraph(arcade.Sprite):
     """
 
     def __init__(
-            self,
-            width: int, height: int,
-            graph_data: str = "FPS",
-            update_rate: float = 0.1,
-            background_color: RGBA255 = arcade.color.BLACK,
-            data_line_color: RGBA255 = arcade.color.WHITE,
-            axis_color: RGBA255 = arcade.color.DARK_YELLOW,
-            grid_color: RGBA255 = arcade.color.DARK_YELLOW,
-            font_color: RGBA255 = arcade.color.WHITE,
-            font_size: int = 10,
-            y_axis_num_lines: int = 4,
-            view_y_scale_step: float = 20.0,
+        self,
+        width: int,
+        height: int,
+        graph_data: str = "FPS",
+        update_rate: float = 0.1,
+        background_color: RGBA255 = arcade.color.BLACK,
+        data_line_color: RGBA255 = arcade.color.WHITE,
+        axis_color: RGBA255 = arcade.color.DARK_YELLOW,
+        grid_color: RGBA255 = arcade.color.DARK_YELLOW,
+        font_color: RGBA255 = arcade.color.WHITE,
+        font_size: int = 10,
+        y_axis_num_lines: int = 4,
+        view_y_scale_step: float = 20.0,
     ):
 
         unique_id = str(random.random())
@@ -103,24 +104,17 @@ class PerfGraph(arcade.Sprite):
 
         # Create the bottom label text object
         self._bottom_label = arcade.Text(
-            graph_data, 0, 2, self._font_color,
-            self._font_size, align="center", width=int(width)
+            graph_data, 0, 2, self._font_color, self._font_size, align="center", width=int(width)
         )
         self._all_text_objects.append(self._bottom_label)
 
         # Create the axes
         self._x_axis = Line(
-            self._left_x, self._bottom_y,
-            self._left_x, height,
-            batch=self._pyglet_batch,
-            color=self._axis_color
+            self._left_x, self._bottom_y, self._left_x, height, batch=self._pyglet_batch, color=self._axis_color
         )
 
         self._y_axis = Line(
-            self._left_x, self._bottom_y,
-            width, self._bottom_y,
-            batch=self._pyglet_batch,
-            color=self._axis_color
+            self._left_x, self._bottom_y, width, self._bottom_y, batch=self._pyglet_batch, color=self._axis_color
         )
 
         # Create the Y scale text objects & lines
@@ -129,16 +123,16 @@ class PerfGraph(arcade.Sprite):
             self._vertical_axis_text_objects.append(
                 arcade.Text(
                     "0",  # Ensure the lowest y axis label is always 0
-                    self._left_x, int(y_level),
-                    self._font_color, self._font_size,
-                    anchor_x="right", anchor_y="center"))
-            self._grid_lines.append(
-                Line(
-                    self._left_x, y_level,
-                    width, y_level,
-                    batch=self._pyglet_batch,
-                    color=self._grid_color
+                    self._left_x,
+                    int(y_level),
+                    self._font_color,
+                    self._font_size,
+                    anchor_x="right",
+                    anchor_y="center",
                 )
+            )
+            self._grid_lines.append(
+                Line(self._left_x, y_level, width, y_level, batch=self._pyglet_batch, color=self._grid_color)
             )
 
         self._all_text_objects.extend(self._vertical_axis_text_objects)
@@ -229,8 +223,7 @@ class PerfGraph(arcade.Sprite):
         # Clear and return if timings are disabled
         if not arcade.timings_enabled():
             # Please forgive the ugly spacing. It makes type checking work.
-            with atlas.render_into(  # type: ignore
-                    self.minimap_texture, projection=self.proj) as fbo:
+            with atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:  # type: ignore
                 fbo.clear(color=(0, 0, 0, 255))
             return
 
@@ -288,8 +281,7 @@ class PerfGraph(arcade.Sprite):
 
         # Render to the internal texture
         # This ugly spacing is intentional to make type checking work.
-        with atlas.render_into(  # type: ignore
-                self.minimap_texture, projection=self.proj) as fbo:
+        with atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:  # type: ignore
 
             # Set the background color
             fbo.clear(color=self.background_color)

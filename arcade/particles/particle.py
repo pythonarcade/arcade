@@ -1,6 +1,7 @@
 """
 Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
 """
+
 from __future__ import annotations
 from typing import Literal, Optional, Tuple
 
@@ -13,15 +14,15 @@ class Particle(Sprite):
     """Sprite that is emitted from an Emitter"""
 
     def __init__(
-            self,
-            path_or_texture: Optional[PathOrTexture],
-            change_xy: Tuple[float, float],
-            center_xy: Point = (0.0, 0.0),
-            angle: float = 0.0,
-            change_angle: float = 0.0,
-            scale: float = 1.0,
-            alpha: int = 255,
-            mutation_callback=None
+        self,
+        path_or_texture: Optional[PathOrTexture],
+        change_xy: Tuple[float, float],
+        center_xy: Point = (0.0, 0.0),
+        angle: float = 0.0,
+        change_angle: float = 0.0,
+        scale: float = 1.0,
+        alpha: int = 255,
+        mutation_callback=None,
     ):
         super().__init__(path_or_texture, scale=scale)
         self.center_x = center_xy[0]
@@ -51,18 +52,19 @@ class EternalParticle(Particle):
     """Particle that has no end to its life"""
 
     def __init__(
-            self,
-            filename_or_texture: PathOrTexture,
-            change_xy: Velocity,
-            center_xy: Point = (0.0, 0.0),
-            angle: float = 0,
-            change_angle: float = 0,
-            scale: float = 1.0,
-            alpha: int = 255,
-            mutation_callback=None
+        self,
+        filename_or_texture: PathOrTexture,
+        change_xy: Velocity,
+        center_xy: Point = (0.0, 0.0),
+        angle: float = 0,
+        change_angle: float = 0,
+        scale: float = 1.0,
+        alpha: int = 255,
+        mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha,
-                         mutation_callback)
+        super().__init__(
+            filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback
+        )
 
     def can_reap(self) -> Literal[False]:
         """Determine if Particle can be deleted"""
@@ -73,19 +75,20 @@ class LifetimeParticle(Particle):
     """Particle that lives for a given amount of time and is then deleted"""
 
     def __init__(
-            self,
-            filename_or_texture: Optional[PathOrTexture],
-            change_xy: Velocity,
-            lifetime: float,
-            center_xy: Point = (0.0, 0.0),
-            angle: float = 0,
-            change_angle: float = 0,
-            scale: float = 1.0,
-            alpha: int = 255,
-            mutation_callback=None
+        self,
+        filename_or_texture: Optional[PathOrTexture],
+        change_xy: Velocity,
+        lifetime: float,
+        center_xy: Point = (0.0, 0.0),
+        angle: float = 0,
+        change_angle: float = 0,
+        scale: float = 1.0,
+        alpha: int = 255,
+        mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha,
-                         mutation_callback)
+        super().__init__(
+            filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback
+        )
         self.lifetime_original = lifetime
         self.lifetime_elapsed = 0.0
 
@@ -103,20 +106,29 @@ class FadeParticle(LifetimeParticle):
     """Particle that animates its alpha between two values during its lifetime"""
 
     def __init__(
-            self,
-            filename_or_texture: PathOrTexture,
-            change_xy: Velocity,
-            lifetime: float,
-            center_xy: Point = (0.0, 0.0),
-            angle: float = 0,
-            change_angle: float = 0,
-            scale: float = 1.0,
-            start_alpha: int = 255,
-            end_alpha: int = 0,
-            mutation_callback=None
+        self,
+        filename_or_texture: PathOrTexture,
+        change_xy: Velocity,
+        lifetime: float,
+        center_xy: Point = (0.0, 0.0),
+        angle: float = 0,
+        change_angle: float = 0,
+        scale: float = 1.0,
+        start_alpha: int = 255,
+        end_alpha: int = 0,
+        mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, lifetime, center_xy, angle, change_angle, scale, start_alpha,
-                         mutation_callback)
+        super().__init__(
+            filename_or_texture,
+            change_xy,
+            lifetime,
+            center_xy,
+            angle,
+            change_angle,
+            scale,
+            start_alpha,
+            mutation_callback,
+        )
         self.start_alpha = start_alpha
         self.alpha = start_alpha
         self.end_alpha = end_alpha
@@ -124,7 +136,5 @@ class FadeParticle(LifetimeParticle):
     def update(self):
         """Advance the Particle's simulation"""
         super().update()
-        a = lerp(self.start_alpha,
-                 self.end_alpha,
-                 self.lifetime_elapsed / self.lifetime_original)
+        a = lerp(self.start_alpha, self.end_alpha, self.lifetime_elapsed / self.lifetime_original)
         self.alpha = int(clamp(a, 0, 255))
