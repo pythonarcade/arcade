@@ -381,7 +381,8 @@ class TextureAtlas(TextureAtlasBase):
 
         # A list of all the images this atlas contains.
         # Unique by: Internal hash property
-        self._images: WeakSet[ImageData] = WeakSet()
+        self._images: WeakValueDictionary[str, ImageData] = WeakValueDictionary()
+
         # All textures added to the atlas
         self._textures: WeakSet[Texture] = WeakSet()
         # atlas_name: Texture
@@ -505,7 +506,7 @@ class TextureAtlas(TextureAtlasBase):
 
         A new list is constructed from the internal weak set of images.
         """
-        return list(self._images)
+        return list(self._images.values())
 
     def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
         """
@@ -520,8 +521,13 @@ class TextureAtlas(TextureAtlasBase):
         if not self.has_texture(texture):
             self._textures.add(texture)
             # Set up finalizer to remove the texture when it's GCed
-            ref = finalize(texture, self.remove, texture)
-            # ref.atexit = False  # Don't bother removing texture on program exit
+            ref = finalize(
+                texture,
+                self._remove,
+                texture.atlas_name,
+                texture.image_data.hash,
+            )
+            ref.atexit = False  # Don't bother removing texture on program exit
 
             self._unique_texture_ref_count.inc_ref(texture)
             self._image_ref_count.inc_ref(texture.image_data)
@@ -642,7 +648,7 @@ class TextureAtlas(TextureAtlasBase):
         # Put texture coordinates into uv buffer
         self._image_uvs.set_slot_data(slot, region.texture_coordinates)
 
-        self._images.add(image_data)
+        self._images[image_data.hash] = image_data
         return x, y, slot, region
 
     # def write_texture(self, texture: "Texture", x: int, y: int):
@@ -720,7 +726,6 @@ class TextureAtlas(TextureAtlasBase):
 
         :param texture: The texture to remove
         """
-        print("REMOVING TEXTURE", texture)
         LOG.info("Removing texture: %s", texture.atlas_name)
         # The texture is not there if GCed but we still
         # need to remove if it it's a manual action
@@ -729,28 +734,47 @@ class TextureAtlas(TextureAtlasBase):
         except KeyError:
             pass
 
+        self._remove(texture.atlas_name, texture.image_data.hash)
+
+    def _remove(self, atlas_name: str, hash: str):
+        """
+        Remove a texture from the atlas without having the texture instance.
+        This is for example called by the finalizer when the texture is GCed.
+        """
+        # print("FINALIZE REMOVER", atlas_name, hash)
+        LOG.info("Removing texture: %s", atlas_name)
+
         # Remove the unique texture if it's there
-        if self._unique_texture_ref_count.dec_ref(texture) == 0:
+        if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
             # We need to remove the texture if manually removed from the atlas.
             # Otherwise it will be removed by GC and trigger KeyError
             try:
-                del self._unique_textures[texture.atlas_name]
+                del self._unique_textures[atlas_name]
             except KeyError:
                 pass
             # Reclaim the texture uv slot
-            del self._texture_regions[texture.atlas_name]
-            self._texture_uvs.free_slot_by_name(texture.atlas_name)
+            try:
+                del self._texture_regions[atlas_name]
+            except KeyError:
+                pass
+            try:
+                self._texture_uvs.free_slot_by_name(atlas_name)
+            except KeyError:
+                pass
 
         # Reclaim the image in the atlas if it's not used by any other texture
-        if self._image_ref_count.dec_ref(texture.image_data) == 0:
+        if self._image_ref_count.dec_ref_by_hash(hash) == 0:
             # We need to remove the image if manually removed from the atlas.
             # Otherwise it will be removed by GC and trigger KeyError
             try:
-                self._images.remove(texture.image_data)
+                del self._images[hash]
             except KeyError:
                 pass
-            del self._image_regions[texture.image_data.hash]
-            self._image_uvs.free_slot_by_name(texture.image_data.hash)
+            try:
+                del self._image_regions[hash]
+            except KeyError:
+                pass
+            self._image_uvs.free_slot_by_name(hash)
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -816,7 +840,7 @@ class TextureAtlas(TextureAtlasBase):
 
     def has_image(self, image_data: "ImageData") -> bool:
         """Check if a image is already in the atlas"""
-        return image_data in self._images
+        return image_data.hash in self._images
 
     def resize(self, size: Tuple[int, int]) -> None:
         """
@@ -854,7 +878,7 @@ class TextureAtlas(TextureAtlasBase):
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # Store old images and textures before clearing the atlas
-        images = list(self._images)
+        images = list(self._images.values())
         textures = self.unique_textures
 
         # Clear the regions and allocator
@@ -917,7 +941,7 @@ class TextureAtlas(TextureAtlasBase):
 
         self._textures = WeakSet()
         self._unique_textures = WeakValueDictionary()
-        self._images = WeakSet()
+        self._images = WeakValueDictionary()
 
         self._image_regions = dict()
         self._texture_regions = dict()
